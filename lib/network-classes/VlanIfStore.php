@@ -1,0 +1,204 @@
+<?php
+/**
+ * © 2019 Palo Alto Networks, Inc.  All rights reserved.
+ *
+ * Licensed under SCRIPT SOFTWARE AGREEMENT, Palo Alto Networks, Inc., at https://www.paloaltonetworks.com/legal/script-software-license-1-0.pdf
+ *
+ */
+
+/**
+ * @property $o VlanInterface[]
+ * @property PANConf $owner
+ */
+class VlanIfStore extends ObjStore
+{
+    public static $childn = 'VlanInterface';
+
+    protected $fastMemToIndex = null;
+    protected $fastNameToIndex = null;
+
+    /**
+     * @param $name string
+     * @param $owner PANConf
+     */
+    public function __construct($name, $owner)
+    {
+        $this->name = $name;
+        $this->owner = $owner;
+        $this->classn = &self::$childn;
+    }
+
+    /**
+     * @return VlanInterface[]
+     */
+    public function getInterfaces()
+    {
+        return $this->o;
+    }
+
+
+    /**
+     * Creates a new VlanInterface in this store. It will be placed at the end of the list.
+     * @param string $name name of the new VlanInterface
+     * @return VlanInterface
+     */
+    public function newVlanIf($name)
+    {
+        $vlanIf = new VlanInterface($name, $this);
+        $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, VlanInterface::$templatexml);
+
+        $vlanIf->load_from_domxml($xmlElement);
+
+        $vlanIf->owner = null;
+        $vlanIf->setName($name);
+
+        //20190507 - which add method is best, is addVlanIf needed??
+        $this->addVlanIf($vlanIf);
+        $this->add($vlanIf);
+
+        return $vlanIf;
+    }
+
+
+    /**
+     * @param VlanInterface $vlanIf
+     * @return bool
+     */
+    public function addVlanIf($vlanIf)
+    {
+        if( !is_object($vlanIf) )
+            derr('this function only accepts VlanInterface class objects');
+
+        if( $vlanIf->owner !== null )
+            derr('Trying to add a VlanInterface that has a owner already !');
+
+
+        $ser = spl_object_hash($vlanIf);
+
+        if( !isset($this->fastMemToIndex[$ser]) )
+        {
+            $vlanIf->owner = $this;
+
+            if( $this->xmlroot === null )
+                $this->createXmlRoot();
+
+            $this->xmlroot->appendChild($vlanIf->xmlroot);
+
+            return TRUE;
+        }
+        else
+            derr('You cannot add a VlanInterface that is already here :)');
+
+        return FALSE;
+    }
+
+    /**
+     * @param VlanInterface $s
+     * @return bool
+     */
+    public function API_addVlanIf($s)
+    {
+        $ret = $this->addVlanIf($s);
+
+        if( $ret )
+        {
+            $con = findConnectorOrDie($this);
+            $xpath = $s->getXPath();
+            #print 'XPATH: '.$xpath->textContent."\n";
+            $con->sendSetRequest($xpath, DH::domlist_to_xml($s->xmlroot->childNodes, -1, FALSE));
+        }
+
+        return $ret;
+    }
+
+    public function createXmlRoot()
+    {
+        if( $this->xmlroot === null )
+        {
+            //TODO: 20180331 why I need to create full path? why it is not set before???
+            $xml = DH::findFirstElementOrCreate('devices', $this->owner->xmlroot);
+            $xml = DH::findFirstElementOrCreate('entry', $xml);
+            $xml = DH::findFirstElementOrCreate('network', $xml);
+            $xml = DH::findFirstElementOrCreate('interface', $xml);
+            $xml = DH::findFirstElementOrCreate('vlan', $xml);
+
+            $this->xmlroot = DH::findFirstElementOrCreate('units', $xml);
+        }
+    }
+
+    public function &getXPath()
+    {
+        $str = '';
+
+        if( $this->owner->isDeviceGroup() || $this->owner->isVirtualSystem() || $this->owner->isContainer() || $this->owner->isDeviceCloud() )
+            $str = $this->owner->getXPath();
+        elseif( $this->owner->isPanorama() || $this->owner->isFirewall() )
+            $str = '/config/shared';
+        else
+            derr('unsupported');
+
+        //TODO: intermediate solution
+        $str = '/config/devices/entry/network/interface';
+
+        $str = $str . '/vlan/units';
+
+        return $str;
+    }
+
+
+    private function &getBaseXPath()
+    {
+        if( $this->owner->isPanorama() || $this->owner->isFirewall() )
+        {
+            $str = "/config/shared";
+        }
+        else
+            $str = $this->owner->getXPath();
+
+        //TODO: intermediate solution
+        $str = '/config/devices/entry/network/interface';
+
+        return $str;
+    }
+
+    public function &getVlanIfStoreXPath()
+    {
+        $path = $this->getBaseXPath() . '/vlan/units';
+        return $path;
+    }
+
+    public function rewriteXML()
+    {
+        if( count($this->o) > 0 )
+        {
+            if( $this->xmlroot === null )
+                return;
+
+            $this->xmlroot->parentNode->removeChild($this->xmlroot);
+            $this->xmlroot = null;
+        }
+
+        if( $this->xmlroot === null )
+        {
+            if( count($this->o) > 0 )
+            {
+                $xml = DH::findFirstElementOrCreate('devices', $this->owner->xmlroot);
+                $xml = DH::findFirstElementOrCreate('entry', $xml);
+                $xml = DH::findFirstElementOrCreate('network', $xml);
+                $xml = DH::findFirstElementOrCreate('interface', $xml);
+                $xml = DH::findFirstElementOrCreate('vlan', $xml);
+
+                DH::findFirstElementOrCreate('units', $xml);
+                #DH::findFirstElementOrCreate('tag', $this->owner->xmlroot);
+            }
+
+        }
+
+        DH::clearDomNodeChilds($this->xmlroot);
+        foreach( $this->o as $o )
+        {
+            if( !$o->isTmp() )
+                $this->xmlroot->appendChild($o->xmlroot);
+        }
+    }
+}

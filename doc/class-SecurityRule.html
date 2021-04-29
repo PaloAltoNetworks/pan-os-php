@@ -1,0 +1,2836 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="ApiGen 2.8.0" />
+
+	<title>Class SecurityRule | PAN-PHP-FRAMEWORK</title>
+
+	<script type="text/javascript" src="resources/combined.js?772778653"></script>
+	<script type="text/javascript" src="elementlist.js?4105871058"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+			<h3>Namespaces</h3>
+			<ul>
+				<li class="active"><a href="namespace-None.html">None</a>
+						</li>
+				<li><a href="namespace-PHP.html">PHP</a>
+						</li>
+			</ul>
+		</div>
+
+		<hr />
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-Address.html">Address</a></li>
+				<li><a href="class-AddressGroup.html">AddressGroup</a></li>
+				<li><a href="class-AddressRuleContainer.html">AddressRuleContainer</a></li>
+				<li><a href="class-AddressStore.html">AddressStore</a></li>
+				<li><a href="class-AggregateEthernetIfStore.html">AggregateEthernetIfStore</a></li>
+				<li><a href="class-AggregateEthernetInterface.html">AggregateEthernetInterface</a></li>
+				<li><a href="class-App.html">App</a></li>
+				<li><a href="class-AppOverrideRule.html">AppOverrideRule</a></li>
+				<li><a href="class-AppRuleContainer.html">AppRuleContainer</a></li>
+				<li><a href="class-AppStore.html">AppStore</a></li>
+				<li><a href="class-CaptivePortalRule.html">CaptivePortalRule</a></li>
+				<li><a href="class-cidr.html">cidr</a></li>
+				<li><a href="class-CsvParser.html">CsvParser</a></li>
+				<li><a href="class-DecryptionRule.html">DecryptionRule</a></li>
+				<li><a href="class-DeviceGroup.html">DeviceGroup</a></li>
+				<li><a href="class-DH.html">DH</a></li>
+				<li><a href="class-DoSRule.html">DoSRule</a></li>
+				<li><a href="class-EthernetIfStore.html">EthernetIfStore</a></li>
+				<li><a href="class-EthernetInterface.html">EthernetInterface</a></li>
+				<li><a href="class-InterfaceContainer.html">InterfaceContainer</a></li>
+				<li><a href="class-IP4Map.html">IP4Map</a></li>
+				<li><a href="class-IPsecTunnel.html">IPsecTunnel</a></li>
+				<li><a href="class-IPsecTunnelStore.html">IPsecTunnelStore</a></li>
+				<li><a href="class-LoopbackIfStore.html">LoopbackIfStore</a></li>
+				<li><a href="class-LoopbackInterface.html">LoopbackInterface</a></li>
+				<li><a href="class-ManagedDevice.html">ManagedDevice</a></li>
+				<li><a href="class-NatRule.html">NatRule</a></li>
+				<li><a href="class-NetworkPropertiesContainer.html">NetworkPropertiesContainer</a></li>
+				<li><a href="class-ObjRuleContainer.html">ObjRuleContainer</a></li>
+				<li><a href="class-ObjStore.html">ObjStore</a></li>
+				<li><a href="class-PanAPIConnector.html">PanAPIConnector</a></li>
+				<li><a href="class-PANConf.html">PANConf</a></li>
+				<li><a href="class-PanoramaConf.html">PanoramaConf</a></li>
+				<li><a href="class-PbfRule.html">PbfRule</a></li>
+				<li><a href="class-PH.html">PH</a></li>
+				<li><a href="class-QoSRule.html">QoSRule</a></li>
+				<li><a href="class-RQuery.html">RQuery</a></li>
+				<li><a href="class-Rule.html">Rule</a></li>
+				<li><a href="class-RuleStore.html">RuleStore</a></li>
+				<li><a href="class-RuleWithUserID.html">RuleWithUserID</a></li>
+				<li class="active"><a href="class-SecurityRule.html">SecurityRule</a></li>
+				<li><a href="class-Service.html">Service</a></li>
+				<li><a href="class-ServiceDstPortMapping.html">ServiceDstPortMapping</a></li>
+				<li><a href="class-ServiceGroup.html">ServiceGroup</a></li>
+				<li><a href="class-ServiceRuleContainer.html">ServiceRuleContainer</a></li>
+				<li><a href="class-ServiceStore.html">ServiceStore</a></li>
+				<li><a href="class-StaticRoute.html">StaticRoute</a></li>
+				<li><a href="class-Tag.html">Tag</a></li>
+				<li><a href="class-TagRuleContainer.html">TagRuleContainer</a></li>
+				<li><a href="class-TagStore.html">TagStore</a></li>
+				<li><a href="class-Template.html">Template</a></li>
+				<li><a href="class-TmpInterface.html">TmpInterface</a></li>
+				<li><a href="class-TmpInterfaceStore.html">TmpInterfaceStore</a></li>
+				<li><a href="class-VirtualRouter.html">VirtualRouter</a></li>
+				<li><a href="class-VirtualRouterStore.html">VirtualRouterStore</a></li>
+				<li><a href="class-VirtualSystem.html">VirtualSystem</a></li>
+				<li><a href="class-Zone.html">Zone</a></li>
+				<li><a href="class-ZoneRuleContainer.html">ZoneRuleContainer</a></li>
+				<li><a href="class-ZoneStore.html">ZoneStore</a></li>
+			</ul>
+
+
+			<h3>Traits</h3>
+			<ul>
+				<li><a href="class-AddressCommon.html">AddressCommon</a></li>
+				<li><a href="class-centralAddressStore.html">centralAddressStore</a></li>
+				<li><a href="class-centralAddressStoreUser.html">centralAddressStoreUser</a></li>
+				<li><a href="class-centralServiceStore.html">centralServiceStore</a></li>
+				<li><a href="class-centralServiceStoreUser.html">centralServiceStoreUser</a></li>
+				<li><a href="class-InterfaceType.html">InterfaceType</a></li>
+				<li><a href="class-NegatableRule.html">NegatableRule</a></li>
+				<li><a href="class-ObjectWithDescription.html">ObjectWithDescription</a></li>
+				<li><a href="class-PanSubHelperTrait.html">PanSubHelperTrait</a></li>
+				<li><a href="class-PathableName.html">PathableName</a></li>
+				<li><a href="class-ReferencableObject.html">ReferencableObject</a></li>
+				<li><a href="class-ServiceCommon.html">ServiceCommon</a></li>
+				<li><a href="class-XmlConvertible.html">XmlConvertible</a></li>
+			</ul>
+
+
+
+			<h3>Functions</h3>
+			<ul>
+				<li><a href="function-__CmpObjMemID.html">__CmpObjMemID</a></li>
+				<li><a href="function-__CmpObjName.html">__CmpObjName</a></li>
+				<li><a href="function-array_diff_no_cast.html">array_diff_no_cast</a></li>
+				<li><a href="function-array_to_devicequery.html">array_to_devicequery</a></li>
+				<li><a href="function-array_unique_no_cast.html">array_unique_no_cast</a></li>
+				<li><a href="function-cloneArray.html">cloneArray</a></li>
+				<li><a href="function-convert.html">convert</a></li>
+				<li><a href="function-derr.html">derr</a></li>
+				<li><a href="function-findConnector.html">findConnector</a></li>
+				<li><a href="function-findConnectorOrDie.html">findConnectorOrDie</a></li>
+				<li><a href="function-insertAfter.html">insertAfter</a></li>
+				<li><a href="function-lastIndex.html">lastIndex</a></li>
+				<li><a href="function-mdeb.html">mdeb</a></li>
+				<li><a href="function-mwarning.html">mwarning</a></li>
+				<li><a href="function-my_shutdown.html">my_shutdown</a></li>
+				<li><a href="function-myErrorHandler.html">myErrorHandler</a></li>
+				<li><a href="function-printn.html">printn</a></li>
+				<li><a href="function-removeElement.html">removeElement</a></li>
+				<li><a href="function-sortArrayByStartValue.html">sortArrayByStartValue</a></li>
+				<li><a href="function-yesNoBool.html">yesNoBool</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="" />
+		<input type="hidden" name="ie" value="UTF-8" />
+		<input type="text" name="q" class="text" />
+		<input type="submit" value="Search" />
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="namespace-None.html" title="Summary of None"><span>Namespace</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class SecurityRule</h1>
+
+
+
+	<dl class="tree">
+		<dd style="padding-left:0px">
+			<a href="class-Rule.html"><span>Rule</span></a>
+			
+			
+			 uses 
+				<a href="class-PathableName.html"><span>PathableName</span></a>, 
+			
+				<a href="class-centralServiceStoreUser.html"><span>centralServiceStoreUser</span></a>, 
+			
+				<a href="class-centralAddressStoreUser.html"><span>centralAddressStoreUser</span></a>, 
+			
+				<a href="class-ObjectWithDescription.html"><span>ObjectWithDescription</span></a>, 
+			
+				<a href="class-XmlConvertible.html"><span>XmlConvertible</span></a>
+			
+		</dd>
+		<dd style="padding-left:30px">
+			<img src="resources/inherit.png" alt="Extended by" />
+			<a href="class-RuleWithUserID.html"><span>RuleWithUserID</span></a>
+			
+			
+			
+		</dd>
+		<dd style="padding-left:60px">
+			<img src="resources/inherit.png" alt="Extended by" />
+<b><span>SecurityRule</span></b>			
+			
+			 uses 
+				<a href="class-NegatableRule.html"><span>NegatableRule</span></a>
+			
+		</dd>
+	</dl>
+
+
+
+
+
+
+
+
+	<div class="info">
+		
+		
+		
+		
+
+		<b>Located at</b> rule-classes/class-SecurityRule.php<br />
+	</div>
+
+
+
+	<table class="summary" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="__construct" id="___construct">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#___construct">#</a>
+		<code><b>__construct</b>( <span><code><a href="class-RuleStore.html">RuleStore</a></code> <var>$owner</var></span>, <span>boolean <var>$fromTemplateXML</var> = <span class="php-keyword1">false</span></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$owner</var></dt>
+					<dd><code><code><a href="class-RuleStore.html">RuleStore</a></code></code><br>$owner</dd>
+					<dt><var>$fromTemplateXML</var></dt>
+					<dd><code>boolean</code><br>$fromTemplateXML</dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="load_from_domxml" id="_load_from_domxml">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_load_from_domxml">#</a>
+		<code><b>load_from_domxml</b>( <span><code><a href="class-DOMElement.html">DOMElement</a></code> <var>$xml</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$xml</var></dt>
+					<dd><code><code><a href="class-DOMElement.html">DOMElement</a></code></code><br>$xml</dd>
+				</dl></div>
+
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code><code><a href="class-Exception.html">Exception</a></code></code><br />
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="type" id="_type">
+
+		<td class="attributes"><code>
+			 public 
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_type">#</a>
+		<code><b>type</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br>type of this rule : 'universal', 'intrazone', 'interzone'<br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setType" id="_setType">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setType">#</a>
+		<code><b>setType</b>( <span>mixed <var>$type</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="API_setType" id="_API_setType">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_API_setType">#</a>
+		<code><b>API_setType</b>( <span>mixed <var>$type</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="extract_category_from_domxml" id="_extract_category_from_domxml">
+
+		<td class="attributes"><code>
+			 protected 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_extract_category_from_domxml">#</a>
+		<code><b>extract_category_from_domxml</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="securityProfileIsBlank" id="_securityProfileIsBlank">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_securityProfileIsBlank">#</a>
+		<code><b>securityProfileIsBlank</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="securityProfileType" id="_securityProfileType">
+
+		<td class="attributes"><code>
+			 public 
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_securityProfileType">#</a>
+		<code><b>securityProfileType</b>( )</code>
+
+		<div class="description short">
+			
+<p>return profile type: 'group' or 'profile' or 'none'</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>return profile type: 'group' or 'profile' or 'none'</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="securityProfileGroup" id="_securityProfileGroup">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_securityProfileGroup">#</a>
+		<code><b>securityProfileGroup</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="securityProfiles" id="_securityProfiles">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_securityProfiles">#</a>
+		<code><b>securityProfiles</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="removeSecurityProfile" id="_removeSecurityProfile">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_removeSecurityProfile">#</a>
+		<code><b>removeSecurityProfile</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="API_removeSecurityProfile" id="_API_removeSecurityProfile">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_API_removeSecurityProfile">#</a>
+		<code><b>API_removeSecurityProfile</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setSecurityProfileGroup" id="_setSecurityProfileGroup">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setSecurityProfileGroup">#</a>
+		<code><b>setSecurityProfileGroup</b>( <span>mixed <var>$newgroup</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="API_setSecurityProfileGroup" id="_API_setSecurityProfileGroup">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_API_setSecurityProfileGroup">#</a>
+		<code><b>API_setSecurityProfileGroup</b>( <span>mixed <var>$newgroup</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setSecProf_AV" id="_setSecProf_AV">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setSecProf_AV">#</a>
+		<code><b>setSecProf_AV</b>( <span>mixed <var>$newAVprof</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setSecProf_Vuln" id="_setSecProf_Vuln">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setSecProf_Vuln">#</a>
+		<code><b>setSecProf_Vuln</b>( <span>mixed <var>$newAVprof</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setSecProf_URL" id="_setSecProf_URL">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setSecProf_URL">#</a>
+		<code><b>setSecProf_URL</b>( <span>mixed <var>$newAVprof</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setSecProf_DataFilt" id="_setSecProf_DataFilt">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setSecProf_DataFilt">#</a>
+		<code><b>setSecProf_DataFilt</b>( <span>mixed <var>$newAVprof</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setSecProf_FileBlock" id="_setSecProf_FileBlock">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setSecProf_FileBlock">#</a>
+		<code><b>setSecProf_FileBlock</b>( <span>mixed <var>$newAVprof</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setSecProf_Spyware" id="_setSecProf_Spyware">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setSecProf_Spyware">#</a>
+		<code><b>setSecProf_Spyware</b>( <span>mixed <var>$newAVprof</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setSecProf_Wildfire" id="_setSecProf_Wildfire">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setSecProf_Wildfire">#</a>
+		<code><b>setSecProf_Wildfire</b>( <span>mixed <var>$newAVprof</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="rewriteSecProfXML" id="_rewriteSecProfXML">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_rewriteSecProfXML">#</a>
+		<code><b>rewriteSecProfXML</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="urlCategories" id="_urlCategories">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_urlCategories">#</a>
+		<code><b>urlCategories</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="urlCategoryIsAny" id="_urlCategoryIsAny">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_urlCategoryIsAny">#</a>
+		<code><b>urlCategoryIsAny</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="urlCategoriesHas" id="_urlCategoriesHas">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_urlCategoriesHas">#</a>
+		<code><b>urlCategoriesHas</b>( <span>string <var>$category</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$category</var></dt>
+					<dd><code>string</code><br>$category</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br>return TRUE if this rule is using the category defined in $category<br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="action" id="_action">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_action">#</a>
+		<code><b>action</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="actionIsAllow" id="_actionIsAllow">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_actionIsAllow">#</a>
+		<code><b>actionIsAllow</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="actionIsDeny" id="_actionIsDeny">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_actionIsDeny">#</a>
+		<code><b>actionIsDeny</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="actionIsDrop" id="_actionIsDrop">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_actionIsDrop">#</a>
+		<code><b>actionIsDrop</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="actionIsResetClient" id="_actionIsResetClient">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_actionIsResetClient">#</a>
+		<code><b>actionIsResetClient</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="actionIsResetServer" id="_actionIsResetServer">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_actionIsResetServer">#</a>
+		<code><b>actionIsResetServer</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="actionIsResetBoth" id="_actionIsResetBoth">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_actionIsResetBoth">#</a>
+		<code><b>actionIsResetBoth</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="actionIsNegative" id="_actionIsNegative">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_actionIsNegative">#</a>
+		<code><b>actionIsNegative</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setAction" id="_setAction">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setAction">#</a>
+		<code><b>setAction</b>( <span>mixed <var>$newAction</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="API_setAction" id="_API_setAction">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_API_setAction">#</a>
+		<code><b>API_setAction</b>( <span>mixed <var>$newAction</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="logStart" id="_logStart">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_logStart">#</a>
+		<code><b>logStart</b>( )</code>
+
+		<div class="description short">
+			
+<p>return true if rule is set to Log at Start</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>return true if rule is set to Log at Start</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setLogStart" id="_setLogStart">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setLogStart">#</a>
+		<code><b>setLogStart</b>( <span>boolean <var>$yes</var></span> )</code>
+
+		<div class="description short">
+			
+<p>enabled or disabled logging at start</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>enabled or disabled logging at start</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$yes</var></dt>
+					<dd><code>boolean</code><br>$yes</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="logEnd" id="_logEnd">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_logEnd">#</a>
+		<code><b>logEnd</b>( )</code>
+
+		<div class="description short">
+			
+<p>return true if rule is set to Log at End</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>return true if rule is set to Log at End</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setLogEnd" id="_setLogEnd">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setLogEnd">#</a>
+		<code><b>setLogEnd</b>( <span>boolean <var>$yes</var></span> )</code>
+
+		<div class="description short">
+			
+<p>enable or disabled logging at end</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>enable or disabled logging at end</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$yes</var></dt>
+					<dd><code>boolean</code><br>$yes</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="API_setLogEnd" id="_API_setLogEnd">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_API_setLogEnd">#</a>
+		<code><b>API_setLogEnd</b>( <span>boolean <var>$yes</var></span> )</code>
+
+		<div class="description short">
+			
+<p>enable or disabled logging at end</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>enable or disabled logging at end</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$yes</var></dt>
+					<dd><code>boolean</code><br>$yes</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="API_setLogStart" id="_API_setLogStart">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_API_setLogStart">#</a>
+		<code><b>API_setLogStart</b>( <span>boolean <var>$yes</var></span> )</code>
+
+		<div class="description short">
+			
+<p>enable or disabled logging at end</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>enable or disabled logging at end</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$yes</var></dt>
+					<dd><code>boolean</code><br>$yes</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="logSetting" id="_logSetting">
+
+		<td class="attributes"><code>
+			 public 
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_logSetting">#</a>
+		<code><b>logSetting</b>( )</code>
+
+		<div class="description short">
+			
+<p>return log forwarding profile if any</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>return log forwarding profile if any</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setLogSetting" id="_setLogSetting">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setLogSetting">#</a>
+		<code><b>setLogSetting</b>( <span>string <var>$newLogSetting</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$newLogSetting</var></dt>
+					<dd><code>string</code><br>$newLogSetting</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br>true if value changed<br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="API_setLogSetting" id="_API_setLogSetting">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_API_setLogSetting">#</a>
+		<code><b>API_setLogSetting</b>( <span>mixed <var>$newLogSetting</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="isDSRIEnabled" id="_isDSRIEnabled">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_isDSRIEnabled">#</a>
+		<code><b>isDSRIEnabled</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="display" id="_display">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_display">#</a>
+		<code><b>display</b>( <span>mixed <var>$padding</var> = <span class="php-num">0</span></span> )</code>
+
+		<div class="description short">
+			
+<p>Helper function to quickly print a function properties to CLI</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Helper function to quickly print a function properties to CLI</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="API_getAppStats" id="_API_getAppStats">
+
+		<td class="attributes"><code>
+			 public 
+			
+			&amp;
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_API_getAppStats">#</a>
+		<code><b>API_getAppStats</b>( <span>mixed <var>$timePeriod</var></span>, <span>mixed <var>$excludedApps</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="API_getAppContainerStats" id="_API_getAppContainerStats">
+
+		<td class="attributes"><code>
+			 public 
+			
+			&amp;
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_API_getAppContainerStats">#</a>
+		<code><b>API_getAppContainerStats</b>( <span>mixed <var>$timePeriod</var> = <span class="php-quote">'last-30-days'</span></span>, <span>mixed <var>$fastMode</var> = <span class="php-keyword1">true</span></span>, <span>mixed <var>$limit</var> = <span class="php-num">50</span></span>, <span>mixed <var>$excludedApps</var> = <span class="php-keyword1">Array</span>()</span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="API_getAppContainerStats2" id="_API_getAppContainerStats2">
+
+		<td class="attributes"><code>
+			 public 
+			array|DomDocument
+			&amp;
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_API_getAppContainerStats2">#</a>
+		<code><b>API_getAppContainerStats2</b>( <span>integer <var>$startTimestamp</var></span>, <span>null|integer <var>$endTimestamp</var> = <span class="php-keyword1">null</span></span>, <span>boolean|true <var>$fastMode</var> = <span class="php-keyword1">true</span></span>, <span>integer <var>$limit</var> = <span class="php-num">50</span></span>, <span>array <var>$excludedApps</var> = <span class="php-keyword1">Array</span>()</span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$startTimestamp</var></dt>
+					<dd><code>integer</code><br>$startTimestamp</dd>
+					<dt><var>$endTimestamp</var></dt>
+					<dd><code>null|integer</code><br>$endTimestamp</dd>
+					<dt><var>$fastMode</var></dt>
+					<dd><code>boolean|true</code><br>$fastMode</dd>
+					<dt><var>$limit</var></dt>
+					<dd><code>integer</code><br>$limit</dd>
+					<dt><var>$excludedApps</var></dt>
+					<dd><code>array</code><br>$excludedApps</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>array|DomDocument</code><br />
+				</div>
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code><code><a href="class-Exception.html">Exception</a></code></code><br />
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="API_getServiceStats" id="_API_getServiceStats">
+
+		<td class="attributes"><code>
+			 public 
+			
+			&amp;
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_API_getServiceStats">#</a>
+		<code><b>API_getServiceStats</b>( <span>mixed <var>$timePeriod</var> = <span class="php-quote">'last-30-days'</span></span>, <span>mixed <var>$fastMode</var> = <span class="php-keyword1">true</span></span>, <span>mixed <var>$limit</var> = <span class="php-num">50</span></span>, <span>mixed <var>$specificApps</var> = <span class="php-keyword1">null</span></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="API_getAddressStats" id="_API_getAddressStats">
+
+		<td class="attributes"><code>
+			 public 
+			
+			&amp;
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_API_getAddressStats">#</a>
+		<code><b>API_getAddressStats</b>( <span>mixed <var>$timePeriod</var> = <span class="php-quote">'last-30-days'</span></span>, <span>mixed <var>$srcORdst</var> = <span class="php-quote">'src'</span></span>, <span>mixed <var>$fastMode</var> = <span class="php-keyword1">true</span></span>, <span>mixed <var>$limit</var> = <span class="php-num">50</span></span>, <span>mixed <var>$excludedAddresses</var> = <span class="php-keyword1">Array</span>()</span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="cleanForDestruction" id="_cleanForDestruction">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_cleanForDestruction">#</a>
+		<code><b>cleanForDestruction</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="isSecurityRule" id="_isSecurityRule">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_isSecurityRule">#</a>
+		<code><b>isSecurityRule</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+				<h4>Overrides</h4>
+				<div class="list"><code><a href="class-Rule.html#_isSecurityRule">Rule::isSecurityRule()</a></code></div>
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="storeVariableName" id="_storeVariableName">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_storeVariableName">#</a>
+		<code><b>storeVariableName</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="ruleNature" id="_ruleNature">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_ruleNature">#</a>
+		<code><b>ruleNature</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+				<h4>Overrides</h4>
+				<div class="list"><code><a href="class-Rule.html#_ruleNature">Rule::ruleNature()</a></code></div>
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="rewriteSDsri_XML" id="_rewriteSDsri_XML">
+
+		<td class="attributes"><code>
+			 protected 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_rewriteSDsri_XML">#</a>
+		<code><b>rewriteSDsri_XML</b>( )</code>
+
+		<div class="description short">
+			
+<p>For developer use only</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>For developer use only</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setDsri" id="_setDsri">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setDsri">#</a>
+		<code><b>setDsri</b>( <span>boolean <var>$dsri</var></span> )</code>
+
+		<div class="description short">
+			
+<p>disable rule if $disabled = true, enable it if not</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>disable rule if $disabled = true, enable it if not</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$dsri</var></dt>
+					<dd><code>boolean</code><br>$disabled</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br>true if value has changed<br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="API_setDsri" id="_API_setDsri">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_API_setDsri">#</a>
+		<code><b>API_setDsri</b>( <span>boolean <var>$dsri</var></span> )</code>
+
+		<div class="description short">
+			
+<p>disable rule if $dsri = true, enable it if not</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>disable rule if $dsri = true, enable it if not</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$dsri</var></dt>
+					<dd><code>boolean</code><br>$dsri</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br>true if value has changed<br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+	<table class="summary inherited">
+	<caption>Methods inherited from <a href="class-RuleWithUserID.html#methods">RuleWithUserID</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-RuleWithUserID.html#_userID_IsAny"><b>userID_IsAny()</b></a>, 
+			<a href="class-RuleWithUserID.html#_userID_IsCustom"><b>userID_IsCustom()</b></a>, 
+			<a href="class-RuleWithUserID.html#_userID_IsKnown"><b>userID_IsKnown()</b></a>, 
+			<a href="class-RuleWithUserID.html#_userID_IsPreLogon"><b>userID_IsPreLogon()</b></a>, 
+			<a href="class-RuleWithUserID.html#_userID_IsUnknown"><b>userID_IsUnknown()</b></a>, 
+			<a href="class-RuleWithUserID.html#_userID_getUsers"><b>userID_getUsers()</b></a>, 
+			<a href="class-RuleWithUserID.html#_userID_loadUsersFromXml"><b>userID_loadUsersFromXml()</b></a>, 
+			<a href="class-RuleWithUserID.html#_userID_type"><b>userID_type()</b></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary inherited">
+	<caption>Methods inherited from <a href="class-Rule.html#methods">Rule</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Rule.html#_API_setDisabled"><b>API_setDisabled()</b></a>, 
+			<a href="class-Rule.html#_API_setEnabled"><b>API_setEnabled()</b></a>, 
+			<a href="class-Rule.html#_API_setName"><b>API_setName()</b></a>, 
+			<a href="class-Rule.html#_API_target_addDevice"><b>API_target_addDevice()</b></a>, 
+			<a href="class-Rule.html#_API_target_negateSet"><b>API_target_negateSet()</b></a>, 
+			<a href="class-Rule.html#_API_target_removeDevice"><b>API_target_removeDevice()</b></a>, 
+			<a href="class-Rule.html#_API_target_setAny"><b>API_target_setAny()</b></a>, 
+			<a href="class-Rule.html#_getXPath"><b>getXPath()</b></a>, 
+			<a href="class-Rule.html#_isAppOverrideRule"><b>isAppOverrideRule()</b></a>, 
+			<a href="class-Rule.html#_isCaptivePortalRule"><b>isCaptivePortalRule()</b></a>, 
+			<a href="class-Rule.html#_isDecryptionRule"><b>isDecryptionRule()</b></a>, 
+			<a href="class-Rule.html#_isDisabled"><b>isDisabled()</b></a>, 
+			<a href="class-Rule.html#_isDoSRule"><b>isDoSRule()</b></a>, 
+			<a href="class-Rule.html#_isEnabled"><b>isEnabled()</b></a>, 
+			<a href="class-Rule.html#_isNatRule"><b>isNatRule()</b></a>, 
+			<a href="class-Rule.html#_isPbfRule"><b>isPbfRule()</b></a>, 
+			<a href="class-Rule.html#_isPostRule"><b>isPostRule()</b></a>, 
+			<a href="class-Rule.html#_isPreRule"><b>isPreRule()</b></a>, 
+			<a href="class-Rule.html#_isQoSRule"><b>isQoSRule()</b></a>, 
+			<a href="class-Rule.html#_load_common_from_domxml"><b>load_common_from_domxml()</b></a>, 
+			<a href="class-Rule.html#_load_destination"><b>load_destination()</b></a>, 
+			<a href="class-Rule.html#_load_from"><b>load_from()</b></a>, 
+			<a href="class-Rule.html#_load_source"><b>load_source()</b></a>, 
+			<a href="class-Rule.html#_load_to"><b>load_to()</b></a>, 
+			<a href="class-Rule.html#_name"><b>name()</b></a>, 
+			<a href="class-Rule.html#_rewriteSDisabled_XML"><b>rewriteSDisabled_XML()</b></a>, 
+			<a href="class-Rule.html#_setDisabled"><b>setDisabled()</b></a>, 
+			<a href="class-Rule.html#_setEnabled"><b>setEnabled()</b></a>, 
+			<a href="class-Rule.html#_setName"><b>setName()</b></a>, 
+			<a href="class-Rule.html#_target_addDevice"><b>target_addDevice()</b></a>, 
+			<a href="class-Rule.html#_target_hasDeviceAndVsys"><b>target_hasDeviceAndVsys()</b></a>, 
+			<a href="class-Rule.html#_target_isAny"><b>target_isAny()</b></a>, 
+			<a href="class-Rule.html#_target_isNegated"><b>target_isNegated()</b></a>, 
+			<a href="class-Rule.html#_target_negateSet"><b>target_negateSet()</b></a>, 
+			<a href="class-Rule.html#_target_removeDevice"><b>target_removeDevice()</b></a>, 
+			<a href="class-Rule.html#_target_rewriteXML"><b>target_rewriteXML()</b></a>, 
+			<a href="class-Rule.html#_target_setAny"><b>target_setAny()</b></a>, 
+			<a href="class-Rule.html#_targets"><b>targets()</b></a>, 
+			<a href="class-Rule.html#_targets_toString"><b>targets_toString()</b></a>
+		</code></td>
+	</tr>
+	</table>
+
+	<table class="summary used">
+	<caption>Methods used from <a href="class-NegatableRule.html#methods">NegatableRule</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-NegatableRule.html#_API_setDestinationIsNegated"><b>API_setDestinationIsNegated()</b></a>, 
+			<a href="class-NegatableRule.html#_API_setSourceIsNegated"><b>API_setSourceIsNegated()</b></a>, 
+			<a href="class-NegatableRule.html#__readNegationFromXml"><b>_readNegationFromXml()</b></a>, 
+			<a href="class-NegatableRule.html#_destinationIsNegated"><b>destinationIsNegated()</b></a>, 
+			<a href="class-NegatableRule.html#_setDestinationIsNegated"><b>setDestinationIsNegated()</b></a>, 
+			<a href="class-NegatableRule.html#_setSourceIsNegated"><b>setSourceIsNegated()</b></a>, 
+			<a href="class-NegatableRule.html#_sourceIsNegated"><b>sourceIsNegated()</b></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-PathableName.html#methods">PathableName</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-PathableName.html#__PANC_shortName"><b>_PANC_shortName()</b></a>, 
+			<a href="class-PathableName.html#_getLocationString"><b>getLocationString()</b></a>, 
+			<a href="class-PathableName.html#_toString"><b>toString()</b></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-centralServiceStoreUser.html#methods">centralServiceStoreUser</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-centralServiceStoreUser.html#_findParentServiceStore"><b>findParentServiceStore()</b></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-centralAddressStoreUser.html#methods">centralAddressStoreUser</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-centralAddressStoreUser.html#_findParentAddressStore"><b>findParentAddressStore()</b></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-ObjectWithDescription.html#methods">ObjectWithDescription</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-ObjectWithDescription.html#_API_setDescription"><b>API_setDescription()</b></a>, 
+			<a href="class-ObjectWithDescription.html#__load_description_from_domxml"><b>_load_description_from_domxml()</b></a>, 
+			<a href="class-ObjectWithDescription.html#_description"><b>description()</b></a>, 
+			<a href="class-ObjectWithDescription.html#_setDescription"><b>setDescription()</b></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-XmlConvertible.html#methods">XmlConvertible</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-XmlConvertible.html#_API_sync"><b>API_sync()</b></a>, 
+			<a href="class-XmlConvertible.html#_getChildXmlText_inline"><b>getChildXmlText_inline()</b></a>, 
+			<a href="class-XmlConvertible.html#_getXmlText"><b>getXmlText()</b></a>, 
+			<a href="class-XmlConvertible.html#_getXmlText_inline"><b>getXmlText_inline()</b></a>
+		</code></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+	<table class="summary" id="constants">
+	<caption>Constants summary</caption>
+	<tr data-order="TypeUniversal" id="TypeUniversal">
+
+		<td class="attributes"><code>integer</code></td>
+		<td class="name"><code>
+<b>TypeUniversal</b>		</code></td>
+		<td class="value"><code><span class="php-num">0</span></code></td>
+		<td class="description"><div>
+			<a href="#TypeUniversal" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="TypeIntrazone" id="TypeIntrazone">
+
+		<td class="attributes"><code>integer</code></td>
+		<td class="name"><code>
+<b>TypeIntrazone</b>		</code></td>
+		<td class="value"><code><span class="php-num">1</span></code></td>
+		<td class="description"><div>
+			<a href="#TypeIntrazone" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="TypeInterzone" id="TypeInterzone">
+
+		<td class="attributes"><code>integer</code></td>
+		<td class="name"><code>
+<b>TypeInterzone</b>		</code></td>
+		<td class="value"><code><span class="php-num">2</span></code></td>
+		<td class="description"><div>
+			<a href="#TypeInterzone" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="ActionAllow" id="ActionAllow">
+
+		<td class="attributes"><code>integer</code></td>
+		<td class="name"><code>
+<b>ActionAllow</b>		</code></td>
+		<td class="value"><code><span class="php-num">0</span></code></td>
+		<td class="description"><div>
+			<a href="#ActionAllow" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="ActionDeny" id="ActionDeny">
+
+		<td class="attributes"><code>integer</code></td>
+		<td class="name"><code>
+<b>ActionDeny</b>		</code></td>
+		<td class="value"><code><span class="php-num">1</span></code></td>
+		<td class="description"><div>
+			<a href="#ActionDeny" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="ActionDrop" id="ActionDrop">
+
+		<td class="attributes"><code>integer</code></td>
+		<td class="name"><code>
+<b>ActionDrop</b>		</code></td>
+		<td class="value"><code><span class="php-num">2</span></code></td>
+		<td class="description"><div>
+			<a href="#ActionDrop" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="ActionResetClient" id="ActionResetClient">
+
+		<td class="attributes"><code>integer</code></td>
+		<td class="name"><code>
+<b>ActionResetClient</b>		</code></td>
+		<td class="value"><code><span class="php-num">3</span></code></td>
+		<td class="description"><div>
+			<a href="#ActionResetClient" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="ActionResetServer" id="ActionResetServer">
+
+		<td class="attributes"><code>integer</code></td>
+		<td class="name"><code>
+<b>ActionResetServer</b>		</code></td>
+		<td class="value"><code><span class="php-num">4</span></code></td>
+		<td class="description"><div>
+			<a href="#ActionResetServer" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="ActionResetBoth" id="ActionResetBoth">
+
+		<td class="attributes"><code>integer</code></td>
+		<td class="name"><code>
+<b>ActionResetBoth</b>		</code></td>
+		<td class="value"><code><span class="php-num">5</span></code></td>
+		<td class="description"><div>
+			<a href="#ActionResetBoth" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	</table>
+
+	<table class="summary inherited">
+	<caption>Constants inherited from <a href="class-RuleWithUserID.html#constants">RuleWithUserID</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-RuleWithUserID.html#__UserIDType_Any"><b>__UserIDType_Any</b></a>, 
+			<a href="class-RuleWithUserID.html#__UserIDType_Custom"><b>__UserIDType_Custom</b></a>, 
+			<a href="class-RuleWithUserID.html#__UserIDType_Known"><b>__UserIDType_Known</b></a>, 
+			<a href="class-RuleWithUserID.html#__UserIDType_PreLogon"><b>__UserIDType_PreLogon</b></a>, 
+			<a href="class-RuleWithUserID.html#__UserIDType_Unknown"><b>__UserIDType_Unknown</b></a>
+		</code></td>
+	</tr>
+	</table>
+
+
+
+	<table class="summary" id="properties">
+	<caption>Properties summary</caption>
+	<tr data-order="action" id="$action">
+		<td class="attributes"><code>
+			protected  
+			integer
+		</code></td>
+
+		<td class="name">
+<var>$action</var>		</td>
+		<td class="value"><code><code><a href="class-SecurityRule.html#ActionAllow">SecurityRule::<b>ActionAllow</b></a></code></code></td>
+		<td class="description"><div>
+			<a href="#$action" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="logstart" id="$logstart">
+		<td class="attributes"><code>
+			protected  
+			boolean
+		</code></td>
+
+		<td class="name">
+<var>$logstart</var>		</td>
+		<td class="value"><code><span class="php-keyword1">false</span></code></td>
+		<td class="description"><div>
+			<a href="#$logstart" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="logend" id="$logend">
+		<td class="attributes"><code>
+			protected  
+			boolean
+		</code></td>
+
+		<td class="name">
+<var>$logend</var>		</td>
+		<td class="value"><code><span class="php-keyword1">true</span></code></td>
+		<td class="description"><div>
+			<a href="#$logend" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="logSetting" id="$logSetting">
+		<td class="attributes"><code>
+			protected  
+			boolean
+		</code></td>
+
+		<td class="name">
+<var>$logSetting</var>		</td>
+		<td class="value"><code><span class="php-keyword1">false</span></code></td>
+		<td class="description"><div>
+			<a href="#$logSetting" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="categoryroot" id="$categoryroot">
+		<td class="attributes"><code>
+			protected  
+			null|<code><a href="class-DOMElement.html">DOMElement</a></code>
+		</code></td>
+
+		<td class="name">
+<var>$categoryroot</var>		</td>
+		<td class="value"><code><span class="php-keyword1">null</span></code></td>
+		<td class="description"><div>
+			<a href="#$categoryroot" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="_urlCategories" id="$_urlCategories">
+		<td class="attributes"><code>
+			protected  
+			string[]
+		</code></td>
+
+		<td class="name">
+<var>$_urlCategories</var>		</td>
+		<td class="value"><code><span class="php-keyword1">Array</span>()</code></td>
+		<td class="description"><div>
+			<a href="#$_urlCategories" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="dsri" id="$dsri">
+		<td class="attributes"><code>
+			protected  
+			boolean
+		</code></td>
+
+		<td class="name">
+<var>$dsri</var>		</td>
+		<td class="value"><code><span class="php-keyword1">false</span></code></td>
+		<td class="description"><div>
+			<a href="#$dsri" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="secproftype" id="$secproftype">
+		<td class="attributes"><code>
+			protected  
+			string
+		</code></td>
+
+		<td class="name">
+<var>$secproftype</var>		</td>
+		<td class="value"><code><span class="php-quote">'none'</span></code></td>
+		<td class="description"><div>
+			<a href="#$secproftype" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="secprofroot" id="$secprofroot">
+		<td class="attributes"><code>
+			public  
+			null|string[]|<code><a href="class-DOMElement.html">DOMElement</a></code>
+		</code></td>
+
+		<td class="name">
+<var>$secprofroot</var>		</td>
+		<td class="value"><code><span class="php-keyword1">null</span></code></td>
+		<td class="description"><div>
+			<a href="#$secprofroot" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="secprofgroup" id="$secprofgroup">
+		<td class="attributes"><code>
+			protected  
+			mixed
+		</code></td>
+
+		<td class="name">
+<var>$secprofgroup</var>		</td>
+		<td class="value"><code><span class="php-keyword1">null</span></code></td>
+		<td class="description"><div>
+			<a href="#$secprofgroup" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="secprofProfiles" id="$secprofProfiles">
+		<td class="attributes"><code>
+			protected  
+			array
+		</code></td>
+
+		<td class="name">
+<var>$secprofProfiles</var>		</td>
+		<td class="value"><code><span class="php-keyword1">Array</span>()</code></td>
+		<td class="description"><div>
+			<a href="#$secprofProfiles" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="apps" id="$apps">
+		<td class="attributes"><code>
+			public  
+			<code><a href="class-AppRuleContainer.html">AppRuleContainer</a></code>
+		</code></td>
+
+		<td class="name">
+<var>$apps</var>		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$apps" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="ruleType" id="$ruleType">
+		<td class="attributes"><code>
+			protected  
+			integer
+		</code></td>
+
+		<td class="name">
+<var>$ruleType</var>		</td>
+		<td class="value"><code><code><a href="class-SecurityRule.html#TypeUniversal">SecurityRule::<b>TypeUniversal</b></a></code></code></td>
+		<td class="description"><div>
+			<a href="#$ruleType" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="templatexml" id="$templatexml">
+		<td class="attributes"><code>
+			public static 
+			string
+		</code></td>
+
+		<td class="name">
+<var>$templatexml</var>		</td>
+		<td class="value"><code><span class="php-quote">'&lt;entry name=&quot;**temporarynamechangeme**&quot;&gt;&lt;option&gt;&lt;disable-server-response-inspection&gt;no&lt;/disable-server-response-inspection&gt;&lt;/option&gt;&lt;from&gt;&lt;member&gt;any&lt;/member&gt;&lt;/from&gt;&lt;to&gt;&lt;member&gt;any&lt;/member&gt;&lt;/to&gt;
+&lt;source&gt;&lt;member&gt;any&lt;/member&gt;&lt;/source&gt;&lt;destination&gt;&lt;member&gt;any&lt;/member&gt;&lt;/destination&gt;&lt;source-user&gt;&lt;member&gt;any&lt;/member&gt;&lt;/source-user&gt;&lt;category&gt;&lt;member&gt;any&lt;/member&gt;&lt;/category&gt;&lt;application&gt;&lt;member&gt;any&lt;/member&gt;&lt;/application&gt;&lt;service&gt;&lt;member&gt;any&lt;/member&gt;
+&lt;/service&gt;&lt;hip-profiles&gt;&lt;member&gt;any&lt;/member&gt;&lt;/hip-profiles&gt;&lt;action&gt;allow&lt;/action&gt;&lt;log-start&gt;no&lt;/log-start&gt;&lt;log-end&gt;yes&lt;/log-end&gt;&lt;negate-source&gt;no&lt;/negate-source&gt;&lt;negate-destination&gt;no&lt;/negate-destination&gt;&lt;tag/&gt;&lt;description/&gt;&lt;disabled&gt;no&lt;/disabled&gt;&lt;/entry&gt;'</span></code></td>
+		<td class="description"><div>
+			<a href="#$templatexml" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	</table>
+
+	<table class="summary inherited">
+	<caption>Properties inherited from <a href="class-RuleWithUserID.html#properties">RuleWithUserID</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-RuleWithUserID.html#$_userIDType"><var>$_userIDType</var></a>, 
+			<a href="class-RuleWithUserID.html#$_users"><var>$_users</var></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary inherited">
+	<caption>Properties inherited from <a href="class-Rule.html#properties">Rule</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Rule.html#$_targetIsNegated"><var>$_targetIsNegated</var></a>, 
+			<a href="class-Rule.html#$_targets"><var>$_targets</var></a>, 
+			<a href="class-Rule.html#$destination"><var>$destination</var></a>, 
+			<a href="class-Rule.html#$disabled"><var>$disabled</var></a>, 
+			<a href="class-Rule.html#$from"><var>$from</var></a>, 
+			<a href="class-Rule.html#$name"><var>$name</var></a>, 
+			<a href="class-Rule.html#$owner"><var>$owner</var></a>, 
+			<a href="class-Rule.html#$services"><var>$services</var></a>, 
+			<a href="class-Rule.html#$source"><var>$source</var></a>, 
+			<a href="class-Rule.html#$tags"><var>$tags</var></a>, 
+			<a href="class-Rule.html#$to"><var>$to</var></a>
+		</code></td>
+	</tr>
+	</table>
+
+	<table class="summary used">
+	<caption>Properties used from <a href="class-centralServiceStoreUser.html#properties">centralServiceStoreUser</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-centralServiceStoreUser.html#$parentServiceStore"><var>$parentServiceStore</var></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Properties used from <a href="class-centralAddressStoreUser.html#properties">centralAddressStoreUser</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-centralAddressStoreUser.html#$parentAddressStore"><var>$parentAddressStore</var></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Properties used from <a href="class-ObjectWithDescription.html#properties">ObjectWithDescription</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-ObjectWithDescription.html#$_description"><var>$_description</var></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Properties used from <a href="class-XmlConvertible.html#properties">XmlConvertible</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-XmlConvertible.html#$xmlroot"><var>$xmlroot</var></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Properties used from <a href="class-NegatableRule.html#properties">NegatableRule</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-NegatableRule.html#$_destinationIsNegated"><var>$_destinationIsNegated</var></a>, 
+			<a href="class-NegatableRule.html#$_sourceIsNegated"><var>$_sourceIsNegated</var></a>
+		</code></td>
+	</tr>
+	</table>
+
+
+
+	<table class="summary used">
+	<caption>Magic properties used from <a href="class-PathableName.html#properties">PathableName</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-PathableName.html#m$name"><var>$name</var></a>, 
+			<a href="class-PathableName.html#m$owner"><var>$owner</var></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Magic properties used from <a href="class-ObjectWithDescription.html#properties">ObjectWithDescription</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-ObjectWithDescription.html#m$xmlroot"><var>$xmlroot</var></a>
+		</code></td>
+	</tr>
+	</table>
+
+</div>
+
+	<div id="footer">
+		PAN-PHP-FRAMEWORK API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
+	</div>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,41 @@
+March 5, 2021
+- no change, but validation to run against PAN-OS 10.0
+
+April 19, 2018
+- additional timezone setting fix for Linux
+
+March 24, 2018
+- final fix for timezone settings for Mac/Linux and Windows environments
+
+March 18, 2018
+- fix for timezone settings at Windows package usage
+
+February 18, 2018
+- supported pan-php-framework version changed to 1.5.13
+
+February 16, 2018
+- rule-activation - change rand() to mrand() and use mt_srand(44) where 44 is used as seed
+
+February 13, 2018
+- extend rule-marker/rule-cloner/rule-activation/rule-cleaner with offline input modi
+- introduce travis-CI test
+
+August 15, 2017
+- fixed an issue with PANOS 8.0 and change of behavior with generated reports.
+
+February 22, 2017
+- fixed an issue in rule-cleaner.php script when cloned rule was not found and a null pointer was given thus generating an error
+
+February 1, 2017
+- improved support for Firewall devices in cleaner script
+
+September 23, 2016
+- bugfix: API calls where not sent to firewall under certain circumstances in rule-cleaner.php
+- improved cleaner script detection and more use cases
+
+August 1, 2016
+- bugfix: 'resetPreviousData' was returning an error for unknown argument syntax
+
+July 20, 2016
+
+- scripts will now check PAN-PHP-framework version for compatibility

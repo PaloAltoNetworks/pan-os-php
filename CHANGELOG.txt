@@ -1,0 +1,631 @@
+CHANGELOG
+
+
+2.0.0 (20210426)
+GENERAL:
+* name: pan-os-php
+* predefined.xml is at version 8399-6667
+
+UTILS:
+* display/manipulate PAN-OS config sections
+* introduce support for FAWKES
+
+
+
+1.5.16 (20190214)
+
+GENERAL:
+* update predefined.xml to 8122-5298
+* trait-PathableName.php | improve function toString() to display alternativeName of VSYS
+* class-LoopbackInterface | introduce function type()
+* class-VirtualRouter | extend function addstaticRouter to create correct XML output
+* panos-xml-issue-detector | add validation/fix for duplicate sec/nat rule names
+* class-PH/-PanAPIConnector | introduce new argument shadow-ApiKeynoSave - which do not save the API key in the User Home file .panconfkeystore
+* class-EthernetIfStore/-EthernetInterface | introduce function addSubintefaceToStore( $subinterface )
+* class-SecurityRule | implement scheduler
+* class-EthernetInterface/-StaticRouter/-VirtualRouter/ utils interface - add support for IPv6 Addresses
+* class-ServiceStore | introduce function findbyProtocolDstSrcPort
+* rename to PAN-PHP-FRAMEWORK
+
+UTILS:
+service-merger: extend location=any - especially for Panorama DG to merge all DG objects with one single script run - also possible with argument allowmergingwithupperlevel
+service-merger: change default DupAlgorithm from sameport (which focus only on Dst port) to sameDstSrcport
+address-/service-merger:  extend location=any to run successful against firewall with vsys/multi-vsys
+addressgroup-/servicegroup-merger: introduce location=any for Panorama DG and Firewall vsys
+rule-edit: introduce 'filter=( schedule is [scheduler-name] )'
+rule-edit: introduce actions=schedule-set:[schedule-name]
+service-edit | actions=move - extend output if firewall is multivsys
+service-edit | introduce 'filter=(value is.single.port / is.port.range / is.comma.separated)'
+rule-edit | introduce new actions=service-remove-objects-matching-filter:subquery1,[forceAny] 'subquery1=( [all available service filter are possible] )'
+address-/rule-/service-/tag-edit | change default behaviour if argument 'out' is not set "out=/dev/null" is used | if argument actions is not set "actions=display" is used
+
+BUGFIX:
+- fix for pa_rule-edit 'filter=(rule is.unused.fast)' for PAN-OS version detection if connection is going through Panorama
+- fix for pa_rule-merge if NEGATION of original Rule and RuleToCompare differ
+- fix for different classes are made
+- fix class-NatRule | rewriteSNAT_XML() revert new introduced bug
+- fix service-merger | fix  algorithm=SameDstSrcPorts for single FW vsys
+- fix address-/service-merger | fix location=any - add also shared
+- fix trait-ObjectWithDescription | fix setDescription for UTF8 encode
+
+
+------------------------------------------------------------------------------------------------------------------------
+
+1.5.15 (20180611)
+* introduce release 1.5.15
+* update predefined.xml to 8041-4843
+* introduce class-VirtualWire
+* introduce class-TemplateStack
+* update predefined.xml to 8043-4857
+* class-EthernetInterface/-EthernetIfStore - extend with new Interface types
+* class-VirtualWire/-VirtualWireStore - extend with new methodes - setName/setInterface - newVirtualWire / addVirtualWire
+* class-Zone/ZoneStore - extend with virtual-wire
+* class-VirtualWire/VirtualWireStore - extend validation
+* class-InterfaceContainer - extend validation for addInterface - improve API_addInterface
+* class-EthernetInterface/EthernetIfStore - extend with ae information - extend validation
+* class-Zone - reduce warning if not yet supported in PAN-PHP-FRAMEWORK
+* class-Zone - extend with type: tap, layer2, tunnel
+* update predefined.xml to 8070-5032
+* class-Address - introduce address object of type ip-wildcard
+* class-AppStore/App - introduce App secure ports
+* class-IKEGateway - extend to cover IKEv2
+* class-PANAPIConnector - introduce hidden arguments: shadow-displaycurlrequest | shadow-hiddenapikey (new with PAN-OS 9.0 - send API key via Header)
+* update predefined.xml to 8110-5233
+* class-NatRule - extend with dynamic-destination-translation (PAN-OS 8.1)
+
+utils:
+address-edit: improvement for actions=decommisssion - extend interface (ethernet/vlan/loopback/tunnel) with add/removeIPv4address
+address-edit: new filter '(value string.regex /[SEARCH-STRING]/)'
+address-edit: new actions=description-delete | new 'filter=(description is.empty)' | new 'filter=(location is.child.of [DG]) / (location is.parent.of [DG])'
+upload-config: extend in=api://[MGTM-IP]/panorama-pushed-config to download panorama pushed config
+rule-edit: introduce hip-profile for actions=display
+rule-edit: new actions=hip-set:[HIP-Profile]
+rule-edit: new action "logsetting-set-FastAPI:[LOGFORWARD]"
+address-merger: extend skipped object output with DG information
+address-edit: new actions=value-host-object-add-netmask-m32
+userid-mgr: fix help / missing variable set
+register-ip-mgr: introduce new util
+rule-merger: merge for all methods the available tags
+rule-merger: merge for all methods the available description
+pan-diff: introduce new util to easily compare two pan-os xml config file
+panos-xml-issue-detector: introduce new util to fine e.g. duplicate member in address-/service-group
+address-merger: extend location=any - especially for Panorama DG to merge all DG objects with one single script run - also possible with argument allowmergingwithupperlevel
+register-ip-mgr | introduce new util to display and unregister-unused dynamic registered-ip addresses
+service-edit: new actions=description-delete | new 'filter=(description is.empty)' | new 'filter=(location is.child.of [DG]) / (location is.parent.of [DG])'
+tag-edit: new 'filter=(location is.child.of [DG]) / (location is.parent.of [DG])'
+address-edit: new actions=name-replace-character:[search],[replace]
+rule-edit: new action "name-Replace-Character:search,replace"
+service-edit: new action "name-Replace-Character:search,replace"
+rule-edit: new filters (from is.in.file [FILENAME]) / (to is.in.file [FILENAME])
+appid-enable: introduce new script to enable APP-IDs which are set to disabled - directly against panorama or via panorama to all connected firewalls on panorama
+pan-diff: extend with API input - to easily compare running and candidate config
+tag-edit: new actions=exporttoexcel:[filename]
+address-edit: extend actions=description-append:$$current.name$$
+
+utils(under development):
+ike: new script to show all IKE/IPsec profile and config settings
+interface: new script to show interface settings
+routing: new script to show route settings
+vsys: new script to show all vsys
+vwire: new script to show vwire settings
+zone: new script to show zone settings
+
+bugfix:
+- fix class-IpsecTunnel | related to proxy-id if <protocol> is not available
+- fix class-EthernetInterfaceStore | xpath fix
+- fix implementation of class-AggregateEthernetInterface
+- fix class-VirtualSystem | no warning if IPv4 address without netmask is used as interface IP
+- fix class-QosRule - fix access type related to app 'filter=(app is.any)'
+- fix error output for XMLline - correct lineNo if lineNo > 65535
+- fix class-authenticationRule |  fix for FW config - typos related to XML xpath finding
+- fix class-IkeCryptoProfileStore | -IKEGateway | -IKEGatewayStore | -IPsecCryptoProfileStore | -IPsecTunnel | -IPsecTunnelStore || improve data handling during script execution
+- fix class-VirtualRouter | fix if object not found for getting the interface IP
+- fix description field for rules and objects was increased to 1023 characters with PAN-OS 7.1 | update all relevant places
+- fix class-AddressRuleContainer - improve setAny, offline config file has now any as correct entry
+- fix rule 'filter=(rule is.unused.fast)' for PAN-OS version > 8.1
+- fix address-merger - duplicate FQDN are now also covered
+- fix address-merger - for location=shared | if config is panos
+- fix service-edit - action=rename, if service is tmp (e.g. service is from Panorama DG)
+
+------------------------------------------------------------------------------------------------------------------------
+
+1.5.14 (20180227)
+* class PanAPIConnector : added support for installed app/av/wildfire/threat-version / PA-VM uuid / cpuid
+* new class IkeCryptoProfile; IkeCryptoProfileStore; IPSecCryptoProfil; IPSecCryptoProfilStore
+* class PanAPIConnector : added support for device uptime
+* update predefined.xml to 8020-4723
+* new class ServiceSrcPortMapping
+* class-AddressGroup - implement method hasGroupinGroup and getGroupNamerecursive
+* class-IPsecTunnel - extend with more validation and warnings
+* class-NatRule.php - introduce method API_setNoSNAT / API_setNoDNAT
+* new class AuthenticationRule : bring in PAN-OS 8.0 change from CaptivePortalRule to AuthenticationRule
+
+utils:
+rules-edit: new action dsri-set:[bool], dsri-Set-FastAPI:[bool] => default value is false
+rules-edit: action 'display' extend with DSRI information, if "Disable Server Response Inspection" is enabled for security rule
+rules-edit: action'nameRename' extend for additional variable usage like $$current.name$$ and $$sequential.number$$
+rules-edit: new action 'app-Fix-Dependencies' to display missing dependencies, with additional argument 'app-Fix-Dependencies:yes' all missing app-id dependencies are added
+rules-edit: new action 'securityProfile-remove-FastAPI'
+rules-edit: new filter (location is.parent.of [DeviceGroup])
+rules-edit: new filter 'app has.missing.dependencies'
+rules-edit: new filter 'action is.drop'
+download-predefined: introduction of new util to download predefined.xml especially for APP-id database
+address-edit: new action split-large-address-group
+address-edit: new action AddToGroup
+address-edit: new action decommission
+rules-edit: new 'filter=(service has.value.only [443])'
+rules-edit: new 'filter=(snathost has.from.query subquery1)' 'subquery1=([all filters possible from address-edit])'
+rules-edit: new 'filter=(snathost.count - >,<,=,!)'
+rules-edit: extend actions=name-Prepend/name-Append/name-Rename with argument accept63characters as bool
+address-merger: introduce argument debugapi and exportcsv | which print out per object value the objects replaced by the kept one | improve output for ancestor
+service-merger: introduce new dupalgorithm sameDstSrcport
+service-edit: new filter (value string.eq [DstPort])
+service-edit: new filter (overrides.upper.level/overriden.at.lower.level)
+
+bugfix:
+- fixed rule 'filter=(rule has.destination.nat)'
+- fix rule-merger - wrong calculation usage for method 5,6,8
+- fix class App - calculateDependencies has missing app-id dependency calculation if explicit and implicit app-id are set
+- fix rules-edit filter (rule is.unused.fast) in a DeviceGroup hierarchy
+- fix class-AppStore - App details not imported if App has no ports
+- fix for all FastAPI actions directly running against a firewall
+- fix for address-merger.php - allow ancestor merging with same name on upperlevel for FQDN address objects
+- fix address-edit actions=name-addprefix/name-addsuffix/name-removePrefix/name-removeSuffix
+- fix class App - import application-filter before application-group to avoid tmp application tagging
+- fix service-edit actions=move - problem with API mode for TMP objects
+- fix class AddressRuleContainer - fix is related address-merger for snathost replacement
+- fix memory calculation for specific situations
+- fix memory issue if own addressgroup/servicegroup is added as a subgroup in an offline configuration file (move from error to warning)
+- fix problems with mergen of branches
+- fix address-edit filter=(object overrides.upper.level)
+- fix service-merger replace value() with getDestPort()
+- fix service-merger help description
+- fix address-edit actions=AddToGroup where shared objects need to be added to childDG | new argument devicegroupname if location=any
+- fix rule-edit 'filter='(snathost.count >,<,=,!)' if not NATRule
+- fix class-AddressGroup - if group isDynamic
+- fix address-edit actions=AddToGroup | improve action to work against all parent/childDG and also shared/vsys level on Firewall
+- fix rule-edit 'filter=(members.count < ) - if dynamicAddressGroup | related to last fix of class-AddressGroup if group isDynamic
+- fix class App-stroe - Application-group members are imported now
+- fix class-PanAPIConnector.php - introcude M-200 and M-600 devices
+- fix address-/ service-merger where same object name in address and addressgroup cause an error
+- fix trait-AddressCommon.php method __removeWhereIamUsed - for address-edit actions=decommission
+- fix class-Rule / class-AuthenticationRule - filter-rule | missing stuff for new class-Authentication
+
+
+1.5.13
+* class ServiceGroup: extend __construct with $fromTemplateXml
+* class ServiceStore: extend for API_newService()/newServiceGroup()/API_newServiceGroup()
+* class NatRule: added support for floating-ip in NAT rules
+* class SecurityRule: added support for URL Categories
+* class App : added support for technology, categories fields
+* class App : added support for evasive-behavior, consume-big-bandwidth, used-by-malware, able-to-transfer-file, has-known-vulnerability, tunnel-other-application fields
+* class App : added support for  prone-to-misuse, pervasive-use, risk, virus-ident, file-type-ident, file-forward, is-saas fields
+* class APP : added support for timeout, tcp-timeout, udp-timeout, tcp_half_closed_timeout, tcp_time_wait_timeout, custom_signature
+* class App : extend with method iscustom() CustomHasSignature()
+* class AppStore: added support for application-group and application-filter
+* class AppStore: added support for custom application
+* class PANConf/PanoramaConf/VirtualSystem: add support for application-group and application-filter
+* class PanAPIConnector : added support for mgmt-ip via variable info_mgmtip
+
+utils:
+address-edit: new filter tag has / has.nocase / has.regex and tag.count >,<,=,! / object is.recursive.member.of
+address-edit: new filter reflocation is / reflocation is.only / refstore is / reftype is
+address-edit: new action description-append
+address-edit: new action add-member
+override-finder: supporting scenario where template defined objects are not present in candidate config
+rules-edit: new filter 'service has.recursive', 'secprof av-profile.is.set', 'secprof as-profile.is.set', 'secprof url-profile.is.set', 'secprof wf-profile.is.set', 'secprof vuln-profile.is.set'
+rules-edit: new filter 'secprof file-profile.is', 'secprof file-profile.is.set', 'secprof data-profile.is', 'secprof data-profile.is.set'
+rules-edit: new filter 'service has.only', 'user has', 'user has.regex', 'url.category is.any'
+rules-edit: new filter 'app technology.is', 'app category.is', 'app subcategory.is', 'app characteristic.has xxxx'
+rules-edit: new filter 'app includes.full.or.partial', 'app includes.full.or.partial.nocase', 'app included-in.full.or.partial', 'app included-in.full.or.partial.nocase'
+rules-edit: new filter 'service has.from.query' and 'service has.recursive.from.query'
+rules-edit: new filter 'location is.child.of [DG]'
+rules-edit: new filter 'service is.tcp','service is.tcp.only','service is.udp','service is.udp.only','service has.value [PORT_VALUE]','service has.value.recursive [PORT_VALUE]'
+rules-edit: new filter 'app custom.has.signature'
+rules-edit: new filter 'dnathost included-in.full', 'dnathost included-in.partial', 'dnathost included-in.full.or.partial', 'dnathost includes.full', 'dnathost includes.partial', 'dnathost includes.full.or.partial'
+rules-edit: action 'tag-Add-Force' new field 'tagColor' to setColor for forced Tag creation
+rules-edit: action 'description-append' new field 'newline' as boolean parameter no/yes
+rules-edit: action 'display' extend with logsetting information / URL category
+rules-edit: action 'exporttoexcel' extend with additionalFields choice ResolveServiceSummary
+rules-edit: action 'description-Prepend'
+service-edit: new actions tag-Add | tag-Add-Force | tag-Remove | tag-Remove-All | tag-Remove-Regex
+service-edit: new action 'name-rename' to allow renaming based on template string. ie:  'name-Rename:$$protocol$$-$$current.name$$'
+service-edit: new action description-append
+service-edit: improve action move - API mode now supported to move service objects to shared level
+service-edit: new filter tag has / has.nocase / has.regex and tag.count >,<,=,! / object is.recursive.member.of
+service-edit: new filter reflocation is / reflocation is.only / refstore is / reftype is
+tag-edit: new action move
+tag-edit: new filter reflocation is / reflocation is.only / refstore is / reftype is
+useid-mgt: add argument debugapi
+doc update
+
+bugfix:
+- fixed a crash when trying to move some rule types from PRE/POST
+- fixed dependencies issues when trying to move an object to another location
+- fixed action 'target-set-any' that would not update properly
+- override-finder.php : supported use case where firewall has no template applied
+- fixed action 'description-Append'
+- fixed an issue with pipeSeparatedList and actions in xxx-edit utilities
+- upload-confing.php : fix an issue where serial# of in=api://[SERIAL]@IP is also used for out=api://IP - but not definied
+- address-edit - xxx-calculate-zones, fixed a crash when interface IP is configured with an address object (class VirtualRouter)
+- address-edit: action 'move' was improperly applied to tmp objects
+- changed SecurityRule::API_getAppContainerStats2() to use DeviceGroup name on PANOS 7.1+ instead of firewall serial numbers
+- fixed a crash when displaying service objects where a service group is member of a service group
+- xxxx-merger : fixed an issue where subQueries were ignored
+- fixed an issue where predefined applications were created as TMP
+- fixed an issue with 'filter=(rule has.source.nat)' where no source NAT rule were shown
+- fixed a crash when trying to add tag to temporary address objects
+- fix address-edit help name-rename output
+- fix class-loopbackinterface / class-aggregateethernetinterface regarding $type variable
+- fixx for address-edit filter - value ip4.included-in/ip4.includes-full/ip4.includes-full-or-partial - regarding addressgroup with member count 0
+
+
+1.5.12 (2017-04-04)
+* introduction of UTILS help.html (utils/doc/help.html)
+* introduction of new util : userid-mgr to register/unregister/dump userid record through api
+* introduction of info_hostname in PanAPIConnector
+* introduction of TAG color
+
+utils:
+rules-edit: action 'exportToExcel' new fields 'dst_negated' and 'src_negated' to show when some fields are negated
+rules-edit: new action  'name-removePrefix' 'name-removeSuffix' 'app-add-force'
+rules-edit: action 'from/to-calculate-zones' add new mode 'unneeded-tag-add' to add rule tag (unneeded-from/to-zone) where unneeded zones are available
+rules-edit: filter 'is.unused.fast' extend for nat rules
+rules-edit: new filters 'src is.fully.included.in.list'
+rules-edit: new actions 'dst-Remove-Objects-Matching-Filter' and 'src-Remove-Objects-Matching-Filter' to remove objects matching a specific filter
+rules-edit: new action 'securityProfile-Profile-Set' to set individual profiles
+address-edit: new filter 'description regex'
+address-edit: new fields in exportToExcel : 'ResolveIP' and 'NestedMembers'
+service-edit: new filter 'description regex'
+generic: new filters 'location regex'
+tag-edit: new action 'setColor', 'addComments', 'deleteComments'
+tag-edit: new filter 'color eq', 'comments regex /XXX/', 'comments is.empty'
+
+bugfix:
+- help message was not available in override-finder.php
+- fixed an issue with PANOS 8.0 and new DG hierarchy. OMG what did they do ? :D
+
+
+1.5.11
+* new function AddressCommon->hasDescendants() to for objects with same name in lower level (child devicegroups)
+* new function AddressCommon->hasDescendants() to determine if objects with same name in lower level (child devicegroups) exist
+* Improved address name regex based filter with support to insert objects value: $$netmask$$, $$netmask.blank32$$, $$value$$, $$value.no-netmask$$
+* new Utility to manage stored API keys 'key-manager.php'
+
+utils:
+* new 'address-merger', 'addressgroup-merger', 'service-merger', 'servicegroup-merger' utilities. Safer, faster and find more dups than MT.
+* new tag-edit utility on the same basis as address-edit
+rules-edit: new action 'tag-Remove-All' 'position-Move-to-Top' 'position-Move-To-Bottom' 'position-Move-Before' 'position-Move-After'
+rules-edit: new filter 'service has.regex', 'rule is.dsri'
+rules-edit: action 'exportToExcel' new option to add optional fields like 'resolveAddressSummary'
+address-edit: new action 'name-rename' to allow renaming based on template string. ie:  'name-Rename:H-$$value.no-netmask-$$current.name$$'
+address-edit: new filters 'overriden.at.lower.level' and 'overrides.upper.level', 'ip4.includes-full', 'ip4.includes-full-or-partial', 'object is.iprange', 'object is.fqdn', 'object is.ip-netmask', netmask  >,<,=,! XX
+address-edit: new actions 'name-removePrefix, name-removeSuffix', 'tag-add', 'tag-add-force', 'tag-remove', 'tag-remove-all', 'tag-remove-regex'
+service-edit: new actions 'name-removePrefix, name-removeSuffix'
+service-edit: new filters 'object is.tcp' and 'object is.udp'
+tag-edit: new filters 'name eq', 'name contains', 'name eq.nocase', 'location is' and 'refcount - >,<,=,!'
+override-finder: when firewall is not available, instead of exit with error, program will skip it and warn user.
+
+bugfix:
+- added checks to prevent crash when trying to resolve an IPv6 object into an IPv4 mapping
+- fixed a crash when exporting PBF rules to HTML in  rules-edit utility
+- fixed a crash when replacing an object used in a DNAT with another object
+- fixed an typo with setLogEnd in SecurityRule that would prevent the rule from being updated
+
+
+1.5.10
+* New Utility "override-finder.php" : find and display which parts of a firewall configuration are currently overriding the Template pushed by Panorama.
+* DoSRule and QoSRule class introduced
+* Fixed PBF rules inconsistencies FROM and TO fields
+* PanAPIConnector new function panorama_getConnectedFirewallsSerials()
+
+utils:
+upload-config: new argument 'extraFiltersOut' to strip unwanted XML parts out of the config before saving/uploading it.
+rules-edit: new actions 'from-replace', 'to-replace' to help replace Zones where required
+
+bugfix:
+- fixed a loading error when using blank proxy-id in IPsecTunnels which implictly means 0.0.0.0/0
+- fixed an issue where malformed xml could be generated when changing log-profile when it already existed
+- fixed error caused by typo in filter (src/to has.from.query)
+- fixed rules-edit filter is.dnat and is.snat and renamed has.source.nat, has.destination.nat, has.bidir.nat
+
+
+1.5.9
+* PanAPIConnector::register_sendUpdate() new IP registration function; PanAPIConnector::register_getIP() new get registered IP function
+* ServiceGroup : detect and warn when a group has several times the same object
+* Zone : function addObjectWhereIamUsed() implemented, supports only SecurityRule so far
+* Rules : improved support of targets with new functions : target_rewriteXML, target_addDevice, target_setAny, target_setNegate, target_isNegated, target_removeDevice
+* PH: finally introduced a way to track library version with PH::frameworkVersion() and PH::frameworkVersion_isGreaterThan()
+
+utils:
+service-edit: new filters 'object is.unused.recursive' to check if an object is used in groups/nested groups which are not used either
+rules-edit: new actions 'src-Negate-Set','dst-Negate-Set' to enable/disable a rule Source/Destination negation
+                        'target-Set-Any','target-Add-Device','target-Negate-Set','target-RemoveDevice' to manage targets
+                        'clone' to clone rules before/after another rule and add a suffix
+rules-edit: improved 'calculate-zones' with NAT rules which will be cloned if several destination zones are found
+
+bugfix:
+- typos in service-edit action prefix-add suffix-add
+- report generation on 7050 requires explicit 'async=yes'
+- calculate-zones now considers directly connected with better priority than static ones
+- fix issue in VirtualSystems where Captive-Portal rules were loaded as AppOverride
+- fix 'stats' output for rules-edit.php, address-edit.php and service-edit.php
+
+
+1.5.7
+* introduction of rules Target field support in the core lib and in utils/filters
+* NatRule display() outputs more informations, directly benefits to rules-edit.php
+* PH::getPanObjectFromconfig() new helper function to load Panorama or Firewall conf
+* introduced plugin system for address/rules/services-edit.php
+* TagRuleContainer::copy new helper function to copy tags from one Rule to another
+* DecryptionRule/PbfRule class now supports service (introduced in PANOS6.1)
+
+utils:
+rules-edit : new filters 'target is.any' 'target has xxxxx/vsysX' 'snathost has xxxx' 'dnathost has xxxx' 'rule is.snat' 'rule is.dnat' 'rule is.snatbidir' 'snat is.static' 'snat is.dynamic-ip' 'snat is.dynamic-ip-and-port' 'natdstinterface is.set' 'rule is.universal' 'rule is.intrazone' 'rule is.interzone'
+rules-edit : new filters for security profiles: 'secprof av-profile.is' 'secprof as-profile.is' 'secprof vuln-profile.is' 'secprof wf-profile.is'
+rules-edit : new actions 'name-Append' and 'name-Prepend' 'split-bidirectionalnat' 'change-ruleType'
+address-edit : improved filter 'name regex' to allow external regular expression reference, permitting expression with parenthesis without the need to escape. ie: 'filter=(name regex %subquery1)' 'subquery1=/^(az)/'
+address-edit: new filters 'object is.unused.recursive' to check if an object is used in groups/nested groups which are not used either
+utilities: propose to enter a new login/password if previous ones are detected as invalid
+
+bugfixes:
+- fixed an issue where security profile filter 'is.set' and 'not.set' could return wrong value
+- fixed an issue where log fowarding profile change would not update the XML
+- RuleStore : fixed an issue where creating a NatRule would generate an error
+- rules-edit 'logEnd-Disable' was not available due to a typo in the name
+- RuleStore::moveRuleAfter/Before fix for post-rulebase would not work
+- Source Nat could be improperly written in some cases
+
+
+1.5.6
+* introduction of CaptivePortal, Pbf type rules initial support
+* PANConf : enhanced support to load pushed panorama config
+* RuleStore : new function to get rules from parent DeviceGroups
+* AddressGroup : enhanced group loading time & consistency
+* SecurityRule|DecryptionRule : added userID support (readonly for the moment) + filters for rules-edit.php
+* changes to make XML code closer to PANOS flavor : empty rules stores won't be created in XML anymore, same for Tag stores
+
+utils:
+rules-edit : loading of firewall configurations can now get panorama pushed config, use option 'loadPanoramaPushedConfig'
+rules-edit : added new filters for userid : 'user is.any' 'user is.unknown' 'user is.known' 'user is.prelogon'
+rules-edit : added security profile, log profile userid column in ExportToExcel
+
+bugfixes:
+- proper XML update when an object used in DNAT is renamed
+- fixed an issue where M-100 and M-500 would not be detected as Panorama
+- fixed missing TO field in ExportToExcel
+- fixed an issue where a zone would have wrong name after its creation
+- fixed an issue with users of old PHP (previous version of MACOSX) and OpenSSL TLS
+
+
+1.5.5
+core:
+* AddressGroup : new functions API_add(), API_remove(), function addObjectWhereIamUsed(), API_addObjectWhereIamUsed()
+* Service : added tag support, new function addObjectWhereIamUsed(), API_addObjectWhereIamUsed()
+* ServiceGroup : added tag support, new function API_remove(), addObjectWhereIamUsed(), API_addObjectWhereIamUsed(), removeWhereIamUsed()
+						API_removeWhereIamUsed()
+
+utils:
+* rules-edit.php : new Actions 'description-append', 'securityProfile-Remove', 'removeWhereUsed'
+* rules-edit.php : create FastAPI modes for : 'enabled-set', 'logStart-Enable', 'logStart-Disable', 'logEnd-Enable', 'logEnd-Disable'
+					'securityProfile-Group-Set'
+* rules-edit.php : new filters 'name is.in.file'
+* service-edit.php : new Action 'replaceWithObject', 'addObjectWhereUsed', 'removeWhereUsed'
+* address-edit.php : new Action 'replaceWithObject', 'addObjectWhereUsed'
+* address-edit.php : new filters 'name is.in.file' 'value ip4.included-in '
+
+bugfixes:
+* rules-edit.php : destination zone calculation fix in
+* AddressGroup : was incorrectly reported as Dynamic when object XML was empty (MigrationTool issue)
+* Address : support usage of IP ranges directly in rules which was not supported before.
+* IP4Map : included-in calculation was return wrong 0 whatever the input
+
+
+1.5.3
+core:
+* RuleStore function to get rule position 'getRulePosition()'
+
+utils:
+* address-edit.php : new Actions exportToExcel, name-addPrefix, name-addSuffix
+* service-edit.php : new Actions exportToExcel, name-addPrefix, name-addSuffix, replaceGroupByService
+* added a template to quick start your own scripts. look in examples\template-for-your-own-scripts.php
+
+bugfixes:
+* issue during creation of a new Service that failed to detect proper protocol
+
+
+1.5.2
+* switched classes constructors to __construct() which is mainstream for PHP5.4+ and 7.0
+* major performance improvement when loading a configuration (added 'name to objects' indexes for fast searches)
+* renamed address query filter "value eq" to "value string.eq" for string comparison
+* new address query filters "value ip4.match.exact"
+* rules-edit.php : improved zone calculation feature by allowing to load an external firewall
+* rules-edit.php : new action exportToExcel
+
+bugfixes:
+* NatRule source nat hosts and types were incorrectly implemented
+
+
+1.5.0
+Library:
+* 6.1 'rule-type' support (universal,intrazone,interzone) implemented. See SecurityRule->type() for details.
+* support for 7.0 new Security rules actions : drop, reset-client, reset-server, reset-both
+* support for 7.0 Device Group hierarchy
+* basic support of Panorama templates
+* moved preRules and postRules into one single store (see getPreRules and getPostRules)
+* VirtualRouter and Static route implemented
+* Major interface/network additions were made to allow future tools like routes calculation etc etc.
+* Support for AppOverride rules
+
+Utilities:
+* new utility : rule-merger.php to find similar rules and merge them
+* util rule-edit : new action 'resolve-zones' to do a rule resolution
+* util rule-edit : new action 'copy' to copy rules into another vsys/device-group
+* util rule-edit : new action 'tag-remove-regex'
+* util rule-edit : new action 'cloneForAppOverride' to clone a security rule and make it an AppOverride
+* util rule-edit : service-edit and address-edit will auto-detect PANOS vs Panorama, no need to use argument 'type' anymore
+* util rule-edit : new filters : 'rule is.unused.fast' will check if a rule was not used since reboot (use cli 'show running rule-use rule-base security type unused vsys vsys1')
+* util rule-edit : new filters : src/dst 'included-in.full included-in.partial included-in.full.or.partial' and 'includes.full includes-full.or.partial includes.partial'
+* util rule-edit : new filters : src/dst 'has.recursive.regex'
+* util rule-edit : new filters : description 'regex' , 'is.empty'
+* util rule-edit : new filters for app 'has' and 'has.nocase' and log profile : 'logprof is.set' 'logprof is xxx'
+* util rule-edit : new filters for zones : 'has.regex' and 'from.count' 'to.count'
+* util rule-edit : new listActions menu
+* util address-edit:  new action 'move'
+* util service-edit and address-edit new actions: replaceByMembersAndDelete, showIP4Mapping
+* util service-edit : new action 'addObjectWhereUsed'
+* util service-edit : new filters for services : 'name is.in.file'
+* util upload-config : now supports inject xml parts direct in candidate config (see 'toXpath' and 'fromXpath' option)
+* util upload-config : you can now preserve target firewall config (like its mgmt ip for example, look for 'help' to see options available).
+* util upload-config : now supports api://x.x.x.x/running-config candidate-config to choose between running and candidate or already saved file
+
+
+
+
+---------
+
+1.2.6
+* introduction of new 'utils' upload-config.php script that allows you send a config to a device or save a config from a device or bridge a config from a device to another.
+* introduction of Exception support for programs that don't want to quit when an error occurs. use PH::enableExceptionSupport() any time for that
+* IOMethods now support optional filename : out=api://192.168.50.10/stage2.xml
+* new filter for rule-edit utility: rule is.disabled
+* elementToPanXPath() helper to print xpath the way PANOS uses it
+
+1.2.4
+* introduction of address-edit.php and service-edit.php on same basis than rules-edit.php for objects manipulations
+* API_delete() implemented for Address, AddressGroup, Service, ServiceGroup
+* RQuery now supports math operators, opening the way for new filters ( >,<,=,!,>= ....)
+* bug fixes for AddressGroup members management on v6
+
+version 1.2.3
+* serious bug fixes , upgrade is recommended
+* TagRuleContainer->merge() implemented
+* fix for ServiceGroup with PANOS6 when reading from XML
+* fixes for DOM XML use vs DeviceGroup creation
+
+version 1.2.2
+* switch API calls from GET to POST for larger requests
+* implemented new timeouts system for API calls for people with slow connection to the device
+
+version 1.2.1
+* speed improvment when loading candidate config from a firewall, call API "show config saved candidate-config" now.
+* SecurityRule->API_setSourceIsNegated and SecurityRule->API_setDestinationIsNegated implemented
+* Address->setDescription() and API_setDescription implemented
+* Address and AddressGroup now have Tag support
+* bugfix : load api key from login & password fixed with DomXML
+
+version 1.2.0
+* switch to DOM XML lib for better and faster memory management
+* skeleton for new classes : EthernetInterface, EthernetIfStore, NetworkPropertiesContainer to start supporting interface manipulation
+* rule-edit new filter : 'services has'
+* rule-edit new actions : logEnd-enable, logEnd-disable, logStart-enable, logStart-disable, logSettingSet
+* rule->API_setDescription() implemented
+* SecurityRule->API_setLogSetting() implemented
+* new function implemented for IpsecTunnels to help manipulate them : proxyIdList(), searchProxyIdLine($local,$remote), hasProxyId($local,$remote), findAvailableProxyIdName($baseName), removeProxyId($local,$remote), addProxyId($local,$remote,$name=null)
+
+
+version 1.1.5
+* new class AddressRuleContainer to replace AddressStore in Rules  (same way as ZoneRuleContainer in previous release)
+* new class ServiceRuleContainer for the same purpose
+* bugfix for application-default where it would not update the xml value
+
+version 1.1.4
+* rule-edit now supports multiple actions at the same time
+* rule-edit now supports Nat and Decryption rules (look for argument 'ruletype=')
+* rule-edit has new filters for security profiles
+* introduced CsvParser
+* introduced IPsecTunnel and IPsecTunnelStore (see PANConf->ipsecTunnels)
+* support for login+password API access to generate a key live
+* UserID API login PanAPIConnector::userIDLogin( ) implemented
+* AppRuleContainer introduced and replaces AppStore on rules
+* renamed rules stores to make better sense ie: VirtualSystem->secrules becomes VirtualSystem->securityRules
+* renamed VirtualSystem->allVSYS to VirtualSystem->virtualSystems and findVSYS_byName() to findVirtualSystem()
+* renamed class VSYS to VirtualSystem
+* added port for PanAPIConnector (default is 443)
+
+
+version 1.1.2
+* bash alias file in utils/alias.sh for easy summoning of utils scripts
+* new filters for rules-edit.php : from is.any, to is.any, app is.any, rule is.postrule, rule is.prerule, rule has.no.securityprofile
+      name eq, name contains, services is.any, services is.application-default, dst has.recursive, src has.recursive,
+      tag has, tag has.nocase
+* new actions for rules-edit.php : delete, invertPreAndPost, from-Remove, from-Remove-Force-Any, to-Remove, to-Move-Force-Any
+   src-Remove-Force-Any, dst-Remove-Force-Any, tag-Add, tag-Add-Force, tag-Remove
+* improved secrules-edit.php arguments sanitization and help message
+* changed Stores to Containers in Rules for Zones and Tags
+* DecryptionRule initial support
+* fix unsupported NAT issue
+* fix LogStart and LogEnd filters in secrules-edit.php
+
+version 1.1.0
+* adding folder 'utils' with scripts ready for the field
+* added script utils/checkpoint-exclude.php to process checkpoint exclusion groups into static objects
+* added script utils/grp-static-to-dynamic.php to convert static groups into dynamic based groups with Tags
+* added script utils/secrules-edit.php to mass edit rules
+* added class PH (PAN-PHP-FRAMEWORK Helper) to gather utility functions
+* better support for V6 configs
+* implemented ZoneStore->has(Zone)
+* RQuery class created to parse & match rule filters
+* added more comments and fixed some typos
+
+version 1.0.4
+* implemented ZoneStore->includesStore() to know if one includes the other
+* implemented AddressStore->includesContainerExpanded() to know if one includes the other
+* implemented ServiceStore->includesContainerExpanded() to know if one includes the other
+* implemented ServiceGroup->expand() and AddressGroup->expand() to get a list of all objects (recursive) within that group
+* impelemented Address->resolveIP_Start_End()
+* fix cidr::netMatch() function for partial matches
+* fix in zones To/From setAny() and RemoveZone() functions
+* fix Store->replaceObject code to check if object already exists
+
+version 1.0.2
+* most objects now support ->getXPath() to get an object XPath
+* create and rename DeviceGroups functions implemented
+* Address->equals() , Address->sameValue() implemented
+* AddressGroup->equals(), AddressGroup->sameValue() implemented
+* AddressStore->merge())  ServiceStore->merge() ZoneStore->merge()  implemented
+* SecurityRule Log-Setting (forwarding profiles fixes)
+* few bugs fixes
+
+version 1.0.1
+* Address setValue() setType() implemented as well as their API counterparts
+* functions create Sec and Nat rules , create Address and Service objects
+* changes in AddressStore to make it case insensitive and performance tweaks
+* alternate XML engine for WAYYYY faster loading in huge configs and uses a lot less memory. Use variable $UseAlXml = TRUE variable to use it (still in beta)
+* new object->toXML() and toXML_inline() functions to convert an object to xml string
+* now supports local firewall API calls through Panorama
+* listing of firewalls serials managed by panorama PanoramaConf->getManagedFirewallsSerials()
+* load managed firewall configs with PanoramaConf->loadManagedFirewallsConfigs($fromDirectory = './')
+
+version 1.0.0
+* more API functions implemented
+* support for Panorama device-group -> device listing   DeviceGroup::getDevicesInGroup()
+* support for API report request via PanAPIConnector->getReport()
+* support for API rule application usage via SecurityRule->API_getAppStats() and SecurityRule->API_getAppContainerStats()
+* support for API rule cloning  RuleStore->API_cloneRule()
+* loading predefined apps by default and their containers
+* ServiceStore->isApplicationDefault() and isAny() implemented
+* looooooots of other new stuff I forgot about
+
+version 0.9c
+* PAN API support improved, can now load/save a config directly from API
+* fixed negate-destination
+* improved example-panorama-unused-objects.php example to count unused objects
+
+version 0.9a
+* new example-panorama-unused-objects.php
+* fixed removeZone() and removeApp()
+* added helpful error message in removeZone()
+* fixed some documentations
+
+version 0.9
+* fixed a bug when adding Zones to a rule, XML was not updated
+* added AddressGroup::removeAll() to clear a group from all its objects.
+* modified example-split-large-gorups accordingly and added some performance tweaks.
+* created panconfigurator.php for easier lib inclusion and fixed path shared.php to make them absolute
+* fixed object renaming in Address and Service Store
+* tons of documenting efforts
+* few more fixes I forgot about
+
+version 0.8
+ * fixed ServiceStore::remove() function to work with metlife example stage4 to merge service objects. Same fix applied to AddressStore class.
