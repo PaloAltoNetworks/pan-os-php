@@ -1,13 +1,14 @@
 <?php
 
-require_once("utils/common/actions.php");
+set_include_path( dirname(__FILE__).'/../'. PATH_SEPARATOR . get_include_path() );
+require_once(dirname(__FILE__)."/../common/actions.php");
 
-require_once("utils/lib/logWriter.php");
-require_once("utils/lib/RULEUTIL.php");
-require_once("utils/lib/STATSUTIL.php");
-require_once("utils/lib/SECURITYPROFILEUTIL.php");
+require_once(dirname(__FILE__)."/logWriter.php");
+require_once(dirname(__FILE__)."/RULEUTIL.php");
+require_once(dirname(__FILE__)."/STATSUTIL.php");
+require_once(dirname(__FILE__)."/SECURITYPROFILEUTIL.php");
 
-require_once("utils/lib/RULEMERGER.php");
+require_once(dirname(__FILE__)."/RULEMERGER.php");
 
 class UTIL
 {
