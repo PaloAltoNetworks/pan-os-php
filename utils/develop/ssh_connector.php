@@ -7,7 +7,7 @@
  *
  */
 
-require_once("lib/pan_php_framework.php");
+require_once dirname(__FILE__)."/../lib/pan_php_framework.php";
 include('phpseclib/Net/SSH2.php');
 include('phpseclib/Crypt/RSA.php');
 

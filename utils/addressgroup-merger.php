@@ -10,9 +10,9 @@ echo "\n***********************************************\n";
 echo "*********** " . basename(__FILE__) . " UTILITY **********\n\n";
 
 set_include_path(dirname(__FILE__) . '/../' . PATH_SEPARATOR . get_include_path());
-require_once("lib/pan_php_framework.php");
+require_once dirname(__FILE__)."/../lib/pan_php_framework.php";
 
-require_once("utils/lib/UTIL.php");
+require_once dirname(__FILE__)."/../utils/lib/UTIL.php";
 require_once("utils/lib/MERGER.php");
 
 
