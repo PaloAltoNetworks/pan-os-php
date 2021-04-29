@@ -12,8 +12,6 @@ RUN apt-get install -y libcurl3-openssl-dev libxml2-dev libonig-dev
 # PHP Extensions
 RUN docker-php-ext-install -j$(nproc) curl dom mbstring
 
-# still needed because of old CP PERL migration script
-RUN apt-get install -y perl liblist-moreutils-perl
 
 RUN mkdir /tools; mkdir /tools/pan-os-php;
 COPY appid-toolbox /tools/pan-os-php/appid-toolbox
@@ -25,8 +23,4 @@ COPY utils /tools/pan-os-php/utils
 # PHP library of pan-os-php
 RUN echo 'include_path = "/usr/local/lib/php:/tools/pan-os-php"' >> /usr/local/etc/php/php.ini
 RUN chmod -R 777 /tools/pan-os-php
-
-# UTIL alias for pan-os-php
-# ALIASES not working until now
-#RUN cat /tools/pan-os-php/utils/alias.sh >> ~/.bashrc
 

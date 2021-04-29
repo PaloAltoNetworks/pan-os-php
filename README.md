@@ -24,7 +24,7 @@ Docker build
 	cd [pan-os-php Root folder]
 	docker build -t pan-os-php .
 	cd [go to the Folder you like to share with the Container]
-	docker run -v ${PWD}:/share -it pan-os-php /usr/local/bin/bash
+	docker run -v ${PWD}:/share -it pan-os-php
 	```
 
 * **WINDOWS** : [run on Windows terminal]
@@ -32,5 +32,5 @@ Docker build
 	cd [pan-os-php Root folder]
 	docker build -t pan-os-php .
 	cd [go to the Folder you like to share with the Container]
-	docker run -v %CD%:/share -it pan-os-php /usr/local/bin/bash
+	docker run -v %CD%:/share -it pan-os-php
 	```
