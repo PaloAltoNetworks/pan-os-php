@@ -10,6 +10,7 @@
 
 print "\n************* START OF SCRIPT " . basename(__FILE__) . " ************\n\n";
 
+set_include_path(dirname(__FILE__) . '/../' . PATH_SEPARATOR . get_include_path());
 require_once "lib/pan_php_framework.php";
 
 PH::processCliArgs();

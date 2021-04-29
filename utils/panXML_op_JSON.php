@@ -8,7 +8,7 @@
  */
 
 
-
+set_include_path(dirname(__FILE__) . '/../' . PATH_SEPARATOR . get_include_path());
 require_once("lib/pan_php_framework.php");
 
 require_once("utils/lib/UTIL.php");
