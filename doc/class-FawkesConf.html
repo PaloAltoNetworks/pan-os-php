@@ -1,0 +1,1388 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="ApiGen 2.8.0" />
+
+	<title>Class FawkesConf | PAN-OS-PHP</title>
+
+	<script type="text/javascript" src="resources/combined.js?2876606788"></script>
+	<script type="text/javascript" src="elementlist.js?1980767494"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+			<h3>Namespaces</h3>
+			<ul>
+				<li class="active"><a href="namespace-None.html">None</a>
+						</li>
+				<li><a href="namespace-PHP.html">PHP</a>
+						</li>
+			</ul>
+		</div>
+
+		<hr />
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-Address.html">Address</a></li>
+				<li><a href="class-AddressGroup.html">AddressGroup</a></li>
+				<li><a href="class-AddressRuleContainer.html">AddressRuleContainer</a></li>
+				<li><a href="class-AddressStore.html">AddressStore</a></li>
+				<li><a href="class-AggregateEthernetIfStore.html">AggregateEthernetIfStore</a></li>
+				<li><a href="class-AggregateEthernetInterface.html">AggregateEthernetInterface</a></li>
+				<li><a href="class-App.html">App</a></li>
+				<li><a href="class-AppOverrideRule.html">AppOverrideRule</a></li>
+				<li><a href="class-AppRuleContainer.html">AppRuleContainer</a></li>
+				<li><a href="class-AppStore.html">AppStore</a></li>
+				<li><a href="class-AuthenticationRule.html">AuthenticationRule</a></li>
+				<li><a href="class-CaptivePortalRule.html">CaptivePortalRule</a></li>
+				<li><a href="class-cidr.html">cidr</a></li>
+				<li><a href="class-Container.html">Container</a></li>
+				<li><a href="class-CsvParser.html">CsvParser</a></li>
+				<li><a href="class-CustomSecurityProfileURL.html">CustomSecurityProfileURL</a></li>
+				<li><a href="class-DecryptionProfile.html">DecryptionProfile</a></li>
+				<li><a href="class-DecryptionRule.html">DecryptionRule</a></li>
+				<li><a href="class-DeviceCloud.html">DeviceCloud</a></li>
+				<li><a href="class-DeviceGroup.html">DeviceGroup</a></li>
+				<li><a href="class-DH.html">DH</a></li>
+				<li><a href="class-DoSRule.html">DoSRule</a></li>
+				<li><a href="class-ErrorReporter.html">ErrorReporter</a></li>
+				<li><a href="class-EthernetIfStore.html">EthernetIfStore</a></li>
+				<li><a href="class-EthernetInterface.html">EthernetInterface</a></li>
+				<li><a href="class-ExpeditionTaskReporter.html">ExpeditionTaskReporter</a></li>
+				<li class="active"><a href="class-FawkesConf.html">FawkesConf</a></li>
+				<li><a href="class-FileTaskReporter.html">FileTaskReporter</a></li>
+				<li><a href="class-HipObjectsProfile.html">HipObjectsProfile</a></li>
+				<li><a href="class-HipProfilesProfile.html">HipProfilesProfile</a></li>
+				<li><a href="class-IkeCryptoProfil.html">IkeCryptoProfil</a></li>
+				<li><a href="class-IkeCryptoProfileStore.html">IkeCryptoProfileStore</a></li>
+				<li><a href="class-IKEGateway.html">IKEGateway</a></li>
+				<li><a href="class-IKEGatewayStore.html">IKEGatewayStore</a></li>
+				<li><a href="class-InterfaceContainer.html">InterfaceContainer</a></li>
+				<li><a href="class-IP4Map.html">IP4Map</a></li>
+				<li><a href="class-IPSecCryptoProfil.html">IPSecCryptoProfil</a></li>
+				<li><a href="class-IPSecCryptoProfileStore.html">IPSecCryptoProfileStore</a></li>
+				<li><a href="class-IPsecTunnel.html">IPsecTunnel</a></li>
+				<li><a href="class-IPsecTunnelStore.html">IPsecTunnelStore</a></li>
+				<li><a href="class-LoopbackIfStore.html">LoopbackIfStore</a></li>
+				<li><a href="class-LoopbackInterface.html">LoopbackInterface</a></li>
+				<li><a href="class-ManagedDevice.html">ManagedDevice</a></li>
+				<li><a href="class-ManagedDeviceStore.html">ManagedDeviceStore</a></li>
+				<li><a href="class-NatRule.html">NatRule</a></li>
+				<li><a href="class-NetworkPropertiesContainer.html">NetworkPropertiesContainer</a></li>
+				<li><a href="class-ObjRuleContainer.html">ObjRuleContainer</a></li>
+				<li><a href="class-ObjStore.html">ObjStore</a></li>
+				<li><a href="class-PanAPIConnector.html">PanAPIConnector</a></li>
+				<li><a href="class-PANConf.html">PANConf</a></li>
+				<li><a href="class-PanoramaConf.html">PanoramaConf</a></li>
+				<li><a href="class-PbfRule.html">PbfRule</a></li>
+				<li><a href="class-PH.html">PH</a></li>
+				<li><a href="class-PredefinedSecurityProfileURL.html">PredefinedSecurityProfileURL</a></li>
+				<li><a href="class-QoSRule.html">QoSRule</a></li>
+				<li><a href="class-RQuery.html">RQuery</a></li>
+				<li><a href="class-Rule.html">Rule</a></li>
+				<li><a href="class-RuleStore.html">RuleStore</a></li>
+				<li><a href="class-RuleWithUserID.html">RuleWithUserID</a></li>
+				<li><a href="class-Schedule.html">Schedule</a></li>
+				<li><a href="class-ScheduleStore.html">ScheduleStore</a></li>
+				<li><a href="class-SecurityProfile.html">SecurityProfile</a></li>
+				<li><a href="class-SecurityProfileAntiSpyware.html">SecurityProfileAntiSpyware</a></li>
+				<li><a href="class-SecurityProfileAntiVirus.html">SecurityProfileAntiVirus</a></li>
+				<li><a href="class-SecurityProfileDNSSecurity.html">SecurityProfileDNSSecurity</a></li>
+				<li><a href="class-SecurityProfileFileBlocking.html">SecurityProfileFileBlocking</a></li>
+				<li><a href="class-SecurityProfileGroup.html">SecurityProfileGroup</a></li>
+				<li><a href="class-SecurityProfileGroupStore.html">SecurityProfileGroupStore</a></li>
+				<li><a href="class-SecurityProfileStore.html">SecurityProfileStore</a></li>
+				<li><a href="class-SecurityProfileURL.html">SecurityProfileURL</a></li>
+				<li><a href="class-SecurityProfileVirusAndWildfire.html">SecurityProfileVirusAndWildfire</a></li>
+				<li><a href="class-SecurityProfileVulnerability.html">SecurityProfileVulnerability</a></li>
+				<li><a href="class-SecurityProfileWildfire.html">SecurityProfileWildfire</a></li>
+				<li><a href="class-SecurityRule.html">SecurityRule</a></li>
+				<li><a href="class-Service.html">Service</a></li>
+				<li><a href="class-ServiceDstPortMapping.html">ServiceDstPortMapping</a></li>
+				<li><a href="class-ServiceGroup.html">ServiceGroup</a></li>
+				<li><a href="class-ServiceRuleContainer.html">ServiceRuleContainer</a></li>
+				<li><a href="class-ServiceSrcPortMapping.html">ServiceSrcPortMapping</a></li>
+				<li><a href="class-ServiceStore.html">ServiceStore</a></li>
+				<li><a href="class-StaticRoute.html">StaticRoute</a></li>
+				<li><a href="class-Tag.html">Tag</a></li>
+				<li><a href="class-TagRuleContainer.html">TagRuleContainer</a></li>
+				<li><a href="class-TagStore.html">TagStore</a></li>
+				<li><a href="class-Template.html">Template</a></li>
+				<li><a href="class-TemplateStack.html">TemplateStack</a></li>
+				<li><a href="class-TmpInterface.html">TmpInterface</a></li>
+				<li><a href="class-TmpInterfaceStore.html">TmpInterfaceStore</a></li>
+				<li><a href="class-TunnelIfStore.html">TunnelIfStore</a></li>
+				<li><a href="class-TunnelInterface.html">TunnelInterface</a></li>
+				<li><a href="class-UrlCategoryRuleContainer.html">UrlCategoryRuleContainer</a></li>
+				<li><a href="class-VirtualRouter.html">VirtualRouter</a></li>
+				<li><a href="class-VirtualRouterContainer.html">VirtualRouterContainer</a></li>
+				<li><a href="class-VirtualRouterStore.html">VirtualRouterStore</a></li>
+				<li><a href="class-VirtualSystem.html">VirtualSystem</a></li>
+				<li><a href="class-VirtualWire.html">VirtualWire</a></li>
+				<li><a href="class-VirtualWireStore.html">VirtualWireStore</a></li>
+				<li><a href="class-VlanIfStore.html">VlanIfStore</a></li>
+				<li><a href="class-VlanInterface.html">VlanInterface</a></li>
+				<li><a href="class-Zone.html">Zone</a></li>
+				<li><a href="class-ZoneRuleContainer.html">ZoneRuleContainer</a></li>
+				<li><a href="class-ZoneStore.html">ZoneStore</a></li>
+			</ul>
+
+			<h3>Interfaces</h3>
+			<ul>
+				<li><a href="class-TaskReporter.html">TaskReporter</a></li>
+			</ul>
+
+			<h3>Traits</h3>
+			<ul>
+				<li><a href="class-AddressCommon.html">AddressCommon</a></li>
+				<li><a href="class-centralAddressStore.html">centralAddressStore</a></li>
+				<li><a href="class-centralAddressStoreUser.html">centralAddressStoreUser</a></li>
+				<li><a href="class-centralServiceStore.html">centralServiceStore</a></li>
+				<li><a href="class-centralServiceStoreUser.html">centralServiceStoreUser</a></li>
+				<li><a href="class-InterfaceType.html">InterfaceType</a></li>
+				<li><a href="class-NegatableRule.html">NegatableRule</a></li>
+				<li><a href="class-ObjectWithDescription.html">ObjectWithDescription</a></li>
+				<li><a href="class-PanSubHelperTrait.html">PanSubHelperTrait</a></li>
+				<li><a href="class-PathableName.html">PathableName</a></li>
+				<li><a href="class-ReferenceableObject.html">ReferenceableObject</a></li>
+				<li><a href="class-RulewithLogging.html">RulewithLogging</a></li>
+				<li><a href="class-ServiceCommon.html">ServiceCommon</a></li>
+				<li><a href="class-XmlConvertible.html">XmlConvertible</a></li>
+			</ul>
+
+
+
+			<h3>Functions</h3>
+			<ul>
+				<li><a href="function-__CmpObjMemID.html">__CmpObjMemID</a></li>
+				<li><a href="function-__CmpObjName.html">__CmpObjName</a></li>
+				<li><a href="function-array_diff_no_cast.html">array_diff_no_cast</a></li>
+				<li><a href="function-array_to_devicequery.html">array_to_devicequery</a></li>
+				<li><a href="function-array_unique_no_cast.html">array_unique_no_cast</a></li>
+				<li><a href="function-cloneArray.html">cloneArray</a></li>
+				<li><a href="function-convert.html">convert</a></li>
+				<li><a href="function-derr.html">derr</a></li>
+				<li><a href="function-findConnector.html">findConnector</a></li>
+				<li><a href="function-findConnectorOrDie.html">findConnectorOrDie</a></li>
+				<li><a href="function-getDirContents.html">getDirContents</a></li>
+				<li><a href="function-insertAfter.html">insertAfter</a></li>
+				<li><a href="function-lastIndex.html">lastIndex</a></li>
+				<li><a href="function-mdeb.html">mdeb</a></li>
+				<li><a href="function-mwarning.html">mwarning</a></li>
+				<li><a href="function-my_shutdown.html">my_shutdown</a></li>
+				<li><a href="function-myAutoloader.html">myAutoloader</a></li>
+				<li><a href="function-myErrorHandler.html">myErrorHandler</a></li>
+				<li><a href="function-printn.html">printn</a></li>
+				<li><a href="function-removeElement.html">removeElement</a></li>
+				<li><a href="function-sortArrayByStartValue.html">sortArrayByStartValue</a></li>
+				<li><a href="function-yesNoBool.html">yesNoBool</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="" />
+		<input type="hidden" name="ie" value="UTF-8" />
+		<input type="text" name="q" class="text" />
+		<input type="submit" value="Search" />
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="namespace-None.html" title="Summary of None"><span>Namespace</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class FawkesConf</h1>
+
+
+	<div class="description">
+	
+<p>Your journey will start from PANConf or PanoramaConf</p>
+
+<p>Code:<br />
+$pan = new PanoramaConf();<br />
+$pan-&gt;load_from_file('config.txt');<br />
+$pan-&gt;display_statistics();</p>
+
+<p>And there you go !</p>
+
+	</div>
+
+	<dl class="tree">
+		<dd style="padding-left:0px">
+<b><span>FawkesConf</span></b>			
+			
+			 uses 
+				<a href="class-PathableName.html"><span>PathableName</span></a>, 
+			
+				<a href="class-PanSubHelperTrait.html"><span>PanSubHelperTrait</span></a>
+			
+		</dd>
+	</dl>
+
+
+
+
+
+
+
+
+	<div class="info">
+		
+		
+		
+		
+
+		<b>Located at</b> device-and-system-classes/FawkesConf.php<br />
+	</div>
+
+
+
+	<table class="summary" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="name" id="_name">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_name">#</a>
+		<code>name( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="__construct" id="___construct">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#___construct">#</a>
+		<code>__construct( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="load_from_xmlstring" id="_load_from_xmlstring">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_load_from_xmlstring">#</a>
+		<code>load_from_xmlstring( <span>mixed <var>&amp; $xml</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="load_from_domxml" id="_load_from_domxml">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_load_from_domxml">#</a>
+		<code>load_from_domxml( <span><code><a href="class-DOMElement.html">DOMElement</a></code>|<code><a href="class-DOMDocument.html">DOMDocument</a></code> <var>$xml</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$xml</var></dt>
+					<dd><code><code><a href="class-DOMElement.html">DOMElement</a></code>|<code><a href="class-DOMDocument.html">DOMDocument</a></code></code><br>$xml</dd>
+				</dl></div>
+
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code><code><a href="class-Exception.html">Exception</a></code></code><br />
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="findContainer" id="_findContainer">
+
+		<td class="attributes"><code>
+			 public 
+			<code><a href="class-Container.html">Container</a></code>|null
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_findContainer">#</a>
+		<code>findContainer( <span>string <var>$name</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$name</var></dt>
+					<dd><code>string</code><br>$name</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><code><a href="class-Container.html">Container</a></code>|null</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="findDeviceCloud" id="_findDeviceCloud">
+
+		<td class="attributes"><code>
+			 public 
+			<code><a href="class-DeviceCloud.html">DeviceCloud</a></code>|null
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_findDeviceCloud">#</a>
+		<code>findDeviceCloud( <span>string <var>$name</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$name</var></dt>
+					<dd><code>string</code><br>$name</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><code><a href="class-DeviceCloud.html">DeviceCloud</a></code>|null</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="save_to_file" id="_save_to_file">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_save_to_file">#</a>
+		<code>save_to_file( <span>string <var>$fileName</var></span>, <span>boolean <var>$printMessage</var> = <span class="php-keyword1">TRUE</span></span>, <span>integer <var>$lineReturn</var> = <span class="php-keyword1">TRUE</span></span>, <span>mixed <var>$indentingXml</var> = <span class="php-num">0</span></span>, <span>mixed <var>$indentingXmlIncreament</var> = <span class="php-num">1</span></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$fileName</var></dt>
+					<dd><code>string</code><br>$fileName</dd>
+					<dt><var>$printMessage</var></dt>
+					<dd><code>boolean</code><br>$printMessage</dd>
+					<dt><var>$lineReturn</var></dt>
+					<dd><code>integer</code><br>$indentingXml</dd>
+					<dt><var>$indentingXml</var></dt>
+					<dd></dd>
+					<dt><var>$indentingXmlIncreament</var></dt>
+					<dd></dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="load_from_file" id="_load_from_file">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_load_from_file">#</a>
+		<code>load_from_file( <span>string <var>$fileName</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$fileName</var></dt>
+					<dd><code>string</code><br>$fileName</dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="display_statistics" id="_display_statistics">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_display_statistics">#</a>
+		<code>display_statistics( <span>mixed <var>$return</var> = <span class="php-keyword1">false</span> </span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="createContainer" id="_createContainer">
+
+		<td class="attributes"><code>
+			 public 
+			<code><a href="class-Container.html">Container</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_createContainer">#</a>
+		<code>createContainer( <span>string <var>$name</var></span>, <span>mixed <var>$parentContainer</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Create a blank device group. Return that DV object.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Create a blank device group. Return that DV object.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$name</var></dt>
+					<dd><code>string</code><br>$name</dd>
+					<dt><var>$parentContainer</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><code><a href="class-Container.html">Container</a></code></code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getContainers" id="_getContainers">
+
+		<td class="attributes"><code>
+			 public 
+			<code><a href="class-Container.html">Container</a>[]</code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getContainers">#</a>
+		<code>getContainers( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><code><a href="class-Container.html">Container</a>[]</code></code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="createDeviceCloud" id="_createDeviceCloud">
+
+		<td class="attributes"><code>
+			 public 
+			<code><a href="class-DeviceCloud.html">DeviceCloud</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_createDeviceCloud">#</a>
+		<code>createDeviceCloud( <span>string <var>$name</var></span>, <span>mixed <var>$parentContainer_txt</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Create a blank template. Return that template object.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Create a blank template. Return that template object.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$name</var></dt>
+					<dd><code>string</code><br>$name</dd>
+					<dt><var>$parentContainer_txt</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><code><a href="class-DeviceCloud.html">DeviceCloud</a></code></code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getDeviceClouds" id="_getDeviceClouds">
+
+		<td class="attributes"><code>
+			 public 
+			<code><a href="class-DeviceCloud.html">DeviceCloud</a>[]</code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getDeviceClouds">#</a>
+		<code>getDeviceClouds( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><code><a href="class-DeviceCloud.html">DeviceCloud</a>[]</code></code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="isFawkes" id="_isFawkes">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_isFawkes">#</a>
+		<code>isFawkes( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="findSubSystemByName" id="_findSubSystemByName">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_findSubSystemByName">#</a>
+		<code>findSubSystemByName( <span>mixed <var>$location</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+	<table class="summary used">
+	<caption>Methods used from <a href="class-PathableName.html#methods">PathableName</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-PathableName.html#__PANC_shortName">()</a>, 
+			<a href="class-PathableName.html#_getLocationString">()</a>, 
+			<a href="class-PathableName.html#_toString">()</a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-PanSubHelperTrait.html#methods">PanSubHelperTrait</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-PanSubHelperTrait.html#_isContainer">()</a>, 
+			<a href="class-PanSubHelperTrait.html#_isDeviceCloud">()</a>, 
+			<a href="class-PanSubHelperTrait.html#_isDeviceGroup">()</a>, 
+			<a href="class-PanSubHelperTrait.html#_isFirewall">()</a>, 
+			<a href="class-PanSubHelperTrait.html#_isPanorama">()</a>, 
+			<a href="class-PanSubHelperTrait.html#_isTemplate">()</a>, 
+			<a href="class-PanSubHelperTrait.html#_isVirtualSystem">()</a>
+		</code></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+
+
+
+	<table class="summary" id="properties">
+	<caption>Properties summary</caption>
+	<tr data-order="xmlroot" id="$xmlroot">
+		<td class="attributes"><code>
+			public  
+			<code><a href="class-DOMElement.html">DOMElement</a></code>
+		</code></td>
+
+		<td class="name">
+<var>$xmlroot</var>		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$xmlroot" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="xmldoc" id="$xmldoc">
+		<td class="attributes"><code>
+			public  
+			<code><a href="class-DOMDocument.html">DOMDocument</a></code>
+		</code></td>
+
+		<td class="name">
+<var>$xmldoc</var>		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$xmldoc" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="devicesroot" id="$devicesroot">
+		<td class="attributes"><code>
+			public  
+			<code><a href="class-DOMElement.html">DOMElement</a></code>
+		</code></td>
+
+		<td class="name">
+<var>$devicesroot</var>		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$devicesroot" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="localhostlocaldomain" id="$localhostlocaldomain">
+		<td class="attributes"><code>
+			public  
+			mixed
+		</code></td>
+
+		<td class="name">
+<var>$localhostlocaldomain</var>		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$localhostlocaldomain" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="localhostroot" id="$localhostroot">
+		<td class="attributes"><code>
+			public  
+			<code><a href="class-DOMElement.html">DOMElement</a></code>
+		</code></td>
+
+		<td class="name">
+<var>$localhostroot</var>		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$localhostroot" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="devicecloudroot" id="$devicecloudroot">
+		<td class="attributes"><code>
+			public  
+			string[]|DomNode
+		</code></td>
+
+		<td class="name">
+<var>$devicecloudroot</var>		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$devicecloudroot" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="cloudroot" id="$cloudroot">
+		<td class="attributes"><code>
+			public  
+			string[]|DomNode
+		</code></td>
+
+		<td class="name">
+<var>$cloudroot</var>		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$cloudroot" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="containerroot" id="$containerroot">
+		<td class="attributes"><code>
+			public  
+			string[]|DomNode
+		</code></td>
+
+		<td class="name">
+<var>$containerroot</var>		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$containerroot" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="version" id="$version">
+		<td class="attributes"><code>
+			public  
+			mixed
+		</code></td>
+
+		<td class="name">
+<var>$version</var>		</td>
+		<td class="value"><code><span class="php-keyword1">null</span></code></td>
+		<td class="description"><div>
+			<a href="#$version" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="managedFirewallsSerials" id="$managedFirewallsSerials">
+		<td class="attributes"><code>
+			public  
+			array
+		</code></td>
+
+		<td class="name">
+<var>$managedFirewallsSerials</var>		</td>
+		<td class="value"><code><span class="php-keyword1">array</span>()</code></td>
+		<td class="description"><div>
+			<a href="#$managedFirewallsSerials" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="managedFirewallsStore" id="$managedFirewallsStore">
+		<td class="attributes"><code>
+			public  
+			mixed
+		</code></td>
+
+		<td class="name">
+<var>$managedFirewallsStore</var>		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$managedFirewallsStore" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="managedFirewallsSerialsModel" id="$managedFirewallsSerialsModel">
+		<td class="attributes"><code>
+			public  
+			array
+		</code></td>
+
+		<td class="name">
+<var>$managedFirewallsSerialsModel</var>		</td>
+		<td class="value"><code><span class="php-keyword1">array</span>()</code></td>
+		<td class="description"><div>
+			<a href="#$managedFirewallsSerialsModel" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="containers" id="$containers">
+		<td class="attributes"><code>
+			public  
+			<code><a href="class-Container.html">Container</a>[]</code>
+		</code></td>
+
+		<td class="name">
+<var>$containers</var>		</td>
+		<td class="value"><code><span class="php-keyword1">array</span>()</code></td>
+		<td class="description"><div>
+			<a href="#$containers" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="clouds" id="$clouds">
+		<td class="attributes"><code>
+			public  
+			<code><a href="class-DeviceCloud.html">DeviceCloud</a>[]</code>
+		</code></td>
+
+		<td class="name">
+<var>$clouds</var>		</td>
+		<td class="value"><code><span class="php-keyword1">array</span>()</code></td>
+		<td class="description"><div>
+			<a href="#$clouds" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="managedFirewalls" id="$managedFirewalls">
+		<td class="attributes"><code>
+			public  
+			<code><a href="class-PANConf.html">PANConf</a>[]</code>
+		</code></td>
+
+		<td class="name">
+<var>$managedFirewalls</var>		</td>
+		<td class="value"><code><span class="php-keyword1">array</span>()</code></td>
+		<td class="description"><div>
+			<a href="#$managedFirewalls" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="connector" id="$connector">
+		<td class="attributes"><code>
+			public  
+			<code><a href="class-PanAPIConnector.html">PanAPIConnector</a></code>|null
+		</code></td>
+
+		<td class="name">
+<var>$connector</var>		</td>
+		<td class="value"><code><span class="php-keyword1">null</span></code></td>
+		<td class="description"><div>
+			<a href="#$connector" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>$connector</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>$connector</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="owner" id="$owner">
+		<td class="attributes"><code>
+			public  
+			null|<code><a href="class-Template.html">Template</a></code>
+		</code></td>
+
+		<td class="name">
+<var>$owner</var>		</td>
+		<td class="value"><code><span class="php-keyword1">null</span></code></td>
+		<td class="description"><div>
+			<a href="#$owner" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="network" id="$network">
+		<td class="attributes"><code>
+			public  
+			<code><a href="class-NetworkPropertiesContainer.html">NetworkPropertiesContainer</a></code>
+		</code></td>
+
+		<td class="name">
+<var>$network</var>		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$network" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="appStore" id="$appStore">
+		<td class="attributes"><code>
+			public  
+			<code><a href="class-AppStore.html">AppStore</a></code>
+		</code></td>
+
+		<td class="name">
+<var>$appStore</var>		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$appStore" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="urlStore" id="$urlStore">
+		<td class="attributes"><code>
+			public  
+			<code><a href="class-SecurityProfileStore.html">SecurityProfileStore</a></code>
+		</code></td>
+
+		<td class="name">
+<var>$urlStore</var>		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$urlStore" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="zoneStore" id="$zoneStore">
+		<td class="attributes"><code>
+			public  
+			<code><a href="class-ZoneStore.html">ZoneStore</a></code>
+		</code></td>
+
+		<td class="name">
+<var>$zoneStore</var>		</td>
+		<td class="value"><code><span class="php-keyword1">null</span></code></td>
+		<td class="description"><div>
+			<a href="#$zoneStore" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="_fakeMode" id="$_fakeMode">
+		<td class="attributes"><code>
+			public  
+			boolean
+		</code></td>
+
+		<td class="name">
+<var>$_fakeMode</var>		</td>
+		<td class="value"><code><span class="php-keyword1">FALSE</span></code></td>
+		<td class="description"><div>
+			<a href="#$_fakeMode" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="_fakeNetworkProperties" id="$_fakeNetworkProperties">
+		<td class="attributes"><code>
+			public  
+			<code><a href="class-NetworkPropertiesContainer.html">NetworkPropertiesContainer</a></code>
+		</code></td>
+
+		<td class="name">
+<var>$_fakeNetworkProperties</var>		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$_fakeNetworkProperties" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="name" id="$name">
+		<td class="attributes"><code>
+			public  
+			string
+		</code></td>
+
+		<td class="name">
+<var>$name</var>		</td>
+		<td class="value"><code><span class="php-quote">''</span></code></td>
+		<td class="description"><div>
+			<a href="#$name" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+
+
+	<table class="summary used">
+	<caption>Magic properties used from <a href="class-PathableName.html#properties">PathableName</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-PathableName.html#m$name"><var>$name</var></a>, 
+			<a href="class-PathableName.html#m$owner"><var>$owner</var></a>
+		</code></td>
+	</tr>
+	</table>
+
+</div>
+
+	<div id="footer">
+		PAN-OS-PHP API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
+	</div>
+</div>
+</div>
+</body>
+</html>

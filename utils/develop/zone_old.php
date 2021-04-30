@@ -12,7 +12,7 @@ print "\n***********************************************\n";
 print "************ COMMIT-CONFIG UTILITY ****************\n\n";
 
 
-require_once("lib/pan_php_framework.php");
+require_once dirname(__FILE__)."/../lib/pan_php_framework.php";
 
 
 function display_usage_and_exit($shortMessage = FALSE)

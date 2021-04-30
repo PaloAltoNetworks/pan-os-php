@@ -12,7 +12,7 @@ print "\n***********************************************\n";
 print "************ INTERFACE-EDIT UTILITY ****************\n\n";
 
 
-require_once("lib/pan_php_framework.php");
+require_once dirname(__FILE__)."/../lib/pan_php_framework.php";
 require_once("utils/common/actions.php");
 
 
