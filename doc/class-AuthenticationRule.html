@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="ApiGen 2.8.0" />
+
+	<title>Class AuthenticationRule | PAN-OS-PHP</title>
+
+	<script type="text/javascript" src="resources/combined.js?2876606788"></script>
+	<script type="text/javascript" src="elementlist.js?1980767494"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+			<h3>Namespaces</h3>
+			<ul>
+				<li class="active"><a href="namespace-None.html">None</a>
+						</li>
+				<li><a href="namespace-PHP.html">PHP</a>
+						</li>
+			</ul>
+		</div>
+
+		<hr />
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-Address.html">Address</a></li>
+				<li><a href="class-AddressGroup.html">AddressGroup</a></li>
+				<li><a href="class-AddressRuleContainer.html">AddressRuleContainer</a></li>
+				<li><a href="class-AddressStore.html">AddressStore</a></li>
+				<li><a href="class-AggregateEthernetIfStore.html">AggregateEthernetIfStore</a></li>
+				<li><a href="class-AggregateEthernetInterface.html">AggregateEthernetInterface</a></li>
+				<li><a href="class-App.html">App</a></li>
+				<li><a href="class-AppOverrideRule.html">AppOverrideRule</a></li>
+				<li><a href="class-AppRuleContainer.html">AppRuleContainer</a></li>
+				<li><a href="class-AppStore.html">AppStore</a></li>
+				<li class="active"><a href="class-AuthenticationRule.html">AuthenticationRule</a></li>
+				<li><a href="class-CaptivePortalRule.html">CaptivePortalRule</a></li>
+				<li><a href="class-cidr.html">cidr</a></li>
+				<li><a href="class-Container.html">Container</a></li>
+				<li><a href="class-CsvParser.html">CsvParser</a></li>
+				<li><a href="class-CustomSecurityProfileURL.html">CustomSecurityProfileURL</a></li>
+				<li><a href="class-DecryptionProfile.html">DecryptionProfile</a></li>
+				<li><a href="class-DecryptionRule.html">DecryptionRule</a></li>
+				<li><a href="class-DeviceCloud.html">DeviceCloud</a></li>
+				<li><a href="class-DeviceGroup.html">DeviceGroup</a></li>
+				<li><a href="class-DH.html">DH</a></li>
+				<li><a href="class-DoSRule.html">DoSRule</a></li>
+				<li><a href="class-ErrorReporter.html">ErrorReporter</a></li>
+				<li><a href="class-EthernetIfStore.html">EthernetIfStore</a></li>
+				<li><a href="class-EthernetInterface.html">EthernetInterface</a></li>
+				<li><a href="class-ExpeditionTaskReporter.html">ExpeditionTaskReporter</a></li>
+				<li><a href="class-FawkesConf.html">FawkesConf</a></li>
+				<li><a href="class-FileTaskReporter.html">FileTaskReporter</a></li>
+				<li><a href="class-HipObjectsProfile.html">HipObjectsProfile</a></li>
+				<li><a href="class-HipProfilesProfile.html">HipProfilesProfile</a></li>
+				<li><a href="class-IkeCryptoProfil.html">IkeCryptoProfil</a></li>
+				<li><a href="class-IkeCryptoProfileStore.html">IkeCryptoProfileStore</a></li>
+				<li><a href="class-IKEGateway.html">IKEGateway</a></li>
+				<li><a href="class-IKEGatewayStore.html">IKEGatewayStore</a></li>
+				<li><a href="class-InterfaceContainer.html">InterfaceContainer</a></li>
+				<li><a href="class-IP4Map.html">IP4Map</a></li>
+				<li><a href="class-IPSecCryptoProfil.html">IPSecCryptoProfil</a></li>
+				<li><a href="class-IPSecCryptoProfileStore.html">IPSecCryptoProfileStore</a></li>
+				<li><a href="class-IPsecTunnel.html">IPsecTunnel</a></li>
+				<li><a href="class-IPsecTunnelStore.html">IPsecTunnelStore</a></li>
+				<li><a href="class-LoopbackIfStore.html">LoopbackIfStore</a></li>
+				<li><a href="class-LoopbackInterface.html">LoopbackInterface</a></li>
+				<li><a href="class-ManagedDevice.html">ManagedDevice</a></li>
+				<li><a href="class-ManagedDeviceStore.html">ManagedDeviceStore</a></li>
+				<li><a href="class-NatRule.html">NatRule</a></li>
+				<li><a href="class-NetworkPropertiesContainer.html">NetworkPropertiesContainer</a></li>
+				<li><a href="class-ObjRuleContainer.html">ObjRuleContainer</a></li>
+				<li><a href="class-ObjStore.html">ObjStore</a></li>
+				<li><a href="class-PanAPIConnector.html">PanAPIConnector</a></li>
+				<li><a href="class-PANConf.html">PANConf</a></li>
+				<li><a href="class-PanoramaConf.html">PanoramaConf</a></li>
+				<li><a href="class-PbfRule.html">PbfRule</a></li>
+				<li><a href="class-PH.html">PH</a></li>
+				<li><a href="class-PredefinedSecurityProfileURL.html">PredefinedSecurityProfileURL</a></li>
+				<li><a href="class-QoSRule.html">QoSRule</a></li>
+				<li><a href="class-RQuery.html">RQuery</a></li>
+				<li><a href="class-Rule.html">Rule</a></li>
+				<li><a href="class-RuleStore.html">RuleStore</a></li>
+				<li><a href="class-RuleWithUserID.html">RuleWithUserID</a></li>
+				<li><a href="class-Schedule.html">Schedule</a></li>
+				<li><a href="class-ScheduleStore.html">ScheduleStore</a></li>
+				<li><a href="class-SecurityProfile.html">SecurityProfile</a></li>
+				<li><a href="class-SecurityProfileAntiSpyware.html">SecurityProfileAntiSpyware</a></li>
+				<li><a href="class-SecurityProfileAntiVirus.html">SecurityProfileAntiVirus</a></li>
+				<li><a href="class-SecurityProfileDNSSecurity.html">SecurityProfileDNSSecurity</a></li>
+				<li><a href="class-SecurityProfileFileBlocking.html">SecurityProfileFileBlocking</a></li>
+				<li><a href="class-SecurityProfileGroup.html">SecurityProfileGroup</a></li>
+				<li><a href="class-SecurityProfileGroupStore.html">SecurityProfileGroupStore</a></li>
+				<li><a href="class-SecurityProfileStore.html">SecurityProfileStore</a></li>
+				<li><a href="class-SecurityProfileURL.html">SecurityProfileURL</a></li>
+				<li><a href="class-SecurityProfileVirusAndWildfire.html">SecurityProfileVirusAndWildfire</a></li>
+				<li><a href="class-SecurityProfileVulnerability.html">SecurityProfileVulnerability</a></li>
+				<li><a href="class-SecurityProfileWildfire.html">SecurityProfileWildfire</a></li>
+				<li><a href="class-SecurityRule.html">SecurityRule</a></li>
+				<li><a href="class-Service.html">Service</a></li>
+				<li><a href="class-ServiceDstPortMapping.html">ServiceDstPortMapping</a></li>
+				<li><a href="class-ServiceGroup.html">ServiceGroup</a></li>
+				<li><a href="class-ServiceRuleContainer.html">ServiceRuleContainer</a></li>
+				<li><a href="class-ServiceSrcPortMapping.html">ServiceSrcPortMapping</a></li>
+				<li><a href="class-ServiceStore.html">ServiceStore</a></li>
+				<li><a href="class-StaticRoute.html">StaticRoute</a></li>
+				<li><a href="class-Tag.html">Tag</a></li>
+				<li><a href="class-TagRuleContainer.html">TagRuleContainer</a></li>
+				<li><a href="class-TagStore.html">TagStore</a></li>
+				<li><a href="class-Template.html">Template</a></li>
+				<li><a href="class-TemplateStack.html">TemplateStack</a></li>
+				<li><a href="class-TmpInterface.html">TmpInterface</a></li>
+				<li><a href="class-TmpInterfaceStore.html">TmpInterfaceStore</a></li>
+				<li><a href="class-TunnelIfStore.html">TunnelIfStore</a></li>
+				<li><a href="class-TunnelInterface.html">TunnelInterface</a></li>
+				<li><a href="class-UrlCategoryRuleContainer.html">UrlCategoryRuleContainer</a></li>
+				<li><a href="class-VirtualRouter.html">VirtualRouter</a></li>
+				<li><a href="class-VirtualRouterContainer.html">VirtualRouterContainer</a></li>
+				<li><a href="class-VirtualRouterStore.html">VirtualRouterStore</a></li>
+				<li><a href="class-VirtualSystem.html">VirtualSystem</a></li>
+				<li><a href="class-VirtualWire.html">VirtualWire</a></li>
+				<li><a href="class-VirtualWireStore.html">VirtualWireStore</a></li>
+				<li><a href="class-VlanIfStore.html">VlanIfStore</a></li>
+				<li><a href="class-VlanInterface.html">VlanInterface</a></li>
+				<li><a href="class-Zone.html">Zone</a></li>
+				<li><a href="class-ZoneRuleContainer.html">ZoneRuleContainer</a></li>
+				<li><a href="class-ZoneStore.html">ZoneStore</a></li>
+			</ul>
+
+			<h3>Interfaces</h3>
+			<ul>
+				<li><a href="class-TaskReporter.html">TaskReporter</a></li>
+			</ul>
+
+			<h3>Traits</h3>
+			<ul>
+				<li><a href="class-AddressCommon.html">AddressCommon</a></li>
+				<li><a href="class-centralAddressStore.html">centralAddressStore</a></li>
+				<li><a href="class-centralAddressStoreUser.html">centralAddressStoreUser</a></li>
+				<li><a href="class-centralServiceStore.html">centralServiceStore</a></li>
+				<li><a href="class-centralServiceStoreUser.html">centralServiceStoreUser</a></li>
+				<li><a href="class-InterfaceType.html">InterfaceType</a></li>
+				<li><a href="class-NegatableRule.html">NegatableRule</a></li>
+				<li><a href="class-ObjectWithDescription.html">ObjectWithDescription</a></li>
+				<li><a href="class-PanSubHelperTrait.html">PanSubHelperTrait</a></li>
+				<li><a href="class-PathableName.html">PathableName</a></li>
+				<li><a href="class-ReferenceableObject.html">ReferenceableObject</a></li>
+				<li><a href="class-RulewithLogging.html">RulewithLogging</a></li>
+				<li><a href="class-ServiceCommon.html">ServiceCommon</a></li>
+				<li><a href="class-XmlConvertible.html">XmlConvertible</a></li>
+			</ul>
+
+
+
+			<h3>Functions</h3>
+			<ul>
+				<li><a href="function-__CmpObjMemID.html">__CmpObjMemID</a></li>
+				<li><a href="function-__CmpObjName.html">__CmpObjName</a></li>
+				<li><a href="function-array_diff_no_cast.html">array_diff_no_cast</a></li>
+				<li><a href="function-array_to_devicequery.html">array_to_devicequery</a></li>
+				<li><a href="function-array_unique_no_cast.html">array_unique_no_cast</a></li>
+				<li><a href="function-cloneArray.html">cloneArray</a></li>
+				<li><a href="function-convert.html">convert</a></li>
+				<li><a href="function-derr.html">derr</a></li>
+				<li><a href="function-findConnector.html">findConnector</a></li>
+				<li><a href="function-findConnectorOrDie.html">findConnectorOrDie</a></li>
+				<li><a href="function-getDirContents.html">getDirContents</a></li>
+				<li><a href="function-insertAfter.html">insertAfter</a></li>
+				<li><a href="function-lastIndex.html">lastIndex</a></li>
+				<li><a href="function-mdeb.html">mdeb</a></li>
+				<li><a href="function-mwarning.html">mwarning</a></li>
+				<li><a href="function-my_shutdown.html">my_shutdown</a></li>
+				<li><a href="function-myAutoloader.html">myAutoloader</a></li>
+				<li><a href="function-myErrorHandler.html">myErrorHandler</a></li>
+				<li><a href="function-printn.html">printn</a></li>
+				<li><a href="function-removeElement.html">removeElement</a></li>
+				<li><a href="function-sortArrayByStartValue.html">sortArrayByStartValue</a></li>
+				<li><a href="function-yesNoBool.html">yesNoBool</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="" />
+		<input type="hidden" name="ie" value="UTF-8" />
+		<input type="text" name="q" class="text" />
+		<input type="submit" value="Search" />
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="namespace-None.html" title="Summary of None"><span>Namespace</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class AuthenticationRule</h1>
+
+
+	<div class="description">
+	
+<p>© 2019 Palo Alto Networks, Inc. All rights reserved.</p>
+
+<p>Licensed under SCRIPT SOFTWARE AGREEMENT, Palo Alto Networks, Inc., at <a
+href="https://www.paloaltonetworks.com/legal/script-software-license-1-0.pdf">https://www.paloaltonetworks.com/legal/script-software-license-1-0.pdf</a></p>
+
+	</div>
+
+	<dl class="tree">
+		<dd style="padding-left:0px">
+			<a href="class-Rule.html"><span>Rule</span></a>
+			
+			
+			 uses 
+				<a href="class-PathableName.html"><span>PathableName</span></a>, 
+			
+				<a href="class-centralServiceStoreUser.html"><span>centralServiceStoreUser</span></a>, 
+			
+				<a href="class-centralAddressStoreUser.html"><span>centralAddressStoreUser</span></a>, 
+			
+				<a href="class-ObjectWithDescription.html"><span>ObjectWithDescription</span></a>, 
+			
+				<a href="class-XmlConvertible.html"><span>XmlConvertible</span></a>
+			
+		</dd>
+		<dd style="padding-left:30px">
+			<img src="resources/inherit.png" alt="Extended by" />
+			<a href="class-RuleWithUserID.html"><span>RuleWithUserID</span></a>
+			
+			
+			
+		</dd>
+		<dd style="padding-left:60px">
+			<img src="resources/inherit.png" alt="Extended by" />
+<b><span>AuthenticationRule</span></b>			
+			
+			 uses 
+				<a href="class-NegatableRule.html"><span>NegatableRule</span></a>, 
+			
+				<a href="class-RulewithLogging.html"><span>RulewithLogging</span></a>
+			
+		</dd>
+	</dl>
+
+
+
+
+
+
+
+
+	<div class="info">
+		
+		
+		
+		
+
+		<b>Located at</b> rule-classes/AuthenticationRule.php<br />
+	</div>
+
+
+
+	<table class="summary" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="__construct" id="___construct">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#___construct">#</a>
+		<code>__construct( <span><code><a href="class-RuleStore.html">RuleStore</a></code> <var>$owner</var></span>, <span>boolean <var>$fromTemplateXML</var> = <span class="php-keyword1">FALSE</span></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$owner</var></dt>
+					<dd><code><code><a href="class-RuleStore.html">RuleStore</a></code></code><br>$owner</dd>
+					<dt><var>$fromTemplateXML</var></dt>
+					<dd><code>boolean</code><br>$fromTemplateXML</dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="load_from_domxml" id="_load_from_domxml">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_load_from_domxml">#</a>
+		<code>load_from_domxml( <span>mixed <var>$xml</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="action" id="_action">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_action">#</a>
+		<code>action( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="actionIsNoCP" id="_actionIsNoCP">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_actionIsNoCP">#</a>
+		<code>actionIsNoCP( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="actionIsNoWebForm" id="_actionIsNoWebForm">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_actionIsNoWebForm">#</a>
+		<code>actionIsNoWebForm( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="actionIsBrowserChallenge" id="_actionIsBrowserChallenge">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_actionIsBrowserChallenge">#</a>
+		<code>actionIsBrowserChallenge( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="display" id="_display">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_display">#</a>
+		<code>display( <span>mixed <var>$padding</var> = <span class="php-num">0</span></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="cleanForDestruction" id="_cleanForDestruction">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_cleanForDestruction">#</a>
+		<code>cleanForDestruction( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="isAuthenticationRule" id="_isAuthenticationRule">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_isAuthenticationRule">#</a>
+		<code>isAuthenticationRule( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+				<h4>Overrides</h4>
+				<div class="list"><code><a href="class-Rule.html#_isAuthenticationRule">Rule::isAuthenticationRule()</a></code></div>
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="ruleNature" id="_ruleNature">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_ruleNature">#</a>
+		<code>ruleNature( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+				<h4>Overrides</h4>
+				<div class="list"><code><a href="class-Rule.html#_ruleNature">Rule::ruleNature()</a></code></div>
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="storeVariableName" id="_storeVariableName">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_storeVariableName">#</a>
+		<code>storeVariableName( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+	<table class="summary inherited">
+	<caption>Methods inherited from <a href="class-RuleWithUserID.html#methods">RuleWithUserID</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-RuleWithUserID.html#_userID_IsAny">userID_IsAny()</a>, 
+			<a href="class-RuleWithUserID.html#_userID_IsCustom">userID_IsCustom()</a>, 
+			<a href="class-RuleWithUserID.html#_userID_IsKnown">userID_IsKnown()</a>, 
+			<a href="class-RuleWithUserID.html#_userID_IsPreLogon">userID_IsPreLogon()</a>, 
+			<a href="class-RuleWithUserID.html#_userID_IsUnknown">userID_IsUnknown()</a>, 
+			<a href="class-RuleWithUserID.html#_userID_getUsers">userID_getUsers()</a>, 
+			<a href="class-RuleWithUserID.html#_userID_loadUsersFromXml">userID_loadUsersFromXml()</a>, 
+			<a href="class-RuleWithUserID.html#_userID_setUsers">userID_setUsers()</a>, 
+			<a href="class-RuleWithUserID.html#_userID_type">userID_type()</a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary inherited">
+	<caption>Methods inherited from <a href="class-Rule.html#methods">Rule</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Rule.html#_API_clearPolicyAppUsageDATA">API_clearPolicyAppUsageDATA()</a>, 
+			<a href="class-Rule.html#_API_setDisabled">API_setDisabled()</a>, 
+			<a href="class-Rule.html#_API_setEnabled">API_setEnabled()</a>, 
+			<a href="class-Rule.html#_API_setName">API_setName()</a>, 
+			<a href="class-Rule.html#_API_target_addDevice">API_target_addDevice()</a>, 
+			<a href="class-Rule.html#_API_target_negateSet">API_target_negateSet()</a>, 
+			<a href="class-Rule.html#_API_target_removeDevice">API_target_removeDevice()</a>, 
+			<a href="class-Rule.html#_API_target_setAny">API_target_setAny()</a>, 
+			<a href="class-Rule.html#_getXPath">getXPath()</a>, 
+			<a href="class-Rule.html#_isAppOverrideRule">isAppOverrideRule()</a>, 
+			<a href="class-Rule.html#_isCaptivePortalRule">isCaptivePortalRule()</a>, 
+			<a href="class-Rule.html#_isDecryptionRule">isDecryptionRule()</a>, 
+			<a href="class-Rule.html#_isDisabled">isDisabled()</a>, 
+			<a href="class-Rule.html#_isDoSRule">isDoSRule()</a>, 
+			<a href="class-Rule.html#_isEnabled">isEnabled()</a>, 
+			<a href="class-Rule.html#_isNatRule">isNatRule()</a>, 
+			<a href="class-Rule.html#_isPbfRule">isPbfRule()</a>, 
+			<a href="class-Rule.html#_isPostRule">isPostRule()</a>, 
+			<a href="class-Rule.html#_isPreRule">isPreRule()</a>, 
+			<a href="class-Rule.html#_isQoSRule">isQoSRule()</a>, 
+			<a href="class-Rule.html#_isSecurityRule">isSecurityRule()</a>, 
+			<a href="class-Rule.html#_load_common_from_domxml">load_common_from_domxml()</a>, 
+			<a href="class-Rule.html#_load_destination">load_destination()</a>, 
+			<a href="class-Rule.html#_load_from">load_from()</a>, 
+			<a href="class-Rule.html#_load_source">load_source()</a>, 
+			<a href="class-Rule.html#_load_to">load_to()</a>, 
+			<a href="class-Rule.html#_name">name()</a>, 
+			<a href="class-Rule.html#_rewriteSDisabled_XML">rewriteSDisabled_XML()</a>, 
+			<a href="class-Rule.html#_setDisabled">setDisabled()</a>, 
+			<a href="class-Rule.html#_setEnabled">setEnabled()</a>, 
+			<a href="class-Rule.html#_setName">setName()</a>, 
+			<a href="class-Rule.html#_target_addDevice">target_addDevice()</a>, 
+			<a href="class-Rule.html#_target_hasDeviceAndVsys">target_hasDeviceAndVsys()</a>, 
+			<a href="class-Rule.html#_target_isAny">target_isAny()</a>, 
+			<a href="class-Rule.html#_target_isNegated">target_isNegated()</a>, 
+			<a href="class-Rule.html#_target_negateSet">target_negateSet()</a>, 
+			<a href="class-Rule.html#_target_removeDevice">target_removeDevice()</a>, 
+			<a href="class-Rule.html#_target_rewriteXML">target_rewriteXML()</a>, 
+			<a href="class-Rule.html#_target_setAny">target_setAny()</a>, 
+			<a href="class-Rule.html#_targets">targets()</a>, 
+			<a href="class-Rule.html#_targets_toString">targets_toString()</a>, 
+			<a href="class-Rule.html#_uuid">uuid()</a>, 
+			<a href="class-Rule.html#_zoneCalculation">zoneCalculation()</a>, 
+			<a href="class-Rule.html#_zoneCalculationNatClone">zoneCalculationNatClone()</a>
+		</code></td>
+	</tr>
+	</table>
+
+	<table class="summary used">
+	<caption>Methods used from <a href="class-NegatableRule.html#methods">NegatableRule</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-NegatableRule.html#_API_setDestinationIsNegated">()</a>, 
+			<a href="class-NegatableRule.html#_API_setSourceIsNegated">()</a>, 
+			<a href="class-NegatableRule.html#__readNegationFromXml">()</a>, 
+			<a href="class-NegatableRule.html#_destinationIsNegated">()</a>, 
+			<a href="class-NegatableRule.html#_setDestinationIsNegated">()</a>, 
+			<a href="class-NegatableRule.html#_setSourceIsNegated">()</a>, 
+			<a href="class-NegatableRule.html#_sourceIsNegated">()</a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-RulewithLogging.html#methods">RulewithLogging</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-RulewithLogging.html#_API_setLogSetting">()</a>, 
+			<a href="class-RulewithLogging.html#__readLogSettingFromXml">()</a>, 
+			<a href="class-RulewithLogging.html#_logSetting">()</a>, 
+			<a href="class-RulewithLogging.html#_setLogSetting">()</a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-PathableName.html#methods">PathableName</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-PathableName.html#__PANC_shortName">()</a>, 
+			<a href="class-PathableName.html#_getLocationString">()</a>, 
+			<a href="class-PathableName.html#_toString">()</a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-centralServiceStoreUser.html#methods">centralServiceStoreUser</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-centralServiceStoreUser.html#_findParentServiceStore">()</a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-centralAddressStoreUser.html#methods">centralAddressStoreUser</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-centralAddressStoreUser.html#_findParentAddressStore">()</a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-ObjectWithDescription.html#methods">ObjectWithDescription</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-ObjectWithDescription.html#_API_setDescription">()</a>, 
+			<a href="class-ObjectWithDescription.html#__load_description_from_domxml">()</a>, 
+			<a href="class-ObjectWithDescription.html#_description">()</a>, 
+			<a href="class-ObjectWithDescription.html#_description_merge">()</a>, 
+			<a href="class-ObjectWithDescription.html#_setDescription">()</a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-XmlConvertible.html#methods">XmlConvertible</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-XmlConvertible.html#_API_sync">()</a>, 
+			<a href="class-XmlConvertible.html#_getChildXmlText_inline">()</a>, 
+			<a href="class-XmlConvertible.html#_getXmlText">()</a>, 
+			<a href="class-XmlConvertible.html#_getXmlText_inline">()</a>, 
+			<a href="class-XmlConvertible.html#_set_node_attribute">()</a>
+		</code></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+	<table class="summary" id="constants">
+	<caption>Constants summary</caption>
+	<tr data-order="ActionNoCaptivePortal" id="ActionNoCaptivePortal">
+
+		<td class="attributes"><code>integer</code></td>
+		<td class="name"><code>
+<b>ActionNoCaptivePortal</b>		</code></td>
+		<td class="value"><code><span class="php-num">0</span></code></td>
+		<td class="description"><div>
+			<a href="#ActionNoCaptivePortal" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="ActionWebForm" id="ActionWebForm">
+
+		<td class="attributes"><code>integer</code></td>
+		<td class="name"><code>
+<b>ActionWebForm</b>		</code></td>
+		<td class="value"><code><span class="php-num">1</span></code></td>
+		<td class="description"><div>
+			<a href="#ActionWebForm" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="ActionBrowserChallenge" id="ActionBrowserChallenge">
+
+		<td class="attributes"><code>integer</code></td>
+		<td class="name"><code>
+<b>ActionBrowserChallenge</b>		</code></td>
+		<td class="value"><code><span class="php-num">2</span></code></td>
+		<td class="description"><div>
+			<a href="#ActionBrowserChallenge" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	</table>
+
+	<table class="summary inherited">
+	<caption>Constants inherited from <a href="class-RuleWithUserID.html#constants">RuleWithUserID</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-RuleWithUserID.html#__UserIDType_Any"><b>__UserIDType_Any</b></a>, 
+			<a href="class-RuleWithUserID.html#__UserIDType_Custom"><b>__UserIDType_Custom</b></a>, 
+			<a href="class-RuleWithUserID.html#__UserIDType_Known"><b>__UserIDType_Known</b></a>, 
+			<a href="class-RuleWithUserID.html#__UserIDType_PreLogon"><b>__UserIDType_PreLogon</b></a>, 
+			<a href="class-RuleWithUserID.html#__UserIDType_Unknown"><b>__UserIDType_Unknown</b></a>
+		</code></td>
+	</tr>
+	</table>
+
+
+
+	<table class="summary" id="properties">
+	<caption>Properties summary</caption>
+	<tr data-order="templatexml" id="$templatexml">
+		<td class="attributes"><code>
+			public static 
+			string
+		</code></td>
+
+		<td class="name">
+<var>$templatexml</var>		</td>
+		<td class="value"><code><span class="php-quote">'&lt;entry name=&quot;**temporarynamechangeme**&quot;&gt;&lt;from&gt;&lt;member&gt;any&lt;/member&gt;&lt;/from&gt;&lt;to&gt;&lt;member&gt;any&lt;/member&gt;&lt;/to&gt;
+&lt;source&gt;&lt;member&gt;any&lt;/member&gt;&lt;/source&gt;&lt;destination&gt;&lt;member&gt;any&lt;/member&gt;&lt;/destination&gt;&lt;service&gt;&lt;member&gt;any&lt;/member&gt;&lt;/service&gt;&lt;/entry&gt;&lt;/entry&gt;'</span></code></td>
+		<td class="description"><div>
+			<a href="#$templatexml" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="templatexmlroot" id="$templatexmlroot">
+		<td class="attributes"><code>
+			protected static 
+			mixed
+		</code></td>
+
+		<td class="name">
+<var>$templatexmlroot</var>		</td>
+		<td class="value"><code><span class="php-keyword1">null</span></code></td>
+		<td class="description"><div>
+			<a href="#$templatexmlroot" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="action" id="$action">
+		<td class="attributes"><code>
+			protected  
+			integer
+		</code></td>
+
+		<td class="name">
+<var>$action</var>		</td>
+		<td class="value"><code><code><a href="class-AuthenticationRule.html#ActionNoCaptivePortal">AuthenticationRule::<b>ActionNoCaptivePortal</b></a></code></code></td>
+		<td class="description"><div>
+			<a href="#$action" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	</table>
+
+	<table class="summary inherited">
+	<caption>Properties inherited from <a href="class-RuleWithUserID.html#properties">RuleWithUserID</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-RuleWithUserID.html#$_userIDType"><var>$_userIDType</var></a>, 
+			<a href="class-RuleWithUserID.html#$_users"><var>$_users</var></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary inherited">
+	<caption>Properties inherited from <a href="class-Rule.html#properties">Rule</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Rule.html#$_targetIsNegated"><var>$_targetIsNegated</var></a>, 
+			<a href="class-Rule.html#$_targets"><var>$_targets</var></a>, 
+			<a href="class-Rule.html#$destination"><var>$destination</var></a>, 
+			<a href="class-Rule.html#$disabled"><var>$disabled</var></a>, 
+			<a href="class-Rule.html#$from"><var>$from</var></a>, 
+			<a href="class-Rule.html#$name"><var>$name</var></a>, 
+			<a href="class-Rule.html#$owner"><var>$owner</var></a>, 
+			<a href="class-Rule.html#$services"><var>$services</var></a>, 
+			<a href="class-Rule.html#$source"><var>$source</var></a>, 
+			<a href="class-Rule.html#$tags"><var>$tags</var></a>, 
+			<a href="class-Rule.html#$to"><var>$to</var></a>
+		</code></td>
+	</tr>
+	</table>
+
+	<table class="summary used">
+	<caption>Properties used from <a href="class-centralServiceStoreUser.html#properties">centralServiceStoreUser</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-centralServiceStoreUser.html#$parentServiceStore"><var>$parentServiceStore</var></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Properties used from <a href="class-centralAddressStoreUser.html#properties">centralAddressStoreUser</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-centralAddressStoreUser.html#$parentAddressStore"><var>$parentAddressStore</var></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Properties used from <a href="class-ObjectWithDescription.html#properties">ObjectWithDescription</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-ObjectWithDescription.html#$_description"><var>$_description</var></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Properties used from <a href="class-XmlConvertible.html#properties">XmlConvertible</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-XmlConvertible.html#$xmlroot"><var>$xmlroot</var></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Properties used from <a href="class-NegatableRule.html#properties">NegatableRule</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-NegatableRule.html#$_destinationIsNegated"><var>$_destinationIsNegated</var></a>, 
+			<a href="class-NegatableRule.html#$_sourceIsNegated"><var>$_sourceIsNegated</var></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Properties used from <a href="class-RulewithLogging.html#properties">RulewithLogging</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-RulewithLogging.html#$logSetting"><var>$logSetting</var></a>
+		</code></td>
+	</tr>
+	</table>
+
+
+
+	<table class="summary used">
+	<caption>Magic properties used from <a href="class-PathableName.html#properties">PathableName</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-PathableName.html#m$name"><var>$name</var></a>, 
+			<a href="class-PathableName.html#m$owner"><var>$owner</var></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Magic properties used from <a href="class-ObjectWithDescription.html#properties">ObjectWithDescription</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-ObjectWithDescription.html#m$xmlroot"><var>$xmlroot</var></a>
+		</code></td>
+	</tr>
+	</table>
+
+</div>
+
+	<div id="footer">
+		PAN-OS-PHP API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
+	</div>
+</div>
+</div>
+</body>
+</html>
