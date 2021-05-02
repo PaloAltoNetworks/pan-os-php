@@ -15,7 +15,7 @@ PAN-OS-PHP is a PHP library aimed at making PANOS config changes easy (and XML f
 
 File tree:
 * **/lib/** contains library files source code
-* **/utils/** contains ready to run scripts, more information in [utils/readme.txt](/utils)
+* **/utils/** contains ready to run scripts, more information in [utils/README](/utils/README.md)
 * **/doc/index.html**  has all classes documentations
 * **/example-xxx.php** are examples about using this library
 
@@ -74,6 +74,9 @@ UTIL
 ============
 
 **You hate scripting ?** 
+
+ - pa_rule-edit / pa_address-edit / pa_service-edit / pa_tag-edit
+ [utils/doc](/utils/doc/help.html)
 
 Utility script 'rules-edit.php' is a swiss knife to edit rules and takes advantage of PAN-OS-PHP
  library from a single CLI query, ie :
