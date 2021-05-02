@@ -6,10 +6,8 @@ var data = {
                 "help": null,
                 "args": [
                     {
-                        "type": "pipeSeparatedList",
-                        "subtype": "string",
+                        "type": "string",
                         "default": "*nodefault*",
-                        "help": "pipe(|) separated list of additional field to include in the report. The following is available:\n  - ResolveAddressSummary : fields with address objects will be resolved to IP addressed and summarized in a new column)\n",
                         "name": "appName"
                     }
                 ]
@@ -22,6 +20,17 @@ var data = {
                         "type": "string",
                         "default": "*nodefault*",
                         "name": "appName"
+                    }
+                ]
+            },
+            {
+                "name": "app-Fix-Dependencies",
+                "help": null,
+                "args": [
+                    {
+                        "type": "bool",
+                        "default": "no",
+                        "name": "fix"
                     }
                 ]
             },
@@ -49,6 +58,11 @@ var data = {
             },
             {
                 "name": "app-Set-Any",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "app-Usage-clear",
                 "help": null,
                 "args": false
             },
@@ -155,6 +169,22 @@ var data = {
                 ]
             },
             {
+                "name": "description-Replace-Character",
+                "help": "",
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "search"
+                    },
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "replace"
+                    }
+                ]
+            },
+            {
                 "name": "disabled-Set",
                 "help": null,
                 "args": [
@@ -182,12 +212,34 @@ var data = {
                 "args": false
             },
             {
+                "name": "DNat-set",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "static",
+                        "help": "The following DNAT-type are possible:\n  - static\n  - dynamic\n  - none\n",
+                        "name": "DNATtype"
+                    },
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "objName"
+                    },
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "servicePort"
+                    }
+                ]
+            },
+            {
                 "name": "dsri-Set",
                 "help": null,
                 "args": [
                     {
                         "type": "bool",
-                        "default": "yes",
+                        "default": "no",
                         "name": "trueOrFalse"
                     }
                 ]
@@ -198,7 +250,7 @@ var data = {
                 "args": [
                     {
                         "type": "bool",
-                        "default": "yes",
+                        "default": "no",
                         "name": "trueOrFalse"
                     }
                 ]
@@ -415,6 +467,17 @@ var data = {
                 "args": false
             },
             {
+                "name": "hip-Set",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "HipProfile"
+                    }
+                ]
+            },
+            {
                 "name": "invertPreAndPost",
                 "help": null,
                 "args": false
@@ -446,6 +509,17 @@ var data = {
             },
             {
                 "name": "logSetting-set",
+                "help": "Sets&nbsplog&nbspsetting\/forwarding&nbspprofile&nbspof&nbspa&nbspSecurity&nbsprule&nbspto&nbspthe&nbspvalue&nbspspecified.",
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "profName"
+                    }
+                ]
+            },
+            {
+                "name": "logSetting-set-FastAPI",
                 "help": "Sets&nbsplog&nbspsetting\/forwarding&nbspprofile&nbspof&nbspa&nbspSecurity&nbsprule&nbspto&nbspthe&nbspvalue&nbspspecified.",
                 "args": [
                     {
@@ -503,6 +577,12 @@ var data = {
                         "type": "string",
                         "default": "*nodefault*",
                         "name": "text"
+                    },
+                    {
+                        "type": "bool",
+                        "default": "false",
+                        "help": "This bool is used to allow longer rule name for PAN-OS starting with version 8.1.",
+                        "name": "accept63characters"
                     }
                 ]
             },
@@ -514,6 +594,12 @@ var data = {
                         "type": "string",
                         "default": "*nodefault*",
                         "name": "text"
+                    },
+                    {
+                        "type": "bool",
+                        "default": "false",
+                        "help": "This bool is used to allow longer rule name for PAN-OS starting with version 8.1.",
+                        "name": "accept63characters"
                     }
                 ]
             },
@@ -548,6 +634,28 @@ var data = {
                         "default": "*nodefault*",
                         "help": "This string is used to compose a name. You can use the following aliases :\n  - $$current.name$$ : current name of the object\n  - $$sequential.number$$ : sequential number - starting with 1\n",
                         "name": "stringFormula"
+                    },
+                    {
+                        "type": "bool",
+                        "default": "false",
+                        "help": "This bool is used to allow longer rule name for PAN-OS starting with version 8.1.",
+                        "name": "accept63characters"
+                    }
+                ]
+            },
+            {
+                "name": "name-Replace-Character",
+                "help": "",
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "search"
+                    },
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "replace"
                     }
                 ]
             },
@@ -584,6 +692,27 @@ var data = {
                 "args": false
             },
             {
+                "name": "qosMarking-Remove",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "qosMarking-Set",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "arg1"
+                    },
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "arg2"
+                    }
+                ]
+            },
+            {
                 "name": "ruleType-Change",
                 "help": null,
                 "args": [
@@ -591,6 +720,22 @@ var data = {
                         "type": "string",
                         "default": "*nodefault*",
                         "name": "text"
+                    }
+                ]
+            },
+            {
+                "name": "schedule-Remove",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "schedule-Set",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "Schedule"
                     }
                 ]
             },
@@ -607,6 +752,17 @@ var data = {
             },
             {
                 "name": "securityProfile-Group-Set-FastAPI",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "profName"
+                    }
+                ]
+            },
+            {
+                "name": "securityProfile-Group-Set-Force",
                 "help": null,
                 "args": [
                     {
@@ -644,6 +800,32 @@ var data = {
             {
                 "name": "securityProfile-Remove",
                 "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "any",
+                        "choices": [
+                            "any",
+                            "virus",
+                            "vulnerability",
+                            "url-filtering",
+                            "data-filtering",
+                            "file-blocking",
+                            "spyware",
+                            "wildfire"
+                        ],
+                        "name": "type"
+                    }
+                ]
+            },
+            {
+                "name": "securityProfile-Remove-FastAPI",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "securityProfile-replace-by-Group",
+                "help": null,
                 "args": false
             },
             {
@@ -680,6 +862,23 @@ var data = {
                 ]
             },
             {
+                "name": "service-Remove-Objects-Matching-Filter",
+                "help": "this&nbspaction&nbspwill&nbspgo&nbspthrough&nbspall&nbspobjects&nbspand&nbspsee&nbspif&nbspthey&nbspmatch&nbspthe&nbspquery&nbspyou&nbspinput&nbspand&nbspthen&nbspremove&nbspthem&nbspif&nbspit's&nbspthe&nbspcase.",
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "help": "specify the query that will be used to filter the objects to be removed - \nexample: 'actions=service-remove-objects-matching-filter:subquery1,true' 'subquery1=(value > 600) && (object is.udp) && (value is.single.port)'",
+                        "name": "filterName"
+                    },
+                    {
+                        "type": "bool",
+                        "default": "false",
+                        "name": "forceAny"
+                    }
+                ]
+            },
+            {
                 "name": "service-Set-Any",
                 "help": null,
                 "args": false
@@ -699,6 +898,11 @@ var data = {
                         "name": "objName"
                     }
                 ]
+            },
+            {
+                "name": "src-dst-swap",
+                "help": "moves&nbspall&nbspsource&nbspobjects&nbspto&nbspdestination&nbspand&nbspreverse.",
+                "args": false
             },
             {
                 "name": "src-Negate-Set",
@@ -989,6 +1193,34 @@ var data = {
                 ]
             },
             {
+                "name": "AddToGroup",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "addressgroupname"
+                    },
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "help": "please define a DeviceGroup name for Panorama config or vsys name for Firewall config.\n",
+                        "name": "devicegroupname"
+                    }
+                ]
+            },
+            {
+                "name": "decommission",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "false",
+                        "name": "file"
+                    }
+                ]
+            },
+            {
                 "name": "delete",
                 "help": null,
                 "args": false
@@ -1000,17 +1232,28 @@ var data = {
             },
             {
                 "name": "description-Append",
-                "help": null,
+                "help": "",
                 "args": [
                     {
                         "type": "string",
                         "default": "*nodefault*",
-                        "name": "text"
+                        "help": "This string is used to compose a name. You can use the following aliases :\n  - $$current.name$$ : current name of the object\n",
+                        "name": "stringFormula"
                     }
                 ]
             },
             {
+                "name": "description-Delete",
+                "help": null,
+                "args": false
+            },
+            {
                 "name": "display",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "display-NAT-usage",
                 "help": null,
                 "args": false
             },
@@ -1121,6 +1364,22 @@ var data = {
                 ]
             },
             {
+                "name": "name-Replace-Character",
+                "help": "",
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "search"
+                    },
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "replace"
+                    }
+                ]
+            },
+            {
                 "name": "removeWhereUsed",
                 "help": null,
                 "args": [
@@ -1138,6 +1397,11 @@ var data = {
             },
             {
                 "name": "replace-IP-by-MT-like-Object",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "replace-Object-by-IP",
                 "help": null,
                 "args": false
             },
@@ -1161,6 +1425,17 @@ var data = {
                 "name": "showIP4Mapping",
                 "help": null,
                 "args": false
+            },
+            {
+                "name": "split-large-address-groups",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "2490",
+                        "name": "largeGroupsCount"
+                    }
+                ]
             },
             {
                 "name": "tag-Add",
@@ -1212,6 +1487,11 @@ var data = {
                 ]
             },
             {
+                "name": "value-host-object-add-netmask-m32",
+                "help": null,
+                "args": false
+            },
+            {
                 "name": "z_BETA_summarize",
                 "help": null,
                 "args": false
@@ -1235,6 +1515,11 @@ var data = {
                 "args": false
             },
             {
+                "name": "delete-Force",
+                "help": null,
+                "args": false
+            },
+            {
                 "name": "deleteForce",
                 "help": null,
                 "args": false
@@ -1249,6 +1534,11 @@ var data = {
                         "name": "text"
                     }
                 ]
+            },
+            {
+                "name": "description-Delete",
+                "help": null,
+                "args": false
             },
             {
                 "name": "display",
@@ -1354,8 +1644,24 @@ var data = {
                     {
                         "type": "string",
                         "default": "*nodefault*",
-                        "help": "This string is used to compose a name. You can use the following aliases :\n  - \\$$current.name\\$\\$ : current name of the object\n  - \\$$destinationport\\$\\$ : destination Port\n  - \\$$protocol\\$\\$ : service protocol\n  - \\$$sourceport\\$\\$ : source Port\n  - \\$$value\\$\\$ : value of the object\n",
+                        "help": "This string is used to compose a name. You can use the following aliases :\n  - $$current.name$$ : current name of the object\n  - $$destinationport$$ : destination Port\n  - $$protocol$$ : service protocol\n  - $$sourceport$$ : source Port\n  - $$value$$ : value of the object\n",
                         "name": "stringFormula"
+                    }
+                ]
+            },
+            {
+                "name": "name-Replace-Character",
+                "help": "",
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "search"
+                    },
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "replace"
                     }
                 ]
             },
@@ -1444,6 +1750,17 @@ var data = {
                         "name": "regex"
                     }
                 ]
+            },
+            {
+                "name": "timeout-set",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "timeoutValue"
+                    }
+                ]
             }
         ],
         "tag": [
@@ -1495,6 +1812,17 @@ var data = {
                 "args": false
             },
             {
+                "name": "create",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "name"
+                    }
+                ]
+            },
+            {
                 "name": "delete",
                 "help": null,
                 "args": false
@@ -1513,6 +1841,28 @@ var data = {
                 "name": "displayReferences",
                 "help": null,
                 "args": false
+            },
+            {
+                "name": "exportToExcel",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "filename"
+                    },
+                    {
+                        "type": "pipeSeparatedList",
+                        "subtype": "string",
+                        "default": "*NONE*",
+                        "choices": [
+                            "WhereUsed",
+                            "UsedInLocation"
+                        ],
+                        "help": "pipe(|) separated list of additional field to include in the report. The following is available:\n  - WhereUsed : list places where object is used (rules, groups ...)\n  - UsedInLocation : list locations (vsys,dg,shared) where object is used\n",
+                        "name": "additionalFields"
+                    }
+                ]
             },
             {
                 "name": "move",
@@ -1612,6 +1962,11 @@ var data = {
                         "argument": null
                     },
                     {
+                        "name": "is.drop",
+                        "help": null,
+                        "argument": null
+                    },
+                    {
                         "name": "is.negative",
                         "help": null,
                         "argument": null
@@ -1643,7 +1998,17 @@ var data = {
                         "argument": "*required*"
                     },
                     {
+                        "name": "has.missing.dependencies",
+                        "help": null,
+                        "argument": null
+                    },
+                    {
                         "name": "has.nocase",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "has.regex",
                         "help": null,
                         "argument": "*required*"
                     },
@@ -1706,6 +2071,17 @@ var data = {
                 ]
             },
             {
+                "name": "dnat",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is.set",
+                        "help": null,
+                        "argument": null
+                    }
+                ]
+            },
+            {
                 "name": "dnathost",
                 "help": null,
                 "operators": [
@@ -1757,7 +2133,7 @@ var data = {
                     },
                     {
                         "name": "has.from.query",
-                        "help": null,
+                        "help": "example: 'filter=(dst has.from.query subquery1)' 'subquery1=(value ip4.includes-full 10.10.0.1)'",
                         "argument": "*required*"
                     },
                     {
@@ -1871,6 +2247,11 @@ var data = {
                         "name": "is.any",
                         "help": null,
                         "argument": null
+                    },
+                    {
+                        "name": "is.in.file",
+                        "help": "returns TRUE if rule name matches one of the names found in text file provided in argument",
+                        "argument": "*required*"
                     }
                 ]
             },
@@ -1897,6 +2278,11 @@ var data = {
                     {
                         "name": "is.child.of",
                         "help": "returns TRUE if object location (shared\/device-group\/vsys name) matches \/ is child the one specified in argument",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.parent.of",
+                        "help": "returns TRUE if object location (shared\/device-group\/vsys name) matches \/ is parent the one specified in argument",
                         "argument": "*required*"
                     },
                     {
@@ -2031,6 +2417,27 @@ var data = {
                 ]
             },
             {
+                "name": "schedule",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "has.regex",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.set",
+                        "help": null,
+                        "argument": null
+                    }
+                ]
+            },
+            {
                 "name": "secprof",
                 "help": null,
                 "operators": [
@@ -2152,7 +2559,7 @@ var data = {
                     },
                     {
                         "name": "has.from.query",
-                        "help": null,
+                        "help": "example: 'filter=(service has.from.query subquery1)' 'subquery1=(value regex 8443)'",
                         "argument": "*required*"
                     },
                     {
@@ -2177,6 +2584,11 @@ var data = {
                     },
                     {
                         "name": "has.value",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "has.value.only",
                         "help": null,
                         "argument": "*required*"
                     },
@@ -2232,6 +2644,11 @@ var data = {
                         "argument": null
                     },
                     {
+                        "name": "is.set",
+                        "help": null,
+                        "argument": null
+                    },
+                    {
                         "name": "is.static",
                         "help": null,
                         "argument": null
@@ -2244,6 +2661,22 @@ var data = {
                 "operators": [
                     {
                         "name": "has",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "has.from.query",
+                        "help": "example: 'filter=(snathost has.from.query subquery1)' 'subquery1=(netmask < 32)'",
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "snathost.count",
+                "help": null,
+                "operators": [
+                    {
+                        "name": ">,<,=,!",
                         "help": null,
                         "argument": "*required*"
                     }
@@ -2260,7 +2693,7 @@ var data = {
                     },
                     {
                         "name": "has.from.query",
-                        "help": null,
+                        "help": "example: 'filter=(src has.from.query subquery1)' 'subquery1=(value ip4.includes-full 10.10.0.1)'",
                         "argument": "*required*"
                     },
                     {
@@ -2411,6 +2844,11 @@ var data = {
                         "name": "is.any",
                         "help": null,
                         "argument": null
+                    },
+                    {
+                        "name": "is.in.file",
+                        "help": "returns TRUE if rule name matches one of the names found in text file provided in argument",
+                        "argument": "*required*"
                     }
                 ]
             },
@@ -2484,6 +2922,11 @@ var data = {
                 "help": null,
                 "operators": [
                     {
+                        "name": "is.empty",
+                        "help": null,
+                        "argument": null
+                    },
+                    {
                         "name": "regex",
                         "help": null,
                         "argument": "*required*"
@@ -2497,6 +2940,16 @@ var data = {
                     {
                         "name": "is",
                         "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.child.of",
+                        "help": "returns TRUE if object location (shared\/device-group\/vsys name) matches \/ is child the one specified in argument",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.parent.of",
+                        "help": "returns TRUE if object location (shared\/device-group\/vsys name) matches \/ is parent the one specified in argument",
                         "argument": "*required*"
                     },
                     {
@@ -2564,6 +3017,11 @@ var data = {
                 "help": null,
                 "operators": [
                     {
+                        "name": "is.dynamic",
+                        "help": null,
+                        "argument": null
+                    },
+                    {
                         "name": "is.fqdn",
                         "help": null,
                         "argument": null
@@ -2584,6 +3042,16 @@ var data = {
                         "argument": null
                     },
                     {
+                        "name": "is.ipv4",
+                        "help": null,
+                        "argument": null
+                    },
+                    {
+                        "name": "is.ipv6",
+                        "help": null,
+                        "argument": null
+                    },
+                    {
                         "name": "is.member.of",
                         "help": null,
                         "argument": "*required*"
@@ -2595,6 +3063,270 @@ var data = {
                     },
                     {
                         "name": "is.tmp",
+                        "help": null,
+                        "argument": null
+                    },
+                    {
+                        "name": "is.unused",
+                        "help": null,
+                        "argument": null
+                    },
+                    {
+                        "name": "is.unused.recursive",
+                        "help": null,
+                        "argument": null
+                    },
+                    {
+                        "name": "overriden.at.lower.level",
+                        "help": null,
+                        "argument": null
+                    },
+                    {
+                        "name": "overrides.upper.level",
+                        "help": null,
+                        "argument": null
+                    }
+                ]
+            },
+            {
+                "name": "refcount",
+                "help": null,
+                "operators": [
+                    {
+                        "name": ">,<,=,!",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "reflocation",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is",
+                        "help": "returns TRUE if object location (shared\/device-group\/vsys name) matches",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.only",
+                        "help": "returns TRUE if object location (shared\/device-group\/vsys name) matches",
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "refstore",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "reftype",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "tag",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "has",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "has.nocase",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "has.regex",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "tag.count",
+                "help": null,
+                "operators": [
+                    {
+                        "name": ">,<,=,!",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "value",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "ip4.included-in",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "ip4.includes-full",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "ip4.includes-full-or-partial",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "ip4.match.exact",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "string.eq",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "string.regex",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            }
+        ],
+        "service": [
+            {
+                "name": "description",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is.empty",
+                        "help": null,
+                        "argument": null
+                    },
+                    {
+                        "name": "regex",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "location",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.child.of",
+                        "help": "returns TRUE if object location (shared\/device-group\/vsys name) matches \/ is child the one specified in argument",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.parent.of",
+                        "help": "returns TRUE if object location (shared\/device-group\/vsys name) matches \/ is parent the one specified in argument",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "regex",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "members.count",
+                "help": null,
+                "operators": [
+                    {
+                        "name": ">,<,=,!",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "name",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "contains",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "eq",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "eq.nocase",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.in.file",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "regex",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "object",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "has.srcport",
+                        "help": null,
+                        "argument": null
+                    },
+                    {
+                        "name": "is.group",
+                        "help": null,
+                        "argument": null
+                    },
+                    {
+                        "name": "is.member.of",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.recursive.member.of",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.tcp",
+                        "help": null,
+                        "argument": null
+                    },
+                    {
+                        "name": "is.tmp",
+                        "help": null,
+                        "argument": null
+                    },
+                    {
+                        "name": "is.udp",
                         "help": null,
                         "argument": null
                     },
@@ -2702,26 +3434,53 @@ var data = {
                 ]
             },
             {
+                "name": "timeout",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is.set",
+                        "help": null,
+                        "argument": null
+                    }
+                ]
+            },
+            {
+                "name": "timeout.value",
+                "help": null,
+                "operators": [
+                    {
+                        "name": ">,<,=,!",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
                 "name": "value",
                 "help": null,
                 "operators": [
                     {
-                        "name": "ip4.included-in",
+                        "name": ">,<,=,!",
                         "help": null,
                         "argument": "*required*"
                     },
                     {
-                        "name": "ip4.includes-full",
+                        "name": "is.comma.separated",
                         "help": null,
-                        "argument": "*required*"
+                        "argument": null
                     },
                     {
-                        "name": "ip4.includes-full-or-partial",
+                        "name": "is.port.range",
                         "help": null,
-                        "argument": "*required*"
+                        "argument": null
                     },
                     {
-                        "name": "ip4.match.exact",
+                        "name": "is.single.port",
+                        "help": null,
+                        "argument": null
+                    },
+                    {
+                        "name": "regex",
                         "help": null,
                         "argument": "*required*"
                     },
@@ -2731,196 +3490,9 @@ var data = {
                         "argument": "*required*"
                     }
                 ]
-            }
-        ],
-        "service": [
-            {
-                "name": "description",
-                "help": null,
-                "operators": [
-                    {
-                        "name": "regex",
-                        "help": null,
-                        "argument": "*required*"
-                    }
-                ]
             },
             {
-                "name": "location",
-                "help": null,
-                "operators": [
-                    {
-                        "name": "is",
-                        "help": null,
-                        "argument": "*required*"
-                    },
-                    {
-                        "name": "regex",
-                        "help": null,
-                        "argument": "*required*"
-                    }
-                ]
-            },
-            {
-                "name": "members.count",
-                "help": null,
-                "operators": [
-                    {
-                        "name": ">,<,=,!",
-                        "help": null,
-                        "argument": "*required*"
-                    }
-                ]
-            },
-            {
-                "name": "name",
-                "help": null,
-                "operators": [
-                    {
-                        "name": "contains",
-                        "help": null,
-                        "argument": "*required*"
-                    },
-                    {
-                        "name": "eq",
-                        "help": null,
-                        "argument": "*required*"
-                    },
-                    {
-                        "name": "eq.nocase",
-                        "help": null,
-                        "argument": "*required*"
-                    },
-                    {
-                        "name": "is.in.file",
-                        "help": null,
-                        "argument": "*required*"
-                    },
-                    {
-                        "name": "regex",
-                        "help": null,
-                        "argument": "*required*"
-                    }
-                ]
-            },
-            {
-                "name": "object",
-                "help": null,
-                "operators": [
-                    {
-                        "name": "is.group",
-                        "help": null,
-                        "argument": null
-                    },
-                    {
-                        "name": "is.member.of",
-                        "help": null,
-                        "argument": "*required*"
-                    },
-                    {
-                        "name": "is.recursive.member.of",
-                        "help": null,
-                        "argument": "*required*"
-                    },
-                    {
-                        "name": "is.tcp",
-                        "help": null,
-                        "argument": null
-                    },
-                    {
-                        "name": "is.tmp",
-                        "help": null,
-                        "argument": null
-                    },
-                    {
-                        "name": "is.udp",
-                        "help": null,
-                        "argument": null
-                    },
-                    {
-                        "name": "is.unused",
-                        "help": null,
-                        "argument": null
-                    },
-                    {
-                        "name": "is.unused.recursive",
-                        "help": null,
-                        "argument": null
-                    }
-                ]
-            },
-            {
-                "name": "refcount",
-                "help": null,
-                "operators": [
-                    {
-                        "name": ">,<,=,!",
-                        "help": null,
-                        "argument": "*required*"
-                    }
-                ]
-            },
-            {
-                "name": "reflocation",
-                "help": null,
-                "operators": [
-                    {
-                        "name": "is",
-                        "help": null,
-                        "argument": "*required*"
-                    },
-                    {
-                        "name": "is.only",
-                        "help": null,
-                        "argument": "*required*"
-                    }
-                ]
-            },
-            {
-                "name": "refstore",
-                "help": null,
-                "operators": [
-                    {
-                        "name": "is",
-                        "help": null,
-                        "argument": "*required*"
-                    }
-                ]
-            },
-            {
-                "name": "reftype",
-                "help": null,
-                "operators": [
-                    {
-                        "name": "is",
-                        "help": null,
-                        "argument": "*required*"
-                    }
-                ]
-            },
-            {
-                "name": "tag",
-                "help": null,
-                "operators": [
-                    {
-                        "name": "has",
-                        "help": null,
-                        "argument": "*required*"
-                    },
-                    {
-                        "name": "has.nocase",
-                        "help": null,
-                        "argument": "*required*"
-                    },
-                    {
-                        "name": "has.regex",
-                        "help": null,
-                        "argument": "*required*"
-                    }
-                ]
-            },
-            {
-                "name": "tag.count",
+                "name": "value.length",
                 "help": null,
                 "operators": [
                     {
@@ -2966,6 +3538,16 @@ var data = {
                     {
                         "name": "is",
                         "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.child.of",
+                        "help": "returns TRUE if object location (shared\/device-group\/vsys name) matches \/ is child the one specified in argument",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.parent.of",
+                        "help": "returns TRUE if object location (shared\/device-group\/vsys name) matches \/ is parent the one specified in argument",
                         "argument": "*required*"
                     },
                     {
