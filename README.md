@@ -143,6 +143,12 @@ RQuery::$defaultFilters['rule']['description']['operators']['is.geq'] = Array(
     )
 );
 ```
+
+- plugin usage from above for rule:
+
+    rules-edit.php  in=api://panorama.mycompany.com loadplugin=your_plugin_file.php ['actions=YOUR_PLUGIN_ACTION_NAME'] ['filter=(YOUR_PLUGIN_FILTER_NAME)']
+
+
 **Available UTIL scripts, provided by Alias:**
 
 - pa_address-edit
