@@ -9,6 +9,9 @@ PAN-OS-PHP is a PHP library aimed at making PANOS config changes easy (and XML f
 **Requirements** : PHP 7.1 with curl module
 
 **Usage**: include the file lib/pan_php_framework.php in your own script to load the necessary classes.
+```php
+    require_once "lib/pan_php_framework.php";
+```
 
 File tree:
 * **/lib/** contains library files source code
@@ -21,17 +24,23 @@ Usage
 
 With less than 20 lines of code, you should be able to solve most of your needs. Brief overview:
 
-Loading a config from a file :
-```php
-    $pan = new PANConf();
-    $pan->load_from_file('myconfig.xml');
-```
+Available arguments for your script:
+- in=file.xml or in=api://192.168.10.1
+- out=file_output.xml [not needed if connection is API]
+- location=vsys1 [default if not used; FW->'vsys1' / Panorama->'shared' ]
 
-Prefer to load it from API candidate config ?
+Loading a config from a file / API candidate config for PAN-OS Firewall or Panorama:
 ```php
-    $connector = panAPIConnector::findOrCreateConnectorFromHost('fw1.mycompany.com');
-    $pan = new PANConf();
-    $pan->API_load_from_candidate($connector);
+    require_once "lib/pan_php_framework.php";    
+    require_once "utils/lib/UTIL.php";
+    
+    $util = new UTIL("custom", $argv, __FILE__);
+    $util->utilInit();
+    
+    $util->load_config();
+    $util->location_filter();
+
+    $pan = $util->pan;    
 ```
 
 Delete unused objects from a config :
@@ -56,7 +65,7 @@ Replace that object by another one :
 Want to add security profile group 'Block-Forward-Critical-High' in rules which have destination zone 'External' and
  source zone 'DMZ'?
 ```php
-    foreach( $vsys1->securityRules->rules() as $rule )
+    foreach( $pan->securityRules->rules() as $rule )
        if( $rule->from->has('DMZ') && $rule->to->has('External') )
            $rule->setSecurityProfileGroup('Block-Forward-Critical-High');
 ```
@@ -90,7 +99,50 @@ Want to know what actions are supported ?
     rules-edit.php  listActions
     rules-edit.php listFilters
 
+**UTIL plugin** 
 
+The UTIL scripts rules-edit/address-edit/service-edit/tag-edit can be easily and flexible extend by writing your own plugin:
+
+- rules-edit actions plugin example:
+```php
+    RuleCallContext::$supportedActions[] = Array(
+        'name' => 'schedule_remove_update_desc',
+        'MainFunction' => function(RuleCallContext $context)
+        {
+            /*
+             * @var securityRule $rule
+             */
+            $rule = $context->object;
+    
+            if( !$rule->isSecurityRule() )
+                return false;
+            if(  $rule->schedule() == null )
+                return false;
+    
+            $schedule_name = $rule->schedule();
+            $rule->removeSchedule();
+            $old_desc = $rule->description();
+            $rule->setDescription( $old_desc." | remove schedule: ".$schedule_name );
+    
+            if( $context->isAPI )
+                $rule->API_sync();
+        }
+    );
+```
+
+- rules-edit filter plugin example:
+```php
+RQuery::$defaultFilters['rule']['description']['operators']['is.geq'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule = $context->object;
+
+        return strlen($rule->description() )  >= $context->value;
+    },
+    'arg' => true
+    )
+);
+```
 **Available UTIL scripts, provided by Alias:**
 
 - pa_address-edit
