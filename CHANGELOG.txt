@@ -1,6 +1,17 @@
 CHANGELOG
 
 
+2.0.1
+GENERAL:
+* introduce again travis for automatic unit testing
+
+UTILS:
+
+
+BUGFIX:
+
+
+
 2.0.0 (20210426)
 GENERAL:
 * name: pan-os-php
