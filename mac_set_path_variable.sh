@@ -13,7 +13,7 @@ echo "START \"set path variables\"" \
 && echo "" \
 && echo "" \
 && echo "check if everything is successfully installed" \
-&& php -r "require('lib/pan_php_framework.php');print \"Expedition-Converter LIBRARY - OK INSTALL SUCCESSFUL\n\";" \
+&& php -r "require('lib/pan_php_framework.php');print \"PAN-OS-PHP LIBRARY - OK INSTALL SUCCESSFUL\n\";" \
 && echo "" \
 && echo "" \
 && echo "set user bash profile"   \
