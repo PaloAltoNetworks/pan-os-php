@@ -80,7 +80,7 @@ trait ObjectWithDescription
         return $ret;
     }
 
-    public function description_merge(Rule $other)
+    public function description_merge( $other )
     {
         $description = $this->description();
         $other_description = $other->description();

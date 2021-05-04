@@ -6,7 +6,7 @@ GENERAL:
 * introduce again travis for automatic unit testing
 
 UTILS:
-
+address-merger | merge TAG before duplicate object is deleted
 
 BUGFIX:
 

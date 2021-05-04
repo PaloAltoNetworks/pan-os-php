@@ -83,30 +83,30 @@ Utility script 'rules-edit.php' is a swiss knife to edit rules and takes advanta
 
 Do you want to enable log at start for rule going to DMZ zone and that has only object group 'Webfarms' as a destination ?
 
-    rules-edit.php in=api://fw1.mycompany.com actions=logStart-Enable 'filter=(to has dmz) and (dst has.only Webfarms)'
+    pa_rule-edit in=api://fw1.mycompany.com actions=logStart-Enable 'filter=(to has dmz) and (dst has.only Webfarms)'
 
 You are not sure about your filter and want to see rules before making changes ? Use action 'display' :
 
-    rules-edit.php  in=api://fw1.mycompany.com actions=display 'filter=(to has dmz) and (dst has.only Webfarms)'
+    pa_rule-edit  in=api://fw1.mycompany.com actions=display 'filter=(to has dmz) and (dst has.only Webfarms)'
 
 Change all rules using Application + Any service to application default ?
 
-    rules-edit.php in=api://fw1.mycompany.com actions=service-Set-AppDefault 'filter=!(app is.any) and (service is.any)'
+    pa_rule-edit in=api://fw1.mycompany.com actions=service-Set-AppDefault 'filter=!(app is.any) and (service is.any)'
 
 Move post-SecurityRules with source zone 'dmz' or source object 'Admin-networks' to pre-Security rule ?
 
-    rules-edit.php  in=api://panorama.mycompany.com actions=invertPreAndPost 'filter=((from has dmz) or (source has Admin-networks) and (rule is.postrule))'
+    pa_rule-edit  in=api://panorama.mycompany.com actions=invertPreAndPost 'filter=((from has dmz) or (source has Admin-networks) and (rule is.postrule))'
 
 Want to know what actions are supported ?
 
-    rules-edit.php  listActions
-    rules-edit.php listFilters
+    pa_rule-edit  listActions
+    pa_rule-edit listFilters
 
 **UTIL plugin** 
 
 The UTIL scripts rules-edit/address-edit/service-edit/tag-edit can be easily and flexible extend by writing your own plugin:
 
-- rules-edit actions plugin example:
+- pa_rule-edit actions plugin example:
 ```php
     RuleCallContext::$supportedActions[] = Array(
         'name' => 'schedule_remove_update_desc',
@@ -133,7 +133,7 @@ The UTIL scripts rules-edit/address-edit/service-edit/tag-edit can be easily and
     );
 ```
 
-- rules-edit filter plugin example:
+- pa_rule-edit filter plugin example:
 ```php
 RQuery::$defaultFilters['rule']['description']['operators']['is.geq'] = Array(
     'Function' => function(RuleRQueryContext $context )
@@ -150,6 +150,14 @@ RQuery::$defaultFilters['rule']['description']['operators']['is.geq'] = Array(
 - plugin usage from above for rule:
 
     rules-edit.php  in=api://panorama.mycompany.com loadplugin=your_plugin_file.php ['actions=YOUR_PLUGIN_ACTION_NAME'] ['filter=(YOUR_PLUGIN_FILTER_NAME)']
+
+**UTIL usage via API** 
+- PAN-OS API-KEYs are stored automatically at file: '.panconfkeystore' in your Systems User folder at the first time using a script with connection type API
+- or you can manage your API-KEY store with UTIL script pa_key-manager:
+```php
+    pa_key-manager add=MGMT-IP
+    pa_key-manager delete=MGMT-IP
+```
 
 
 **Available UTIL scripts, provided by Alias:**
@@ -169,7 +177,6 @@ RQuery::$defaultFilters['rule']['description']['operators']['is.geq'] = Array(
 - pa_download-predefined
 - pa_key-manager
 - pa_override-finder
-- pa_panorama-2-fawkes
 - pa_panos-xml-issue-detector
 - pa_register-ip-mgr
 - pa_rule-edit
