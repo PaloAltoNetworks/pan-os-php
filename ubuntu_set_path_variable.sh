@@ -10,19 +10,16 @@ echo "START \"update UBUNTU\"" \
 && echo "\"install tzdata\"" \
 && apt-get -y install tzdata \
 && echo "" \
-&& apt install -y git php vim php-curl php-dom php-mbstring python3.7 python3-pip iputils-ping traceroute \
+&& apt install -y git php${PHP_VAR} vim php${PHP_VAR}-curl php${PHP_VAR}-dom php${PHP_VAR}-mbstring \
 && echo "" \
-&& echo "" \
-&& apt install -y perl \
-&& cpan install List::MoreUtils \
 && echo "" \
 && echo "" \
 && php -v \
 && "mkdir /tools ; cd /tools" \
-&& "extract everything to /tools and rename it to Expedition-Converter" \
+&& "extract everything to /tools and rename it to pan-os-php" \
 && echo "" \
 && "INSTALLATION via GIT" \
-&& "git clone https://spring.paloaltonetworks.com/swaschkut/Expedition-Converter.git" \
+&& "git clone https://github.com/PaloAltoNetworks/pan-os-php.git" \
 && echo "" \
 && echo "" \
 && "cd ${FOLDER_PATH}" \
@@ -35,7 +32,7 @@ echo "START \"update UBUNTU\"" \
 && chmod -R 777 ${FOLDER_PATH} \
 && echo "" \
 && echo "check if everything is successfully installed" \
-&& php -r "require('lib/pan_php_framework.php');print \"Expedition-Converter LIBRARY - OK INSTALL SUCCESSFUL\n\";" \
+&& php -r "require('lib/pan_php_framework.php');print \"PAN-OS-PHP LIBRARY - OK INSTALL SUCCESSFUL\n\";" \
 && echo "" \
 && echo "" \
 && echo "" \
