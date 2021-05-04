@@ -605,18 +605,22 @@ class Address
 
                     if( $apiMode )
                         $newTag->API_sync();
+                }
+                if( $tag !== $newTag )
+                {
                     $tag->replaceMeGlobally($newTag);
+                    if( $apiMode )
+                    {
+                        $pickedObject->tags->API_addTag( $newTag );
+                        $tag->owner->API_removeTag($tag);
+                    }
+                    else
+                    {
+                        $pickedObject->tags->addTag( $newTag );
+                        $tag->owner->removeTag($tag);
+                    }
                 }
-                if( $apiMode )
-                {
-                    $pickedObject->tags->API_addTag( $newTag );
-                    $tag->owner->API_removeTag($tag);
-                }
-                else
-                {
-                    $pickedObject->tags->addTag( $newTag );
-                    $tag->owner->removeTag($tag);
-                }
+
             }
         }
 
