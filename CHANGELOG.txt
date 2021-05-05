@@ -9,7 +9,7 @@ UTILS:
 address-merger | merge TAG before duplicate object is deleted
 
 BUGFIX:
-
+PanoramaConf | fix for TagStore to set parentCentralStore at time of reading DG hierarchy - example usage pa_rule-edit actions=tag-add:TAGNAME (if TAGNAME is defined NOT at shared but at parent DG)
 
 
 2.0.0 (20210426)
