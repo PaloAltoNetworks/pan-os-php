@@ -317,6 +317,7 @@ class FawkesConf
                     $ldv->parentContainer = $parentContainer;
                     $ldv->addressStore->parentCentralStore = $parentContainer->addressStore;
                     $ldv->serviceStore->parentCentralStore = $parentContainer->serviceStore;
+                    $ldv->tagStore->parentCentralStore = $parentContainer->tagStore;
                 }
             }
             

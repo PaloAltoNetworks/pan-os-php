@@ -903,6 +903,7 @@ class PanoramaConf
                         $ldv->parentDeviceGroup = $parentDG;
                         $ldv->addressStore->parentCentralStore = $parentDG->addressStore;
                         $ldv->serviceStore->parentCentralStore = $parentDG->serviceStore;
+                        $ldv->tagStore->parentCentralStore = $parentDG->tagStore;
                     }
                 }
 
