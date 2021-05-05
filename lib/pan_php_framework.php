@@ -142,6 +142,7 @@ require_once $basedir . '/misc-classes/RuleRQueryContext.php';
 require_once $basedir . '/misc-classes/ServiceRQueryContext.php';
 require_once $basedir . '/misc-classes/TagRQueryContext.php';
 require_once $basedir . '/misc-classes/ZoneRQueryContext.php';
+require_once $basedir . '/misc-classes/ScheduleRQueryContext.php';
 
 require_once $basedir . '/misc-classes/InterfaceRQueryContext.php';
 require_once $basedir . '/misc-classes/RoutingRQueryContext.php';

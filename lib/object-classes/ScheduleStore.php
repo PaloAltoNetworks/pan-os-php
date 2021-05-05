@@ -8,10 +8,10 @@
  */
 
 /**
- * Class TagStore
- * @property Tag[] $o
+ * Class ScheduleStore
+ * @property Schedule[] $o
  * @property VirtualSystem|DeviceGroup|PanoramaConf|PANConf|Container|DeviceCloud $owner
- * @method Tag[] getAll()
+ * @method Schedule[] getAll()
  */
 class ScheduleStore extends ObjStore
 {
@@ -29,10 +29,10 @@ class ScheduleStore extends ObjStore
         $this->o = array();
 
         if( isset($owner->parentDeviceGroup) && $owner->parentDeviceGroup !== null )
-            $this->parentCentralStore = $owner->parentDeviceGroup->tagStore;
+            $this->parentCentralStore = $owner->parentDeviceGroup->scheduleStore;
         elseif( isset($owner->parentContainer) && $owner->parentContainer !== null )
         {
-            $this->parentCentralStore = $owner->parentContainer->tagStore;
+            $this->parentCentralStore = $owner->parentContainer->scheduleStore;
         }
         else
             $this->findParentCentralStore();
@@ -58,15 +58,15 @@ class ScheduleStore extends ObjStore
         return null;
     }
 
-    public function removeAllTags()
+    public function removeAllSchedules()
     {
         $this->removeAll();
         $this->rewriteXML();
     }
 
     /**
-     * add a Tag to this store. Use at your own risk.
-     * @param Tag $Obj
+     * add a Schedule to this store. Use at your own risk.
+     * @param Schedule $Obj
      * @param bool
      * @return bool
      */
@@ -77,7 +77,7 @@ class ScheduleStore extends ObjStore
         if( $ret && $rewriteXML )
         {
             if( $this->xmlroot === null )
-                $this->xmlroot = DH::findFirstElementOrCreate('tag', $this->owner->xmlroot);
+                $this->xmlroot = DH::findFirstElementOrCreate('schedule', $this->owner->xmlroot);
 
             $this->xmlroot->appendChild($Obj->xmlroot);
         }
@@ -91,7 +91,7 @@ class ScheduleStore extends ObjStore
      * @param integer|string $startCount
      * @return string
      */
-    public function findAvailableTagName($base, $suffix, $startCount = '')
+    public function findAvailableScheduleName($base, $suffix, $startCount = '')
     {
         $maxl = 31;
         $basel = strlen($base);
@@ -121,7 +121,7 @@ class ScheduleStore extends ObjStore
 
 
     /**
-     * return tags in this store
+     * return schedules in this store
      * @return Schedule[]
      */
     public function schedules()
@@ -132,14 +132,14 @@ class ScheduleStore extends ObjStore
     function createSchedule($name, $ref = null)
     {
         if( $this->find($name, null, FALSE) !== null )
-            derr('Tag named "' . $name . '" already exists, cannot create');
+            derr('Schedule named "' . $name . '" already exists, cannot create');
 
         if( $this->xmlroot === null )
         {
             if( $this->owner->isDeviceGroup() || $this->owner->isVirtualSystem() || $this->owner->isContainer() || $this->owner->isDeviceCloud() )
-                $this->xmlroot = DH::findFirstElementOrCreate('tag', $this->owner->xmlroot);
+                $this->xmlroot = DH::findFirstElementOrCreate('schedule', $this->owner->xmlroot);
             else
-                $this->xmlroot = DH::findFirstElementOrCreate('tag', $this->owner->sharedroot);
+                $this->xmlroot = DH::findFirstElementOrCreate('schedule', $this->owner->sharedroot);
         }
 
         $newSchedule = new Schedule($name, $this);
@@ -164,12 +164,12 @@ class ScheduleStore extends ObjStore
         if( $f !== null )
             return $f;
 
-        return $this->createTag($name, $ref);
+        return $this->createSchedule($name, $ref);
     }
 
     function API_createSchedule($name, $ref = null)
     {
-        $newSchedule = $this->createTag($name, $ref);
+        $newSchedule = $this->createSchedule($name, $ref);
 
         if( !$newSchedule->isTmp() )
         {
@@ -204,14 +204,14 @@ class ScheduleStore extends ObjStore
      * @param Schedule $schedule
      * @return bool
      */
-    public function API_removeTag(Schedule $schedule)
+    public function API_removeSchedule(Schedule $schedule)
     {
         $xpath = null;
 
         if( !$schedule->isTmp() )
             $xpath = $schedule->getXPath();
 
-        $ret = $this->removeTag($schedule);
+        $ret = $this->removeSchedule($schedule);
 
         if( $ret && !$schedule->isTmp() )
         {
@@ -233,7 +233,7 @@ class ScheduleStore extends ObjStore
         else
             derr('unsupported');
 
-        $str = $str . '/tag';
+        $str = $str . '/schedule';
 
         return $str;
     }
@@ -252,7 +252,7 @@ class ScheduleStore extends ObjStore
         return $str;
     }
 
-    public function &getTagStoreXPath()
+    public function &getScheduleStoreXPath()
     {
         $path = $this->getBaseXPath() . '/schedule';
         return $path;
@@ -297,7 +297,7 @@ class ScheduleStore extends ObjStore
         {
             $ref = $cur->owner;
             if( isset($ref->scheduleStore) &&
-                $ref->tagStore !== null )
+                $ref->scheduleStore !== null )
             {
                 $this->parentCentralStore = $ref->scheduleStore;
                 //print $this->toString()." : found a parent central store: ".$parentCentralStore->toString()."\n";
@@ -327,7 +327,7 @@ class ScheduleStore extends ObjStore
 
 
             if( isset($current->owner->owner) && $current->owner->owner !== null && !$current->owner->owner->isFawkes() )
-                $current = $current->owner->owner->tagStore;
+                $current = $current->owner->owner->scheduleStore;
             else
                 break;
         }

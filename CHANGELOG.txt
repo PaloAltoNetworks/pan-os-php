@@ -7,6 +7,7 @@ GENERAL:
 
 UTILS:
 address-merger | merge TAG before duplicate object is deleted
+schedule-edit | introduce new util tool
 
 BUGFIX:
 PanoramaConf | fix for TagStore to set parentCentralStore at time of reading DG hierarchy - example usage pa_rule-edit actions=tag-add:TAGNAME (if TAGNAME is defined NOT at shared but at parent DG)

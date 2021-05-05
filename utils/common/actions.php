@@ -57,3 +57,7 @@ require_once("SecurityProfileCallContext.php");
 require_once "actions-securityprofile.php";
 SecurityProfileCallContext::prepareSupportedActions();
 
+
+require_once("ScheduleCallContext.php");
+require_once "actions-schedule.php";
+ScheduleCallContext::prepareSupportedActions();

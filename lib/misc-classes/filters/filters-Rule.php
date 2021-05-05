@@ -3051,9 +3051,9 @@ RQuery::$defaultFilters['rule']['schedule']['operators']['is'] = array(
 
         $schedule = $rule->schedule();
 
-        if( $schedule !== null )
+        if( is_object( $schedule ) )
         {
-            if( $schedule == $context->value )
+            if( $schedule->name() == $context->value )
                 return TRUE;
         }
 
@@ -3070,7 +3070,7 @@ RQuery::$defaultFilters['rule']['schedule']['operators']['is.set'] = array(
 
         $schedule = $rule->schedule();
 
-        if( $schedule !== null )
+        if( is_object( $schedule ) )
         {
             return TRUE;
         }
@@ -3088,9 +3088,9 @@ RQuery::$defaultFilters['rule']['schedule']['operators']['has.regex'] = array(
 
         $schedule = $rule->schedule();
 
-        if( $schedule !== null )
+        if( is_object( $schedule ) )
         {
-            $matching = preg_match($context->value, $schedule);
+            $matching = preg_match($context->value, $schedule->name() );
             if( $matching === FALSE )
                 derr("regular expression error on '{$context->value}'");
             if( $matching === 1 )

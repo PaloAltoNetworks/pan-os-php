@@ -16,6 +16,12 @@ class Schedule
     /** @var TagStore|null */
     public $owner = null;
 
+    protected $_recurring = null;
+    //possible recurring setting daily/weekly/non-recurring
+
+    //daily/non-recurring could have multiple <member> XML tags
+    //weekly could have different day entried
+
 //Todo:
 //- read schedule type
 //- read members
@@ -71,11 +77,6 @@ class Schedule
         if( $fromXmlTemplate )
         {
             $doc = new DOMDocument();
-            if( $owner->owner->version < 60 )
-                derr('tag stores were introduced in v6.0');
-            else
-                $doc->loadXML(self::$templatexml, XML_PARSE_BIG_LINES);
-
             $node = DH::findFirstElement('entry', $doc);
 
             $rootDoc = $owner->xmlroot->ownerDocument;
@@ -122,7 +123,7 @@ class Schedule
      */
     public function &getXPath()
     {
-        $str = $this->owner->getTagStoreXPath() . "/entry[@name='" . $this->name . "']";
+        $str = $this->owner->getScheduleStoreXPath() . "/entry[@name='" . $this->name . "']";
 
         return $str;
     }

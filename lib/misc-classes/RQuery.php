@@ -65,11 +65,6 @@ class RQuery
 
         $this->objectType = $objectType;
 
-        if( $this->objectType != "rule" && $this->objectType != "address" && $this->objectType != "service" && $this->objectType != "tag" && $this->objectType != "zone" && $this->objectType != "securityprofile" )
-        {
-            derr("unsupported object type '$objectType'");
-        }
-
         if( $this->objectType == 'service' )
             $this->contextObject = new ServiceRQueryContext($this);
         elseif( $this->objectType == 'address' )
@@ -82,6 +77,10 @@ class RQuery
             $this->contextObject = new ZoneRQueryContext($this);
         elseif( $this->objectType == 'securityprofile' )
             $this->contextObject = new SecurityProfileRQueryContext($this);
+        elseif( $this->objectType == 'schedule' )
+            $this->contextObject = new ScheduleRQueryContext($this);
+        else
+            derr("unsupported object type '$objectType'");
     }
 
     /**
@@ -657,5 +656,6 @@ require_once 'filters/filters-Interface.php';
 require_once 'filters/filters-Routing.php';
 require_once 'filters/filters-VirtualWire.php';
 require_once 'filters/filters-SecurityProfile.php';
+require_once 'filters/filters-Schedule.php';
 
 

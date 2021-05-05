@@ -318,6 +318,7 @@ class FawkesConf
                     $ldv->addressStore->parentCentralStore = $parentContainer->addressStore;
                     $ldv->serviceStore->parentCentralStore = $parentContainer->serviceStore;
                     $ldv->tagStore->parentCentralStore = $parentContainer->tagStore;
+                    $ldv->scheduleStore->parentCentralStore = $parentContainer->scheduleStore;
                     //Todo: swaschkut 20210505 - check if other Stores must be added
                     //- appStore;scheduleStore/securityProfileGroupStore/all kind of SecurityProfile
                 }
@@ -821,6 +822,7 @@ class FawkesConf
             $newDG->addressStore->parentCentralStore = $parentContainer->addressStore;
             $newDG->serviceStore->parentCentralStore = $parentContainer->serviceStore;
             $newDG->tagStore->parentCentralStore = $parentContainer->tagStore;
+            $newDG->scheduleStore->parentCentralStore = $parentContainer->scheduleStore;
             //Todo: swaschkut 20210505 - check if other Stores must be added
             //- appStore;scheduleStore/securityProfileGroupStore/all kind of SecurityProfile
         }
@@ -893,6 +895,7 @@ class FawkesConf
             $newDG->addressStore->parentCentralStore = $parentContainer->addressStore;
             $newDG->serviceStore->parentCentralStore = $parentContainer->serviceStore;
             $newDG->tagStore->parentCentralStore = $parentContainer->tagStore;
+            $newDG->scheduleStore->parentCentralStore = $parentContainer->scheduleStore;
             //Todo: swaschkut 20210505 - check if other Stores must be added
             //- appStore;scheduleStore/securityProfileGroupStore/all kind of SecurityProfile
         }
