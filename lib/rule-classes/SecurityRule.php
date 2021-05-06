@@ -223,7 +223,7 @@ class SecurityRule extends RuleWithUserID
             }
             elseif( $node->nodeName == 'schedule' )
             {
-                $this->schedule = $node->textContent;
+                #$this->schedule = $node->textContent;
 
                 $f = $this->owner->owner->scheduleStore->findOrCreate($node->textContent, $this);
                 if( $f != null )
@@ -231,7 +231,7 @@ class SecurityRule extends RuleWithUserID
                     $f->addReference( $this );
                 }
 
-
+                $this->schedule = $f;
             }
             elseif( $node->nodeName == 'qos' )
             {
@@ -1028,8 +1028,8 @@ class SecurityRule extends RuleWithUserID
         if( $this->dsri )
             print $padding . "  DSRI: disabled\n";
 
-        if( strlen($this->schedule) > 0 )
-            print $padding . "  Schedule:  " . $this->schedule . "\n";
+        if( $this->schedule !== null )
+            print $padding . "  Schedule:  " . $this->schedule->name() . "\n";
 
         print "\n";
     }
@@ -1594,6 +1594,9 @@ class SecurityRule extends RuleWithUserID
             if( $this->schedule === null )
                 return FALSE;
 
+            if( is_object($this->schedule) )
+                $this->schedule->removeReference($this);
+
             $this->schedule = null;
             $tmpRoot = DH::findFirstElement('schedule', $this->xmlroot);
 
@@ -1601,15 +1604,27 @@ class SecurityRule extends RuleWithUserID
                 return TRUE;
 
             $this->xmlroot->removeChild($tmpRoot);
+
+
         }
         else
         {
             $newSchedule = utf8_encode($newSchedule);
-            if( $this->schedule == $newSchedule )
+            if( is_object( $this->schedule ) && $this->schedule->name() == $newSchedule )
                 return FALSE;
-            $this->schedule = $newSchedule;
+
+            if( is_object($this->schedule) )
+                $this->schedule->removeReference($this);
+
+            $f = $this->owner->owner->scheduleStore->findOrCreate($newSchedule, $this);
+            if( $f != null )
+                $f->addReference( $this );
+
+            $this->schedule = $f;
+
+            #$this->schedule = $newSchedule;
             $tmpRoot = DH::findFirstElementOrCreate('schedule', $this->xmlroot);
-            DH::setDomNodeText($tmpRoot, $this->schedule);
+            DH::setDomNodeText($tmpRoot, $this->schedule->name());
         }
 
         return TRUE;
@@ -1626,10 +1641,10 @@ class SecurityRule extends RuleWithUserID
             $xpath = $this->getXPath() . '/schedule';
             $con = findConnectorOrDie($this);
 
-            if( strlen($this->schedule) < 1 )
+            if( !is_object( $this->schedule )  )
                 $con->sendDeleteRequest($xpath);
             else
-                $con->sendSetRequest($this->getXPath(), '<schedule>' . htmlspecialchars($this->schedule) . '</schedule>');
+                $con->sendSetRequest($this->getXPath(), '<schedule>' . htmlspecialchars($this->schedule->name()) . '</schedule>');
 
         }
 

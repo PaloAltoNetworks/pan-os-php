@@ -588,6 +588,45 @@ class Address
 
     }
 
+    public function merge_tag_description_to( $pickedObject, $apiMode = false )
+    {
+        foreach( $this->tags->getAll() as $tag )
+        {
+            echo "     - merge TAG: '{$tag->name()}' before deleting...\n";
+            /** @var  Tag $tag*/
+            if( !$pickedObject->tags->hasTag( $tag ) )
+            {
+                $newTag = $pickedObject->owner->owner->tagStore->find( $tag->name() );
+                if( $newTag === null )
+                {
+                    $newTag = $pickedObject->owner->owner->tagStore->createTag( $tag->name() );
+                    $newTag->setColor( $tag->getColor() );
+                    $newTag->addComments( $tag->getComments() );
+
+                    if( $apiMode )
+                        $newTag->API_sync();
+                }
+                if( $tag !== $newTag )
+                {
+                    $tag->replaceMeGlobally($newTag);
+                    if( $apiMode )
+                    {
+                        $pickedObject->tags->API_addTag( $newTag );
+                        $tag->owner->API_removeTag($tag);
+                    }
+                    else
+                    {
+                        $pickedObject->tags->addTag( $newTag );
+                        $tag->owner->removeTag($tag);
+                    }
+                }
+
+            }
+        }
+
+        $pickedObject->description_merge( $this );
+    }
+
     static protected $templatexml = '<entry name="**temporarynamechangeme**"><ip-netmask>tempvaluechangeme</ip-netmask></entry>';
 
 }

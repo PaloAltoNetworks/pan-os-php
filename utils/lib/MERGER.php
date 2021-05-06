@@ -783,9 +783,11 @@ class MERGER extends UTIL
                                 if( $this->dupAlg == 'identical' )
                                     if( $pickedObject->name() != $ancestor->name() )
                                     {
-                                        echo "    - SKIP: object name '{$object->name()}' [with value '{$object->value()}'] is not IDENTICAL to object name from upperlevel '{$pickedObject->name()}' [with value '{$pickedObject->value()}'] \n";
+                                        echo "    - SKIP: object name '{$pickedObject->name()}' [with value '{$pickedObject->value()}'] is not IDENTICAL to object name from upperlevel '{$ancestor->name()}' [with value '{$ancestor->value()}'] \n";
                                         continue;
                                     }
+
+                                $object->merge_tag_description_to( $ancestor, $this->apiMode );
 
                                 echo "    - object '{$object->name()}' merged with its ancestor, deleting this one... ";
                                 $this->deletedObjects[$index]['kept'] = $pickedObject->name();
@@ -794,6 +796,7 @@ class MERGER extends UTIL
                                 else
                                     $this->deletedObjects[$index]['removed'] .= "|" . $object->name();
                                 $object->replaceMeGlobally($ancestor);
+
                                 if( $this->apiMode )
                                     $object->owner->API_remove($object);
                                 else
@@ -845,6 +848,8 @@ class MERGER extends UTIL
                         echo "    - replacing '{$object->_PANC_shortName()}' ...\n";
                         $object->__replaceWhereIamUsed($this->apiMode, $pickedObject, TRUE, 5);
 
+                        $object->merge_tag_description_to( $pickedObject, $this->apiMode );
+
                         echo "    - deleting '{$object->_PANC_shortName()}'\n";
                         $this->deletedObjects[$index]['kept'] = $pickedObject->name();
                         if( $this->deletedObjects[$index]['removed'] == "" )
@@ -852,13 +857,9 @@ class MERGER extends UTIL
                         else
                             $this->deletedObjects[$index]['removed'] .= "|" . $object->name();
                         if( $this->apiMode )
-                        {
                             $object->owner->API_remove($object);
-                        }
                         else
-                        {
                             $object->owner->remove($object);
-                        }
 
                         $countRemoved++;
 

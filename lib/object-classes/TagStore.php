@@ -16,7 +16,7 @@
 class TagStore extends ObjStore
 {
     /** @var null|TagStore */
-    protected $parentCentralStore = null;
+    public $parentCentralStore = null;
 
     public static $childn = 'Tag';
 

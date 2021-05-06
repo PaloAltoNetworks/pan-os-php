@@ -208,6 +208,8 @@ class UTIL
             $tmp_array = &VsysCallContext::$supportedActions;
         elseif( $this->utilType == 'securityprofile' )
             $tmp_array = &SecurityProfileCallContext::$supportedActions;
+        elseif( $this->utilType == 'schedule' )
+            $tmp_array = &ScheduleCallContext::$supportedActions;
 
         return $tmp_array;
     }
@@ -289,6 +291,8 @@ class UTIL
                 VsysCallContext::prepareSupportedActions();
             elseif( $this->utilType == 'securityprofile' )
                 SecurityProfileCallContext::prepareSupportedActions();
+            elseif( $this->utilType == 'schedule' )
+                ScheduleCallContext::prepareSupportedActions();
 
             PH::print_stdout( "OK!" );
         }
@@ -747,6 +751,8 @@ class UTIL
                 $context = new VsysCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries);
             elseif( $this->utilType == 'securityprofile' )
                 $context = new SecurityProfileCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries);
+            elseif( $this->utilType == 'schedule' )
+                $context = new ScheduleCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries);
 
             $context->baseObject = $this->pan;
             if( isset($this->configInput['type']) && $this->configInput['type'] == 'api' )
@@ -875,6 +881,8 @@ class UTIL
                         $this->objectsToProcess[] = array('store' => $this->pan->tagStore, 'objects' => $this->pan->tagStore->getall());
                     elseif( $this->utilType == 'vsys' )
                         $this->objectsToProcess[] = array('store' => $this->pan, 'objects' => $this->pan->getVirtualSystems());
+                    elseif( $this->utilType == 'schedule' )
+                        $this->objectsToProcess[] = array('store' => $this->pan->scheduleStore, 'objects' => $this->pan->scheduleStore->getall());
 
                     $locationFound = TRUE;
                 }
@@ -898,6 +906,8 @@ class UTIL
                         #$this->objectsToProcess[] = Array('store' => $sub->ruleStore, 'objects' => $sub->ruleStore->getall());
                         elseif( $this->utilType == 'tag' )
                             $this->objectsToProcess[] = array('store' => $sub->tagStore, 'objects' => $sub->tagStore->getall());
+                        elseif( $this->utilType == 'schedule' )
+                            $this->objectsToProcess[] = array('store' => $sub->scheduleStore, 'objects' => $sub->scheduleStore->getall());
                         #elseif( $this->utilType == 'vsys' )
                         #    $this->objectsToProcess[] = Array('store' => $sub->owner, 'objects' => $sub);
 
@@ -926,6 +936,8 @@ class UTIL
                     #$this->objectsToProcess[] = Array('store' => $this->pan->ruleStore, 'objects' => $this->pan->ruleStore->getall());
                     elseif( $this->utilType == 'tag' )
                         $this->objectsToProcess[] = array('store' => $this->pan->tagStore, 'objects' => $this->pan->tagStore->getall());
+                    elseif( $this->utilType == 'schedule' )
+                        $this->objectsToProcess[] = array('store' => $this->pan->scheduleStore, 'objects' => $this->pan->scheduleStore->getall());
                     elseif( $this->utilType == 'zone' )
                         $this->objectsToProcess[] = array('store' => $this->pan->zoneStore, 'objects' => $this->pan->zoneStore->getall());
 
@@ -958,7 +970,8 @@ class UTIL
                         #$this->objectsToProcess[] = Array('store' => $sub->ruleStore, 'objects' => $sub->ruleStore->getall());
                         elseif( $this->utilType == 'tag' )
                             $this->objectsToProcess[] = array('store' => $sub->tagStore, 'objects' => $sub->tagStore->getall());
-
+                        elseif( $this->utilType == 'schedule' )
+                            $this->objectsToProcess[] = array('store' => $sub->scheduleStore, 'objects' => $sub->scheduleStore->getall());
                         elseif( $this->utilType == 'zone' )
                             $this->objectsToProcess[] = array('store' => $sub->zoneStore, 'objects' => $sub->zoneStore->getall());
 

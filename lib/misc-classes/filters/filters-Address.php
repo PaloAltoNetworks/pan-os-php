@@ -345,6 +345,20 @@ RQuery::$defaultFilters['address']['name']['operators']['regex'] = array(
             $value = str_replace('$$value$$', $replace, $value);
 
         }
+        if( strpos($value, '$$ipv4$$') !== FALSE )
+        {
+            $replace = '%%%INVALID\.FOR\.THIS\.TYPE\.OF\.OBJECT%%%';
+
+            $replace = '\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}';
+            $value = str_replace('$$ipv4$$', $replace, $value);
+        }
+        if( strpos($value, '$$ipv6$$') !== FALSE )
+        {
+            $replace = '%%%INVALID\.FOR\.THIS\.TYPE\.OF\.OBJECT%%%';
+
+            $replace = '[0-9a-f]{1,4}_([0-9a-f]{0,4}_){1,6}[0-9a-f]{1,4}';
+            $value = str_replace('$$ipv6$$', $replace, $value);
+        }
         if( strpos($value, '$$value.no-netmask$$') !== FALSE )
         {
             $replace = '%%%INVALID\.FOR\.THIS\.TYPE\.OF\.OBJECT%%%';

@@ -537,8 +537,9 @@ class AddressGroup
 
             return TRUE;
         }
-        else
-            mwarning("object is not part of this group: " . $old->toString());
+        elseif( !$this->isDynamic() )
+                mwarning("object is not part of this group: " . $old->toString());
+
 
 
         return FALSE;

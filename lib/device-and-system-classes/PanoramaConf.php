@@ -903,6 +903,10 @@ class PanoramaConf
                         $ldv->parentDeviceGroup = $parentDG;
                         $ldv->addressStore->parentCentralStore = $parentDG->addressStore;
                         $ldv->serviceStore->parentCentralStore = $parentDG->serviceStore;
+                        $ldv->tagStore->parentCentralStore = $parentDG->tagStore;
+                        $ldv->scheduleStore->parentCentralStore = $parentDG->scheduleStore;
+                        //Todo: swaschkut 20210505 - check if other Stores must be added
+                        //- appStore;scheduleStore/securityProfileGroupStore/all kind of SecurityProfile
                     }
                 }
 
@@ -1349,7 +1353,7 @@ class PanoramaConf
      * @param string $name
      * @return DeviceGroup
      **/
-    public function createDeviceGroup($name)
+    public function createDeviceGroup($name, $parentDGname = null )
     {
         $newDG = new DeviceGroup($this);
         $newDG->load_from_templateXml();
@@ -1379,6 +1383,24 @@ class PanoramaConf
                 $newXmlNode = DH::importXmlStringOrDie($this->xmldoc, "<entry name=\"{$name}\"><dg-id>{$dgMaxID}</dg-id></entry>");
 
             $dgMetaDataNode->appendChild($newXmlNode);
+        }
+
+        if( $parentDGname !== null )
+        {
+            $parentDG = $this->findDeviceGroup( $parentDGname );
+            if( $parentDG === null )
+                mwarning("DeviceGroup '$name' has DeviceGroup '{$parentDGname}' listed as parent but it cannot be found in XML");
+            else
+            {
+                $parentDG->_childDeviceGroups[$name] = $newDG;
+                $newDG->parentDeviceGroup = $parentDG;
+                $newDG->addressStore->parentCentralStore = $parentDG->addressStore;
+                $newDG->serviceStore->parentCentralStore = $parentDG->serviceStore;
+                $newDG->tagStore->parentCentralStore = $parentDG->tagStore;
+                $newDG->scheduleStore->parentCentralStore = $parentDG->scheduleStore;
+                //Todo: swaschkut 20210505 - check if other Stores must be added
+                //- appStore;scheduleStore/securityProfileGroupStore/all kind of SecurityProfile
+            }
         }
 
         return $newDG;

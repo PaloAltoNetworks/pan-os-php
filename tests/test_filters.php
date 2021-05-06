@@ -101,8 +101,10 @@ foreach( RQuery::$defaultFilters as $type => &$filtersByField )
             elseif( $type == 'zone' )
             {
                 $util = '../utils/zone-edit.php';
-                #echo "******* SKIPPED for now *******\n";
-                #continue;
+            }
+            elseif( $type == 'schedule' )
+            {
+                $util = '../utils/schedule-edit.php';
             }
             elseif( $type == 'securityprofile' )
             {

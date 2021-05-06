@@ -290,6 +290,9 @@ class DeviceCloud
                 $this->parentContainer = $parentContainer;
                 $this->addressStore->parentCentralStore = $parentContainer->addressStore;
                 $this->serviceStore->parentCentralStore = $parentContainer->serviceStore;
+                $this->tagStore->parentCentralStore = $parentContainer->tagStore;
+                //Todo: swaschkut 20210505 - check if other Stores must be added
+                //- appStore;scheduleStore/securityProfileGroupStore/all kind of SecurityProfile
             }
         }
 

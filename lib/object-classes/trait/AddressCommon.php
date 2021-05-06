@@ -474,6 +474,9 @@ trait AddressCommon
 
         foreach( $this->refrules as $objectRef )
         {
+            if(  (get_class($objectRef) == "AddressGroup") && $objectRef->isDynamic() )
+                continue;
+
             if( $displayOutput )
                 echo $outputPadding . "- replacing in {$objectRef->toString()}\n";
             if( $apiMode )

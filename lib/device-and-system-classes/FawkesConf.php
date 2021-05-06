@@ -317,6 +317,10 @@ class FawkesConf
                     $ldv->parentContainer = $parentContainer;
                     $ldv->addressStore->parentCentralStore = $parentContainer->addressStore;
                     $ldv->serviceStore->parentCentralStore = $parentContainer->serviceStore;
+                    $ldv->tagStore->parentCentralStore = $parentContainer->tagStore;
+                    $ldv->scheduleStore->parentCentralStore = $parentContainer->scheduleStore;
+                    //Todo: swaschkut 20210505 - check if other Stores must be added
+                    //- appStore;scheduleStore/securityProfileGroupStore/all kind of SecurityProfile
                 }
             }
             
@@ -773,14 +777,14 @@ class FawkesConf
      * @param string $name
      * @return Container
      **/
-    public function createContainer($name, $parentContainer)
+    public function createContainer($name, $parentContainerName)
     {
         $newDG = new Container($this);
         $newDG->load_from_templateContainerXml();
         $newDG->setName($name);
 
         $parentNode = DH::findFirstElementOrCreate('parent', $newDG->xmlroot );
-        DH::setDomNodeText($parentNode, $parentContainer );
+        DH::setDomNodeText($parentNode, $parentContainerName );
 
         $this->containers[] = $newDG;
 
@@ -808,15 +812,19 @@ class FawkesConf
             $dgMetaDataNode->appendChild($newXmlNode);
         }
 
-        $parentContainer = $this->findContainer( $parentContainer );
+        $parentContainer = $this->findContainer( $parentContainerName );
         if( $parentContainer === null )
-            mwarning("Container '$name' has Container '{$parentContainer}' listed as parent but it cannot be found in XML");
+            mwarning("Container '$name' has Container '{$parentContainerName}' listed as parent but it cannot be found in XML");
         else
         {
             $parentContainer->_childContainers[$name] = $newDG;
             $newDG->parentContainer = $parentContainer;
             $newDG->addressStore->parentCentralStore = $parentContainer->addressStore;
             $newDG->serviceStore->parentCentralStore = $parentContainer->serviceStore;
+            $newDG->tagStore->parentCentralStore = $parentContainer->tagStore;
+            $newDG->scheduleStore->parentCentralStore = $parentContainer->scheduleStore;
+            //Todo: swaschkut 20210505 - check if other Stores must be added
+            //- appStore;scheduleStore/securityProfileGroupStore/all kind of SecurityProfile
         }
 
         return $newDG;
@@ -886,6 +894,10 @@ class FawkesConf
             $newDG->parentContainer = $parentContainer;
             $newDG->addressStore->parentCentralStore = $parentContainer->addressStore;
             $newDG->serviceStore->parentCentralStore = $parentContainer->serviceStore;
+            $newDG->tagStore->parentCentralStore = $parentContainer->tagStore;
+            $newDG->scheduleStore->parentCentralStore = $parentContainer->scheduleStore;
+            //Todo: swaschkut 20210505 - check if other Stores must be added
+            //- appStore;scheduleStore/securityProfileGroupStore/all kind of SecurityProfile
         }
 
         return $newDG;
