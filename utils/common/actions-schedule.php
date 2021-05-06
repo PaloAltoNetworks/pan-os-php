@@ -321,6 +321,46 @@ ScheduleCallContext::$supportedActions['display'] = array(
 
         PH::print_stdout( $tmp_txt );
 
+        $tmp_array = $object->getRecurring();
+
+        if( isset($tmp_array['daily']) )
+        {
+            PH::print_stdout( $context->padding . "  daily:");
+            $string = "";
+            foreach( $tmp_array['daily'] as $entry )
+            {
+                PH::print_stdout( $context->padding . "   - ".$entry['start']." - ".$entry['end'] );
+            }
+        }
+
+
+        if( isset($tmp_array['weekly']) )
+        {
+            PH::print_stdout( $context->padding . "  weekly:");
+            foreach( $tmp_array['weekly'] as $key => $entry )
+            {
+                $string = $key." | ";
+                foreach( $entry as $day_entry )
+                {
+                    $string2 = $day_entry['start']."-".$day_entry['end'];
+                    PH::print_stdout( $context->padding . "   - ".$string.$string2 );
+                }
+            }
+
+        }
+
+        if( isset($tmp_array['non-recurring']) )
+        {
+            PH::print_stdout( $context->padding . "  non-recurring:");
+            $string = "  non-recurring: ";
+            foreach( $tmp_array['non-recurring'] as $entry )
+            {
+                PH::print_stdout( $context->padding . "   - ".$entry['start']." - ".$entry['end'] );
+            }
+
+        }
+
+
 
     },
 );

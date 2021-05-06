@@ -3101,5 +3101,24 @@ RQuery::$defaultFilters['rule']['schedule']['operators']['has.regex'] = array(
     },
     'arg' => TRUE,
 );
+
+RQuery::$defaultFilters['rule']['schedule']['operators']['is.expired'] = array(
+    'Function' => function (RuleRQueryContext $context) {
+        $rule = $context->object;
+        if( !$rule->isSecurityRule() )
+            return FALSE;
+
+        $schedule = $rule->schedule();
+
+        if( is_object( $schedule ) )
+        {
+            return $schedule->isExpired();
+        }
+
+        return FALSE;
+    },
+    'arg' => false,
+);
+
 // </editor-fold>
 
