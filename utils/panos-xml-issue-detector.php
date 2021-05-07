@@ -155,6 +155,9 @@ $countDuplicateNATRuleObjects = 0;
 $countMissconfiguredSecRuleServiceObjects=0;
 $countMissconfiguredSecRuleApplicationObjects=0;
 
+$countMissconfiguredSecRuleSourceObjects=0;
+$countMissconfiguredSecRuleDestinationObjects=0;
+
 $countMissconfiguredSecRuleCategoryObjects=0;
 
 $countMissconfiguredAddressObjects = 0;
@@ -736,6 +739,8 @@ foreach( $locationNodes as $locationName => $locationNode )
         $secRuleIndex = array();
         $natRules = array();
         $natRuleIndex = array();
+        $secRuleSourceIndex = array();
+        $secRuleDestinationIndex = array();
         $secRuleServiceIndex = array();
         $secRuleApplicationIndex = array();
         $secRuleCategoryIndex = array();
@@ -759,6 +764,8 @@ foreach( $locationNodes as $locationName => $locationNode )
                         {
                             $secRuleServices = array();
                             $secRuleApplication = array();
+                            $secRuleSource = array();
+                            $secRuleDestination = array();
 
                             /** @var DOMElement $objectNode */
                             if( $objectNode->nodeType != XML_ELEMENT_NODE )
@@ -833,6 +840,53 @@ foreach( $locationNodes as $locationName => $locationNode )
                             if( $objectNode_category && !$objectNode_category->hasChildNodes() )
                                 $secRuleCategoryIndex[$objectName] = $objectNode_category;
 
+                            //check if source has 'any' and additional
+                            $objectNode_sources = DH::findFirstElement('source', $objectNode);
+                            foreach( $objectNode_sources->childNodes as $objectSource )
+                            {
+                                /** @var DOMElement $objectSource */
+                                if( $objectSource->nodeType != XML_ELEMENT_NODE )
+                                    continue;
+
+                                $objectSourceName = $objectSource->textContent;
+                                if( isset($secRuleSource[$objectSourceName]) )
+                                {
+                                    //Secrule has same application defined twice
+                                }
+                                else
+                                {
+                                    $secRuleSource[$objectSourceName] = $objectSource;
+                                    #print $objectName.'add to array: '.$objectSourceName."\n";
+                                }
+
+                            }
+                            if( isset($secRuleSource['any']) and count($secRuleSource) > 1 )
+                            {
+                                $secRuleSourceIndex[$objectName] = $secRuleSource['any'];
+                                print "     - Rule: '".$objectName."' has source 'any' + something else defined.\n" ;
+                            }
+
+                            //check if destination has 'any' and additional
+                            $objectNode_destinations = DH::findFirstElement('destination', $objectNode);
+                            foreach( $objectNode_destinations->childNodes as $objectDestination )
+                            {
+                                /** @var DOMElement $objectDestination */
+                                if( $objectDestination->nodeType != XML_ELEMENT_NODE )
+                                    continue;
+
+                                $objectDestinationName = $objectDestination->textContent;
+                                if( isset($secRuleDestination[$objectDestinationName]) )
+                                {
+                                    //Secrule has same application defined twice
+                                }
+                                else
+                                    $secRuleDestination[$objectSourceName] = $objectDestination;
+                            }
+                            if( isset($secRuleDestination['any']) and count($secRuleDestination) > 1 )
+                            {
+                                $secRuleDestinationIndex[$objectName] = $secRuleDestination['any'];
+                                #print "     - Rule: '".$objectName."' has application 'any' + something else defined.\n" ;
+                            }
                         }
 
                     }
@@ -935,6 +989,19 @@ foreach( $locationNodes as $locationName => $locationNode )
                 }
             }
 
+            print "\n - Scanning for missconfigured Source Field in Security Rules...\n";
+            foreach( $secRuleSourceIndex as $objectName => $objectNode )
+            {
+                print "   - found Security Rule named '{$objectName}' that has source 'any' and additional source configured at XML line #{$objectNode->getLineNo()}\n";
+                $countMissconfiguredSecRuleSourceObjects++;
+            }
+
+            print "\n - Scanning for missconfigured Destination Field in Security Rules...\n";
+            foreach( $secRuleDestinationIndex as $objectName => $objectNode )
+            {
+                print "   - found Security Rule named '{$objectName}' that has destination 'any' and additional destination configured at XML line #{$objectNode->getLineNo()}\n";
+                $countMissconfiguredSecRuleDestinationObjects++;
+            }
 
             print "\n - Scanning for missconfigured Service Field in Security Rules...\n";
             foreach( $secRuleServiceIndex as $objectName => $objectNode )
@@ -1061,6 +1128,8 @@ echo " - FIX_MANUALLY: empty service-group: {$countEmptyServiceGroup} (look in t
 echo " - FIX_MANUALLY: duplicate Security Rules: {$countDuplicateSecRuleObjects} (look in the logs )\n";
 echo " - FIX_MANUALLY: duplicate NAT Rules: {$countDuplicateNATRuleObjects} (look in the logs )\n\n";
 
+echo " - FIX_MANUALLY: missconfigured Source Field in Security Rules: {$countMissconfiguredSecRuleSourceObjects} (look in the logs )\n";
+echo " - FIX_MANUALLY: missconfigured Destination Field in Security Rules: {$countMissconfiguredSecRuleDestinationObjects} (look in the logs )\n";
 echo " - FIX_MANUALLY: missconfigured Service Field in Security Rules: {$countMissconfiguredSecRuleServiceObjects} (look in the logs )\n";
 echo " - FIX_MANUALLY: missconfigured Application Field in Security Rules: {$countMissconfiguredSecRuleApplicationObjects} (look in the logs )\n";
 echo " - FIX_MANUALLY: missconfigured Category Field in Security Rules: {$countMissconfiguredSecRuleCategoryObjects} (look in the logs )\n\n";
