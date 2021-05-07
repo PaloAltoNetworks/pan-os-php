@@ -19,6 +19,15 @@ RQuery::$defaultFilters['schedule']['object']['operators']['is.unused'] = array(
         'input' => 'input/panorama-8.0.xml'
     )
 );
+
+RQuery::$defaultFilters['schedule']['object']['operators']['is.expired'] = array(
+    'Function' => function (ScheduleRQueryContext $context) {
+        $value = $context->object;
+
+        return $value->isExpired();
+    },
+    'arg' => false,
+);
 RQuery::$defaultFilters['schedule']['name']['operators']['is.in.file'] = array(
     'Function' => function (ScheduleRQueryContext $context) {
         $object = $context->object;
@@ -372,4 +381,12 @@ RQuery::$defaultFilters['schedule']['reftype']['operators']['is'] = array(
     )
 );
 
+RQuery::$defaultFilters['schedule']['object']['operators']['is.expired'] = array(
+    'Function' => function (ScheduleRQueryContext $context) {
+        $value = $context->object;
+
+        return $value->isExpired();
+    },
+    'arg' => false,
+);
 // </editor-fold>
