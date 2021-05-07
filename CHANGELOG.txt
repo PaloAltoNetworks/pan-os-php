@@ -8,9 +8,11 @@ GENERAL:
 UTILS:
 address-merger | merge TAG before duplicate object is deleted
 schedule-edit | introduce new util tool
+rule-edit | introduce 'filter=(schedule is.expired)' - example usage: pa_rule-edit in=api://IP actions=disabled-set 'filter=(schedule is.expired)'
 
 BUGFIX:
 PanoramaConf | fix for TagStore to set parentCentralStore at time of reading DG hierarchy - example usage pa_rule-edit actions=tag-add:TAGNAME (if TAGNAME is defined NOT at shared but at parent DG)
+util developer scripts - fix includePath to fit into PAN-OS-PHP project
 
 
 2.0.0 (20210426)
