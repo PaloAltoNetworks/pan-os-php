@@ -10,7 +10,8 @@
 echo "\n*************************************************\n";
 echo "**************** MERGER TESTERS *****************\n\n";
 
-require_once '../lib/pan_php_framework.php';
+set_include_path(dirname(__FILE__) . '/../' . PATH_SEPARATOR . get_include_path());
+require_once dirname(__FILE__)."/../lib/pan_php_framework.php";
 
 PH::processCliArgs();
 
@@ -32,7 +33,7 @@ if( strpos($configInput, "api://") !== FALSE )
 else
     derr('"in" argument must be of type API [in=api://192.168.55.208]');
 
-$cli = "php ../utils/upload-config.php in=input/panorama-8.0-merger.xml out=api://{$api_ip_address} loadAfterUpload injectUserAdmin2  2>&1";
+$cli = "php ../utils/upload-config.php in=input/panorama-10.0-merger.xml out=api://{$api_ip_address} loadAfterUpload injectUserAdmin2  2>&1";
 echo " * Executing CLI: {$cli}\n";
 
 $output = array();
@@ -103,8 +104,6 @@ $test_merger = array('address', 'service', 'addressgroup', 'servicegroup');
 
 foreach( $test_merger as $merger )
 {
-    $ci['input'] = 'input/panorama-8.0-merger.xml';
-
     echo "\n\n\n *** Processing merger: {$merger} \n";
 
     $dupalgorithm_array = array();
@@ -140,7 +139,7 @@ foreach( $test_merger as $merger )
 
     foreach( $dupalgorithm_array as $dupalgorithm )
     {
-        $location = 'testDG';
+        $location = 'any';
         $output = '/dev/null';
 
         $cli = "php $util in=api://{$api_ip_address} location={$location} allowMergingWithUpperLevel";

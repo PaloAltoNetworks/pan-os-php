@@ -10,7 +10,8 @@
 echo "\n*************************************************\n";
 echo "**************** MERGER TESTERS *****************\n\n";
 
-require_once '../lib/pan_php_framework.php';
+set_include_path(dirname(__FILE__) . '/../' . PATH_SEPARATOR . get_include_path());
+require_once dirname(__FILE__)."/../lib/pan_php_framework.php";
 
 PH::processCliArgs();
 
@@ -62,7 +63,8 @@ $test_merger = array('address', 'service', 'addressgroup', 'servicegroup', 'tag'
 
 foreach( $test_merger as $merger )
 {
-    $ci['input'] = 'input/panorama-8.0-merger.xml';
+    #$ci['input'] = 'input/panorama-8.0-merger.xml';
+    $ci['input'] = 'input/panorama-10.0-merger.xml';
 
     echo "\n\n\n *** Processing merger: {$merger} \n";
 
@@ -106,36 +108,40 @@ foreach( $test_merger as $merger )
     else
         derr('unsupported');
 
-    foreach( $dupalgorithm_array as $dupalgorithm )
+    $array = array("", "allowMergingWithUpperLevel");
+    foreach( $array as $allowmergingwithupperlevel )
     {
-        $location = 'testDG';
-        $output = '/dev/null';
-
-        $cli = "php $util in={$ci['input']} out={$output} location={$location} allowMergingWithUpperLevel";
-
-        if( $merger != 'address' )
-            $cli .= " DupAlgorithm={$dupalgorithm}";
-
-        $cli .= ' 2>&1';
-
-        echo " * Executing CLI: {$cli}\n";
-
-        $output = array();
-        $retValue = 0;
-
-        exec($cli, $output, $retValue);
-
-        foreach( $output as $line )
+        foreach( $dupalgorithm_array as $dupalgorithm )
         {
-            echo '   ##  ';
-            echo $line;
+            $location = 'testDG';
+            $output = '/dev/null';
+
+            $cli = "php $util in={$ci['input']} out={$output} location={$location} {$allowmergingwithupperlevel}";
+
+            #if( $merger != 'address' )
+                $cli .= " DupAlgorithm={$dupalgorithm}";
+
+            $cli .= ' 2>&1';
+
+            echo " * Executing CLI: {$cli}\n";
+
+            $output = array();
+            $retValue = 0;
+
+            exec($cli, $output, $retValue);
+
+            foreach( $output as $line )
+            {
+                echo '   ##  ';
+                echo $line;
+                echo "\n";
+            }
+
+            if( $retValue != 0 )
+                derr("CLI exit with error code '{$retValue}'");
+
             echo "\n";
         }
-
-        if( $retValue != 0 )
-            derr("CLI exit with error code '{$retValue}'");
-
-        echo "\n";
     }
 
 
