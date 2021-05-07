@@ -7,9 +7,10 @@
  *
  */
 
-require_once dirname(__FILE__)."/../lib/pan_php_framework.php";
-include('phpseclib/Net/SSH2.php');
-include('phpseclib/Crypt/RSA.php');
+set_include_path(dirname(__FILE__) . '/../' . PATH_SEPARATOR . get_include_path());
+require_once dirname(__FILE__)."/../../lib/pan_php_framework.php";
+require_once dirname(__FILE__)."/../../phpseclib/Net/SSH2.php";
+require_once dirname(__FILE__)."/../../phpseclib/Crypt/RSA.php";
 
 
 //Todo: SWASCHKUT input of more then one 3rd party IP address

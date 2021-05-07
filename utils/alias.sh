@@ -22,6 +22,8 @@ alias pa_servicegroup-merger='php -r "require_once '"'"'utils/servicegroup-merge
 alias pa_tag-edit='php -r "require_once '"'"'utils/tag-edit.php'"'"';" $@'
 alias pa_tag-merger='php -r "require_once '"'"'utils/tag-merger.php'"'"';" $@'
 
+alias pa_schedule-edit='php -r "require_once '"'"'utils/schedule-edit.php'"'"';" $@'
+
 alias pa_upload-config='php -r "require_once '"'"'utils/upload-config.php'"'"';" $@'
 alias pa_override-finder='php -r "require_once '"'"'utils/override-finder.php'"'"';" $@'
 alias pa_userid-mgr='php -r "require_once '"'"'utils/userid-mgr.php'"'"';" $@'
