@@ -709,8 +709,104 @@ class ServiceStore
                     $objects[$o->name()] = $o;
             }
 
+            if( isset($current->owner->parentDeviceGroup) && $current->owner->parentDeviceGroup !== null )
+                $current = $current->owner->parentDeviceGroup->serviceStore;
+            elseif( isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
+                $current = $current->owner->parentContainer->serviceStore;
+            elseif( isset($current->owner->owner) && $current->owner->owner !== null && !$current->owner->owner->isFawkes() )
+                $current = $current->owner->owner->serviceStore;
+            else
+                break;
+        }
 
-            if( isset($current->owner->owner) && $current->owner->owner !== null && !$current->owner->owner->isFawkes() )
+        return $objects;
+    }
+
+    /**
+     * @return Service[]|ServiceGroup[]
+     */
+    public function nestedPointOfView_sven()
+    {
+        $current = $this;
+
+        $objects = array();
+
+        while( TRUE )
+        {
+            if( get_class( $current->owner ) == "PanoramaConf" )
+                $location = "shared";
+            else
+                $location = $current->owner->name();
+
+            foreach( $current->_serviceObjects as $o )
+            {
+                if( !isset($objects[$o->name()]) )
+                    $objects[$o->name()] = $o;
+                else
+                {
+                    $tmp_o = &$objects[ $o->name() ];
+                    $tmp_ref_count = $tmp_o->countReferences();
+
+                    if( $tmp_ref_count == 0 )
+                    {
+                        // if object is /32, let's remove it to match equivalent non /32 syntax
+                        $tmp_value = $tmp_o->value();
+                        if( $tmp_o->isType_ipNetmask() && strpos($tmp_o->value(), '/32') !== FALSE )
+                            $tmp_value = substr($tmp_value, 0, strlen($tmp_value) - 3);
+
+                        $o_value = $o->value();
+                        if( $o->isType_ipNetmask() && strpos($o->value(), '/32') !== FALSE )
+                            $o_value = substr($o_value, 0, strlen($o_value) - 3);
+                        $o_ref_count = $o->countReferences();
+
+                        if( $tmp_value != $o_value && ($o_ref_count > 0) )
+                        {
+                            if( $location != "shared" )
+                                foreach( $o->refrules as $ref )
+                                    $tmp_o->addReference( $ref );
+                        }
+                    }
+                }
+            }
+            foreach( $current->_serviceGroups as $o )
+            {
+                if( !isset($objects[$o->name()]) )
+                    $objects[$o->name()] = $o;
+                else
+                {
+                    $tmp_o = &$objects[ $o->name() ];
+                    $tmp_ref_count = $tmp_o->countReferences();
+
+                    if( $tmp_ref_count == 0 )
+                    {
+                        #$tmp_mapping = $tmp_o->getFullMapping();
+                        $tmp_mapping = $tmp_o->dstPortMapping();
+                        #$tmp_value = $tmp_mapping['ip4']->dumpToString();
+
+                        #$o_mapping = $o->getFullMapping();
+                        /**
+                         * @var ServiceDstPortMapping $o_mapping
+                         */
+                        $o_mapping = $o->dstPortMapping();
+                        #$o_value = $o_mapping['ip4']->dumpToString();
+
+                        $o_ref_count = $o->countReferences();
+
+                        if( $tmp_value != $o_value && ( $o_ref_count > 0) )
+                        {
+                            if( $location != "shared" )
+                                foreach( $o->refrules as $ref )
+                                    $tmp_o->addReference( $ref );
+                        }
+                    }
+                }
+            }
+
+            if( isset($current->owner->parentDeviceGroup) && $current->owner->parentDeviceGroup !== null )
+                $current = $current->owner->parentDeviceGroup->serviceStore;
+            elseif( isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
+                $current = $current->owner->parentContainer->serviceStore;
+            elseif( isset($current->owner->owner) && $current->owner->owner !== null )
                 $current = $current->owner->owner->serviceStore;
             else
                 break;

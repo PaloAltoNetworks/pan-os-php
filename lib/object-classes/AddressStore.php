@@ -792,7 +792,7 @@ class AddressStore
     /**
      * @return Address[]|AddressGroup[]
      */
-    public function nestedPointOfView()
+    public function nestedPointOfView_old()
     {
         $current = $this;
 
@@ -824,7 +824,7 @@ class AddressStore
     /**
      * @return Address[]|AddressGroup[]
      */
-    public function nestedPointOfView_sven()
+    public function nestedPointOfView()
     {
         $current = $this;
 
@@ -847,6 +847,9 @@ class AddressStore
                     $tmp_o = &$objects[ $o->name() ];
                     $tmp_ref_count = $tmp_o->countReferences();
 
+                    $objects_overwritten[$o->name()][$tmp_o->owner->owner->name()] = $tmp_o;
+                    $objects_overwritten[$o->name()][$location] = $o;
+
                     if( $tmp_ref_count == 0 )
                     {
                         // if object is /32, let's remove it to match equivalent non /32 syntax
@@ -861,8 +864,6 @@ class AddressStore
 
                         if( $tmp_value != $o_value && ($o_ref_count > 0) )
                         {
-                            #$objects_overwritten[$o->name()][$tmp_o->owner->owner->name()] = $tmp_o;
-                            #$objects_overwritten[$o->name()][$location] = $o;
                             if( $location != "shared" )
                                 foreach( $o->refrules as $ref )
                                     $tmp_o->addReference( $ref );
@@ -879,6 +880,9 @@ class AddressStore
                     $tmp_o = &$objects[ $o->name() ];
                     $tmp_ref_count = $tmp_o->countReferences();
 
+                    $objects_overwritten[$o->name()][$tmp_o->owner->owner->name()] = $tmp_o;
+                    $objects_overwritten[$o->name()][$location] = $o;
+
                     if( $tmp_ref_count == 0 )
                     {
                         $tmp_mapping = $tmp_o->getFullMapping();
@@ -890,8 +894,6 @@ class AddressStore
 
                         if( $tmp_value != $o_value && ( $o_ref_count > 0) )
                         {
-                            #$objects_overwritten[$o->name()][$tmp_o->owner->owner->name()] = $tmp_o;
-                            #$objects_overwritten[$o->name()][$location] = $o;
                             if( $location != "shared" )
                                 foreach( $o->refrules as $ref )
                                     $tmp_o->addReference( $ref );
@@ -902,13 +904,15 @@ class AddressStore
 
             if( isset($current->owner->parentDeviceGroup) && $current->owner->parentDeviceGroup !== null )
                 $current = $current->owner->parentDeviceGroup->addressStore;
-            elseif( isset($current->owner->owner) && $current->owner->owner !== null )
+            elseif( isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
+                $current = $current->owner->parentContainer->addressStore;
+            elseif( isset($current->owner->owner) && $current->owner->owner !== null && !$current->owner->owner->isFawkes() )
                 $current = $current->owner->owner->addressStore;
             else
                 break;
         }
 
-        /*
+/*
         foreach( $objects_overwritten as $key => $DGs )
         {
             print "NAME: ".$key."\n";
@@ -916,9 +920,9 @@ class AddressStore
             {
                 if( $object->isAddress() )
                 {
-                    #print "   - DG: ".$key2." value: ".$object->value();
-                    #print "\n";
-                    #$object->display_references(7);
+                    print "   - DG: ".$key2." value: ".$object->value();
+                    print "\n";
+                    $object->display_references(7);
                 }
                 else
                 {
@@ -929,8 +933,8 @@ class AddressStore
             }
 
             print "\n";
-        }
-        */
+        }*/
+
         return $objects;
     }
 

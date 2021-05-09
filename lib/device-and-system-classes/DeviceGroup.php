@@ -675,7 +675,10 @@ class DeviceGroup
             }
         }
 
-        $this->addressStore->nestedPointOfView_sven();
+        $this->addressStore->nestedPointOfView();
+        $this->serviceStore->nestedPointOfView();
+        $this->tagStore->nestedPointOfView();
+        $this->scheduleStore->nestedPointOfView();
 
     }
 
