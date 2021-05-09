@@ -113,7 +113,7 @@ foreach( $test_merger as $merger )
     {
         foreach( $dupalgorithm_array as $dupalgorithm )
         {
-            $location = 'testDG';
+            $location = 'any';
             $output = '/dev/null';
 
             $cli = "php $util in={$ci['input']} out={$output} location={$location} {$allowmergingwithupperlevel}";

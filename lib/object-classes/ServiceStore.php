@@ -749,22 +749,10 @@ class ServiceStore
 
                     if( $tmp_ref_count == 0 )
                     {
-                        // if object is /32, let's remove it to match equivalent non /32 syntax
-                        $tmp_value = $tmp_o->value();
-                        if( $tmp_o->isType_ipNetmask() && strpos($tmp_o->value(), '/32') !== FALSE )
-                            $tmp_value = substr($tmp_value, 0, strlen($tmp_value) - 3);
-
-                        $o_value = $o->value();
-                        if( $o->isType_ipNetmask() && strpos($o->value(), '/32') !== FALSE )
-                            $o_value = substr($o_value, 0, strlen($o_value) - 3);
-                        $o_ref_count = $o->countReferences();
-
-                        if( $tmp_value != $o_value && ($o_ref_count > 0) )
-                        {
-                            if( $location != "shared" )
-                                foreach( $o->refrules as $ref )
-                                    $tmp_o->addReference( $ref );
-                        }
+                        //Todo: check if object value is same; if same to not add ref
+                        if( $location != "shared" )
+                            foreach( $o->refrules as $ref )
+                                $tmp_o->addReference( $ref );
                     }
                 }
             }
@@ -779,25 +767,10 @@ class ServiceStore
 
                     if( $tmp_ref_count == 0 )
                     {
-                        #$tmp_mapping = $tmp_o->getFullMapping();
-                        $tmp_mapping = $tmp_o->dstPortMapping();
-                        #$tmp_value = $tmp_mapping['ip4']->dumpToString();
-
-                        #$o_mapping = $o->getFullMapping();
-                        /**
-                         * @var ServiceDstPortMapping $o_mapping
-                         */
-                        $o_mapping = $o->dstPortMapping();
-                        #$o_value = $o_mapping['ip4']->dumpToString();
-
-                        $o_ref_count = $o->countReferences();
-
-                        if( $tmp_value != $o_value && ( $o_ref_count > 0) )
-                        {
-                            if( $location != "shared" )
-                                foreach( $o->refrules as $ref )
-                                    $tmp_o->addReference( $ref );
-                        }
+                        //Todo: check if object value is same; if same to not add ref
+                        if( $location != "shared" )
+                            foreach( $o->refrules as $ref )
+                                $tmp_o->addReference( $ref );
                     }
                 }
             }

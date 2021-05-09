@@ -319,10 +319,28 @@ class ScheduleStore extends ObjStore
 
         while( TRUE )
         {
+            if( get_class( $current->owner ) == "PanoramaConf" )
+                $location = "shared";
+            else
+                $location = $current->owner->name();
+
             foreach( $current->o as $o )
             {
                 if( !isset($objects[$o->name()]) )
                     $objects[$o->name()] = $o;
+                else
+                {
+                    $tmp_o = &$objects[ $o->name() ];
+                    $tmp_ref_count = $tmp_o->countReferences();
+
+                    if( $tmp_ref_count == 0 )
+                    {
+                        //Todo: check if object value is same; if same to not add ref
+                        if( $location != "shared" )
+                            foreach( $o->refrules as $ref )
+                                $tmp_o->addReference( $ref );
+                    }
+                }
             }
 
             if( isset($current->owner->parentDeviceGroup) && $current->owner->parentDeviceGroup !== null )
