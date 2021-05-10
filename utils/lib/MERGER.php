@@ -1620,8 +1620,27 @@ class MERGER extends UTIL
                 $objectsToSearchThrough = $store->serviceObjects();
 
             $hashMap = array();
+            $child_hashMap = array();
             $upperHashMap = array();
             if( $this->dupAlg == 'sameports' || $this->dupAlg == 'samedstsrcports' )
+            {
+                foreach( $childDeviceGroups as $dg )
+                {
+                    /** @var DeviceGroup $dg */
+                    foreach( $dg->serviceStore->serviceObjects() as $object )
+                    {
+                        if( !$object->isService() )
+                            continue;
+                        if( $object->isTmpSrv() )
+                            continue;
+
+                        $value = $object->dstPortMapping()->mappingToText();
+
+                        #print "add objNAME: " . $object->name() . " DG: " . $object->owner->owner->name() . "\n";
+                        $child_hashMap[$value][] = $object;
+                    }
+                }
+
                 foreach( $objectsToSearchThrough as $object )
                 {
                     if( !$object->isService() )
@@ -1638,6 +1657,7 @@ class MERGER extends UTIL
                     // Object with descendants in lower device groups should be excluded
                     if( $this->pan->isPanorama() && $object->owner === $store )
                     {
+                        /*
                         foreach( $childDeviceGroups as $dg )
                         {
                             if( $dg->serviceStore->find($object->name(), null, FALSE) !== null )
@@ -1657,6 +1677,7 @@ class MERGER extends UTIL
                         }
                         if( $skipThisOne )
                             continue;
+                        */
                     }
                     elseif( $this->pan->isFawkes() && $object->owner === $store )
                     {
@@ -1670,7 +1691,7 @@ class MERGER extends UTIL
                         $hashMap[$value][] = $object;
                         if( $parentStore !== null )
                         {
-                            $object->ancestor = self::findAncestor( $parentStore, $object );
+                            $object->ancestor = self::findAncestor($parentStore, $object);
                             /*
                             $findAncestor = $parentStore->find($object->name(), null, TRUE);
                             if( $findAncestor !== null )
@@ -1682,7 +1703,9 @@ class MERGER extends UTIL
                         $upperHashMap[$value][] = $object;
 
                 }
+            }
             elseif( $this->dupAlg == 'whereused' )
+            {
                 foreach( $objectsToSearchThrough as $object )
                 {
                     if( !$object->isService() )
@@ -1702,7 +1725,7 @@ class MERGER extends UTIL
                         $hashMap[$value][] = $object;
                         if( $parentStore !== null )
                         {
-                            $object->ancestor = self::findAncestor( $parentStore, $object );
+                            $object->ancestor = self::findAncestor($parentStore, $object);
                             /*
                             $findAncestor = $parentStore->find($object->name(), null, TRUE);
                             if( $findAncestor !== null )
@@ -1713,6 +1736,7 @@ class MERGER extends UTIL
                     else
                         $upperHashMap[$value][] = $object;
                 }
+            }
             else derr("unsupported use case");
 
 //
@@ -1727,14 +1751,27 @@ class MERGER extends UTIL
                     $countConcernedObjects += count($hash);
             }
             unset($hash);
+            $countConcernedChildObjects = 0;
+            foreach( $child_hashMap as $index => &$hash )
+            {
+                if( count($hash) == 1 && !isset($upperHashMap[$index]) && !isset(reset($hash)->ancestor) )
+                    unset($child_hashMap[$index]);
+                else
+                    $countConcernedChildObjects += count($hash);
+            }
+            unset($hash);
             echo "OK!\n";
 
             echo " - found " . count($hashMap) . " duplicates values totalling {$countConcernedObjects} service objects which are duplicate\n";
+
+            echo " - found " . count($child_hashMap) . " duplicates childDG values totalling {$countConcernedChildObjects} service objects which are duplicate\n";
+
 
             echo "\n\nNow going after each duplicates for a replacement\n";
 
             $countRemoved = 0;
             if( $this->dupAlg == 'sameports' || $this->dupAlg == 'samedstsrcports' )
+            {
                 foreach( $hashMap as $index => &$hash )
                 {
                     echo "\n";
@@ -1893,6 +1930,92 @@ class MERGER extends UTIL
                         }
                     }
                 }
+
+                $countChildRemoved = 0;
+                $countChildCreated = 0;
+                foreach( $child_hashMap as $index => &$hash )
+                {
+                    echo "\n";
+                    echo " - value '{$index}'\n";
+                    $this->deletedObjects[$index]['kept'] = "";
+                    $this->deletedObjects[$index]['removed'] = "";
+
+
+                    $pickedObject = null;
+
+                    if( $this->pickFilter !== null )
+                    {
+                        foreach( $hash as $object )
+                        {
+                            if( $this->pickFilter->matchSingleObject(array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
+                            {
+                                $pickedObject = $object;
+                                break;
+                            }
+                        }
+                        if( $pickedObject === null )
+                            $pickedObject = reset($hash);
+                    }
+                    else
+                    {
+                        $pickedObject = reset($hash);
+                    }
+
+
+                    $tmp_DG_name = $store->owner->name();
+                    if( $tmp_DG_name == "" )
+                        $tmp_DG_name = 'shared';
+
+                    /** @var Service $tmp_service */
+                    $tmp_service = $store->find( $pickedObject->name() );
+                    if( $tmp_service == null )
+                    {
+                        print "   * create object in DG: '".$tmp_DG_name."' : '".$pickedObject->name()."'\n";
+
+                        /** @var ServiceStore $store */
+                        if( $this->apiMode )
+                            $tmp_service = $store->API_newService($pickedObject->name(), $pickedObject->protocol(), $pickedObject->getDestPort(), $pickedObject->description(), $pickedObject->getSourcePort() );
+                        else
+                            $tmp_service = $store->newService($pickedObject->name(), $pickedObject->protocol(), $pickedObject->getDestPort(), $pickedObject->description(), $pickedObject->getSourcePort() );
+
+                        $countChildCreated++;
+                    }
+                    else
+                    {
+                        if( $tmp_service->equals( $pickedObject ) )
+                        {
+                            print "   * keeping object '{$tmp_service->name()}'\n";
+                        }
+                        else
+                        {
+                            echo "    - SKIP: object name '{$pickedObject->name()}' [with value '{$pickedObject->value()}'] is not IDENTICAL to object name DG: '".$tmp_DG_name."' '{$tmp_service->name()}' [with value '{$tmp_service->getDestPort()}'] \n";
+                            continue;
+                        }
+                    }
+
+                    // Merging loop finally!
+                    foreach( $hash as $objectIndex => $object )
+                    {
+                        echo "    - replacing '{$object->_PANC_shortName()}' ...\n";
+                        $object->__replaceWhereIamUsed($this->apiMode, $tmp_service, TRUE, 5);
+
+                        #$object->merge_tag_description_to($tmp_service, $this->apiMode);
+
+                        echo "    - deleting '{$object->_PANC_shortName()}'\n";
+                        $this->deletedObjects[$index]['kept'] = $tmp_service->name();
+                        if( $this->deletedObjects[$index]['removed'] == "" )
+                            $this->deletedObjects[$index]['removed'] = $object->name();
+                        else
+                            $this->deletedObjects[$index]['removed'] .= "|" . $object->name();
+                        if( $this->apiMode )
+                            $object->owner->API_remove($object);
+                        else
+                            $object->owner->remove($object);
+
+                        $countChildRemoved++;
+                    }
+                }
+            }
             elseif( $this->dupAlg == 'whereused' )
                 foreach( $hashMap as $index => &$hash )
                 {
@@ -1991,6 +2114,8 @@ class MERGER extends UTIL
 
 
             echo "\n\nDuplicates removal is now done. Number of objects after cleanup: '{$store->countServices()}' (removed {$countRemoved} services)\n\n";
+            if( count( $child_hashMap ) >0 )
+                echo "Duplicates ChildDG removal is now done. Number of objects after cleanup: '{$store->countServices()}' (removed/created {$countChildRemoved}/{$countChildCreated} addresses)\n\n";
 
             echo "\n\n***********************************************\n\n";
 
