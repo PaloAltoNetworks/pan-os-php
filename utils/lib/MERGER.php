@@ -817,8 +817,6 @@ class MERGER extends UTIL
 
             echo " - found " . count($child_hashMap) . " duplicates childDG values totalling {$countConcernedChildObjects} address objects which are duplicate\n";
 
-            #if( count( $child_hashMap ) > 1 )
-                #derr( "check needed\n" );
 
             echo "\n\nNow going after each duplicates for a replacement\n";
 
@@ -1000,37 +998,61 @@ class MERGER extends UTIL
             $countChildCreated = 0;
             foreach( $child_hashMap as $index => &$hash )
             {
-                #echo "\n";
-                #echo " - value '{$index}'\n";
+                echo "\n";
+                echo " - value '{$index}'\n";
                 $this->deletedObjects[$index]['kept'] = "";
                 $this->deletedObjects[$index]['removed'] = "";
+
 
                 $pickedObject = null;
 
                 if( $this->pickFilter !== null )
                 {
-
+                    foreach( $hash as $object )
+                    {
+                        if( $this->pickFilter->matchSingleObject(array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
+                        {
+                            $pickedObject = $object;
+                            break;
+                        }
+                    }
+                    if( $pickedObject === null )
+                        $pickedObject = reset($hash);
                 }
-
-
-                //Todo: pickfilter is missing
-                foreach( $hash as $objectIndex => $object )
+                else
                 {
-                    print "\n - value '".$object->type()."-".$object->value()."'\n";
-                    $pickedObject = $object;
-                    break;
+                    $pickedObject = reset($hash);
                 }
+
+
+                $tmp_DG_name = $store->owner->name();
+                if( $tmp_DG_name == "" )
+                    $tmp_DG_name = 'shared';
 
                 $tmp_address = $store->find( $pickedObject->name() );
                 if( $tmp_address == null )
                 {
-                    print "   * create object in DG: '".$store->owner->name()."' : '".$pickedObject->name()."'\n";
-                    $tmp_address = $store->newAddress($pickedObject->name(), $pickedObject->type(), $pickedObject->value(), $pickedObject->description() );
+                    print "   * create object in DG: '".$tmp_DG_name."' : '".$pickedObject->name()."'\n";
+
+                    /** @var AddressStore $store */
+                    if( $this->apiMode )
+                        $tmp_address = $store->API_newAddress($pickedObject->name(), $pickedObject->type(), $pickedObject->value(), $pickedObject->description() );
+                    else
+                        $tmp_address = $store->newAddress($pickedObject->name(), $pickedObject->type(), $pickedObject->value(), $pickedObject->description() );
+
                     $countChildCreated++;
                 }
                 else
                 {
-
+                    if( $tmp_address->type() === $pickedObject->type() && $tmp_address->value() === $pickedObject->value() )
+                    {
+                        print "   * keeping object '{$tmp_address->name()}'\n";
+                    }
+                    else
+                    {
+                        echo "    - SKIP: object name '{$pickedObject->name()}' [with value '{$pickedObject->value()}'] is not IDENTICAL to object name DG: '".$tmp_DG_name."' '{$tmp_address->name()}' [with value '{$tmp_address->value()}'] \n";
+                        continue;
+                    }
                 }
 
                 // Merging loop finally!
