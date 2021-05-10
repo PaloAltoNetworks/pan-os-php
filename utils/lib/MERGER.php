@@ -149,17 +149,35 @@ class MERGER extends UTIL
                 if( $this->utilType == "address-merger" )
                 {
                     $store = $findLocation->addressStore;
-                    $parentStore = $findLocation->owner->addressStore;
+
+                    if( $pan->isPanorama() && isset($findLocation->parentDeviceGroup) && $findLocation->parentDeviceGroup !== null )
+                        $parentStore = $findLocation->parentDeviceGroup->addressStore;
+                    elseif( $pan->isFawkes() && isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
+                        $parentStore = $findLocation->parentContainer->addressStore;
+                    else
+                        $parentStore = $findLocation->owner->addressStore;
                 }
                 elseif( $this->utilType == "service-merger" )
                 {
                     $store = $findLocation->serviceStore;
-                    $parentStore = $findLocation->owner->serviceStore;
+
+                    if( $pan->isPanorama() && isset($findLocation->parentDeviceGroup) && $findLocation->parentDeviceGroup !== null )
+                        $parentStore = $findLocation->parentDeviceGroup->serviceStore;
+                    elseif( $pan->isFawkes() && isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
+                        $parentStore = $findLocation->parentContainer->serviceStore;
+                    else
+                        $parentStore = $findLocation->owner->serviceStore;
                 }
                 elseif( $this->utilType == "tag-merger" )
                 {
                     $store = $findLocation->tagStore;
-                    $parentStore = $findLocation->owner->tagStore;
+
+                    if( $pan->isPanorama() && isset($findLocation->parentDeviceGroup) && $findLocation->parentDeviceGroup !== null )
+                        $parentStore = $findLocation->parentDeviceGroup->tagStore;
+                    elseif( $pan->isFawkes() && isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
+                        $parentStore = $findLocation->parentContainer->tagStore;
+                    else
+                        $parentStore = $findLocation->owner->tagStore;
                 }
                 if( get_class( $findLocation->owner ) == "FawkesConf" )
                     $parentStore = null;
@@ -218,6 +236,32 @@ class MERGER extends UTIL
 
         if( isset(PH::$args['allowmergingwithupperlevel']) )
             $this->upperLevelSearch = TRUE;
+    }
+
+    function findAncestor( $current, $object )
+    {
+        while( TRUE )
+        {
+            $findAncestor = $current->find($object->name(), null, TRUE);
+            if( $findAncestor !== null )
+            {
+                return $findAncestor;
+                break;
+            }
+
+            if( isset($current->owner->parentDeviceGroup) && $current->owner->parentDeviceGroup !== null )
+                $current = $current->owner->parentDeviceGroup->addressStore;
+            elseif( isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
+                $current = $current->owner->parentContainer->addressStore;
+            elseif( isset($current->owner->owner) && $current->owner->owner !== null && !$current->owner->owner->isFawkes() )
+                $current = $current->owner->owner->addressStore;
+            else
+            {
+                return null;
+                break;
+            }
+        }
+
     }
 
     function addressgroup_merging()
@@ -587,7 +631,10 @@ class MERGER extends UTIL
 // Building a hash table of all address objects with same value
 //
             if( $this->upperLevelSearch )
+            {
                 $objectsToSearchThrough = $store->nestedPointOfView();
+                #$objectsToSearchThrough = $store->nestedPointOfView_sven();
+            }
             else
                 $objectsToSearchThrough = $store->addressObjects();
 
@@ -644,9 +691,28 @@ class MERGER extends UTIL
                         $hashMap[$value][] = $object;
                         if( $parentStore !== null )
                         {
-                            $findAncestor = $parentStore->find($object->name(), null, TRUE);
-                            if( $findAncestor !== null )
-                                $object->ancestor = $findAncestor;
+                            $object->ancestor = self::findAncestor( $parentStore, $object );
+                            /*
+                            while( TRUE )
+                            {
+
+                                $findAncestor = $current->find($object->name(), null, TRUE);
+                                if( $findAncestor !== null )
+                                {
+                                    $object->ancestor = $findAncestor;
+                                    break;
+                                }
+
+                                if( isset($current->owner->parentDeviceGroup) && $current->owner->parentDeviceGroup !== null )
+                                    $current = $current->owner->parentDeviceGroup->addressStore;
+                                elseif( isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
+                                    $current = $current->owner->parentContainer->addressStore;
+                                elseif( isset($current->owner->owner) && $current->owner->owner !== null && !$current->owner->owner->isFawkes() )
+                                    $current = $current->owner->owner->addressStore;
+                                else
+                                    break;
+
+                            }*/
                         }
                     }
                     else
@@ -673,9 +739,11 @@ class MERGER extends UTIL
                         $hashMap[$value][] = $object;
                         if( $parentStore !== null )
                         {
-                            $findAncestor = $parentStore->find($object->name(), null, TRUE);
+                            $object->ancestor = self::findAncestor( $parentStore, $object );
+                            /*$findAncestor = $parentStore->find($object->name(), null, TRUE);
                             if( $findAncestor !== null )
                                 $object->ancestor = $findAncestor;
+                            */
                         }
                     }
                     else
@@ -1000,9 +1068,12 @@ class MERGER extends UTIL
                     $hashMap[$value][] = $object;
                     if( $parentStore !== null )
                     {
+                        $object->ancestor = self::findAncestor( $parentStore, $object );
+                        /*
                         $findAncestor = $parentStore->find($object->name(), null, TRUE);
                         if( $findAncestor !== null )
                             $object->ancestor = $findAncestor;
+                        */
                     }
                 }
                 else
@@ -1313,9 +1384,12 @@ class MERGER extends UTIL
                         $hashMap[$value][] = $object;
                         if( $parentStore !== null )
                         {
+                            $object->ancestor = self::findAncestor( $parentStore, $object );
+                            /*
                             $findAncestor = $parentStore->find($object->name(), null, TRUE);
                             if( $findAncestor !== null )
                                 $object->ancestor = $findAncestor;
+                            */
                         }
                     }
                     else
@@ -1342,9 +1416,12 @@ class MERGER extends UTIL
                         $hashMap[$value][] = $object;
                         if( $parentStore !== null )
                         {
+                            $object->ancestor = self::findAncestor( $parentStore, $object );
+                            /*
                             $findAncestor = $parentStore->find($object->name(), null, TRUE);
                             if( $findAncestor !== null )
                                 $object->ancestor = $findAncestor;
+                            */
                         }
                     }
                     else
@@ -1714,9 +1791,12 @@ class MERGER extends UTIL
                         $hashMap[$value][] = $object;
                         if( $parentStore !== null )
                         {
+                            $object->ancestor = self::findAncestor( $parentStore, $object );
+                            /*
                             $findAncestor = $parentStore->find($object->name(), null, TRUE);
                             if( $findAncestor !== null )
                                 $object->ancestor = $findAncestor;
+                            */
                         }
                     }
                     else
@@ -1744,9 +1824,12 @@ class MERGER extends UTIL
                         $hashMap[$value][] = $object;
                         if( $parentStore !== null )
                         {
+                            $object->ancestor = self::findAncestor( $parentStore, $object );
+                            /*
                             $findAncestor = $parentStore->find($object->name(), null, TRUE);
                             if( $findAncestor !== null )
                                 $object->ancestor = $findAncestor;
+                            */
                         }
                     }
                     else

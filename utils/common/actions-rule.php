@@ -2521,6 +2521,8 @@ RuleCallContext::$supportedActions[] = array(
             return;
         }
 
+        echo $context->padding . " - new name will be '{$newName}'\n";
+        
         if( $context->isAPI )
         {
             $rule->API_setName($newName);
@@ -2572,6 +2574,8 @@ RuleCallContext::$supportedActions[] = array(
             print $context->padding . " * SKIPPED because name '{$newName}' is not available\n";
             return;
         }
+
+        echo $context->padding . " - new name will be '{$newName}'\n";
 
         if( $context->isAPI )
         {

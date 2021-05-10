@@ -709,8 +709,77 @@ class ServiceStore
                     $objects[$o->name()] = $o;
             }
 
+            if( isset($current->owner->parentDeviceGroup) && $current->owner->parentDeviceGroup !== null )
+                $current = $current->owner->parentDeviceGroup->serviceStore;
+            elseif( isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
+                $current = $current->owner->parentContainer->serviceStore;
+            elseif( isset($current->owner->owner) && $current->owner->owner !== null && !$current->owner->owner->isFawkes() )
+                $current = $current->owner->owner->serviceStore;
+            else
+                break;
+        }
 
-            if( isset($current->owner->owner) && $current->owner->owner !== null && !$current->owner->owner->isFawkes() )
+        return $objects;
+    }
+
+    /**
+     * @return Service[]|ServiceGroup[]
+     */
+    public function nestedPointOfView_sven()
+    {
+        $current = $this;
+
+        $objects = array();
+
+        while( TRUE )
+        {
+            if( get_class( $current->owner ) == "PanoramaConf" )
+                $location = "shared";
+            else
+                $location = $current->owner->name();
+
+            foreach( $current->_serviceObjects as $o )
+            {
+                if( !isset($objects[$o->name()]) )
+                    $objects[$o->name()] = $o;
+                else
+                {
+                    $tmp_o = &$objects[ $o->name() ];
+                    $tmp_ref_count = $tmp_o->countReferences();
+
+                    if( $tmp_ref_count == 0 )
+                    {
+                        //Todo: check if object value is same; if same to not add ref
+                        if( $location != "shared" )
+                            foreach( $o->refrules as $ref )
+                                $tmp_o->addReference( $ref );
+                    }
+                }
+            }
+            foreach( $current->_serviceGroups as $o )
+            {
+                if( !isset($objects[$o->name()]) )
+                    $objects[$o->name()] = $o;
+                else
+                {
+                    $tmp_o = &$objects[ $o->name() ];
+                    $tmp_ref_count = $tmp_o->countReferences();
+
+                    if( $tmp_ref_count == 0 )
+                    {
+                        //Todo: check if object value is same; if same to not add ref
+                        if( $location != "shared" )
+                            foreach( $o->refrules as $ref )
+                                $tmp_o->addReference( $ref );
+                    }
+                }
+            }
+
+            if( isset($current->owner->parentDeviceGroup) && $current->owner->parentDeviceGroup !== null )
+                $current = $current->owner->parentDeviceGroup->serviceStore;
+            elseif( isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
+                $current = $current->owner->parentContainer->serviceStore;
+            elseif( isset($current->owner->owner) && $current->owner->owner !== null )
                 $current = $current->owner->owner->serviceStore;
             else
                 break;

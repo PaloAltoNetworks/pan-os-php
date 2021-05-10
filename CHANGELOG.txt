@@ -7,8 +7,10 @@ GENERAL:
 
 UTILS:
 address-merger | merge TAG before duplicate object is deleted
-schedule-edit | introduce new util tool
+schedule-edit | introduce new util tool, introduce 'filter=(object is.expired)'
 rule-edit | introduce 'filter=(schedule is.expired)' - example usage: pa_rule-edit in=api://IP actions=disabled-set 'filter=(schedule is.expired)'
+pa_xml-issue-detecor | extend to find for source/destination if ANY and other objects are set
+address-edit | extend actions=display to print tag information
 
 BUGFIX:
 PanoramaConf | fix for TagStore to set parentCentralStore at time of reading DG hierarchy - example usage pa_rule-edit actions=tag-add:TAGNAME (if TAGNAME is defined NOT at shared but at parent DG)
