@@ -675,6 +675,17 @@ class MERGER extends UTIL
                 {
                     print "   * move object to DG: '".$tmp_DG_name."' : '".$pickedObject->name()."'\n";
 
+                    $skip = false;
+                    foreach( $pickedObject->members() as $memberObject )
+                        if( $store->find($memberObject->name()) === null )
+                        {
+                            echo  "   * SKIPPED : this group has an object named '{$memberObject->name()} that does not exist in target location '{$store->owner->name()}'\n";
+                            $skip = true;
+                            break;
+                        }
+                    if( $skip )
+                        continue;
+
                     /** @var AddressStore $store */
                     if( $this->apiMode )
                     {
@@ -715,7 +726,10 @@ class MERGER extends UTIL
                     if( $object !==  $tmp_address)
                     {
                         echo "    - group '{$object->name()}' DG: '".$object->owner->owner->name()."' merged with its ancestor at DG: '".$store->owner->name()."', deleting this one... \n";
-                        $object->replaceMeGlobally($tmp_address);
+
+                        echo "    - replacing '{$object->_PANC_shortName()}' ...\n";
+                        $object->__replaceWhereIamUsed($this->apiMode, $tmp_address, TRUE, 5);
+
                         if( $this->apiMode )
                             $object->owner->API_remove($object, TRUE);
                         else
@@ -737,7 +751,9 @@ class MERGER extends UTIL
             echo "\n\n";
         }    
     }
-    
+
+
+
     function address_merging()
     {
         foreach( $this->location_array as $tmp_location )
