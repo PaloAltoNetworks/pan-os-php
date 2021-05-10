@@ -639,9 +639,27 @@ class MERGER extends UTIL
                 $objectsToSearchThrough = $store->addressObjects();
 
             $hashMap = array();
+            $child_hashMap = array();
             $upperHashMap = array();
             if( $this->dupAlg == 'sameaddress' || $this->dupAlg == 'identical' )
             {
+                foreach( $childDeviceGroups as $dg )
+                {
+                    foreach( $dg->addressStore->addressObjects() as $object )
+                    {
+                        if( !$object->isAddress() )
+                            continue;
+                        if( $object->isTmpAddr() )
+                            continue;
+
+                        $value = $object->value();
+
+                        #print "add objNAME: " . $object->name() . " DG: " . $object->owner->owner->name() . "\n";
+                        $child_hashMap[$value][] = $object;
+                    }
+                }
+
+
                 foreach( $objectsToSearchThrough as $object )
                 {
                     if( !$object->isAddress() )
@@ -657,8 +675,24 @@ class MERGER extends UTIL
                     // Object with descendants in lower device groups should be excluded
                     if( $this->pan->isPanorama() && $object->owner === $store )
                     {
+
+                        /*
                         foreach( $childDeviceGroups as $dg )
                         {
+                            foreach( $dg->addressStore->addressObjects() as $object )
+                            {
+                                if( !$object->isAddress() )
+                                    continue;
+                                if( $object->isTmpAddr() )
+                                    continue;
+
+                                $value = $object->value();
+
+                                print "add objNAME: ".$object->name(). " DG: ".$object->owner->owner->name()."\n";
+                                $child_hashMap[$value][] = $object;
+                            }*/
+                            /*
+                             * //this does not make sense, why we should NOT merge higher level objects, if same name is available at lower???
                             if( $dg->addressStore->find($object->name(), null, FALSE) !== null )
                             {
                                 $tmp_obj = $dg->addressStore->find($object->name(), null, FALSE);
@@ -672,10 +706,15 @@ class MERGER extends UTIL
 
                                 $skipThisOne = TRUE;
                                 break;
-                            }
-                        }
+                            }*/
+                        //}
+
+                        /*
                         if( $skipThisOne )
                             continue;
+                        */
+
+
                     }
 
                     $value = $object->value();
@@ -763,9 +802,23 @@ class MERGER extends UTIL
                     $countConcernedObjects += count($hash);
             }
             unset($hash);
+            $countConcernedChildObjects = 0;
+            foreach( $child_hashMap as $index => &$hash )
+            {
+                if( count($hash) == 1 && !isset($upperHashMap[$index]) && !isset(reset($hash)->ancestor) )
+                    unset($child_hashMap[$index]);
+                else
+                    $countConcernedChildObjects += count($hash);
+            }
+            unset($hash);
             echo "OK!\n";
 
             echo " - found " . count($hashMap) . " duplicates values totalling {$countConcernedObjects} address objects which are duplicate\n";
+
+            echo " - found " . count($child_hashMap) . " duplicates childDG values totalling {$countConcernedChildObjects} address objects which are duplicate\n";
+
+            #if( count( $child_hashMap ) > 1 )
+                #derr( "check needed\n" );
 
             echo "\n\nNow going after each duplicates for a replacement\n";
 
@@ -942,7 +995,71 @@ class MERGER extends UTIL
                 }
             }
 
+
+            $countChildRemoved = 0;
+            $countChildCreated = 0;
+            foreach( $child_hashMap as $index => &$hash )
+            {
+                #echo "\n";
+                #echo " - value '{$index}'\n";
+                $this->deletedObjects[$index]['kept'] = "";
+                $this->deletedObjects[$index]['removed'] = "";
+
+                $pickedObject = null;
+
+                if( $this->pickFilter !== null )
+                {
+
+                }
+
+
+                //Todo: pickfilter is missing
+                foreach( $hash as $objectIndex => $object )
+                {
+                    print "\n - value '".$object->type()."-".$object->value()."'\n";
+                    $pickedObject = $object;
+                    break;
+                }
+
+                $tmp_address = $store->find( $pickedObject->name() );
+                if( $tmp_address == null )
+                {
+                    print "   * create object in DG: '".$store->owner->name()."' : '".$pickedObject->name()."'\n";
+                    $tmp_address = $store->newAddress($pickedObject->name(), $pickedObject->type(), $pickedObject->value(), $pickedObject->description() );
+                    $countChildCreated++;
+                }
+                else
+                {
+
+                }
+
+                // Merging loop finally!
+                foreach( $hash as $objectIndex => $object )
+                {
+                    echo "    - replacing '{$object->_PANC_shortName()}' ...\n";
+                    $object->__replaceWhereIamUsed($this->apiMode, $tmp_address, TRUE, 5);
+
+                    $object->merge_tag_description_to($tmp_address, $this->apiMode);
+
+                    echo "    - deleting '{$object->_PANC_shortName()}'\n";
+                    $this->deletedObjects[$index]['kept'] = $tmp_address->name();
+                    if( $this->deletedObjects[$index]['removed'] == "" )
+                        $this->deletedObjects[$index]['removed'] = $object->name();
+                    else
+                        $this->deletedObjects[$index]['removed'] .= "|" . $object->name();
+                    if( $this->apiMode )
+                        $object->owner->API_remove($object);
+                    else
+                        $object->owner->remove($object);
+
+                    $countChildRemoved++;
+                }
+            }
+
+
+
             echo "\n\nDuplicates removal is now done. Number of objects after cleanup: '{$store->countAddresses()}' (removed {$countRemoved} addresses)\n\n";
+            echo "Duplicates ChildDG removal is now done. Number of objects after cleanup: '{$store->countAddresses()}' (removed/created {$countChildRemoved}/{$countChildCreated} addresses)\n\n";
 
             echo "\n\n***********************************************\n\n";
 
