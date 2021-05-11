@@ -347,6 +347,7 @@ class MERGER extends UTIL
                 $objectsToSearchThrough = $store->addressGroups();
 
             $child_hashMap = array();
+            //todo: childDG/childDG to parentDG merge is always done; should it not combined to upperLevelSearch value?
             foreach( $childDeviceGroups as $dg )
             {
                 /** @var DeviceGroup $dg */
@@ -789,6 +790,7 @@ class MERGER extends UTIL
             $upperHashMap = array();
             if( $this->dupAlg == 'sameaddress' || $this->dupAlg == 'identical' )
             {
+                //todo: childDG/childDG to parentDG merge is always done; should it not combined to upperLevelSearch value?
                 foreach( $childDeviceGroups as $dg )
                 {
                     foreach( $dg->addressStore->addressObjects() as $object )
@@ -796,6 +798,9 @@ class MERGER extends UTIL
                         if( !$object->isAddress() )
                             continue;
                         if( $object->isTmpAddr() )
+                            continue;
+
+                        if( $this->excludeFilter !== null && $this->excludeFilter->matchSingleObject(array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
                             continue;
 
                         $value = $object->value();
@@ -1624,6 +1629,7 @@ class MERGER extends UTIL
             $upperHashMap = array();
             if( $this->dupAlg == 'sameports' || $this->dupAlg == 'samedstsrcports' )
             {
+                //todo: childDG/childDG to parentDG merge is always done; should it not combined to upperLevelSearch value?
                 foreach( $childDeviceGroups as $dg )
                 {
                     /** @var DeviceGroup $dg */
@@ -1632,6 +1638,9 @@ class MERGER extends UTIL
                         if( !$object->isService() )
                             continue;
                         if( $object->isTmpSrv() )
+                            continue;
+
+                        if( $this->excludeFilter !== null && $this->excludeFilter->matchSingleObject(array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
                             continue;
 
                         $value = $object->dstPortMapping()->mappingToText();
@@ -2150,9 +2159,32 @@ class MERGER extends UTIL
                 $objectsToSearchThrough = $store->tags();
 
             $hashMap = array();
+            $child_hashMap = array();
             $upperHashMap = array();
             if( $this->dupAlg == 'samecolor' || $this->dupAlg == 'identical' )
             {
+                //todo: childDG/childDG to parentDG merge is always done; should it not combined to upperLevelSearch value?
+                foreach( $childDeviceGroups as $dg )
+                {
+                    /** @var DeviceGroup $dg */
+                    foreach( $dg->tagStore->tags() as $object )
+                    {
+                        if( !$object->isTag() )
+                            continue;
+                        if( $object->isTmp() )
+                            continue;
+
+                        if( $this->excludeFilter !== null && $this->excludeFilter->matchSingleObject(array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
+                            continue;
+
+                        $value = $object->getColor();
+                        $value = $object->name();
+
+                        #print "add objNAME: " . $object->name() . " DG: " . $object->owner->owner->name() . "\n";
+                        $child_hashMap[$value][] = $object;
+                    }
+                }
+
                 foreach( $objectsToSearchThrough as $object )
                 {
                     if( !$object->isTag() )
@@ -2168,6 +2200,7 @@ class MERGER extends UTIL
                     // Object with descendants in lower device groups should be excluded
                     if( $this->pan->isPanorama() && $object->owner === $store )
                     {
+                        /*
                         foreach( $childDeviceGroups as $dg )
                         {
                             if( $dg->tagStore->find($object->name(), null, FALSE) !== null )
@@ -2180,6 +2213,7 @@ class MERGER extends UTIL
                         }
                         if( $skipThisOne )
                             continue;
+                        */
                     }
                     elseif( $this->pan->isPanorama() && $object->owner === $store )
                     {
@@ -2260,9 +2294,21 @@ class MERGER extends UTIL
                     $countConcernedObjects += count($hash);
             }
             unset($hash);
+            $countConcernedChildObjects = 0;
+            foreach( $child_hashMap as $index => &$hash )
+            {
+                if( count($hash) == 1 && !isset($upperHashMap[$index]) && !isset(reset($hash)->ancestor) )
+                    unset($child_hashMap[$index]);
+                else
+                    $countConcernedChildObjects += count($hash);
+            }
+            unset($hash);
             echo "OK!\n";
 
             echo " - found " . count($hashMap) . " duplicates values totalling {$countConcernedObjects} tag objects which are duplicate\n";
+
+            echo " - found " . count($child_hashMap) . " duplicates childDG values totalling {$countConcernedChildObjects} tag objects which are duplicate\n";
+
 
             echo "\n\nNow going after each duplicates for a replacement\n";
 
@@ -2441,7 +2487,99 @@ class MERGER extends UTIL
                 }
             }
 
-            echo "\n\nDuplicates removal is now done. Number of objects after cleanup: '{$store->count()}' (removed {$countRemoved} addresses)\n\n";
+            $countChildRemoved = 0;
+            $countChildCreated = 0;
+            foreach( $child_hashMap as $index => &$hash )
+            {
+                echo "\n";
+                echo " - value '{$index}'\n";
+                $this->deletedObjects[$index]['kept'] = "";
+                $this->deletedObjects[$index]['removed'] = "";
+
+
+                $pickedObject = null;
+
+                if( $this->pickFilter !== null )
+                {
+                    foreach( $hash as $object )
+                    {
+                        if( $this->pickFilter->matchSingleObject(array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
+                        {
+                            $pickedObject = $object;
+                            break;
+                        }
+                    }
+                    if( $pickedObject === null )
+                        $pickedObject = reset($hash);
+                }
+                else
+                {
+                    $pickedObject = reset($hash);
+                }
+
+
+                $tmp_DG_name = $store->owner->name();
+                if( $tmp_DG_name == "" )
+                    $tmp_DG_name = 'shared';
+
+                /** @var Tag $tmp_tag */
+                $tmp_tag = $store->find( $pickedObject->name() );
+                if( $tmp_tag == null )
+                {
+                    print "   * create object in DG: '".$tmp_DG_name."' : '".$pickedObject->name()."'\n";
+
+                    $tmp_tag = $store->createTag($pickedObject->name() );
+                    $tmp_tag->setColor( $pickedObject->getColor() );
+
+                    /** @var TagStore $store */
+                    if( $this->apiMode )
+                    {
+                        $tmp_tag->API_sync();;
+                    }
+
+
+                    $countChildCreated++;
+                }
+                else
+                {
+                    if( $tmp_tag->equals( $pickedObject ) )
+                    {
+                        print "   * keeping object '{$tmp_tag->name()}'\n";
+                    }
+                    else
+                    {
+                        echo "    - SKIP: object name '{$pickedObject->name()}' [with value '{$pickedObject->getColor()}'] is not IDENTICAL to object name DG: '".$tmp_DG_name."' '{$tmp_tag->name()}' [with value '{$tmp_tag->getColor()}'] \n";
+                        continue;
+                    }
+                }
+
+                // Merging loop finally!
+                foreach( $hash as $objectIndex => $object )
+                {
+                    echo "    - replacing '{$object->_PANC_shortName()}' ...\n";
+                    #$object->__replaceWhereIamUsed($this->apiMode, $tmp_tag, TRUE, 5);
+                    $object->replaceMeGlobally($tmp_tag);
+                    #$object->merge_tag_description_to($tmp_tag, $this->apiMode);
+
+                    echo "    - deleting '{$object->_PANC_shortName()}'\n";
+                    $this->deletedObjects[$index]['kept'] = $tmp_tag->name();
+                    if( $this->deletedObjects[$index]['removed'] == "" )
+                        $this->deletedObjects[$index]['removed'] = $object->name();
+                    else
+                        $this->deletedObjects[$index]['removed'] .= "|" . $object->name();
+                    if( $this->apiMode )
+                        $object->owner->API_removeTag($object);
+                    else
+                        $object->owner->removeTag($object);
+
+                    $countChildRemoved++;
+                }
+            }
+
+
+            echo "\n\nDuplicates removal is now done. Number of objects after cleanup: '{$store->count()}' (removed {$countRemoved} tags)\n\n";
+            if( count( $child_hashMap ) >0 )
+                echo "Duplicates ChildDG removal is now done. Number of objects after cleanup: '{$store->count()}' (removed/created {$countChildRemoved}/{$countChildCreated} tags)\n\n";
 
             echo "\n\n***********************************************\n\n";
 
