@@ -564,10 +564,6 @@ class UTIL
                 $this->configOutput = PH::$args['out'];
                 if( !is_string($this->configOutput) || strlen($this->configOutput) < 1 )
                     display_error_usage_exit('"out" argument is not a valid string');
-
-                // destroy destination file if it exists
-                if( file_exists($this->configOutput) && is_file($this->configOutput) )
-                    unlink($this->configOutput);
             }
 
             $this->apiMode = FALSE;
@@ -1159,6 +1155,10 @@ class UTIL
         {
             if( $this->configOutput != '/dev/null' )
             {
+                // destroy destination file if it exists
+                if( file_exists($this->configOutput) && is_file($this->configOutput) )
+                    unlink($this->configOutput);
+
                 //          save_to_file($fileName, $printMessage=true, $lineReturn = true, $indentingXml = 0, $indentingXmlIncreament = 1 )
                 $this->pan->save_to_file($this->configOutput, $printMessage, $lineReturn, $indentingXml, $indentingXmlIncreament);
             }
