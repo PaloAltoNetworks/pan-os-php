@@ -960,6 +960,83 @@ RQuery::$defaultFilters['address']['value']['operators']['string.regex'] = array
     },
     'arg' => TRUE
 );
+RQuery::$defaultFilters['address']['value']['operators']['is.included-in.name'] = Array(
+    'Function' => function(AddressRQueryContext $context )
+    {
+        $object = $context->object;
+
+        if( $object->isTmpAddr() || $object->isGroup()  )
+        {
+            return null;
+        }
+
+
+        if( $object->isType_ipNetmask() || $object->isType_ipRange() || $object->isType_FQDN() )
+        {
+            $name = $object->name();
+            if(  $object->isType_ipRange())
+            {
+                $addr_value = $object->value();
+                $addr_value = explode( '-', $addr_value);
+                $addr_value = $addr_value[0];
+            }
+            elseif( $object->isType_FQDN() )
+                $addr_value = $object->value();
+            else
+                $addr_value = $object->getNetworkValue();
+
+            if( strpos($name, $addr_value) !== FALSE )
+                return true;
+        }
+
+        return false;
+    },
+    'arg' => false
+);
+RQuery::$defaultFilters['address']['value']['operators']['is.in.file'] = Array(
+    'Function' => function(AddressRQueryContext $context )
+    {
+        $object = $context->object;
+
+        if( !isset($context->cachedList) )
+        {
+            $text = file_get_contents($context->value);
+
+            if( $text === false )
+                derr("cannot open file '{$context->value}");
+
+            $lines = explode("\n", $text);
+            foreach( $lines as  $line)
+            {
+                $line = trim($line);
+                if(strlen($line) == 0)
+                    continue;
+                $list[$line] = true;
+            }
+
+            $context->cachedList = &$list;
+        }
+        else
+            $list = &$context->cachedList;
+
+        if( !$object->isGroup() )
+        {
+            //TODO: if not IPv4 -  return false
+            if( $object->getNetworkMask() == '32' )
+                $addr_value = $object->getNetworkValue();
+            else
+                $addr_value = $object->value();
+
+            return isset($list[ $addr_value ]);
+            //TODO: if IPv6 check
+        }
+        else
+            return false;
+
+    },
+    'arg' => true
+);
+
 RQuery::$defaultFilters['address']['description']['operators']['regex'] = array(
     'Function' => function (AddressRQueryContext $context) {
         $object = $context->object;
