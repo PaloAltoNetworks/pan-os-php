@@ -6,6 +6,7 @@ GENERAL:
 * introduce again travis for automatic unit testing
 
 UTILS:
+XYZ-merger | update functionality 'allowmergingwithupperlevel' - complete DG hierarchy is now checked & if Panorama DG has two/more childDG these childDG are checked and if duplicate objects are there, objects are merged into parentDG
 address-merger | merge TAG before duplicate object is deleted
 schedule-edit | introduce new util tool, introduce 'filter=(object is.expired)'
 rule-edit | introduce 'filter=(schedule is.expired)' - example usage: pa_rule-edit in=api://IP actions=disabled-set 'filter=(schedule is.expired)'
