@@ -1748,6 +1748,48 @@ AddressCallContext::$supportedActions[] = array(
     }
 );
 
+
+AddressCallContext::$supportedActions[] = array(
+    'name' => 'value-set-reverse-dns',
+    'MainFunction' => function (AddressCallContext $context) {
+        $object = $context->object;
+
+        if( $object->isGroup() )
+        {
+            echo $context->padding . " *** SKIPPED : object is of type GROUP\n";
+            return;
+        }
+        if( !$object->isType_ipNetmask() )
+        {
+            echo $context->padding . " *** SKIPPED : 'value-set-reverse-dns' alias is compatible with ip-netmask type objects\n";
+            return;
+        }
+        if( $object->getNetworkMask() != 32 )
+        {
+            echo $context->padding . " *** SKIPPED : 'value-set-reverse-dns' actions only works on /32 addresses\n";
+            return;
+        }
+
+        $ip = $object->getNetworkValue();
+        $reverseDns = gethostbyaddr($ip);
+
+        if( $ip == $reverseDns )
+        {
+            echo $context->padding . " *** SKIPPED : 'value-set-reverse-dns' could not be resolved\n";
+            return;
+        }
+        echo $context->padding . " - new value will be: '" . $reverseDns . " with type: fqdn'\n";
+
+        $object->setType( 'fqdn' );
+        $object->setValue($reverseDns);
+
+        if( $context->isAPI )
+            $object->API_sync();
+
+        echo "OK";
+    }
+);
+
 //starting with 7.0 PAN-OS support max. 2500 members per group, former 500
 AddressCallContext::$supportedActions[] = array(
     'name' => 'split-large-address-groups',
