@@ -7,6 +7,7 @@ GENERAL:
 
 UTILS:
 address-edit - new actions=value-set-reverse-dns
+address-edit - new actions=value-set-ip-for-fqdn
 XYZ-merger | update functionality 'allowmergingwithupperlevel' - complete DG hierarchy is now checked & if Panorama DG has two/more childDG these childDG are checked and if duplicate objects are there, objects are merged into parentDG
 address-merger | merge TAG before duplicate object is deleted
 schedule-edit | introduce new util tool, introduce 'filter=(object is.expired)'

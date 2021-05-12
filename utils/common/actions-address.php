@@ -1790,6 +1790,49 @@ AddressCallContext::$supportedActions[] = array(
     }
 );
 
+AddressCallContext::$supportedActions[] = array(
+    'name' => 'value-set-ip-for-fqdn',
+    'MainFunction' => function (AddressCallContext $context) {
+        $object = $context->object;
+
+        if( $object->isGroup() )
+        {
+            echo $context->padding . " *** SKIPPED : object is of type GROUP\n";
+            return;
+        }
+        if( !$object->isType_FQDN() )
+        {
+            echo $context->padding . " *** SKIPPED : object is NOT of type FQDN\n";
+            return;
+        }
+
+
+        $fqdn = $object->value();
+
+        $reverseDns = gethostbynamel($fqdn);
+        if( count( $reverseDns ) == 0 )
+        {
+            echo $context->padding . " *** SKIPPED : 'value-set-ip-for-fqdn' could not be resolved\n";
+            return;
+        }
+        elseif( count( $reverseDns ) > 1 )
+        {
+            echo $context->padding . " *** SKIPPED : 'value-set-ip-for-fqdn' resolved more than one IP-Address [".implode(",",$reverseDns)."]\n";
+            return;
+        }
+
+        echo $context->padding . " - new value will be: '" . $reverseDns[0] . " with type: ip-netmask'\n";
+
+        $object->setType( 'ip-netmask' );
+        $object->setValue($reverseDns[0]);
+
+        if( $context->isAPI )
+            $object->API_sync();
+
+        echo "OK";
+    }
+);
+
 //starting with 7.0 PAN-OS support max. 2500 members per group, former 500
 AddressCallContext::$supportedActions[] = array(
     'name' => 'split-large-address-groups',
