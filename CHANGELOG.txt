@@ -15,6 +15,7 @@ pa_xml-issue-detecor | extend to find for source/destination if ANY and other ob
 address-edit | extend actions=display to print tag information
 
 BUGFIX:
+address-merger | bugfix to NOT merging objects from upperlevel if same name but different type [also NOT if value is logical same] (e.g. 1.1.1.1 with type ip-netmask - do not merge with one.one.one.one of type fqdn)
 PanoramaConf | fix for TagStore to set parentCentralStore at time of reading DG hierarchy - example usage pa_rule-edit actions=tag-add:TAGNAME (if TAGNAME is defined NOT at shared but at parent DG)
 util developer scripts - fix includePath to fit into PAN-OS-PHP project
 

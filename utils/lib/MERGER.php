@@ -1048,7 +1048,7 @@ class MERGER extends UTIL
                         /** @var Address $ancestor */
                         if( $this->upperLevelSearch && !$ancestor->isGroup() && !$ancestor->isTmpAddr() && ($ancestor->isType_ipNetmask() || $ancestor->isType_ipRange() || $ancestor->isType_FQDN()) )
                         {
-                            if( $object->getIP4Mapping()->equals($ancestor->getIP4Mapping()) || $ancestor->isType_FQDN() )
+                            if( $object->getIP4Mapping()->equals($ancestor->getIP4Mapping())  || ( $object->isType_FQDN() && $ancestor->isType_FQDN() ) && ($object->value() == $ancestor->value() ) )
                             {
                                 if( $this->dupAlg == 'identical' )
                                     if( $pickedObject->name() != $ancestor->name() )
