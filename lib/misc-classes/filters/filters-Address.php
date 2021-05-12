@@ -985,7 +985,7 @@ RQuery::$defaultFilters['address']['value']['operators']['is.included-in.name'] 
             else
                 $addr_value = $object->getNetworkValue();
 
-            if( strpos($name, $addr_value) !== FALSE )
+            if( strpos(strtolower($name), strtolower($addr_value) ) !== FALSE )
                 return true;
         }
 
