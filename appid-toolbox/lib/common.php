@@ -11,7 +11,7 @@
 require_once("lib/pan_php_framework.php");
 
 $minimumVersion = "1.5.13";
-$maximumVersion = "2.0.0";
+$maximumVersion = "2.1.0";
 
 // Check version of PAN-PHP-framework for compatibility
 if( ! PH::frameworkVersion_isGreaterThan($minimumVersion) || PH::frameworkVersion_isGreaterThan($maximumVersion) )
