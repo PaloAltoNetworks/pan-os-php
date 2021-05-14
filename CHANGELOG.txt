@@ -6,6 +6,11 @@ GENERAL:
 * introduce again travis for automatic unit testing
 
 UTILS:
+pa_address-edit - new 'filter=(value is.included-in.name)' | to check if object value is part of object name
+pa_address-edit - new 'filter=(value is.in.file FILENAME)'
+address-edit - new actions=value-set-reverse-dns
+address-edit - new actions=value-set-ip-for-fqdn
+XYZ-merger | update functionality 'allowmergingwithupperlevel' - complete DG hierarchy is now checked & if Panorama DG has two/more childDG these childDG are checked and if duplicate objects are there, objects are merged into parentDG
 address-merger | merge TAG before duplicate object is deleted
 schedule-edit | introduce new util tool, introduce 'filter=(object is.expired)'
 rule-edit | introduce 'filter=(schedule is.expired)' - example usage: pa_rule-edit in=api://IP actions=disabled-set 'filter=(schedule is.expired)'
@@ -13,6 +18,7 @@ pa_xml-issue-detecor | extend to find for source/destination if ANY and other ob
 address-edit | extend actions=display to print tag information
 
 BUGFIX:
+address-merger | bugfix to NOT merging objects from upperlevel if same name but different type [also NOT if value is logical same] (e.g. 1.1.1.1 with type ip-netmask - do not merge with one.one.one.one of type fqdn)
 PanoramaConf | fix for TagStore to set parentCentralStore at time of reading DG hierarchy - example usage pa_rule-edit actions=tag-add:TAGNAME (if TAGNAME is defined NOT at shared but at parent DG)
 util developer scripts - fix includePath to fit into PAN-OS-PHP project
 

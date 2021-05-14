@@ -477,6 +477,42 @@ trait AddressCommon
             if(  (get_class($objectRef) == "AddressGroup") && $objectRef->isDynamic() )
                 continue;
 
+
+            if( ($this->isAddress() && $withObject->isAddress()) )
+            {
+                if( $this->type() !== $withObject->type() )
+                {
+                    print "- SKIP: not possible due to different object type\n";
+                    continue;
+                }
+
+                $tmp_store = null;
+                if(  (get_class($objectRef) == "AddressGroup") )
+                    $tmp_store = $objectRef->owner;
+                elseif(  (get_class($objectRef) == "NatRule") )
+                    $tmp_store = $objectRef->owner->owner->addressStore;
+                elseif( (get_class($objectRef) == "AddressRuleContainer") )
+                    $tmp_store = $objectRef->owner->owner->owner->addressStore;
+                else
+                    $tmp_store = $objectRef->owner->owner->owner->addressStore;
+
+                $tmp_addr = $tmp_store->find( $withObject->name() );
+                if( $tmp_addr === null )
+                    $tmp_addr = $tmp_store->parentCentralStore->find( $withObject->name() );
+
+                if( $withObject->value() !== $tmp_addr->value() )
+                {
+                    if( $this->type() !== $withObject->type() || $withObject->getNetworkValue() !== $tmp_addr->getNetworkValue())
+                    {
+                        print "- SKIP: not possible to replace due to different value: {$objectRef->toString()}";
+                        print " - '".$withObject->value()."' | '".$tmp_addr->value()."'\n";
+                        continue;
+                    }
+                }
+            }
+
+
+
             if( $displayOutput )
                 echo $outputPadding . "- replacing in {$objectRef->toString()}\n";
             if( $apiMode )
