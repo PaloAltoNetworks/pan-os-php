@@ -39,10 +39,10 @@ class SecurityProfileGroupStore extends ObjStore
         $this->o = array();
 
         if( isset($owner->parentDeviceGroup) && $owner->parentDeviceGroup !== null )
-            $this->parentCentralStore = $owner->parentDeviceGroup->SecurityProfileGroupStore;
+            $this->parentCentralStore = $owner->parentDeviceGroup->securityProfileGroupStore;
         elseif( isset($owner->parentContainer) && $owner->parentContainer !== null )
         {
-            $this->parentCentralStore = $owner->parentContainer->SecurityProfileGroupStore;
+            $this->parentCentralStore = $owner->parentContainer->securityProfileGroupStore;
         }
         else
             $this->findParentCentralStore();
