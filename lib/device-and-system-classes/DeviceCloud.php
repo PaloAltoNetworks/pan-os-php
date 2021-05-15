@@ -176,7 +176,7 @@ class DeviceCloud
         $this->URLProfileStore = new SecurityProfileStore($this, "URLProfileStore");
         $this->URLProfileStore->name = 'URL';
 
-        #$this->AntiVirusProfileStore = new SecurityProfileStore($this, "SecurityProfileAntiVirus");
+        #$this->AntiVirusProfileStore = new SecurityProfileStore($this, "AntiVirusProfileStore");
         #$this->AntiVirusProfileStore->name = 'AntiVirus';
 
         $this->VirusAndWildfireProfileStore = new SecurityProfileStore($this, "VirusAndWildfireProfileStore");

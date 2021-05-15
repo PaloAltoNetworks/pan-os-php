@@ -2,7 +2,7 @@
 
 /**
  * Class SecProfRQueryContext
- * @property SecurityProfileURL $object
+ * @property URLProfileStore $object
  * @ignore
  */
 class SecurityProfileRQueryContext extends RQueryContext

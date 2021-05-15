@@ -4,7 +4,7 @@
 /**
  * @property $_ip4Map IP4Map cached ip start and end value for fast optimization
  */
-class SecurityProfileVulnerability
+class FileBlockingProfileStore
 {
     use ReferenceableObject;
     use PathableName;
@@ -18,6 +18,17 @@ class SecurityProfileVulnerability
 
     /** @var SecurityProfileStore|null */
     public $owner;
+
+
+    public $ftp = array();
+    public $http = array();
+    public $imap = array();
+    public $pop3 = array();
+    public $smb = array();
+    public $smtp = array();
+
+
+    public $tmp_virus_prof_array = array('ftp', 'http', 'imap', 'pop3', 'smb', 'smtp');
 
 
     /**
@@ -37,9 +48,7 @@ class SecurityProfileVulnerability
 
             $node = DH::findFirstElementOrDie('entry', $doc);
 
-            $rootDoc = $owner->xmlroot->ownerDocument;
-            #$rootDoc = $this->owner->securityProfileRoot->ownerDocument;
-
+            $rootDoc = $this->owner->securityProfileRoot->ownerDocument;
             $this->xmlroot = $rootDoc->importNode($node, TRUE);
             $this->load_from_domxml($this->xmlroot);
 
@@ -84,12 +93,12 @@ class SecurityProfileVulnerability
      */
     public function load_from_domxml(DOMElement $xml)
     {
-        $secprof_type = "vulnerability";
+        $secprof_type = "file-blocking";
         $this->xmlroot = $xml;
 
         $this->name = DH::findAttribute('name', $xml);
         if( $this->name === FALSE )
-            derr("Vulnerability SecurityProfile name not found\n");
+            derr("FileBlocking SecurityProfile name not found\n");
 
         #print "\nsecprofURL TMP: object named '".$this->name."' found\n";
 

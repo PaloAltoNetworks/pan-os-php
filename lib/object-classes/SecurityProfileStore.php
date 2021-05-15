@@ -15,10 +15,10 @@ class SecurityProfileStore extends ObjStore
 
     public $nameIndex = array();
 
-    /** @var SecurityProfileURL[] */
+    /** @var URLProfileStore[] */
     public $_all = array();
 
-    /** @var SecurityProfileURL[] */
+    /** @var URLProfileStore[] */
     public $_SecurityProfiles = array();
 
 
@@ -181,7 +181,7 @@ $this->customURLProfileStore = new SecurityProfileStore($this, "customURLProfile
                     continue;
                 }
                 $tmp_name = DH::findAttribute('name', $node);
-                /** @var SecurityProfileURL|CustomSecurityProfileURL $nr */
+                /** @var URLProfileStore|customURLProfileStore $nr */
                 $nr = new $this->type($tmp_name, $this);
                 $nr->load_from_domxml($node);
                 if( PH::$enableXmlDuplicatesDeletion )
@@ -226,7 +226,7 @@ $this->customURLProfileStore = new SecurityProfileStore($this, "customURLProfile
     /**
      * Look for a rule named $name. Return NULL if not found
      * @param string $name
-     * @return null|SecurityProfileURL|SecurityProfileAntiVirus|CustomSecurityProfileURL
+     * @return null|URLProfileStore|AntiVirusProfileStore|customURLProfileStore
      */
     public function find($name)
     {
@@ -240,7 +240,7 @@ $this->customURLProfileStore = new SecurityProfileStore($this, "customURLProfile
     }
 
     /**
-     * @param SecurityProfileURL|SecurityProfileAntiVirus|CustomSecurityProfileURL
+     * @param URLProfileStore|AntiVirusProfileStore|customURLProfileStore
      * @return bool
      */
     function inStore($SecurityProfile)
@@ -256,7 +256,7 @@ $this->customURLProfileStore = new SecurityProfileStore($this, "customURLProfile
     /**
      * Returns an Array with all SecurityProfiles inside this store
      * @param null|string|string[] $withFilter
-     * @return CustomProfileURL[]|SecurityProfileURL
+     * @return CustomProfileURL[]|URLProfileStore
      */
     public function &securityProfiles($withFilter = null)
     {
@@ -358,7 +358,7 @@ $this->customURLProfileStore = new SecurityProfileStore($this, "customURLProfile
 
 
     /**
-     * @param SecurityProfileURL|CustomSecurityProfileURL|SecurityProfileAntiVirus|SecurityProfileAntiSpyware|SecurityProfileFileBlocking|SecurityProfileVulnerability|SecurityProfileWildfire|SecurityProfileVirusAndWildfire|SecurityProfileDNSSecurity|DecryptionProfile|HipObjectsProfile|HipProfilesProfile $rule
+     * @param URLProfileStore|customURLProfileStore|AntiVirusProfileStore|AntiSpywareProfileStore|FileBlockingProfileStore|VulnerabilityProfileStore|WildfireProfileStore|VirusAndWildfireProfileStore|DNSSecurityProfileStore|DecryptionProfileStore|HipObjectsProfileStore|HipProfilesProfileStore $rule
      * @return bool
      */
     public function addSecurityProfile($rule)
@@ -409,16 +409,16 @@ $this->customURLProfileStore = new SecurityProfileStore($this, "customURLProfile
 
 
     /**
-     * Creates a new SecurityProfileURL in this store. It will be placed at the end of the list.
+     * Creates a new URLProfileStore in this store. It will be placed at the end of the list.
      * @param string $name name of the new Rule
      * @param bool $inPost create it in post or pre (if applicable)
-     * @return SecurityProfileURL
+     * @return URLProfileStore
      */
     public function newSecurityProfileURL($name)
     {
-        $rule = new SecurityProfileURL($this);
+        $rule = new URLProfileStore($this);
 
-        $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, SecurityProfileURL::$templatexml);
+        $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, URLProfileStore::$templatexml);
         $rule->load_from_domxml($xmlElement);
 
         $rule->owner = null;
@@ -430,16 +430,16 @@ $this->customURLProfileStore = new SecurityProfileStore($this, "customURLProfile
     }
 
     /**
-     * Creates a new CustomSecurityProfileURL in this store. It will be placed at the end of the list.
+     * Creates a new customURLProfileStore in this store. It will be placed at the end of the list.
      * @param string $name name of the new Rule
      * @param bool $inPost create it in post or pre (if applicable)
-     * @return CustomSecurityProfileURL
+     * @return customURLProfileStore
      */
     public function newCustomSecurityProfileURL($name)
     {
-        $rule = new CustomSecurityProfileURL($this);
+        $rule = new customURLProfileStore($this);
 
-        $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, CustomSecurityProfileURL::$templatexml);
+        $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, customURLProfileStore::$templatexml);
         $rule->load_from_domxml($xmlElement);
 
         $rule->owner = null;
@@ -454,7 +454,7 @@ $this->customURLProfileStore = new SecurityProfileStore($this, "customURLProfile
      * Creates a new PredefinedSecurityProfileURL in this store. It will be placed at the end of the list.
      * @param string $name name of the new Rule
      * @param bool $inPost create it in post or pre (if applicable)
-     * @return CustomSecurityProfileURL
+     * @return customURLProfileStore
      */
     public function newPredefinedSecurityProfileURL($name)
     {

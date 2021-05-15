@@ -7,7 +7,7 @@
  *
  */
 
-class HipProfilesProfile
+class customURLProfileStore
 {
     use ReferenceableObject;
     use PathableName;
@@ -17,6 +17,11 @@ class HipProfilesProfile
     /** @var SecurityProfileStore|null */
     public $owner = null;
 
+    /** @var array $members */
+    private $members = array();
+
+    /** @var DOMElement */
+    private $membersRoot = null;
 
     /**
      * @param SecurityProfileStore|null $owner
@@ -74,6 +79,29 @@ class HipProfilesProfile
     }
 
     /**
+     * Add a member to this group, it must be passed as an object
+     * @param string $newMember Object to be added
+     * @param bool $rewriteXml
+     * @return bool
+     */
+    public function addMember($newMember, $rewriteXml = TRUE)
+    {
+
+        if( !in_array($newMember, $this->members, TRUE) )
+        {
+            $this->members[] = $newMember;
+            if( $rewriteXml && $this->owner !== null )
+            {
+                DH::createElement($this->membersRoot, 'member', $newMember);
+            }
+
+            return TRUE;
+        }
+
+        return FALSE;
+    }
+
+    /**
      * @return string
      */
     public function &getXPath()
@@ -102,10 +130,28 @@ class HipProfilesProfile
 
         $this->name = DH::findAttribute('name', $xml);
         if( $this->name === FALSE )
-            derr("HipProfiles name not found\n", $xml);
+            derr("CustomProfileURL name not found\n", $xml);
 
         if( strlen($this->name) < 1 )
-            derr("HipProfiles name '" . $this->name . "' is not valid.", $xml);
+            derr("CustomProfileURL name '" . $this->name . "' is not valid.", $xml);
+
+        $this->membersRoot = DH::findFirstElement('list', $xml);
+        if( $this->membersRoot !== FALSE )
+        {
+            foreach( $this->membersRoot->childNodes as $node )
+            {
+                if( $node->nodeType != 1 ) continue;
+
+                $memberName = $node->textContent;
+
+                if( strlen($memberName) < 1 )
+                    derr('found a member with empty name !', $node);
+
+                #$f = $this->owner->findOrCreate($memberName, $this, true);
+                $this->members[] = $memberName;
+
+            }
+        }
 
         return TRUE;
     }
@@ -125,13 +171,19 @@ class HipProfilesProfile
             }
         }*/
 
+        print "\n";
+
+        foreach( $this->members as $member )
+        {
+            print "        - " . $member . "\n";
+        }
 
         print "\n\n";
     }
 
     static public $templatexml = '<entry name="**temporarynamechangeme**"></entry>';
 
-    public function isDecryptionProfile()
+    public function isCustomURL()
     {
         return TRUE;
     }
