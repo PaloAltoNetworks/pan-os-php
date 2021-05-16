@@ -1,0 +1,4 @@
+[submodule "git-php"]
+	path = git-php
+	url = https://github.com/swaschkut/git-php
+	branch = master
