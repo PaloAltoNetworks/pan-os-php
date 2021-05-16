@@ -194,7 +194,10 @@ class ScheduleStore extends ObjStore
 
         if( $ret && !$schedule->isTmp() && $this->xmlroot !== null )
         {
-            $this->xmlroot->removeChild($schedule->xmlroot);
+            if( $this->count() > 0 )
+                $this->xmlroot->removeChild($schedule->xmlroot);
+            else
+                DH::clearDomNodeChilds($this->xmlroot);
         }
 
         return $ret;

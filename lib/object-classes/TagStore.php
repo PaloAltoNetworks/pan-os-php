@@ -192,7 +192,10 @@ class TagStore extends ObjStore
 
         if( $ret && !$tag->isTmp() && $this->xmlroot !== null )
         {
-            $this->xmlroot->removeChild($tag->xmlroot);
+            if( $this->count() > 0 )
+                $this->xmlroot->removeChild($tag->xmlroot);
+            else
+                DH::clearDomNodeChilds($this->xmlroot);
         }
 
         return $ret;

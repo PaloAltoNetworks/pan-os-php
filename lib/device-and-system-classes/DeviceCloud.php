@@ -170,28 +170,28 @@ class DeviceCloud
         $this->addressStore->name = 'addresses';
 
 
-        $this->customURLProfileStore = new SecurityProfileStore($this, "CustomSecurityProfileURL");
+        $this->customURLProfileStore = new SecurityProfileStore($this, "customURLProfileStore");
         $this->customURLProfileStore->name = 'CustomURL';
 
-        $this->URLProfileStore = new SecurityProfileStore($this, "SecurityProfileURL");
+        $this->URLProfileStore = new SecurityProfileStore($this, "URLProfileStore");
         $this->URLProfileStore->name = 'URL';
 
-        #$this->AntiVirusProfileStore = new SecurityProfileStore($this, "SecurityProfileAntiVirus");
+        #$this->AntiVirusProfileStore = new SecurityProfileStore($this, "AntiVirusProfileStore");
         #$this->AntiVirusProfileStore->name = 'AntiVirus';
 
-        $this->VirusAndWildfireProfileStore = new SecurityProfileStore($this, "SecurityProfileVirusAndWildfire");
+        $this->VirusAndWildfireProfileStore = new SecurityProfileStore($this, "VirusAndWildfireProfileStore");
         $this->VirusAndWildfireProfileStore->name = 'VirusAndWildfire';
 
-        $this->DNSSecurityProfileStore = new SecurityProfileStore($this, "SecurityProfileDNSSecurity");
+        $this->DNSSecurityProfileStore = new SecurityProfileStore($this, "DNSSecurityProfileStore");
         $this->DNSSecurityProfileStore->name = 'DNSSecurity';
 
-        $this->VulnerabilityProfileStore = new SecurityProfileStore($this, "SecurityProfileVulnerability");
+        $this->VulnerabilityProfileStore = new SecurityProfileStore($this, "VulnerabilityProfileStore");
         $this->VulnerabilityProfileStore->name = 'Vulnerability';
 
-        $this->AntiSpywareProfileStore = new SecurityProfileStore($this, "SecurityProfileAntiSpyware");
+        $this->AntiSpywareProfileStore = new SecurityProfileStore($this, "AntiSpywareProfileStore");
         $this->AntiSpywareProfileStore->name = 'AntiSpyware';
 
-        $this->FileBlockingProfileStore = new SecurityProfileStore($this, "SecurityProfileFileBlocking");
+        $this->FileBlockingProfileStore = new SecurityProfileStore($this, "FileBlockingProfileStore");
         $this->FileBlockingProfileStore->name = 'FileBlocking';
 
         #$this->WildfireProfileStore = new SecurityProfileStore($this, "SecurityProfileWildFire");
@@ -202,13 +202,13 @@ class DeviceCloud
         $this->securityProfileGroupStore->name = 'SecurityProfileGroups';
 
 
-        $this->DecryptionProfileStore = new SecurityProfileStore($this, "DecryptionProfile");
+        $this->DecryptionProfileStore = new SecurityProfileStore($this, "DecryptionProfileStore");
         $this->DecryptionProfileStore->name = 'Decryption';
 
-        $this->HipObjectsProfileStore = new SecurityProfileStore($this, "HipObjectsProfile");
+        $this->HipObjectsProfileStore = new SecurityProfileStore($this, "HipObjectsProfileStore");
         $this->HipObjectsProfileStore->name = 'HipObjects';
 
-        $this->HipProfilesProfileStore = new SecurityProfileStore($this, "HipProfilesProfile");
+        $this->HipProfilesProfileStore = new SecurityProfileStore($this, "HipProfilesProfileStore");
         $this->HipProfilesProfileStore->name = 'HipProfiles';
 
 

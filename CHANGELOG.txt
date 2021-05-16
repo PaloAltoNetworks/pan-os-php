@@ -1,7 +1,13 @@
 CHANGELOG
 
+2.0.2
 
-2.0.1
+BUGFIX:
+class SecurityProfileStore/SecurityProfileGroup - related to classes Container/DeviceCloud/PanoramaConf/PanConf/VirtualSystem/DeviceGroup - correction of SecurityProfileStore type - fix related if argument 'loadpanoramapushedconfig' was used
+pa_tag-edit/pa_schedule-edit/pa_rule-edit - fix XML out file; if all objects are deleted, so that XML Node do not contain any Newline
+
+
+2.0.1 (20210514)
 GENERAL:
 * introduce again travis for automatic unit testing
 

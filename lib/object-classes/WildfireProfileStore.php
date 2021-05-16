@@ -4,7 +4,7 @@
 /**
  * @property $_ip4Map IP4Map cached ip start and end value for fast optimization
  */
-class SecurityProfileDNSSecurity
+class WildfireProfileStore
 {
     use ReferenceableObject;
     use PathableName;
@@ -37,14 +37,7 @@ class SecurityProfileDNSSecurity
 
             $node = DH::findFirstElementOrDie('entry', $doc);
 
-            if( is_object( $owner->xmlroot ) )
-                $rootDoc = $owner->xmlroot->ownerDocument;
-            else
-            {
-                $owner->createXmlRoot();
-                $rootDoc = $owner->xmlroot->ownerDocument;
-            }
-            #$rootDoc = $this->owner->securityProfileRoot->ownerDocument;
+            $rootDoc = $this->owner->securityProfileRoot->ownerDocument;
             $this->xmlroot = $rootDoc->importNode($node, TRUE);
             $this->load_from_domxml($this->xmlroot);
 
@@ -87,30 +80,16 @@ class SecurityProfileDNSSecurity
      * @return bool TRUE if loaded ok, FALSE if not
      * @ignore
      */
-    public function load_from_domxml(DOMElement $xml, $withoutname = false)
+    public function load_from_domxml(DOMElement $xml)
     {
-        $secprof_type = "dns-security";
+        $secprof_type = "wildfire";
         $this->xmlroot = $xml;
 
-        if( !$withoutname )
-        {
-            $this->name = DH::findAttribute('name', $xml);
-            if( $this->name === FALSE )
-                derr("DNS-Security SecurityProfile name not found\n");
-        }
+        $this->name = DH::findAttribute('name', $xml);
+        if( $this->name === FALSE )
+            derr("WildFire SecurityProfile name not found\n");
 
 
-        #print "\nsecprofURL TMP: object named '".$this->name."' found\n";
-
-        #$this->owner->_SecurityProfiles[$secprof_type][$this->name] = $this;
-        #$this->owner->_all[$secprof_type][$this->name] = $this;
-        #$this->owner->o[] = $this;
-
-
-        //predefined URL category
-        //$tmp_array[$secprof_type][$typeName]['allow']['URL category'] = all predefined URL category
-
-/*
         $tmp_rule = DH::findFirstElement('rules', $xml);
         if( $tmp_rule !== FALSE )
         {
@@ -199,9 +178,7 @@ class SecurityProfileDNSSecurity
                 }
             }
         }
-*/
 
-/*
         $tmp_threat_exception = DH::findFirstElement('threat-exception', $xml);
         if( $tmp_threat_exception !== FALSE )
         {
@@ -226,7 +203,6 @@ class SecurityProfileDNSSecurity
                 }
             }
         }
-*/
 
         #print_r( $tmp_array );
 
