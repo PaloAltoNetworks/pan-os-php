@@ -1310,7 +1310,12 @@ class RuleStore
             unset($this->fastNameToIndex[$rule->name()]);
             unset($this->_rules[$this->fastMemToIndex[$serial]]);
             unset($this->fastMemToIndex[$serial]);
-            $this->xmlroot->removeChild($rule->xmlroot);
+
+            if( count($this->_rules) > 0 )
+                $this->xmlroot->removeChild($rule->xmlroot);
+            else
+                DH::clearDomNodeChilds($this->xmlroot);
+
             $rule->owner = null;
 
             if( $deleteForever )
@@ -1324,7 +1329,12 @@ class RuleStore
                 unset($this->fastNameToIndex_forPost[$rule->name()]);
                 unset($this->_postRules[$this->fastMemToIndex_forPost[$serial]]);
                 unset($this->fastMemToIndex_forPost[$serial]);
-                $this->postRulesRoot->removeChild($rule->xmlroot);
+
+                if( count($this->_postRules ) > 0 )
+                    $this->postRulesRoot->removeChild($rule->xmlroot);
+                else
+                    DH::clearDomNodeChilds($this->xmlroot);
+
                 $rule->owner = null;
 
                 if( $deleteForever )
