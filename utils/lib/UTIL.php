@@ -10,9 +10,10 @@ require_once(dirname(__FILE__)."/SECURITYPROFILEUTIL.php");
 
 require_once(dirname(__FILE__)."/RULEMERGER.php");
 
+use CzProject\GitPhp\Git as Git;
+
 class UTIL
 {
-
     public $configType = null;
     public $configInput = null;
     public $configOutput = null;
@@ -52,6 +53,7 @@ class UTIL
 
     public $utilType = null;
     public $PHP_FILE = null;
+
 
     function __construct($utilType, $argv, $PHP_FILE, $_supportedArguments = array(), $_usageMsg = "")
     {
@@ -129,6 +131,7 @@ class UTIL
         $this->supportedArguments['expedition'] = array('niceName' => 'expedition', 'shortHelp' => 'only used if called from Expedition Tool');
         $this->supportedArguments['template'] = array('niceName' => 'template', 'shortHelp' => 'Panorama template');
         $this->supportedArguments['loadpanoramapushedconfig'] = array('niceName' => 'loadPanoramaPushedConfig', 'shortHelp' => 'load Panorama pushed config from the firewall to take in account panorama objects and rules');
+        $this->supportedArguments['git'] = array('niceName' => 'Git', 'shortHelp' => 'if argument git is used, git repository is created to track changes for input file');
     }
 
     public function utilInit()
@@ -1150,6 +1153,25 @@ class UTIL
             $indentingXml = -1;
             $indentingXmlIncreament = 0;
         }
+
+
+        if( PH::$args['git'] )
+        {
+            /** @var Git $git */
+            $git = new Git();
+
+            $directory = dirname( $this->configInput['filename'] );
+            $filename = basename( $this->configInput['filename'] );
+
+            $repo = $git->init($directory);
+            $repo->addFile($filename);
+            #$repo->addAllChanges();
+
+            $repo->commit($filename.' before save of: '.$this->PHP_FILE );
+
+            $this->configOutput = $this->configInput['filename'];
+        }
+
         // save our work !!!
         if( $this->configOutput !== null )
         {
@@ -1161,6 +1183,13 @@ class UTIL
 
                 //          save_to_file($fileName, $printMessage=true, $lineReturn = true, $indentingXml = 0, $indentingXmlIncreament = 1 )
                 $this->pan->save_to_file($this->configOutput, $printMessage, $lineReturn, $indentingXml, $indentingXmlIncreament);
+
+                if( PH::$args['git'] )
+                {
+                    $repo = $git->init($directory);
+                    $repo->addFile($filename);
+                    $repo->commit($this->PHP_FILE . " | " . implode(", ", PH::$argv ) );
+                }
             }
         }
 
