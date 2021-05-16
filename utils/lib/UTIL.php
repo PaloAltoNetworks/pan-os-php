@@ -1155,7 +1155,7 @@ class UTIL
         }
 
 
-        if( PH::$args['git'] )
+        if( isset(PH::$args['git']) && PH::$args['git'] )
         {
             /** @var Git $git */
             $git = new Git();
@@ -1184,7 +1184,7 @@ class UTIL
                 //          save_to_file($fileName, $printMessage=true, $lineReturn = true, $indentingXml = 0, $indentingXmlIncreament = 1 )
                 $this->pan->save_to_file($this->configOutput, $printMessage, $lineReturn, $indentingXml, $indentingXmlIncreament);
 
-                if( PH::$args['git'] )
+                if( isset(PH::$args['git']) && PH::$args['git'] )
                 {
                     $repo = $git->init($directory);
                     $repo->addFile($filename);
