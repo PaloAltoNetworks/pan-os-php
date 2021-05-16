@@ -126,6 +126,18 @@ require_once $basedir . '/classes/taskManagement/TaskReporter.php';
 require_once $basedir . '/classes/taskManagement/ExpeditionTaskReporter.php';
 require_once $basedir . '/classes/taskManagement/FileTaskReporter.php';
 
+require_once $basedir . '/../git-php/src/IRunner.php';
+require_once $basedir . '/../git-php/src/Runners/CliRunner.php';
+require_once $basedir . '/../git-php/src/Runners/MemoryRunner.php';
+require_once $basedir . '/../git-php/src/CommandProcessor.php';
+require_once $basedir . '/../git-php/src/Commit.php';
+require_once $basedir . '/../git-php/src/CommitId.php';
+require_once $basedir . '/../git-php/src/Helpers.php';
+require_once $basedir . '/../git-php/src/exceptions.php';
+require_once $basedir . '/../git-php/src/RunnerResult.php';
+require_once $basedir . '/../git-php/src/GitRepository.php';
+require_once $basedir . '/../git-php/src/Git.php';
+
 
 require_once $basedir . '/misc-classes/trait/ReferenceableObject.php';
 require_once $basedir . '/misc-classes/trait/XmlConvertible.php';
