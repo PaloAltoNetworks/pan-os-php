@@ -105,6 +105,19 @@ RQuery::$defaultFilters['address']['object']['operators']['is.fqdn'] = array(
         'input' => 'input/panorama-8.0.xml'
     )
 );
+RQuery::$defaultFilters['address']['object']['operators']['is.ip-wildcard'] = array(
+    'Function' => function (AddressRQueryContext $context) {
+        if( !$context->object->isGroup() )
+            return $context->object->isType_ipWildcard() == TRUE;
+        else
+            return FALSE;
+    },
+    'arg' => FALSE,
+    'ci' => array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 RQuery::$defaultFilters['address']['object']['operators']['is.ipv4'] = Array(
     'Function' => function(AddressRQueryContext $context )
     {
