@@ -43,9 +43,16 @@ $pa_migration_parser = "parser";
 $pa_address_edit = "address";
 $pa_service_edit = "service";
 $pa_tag_edit = "tag";
-$pa_zone_edit = "tag";
+$pa_zone_edit = "zone";
 $pa_rule_edit = "rule";
 $pa_rule_stats = "stats";
+
+$pa_address_merger = "address-merger";
+$pa_addressgroup_merger = "addressgroup-merger";
+$pa_service_merger = "service-merger";
+$pa_servicegroup_merger = "servicegroup-merger";
+$pa_tag_merger = "tag-merger";
+
 ###############################################################################
 //MIGRATION PLAYBOOK
 ###############################################################################
@@ -58,6 +65,11 @@ $command_array = array();
 $command_array[] = array( $pa_migration_parser, "vendor=".$vendor, "file=".$file, "stats" );
 $command_array[] = array( $pa_rule_stats );
 $command_array[] = array( $pa_address_edit, "location=vsys1", "actions=display", "filter=(object is.unused.recursive)", "stats" );
+#$command_array[] = array( $pa_address_merger, "location=any", "allowmergingwithupperlevel", "shadow-ignoreInvalidAddressObjects", "stats" );
+#$command_array[] = array( $pa_addressgroup_merger, "location=any", "allowmergingwithupperlevel", "shadow-ignoreInvalidAddressObjects", "stats" );
+#$command_array[] = array( $pa_service_merger, "location=any", "allowmergingwithupperlevel", "shadow-ignoreInvalidAddressObjects", "stats" );
+#$command_array[] = array( $pa_servicegroup_merger, "location=any", "allowmergingwithupperlevel", "shadow-ignoreInvalidAddressObjects", "stats" );
+#$command_array[] = array( $pa_tag_merger, "location=any", "allowmergingwithupperlevel", "shadow-ignoreInvalidAddressObjects", "stats" );
 
 
 ###############################################################################
@@ -142,6 +154,12 @@ foreach( $command_array as $key => $command )
         $tool = "pa_rule-stats";
         print_tool_usage( $tool, PH::$argv );
         $stats = new STATSUTIL( $script, $argv, $tool );
+    }
+    elseif( $script == $pa_rule_edit )
+    {
+        $tool = "pa_rule-edit";
+        print_tool_usage( $tool, PH::$argv );
+        $util = new RULEUTIL($script, $argv, $tool);
     }
     else
     {
