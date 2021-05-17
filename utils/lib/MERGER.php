@@ -707,6 +707,12 @@ class MERGER extends UTIL
                 }
                 else
                 {
+                    if( !$tmp_address->isGroup() )
+                    {
+                        echo "    - SKIP: object name '{$pickedObject->name()}' of type AddressGroup can not be merged with object name DG: '".$tmp_DG_name."' '{$tmp_address->name()}' of type Address \n";
+                        continue;
+                    }
+
                     $pickedObject_value = $hashGenerator($pickedObject);
                     $tmp_address_value = $hashGenerator($tmp_address);
 
@@ -1997,7 +2003,7 @@ class MERGER extends UTIL
                         }
                         else
                         {
-                            echo "    - SKIP: object name '{$pickedObject->name()}' [with value '{$pickedObject->value()}'] is not IDENTICAL to object name DG: '".$tmp_DG_name."' '{$tmp_service->name()}' [with value '{$tmp_service->getDestPort()}'] \n";
+                            echo "    - SKIP: object name '{$pickedObject->name()}' [with value '{$pickedObject->getDestPort()}'] is not IDENTICAL to object name DG: '".$tmp_DG_name."' '{$tmp_service->name()}' [with value '{$tmp_service->getDestPort()}'] \n";
                             continue;
                         }
                     }

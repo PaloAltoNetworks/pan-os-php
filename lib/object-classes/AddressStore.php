@@ -850,7 +850,7 @@ class AddressStore
                     $objects_overwritten[$o->name()][$tmp_o->owner->owner->name()] = $tmp_o;
                     $objects_overwritten[$o->name()][$location] = $o;
 
-                    if( $tmp_ref_count == 0 )
+                    if( $tmp_ref_count == 0 && $tmp_o->isAddress() )
                     {
                         // if object is /32, let's remove it to match equivalent non /32 syntax
                         $tmp_value = $tmp_o->value();
