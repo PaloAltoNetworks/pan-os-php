@@ -33,6 +33,7 @@ $supportedArguments[] = array('niceName' => 'allowMergingWithUpperLevel', 'short
 $supportedArguments[] = array('niceName' => 'help', 'shortHelp' => 'this message');
 $supportedArguments[] = array('niceName' => 'exportCSV', 'shortHelp' => 'when this argument is specified, it instructs the script to print out the kept and removed objects per value');
 $supportedArguments[] = array('niceName' => 'DebugAPI', 'shortHelp' => 'prints API calls when they happen');
+$supportedArguments[] = array('niceName' => 'Git', 'shortHelp' => 'if argument git is used, git repository is created to track changes for input file');
 
 
 $usageMsg = PH::boldText('USAGE: ') . "php " . basename(__FILE__) . " in=inputfile.xml [out=outputfile.xml] location=shared ['pickFilter=(name regex /^H-/)']\n" .
