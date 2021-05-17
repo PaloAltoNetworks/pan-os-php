@@ -290,6 +290,7 @@ class cidr
     static public function &stringToStartEnd($value)
     {
         $result = array();
+        $result['network'] = $value;
 
         $ex = explode('-', $value);
         if( filter_var($ex[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== FALSE )
@@ -394,7 +395,7 @@ class cidr
             }
         }
 
-        $result['network'] = $value;
+
         $result['start'] = $subNetwork;
         $result['end'] = $subBroadcast;
 
