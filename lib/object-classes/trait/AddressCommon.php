@@ -500,6 +500,12 @@ trait AddressCommon
                 if( $tmp_addr === null )
                     $tmp_addr = $tmp_store->parentCentralStore->find( $withObject->name() );
 
+                if( !$tmp_addr->isAddress() )
+                {
+                    print "- SKIP: not possible due to different object type\n";
+                    continue;
+                }
+                
                 if( $withObject->value() !== $tmp_addr->value() )
                 {
                     if( $this->type() !== $withObject->type() || $withObject->getNetworkValue() !== $tmp_addr->getNetworkValue())
