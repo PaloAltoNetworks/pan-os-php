@@ -1997,7 +1997,7 @@ class MERGER extends UTIL
                         }
                         else
                         {
-                            echo "    - SKIP: object name '{$pickedObject->name()}' [with value '{$pickedObject->value()}'] is not IDENTICAL to object name DG: '".$tmp_DG_name."' '{$tmp_service->name()}' [with value '{$tmp_service->getDestPort()}'] \n";
+                            echo "    - SKIP: object name '{$pickedObject->name()}' [with value '{$pickedObject->getDestPort()}'] is not IDENTICAL to object name DG: '".$tmp_DG_name."' '{$tmp_service->name()}' [with value '{$tmp_service->getDestPort()}'] \n";
                             continue;
                         }
                     }
