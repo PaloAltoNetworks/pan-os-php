@@ -707,6 +707,12 @@ class MERGER extends UTIL
                 }
                 else
                 {
+                    if( !$tmp_address->isGroup() )
+                    {
+                        echo "    - SKIP: object name '{$pickedObject->name()}' of type AddressGroup can not be merged with object name DG: '".$tmp_DG_name."' '{$tmp_address->name()}' of type Address \n";
+                        continue;
+                    }
+
                     $pickedObject_value = $hashGenerator($pickedObject);
                     $tmp_address_value = $hashGenerator($tmp_address);
 
