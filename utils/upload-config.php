@@ -13,6 +13,8 @@ print "************ UPLOAD CONFIG UTILITY ************\n\n";
 set_include_path(dirname(__FILE__) . '/../' . PATH_SEPARATOR . get_include_path());
 require_once dirname(__FILE__)."/../lib/pan_php_framework.php";
 
+use CzProject\GitPhp\Git as Git;
+
 function dirname_cleanup_win()
 {
     $tmp_dirname = dirname(__FILE__);
@@ -142,7 +144,7 @@ $supportedArguments['preservemgmtusers'] = array('niceName' => 'preserveMgmtUser
 $supportedArguments['preservemgmtsystem'] = array('niceName' => 'preserveMgmtSystem', 'shortHelp' => 'preserves what is in /config/devices/entry/deviceconfig/system');
 $supportedArguments['injectuseradmin2'] = array('niceName' => 'injectUserAdmin2', 'shortHelp' => 'adds user "admin2" with password "admin" in administrators');
 $supportedArguments['extrafiltersout'] = array('niceName' => 'extraFiltersOut', 'shortHelp' => 'list of xpath separated by | character that will be stripped from the XML before going to output');
-
+$supportedArguments['git'] = array('niceName' => 'Git', 'shortHelp' => 'if argument git is used, git repository is created to track changes for input file');
 
 PH::processCliArgs();
 
@@ -432,6 +434,29 @@ if( $configOutput['type'] == 'file' )
         print "{$configOutput['filename']}... ";
         $doc->save($configOutput['filename']);
         print "OK!\n";
+
+
+
+        if( isset(PH::$args['git']) && PH::$args['git'] )
+        {
+            /** @var Git $git */
+            $git = new Git();
+
+            $directory = dirname( $configOutput['filename'] );
+            $filename = basename( $configOutput['filename'] );
+
+            $repo = $git->init($directory);
+
+            if( PH::$args['git'] != "" && !boolYesNo(PH::$args['git']) )
+                $repo = $repo->createBranch( PH::$args['git'], true );
+
+            $repo->addFile($filename);
+            $repo->commit("pa_upload-config | " );
+
+            if( PH::$args['git'] != "" && !boolYesNo(PH::$args['git']) )
+                $repo->merge( PH::$args['git'] );
+            //todo: merge branch to master
+        }
     }
 
 }
