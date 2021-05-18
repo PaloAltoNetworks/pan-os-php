@@ -1188,13 +1188,14 @@ class UTIL
                 {
                     $repo = $git->init($directory);
 
-                    if( PH::$args['git'] != "" )
+                    if( PH::$args['git'] != "" && !boolYesNo(PH::$args['git']) )
                         $repo = $repo->createBranch( PH::$args['git'], true );
 
                     $repo->addFile($filename);
                     $repo->commit($this->PHP_FILE . " | " . implode(", ", PH::$args ) );
 
-                    $repo->merge( PH::$args['git'] );
+                    if( PH::$args['git'] != "" && !boolYesNo(PH::$args['git']) )
+                        $repo->merge( PH::$args['git'] );
                     //todo: merge branch to master
                 }
             }
