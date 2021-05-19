@@ -357,6 +357,10 @@ class TagStore extends ObjStore
         return $objects;
     }
 
+    public function storeName()
+    {
+        return "tagStore";
+    }
 }
 
 
