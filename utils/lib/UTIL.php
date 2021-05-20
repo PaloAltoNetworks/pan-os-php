@@ -886,20 +886,23 @@ class UTIL
                 {
                     if( isset(PH::$args['loadpanoramapushedconfig']) )
                     {
-                        //not yet implemented
-                        //missing stuff for all object store; how to get from panorama pushed config store the information;
-                    }
+                        if( $this->utilType == 'address' )
+                            $this->objectsToProcess[] = array('store' => $sub->addressStore, 'objects' => $sub->addressStore->resultingObjectSet());
+                        elseif( $this->utilType == 'service' )
+                            $this->objectsToProcess[] = array('store' => $sub->serviceStore, 'objects' => $sub->serviceStore->resultingObjectSet());
+                        elseif( $this->utilType == 'tag' )
+                            $this->objectsToProcess[] = array('store' => $sub->tagStore, 'objects' => $sub->tagStore->resultingObjectSet());
+                        elseif( $this->utilType == 'schedule' )
+                            $this->objectsToProcess[] = array('store' => $sub->scheduleStore, 'objects' => $sub->scheduleStore->resultingObjectSet());
 
-                    #else{
-                    #if( ($location == 'any' || $location == 'all' || $location == $sub->name() && !isset($ruleStoresToProcess[$sub->name()])) )
-                    if( ($location == 'any' || $location == $sub->name() && !isset($ruleStoresToProcess[$sub->name()])) )
+                        $locationFound = TRUE;
+                    }
+                    elseif( ($location == 'any' || $location == $sub->name() && !isset($ruleStoresToProcess[$sub->name()])) )
                     {
                         if( $this->utilType == 'address' )
                             $this->objectsToProcess[] = array('store' => $sub->addressStore, 'objects' => $sub->addressStore->all(null, TRUE));
                         elseif( $this->utilType == 'service' )
                             $this->objectsToProcess[] = array('store' => $sub->serviceStore, 'objects' => $sub->serviceStore->all(null, TRUE));
-                        #elseif( $this->utilType == 'rule' )
-                        #$this->objectsToProcess[] = Array('store' => $sub->ruleStore, 'objects' => $sub->ruleStore->getall());
                         elseif( $this->utilType == 'tag' )
                             $this->objectsToProcess[] = array('store' => $sub->tagStore, 'objects' => $sub->tagStore->getall());
                         elseif( $this->utilType == 'schedule' )

@@ -1040,6 +1040,42 @@ class AddressStore
         return $count;
     }
 
+    public function storeName()
+    {
+        return "addressStore";
+    }
+
+    /**
+     * Returns an Array with all Address|AddressGroup inside this store
+     * @return Address[]|AddressGroup[]
+     */
+    public function &resultingObjectSet()
+    {
+
+        $res = array();
+
+        if( isset($this->owner->parentDeviceGroup) )
+        {
+            $varName = $this->storeName();
+            /** @var AddressStore $var */
+            $var = $this->owner->parentDeviceGroup->$varName;
+            #$var = $this->owner->parentDeviceGroup->addressStore;
+            $res = $var->resultingObjectSet();
+        }
+        elseif( $this->owner->isPanorama() )
+        {
+            $varName = $this->storeName();
+            /** @var AddressStore $var */
+            $var = $this->owner->$varName;
+            #$var = $this->owner->addressStore;
+            $res = $var->all();
+        }
+
+        if( !$this->owner->isPanorama() )
+            $res = array_merge($res, $this->all());
+
+        return $res;
+    }
 
 }
 

@@ -967,4 +967,40 @@ class ServiceStore
         }
     }
 
+    public function storeName()
+    {
+        return "serviceStore";
+    }
+
+    /**
+     * Returns an Array with all Address|AddressGroup inside this store
+     * @return Service[]|ServiceGroup[]
+     */
+    public function &resultingObjectSet()
+    {
+
+        $res = array();
+
+        if( isset($this->owner->parentDeviceGroup) )
+        {
+            $varName = $this->storeName();
+            /** @var ServiceStore $var */
+            $var = $this->owner->parentDeviceGroup->$varName;
+            #$var = $this->owner->parentDeviceGroup->serviceStore;
+            $res = $var->resultingObjectSet();
+        }
+        elseif( $this->owner->isPanorama() )
+        {
+            $varName = $this->storeName();
+            /** @var ServiceStore $var */
+            $var = $this->owner->$varName;
+            #$var = $this->owner->serviceStore;
+            $res = $var->all();
+        }
+
+        if( !$this->owner->isPanorama() )
+            $res = array_merge($res, $this->all());
+
+        return $res;
+    }
 }

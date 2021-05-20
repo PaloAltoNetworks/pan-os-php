@@ -359,6 +359,11 @@ class ScheduleStore extends ObjStore
         return $objects;
     }
 
+    public function storeName()
+    {
+        return "scheduleStore";
+    }
+
 }
 
 

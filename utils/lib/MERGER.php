@@ -58,7 +58,7 @@ class MERGER extends UTIL
             else
                 $alldevicegroup = $pan->virtualSystems;
 
-
+            $location_array = array();
             foreach( $alldevicegroup as $key => $tmp_location )
             {
                 $objectsLocation = $tmp_location->name();
