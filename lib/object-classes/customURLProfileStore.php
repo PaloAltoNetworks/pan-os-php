@@ -92,6 +92,8 @@ class customURLProfileStore
             $this->members[] = $newMember;
             if( $rewriteXml && $this->owner !== null )
             {
+                if( $this->membersRoot == null )
+                    $this->membersRoot = DH::findFirstElementOrCreate('list', $this->xmlroot);
                 DH::createElement($this->membersRoot, 'member', $newMember);
             }
 
