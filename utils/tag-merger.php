@@ -56,7 +56,7 @@ if( isset(PH::$args['dupalgorithm']) )
 {
     $merger->dupAlg = strtolower(PH::$args['dupalgorithm']);
     if( $merger->dupAlg != 'samecolor' && $merger->dupAlg != 'whereused' && $merger->dupAlg != 'identical' )
-        display_error_usage_exit('unsupported value for dupAlgorithm: ' . PH::$args['dupalgorithm']);
+        $merger->display_error_usage_exit('unsupported value for dupAlgorithm: ' . PH::$args['dupalgorithm']);
 }
 else
     $merger->dupAlg = 'identical';

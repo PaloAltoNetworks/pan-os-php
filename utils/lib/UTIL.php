@@ -563,7 +563,7 @@ class UTIL
             {
                 $this->configOutput = PH::$args['out'];
                 if( !is_string($this->configOutput) || strlen($this->configOutput) < 1 )
-                    display_error_usage_exit('"out" argument is not a valid string');
+                    $this->display_error_usage_exit('"out" argument is not a valid string');
             }
 
             $this->apiMode = FALSE;
