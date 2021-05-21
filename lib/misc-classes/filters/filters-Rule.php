@@ -2842,6 +2842,15 @@ RQuery::$defaultFilters['rule']['description']['operators']['regex'] = array(
         'input' => 'input/panorama-8.0.xml'
     )
 );
+RQuery::$defaultFilters['rule']['description.length']['operators']['>,<,=,!'] = array(
+    'eval' => "strlen(\$object->description() ) !operator! !value!",
+    'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP% 1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
 
 RQuery::$defaultFilters['rule']['app']['operators']['category.is'] = array(
     'Function' => function (RuleRQueryContext $context) {

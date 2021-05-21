@@ -883,7 +883,7 @@ class AddressStore
                     $objects_overwritten[$o->name()][$tmp_o->owner->owner->name()] = $tmp_o;
                     $objects_overwritten[$o->name()][$location] = $o;
 
-                    if( $tmp_ref_count == 0 )
+                    if( $tmp_ref_count == 0 && $tmp_o->isGroup() )
                     {
                         $tmp_mapping = $tmp_o->getFullMapping();
                         $tmp_value = $tmp_mapping['ip4']->dumpToString();
