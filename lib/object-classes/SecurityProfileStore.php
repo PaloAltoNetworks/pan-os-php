@@ -416,7 +416,7 @@ $this->customURLProfileStore = new SecurityProfileStore($this, "customURLProfile
      */
     public function newSecurityProfileURL($name)
     {
-        $rule = new URLProfileStore($this);
+        $rule = new URLProfileStore($name, $this);
 
         $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, URLProfileStore::$templatexml);
         $rule->load_from_domxml($xmlElement);
@@ -437,7 +437,7 @@ $this->customURLProfileStore = new SecurityProfileStore($this, "customURLProfile
      */
     public function newCustomSecurityProfileURL($name)
     {
-        $rule = new customURLProfileStore($this);
+        $rule = new customURLProfileStore($name, $this);
 
         $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, customURLProfileStore::$templatexml);
         $rule->load_from_domxml($xmlElement);

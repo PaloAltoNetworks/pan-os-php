@@ -1,13 +1,30 @@
 CHANGELOG
 
-2.0.2
+2.0.5
+UTILS:
+* pa_rule-edit introduce 'filter=(description.length <>=! NUMBER)'
 
+BUGFIX:
+* class AddressStore - inroduce AddressGroup validation for method  nestedPointOfView()
+
+2.0.4
+UTILS:
+* pa-address/service/tag/schedule-edit introduce argument loadpanoramapushedconfig to display local and panorama pushed objects
+
+
+2.0.3
+BUGFIX:
+* bugfix for pa_addressgroup-merger and pa_service-merger
+
+
+2.0.2
 UTILS:
 * pa-address/service/tag/schedule-edit introduce argument loadpanoramapushedconfig to display local and panorama pushed objects
 
 BUGFIX:
 class SecurityProfileStore/SecurityProfileGroup - related to classes Container/DeviceCloud/PanoramaConf/PanConf/VirtualSystem/DeviceGroup - correction of SecurityProfileStore type - fix related if argument 'loadpanoramapushedconfig' was used
 pa_tag-edit/pa_schedule-edit/pa_rule-edit - fix XML out file; if all objects are deleted, so that XML Node do not contain any Newline
+
 
 
 2.0.1 (20210514)

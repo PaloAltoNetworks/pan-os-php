@@ -563,7 +563,7 @@ class UTIL
             {
                 $this->configOutput = PH::$args['out'];
                 if( !is_string($this->configOutput) || strlen($this->configOutput) < 1 )
-                    display_error_usage_exit('"out" argument is not a valid string');
+                    $this->display_error_usage_exit('"out" argument is not a valid string');
             }
 
             $this->apiMode = FALSE;
@@ -734,21 +734,21 @@ class UTIL
 
             //variable based on which util script is calling the method
             if( $this->utilType == 'tag' )
-                $context = new TagCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries);
+                $context = new TagCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries, $this);
             elseif( $this->utilType == 'address' )
-                $context = new AddressCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries);
+                $context = new AddressCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries, $this);
             elseif( $this->utilType == 'service' )
-                $context = new ServiceCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries);
+                $context = new ServiceCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries, $this);
             elseif( $this->utilType == 'rule' )
-                $context = new RuleCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries);
+                $context = new RuleCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries, $this);
             elseif( $this->utilType == 'zone' )
-                $context = new ZoneCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries);
+                $context = new ZoneCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries, $this);
             elseif( $this->utilType == 'vsys' )
-                $context = new VsysCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries);
+                $context = new VsysCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries, $this);
             elseif( $this->utilType == 'securityprofile' )
-                $context = new SecurityProfileCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries);
+                $context = new SecurityProfileCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries, $this);
             elseif( $this->utilType == 'schedule' )
-                $context = new ScheduleCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries);
+                $context = new ScheduleCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries, $this);
 
             $context->baseObject = $this->pan;
             if( isset($this->configInput['type']) && $this->configInput['type'] == 'api' )

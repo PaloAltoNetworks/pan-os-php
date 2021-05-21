@@ -26,8 +26,13 @@ class CallContext
 
     public $nestedQueries;
 
-    public function __construct($actionProperties, $arguments, $nestedQueries = null)
+    /** @var UTIL $util */
+    public $util = null;
+
+    public function __construct($actionProperties, $arguments, $nestedQueries = null, $util = null)
     {
+        $this->util = $util;
+
         $this->actionRef = $actionProperties;
         $this->prepareArgumentsForAction($arguments);
 
@@ -93,7 +98,7 @@ class CallContext
         $this->rawArguments = array();
 
         if( strlen($arguments) != 0 && !isset($this->actionRef['args']) )
-            display_error_usage_exit("error while processing argument '{$this->actionRef['name']}' : arguments were provided while they are not supported by this action");
+            $this->util->display_error_usage_exit("error while processing argument '{$this->actionRef['name']}' : arguments were provided while they are not supported by this action");
 
         if( !isset($this->actionRef['args']) || $this->actionRef['args'] === FALSE )
             return;
@@ -101,7 +106,7 @@ class CallContext
         $ex = explode(',', $arguments);
 
         if( count($ex) > count($this->actionRef['args']) )
-            display_error_usage_exit("error while processing argument '{$this->actionRef['name']}' : too many arguments provided");
+            $this->util->display_error_usage_exit("error while processing argument '{$this->actionRef['name']}' : too many arguments provided");
 
         $count = -1;
         foreach( $this->actionRef['args'] as $argName => &$properties )
