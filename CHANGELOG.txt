@@ -6,13 +6,18 @@ UTILS:
 
 BUGFIX:
 * class AddressStore - inroduce AddressGroup validation for method  nestedPointOfView()
+* UTIL | bugfix related to display_error_usage_exit usage from class UTIL
+* UTIL | class CallContext - introduce $util variable to use single ava
+* class SecurityProfileStor | bugfix for calling URLProfileStore and cu…  …
+* class customURLProfileStore | bugfix if XMLnode 'list' is not available
 
-2.0.4
+
+2.0.4 (20210519)
 UTILS:
 * pa-address/service/tag/schedule-edit introduce argument loadpanoramapushedconfig to display local and panorama pushed objects
 
 
-2.0.3
+2.0.3 (20210517)
 BUGFIX:
 * bugfix for pa_addressgroup-merger and pa_service-merger
 
