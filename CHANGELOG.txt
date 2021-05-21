@@ -17,7 +17,7 @@ UTILS:
 * pa-address/service/tag/schedule-edit introduce argument loadpanoramapushedconfig to display local and panorama pushed objects
 
 
-2.0.3
+2.0.3 (20210517)
 BUGFIX:
 * bugfix for pa_addressgroup-merger and pa_service-merger
 
