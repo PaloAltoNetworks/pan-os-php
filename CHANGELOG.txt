@@ -12,7 +12,7 @@ BUGFIX:
 * class customURLProfileStore | bugfix if XMLnode 'list' is not available
 
 
-2.0.4
+2.0.4 (20210519)
 UTILS:
 * pa-address/service/tag/schedule-edit introduce argument loadpanoramapushedconfig to display local and panorama pushed objects
 
