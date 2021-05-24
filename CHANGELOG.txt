@@ -5,11 +5,12 @@ UTILS:
 * pa_rule-edit introduce 'filter=(description.length <>=! NUMBER)'
 
 BUGFIX:
-* class AddressStore - inroduce AddressGroup validation for method  nestedPointOfView()
+* class AddressStore - introduce AddressGroup validation for method  nestedPointOfView()
 * UTIL | bugfix related to display_error_usage_exit usage from class UTIL
 * UTIL | class CallContext - introduce $util variable to use single ava
 * class SecurityProfileStor | bugfix for calling URLProfileStore and cu…  …
 * class customURLProfileStore | bugfix if XMLnode 'list' is not available
+* class IPsecTunnel | bugfix NOT create XML node 'proxy-id-v6' if not avai…
 
 
 2.0.4 (20210519)
