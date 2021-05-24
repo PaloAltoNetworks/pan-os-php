@@ -190,7 +190,7 @@ class IPsecTunnel
                     }
                 }
                 // now extracts ProxyID for IPv6
-                $this->proxyIdRootv6 = DH::findFirstElementOrCreate('proxy-id-v6', $node);
+                $this->proxyIdRootv6 = DH::findFirstElement('proxy-id-v6', $node);
 
 
                 if( $this->proxyIdRootv6 != null )
