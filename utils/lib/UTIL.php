@@ -127,11 +127,23 @@ class UTIL
         $this->supportedArguments['filter'] = array('niceName' => 'Filter', 'shortHelp' => "filters objects based on a query. ie: 'filter=((from has external) or (source has privateNet1) and (to has external))'", 'argDesc' => '(field operator [value])');
         $this->supportedArguments['loadplugin'] = array('niceName' => 'loadPlugin', 'shortHelp' => 'a PHP file which contains a plugin to expand capabilities of this script');
         $this->supportedArguments['help'] = array('niceName' => 'help', 'shortHelp' => 'this message');
+
         $this->supportedArguments['expedition'] = array('niceName' => 'expedition', 'shortHelp' => 'only used if called from Expedition Tool');
         $this->supportedArguments['template'] = array('niceName' => 'template', 'shortHelp' => 'Panorama template');
+
         $this->supportedArguments['loadpanoramapushedconfig'] = array('niceName' => 'loadPanoramaPushedConfig', 'shortHelp' => 'load Panorama pushed config from the firewall to take in account panorama objects and rules');
-        $this->supportedArguments['shadow-apikeynohidden'] = array('niceName' => 'shadow-apikeynohidden', 'shortHelp' => 'send API-KEY in clear text via URL. this is needed for all PAN-OS version <9.0 if API mode is used. ');
         $this->supportedArguments['apitimeout'] = array('niceName' => 'apiTimeout', 'shortHelp' => 'in case API takes too long time to anwer, increase this value (default=60)');
+
+
+
+        $this->supportedArguments['shadow-disableoutputformatting'] = array('niceName' => 'shadow-disableoutputformatting', 'shortHelp' => 'XML output in offline config is not in cleaned PHP DOMDocument structure');
+        $this->supportedArguments['shadow-enablexmlduplicatesdeletion']= array('niceName' => 'shadow-enablexmlduplicatesdeletion', 'shortHelp' => 'if duplicate objects are available, keep only one object of the same name');
+        $this->supportedArguments['shadow-ignoreinvalidaddressobjects']= array('niceName' => 'shadow-ignoreinvalidaddressobjects', 'shortHelp' => 'PAN-OS allow to have invalid address objects available, like object without value or type');
+        $this->supportedArguments['shadow-apikeynohidden'] = array('niceName' => 'shadow-apikeynohidden', 'shortHelp' => 'send API-KEY in clear text via URL. this is needed for all PAN-OS version <9.0 if API mode is used. ');
+        $this->supportedArguments['shadow-apikeynosave']= array('niceName' => 'shadow-apikeynosave', 'shortHelp' => 'do not store API key in .panconfkeystore file');
+        $this->supportedArguments['shadow-displaycurlrequest']= array('niceName' => 'shadow-displaycurlrequest', 'shortHelp' => 'display curl information if running in API mode');
+        $this->supportedArguments['shadow-reducexml']= array('niceName' => 'shadow-reducexml', 'shortHelp' => 'store reduced XML, without newline and remove blank characters in offline mode');
+        $this->supportedArguments['shadow-json']= array('niceName' => 'shadow-json', 'shortHelp' => 'BETA command to display output on stdout not in text but in JSON format');
     }
 
     public function utilInit()
@@ -502,7 +514,7 @@ class UTIL
         if( isset(PH::$args['apiTimeout']) )
             $this->apiTimeoutValue = PH::$args['apiTimeout'];
 
-        
+
         if( isset(PH::$args['expedition']) )
         {
             $this->expedition = PH::$args['expedition'];
@@ -641,7 +653,7 @@ class UTIL
                 $inputConnector = $this->configInput['connector'];
 
                 PH::print_stdout( " - 'loadPanoramaPushedConfig' was requested, downloading it through API..." );
-                $panoramaDoc = $inputConnector->getPanoramaPushedConfig();
+                $panoramaDoc = $inputConnector->getPanoramaPushedConfig( $this->apiTimeoutValue );
 
                 $xpathResult = DH::findXPath('/panorama/vsys', $panoramaDoc);
 
