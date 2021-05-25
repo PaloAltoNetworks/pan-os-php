@@ -302,6 +302,14 @@
                 "name": "value-host-object-add-netmask-m32",
                 "MainFunction": {}
             },
+            "value-set-ip-for-fqdn": {
+                "name": "value-set-ip-for-fqdn",
+                "MainFunction": {}
+            },
+            "value-set-reverse-dns": {
+                "name": "value-set-reverse-dns",
+                "MainFunction": {}
+            },
             "z_beta_summarize": {
                 "name": "z_BETA_summarize",
                 "MainFunction": {}
@@ -369,7 +377,7 @@
             "members.count": {
                 "operators": {
                     ">,<,=,!": {
-                        "eval": "$object->isGroup() && $object->count() !operator! !value!",
+                        "eval": "$object->isGroup() && !$object->isDynamic() && $object->count() !operator! !value!",
                         "arg": true,
                         "ci": {
                             "fString": "(%PROP% 1)",
@@ -489,6 +497,14 @@
                         }
                     },
                     "is.fqdn": {
+                        "Function": {},
+                        "arg": false,
+                        "ci": {
+                            "fString": "(%PROP%)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    },
+                    "is.ip-wildcard": {
                         "Function": {},
                         "arg": false,
                         "ci": {
@@ -682,6 +698,14 @@
                     "string.regex": {
                         "Function": {},
                         "arg": true
+                    },
+                    "is.included-in.name": {
+                        "Function": {},
+                        "arg": false
+                    },
+                    "is.in.file": {
+                        "Function": {},
+                        "arg": true
                     }
                 }
             }
@@ -822,7 +846,7 @@
                     "stringFormula": {
                         "type": "string",
                         "default": "*nodefault*",
-                        "help": "This string is used to compose a name. You can use the following aliases :\n  - \\$$current.name\\$\\$ : current name of the object\n  - \\$$destinationport\\$\\$ : destination Port\n  - \\$$protocol\\$\\$ : service protocol\n  - \\$$sourceport\\$\\$ : source Port\n  - \\$$value\\$\\$ : value of the object\n"
+                        "help": "This string is used to compose a name. You can use the following aliases :\n  - $$current.name$$ : current name of the object\n  - $$destinationport$$ : destination Port\n  - $$protocol$$ : service protocol\n  - $$sourceport$$ : source Port\n  - $$value$$ : value of the object\n"
                     }
                 },
                 "help": ""
@@ -2469,6 +2493,10 @@
                 "MainFunction": {},
                 "GlobalFinishFunction": {}
             },
+            "securityprofile-replace-by-group": {
+                "name": "securityProfile-replace-by-Group",
+                "MainFunction": {}
+            },
             "service-add": {
                 "name": "service-Add",
                 "section": "service",
@@ -2968,6 +2996,18 @@
                     }
                 }
             },
+            "description.length": {
+                "operators": {
+                    ">,<,=,!": {
+                        "eval": "strlen($object->description() ) !operator! !value!",
+                        "arg": true,
+                        "ci": {
+                            "fString": "(%PROP% 1)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    }
+                }
+            },
             "dnat": {
                 "operators": {
                     "is.set": {
@@ -3427,6 +3467,10 @@
                     "has.regex": {
                         "Function": {},
                         "arg": true
+                    },
+                    "is.expired": {
+                        "Function": {},
+                        "arg": false
                     }
                 }
             },
