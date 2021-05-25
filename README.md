@@ -2,9 +2,13 @@ pan-os-php
 ================
 
 
-PAN-OS-PHP is a PHP library aimed at making PANOS config changes easy (and XML free ;), maintainable and allowing complex scenarios like rule merging, unused object tracking, conversion of checkpoint exclusion groups, massive rule editing, AppID conversion … . It will work seamlessly on local config file or API.
+PAN-OS-PHP is a PHP library aimed at making PANOS config changes easy (and XML free ;), 
+maintainable and allowing complex scenarios like rule merging, unused object tracking,
+conversion of checkpoint exclusion groups, massive rule editing, AppID conversion … . 
+It will work seamlessly on local config file or API.
 
-**Homepage** : download latest sources on [GitHub](https://github.com/PaloAltoNetworks/pan-os-php). Windows package with PHP binaries here: [dev.zip] (https://github.com/PaloAltoNetworks/pan-os-php-windows-package/blob/main/dev.zip)
+**Homepage** : download latest sources on [GitHub](https://github.com/PaloAltoNetworks/pan-os-php).
+Windows package with PHP binaries here: [Git PAN-OS-PHP Windows Package](https://github.com/PaloAltoNetworks/pan-os-php-windows-package)
 
 **Requirements** : PHP 7.1 with curl module
 
@@ -18,6 +22,13 @@ File tree:
 * **/utils/** contains ready to run scripts, more information in [utils/README](/utils/README.md)
 * **/doc/index.html**  has all classes documentations
 * **/example-xxx.php** are examples about using this library
+
+SUPPORT
+============
+This tool is provided "AS IS" and is community supported.
+Please also check the [LICENSE](https://github.com/PaloAltoNetworks/pan-os-php/blob/main/LICENSE.txt) file.
+
+For help, it is always possible to open a GIT issue for this repository, or reaching out to [Palo Alto Networks LIVE community page](https://live.paloaltonetworks.com/t5/api-articles/pan-os-php-scripting-library-and-utilities/ta-p/404396).
 
 Usage
 ============

@@ -18,6 +18,7 @@ class UTIL
     public $configOutput = null;
     public $doActions = null;
     public $dryRun = FALSE;
+    public $apiTimeoutValue = 60;
     public $objectsLocation = 'shared';
 
     public $objectsLocationCounter = 0;
@@ -130,6 +131,7 @@ class UTIL
         $this->supportedArguments['template'] = array('niceName' => 'template', 'shortHelp' => 'Panorama template');
         $this->supportedArguments['loadpanoramapushedconfig'] = array('niceName' => 'loadPanoramaPushedConfig', 'shortHelp' => 'load Panorama pushed config from the firewall to take in account panorama objects and rules');
         $this->supportedArguments['shadow-apikeynohidden'] = array('niceName' => 'shadow-apikeynohidden', 'shortHelp' => 'send API-KEY in clear text via URL. this is needed for all PAN-OS version <9.0 if API mode is used. ');
+        $this->supportedArguments['apitimeout'] = array('niceName' => 'apiTimeout', 'shortHelp' => 'in case API takes too long time to anwer, increase this value (default=60)');
     }
 
     public function utilInit()
@@ -497,6 +499,10 @@ class UTIL
                 $this->display_error_usage_exit('"filter" argument is not a valid string');
         }
 
+        if( isset(PH::$args['apiTimeout']) )
+            $this->apiTimeoutValue = PH::$args['apiTimeout'];
+
+        
         if( isset(PH::$args['expedition']) )
         {
             $this->expedition = PH::$args['expedition'];
@@ -583,7 +589,7 @@ class UTIL
                 $this->configInput['connector']->setShowApiCalls(TRUE);
             $this->apiMode = TRUE;
             PH::print_stdout( " - Downloading config from API... " );
-            $this->xmlDoc = $this->configInput['connector']->getCandidateConfig();
+            $this->xmlDoc = $this->configInput['connector']->getCandidateConfig( $this->apiTimeoutValue );
             PH::print_stdout( "OK!" );
         }
         else
