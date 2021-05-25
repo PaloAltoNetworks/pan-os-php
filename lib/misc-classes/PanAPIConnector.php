@@ -342,7 +342,7 @@ class PanAPIConnector
      * @param bool $hiddenPW
      * @return PanAPIConnector
      */
-    static public function findOrCreateConnectorFromHost($host, $apiKey = null, $promptForKey = TRUE, $checkConnectivity = TRUE, $hiddenPW = TRUE)
+    static public function findOrCreateConnectorFromHost($host, $apiKey = null, $promptForKey = TRUE, $checkConnectivity = TRUE, $hiddenPW = TRUE, $debugAPI = false)
     {
         self::loadConnectorsFromUserHome();
 
@@ -423,6 +423,8 @@ class PanAPIConnector
                 $con = new PanAPIConnector($host, '', 'panos', null, $port);
 
                 $url = "type=keygen&user=" . urlencode($user) . "&password=" . urlencode($password);
+                if( $debugAPI )
+                    $con->setShowApiCalls( $debugAPI );
                 $res = $con->sendRequest($url);
 
                 $res = DH::findFirstElement('response', $res);
