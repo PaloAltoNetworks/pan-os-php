@@ -18,6 +18,7 @@ class UTIL
     public $configOutput = null;
     public $doActions = null;
     public $dryRun = FALSE;
+    public $apiTimeoutValue = 60;
     public $objectsLocation = 'shared';
 
     public $objectsLocationCounter = 0;
@@ -498,11 +499,10 @@ class UTIL
                 $this->display_error_usage_exit('"filter" argument is not a valid string');
         }
 
-        if( !isset(PH::$args['apiTimeout']) )
-            $apiTimeoutValue = 60;
-        else
-            $apiTimeoutValue = PH::$args['apiTimeout'];
+        if( isset(PH::$args['apiTimeout']) )
+            $this->apiTimeoutValue = PH::$args['apiTimeout'];
 
+        
         if( isset(PH::$args['expedition']) )
         {
             $this->expedition = PH::$args['expedition'];
@@ -589,7 +589,7 @@ class UTIL
                 $this->configInput['connector']->setShowApiCalls(TRUE);
             $this->apiMode = TRUE;
             PH::print_stdout( " - Downloading config from API... " );
-            $this->xmlDoc = $this->configInput['connector']->getCandidateConfig();
+            $this->xmlDoc = $this->configInput['connector']->getCandidateConfig( $this->apiTimeoutValue );
             PH::print_stdout( "OK!" );
         }
         else
