@@ -130,6 +130,7 @@ class UTIL
         $this->supportedArguments['template'] = array('niceName' => 'template', 'shortHelp' => 'Panorama template');
         $this->supportedArguments['loadpanoramapushedconfig'] = array('niceName' => 'loadPanoramaPushedConfig', 'shortHelp' => 'load Panorama pushed config from the firewall to take in account panorama objects and rules');
         $this->supportedArguments['shadow-apikeynohidden'] = array('niceName' => 'shadow-apikeynohidden', 'shortHelp' => 'send API-KEY in clear text via URL. this is needed for all PAN-OS version <9.0 if API mode is used. ');
+        $this->supportedArguments['apitimeout'] = array('niceName' => 'apiTimeout', 'shortHelp' => 'in case API takes too long time to anwer, increase this value (default=60)');
     }
 
     public function utilInit()
@@ -496,6 +497,11 @@ class UTIL
             if( !is_string($this->objectsFilter) || strlen($this->objectsFilter) < 1 )
                 $this->display_error_usage_exit('"filter" argument is not a valid string');
         }
+
+        if( !isset(PH::$args['apiTimeout']) )
+            $apiTimeoutValue = 60;
+        else
+            $apiTimeoutValue = PH::$args['apiTimeout'];
 
         if( isset(PH::$args['expedition']) )
         {
