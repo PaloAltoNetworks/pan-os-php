@@ -12,6 +12,8 @@ BUGFIX:
 * class customURLProfileStore | bugfix if XMLnode 'list' is not available
 * class IPsecTunnel | bugfix NOT create XML node 'proxy-id-v6' if not avai…
 * UTIL | bugfix to get argument 'apitimeout=XYZ' into working mode
+* UTIL | reinitiate class PH() at calling of UTIL()
+
 
 2.0.4 (20210519)
 UTILS:

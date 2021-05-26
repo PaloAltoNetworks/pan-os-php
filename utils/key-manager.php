@@ -23,6 +23,7 @@ $supportedArguments[] = array('niceName' => 'test', 'shortHelp' => 'Tests API ke
 $supportedArguments[] = array('niceName' => 'apikey', 'shortHelp' => 'can be used in combination with add argument to use specific API key provided as an argument.', 'argDesc' => '[API Key]');
 $supportedArguments[] = array('niceName' => 'hiddenpw', 'shortHelp' => 'Use this if the entered password should not be displayed.');
 $supportedArguments[] = array('niceName' => 'help', 'shortHelp' => 'this message');
+$supportedArguments[] = array('niceName' => 'DebugAPI', 'shortHelp' => 'prints API calls when they happen');
 
 $usageMsg = PH::boldText('USAGE: ') . "php " . basename(__FILE__) . " [delete=hostOrIP] [add=hostOrIP] [test=hostOrIP] [hiddenPW]";
 
@@ -50,6 +51,11 @@ if( isset(PH::$args['nohiddenpw']) )
     $hiddenPW = FALSE;
 else
     $hiddenPW = TRUE;
+
+if( isset(PH::$args['debugapi']) )
+    $debugAPI = TRUE;
+else
+    $debugAPI = FALSE;
 
 if( isset(PH::$args['delete']) )
 {
@@ -81,7 +87,7 @@ if( isset(PH::$args['add']) )
     echo " - requested to add Host/IP '{$addHost}'\n";
 
     if( !isset(PH::$args['apikey']) )
-        PanAPIConnector::findOrCreateConnectorFromHost($addHost, null, TRUE, TRUE, $hiddenPW);
+        PanAPIConnector::findOrCreateConnectorFromHost($addHost, null, TRUE, TRUE, $hiddenPW, $debugAPI);
     else
         PanAPIConnector::findOrCreateConnectorFromHost($addHost, PH::$args['apikey']);
 }
@@ -102,7 +108,7 @@ if( isset(PH::$args['test']) )
             try
             {
                 if( !isset(PH::$args['apikey']) )
-                    $connector = PanAPIConnector::findOrCreateConnectorFromHost($checkHost, null, TRUE, TRUE, $hiddenPW);
+                    $connector = PanAPIConnector::findOrCreateConnectorFromHost($checkHost, null, TRUE, TRUE, $hiddenPW, $debugAPI);
                 else
                     $connector = PanAPIConnector::findOrCreateConnectorFromHost($checkHost, PH::$args['apikey']);
 
@@ -121,7 +127,7 @@ if( isset(PH::$args['test']) )
     {
         echo " - requested to test Host/IP '{$checkHost}'\n";
         if( !isset(PH::$args['apikey']) )
-            $connector = PanAPIConnector::findOrCreateConnectorFromHost($checkHost, null, TRUE, TRUE, $hiddenPW);
+            $connector = PanAPIConnector::findOrCreateConnectorFromHost($checkHost, null, TRUE, TRUE, $hiddenPW, $debugAPI);
         else
             $connector = PanAPIConnector::findOrCreateConnectorFromHost($checkHost, PH::$args['apikey']);
 

@@ -102,6 +102,7 @@ $in = "";
 
 foreach( $command_array as $key => $command )
 {
+    $argv = array();
     PH::$args = array();
     PH::$argv = array();
     PH::$argv[0] = $argv[0];
@@ -114,7 +115,11 @@ foreach( $command_array as $key => $command )
 
 
     foreach( $command as $argument )
+    {
         PH::$argv[] = $argument;
+        $argv[] = $argument;
+    }
+
 
 
 
@@ -133,12 +138,17 @@ foreach( $command_array as $key => $command )
 
 
     if( $script != $pa_migration_parser )
+    {
         PH::$argv[] = "in=".$in;
+        $argv[] = "in=".$in;
+    }
+
 
     if( $script != $pa_rule_stats )
     {
         $out = $stage_name.$out_counter.".xml";
         PH::$argv[] = "out=".$out;
+        $argv[] = "out=".$out;
     }
 
 

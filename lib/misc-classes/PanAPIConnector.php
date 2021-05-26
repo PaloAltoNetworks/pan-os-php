@@ -342,7 +342,7 @@ class PanAPIConnector
      * @param bool $hiddenPW
      * @return PanAPIConnector
      */
-    static public function findOrCreateConnectorFromHost($host, $apiKey = null, $promptForKey = TRUE, $checkConnectivity = TRUE, $hiddenPW = TRUE)
+    static public function findOrCreateConnectorFromHost($host, $apiKey = null, $promptForKey = TRUE, $checkConnectivity = TRUE, $hiddenPW = TRUE, $debugAPI = false)
     {
         self::loadConnectorsFromUserHome();
 
@@ -423,6 +423,8 @@ class PanAPIConnector
                 $con = new PanAPIConnector($host, '', 'panos', null, $port);
 
                 $url = "type=keygen&user=" . urlencode($user) . "&password=" . urlencode($password);
+                if( $debugAPI )
+                    $con->setShowApiCalls( $debugAPI );
                 $res = $con->sendRequest($url);
 
                 $res = DH::findFirstElement('response', $res);
@@ -1354,11 +1356,12 @@ class PanAPIConnector
         return $r;
     }
 
-    public function getPanoramaPushedConfig()
+    public function getPanoramaPushedConfig( $apiTimeOut = 30 )
     {
         $url = 'action=get&type=config&xpath=/config/panorama';
-
-        $r = $this->sendRequest($url, TRUE);
+        $moreOptions = array('timeout' => $apiTimeOut, 'lowSpeedTime' => 0);
+        $filecontent = null;
+        $r = $this->sendRequest($url, TRUE, $filecontent, '', $moreOptions);
 
         $configRoot = DH::findFirstElement('result', $r);
         if( $configRoot === FALSE )
@@ -1583,13 +1586,14 @@ class PanAPIConnector
      * @param $maxWaitTime integer
      * @return DomDocument|string[]
      */
-    public function sendCmdRequest($cmd, $checkResultTag = TRUE, $maxWaitTime = -1)
+    public function sendCmdRequest($cmd, $checkResultTag = TRUE, $maxWaitTime = -1, $apiTimeOut = 7)
     {
         $req = "type=op&cmd=$cmd";
         if( $maxWaitTime == -1 )
             $moreOptions['lowSpeedTime'] = null;
         else
             $moreOptions['lowSpeedTime'] = $maxWaitTime;
+        $moreOptions['timeout'] = $apiTimeOut;
 
         $nullVar = null;
 
@@ -1598,10 +1602,12 @@ class PanAPIConnector
         return $ret;
     }
 
-    public function getJobResult($jobID)
+    public function getJobResult($jobID, $apiTimeOut = 7)
     {
         $req = "type=op&cmd=<show><jobs><id>$jobID</id></jobs></show>";
-        $ret = $this->sendRequest($req);
+        $moreOptions['timeout'] = $apiTimeOut;
+        $filecontent = null;
+        $ret = $this->sendRequest($req, false, $filecontent, '', $moreOptions);
 
         //TODO: 20180305 not working
         $found = &searchForName('name', 'result', $ret);
@@ -1660,14 +1666,14 @@ class PanAPIConnector
      * @param bool $verbose
      * @return DOMNode
      */
-    public function uploadConfiguration($configDomXml, $configName = 'stage0.xml', $verbose = TRUE)
+    public function uploadConfiguration($configDomXml, $configName = 'stage0.xml', $verbose = TRUE, $apiTimeOut = 7)
     {
         if( $verbose )
             print "Uploadig config to device {$this->apihost}/{$configName}....";
 
         $url = "type=import&category=configuration&category=configuration";
 
-        $answer = $this->sendRequest($url, FALSE, DH::dom_to_xml($configDomXml), $configName, array('timeout' => 7));
+        $answer = $this->sendRequest($url, FALSE, DH::dom_to_xml($configDomXml), $configName, array('timeout' => $apiTimeOut));
 
         if( $verbose )
             print "OK!\n";
