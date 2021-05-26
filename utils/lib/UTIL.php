@@ -56,6 +56,9 @@ class UTIL
 
     function __construct($utilType, $argv, $PHP_FILE, $_supportedArguments = array(), $_usageMsg = "")
     {
+        $argc = array();
+        $tmp_ph = new PH($argv, $argc);
+
         $this->utilType = $utilType;
         $this->PHP_FILE = $PHP_FILE;
 
