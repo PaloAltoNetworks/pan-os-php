@@ -5,6 +5,7 @@ UTILS:
 * pa_rule-edit introduce 'filter=(description.length <>=! NUMBER)'
 * pa_rule-edit actions=exportToExcel - introduce column 'log_profile_name' to display the log forwarding profile name
 * pa_address-edit introduce new 'filter=(value has.wrong.network)' - display objects where IP-value does not fit to calculated IP-network
+* class UTIL | introduce $location, $sub for single location cli argument, to be used in example template
 
 EXAMPLES:
 * update template script to show how UTIL() class usage make your scripting life easier
@@ -20,6 +21,8 @@ BUGFIX:
 * UTIL | reinitiate class PH() at calling of UTIL()
 * UTIL | pa_rule-edit actions=exportToExcel - related to class Schedule() introduce in the past
 * UTIL | pa_address-edit actions=replaceByMembersAndDelete - missing validation if object is group
+* UTIL | pa_service-edit actions=replaceByMembersAndDelete - missing validation if object is group
+
 
 2.0.4 (20210519)
 UTILS:

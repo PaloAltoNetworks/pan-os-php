@@ -565,6 +565,12 @@ ServiceCallContext::$supportedActions[] = array(
     'MainFunction' => function (ServiceCallContext $context) {
         $object = $context->object;
 
+        if( !$object->isGroup() )
+        {
+            print $context->padding."     *  skipped it's not a group\n";
+            return;
+        }
+
         $object->replaceByMembersAndDelete($context->padding, $context->isAPI);
         /*
                 if( !$object->isGroup() )

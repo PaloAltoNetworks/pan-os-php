@@ -54,6 +54,9 @@ class UTIL
     public $utilType = null;
     public $PHP_FILE = null;
 
+    public $location = null;
+    public $sub = null;
+
     function __construct($utilType, $argv, $PHP_FILE, $_supportedArguments = array(), $_usageMsg = "")
     {
         $argc = array();
@@ -873,7 +876,23 @@ class UTIL
 
         $this->objectsLocation = array_unique($this->objectsLocation);
 
-
+        if( count( $this->objectsLocation ) == 1 )
+        {
+            $this->location = $this->objectsLocation[0];
+            if( $this->location == 'shared' )
+            {
+                $this->sub = $this->pan;
+            }
+            else
+            {
+                $this->sub = $this->pan->findSubSystemByName($this->location);
+                if( $this->sub === null )
+                {
+                    print " - specific location '{$this->location}' was not found. EXIT!!\n\n";
+                    exit(1);
+                }
+            }
+        }
     }
 
     public function location_filter_object()

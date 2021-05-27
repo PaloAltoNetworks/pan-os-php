@@ -45,13 +45,17 @@ $util->location_filter();
 /** @var PANConf|PanoramaConf $pan */
 $pan = $util->pan;
 
-$location = PH::$args['location'];
-$sub = $pan->findSubSystemByName($location);
-if( $sub === null )
-{
-    print " - specific location '{$location}' was not found. EXIT!!\n\n";
-    exit(1);
-}
+/** @var VirtualSystem|DeviceGroup $sub */
+$sub = $util->sub;
+
+/** @var string $location */
+$location = $util->location;
+
+/** @var boolean $apiMode */
+$apiMode = $util->apiMode;
+
+/** @var array $args */
+$args = PH::$args;
 
 print "\n\n    **********     **********\n\n";
 
@@ -64,8 +68,8 @@ print "\n\n    **********     **********\n\n";
  * * $pan : PANConf or PanoramaConf object
  * * $location : string with location name or undefined if not provided on CLI
  * * $sub : DeviceGroup or VirtualSystem found after looking from cli 'location' argument
- * * $util->apiMode : if config file was downloaded from API directly
- * * PH::$args : array with all CLI arguments processed by PAN-PHP-FRAMEWORK
+ * * $apiMode : if config file was downloaded from API directly
+ * * $args : array with all CLI arguments processed by PAN-PHP-FRAMEWORK
  * *
  */
 
