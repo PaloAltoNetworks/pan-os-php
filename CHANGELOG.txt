@@ -4,8 +4,9 @@ CHANGELOG
 UTILS:
 * pa_rule-edit introduce 'filter=(description.length <>=! NUMBER)'
 * pa_rule-edit actions=exportToExcel - introduce column 'log_profile_name' to display the log forwarding profile name
+* pa_address-edit introduce new 'filter=(value has.wrong.netmask)' - display objects where IP-value does not fit to calculated IP-network
 
-EXAMPLS:
+EXAMPLES:
 * update template script to show how UTIL() class usage make your scripting life easier
 
 BUGFIX:
@@ -17,7 +18,7 @@ BUGFIX:
 * class IPsecTunnel | bugfix NOT create XML node 'proxy-id-v6' if not avai…
 * UTIL | bugfix to get argument 'apitimeout=XYZ' into working mode
 * UTIL | reinitiate class PH() at calling of UTIL()
-
+* UTIL | pa_rule-edit actions=exportToExcel - related to class Schedule() introduce in the past
 
 2.0.4 (20210519)
 UTILS:
