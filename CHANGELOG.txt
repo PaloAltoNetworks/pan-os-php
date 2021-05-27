@@ -19,6 +19,7 @@ BUGFIX:
 * UTIL | bugfix to get argument 'apitimeout=XYZ' into working mode
 * UTIL | reinitiate class PH() at calling of UTIL()
 * UTIL | pa_rule-edit actions=exportToExcel - related to class Schedule() introduce in the past
+* UTIL | pa_address-edit actions=replaceByMembersAndDelete - missing validation if object is group
 
 2.0.4 (20210519)
 UTILS:
