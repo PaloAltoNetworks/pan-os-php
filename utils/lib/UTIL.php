@@ -883,6 +883,10 @@ class UTIL
             {
                 $this->sub = $this->pan;
             }
+            elseif( $this->location == 'any' )
+            {
+                #
+            }
             else
             {
                 $this->sub = $this->pan->findSubSystemByName($this->location);
