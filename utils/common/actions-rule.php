@@ -3202,6 +3202,7 @@ RuleCallContext::$supportedActions[] = array(
             'log start' => 'log_start',
             'log end' => 'log_end',
             'log prof' => 'log_profile',
+            'log prof name' => 'log_profile_name',
             'snat type' => 'snat_type',
             'snat_address' => 'snat_address',
             'snat_address_resolved_sum' => 'snat_address_resolved_sum',
