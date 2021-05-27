@@ -863,13 +863,13 @@ AddressCallContext::$supportedActions[] = array(
     'MainFunction' => function (AddressCallContext $context) {
         $object = $context->object;
 
-        if( !$this->isGroup() )
+        if( !$object->isGroup() )
         {
             echo $context->padding . " - SKIPPED : it's not a group\n";
             return;
         }
 
-        if( $this->owner === null )
+        if( $object->owner === null )
         {
             echo $context->padding . " -  SKIPPED : object was previously removed\n";
             return;
