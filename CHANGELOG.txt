@@ -3,6 +3,10 @@ CHANGELOG
 2.0.5
 UTILS:
 * pa_rule-edit introduce 'filter=(description.length <>=! NUMBER)'
+* pa_rule-edit actions=exportToExcel - introduce column 'log_profile_name' to display the log forwarding profile name
+
+EXAMPLS:
+* update template script to show how UTIL() class usage make your scripting life easier
 
 BUGFIX:
 * class AddressStore - introduce AddressGroup validation for method  nestedPointOfView()

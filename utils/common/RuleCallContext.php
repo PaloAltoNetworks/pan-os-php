@@ -467,6 +467,17 @@ class RuleCallContext extends CallContext
             return self::enclose(boolYesNo($rule->logSetting()), $wrap);
         }
 
+        if( $fieldName == 'log_profile_name' )
+        {
+            if( !$rule->isSecurityRule() )
+                return self::enclose('');
+
+            if( $rule->logSetting() === FALSE )
+                return self::enclose( '');
+
+            return self::enclose($rule->logSetting());
+        }
+
         if( $fieldName == 'snat_type' )
         {
             if( !$rule->isNatRule() )
