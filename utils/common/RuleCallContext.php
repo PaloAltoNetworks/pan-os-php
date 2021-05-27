@@ -240,8 +240,12 @@ class RuleCallContext extends CallContext
         {
             if( !$rule->isSecurityRule() )
                 return self::enclose('');
-            if( strlen($rule->schedule()) > 0 )
-                return self::enclose($rule->schedule(), $wrap);
+            $schedule = $rule->schedule();
+            if( $schedule == null )
+                return self::enclose('');
+
+            if( strlen($schedule->name()) > 0 )
+                return self::enclose($schedule->name(), $wrap);
             else
                 return self::enclose('');
         }
