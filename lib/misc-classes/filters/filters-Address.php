@@ -1049,6 +1049,32 @@ RQuery::$defaultFilters['address']['value']['operators']['is.in.file'] = Array(
     },
     'arg' => true
 );
+RQuery::$defaultFilters['address']['value']['operators']['has.wrong.netmask'] = Array(
+    'Function' => function(AddressRQueryContext $context )
+    {
+        $object = $context->object;
+
+        if( $object->isGroup() )
+            return null;
+
+        if( !$object->isType_ipNetmask() )
+            return null;
+
+        $value = $object->getNetworkValue();
+        $netmask = $object->getNetworkMask();
+
+        if( $netmask == '32' )
+            return null;
+
+        $calc_network = CIDR::cidr2network( $value, $netmask );
+
+        if( $value != $calc_network )
+            return true;
+
+        return null;
+    },
+    'arg' => false
+);
 
 RQuery::$defaultFilters['address']['description']['operators']['regex'] = array(
     'Function' => function (AddressRQueryContext $context) {
