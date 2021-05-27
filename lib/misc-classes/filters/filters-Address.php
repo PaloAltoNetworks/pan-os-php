@@ -1049,7 +1049,7 @@ RQuery::$defaultFilters['address']['value']['operators']['is.in.file'] = Array(
     },
     'arg' => true
 );
-RQuery::$defaultFilters['address']['value']['operators']['has.wrong.netmask'] = Array(
+RQuery::$defaultFilters['address']['value']['operators']['has.wrong.network'] = Array(
     'Function' => function(AddressRQueryContext $context )
     {
         $object = $context->object;

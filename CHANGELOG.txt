@@ -4,7 +4,7 @@ CHANGELOG
 UTILS:
 * pa_rule-edit introduce 'filter=(description.length <>=! NUMBER)'
 * pa_rule-edit actions=exportToExcel - introduce column 'log_profile_name' to display the log forwarding profile name
-* pa_address-edit introduce new 'filter=(value has.wrong.netmask)' - display objects where IP-value does not fit to calculated IP-network
+* pa_address-edit introduce new 'filter=(value has.wrong.network)' - display objects where IP-value does not fit to calculated IP-network
 
 EXAMPLES:
 * update template script to show how UTIL() class usage make your scripting life easier
