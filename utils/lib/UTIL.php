@@ -892,8 +892,7 @@ class UTIL
                 $this->sub = $this->pan->findSubSystemByName($this->location);
                 if( $this->sub === null )
                 {
-                    print " - specific location '{$this->location}' was not found. EXIT!!\n\n";
-                    exit(1);
+                    $this->locationNotFound($this->location);
                 }
             }
         }
