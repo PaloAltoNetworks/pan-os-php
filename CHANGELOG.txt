@@ -7,9 +7,11 @@ UTILS:
 * pa_address-edit introduce new 'filter=(value has.wrong.network)' - display objects where IP-value does not fit to calculated IP-network
 * class UTIL | introduce $location, $sub for single location cli argument, to be used in example template
 * pa_rule-edit introduce 'filter=(rule is.enabled)'
+* device-edit.php | introduction BETA script
 
 EXAMPLES:
 * update template script to show how UTIL() class usage make your scripting life easier
+* update template script to add $util->save_our_work() method at the end
 
 BUGFIX:
 * class AddressStore - introduce AddressGroup validation for method  nestedPointOfView()
