@@ -27,8 +27,8 @@ $supportedArguments['shadow-reducexml']= array('niceName' => 'shadow-reducexml',
 $supportedArguments['shadow-json']= array('niceName' => 'shadow-json', 'shortHelp' => 'BETA command to display output on stdout not in text but in JSON format');
 
 //YOUR OWN arguments if needed
-$supportedArguments['argument1'] = array('niceName' => 'ARGUMENT1', 'shortHelp' => 'an argument you like to use in your script');
-$supportedArguments['optional_argument2'] = array('niceName' => 'Optional_Argument2', 'shortHelp' => 'an argument you like to define here');
+$supportedArguments['actions'] = array('niceName' => 'ACTIONS', 'shortHelp' => 'an argument you like to use in your script');
+$supportedArguments['filter'] = array('niceName' => 'FILTER', 'shortHelp' => 'an argument you like to define here');
 
 
 $usageMsg = PH::boldText('USAGE: ') . "php " . basename(__FILE__) . " in=api:://[MGMT-IP] argument1 [optional_argument2]";
@@ -74,8 +74,26 @@ print "\n\n    **********     **********\n\n";
  * *
  */
 
+if( isset(PH::$args['actions']) )
+{
+    $action = PH::$args['actions'];
+    $action_arg = explode( ":", $action );
+    if( strtolower( $action_arg[0] ) == "createdg" )
+    {
+        $dgName = $action_arg[1];
+        if( !$pan->isPanorama() )
+            derr( "only supported on Panroama config" );
 
+        print "create DeviceGroup: ".$dgName."\n";
+        $pan->createDeviceGroup( $dgName );
+    }
+    else
+    {
+        derr( "ACTION: ".$action. " not supported yet" );
+    }
+}
 
+//save your config
 $util->save_our_work();
-print "\n************* END OF SCRIPT ".basename(__FILE__)." ************\n\n";
 
+print "\n************* END OF SCRIPT ".basename(__FILE__)." ************\n\n";
