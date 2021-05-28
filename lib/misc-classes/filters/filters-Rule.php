@@ -2099,6 +2099,16 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.disabled'] = array(
         'input' => 'input/panorama-8.0.xml'
     )
 );
+RQuery::$defaultFilters['rule']['rule']['operators']['is.enabled'] = array(
+    'Function' => function (RuleRQueryContext $context) {
+        return $context->object->isEnabled();
+    },
+    'arg' => FALSE,
+    'ci' => array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 RQuery::$defaultFilters['rule']['rule']['operators']['is.dsri'] = array(
     'Function' => function (RuleRQueryContext $context) {
         if( !$context->object->isSecurityRule() )

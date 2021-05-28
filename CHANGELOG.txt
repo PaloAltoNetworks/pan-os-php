@@ -6,6 +6,7 @@ UTILS:
 * pa_rule-edit actions=exportToExcel - introduce column 'log_profile_name' to display the log forwarding profile name
 * pa_address-edit introduce new 'filter=(value has.wrong.network)' - display objects where IP-value does not fit to calculated IP-network
 * class UTIL | introduce $location, $sub for single location cli argument, to be used in example template
+* pa_rule-edit introduce 'filter=(rule is.enabled)'
 
 EXAMPLES:
 * update template script to show how UTIL() class usage make your scripting life easier
