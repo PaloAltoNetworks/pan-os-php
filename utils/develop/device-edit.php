@@ -84,14 +84,23 @@ if( isset(PH::$args['actions']) )
         if( !$pan->isPanorama() )
             derr( "only supported on Panroama config" );
 
-        print "create DeviceGroup: ".$dgName."\n";
-        $pan->createDeviceGroup( $dgName );
+        $tmp_dg = $pan->findDeviceGroup( $dgName );
+        if( $tmp_dg === null )
+        {
+            print " * create DeviceGroup: ".$dgName."\n";
+            $pan->createDeviceGroup( $dgName );
+        }
+        else
+            print " * DeviceGroup with name: ".$dgName." already available!\n";
+
     }
     else
     {
         derr( "ACTION: ".$action. " not supported yet" );
     }
 }
+
+print "\n\n    **********     **********\n\n";
 
 //save your config
 $util->save_our_work();
