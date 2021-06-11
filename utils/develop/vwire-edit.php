@@ -346,7 +346,7 @@ if( $objectsFilter !== null )
 //
 // load the config
 //
-print " - Loading configuration through PAN-Configurator library... ";
+print " - Loading configuration through PAN-PHP-framework library... ";
 $loadStartMem = memory_get_usage(true);
 $loadStartTime = microtime(true);
 $pan->load_from_domxml($xmlDoc1);

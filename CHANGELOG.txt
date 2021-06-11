@@ -25,6 +25,7 @@ BUGFIX:
 * UTIL | pa_rule-edit actions=exportToExcel - related to class Schedule() introduce in the past
 * UTIL | pa_address-edit actions=replaceByMembersAndDelete - missing validation if object is group
 * UTIL | pa_service-edit actions=replaceByMembersAndDelete - missing validation if object is group
+* class SecurityRule | bugfix for reading Schedule Object if defined on parentDG / shared level
 
 
 2.0.4 (20210519)
