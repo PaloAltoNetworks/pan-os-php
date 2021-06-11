@@ -225,13 +225,14 @@ class SecurityRule extends RuleWithUserID
             {
                 #$this->schedule = $node->textContent;
 
-                $f = $this->owner->owner->scheduleStore->findOrCreate($node->textContent, $this);
+                $f = $this->owner->owner->scheduleStore->find($node->textContent, $this);
+                if( $f == null && is_object($this->owner->owner->scheduleStore->parentCentralStore))
+                    $f = $this->owner->owner->scheduleStore->parentCentralStore->find($node->textContent, $this);
                 if( $f != null )
                 {
                     $f->addReference( $this );
+                    $this->schedule = $f;
                 }
-
-                $this->schedule = $f;
             }
             elseif( $node->nodeName == 'qos' )
             {
