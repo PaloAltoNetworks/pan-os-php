@@ -716,9 +716,6 @@ class SecurityRule extends RuleWithUserID
                 $ntmp->appendChild($this->secprofroot->ownerDocument->createTextNode($value));
             }
         }
-        elseif( $this->secprofroot !== null )
-            DH::removeChild($this->xmlroot, $this->secprofroot);
-
     }
 
     /**
