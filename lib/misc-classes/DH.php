@@ -674,5 +674,7 @@ class DH
     }
 
 
+    //todo: 20210615 swaschkut
+    //merge two XML node // DomDocument
 }
 

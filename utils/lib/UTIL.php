@@ -28,8 +28,13 @@ class UTIL
     public $objectsFilter = null;
     public $errorMessage = '';
     public $debugAPI = FALSE;
+
+    /** @var DOMDocument $xmlDoc */
     public $xmlDoc = null;
+
+    /** @var PANConf|PanoramaConf|FawkesConf $pan  */
     public $pan = null;
+
     public $nestedQueries = array();
     public $objectFilterRQuery = null;
     public $objectsToProcess = array();
