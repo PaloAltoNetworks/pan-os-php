@@ -747,6 +747,9 @@ class EthernetInterface
      */
     public function setLinkState($linkstate)
     {
+        if( $this->isSubInterface() )
+            return false;
+        
         $linkstate_array = array( "auto","up", "down" );
         if( !in_array( $linkstate, $linkstate_array) )
             return false;
