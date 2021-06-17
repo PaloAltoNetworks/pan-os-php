@@ -57,6 +57,8 @@ class EthernetInterface
     protected $l3ipv4Addresses;
     protected $l3ipv6Addresses;
 
+    protected $linkstate = "auto";
+
     static public $supportedTypes = array('layer3', 'layer2', 'virtual-wire', 'tap', 'ha', 'aggregate-group', 'log-card', 'decrypt-mirror', 'empty');
 
     /**
@@ -97,6 +99,11 @@ class EthernetInterface
             {
                 $this->_description = $node->textContent;
                 //print "Desc found: {$this->description}\n";
+            }
+            elseif( $nodeName == 'link-state' )
+            {
+                $this->linkstate = $node->textContent;
+                //print "linkstate found: {$this->description}\n";
             }
         }
 
@@ -733,6 +740,28 @@ class EthernetInterface
         return $ret;
     }
 
+    /**
+     * return true if change was successful false if not (duplicate rulename?)
+     * @param string $name new name for the rule
+     * @return bool
+     */
+    public function setLinkState($linkstate)
+    {
+        $linkstate_array = array( "auto","up", "down" );
+        if( !in_array( $linkstate, $linkstate_array) )
+            return false;
+
+        if( $this->linkstate == $linkstate )
+            return TRUE;
+
+        $this->linkstate = $linkstate;
+
+        $linkNode = DH::findFirstElementOrCreate( 'link-state', $this->xmlroot);
+        $linkNode->textContent = $linkstate;
+
+        return TRUE;
+
+    }
 
     //Todo: (20180722)
     //---(also needed for vlan / loopback / tunnel interface)
