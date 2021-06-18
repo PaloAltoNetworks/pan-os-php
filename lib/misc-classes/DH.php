@@ -563,12 +563,15 @@ class DH
 
     /**
      * return
-     * @param string $xpathString
+     * @param string|array $xpathString
      * @param DOMDocument|DOMNode $contextNode
      * @return DOMNodeList|bool
      */
     static public function findXPath($xpathString, $contextNode)
     {
+        if( is_array( $xpathString ) )
+            $xpathString = implode( " | ", $xpathString);
+
         if( $contextNode->nodeType == XML_DOCUMENT_NODE || $contextNode->nodeType == XML_HTML_DOCUMENT_NODE )
         {
             $xpath = new DOMXpath($contextNode);
