@@ -80,20 +80,38 @@ elseif( $configInput['type'] == 'api' )
 else
     derr('not supported yet');
 
+
 //
 // Determine if PANOS or Panorama
 //
+$xpathResult = DH::findXPath('/config', $xmlDoc);
+$xpathResult = $xpathResult->item(0);
+$fawkes_config_version = DH::findAttribute('fawkes-config-version', $xpathResult);
+if( $fawkes_config_version != null )
+    print "FAWKES-CONFIG-VERSION: ".$fawkes_config_version."\n";
+else
+{
+    $fawkes_config_version = DH::findAttribute('fawkes-config', $xpathResult);
+    if( $fawkes_config_version != null )
+        print "FAWKES-CONFIG-VERSION: ".$fawkes_config_version."\n";
+}
+
 $xpathResult = DH::findXPath('/config/devices/entry/vsys', $xmlDoc);
 if( $xpathResult === FALSE )
     derr('XPath error happened');
 if( $xpathResult->length < 1 )
-    $configType = 'panorama';
+{
+    if( $fawkes_config_version != null )
+        $configType = 'fawkes';
+    else
+        $configType = 'panorama';
+}
+
 else
     $configType = 'panos';
 unset($xpathResult);
 
 print " - Detected platform type is '{$configType}'\n";
-
 
 ///////////////////////////////////////////////////////////
 //clean stage config / delete all <deleted> entries
@@ -190,24 +208,34 @@ $address_region = array();
 
 
 /** @var DOMElement[] $locationNodes */
-$locationNodes['shared'] = DH::findXPathSingleEntryOrDie('/config/shared', $xmlDoc);
+$locationNodes = array();
+$tmp_shared_node = DH::findXPathSingleEntry('/config/shared', $xmlDoc);
+if( $tmp_shared_node !== false )
+    $locationNodes['shared'] = $tmp_shared_node;
 
 if( $configType == 'panos' )
     $tmpNodes = DH::findXPath('/config/devices/entry/vsys/entry', $xmlDoc);
-else
+elseif( $configType == 'panorama' )
     $tmpNodes = DH::findXPath('/config/devices/entry/device-group/entry', $xmlDoc);
+elseif( $configType == 'fawkes' )
+{
+    $search_array = array( '/config/devices/entry/container/entry','/config/devices/entry/device/cloud/entry' );
+    $tmpNodes = DH::findXPath($search_array, $xmlDoc);
 
+}
 
 foreach( $tmpNodes as $node )
     $locationNodes[$node->getAttribute('name')] = $node;
 
-print " - Found " . count($locationNodes) . " locations (VSYS/DG)\n";
+print " - Found " . count($locationNodes) . " locations (VSYS/DG/Container/DeviceCloud)\n";
+foreach( $locationNodes as $key => $tmpNode )
+    print "   - ".$key."\n";
 
 print "\n *******   ********   ********\n\n";
 
 foreach( $locationNodes as $locationName => $locationNode )
 {
-    print "\n** PARSING VSYS/DG '{$locationName}' **\n";
+    print "\n** PARSING VSYS/DG/Container/DeviceCloud '{$locationName}' **\n";
 
     $addressObjects = array();
     $addressGroups = array();
