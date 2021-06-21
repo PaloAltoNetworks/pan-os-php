@@ -91,6 +91,8 @@ class RQuery
             $this->contextObject = new SecurityProfileRQueryContext($this);
         elseif( $this->objectType == 'schedule' )
             $this->contextObject = new ScheduleRQueryContext($this);
+        elseif( $this->objectType == 'device' )
+            $this->contextObject = new DeviceRQueryContext($this);
         else
             derr("unsupported object type '$objectType'");
     }
@@ -669,5 +671,6 @@ require_once 'filters/filters-Routing.php';
 require_once 'filters/filters-VirtualWire.php';
 require_once 'filters/filters-SecurityProfile.php';
 require_once 'filters/filters-Schedule.php';
+require_once 'filters/filters-Device.php';
 
 

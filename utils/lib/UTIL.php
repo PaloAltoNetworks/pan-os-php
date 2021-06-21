@@ -7,6 +7,7 @@ require_once(dirname(__FILE__)."/logWriter.php");
 require_once(dirname(__FILE__)."/RULEUTIL.php");
 require_once(dirname(__FILE__)."/STATSUTIL.php");
 require_once(dirname(__FILE__)."/SECURITYPROFILEUTIL.php");
+require_once(dirname(__FILE__)."/DEVICEUTIL.php");
 
 require_once(dirname(__FILE__)."/RULEMERGER.php");
 
@@ -236,6 +237,8 @@ class UTIL
             $tmp_array = &SecurityProfileCallContext::$supportedActions;
         elseif( $this->utilType == 'schedule' )
             $tmp_array = &ScheduleCallContext::$supportedActions;
+        elseif( $this->utilType == 'device' )
+            $tmp_array = &DeviceCallContext::$supportedActions;
 
         return $tmp_array;
     }
@@ -319,6 +322,8 @@ class UTIL
                 SecurityProfileCallContext::prepareSupportedActions();
             elseif( $this->utilType == 'schedule' )
                 ScheduleCallContext::prepareSupportedActions();
+            elseif( $this->utilType == 'device' )
+                DeviceCallContext::prepareSupportedActions();
 
             PH::print_stdout( "OK!" );
         }
@@ -779,6 +784,8 @@ class UTIL
                 $context = new SecurityProfileCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries, $this);
             elseif( $this->utilType == 'schedule' )
                 $context = new ScheduleCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries, $this);
+            elseif( $this->utilType == 'device' )
+                $context = new DeviceCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries, $this);
 
             $context->baseObject = $this->pan;
             if( isset($this->configInput['type']) && $this->configInput['type'] == 'api' )

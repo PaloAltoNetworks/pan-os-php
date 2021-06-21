@@ -73,3 +73,7 @@ SecurityProfileCallContext::prepareSupportedActions();
 require_once("ScheduleCallContext.php");
 require_once "actions-schedule.php";
 ScheduleCallContext::prepareSupportedActions();
+
+require_once("DeviceCallContext.php");
+require_once "actions-device.php";
+DeviceCallContext::prepareSupportedActions();

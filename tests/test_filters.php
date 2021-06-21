@@ -144,6 +144,11 @@ foreach( RQuery::$defaultFilters as $type => &$filtersByField )
                 echo "******* SKIPPED for now *******\n";
                 continue;
             }
+            elseif( $type == 'device' )
+            {
+                echo "******* SKIPPED for now *******\n";
+                continue;
+            }
             else
             {
                 derr('unsupported');
