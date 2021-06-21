@@ -98,6 +98,11 @@ if( isset(PH::$args['actions']) )
     {
         derr( "ACTION: ".$action. " not supported yet" );
     }
+
+    //Todo:
+    // - create template-stack ( add to FW device (serial#))
+    // - create template (incl adding to template-stack)
+    // - filter for template-stack has template
 }
 
 print "\n\n    **********     **********\n\n";

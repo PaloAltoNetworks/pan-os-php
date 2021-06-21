@@ -162,6 +162,7 @@ require_once $basedir . '/misc-classes/VirtualWireRQueryContext.php';
 
 require_once $basedir . '/misc-classes/SecurityProfileRQueryContext.php';
 
+require_once $basedir . '/misc-classes/DeviceRQueryContext.php';
 
 require_once $basedir . '/misc-classes/CsvParser.php';
 require_once $basedir . '/misc-classes/trait/PanSubHelperTrait.php';

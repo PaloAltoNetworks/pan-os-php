@@ -60,6 +60,9 @@ alias pa_vwire='php -r "require_once '"'"'utils/develop/vwire.php'"'"';" $@'
 alias pa_ike='php -r "require_once '"'"'utils/develop/ike.php'"'"';" $@'
 
 
+alias pa_device-edit='php -r "require_once '"'"'utils/device-edit.php'"'"';" $@'
+
+
 alias pa_ssh-connector='php -r "require_once '"'"'utils/develop/ssh_connector.php'"'"';" $@'
 
 alias pa_bpa-generator='php -r "require_once '"'"'utils/bpa-generator.php'"'"';" $@'
