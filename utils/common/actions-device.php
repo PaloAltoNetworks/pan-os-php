@@ -22,8 +22,11 @@
 // - create template-stack ( add to FW device (serial#))
 // - create template (incl adding to template-stack)
 // - add devicegroup to FW device serial#
-// - create devicegroup with extension to  DG parent
-// - filter for template-stack has template
+// - containercreate / devicecloudcreate
+// - devicegroupsetparent
+// - containersetparent / deviceloudsetparent
+// - templatemovesharedtovsys
+// - templatestackmovetofirsttemplate
 
 DeviceCallContext::$supportedActions['display'] = array(
     'name' => 'display',
@@ -36,15 +39,25 @@ DeviceCallContext::$supportedActions['display'] = array(
         if( get_class($object) == "TemplateStack" )
         {
             $used_templates = $object->templates;
-            foreach( $used_templates as $template )
+            foreach( array_reverse($used_templates) as $template )
             {
-                print "        - " . get_class($template) . " '{$template->name()}'  ";
+                print $context->padding." - " . get_class($template) . " '{$template->name()}'  ";
                 print "\n";
             }
             //Todo: print where this TemplateStack is used SERIAL
         }
         elseif( get_class($object) == "DeviceGroup" )
         {
+            $parentDGS = $object->parentDeviceGroups();
+            $parentDGS['shared'] = $object->owner;
+
+
+            $tmp_padding = "";
+            foreach( array_reverse( $parentDGS ) as $key => $DG)
+            {
+                print $context->padding.$tmp_padding."- ".$key."\n";
+                $tmp_padding .= "  ";
+            }
             //Todo: print complete DG Hierarchy
         }
         elseif( get_class($object) == "Template" )
@@ -55,31 +68,43 @@ DeviceCallContext::$supportedActions['display'] = array(
         print "\n";
     },
 );
-DeviceCallContext::$supportedActions['createDeviceGroup'] = array(
-    'name' => 'createdevicegroup',
+DeviceCallContext::$supportedActions['DeviceGroupcreate'] = array(
+    'name' => 'devicegroupcreate',
     'GlobalInitFunction' => function (DeviceCallContext $context) {
     },
     'MainFunction' => function (DeviceCallContext $context) {
     },
     'GlobalFinishFunction' => function (DeviceCallContext $context) {
         $dgName = $context->arguments['name'];
+        $parentDG = $context->arguments['parentdg'];
 
         $pan = $context->subSystem;
 
         if( !$pan->isPanorama() )
             derr( "only supported on Panorama config" );
 
+        if( $parentDG != 'false' )
+        {
+            $tmp_parentdg = $pan->findDeviceGroup( $parentDG );
+            if( $tmp_parentdg === null )
+            {
+                print "     - SKIP parentDG set with '".$parentDG."' but not found on this config\n";
+                $parentDG = null;
+            }
+        }
+
         $tmp_dg = $pan->findDeviceGroup( $dgName );
         if( $tmp_dg === null )
         {
-            print " * create DeviceGroup: ".$dgName."\n";
-            $pan->createDeviceGroup( $dgName );
+            print "     * create DeviceGroup: ".$dgName."\n";
+            $pan->createDeviceGroup( $dgName, $parentDG );
         }
         else
-            print " * DeviceGroup with name: ".$dgName." already available!\n";
+            print "     * DeviceGroup with name: ".$dgName." already available!\n";
     },
     'args' => array(
         'name' => array('type' => 'string', 'default' => 'false'),
+        'parentdg' => array('type' => 'string', 'default' => 'null'),
     ),
 );
 DeviceCallContext::$supportedActions[] = array(
@@ -167,19 +192,8 @@ DeviceCallContext::$supportedActions[] = array(
 
                 if( get_class($object) == "TemplateStack" )
                 {
-                    $used_templates = $object->templates;
-                    $tmp_name = "";
-                    foreach( $used_templates as $key => $template )
-                    {
-                        if( $key == 0 )
-                            $tmp_name .= htmlspecialchars( $template->name() );
-                        else
-                            $tmp_name .= "<br />".htmlspecialchars( $template->name() );
-                    }
-                    $lines .= "<td>{$tmp_name}</td>";
+                    $lines .= $encloseFunction( array_reverse($object->templates) );
                 }
-
-
 
                 if( $addWhereUsed )
                 {
