@@ -464,7 +464,7 @@ class AddressRuleContainer extends ObjRuleContainer
             if( !$this->has($o) )
                 $tmp_return = FALSE;
             else
-                $missingAddress[] = $o;
+                $foundAddress[] = $o;
         }
 
         if( !$tmp_return )
