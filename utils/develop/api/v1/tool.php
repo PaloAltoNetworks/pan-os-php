@@ -3,8 +3,10 @@
 // - change UTIL script so it can be used here:
 //   - address-merger/addressgroup-merger/service-merger/servicegroup-merge/tag-merger/rule-merger
 //   - interface/routing/vwire/ike
+// -
 // - user authentication OAuth2 - access to only specific projects
-// - upload config to project folder
+// - create project related to user => response project ID
+// - upload config to project folder by using project ID
 // - use git module to do all manipulation against one file within a project folder
 
 
