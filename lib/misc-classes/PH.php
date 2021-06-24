@@ -35,56 +35,64 @@ class PH
             {
                 PH::disableOutputFormatting();
                 unset(PH::$argv[$argIndex]);
-                $argc--;
+                if( !isset( $_SERVER['REQUEST_METHOD'] ) )
+                    $argc--;
                 continue;
             }
             elseif( $arg == 'shadow-enablexmlduplicatesdeletion' )
             {
                 PH::$enableXmlDuplicatesDeletion = TRUE;
                 unset(PH::$argv[$argIndex]);
-                $argc--;
+                if( !isset( $_SERVER['REQUEST_METHOD'] ) )
+                    $argc--;
                 continue;
             }
             elseif( $arg == 'shadow-ignoreinvalidaddressobjects' )
             {
                 PH::$ignoreInvalidAddressObjects = TRUE;
                 unset(PH::$argv[$argIndex]);
-                $argc--;
+                if( !isset( $_SERVER['REQUEST_METHOD'] ) )
+                    $argc--;
                 continue;
             }
             elseif( $arg == 'shadow-apikeynohidden' )
             {
                 PH::$sendAPIkeyviaHeader = FALSE;
                 unset(PH::$argv[$argIndex]);
-                $argc--;
+                if( !isset( $_SERVER['REQUEST_METHOD'] ) )
+                    $argc--;
                 continue;
             }
             elseif( $arg == 'shadow-apikeynosave' )
             {
                 PH::$saveAPIkey = FALSE;
                 unset(PH::$argv[$argIndex]);
-                $argc--;
+                if( !isset( $_SERVER['REQUEST_METHOD'] ) )
+                    $argc--;
                 continue;
             }
             elseif( $arg == 'shadow-displaycurlrequest' )
             {
                 PH::$displayCurlRequest = TRUE;
                 unset(PH::$argv[$argIndex]);
-                $argc--;
+                if( !isset( $_SERVER['REQUEST_METHOD'] ) )
+                    $argc--;
                 continue;
             }
             elseif( $arg == 'shadow-reducexml' )
             {
                 PH::$shadow_reducexml = TRUE;
                 unset(PH::$argv[$argIndex]);
-                $argc--;
+                if( !isset( $_SERVER['REQUEST_METHOD'] ) )
+                    $argc--;
                 continue;
             }
             elseif( $arg == 'shadow-json' )
             {
                 PH::$shadow_json = TRUE;
                 unset(PH::$argv[$argIndex]);
-                $argc--;
+                if( !isset( $_SERVER['REQUEST_METHOD'] ) )
+                    $argc--;
                 continue;
             }
         }
