@@ -1,4 +1,12 @@
 <?php
+//Todo: swaschkut 20210624
+// - change UTIL script so it can be used here:
+//   - address-merger/addressgroup-merger/service-merger/servicegroup-merge/tag-merger/rule-merger
+//   - interface/routing/vwire/ike
+// - user authentication OAuth2 - access to only specific projects
+// - upload config to project folder
+// - use git module to do all manipulation against one file within a project folder
+
 
 require_once dirname(__FILE__)."/../../../../lib/pan_php_framework.php";
 require_once ( dirname(__FILE__)."/../../../lib/UTIL.php");
@@ -24,13 +32,14 @@ $argv[0] = "Standard input code";
 $argv[1] = "in=".dirname(__FILE__)."/../../../../tests/input/panorama-10.0-merger.xml";
 #$argv[2] = "shadow-json";
 
-$supportedRoute = array('stats', 'address', 'service', 'tag', 'rule');
-
+$supportedRoute = array('stats', 'address', 'service', 'tag', 'rule', 'device', 'securityprofile', 'zone', 'schedule');
+sort($supportedRoute );
 
 // catch this here, we don't support many routes yet
 if( empty( $url_pieces) || ( isset($url_pieces[1]) && !in_array( $url_pieces[1], $supportedRoute ) ) )
 {
-    throw new Exception('Unknown endpoint', 404);
+    $message = 'Unknown endpoint. supported: '.implode( ", ", $supportedRoute );
+    throw new Exception($message, 404);
 }
 
 switch($verb) {
@@ -71,6 +80,19 @@ switch($verb) {
             {
                 foreach( $_GET as $key => $get )
                 {
+                    if( $key == "in" )
+                    {
+                        unset( $argv[1] );
+                        if( strpos( $get, "api" ) === false )
+                            $get = dirname(__FILE__)."/../../../../projects/".$get;
+                        else
+                            throw new Exception( "PAN-OS XML API mode is NOT yet supported.", 404);
+                    }
+                    elseif( $key == "out" )
+                    {
+                        $get = dirname(__FILE__)."/../../../../projects/".$get;
+                    }
+
                     if( !empty($get) )
                         $value = $key."=".$get;
                     else
@@ -82,14 +104,27 @@ switch($verb) {
             header("Content-Type: application/json");
             if( $url_pieces[1] == 'stats' )
                 $util = new STATSUTIL( "stats", $argv, __FILE__);
+
             elseif( $url_pieces[1] == 'address' )
                 $util = new UTIL( "address", $argv, __FILE__);
             elseif( $url_pieces[1] == 'service' )
                 $util = new UTIL( "service", $argv, __FILE__);
             elseif( $url_pieces[1] == 'tag' )
                 $util = new UTIL( "tag", $argv, __FILE__);
+            elseif( $url_pieces[1] == 'zone' )
+                $util = new UTIL( "zone", $argv, __FILE__);
+            elseif( $url_pieces[1] == 'schedule' )
+                $util = new UTIL( "schedule", $argv, __FILE__);
+
             elseif( $url_pieces[1] == 'rule' )
                 $util = new RULEUTIL( "rule", $argv, __FILE__);
+
+            elseif( $url_pieces[1] == 'device' )
+                $util = new DEVICEUTIL( "device", $argv, __FILE__);
+
+            elseif( $url_pieces[1] == 'securityprofile' )
+                $util = new SECURITYPROFILEUTIL( "securityprofile", $argv, __FILE__);
+
         }
         break;
     // two cases so similar we'll just share code

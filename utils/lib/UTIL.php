@@ -613,7 +613,7 @@ class UTIL
                 derr("file '{$this->configInput['filename']}' not found");
 
             $this->xmlDoc = new DOMDocument();
-            PH::print_stdout( " - Reading XML file from disk... " );
+            PH::print_stdout( " - Reading XML file from disk... ".$this->configInput['filename'] );
             if( !$this->xmlDoc->load($this->configInput['filename'], XML_PARSE_BIG_LINES) )
                 derr("error while reading xml config file");
             PH::print_stdout( "OK!" );
