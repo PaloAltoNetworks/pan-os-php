@@ -330,8 +330,9 @@ class ServiceRuleContainer extends ObjRuleContainer
      * @param $anyIsAcceptable
      * @return boolean true if Zones from $other are all in this store
      */
-    public function includesContainer(ServiceRuleContainer $other, $anyIsAcceptable = TRUE)
+    public function includesContainer(ServiceRuleContainer $other, $anyIsAcceptable = TRUE, &$foundServices = array())
     {
+        $tmp_return = TRUE;
 
         if( !$anyIsAcceptable )
         {
@@ -350,11 +351,14 @@ class ServiceRuleContainer extends ObjRuleContainer
         foreach( $objects as $o )
         {
             if( !$this->has($o) )
-                return FALSE;
+                $tmp_return = FALSE;
+            else
+                $foundServices[] = $o;
         }
+        if( !$tmp_return )
+            return FALSE;
 
         return TRUE;
-
     }
 
     public function API_setAny()
