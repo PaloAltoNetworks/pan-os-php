@@ -994,6 +994,11 @@ class PanoramaConf
         //Todo: swaschkut check
         //$indentingXmlIncreament was 2 per default for Panroama
         $xml = &DH::dom_to_xml($this->xmlroot, $indentingXml, $lineReturn, -1, $indentingXmlIncreament + 1);
+
+        $path_parts = pathinfo($fileName);
+        if (!is_dir($path_parts['dirname']))
+            mkdir($path_parts['dirname'], 0777, true);
+
         file_put_contents($fileName, $xml);
 
         if( $printMessage )
