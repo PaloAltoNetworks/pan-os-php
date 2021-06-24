@@ -583,8 +583,15 @@ class UTIL
 
         if( $this->configInput['status'] == 'fail' )
         {
-            fwrite(STDERR, "\n\n**ERROR** " . $this->configInput['msg'] . "\n\n");
-            exit(1);
+            if( isset( $_SERVER['REQUEST_METHOD'] ) )
+            {
+                throw new Exception( "**ERROR** " . $this->configInput['msg'], 404);
+            }
+            else
+            {
+                fwrite(STDERR, "\n\n**ERROR** " . $this->configInput['msg'] . "\n\n");
+                exit(1);
+            }
         }
 
         if( $this->configInput['type'] == 'file' )
