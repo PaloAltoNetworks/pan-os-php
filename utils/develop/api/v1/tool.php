@@ -28,7 +28,7 @@ $supportedRoute = array('stats', 'address', 'service', 'tag', 'rule');
 
 
 // catch this here, we don't support many routes yet
-if( !isset( $url_pieces) || ( isset($url_pieces[1]) && !in_array( $url_pieces[1], $supportedRoute ) ) )
+if( empty( $url_pieces) || ( isset($url_pieces[1]) && !in_array( $url_pieces[1], $supportedRoute ) ) )
 {
     throw new Exception('Unknown endpoint', 404);
 }
