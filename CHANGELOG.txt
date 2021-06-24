@@ -11,6 +11,7 @@ UTILS:
 * class DH | extend method findXPath to accept array with multiple xPath strings
 * panos-xml-issue-detector | extend to support FAWKES config syntax
 * pa_device-edit - new util script to display VSYS/DeviceGroup/Template/TemplateStack/Container/DeviceCloud informaiton
+* class PH | improvments to be prepared for next feature pan-os-php API
 
 EXAMPLES:
 * update template script to show how UTIL() class usage make your scripting life easier
