@@ -138,7 +138,7 @@ class IPsecTunnel
                         }
                         else
                         {
-                            #$protocol_any = DH::findFirstElement('any', $protocolNode);
+                            $protocol_any = FALSE;
                             $protocol_tcp = FALSE;
                             $protocol_udp = FALSE;
                             $protocol_number = FALSE;
