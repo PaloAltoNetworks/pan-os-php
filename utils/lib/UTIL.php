@@ -177,9 +177,9 @@ class UTIL
         $this->init_arguments();
     }
 
-    public function utilActionFilter()
+    public function utilActionFilter( $utilType = null)
     {
-        $this->extracting_actions();
+        $this->extracting_actions( $utilType );
         $this->createRQuery();
 
 
@@ -231,14 +231,22 @@ class UTIL
             $tmp_array = &RuleCallContext::$supportedActions;
         elseif( $this->utilType == 'zone' )
             $tmp_array = &ZoneCallContext::$supportedActions;
-        elseif( $this->utilType == 'vsys' )
-            $tmp_array = &VsysCallContext::$supportedActions;
         elseif( $this->utilType == 'securityprofile' )
             $tmp_array = &SecurityProfileCallContext::$supportedActions;
         elseif( $this->utilType == 'schedule' )
             $tmp_array = &ScheduleCallContext::$supportedActions;
+
         elseif( $this->utilType == 'device' )
             $tmp_array = &DeviceCallContext::$supportedActions;
+        elseif( $this->utilType == 'vsys' )
+            $tmp_array = &VsysCallContext::$supportedActions;
+
+        elseif( $this->utilType == 'virtualwire' )
+            $tmp_array = &VirtualWireCallContext::$supportedActions;
+        elseif( $this->utilType == 'routing' )
+            $tmp_array = &RoutingCallContext::$supportedActions;
+        elseif( $this->utilType == 'interface' )
+            $tmp_array = &InterfaceCallContext::$supportedActions;
 
         return $tmp_array;
     }
@@ -737,8 +745,11 @@ class UTIL
         }
     }
 
-    public function extracting_actions()
+    public function extracting_actions( $utilType = null)
     {
+        if( $utilType != null )
+            $this->utilType = $utilType;
+
         $tmp_array = $this->supportedActions();
 
         //
@@ -778,14 +789,22 @@ class UTIL
                 $context = new RuleCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries, $this);
             elseif( $this->utilType == 'zone' )
                 $context = new ZoneCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries, $this);
-            elseif( $this->utilType == 'vsys' )
-                $context = new VsysCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries, $this);
             elseif( $this->utilType == 'securityprofile' )
                 $context = new SecurityProfileCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries, $this);
             elseif( $this->utilType == 'schedule' )
                 $context = new ScheduleCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries, $this);
+
             elseif( $this->utilType == 'device' )
                 $context = new DeviceCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries, $this);
+            elseif( $this->utilType == 'vsys' )
+                $context = new VsysCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries, $this);
+
+            elseif( $this->utilType == 'virtualwire' )
+                $context = new VirtualWireCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries, $this);
+            elseif( $this->utilType == 'routing' )
+                $context = new RoutingCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries, $this);
+            elseif( $this->utilType == 'interface' )
+                $context = new InterfaceCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries, $this);
 
             $context->baseObject = $this->pan;
             if( isset($this->configInput['type']) && $this->configInput['type'] == 'api' )
@@ -874,13 +893,13 @@ class UTIL
             if( strtolower($location) == 'shared' )
                 $location = 'shared';
             else if( strtolower($location) == 'any' )
-                $location = 'any';
+                $this->location = 'any';
             else if( strtolower($location) == 'all' )
             {
                 if( $this->configType == 'fawkes' )
-                    $location = 'All';
+                    $this->location = 'All';
                 else
-                    $location = 'any';
+                    $this->location = 'any';
             }
 
         }
@@ -1029,7 +1048,6 @@ class UTIL
                             $this->objectsToProcess[] = array('store' => $sub->scheduleStore, 'objects' => $sub->scheduleStore->getall());
                         elseif( $this->utilType == 'zone' )
                             $this->objectsToProcess[] = array('store' => $sub->zoneStore, 'objects' => $sub->zoneStore->getall());
-
 
                         $locationFound = TRUE;
                     }
