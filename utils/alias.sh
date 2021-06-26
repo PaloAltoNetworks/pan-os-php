@@ -51,16 +51,17 @@ alias pa_appidtoolbox-rule-marker='php -r "require_once '"'"'appid-toolbox/rule-
 alias pa_zone-edit='php -r "require_once '"'"'utils/zone-edit.php'"'"';" $@'
 alias pa_securityprofile-edit='php -r "require_once '"'"'utils/securityprofile-edit.php'"'"';" $@'
 
+alias pa_vsys='php -r "require_once '"'"'utils/vsys.php'"'"';" $@'
+alias pa_device-edit='php -r "require_once '"'"'utils/device-edit.php'"'"';" $@'
+
+
 alias pa_interface='php -r "require_once '"'"'utils/develop/interface.php'"'"';" $@'
 alias pa_routing='php -r "require_once '"'"'utils/develop/routing.php'"'"';" $@'
-alias pa_vsys='php -r "require_once '"'"'utils/develop/vsys.php'"'"';" $@'
 alias pa_vwire='php -r "require_once '"'"'utils/develop/vwire.php'"'"';" $@'
 
 
 alias pa_ike='php -r "require_once '"'"'utils/develop/ike.php'"'"';" $@'
 
-
-alias pa_device-edit='php -r "require_once '"'"'utils/device-edit.php'"'"';" $@'
 
 
 alias pa_ssh-connector='php -r "require_once '"'"'utils/develop/ssh_connector.php'"'"';" $@'
