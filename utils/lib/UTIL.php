@@ -243,6 +243,10 @@ class UTIL
 
         elseif( $this->utilType == 'virtualwire' )
             $tmp_array = &VirtualWireCallContext::$supportedActions;
+        elseif( $this->utilType == 'routing' )
+            $tmp_array = &RoutingCallContext::$supportedActions;
+        elseif( $this->utilType == 'interface' )
+            $tmp_array = &InterfaceCallContext::$supportedActions;
 
         return $tmp_array;
     }
@@ -797,6 +801,10 @@ class UTIL
 
             elseif( $this->utilType == 'virtualwire' )
                 $context = new VirtualWireCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries, $this);
+            elseif( $this->utilType == 'routing' )
+                $context = new RoutingCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries, $this);
+            elseif( $this->utilType == 'interface' )
+                $context = new InterfaceCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries, $this);
 
             $context->baseObject = $this->pan;
             if( isset($this->configInput['type']) && $this->configInput['type'] == 'api' )
