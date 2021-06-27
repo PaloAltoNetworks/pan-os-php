@@ -34,7 +34,7 @@ $argv[0] = "Standard input code";
 $argv[1] = "in=".dirname(__FILE__)."/../../../../tests/input/panorama-10.0-merger.xml";
 #$argv[2] = "shadow-json";
 
-$supportedRoute = array('stats', 'address', 'service', 'tag', 'rule', 'device', 'securityprofile', 'zone', 'schedule');
+$supportedRoute = array('stats', 'address', 'service', 'tag', 'rule', 'device', 'securityprofile', 'zone', 'schedule', 'interface', 'virtualwire', 'routing');
 sort($supportedRoute );
 
 // catch this here, we don't support many routes yet
@@ -123,6 +123,13 @@ switch($verb) {
 
             elseif( $url_pieces[1] == 'device' )
                 $util = new DEVICEUTIL( "device", $argv, __FILE__);
+
+            elseif( $url_pieces[1] == 'interface' )
+                $util = new NETWORKUTIL( "interface", $argv, __FILE__);
+            elseif( $url_pieces[1] == 'routing' )
+                $util = new NETWORKUTIL( "routing", $argv, __FILE__);
+            elseif( $url_pieces[1] == 'virtualwire' )
+                $util = new NETWORKUTIL( "virtualwire", $argv, __FILE__);
 
             elseif( $url_pieces[1] == 'securityprofile' )
                 $util = new SECURITYPROFILEUTIL( "securityprofile", $argv, __FILE__);
