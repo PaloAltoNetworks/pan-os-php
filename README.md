@@ -230,7 +230,7 @@ Docker PAN-OS-PHP API
    ```bash
    docker run -d -p 8082:80 --mount type=bind,source="[absolute_ROOTFOLDER]]/pan-os-php",target=/var/www/html php:apache
    ```
-The PAN-OS-API is right now under development, but please feel free to try it out:
+The PAN-OS-PHP API is right now under development, but please feel free to try it out:
 http://localhost:8082/utils/develop/api/v1/tool.php
 
 The following "RESTAPI" routes are available:
@@ -253,7 +253,7 @@ The following "RESTAPI" routes are available:
 - /routing
 - /virtualwire
 
-PAN-OS-API is NOT working yet with PAN-OS XML API but it is possible to run it against PAN-OS FW and Panorama offline configuration files, and manipulate in the same way as on PAN-OS-PHP ClI:
+PAN-OS-PHP API is NOT working yet with PAN-OS XML API but it is possible to run it against PAN-OS FW and Panorama offline configuration files, and manipulate in the same way as on PAN-OS-PHP ClI:
 - pa_address-edit help
 - http://localhost:8082/utils/develop/api/v1/tool.php/address?help
 
