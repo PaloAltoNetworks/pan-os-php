@@ -8,6 +8,7 @@ require_once(dirname(__FILE__)."/RULEUTIL.php");
 require_once(dirname(__FILE__)."/STATSUTIL.php");
 require_once(dirname(__FILE__)."/SECURITYPROFILEUTIL.php");
 require_once(dirname(__FILE__)."/DEVICEUTIL.php");
+require_once(dirname(__FILE__)."/NETWORKUTIL.php");
 
 require_once(dirname(__FILE__)."/RULEMERGER.php");
 

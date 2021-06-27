@@ -51,98 +51,10 @@ if( !PH::$shadow_json )
     print "************ VWIRE-EDIT UTILITY  ****************\n\n";
 }
 
-$util = new UTIL("custom", $argv, __FILE__, $supportedArguments, $usageMsg);
 
-$util->utilInit();
-
-$util->utilActionFilter( "virtualwire" );
+$util = new NETWORKUTIL("virtualwire", $argv, __FILE__, $supportedArguments, $usageMsg);
 
 
-
-//Todo - how to transfer this part into UTIL CLASS
-//Todo: location and template check needed
-foreach( $util->objectsLocation as $location )
-{
-
-    if( $util->configType == 'panos')
-    {
-
-        #if( $location == 'shared' || $location == 'any'  ){
-            $util->objectsToProcess[] = Array('store' => $util->pan->network->virtualWireStore, 'objects' => $util->pan->network->virtualWireStore->virtualWires());
-            $locationFound = true;
-        #}
-
-        /*
-        foreach ($pan->getVirtualSystems() as $sub)
-        {
-            if( ($location == 'any' || $location == 'all' || $location == $sub->name() && !isset($ruleStoresToProcess[$sub->name()]) ))
-            {
-                $objectsToProcess[] = Array('store' => $sub->importedInterfaces, 'objects' => $sub->importedInterfaces->getAllInterfaces());
-                $locationFound = true;
-            }
-        }
-        */
-    }
-    else
-    {
-        derr( "This script is not yet working with Panorama config" );
-
-
-
-        /*
-        if( $location == 'shared' || $location == 'any' )
-        {
-
-            $objectsToProcess[] = Array('store' => $pan->tagStore, 'objects' => $pan->tagStore->getall());
-            $locationFound = true;
-        }
-
-        foreach( $pan->getDeviceGroups() as $sub )
-        {
-            if( ($location == 'any' || $location == 'all' || $location == $sub->name()) && !isset($ruleStoresToProcess[$sub->name().'%pre']) )
-            {
-                $objectsToProcess[] = Array('store' => $sub->tagStore, 'objects' => $sub->tagStore->getall() );
-                $locationFound = true;
-            }
-        }
-        */
-
-    }
-
-    if( !$locationFound )
-    {
-        $util->locationNotFound($location);
-    }
-}
-// </editor-fold>
-
-$util->GlobalInitAction($util->sub);
-
-
-
-$util->time_to_process_objects();
-
-$util->GlobalFinishAction();
-
-
-
-PH::print_stdout( "" );
-PH::print_stdout( "**** PROCESSING OF $util->totalObjectsProcessed OBJECTS DONE ****" );
-PH::print_stdout( "" );
-
-$util->stats();
-
-##############################################
-
-print "\n\n\n";
-
-$util->save_our_work(TRUE);
-
-if( PH::$shadow_json )
-    print json_encode( PH::$JSON_OUT, JSON_PRETTY_PRINT );
-
-##########################################
-##########################################
 if( !PH::$shadow_json )
 {
     print "\n\n\n";

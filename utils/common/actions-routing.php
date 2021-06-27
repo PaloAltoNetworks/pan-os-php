@@ -34,7 +34,7 @@ RoutingCallContext::$supportedActions['display'] = Array(
             print " - DEST: " . str_pad($staticRoute->destination(), 20);
             print " - NEXTHOP: " . str_pad($staticRoute->nexthopIP(), 20);
             if( $staticRoute->nexthopInterface() != null )
-                print " - NEXT INTERFACE: " . str_pad($staticRoute->nexthopInterface()->toString(), 20);
+                print "\n           - NEXT INTERFACE: " . str_pad($staticRoute->nexthopInterface()->toString(), 20);
 
             print "\n";
         }

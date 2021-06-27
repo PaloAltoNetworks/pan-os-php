@@ -50,100 +50,10 @@ if( !PH::$shadow_json )
     print "************ ROUTING-EDIT UTILITY  ****************\n\n";
 }
 
-$util = new UTIL("custom", $argv, __FILE__, $supportedArguments, $usageMsg);
 
-$util->utilInit();
-
-$util->utilActionFilter( "routing" );
+$util = new NETWORKUTIL("routing", $argv, __FILE__, $supportedArguments, $usageMsg);
 
 
-
-//Todo: location and template check needed
-foreach( $util->objectsLocation as $location )
-{
-    $locationFound = false;
-
-    if( $util->configType == 'panos')
-    {
-
-        #if( $location == 'shared' || $location == 'any'  ){
-            $util->objectsToProcess[] = Array('store' => $util->pan->network->virtualRouterStore, 'objects' => $util->pan->network->virtualRouterStore->getAll());
-            $locationFound = true;
-        #}
-
-
-        //Todo: go through all virtualRouter, check attached interface if interface contain to a location then continue,
-        //if interface do not contain to location remove VR
-        /*
-        foreach ($pan->getVirtualSystems() as $sub)
-        {
-            if( ($location == 'any' || $location == 'all' || $location == $sub->name() && !isset($ruleStoresToProcess[$sub->name()]) ))
-            {
-                $objectsToProcess[] = Array('store' => $sub->importedInterfaces, 'objects' => $sub->importedInterfaces->getAll());
-                $locationFound = true;
-            }
-        }
-        */
-
-    }
-    else
-    {
-        derr( "This script is not yet working with a Panorama config" );
-        /*
-        //template is needed
-        if( $location == 'shared' || $location == 'any' )
-        {
-
-            $objectsToProcess[] = Array('store' => $pan->tagStore, 'objects' => $pan->tagStore->getall());
-            $locationFound = true;
-        }
-
-        foreach( $pan->getDeviceGroups() as $sub )
-        {
-            if( ($location == 'any' || $location == 'all' || $location == $sub->name()) && !isset($ruleStoresToProcess[$sub->name().'%pre']) )
-            {
-                $objectsToProcess[] = Array('store' => $sub->tagStore, 'objects' => $sub->tagStore->getall() );
-                $locationFound = true;
-            }
-        }
-        */
-    }
-
-    if( !$locationFound )
-    {
-        $util->locationNotFound($location);
-    }
-}
-// </editor-fold>
-
-$util->GlobalInitAction($util->sub);
-
-
-
-$util->time_to_process_objects();
-
-$util->GlobalFinishAction();
-
-
-
-
-PH::print_stdout( "" );
-PH::print_stdout( "**** PROCESSING OF $util->totalObjectsProcessed OBJECTS DONE ****" );
-PH::print_stdout( "" );
-
-$util->stats();
-
-##############################################
-
-print "\n\n\n";
-
-$util->save_our_work(TRUE);
-
-if( PH::$shadow_json )
-    print json_encode( PH::$JSON_OUT, JSON_PRETTY_PRINT );
-
-##########################################
-##########################################
 if( !PH::$shadow_json )
 {
     print "\n\n\n";

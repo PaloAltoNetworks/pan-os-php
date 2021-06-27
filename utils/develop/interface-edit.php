@@ -51,98 +51,10 @@ if( !PH::$shadow_json )
     print "************ INTERFACE-EDIT UTILITY  ****************\n\n";
 }
 
-$util = new UTIL("custom", $argv, __FILE__, $supportedArguments, $usageMsg);
 
-$util->utilInit();
-
-$util->utilActionFilter( "interface" );
+$util = new NETWORKUTIL("interface", $argv, __FILE__, $supportedArguments, $usageMsg);
 
 
-
-
-
-
-//Todo: location and template check needed
-foreach( $util->objectsLocation as $location )
-{
-    $locationFound = false;
-
-    if( $util->configType == 'panos')
-    {
-        if( $util->location == 'shared' || $util->location == 'any'  )
-        {
-            $util->objectsToProcess[] = Array('store' => $util->pan->network, 'objects' => $util->pan->network->getAllInterfaces());
-            $locationFound = true;
-        }
-
-
-        foreach ($util->pan->getVirtualSystems() as $sub)
-        {
-            if( ($util->location == 'any' || $util->location == $sub->name() )) //&& !isset($util->objectsToProcess[$sub->name()]) ))
-            {
-                $util->objectsToProcess[] = Array('store' => $sub->importedInterfaces, 'objects' => $sub->importedInterfaces->getAll());
-                $locationFound = true;
-            }
-        }
-    }
-    else
-    {
-        foreach( $util->pan->templates as $template )
-        {
-            if( $util->location == 'shared' || $util->location == 'any'  )
-            {
-                $util->objectsToProcess[] = Array('store' => $template->deviceConfiguration->network, 'objects' => $template->deviceConfiguration->network->getAllInterfaces());
-                $locationFound = true;
-            }
-
-
-            foreach( $util->pan->getVirtualSystems() as $sub )
-            {
-                if( ($util->location == 'any' || $util->location == 'all' || $util->location == $sub->name()) && !isset($util->objectsToProcess[$sub->name() . '%pre']) )
-                {
-                    $util->objectsToProcess[] = Array('store' => $sub->network, 'objects' => $sub->importedInterfaces->getAll());
-                    $locationFound = TRUE;
-                }
-            }
-        }
-    }
-
-    if( !$locationFound )
-    {
-        $util->locationNotFound($location);
-    }
-}
-// </editor-fold>
-
-
-
-$util->GlobalInitAction($util->sub);
-
-
-
-$util->time_to_process_objects();
-
-$util->GlobalFinishAction();
-
-
-
-PH::print_stdout( "" );
-PH::print_stdout( "**** PROCESSING OF $util->totalObjectsProcessed OBJECTS DONE ****" );
-PH::print_stdout( "" );
-
-$util->stats();
-
-##############################################
-
-print "\n\n\n";
-
-$util->save_our_work(TRUE);
-
-if( PH::$shadow_json )
-    print json_encode( PH::$JSON_OUT, JSON_PRETTY_PRINT );
-
-##########################################
-##########################################
 if( !PH::$shadow_json )
 {
     print "\n\n\n";
