@@ -123,7 +123,7 @@ class VirtualSystem
     /** @var InterfaceContainer */
     public $importedInterfaces;
 
-    /** @var InterfaceContainer */
+    /** @var VirtualRouterContainer */
     public $importedVirtualRouter;
 
     /** @var DeviceGroup $parentDeviceGroup in case it load as part of Panorama */

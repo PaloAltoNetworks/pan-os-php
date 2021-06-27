@@ -146,7 +146,7 @@ class DeviceCloud
     /** @var InterfaceContainer */
     public $importedInterfaces;
 
-    /** @var InterfaceContainer */
+    /** @var VirtualRouterContainer */
     public $importedVirtualRouter;
 
     /** @var Container parentContainer in case it load as part of Panorama */

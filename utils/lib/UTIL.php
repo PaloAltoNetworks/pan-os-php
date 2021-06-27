@@ -8,6 +8,7 @@ require_once(dirname(__FILE__)."/RULEUTIL.php");
 require_once(dirname(__FILE__)."/STATSUTIL.php");
 require_once(dirname(__FILE__)."/SECURITYPROFILEUTIL.php");
 require_once(dirname(__FILE__)."/DEVICEUTIL.php");
+require_once(dirname(__FILE__)."/NETWORKUTIL.php");
 
 require_once(dirname(__FILE__)."/RULEMERGER.php");
 
@@ -735,20 +736,16 @@ class UTIL
         else
         {
             if( $this->configType == 'panos' )
-            {
-                PH::print_stdout( " - No 'location' provided so using default ='vsys1'" );
                 $this->objectsLocation = 'vsys1';
-            }
             elseif( $this->configType == 'panorama' )
-            {
-                PH::print_stdout( " - No 'location' provided so using default ='shared'" );
                 $this->objectsLocation = 'shared';
-            }
             elseif( $this->configType == 'fawkes' )
-            {
-                PH::print_stdout( " - No 'location' provided so using default ='All'" );
                 $this->objectsLocation = 'All';
-            }
+
+            if( get_class( $this ) == "NETWORKUTIL" )
+                $this->objectsLocation = 'any';
+
+            PH::print_stdout( " - No 'location' provided so using default ='".$this->objectsLocation."'" );
         }
     }
 
