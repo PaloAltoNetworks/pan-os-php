@@ -1,3 +1,4 @@
+@@ -0,0 +1,571 @@
 <?php
 
 /**
@@ -19,8 +20,6 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-print "\n***********************************************\n";
-print   "*********** ZONE-EDIT UTILITY **************\n\n";
 
 
 set_include_path(dirname(__FILE__) . '/../' . PATH_SEPARATOR . get_include_path());
@@ -29,11 +28,21 @@ require_once dirname(__FILE__)."/../lib/pan_php_framework.php";
 require_once dirname(__FILE__)."/../utils/lib/UTIL.php";
 
 
-print "\n";
+if( !PH::$shadow_json )
+{
+    print "\n***********************************************\n";
+    print "************ INTERFACE-EDIT UTILITY  ****************\n\n";
+}
 
-$util = new NETWORKUTIL("zone", $argv, __FILE__);
+
+$util = new NETWORKUTIL("interface", $argv, __FILE__);
 
 
-print "\n\n*********** END OF ZONE-EDIT UTILITY **********\n";
-print     "**************************************************\n";
-print "\n\n";
+if( !PH::$shadow_json )
+{
+    print "\n\n\n";
+
+    print "\n\n************ END OF INTERFACE-EDIT UTILITY ************\n";
+    print     "**************************************************\n";
+    print "\n\n";
+}

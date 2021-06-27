@@ -791,8 +791,7 @@ class UTIL
                 $context = new ServiceCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries, $this);
             elseif( $this->utilType == 'rule' )
                 $context = new RuleCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries, $this);
-            elseif( $this->utilType == 'zone' )
-                $context = new ZoneCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries, $this);
+
             elseif( $this->utilType == 'securityprofile' )
                 $context = new SecurityProfileCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries, $this);
             elseif( $this->utilType == 'schedule' )
@@ -803,6 +802,8 @@ class UTIL
             elseif( $this->utilType == 'vsys' )
                 $context = new VsysCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries, $this);
 
+            elseif( $this->utilType == 'zone' )
+                $context = new ZoneCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries, $this);
             elseif( $this->utilType == 'virtualwire' )
                 $context = new VirtualWireCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries, $this);
             elseif( $this->utilType == 'routing' )
@@ -950,8 +951,6 @@ class UTIL
                         $this->objectsToProcess[] = array('store' => $this->pan->addressStore, 'objects' => $this->pan->addressStore->all(null, TRUE));
                     elseif( $this->utilType == 'service' )
                         $this->objectsToProcess[] = array('store' => $this->pan->serviceStore, 'objects' => $this->pan->serviceStore->all(null, TRUE));
-                    #elseif( $this->utilType == 'rule' )
-                    #$this->objectsToProcess[] = Array('store' => $this->pan->ruleStore, 'objects' => $this->pan->ruleStore->getall());
                     elseif( $this->utilType == 'tag' )
                         $this->objectsToProcess[] = array('store' => $this->pan->tagStore, 'objects' => $this->pan->tagStore->getall());
                     elseif( $this->utilType == 'vsys' )
@@ -986,12 +985,7 @@ class UTIL
                             $this->objectsToProcess[] = array('store' => $sub->tagStore, 'objects' => $sub->tagStore->getall());
                         elseif( $this->utilType == 'schedule' )
                             $this->objectsToProcess[] = array('store' => $sub->scheduleStore, 'objects' => $sub->scheduleStore->getall());
-                        #elseif( $this->utilType == 'vsys' )
-                        #    $this->objectsToProcess[] = Array('store' => $sub->owner, 'objects' => $sub);
 
-
-                        elseif( $this->utilType == 'zone' )
-                            $this->objectsToProcess[] = array('store' => $sub->zoneStore, 'objects' => $sub->zoneStore->getall());
 
 
                         $locationFound = TRUE;
@@ -1010,14 +1004,11 @@ class UTIL
                         $this->objectsToProcess[] = array('store' => $this->pan->addressStore, 'objects' => $this->pan->addressStore->all(null, TRUE));
                     elseif( $this->utilType == 'service' )
                         $this->objectsToProcess[] = array('store' => $this->pan->serviceStore, 'objects' => $this->pan->serviceStore->all(null, TRUE));
-                    #elseif( $this->utilType == 'rule' )
-                    #$this->objectsToProcess[] = Array('store' => $this->pan->ruleStore, 'objects' => $this->pan->ruleStore->getall());
+
                     elseif( $this->utilType == 'tag' )
                         $this->objectsToProcess[] = array('store' => $this->pan->tagStore, 'objects' => $this->pan->tagStore->getall());
                     elseif( $this->utilType == 'schedule' )
                         $this->objectsToProcess[] = array('store' => $this->pan->scheduleStore, 'objects' => $this->pan->scheduleStore->getall());
-                    elseif( $this->utilType == 'zone' )
-                        $this->objectsToProcess[] = array('store' => $this->pan->zoneStore, 'objects' => $this->pan->zoneStore->getall());
 
 
                     $locationFound = TRUE;
@@ -1044,14 +1035,11 @@ class UTIL
                             $this->objectsToProcess[] = array('store' => $sub->addressStore, 'objects' => $sub->addressStore->all(null, TRUE));
                         elseif( $this->utilType == 'service' )
                             $this->objectsToProcess[] = array('store' => $sub->serviceStore, 'objects' => $sub->serviceStore->all(null, TRUE));
-                        #elseif( $this->utilType == 'rule' )
-                        #$this->objectsToProcess[] = Array('store' => $sub->ruleStore, 'objects' => $sub->ruleStore->getall());
+
                         elseif( $this->utilType == 'tag' )
                             $this->objectsToProcess[] = array('store' => $sub->tagStore, 'objects' => $sub->tagStore->getall());
                         elseif( $this->utilType == 'schedule' )
                             $this->objectsToProcess[] = array('store' => $sub->scheduleStore, 'objects' => $sub->scheduleStore->getall());
-                        elseif( $this->utilType == 'zone' )
-                            $this->objectsToProcess[] = array('store' => $sub->zoneStore, 'objects' => $sub->zoneStore->getall());
 
                         $locationFound = TRUE;
                     }
