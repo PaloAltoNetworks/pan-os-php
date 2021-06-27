@@ -51,6 +51,10 @@ class NETWORKUTIL extends UTIL
                         $this->objectsToProcess[] = Array('store' => $this->pan->network, 'objects' => $this->pan->network->getAllInterfaces());
                     elseif( $this->utilType == 'routing' )
                         $this->objectsToProcess[] = Array('store' => $this->pan->network->virtualRouterStore, 'objects' => $this->pan->network->virtualRouterStore->getAll());
+                    elseif( $this->utilType == 'zone' )
+                    {
+                        //zone store only in vsys available
+                    }
 
                     $locationFound = TRUE;
                 }
@@ -69,6 +73,8 @@ class NETWORKUTIL extends UTIL
                             {}
                             elseif( $this->utilType == 'routing' )
                             {}
+                            elseif( $this->utilType == 'zone' )
+                            {}
 
                             $locationFound = TRUE;
                         }
@@ -83,6 +89,8 @@ class NETWORKUTIL extends UTIL
                                 $this->objectsToProcess[] = Array('store' => $sub->importedInterfaces, 'objects' => $sub->importedInterfaces->getAll());
                             elseif( $this->utilType == 'routing' )
                             {}
+                            elseif( $this->utilType == 'zone' )
+                                $this->objectsToProcess[] = array('store' => $sub->zoneStore, 'objects' => $sub->zoneStore->getall());
 
                             $locationFound = TRUE;
                         }
@@ -115,6 +123,10 @@ class NETWORKUTIL extends UTIL
                                 $this->objectsToProcess[] = Array('store' => $template->deviceConfiguration->network, 'objects' => $template->deviceConfiguration->network->getAllInterfaces());
                             elseif( $this->utilType == 'routing' )
                                 $this->objectsToProcess[] = Array('store' => $template->deviceConfiguration->network->virtualRouterStore, 'objects' => $template->deviceConfiguration->network->virtualRouterStore->getAll());
+                            elseif( $this->utilType == 'zone' )
+                            {
+                                //zone store only in vsys available
+                            }
 
                             $locationFound = true;
                         }
@@ -129,6 +141,9 @@ class NETWORKUTIL extends UTIL
                                     $this->objectsToProcess[] = array('store' => $sub->importedInterfaces, 'objects' => $sub->importedInterfaces->getAll());
                                 elseif( $this->utilType == 'routing' )
                                 {}
+                                elseif( $this->utilType == 'zone' )
+                                    $this->objectsToProcess[] = array('store' => $sub->zoneStore, 'objects' => $sub->zoneStore->getall());
+
                                 $locationFound = TRUE;
                             }
                         }
