@@ -162,7 +162,7 @@ RQuery::$defaultFilters['rule']['description']['operators']['is.geq'] = Array(
 
     rules-edit.php  in=api://panorama.mycompany.com loadplugin=your_plugin_file.php ['actions=YOUR_PLUGIN_ACTION_NAME'] ['filter=(YOUR_PLUGIN_FILTER_NAME)']
 
-**UTIL usage via API** 
+**UTIL usage via PAN-OS XML API** 
 - PAN-OS API-KEYs are stored automatically at file: '.panconfkeystore' in your Systems User folder at the first time using a script with connection type API
 - or you can manage your API-KEY store with UTIL script pa_key-manager:
 ```php
@@ -224,3 +224,44 @@ Docker build
 	cd [go to the Folder you like to share with the Container]
 	docker run -v %CD%:/share -it pan-os-php
 	```
+
+Docker PAN-OS-PHP API
+============
+   ```bash
+   docker run -d -p 8082:80 --mount type=bind,source="[absolute_ROOTFOLDER]]/pan-os-php",target=/var/www/html php:apache
+   ```
+The PAN-OS-API is right now under development, but please feel free to try it out:
+http://localhost:8082/utils/develop/api/v1/tool.php
+
+The following "RESTAPI" routes are available:
+- /stats
+
+
+- /address
+- /service
+- /tag
+- /rule
+- /securityprofile
+- /schedule
+
+
+- /device
+
+
+- /zone
+- /interface
+- /routing
+- /virtualwire
+
+PAN-OS-API is NOT working yet with PAN-OS XML API but it is possible to run it against PAN-OS FW and Panorama offline configuration files, and manipulate in the same way as on PAN-OS-PHP ClI:
+- pa_address-edit help
+- http://localhost:8082/utils/develop/api/v1/tool.php/address?help
+
+- pa_address-edit listactions
+- http://localhost:8082/utils/develop/api/v1/tool.php/address?listactions
+
+To get it working on your own PAN-OS Firewall / Panorama config files,
+please put your files into [PAN-OS-PHP_RootFolder]/projects.
+
+It is now possible to start using it:
+http://localhost:8082/utils/develop/api/v1/tool.php/address?in=YOUR_CONFIG_FILE.xml

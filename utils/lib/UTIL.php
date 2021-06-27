@@ -592,8 +592,15 @@ class UTIL
 
         if( $this->configInput['status'] == 'fail' )
         {
-            fwrite(STDERR, "\n\n**ERROR** " . $this->configInput['msg'] . "\n\n");
-            exit(1);
+            if( isset( $_SERVER['REQUEST_METHOD'] ) )
+            {
+                throw new Exception( "**ERROR** " . $this->configInput['msg'], 404);
+            }
+            else
+            {
+                fwrite(STDERR, "\n\n**ERROR** " . $this->configInput['msg'] . "\n\n");
+                exit(1);
+            }
         }
 
         if( $this->configInput['type'] == 'file' )
@@ -615,7 +622,7 @@ class UTIL
                 derr("file '{$this->configInput['filename']}' not found");
 
             $this->xmlDoc = new DOMDocument();
-            PH::print_stdout( " - Reading XML file from disk... " );
+            PH::print_stdout( " - Reading XML file from disk... ".$this->configInput['filename'] );
             if( !$this->xmlDoc->load($this->configInput['filename'], XML_PARSE_BIG_LINES) )
                 derr("error while reading xml config file");
             PH::print_stdout( "OK!" );

@@ -14,6 +14,7 @@ UTILS:
 * class PH | improvments to be prepared for next feature pan-os-php API
 * routing-/interface-/vwire-edit - move from develop to util folder
 * zone-edit script - start using NETWORKUTIL - to better support Panorama configuration
+* introduce PAN-OS-PHP API in addition to PAN-OS-PHP CLI
 
 EXAMPLES:
 * update template script to show how UTIL() class usage make your scripting life easier
