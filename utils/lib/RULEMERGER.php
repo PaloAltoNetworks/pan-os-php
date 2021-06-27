@@ -33,15 +33,16 @@ class RULEMERGER extends UTIL
             }
         }
 
-        /*          'matchFromToSrcDstApp'  => 1 ,
-                    'matchFromToSrcDstSvc'  => 2 ,
-                    'matchFromToSrcSvcApp'  => 3 ,
-                    'matchFromToDstSvcApp'  => 4 ,
-                    'matchFromSrcDstSvcApp' => 5 ,
-                    'matchToSrcDstSvcApp'   => 6 ,
-                    'matchToDstSvcApp'   => 7 ,
-                    'matchFromSrcSvcApp' => 8 ,
-                    identical' => 9 ,
+        /*
+        'matchFromToSrcDstApp'  => 1 ,
+        'matchFromToSrcDstSvc'  => 2 ,
+        'matchFromToSrcSvcApp'  => 3 ,
+        'matchFromToDstSvcApp'  => 4 ,
+        'matchFromSrcDstSvcApp' => 5 ,
+        'matchToSrcDstSvcApp'   => 6 ,
+        'matchToDstSvcApp'   => 7 ,
+        'matchFromSrcSvcApp' => 8 ,
+        'identical' => 9 ,
         */
 
         if( $this->UTIL_additionalMatch == 'tag' )

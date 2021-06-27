@@ -61,7 +61,7 @@ require_once  "actions-routing.php";
 RoutingCallContext::prepareSupportedActions();
 
 require_once ( "VirtualWireCallContext.php");
-require_once  "actions-interface.php";
+require_once  "actions-virtualwire.php";
 VirtualWireCallContext::prepareSupportedActions();
 
 

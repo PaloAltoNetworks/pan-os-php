@@ -31,7 +31,7 @@ BUGFIX:
 * UTIL | pa_service-edit actions=replaceByMembersAndDelete - missing validation if object is group
 * class SecurityRule | bugfix for reading Schedule Object if defined on parentDG / shared level
 * class SecurityRule | bugfix for method rewriteSecProfXML() to remove XML childelement only once
-
+* class IPsecTunnel | bugfix in load_from_domxml() if XML Node 'protocol' not found 
 
 
 2.0.4 (20210519)
