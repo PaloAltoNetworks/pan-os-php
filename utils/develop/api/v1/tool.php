@@ -113,8 +113,6 @@ switch($verb) {
                 $util = new UTIL( "service", $argv, __FILE__);
             elseif( $url_pieces[1] == 'tag' )
                 $util = new UTIL( "tag", $argv, __FILE__);
-            elseif( $url_pieces[1] == 'zone' )
-                $util = new UTIL( "zone", $argv, __FILE__);
             elseif( $url_pieces[1] == 'schedule' )
                 $util = new UTIL( "schedule", $argv, __FILE__);
 
@@ -124,6 +122,8 @@ switch($verb) {
             elseif( $url_pieces[1] == 'device' )
                 $util = new DEVICEUTIL( "device", $argv, __FILE__);
 
+            elseif( $url_pieces[1] == 'zone' )
+                $util = new NETWORKUTIL( "zone", $argv, __FILE__);
             elseif( $url_pieces[1] == 'interface' )
                 $util = new NETWORKUTIL( "interface", $argv, __FILE__);
             elseif( $url_pieces[1] == 'routing' )
