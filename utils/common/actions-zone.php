@@ -325,11 +325,13 @@ ZoneCallContext::$supportedActions['displayreferences'] = array(
 ZoneCallContext::$supportedActions['display'] = array(
     'name' => 'display',
     'MainFunction' => function (ZoneCallContext $context) {
+        /** @var Zone $object */
         $object = $context->object;
         $tmp_txt = "     * " . get_class($object) . " '{$object->name()}'   ( type: " . $object->_type . " )   ";
         if( $object->zoneProtectionProfile !== null )
             $tmp_txt .= "ZPP: " . $object->zoneProtectionProfile;
-
+        if( $object->logsetting !== null )
+            $tmp_txt .= "Log Setting: " . $object->logsetting;
         PH::print_stdout( $tmp_txt );
 
         //DISPLAY interfaces attached to zones
@@ -590,7 +592,7 @@ ZoneCallContext::$supportedActions[] = array(
                 }
                 else
                 {
-                    $lines .= "---";
+                    $lines .= $encloseFunction( "" );
                     $lines .= $encloseFunction($object->owner->owner->name());
                 }
 
@@ -607,8 +609,15 @@ ZoneCallContext::$supportedActions[] = array(
                     else
                     {
                         $lines .= $encloseFunction($object->type());
-                        $lines .= $encloseFunction($object->attachedInterfaces->toString() );
-                        $lines .= $encloseFunction($object->logsetting);
+                        foreach( $object->attachedInterfaces->getAll() as $int )
+                            print "INT: ".$int->name()."\n";
+                        $lines .= $encloseFunction( $object->attachedInterfaces->getAll() );
+
+                        if( $object->logsetting == null )
+                            $tmpLogprof = "";
+                        else
+                            $tmpLogprof = $object->logsetting;
+                        $lines .= $encloseFunction( $tmpLogprof );
 
                     }
 

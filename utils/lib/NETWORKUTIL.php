@@ -115,44 +115,48 @@ class NETWORKUTIL extends UTIL
                 {
                     foreach( $this->pan->templates as $template )
                     {
-                        if( $location == 'shared' || $location == 'any'  )
+                        if( $this->templateName == 'any' || $this->templateName == $template->name() )
                         {
-                            if( $this->utilType == 'virtualwire' )
-                                $this->objectsToProcess[] = Array('store' => $template->deviceConfiguration->network->virtualWireStore, 'objects' => $template->deviceConfiguration->network->virtualWireStore->virtualWires());
-                            elseif( $this->utilType == 'interface' )
-                                $this->objectsToProcess[] = Array('store' => $template->deviceConfiguration->network, 'objects' => $template->deviceConfiguration->network->getAllInterfaces());
-                            elseif( $this->utilType == 'routing' )
-                                $this->objectsToProcess[] = Array('store' => $template->deviceConfiguration->network->virtualRouterStore, 'objects' => $template->deviceConfiguration->network->virtualRouterStore->getAll());
-                            elseif( $this->utilType == 'zone' )
-                            {
-                                //zone store only in vsys available
-                            }
-
-                            $locationFound = true;
-                        }
-
-                        foreach( $template->deviceConfiguration->getVirtualSystems() as $sub )
-                        {
-                            if( ($location == 'any' || $location == $sub->name()) && !isset($util->objectsToProcess[$sub->name() . '%pre']) )
+                            if( $location == 'shared' || $location == 'any'  )
                             {
                                 if( $this->utilType == 'virtualwire' )
-                                {}
+                                    $this->objectsToProcess[] = Array('store' => $template->deviceConfiguration->network->virtualWireStore, 'objects' => $template->deviceConfiguration->network->virtualWireStore->virtualWires());
                                 elseif( $this->utilType == 'interface' )
-                                    $this->objectsToProcess[] = array('store' => $sub->importedInterfaces, 'objects' => $sub->importedInterfaces->getAll());
+                                    $this->objectsToProcess[] = Array('store' => $template->deviceConfiguration->network, 'objects' => $template->deviceConfiguration->network->getAllInterfaces());
                                 elseif( $this->utilType == 'routing' )
-                                {}
+                                    $this->objectsToProcess[] = Array('store' => $template->deviceConfiguration->network->virtualRouterStore, 'objects' => $template->deviceConfiguration->network->virtualRouterStore->getAll());
                                 elseif( $this->utilType == 'zone' )
-                                    $this->objectsToProcess[] = array('store' => $sub->zoneStore, 'objects' => $sub->zoneStore->getall());
+                                {
+                                    //zone store only in vsys available
+                                }
 
-                                $locationFound = TRUE;
+                                $locationFound = true;
+                            }
+
+                            foreach( $template->deviceConfiguration->getVirtualSystems() as $sub )
+                            {
+                                if( ($location == 'any' || $location == $sub->name()) && !isset($util->objectsToProcess[$sub->name() . '%pre']) )
+                                {
+                                    if( $this->utilType == 'virtualwire' )
+                                    {}
+                                    elseif( $this->utilType == 'interface' )
+                                        $this->objectsToProcess[] = array('store' => $sub->importedInterfaces, 'objects' => $sub->importedInterfaces->getAll());
+                                    elseif( $this->utilType == 'routing' )
+                                    {}
+                                    elseif( $this->utilType == 'zone' )
+                                        $this->objectsToProcess[] = array('store' => $sub->zoneStore, 'objects' => $sub->zoneStore->getall());
+
+                                    $locationFound = TRUE;
+                                }
                             }
                         }
+
                     }
                 }
             }
 
-            if( !$locationFound )
-                self::locationNotFound($location, $this->configType, $this->pan);
+            #if( !$locationFound )
+            #    self::locationNotFound($location, $this->configType, $this->pan);
         }
     }
 

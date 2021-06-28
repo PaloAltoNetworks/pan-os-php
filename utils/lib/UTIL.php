@@ -24,6 +24,7 @@ class UTIL
     public $objectsLocation = 'shared';
 
     public $objectsLocationCounter = 0;
+    public $objectsTemplate = '';
     public $templateName = "";
     public $templateNameCounter = 0;
 
@@ -63,6 +64,7 @@ class UTIL
 
     public $location = null;
     public $sub = null;
+    public $template = null;
 
     function __construct($utilType, $argv, $PHP_FILE, $_supportedArguments = array(), $_usageMsg = "")
     {
@@ -747,6 +749,30 @@ class UTIL
 
             PH::print_stdout( " - No 'location' provided so using default ='".$this->objectsLocation."'" );
         }
+
+        //
+        // Template provided in CLI ?
+        //
+        if( isset(PH::$args['template']) )
+        {
+            $this->objectsTemplate = PH::$args['template'];
+            if( !is_string($this->objectsTemplate) || strlen($this->objectsTemplate) < 1 )
+                $this->display_error_usage_exit('"location" argument is not a valid string');
+        }
+        else
+        {
+            if( $this->configType == 'panos' )
+                $this->objectsTemplate = 'any';
+            elseif( $this->configType == 'panorama' )
+                $this->objectsTemplate = 'any';
+            elseif( $this->configType == 'fawkes' )
+                $this->objectsTemplate = 'any';
+
+            if( get_class( $this ) == "NETWORKUTIL" )
+                $this->objectsTemplate = 'any';
+
+            PH::print_stdout( " - No 'template' provided so using default ='".$this->objectsTemplate."'" );
+        }
     }
 
     public function extracting_actions( $utilType = null)
@@ -898,20 +924,19 @@ class UTIL
             if( strtolower($location) == 'shared' )
                 $location = 'shared';
             else if( strtolower($location) == 'any' )
-                $this->location = 'any';
+                $location = 'any';
             else if( strtolower($location) == 'all' )
             {
                 if( $this->configType == 'fawkes' )
-                    $this->location = 'All';
+                    $location = 'All';
                 else
-                    $this->location = 'any';
+                    $location = 'any';
             }
 
         }
         unset($location);
 
         $this->objectsLocation = array_unique($this->objectsLocation);
-
         if( count( $this->objectsLocation ) == 1 )
         {
             $this->location = $this->objectsLocation[0];
@@ -929,6 +954,49 @@ class UTIL
                 if( $this->sub === null )
                 {
                     $this->locationNotFound($this->location);
+                }
+            }
+        }
+
+        //
+        // Template Filter Processing
+        //
+
+        // <editor-fold desc=" ****  Location Filter Processing  ****" defaultstate="collapsed" >
+        $this->objectsTemplate = explode(',', $this->objectsTemplate);
+
+        foreach( $this->objectsTemplate as &$location )
+        {
+            if( strtolower($location) == 'any' )
+                $location = 'any';
+            else if( strtolower($location) == 'all' )
+            {
+                $location = 'any';
+            }
+
+        }
+        unset($location);
+
+        $this->objectsTemplate = array_unique($this->objectsTemplate);
+
+        if( count( $this->objectsTemplate ) == 1 )
+        {
+            $this->templateName = $this->objectsTemplate[0];
+            if( $this->templateName == 'shared' )
+            {
+                #$this->sub = $this->pan;
+            }
+            elseif( $this->templateName == 'any' )
+            {
+                #
+            }
+            else
+            {
+                $this->template = $this->pan->findTemplate($this->templateName);
+                if( $this->template === null )
+                {
+                    derr("template: " . $this->template . " not found!");
+                    #$this->locationNotFound($this->location);
                 }
             }
         }
