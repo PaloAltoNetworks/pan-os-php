@@ -325,11 +325,13 @@ ZoneCallContext::$supportedActions['displayreferences'] = array(
 ZoneCallContext::$supportedActions['display'] = array(
     'name' => 'display',
     'MainFunction' => function (ZoneCallContext $context) {
+        /** @var Zone $object */
         $object = $context->object;
         $tmp_txt = "     * " . get_class($object) . " '{$object->name()}'   ( type: " . $object->_type . " )   ";
         if( $object->zoneProtectionProfile !== null )
             $tmp_txt .= "ZPP: " . $object->zoneProtectionProfile;
-
+        if( $object->logsetting !== null )
+            $tmp_txt .= "Log Setting: " . $object->logsetting;
         PH::print_stdout( $tmp_txt );
 
         //DISPLAY interfaces attached to zones
