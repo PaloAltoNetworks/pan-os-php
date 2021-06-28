@@ -2,7 +2,7 @@ CHANGELOG
 
 2.0.6
 UTILS:
-
+* pa_zone-edit | introduce filter=(logprof is.set) and (logprof is XYZ) | actions=exportToExcel
 
 BUGFIX:
 
