@@ -107,6 +107,12 @@ class LoopbackInterface
     {
         $str = $this->owner->getLoopbackIfStoreXPath() . "/entry[@name='" . $this->name . "']";
 
+        if( $this->owner->owner->owner !== null && get_class( $this->owner->owner->owner ) == "Template" )
+        {
+            $templateXpath = $this->owner->owner->owner->getXPath();
+            $str = $templateXpath.$str;
+        }
+
         return $str;
     }
 

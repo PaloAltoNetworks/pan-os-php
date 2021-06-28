@@ -251,7 +251,6 @@ class Zone
         if( !$this->isTmp() )
         {
             $c = findConnectorOrDie($this);
-
             $path = $this->getXPath();
 
             $c->sendRenameRequest($path, $newname);
@@ -416,6 +415,12 @@ class Zone
             derr('no xpath on temporary objects');
 
         $str = $this->owner->getXPath() . "entry[@name='" . $this->name . "']";
+
+        if( $this->owner->owner->owner->owner  !== null && get_class( $this->owner->owner->owner->owner ) == "Template" )
+        {
+            $templateXpath = $this->owner->owner->owner->owner->getXPath();
+            $str = $templateXpath.$str;
+        }
 
         return $str;
     }
