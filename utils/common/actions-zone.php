@@ -495,3 +495,198 @@ ZoneCallContext::$supportedActions['logsetting-set'] = array(
     ),
 );
 
+ZoneCallContext::$supportedActions[] = array(
+    'name' => 'exportToExcel',
+    'MainFunction' => function (ZoneCallContext $context) {
+        $object = $context->object;
+        $context->objectList[] = $object;
+    },
+    'GlobalInitFunction' => function (ZoneCallContext $context) {
+        $context->objectList = array();
+    },
+    'GlobalFinishFunction' => function (ZoneCallContext $context) {
+        $args = &$context->arguments;
+        $filename = $args['filename'];
+
+        $addWhereUsed = FALSE;
+        $addUsedInLocation = FALSE;
+        $addResolveGroupIPCoverage = FALSE;
+        $addNestedMembers = FALSE;
+
+        $optionalFields = &$context->arguments['additionalFields'];
+
+        if( isset($optionalFields['WhereUsed']) )
+            $addWhereUsed = TRUE;
+
+        if( isset($optionalFields['UsedInLocation']) )
+            $addUsedInLocation = TRUE;
+
+        if( isset($optionalFields['ResolveIP']) )
+            $addResolveGroupIPCoverage = TRUE;
+
+        if( isset($optionalFields['NestedMembers']) )
+            $addNestedMembers = TRUE;
+
+        $headers = '<th>template</th><th>location</th><th>name</th><th>type</th><th>interfaces</th><th>log-setting</th>';
+
+        if( $addWhereUsed )
+            $headers .= '<th>where used</th>';
+        if( $addUsedInLocation )
+            $headers .= '<th>location used</th>';
+        if( $addResolveGroupIPCoverage )
+            $headers .= '<th>ip resolution</th>';
+        if( $addNestedMembers )
+            $headers .= '<th>nested members</th>';
+
+        $lines = '';
+        $encloseFunction = function ($value, $nowrap = TRUE) {
+            if( is_string($value) )
+                $output = htmlspecialchars($value);
+            elseif( is_array($value) )
+            {
+                $output = '';
+                $first = TRUE;
+                foreach( $value as $subValue )
+                {
+                    if( !$first )
+                    {
+                        $output .= '<br />';
+                    }
+                    else
+                        $first = FALSE;
+
+                    if( is_string($subValue) )
+                        $output .= htmlspecialchars($subValue);
+                    else
+                        $output .= htmlspecialchars($subValue->name());
+                }
+            }
+            else
+                derr('unsupported');
+
+            if( $nowrap )
+                return '<td style="white-space: nowrap">' . $output . '</td>';
+
+            return '<td>' . $output . '</td>';
+        };
+
+        $count = 0;
+        if( isset($context->objectList) )
+        {
+            foreach( $context->objectList as $object )
+            {
+                $count++;
+
+                /** @var Zone $object */
+                if( $count % 2 == 1 )
+                    $lines .= "<tr>\n";
+                else
+                    $lines .= "<tr bgcolor=\"#DDDDDD\">";
+
+                if( $object->owner->owner->owner->owner  !== null && get_class( $object->owner->owner->owner->owner ) == "Template" )
+                {
+                    $lines .= $encloseFunction($object->owner->owner->owner->owner->name());
+                    $lines .= $encloseFunction($object->owner->owner->name());
+                }
+                else
+                {
+                    $lines .= "---";
+                    $lines .= $encloseFunction($object->owner->owner->name());
+                }
+
+
+                $lines .= $encloseFunction($object->name());
+
+                    if( $object->isTmp() )
+                    {
+                        $lines .= $encloseFunction('unknown');
+                        $lines .= $encloseFunction('');
+                        $lines .= $encloseFunction('');
+                        $lines .= $encloseFunction('');
+                    }
+                    else
+                    {
+                        $lines .= $encloseFunction($object->type());
+                        $lines .= $encloseFunction($object->attachedInterfaces->toString() );
+                        $lines .= $encloseFunction($object->logsetting);
+
+                    }
+
+                if( $addWhereUsed )
+                {
+                    $refTextArray = array();
+                    foreach( $object->getReferences() as $ref )
+                        $refTextArray[] = $ref->_PANC_shortName();
+
+                    $lines .= $encloseFunction($refTextArray);
+                }
+                if( $addUsedInLocation )
+                {
+                    $refTextArray = array();
+                    foreach( $object->getReferences() as $ref )
+                    {
+                        $location = PH::getLocationString($object->owner);
+                        $refTextArray[$location] = $location;
+                    }
+
+                    $lines .= $encloseFunction($refTextArray);
+                }
+                if( $addResolveGroupIPCoverage )
+                {
+                    $mapping = $object->getIP4Mapping();
+                    $strMapping = explode(',', $mapping->dumpToString());
+
+                    foreach( array_keys($mapping->unresolved) as $unresolved )
+                        $strMapping[] = $unresolved;
+
+                    $lines .= $encloseFunction($strMapping);
+                }
+                if( $addNestedMembers )
+                {
+                    if( $object->isGroup() )
+                    {
+                        $members = $object->expand(TRUE);
+                        $lines .= $encloseFunction($members);
+                    }
+                    else
+                        $lines .= $encloseFunction('');
+                }
+
+                $lines .= "</tr>\n";
+
+            }
+        }
+
+        $content = file_get_contents(dirname(__FILE__) . '/html-export-template.html');
+        $content = str_replace('%TableHeaders%', $headers, $content);
+
+        $content = str_replace('%lines%', $lines, $content);
+
+        $jscontent = file_get_contents(dirname(__FILE__) . '/jquery-1.11.js');
+        $jscontent .= "\n";
+        $jscontent .= file_get_contents(dirname(__FILE__) . '/jquery.stickytableheaders.min.js');
+        $jscontent .= "\n\$('table').stickyTableHeaders();\n";
+
+        $content = str_replace('%JSCONTENT%', $jscontent, $content);
+
+        file_put_contents($filename, $content);
+
+
+        file_put_contents($filename, $content);
+    },
+    'args' => array('filename' => array('type' => 'string', 'default' => '*nodefault*'),
+        'additionalFields' =>
+            array('type' => 'pipeSeparatedList',
+                'subtype' => 'string',
+                'default' => '*NONE*',
+                'choices' => array('WhereUsed', 'UsedInLocation', 'ResolveIP', 'NestedMembers'),
+                'help' =>
+                    "pipe(|) separated list of additional fields (ie: Arg1|Arg2|Arg3...) to include in the report. The following is available:\n" .
+                    "  - NestedMembers: lists all members, even the ones that may be included in nested groups\n" .
+                    "  - ResolveIP\n" .
+                    "  - UsedInLocation : list locations (vsys,dg,shared) where object is used\n" .
+                    "  - WhereUsed : list places where object is used (rules, groups ...)\n"
+            )
+    )
+
+);
