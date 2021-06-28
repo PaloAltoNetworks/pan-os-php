@@ -592,7 +592,7 @@ ZoneCallContext::$supportedActions[] = array(
                 }
                 else
                 {
-                    $lines .= "---";
+                    $lines .= $encloseFunction( "" );
                     $lines .= $encloseFunction($object->owner->owner->name());
                 }
 
@@ -609,8 +609,15 @@ ZoneCallContext::$supportedActions[] = array(
                     else
                     {
                         $lines .= $encloseFunction($object->type());
-                        $lines .= $encloseFunction($object->attachedInterfaces->toString() );
-                        $lines .= $encloseFunction($object->logsetting);
+                        foreach( $object->attachedInterfaces->getAll() as $int )
+                            print "INT: ".$int->name()."\n";
+                        $lines .= $encloseFunction( $object->attachedInterfaces->getAll() );
+
+                        if( $object->logsetting == null )
+                            $tmpLogprof = "";
+                        else
+                            $tmpLogprof = $object->logsetting;
+                        $lines .= $encloseFunction( $tmpLogprof );
 
                     }
 
