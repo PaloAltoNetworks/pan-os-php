@@ -39,7 +39,7 @@ DeviceCallContext::$supportedActions['display'] = array(
         if( get_class($object) == "TemplateStack" )
         {
             $used_templates = $object->templates;
-            foreach( array_reverse($used_templates) as $template )
+            foreach( $used_templates as $template )
             {
                 print $context->padding." - " . get_class($template) . " '{$template->name()}'  ";
                 print "\n";
@@ -244,4 +244,37 @@ DeviceCallContext::$supportedActions[] = array(
                     "  - WhereUsed : list places where object is used (rules, groups ...)\n" .
                     "  - UsedInLocation : list locations (vsys,dg,shared) where object is used\n")
     )
+);
+DeviceCallContext::$supportedActions['template-add'] = array(
+    'name' => 'template-add',
+    'MainFunction' => function (DeviceCallContext $context) {
+
+        /** @var TemplateStack $object */
+        $object = $context->object;
+
+        if( get_class($object) == "TemplateStack" )
+        {
+            $templateName = $context->arguments['templateName'];
+            $position = $context->arguments['position'];
+
+
+            $template = $object->owner->findTemplate( $templateName );
+
+            if( $template == null )
+            {
+                print "     - SKIP adding template '".$templateName."' because it is not found in this config\n";
+                return null;
+            }
+
+            if( $context->isAPI )
+                $object->API_addTemplate( $template, $position );
+            else
+                $object->addTemplate( $template, $position );
+        }
+        print "\n";
+    },
+    'args' => array(
+        'templateName' => array('type' => 'string', 'default' => 'false'),
+        'position' => array('type' => 'string', 'default' => 'bottom'),
+    ),
 );
