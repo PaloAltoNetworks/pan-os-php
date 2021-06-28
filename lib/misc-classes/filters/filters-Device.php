@@ -3,16 +3,6 @@
 // <editor-fold desc=" ***** Zone filters *****" defaultstate="collapsed" >
 
 /*
-RQuery::$defaultFilters['device']['name']['operators']['eq'] = array(
-    'Function' => function (DeviceRQueryContext $context) {
-        return $context->object->name() == $context->value;
-    },
-    'arg' => TRUE,
-    'ci' => array(
-        'fString' => '(%PROP% grp.shared-group1)',
-        'input' => 'input/panorama-8.0.xml'
-    )
-);
 RQuery::$defaultFilters['device']['name']['operators']['eq.nocase'] = array(
     'Function' => function (DeviceRQueryContext $context) {
         return strtolower($context->object->name()) == strtolower($context->value);
@@ -34,6 +24,16 @@ RQuery::$defaultFilters['device']['name']['operators']['contains'] = array(
     )
 );
 */
+RQuery::$defaultFilters['device']['name']['operators']['eq'] = array(
+    'Function' => function (DeviceRQueryContext $context) {
+        return $context->object->name() == $context->value;
+    },
+    'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP% grp.shared-group1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 RQuery::$defaultFilters['device']['name']['operators']['regex'] = array(
     'Function' => function (DeviceRQueryContext $context) {
         $object = $context->object;

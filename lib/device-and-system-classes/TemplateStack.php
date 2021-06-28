@@ -30,6 +30,8 @@ class TemplateStack
     /** @var  array */
     public $templates = array();
 
+    protected $templateRoot = null;
+
     protected $FirewallsSerials = array();
 
     /** @var  PANConf */
@@ -59,11 +61,11 @@ class TemplateStack
         //Todo: how common it is to have device config inside templateStack???
 
         #print "template-stack: ".$this->name."\n";
-        $tmp = DH::findFirstElement('templates', $xml);
+        $this->templateRoot = DH::findFirstElement('templates', $xml);
 
-        if( $tmp !== FALSE )
+        if( $this->templateRoot !== FALSE )
         {
-            foreach( $tmp->childNodes as $node )
+            foreach( $this->templateRoot->childNodes as $node )
             {
                 if( $node->nodeType != XML_ELEMENT_NODE ) continue;
 
@@ -100,6 +102,72 @@ class TemplateStack
     public function isTemplateStack()
     {
         return TRUE;
+    }
+
+    /**
+     * Add a member to this group, it must be passed as an object
+     * @param Template $newObject Object to be added
+     * @param bool $rewriteXml
+     * @return bool
+     */
+    public function addTemplate($newObject, $position, $rewriteXml = TRUE)
+    {
+        if( !is_object($newObject) )
+            derr("Only objects can be passed to this function");
+
+        if( get_class( $newObject ) !== "Template" )
+        {
+            mwarning("only objects of class Template can be added to a Template-Stack!");
+            return FALSE;
+        }
+
+        if( $position !== 'bottom' )
+        {
+            mwarning("Template position only bottom is supported right now!");
+            return null;
+        }
+
+
+        if( !in_array($newObject, $this->templates, TRUE) )
+        {
+            $this->templates[] = $newObject;
+            $newObject->addReference($this);
+            if( $rewriteXml && $this->owner !== null )
+            {
+                DH::createElement($this->templateRoot, 'member', $newObject->name());
+            }
+
+            return TRUE;
+        }
+
+        return FALSE;
+    }
+
+    /**
+     * Add a member to this group, it must be passed as an object
+     * @param Template $newObject Object to be added
+     * @return bool
+     */
+    public function API_addTemplate($newObject, $position)
+    {
+        $ret = $this->addTemplate($newObject, $position);
+
+        if( $ret )
+        {
+            $con = findConnector($this);
+            $xpath = $this->getXPath();
+
+            $con->sendSetRequest($xpath."/templates", "<member>{$newObject->name()}</member>");
+        }
+
+        return $ret;
+    }
+
+    public function &getXPath()
+    {
+        $str = "/config/devices/entry[@name='localhost.localdomain']/template-stack/entry[@name='" . $this->name . "']";
+
+        return $str;
     }
 
 }
