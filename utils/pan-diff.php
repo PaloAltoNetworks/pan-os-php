@@ -145,7 +145,7 @@ function compareElements($el1, $el2, $xpath = null)
 
     /** @var DOMElement[][] $plus */
     $plus = array();
-    /** @var DOMElement[][ $minus */
+    /** @var DOMElement[][] $minus */
     $minus = array();
 
     foreach( $el1->childNodes as $node )
@@ -251,6 +251,7 @@ function compareElements($el1, $el2, $xpath = null)
                     else
                     {
                         $el1BasicNode = array($el1BasicNode);
+                        $el1BasicNode[] = $node;
                     }
                 }
 
@@ -279,6 +280,7 @@ function compareElements($el1, $el2, $xpath = null)
                     else
                     {
                         $el2BasicNode = array($el2BasicNode);
+                        $el2BasicNode[] = $node;
                     }
                 }
 
@@ -315,12 +317,16 @@ function compareElements($el1, $el2, $xpath = null)
                     $nodeContent = $node->textContent;
                     if( isset($el1ContentSorted[$nodeContent]) )
                         derr('cannot have <node>xxxx</node> nodes witch same content', $el1);
+                    else
+                        $el1ContentSorted[$nodeContent] = $node;
                 }
                 foreach( $el2BasicNode as $node )
                 {
                     $nodeContent = $node->textContent;
                     if( isset($el2ContentSorted[$nodeContent]) )
                         derr('cannot have <node>xxxx</node> nodes witch same content', $el2);
+                    else
+                        $el2ContentSorted[$nodeContent] = $node;
                 }
 
                 foreach( $el1ContentSorted as $content => $node )
