@@ -609,8 +609,6 @@ ZoneCallContext::$supportedActions[] = array(
                     else
                     {
                         $lines .= $encloseFunction($object->type());
-                        foreach( $object->attachedInterfaces->getAll() as $int )
-                            print "INT: ".$int->name()."\n";
                         $lines .= $encloseFunction( $object->attachedInterfaces->getAll() );
 
                         if( $object->logsetting == null )
