@@ -172,6 +172,7 @@ function check_region( $name, $object, &$address_region )
 
 $totalAddressGroupsFixed = 0;
 $totalServiceGroupsFixed = 0;
+$totalApplicationGroupsFixed = 0;
 
 $totalAddressGroupsSubGroupFixed = 0;
 $totalServiceGroupsSubGroupFixed = 0;
@@ -245,6 +246,8 @@ foreach( $locationNodes as $locationName => $locationNode )
     $serviceObjects = array();
     $serviceGroups = array();
     $serviceIndex = array();
+
+    $applicationGroups = array();
 
     $secRules = array();
     $secRuleIndex = array();
@@ -759,6 +762,81 @@ foreach( $locationNodes as $locationName => $locationNode )
         #$countDuplicateServiceObjects--;
     }
 
+    //
+    //
+    //
+    //
+    //
+    //
+    $objectTypeNode = DH::findFirstElement('application-group', $locationNode);
+    if( $objectTypeNode !== FALSE )
+    {
+        foreach( $objectTypeNode->childNodes as $objectNode )
+        {
+            /** @var DOMElement $objectNode */
+            if( $objectNode->nodeType != XML_ELEMENT_NODE )
+                continue;
+
+            $objectName = $objectNode->getAttribute('name');
+
+            check_region( $objectName, $objectNode, $address_region );
+
+            $applicationGroups[$objectName][] = $objectNode;
+
+            if( !isset($applicationIndex[$objectName]) )
+                $applicationIndex[$objectName] = array('regular' => array(), 'group' => array());
+
+            $applicationIndex[$objectName]['group'][] = $objectNode;
+        }
+    }
+
+    //
+    //
+    //
+
+    print "\n\n";
+    print "#####     #####     #####     #####     #####     #####     #####     #####     #####     #####     #####\n";
+    print " - parsed ". count($applicationGroups) . " application groups\n";
+    print "\n";
+    print "\n - Scanning for application groups with duplicate members...\n";
+
+    foreach( $applicationGroups as $objectName => $nodes )
+    {
+        foreach( $nodes as $node )
+        {
+            $staticNode = DH::findFirstElement('members', $node);
+            if( $staticNode === FALSE )
+                continue;
+
+            $membersIndex = array();
+            /** @var DOMElement[] $nodesToRemove */
+            $nodesToRemove = array();
+
+            $demo = iterator_to_array($staticNode->childNodes);
+            foreach( $demo as $NodeMember )
+            {
+                /** @var DOMElement $NodeMember */
+                if( $NodeMember->nodeType != XML_ELEMENT_NODE )
+                    continue;
+
+                $memberName = $NodeMember->textContent;
+
+                if( isset($membersIndex[$memberName]) )
+                {
+                    echo "    - group '{$objectName}' from DG/VSYS {$locationName} has a duplicate member named '{$memberName}' ... *FIXED*\n";
+                    #$nodesToRemove[] = $staticNodeMember;
+                    $staticNode->removeChild($NodeMember);
+                    $totalApplicationGroupsFixed++;
+                    continue;
+                }
+
+                $membersIndex[$memberName] = TRUE;
+            }
+
+            foreach( $nodesToRemove as $nodeToRemove )
+                $nodeToRemove->parentNode->removeChild($nodeToRemove);
+        }
+    }
 
     //
     //
@@ -856,7 +934,8 @@ foreach( $locationNodes as $locationName => $locationNode )
 
                             //check if application has 'any' adn additional
                             $objectNode_applications = DH::findFirstElement('application', $objectNode);
-                            foreach( $objectNode_applications->childNodes as $objectApplication )
+                            $demo = iterator_to_array($objectNode_applications->childNodes);
+                            foreach( $demo as $objectApplication )
                             {
                                 /** @var DOMElement $objectApplication */
                                 if( $objectApplication->nodeType != XML_ELEMENT_NODE )
@@ -865,7 +944,9 @@ foreach( $locationNodes as $locationName => $locationNode )
                                 $objectApplicationName = $objectApplication->textContent;
                                 if( isset($secRuleApplication[$objectApplicationName]) )
                                 {
-                                    //Secrule has same application defined twice
+                                    print "     - Secrule: ".$objectName." has same application defined twice: ".$objectApplicationName;
+                                    $objectNode_applications->removeChild($objectNode_applications);
+                                    print PH::boldText(" (removed)")."\n";
                                 }
                                 else
                                     $secRuleApplication[$objectApplicationName] = $objectApplication;
@@ -882,7 +963,8 @@ foreach( $locationNodes as $locationName => $locationNode )
 
                             //check if source has 'any' and additional
                             $objectNode_sources = DH::findFirstElement('source', $objectNode);
-                            foreach( $objectNode_sources->childNodes as $objectSource )
+                            $demo = iterator_to_array($objectNode_sources->childNodes);
+                            foreach( $demo as $objectSource )
                             {
                                 /** @var DOMElement $objectSource */
                                 if( $objectSource->nodeType != XML_ELEMENT_NODE )
@@ -891,7 +973,10 @@ foreach( $locationNodes as $locationName => $locationNode )
                                 $objectSourceName = $objectSource->textContent;
                                 if( isset($secRuleSource[$objectSourceName]) )
                                 {
-                                    //Secrule has same application defined twice
+                                    print "     - Secrule: ".$objectName." has same source defined twice: ".$objectSourceName;
+                                    $objectNode_sources->removeChild($objectSource);
+                                    print PH::boldText(" (removed)")."\n";
+                                    $countMissconfiguredSecRuleSourceObjects++;
                                 }
                                 else
                                 {
@@ -908,20 +993,27 @@ foreach( $locationNodes as $locationName => $locationNode )
 
                             //check if destination has 'any' and additional
                             $objectNode_destinations = DH::findFirstElement('destination', $objectNode);
-                            foreach( $objectNode_destinations->childNodes as $objectDestination )
+                            $demo = iterator_to_array($objectNode_destinations->childNodes);
+                            foreach( $demo as $objectDestination )
                             {
                                 /** @var DOMElement $objectDestination */
                                 if( $objectDestination->nodeType != XML_ELEMENT_NODE )
                                     continue;
 
                                 $objectDestinationName = $objectDestination->textContent;
+                                #print "rule: ".$objectName." name: ".$objectDestinationName."\n";
                                 if( isset($secRuleDestination[$objectDestinationName]) )
                                 {
-                                    //Secrule has same application defined twice
+                                    print "     - Secrule: ".$objectName." has same destination defined twice: ".$objectDestinationName;
+                                    $objectNode_destinations->removeChild($objectDestination);
+                                    print PH::boldText(" (removed)")."\n";
+                                    $countMissconfiguredSecRuleDestinationObjects++;
                                 }
                                 else
-                                    $secRuleDestination[$objectSourceName] = $objectDestination;
+                                    $secRuleDestination[$objectDestinationName] = $objectDestination;
                             }
+                            #if( $objectName === "FW RULE-00.06" )
+                                #derr('end');
                             if( isset($secRuleDestination['any']) and count($secRuleDestination) > 1 )
                             {
                                 $secRuleDestinationIndex[$objectName] = $secRuleDestination['any'];
@@ -1153,6 +1245,8 @@ echo " - FIXED: duplicate address-group members: {$totalAddressGroupsFixed}\n";
 echo " - FIXED: duplicate service-group members: {$totalServiceGroupsFixed}\n";
 echo " - FIXED: own address-group as subgroup member: {$totalAddressGroupsSubGroupFixed}\n";
 echo " - FIXED: own service-group as subgroup members: {$totalServiceGroupsSubGroupFixed}\n";
+
+echo " - FIXED: duplicate application-group members: {$totalApplicationGroupsFixed}\n";
 
 echo "\n\nIssues that could not be fixed (look in logs for FIX_MANUALLY keyword):\n";
 echo " - FIX_MANUALLY: address objects with same name as REGION: {$countMissconfiguredAddressRegionObjects} (look in the logs)\n\n";
