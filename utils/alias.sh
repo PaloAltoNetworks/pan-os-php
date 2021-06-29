@@ -47,17 +47,15 @@ alias pa_appidtoolbox-rule-cloner='php -r "require_once '"'"'appid-toolbox/rule-
 alias pa_appidtoolbox-rule-marker='php -r "require_once '"'"'appid-toolbox/rule-marker.php'"'"';" $@'
 
 
-
-alias pa_zone-edit='php -r "require_once '"'"'utils/zone-edit.php'"'"';" $@'
 alias pa_securityprofile-edit='php -r "require_once '"'"'utils/securityprofile-edit.php'"'"';" $@'
 
-alias pa_vsys='php -r "require_once '"'"'utils/vsys.php'"'"';" $@'
+alias pa_vsys='php -r "require_once '"'"'utils/vsys-edit.php'"'"';" $@'
+
 alias pa_device-edit='php -r "require_once '"'"'utils/device-edit.php'"'"';" $@'
-
-
-alias pa_interface='php -r "require_once '"'"'utils/develop/interface.php'"'"';" $@'
-alias pa_routing='php -r "require_once '"'"'utils/develop/routing.php'"'"';" $@'
-alias pa_vwire='php -r "require_once '"'"'utils/develop/vwire.php'"'"';" $@'
+alias pa_zone-edit='php -r "require_once '"'"'utils/zone-edit.php'"'"';" $@'
+alias pa_interface-edit='php -r "require_once '"'"'utils/interface-edit.php'"'"';" $@'
+alias pa_routing-edit='php -r "require_once '"'"'utils/routing-edit.php'"'"';" $@'
+alias pa_vwire-edit='php -r "require_once '"'"'utils/vwire-edit.php'"'"';" $@'
 
 
 alias pa_ike='php -r "require_once '"'"'utils/develop/ike.php'"'"';" $@'
