@@ -9,6 +9,10 @@ BUGFIX:
 * pa_diff | bugfix to find also changes within existing config like adding rule to/from/source/destination member
 * pa_panos-xml-issue-detector | extend to remove duplicate members from security-Rule source/destionation/application - remove duplicate application-group members
 
+GENERAL:
+* predefined.xml update to version 8422-6787
+
+
 2.0.5 (20210627)
 UTILS:
 * pa_rule-edit introduce 'filter=(description.length <>=! NUMBER)'
