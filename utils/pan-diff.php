@@ -316,7 +316,7 @@ function compareElements($el1, $el2, $xpath = null)
                 {
                     $nodeContent = $node->textContent;
                     if( isset($el1ContentSorted[$nodeContent]) )
-                        derr('cannot have <node>xxxx</node> nodes witch same content', $el1);
+                        derr('cannot have <node>'.$nodeContent.'</node> nodes witch same content. file1', $el1);
                     else
                         $el1ContentSorted[$nodeContent] = $node;
                 }
@@ -324,7 +324,7 @@ function compareElements($el1, $el2, $xpath = null)
                 {
                     $nodeContent = $node->textContent;
                     if( isset($el2ContentSorted[$nodeContent]) )
-                        derr('cannot have <node>xxxx</node> nodes witch same content', $el2);
+                        derr('cannot have <node>'.$nodeContent.'</node> nodes witch same content. file2', $el2);
                     else
                         $el2ContentSorted[$nodeContent] = $node;
                 }
