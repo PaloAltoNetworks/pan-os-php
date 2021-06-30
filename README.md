@@ -187,9 +187,12 @@ RQuery::$defaultFilters['rule']['description']['operators']['is.geq'] = Array(
 - pa_diff
 - pa_download-predefined
 - pa_key-manager
+- pa_ike
+- pa_interface-edit
 - pa_override-finder
 - pa_panos-xml-issue-detector
 - pa_register-ip-mgr
+- pa_routing-edit
 - pa_rule-edit
 - pa_rule-merger
 - pa_rule-stats
@@ -202,6 +205,7 @@ RQuery::$defaultFilters['rule']['description']['operators']['is.geq'] = Array(
 - pa_tag-merger
 - pa_upload-config
 - pa_userid-mgr
+- pa_vwire-edit
 - pa_xml-op-json
 - pa_zone-edit
 

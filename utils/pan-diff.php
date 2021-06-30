@@ -19,6 +19,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+//Todo: 20210630 swaschkut
+// - rule order check needed
 
 print "\n************* START OF SCRIPT " . basename(__FILE__) . " ************\n\n";
 

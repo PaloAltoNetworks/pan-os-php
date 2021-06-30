@@ -902,7 +902,8 @@ foreach( $locationNodes as $locationName => $locationNode )
                             //Todo:
                             //check if service has 'application-default' and additional
                             $objectNode_services = DH::findFirstElement('service', $objectNode);
-                            foreach( $objectNode_services->childNodes as $objectService )
+                            $demo = iterator_to_array($objectNode_services->childNodes);
+                            foreach( $demo as $objectService )
                             {
                                 /** @var DOMElement $objectService */
                                 if( $objectService->nodeType != XML_ELEMENT_NODE )
@@ -912,6 +913,9 @@ foreach( $locationNodes as $locationName => $locationNode )
                                 if( isset($secRuleServices[$objectServiceName]) )
                                 {
                                     //Secrule service has twice same service added
+                                    print "     - Secrule: ".$objectName." has same service defined twice: ".$objectServiceName;
+                                    $objectNode_services->removeChild($objectService);
+                                    print PH::boldText(" (removed)")."\n";
                                 }
                                 else
                                     $secRuleServices[$objectServiceName] = $objectService;
@@ -1166,9 +1170,51 @@ foreach( $locationNodes as $locationName => $locationNode )
                     $countMissconfiguredSecRuleServiceAppDefaultObjects++;
                 }
             }
-
         }
     }
+
+
+    ///config/readonly/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='mn053-mnr-int']/address-group
+    ///
+    ///
+    print "\n - Scanning for /config/readonly/devices/entry[@name='localhost.localdomain']/device-group/ for duplicate address-group ...\n";
+    $tmpReadOnly = DH::findXPath("/config/readonly/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='".$locationName."']", $xmlDoc);
+    $readOnly = array();
+
+    foreach( $tmpReadOnly as $node )
+        $readOnly[] = $node;
+
+    $readonlyDGAddressgroups = array();
+
+    if( isset( $readOnly[0] ) )
+    {
+        $readonlyAddressgroups = DH::findFirstElement('address-group', $readOnly[0]);
+        if( $readonlyAddressgroups !== false )
+            $demo = iterator_to_array($readonlyAddressgroups->childNodes);
+        else
+            $demo = array();
+    }
+    else
+        $demo = array();
+
+    foreach( $demo as $objectAddressGroup )
+    {
+        /** @var DOMElement $objectApplication */
+        if( $objectAddressGroup->nodeType != XML_ELEMENT_NODE )
+            continue;
+
+        $objectAddressGroupName = $objectAddressGroup->getAttribute('name');
+        if( isset($readonlyDGAddressgroups[$objectAddressGroupName]) )
+        {
+            print "     - readOnly DG: ".$locationName." has same addressgroup defined twice: ".$objectAddressGroupName;
+            $readonlyAddressgroups->removeChild($objectAddressGroup);
+            print PH::boldText(" (removed)")."\n";
+        }
+        else
+            $readonlyDGAddressgroups[$objectAddressGroupName] = $objectAddressGroup;
+    }
+
+
     //
     //
     //
@@ -1237,6 +1283,46 @@ foreach( $locationNodes as $locationName => $locationNode )
     }
 
     print "\n** ** ** ** ** ** **\n";
+}
+
+///
+///
+///
+print "\n - Scanning for /config/readonly/shared for duplicate address-group ...\n";
+$tmpReadOnly = DH::findXPath("/config/readonly/shared", $xmlDoc);
+$readOnly = array();
+
+foreach( $tmpReadOnly as $node )
+    $readOnly[] = $node;
+
+$readonlyDGAddressgroups = array();
+
+if( isset( $readOnly[0] ) )
+{
+    $readonlyAddressgroups = DH::findFirstElement('address-group', $readOnly[0]);
+    if( $readonlyAddressgroups !== false )
+        $demo = iterator_to_array($readonlyAddressgroups->childNodes);
+    else
+        $demo = array();
+}
+else
+    $demo = array();
+
+foreach( $demo as $objectAddressGroup )
+{
+    /** @var DOMElement $objectApplication */
+    if( $objectAddressGroup->nodeType != XML_ELEMENT_NODE )
+        continue;
+
+    $objectAddressGroupName = $objectAddressGroup->getAttribute('name');
+    if( isset($readonlyDGAddressgroups[$objectAddressGroupName]) )
+    {
+        print "     - readOnly shared has same addressgroup defined twice: ".$objectAddressGroupName;
+        $readonlyAddressgroups->removeChild($objectAddressGroup);
+        print PH::boldText(" (removed)")."\n";
+    }
+    else
+        $readonlyDGAddressgroups[$objectAddressGroupName] = $objectAddressGroup;
 }
 
 
