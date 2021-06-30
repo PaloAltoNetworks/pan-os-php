@@ -4,6 +4,7 @@ CHANGELOG
 UTILS:
 * pa_zone-edit | introduce filter=(logprof is.set) and (logprof is XYZ) | actions=exportToExcel
 * pa_device-edit | introduce actions=template-add:TEMPLATENAME for devicetype=templatestack | introduce filter=(name eq DEVICENAME)
+* introduce new script pan_config-size - to display the specific parts of the config which used the most config size
 
 BUGFIX:
 * pa_diff | bugfix to find also changes within existing config like adding rule to/from/source/destination member
