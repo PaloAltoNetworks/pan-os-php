@@ -24,7 +24,7 @@ class UTIL
     public $objectsLocation = 'shared';
 
     public $objectsLocationCounter = 0;
-    public $objectsTemplate = '';
+    public $objectsTemplate = 'any';
     public $templateName = "";
     public $templateNameCounter = 0;
 
@@ -982,6 +982,7 @@ class UTIL
         if( count( $this->objectsTemplate ) == 1 )
         {
             $this->templateName = $this->objectsTemplate[0];
+
             if( $this->templateName == 'shared' )
             {
                 #$this->sub = $this->pan;
