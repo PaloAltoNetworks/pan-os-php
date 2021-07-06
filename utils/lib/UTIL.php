@@ -919,18 +919,18 @@ class UTIL
          */
         $this->objectsLocation = explode(',', $this->objectsLocation);
 
-        foreach( $this->objectsLocation as &$location )
+        foreach( $this->objectsLocation as $key => &$location )
         {
             if( strtolower($location) == 'shared' )
-                $location = 'shared';
+                $this->objectsLocation[$key] = 'shared';
             else if( strtolower($location) == 'any' )
-                $location = 'any';
+                $this->objectsLocation[$key] = 'any';
             else if( strtolower($location) == 'all' )
             {
                 if( $this->configType == 'fawkes' )
-                    $location = 'All';
+                    $this->objectsLocation[$key] = 'All';
                 else
-                    $location = 'any';
+                    $this->objectsLocation[$key] = 'any';
             }
 
         }
@@ -965,13 +965,13 @@ class UTIL
         // <editor-fold desc=" ****  Location Filter Processing  ****" defaultstate="collapsed" >
         $this->objectsTemplate = explode(',', $this->objectsTemplate);
 
-        foreach( $this->objectsTemplate as &$location )
+        foreach( $this->objectsTemplate as $key => &$location )
         {
             if( strtolower($location) == 'any' )
-                $location = 'any';
+                $this->objectsTemplate[$key] = 'any';
             else if( strtolower($location) == 'all' )
             {
-                $location = 'any';
+                $this->objectsTemplate[$key] = 'any';
             }
 
         }
