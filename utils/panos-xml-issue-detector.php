@@ -61,11 +61,20 @@ function checkRemoveDuplicateMembers( $locationNode, $locationName, $tagName, &$
 
     foreach( $tagNameArray as $objectName => $nodes )
     {
+        print "NAME: ".$objectName."\n";
+
         foreach( $nodes as $node )
         {
-            $staticNode = DH::findFirstElement('members', $node);
+
+            //custom-url-catgegory
+            $staticNode = DH::findFirstElement('list', $node);
             if( $staticNode === FALSE )
-                continue;
+            {
+                //application-group and all other address-group/service-group
+                $staticNode = DH::findFirstElement('members', $node);
+                if( $staticNode === FALSE )
+                    continue;
+            }
 
             $membersIndex = array();
             /** @var DOMElement[] $nodesToRemove */
@@ -849,7 +858,7 @@ foreach( $locationNodes as $locationName => $locationNode )
     $totalCustomUrlCategoryFixed = 0;
     $locationNode_profiles = DH::findFirstElement('profiles', $locationNode);
     if( $locationNode_profiles !== FALSE )
-        checkRemoveDuplicateMembers( $locationNode_profiles, $locationName, 'custom-url-category', $customURLcategory, $applicationIndex, $totalCustomUrlCategoryFixed );
+        checkRemoveDuplicateMembers( $locationNode_profiles, $locationName, 'custom-url-category', $customURLcategory, $customURLcategoryIndex, $totalCustomUrlCategoryFixed );
 
     //
     //
