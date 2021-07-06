@@ -847,7 +847,9 @@ foreach( $locationNodes as $locationName => $locationNode )
     $customURLcategory = array();
     $customURLcategoryIndex = array();
     $totalCustomUrlCategoryFixed = 0;
-    checkRemoveDuplicateMembers( $locationNode, $locationName, 'custom-url-category', $customURLcategory, $applicationIndex, $totalCustomUrlCategoryFixed );
+    $locationNode_profiles = DH::findFirstElement('profiles', $locationNode);
+    if( $locationNode_profiles !== FALSE )
+        checkRemoveDuplicateMembers( $locationNode_profiles, $locationName, 'custom-url-category', $customURLcategory, $applicationIndex, $totalCustomUrlCategoryFixed );
 
     //
     //
