@@ -25,6 +25,75 @@ set_include_path(dirname(__FILE__) . '/../' . PATH_SEPARATOR . get_include_path(
 // load PAN-PHP-FRAMEWORK library
 require_once dirname(__FILE__)."/../lib/pan_php_framework.php";
 
+function checkRemoveDuplicateMembers( $locationNode, $locationName, $tagName, &$tagNameArray, &$tagNameIndex, &$totalTagNameFixed )
+{
+    $objectTypeNode = DH::findFirstElement($tagName, $locationNode);
+    if( $objectTypeNode !== FALSE )
+    {
+        foreach( $objectTypeNode->childNodes as $objectNode )
+        {
+            /** @var DOMElement $objectNode */
+            if( $objectNode->nodeType != XML_ELEMENT_NODE )
+                continue;
+
+            $objectName = $objectNode->getAttribute('name');
+
+            check_region( $objectName, $objectNode, $address_region );
+
+            $tagNameArray[$objectName][] = $objectNode;
+
+            if( !isset($tagNameIndex[$objectName]) )
+                $tagNameIndex[$objectName] = array('regular' => array(), 'group' => array());
+
+            $tagNameIndex[$objectName]['group'][] = $objectNode;
+        }
+    }
+
+    //
+    //
+    //
+
+    print "\n\n";
+    print "#####     #####     #####     #####     #####     #####     #####     #####     #####     #####     #####\n";
+    print " - parsed ". count($tagNameArray) . " ".$tagName."\n";
+    print "\n";
+    print "\n - Scanning for ".$tagName." with duplicate members...\n";
+
+    foreach( $tagNameArray as $objectName => $nodes )
+    {
+        foreach( $nodes as $node )
+        {
+            $staticNode = DH::findFirstElement('members', $node);
+            if( $staticNode === FALSE )
+                continue;
+
+            $membersIndex = array();
+            /** @var DOMElement[] $nodesToRemove */
+            $nodesToRemove = array();
+
+            $demo = iterator_to_array($staticNode->childNodes);
+            foreach( $demo as $NodeMember )
+            {
+                /** @var DOMElement $NodeMember */
+                if( $NodeMember->nodeType != XML_ELEMENT_NODE )
+                    continue;
+
+                $memberName = $NodeMember->textContent;
+
+                if( isset($membersIndex[$memberName]) )
+                {
+                    echo "    - group '{$objectName}' from DG/VSYS {$locationName} has a duplicate member named '{$memberName}' ... *FIXED*\n";
+                    $staticNode->removeChild($NodeMember);
+                    $totalTagNameFixed++;
+                    continue;
+                }
+
+                $membersIndex[$memberName] = TRUE;
+            }
+        }
+    }
+}
+
 PH::processCliArgs();
 
 $configInput = null;
@@ -172,7 +241,7 @@ function check_region( $name, $object, &$address_region )
 
 $totalAddressGroupsFixed = 0;
 $totalServiceGroupsFixed = 0;
-$totalApplicationGroupsFixed = 0;
+
 
 $totalAddressGroupsSubGroupFixed = 0;
 $totalServiceGroupsSubGroupFixed = 0;
@@ -247,7 +316,7 @@ foreach( $locationNodes as $locationName => $locationNode )
     $serviceGroups = array();
     $serviceIndex = array();
 
-    $applicationGroups = array();
+
 
     $secRules = array();
     $secRuleIndex = array();
@@ -768,75 +837,17 @@ foreach( $locationNodes as $locationName => $locationNode )
     //
     //
     //
-    $objectTypeNode = DH::findFirstElement('application-group', $locationNode);
-    if( $objectTypeNode !== FALSE )
-    {
-        foreach( $objectTypeNode->childNodes as $objectNode )
-        {
-            /** @var DOMElement $objectNode */
-            if( $objectNode->nodeType != XML_ELEMENT_NODE )
-                continue;
-
-            $objectName = $objectNode->getAttribute('name');
-
-            check_region( $objectName, $objectNode, $address_region );
-
-            $applicationGroups[$objectName][] = $objectNode;
-
-            if( !isset($applicationIndex[$objectName]) )
-                $applicationIndex[$objectName] = array('regular' => array(), 'group' => array());
-
-            $applicationIndex[$objectName]['group'][] = $objectNode;
-        }
-    }
+    $applicationGroups = array();
+    $applicationIndex = array();
+    $totalApplicationGroupsFixed = 0;
+    checkRemoveDuplicateMembers( $locationNode, $locationName, 'application-group', $applicationGroups, $applicationIndex, $totalApplicationGroupsFixed );
 
     //
     //
-    //
-
-    print "\n\n";
-    print "#####     #####     #####     #####     #####     #####     #####     #####     #####     #####     #####\n";
-    print " - parsed ". count($applicationGroups) . " application groups\n";
-    print "\n";
-    print "\n - Scanning for application groups with duplicate members...\n";
-
-    foreach( $applicationGroups as $objectName => $nodes )
-    {
-        foreach( $nodes as $node )
-        {
-            $staticNode = DH::findFirstElement('members', $node);
-            if( $staticNode === FALSE )
-                continue;
-
-            $membersIndex = array();
-            /** @var DOMElement[] $nodesToRemove */
-            $nodesToRemove = array();
-
-            $demo = iterator_to_array($staticNode->childNodes);
-            foreach( $demo as $NodeMember )
-            {
-                /** @var DOMElement $NodeMember */
-                if( $NodeMember->nodeType != XML_ELEMENT_NODE )
-                    continue;
-
-                $memberName = $NodeMember->textContent;
-
-                if( isset($membersIndex[$memberName]) )
-                {
-                    echo "    - group '{$objectName}' from DG/VSYS {$locationName} has a duplicate member named '{$memberName}' ... *FIXED*\n";
-                    #$nodesToRemove[] = $staticNodeMember;
-                    $staticNode->removeChild($NodeMember);
-                    $totalApplicationGroupsFixed++;
-                    continue;
-                }
-
-                $membersIndex[$memberName] = TRUE;
-            }
-
-            foreach( $nodesToRemove as $nodeToRemove )
-                $nodeToRemove->parentNode->removeChild($nodeToRemove);
-        }
-    }
+    $customURLcategory = array();
+    $customURLcategoryIndex = array();
+    $totalCustomUrlCategoryFixed = 0;
+    checkRemoveDuplicateMembers( $locationNode, $locationName, 'custom-url-category', $customURLcategory, $applicationIndex, $totalCustomUrlCategoryFixed );
 
     //
     //
