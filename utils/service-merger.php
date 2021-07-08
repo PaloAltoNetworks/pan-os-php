@@ -46,6 +46,9 @@ $supportedArguments[] = array('niceName' => 'pickFilter',
 $supportedArguments[] = array('niceName' => 'excludeFilter', 'shortHelp' => 'specify a filter to exclude objects from merging process entirely', 'argDesc' => '(name regex /^g/)');
 $supportedArguments[] = array('niceName' => 'allowMergingWithUpperLevel', 'shortHelp' => 'when this argument is specified, it instructs the script to also look for duplicates in upper level');
 $supportedArguments[] = array('niceName' => 'help', 'shortHelp' => 'this message');
+$supportedArguments[] = array('niceName' => 'exportCSV', 'shortHelp' => 'when this argument is specified, it instructs the script to print out the kept and removed objects per value');
+$supportedArguments[] = array('niceName' => 'DebugAPI', 'shortHelp' => 'prints API calls when they happen');
+
 
 $usageMsg = PH::boldText("USAGE: ") . "php " . basename(__FILE__) . " in=inputfile.xml [out=outputfile.xml] location=shared [dupAlgorithm=XYZ] [MergeCountLimit=100] ['pickFilter=(name regex /^H-/)']...";
 
@@ -78,6 +81,18 @@ $merger->service_merging();
 
 
 $merger->save_our_work( true );
+
+
+if( isset(PH::$args['exportcsv']) )
+{
+    foreach( $merger->deletedObjects as $obj_index => $object_name )
+    {
+        if( !isset($object_name['kept']) )
+            print_r($object_name);
+        print $obj_index . "," . $object_name['kept'] . "," . $object_name['removed'] . "\n";
+    }
+}
+
 
 echo "\n************* END OF SCRIPT " . basename(__FILE__) . " ************\n\n";
 

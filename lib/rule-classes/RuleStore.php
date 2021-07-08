@@ -1141,7 +1141,11 @@ class RuleStore
     {
         $rule = new SecurityRule($this);
 
-        $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, SecurityRule::$templatexml);
+        if( $this->owner->version < 100 )
+            $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, SecurityRule::$templatexml);
+        else
+            $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, SecurityRule::$templatexml100);
+
         $rule->load_from_domxml($xmlElement);
 
         $rule->owner = null;

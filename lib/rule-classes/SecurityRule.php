@@ -267,13 +267,21 @@ class SecurityRule extends RuleWithUserID
 
 
         //
-        // Begin <hip-profiles> extraction
+        // Begin <hip-profiles> extraction // valid for PAN-OS version < 10.0
+        // Todo: PAN-OS version >= 10.0 -> source-hip and destination-hip
         //
-        $this->hipprofroot = DH::findFirstElement('hip-profiles', $xml);
+        if( $this->owner->version < 100 )
+            $hipprofilevariable = 'hip-profiles';
+        else
+            $hipprofilevariable = 'source-hip';
+
+        $this->hipprofroot = DH::findFirstElement($hipprofilevariable, $xml);
         if( $this->hipprofroot === FALSE )
             $this->hipprofroot = null;
         else
-            $this->extract_hip_profile_from_domxml();
+            $this->extract_hip_profile_from_domxml( );
+
+
         // End of <hip-profiles>
 
         $this->_readNegationFromXml();
@@ -740,7 +748,7 @@ class SecurityRule extends RuleWithUserID
         {
             if( $prof->nodeType != XML_ELEMENT_NODE ) continue;
 
-            $this->hipprofProfiles[$prof->nodeName] = $prof->textContent;
+            $this->hipprofProfiles[$prof->textContent] = $prof->textContent;
             #print PH::boldText("name: |".$prof->nodeName."| - |".$prof->textContent."|\n" );
         }
     }
@@ -1542,14 +1550,18 @@ class SecurityRule extends RuleWithUserID
         return $ret;
     }
 
-    public function rewriteHipProfXML()
+    public function rewriteHipProfXML( )
     {
+        if( $this->owner->version < 100 )
+            $hipprofilevariable = 'hip-profiles';
+        else
+            $hipprofilevariable = 'source-hip';
 
         if( $this->hipprofroot !== null )
             DH::clearDomNodeChilds($this->hipprofroot);
 
         if( $this->hipprofroot === null || $this->hipprofroot === FALSE )
-            $this->hipprofroot = DH::createElement($this->xmlroot, 'hip-profiles');
+            $this->hipprofroot = DH::createElement($this->xmlroot, $hipprofilevariable);
         else
             $this->xmlroot->appendChild($this->hipprofroot);
 
@@ -1573,12 +1585,17 @@ class SecurityRule extends RuleWithUserID
     {
         $ret = $this->setHipProfile($hipProfile);
 
+        if( $this->owner->version < 100 )
+            $hipprofilevariable = 'hip-profiles';
+        else
+            $hipprofilevariable = 'source-hip';
+
         if( $ret )
         {
-            $xpath = $this->getXPath() . '/hip-profiles';
+            $xpath = $this->getXPath() . '/'.$hipprofilevariable;
             $con = findConnectorOrDie($this);
 
-            $con->sendEditRequest($xpath, '<hip-profiles><member>' . $hipProfile . '</member></hip-profiles>');
+            $con->sendEditRequest($xpath, '<'.$hipprofilevariable.'><member>' . $hipProfile . '</member></'.$hipprofilevariable.'>');
         }
 
         return $ret;
@@ -1943,6 +1960,9 @@ class SecurityRule extends RuleWithUserID
 <source><member>any</member></source><destination><member>any</member></destination><source-user><member>any</member></source-user><category><member>any</member></category><application><member>any</member></application><service><member>any</member>
 </service><hip-profiles><member>any</member></hip-profiles><action>allow</action><log-start>no</log-start><log-end>yes</log-end><negate-source>no</negate-source><negate-destination>no</negate-destination><tag/><description/><disabled>no</disabled></entry>';
 
+    static public $templatexml100 = '<entry name="**temporarynamechangeme**"><option><disable-server-response-inspection>no</disable-server-response-inspection></option><from><member>any</member></from><to><member>any</member></to>
+<source><member>any</member></source><destination><member>any</member></destination><source-user><member>any</member></source-user><category><member>any</member></category><application><member>any</member></application><service><member>any</member>
+</service><source-hip><member>any</member></source-hip><destination-hip><member>any</member></destination-hip><action>allow</action><log-start>no</log-start><log-end>yes</log-end><negate-source>no</negate-source><negate-destination>no</negate-destination><tag/><description/><disabled>no</disabled></entry>';
 }
 
 
