@@ -178,6 +178,10 @@ class AddressGroup
                             }
                         }
                     }
+                    if( strpos( $tagFilter, '(tag has' ) === false )
+                    {
+                        $tagFilter = "(tag has ".$tagFilter.")";
+                    }
 
                     $tmp_found_addresses = $this->owner->all($tagFilter);
                     foreach( $tmp_found_addresses as $address )
