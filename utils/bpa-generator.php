@@ -228,7 +228,7 @@ $supportedArguments = array();
 $supportedArguments['in'] = array('niceName' => 'in', 'shortHelp' => 'api. ie: in=api://192.168.1.1 or in=api://0018CAEC3@panorama.company.com', 'argDesc' => '[filename]|[api://IP]|[api://serial@IP]');
 $supportedArguments['debugapi'] = array('niceName' => 'DebugAPI', 'shortHelp' => 'prints API calls when they happen');
 $supportedArguments['help'] = array('niceName' => 'help', 'shortHelp' => 'this message');
-$supportedArguments['cycleconnectedfirewalls'] = array('niceName' => 'cycleConnectedFirewalls', 'shortHelp' => 'a listing of all devices connected to Panorama will be collected through API then each firewall will be queried for overrides');
+$supportedArguments['cycleconnectedfirewalls'] = array('niceName' => 'cycleConnectedFirewalls', 'shortHelp' => 'a listing of all devices connected to Panorama will be collected through API then each firewall will be queried for bpa generator');
 $supportedArguments['bpakey'] = array('niceName' => 'bpaKey', 'shortHelp' => 'BPA API Key, this can be requested via bpa@paloaltonetworks.com');
 
 
