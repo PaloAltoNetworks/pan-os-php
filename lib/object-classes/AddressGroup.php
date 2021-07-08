@@ -152,47 +152,22 @@ class AddressGroup
                     $tmp_filter = DH::findFirstElement('filter', $tmp);
                     $this->filter = $tmp_filter->nodeValue;
 
-                    //add DAG as reference to all tagged address objects
-                    $tmp_filter = array();
-                    $filterArray = array(" and ", " or ");
-                    if( (strpos($this->filter, $filterArray[0]) === FALSE) and (strpos($this->filter, $filterArray[1]) === FALSE) )
+
+                    $patterns = array( "@'(.*?)'@", "@\"(.*?)\"@");
+                    $tagFilter = $this->filter;
+                    foreach( $patterns as $pattern)
                     {
-                        $entry = trim($this->filter);
-                        $entry = str_replace("'", "", $entry);
-                        $entry = str_replace('"', "", $entry);
-                        $tmp_filter['none'][] = $entry;
-                    }
-                    else
-                    {
-                        foreach( $filterArray as $key => $keyFilter )
+                        $names = array();
+
+                        $is_match = preg_match_all($pattern, $tagFilter, $names);
+                        foreach( $names[1] as $key => $replaceTXT )
                         {
-                            $tmp_explode = explode($keyFilter, $this->filter);
+                            $pattern = $names[0][$key];
+                            $replacements = "(tag has ".$replaceTXT.")";
 
-                            if( count($tmp_explode) > 1 )
-                            {
-                                $tmp_filter[$keyFilter] = $tmp_explode;
+                            $tagFilter = str_replace( $pattern, $replacements, $tagFilter );
 
-                                foreach( $tmp_filter[$keyFilter] as $key2 => $entry )
-                                {
-                                    $entry = trim($entry);
-                                    $entry = str_replace("'", "", $entry);
-                                    $tmp_filter[$keyFilter][$key2] = $entry;
-                                }
-                            }
-                        }
-                    }
-
-                    #print_r( $tmp_filter );
-                    foreach( $tmp_filter as $key => $filter )
-                    {
-                        $tagFilter = "";
-                        foreach( $filter as $key2 => $test )
-                        {
-                            if( $key2 == 0 )
-                                $tagFilter .= "(tag has " . $test . ")";
-                            else
-                                $tagFilter .= " " . $key . " (tag has " . $test . ")";
-                            $tag = $this->owner->owner->tagStore->find($test);
+                            $tag = $this->owner->owner->tagStore->find($replaceTXT);
                             if( $tag !== null )
                                 $tag->addReference($this);
                             else
@@ -201,19 +176,14 @@ class AddressGroup
                                 #stop throwing WARNING - as it could be that DAG filter is not based on TAG, e.g. VMware info
                                 #mwarning( "TAG not found: ".$test." - for DAG: '".$this->name()."' in location: ".$this->owner->owner->name(), null, false );
                             }
-
                         }
-                        //Todo: remark
-                        #print "\nADRgroup: ".$this->name()."\n";
-                        #print "TAGfilter: ".$tagFilter."\n";
+                    }
 
-
-                        $tmp_found_addresses = $this->owner->all($tagFilter);
-                        foreach( $tmp_found_addresses as $address )
-                        {
-                            #print "object: ".$address->name()." add ref to ".$this->name()."\n";
-                            $address->addReference($this);
-                        }
+                    $tmp_found_addresses = $this->owner->all($tagFilter);
+                    foreach( $tmp_found_addresses as $address )
+                    {
+                        #print "object: ".$address->name()." add ref to ".$this->name()."\n";
+                        $address->addReference($this);
                     }
                 }
             }

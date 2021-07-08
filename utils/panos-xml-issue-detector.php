@@ -61,8 +61,6 @@ function checkRemoveDuplicateMembers( $locationNode, $locationName, $tagName, &$
 
     foreach( $tagNameArray as $objectName => $nodes )
     {
-        print "NAME: ".$objectName."\n";
-
         foreach( $nodes as $node )
         {
 
