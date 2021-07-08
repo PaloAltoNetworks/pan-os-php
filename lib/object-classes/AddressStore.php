@@ -168,7 +168,7 @@ class AddressStore
             $errMesg = '';
             $query = new RQuery('address');
             if( $query->parseFromString($withFilter, $errMsg) === FALSE )
-                derr("error while parsing query: {$errMesg}");
+                derr("error while parsing query: {$errMesg} - filter: {$withFilter}");
 
             $res = array();
             foreach( $this->_all as $obj )
