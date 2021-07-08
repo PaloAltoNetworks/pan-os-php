@@ -10,6 +10,7 @@ BUGFIX:
 * pa_diff | bugfix to find also changes within existing config like adding rule to/from/source/destination member
 * pa_panos-xml-issue-detector | extend to remove duplicate members from security-Rule source/destionation/application - remove duplicate application-group members
 * class AddressGroup | bugfix to read filter of dynamic addressgroup correct
+* class RuleStore/SecurityRule | improve config reading for PAN-OS >= 10.0 - hip-profiles is now source-hip and additional destination-hip
 
 GENERAL:
 * predefined.xml update to version 8422-6787
