@@ -1080,7 +1080,7 @@ class MERGER extends UTIL
 
                                 echo "OK!\n";
 
-                                echo "         anchestor name: '{$ancestor->name()}' DG: ";
+                                echo "         ancestor name: '{$ancestor->name()}' DG: ";
                                 if( $ancestor->owner->owner->name() == "" ) print "'shared'";
                                 else print "'{$ancestor->owner->owner->name()}'";
                                 print  "  value: '{$ancestor->value()}' \n";
@@ -1105,7 +1105,7 @@ class MERGER extends UTIL
                         }
                         echo "    - object '{$object->name()}' '{$ancestor->type()}' cannot be merged because it has an ancestor " . $ancestor_different_value . "\n";
 
-                        echo "         anchestor name: '{$ancestor->name()}' DG: ";
+                        echo "         ancestor name: '{$ancestor->name()}' DG: ";
                         if( $ancestor->owner->owner->name() == "" ) print "'shared'";
                         else print "'{$ancestor->owner->owner->name()}'";
                         print  "  value: '{$ancestor->value()}' \n";
@@ -1882,7 +1882,7 @@ class MERGER extends UTIL
 
                                     echo "OK!\n";
 
-                                    echo "         anchestor name: '{$ancestor->name()}' DG: ";
+                                    echo "         ancestor name: '{$ancestor->name()}' DG: ";
                                     if( $ancestor->owner->owner->name() == "" ) print "'shared'";
                                     else print "'{$ancestor->owner->owner->name()}'";
                                     print  "  value: '{$ancestor->getDestPort()}' \n";
@@ -1896,7 +1896,7 @@ class MERGER extends UTIL
                             }
                             echo "    - object '{$object->name()}' cannot be merged because it has an ancestor\n";
 
-                            echo "         anchestor name: '{$ancestor->name()}' DG: ";
+                            echo "         ancestor name: '{$ancestor->name()}' DG: ";
                             if( $ancestor->owner->owner->name() == "" ) print "'shared'";
                             else print "'{$ancestor->owner->owner->name()}'";
                             print  "  value: '{$ancestor->getDestPort()}' \n";
@@ -2074,7 +2074,7 @@ class MERGER extends UTIL
                             /** @var Service $ancestor */
                             echo "    - object '{$object->name()}' cannot be merged because it has an ancestor\n";
 
-                            echo "         anchestor name: '{$ancestor->name()}' DG: ";
+                            echo "         ancestor name: '{$ancestor->name()}' DG: ";
                             if( $ancestor->owner->owner->name() == "" ) print "'shared'";
                             else print "'{$ancestor->owner->owner->name()}'";
                             print  "  value: '{$ancestor->value()}' \n";
@@ -2419,7 +2419,7 @@ class MERGER extends UTIL
 
                                 echo "OK!\n";
 
-                                echo "         anchestor name: '{$ancestor->name()}' DG: ";
+                                echo "         ancestor name: '{$ancestor->name()}' DG: ";
                                 if( $ancestor->owner->owner->name() == "" ) print "'shared'";
                                 else print "'{$ancestor->owner->owner->name()}'";
                                 print  "  color: '{$ancestor->getColor()}' \n";
@@ -2444,7 +2444,7 @@ class MERGER extends UTIL
                         }
                         echo "    - object '{$object->name()}' cannot be merged because it has an ancestor " . $ancestor_different_color . "\n";
 
-                        echo "         anchestor name: '{$ancestor->name()}' DG: ";
+                        echo "         ancestor name: '{$ancestor->name()}' DG: ";
                         if( $ancestor->owner->owner->name() == "" ) print "'shared'";
                         else print "'{$ancestor->owner->owner->name()}'";
                         print  "  color: '{$ancestor->getColor()}' \n";

@@ -286,7 +286,7 @@ class ServiceRuleContainer extends ObjRuleContainer
             }
         }
 
-        mwarning('no parent store found!');
+        #mwarning('no parent store found!', null, false);
 
     }
 
