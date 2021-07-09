@@ -1953,6 +1953,429 @@ var data = {
                 "help": null,
                 "args": false
             }
+        ],
+        "zone": [
+            {
+                "name": "delete",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "deleteForce",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "display",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "displayReferences",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "exportToExcel",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "filename"
+                    },
+                    {
+                        "type": "pipeSeparatedList",
+                        "subtype": "string",
+                        "default": "*NONE*",
+                        "choices": [
+                            "WhereUsed",
+                            "UsedInLocation",
+                            "ResolveIP",
+                            "NestedMembers"
+                        ],
+                        "help": "pipe(|) separated list of additional fields (ie: Arg1|Arg2|Arg3...) to include in the report. The following is available:\n  - NestedMembers: lists all members, even the ones that may be included in nested groups\n  - ResolveIP\n  - UsedInLocation : list locations (vsys,dg,shared) where object is used\n  - WhereUsed : list places where object is used (rules, groups ...)\n",
+                        "name": "additionalFields"
+                    }
+                ]
+            },
+            {
+                "name": "logsetting-Set",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "help": "this argument can be also 'none' to remove the Log Setting back to PAN-OS default.",
+                        "name": "logforwardingprofile-name"
+                    }
+                ]
+            },
+            {
+                "name": "name-addPrefix",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "prefix"
+                    }
+                ]
+            },
+            {
+                "name": "name-addSuffix",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "suffix"
+                    }
+                ]
+            },
+            {
+                "name": "name-removePrefix",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "prefix"
+                    }
+                ]
+            },
+            {
+                "name": "name-removeSuffix",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "suffix"
+                    }
+                ]
+            },
+            {
+                "name": "name-toLowerCase",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "name-toUCWords",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "name-toUpperCase",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "PacketBufferProtection-Set",
+                "help": null,
+                "args": [
+                    {
+                        "type": "bool",
+                        "default": "*nodefault*",
+                        "name": "PacketBufferProtection"
+                    }
+                ]
+            },
+            {
+                "name": "replaceWithObject",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "objectName"
+                    }
+                ]
+            },
+            {
+                "name": "zpp-Set",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "ZPP-name"
+                    }
+                ]
+            }
+        ],
+        "securityprofile": [
+            {
+                "name": "action-set",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "help": "allow, alert, block, continue, override",
+                        "name": "action"
+                    },
+                    {
+                        "type": "string",
+                        "default": "all",
+                        "help": "all \/ all-[action] \/ category",
+                        "name": "filter"
+                    }
+                ]
+            },
+            {
+                "name": "delete",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "deleteForce",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "display",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "displayReferences",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "name-addPrefix",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "prefix"
+                    }
+                ]
+            },
+            {
+                "name": "name-addSuffix",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "suffix"
+                    }
+                ]
+            },
+            {
+                "name": "name-removePrefix",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "prefix"
+                    }
+                ]
+            },
+            {
+                "name": "name-removeSuffix",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "suffix"
+                    }
+                ]
+            },
+            {
+                "name": "name-toLowerCase",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "name-toUCWords",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "name-toUpperCase",
+                "help": null,
+                "args": false
+            }
+        ],
+        "device": [
+            {
+                "name": "devicegroupcreate",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "false",
+                        "name": "name"
+                    },
+                    {
+                        "type": "string",
+                        "default": "null",
+                        "name": "parentdg"
+                    }
+                ]
+            },
+            {
+                "name": "display",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "exportToExcel",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "filename"
+                    },
+                    {
+                        "type": "pipeSeparatedList",
+                        "subtype": "string",
+                        "default": "*NONE*",
+                        "choices": [
+                            "WhereUsed",
+                            "UsedInLocation"
+                        ],
+                        "help": "pipe(|) separated list of additional field to include in the report. The following is available:\n  - WhereUsed : list places where object is used (rules, groups ...)\n  - UsedInLocation : list locations (vsys,dg,shared) where object is used\n",
+                        "name": "additionalFields"
+                    }
+                ]
+            },
+            {
+                "name": "template-add",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "false",
+                        "name": "templateName"
+                    },
+                    {
+                        "type": "string",
+                        "default": "bottom",
+                        "name": "position"
+                    }
+                ]
+            }
+        ],
+        "interface": [
+            {
+                "name": "display",
+                "help": null,
+                "args": false
+            }
+        ],
+        "routing": [
+            {
+                "name": "display",
+                "help": null,
+                "args": false
+            }
+        ],
+        "virtualwire": [
+            {
+                "name": "display",
+                "help": null,
+                "args": false
+            }
+        ],
+        "schedule": [
+            {
+                "name": "delete",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "deleteForce",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "display",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "displayReferences",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "name-addPrefix",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "prefix"
+                    }
+                ]
+            },
+            {
+                "name": "name-addSuffix",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "suffix"
+                    }
+                ]
+            },
+            {
+                "name": "name-removePrefix",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "prefix"
+                    }
+                ]
+            },
+            {
+                "name": "name-removeSuffix",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "suffix"
+                    }
+                ]
+            },
+            {
+                "name": "name-toLowerCase",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "name-toUCWords",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "name-toUpperCase",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "replaceWithObject",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "objectName"
+                    }
+                ]
+            }
         ]
     },
     "filters": {
@@ -3643,6 +4066,511 @@ var data = {
                 "name": "object",
                 "help": null,
                 "operators": [
+                    {
+                        "name": "is.tmp",
+                        "help": null,
+                        "argument": null
+                    },
+                    {
+                        "name": "is.unused",
+                        "help": null,
+                        "argument": null
+                    }
+                ]
+            },
+            {
+                "name": "refcount",
+                "help": null,
+                "operators": [
+                    {
+                        "name": ">,<,=,!",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "reflocation",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.only",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "refstore",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "reftype",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            }
+        ],
+        "zone": [
+            {
+                "name": "location",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.child.of",
+                        "help": "returns TRUE if object location (shared\/device-group\/vsys name) matches \/ is child the one specified in argument",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.parent.of",
+                        "help": "returns TRUE if object location (shared\/device-group\/vsys name) matches \/ is parent the one specified in argument",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "regex",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "logprof",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is",
+                        "help": "return true if Log Forwarding Profile is the one specified in argument",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.set",
+                        "help": null,
+                        "argument": null
+                    }
+                ]
+            },
+            {
+                "name": "name",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "contains",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "eq",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "eq.nocase",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.in.file",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "regex",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "object",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is.tmp",
+                        "help": null,
+                        "argument": null
+                    },
+                    {
+                        "name": "is.unused",
+                        "help": null,
+                        "argument": null
+                    }
+                ]
+            },
+            {
+                "name": "refcount",
+                "help": null,
+                "operators": [
+                    {
+                        "name": ">,<,=,!",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "reflocation",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.only",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "refstore",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "reftype",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            }
+        ],
+        "securityprofile": [
+            {
+                "name": "alert",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "has",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "block",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "has",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "continue",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "has",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "location",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.child.of",
+                        "help": "returns TRUE if object location (shared\/device-group\/vsys name) matches \/ is child the one specified in argument",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.parent.of",
+                        "help": "returns TRUE if object location (shared\/device-group\/vsys name) matches \/ is parent the one specified in argument",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "regex",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "name",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "contains",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "eq",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "eq.nocase",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.in.file",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "regex",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "object",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is.tmp",
+                        "help": null,
+                        "argument": null
+                    },
+                    {
+                        "name": "is.unused",
+                        "help": null,
+                        "argument": null
+                    }
+                ]
+            },
+            {
+                "name": "override",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "has",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "refcount",
+                "help": null,
+                "operators": [
+                    {
+                        "name": ">,<,=,!",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "reflocation",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.only",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "refstore",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "reftype",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            }
+        ],
+        "device": [
+            {
+                "name": "name",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "eq",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "regex",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "templatestack",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "has.member",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            }
+        ],
+        "interface": [
+            {
+                "name": "name",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "eq",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            }
+        ],
+        "routing": [
+            {
+                "name": "name",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "eq",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            }
+        ],
+        "virtualwire": [
+            {
+                "name": "name",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "eq",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            }
+        ],
+        "schedule": [
+            {
+                "name": "location",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.child.of",
+                        "help": "returns TRUE if object location (shared\/device-group\/vsys name) matches \/ is child the one specified in argument",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.parent.of",
+                        "help": "returns TRUE if object location (shared\/device-group\/vsys name) matches \/ is parent the one specified in argument",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "regex",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "name",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "contains",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "eq",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "eq.nocase",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.in.file",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "regex",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "object",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is.expired",
+                        "help": null,
+                        "argument": null
+                    },
                     {
                         "name": "is.tmp",
                         "help": null,
