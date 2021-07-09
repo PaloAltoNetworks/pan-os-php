@@ -1492,6 +1492,16 @@ var data = {
                 "args": false
             },
             {
+                "name": "value-set-ip-for-fqdn",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "value-set-reverse-dns",
+                "help": null,
+                "args": false
+            },
+            {
                 "name": "z_BETA_summarize",
                 "help": null,
                 "args": false
@@ -2071,6 +2081,17 @@ var data = {
                 ]
             },
             {
+                "name": "description.length",
+                "help": null,
+                "operators": [
+                    {
+                        "name": ">,<,=,!",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
                 "name": "dnat",
                 "help": null,
                 "operators": [
@@ -2385,6 +2406,11 @@ var data = {
                         "argument": null
                     },
                     {
+                        "name": "is.enabled",
+                        "help": null,
+                        "argument": null
+                    },
+                    {
                         "name": "is.interzone",
                         "help": null,
                         "argument": null
@@ -2429,6 +2455,11 @@ var data = {
                         "name": "is",
                         "help": null,
                         "argument": "*required*"
+                    },
+                    {
+                        "name": "is.expired",
+                        "help": null,
+                        "argument": null
                     },
                     {
                         "name": "is.set",
@@ -3042,6 +3073,11 @@ var data = {
                         "argument": null
                     },
                     {
+                        "name": "is.ip-wildcard",
+                        "help": null,
+                        "argument": null
+                    },
+                    {
                         "name": "is.ipv4",
                         "help": null,
                         "argument": null
@@ -3174,6 +3210,11 @@ var data = {
                 "help": null,
                 "operators": [
                     {
+                        "name": "has.wrong.network",
+                        "help": null,
+                        "argument": null
+                    },
+                    {
                         "name": "ip4.included-in",
                         "help": null,
                         "argument": "*required*"
@@ -3192,6 +3233,16 @@ var data = {
                         "name": "ip4.match.exact",
                         "help": null,
                         "argument": "*required*"
+                    },
+                    {
+                        "name": "is.in.file",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.included-in.name",
+                        "help": null,
+                        "argument": null
                     },
                     {
                         "name": "string.eq",
