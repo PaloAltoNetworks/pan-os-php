@@ -66,6 +66,14 @@ $actionsData['rule'] = generateActionJSON(RuleCallContext::$supportedActions);
 $actionsData['address'] = generateActionJSON(AddressCallContext::$supportedActions);
 $actionsData['service'] = generateActionJSON(ServiceCallContext::$supportedActions);
 $actionsData['tag'] = generateActionJSON(TagCallContext::$supportedActions);
+$actionsData['zone'] = generateActionJSON(ZoneCallContext::$supportedActions);
+$actionsData['securityprofile'] = generateActionJSON(SecurityProfileCallContext::$supportedActions);
+$actionsData['device'] = generateActionJSON(DeviceCallContext::$supportedActions);
+$actionsData['interface'] = generateActionJSON(InterfaceCallContext::$supportedActions);
+$actionsData['routing'] = generateActionJSON(RoutingCallContext::$supportedActions);
+$actionsData['virtualwire'] = generateActionJSON(VirtualWireCallContext::$supportedActions);
+$actionsData['schedule'] = generateActionJSON(ScheduleCallContext::$supportedActions);
+
 
 function &generateFilterJSON($filters)
 {
@@ -102,6 +110,13 @@ $filtersData['rule'] = generateFilterJSON(RQuery::$defaultFilters['rule']);
 $filtersData['address'] = generateFilterJSON(RQuery::$defaultFilters['address']);
 $filtersData['service'] = generateFilterJSON(RQuery::$defaultFilters['service']);
 $filtersData['tag'] = generateFilterJSON(RQuery::$defaultFilters['tag']);
+$filtersData['zone'] = generateFilterJSON(RQuery::$defaultFilters['zone']);
+$filtersData['securityprofile'] = generateFilterJSON(RQuery::$defaultFilters['securityprofile']);
+$filtersData['device'] = generateFilterJSON(RQuery::$defaultFilters['device']);
+$filtersData['interface'] = generateFilterJSON(RQuery::$defaultFilters['interface']);
+$filtersData['routing'] = generateFilterJSON(RQuery::$defaultFilters['routing']);
+$filtersData['virtualwire'] = generateFilterJSON(RQuery::$defaultFilters['virtualwire']);
+$filtersData['schedule'] = generateFilterJSON(RQuery::$defaultFilters['schedule']);
 
 
 $data = array('actions' => &$actionsData, 'filters' => &$filtersData);
