@@ -183,6 +183,8 @@ class AddressGroup
                         $tagFilter = "(tag has ".$tagFilter.")";
                     }
 
+                    $this->filter = $tagFilter;
+
                     $tmp_found_addresses = $this->owner->all($tagFilter);
                     foreach( $tmp_found_addresses as $address )
                     {
