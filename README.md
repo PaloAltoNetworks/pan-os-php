@@ -239,7 +239,9 @@ Docker PAN-OS-PHP API
    docker run -d -p 8082:80 --mount type=bind,source="[absolute_ROOTFOLDER]]/pan-os-php",target=/var/www/html php:apache
    ```
 The PAN-OS-PHP API is right now under development, but please feel free to try it out:
-http://localhost:8082/utils/develop/api/v1/tool.php
+   ```bash
+   http://localhost:8082/utils/develop/api/v1/tool.php
+   ```
 
 The following "RESTAPI" routes are available:
 - /stats
@@ -263,14 +265,20 @@ The following "RESTAPI" routes are available:
 - /virtualwire
 
 
+A helper UI for PAN-OS-PHP API is available at:
+   ```bash
+   http://localhost:8082/utils/develop/ui
+   ```
 
 PAN-OS-PHP API is NOT working yet with PAN-OS XML API but it is possible to run it against PAN-OS FW and Panorama offline configuration files, and manipulate in the same way as on PAN-OS-PHP ClI:
-- pa_address-edit help
-- http://localhost:8082/utils/develop/api/v1/tool.php/address?help
-
-- pa_address-edit listactions
-- http://localhost:8082/utils/develop/api/v1/tool.php/address?listactions
-
+   ```bash
+   ClI: pa_address-edit help
+   API: http://localhost:8082/utils/develop/api/v1/tool.php/address?help
+   ```
+   ```bash
+   CLI: pa_address-edit listactions
+   API: http://localhost:8082/utils/develop/api/v1/tool.php/address?listactions
+   ```
 To get it working on your own PAN-OS Firewall / Panorama config files,
 please put your files into [PAN-OS-PHP_RootFolder]/projects.
 
