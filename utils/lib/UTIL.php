@@ -10,7 +10,7 @@ require_once(dirname(__FILE__)."/SECURITYPROFILEUTIL.php");
 require_once(dirname(__FILE__)."/DEVICEUTIL.php");
 require_once(dirname(__FILE__)."/NETWORKUTIL.php");
 
-require_once("utils/lib/MERGER.php");
+require_once(dirname(__FILE__)."/MERGER.php");
 require_once(dirname(__FILE__)."/RULEMERGER.php");
 
 class UTIL

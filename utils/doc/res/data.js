@@ -2203,6 +2203,64 @@ var data = {
                 "args": false
             }
         ],
+        "securityprofilegroup": [
+            {
+                "name": "display",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "displayReferences",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "securityProfile-Remove",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "any",
+                        "choices": [
+                            "any",
+                            "virus",
+                            "vulnerability",
+                            "url-filtering",
+                            "data-filtering",
+                            "file-blocking",
+                            "spyware",
+                            "wildfire"
+                        ],
+                        "name": "type"
+                    }
+                ]
+            },
+            {
+                "name": "securityProfile-Set",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "choices": [
+                            "virus",
+                            "vulnerability",
+                            "url-filtering",
+                            "data-filtering",
+                            "file-blocking",
+                            "spyware",
+                            "wildfire"
+                        ],
+                        "name": "type"
+                    },
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "profName"
+                    }
+                ]
+            }
+        ],
         "device": [
             {
                 "name": "devicegroupcreate",
@@ -4432,6 +4490,195 @@ var data = {
                         "name": "is",
                         "help": null,
                         "argument": "*required*"
+                    }
+                ]
+            }
+        ],
+        "securityprofilegroup": [
+            {
+                "name": "location",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.child.of",
+                        "help": "returns TRUE if object location (shared\/device-group\/vsys name) matches \/ is child the one specified in argument",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.parent.of",
+                        "help": "returns TRUE if object location (shared\/device-group\/vsys name) matches \/ is parent the one specified in argument",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "regex",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "name",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "contains",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "eq",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "eq.nocase",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.in.file",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "regex",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "object",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is.tmp",
+                        "help": null,
+                        "argument": null
+                    },
+                    {
+                        "name": "is.unused",
+                        "help": null,
+                        "argument": null
+                    }
+                ]
+            },
+            {
+                "name": "reflocation",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.only",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "refstore",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "reftype",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "secprof",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "as-profile.is",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "as-profile.is.set",
+                        "help": null,
+                        "argument": null
+                    },
+                    {
+                        "name": "av-profile.is",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "av-profile.is.set",
+                        "help": null,
+                        "argument": null
+                    },
+                    {
+                        "name": "data-profile.is",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "data-profile.is.set",
+                        "help": null,
+                        "argument": null
+                    },
+                    {
+                        "name": "file-profile.is",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "file-profile.is.set",
+                        "help": null,
+                        "argument": null
+                    },
+                    {
+                        "name": "url-profile.is",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "url-profile.is.set",
+                        "help": null,
+                        "argument": null
+                    },
+                    {
+                        "name": "vuln-profile.is",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "vuln-profile.is.set",
+                        "help": null,
+                        "argument": null
+                    },
+                    {
+                        "name": "wf-profile.is",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "wf-profile.is.set",
+                        "help": null,
+                        "argument": null
                     }
                 ]
             }
