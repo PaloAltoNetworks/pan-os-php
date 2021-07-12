@@ -35,6 +35,7 @@ alias pa_ckp-exclude='php -r "require_once '"'"'utils/checkpoint-exclude.php'"'"
 
 alias pa_download-predefined='php -r "require_once '"'"'utils/download_predefined.php'"'"';" $@'
 alias pa_diff='php -r "require_once '"'"'utils/pan-diff.php'"'"';" $@'
+alias pa_config-size='php -r "require_once '"'"'utils/pan_config-size.php'"'"';" $@'
 alias pa_panos-xml-issue-detector='php -r "require_once '"'"'utils/panos-xml-issue-detector.php'"'"';" $@'
 alias pa_appid-enabler='php -r "require_once '"'"'utils/appid-enabler.php'"'"';" $@'
 
@@ -48,6 +49,7 @@ alias pa_appidtoolbox-rule-marker='php -r "require_once '"'"'appid-toolbox/rule-
 
 
 alias pa_securityprofile-edit='php -r "require_once '"'"'utils/securityprofile-edit.php'"'"';" $@'
+alias pa_securityprofilegroup-edit='php -r "require_once '"'"'utils/securityprofilegroup-edit.php'"'"';" $@'
 
 alias pa_vsys='php -r "require_once '"'"'utils/vsys-edit.php'"'"';" $@'
 

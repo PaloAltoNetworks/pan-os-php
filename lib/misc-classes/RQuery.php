@@ -89,6 +89,8 @@ class RQuery
             $this->contextObject = new ZoneRQueryContext($this);
         elseif( $this->objectType == 'securityprofile' )
             $this->contextObject = new SecurityProfileRQueryContext($this);
+        elseif( $this->objectType == 'securityprofilegroup' )
+            $this->contextObject = new SecurityProfileGroupRQueryContext($this);
         elseif( $this->objectType == 'schedule' )
             $this->contextObject = new ScheduleRQueryContext($this);
         elseif( $this->objectType == 'device' )
@@ -670,6 +672,7 @@ require_once 'filters/filters-Interface.php';
 require_once 'filters/filters-Routing.php';
 require_once 'filters/filters-VirtualWire.php';
 require_once 'filters/filters-SecurityProfile.php';
+require_once 'filters/filters-SecurityProfileGroup.php';
 require_once 'filters/filters-Schedule.php';
 require_once 'filters/filters-Device.php';
 

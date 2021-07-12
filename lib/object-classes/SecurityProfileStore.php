@@ -117,8 +117,19 @@ $this->customURLProfileStore = new SecurityProfileStore($this, "customURLProfile
         $this->owner = $owner;
         $this->o = array();
 
+        $allowedTypes = array_keys(self::$storeNameByType);
+        if( !in_array($profileType, $allowedTypes) )
+            derr("Error : type '$profileType' is not a valid one");
+
+        $this->type = $profileType;
+
+        $this->name = self::$storeNameByType[$this->type]['name'];
+
+
         if( isset($owner->parentDeviceGroup) && $owner->parentDeviceGroup !== null )
+        {
             $this->parentCentralStore = $owner->parentDeviceGroup->$profileType;
+        }
         elseif( isset($owner->parentContainer) && $owner->parentContainer !== null )
         {
             $this->parentCentralStore = $owner->parentContainer->$profileType;
@@ -128,13 +139,7 @@ $this->customURLProfileStore = new SecurityProfileStore($this, "customURLProfile
 
         $this->_SecurityProfiles = array();
 
-        $allowedTypes = array_keys(self::$storeNameByType);
-        if( !in_array($profileType, $allowedTypes) )
-            derr("Error : type '$profileType' is not a valid one");
 
-        $this->type = $profileType;
-
-        $this->name = self::$storeNameByType[$this->type]['name'];
 
     }
 
@@ -228,7 +233,7 @@ $this->customURLProfileStore = new SecurityProfileStore($this, "customURLProfile
      * @param string $name
      * @return null|URLProfileStore|AntiVirusProfileStore|customURLProfileStore
      */
-    public function find($name)
+    /*public function find($name)
     {
         if( !is_string($name) )
             derr("String was expected for rule name");
@@ -237,6 +242,68 @@ $this->customURLProfileStore = new SecurityProfileStore($this, "customURLProfile
             return $this->_SecurityProfiles[ $name ];
 
         return null;
+    }*/
+
+    /**
+     * Should only be called from a CentralStore or give unpredictable results
+     * @param string $objectName
+     * @param ReferenceableObject $ref
+     * @param bool $nested
+     * @return null|URLProfileStore|AntiVirusProfileStore|customURLProfileStore
+     */
+    public function find($objectName, $ref = null, $nested = TRUE)
+    {
+        $f = null;
+
+        if( isset($this->fastNameToIndex[$objectName]) )
+        {
+            $foundObject = $this->_SecurityProfiles[ $objectName ];
+            $foundObject->addReference($ref);
+            return $foundObject;
+        }
+
+        /*
+        if( isset($this->_all[$objectName]) )
+        {
+            $foundObject = $this->_all[$objectName];
+            $foundObject->addReference($ref);
+            return $foundObject;
+        }*/
+
+        // when load a PANOS firewall attached to a Panorama
+        if( $nested && isset($this->panoramaShared) )
+        {
+            $f = $this->panoramaShared->find($objectName, $ref, FALSE);
+
+            if( $f !== null )
+                return $f;
+        }
+        // when load a PANOS firewall attached to a Panorama
+        if( $nested && isset($this->panoramaDG) )
+        {
+            $f = $this->panoramaDG->find($objectName, $ref, FALSE);
+            if( $f !== null )
+                return $f;
+        }
+
+        if( $nested && $this->parentCentralStore )
+        {
+            $f = $this->parentCentralStore->find($objectName, $ref, $nested);
+        }
+
+        return $f;
+    }
+
+    public function findOrCreate($fn, $ref = null, $nested = TRUE)
+    {
+        $f = $this->find($fn, $ref, $nested);
+
+        if( $f !== null )
+            return $f;
+
+        $f = $this->createTmp($fn, $ref);
+
+        return $f;
     }
 
     /**
@@ -619,15 +686,17 @@ $this->customURLProfileStore = new SecurityProfileStore($this, "customURLProfile
     {
         $this->parentCentralStore = null;
 
-        $cur = $this->owner;
+        $profileType = $this->type;
+
+        $cur = $this;
         while( isset($cur->owner) && $cur->owner !== null )
         {
             $ref = $cur->owner;
-            if( isset($ref->securityProfileStore) &&
-                $ref->securityProfileStore !== null )
+            if( isset($ref->$profileType) &&
+                $ref->$profileType !== null )
             {
-                $this->parentCentralStore = $ref->securityProfileStore;
-                //print $this->toString()." : found a parent central store: ".$parentCentralStore->toString()."\n";
+                $this->parentCentralStore = $ref->$profileType;
+                #print $this->toString()." : found a parent central store: ".$this->parentCentralStore->toString()."\n";
                 return;
             }
             $cur = $ref;

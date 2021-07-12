@@ -1615,7 +1615,8 @@ AddressCallContext::$supportedActions[] = array(
                 $tag_string = "";
                 if( count($object->tags->tags()) > 0 )
                     $tag_string = "tag: '".$object->tags->toString_inline()."'";
-                PH::print_stdout( $context->padding . "* " . get_class($object) . " '{$object->name()}' (DYNAMIC)    desc: '{$object->description()}' $tag_string" );
+                PH::print_stdout( $context->padding . "* " . get_class($object) . " '{$object->name()}' (DYNAMIC)    desc: '{$object->description()}' $tag_string filter: '{$object->filter}" );
+
             }
             else
             {
