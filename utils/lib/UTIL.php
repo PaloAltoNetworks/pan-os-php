@@ -237,6 +237,8 @@ class UTIL
             $tmp_array = &ZoneCallContext::$supportedActions;
         elseif( $this->utilType == 'securityprofile' )
             $tmp_array = &SecurityProfileCallContext::$supportedActions;
+        elseif( $this->utilType == 'securityprofilegroup' )
+            $tmp_array = &SecurityProfileGroupCallContext::$supportedActions;
         elseif( $this->utilType == 'schedule' )
             $tmp_array = &ScheduleCallContext::$supportedActions;
 
@@ -332,6 +334,8 @@ class UTIL
                 VsysCallContext::prepareSupportedActions();
             elseif( $this->utilType == 'securityprofile' )
                 SecurityProfileCallContext::prepareSupportedActions();
+            elseif( $this->utilType == 'securityprofilegroup' )
+                SecurityProfileGroupCallContext::prepareSupportedActions();
             elseif( $this->utilType == 'schedule' )
                 ScheduleCallContext::prepareSupportedActions();
             elseif( $this->utilType == 'device' )
@@ -821,6 +825,8 @@ class UTIL
 
             elseif( $this->utilType == 'securityprofile' )
                 $context = new SecurityProfileCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries, $this);
+            elseif( $this->utilType == 'securityprofilegroup' )
+                $context = new SecurityProfileGroupCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries, $this);
             elseif( $this->utilType == 'schedule' )
                 $context = new ScheduleCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries, $this);
 
@@ -1025,6 +1031,8 @@ class UTIL
                         $this->objectsToProcess[] = array('store' => $this->pan->tagStore, 'objects' => $this->pan->tagStore->getall());
                     elseif( $this->utilType == 'vsys' )
                         $this->objectsToProcess[] = array('store' => $this->pan, 'objects' => $this->pan->getVirtualSystems());
+                    elseif( $this->utilType == 'securityprofilegroup' )
+                        $this->objectsToProcess[] = array('store' => $this->pan->securityProfileGroupStore, 'objects' => $this->pan->securityProfileGroupStore->getAll());
                     elseif( $this->utilType == 'schedule' )
                         $this->objectsToProcess[] = array('store' => $this->pan->scheduleStore, 'objects' => $this->pan->scheduleStore->getall());
 
@@ -1040,6 +1048,8 @@ class UTIL
                             $this->objectsToProcess[] = array('store' => $sub->serviceStore, 'objects' => $sub->serviceStore->resultingObjectSet());
                         elseif( $this->utilType == 'tag' )
                             $this->objectsToProcess[] = array('store' => $sub->tagStore, 'objects' => $sub->tagStore->resultingObjectSet());
+                        elseif( $this->utilType == 'securityprofilegroup' )
+                            $this->objectsToProcess[] = array('store' => $sub->securityProfileGroupStore, 'objects' => $sub->securityProfileGroupStore->resultingObjectSet());
                         elseif( $this->utilType == 'schedule' )
                             $this->objectsToProcess[] = array('store' => $sub->scheduleStore, 'objects' => $sub->scheduleStore->resultingObjectSet());
 
@@ -1053,6 +1063,8 @@ class UTIL
                             $this->objectsToProcess[] = array('store' => $sub->serviceStore, 'objects' => $sub->serviceStore->all(null, TRUE));
                         elseif( $this->utilType == 'tag' )
                             $this->objectsToProcess[] = array('store' => $sub->tagStore, 'objects' => $sub->tagStore->getall());
+                        elseif( $this->utilType == 'securityprofilegroup' )
+                            $this->objectsToProcess[] = array('store' => $sub->securityProfileGroupStore, 'objects' => $sub->securityProfileGroupStore->getAll());
                         elseif( $this->utilType == 'schedule' )
                             $this->objectsToProcess[] = array('store' => $sub->scheduleStore, 'objects' => $sub->scheduleStore->getall());
 
@@ -1077,6 +1089,8 @@ class UTIL
 
                     elseif( $this->utilType == 'tag' )
                         $this->objectsToProcess[] = array('store' => $this->pan->tagStore, 'objects' => $this->pan->tagStore->getall());
+                    elseif( $this->utilType == 'securityprofilegroup' )
+                        $this->objectsToProcess[] = array('store' => $this->pan->securityProfileGroupStore, 'objects' => $this->pan->securityProfileGroupStore->getAll());
                     elseif( $this->utilType == 'schedule' )
                         $this->objectsToProcess[] = array('store' => $this->pan->scheduleStore, 'objects' => $this->pan->scheduleStore->getall());
 
@@ -1108,6 +1122,8 @@ class UTIL
 
                         elseif( $this->utilType == 'tag' )
                             $this->objectsToProcess[] = array('store' => $sub->tagStore, 'objects' => $sub->tagStore->getall());
+                        elseif( $this->utilType == 'securityprofilegroup' )
+                            $this->objectsToProcess[] = array('store' => $sub->securityProfileGroupStore, 'objects' => $sub->securityProfileGroupStore->getAll());
                         elseif( $this->utilType == 'schedule' )
                             $this->objectsToProcess[] = array('store' => $sub->scheduleStore, 'objects' => $sub->scheduleStore->getall());
 

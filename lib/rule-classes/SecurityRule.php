@@ -432,7 +432,9 @@ class SecurityRule extends RuleWithUserID
             {
                 $this->secproftype = 'group';
 
-                $tmp_group =  $this->owner->owner->securityProfileGroupStore->findorCreate( $firstE->textContent );
+                //Todo findOrCreate can NOT be used because of default object not created
+                #$tmp_group =  $this->owner->owner->securityProfileGroupStore->findorCreate( $firstE->textContent );
+                $tmp_group =  $this->owner->owner->securityProfileGroupStore->find( $firstE->textContent );
                 if( $tmp_group !== false )
                 {
                     $this->secprofgroup = $firstE->textContent;

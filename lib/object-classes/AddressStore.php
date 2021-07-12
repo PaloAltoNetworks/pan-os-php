@@ -323,7 +323,7 @@ class AddressStore
                     $curo->owner->addressStore !== null )
                 {
                     $this->parentCentralStore = $curo->owner->addressStore;
-                    //print $this->toString()." : found a parent central store: ".$parentCentralStore->toString()."\n";
+                    //print $this->toString()." : found a parent central store: ".$this->parentCentralStore->toString()."\n";
                     return;
                 }
                 $curo = $curo->owner;

@@ -161,6 +161,7 @@ require_once $basedir . '/misc-classes/RoutingRQueryContext.php';
 require_once $basedir . '/misc-classes/VirtualWireRQueryContext.php';
 
 require_once $basedir . '/misc-classes/SecurityProfileRQueryContext.php';
+require_once $basedir . '/misc-classes/SecurityProfileGroupRQueryContext.php';
 
 require_once $basedir . '/misc-classes/DeviceRQueryContext.php';
 
