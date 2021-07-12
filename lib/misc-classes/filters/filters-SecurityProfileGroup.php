@@ -10,7 +10,7 @@ RQuery::$defaultFilters['securityprofilegroupgroup']['refcount']['operators']['>
     )
 );
 RQuery::$defaultFilters['securityprofilegroup']['object']['operators']['is.unused'] = array(
-    'Function' => function (securityprofilegroupRQueryContext $context) {
+    'Function' => function (SecurityprofilegroupRQueryContext $context) {
         return $context->object->countReferences() == 0;
     },
     'arg' => FALSE,
@@ -20,7 +20,7 @@ RQuery::$defaultFilters['securityprofilegroup']['object']['operators']['is.unuse
     )
 );
 RQuery::$defaultFilters['securityprofilegroup']['name']['operators']['is.in.file'] = array(
-    'Function' => function (securityprofilegroupRQueryContext $context) {
+    'Function' => function (SecurityprofilegroupRQueryContext $context) {
         $object = $context->object;
 
         if( !isset($context->cachedList) )
@@ -49,7 +49,7 @@ RQuery::$defaultFilters['securityprofilegroup']['name']['operators']['is.in.file
     'arg' => TRUE
 );
 RQuery::$defaultFilters['securityprofilegroup']['object']['operators']['is.tmp'] = array(
-    'Function' => function (securityprofilegroupRQueryContext $context) {
+    'Function' => function (SecurityprofilegroupRQueryContext $context) {
         return $context->object->isTmp();
     },
     'arg' => FALSE,
@@ -59,7 +59,7 @@ RQuery::$defaultFilters['securityprofilegroup']['object']['operators']['is.tmp']
     )
 );
 RQuery::$defaultFilters['securityprofilegroup']['name']['operators']['eq'] = array(
-    'Function' => function (securityprofilegroupRQueryContext $context) {
+    'Function' => function (SecurityprofilegroupRQueryContext $context) {
         return $context->object->name() == $context->value;
     },
     'arg' => TRUE,
@@ -69,7 +69,7 @@ RQuery::$defaultFilters['securityprofilegroup']['name']['operators']['eq'] = arr
     )
 );
 RQuery::$defaultFilters['securityprofilegroup']['name']['operators']['eq.nocase'] = array(
-    'Function' => function (securityprofilegroupRQueryContext $context) {
+    'Function' => function (SecurityprofilegroupRQueryContext $context) {
         return strtolower($context->object->name()) == strtolower($context->value);
     },
     'arg' => TRUE,
@@ -79,7 +79,7 @@ RQuery::$defaultFilters['securityprofilegroup']['name']['operators']['eq.nocase'
     )
 );
 RQuery::$defaultFilters['securityprofilegroup']['name']['operators']['contains'] = array(
-    'Function' => function (securityprofilegroupRQueryContext $context) {
+    'Function' => function (SecurityprofilegroupRQueryContext $context) {
         return strpos($context->object->name(), $context->value) !== FALSE;
     },
     'arg' => TRUE,
@@ -89,7 +89,7 @@ RQuery::$defaultFilters['securityprofilegroup']['name']['operators']['contains']
     )
 );
 RQuery::$defaultFilters['securityprofilegroup']['name']['operators']['regex'] = array(
-    'Function' => function (securityprofilegroupRQueryContext $context) {
+    'Function' => function (SecurityprofilegroupRQueryContext $context) {
         $object = $context->object;
         $value = $context->value;
 
@@ -116,7 +116,7 @@ RQuery::$defaultFilters['securityprofilegroup']['name']['operators']['regex'] = 
     )
 );
 RQuery::$defaultFilters['securityprofilegroup']['location']['operators']['is'] = array(
-    'Function' => function (securityprofilegroupRQueryContext $context) {
+    'Function' => function (SecurityprofilegroupRQueryContext $context) {
         $owner = $context->object->owner->owner;
         if( strtolower($context->value) == 'shared' )
         {
@@ -138,7 +138,7 @@ RQuery::$defaultFilters['securityprofilegroup']['location']['operators']['is'] =
     )
 );
 RQuery::$defaultFilters['securityprofilegroup']['location']['operators']['regex'] = array(
-    'Function' => function (securityprofilegroupRQueryContext $context) {
+    'Function' => function (SecurityprofilegroupRQueryContext $context) {
         $name = $context->object->getLocationString();
         $matching = preg_match($context->value, $name);
         if( $matching === FALSE )
@@ -154,7 +154,7 @@ RQuery::$defaultFilters['securityprofilegroup']['location']['operators']['regex'
     )
 );
 RQuery::$defaultFilters['securityprofilegroup']['location']['operators']['is.child.of'] = array(
-    'Function' => function (securityprofilegroupRQueryContext $context) {
+    'Function' => function (SecurityprofilegroupRQueryContext $context) {
         $secprof_location = $context->object->getLocationString();
 
         $sub = $context->object->owner;
@@ -201,7 +201,7 @@ RQuery::$defaultFilters['securityprofilegroup']['location']['operators']['is.chi
     )
 );
 RQuery::$defaultFilters['securityprofilegroup']['location']['operators']['is.parent.of'] = array(
-    'Function' => function (securityprofilegroupRQueryContext $context) {
+    'Function' => function (SecurityprofilegroupRQueryContext $context) {
         $secprof_location = $context->object->getLocationString();
 
         $sub = $context->object->owner;
@@ -251,7 +251,7 @@ RQuery::$defaultFilters['securityprofilegroup']['location']['operators']['is.par
     )
 );
 RQuery::$defaultFilters['securityprofilegroup']['reflocation']['operators']['is'] = array(
-    'Function' => function (securityprofilegroupRQueryContext $context) {
+    'Function' => function (SecurityprofilegroupRQueryContext $context) {
         $object = $context->object;
         $owner = $context->object->owner->owner;
 
@@ -294,7 +294,7 @@ RQuery::$defaultFilters['securityprofilegroup']['reflocation']['operators']['is'
     )
 );
 RQuery::$defaultFilters['securityprofilegroup']['reflocation']['operators']['is.only'] = array(
-    'Function' => function (securityprofilegroupRQueryContext $context) {
+    'Function' => function (SecurityprofilegroupRQueryContext $context) {
         $owner = $context->object->owner->owner;
         $reflocations = $context->object->getReferencesLocation();
 
@@ -330,7 +330,7 @@ RQuery::$defaultFilters['securityprofilegroup']['reflocation']['operators']['is.
     )
 );
 RQuery::$defaultFilters['securityprofilegroup']['refstore']['operators']['is'] = array(
-    'Function' => function (securityprofilegroupRQueryContext $context) {
+    'Function' => function (SecurityprofilegroupRQueryContext $context) {
         $value = $context->value;
         $value = strtolower($value);
 
@@ -351,7 +351,7 @@ RQuery::$defaultFilters['securityprofilegroup']['refstore']['operators']['is'] =
     )
 );
 RQuery::$defaultFilters['securityprofilegroup']['reftype']['operators']['is'] = array(
-    'Function' => function (securityprofilegroupRQueryContext $context) {
+    'Function' => function (SecurityprofilegroupRQueryContext $context) {
         $value = $context->value;
         $value = strtolower($value);
 
@@ -372,5 +372,233 @@ RQuery::$defaultFilters['securityprofilegroup']['reftype']['operators']['is'] = 
     )
 );
 
+#private $secprof_array = array('virus', 'spyware', 'vulnerability', 'file-blocking', 'wildfire-analysis', 'url-filtering');
+
+RQuery::$defaultFilters['securityprofilegroup']['secprof']['operators']['av-profile.is'] = array(
+    'Function' => function (SecurityprofilegroupRQueryContext $context) {
+        $secprofgroup = $context->object;
+        
+        $profiles = $secprofgroup->securityProfiles();
+        if( !isset($profiles['virus']) )
+            return FALSE;
+
+        return $profiles['virus'] == $context->value;
+    },
+    'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP% av-production)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['securityprofilegroup']['secprof']['operators']['as-profile.is'] = array(
+    'Function' => function (SecurityprofilegroupRQueryContext $context) {
+        $secprofgroup = $context->object;
+        
+
+        $profiles = $secprofgroup->securityProfiles();
+        if( !isset($profiles['spyware']) )
+            return FALSE;
+
+        return $profiles['spyware'] == $context->value;
+    },
+    'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP% as-production)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['securityprofilegroup']['secprof']['operators']['url-profile.is'] = array(
+    'Function' => function (SecurityprofilegroupRQueryContext $context) {
+        $secprofgroup = $context->object;
+        
+
+        $profiles = $secprofgroup->securityProfiles();
+        if( !isset($profiles['url-filtering']) )
+            return FALSE;
+
+        return $profiles['url-filtering'] == $context->value;
+    },
+    'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP% url-production)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['securityprofilegroup']['secprof']['operators']['wf-profile.is'] = array(
+    'Function' => function (SecurityprofilegroupRQueryContext $context) {
+        $secprofgroup = $context->object;
+        
+
+        $profiles = $secprofgroup->securityProfiles();
+        if( !isset($profiles['wildfire-analysis']) )
+            return FALSE;
+
+        return $profiles['wildfire-analysis'] == $context->value;
+    },
+    'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP% wf-production)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['securityprofilegroup']['secprof']['operators']['vuln-profile.is'] = array(
+    'Function' => function (SecurityprofilegroupRQueryContext $context) {
+        $secprofgroup = $context->object;
+        
+
+        $profiles = $secprofgroup->securityProfiles();
+        if( !isset($profiles['vulnerability']) )
+            return FALSE;
+
+        return $profiles['vulnerability'] == $context->value;
+    },
+    'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP% vuln-production)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['securityprofilegroup']['secprof']['operators']['file-profile.is'] = array(
+    'Function' => function (SecurityprofilegroupRQueryContext $context) {
+        $secprofgroup = $context->object;
+        
+
+        $profiles = $secprofgroup->securityProfiles();
+        if( !isset($profiles['file-blocking']) )
+            return FALSE;
+
+        return $profiles['file-blocking'] == $context->value;
+    },
+    'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP% vuln-production)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
+RQuery::$defaultFilters['securityprofilegroup']['secprof']['operators']['data-profile.is'] = array(
+    'Function' => function (SecurityprofilegroupRQueryContext $context) {
+        $secprofgroup = $context->object;
+        
+
+        $profiles = $secprofgroup->securityProfiles();
+        if( !isset($profiles['data-filtering']) )
+            return FALSE;
+
+        return $profiles['data-filtering'] == $context->value;
+    },
+    'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP% vuln-production)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
+RQuery::$defaultFilters['securityprofilegroup']['secprof']['operators']['av-profile.is.set'] = array(
+    'Function' => function (SecurityprofilegroupRQueryContext $context) {
+        $secprofgroup = $context->object;
+        
+
+        $profiles = $secprofgroup->securityProfiles();
+
+        return isset($profiles['virus']);
+    },
+    'arg' => FALSE,
+    'ci' => array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['securityprofilegroup']['secprof']['operators']['as-profile.is.set'] = array(
+    'Function' => function (SecurityprofilegroupRQueryContext $context) {
+        $secprofgroup = $context->object;
+        
+
+        $profiles = $secprofgroup->securityProfiles();
+
+        return isset($profiles['spyware']);
+    },
+    'arg' => FALSE,
+    'ci' => array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['securityprofilegroup']['secprof']['operators']['url-profile.is.set'] = array(
+    'Function' => function (SecurityprofilegroupRQueryContext $context) {
+        $secprofgroup = $context->object;
+        
+
+        $profiles = $secprofgroup->securityProfiles();
+
+        return isset($profiles['url-filtering']);
+    },
+    'arg' => FALSE,
+    'ci' => array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['securityprofilegroup']['secprof']['operators']['wf-profile.is.set'] = array(
+    'Function' => function (SecurityprofilegroupRQueryContext $context) {
+        $secprofgroup = $context->object;
+        
+
+        $profiles = $secprofgroup->securityProfiles();
+
+        return isset($profiles['wildfire-analysis']);
+    },
+    'arg' => FALSE,
+    'ci' => array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['securityprofilegroup']['secprof']['operators']['vuln-profile.is.set'] = array(
+    'Function' => function (SecurityprofilegroupRQueryContext $context) {
+        $secprofgroup = $context->object;
+        
+
+        $profiles = $secprofgroup->securityProfiles();
+
+        return isset($profiles['vulnerability']);
+    },
+    'arg' => FALSE,
+    'ci' => array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['securityprofilegroup']['secprof']['operators']['file-profile.is.set'] = array(
+    'Function' => function (SecurityprofilegroupRQueryContext $context) {
+        $secprofgroup = $context->object;
+        
+
+        $profiles = $secprofgroup->securityProfiles();
+
+        return isset($profiles['file-blocking']);
+    },
+    'arg' => FALSE,
+    'ci' => array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
+RQuery::$defaultFilters['securityprofilegroup']['secprof']['operators']['data-profile.is.set'] = array(
+    'Function' => function (SecurityprofilegroupRQueryContext $context) {
+        $secprofgroup = $context->object;
+        
+
+        $profiles = $secprofgroup->securityProfiles();
+
+        return isset($profiles['data-filtering']);
+    },
+    'arg' => FALSE,
+    'ci' => array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 
 // </editor-fold>

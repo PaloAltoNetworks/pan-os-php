@@ -49,3 +49,113 @@ SecurityProfileGroupCallContext::$supportedActions[] = array(
         PH::print_stdout(  "" );
     },
 );
+
+SecurityProfileGroupCallContext::$supportedActions[] = array(
+    'name' => 'securityProfile-Set',
+    'MainFunction' => function (SecurityProfileGroupCallContext $context) {
+        $secprofgroup = $context->object;
+
+        $type = $context->arguments['type'];
+        $profName = $context->arguments['profName'];
+
+
+        $ret = TRUE;
+
+        if( $type == 'virus' )
+            $ret = $secprofgroup->setSecProf_AV($profName);
+        elseif( $type == 'vulnerability' )
+            $ret = $secprofgroup->setSecProf_Vuln($profName);
+        elseif( $type == 'url-filtering' )
+            $ret = $secprofgroup->setSecProf_URL($profName);
+        elseif( $type == 'data-filtering' )
+            $ret = $secprofgroup->setSecProf_DataFilt($profName);
+        elseif( $type == 'file-blocking' )
+            $ret = $secprofgroup->setSecProf_FileBlock($profName);
+        elseif( $type == 'spyware' )
+            $ret = $secprofgroup->setSecProf_Spyware($profName);
+        elseif( $type == 'wildfire' )
+            $ret = $secprofgroup->setSecProf_Wildfire($profName);
+        else
+            derr("unsupported profile type '{$type}'");
+
+        if( !$ret )
+        {
+            echo $context->padding . " * SKIPPED : no change detected\n";
+            return;
+        }
+
+
+        if( $context->isAPI )
+        {
+            $xpath = $secprofgroup->getXPath();
+            $con = findConnectorOrDie($secprofgroup);
+            $con->sendEditRequest($xpath, DH::dom_to_xml($secprofgroup->xmlroot, -1, FALSE));
+        }
+        else
+            #$secprofgroup->rewriteSecProfXML();
+            $secprofgroup->rewriteXML();
+
+    },
+    'args' => array('type' => array('type' => 'string', 'default' => '*nodefault*',
+        'choices' => array('virus', 'vulnerability', 'url-filtering', 'data-filtering', 'file-blocking', 'spyware', 'wildfire')),
+        'profName' => array('type' => 'string', 'default' => '*nodefault*'))
+);
+SecurityProfileGroupCallContext::$supportedActions[] = array(
+    'name' => 'securityProfile-Remove',
+    'MainFunction' => function (SecurityProfileGroupCallContext $context) {
+        $secprofgroup = $context->object;
+        $type = $context->arguments['type'];
+
+
+        $ret = TRUE;
+        $profName = "null";
+
+        if( $type == "any" )
+        {
+            if( $context->isAPI )
+                $secprofgroup->API_removeSecurityProfile();
+            else
+                $secprofgroup->removeSecurityProfile();
+        }
+        elseif( $type == 'virus' )
+            $ret = $secprofgroup->setSecProf_AV($profName);
+        elseif( $type == 'vulnerability' )
+            $ret = $secprofgroup->setSecProf_Vuln($profName);
+        elseif( $type == 'url-filtering' )
+            $ret = $secprofgroup->setSecProf_URL($profName);
+        elseif( $type == 'data-filtering' )
+            $ret = $secprofgroup->setSecProf_DataFilt($profName);
+        elseif( $type == 'file-blocking' )
+            $ret = $secprofgroup->setSecProf_FileBlock($profName);
+        elseif( $type == 'spyware' )
+            $ret = $secprofgroup->setSecProf_Spyware($profName);
+        elseif( $type == 'wildfire' )
+            $ret = $secprofgroup->setSecProf_Wildfire($profName);
+        else
+            derr("unsupported profile type '{$type}'");
+
+        if( $type != "any" )
+        {
+            if( !$ret )
+            {
+                echo $context->padding . " * SKIPPED : no change detected\n";
+                return;
+            }
+
+
+            if( $context->isAPI )
+            {
+                $xpath = $secprofgroup->getXPath();
+                $con = findConnectorOrDie($secprofgroup);
+                $con->sendEditRequest($xpath, DH::dom_to_xml($secprofgroup->xmlroot, -1, FALSE));
+            }
+            else
+                #$secprofgroup->rewriteSecProfXML();
+                $secprofgroup->rewriteXML();
+        }
+
+    },
+    'args' => array('type' => array('type' => 'string', 'default' => 'any',
+        'choices' => array('any', 'virus', 'vulnerability', 'url-filtering', 'data-filtering', 'file-blocking', 'spyware', 'wildfire'))
+    )
+);
