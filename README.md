@@ -184,19 +184,23 @@ RQuery::$defaultFilters['rule']['description']['operators']['is.geq'] = Array(
 - pa_appidtoolbox-rule-marker
 - pa_bpa-generator
 - pa_ckp-exclude
+- pa_device-edit
 - pa_diff
 - pa_download-predefined
 - pa_key-manager
 - pa_ike
 - pa_interface-edit
 - pa_override-finder
+- pa_config-size
 - pa_panos-xml-issue-detector
 - pa_register-ip-mgr
 - pa_routing-edit
 - pa_rule-edit
 - pa_rule-merger
 - pa_rule-stats
+- pa_schedule-edit
 - pa_securityprofile-edit
+- pa_securityprofilegroup-edit
 - pa_service-edit
 - pa_service-merger
 - pa_servicegroup-merger
@@ -246,6 +250,7 @@ The following "RESTAPI" routes are available:
 - /tag
 - /rule
 - /securityprofile
+- /securityprofilegroup
 - /schedule
 
 
@@ -256,6 +261,8 @@ The following "RESTAPI" routes are available:
 - /interface
 - /routing
 - /virtualwire
+
+
 
 PAN-OS-PHP API is NOT working yet with PAN-OS XML API but it is possible to run it against PAN-OS FW and Panorama offline configuration files, and manipulate in the same way as on PAN-OS-PHP ClI:
 - pa_address-edit help
