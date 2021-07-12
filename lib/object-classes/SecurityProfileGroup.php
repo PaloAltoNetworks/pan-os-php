@@ -32,7 +32,7 @@ class SecurityProfileGroup
      * FAWKES
      *    <dns-security>    <spyware>   <vulnerability> <url-filtering> <file-blocking> <saas-security> <virus-and-wildfire-analysis>
      */
-    private $secprof_array = array('virus', 'spyware', 'vulnerability', 'file-blocking', 'wildfire-analysis', 'url-filtering');
+    private $secprof_array = array('virus', 'spyware', 'vulnerability', 'file-blocking', 'wildfire-analysis', 'url-filtering', 'data-filtering');
     private $secprof_fawkes_array = array('virus-and-wildfire-analysis-analysis', 'spyware', 'vulnerability', 'file-blocking', 'dns-security', 'url-filtering');
 
     /*
@@ -40,7 +40,7 @@ class SecurityProfileGroup
      * define new ProfileStore:
      * ->VirusWildfireProfileStore; DnsSecurityProfileStore; SaasSecurityProfileStore
      */
-    private $secprof_store = array( 'AntiVirusProfileStore', 'AntiSpywareProfileStore', 'VulnerabilityProfileStore', 'FileBlockingProfileStore', 'WildfireProfileStore', 'URLProfileStore' );
+    private $secprof_store = array( 'AntiVirusProfileStore', 'AntiSpywareProfileStore', 'VulnerabilityProfileStore', 'FileBlockingProfileStore', 'WildfireProfileStore', 'URLProfileStore', 'DataProfileStore' );
     private $secprof_fawkes_store = array( 'VirusAndWildfireProfileStore', 'AntiSpywareProfileStore', 'VulnerabilityProfileStore', 'FileBlockingProfileStore', 'DNSSecurityProfileStore', 'URLProfileStore' );
 
 
@@ -188,6 +188,10 @@ class SecurityProfileGroup
 
     }
 
+    public function securityProfiles()
+    {
+        return $this->secprofiles;
+    }
 
     /**
      * @return string
@@ -283,6 +287,210 @@ class SecurityProfileGroup
 
         return TRUE;
     }
+
+    public function removeSecurityProfile()
+    {
+        $this->secprofiles = array();
+
+        $this->rewriteXML();
+
+        return TRUE;
+    }
+
+    public function API_removeSecurityProfile()
+    {
+        $ret = $this->removeSecurityProfile();
+
+        if( $ret )
+        {
+            $xpath = $this->getXPath();
+            $con = findConnectorOrDie($this);
+
+            $con->sendDeleteRequest($xpath);
+        }
+
+        return $ret;
+    }
+
+    public function setSecProf_AV($newAVprof)
+    {
+        if( $newAVprof == "null" )
+            unset($this->secprofiles['virus']);
+        else
+        {
+            $newAVproftxt = $newAVprof;
+            $newAVprof = $this->owner->owner->AntiVirusProfileStore->find( $newAVproftxt );
+            if( $newAVprof !== "null" )
+                $this->secprofiles['virus'] = $newAVprof;
+            else
+                $this->secprofiles['virus'] = $newAVproftxt;
+        }
+
+
+        $this->rewriteXML();
+
+        return TRUE;
+    }
+
+    public function setSecProf_Vuln($newAVprof)
+    {
+        if( $newAVprof == "null" )
+            unset($this->secprofiles['vulnerability']);
+        else
+        {
+            $newAVproftxt = $newAVprof;
+            $newAVprof = $this->owner->owner->VulnerabilityProfileStore->find( $newAVproftxt );
+            if( $newAVprof !== "null" )
+                $this->secprofiles['vulnerability'] = $newAVprof;
+            else
+                $this->secprofiles['vulnerability'] = $newAVproftxt;
+        }
+
+
+        $this->rewriteXML();
+
+        return TRUE;
+    }
+
+    public function setSecProf_URL($newAVprof)
+    {
+        if( $newAVprof == "null" )
+            unset($this->secprofiles['url-filtering']);
+        else
+        {
+            $newAVproftxt = $newAVprof;
+            $newAVprof = $this->owner->owner->URLProfileStore->find( $newAVproftxt );
+            if( $newAVprof !== "null" )
+                $this->secprofiles['url-filtering'] = $newAVprof;
+            else
+                $this->secprofiles['url-filtering'] = $newAVproftxt;
+        }
+
+
+        $this->rewriteXML();
+
+        return TRUE;
+    }
+
+    public function setSecProf_DataFilt($newAVprof)
+    {
+        if( $newAVprof == "null" )
+            unset($this->secprofiles['data-filtering']);
+        else
+        {
+            $newAVproftxt = $newAVprof;
+            #$newAVprof = $this->owner->owner->DataProfileStore->find( $newAVproftxt );
+            $newAVprof = null;
+            if( $newAVprof !== "null" )
+                $this->secprofiles['data-filtering'] = $newAVprof;
+            else
+                $this->secprofiles['data-filtering'] = $newAVproftxt;
+        }
+
+
+        $this->rewriteXML();
+
+        return TRUE;
+    }
+
+    public function setSecProf_FileBlock($newAVprof)
+    {
+        if( $newAVprof == "null" )
+            unset($this->secprofiles['file-blocking']);
+        else
+        {
+            $newAVproftxt = $newAVprof;
+            $newAVprof = $this->owner->owner->FileBlockingProfileStore->find( $newAVproftxt );
+            if( $newAVprof !== "null" )
+                $this->secprofiles['file-blocking'] = $newAVprof;
+            else
+                $this->secprofiles['file-blocking'] = $newAVproftxt;
+        }
+
+
+        $this->rewriteXML();
+
+        return TRUE;
+    }
+
+    public function setSecProf_Spyware($newAVprof)
+    {
+        if( $newAVprof == "null" )
+            unset($this->secprofiles['spyware']);
+        else
+        {
+            $newAVproftxt = $newAVprof;
+            $newAVprof = $this->owner->owner->AntiSpywareProfileStore->find( $newAVproftxt );
+            if( $newAVprof !== "null" )
+                $this->secprofiles['spyware'] = $newAVprof;
+            else
+                $this->secprofiles['spyware'] = $newAVproftxt;
+        }
+
+
+        $this->rewriteXML();
+
+        return TRUE;
+    }
+
+    public function setSecProf_Wildfire($newAVprof)
+    {
+       
+        if( $newAVprof == "null" )
+            unset($this->secprofiles['wildfire-analysis']);
+        else
+        {
+            $newAVproftxt = $newAVprof;
+            $newAVprof = $this->owner->owner->WildfireProfileStore->find( $newAVproftxt );
+            if( $newAVprof !== "null" )
+                $this->secprofiles['wildfire-analysis'] = $newAVprof;
+            else
+                $this->secprofiles['wildfire-analysis'] = $newAVproftxt;
+        }
+
+
+        $this->rewriteXML();
+
+        return TRUE;
+    }
+
+    /*
+    public function rewriteSecProfXML()
+    {
+
+        if( $this->secprofroot !== null )
+            DH::clearDomNodeChilds($this->secprofroot);
+        if( $this->secproftype == 'group' )
+        {
+            if( $this->secprofroot === null || $this->secprofroot === FALSE )
+                $this->secprofroot = DH::createElement($this->xmlroot, 'profile-setting');
+            else
+                $this->xmlroot->appendChild($this->secprofroot);
+
+            $tmp = $this->secprofroot->ownerDocument->createElement('group');
+            $tmp = $this->secprofroot->appendChild($tmp);
+            $tmp = $tmp->appendChild($this->secprofroot->ownerDocument->createElement('member'));
+            $tmp->appendChild($this->secprofroot->ownerDocument->createTextNode($this->secprofgroup));
+        }
+        else if( $this->secproftype == 'profiles' )
+        {
+            if( $this->secprofroot === null || $this->secprofroot === FALSE )
+                $this->secprofroot = DH::createElement($this->xmlroot, 'profile-setting');
+            else
+                $this->xmlroot->appendChild($this->secprofroot);
+
+            $tmp = $this->secprofroot->ownerDocument->createElement('profiles');
+            $tmp = $this->secprofroot->appendChild($tmp);
+
+            foreach( $this->secprofProfiles as $index => $value )
+            {
+                $type = $tmp->appendChild($this->secprofroot->ownerDocument->createElement($index));
+                $ntmp = $type->appendChild($this->secprofroot->ownerDocument->createElement('member'));
+                $ntmp->appendChild($this->secprofroot->ownerDocument->createTextNode($value));
+            }
+        }
+    }
+    */
 
     public function rewriteXML()
     {
