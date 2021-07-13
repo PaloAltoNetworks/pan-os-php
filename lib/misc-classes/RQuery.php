@@ -93,6 +93,8 @@ class RQuery
             $this->contextObject = new SecurityProfileGroupRQueryContext($this);
         elseif( $this->objectType == 'schedule' )
             $this->contextObject = new ScheduleRQueryContext($this);
+        elseif( $this->objectType == 'application' )
+            $this->contextObject = new ApplicationRQueryContext($this);
         elseif( $this->objectType == 'device' )
             $this->contextObject = new DeviceRQueryContext($this);
         else

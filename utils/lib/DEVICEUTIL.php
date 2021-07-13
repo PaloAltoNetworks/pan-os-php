@@ -73,6 +73,8 @@ class DEVICEUTIL extends UTIL
                     $this->objectsToProcess[] = array('store' => $this->pan, 'objects' => $this->pan->getTemplates());
                 if( array_search('any', $this->deviceTypes) !== FALSE || array_search('templatestack', $this->deviceTypes) !== FALSE )
                     $this->objectsToProcess[] = array('store' => $this->pan, 'objects' => $this->pan->getTemplatesStacks());
+                if( array_search('any', $this->deviceTypes) !== FALSE || array_search('manageddevice', $this->deviceTypes) !== FALSE )
+                    $this->objectsToProcess[] = array('store' => $this->pan->managedFirewallsStore, 'objects' => $this->pan->managedFirewallsStore->getAll());
             }
             elseif( $this->configType == 'fawkes' )
             {
@@ -80,6 +82,8 @@ class DEVICEUTIL extends UTIL
                     $this->objectsToProcess[] = array('store' => $this->pan, 'objects' => $this->pan->getContainers());
                 if( array_search('any', $this->deviceTypes) !== FALSE || array_search('devicecloud', $this->deviceTypes) !== FALSE )
                     $this->objectsToProcess[] = array('store' => $this->pan, 'objects' => $this->pan->getDeviceClouds());
+                if( array_search('any', $this->deviceTypes) !== FALSE || array_search('manageddevice', $this->deviceTypes) !== FALSE )
+                    $this->objectsToProcess[] = array('store' => $this->pan->managedFirewallsStore, 'objects' => $this->pan->managedFirewallsStore->getAll());
             }
 
                 
@@ -96,7 +100,7 @@ class DEVICEUTIL extends UTIL
         //
         // Determine device types
         //
-        $supportedRuleTypes = array( 'any', 'vsys', 'devicegroup', 'template', 'templatestack', 'container', 'devicecloud');
+        $supportedRuleTypes = array( 'any', 'vsys', 'devicegroup', 'template', 'templatestack', 'container', 'devicecloud', 'manageddevice');
         if( !isset(PH::$args['devicetype']) )
         {
             if( $this->configType == 'panos' )

@@ -68,6 +68,39 @@ DeviceCallContext::$supportedActions['display'] = array(
         print "\n";
     },
 );
+DeviceCallContext::$supportedActions[] = array(
+    'name' => 'displaymanageddevices',
+    'MainFunction' => function (DeviceCallContext $context) {
+        $managedDevice = $context->object;
+        $device = $managedDevice->owner->owner;
+
+        $padding = "       ";
+
+        if( get_class( $managedDevice ) !== "ManagedDevice" )
+            return false;
+
+        /** @var ManagedDevice */
+
+        if( $managedDevice->getDeviceGroup() != null )
+            print $padding."DG: ".$managedDevice->getDeviceGroup()."\n";
+        if( $managedDevice->getTemplate() != null )
+            print $padding."Template: ".$managedDevice->getTemplate()."\n";
+        if( $managedDevice->getTemplateStack() != null )
+        {
+            print $padding."TempalteStack: ".$managedDevice->getTemplateStack()."\n";
+            $templatestack = $device->findTemplateStack( $managedDevice->getTemplateStack() );
+            foreach( $templatestack->templates as $template )
+            {
+                $template_obj = $device->findTemplate( $template );
+                if( $template_obj !== null )
+                    print " - ".$template_obj->name()."\n";
+            }
+        }
+
+        return true;
+
+    },
+);
 DeviceCallContext::$supportedActions['DeviceGroupcreate'] = array(
     'name' => 'devicegroupcreate',
     'GlobalInitFunction' => function (DeviceCallContext $context) {

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ISC License
  *
@@ -18,22 +19,22 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-class DeviceCallContext extends CallContext
+
+set_include_path(dirname(__FILE__) . '/../' . PATH_SEPARATOR . get_include_path());
+require_once dirname(__FILE__)."/../lib/pan_php_framework.php";
+require_once dirname(__FILE__)."/../utils/lib/UTIL.php";
+
+if( !PH::$shadow_json )
 {
-    /** @var  VirtualSystem|DeviceGroup|Template|TemplateStack|Container|DeviceCloud|ManagedDevice */
-    public $object;
+    echo "\n***********************************************\n";
+    echo "*********** APPLICATION-EDIT UTILITY **************\n\n";
+}
 
-    public static $commonActionFunctions = array();
-    public static $supportedActions = array();
+$util = new UTIL("application", $argv, __FILE__);
 
-    static public function prepareSupportedActions()
-    {
-        $tmpArgs = array();
-        foreach( self::$supportedActions as &$arg )
-        {
-            $tmpArgs[strtolower($arg['name'])] = $arg;
-        }
-        ksort($tmpArgs);
-        self::$supportedActions = $tmpArgs;
-    }
+if( !PH::$shadow_json )
+{
+    echo "\n\n********** END OF APPLICATION-EDIT UTILITY ***********\n";
+    echo "**************************************************\n";
+    echo "\n\n";
 }

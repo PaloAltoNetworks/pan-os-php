@@ -18,10 +18,11 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-class DeviceCallContext extends CallContext
+class ApplicationCallContext extends CallContext
 {
-    /** @var  VirtualSystem|DeviceGroup|Template|TemplateStack|Container|DeviceCloud|ManagedDevice */
+    /** @var  App */
     public $object;
+
 
     public static $commonActionFunctions = array();
     public static $supportedActions = array();
