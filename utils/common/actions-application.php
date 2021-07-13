@@ -18,6 +18,11 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+//Todo: introduce actions:
+//      display
+//      set custom timeout, tcp-timeout, udp-timeout, tcp_half_closed_timeout, tcp_time_wait_timeout
+//      enable app-id
+
 ApplicationCallContext::$supportedActions['displayreferences'] = array(
     'name' => 'displayReferences',
     'MainFunction' => function (ApplicationCallContext $context) {

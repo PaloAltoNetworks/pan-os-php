@@ -33,6 +33,9 @@ RQuery::$defaultFilters['app']['characteristic']['operators']['has'] = array(
     )
 );
 
+//Todo: introduce filter
+//      app-id is.disabled
+
 RQuery::$defaultFilters['application']['name']['operators']['eq'] = array(
     'Function' => function (ApplicationRQueryContext $context) {
         return $context->object->name() == $context->value;
