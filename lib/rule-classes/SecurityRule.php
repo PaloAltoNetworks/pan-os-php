@@ -786,6 +786,26 @@ class SecurityRule extends RuleWithUserID
         return isset($this->_urlCategories[$category]);
     }
 
+    /**
+     * enable or disabled logging at end
+     * @param bool $yes
+     * @return bool
+     */
+    public function setUrlCategories($category)
+    {
+        if( !isset( $this->_urlCategories[ $category ] ) )
+        {
+            $tmp = DH::findFirstElementOrCreate('category', $this->xmlroot);
+
+            $tmp_member = DH::findFirstElementOrCreate('member', $tmp);
+            $tmp_member->textContent = $category;
+
+            $this->_urlCategories[ $category ] = $category;
+
+            return TRUE;
+        }
+        return FALSE;
+    }
 
     public function action()
     {
