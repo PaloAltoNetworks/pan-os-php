@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Class SecProfRQueryContext
- * @property URLProfileStore $object
+ * Class SecurityProfileGroupRQueryContext
+ * @property SecurityProfileGroupStore $object
  * @ignore
  */
 class SecurityProfileGroupRQueryContext extends RQueryContext

@@ -254,6 +254,198 @@ class App
 
         return FALSE;
     }
+
+    function print_appdetails( )
+    {
+        global $print_explicit;
+        global $print_implicit;
+
+        $padding = 30;
+        $padding_10 = "          ";
+
+
+        print str_pad( PH::boldText($this->name() ), $padding )." - ";
+
+        if( isset($this->obsolete) )
+            print "(obsolete) ";
+
+        if( isset($this->category) )
+            print "category|".str_pad( $this->category, $padding ) . " - ";
+
+
+        if( isset($this->subCategory) )
+            print "subcategory|".str_pad( $this->subCategory, $padding ) . " - ";
+
+
+        if( isset($this->technology) )
+            print "technology|".str_pad ( $this->technology, $padding ) . " - ";
+
+        if( isset($this->risk) )
+            print "risk|".$this->risk . " - ";
+
+
+
+        if( isset($this->tcp) )
+        {
+            print "\n".$padding_10."tcp/";
+            foreach( $this->tcp as $tcp )
+            {
+                if( $tcp[0] == "single" )
+                    print $tcp[1].",";
+                elseif( $tcp[0] == "dynamic" )
+                    print "dynamic";
+                elseif( $tcp[0] == "range" )
+                    print $tcp[1]. "-".$tcp[2].",";
+                else
+                    print "implode:".implode("','",$tcp)."";
+            }
+
+        }
+        if( isset($this->udp) )
+        {
+            print "\n".$padding_10."udp/";
+            foreach( $this->udp as $udp )
+            {
+                if( $udp[0] == "single" )
+                    print $udp[1].",";
+                elseif( $udp[0] == "dynamic" )
+                    print "dynamic";
+                elseif( $udp[0] == "range" )
+                    print $udp[1]. "-".$udp[2].",";
+                else
+                    print "implode:".implode("','",$udp)."";
+            }
+
+        }
+
+
+        //secure ports:
+        if( isset($this->tcp_secure) )
+        {
+            print "\n".$padding_10."secure - tcp/";
+            foreach( $this->tcp_secure as $tcp )
+            {
+                if( $tcp[0] == "single" )
+                    print $tcp[1].",";
+                elseif( $tcp[0] == "dynamic" )
+                    print "dynamic";
+                elseif( $tcp[0] == "range" )
+                    print $tcp[1]. "-".$tcp[2].",";
+                else
+                    print "implode:".implode("','",$tcp)."";
+            }
+
+        }
+        if( isset($this->udp_secure) )
+        {
+            print "\n".$padding_10."secure - udp/";
+            foreach( $this->udp_secure as $udp )
+            {
+                if( $udp[0] == "single" )
+                    print $udp[1].",";
+                elseif( $udp[0] == "dynamic" )
+                    print "dynamic";
+                elseif( $udp[0] == "range" )
+                    print $udp[1]. "-".$udp[2].",";
+                else
+                    print "implode:".implode("','",$udp)."";
+            }
+
+        }
+
+        if( $this->proto != "" )
+            print "\n".$padding_10."IP-Protocol: '".$this->proto."'\n";
+
+        print "\n";
+
+
+        if( isset( $this->timeout ) )
+            print $padding_10."timeout|".$this->timeout . " - ";
+        if( isset( $this->tcp_timeout ) )
+            print $padding_10."tcp-timeout|".$this->tcp_timeout . " - ";
+        if( isset( $this->tcp_half_closed_timeout ) )
+            print $padding_10."tcp-half-closed-timeout|".$this->tcp_half_closed_timeout . " - ";
+        if( isset( $this->tcp_time_wait_timeout ) )
+            print $padding_10."tcp-time-wait-timeout|".$this->tcp_time_wait_timeout . " - ";
+        if( isset( $this->udp_timeout ) )
+            print $padding_10."udp-timeout|".$this->udp_timeout . " - ";
+
+
+        print "\n";
+
+        if( isset( $this->explicitUse ) && $print_explicit )
+        {
+            foreach( $this->explicitUse as $app1 )
+            {
+                print "           explicit->" . $app1->type . " | ";
+
+                $app1->print_appdetails( );
+            }
+        }
+
+        if( isset( $this->implicitUse ) && $print_implicit )
+        {
+            foreach( $this->implicitUse as $app2 )
+            {
+                print "           implicit->" . $app2->type . " | ";
+
+                $app2->print_appdetails( );
+            }
+        }
+
+        print "\n";
+        if( isset( $this->icmpsub )  )
+        {
+            print "               icmp type: ". $this->icmpsub . "\n";
+        }
+        if( isset( $this->icmp6sub )  )
+        {
+            print "               icmpv6 type: ". $this->icmp6sub . "\n";
+        }
+        if( isset( $this->icmpcode )  )
+        {
+            print "               icmp code: ". $this->icmpcode . "\n";
+        }
+        if( isset( $this->icmp6code )  )
+        {
+            print "               icmpv6 code: ". $this->icmp6code . "\n";
+        }
+        /*
+            if( isset($app->_characteristics) )
+            {
+                #print PH::list_to_string($app->_characteristics);
+                print_r( $app->_characteristics );
+            }
+        */
+        #if( $app->type != 'application-filter' )
+        #{
+        #print PH::
+        if( isset($this->tmp_details) )
+        {
+            print "TMP details: -";
+            print_r( $this->tmp_details );
+            derr('check');
+        }
+
+        #}
+
+        if( $this->type == 'application-group' )
+        {
+            #print "application-group: - ".$app->name();
+            #print "ARRAY: if not empty";
+            if( isset( $this->groupapps ) )
+            {
+
+                foreach( $this->groupapps as $tmpapp)
+                    $tmpapp->print_appdetails( );
+
+                print "\n";
+            }
+
+
+        }
+
+    }
 }
 
 

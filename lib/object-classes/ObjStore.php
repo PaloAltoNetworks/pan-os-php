@@ -61,6 +61,11 @@ class ObjStore
         $this->name = $newname;
     }
 
+    public function name()
+    {
+        return $this->name;
+    }
+
     protected function findByName($name, $ref = null)
     {
         if( isset($this->nameIndex[$name]) )
