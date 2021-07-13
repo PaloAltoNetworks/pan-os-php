@@ -20,7 +20,7 @@
 
 class DeviceCallContext extends CallContext
 {
-    /** @var  VirtualSystem|DeviceGroup|Template|TemplateStack|Container|DeviceCloud */
+    /** @var  VirtualSystem|DeviceGroup|Template|TemplateStack|Container|DeviceCloud|ManagedDevice */
     public $object;
 
     public static $commonActionFunctions = array();
