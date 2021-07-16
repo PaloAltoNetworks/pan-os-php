@@ -146,20 +146,8 @@ class ScheduleStore extends ObjStore
         if( $this->find($name, null, FALSE) !== null )
             derr('Schedule named "' . $name . '" already exists, cannot create');
 
-        if( $this->xmlroot === null )
-        {
-            if( $this->owner->isDeviceGroup() || $this->owner->isVirtualSystem() || $this->owner->isContainer() || $this->owner->isDeviceCloud() )
-                $this->xmlroot = DH::findFirstElementOrCreate('schedule', $this->owner->xmlroot);
-            else
-                $this->xmlroot = DH::findFirstElementOrCreate('schedule', $this->owner->sharedroot);
-        }
 
-        $newSchedule = new Schedule($name, $this);
-        $newSchedule->owner = null;
-
-        $newScheduleRoot = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, Schedule::$templatexml);
-        $newScheduleRoot->setAttribute('name', $name);
-        $newSchedule->load_from_domxml($newScheduleRoot);
+        $newSchedule = new Schedule($name, $this, TRUE);
 
         if( $ref !== null )
             $newSchedule->addReference($ref);
