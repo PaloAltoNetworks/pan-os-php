@@ -251,7 +251,7 @@ class Schedule
             $valueRoot = DH::findFirstElementOrCreate("non-recurring", $valueRoot);
             foreach( $this->recurring_array['non-recurring'] as $entry )
             {
-                DH::setDomNodeText($valueRoot, "<member>".$entry['start']."".$entry['end']."</member>");
+                DH::createElement($valueRoot, 'member', $entry['start']."-".$entry['end']);
             }
         }
 
