@@ -6,6 +6,7 @@ UTILS:
 * introduce new script pa_application-edit; with different filters
 * pa_device-edit | extend with devicetype=manageddevice
 * pa_securityprofilegroup-edit | introduce actions=exporttoexcel:FILE.HTML
+* pa_schedule-edit - class Schedule | introduce method setNonRecurring
 
 BUGFIX:
 * class Schedule/ScheduleStore - bugfix to create new schedule objects
