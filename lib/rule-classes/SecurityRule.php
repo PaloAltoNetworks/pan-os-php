@@ -1638,6 +1638,9 @@ class SecurityRule extends RuleWithUserID
      */
     function setSchedule($newSchedule = null)
     {
+        if( is_object( $newSchedule ) )
+            $newSchedule = $newSchedule->name();
+
         if( $newSchedule === null || strlen($newSchedule) < 1 )
         {
             if( $this->schedule === null )
