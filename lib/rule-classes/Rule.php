@@ -208,6 +208,15 @@ class Rule
                             continue;
                         }
 
+                        if( $this->owner->owner !== null && get_class( $this->owner->owner ) == "PanoramaConf" )
+                            $managedFirewall = $this->owner->owner->managedFirewallsStore->find($targetSerial);
+                        elseif( $this->owner->owner->owner !== null && get_class( $this->owner->owner->owner ) == "PanoramaConf" )
+                            $managedFirewall = $this->owner->owner->owner->managedFirewallsStore->find($targetSerial);
+
+                        if( $managedFirewall !== null )
+                            $managedFirewall->addReference( $this );
+
+
                         if( $this->_targets === null )
                             $this->_targets = array();
 

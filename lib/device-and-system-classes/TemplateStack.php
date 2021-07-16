@@ -82,7 +82,11 @@ class TemplateStack
         {
             $managedFirewall = $this->owner->managedFirewallsStore->find($serial);
             if( $managedFirewall !== null )
+            {
                 $managedFirewall->addTemplateStack($this->name);
+                $managedFirewall->addReference( $this );
+            }
+
         }
 
         $tmp = DH::findFirstElement('config', $xml);

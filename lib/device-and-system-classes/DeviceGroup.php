@@ -685,7 +685,11 @@ class DeviceGroup
             {
                 $managedFirewall = $this->owner->managedFirewallsStore->find($serial);
                 if( $managedFirewall !== null )
+                {
                     $managedFirewall->addDeviceGroup($this->name);
+                    $managedFirewall->addReference( $this );
+                }
+
             }
         }
 
