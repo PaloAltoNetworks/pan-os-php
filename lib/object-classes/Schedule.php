@@ -223,6 +223,40 @@ class Schedule
         }
     }
 
+    /**
+     * @param string $newValue
+     * @param bool $rewriteXml
+     * @return bool
+     * @throws Exception
+     */
+    public function setNonRecurring($newValue, $rewriteXml = TRUE)
+    {
+        if( !is_string($newValue) )
+            derr('value can be text only');
+
+        //validation needed
+        #if( $newValue == $this->value )
+        #    return FALSE;
+
+        $startEnd = explode("-", $newValue);
+        $tmp = array();
+        $tmp['start'] = $startEnd[0];
+        $tmp['end'] = $startEnd[1];
+
+        $this->recurring_array['non-recurring'][] = $tmp;
+
+        if( $rewriteXml )
+        {
+            $valueRoot = DH::findFirstElementOrCreate("schedule-type", $this->xmlroot);
+            $valueRoot = DH::findFirstElementOrCreate("non-recurring", $valueRoot);
+            foreach( $this->recurring_array['non-recurring'] as $entry )
+            {
+                DH::setDomNodeText($valueRoot, "<member>".$entry['start']."".$entry['end']."</member>");
+            }
+        }
+
+        return TRUE;
+    }
 
 
     static public $templatexml = '<entry name="**temporarynamechangeme**"></entry>';
