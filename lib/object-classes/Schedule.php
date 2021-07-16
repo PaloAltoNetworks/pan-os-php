@@ -53,7 +53,9 @@ class Schedule
         if( $fromXmlTemplate )
         {
             $doc = new DOMDocument();
-            $node = DH::findFirstElement('entry', $doc);
+            $doc->loadXML(self::$templatexml, XML_PARSE_BIG_LINES);
+
+            $node = DH::findFirstElementOrDie('entry', $doc);
 
             $rootDoc = $owner->xmlroot->ownerDocument;
 
