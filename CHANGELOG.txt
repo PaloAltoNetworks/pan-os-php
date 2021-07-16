@@ -8,6 +8,7 @@ UTILS:
 * pa_securityprofilegroup-edit | introduce actions=exporttoexcel:FILE.HTML
 * pa_schedule-edit - class Schedule | introduce method setNonRecurring
 * pa_schedule-edit - class Schedule | introduce methode setRecurringDaily and setRecurringWeekly
+* pa_device-edit | introduce actions=displayreferences
 
 BUGFIX:
 * class Schedule/ScheduleStore - bugfix to create new schedule objects

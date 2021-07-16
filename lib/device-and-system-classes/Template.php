@@ -66,7 +66,11 @@ class Template
             {
                 $managedFirewall = $this->owner->managedFirewallsStore->find($serial);
                 if( $managedFirewall !== null )
+                {
                     $managedFirewall->addTemplate($this->name);
+                    $managedFirewall->addReference( $this );
+                }
+
             }
         }
     }

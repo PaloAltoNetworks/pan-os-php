@@ -60,6 +60,33 @@ DeviceCallContext::$supportedActions['display'] = array(
             }
             //Todo: print complete DG Hierarchy
         }
+        elseif( get_class($object) == "ManagedDevice" )
+        {
+            $managedDevice = $context->object;
+            $device = $managedDevice->owner->owner;
+
+            $padding = "       ";
+            /** @var ManagedDevice */
+
+            if( $managedDevice->getDeviceGroup() != null )
+                print $padding."DG: ".$managedDevice->getDeviceGroup()."\n";
+            if( $managedDevice->getTemplate() != null )
+                print $padding."Template: ".$managedDevice->getTemplate()."\n";
+            if( $managedDevice->getTemplateStack() != null )
+            {
+                print $padding."TempalteStack: ".$managedDevice->getTemplateStack()."\n";
+                $templatestack = $device->findTemplateStack( $managedDevice->getTemplateStack() );
+                foreach( $templatestack->templates as $template )
+                {
+                    $template_obj = $device->findTemplate( $template );
+                    if( $template_obj !== null )
+                        print " - ".$template_obj->name()."\n";
+                }
+            }
+
+            $managedDevice->getReferences();
+
+        }
         elseif( get_class($object) == "Template" )
         {
             //Todo: print where this template is used // full templateStack hierarchy
@@ -68,37 +95,12 @@ DeviceCallContext::$supportedActions['display'] = array(
         print "\n";
     },
 );
-DeviceCallContext::$supportedActions[] = array(
-    'name' => 'displaymanageddevices',
+DeviceCallContext::$supportedActions['displayreferences'] = array(
+    'name' => 'displayReferences',
     'MainFunction' => function (DeviceCallContext $context) {
-        $managedDevice = $context->object;
-        $device = $managedDevice->owner->owner;
+        $object = $context->object;
 
-        $padding = "       ";
-
-        if( get_class( $managedDevice ) !== "ManagedDevice" )
-            return false;
-
-        /** @var ManagedDevice */
-
-        if( $managedDevice->getDeviceGroup() != null )
-            print $padding."DG: ".$managedDevice->getDeviceGroup()."\n";
-        if( $managedDevice->getTemplate() != null )
-            print $padding."Template: ".$managedDevice->getTemplate()."\n";
-        if( $managedDevice->getTemplateStack() != null )
-        {
-            print $padding."TempalteStack: ".$managedDevice->getTemplateStack()."\n";
-            $templatestack = $device->findTemplateStack( $managedDevice->getTemplateStack() );
-            foreach( $templatestack->templates as $template )
-            {
-                $template_obj = $device->findTemplate( $template );
-                if( $template_obj !== null )
-                    print " - ".$template_obj->name()."\n";
-            }
-        }
-
-        return true;
-
+        $object->display_references(7);
     },
 );
 DeviceCallContext::$supportedActions['DeviceGroupcreate'] = array(
