@@ -14,7 +14,7 @@ BUGFIX:
 * class Schedule/ScheduleStore - bugfix to create new schedule objects
 
 GENERAL:
-
+* introduce class LogCollectorGroup - benefit for pa_device-edit devicetype=manageddevice actions=displayreferences
 
 2.0.6 (202107212)
 UTILS:

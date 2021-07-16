@@ -61,6 +61,10 @@ class PanoramaConf
     /** @var string[]|DomNode */
     public $devicegrouproot;
 
+    /** @var string[]|DomNode */
+    public $logcollectorgrouproot;
+
+
     public $version = null;
 
     public $managedFirewallsSerials = array();
@@ -75,6 +79,9 @@ class PanoramaConf
 
     /** @var TemplateStack[] */
     public $templatestacks = array();
+
+    /** @var LogCollectorGroup[] */
+    public $logCollectorGroups = array();
 
     /** @var RuleStore */
     public $securityRules;
@@ -325,6 +332,7 @@ class PanoramaConf
         $this->devicegrouproot = DH::findFirstElementOrCreate('device-group', $this->localhostroot);
         $this->templateroot = DH::findFirstElementOrCreate('template', $this->localhostroot);
         $this->templatestackroot = DH::findFirstElementOrCreate('template-stack', $this->localhostroot);
+        $this->logcollectorgrouproot = DH::findFirstElementOrCreate('log-collector-group', $this->localhostroot);
 
         //
         // Extract Tag objects
@@ -931,6 +939,25 @@ class PanoramaConf
         }
         //
         // End of DeviceGroup loading
+        //
+
+        //
+        // loading LogCollectorGroup
+        //
+        foreach( $this->logcollectorgrouproot->childNodes as $node )
+        {
+            if( $node->nodeType != XML_ELEMENT_NODE ) continue;
+
+            #$ldv = new LogCollectorGroup('*tmp*', $this);
+            $ldv = new LogCollectorGroup( $this);
+            $ldv->load_from_domxml($node);
+            $this->logCollectorGroups[] = $ldv;
+            //print "TemplateStack '{$ldv->name()}' found\n";
+
+            //Todo: add templates to templatestack
+        }
+        //
+        // end of LogCollectorGroup
         //
 
     }
