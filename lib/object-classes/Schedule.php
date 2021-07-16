@@ -127,95 +127,96 @@ class Schedule
 
         $tmp = DH::findFirstElement('schedule-type', $xml);
 
-
-        foreach( $tmp->childNodes as $node )
+        if( $tmp !== false )
         {
-            if( $node->nodeType != XML_ELEMENT_NODE )
-                continue;
-
-            if( $node->nodeName == "recurring" )
+            foreach( $tmp->childNodes as $node )
             {
-                foreach( $node->childNodes as $node2 )
+                if( $node->nodeType != XML_ELEMENT_NODE )
+                    continue;
+
+                if( $node->nodeName == "recurring" )
                 {
-                    if( $node2->nodeType != XML_ELEMENT_NODE )
-                        continue;
-
-
-
-                    if( $node2->nodeName == "daily" )
+                    foreach( $node->childNodes as $node2 )
                     {
-                        $this->recurring_type = "daily";
+                        if( $node2->nodeType != XML_ELEMENT_NODE )
+                            continue;
 
-                        foreach( $node2->childNodes as $childNode )
+
+                        if( $node2->nodeName == "daily" )
                         {
-                            if( $childNode->nodeType != XML_ELEMENT_NODE )
-                                continue;
+                            $this->recurring_type = "daily";
 
-                            $startEnd = explode( "-", $childNode->textContent );
-                            $tmp = array();
-                            $tmp['start'] = $startEnd[0];
-                            $tmp['end'] = $startEnd[1];
-
-                            $this->recurring_array['daily'][] = $tmp;
-                        }
-                    }
-                    elseif( $node2->nodeName == "weekly" )
-                    {
-                        $this->recurring_type = "weekly";
-
-                        foreach( $node2->childNodes as $childNode )
-                        {
-                            if( $childNode->nodeType != XML_ELEMENT_NODE )
-                                continue;
-
-                            /*
-                            if( $childNode != null )
+                            foreach( $node2->childNodes as $childNode )
                             {
-                                $newdoc = new DOMDocument;
-                                $node = $newdoc->importNode($childNode, true);
-                                $newdoc->appendChild($node);
-                                print $newdoc->saveXML();
-                            }*/
-
-                            foreach( $childNode->childNodes as $member )
-                            {
-                                if( $member->nodeType != XML_ELEMENT_NODE )
+                                if( $childNode->nodeType != XML_ELEMENT_NODE )
                                     continue;
 
-                                $startEnd = explode( "-", $member->textContent );
+                                $startEnd = explode("-", $childNode->textContent);
                                 $tmp = array();
                                 $tmp['start'] = $startEnd[0];
                                 $tmp['end'] = $startEnd[1];
 
-                                $this->recurring_array['weekly'][$childNode->nodeName][] = $tmp;
+                                $this->recurring_array['daily'][] = $tmp;
                             }
-
                         }
+                        elseif( $node2->nodeName == "weekly" )
+                        {
+                            $this->recurring_type = "weekly";
+
+                            foreach( $node2->childNodes as $childNode )
+                            {
+                                if( $childNode->nodeType != XML_ELEMENT_NODE )
+                                    continue;
+
+                                /*
+                                if( $childNode != null )
+                                {
+                                    $newdoc = new DOMDocument;
+                                    $node = $newdoc->importNode($childNode, true);
+                                    $newdoc->appendChild($node);
+                                    print $newdoc->saveXML();
+                                }*/
+
+                                foreach( $childNode->childNodes as $member )
+                                {
+                                    if( $member->nodeType != XML_ELEMENT_NODE )
+                                        continue;
+
+                                    $startEnd = explode("-", $member->textContent);
+                                    $tmp = array();
+                                    $tmp['start'] = $startEnd[0];
+                                    $tmp['end'] = $startEnd[1];
+
+                                    $this->recurring_array['weekly'][$childNode->nodeName][] = $tmp;
+                                }
+
+                            }
+                        }
+                        else
+                            mwarning("recurringType: " . $node2->nodeName . " not supported");
                     }
-                    else
-                        mwarning( "recurringType: ".$node2->nodeName." not supported" );
                 }
-            }
-            elseif( $node->nodeName == "non-recurring" )
-            {
-                $this->recurring_type = "non-recurring";
-
-                foreach( $node->childNodes as $childNode )
+                elseif( $node->nodeName == "non-recurring" )
                 {
-                    if( $childNode->nodeType != XML_ELEMENT_NODE )
-                        continue;
+                    $this->recurring_type = "non-recurring";
 
-                    $startEnd = explode( "-", $childNode->textContent );
-                    $tmp = array();
-                    $tmp['start'] = $startEnd[0];
-                    $tmp['end'] = $startEnd[1];
+                    foreach( $node->childNodes as $childNode )
+                    {
+                        if( $childNode->nodeType != XML_ELEMENT_NODE )
+                            continue;
 
-                    $this->recurring_array['non-recurring'][] = $tmp;
+                        $startEnd = explode("-", $childNode->textContent);
+                        $tmp = array();
+                        $tmp['start'] = $startEnd[0];
+                        $tmp['end'] = $startEnd[1];
+
+                        $this->recurring_array['non-recurring'][] = $tmp;
+                    }
                 }
-            }
-            else
-            {
-                mwarning( "recurringType: ".$node->nodeName." not supported" );
+                else
+                {
+                    mwarning("recurringType: " . $node->nodeName . " not supported");
+                }
             }
         }
     }
