@@ -229,6 +229,80 @@ class Schedule
      * @return bool
      * @throws Exception
      */
+    public function setRecurringDaily($newValue, $rewriteXml = TRUE)
+    {
+        if( !is_string($newValue) )
+            derr('value can be text only');
+
+        //validation needed
+        #if( $newValue == $this->value )
+        #    return FALSE;
+
+        $startEnd = explode("-", $newValue);
+        $tmp = array();
+        $tmp['start'] = $startEnd[0];
+        $tmp['end'] = $startEnd[1];
+
+        $this->recurring_array['daily'][] = $tmp;
+
+        if( $rewriteXml )
+        {
+            $valueRoot = DH::findFirstElementOrCreate("schedule-type", $this->xmlroot);
+            $valueRoot = DH::findFirstElementOrCreate("recurring", $valueRoot);
+            $valueRoot = DH::findFirstElementOrCreate("daily", $valueRoot);
+            foreach( $this->recurring_array['daily'] as $entry )
+            {
+                DH::createElement($valueRoot, 'member', $entry['start']."-".$entry['end']);
+            }
+        }
+
+        return TRUE;
+    }
+
+    /**
+     * @param string $newValue
+     * @param bool $rewriteXml
+     * @return bool
+     * @throws Exception
+     */
+    public function setRecurringWeekly( $day, $newValue, $rewriteXml = TRUE)
+    {
+        if( !is_string($newValue) )
+            derr('value can be text only');
+
+        //validation needed
+        #if( $newValue == $this->value )
+        #    return FALSE;
+
+        $startEnd = explode("-", $newValue);
+        $tmp = array();
+        $tmp['start'] = $startEnd[0];
+        $tmp['end'] = $startEnd[1];
+
+        $this->recurring_array['weekly'][$day][] = $tmp;
+
+        if( $rewriteXml )
+        {
+            $valueRoot = DH::findFirstElementOrCreate("schedule-type", $this->xmlroot);
+            $valueRoot = DH::findFirstElementOrCreate("recurring", $valueRoot);
+            $valueRoot = DH::findFirstElementOrCreate("weekly", $valueRoot);
+            $valueRoot = DH::findFirstElementOrCreate($day, $valueRoot);
+            foreach( $this->recurring_array['weekly'][$day] as $entry )
+            {
+                DH::createElement($valueRoot, 'member', $entry['start']."-".$entry['end']);
+            }
+        }
+
+        return TRUE;
+    }
+
+
+    /**
+     * @param string $newValue
+     * @param bool $rewriteXml
+     * @return bool
+     * @throws Exception
+     */
     public function setNonRecurring($newValue, $rewriteXml = TRUE)
     {
         if( !is_string($newValue) )
