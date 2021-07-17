@@ -20,16 +20,6 @@ class FileBlockingProfileStore
     public $owner;
 
 
-    public $ftp = array();
-    public $http = array();
-    public $imap = array();
-    public $pop3 = array();
-    public $smb = array();
-    public $smtp = array();
-
-
-    public $tmp_virus_prof_array = array('ftp', 'http', 'imap', 'pop3', 'smb', 'smtp');
-
 
     /**
      * you should not need this one for normal use

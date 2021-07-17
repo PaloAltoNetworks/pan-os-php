@@ -109,6 +109,9 @@ class PANConf
     public $FileBlockingProfileStore = null;
 
     /** @var SecurityProfileStore */
+    public $DataFilteringProfileStore = null;
+
+    /** @var SecurityProfileStore */
     public $WildfireProfileStore = null;
 
 
@@ -180,6 +183,9 @@ class PANConf
 
         $this->FileBlockingProfileStore = new SecurityProfileStore($this, "FileBlockingProfileStore");
         $this->FileBlockingProfileStore->name = 'FileBlocking';
+
+        $this->DataFilteringProfileStore = new SecurityProfileStore($this, "DataFilteringProfileStore");
+        $this->DataFilteringProfileStore->name = 'DataFiltering';
 
         $this->WildfireProfileStore = new SecurityProfileStore($this, "WildfireProfileStore");
         $this->WildfireProfileStore->name = 'WildFire';
@@ -405,6 +411,17 @@ class PANConf
                     #$tmprulesroot = DH::findFirstElement('rules', $tmproot);
                     #if( $tmprulesroot !== FALSE )
                     $this->FileBlockingProfileStore->load_from_domxml($tmproot);
+                }
+
+                //
+                // DataFiltering Profile extraction
+                //
+                $tmproot = DH::findFirstElement('data-filtering', $this->securityProfilebaseroot);
+                if( $tmproot !== FALSE )
+                {
+                    #$tmprulesroot = DH::findFirstElement('rules', $tmproot);
+                    #if( $tmprulesroot !== FALSE )
+                    $this->DataFilteringProfileStore->load_from_domxml($tmproot);
                 }
 
                 //

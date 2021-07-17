@@ -9,19 +9,22 @@ UTILS:
 * pa_schedule-edit - class Schedule | introduce method setNonRecurring
 * pa_schedule-edit - class Schedule | introduce methode setRecurringDaily and setRecurringWeekly
 * pa_device-edit | introduce actions=displayreferences
+* pa_securityprofile-edit - added support for data-filtering
 
 BUGFIX:
 * class Schedule/ScheduleStore - bugfix to create new schedule objects
 
 GENERAL:
 * introduce class LogCollectorGroup - benefit for pa_device-edit devicetype=manageddevice actions=displayreferences
+* introduce SecurityProfile data-filtering class DataFilteringProfileStore - support on FW and Panorama and there for vsys/DG and also on shared level
+
 
 2.0.6 (202107212)
 UTILS:
 * pa_zone-edit | introduce filter=(logprof is.set) and (logprof is XYZ) | actions=exportToExcel
 * pa_device-edit | introduce actions=template-add:TEMPLATENAME for devicetype=templatestack | introduce filter=(name eq DEVICENAME)
-* introduce new script pan_config-size - to display the specific parts of the config which used the most config size
-* introduce new script pa_securityprofilegroup-edit
+* pan_config-size - introduce new script  - to display the specific parts of the config which used the most config size
+* pa_securityprofilegroup-edit - introduce new script
 
 BUGFIX:
 * pa_diff | bugfix to find also changes within existing config like adding rule to/from/source/destination member
