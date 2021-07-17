@@ -214,6 +214,7 @@ require_once $basedir . '/object-classes/AntiVirusProfileStore.php';
 require_once $basedir . '/object-classes/VulnerabilityProfileStore.php';
 require_once $basedir . '/object-classes/AntiSpywareProfileStore.php';
 require_once $basedir . '/object-classes/FileBlockingProfileStore.php';
+require_once $basedir . '/object-classes/DataFilteringProfileStore.php';
 require_once $basedir . '/object-classes/WildfireProfileStore.php';
 require_once $basedir . '/object-classes/customURLProfileStore.php';
 require_once $basedir . '/object-classes/PredefinedSecurityProfileURL.php';

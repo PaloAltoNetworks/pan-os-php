@@ -27,7 +27,7 @@ class SecurityProfileStore extends ObjStore
 
     public static $childn = 'SecurityProfile';
 
-    private $secprof_array = array('virus', 'spyware', 'vulnerability', 'file-blocking', 'wildfire-analysis', 'url-filtering', 'custom-url-category', 'predefined-url');
+    private $secprof_array = array('virus', 'spyware', 'vulnerability', 'file-blocking', 'wildfire-analysis', 'url-filtering', 'custom-url-category', 'predefined-url', 'data-filtering');
     private $secprof_fawkes_array = array('virus-and-wildfire-analysis', 'spyware', 'vulnerability', 'file-blocking', 'dns-security', 'url-filtering', 'custom-url-category', 'predefined-url');
     /** @var DOMElement */
     public $securityProfileRoot;
@@ -93,7 +93,7 @@ $this->customURLProfileStore = new SecurityProfileStore($this, "customURLProfile
         'VulnerabilityProfileStore' => array('name' => 'Vulnerability', 'varName' => 'fbSecProf', 'xpathRoot' => 'vulnerability'),
         'FileBlockingProfileStore' => array('name' => 'FileBlocking', 'varName' => 'fbSecProf', 'xpathRoot' => 'file-blocking'),
         'WildfireProfileStore' => array('name' => 'Wildfire', 'varName' => 'wfSecProf', 'xpathRoot' => 'wildfire-analysis'),
-        'DataFilteringProfileStore' => array('name' => 'Data-Filtering', 'varName' => 'dfSecProf', 'xpathRoot' => 'XYZ'),
+        'DataFilteringProfileStore' => array('name' => 'DataFiltering', 'varName' => 'dfSecProf', 'xpathRoot' => 'data-filtering'),
         'DoSProtectionProfileStore' => array('name' => 'DoSProtection', 'varName' => 'dosSecProf', 'xpathRoot' => 'XYZ'),
 
         'customURLProfileStore' => array('name' => 'customURL', 'varName' => 'customUrlSecProf', 'xpathRoot' => 'custom-url-category'),
