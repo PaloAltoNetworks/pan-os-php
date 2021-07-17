@@ -209,22 +209,22 @@ require_once $basedir . '/object-classes/SecurityProfileStore.php';
 require_once $basedir . '/object-classes/SecurityProfileGroupStore.php';
 require_once $basedir . '/object-classes/SecurityProfileGroup.php';
 require_once $basedir . '/object-classes/SecurityProfile.php';
-require_once $basedir . '/object-classes/URLProfileStore.php';
-require_once $basedir . '/object-classes/AntiVirusProfileStore.php';
-require_once $basedir . '/object-classes/VulnerabilityProfileStore.php';
-require_once $basedir . '/object-classes/AntiSpywareProfileStore.php';
-require_once $basedir . '/object-classes/FileBlockingProfileStore.php';
-require_once $basedir . '/object-classes/DataFilteringProfileStore.php';
-require_once $basedir . '/object-classes/WildfireProfileStore.php';
-require_once $basedir . '/object-classes/customURLProfileStore.php';
+require_once $basedir . '/object-classes/URLProfile.php';
+require_once $basedir . '/object-classes/AntiVirusProfile.php';
+require_once $basedir . '/object-classes/VulnerabilityProfile.php';
+require_once $basedir . '/object-classes/AntiSpywareProfile.php';
+require_once $basedir . '/object-classes/FileBlockingProfile.php';
+require_once $basedir . '/object-classes/DataFilteringProfile.php';
+require_once $basedir . '/object-classes/WildfireProfile.php';
+require_once $basedir . '/object-classes/customURLProfile.php';
 require_once $basedir . '/object-classes/PredefinedSecurityProfileURL.php';
 
-require_once $basedir . '/object-classes/VirusAndWildfireProfileStore.php';
-require_once $basedir . '/object-classes/DNSSecurityProfileStore.php';
+require_once $basedir . '/object-classes/VirusAndWildfireProfile.php';
+require_once $basedir . '/object-classes/DNSSecurityProfile.php';
 
-require_once $basedir . '/object-classes/DecryptionProfileStore.php';
-require_once $basedir . '/object-classes/HipObjectsProfileStore.php';
-require_once $basedir . '/object-classes/HipProfilesProfileStore.php';
+require_once $basedir . '/object-classes/DecryptionProfile.php';
+require_once $basedir . '/object-classes/HipObjectsProfile.php';
+require_once $basedir . '/object-classes/HipProfilesProfile.php';
 
 require_once $basedir . '/device-and-system-classes/VirtualSystem.php';
 require_once $basedir . '/device-and-system-classes/PANConf.php';

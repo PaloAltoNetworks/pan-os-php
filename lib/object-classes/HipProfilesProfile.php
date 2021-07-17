@@ -19,7 +19,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-class DecryptionProfileStore
+class HipProfilesProfile
 {
     use ReferenceableObject;
     use PathableName;
@@ -114,10 +114,10 @@ class DecryptionProfileStore
 
         $this->name = DH::findAttribute('name', $xml);
         if( $this->name === FALSE )
-            derr("DecryptionProfileStore name not found\n", $xml);
+            derr("HipProfiles name not found\n", $xml);
 
         if( strlen($this->name) < 1 )
-            derr("DecryptionProfileStore name '" . $this->name . "' is not valid.", $xml);
+            derr("HipProfiles name '" . $this->name . "' is not valid.", $xml);
 
         return TRUE;
     }

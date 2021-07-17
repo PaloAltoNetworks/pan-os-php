@@ -4,7 +4,7 @@
 /**
  * @property $_ip4Map IP4Map cached ip start and end value for fast optimization
  */
-class URLProfileStore
+class URLProfile
 {
     use ReferenceableObject;
     use PathableName;

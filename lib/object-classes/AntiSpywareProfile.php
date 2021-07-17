@@ -4,7 +4,7 @@
 /**
  * @property $_ip4Map IP4Map cached ip start and end value for fast optimization
  */
-class VirusAndWildfireProfileStore
+class AntiSpywareProfile
 {
     use ReferenceableObject;
     use PathableName;
@@ -82,12 +82,12 @@ class VirusAndWildfireProfileStore
      */
     public function load_from_domxml(DOMElement $xml)
     {
-        $secprof_type = "virus-and-wildfire-analysis";
+        $secprof_type = "spyware";
         $this->xmlroot = $xml;
 
         $this->name = DH::findAttribute('name', $xml);
         if( $this->name === FALSE )
-            derr("VirusAndWildFire SecurityProfile name not found\n");
+            derr("Spyware SecurityProfile name not found\n");
 
         #print "\nsecprofURL TMP: object named '".$this->name."' found\n";
 
@@ -98,55 +98,6 @@ class VirusAndWildfireProfileStore
 
         //predefined URL category
         //$tmp_array[$secprof_type][$typeName]['allow']['URL category'] = all predefined URL category
-
-        $tmp_decoder = DH::findFirstElement('decoder', $xml);
-        if( $tmp_decoder !== FALSE )
-        {
-            $tmp_array = array();
-
-            foreach( $tmp_decoder->childNodes as $tmp_entry )
-            {
-                if( $tmp_entry->nodeType != XML_ELEMENT_NODE )
-                    continue;
-
-
-                $appName = DH::findAttribute('name', $tmp_entry);
-                if( $appName === FALSE )
-                    derr("secprof name not found\n");
-
-
-                #$tmp_array['virus'][$this->name][$appName] = array();
-
-                $action = DH::findFirstElement('action', $tmp_entry);
-                if( $action !== FALSE )
-                {
-                    #$tmp_array['virus'][$this->name][$appName]['action'] = $action->textContent;
-                    #$this->$appName['action'] = $action->textContent;
-                }
-                else
-                {
-                    #$this->$appName['action'] = " -- NOT SET -- ";
-                    //Todo: if not, set default???
-                }
-
-
-                $action_wildfire = DH::findFirstElement('wildfire-action', $tmp_entry);
-                if( $action_wildfire !== FALSE )
-                {
-                    #$tmp_array['virus'][$this->name][$appName]['wildfire-action'] = $action_wildfire->textContent;
-                    #$this->$appName['wildfire-action'] = $action_wildfire->textContent;
-                }
-                else
-                {
-                    #$this->$appName['wildfire-action'] = " -- NOT SET -- ";
-                    //Todo: if not, set default???
-                }
-
-
-            }
-
-            #print_r( $tmp_array );
-        }
 
 
         $tmp_rule = DH::findFirstElement('rules', $xml);
@@ -237,7 +188,6 @@ class VirusAndWildfireProfileStore
                 }
             }
         }
-
 
         $tmp_threat_exception = DH::findFirstElement('threat-exception', $xml);
         if( $tmp_threat_exception !== FALSE )
