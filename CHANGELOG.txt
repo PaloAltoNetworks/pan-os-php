@@ -1,6 +1,14 @@
 CHANGELOG
 
-2.0.7
+2.0.8
+UTILS:
+
+BUGFIX:
+
+GENERAL:
+
+
+2.0.7 (20210717)
 UTILS:
 * pa_securityprofilegroup-edit | new actions=securityProfile-Set and securityProfile-Remove - new filters: * secprof: as-profile.is, as-profile.is.set, av-profile.is, av-profile.is.set, data-profile.is, data-profile.is.set, file-profile.is, file-profile.is.set, url-profile.is, url-profile.is.set, vuln-profile.is, vuln-profile.is.set, wf-profile.is, wf-profile.is.set
 * introduce new script pa_application-edit; with different filters
