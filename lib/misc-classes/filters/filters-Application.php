@@ -70,7 +70,7 @@ RQuery::$defaultFilters['application']['characteristic']['operators']['has'] = a
 
 RQuery::$defaultFilters['application']['object']['operators']['is.predefined'] = array(
     'Function' => function (ApplicationRQueryContext $context) {
-        if( $context->object->type == "predefined" )
+        if( $context->object->isPredefined() )
             return TRUE;
 
         return FALSE;
@@ -83,7 +83,7 @@ RQuery::$defaultFilters['application']['object']['operators']['is.predefined'] =
 );
 RQuery::$defaultFilters['application']['object']['operators']['is.application-group'] = array(
     'Function' => function (ApplicationRQueryContext $context) {
-        if( $context->object->type == "application-group" )
+        if( $context->object->isApplicationGroup() )
             return TRUE;
 
         return FALSE;
@@ -96,7 +96,7 @@ RQuery::$defaultFilters['application']['object']['operators']['is.application-gr
 );
 RQuery::$defaultFilters['application']['object']['operators']['is.application-filter'] = array(
     'Function' => function (ApplicationRQueryContext $context) {
-        if( $context->object->type == "application-filter" )
+        if( $context->object->isApplicationFilter() )
             return TRUE;
 
         return FALSE;
@@ -109,7 +109,7 @@ RQuery::$defaultFilters['application']['object']['operators']['is.application-fi
 );
 RQuery::$defaultFilters['application']['object']['operators']['is.application-custom'] = array(
     'Function' => function (ApplicationRQueryContext $context) {
-        if( $context->object->type == "application-custom" )
+        if( $context->object->isApplicationCustom() )
             return TRUE;
 
         return FALSE;
@@ -122,7 +122,20 @@ RQuery::$defaultFilters['application']['object']['operators']['is.application-cu
 );
 RQuery::$defaultFilters['application']['object']['operators']['is.tmp'] = array(
     'Function' => function (ApplicationRQueryContext $context) {
-        if( $context->object->type == "tmp" )
+        if( $context->object->isTmp() )
+            return TRUE;
+
+        return FALSE;
+    },
+    'arg' => FALSE,
+    'ci' => array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['application']['object']['operators']['is.container'] = array(
+    'Function' => function (ApplicationRQueryContext $context) {
+        if( $context->object->isContainer() )
             return TRUE;
 
         return FALSE;
