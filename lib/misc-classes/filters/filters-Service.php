@@ -422,7 +422,10 @@ RQuery::$defaultFilters['service']['location']['operators']['is.parent.of'] = ar
             $sub = $sub->owner;
 
         if( get_class($sub) == "PANConf" )
-            derr("filter location is.parent.of is not working against a firewall configuration");
+        {
+            print "ERROR: filter location is.child.of is not working against a firewall configuration";
+            return FALSE;
+        }
 
         if( strtolower($context->value) == 'shared' )
             return TRUE;
