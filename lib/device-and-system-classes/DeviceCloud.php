@@ -169,7 +169,9 @@ class DeviceCloud
         #$this->importedInterfaces = new InterfaceContainer($this, $owner->network);
         #$this->importedVirtualRouter = new VirtualRouterContainer($this, $owner->network);
 
-        $this->appStore = $owner->appStore;
+        #$this->appStore = $owner->appStore;
+        $this->appStore = new AppStore($this);
+        $this->appStore->name = 'customApplication';
 
         $this->zoneStore = new ZoneStore($this);
         $this->zoneStore->setName('zoneStore');
@@ -303,6 +305,9 @@ class DeviceCloud
                 $this->addressStore->parentCentralStore = $parentContainer->addressStore;
                 $this->serviceStore->parentCentralStore = $parentContainer->serviceStore;
                 $this->tagStore->parentCentralStore = $parentContainer->tagStore;
+                $this->scheduleStore->parentCentralStore = $parentContainer->scheduleStore;
+                $this->appStore->parentCentralStore = $parentContainer->appStore;
+                $this->securityProfileGroupStore->parentCentralStore = $parentContainer->securityProfileGroupStore;
                 //Todo: swaschkut 20210505 - check if other Stores must be added
                 //- appStore;scheduleStore/securityProfileGroupStore/all kind of SecurityProfile
             }

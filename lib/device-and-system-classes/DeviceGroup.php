@@ -155,7 +155,11 @@ class DeviceGroup
         $this->tagStore->name = 'tags';
 
         $this->zoneStore = $owner->zoneStore;
-        $this->appStore = $owner->appStore;
+
+        //this is not working correctly - each DG has its own appstore
+        #$this->appStore = $owner->appStore;
+        $this->appStore = new AppStore($this);
+        $this->appStore->name = 'customApplication';
 
         $this->serviceStore = new ServiceStore($this);
         $this->serviceStore->name = 'services';
@@ -710,6 +714,7 @@ class DeviceGroup
         $this->serviceStore->nestedPointOfView();
         $this->tagStore->nestedPointOfView();
         $this->scheduleStore->nestedPointOfView();
+        $this->appStore->nestedPointOfView();
 
     }
 

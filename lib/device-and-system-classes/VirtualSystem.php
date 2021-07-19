@@ -149,7 +149,11 @@ class VirtualSystem
         $this->importedInterfaces = new InterfaceContainer($this, $owner->network);
         $this->importedVirtualRouter = new VirtualRouterContainer($this, $owner->network);
 
-        $this->appStore = $owner->appStore;
+
+        #$this->appStore = $owner->appStore;
+        $this->appStore = new AppStore($this);
+        $this->appStore->name = 'customApplication';
+
 
         $this->zoneStore = new ZoneStore($this);
         $this->zoneStore->setName('zoneStore');

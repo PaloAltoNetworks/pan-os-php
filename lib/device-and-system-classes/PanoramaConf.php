@@ -198,7 +198,7 @@ class PanoramaConf
         $this->zoneStore = new ZoneStore($this);
         $this->zoneStore->setName('zoneStore');
 
-        $this->appStore = AppStore::getPredefinedStore();
+        $this->appStore = AppStore::getPredefinedStore( $this );
 
         $this->urlStore = SecurityProfileStore::getPredefinedStore();
 
@@ -939,6 +939,8 @@ class PanoramaConf
                         $ldv->serviceStore->parentCentralStore = $parentDG->serviceStore;
                         $ldv->tagStore->parentCentralStore = $parentDG->tagStore;
                         $ldv->scheduleStore->parentCentralStore = $parentDG->scheduleStore;
+                        $ldv->appStore->parentCentralStore = $parentDG->appStore;
+                        $ldv->securityProfileGroupStore->parentCentralStore = $parentDG->securityProfileGroupStore;
                         //Todo: swaschkut 20210505 - check if other Stores must be added
                         //- appStore;scheduleStore/securityProfileGroupStore/all kind of SecurityProfile
                     }
@@ -1456,6 +1458,8 @@ class PanoramaConf
                 $newDG->serviceStore->parentCentralStore = $parentDG->serviceStore;
                 $newDG->tagStore->parentCentralStore = $parentDG->tagStore;
                 $newDG->scheduleStore->parentCentralStore = $parentDG->scheduleStore;
+                $newDG->appStore->parentCentralStore = $parentDG->appStore;
+                $newDG->securityProfileGroupStore->parentCentralStore = $parentDG->securityProfileGroupStore;
                 //Todo: swaschkut 20210505 - check if other Stores must be added
                 //- appStore;scheduleStore/securityProfileGroupStore/all kind of SecurityProfile
             }

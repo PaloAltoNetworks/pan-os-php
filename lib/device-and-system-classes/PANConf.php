@@ -154,7 +154,7 @@ class PANConf
         $this->tagStore = new TagStore($this);
         $this->tagStore->setName('tagStore');
 
-        $this->appStore = AppStore::getPredefinedStore();
+        $this->appStore = AppStore::getPredefinedStore( $this );
 
         $this->urlStore = SecurityProfileStore::getPredefinedStore();
 
