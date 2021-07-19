@@ -1,7 +1,7 @@
 <?php
 
 // <editor-fold desc=" ***** SecProfGroup filters *****" defaultstate="collapsed" >
-RQuery::$defaultFilters['securityprofilegroupgroup']['refcount']['operators']['>,<,=,!'] = array(
+RQuery::$defaultFilters['securityprofilegroup']['refcount']['operators']['>,<,=,!'] = array(
     'eval' => '$object->countReferences() !operator! !value!',
     'arg' => TRUE,
     'ci' => array(

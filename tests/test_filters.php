@@ -124,6 +124,11 @@ foreach( RQuery::$defaultFilters as $type => &$filtersByField )
                 echo "******* SKIPPED for now *******\n";
                 continue;
             }
+            elseif( $type == 'securityprofilegroup' )
+            {
+                echo "******* SKIPPED for now *******\n";
+                continue;
+            }
             elseif( $type == 'app' )
             {
                 echo "******* SKIPPED for now *******\n";
@@ -138,7 +143,7 @@ foreach( RQuery::$defaultFilters as $type => &$filtersByField )
                 echo "******* SKIPPED for now *******\n";
                 continue;
             }
-            elseif( $type == 'virtual-wire' )
+            elseif( $type == 'virtualwire' )
             {
                 echo "******* SKIPPED for now *******\n";
                 continue;
