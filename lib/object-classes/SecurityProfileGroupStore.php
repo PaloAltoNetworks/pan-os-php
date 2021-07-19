@@ -14,7 +14,7 @@ class SecurityProfileGroupStore extends ObjStore
     public $name = 'temporaryname';
 
     /** @var null|SecurityProfileGroupStore */
-    protected $parentCentralStore = null;
+    public $parentCentralStore = null;
 
     public static $childn = 'SecurityProfileGroup';
 

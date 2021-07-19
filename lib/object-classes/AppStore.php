@@ -45,12 +45,12 @@ class AppStore extends ObjStore
     /**
      * @return AppStore|null
      */
-    public static function getPredefinedStore()
+    public static function getPredefinedStore( $owner )
     {
         if( self::$predefinedStore !== null )
             return self::$predefinedStore;
 
-        self::$predefinedStore = new AppStore(null);
+        self::$predefinedStore = new AppStore( $owner );
         self::$predefinedStore->setName('predefined Apps');
         self::$predefinedStore->load_from_predefinedfile();
 
@@ -63,9 +63,18 @@ class AppStore extends ObjStore
         $this->classn = &self::$childn;
 
         $this->owner = $owner;
-        $this->o = &$this->apps;
+        #$this->o = &$this->apps;
+        $this->o = array();
 
-        $this->findParentCentralStore();
+
+        if( isset($owner->parentDeviceGroup) && $owner->parentDeviceGroup !== null )
+            $this->parentCentralStore = $owner->parentDeviceGroup->appStore;
+        elseif( isset($owner->parentContainer) && $owner->parentContainer !== null )
+        {
+            $this->parentCentralStore = $owner->parentContainer->appStore;
+        }
+        else
+            $this->findParentCentralStore();
     }
 
     /**
@@ -73,19 +82,29 @@ class AppStore extends ObjStore
      * @param $ref
      * @return null|App
      */
-    public function find($name, $ref = null)
+    public function find($name, $ref = null, $nested = TRUE )
     {
-        return $this->findByName($name, $ref);
-    }
-
-    /**
-     * @param $name string
-     * @param $ref
-     * @return null|App
-     */
-    public function findorCreate($name, $ref = null)
-    {
+        if( $name == "customSven" )
+            print "|".$this->toString()."\n";
         $f = $this->findByName($name, $ref);
+        if( $f !== null )
+            return $f;
+
+        if( $nested && $this->parentCentralStore )
+            return $this->parentCentralStore->find($name, $ref, $nested);
+
+        return null;
+    }
+
+    /**
+     * @param $name string
+     * @param $ref
+     * @return null|App
+     */
+    public function findorCreate($name, $ref = null, $nested = TRUE)
+    {
+        #$f = $this->findByName($name, $ref, $nested);
+        $f = $this->find($name, $ref, $nested);
 
         if( $f !== null )
             return $f;
@@ -114,25 +133,69 @@ class AppStore extends ObjStore
     {
         $this->parentCentralStore = null;
 
-        if( $this->owner )
+        $cur = $this->owner;
+        while( isset($cur->owner) && $cur->owner !== null )
         {
-            $curo = $this;
-            while( isset($curo->owner) && $curo->owner !== null )
+            $ref = $cur->owner;
+            if( isset($ref->appStore) &&
+                $ref->appStore !== null )
             {
-
-                if( isset($curo->owner->appStore) &&
-                    $curo->owner->appStore !== null )
-                {
-                    $this->parentCentralStore = $curo->owner->appStore;
-                    //print $this->toString()." : found a parent central store: ".$parentCentralStore->toString()."\n";
-                    return;
-                }
-                $curo = $curo->owner;
+                $this->parentCentralStore = $ref->appStore;
+                #print $this->toString()." : found a parent central store: ".$this->parentCentralStore->toString()."\n";
+                return;
             }
+            $cur = $ref;
         }
-
         //print $this->toString().": no parent store found\n";
 
+    }
+
+    /**
+     * @return App[]
+     */
+    public function nestedPointOfView()
+    {
+        $current = $this;
+
+        $objects = array();
+
+        while( TRUE )
+        {
+            if( get_class( $current->owner ) == "PanoramaConf" )
+                $location = "shared";
+            else
+                $location = $current->owner->name();
+
+            foreach( $current->o as $o )
+            {
+                if( !isset($objects[$o->name()]) )
+                    $objects[$o->name()] = $o;
+                else
+                {
+                    $tmp_o = &$objects[ $o->name() ];
+                    $tmp_ref_count = $tmp_o->countReferences();
+
+                    if( $tmp_ref_count == 0 )
+                    {
+                        //Todo: check if object value is same; if same to not add ref
+                        if( $location != "shared" )
+                            foreach( $o->refrules as $ref )
+                                $tmp_o->addReference( $ref );
+                    }
+                }
+            }
+
+            if( isset($current->owner->parentDeviceGroup) && $current->owner->parentDeviceGroup !== null )
+                $current = $current->owner->parentDeviceGroup->appStore;
+            elseif( isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
+                $current = $current->owner->parentContainer->appStore;
+            elseif( isset($current->owner->owner) && $current->owner->owner !== null && !$current->owner->owner->isFawkes() )
+                $current = $current->owner->owner->appStore;
+            else
+                break;
+        }
+
+        return $objects;
     }
 
     public function load_from_domxml(DOMElement $xml)

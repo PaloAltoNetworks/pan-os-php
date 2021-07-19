@@ -66,7 +66,7 @@ class ObjStore
         return $this->name;
     }
 
-    protected function findByName($name, $ref = null)
+    protected function findByName($name, $ref = null, $nested = TRUE)
     {
         if( isset($this->nameIndex[$name]) )
         {
@@ -74,6 +74,13 @@ class ObjStore
             if( $ref !== null )
                 $o->addReference($ref);
             return $o;
+        }
+
+        if( $nested && $this->parentCentralStore )
+        {
+            $f = $this->parentCentralStore->findbyName($name, $ref, $nested);
+            if( $f !== null )
+                return $f;
         }
 
         return null;

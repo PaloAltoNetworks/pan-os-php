@@ -238,7 +238,7 @@ class App
         return $ret;
     }
 
-    public function isCustom()
+    public function isApplicationCustom()
     {
         if( $this->type == 'application-custom' )
             return TRUE;
@@ -246,9 +246,46 @@ class App
         return FALSE;
     }
 
+    public function isApplicationGroup()
+    {
+        if( $this->type == 'application-group' )
+            return TRUE;
+
+        return FALSE;
+    }
+
+    public function isApplicationFilter()
+    {
+        if( $this->type == 'application-filter' )
+            return TRUE;
+
+        return FALSE;
+    }
+
+    public function isTmp()
+    {
+        if( $this->type == 'tmp' )
+            return TRUE;
+
+        return FALSE;
+    }
+
+    public function isPredefined()
+    {
+        if( $this->type == 'predefined' )
+            return TRUE;
+
+        return FALSE;
+    }
+
+    public function type()
+    {
+        return $this->type;
+    }
+
     public function CustomHasSignature()
     {
-        if( $this->isCustom() )
+        if( $this->isApplicationCustom() )
             if( $this->custom_signature )
                 return TRUE;
 

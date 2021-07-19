@@ -21,7 +21,7 @@
 
 /**
  * Class UrlCategoryRuleContainer
- * @property customURLProfileStore[]|URLProfileStore[] $o
+ * @property customURLProfile[]|URLProfile[] $o
  * @property Rule|SecurityRule $owner
  *
  */
@@ -43,7 +43,7 @@ class UrlCategoryRuleContainer extends ObjRuleContainer
 
 
     /**
-     * @param customURLProfileStore|URLProfileStore $Obj
+     * @param customURLProfile|URLProfile $Obj
      * @param bool $rewriteXml
      * @return bool
      */
@@ -61,7 +61,7 @@ class UrlCategoryRuleContainer extends ObjRuleContainer
     }
 
     /**
-     * @param customURLProfileStore|URLProfileStore $Obj
+     * @param customURLProfile|URLProfile $Obj
      * @param bool $rewritexml
      * @return bool
      */
@@ -84,7 +84,7 @@ class UrlCategoryRuleContainer extends ObjRuleContainer
 
 
     /**
-     * @param customURLProfileStore|URLProfileStore $Obj
+     * @param customURLProfile|URLProfile $Obj
      * @param bool $rewriteXml
      * @param bool $forceAny
      *
@@ -110,7 +110,7 @@ class UrlCategoryRuleContainer extends ObjRuleContainer
     }
 
     /**
-     * @param customURLProfileStore|URLProfileStore $Obj
+     * @param customURLProfile|URLProfile $Obj
      * @param bool $rewriteXml
      * @param bool $forceAny
      * @return bool
@@ -142,7 +142,7 @@ class UrlCategoryRuleContainer extends ObjRuleContainer
 
 
     /**
-     * @param customURLProfileStore|URLProfileStore|string $object can be customURLProfileStore|URLProfileStore object or object name (string)
+     * @param customURLProfile|URLProfile|string $object can be customURLProfileStore|URLProfileStore object or object name (string)
      * @return bool
      */
     public function has($object, $caseSensitive = TRUE)
@@ -153,7 +153,7 @@ class UrlCategoryRuleContainer extends ObjRuleContainer
 
     /**
      * return an array with all objects
-     * @return customURLProfileStore[]|URLProfileStore[]
+     * @return customURLProfile[]|URLProfile[]
      */
     public function members()
     {
@@ -162,7 +162,7 @@ class UrlCategoryRuleContainer extends ObjRuleContainer
 
     /**
      * return an array with all objects
-     * @return customURLProfileStore[]|URLProfileStore[]
+     * @return customURLProfile[]|URLProfile[]
      */
     public function all()
     {
@@ -364,7 +364,7 @@ class UrlCategoryRuleContainer extends ObjRuleContainer
 
 
     /**
-     * @param customURLProfileStore|URLProfileStore
+     * @param customURLProfile|URLProfile
      * @param bool $anyIsAcceptable
      * @return bool
      */
@@ -468,7 +468,7 @@ class UrlCategoryRuleContainer extends ObjRuleContainer
     }
 
     /**
-     * @return customURLProfileStore[]|URLProfileStore[]
+     * @return customURLProfile[]|URLProfile[]
      */
     public function &membersExpanded($keepGroupsInList = FALSE)
     {

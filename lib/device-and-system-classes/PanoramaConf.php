@@ -198,7 +198,7 @@ class PanoramaConf
         $this->zoneStore = new ZoneStore($this);
         $this->zoneStore->setName('zoneStore');
 
-        $this->appStore = AppStore::getPredefinedStore();
+        $this->appStore = AppStore::getPredefinedStore( $this );
 
         $this->urlStore = SecurityProfileStore::getPredefinedStore();
 
@@ -209,29 +209,29 @@ class PanoramaConf
         $this->addressStore->name = 'addresses';
 
 
-        $this->customURLProfileStore = new SecurityProfileStore($this, "customURLProfileStore");
+        $this->customURLProfileStore = new SecurityProfileStore($this, "customURLProfile");
         $this->customURLProfileStore->name = 'CustomURL';
 
-        $this->URLProfileStore = new SecurityProfileStore($this, "URLProfileStore");
+        $this->URLProfileStore = new SecurityProfileStore($this, "URLProfile");
         $this->URLProfileStore->name = 'URL';
 
-        $this->AntiVirusProfileStore = new SecurityProfileStore($this, "AntiVirusProfileStore");
+        $this->AntiVirusProfileStore = new SecurityProfileStore($this, "AntiVirusProfile");
         $this->AntiVirusProfileStore->name = 'AntiVirus';
 
 
-        $this->VulnerabilityProfileStore = new SecurityProfileStore($this, "VulnerabilityProfileStore");
+        $this->VulnerabilityProfileStore = new SecurityProfileStore($this, "VulnerabilityProfile");
         $this->VulnerabilityProfileStore->name = 'Vulnerability';
 
-        $this->AntiSpywareProfileStore = new SecurityProfileStore($this, "AntiSpywareProfileStore");
+        $this->AntiSpywareProfileStore = new SecurityProfileStore($this, "AntiSpywareProfile");
         $this->AntiSpywareProfileStore->name = 'AntiSpyware';
 
-        $this->FileBlockingProfileStore = new SecurityProfileStore($this, "FileBlockingProfileStore");
+        $this->FileBlockingProfileStore = new SecurityProfileStore($this, "FileBlockingProfile");
         $this->FileBlockingProfileStore->name = 'FileBlocking';
 
-        $this->DataFilteringProfileStore = new SecurityProfileStore($this, "DataFilteringProfileStore");
+        $this->DataFilteringProfileStore = new SecurityProfileStore($this, "DataFilteringProfile");
         $this->DataFilteringProfileStore->name = 'DataFiltering';
 
-        $this->WildfireProfileStore = new SecurityProfileStore($this, "WildfireProfileStore");
+        $this->WildfireProfileStore = new SecurityProfileStore($this, "WildfireProfile");
         $this->WildfireProfileStore->name = 'WildFire';
 
 
@@ -239,13 +239,13 @@ class PanoramaConf
         $this->securityProfileGroupStore->name = 'SecurityProfileGroups';
 
 
-        $this->DecryptionProfileStore = new SecurityProfileStore($this, "DecryptionProfileStore");
+        $this->DecryptionProfileStore = new SecurityProfileStore($this, "DecryptionProfile");
         $this->DecryptionProfileStore->name = 'Decryption';
 
-        $this->HipObjectsProfileStore = new SecurityProfileStore($this, "HipObjectsProfileStore");
+        $this->HipObjectsProfileStore = new SecurityProfileStore($this, "HipObjectsProfile");
         $this->HipObjectsProfileStore->name = 'HipObjects';
 
-        $this->HipProfilesProfileStore = new SecurityProfileStore($this, "HipProfilesProfileStore");
+        $this->HipProfilesProfileStore = new SecurityProfileStore($this, "HipProfilesProfile");
         $this->HipProfilesProfileStore->name = 'HipProfiles';
 
         $this->scheduleStore = new ScheduleStore($this);
@@ -939,6 +939,8 @@ class PanoramaConf
                         $ldv->serviceStore->parentCentralStore = $parentDG->serviceStore;
                         $ldv->tagStore->parentCentralStore = $parentDG->tagStore;
                         $ldv->scheduleStore->parentCentralStore = $parentDG->scheduleStore;
+                        $ldv->appStore->parentCentralStore = $parentDG->appStore;
+                        $ldv->securityProfileGroupStore->parentCentralStore = $parentDG->securityProfileGroupStore;
                         //Todo: swaschkut 20210505 - check if other Stores must be added
                         //- appStore;scheduleStore/securityProfileGroupStore/all kind of SecurityProfile
                     }
@@ -1456,6 +1458,8 @@ class PanoramaConf
                 $newDG->serviceStore->parentCentralStore = $parentDG->serviceStore;
                 $newDG->tagStore->parentCentralStore = $parentDG->tagStore;
                 $newDG->scheduleStore->parentCentralStore = $parentDG->scheduleStore;
+                $newDG->appStore->parentCentralStore = $parentDG->appStore;
+                $newDG->securityProfileGroupStore->parentCentralStore = $parentDG->securityProfileGroupStore;
                 //Todo: swaschkut 20210505 - check if other Stores must be added
                 //- appStore;scheduleStore/securityProfileGroupStore/all kind of SecurityProfile
             }

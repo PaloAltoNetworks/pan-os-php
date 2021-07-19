@@ -97,18 +97,18 @@ ApplicationCallContext::$supportedActions[] = array(
             $context->counter_predefined++;
 
 
-        if( $app->type == 'application-custom' )
+        if( $app->isApplicationCustom() )
         {
             $context->counter_custom_app++;
             if( $app->custom_signature )
                 print "custom_signature is set\n";
         }
 
-        if( $app->type != 'application-filter' )
+        if( $app->isApplicationFilter() )
             $context->counter_app_filter++;
 
 
-        if( $app->type == 'application-group' )
+        if( $app->isApplicationGroup() )
             $context->counter_app_group++;
 
 
@@ -194,4 +194,188 @@ ApplicationCallContext::$supportedActions[] = array(
         print "app_filter_counter: ".$context->counter_app_filter."\n";
         print "app_group_counter: ".$context->counter_app_group."\n";
     }
+);
+
+ApplicationCallContext::$supportedActions[] = array(
+    'name' => 'ALPHAmove',
+    'MainFunction' => function (ApplicationCallContext $context) {
+        $object = $context->object;
+
+        //Todo: support for:
+        //ApplicationFilter
+        //ApplicationGroup
+        //application-group
+
+        if( !$object->isApplicationCustom() )
+        {
+            echo $context->padding . " * SKIPPED this is NOT a custom application object. TYPE: ".$object->type."\n";
+            return;
+        }
+
+        $localLocation = 'shared';
+
+        if( !$object->owner->owner->isPanorama() && !$object->owner->owner->isFirewall() )
+            $localLocation = $object->owner->owner->name();
+
+        $targetLocation = $context->arguments['location'];
+        $targetStore = null;
+
+        if( $localLocation == $targetLocation )
+        {
+            echo $context->padding . " * SKIPPED because original and target destinations are the same: $targetLocation\n";
+            return;
+        }
+
+        $rootObject = PH::findRootObjectOrDie($object->owner->owner);
+
+        if( $targetLocation == 'shared' )
+        {
+            $targetStore = $rootObject->appStore;
+        }
+        else
+        {
+            $findSubSystem = $rootObject->findSubSystemByName($targetLocation);
+            if( $findSubSystem === null )
+                derr("cannot find VSYS/DG named '$targetLocation'");
+
+            $targetStore = $findSubSystem->appStore;
+        }
+
+        if( $localLocation == 'shared' )
+        {
+            $reflocations = $object->getReferencesLocation();
+
+            foreach( $object->getReferences() as $ref )
+            {
+                if( PH::getLocationString($ref) != $targetLocation )
+                {
+                    $skipped = TRUE;
+                    //check if targetLocation is parent of reflocation
+                    $locations = $findSubSystem->childDeviceGroups(TRUE);
+                    foreach( $locations as $childloc )
+                    {
+                        if( PH::getLocationString($ref) == $childloc->name() )
+                            $skipped = FALSE;
+                    }
+
+                    if( $skipped )
+                    {
+                        echo $context->padding . "   * SKIPPED : moving from SHARED to sub-level is NOT possible because of references on higher DG level\n";
+                        return;
+                    }
+                }
+            }
+        }
+
+        if( $localLocation != 'shared' && $targetLocation != 'shared' )
+        {
+            if( $context->baseObject->isFirewall() )
+            {
+                echo $context->padding . "   * SKIPPED : moving between VSYS is not supported\n";
+                return;
+            }
+
+            #echo $context->padding."   * SKIPPED : moving between 2 VSYS/DG is not supported yet\n";
+            #return;
+
+            foreach( $object->getReferences() as $ref )
+            {
+                if( PH::getLocationString($ref) != $targetLocation )
+                {
+                    $skipped = TRUE;
+                    //check if targetLocation is parent of reflocation
+                    $locations = $findSubSystem->childDeviceGroups(TRUE);
+                    foreach( $locations as $childloc )
+                    {
+                        if( PH::getLocationString($ref) == $childloc->name() )
+                            $skipped = FALSE;
+                    }
+
+                    if( $skipped )
+                    {
+                        echo $context->padding . "   * SKIPPED : moving between 2 VSYS/DG is not possible because of references on higher DG level\n";
+                        return;
+                    }
+                }
+            }
+        }
+
+        $conflictObject = $targetStore->find($object->name(), null);
+        if( $conflictObject === null )
+        {
+            echo $context->padding . "   * moved, no conflict\n";
+            if( $context->isAPI )
+            {
+                $oldXpath = $object->getXPath();
+                $object->owner->remove($object);
+                $targetStore->add($object);
+                $object->API_sync();
+                $context->connector->sendDeleteRequest($oldXpath);
+            }
+            else
+            {
+                $object->owner->remove($object);
+                $targetStore->add($object);
+            }
+            return;
+        }
+
+        if( $context->arguments['mode'] == 'skipifconflict' )
+        {
+            echo $context->padding . "   * SKIPPED : there is an object with same name. Choose another mode to resolve this conflict\n";
+            return;
+        }
+
+        echo $context->padding . "   - there is a conflict with an object of same name and type. Please use address-merger.php script with argument 'allowmergingwithupperlevel'";
+        #if( $conflictObject->isGroup() )
+        #    echo " - Group\n";
+        #else
+            echo " - ".$conflictObject->type() . "\n";
+
+        /*
+        if( $conflictObject->isGroup() && !$object->isGroup() || !$conflictObject->isGroup() && $object->isGroup() )
+        {
+            echo $context->padding . "   * SKIPPED because conflict has mismatching types\n";
+            return;
+        }*/
+
+        /*
+        if( $conflictObject->isTmpAddr() )
+        {
+            echo $context->padding . "   * SKIPPED because the conflicting object is TMP| value: ".$conflictObject->value()."\n";
+            //normally the $object must be moved and the conflicting TMP object must be replaced by this $object
+            return;
+        }
+        */
+
+        /*
+        if( $object->equals($conflictObject) )
+        {
+            echo "    * Removed because target has same content\n";
+            $object->replaceMeGlobally($conflictObject);
+
+            if( $context->isAPI )
+                $object->owner->API_remove($object);
+            else
+                $object->owner->remove($object);
+            return;
+        }*/
+
+
+        if( $context->arguments['mode'] == 'removeifmatch' )
+            return;
+
+        echo "    * Removed because target has same numerical value\n";
+
+        $object->replaceMeGlobally($conflictObject);
+        if( $context->isAPI )
+            $object->owner->API_remove($object);
+        else
+            $object->owner->remove($object);
+
+
+    },
+    'args' => array('location' => array('type' => 'string', 'default' => '*nodefault*'),
+        'mode' => array('type' => 'string', 'default' => 'skipIfConflict', 'choices' => array('skipIfConflict', 'removeIfMatch'))
+    ),
 );

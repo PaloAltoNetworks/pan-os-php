@@ -155,7 +155,11 @@ class DeviceGroup
         $this->tagStore->name = 'tags';
 
         $this->zoneStore = $owner->zoneStore;
-        $this->appStore = $owner->appStore;
+
+        //this is not working correctly - each DG has its own appstore
+        #$this->appStore = $owner->appStore;
+        $this->appStore = new AppStore($this);
+        $this->appStore->name = 'customApplication';
 
         $this->serviceStore = new ServiceStore($this);
         $this->serviceStore->name = 'services';
@@ -164,29 +168,29 @@ class DeviceGroup
         $this->addressStore->name = 'address';
 
 
-        $this->customURLProfileStore = new SecurityProfileStore($this, "customURLProfileStore");
+        $this->customURLProfileStore = new SecurityProfileStore($this, "customURLProfile");
         $this->customURLProfileStore->name = 'CustomURL';
 
-        $this->URLProfileStore = new SecurityProfileStore($this, "URLProfileStore");
+        $this->URLProfileStore = new SecurityProfileStore($this, "URLProfile");
         $this->URLProfileStore->name = 'URL';
 
-        $this->AntiVirusProfileStore = new SecurityProfileStore($this, "AntiVirusProfileStore");
+        $this->AntiVirusProfileStore = new SecurityProfileStore($this, "AntiVirusProfile");
         $this->AntiVirusProfileStore->name = 'AntiVirus';
 
 
-        $this->VulnerabilityProfileStore = new SecurityProfileStore($this, "VulnerabilityProfileStore");
+        $this->VulnerabilityProfileStore = new SecurityProfileStore($this, "VulnerabilityProfile");
         $this->VulnerabilityProfileStore->name = 'Vulnerability';
 
-        $this->AntiSpywareProfileStore = new SecurityProfileStore($this, "AntiSpywareProfileStore");
+        $this->AntiSpywareProfileStore = new SecurityProfileStore($this, "AntiSpywareProfile");
         $this->AntiSpywareProfileStore->name = 'AntiSpyware';
 
-        $this->FileBlockingProfileStore = new SecurityProfileStore($this, "FileBlockingProfileStore");
+        $this->FileBlockingProfileStore = new SecurityProfileStore($this, "FileBlockingProfile");
         $this->FileBlockingProfileStore->name = 'FileBlocking';
 
-        $this->DataFilteringProfileStore = new SecurityProfileStore($this, "DataFilteringProfileStore");
+        $this->DataFilteringProfileStore = new SecurityProfileStore($this, "DataFilteringProfile");
         $this->DataFilteringProfileStore->name = 'DataFiltering';
 
-        $this->WildfireProfileStore = new SecurityProfileStore($this, "WildfireProfileStore");
+        $this->WildfireProfileStore = new SecurityProfileStore($this, "WildfireProfile");
         $this->WildfireProfileStore->name = 'WildFire';
 
 
@@ -194,13 +198,13 @@ class DeviceGroup
         $this->securityProfileGroupStore->name = 'SecurityProfileGroups';
 
 
-        $this->DecryptionProfileStore = new SecurityProfileStore($this, "DecryptionProfileStore");
+        $this->DecryptionProfileStore = new SecurityProfileStore($this, "DecryptionProfile");
         $this->DecryptionProfileStore->name = 'Decryption';
 
-        $this->HipObjectsProfileStore = new SecurityProfileStore($this, "HipObjectsProfileStore");
+        $this->HipObjectsProfileStore = new SecurityProfileStore($this, "HipObjectsProfile");
         $this->HipObjectsProfileStore->name = 'HipObjects';
 
-        $this->HipProfilesProfileStore = new SecurityProfileStore($this, "HipProfilesProfileStore");
+        $this->HipProfilesProfileStore = new SecurityProfileStore($this, "HipProfilesProfile");
         $this->HipProfilesProfileStore->name = 'HipProfiles';
 
         $this->scheduleStore = new ScheduleStore($this);
@@ -710,6 +714,7 @@ class DeviceGroup
         $this->serviceStore->nestedPointOfView();
         $this->tagStore->nestedPointOfView();
         $this->scheduleStore->nestedPointOfView();
+        $this->appStore->nestedPointOfView();
 
     }
 

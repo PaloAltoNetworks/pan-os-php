@@ -173,8 +173,13 @@ class Container
         $this->tagStore = new TagStore($this);
         $this->tagStore->name = 'tags';
 
+        //Todo: swaschkut 20210718 each Container should also have its own zoneStore???
         $this->zoneStore = $owner->zoneStore;
-        $this->appStore = $owner->appStore;
+        #$this->zoneStore = new ZoneStore($this);
+        #$this->zoneStore->setName('zoneStore');
+
+        $this->appStore = new AppStore($this);
+        $this->appStore->name = 'customApplication';
 
         $this->serviceStore = new ServiceStore($this);
         $this->serviceStore->name = 'services';
@@ -183,28 +188,28 @@ class Container
         $this->addressStore->name = 'address';
 
 
-        $this->customURLProfileStore = new SecurityProfileStore($this, "customURLProfileStore");
+        $this->customURLProfileStore = new SecurityProfileStore($this, "customURLProfile");
         $this->customURLProfileStore->name = 'CustomURL';
 
-        $this->URLProfileStore = new SecurityProfileStore($this, "URLProfileStore");
+        $this->URLProfileStore = new SecurityProfileStore($this, "URLProfile");
         $this->URLProfileStore->name = 'URL';
 
-        #$this->AntiVirusProfileStore = new SecurityProfileStore($this, "AntiVirusProfileStore");
+        #$this->AntiVirusProfileStore = new SecurityProfileStore($this, "AntiVirusProfile");
         #$this->AntiVirusProfileStore->name = 'AntiVirus';
 
-        $this->VirusAndWildfireProfileStore = new SecurityProfileStore($this, "VirusAndWildfireProfileStore");
+        $this->VirusAndWildfireProfileStore = new SecurityProfileStore($this, "VirusAndWildfireProfile");
         $this->VirusAndWildfireProfileStore->name = 'VirusAndWildfire';
 
-        $this->DNSSecurityProfileStore = new SecurityProfileStore($this, "DNSSecurityProfileStore");
+        $this->DNSSecurityProfileStore = new SecurityProfileStore($this, "DNSSecurityProfile");
         $this->DNSSecurityProfileStore->name = 'DNSSecurity';
 
-        $this->VulnerabilityProfileStore = new SecurityProfileStore($this, "VulnerabilityProfileStore");
+        $this->VulnerabilityProfileStore = new SecurityProfileStore($this, "VulnerabilityProfile");
         $this->VulnerabilityProfileStore->name = 'Vulnerability';
 
-        $this->AntiSpywareProfileStore = new SecurityProfileStore($this, "AntiSpywareProfileStore");
+        $this->AntiSpywareProfileStore = new SecurityProfileStore($this, "AntiSpywareProfile");
         $this->AntiSpywareProfileStore->name = 'AntiSpyware';
 
-        $this->FileBlockingProfileStore = new SecurityProfileStore($this, "FileBlockingProfileStore");
+        $this->FileBlockingProfileStore = new SecurityProfileStore($this, "FileBlockingProfile");
         $this->FileBlockingProfileStore->name = 'FileBlocking';
 
         #$this->WildfireProfileStore = new SecurityProfileStore($this, "SecurityProfileWildFire");
@@ -215,13 +220,13 @@ class Container
         $this->securityProfileGroupStore->name = 'SecurityProfileGroups';
 
 
-        $this->DecryptionProfileStore = new SecurityProfileStore($this, "DecryptionProfileStore");
+        $this->DecryptionProfileStore = new SecurityProfileStore($this, "DecryptionProfile");
         $this->DecryptionProfileStore->name = 'Decryption';
 
-        $this->HipObjectsProfileStore = new SecurityProfileStore($this, "HipObjectsProfileStore");
+        $this->HipObjectsProfileStore = new SecurityProfileStore($this, "HipObjectsProfile");
         $this->HipObjectsProfileStore->name = 'HipObjects';
 
-        $this->HipProfilesProfileStore = new SecurityProfileStore($this, "HipProfilesProfileStore");
+        $this->HipProfilesProfileStore = new SecurityProfileStore($this, "HipProfilesProfile");
         $this->HipProfilesProfileStore->name = 'HipProfiles';
 
         $this->scheduleStore = new ScheduleStore($this);

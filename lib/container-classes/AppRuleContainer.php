@@ -191,7 +191,11 @@ class AppRuleContainer extends ObjRuleContainer
                 derr('this container has members with empty name!', $node);
             }
 
-            $f = $this->parentCentralStore->findOrCreate($lower, $this);
+
+            /** @var AppStore $appStore */
+            $appStore = $this->owner->owner->owner->appStore;
+            $f = $appStore->findorCreate( $lower, $this);
+
             $this->o[] = $f;
             $i++;
         }
