@@ -1,9 +1,20 @@
 CHANGELOG
 
-2.0.8
+2.0.9
 UTILS:
 
 BUGFIX:
+
+
+GENERAL:
+
+
+
+2.0.8 (20210719)
+UTILS:
+
+BUGFIX:
+* framework related to appStore - introduce appStore on all lower level/DG hierarchy
 
 GENERAL:
 * SecurityProfile classes rename from XYZStore to XYZ
