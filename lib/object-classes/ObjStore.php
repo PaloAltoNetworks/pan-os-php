@@ -76,7 +76,7 @@ class ObjStore
             return $o;
         }
 
-        if( $nested && $this->parentCentralStore )
+        if( $nested && isset($this->parentCentralStore) && $this->parentCentralStore )
         {
             $f = $this->parentCentralStore->findbyName($name, $ref, $nested);
             if( $f !== null )
