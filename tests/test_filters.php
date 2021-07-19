@@ -112,19 +112,23 @@ foreach( RQuery::$defaultFilters as $type => &$filtersByField )
             elseif( $type == 'tag' )
                 $util = '../utils/tag-edit.php';
             elseif( $type == 'zone' )
-            {
                 $util = '../utils/zone-edit.php';
-            }
             elseif( $type == 'schedule' )
-            {
                 $util = '../utils/schedule-edit.php';
-            }
+            #elseif( $type == 'application' )
+            #    $util = '../utils/application-edit.php';
+
+
             elseif( $type == 'securityprofile' )
             {
                 echo "******* SKIPPED for now *******\n";
                 continue;
             }
             elseif( $type == 'app' )
+            {
+                echo "******* SKIPPED for now *******\n";
+                continue;
+            }elseif( $type == 'application' )
             {
                 echo "******* SKIPPED for now *******\n";
                 continue;
