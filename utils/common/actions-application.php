@@ -60,9 +60,9 @@ ApplicationCallContext::$supportedActions[] = array(
             $context->counter_containers++;
             if( $context->print_container )
             {
-                $app->print_appdetails();
+                $app->print_appdetails( $context->padding );
 
-                print "is container: \n";
+                print $context->padding." - is container: \n";
                 foreach( $app->containerApps() as $app1 )
                 {
                     if( $app1->isContainer() )
@@ -71,23 +71,22 @@ ApplicationCallContext::$supportedActions[] = array(
                         foreach( $app1->containerApps() as $app2 )
                         {
                             print "     ->" . $app2->type . " | ";
-                            $app2->print_appdetails();
+                            $app2->print_appdetails( $context->padding, true );
                         }
                     }
                     else
                     {
                         print "     ->" . $app1->type . " | ";
-                        $app1->print_appdetails();
+                        $app1->print_appdetails( $context->padding, true );
                     }
                 }
-                print "\n";
             }
         }
         else
         {
-            print $app->type . " |-> ";
-            $app->print_appdetails();
-            print "<-|\n";
+            print $context->padding." - ".$app->type;
+            $printflag = true;
+            $app->print_appdetails( $context->padding, $printflag );
         }
 
         if( $app->type == 'tmp' )
@@ -181,7 +180,7 @@ ApplicationCallContext::$supportedActions[] = array(
             }
         }
 
-        print "#############################################\n";
+        #print "#############################################\n";
     },
     'GlobalFinishFunction' => function (ApplicationCallContext $context) {
         print "tmp_counter: ".$context->tmpcounter."\n";
@@ -197,16 +196,11 @@ ApplicationCallContext::$supportedActions[] = array(
 );
 
 ApplicationCallContext::$supportedActions[] = array(
-    'name' => 'ALPHAmove',
+    'name' => 'move',
     'MainFunction' => function (ApplicationCallContext $context) {
         $object = $context->object;
 
-        //Todo: support for:
-        //ApplicationFilter
-        //ApplicationGroup
-        //application-group
-
-        if( !$object->isApplicationCustom() )
+        if( !$object->isApplicationCustom() && !$object->isApplicationFilter() && !$object->isApplicationGroup() )
         {
             echo $context->padding . " * SKIPPED this is NOT a custom application object. TYPE: ".$object->type."\n";
             return;
@@ -308,14 +302,14 @@ ApplicationCallContext::$supportedActions[] = array(
             {
                 $oldXpath = $object->getXPath();
                 $object->owner->remove($object);
-                $targetStore->add($object);
+                $targetStore->addApp($object);
                 $object->API_sync();
                 $context->connector->sendDeleteRequest($oldXpath);
             }
             else
             {
                 $object->owner->remove($object);
-                $targetStore->add($object);
+                $targetStore->addApp($object);
             }
             return;
         }
@@ -376,6 +370,7 @@ ApplicationCallContext::$supportedActions[] = array(
 
     },
     'args' => array('location' => array('type' => 'string', 'default' => '*nodefault*'),
-        'mode' => array('type' => 'string', 'default' => 'skipIfConflict', 'choices' => array('skipIfConflict', 'removeIfMatch'))
+        #'mode' => array('type' => 'string', 'default' => 'skipIfConflict', 'choices' => array('skipIfConflict', 'removeIfMatch'))
+        'mode' => array('type' => 'string', 'default' => 'skipIfConflict', 'choices' => array('skipIfConflict'))
     ),
 );
