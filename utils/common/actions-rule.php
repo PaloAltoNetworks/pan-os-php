@@ -3221,7 +3221,8 @@ RuleCallContext::$supportedActions[] = array(
             'dnat_host' => 'dnat_host',
             'dnat_host_resolved_sum' => 'dnat_host_resolved_sum',
             'description' => 'description',
-            'schedule' => 'schedule'
+            'schedule' => 'schedule',
+            'target' => 'target'
         );
 
         $lines = '';

@@ -93,6 +93,7 @@ class App
     {
         $this->owner = $owner;
         $this->name = $name;
+        $this->xmlroot = null;
 
         foreach( self::$_supportedCharacteristics as $characteristicName )
             $this->_characteristics[$characteristicName] = FALSE;
@@ -292,7 +293,7 @@ class App
         return FALSE;
     }
 
-    function print_appdetails( )
+    function print_appdetails( $padding_above, $printName = true  )
     {
         global $print_explicit;
         global $print_implicit;
@@ -300,14 +301,14 @@ class App
         $padding = 30;
         $padding_10 = "          ";
 
-
-        print str_pad( PH::boldText($this->name() ), $padding )." - ";
+        if( $printName )
+            print "\n".$padding_above." - ".str_pad( PH::boldText($this->name() ), $padding )." - ";
 
         if( isset($this->obsolete) )
-            print "(obsolete) ";
+            print $padding_above."  - (obsolete) ";
 
         if( isset($this->category) )
-            print "category|".str_pad( $this->category, $padding ) . " - ";
+            print $padding_above."  - category|".str_pad( $this->category, $padding ) . " - ";
 
 
         if( isset($this->subCategory) )
@@ -320,7 +321,7 @@ class App
         if( isset($this->risk) )
             print "risk|".$this->risk . " - ";
 
-
+        print "\n";
 
         if( isset($this->tcp) )
         {
@@ -336,7 +337,6 @@ class App
                 else
                     print "implode:".implode("','",$tcp)."";
             }
-
         }
         if( isset($this->udp) )
         {
@@ -352,7 +352,6 @@ class App
                 else
                     print "implode:".implode("','",$udp)."";
             }
-
         }
 
 
@@ -393,7 +392,7 @@ class App
         if( $this->proto != "" )
             print "\n".$padding_10."IP-Protocol: '".$this->proto."'\n";
 
-        print "\n";
+        #print "\n";
 
 
         if( isset( $this->timeout ) )
@@ -416,7 +415,7 @@ class App
             {
                 print "           explicit->" . $app1->type . " | ";
 
-                $app1->print_appdetails( );
+                $app1->print_appdetails( $padding_above );
             }
         }
 
@@ -426,11 +425,11 @@ class App
             {
                 print "           implicit->" . $app2->type . " | ";
 
-                $app2->print_appdetails( );
+                $app2->print_appdetails( $padding_above );
             }
         }
 
-        print "\n";
+        #print "\n";
         if( isset( $this->icmpsub )  )
         {
             print "               icmp type: ". $this->icmpsub . "\n";
@@ -454,9 +453,7 @@ class App
                 print_r( $app->_characteristics );
             }
         */
-        #if( $app->type != 'application-filter' )
-        #{
-        #print PH::
+
         if( isset($this->tmp_details) )
         {
             print "TMP details: -";
@@ -464,24 +461,16 @@ class App
             derr('check');
         }
 
-        #}
+
 
         if( $this->type == 'application-group' )
         {
-            #print "application-group: - ".$app->name();
-            #print "ARRAY: if not empty";
             if( isset( $this->groupapps ) )
             {
-
                 foreach( $this->groupapps as $tmpapp)
-                    $tmpapp->print_appdetails( );
-
-                print "\n";
+                    $tmpapp->print_appdetails( $padding_above );
             }
-
-
         }
-
     }
 }
 

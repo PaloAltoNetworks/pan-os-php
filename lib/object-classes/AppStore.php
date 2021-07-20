@@ -42,6 +42,16 @@ class AppStore extends ObjStore
     /** @var null|AppStore */
     public static $predefinedStore = null;
 
+    /** @var DOMElement */
+    public $appCustomRoot;
+
+    /** @var DOMElement */
+    public $appFilterRoot;
+
+    /** @var DOMElement */
+    public $appGroupRoot;
+
+
     /**
      * @return AppStore|null
      */
@@ -84,8 +94,6 @@ class AppStore extends ObjStore
      */
     public function find($name, $ref = null, $nested = TRUE )
     {
-        if( $name == "customSven" )
-            print "|".$this->toString()."\n";
         $f = $this->findByName($name, $ref);
         if( $f !== null )
             return $f;
@@ -211,6 +219,7 @@ class AppStore extends ObjStore
 
             $app = new App($appName, $this);
             $app->type = 'predefined';
+            $app->xmlroot = $appx;
             $this->add($app);
         }
 
@@ -684,6 +693,7 @@ class AppStore extends ObjStore
                 derr("ApplicationContainer name not found in XML: ", $appx);
 
             $app = new App($appName, $this);
+            $app->xmlroot = $appx;
             $app->type = 'predefined';
             $this->add($app);
 
@@ -707,6 +717,8 @@ class AppStore extends ObjStore
 
     public function load_application_group_from_domxml($xmlDom)
     {
+        $this->appGroupRoot = $xmlDom;
+
         foreach( $xmlDom->childNodes as $appx )
         {
             if( $appx->nodeType != XML_ELEMENT_NODE ) continue;
@@ -716,9 +728,10 @@ class AppStore extends ObjStore
                 derr("ApplicationGroup name not found in XML: ", $appx);
 
             $app = new App($appName, $this);
+            $app->xmlroot = $appx;
             $app->type = 'application-group';
 
-            $this->app_groups[] = $app;
+            $this->app_groups[ $app->name() ] = $app;
 
             $this->add($app);
 
@@ -749,6 +762,8 @@ class AppStore extends ObjStore
 
     public function load_application_custom_from_domxml($xmlDom)
     {
+        $this->appCustomRoot = $xmlDom;
+
         foreach( $xmlDom->childNodes as $appx )
         {
             if( $appx->nodeType != XML_ELEMENT_NODE ) continue;
@@ -758,10 +773,11 @@ class AppStore extends ObjStore
                 derr("ApplicationCustom name not found in XML: ", $appx);
 
             $app = new App($appName, $this);
+            $app->xmlroot = $appx;
             $app->type = 'application-custom';
             $this->add($app);
 
-            $this->apps_custom[] = $app;
+            $this->apps_custom[ $app->name() ] = $app;
 
             //TODO: not implemented yet: <description>custom_app</description>
 
@@ -1037,8 +1053,11 @@ class AppStore extends ObjStore
         }
     }
 
+
     public function load_application_filter_from_domxml($xmlDom)
     {
+        $this->appFilterRoot = $xmlDom;
+
         foreach( $xmlDom->childNodes as $appx )
         {
             if( $appx->nodeType != XML_ELEMENT_NODE ) continue;
@@ -1048,10 +1067,11 @@ class AppStore extends ObjStore
                 derr("ApplicationFilter name not found in XML: ", $appx);
 
             $app = new App($appName, $this);
+            $app->xmlroot = $appx;
             $app->type = 'application-filter';
             $this->add($app);
 
-            $this->app_filters[] = $app;
+            $this->app_filters[ $app->name() ] = $app;
 
             //TODO: check if multiple selections are needed
             //only first FILTER is checked
@@ -1189,6 +1209,51 @@ class AppStore extends ObjStore
         $app->tcp[] = array(0 => 'dynamic');
     }
 
+    /**
+     * @param App $Obj
+     * @return bool if object was added. wrong if it was already there or another object with same name.
+     *
+     * @throws Exception
+     */
+    public function addApp( $Obj )
+    {
+        $objectName = $Obj->name();
+
+        if( !in_array($Obj, $this->o, TRUE) )
+        {
+            $this->o[] = $Obj;
+            $this->nameIndex[$Obj->name()] = $Obj;
+        }
+        else
+        {
+            derr('You cannot add object with same name in a store');
+        }
+
+        if( $Obj->isApplicationCustom() )
+        {
+            $this->apps_custom[$objectName] = $Obj;
+            $this->appCustomRoot->appendChild($Obj->xmlroot);
+        }
+        elseif( $Obj->isApplicationFilter() )
+        {
+            $this->app_filters[$objectName] = $Obj;
+            $this->appFilterRoot->appendChild($Obj->xmlroot);
+        }
+        elseif( $Obj->isApplicationGroup() )
+        {
+            $this->app_groups[$objectName] = $Obj;
+            $this->appGroupRoot->appendChild($Obj->xmlroot);
+        }
+        else
+            derr('invalid app type found');
+
+
+        $Obj->owner = $this;
+
+
+        return TRUE;
+
+    }
 
     public function get_app_by_ipprotocol($protocol)
     {

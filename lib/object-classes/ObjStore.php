@@ -203,7 +203,7 @@ class ObjStore
      * @return bool
      * @ignore
      */
-    protected function add($Obj)
+    public function add($Obj)
     {
         if( !in_array($Obj, $this->o, TRUE) )
         {
@@ -217,7 +217,7 @@ class ObjStore
         return FALSE;
     }
 
-    protected function removeAll()
+    public function removeAll()
     {
         foreach( $this->o as $o )
         {
@@ -232,7 +232,7 @@ class ObjStore
      * @param ReferenceableObject $Obj
      * @return bool
      */
-    protected function remove($Obj)
+    public function remove($Obj)
     {
         $pos = array_search($Obj, $this->o, TRUE);
         if( $pos !== FALSE )
