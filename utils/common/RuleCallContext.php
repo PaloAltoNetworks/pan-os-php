@@ -587,6 +587,15 @@ class RuleCallContext extends CallContext
             return self::enclose($strMapping);
         }
 
+        if( $fieldName == 'target' )
+        {
+            if( $rule->target_isAny() )
+                return self::enclose('');
+
+            $strMapping = $rule->targets();
+
+            return self::enclose($strMapping);
+        }
 
         return self::enclose('unsupported');
 

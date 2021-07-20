@@ -2,6 +2,7 @@ CHANGELOG
 
 2.0.9
 UTILS:
+* pa_rule-edit actions=exporttoexcel - extend with rule target information
 
 BUGFIX:
 
