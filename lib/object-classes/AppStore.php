@@ -727,36 +727,14 @@ class AppStore extends ObjStore
             if( $appName === FALSE )
                 derr("ApplicationGroup name not found in XML: ", $appx);
 
-            $app = new App($appName, $this);
+            $app = new AppGroup($appName, $this);
             $app->xmlroot = $appx;
             $app->type = 'application-group';
 
             $this->app_groups[ $app->name() ] = $app;
-
             $this->add($app);
 
-
-            $app->groupapps = array();
-
-            $cursor = DH::findFirstElement('members', $appx);
-            if( $cursor === FALSE )
-                continue;
-
-            foreach( $cursor->childNodes as $function )
-            {
-                if( $function->nodeType != XML_ELEMENT_NODE )
-                    continue;
-
-                $groupapp = $this->find($function->textContent);
-
-                if( $groupapp !== null )
-                    $app->groupapps[] = $groupapp;
-                else
-                {
-                    $groupapp = $this->findOrCreate($function->textContent);
-                    $app->groupapps[] = $groupapp;
-                }
-            }
+            $app->load_from_domxml( $app->xmlroot );
         }
     }
 
@@ -772,284 +750,14 @@ class AppStore extends ObjStore
             if( $appName === FALSE )
                 derr("ApplicationCustom name not found in XML: ", $appx);
 
-            $app = new App($appName, $this);
+            $app = new AppCustom($appName, $this);
             $app->xmlroot = $appx;
             $app->type = 'application-custom';
             $this->add($app);
 
             $this->apps_custom[ $app->name() ] = $app;
 
-            //TODO: not implemented yet: <description>custom_app</description>
-
-            $signaturecur = DH::findFirstElement('signature', $appx);
-            if( $signaturecur !== FALSE )
-            {
-                $app->custom_signature = TRUE;
-            }
-
-            $parentappcur = DH::findFirstElement('parent-app', $appx);
-            if( $parentappcur !== FALSE )
-            {
-                //TODO: implementation needed of $app->parent_app
-                #$app->parent_app = $parentappcur->textContent;
-            }
-
-            $timeoutcur = DH::findFirstElement('timeout', $appx);
-            if( $timeoutcur !== FALSE )
-            {
-                $app->timeout = $timeoutcur->textContent;
-            }
-            $tcptimeoutcur = DH::findFirstElement('tcp-timeout', $appx);
-            if( $tcptimeoutcur !== FALSE )
-            {
-                $app->tcp_timeout = $tcptimeoutcur->textContent;
-            }
-            $udptimeoutcur = DH::findFirstElement('udp-timeout', $appx);
-            if( $udptimeoutcur !== FALSE )
-            {
-                $app->udp_timeout = $udptimeoutcur->textContent;
-            }
-            $tcp_half_timeoutcur = DH::findFirstElement('tcp-half-closed-timeout', $appx);
-            if( $tcp_half_timeoutcur !== FALSE )
-            {
-                $app->tcp_half_closed_timeout = $tcp_half_timeoutcur->textContent;
-            }
-            $tcp_wait_timeoutcur = DH::findFirstElement('tcp-time-wait-timeout', $appx);
-            if( $tcp_wait_timeoutcur !== FALSE )
-            {
-                $app->tcp_time_wait_timeout = $tcp_wait_timeoutcur->textContent;
-            }
-
-            $cursor = DH::findFirstElement('default', $appx);
-            if( $cursor !== FALSE )
-            {
-                $protocur = DH::findFirstElement('ident-by-ip-protocol', $cursor);
-                if( $protocur !== FALSE )
-                {
-                    $app->proto = $protocur->textContent;
-                }
-
-                $icmpcur = DH::findFirstElement('ident-by-icmp-type', $cursor);
-                if( $icmpcur !== FALSE )
-                {
-                    $icmptype = DH::findFirstElement('type', $icmpcur);
-                    if( $icmptype !== FALSE )
-                    {
-                        $app->icmpsub = $icmptype->textContent;
-                    }
-
-                    $icmpcode = DH::findFirstElement('code', $icmpcur);
-                    if( $icmpcode !== FALSE )
-                    {
-                        $app->icmpcode = $icmpcode->textContent;
-                    }
-                }
-
-                $icmp6cur = DH::findFirstElement('ident-by-icmp6-type', $cursor);
-                if( $icmp6cur !== FALSE )
-                {
-                    $icmp6type = DH::findFirstElement('type', $icmp6cur);
-                    if( $icmp6type !== FALSE )
-                    {
-                        $app->icmp6sub = $icmp6type->textContent;
-                    }
-
-                    $icmp6code = DH::findFirstElement('code', $icmp6cur);
-                    if( $icmp6code !== FALSE )
-                    {
-                        $app->icmp6code = $icmp6code->textContent;
-                    }
-                }
-
-                $cursor = DH::findFirstElement('port', $cursor);
-                if( $cursor !== FALSE )
-                {
-                    foreach( $cursor->childNodes as $portx )
-                    {
-                        if( $portx->nodeType != XML_ELEMENT_NODE )
-                            continue;
-
-                        /** @var  $portx DOMElement */
-
-                        $ex = explode('/', $portx->textContent);
-
-                        if( count($ex) != 2 )
-                            derr('unsupported port description: ' . $portx->textContent);
-
-                        if( $ex[0] == 'tcp' )
-                        {
-                            $exports = explode(',', $ex[1]);
-                            $ports = array();
-
-                            if( count($exports) < 1 )
-                                derr('unsupported port description: ' . $portx->textContent);
-
-                            foreach( $exports as &$sport )
-                            {
-                                if( $sport == 'dynamic' )
-                                {
-                                    $ports[] = array(0 => 'dynamic');
-                                    continue;
-                                }
-                                $tmpex = explode('-', $sport);
-                                if( count($tmpex) < 2 )
-                                {
-                                    $ports[] = array(0 => 'single', 1 => $sport);
-                                    continue;
-                                }
-
-                                $ports[] = array(0 => 'range', 1 => $tmpex[0], 2 => $tmpex[1]);
-
-                            }
-                            //print_r($ports);
-
-                            if( $app->tcp === null )
-                                $app->tcp = $ports;
-                            else
-                                $app->tcp = array_merge($app->tcp, $ports);
-                        }
-                        elseif( $ex[0] == 'udp' )
-                        {
-                            $exports = explode(',', $ex[1]);
-                            $ports = array();
-
-                            if( count($exports) < 1 )
-                                derr('unsupported port description: ' . $portx->textContent);
-
-                            foreach( $exports as &$sport )
-                            {
-                                if( $sport == 'dynamic' )
-                                {
-                                    $ports[] = array(0 => 'dynamic');
-                                    continue;
-                                }
-                                $tmpex = explode('-', $sport);
-                                if( count($tmpex) < 2 )
-                                {
-                                    $ports[] = array(0 => 'single', 1 => $sport);
-                                    continue;
-                                }
-
-                                $ports[] = array(0 => 'range', 1 => $tmpex[0], 2 => $tmpex[1]);
-
-                            }
-                            //print_r($ports);
-
-                            if( $app->udp === null )
-                                $app->udp = $ports;
-                            else
-                                $app->udp = array_merge($app->udp, $ports);
-                        }
-                        elseif( $ex[0] == 'icmp' )
-                        {
-                            $app->icmp = $ex[1];
-                        }
-                        elseif( $ex[0] == 'icmp6' )
-                        {
-                            $app->icmp6 = $ex[1];
-                        }
-                        else
-                            derr('unsupported port description: ' . $portx->textContent);
-                    }
-                }
-            }
-
-
-            $app->app_filter_details = array();
-
-            $tmp = DH::findFirstElement('category', $appx);
-            if( $tmp !== FALSE )
-            {
-                $app->category = $tmp->textContent;
-            }
-
-            $tmp = DH::findFirstElement('subcategory', $appx);
-            if( $tmp !== FALSE )
-            {
-                $app->subCategory = $tmp->textContent;
-            }
-
-            $tmp = DH::findFirstElement('technology', $appx);
-            if( $tmp !== FALSE )
-            {
-                $app->technology = $tmp->textContent;
-            }
-
-            $tmp = DH::findFirstElement('risk', $appx);
-            if( $tmp !== FALSE )
-            {
-                $app->risk = $tmp->textContent;
-            }
-
-            $tmp = DH::findFirstElement('evasive-behavior', $appx);
-            if( $tmp !== FALSE )
-            {
-                if( $tmp->textContent == 'yes' )
-                    $app->_characteristics['evasive'] = TRUE;
-            }
-            $tmp = DH::findFirstElement('consume-big-bandwidth', $appx);
-            if( $tmp !== FALSE )
-            {
-                if( $tmp->textContent == 'yes' )
-                    $app->_characteristics['excessive-bandwidth'] = TRUE;
-            }
-            $tmp = DH::findFirstElement('used-by-malware', $appx);
-            if( $tmp !== FALSE )
-            {
-                if( $tmp->textContent == 'yes' )
-                    $app->_characteristics['used-by-malware'] = TRUE;
-            }
-            $tmp = DH::findFirstElement('able-to-transfer-files', $appx);
-            if( $tmp !== FALSE )
-            {
-                if( $tmp->textContent == 'yes' )
-                    $app->_characteristics['transfers-files'] = TRUE;
-            }
-            $tmp = DH::findFirstElement('has-known-vulnerabilities', $appx);
-            if( $tmp !== FALSE )
-            {
-                if( $tmp->textContent == 'yes' )
-                    $app->_characteristics['vulnerabilities'] = TRUE;
-            }
-            $tmp = DH::findFirstElement('tunnels-other-apps', $appx);
-            if( $tmp !== FALSE )
-            {
-                if( $tmp->textContent == 'yes' )
-                    $app->_characteristics['tunnels-other-apps'] = TRUE;
-            }
-            $tmp = DH::findFirstElement('prone-to-misuse', $appx);
-            if( $tmp !== FALSE )
-            {
-                if( $tmp->textContent == 'yes' )
-                    $app->_characteristics['prone-to-misuse'] = TRUE;
-            }
-
-            $tmp = DH::findFirstElement('pervasive-use', $appx);
-            if( $tmp !== FALSE )
-            {
-                if( $tmp->textContent == 'yes' )
-                    $app->_characteristics['widely-used'] = TRUE;
-            }
-
-
-            $tmp = DH::findFirstElement('virusident-ident', $appx);
-            if( $tmp !== FALSE )
-            {
-                if( $tmp->textContent == 'yes' )
-                    $app->virusident = TRUE;
-            }
-            $tmp = DH::findFirstElement('filetype-ident', $appx);
-            if( $tmp !== FALSE )
-            {
-                if( $tmp->textContent == 'yes' )
-                    $app->filetypeident = TRUE;
-            }
-            $tmp = DH::findFirstElement('data-ident', $appx);
-            if( $tmp !== FALSE )
-            {
-                if( $tmp->textContent == 'yes' )
-                    $app->fileforward = TRUE;
-            }
+            $app->load_from_domxml( $app->xmlroot );
         }
     }
 
@@ -1066,118 +774,14 @@ class AppStore extends ObjStore
             if( $appName === FALSE )
                 derr("ApplicationFilter name not found in XML: ", $appx);
 
-            $app = new App($appName, $this);
+            $app = new AppFilter($appName, $this);
             $app->xmlroot = $appx;
             $app->type = 'application-filter';
             $this->add($app);
 
             $this->app_filters[ $app->name() ] = $app;
 
-            //TODO: check if multiple selections are needed
-            //only first FILTER is checked
-            //what about second/third??
-            //- if use array how to get the information via the app filter
-            $app->app_filter_details = array();
-
-            $tmp = DH::findFirstElement('category', $appx);
-            if( $tmp !== FALSE )
-            {
-                $app->app_filter_details['category'] = array();
-                foreach( $tmp->childNodes as $tmp1 )
-                {
-                    if( $tmp1->nodeType != XML_ELEMENT_NODE ) continue;
-                    $app->category = $tmp1->textContent;
-                    $app->app_filter_details['category'][$tmp1->textContent] = $tmp1->textContent;
-
-                }
-            }
-
-            $tmp = DH::findFirstElement('subcategory', $appx);
-            if( $tmp !== FALSE )
-            {
-                $app->app_filter_details['subcategory'] = array();
-                foreach( $tmp->childNodes as $tmp1 )
-                {
-                    if( $tmp1->nodeType != XML_ELEMENT_NODE ) continue;
-                    $app->subCategory = $tmp1->textContent;
-                    $app->app_filter_details['subcategory'][$tmp1->textContent] = $tmp1->textContent;
-                }
-            }
-
-            $tmp = DH::findFirstElement('technology', $appx);
-            if( $tmp !== FALSE )
-            {
-                $app->app_filter_details['technology'] = array();
-                foreach( $tmp->childNodes as $tmp1 )
-                {
-                    if( $tmp1->nodeType != XML_ELEMENT_NODE ) continue;
-                    $app->technology = $tmp1->textContent;
-                    $app->app_filter_details['technology'][$tmp1->textContent] = $tmp1->textContent;
-                }
-            }
-
-            $tmp = DH::findFirstElement('risk', $appx);
-            if( $tmp !== FALSE )
-            {
-                $app->app_filter_details['risk'] = array();
-                foreach( $tmp->childNodes as $tmp1 )
-                {
-                    if( $tmp1->nodeType != XML_ELEMENT_NODE ) continue;
-                    $app->risk = $tmp1->textContent;
-                    $app->app_filter_details['risk'][$tmp1->textContent] = $tmp1->textContent;
-                }
-            }
-
-            $tmp = DH::findFirstElement('evasive', $appx);
-            if( $tmp !== FALSE )
-            {
-                if( $tmp->textContent == 'yes' )
-                    $app->_characteristics['evasive'] = TRUE;
-            }
-            $tmp = DH::findFirstElement('excessive-bandwidth-use', $appx);
-            if( $tmp !== FALSE )
-            {
-                if( $tmp->textContent == 'yes' )
-                    $app->_characteristics['excessive-bandwidth'] = TRUE;
-            }
-            $tmp = DH::findFirstElement('used-by-malware', $appx);
-            if( $tmp !== FALSE )
-            {
-                if( $tmp->textContent == 'yes' )
-                    $app->_characteristics['used-by-malware'] = TRUE;
-            }
-            $tmp = DH::findFirstElement('transfers-files', $appx);
-            if( $tmp !== FALSE )
-            {
-                if( $tmp->textContent == 'yes' )
-                    $app->_characteristics['transfers-files'] = TRUE;
-            }
-            $tmp = DH::findFirstElement('has-known-vulnerabilities', $appx);
-            if( $tmp !== FALSE )
-            {
-                if( $tmp->textContent == 'yes' )
-                    $app->_characteristics['vulnerabilities'] = TRUE;
-            }
-            $tmp = DH::findFirstElement('tunnels-other-apps', $appx);
-            if( $tmp !== FALSE )
-            {
-                if( $tmp->textContent == 'yes' )
-                    $app->_characteristics['tunnels-other-apps'] = TRUE;
-            }
-            $tmp = DH::findFirstElement('prone-to-misuse', $appx);
-            if( $tmp !== FALSE )
-            {
-                if( $tmp->textContent == 'yes' )
-                    $app->_characteristics['prone-to-misuse'] = TRUE;
-            }
-
-            $tmp = DH::findFirstElement('pervasive', $appx);
-            if( $tmp !== FALSE )
-            {
-                if( $tmp->textContent == 'yes' )
-                    $app->_characteristics['widely-used'] = TRUE;
-            }
-
+            $app->load_from_domxml( $app->xmlroot );
         }
     }
 
@@ -1255,6 +859,23 @@ class AppStore extends ObjStore
 
     }
 
+    /**
+     * @param App $Obj
+     * @return bool if object was added. wrong if it was already there or another object with same name.
+     *
+     * @throws Exception
+     */
+    public function remove( $Obj )
+    {
+        if( $Obj->isApplicationCustom() || $Obj->isApplicationFilter() || $Obj->isApplicationGroup() )
+        {
+            parent::remove( $Obj );
+        }
+        else
+            return FALSE;
+
+    }
+
     public function get_app_by_ipprotocol($protocol)
     {
         if( !is_numeric($protocol) )
@@ -1313,6 +934,38 @@ class AppStore extends ObjStore
     public function countAppGroups()
     {
         return count( $this->app_groups );
+    }
+
+    private function &getBaseXPath()
+    {
+        $class = get_class($this->owner);
+
+        if( $class == 'PanoramaConf' || $class == 'PANConf' )
+        {
+            $str = "/config/shared";
+        }
+        else
+            $str = $this->owner->getXPath();
+
+        return $str;
+    }
+
+    public function &getAppCustomStoreXPath()
+    {
+        $path = $this->getBaseXPath() . '/application';
+        return $path;
+    }
+
+    public function &getAppFilterStoreXPath()
+    {
+        $path = $this->getBaseXPath() . '/application-filter';
+        return $path;
+    }
+
+    public function &getAppGroupStoreXPath()
+    {
+        $path = $this->getBaseXPath() . '/application-group';
+        return $path;
     }
 }
 
