@@ -6,7 +6,7 @@ UTILS:
 * pa_rule-edit actions=exporttoexcel - extend with rule target information
 
 BUGFIX:
-
+* pa_application-edit | class UTIL fix for deviceType FAWKES to display predefined app
 
 GENERAL:
 * introduce class AppCustom/AppFilter/AppGroup - to split object relevant information from class App
