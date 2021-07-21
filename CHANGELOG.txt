@@ -2,13 +2,14 @@ CHANGELOG
 
 2.0.9
 UTILS:
+* pa_application-edit | introduce actions=move
 * pa_rule-edit actions=exporttoexcel - extend with rule target information
 
 BUGFIX:
 
 
 GENERAL:
-
+* introduce class AppCustom/AppFilter/AppGroup - to split object relevant information from class App
 
 
 2.0.8 (20210719)
