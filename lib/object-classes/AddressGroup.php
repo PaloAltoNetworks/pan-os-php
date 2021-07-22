@@ -798,7 +798,7 @@ class AddressGroup
             $netStartEnd = IP4Map::mapFromText($network);
 
         if( count($this->members) == 0 )
-            return 1;
+            return 0;
 
         $result = -1;
 
