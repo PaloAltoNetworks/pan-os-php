@@ -6,7 +6,9 @@ UTILS:
 * pa_rule-edit actions=exporttoexcel - extend with rule target information
 
 BUGFIX:
-
+* pa_application-edit | class UTIL fix for deviceType FAWKES to display predefined app
+* class AddressGroup | method includedInIP4Network return 0 instead of 1 if Addressgroup has no members
+* class RuleStore | method resultingPostRuleSet() - for Panorama shared now postRule is only return once instead of duplicate
 
 GENERAL:
 * introduce class AppCustom/AppFilter/AppGroup - to split object relevant information from class App

@@ -1109,6 +1109,13 @@ class UTIL
 
                     $locationFound = TRUE;
                 }
+                elseif( $this->configType == 'fawkes' && ($location == 'ANY' || $location == 'any') )
+                {
+                    if( $this->utilType == 'application' )
+                        $this->objectsToProcess[] = array('store' => $this->pan->appStore, 'objects' => $this->pan->appStore->apps());
+
+                    $locationFound = TRUE;
+                }
 
 
                 if( $this->configType == 'panorama' )

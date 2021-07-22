@@ -1064,8 +1064,10 @@ class RuleStore
      */
     public function &resultingPostRuleSet()
     {
-
-        $res = $this->_postRules;
+        if( $this->owner->isPanorama() )
+            $res = array();
+        else
+            $res = $this->_postRules;
 
         if( isset($this->owner->parentDeviceGroup) )
         {
