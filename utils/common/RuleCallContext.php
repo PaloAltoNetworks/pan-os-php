@@ -592,7 +592,7 @@ class RuleCallContext extends CallContext
             if( $rule->target_isAny() )
                 return self::enclose('');
 
-            $strMapping = $rule->targets();
+            $strMapping = $rule->targets_toString();
 
             return self::enclose($strMapping);
         }
