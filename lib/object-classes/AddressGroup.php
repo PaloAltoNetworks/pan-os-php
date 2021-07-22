@@ -189,6 +189,8 @@ class AddressGroup
                     foreach( $tmp_found_addresses as $address )
                     {
                         #print "object: ".$address->name()." add ref to ".$this->name()."\n";
+                        //how to find out all objects which are related to this filter???
+                        #$this->members[] = $address;
                         $address->addReference($this);
                     }
                 }
