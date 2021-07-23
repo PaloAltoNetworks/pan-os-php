@@ -34,7 +34,7 @@ $argv[0] = "Standard input code";
 $argv[1] = "in=".dirname(__FILE__)."/../../../../tests/input/panorama-10.0-merger.xml";
 #$argv[2] = "shadow-json";
 
-$supportedRoute = array('stats', 'address', 'service', 'tag', 'rule', 'device', 'securityprofile', 'securityprofilegroup', 'zone', 'schedule', 'interface', 'virtualwire', 'routing');
+$supportedRoute = array('stats', 'address', 'service', 'tag', 'rule', 'device', 'securityprofile', 'securityprofilegroup', 'zone', 'schedule', 'interface', 'virtualwire', 'routing', 'application');
 sort($supportedRoute );
 
 // catch this here, we don't support many routes yet
@@ -117,6 +117,8 @@ switch($verb) {
                 $util = new UTIL( "schedule", $argv, __FILE__);
             elseif( $url_pieces[1] == 'securityprofilegroup' )
                 $util = new UTIL( "securityprofilegroup", $argv, __FILE__);
+            elseif( $url_pieces[1] == 'application' )
+                $util = new UTIL( "application", $argv, __FILE__);
 
             elseif( $url_pieces[1] == 'rule' )
                 $util = new RULEUTIL( "rule", $argv, __FILE__);
@@ -140,6 +142,10 @@ switch($verb) {
         break;
     // two cases so similar we'll just share code
     case 'POST':
+        //introduce uploading XML config file for manipulation
+        #print_r($_POST);
+        #print_r($HTTP_POST_FILES);
+        #print_r($HTTP_POST_VARS);
     case 'PUT':
         // read the JSON
         $params = json_decode(file_get_contents("php://input"), true);
@@ -165,6 +171,16 @@ switch($verb) {
         #$storage->remove($id);
         #$storage->save();
         header("Location: http://localhost:8080/items", null, 204);
+        exit;
+        break;
+    case 'OPTIONS':
+        header('Access-Control-Allow-Origin: *');
+        header('Access-Control-Allow-Methods: POST, GET, DELETE, PUT, PATCH, OPTIONS');
+        header('Access-Control-Allow-Headers: token, Content-Type');
+        header('Content-Length: 0');
+        #header('Content-Type: text/plain');
+        header('Content-Type: application/xml; charset=utf-8');
+        header("HTTP/1.1", null, 204);
         exit;
         break;
     default:
