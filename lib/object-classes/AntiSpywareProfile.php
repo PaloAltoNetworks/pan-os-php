@@ -157,7 +157,7 @@ class AntiSpywareProfile
                     if( $tmp_action !== FALSE )
                         $tmp_array[$this->secprof_type][$this->name]['rules'][$vb_severity]['action'] = $tmp_action->nodeName;
 
-                    if( $secprof_type == 'file-blocking' )
+                    if( $this->secprof_type == 'file-blocking' )
                         $tmp_array[$this->secprof_type][$this->name]['rules'][$vb_severity]['action'] = $action->textContent;
                 }
 
