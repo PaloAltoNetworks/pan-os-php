@@ -22,9 +22,6 @@
 
 class AppCustom extends App
 {
-
-    use ReferenceableObject;
-    use PathableName;
     use XmlConvertible;
 
     /**

@@ -22,9 +22,6 @@
 
 class AppFilter extends App
 {
-
-    use ReferenceableObject;
-    use PathableName;
     use XmlConvertible;
 
     /**
