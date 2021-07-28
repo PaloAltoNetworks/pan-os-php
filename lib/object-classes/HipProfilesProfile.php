@@ -29,6 +29,7 @@ class HipProfilesProfile
     /** @var SecurityProfileStore|null */
     public $owner = null;
 
+    public $secprof_type;
 
     /**
      * @param SecurityProfileStore|null $owner

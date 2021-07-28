@@ -19,6 +19,7 @@ class VirusAndWildfireProfile
     /** @var SecurityProfileStore|null */
     public $owner;
 
+    public $secprof_type;
 
     /**
      * you should not need this one for normal use
@@ -82,7 +83,7 @@ class VirusAndWildfireProfile
      */
     public function load_from_domxml(DOMElement $xml)
     {
-        $secprof_type = "virus-and-wildfire-analysis";
+        $this->secprof_type = "virus-and-wildfire-analysis";
         $this->xmlroot = $xml;
 
         $this->name = DH::findAttribute('name', $xml);

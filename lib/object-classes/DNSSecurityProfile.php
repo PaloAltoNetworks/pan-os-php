@@ -19,6 +19,7 @@ class DNSSecurityProfile
     /** @var SecurityProfileStore|null */
     public $owner;
 
+    public $secprof_type;
 
     /**
      * you should not need this one for normal use
@@ -89,7 +90,7 @@ class DNSSecurityProfile
      */
     public function load_from_domxml(DOMElement $xml, $withoutname = false)
     {
-        $secprof_type = "dns-security";
+        $this->secprof_type = "dns-security";
         $this->xmlroot = $xml;
 
         if( !$withoutname )

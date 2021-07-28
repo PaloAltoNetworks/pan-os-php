@@ -19,7 +19,7 @@ class FileBlockingProfile
     /** @var SecurityProfileStore|null */
     public $owner;
 
-
+    public $secprof_type;
 
     /**
      * you should not need this one for normal use
@@ -83,7 +83,7 @@ class FileBlockingProfile
      */
     public function load_from_domxml(DOMElement $xml)
     {
-        $secprof_type = "file-blocking";
+        $this->secprof_type = "file-blocking";
         $this->xmlroot = $xml;
 
         $this->name = DH::findAttribute('name', $xml);

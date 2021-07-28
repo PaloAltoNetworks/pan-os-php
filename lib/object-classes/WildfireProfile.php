@@ -19,6 +19,7 @@ class WildfireProfile
     /** @var SecurityProfileStore|null */
     public $owner;
 
+    public $secprof_type;
 
     /**
      * you should not need this one for normal use
@@ -82,7 +83,7 @@ class WildfireProfile
      */
     public function load_from_domxml(DOMElement $xml)
     {
-        $secprof_type = "wildfire";
+        $this->secprof_type = "wildfire";
         $this->xmlroot = $xml;
 
         $this->name = DH::findAttribute('name', $xml);

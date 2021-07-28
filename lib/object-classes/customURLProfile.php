@@ -35,6 +35,8 @@ class customURLProfile
     /** @var DOMElement */
     private $membersRoot = null;
 
+    public $secprof_type;
+
     /**
      * @param SecurityProfileStore|null $owner
      * @param bool $fromXmlTemplate

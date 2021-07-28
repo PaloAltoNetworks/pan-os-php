@@ -19,6 +19,8 @@ class URLProfile
     /** @var SecurityProfileStore|null */
     public $owner;
 
+    public $secprof_type;
+
     public $allow = array();
     public $alert = array();
     public $block = array();
@@ -114,6 +116,8 @@ class URLProfile
      */
     public function load_from_domxml(DOMElement $xml, $withOwner = true )
     {
+        $this->secprof_type = "url-filtering";
+
         $this->xmlroot = $xml;
 
         $this->name = DH::findAttribute('name', $xml);

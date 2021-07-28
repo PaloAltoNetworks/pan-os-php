@@ -139,6 +139,10 @@ class SecurityProfile
         return $this->value;
     }
 
+    public function display()
+    {
+        print "     * " . get_class($this) . " '" . $this->name() . "'    \n";
+    }
 
     /**
      * @param string $newValue

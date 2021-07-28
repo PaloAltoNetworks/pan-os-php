@@ -19,6 +19,7 @@ class AntiVirusProfile
     /** @var SecurityProfileStore|null */
     public $owner;
 
+    public $secprof_type;
 
     public $ftp = array();
     public $http = array();
