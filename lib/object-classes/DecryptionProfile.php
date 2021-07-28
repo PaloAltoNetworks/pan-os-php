@@ -29,6 +29,7 @@ class DecryptionProfile
     /** @var SecurityProfileStore|null */
     public $owner = null;
 
+    public $secprof_type;
 
     /**
      * @param SecurityProfileStore|null $owner
@@ -110,6 +111,8 @@ class DecryptionProfile
      */
     public function load_from_domxml(DOMElement $xml)
     {
+        $this->secprof_type = "decryption";
+
         $this->xmlroot = $xml;
 
         $this->name = DH::findAttribute('name', $xml);

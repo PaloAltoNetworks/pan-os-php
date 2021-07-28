@@ -19,6 +19,7 @@ class DataFilteringProfile
     /** @var SecurityProfileStore|null */
     public $owner;
 
+    public $secprof_type;
 
     /**
      * you should not need this one for normal use
