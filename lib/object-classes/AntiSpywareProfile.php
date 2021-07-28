@@ -83,7 +83,7 @@ class AntiSpywareProfile
      */
     public function load_from_domxml(DOMElement $xml)
     {
-        $secprof_type = "spyware";
+        $this->secprof_type = "spyware";
         $this->xmlroot = $xml;
 
         $this->name = DH::findAttribute('name', $xml);
