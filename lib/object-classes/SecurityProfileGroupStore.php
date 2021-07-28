@@ -147,7 +147,7 @@ class SecurityProfileGroupStore extends ObjStore
         return md5( $str );
     }
 
-    public function createSecurityProfileGroup_based_Profile( $secProf_array )
+    public function createSecurityProfileGroup_based_Profile( $secProf_array, $secProfOBJ_array = array() )
     {
         $name = $this->findAvailableSecurityProfileGroupName( "secProfGroup"  );
 
@@ -163,6 +163,9 @@ class SecurityProfileGroupStore extends ObjStore
             $string .= "<".$key.">\n";
             $string .= "<member>".$secProf."</member>\n";
             $string .= "</".$key.">\n";
+
+            if( isset( $secProfOBJ_array[$secProf] ) )
+                $secProfOBJ_array[$secProf]->addReference( $tmp_secProfGroup );
         }
 
         $string .= "</entry>\n";

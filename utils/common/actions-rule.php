@@ -2014,7 +2014,7 @@ RuleCallContext::$supportedActions[] = Array(
         if( $secprofgroup == null )
         {
             #print PH::boldText(  "SecurityProfileGroup not found\n" );
-            $secprofgroup = $rule->owner->owner->securityProfileGroupStore->createSecurityProfileGroup_based_Profile( $profiles );
+            $secprofgroup = $rule->owner->owner->securityProfileGroupStore->createSecurityProfileGroup_based_Profile( $profiles, $profiles_obj );
         }
 
         if( $secprofgroup != null )
