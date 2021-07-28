@@ -22,9 +22,6 @@
 
 class AppGroup extends App
 {
-
-    use ReferenceableObject;
-    use PathableName;
     use XmlConvertible;
 
     protected $groupapps = array();
