@@ -103,20 +103,20 @@ class DNSSecurityProfile
 
         #print "\nsecprofURL TMP: object named '".$this->name."' found\n";
 
-        #$this->owner->_SecurityProfiles[$secprof_type][$this->name] = $this;
-        #$this->owner->_all[$secprof_type][$this->name] = $this;
+        #$this->owner->_SecurityProfiles[$this->secprof_type][$this->name] = $this;
+        #$this->owner->_all[$this->secprof_type][$this->name] = $this;
         #$this->owner->o[] = $this;
 
 
         //predefined URL category
-        //$tmp_array[$secprof_type][$typeName]['allow']['URL category'] = all predefined URL category
+        //$tmp_array[$this->secprof_type][$typeName]['allow']['URL category'] = all predefined URL category
 
 /*
         $tmp_rule = DH::findFirstElement('rules', $xml);
         if( $tmp_rule !== FALSE )
         {
-            #$tmp_array[$secprof_type][$secprof_type][$this->name]['rules'] = array();
-            $tmp_array[$secprof_type][$this->name]['rules'] = array();
+            #$tmp_array[$this->secprof_type][$this->secprof_type][$this->name]['rules'] = array();
+            $tmp_array[$this->secprof_type][$this->name]['rules'] = array();
             foreach( $tmp_rule->childNodes as $tmp_entry1 )
             {
                 if( $tmp_entry1->nodeType != XML_ELEMENT_NODE )
@@ -132,13 +132,13 @@ class DNSSecurityProfile
                     if( $severity->nodeType != XML_ELEMENT_NODE )
                         continue;
 
-                    $tmp_array[$secprof_type][$this->name]['rules'][$vb_severity]['severity'] = array();
+                    $tmp_array[$this->secprof_type][$this->name]['rules'][$vb_severity]['severity'] = array();
                     foreach( $severity->childNodes as $member )
                     {
                         if( $member->nodeType != XML_ELEMENT_NODE )
                             continue;
 
-                        $tmp_array[$secprof_type][$this->name]['rules'][$vb_severity]['severity'][$member->textContent] = $member->textContent;
+                        $tmp_array[$this->secprof_type][$this->name]['rules'][$vb_severity]['severity'][$member->textContent] = $member->textContent;
                     }
                 }
 
@@ -148,13 +148,13 @@ class DNSSecurityProfile
                     if( $severity->nodeType != XML_ELEMENT_NODE )
                         continue;
 
-                    $tmp_array[$secprof_type][$this->name]['rules'][$vb_severity]['file-type'] = array();
+                    $tmp_array[$this->secprof_type][$this->name]['rules'][$vb_severity]['file-type'] = array();
                     foreach( $severity->childNodes as $member )
                     {
                         if( $member->nodeType != XML_ELEMENT_NODE )
                             continue;
 
-                        $tmp_array[$secprof_type][$this->name]['rules'][$vb_severity]['file-type'][$member->textContent] = $member->textContent;
+                        $tmp_array[$this->secprof_type][$this->name]['rules'][$vb_severity]['file-type'][$member->textContent] = $member->textContent;
                     }
                 }
 
@@ -166,10 +166,10 @@ class DNSSecurityProfile
 
                     $tmp_action = DH::firstChildElement($action);
                     if( $tmp_action !== FALSE )
-                        $tmp_array[$secprof_type][$this->name]['rules'][$vb_severity]['action'] = $tmp_action->nodeName;
+                        $tmp_array[$this->secprof_type][$this->name]['rules'][$vb_severity]['action'] = $tmp_action->nodeName;
 
                     if( $secprof_type == 'file-blocking' )
-                        $tmp_array[$secprof_type][$this->name]['rules'][$vb_severity]['action'] = $action->textContent;
+                        $tmp_array[$this->secprof_type][$this->name]['rules'][$vb_severity]['action'] = $action->textContent;
                 }
 
                 $packet_capture = DH::findFirstElement('packet-capture', $tmp_entry1);
@@ -178,7 +178,7 @@ class DNSSecurityProfile
                     if( $packet_capture->nodeType != XML_ELEMENT_NODE )
                         continue;
 
-                    $tmp_array[$secprof_type][$this->name]['rules'][$vb_severity]['packet-capture'] = $packet_capture->textContent;
+                    $tmp_array[$this->secprof_type][$this->name]['rules'][$vb_severity]['packet-capture'] = $packet_capture->textContent;
                 }
 
                 $direction = DH::findFirstElement('direction', $tmp_entry1);
@@ -187,7 +187,7 @@ class DNSSecurityProfile
                     if( $direction->nodeType != XML_ELEMENT_NODE )
                         continue;
 
-                    $tmp_array[$secprof_type][$this->name]['rules'][$vb_severity]['direction'] = $direction->textContent;
+                    $tmp_array[$this->secprof_type][$this->name]['rules'][$vb_severity]['direction'] = $direction->textContent;
                 }
 
                 $analysis = DH::findFirstElement('analysis', $tmp_entry1);
@@ -196,7 +196,7 @@ class DNSSecurityProfile
                     if( $analysis->nodeType != XML_ELEMENT_NODE )
                         continue;
 
-                    $tmp_array[$secprof_type][$this->name]['rules'][$vb_severity]['analysis'] = $analysis->textContent;
+                    $tmp_array[$this->secprof_type][$this->name]['rules'][$vb_severity]['analysis'] = $analysis->textContent;
                 }
             }
         }
@@ -206,7 +206,7 @@ class DNSSecurityProfile
         $tmp_threat_exception = DH::findFirstElement('threat-exception', $xml);
         if( $tmp_threat_exception !== FALSE )
         {
-            $tmp_array[$secprof_type][$this->name]['threat-exception'] = array();
+            $tmp_array[$this->secprof_type][$this->name]['threat-exception'] = array();
             foreach( $tmp_threat_exception->childNodes as $tmp_entry1 )
             {
                 if( $tmp_entry1->nodeType != XML_ELEMENT_NODE )
@@ -223,7 +223,7 @@ class DNSSecurityProfile
                         continue;
 
                     $tmp_action = DH::firstChildElement($action);
-                    $tmp_array[$secprof_type][$this->name]['threat-exception'][$tmp_name]['action'] = $tmp_action->nodeName;
+                    $tmp_array[$this->secprof_type][$this->name]['threat-exception'][$tmp_name]['action'] = $tmp_action->nodeName;
                 }
             }
         }

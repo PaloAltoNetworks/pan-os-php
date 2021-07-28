@@ -108,7 +108,7 @@ class AntiVirusProfile
 
 
         //predefined URL category
-        //$tmp_array[$secprof_type][$typeName]['allow']['URL category'] = all predefined URL category
+        //$tmp_array[$this->secprof_type][$typeName]['allow']['URL category'] = all predefined URL category
 
 
         $tmp_decoder = DH::findFirstElement('decoder', $xml);
