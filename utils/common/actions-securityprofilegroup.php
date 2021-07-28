@@ -20,7 +20,7 @@
 
 SecurityProfileGroupCallContext::$supportedActions['displayreferences'] = array(
     'name' => 'displayReferences',
-    'MainFunction' => function (SecurityProfileCallContext $context) {
+    'MainFunction' => function (SecurityProfileGroupCallContext $context) {
         $object = $context->object;
 
         $object->display_references(7);
