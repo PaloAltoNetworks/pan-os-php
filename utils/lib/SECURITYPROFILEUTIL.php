@@ -78,7 +78,7 @@ class SECURITYPROFILEUTIL extends UTIL
                     {
                         $this->objectsToProcess[] = array('store' => $this->pan->AntiSpywareProfileStore, 'rules' => $this->pan->AntiSpywareProfileStore->securityProfiles());
                     }
-                    if( array_search('any', $this->securityProfileTypes) !== FALSE || array_search('wildfire-analysing', $this->securityProfileTypes) !== FALSE )
+                    if( array_search('any', $this->securityProfileTypes) !== FALSE || array_search('wildfire-analysis', $this->securityProfileTypes) !== FALSE )
                     {
                         $this->objectsToProcess[] = array('store' => $this->pan->WildfireProfileStore, 'rules' => $this->pan->WildfireProfileStore->securityProfiles());
                     }
@@ -125,7 +125,7 @@ class SECURITYPROFILEUTIL extends UTIL
                             {
                                 $this->objectsToProcess[] = array('store' => $sub->AntiSpywareProfileStore, 'rules' => $sub->AntiSpywareProfileStore->securityProfiles());
                             }
-                            if( array_search('any', $this->securityProfileTypes) !== FALSE || array_search('wildfire-analysing', $this->securityProfileTypes) !== FALSE )
+                            if( array_search('any', $this->securityProfileTypes) !== FALSE || array_search('wildfire-analysis', $this->securityProfileTypes) !== FALSE )
                             {
                                 $this->objectsToProcess[] = array('store' => $sub->WildfireProfileStore, 'rules' => $sub->WildfireProfileStore->securityProfiles());
                             }
@@ -169,7 +169,7 @@ class SECURITYPROFILEUTIL extends UTIL
                             {
                                 $this->objectsToProcess[] = array('store' => $sub->AntiSpywareProfileStore, 'rules' => $sub->AntiSpywareProfileStore->securityProfiles());
                             }
-                            if( array_search('any', $this->securityProfileTypes) !== FALSE || array_search('wildfire-analysing', $this->securityProfileTypes) !== FALSE )
+                            if( array_search('any', $this->securityProfileTypes) !== FALSE || array_search('wildfire-analysis', $this->securityProfileTypes) !== FALSE )
                             {
                                 $this->objectsToProcess[] = array('store' => $sub->WildfireProfileStore, 'rules' => $sub->WildfireProfileStore->securityProfiles());
                             }
@@ -221,7 +221,7 @@ class SECURITYPROFILEUTIL extends UTIL
                     {
                         $this->objectsToProcess[] = array('store' => $this->pan->AntiSpywareProfileStore, 'rules' => $this->pan->AntiSpywareProfileStore->securityProfiles());
                     }
-                    if( array_search('any', $this->securityProfileTypes) !== FALSE || array_search('wildfire-analysing', $this->securityProfileTypes) !== FALSE )
+                    if( array_search('any', $this->securityProfileTypes) !== FALSE || array_search('wildfire-analysis', $this->securityProfileTypes) !== FALSE )
                     {
                         $this->objectsToProcess[] = array('store' => $this->pan->WildfireProfileStore, 'rules' => $this->pan->WildfireProfileStore->securityProfiles());
                     }
@@ -281,7 +281,7 @@ class SECURITYPROFILEUTIL extends UTIL
                             {
                                 $this->objectsToProcess[] = array('store' => $sub->AntiVirusProfileStore, 'rules' => $sub->AntiVirusProfileStore->securityProfiles());
                             }
-                            if( array_search('any', $this->securityProfileTypes) !== FALSE || array_search('wildfire-analysing', $this->securityProfileTypes) !== FALSE )
+                            if( array_search('any', $this->securityProfileTypes) !== FALSE || array_search('wildfire-analysis', $this->securityProfileTypes) !== FALSE )
                             {
                                 $this->objectsToProcess[] = array('store' => $sub->WildfireProfileStore, 'rules' => $sub->WildfireProfileStore->securityProfiles());
                             }
