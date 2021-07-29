@@ -272,6 +272,9 @@ class Service
 
         $this->_timeout = $newTimeout;
         $tmp = DH::findFirstElementOrCreate('override', $this->tcpOrUdpRoot);
+        $tmpno = DH::findFirstElement('no', $tmp);
+        if( $tmpno !== false )
+            $tmp->removeChild( $tmpno );
         $tmp = DH::findFirstElementOrCreate('yes', $tmp);
         $tmp = DH::findFirstElementOrCreate('timeout', $tmp, $this->_timeout);
         DH::setDomNodeText($tmp, $newTimeout);
