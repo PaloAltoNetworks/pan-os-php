@@ -28,7 +28,7 @@ class SecurityProfileStore extends ObjStore
     public static $childn = 'SecurityProfile';
 
     private $secprof_array = array('virus', 'spyware', 'vulnerability', 'file-blocking', 'wildfire-analysis', 'url-filtering', 'custom-url-category', 'predefined-url', 'data-filtering');
-    private $secprof_fawkes_array = array('virus-and-wildfire-analysis', 'spyware', 'vulnerability', 'file-blocking', 'dns-security', 'url-filtering', 'custom-url-category', 'predefined-url');
+    private $secprof_fawkes_array = array('virus-and-wildfire-analysis', 'spyware', 'vulnerability', 'file-blocking', 'dns-security', 'url-filtering', 'custom-url-category', 'predefined-url', 'saas-security');
     /** @var DOMElement */
     public $securityProfileRoot;
 
@@ -36,6 +36,8 @@ class SecurityProfileStore extends ObjStore
 
     static private $storeNameByType = array(
         'URLProfile' => array('name' => 'URL', 'varName' => 'urlSecProf', 'xpathRoot' => 'url-filtering'),
+        'SaasSecurityProfile' => array('name' => 'SaasSecurity', 'varName' => 'saasSecProf', 'xpathRoot' => 'saas-security'),
+
         'AntiVirusProfile' => array('name' => 'Virus', 'varName' => 'avSecProf', 'xpathRoot' => 'virus'),
 
         'VirusAndWildfireProfile' => array('name' => 'VirusAndWildfire', 'varName' => 'avawfSecProf', 'xpathRoot' => 'virus-and-wildfire-analysis'),
@@ -377,7 +379,7 @@ class SecurityProfileStore extends ObjStore
 
 
     /**
-     * @param URLProfile|customURLProfile|AntiVirusProfile|AntiSpywareProfile|FileBlockingProfile|VulnerabilityProfile|WildfireProfile|VirusAndWildfireProfile|DNSSecurityProfile|DecryptionProfile|HipObjectsProfile|HipProfilesProfile $rule
+     * @param URLProfile|customURLProfile|AntiVirusProfile|AntiSpywareProfile|FileBlockingProfile|VulnerabilityProfile|WildfireProfile|VirusAndWildfireProfile|DNSSecurityProfile|DecryptionProfile|HipObjectsProfile|HipProfilesProfile|SaasSecurityProfile $rule
      * @return bool
      */
     public function addSecurityProfile($rule)

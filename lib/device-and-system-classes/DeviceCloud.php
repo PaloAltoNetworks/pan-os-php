@@ -51,6 +51,9 @@ class DeviceCloud
     public $DNSSecurityProfileStore = null;
 
     /** @var SecurityProfileStore */
+    public $SaasSecurityProfileStore = null;
+
+    /** @var SecurityProfileStore */
     public $VulnerabilityProfileStore = null;
 
     /** @var SecurityProfileStore */
@@ -198,6 +201,9 @@ class DeviceCloud
 
         $this->DNSSecurityProfileStore = new SecurityProfileStore($this, "DNSSecurityProfile");
         $this->DNSSecurityProfileStore->name = 'DNSSecurity';
+
+        $this->SaasSecurityProfileStore = new SecurityProfileStore($this, "SaasSecurityProfile");
+        $this->SaasSecurityProfileStore->name = 'SaasSecurity';
 
         $this->VulnerabilityProfileStore = new SecurityProfileStore($this, "VulnerabilityProfile");
         $this->VulnerabilityProfileStore->name = 'Vulnerability';
@@ -473,12 +479,21 @@ class DeviceCloud
                 }
 
                 //
-                // wildfire Profile extraction
+                // DNSSecurity Profile extraction
                 //
                 $tmproot = DH::findFirstElement('dns-security', $this->securityProfilebaseroot);
                 if( $tmproot !== FALSE )
                 {
                     $this->DNSSecurityProfileStore->load_from_domxml($tmproot);
+                }
+
+                //
+                // SaasSecurity Profile extraction
+                //
+                $tmproot = DH::findFirstElement('saas-security', $this->securityProfilebaseroot);
+                if( $tmproot !== FALSE )
+                {
+                    $this->SaasSecurityProfileStore->load_from_domxml($tmproot);
                 }
 
                 //
@@ -744,7 +759,8 @@ class DeviceCloud
         $stdoutarray['securityProfile objects']['Anti-Spyware'] = $this->AntiSpywareProfileStore->count();
         $stdoutarray['securityProfile objects']['Vulnerability'] = $this->VulnerabilityProfileStore->count();
         $stdoutarray['securityProfile objects']['WildfireAndAntivirus'] = $this->VirusAndWildfireProfileStore->count();
-        $stdoutarray['securityProfile objects']['DNS'] = $this->DNSSecurityProfileStore->count();
+        $stdoutarray['securityProfile objects']['DNS-Security'] = $this->DNSSecurityProfileStore->count();
+        $stdoutarray['securityProfile objects']['Saas-Security'] = $this->SaasSecurityProfileStore->count();
         $stdoutarray['securityProfile objects']['URL'] = $this->URLProfileStore->count();
         $stdoutarray['securityProfile objects']['File-Blocking'] = $this->FileBlockingProfileStore->count();
         $stdoutarray['securityProfile objects']['Decryption'] = $this->DecryptionProfileStore->count();

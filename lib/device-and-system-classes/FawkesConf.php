@@ -479,6 +479,7 @@ class FawkesConf
         $gnsecprofVB = $container_all->VulnerabilityProfileStore->count();
         $gnsecprofAVWF = $container_all->VirusAndWildfireProfileStore->count();
         $gnsecprofDNS = $container_all->DNSSecurityProfileStore->count();
+        $gnsecprofSaas = $container_all->SaasSecurityProfileStore->count();
         $gnsecprofURL = $container_all->URLProfileStore->count();
         $gnsecprofFB = $container_all->FileBlockingProfileStore->count();
 
@@ -532,6 +533,7 @@ class FawkesConf
             $gnsecprofVB += $cur->VulnerabilityProfileStore->count();
             $gnsecprofAVWF += $cur->VirusAndWildfireProfileStore->count();
             $gnsecprofDNS += $cur->DNSSecurityProfileStore->count();
+            $gnsecprofSaas += $cur->SaasSecurityProfileStore->count();
             $gnsecprofURL += $cur->URLProfileStore->count();
             $gnsecprofFB += $cur->FileBlockingProfileStore->count();
 
@@ -598,6 +600,7 @@ class FawkesConf
             $gnsecprofVB += $cur->VulnerabilityProfileStore->count();
             $gnsecprofAVWF += $cur->VirusAndWildfireProfileStore->count();
             $gnsecprofDNS += $cur->DNSSecurityProfileStore->count();
+            $gnsecprofSaas += $cur->SaasSecurityProfileStore->count();
             $gnsecprofURL += $cur->URLProfileStore->count();
             $gnsecprofFB += $cur->FileBlockingProfileStore->count();
 
@@ -747,6 +750,10 @@ class FawkesConf
         $stdoutarray['securityProfile objects'] = array();
         $stdoutarray['securityProfile DNS objects']['All'] = $container_all->DNSSecurityProfileStore->count();
         $stdoutarray['securityProfile DNS objects']['total_DGs'] = $gnsecprofDNS;
+
+        $stdoutarray['securityProfile objects'] = array();
+        $stdoutarray['securityProfile Saas objects']['All'] = $container_all->SaasSecurityProfileStore->count();
+        $stdoutarray['securityProfile Saas objects']['total_DGs'] = $gnsecprofSaas;
 
         $stdoutarray['securityProfile objects'] = array();
         $stdoutarray['securityProfile URL objects']['All'] = $container_all->URLProfileStore->count();
