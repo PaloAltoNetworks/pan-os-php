@@ -435,12 +435,12 @@ class SecurityRule extends RuleWithUserID
                 //Todo findOrCreate can NOT be used because of default object not created
                 #$tmp_group =  $this->owner->owner->securityProfileGroupStore->findorCreate( $firstE->textContent );
                 $tmp_group =  $this->owner->owner->securityProfileGroupStore->find( $firstE->textContent );
-                if( $tmp_group !== false )
+                if( is_object( $tmp_group ) )
                 {
                     $this->secprofgroup = $firstE->textContent;
                     //Todo: swaschkut 20210422
                     //- not working due to parentcentralStore implementation wrong
-                    #$tmp_group->addReference( $this );
+                    $tmp_group->addReference( $this );
                 }
                 else
                 {
