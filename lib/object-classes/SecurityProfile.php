@@ -25,7 +25,8 @@ class SecurityProfile
     const TypeWildfire_analysis = 5;
     const TypeUrl_filtering = 6;
     const TypeData_filtering = 7;
-
+    const TypeDNS_security = 8;
+    const TypeSaas_security = 9;
 
     static private $SecurityProfileTypes = array(self::TypeTmp => 'tmp',
         self::TypeVirus => 'virus',
@@ -34,7 +35,9 @@ class SecurityProfile
         self::TypeFile_blocking => 'file-blocking',
         self::TypeWildfire_analysis => 'wildfire-analysis',
         self::TypeUrl_filtering => 'url-filtering',
-        self::TypeData_filtering => 'data-filtering'
+        self::TypeData_filtering => 'data-filtering',
+        self::TypeDNS_security => 'dns-security',
+        self::TypeSaas_security => 'saas-security'
     );
 
     public $type = self::TypeTmp;

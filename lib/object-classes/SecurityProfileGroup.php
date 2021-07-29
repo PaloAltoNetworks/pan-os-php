@@ -33,7 +33,7 @@ class SecurityProfileGroup
      *    <dns-security>    <spyware>   <vulnerability> <url-filtering> <file-blocking> <saas-security> <virus-and-wildfire-analysis>
      */
     private $secprof_array = array('virus', 'spyware', 'vulnerability', 'file-blocking', 'wildfire-analysis', 'url-filtering', 'data-filtering');
-    private $secprof_fawkes_array = array('virus-and-wildfire-analysis-analysis', 'spyware', 'vulnerability', 'file-blocking', 'dns-security', 'url-filtering');
+    private $secprof_fawkes_array = array('virus-and-wildfire-analysis-analysis', 'spyware', 'vulnerability', 'file-blocking', 'dns-security', 'url-filtering', 'saas-security');
 
     /*
      * FAWKES
@@ -41,7 +41,7 @@ class SecurityProfileGroup
      * ->VirusWildfireProfileStore; DnsSecurityProfileStore; SaasSecurityProfileStore
      */
     private $secprof_store = array( 'AntiVirusProfileStore', 'AntiSpywareProfileStore', 'VulnerabilityProfileStore', 'FileBlockingProfileStore', 'WildfireProfileStore', 'URLProfileStore', 'DataFilteringProfileStore' );
-    private $secprof_fawkes_store = array( 'VirusAndWildfireProfileStore', 'AntiSpywareProfileStore', 'VulnerabilityProfileStore', 'FileBlockingProfileStore', 'DNSSecurityProfileStore', 'URLProfileStore' );
+    private $secprof_fawkes_store = array( 'VirusAndWildfireProfileStore', 'AntiSpywareProfileStore', 'VulnerabilityProfileStore', 'FileBlockingProfileStore', 'DNSSecurityProfileStore', 'URLProfileStore', 'SaasProfileStore' );
 
 
     public $secprofiles = array();
@@ -166,7 +166,10 @@ class SecurityProfileGroup
                     $tmp_store_name = $used_secprof_store[$key];
                     $profile = $this->owner->owner->$tmp_store_name->find( $tmp_type->nodeValue );
                     if( $profile != false )
+                    {
                         $this->secprofiles[ $secprof_type ] = $profile;
+                        $profile->addReference( $this );
+                    }
                     else
                     {
                         //Todo: not a profile - default profile

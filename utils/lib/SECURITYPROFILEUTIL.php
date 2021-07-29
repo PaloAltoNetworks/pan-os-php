@@ -36,7 +36,7 @@ class SECURITYPROFILEUTIL extends UTIL
     public function supportedArguments()
     {
         parent::supportedArguments();
-        $this->supportedArguments['securityprofiletype'] = array('niceName' => 'securityProfileType', 'shortHelp' => 'specify which type(s) of you rule want to edit, (default is "security". ie: securityprofiletype=any  securityprofiletype=url, customurl', 'argDesc' => 'all|any|url-filtering|virus|vulnerability|spyware|file-blocking|data-filtering|wildfire-analysis|custom-url-category|predefined-url');
+        $this->supportedArguments['securityprofiletype'] = array('niceName' => 'securityProfileType', 'shortHelp' => 'specify which type(s) of you rule want to edit, (default is "security". ie: securityprofiletype=any  securityprofiletype=url, customurl', 'argDesc' => 'all|any|url-filtering|virus|vulnerability|spyware|file-blocking|data-filtering|wildfire-analysis|custom-url-category|predefined-url|dns-security|saas-security');
     }
 
     public function location_filter_object()
@@ -266,9 +266,13 @@ class SECURITYPROFILEUTIL extends UTIL
                             {
                                 $this->objectsToProcess[] = array('store' => $sub->VirusAndWildfireProfileStore, 'rules' => $sub->VirusAndWildfireProfileStore->securityProfiles());
                             }
-                            if( array_search('any', $this->securityProfileTypes) !== FALSE || array_search('dnssecurity', $this->securityProfileTypes) !== FALSE )
+                            if( array_search('any', $this->securityProfileTypes) !== FALSE || array_search('dns-security', $this->securityProfileTypes) !== FALSE )
                             {
                                 $this->objectsToProcess[] = array('store' => $sub->DNSSecurityProfileStore, 'rules' => $sub->DNSSecurityProfileStore->securityProfiles());
+                            }
+                            if( array_search('any', $this->securityProfileTypes) !== FALSE || array_search('saas-security', $this->securityProfileTypes) !== FALSE )
+                            {
+                                $this->objectsToProcess[] = array('store' => $sub->SaasSecurityProfileStore, 'rules' => $sub->SaasSecurityProfileStore->securityProfiles());
                             }
                         }
                         else

@@ -224,6 +224,7 @@ require_once $basedir . '/object-classes/PredefinedSecurityProfileURL.php';
 
 require_once $basedir . '/object-classes/VirusAndWildfireProfile.php';
 require_once $basedir . '/object-classes/DNSSecurityProfile.php';
+require_once $basedir . '/object-classes/SaasSecurityProfile.php';
 
 require_once $basedir . '/object-classes/DecryptionProfile.php';
 require_once $basedir . '/object-classes/HipObjectsProfile.php';
