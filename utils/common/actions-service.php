@@ -1203,6 +1203,13 @@ ServiceCallContext::$supportedActions[] = array(
         $newTimeout = $context->arguments['timeoutValue'];
         $newTimeout = intval($newTimeout);
 
+        $class = get_class($object);
+        if( $class === 'ServiceGroup' )
+        {
+            print "     *  skipped because object is ServiceGroup\n";
+            return null;
+        }
+
         $tmp_timeout = $object->getTimeout();
 
         if( $tmp_timeout != $newTimeout )
