@@ -12,6 +12,7 @@ BUGFIX:
 
 GENERAL:
 * introduce class AppCustom/AppFilter/AppGroup - to split object relevant information from class App
+* introduce class SaasSecurityProfile - extending all Fawkes config class and UTIL to support this new SecurityProfile
 
 
 2.0.8 (20210719)
