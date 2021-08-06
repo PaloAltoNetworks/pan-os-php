@@ -27,14 +27,14 @@ require_once dirname(__FILE__)."/../../utils/lib/UTIL.php";
 if( !PH::$shadow_json )
 {
     echo "\n***********************************************\n";
-    echo "*********** THREAT-EDIT UTILITY **************\n\n";
+    echo "*********** THREAT UTILITY **************\n\n";
 }
 
 $util = new UTIL("threat", $argv, __FILE__);
 
 if( !PH::$shadow_json )
 {
-    echo "\n\n********** END OF THREAT-EDIT UTILITY ***********\n";
+    echo "\n\n********** END OF THREAT UTILITY ***********\n";
     echo "**************************************************\n";
     echo "\n\n";
 }

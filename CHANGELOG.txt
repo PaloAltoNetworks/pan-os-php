@@ -4,6 +4,7 @@ CHANGELOG
 UTILS:
 * pa_application-edit | introduce actions=move
 * pa_rule-edit actions=exporttoexcel - extend with rule target information
+* introduce pa_threat - actions=display and filters
 
 BUGFIX:
 * pa_application-edit | class UTIL fix for deviceType FAWKES to display predefined app
@@ -14,6 +15,7 @@ BUGFIX:
 GENERAL:
 * introduce class AppCustom/AppFilter/AppGroup - to split object relevant information from class App
 * introduce class SaasSecurityProfile - extending all Fawkes config class and UTIL to support this new SecurityProfile
+* introduce class class Threat / ThreatStore / ThreatVulnerability / ThreatSpyware
 
 
 2.0.8 (20210719)
