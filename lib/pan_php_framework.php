@@ -156,6 +156,8 @@ require_once $basedir . '/misc-classes/TagRQueryContext.php';
 require_once $basedir . '/misc-classes/ZoneRQueryContext.php';
 require_once $basedir . '/misc-classes/ScheduleRQueryContext.php';
 
+require_once $basedir . '/misc-classes/ThreatRQueryContext.php';
+
 require_once $basedir . '/misc-classes/InterfaceRQueryContext.php';
 require_once $basedir . '/misc-classes/RoutingRQueryContext.php';
 require_once $basedir . '/misc-classes/VirtualWireRQueryContext.php';
@@ -204,6 +206,11 @@ require_once $basedir . '/object-classes/trait/centralServiceStoreUser.php';
 require_once $basedir . '/object-classes/trait/ServiceCommon.php';
 require_once $basedir . '/object-classes/Service.php';
 require_once $basedir . '/object-classes/ServiceGroup.php';
+
+require_once $basedir . '/object-classes/ThreatStore.php';
+require_once $basedir . '/object-classes/Threat.php';
+require_once $basedir . '/object-classes/ThreatVulnerability.php';
+require_once $basedir . '/object-classes/ThreatSpyware.php';
 
 require_once $basedir . '/object-classes/ScheduleStore.php';
 require_once $basedir . '/object-classes/Schedule.php';

@@ -93,6 +93,9 @@ class FawkesConf
     /** @var AppStore */
     public $appStore;
 
+    /** @var ThreatStore */
+    public $threatStore;
+
     /** @var SecurityProfileStore */
     public $urlStore;
 
@@ -120,6 +123,8 @@ class FawkesConf
 
 
         $this->appStore = AppStore::getPredefinedStore( $this );
+
+        $this->threatStore = ThreatStore::getPredefinedStore( $this );
 
         $this->urlStore = SecurityProfileStore::getPredefinedStore();
 

@@ -272,7 +272,9 @@ else
 ##########################################
 ##########################################
 
-$request = 'type=config&action=get&xpath=%2Fconfig%2Fpredefined';
+#$request = 'type=config&action=get&xpath=%2Fconfig%2Fpredefined';
+
+$request = 'type=op&cmd=<show><predefined><xpath>%2Fpredefined<%2Fxpath><%2Fpredefined><%2Fshow>';
 
 try
 {

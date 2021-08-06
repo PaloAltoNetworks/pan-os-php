@@ -97,6 +97,8 @@ class RQuery
             $this->contextObject = new ApplicationRQueryContext($this);
         elseif( $this->objectType == 'device' )
             $this->contextObject = new DeviceRQueryContext($this);
+        elseif( $this->objectType == 'threat' )
+            $this->contextObject = new ThreatRQueryContext($this);
         else
             derr("unsupported object type '$objectType'");
     }
@@ -670,6 +672,7 @@ require_once 'filters/filters-Service.php';
 require_once 'filters/filters-Tag.php';
 require_once 'filters/filters-Zone.php';
 require_once 'filters/filters-Application.php';
+require_once 'filters/filters-Threat.php';
 require_once 'filters/filters-Interface.php';
 require_once 'filters/filters-Routing.php';
 require_once 'filters/filters-VirtualWire.php';

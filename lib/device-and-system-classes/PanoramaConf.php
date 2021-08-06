@@ -172,6 +172,9 @@ class PanoramaConf
     /** @var AppStore */
     public $appStore;
 
+    /** @var ThreatStore */
+    public $threatStore;
+
     /** @var SecurityProfileStore */
     public $urlStore;
 
@@ -199,6 +202,8 @@ class PanoramaConf
         $this->zoneStore->setName('zoneStore');
 
         $this->appStore = AppStore::getPredefinedStore( $this );
+
+        $this->threatStore = ThreatStore::getPredefinedStore( $this );
 
         $this->urlStore = SecurityProfileStore::getPredefinedStore();
 

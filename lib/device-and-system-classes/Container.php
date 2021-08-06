@@ -116,6 +116,9 @@ class Container
     /** @var AppStore */
     public $appStore;
 
+    /** @var ThreatStore */
+    public $threatStore;
+
     /** @var TagStore */
     public $tagStore = null;
 
@@ -183,6 +186,8 @@ class Container
 
         $this->appStore = new AppStore($this);
         $this->appStore->name = 'customApplication';
+
+        $this->threatStore = $owner->threatStore;
 
         $this->serviceStore = new ServiceStore($this);
         $this->serviceStore->name = 'services';

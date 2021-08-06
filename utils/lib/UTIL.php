@@ -243,7 +243,9 @@ class UTIL
             $tmp_array = &ScheduleCallContext::$supportedActions;
         elseif( $this->utilType == 'application' )
             $tmp_array = &ApplicationCallContext::$supportedActions;
-        
+        elseif( $this->utilType == 'threat' )
+            $tmp_array = &ThreatCallContext::$supportedActions;
+
         elseif( $this->utilType == 'device' )
             $tmp_array = &DeviceCallContext::$supportedActions;
         elseif( $this->utilType == 'vsys' )
@@ -342,6 +344,8 @@ class UTIL
                 ScheduleCallContext::prepareSupportedActions();
             elseif( $this->utilType == 'application' )
                 ApplicationCallContext::prepareSupportedActions();
+            elseif( $this->utilType == 'threat' )
+                ThreatCallContext::prepareSupportedActions();
             elseif( $this->utilType == 'device' )
                 DeviceCallContext::prepareSupportedActions();
 
@@ -835,7 +839,9 @@ class UTIL
                 $context = new ScheduleCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries, $this);
             elseif( $this->utilType == 'application' )
                 $context = new ApplicationCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries, $this);
-            
+            elseif( $this->utilType == 'threat' )
+                $context = new ThreatCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries, $this);
+
             elseif( $this->utilType == 'device' )
                 $context = new DeviceCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries, $this);
             elseif( $this->utilType == 'vsys' )
@@ -1043,7 +1049,9 @@ class UTIL
                         $this->objectsToProcess[] = array('store' => $this->pan->scheduleStore, 'objects' => $this->pan->scheduleStore->getall());
                     elseif( $this->utilType == 'application' )
                         $this->objectsToProcess[] = array('store' => $this->pan->appStore, 'objects' => $this->pan->appStore->apps());
-                    
+                    elseif( $this->utilType == 'threat' )
+                        $this->objectsToProcess[] = array('store' => $this->pan->threatStore, 'objects' => $this->pan->threatStore->getAll());
+
                     $locationFound = TRUE;
                 }
                 foreach( $this->pan->getVirtualSystems() as $sub )
@@ -1062,7 +1070,7 @@ class UTIL
                             $this->objectsToProcess[] = array('store' => $sub->scheduleStore, 'objects' => $sub->scheduleStore->resultingObjectSet());
                         elseif( $this->utilType == 'application' )
                             $this->objectsToProcess[] = array('store' => $sub->appStore, 'objects' => $sub->appStore->resultingObjectSet());
-                        
+
                         $locationFound = TRUE;
                     }
                     elseif( ($location == 'any' || $location == $sub->name() && !isset($ruleStoresToProcess[$sub->name()])) )
@@ -1106,6 +1114,8 @@ class UTIL
                         $this->objectsToProcess[] = array('store' => $this->pan->scheduleStore, 'objects' => $this->pan->scheduleStore->getall());
                     elseif( $this->utilType == 'application' )
                         $this->objectsToProcess[] = array('store' => $this->pan->appStore, 'objects' => $this->pan->appStore->apps());
+                    elseif( $this->utilType == 'threat' )
+                        $this->objectsToProcess[] = array('store' => $this->pan->threatStore, 'objects' => $this->pan->threatStore->getAll());
 
                     $locationFound = TRUE;
                 }
@@ -1113,6 +1123,8 @@ class UTIL
                 {
                     if( $this->utilType == 'application' )
                         $this->objectsToProcess[] = array('store' => $this->pan->appStore, 'objects' => $this->pan->appStore->apps());
+                    elseif( $this->utilType == 'threat' )
+                        $this->objectsToProcess[] = array('store' => $this->pan->threatStore, 'objects' => $this->pan->threatStore->getAll());
 
                     $locationFound = TRUE;
                 }
