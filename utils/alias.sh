@@ -61,7 +61,7 @@ alias pa_routing-edit='php -r "require_once '"'"'utils/routing-edit.php'"'"';" $
 alias pa_vwire-edit='php -r "require_once '"'"'utils/vwire-edit.php'"'"';" $@'
 
 
-alias pa_threat='php -r "require_once '"'"'utils/develop/threat-edit.php'"'"';" $@'
+alias pa_threat='php -r "require_once '"'"'utils/develop/threat.php'"'"';" $@'
 
 alias pa_ike='php -r "require_once '"'"'utils/develop/ike.php'"'"';" $@'
 
