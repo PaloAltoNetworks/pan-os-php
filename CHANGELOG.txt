@@ -4,16 +4,19 @@ CHANGELOG
 UTILS:
 * pa_application-edit | introduce actions=move
 * pa_rule-edit actions=exporttoexcel - extend with rule target information
+* introduce pa_threat - actions=display and filters
 
 BUGFIX:
 * pa_application-edit | class UTIL fix for deviceType FAWKES to display predefined app
 * class AddressGroup | method includedInIP4Network return 0 instead of 1 if Addressgroup has no members
 * class RuleStore | method resultingPostRuleSet() - for Panorama shared now postRule is only return once instead of duplicate
 * pa_service-edit | bug fix for actions=timeout-set:SECONDS - <override><no/></override> was not removed | skip if servicegroup
+* pa_XYZ-merger | bug fix to merg with childDG ONLY if argument allowmergingwithupperlevel is set
 
 GENERAL:
 * introduce class AppCustom/AppFilter/AppGroup - to split object relevant information from class App
 * introduce class SaasSecurityProfile - extending all Fawkes config class and UTIL to support this new SecurityProfile
+* introduce class class Threat / ThreatStore / ThreatVulnerability / ThreatSpyware
 
 
 2.0.8 (20210719)

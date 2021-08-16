@@ -35,6 +35,8 @@ class DeviceCloud
     /** @var AppStore|null */
     public $appStore = null;
 
+    /** @var ThreatStore|null */
+    public $threatStore = null;
 
     protected $securityProfilebaseroot;
 
@@ -175,6 +177,8 @@ class DeviceCloud
         #$this->appStore = $owner->appStore;
         $this->appStore = new AppStore($this);
         $this->appStore->name = 'customApplication';
+
+        $this->threatStore = $owner->threatStore;
 
         $this->zoneStore = new ZoneStore($this);
         $this->zoneStore->setName('zoneStore');

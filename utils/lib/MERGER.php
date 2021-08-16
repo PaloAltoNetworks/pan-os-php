@@ -271,7 +271,10 @@ class MERGER extends UTIL
             $store = $tmp_location['store'];
             $findLocation = $tmp_location['findLocation'];
             $parentStore = $tmp_location['parentStore'];
-            $childDeviceGroups = $tmp_location['childDeviceGroups'];
+            if( $this->upperLevelSearch )
+                $childDeviceGroups = $tmp_location['childDeviceGroups'];
+            else
+                $childDeviceGroups = array();
 
             echo " - upper level search status : " . boolYesNo($this->upperLevelSearch) . "\n";
             if( is_string($findLocation) )
@@ -768,7 +771,10 @@ class MERGER extends UTIL
             $store = $tmp_location['store'];
             $findLocation = $tmp_location['findLocation'];
             $parentStore = $tmp_location['parentStore'];
-            $childDeviceGroups = $tmp_location['childDeviceGroups'];
+            if( $this->upperLevelSearch )
+                $childDeviceGroups = $tmp_location['childDeviceGroups'];
+            else
+                $childDeviceGroups = array();
 
             echo " - upper level search status : " . boolYesNo($this->upperLevelSearch) . "\n";
             if( is_string($findLocation) )
@@ -959,6 +965,7 @@ class MERGER extends UTIL
                     $countConcernedObjects += count($hash);
             }
             unset($hash);
+
             $countConcernedChildObjects = 0;
             foreach( $child_hashMap as $index => &$hash )
             {
@@ -968,6 +975,8 @@ class MERGER extends UTIL
                     $countConcernedChildObjects += count($hash);
             }
             unset($hash);
+
+
             echo "OK!\n";
 
             echo " - found " . count($hashMap) . " duplicates values totalling {$countConcernedObjects} address objects which are duplicate\n";
@@ -1253,7 +1262,10 @@ class MERGER extends UTIL
             $store = $tmp_location['store'];
             $findLocation = $tmp_location['findLocation'];
             $parentStore = $tmp_location['parentStore'];
-            $childDeviceGroups = $tmp_location['childDeviceGroups'];
+            if( $this->upperLevelSearch )
+                $childDeviceGroups = $tmp_location['childDeviceGroups'];
+            else
+                $childDeviceGroups = array();
 
             echo " - upper level search status : " . boolYesNo($this->upperLevelSearch) . "\n";
             if( is_string($findLocation) )
@@ -1609,7 +1621,10 @@ class MERGER extends UTIL
             $store = $tmp_location['store'];
             $findLocation = $tmp_location['findLocation'];
             $parentStore = $tmp_location['parentStore'];
-            $childDeviceGroups = $tmp_location['childDeviceGroups'];
+            if( $this->upperLevelSearch )
+                $childDeviceGroups = $tmp_location['childDeviceGroups'];
+            else
+                $childDeviceGroups = array();
 
             echo " - upper level search status : " . boolYesNo($this->upperLevelSearch) . "\n";
             if( is_string($findLocation) )

@@ -35,6 +35,8 @@ class VirtualSystem
     /** @var AppStore|null */
     public $appStore = null;
 
+    /** @var ThreatStore|null */
+    public $threatStore = null;
 
     protected $securityProfilebaseroot;
 
@@ -154,6 +156,7 @@ class VirtualSystem
         $this->appStore = new AppStore($this);
         $this->appStore->name = 'customApplication';
 
+        $this->threatStore = $owner->threatStore;
 
         $this->zoneStore = new ZoneStore($this);
         $this->zoneStore->setName('zoneStore');

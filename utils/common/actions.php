@@ -81,6 +81,10 @@ require_once("ApplicationCallContext.php");
 require_once "actions-application.php";
 ApplicationCallContext::prepareSupportedActions();
 
+require_once("ThreatCallContext.php");
+require_once "actions-threat.php";
+ThreatCallContext::prepareSupportedActions();
+
 require_once("DeviceCallContext.php");
 require_once "actions-device.php";
 DeviceCallContext::prepareSupportedActions();

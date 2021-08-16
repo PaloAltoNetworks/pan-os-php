@@ -11,6 +11,8 @@ class ThreatStore extends ObjStore
 
     public $predefinedStore_threat_version = null;
 
+    public static $childn = 'App';
+
     /** @var null|ThreatStore */
     public static $predefinedStore = null;
 
@@ -22,7 +24,7 @@ class ThreatStore extends ObjStore
         if( self::$predefinedStore !== null )
             return self::$predefinedStore;
 
-        self::$predefinedStore = new AppStore( $owner );
+        self::$predefinedStore = new ThreatStore( $owner );
         self::$predefinedStore->setName('predefined Threats');
         self::$predefinedStore->load_from_predefinedfile();
 
@@ -83,10 +85,36 @@ class ThreatStore extends ObjStore
             if( $threatName === FALSE )
                 derr("threat name not found\n");
 
-            $threat = new Threat($threatName, $this);
-            $threat->type = 'predefined';
+            $threat = new ThreatVulnerability($threatName, $this);
+            $threat->type = 'vulnerability';
             $threat->xmlroot = $threatx;
+            $threat->vulnerability_load_from_domxml( $threatx );
+
             $this->add($threat);
+
+            $this->vulnerability[] = $threat;
+        }
+    }
+
+    public function load_phone_home_containers_from_domxml(DOMElement $xml)
+    {
+        foreach( $xml->childNodes as $threatx )
+        {
+            if( $threatx->nodeType != XML_ELEMENT_NODE )
+                continue;
+
+            $threatName = DH::findAttribute('name', $threatx);
+            if( $threatName === FALSE )
+                derr("threat name not found\n");
+
+            $threat = new ThreatSpyware($threatName, $this);
+            $threat->type = 'spyware';
+            $threat->xmlroot = $threatx;
+            $threat->spyware_load_from_domxml( $threatx );
+
+            $this->add($threat);
+
+            $this->phoneHome[] = $threat;
         }
     }
 }
