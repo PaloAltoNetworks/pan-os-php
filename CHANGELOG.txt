@@ -5,6 +5,7 @@ UTILS:
 * pa_application-edit | introduce actions=move
 * pa_rule-edit actions=exporttoexcel - extend with rule target information
 * introduce pa_threat - actions=display and filters
+* pa_service-edit | actions=exportToExcel - add timeout value
 
 BUGFIX:
 * pa_application-edit | class UTIL fix for deviceType FAWKES to display predefined app

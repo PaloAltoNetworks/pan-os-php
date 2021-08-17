@@ -206,7 +206,7 @@ ServiceCallContext::$supportedActions[] = array(
             $addUsedInLocation = TRUE;
 
 
-        $headers = '<th>location</th><th>name</th><th>type</th><th>dport</th><th>sport</th><th>members</th><th>description</th><th>tags</th>';
+        $headers = '<th>location</th><th>name</th><th>type</th><th>dport</th><th>sport</th><th>timeout</th><th>members</th><th>description</th><th>tags</th>';
 
         if( $addWhereUsed )
             $headers .= '<th>where used</th>';
@@ -235,6 +235,7 @@ ServiceCallContext::$supportedActions[] = array(
                     $lines .= $encloseFunction('group');
                     $lines .= $encloseFunction('');
                     $lines .= $encloseFunction('');
+                    $lines .= $encloseFunction('');
                     $lines .= $encloseFunction($object->members());
                     $lines .= $encloseFunction('');
                     $lines .= $encloseFunction($object->tags->tags());
@@ -244,6 +245,7 @@ ServiceCallContext::$supportedActions[] = array(
                     if( $object->isTmpSrv() )
                     {
                         $lines .= $encloseFunction('unknown');
+                        $lines .= $encloseFunction('');
                         $lines .= $encloseFunction('');
                         $lines .= $encloseFunction('');
                         $lines .= $encloseFunction('');
@@ -258,6 +260,7 @@ ServiceCallContext::$supportedActions[] = array(
 
                         $lines .= $encloseFunction($object->getDestPort());
                         $lines .= $encloseFunction($object->getSourcePort());
+                        $lines .= $encloseFunction($object->getTimeout());
                         $lines .= $encloseFunction('');
                         $lines .= $encloseFunction($object->description(), FALSE);
                         $lines .= $encloseFunction($object->tags->tags());
