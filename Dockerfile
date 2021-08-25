@@ -8,7 +8,7 @@ RUN apt update -y --fix-missing
 RUN apt-get install -y tzdata
 
 
-RUN apt-get install -y php php-curl php-dom php-mbstring
+RUN apt-get install -y php php-curl php-dom php-mbstring php-bcmath
 
 
 RUN mkdir /tools; mkdir /tools/pan-os-php;
