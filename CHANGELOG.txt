@@ -13,12 +13,13 @@ BUGFIX:
 * class RuleStore | method resultingPostRuleSet() - for Panorama shared now postRule is only return once instead of duplicate
 * pa_service-edit | bug fix for actions=timeout-set:SECONDS - <override><no/></override> was not removed | skip if servicegroup
 * pa_XYZ-merger | bug fix to merg with childDG ONLY if argument allowmergingwithupperlevel is set
+* pa_rule-edit | bugfix - actions=exporttoexcel:FILE ruleType=pbf - PBF has no TO zone
 
 GENERAL:
 * introduce class AppCustom/AppFilter/AppGroup - to split object relevant information from class App
 * introduce class SaasSecurityProfile - extending all Fawkes config class and UTIL to support this new SecurityProfile
 * introduce class class Threat / ThreatStore / ThreatVulnerability / ThreatSpyware
-
+* predefined.xml update to version 8448-6902
 
 2.0.8 (20210719)
 UTILS:
