@@ -1425,7 +1425,7 @@ RQuery::$defaultFilters['rule']['service']['operators']['is.tcp'] = array(
                 if( strpos($port_mapping_text, "tcp") !== FALSE )
                     $isTCP = TRUE;
                 else
-                    return FALSE;
+                    $isTCP = FALSE;
             }
             elseif( $object->isTcp() )
                 $isTCP = TRUE;
@@ -1464,9 +1464,9 @@ RQuery::$defaultFilters['rule']['service']['operators']['is.udp'] = array(
                 $port_mapping_text = $port_mapping->mappingToText();
 
                 if( strpos($port_mapping_text, "udp") !== FALSE )
-                    return TRUE;
+                    $isUDP = TRUE;
                 else
-                    return FALSE;
+                    $isUDP = FALSE;
             }
             elseif( $object->isUdp() )
                 $isUDP = TRUE;
