@@ -994,10 +994,8 @@ ServiceCallContext::$supportedActions[] = array(
                     {
                         $tmp_txt .= "    count values: '" . (substr_count($member->getDestPort(), ",") + 1) . "' length: " . strlen($member->getDestPort());
                     }
-
-
-                    PH::print_stdout( $tmp_txt );
                 }
+                PH::print_stdout( $tmp_txt );
             }
         }
         else

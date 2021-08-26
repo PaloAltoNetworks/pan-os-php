@@ -14,6 +14,7 @@ BUGFIX:
 * pa_service-edit | bug fix for actions=timeout-set:SECONDS - <override><no/></override> was not removed | skip if servicegroup
 * pa_XYZ-merger | bug fix to merg with childDG ONLY if argument allowmergingwithupperlevel is set
 * pa_rule-edit | bugfix - actions=exporttoexcel:FILE ruleType=pbf - PBF has no TO zone
+* pa_rule-edit - bugfix 'filter=(service is.udp)'
 
 GENERAL:
 * introduce class AppCustom/AppFilter/AppGroup - to split object relevant information from class App
