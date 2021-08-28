@@ -6,6 +6,7 @@ UTILS:
 * pa_rule-edit actions=exporttoexcel - extend with rule target information
 * introduce pa_threat - actions=display and filters
 * pa_service-edit | actions=exportToExcel - add timeout value
+* pa_diff - extend to display rule order changes
 
 BUGFIX:
 * pa_application-edit | class UTIL fix for deviceType FAWKES to display predefined app
@@ -19,8 +20,9 @@ BUGFIX:
 GENERAL:
 * introduce class AppCustom/AppFilter/AppGroup - to split object relevant information from class App
 * introduce class SaasSecurityProfile - extending all Fawkes config class and UTIL to support this new SecurityProfile
-* introduce class class Threat / ThreatStore / ThreatVulnerability / ThreatSpyware
+* introduce class Threat / ThreatStore / ThreatVulnerability / ThreatSpyware
 * predefined.xml update to version 8448-6902
+
 
 2.0.8 (20210719)
 UTILS:

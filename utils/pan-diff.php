@@ -126,6 +126,46 @@ else
 
 print "*** NOW DISPLAY DIFF ***\n\n";
 
+function endsWith($haystack, $needle) {
+    $length = strlen($needle);
+    return $length > 0 ? substr($haystack, -$length) === $needle : true;
+}
+
+function calculateRuleorder( $el1Elements, $el2Elements)
+{
+    global $el1rulebase;
+    global $el2rulebase;
+
+    $el1rulebase = array();
+    foreach( $el1Elements['entry'] as $key => $rule )
+    {
+        $name = $rule->getAttribute('name');
+        $el1rulebase[$name] = $name;
+    }
+    $el2rulebase = array();
+    foreach( $el2Elements['entry'] as $key => $rule )
+    {
+        $name = $rule->getAttribute('name');
+        $el2rulebase[$name] = $name;
+    }
+}
+function checkRuleOrder( $xpath )
+{
+    global $el1rulebase;
+    global $el2rulebase;
+
+    $start = strpos( $xpath, '/rules/entry[@name=\'' );
+    $name_string =  substr( $xpath, $start+20);
+    $name_string = str_replace( "']", '', $name_string );
+
+    $posFile1 = array_search($name_string, array_keys($el1rulebase));
+    $posFile2 = array_search($name_string, array_keys($el2rulebase));
+    if( $posFile1 !== $posFile2 )
+    {
+        print "\nXPATH: $xpath\n";
+        print "x different RULE position: file1: pos".$posFile1." / file2: pos".$posFile2."\n";
+    }
+}
 
 /**
  * @param DOMElement $el1
@@ -133,10 +173,12 @@ print "*** NOW DISPLAY DIFF ***\n\n";
  */
 function compareElements($el1, $el2, $xpath = null)
 {
+    global $el1rulebase;
+    global $el2rulebase;
+
     #print "argument XPATH: ".$xpath."\n";
     if( $xpath == null )
         $xpath = DH::elementToPanXPath($el1);
-
 
     #print "*** COMPARING {$xpath}\n";
 
@@ -168,6 +210,11 @@ function compareElements($el1, $el2, $xpath = null)
         $el2Elements[$node->tagName][] = $node;
     }
 
+    //calculating rule order
+    if( endsWith( $xpath, "/rules" ) && strpos( $xpath, "rulebase/") !== false )
+        calculateRuleorder( $el1Elements, $el2Elements);
+
+
     if( count($el1Elements) == 0 && count($el2Elements) == 0 )
     {
         $el1Trim = trim($el1->textContent);
@@ -177,26 +224,17 @@ function compareElements($el1, $el2, $xpath = null)
         {
             $text = '';
 
-
             $tmp = DH::dom_to_xml($el1);
             $text .= '+' . str_replace("\n", "\n", $tmp);
 
             $tmp = DH::dom_to_xml($el2);
             $text .= '-' . str_replace("\n", "\n", $tmp);
 
-
             if( $text != '' )
             {
                 print "\nXPATH: $xpath\n";
                 print "$text\n";
             }
-
-            /* OLD OUTPUT
-            #$xpath = DH::elementToPanXPath($el1);
-            #print "\nXPATH: {$xpath}\n";
-            #print "- {$el1Trim}\n";
-            #print "+ {$el2Trim}\n";
-            */
         }
         return;
     }
@@ -209,10 +247,7 @@ function compareElements($el1, $el2, $xpath = null)
         if( !isset($el2Elements[$tagName]) )
         {
             foreach( $nodeArray1 as $node )
-            {
                 $minus[] = $node;
-            }
-
             unset($el1Elements[$tagName]);
         }
     }
@@ -221,9 +256,7 @@ function compareElements($el1, $el2, $xpath = null)
         if( !isset($el1Elements[$tagName]) )
         {
             foreach( $nodeArray2 as $node )
-            {
                 $plus[] = $node;
-            }
             unset($el2Elements[$tagName]);
         }
     }
@@ -361,7 +394,6 @@ function compareElements($el1, $el2, $xpath = null)
             else
                 foreach( $el2BasicNode as $node )
                     $minus[] = $node;
-
         }
         else
         {
@@ -389,6 +421,10 @@ function compareElements($el1, $el2, $xpath = null)
                 {
                     $minus[] = $node;
                     unset($el1NameSorted[$nodeName]);
+
+                    $nodeName = $node->getAttribute('name');
+                    if( isset( $el1rulebase[$nodeName] ) )
+                        unset( $el1rulebase[$nodeName] );
                 }
             }
             foreach( $el2NameSorted as $nodeName => $node )
@@ -397,6 +433,10 @@ function compareElements($el1, $el2, $xpath = null)
                 {
                     $plus[] = $node;
                     unset($el2NameSorted[$nodeName]);
+
+                    $nodeName = $node->getAttribute('name');
+                    if( isset( $el2rulebase[$nodeName] ) )
+                        unset( $el2rulebase[$nodeName] );
                 }
             }
 
@@ -412,6 +452,11 @@ function compareElements($el1, $el2, $xpath = null)
         unset($el1Elements[$tagName]);
         unset($el2Elements[$tagName]);
     }
+
+
+    //check if ruleorder is same
+    if( endsWith( $xpath, "']" ) && strpos( $xpath, "rulebase/") !== false && strpos( $xpath, "/rules") !== false )
+        checkRuleOrder( $xpath );
 
 
     $text = '';
@@ -435,6 +480,9 @@ function compareElements($el1, $el2, $xpath = null)
     }
 
 }
+
+$el1rulebase = array();
+$el2rulebase = array();
 
 if( $filter == FALSE )
 {
