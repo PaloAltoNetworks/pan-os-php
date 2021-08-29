@@ -1311,7 +1311,7 @@ class PanoramaConf
         $url = "&type=import&category=configuration&category=configuration";
         $this->connector->sendRequest($url, FALSE, DH::dom_to_xml($this->xmlroot), $config_filename);
 
-        print "OK!\n";
+
     }
 
     /**

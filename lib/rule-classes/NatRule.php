@@ -112,7 +112,7 @@ class NatRule extends Rule
             derr("name not found\n");
 
         $this->load_common_from_domxml();
-        //print "found rule name '".$this->name."'\n";
+        //PH::print_stdout( "found rule name '".$this->name."'" );
 
         $this->load_from();
         $this->load_to();
@@ -153,7 +153,7 @@ class NatRule extends Rule
 
         if( $this->dnatroot !== FALSE )
         {
-            //print "rule '".$this->name."' has destination-translation\n";
+            //PH::print_stdout( "rule '".$this->name."' has destination-translation" );
             if( $this->dnatroot->hasChildNodes() )
             {
                 $this->subdnatTAroot = DH::findFirstElement('translated-address', $this->dnatroot);
@@ -182,7 +182,7 @@ class NatRule extends Rule
         $this->snatroot = DH::findFirstElement('source-translation', $xml);
         if( $this->snatroot !== FALSE )
         {
-            //print "we have found a source NAT\n";
+            //PH::print_stdout( "we have found a source NAT" );
             // next <tag> will determine NAT type
             $firstE = DH::firstChildElement($this->snatroot);
             $this->snattype = $firstE->nodeName;
@@ -191,7 +191,7 @@ class NatRule extends Rule
             if( $this->snattype != "static-ip" && $this->snattype != "dynamic-ip-and-port" && $this->snattype != "dynamic-ip" )
                 derr("SNAT type '" . $this->snattype . "' for rule '" . $this->name . "' is not supported, EXIT\n");
 
-            //print "Determined NAT type ".$tcur['name']."\n";
+            //PH::print_stdout( "Determined NAT type ".$tcur['name'] );
 
 
             if( $this->snattype == "static-ip" )
@@ -327,7 +327,7 @@ class NatRule extends Rule
             $lname = $this->serviceroot->textContent;
             if( strtolower($lname) != 'any' )
             {
-                //print "found service named $lname in  NAT rule '".$this->name."'\n";
+                //PH::print_stdout( "found service named $lname in  NAT rule '".$this->name."'" );
                 $f = $this->parentServiceStore->findOrCreate($lname, $this, TRUE);
                 if( !$f )
                 {

@@ -1,7 +1,7 @@
 <?php
 
-echo "\n*************************************************\n";
-echo   "**************** FILTER TESTERS *****************\n\n";
+print "\n*************************************************\n";
+print   "**************** FILTER TESTERS *****************\n\n";
 
 require_once("lib/pan_php_framework.php");
 
@@ -69,7 +69,7 @@ foreach( $cli_array as $cli )
 {
             $cli .= ' 2>&1';
 
-            echo " * Executing CLI: {$cli}\n";
+            print " * Executing CLI: {$cli}\n";
 
             $output = Array();
             $retValue = 0;
@@ -78,20 +78,20 @@ foreach( $cli_array as $cli )
 
             foreach($output as $line)
             {
-                echo '   ##  '; echo $line; echo "\n";
+                print '   ##  '; print $line; print "\n";
             }
 
             if( $retValue != 0 )
                 derr("CLI exit with error code '{$retValue}'");
 
-            echo "\n";
+            print "\n";
 }
 
 
-echo "\n*****  *****\n";
-#echo " - Processed {$totalFilterCount} filters\n";
-#echo " - Found {$totalFilterWithCiCount} that are CI enabled\n";
-echo "\n*****  *****\n";
+print "\n*****  *****\n";
+#print " - Processed {$totalFilterCount} filters\n";
+#print " - Found {$totalFilterWithCiCount} that are CI enabled\n";
+print "\n*****  *****\n";
 
 
 
@@ -118,14 +118,14 @@ foreach( $stage_array as $item )
 
     $cli .= "  2>&1";
 
-    echo " * Executing CLI: {$cli}\n";
+    print " * Executing CLI: {$cli}\n";
 
     exec($cli, $output, $retValue );
 
     $counter = 0;
     foreach($output as $line)
     {
-        echo '   ##  '; echo $line; echo "\n";
+        print '   ##  '; print $line; print "\n";
         $counter++;
     }
 
@@ -137,7 +137,7 @@ foreach( $stage_array as $item )
     if( $retValue != 0 )
         derr("CLI exit with error code '{$retValue}'");
 
-    echo "\n";
+    print "\n";
 }
 
 
@@ -151,9 +151,9 @@ foreach( $stage_array as $item )
 
 
 
-echo "\n";
-echo "\n*********** FINISHED TESTING FILTERS ************\n";
-echo   "*************************************************\n\n";
+print "\n";
+print "\n*********** FINISHED TESTING FILTERS ************\n";
+print   "*************************************************\n\n";
 
 
 

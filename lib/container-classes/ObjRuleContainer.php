@@ -53,10 +53,10 @@ class ObjRuleContainer
     {
         if( count($ostore->o) != count($this->o) )
         {
-            //print "Not same count '".count($ostore->o)."':'".count($this->o)."'\n";
+            //PH::print_stdout( "Not same count '".count($ostore->o)."':'".count($this->o)."'" );
             return FALSE;
         }
-        //print "passed\n";
+        //PH::print_stdout( "passed" );
         foreach( $this->o as $o )
         {
             if( !in_array($o, $ostore->o, TRUE) )

@@ -22,7 +22,7 @@
  *        $plaintext.= 'a';
  *    }
  *
- *    echo $des->decrypt($des->encrypt($plaintext));
+ *    print $des->decrypt($des->encrypt($plaintext));
  * ?>
  * </code>
  *
@@ -400,11 +400,11 @@ class Crypt_TripleDES extends Crypt_DES
      * will yield different outputs:
      *
      * <code>
-     *    echo $des->encrypt(substr($plaintext, 0, 8));
-     *    echo $des->encrypt(substr($plaintext, 8, 8));
+     *    print $des->encrypt(substr($plaintext, 0, 8));
+     *    print $des->encrypt(substr($plaintext, 8, 8));
      * </code>
      * <code>
-     *    echo $des->encrypt($plaintext);
+     *    print $des->encrypt($plaintext);
      * </code>
      *
      * The solution is to enable the continuous buffer.  Although this will resolve the above discrepancy, it creates
@@ -412,10 +412,10 @@ class Crypt_TripleDES extends Crypt_DES
      *
      * <code>
      *    $des->encrypt(substr($plaintext, 0, 8));
-     *    echo $des->decrypt($des->encrypt(substr($plaintext, 8, 8)));
+     *    print $des->decrypt($des->encrypt(substr($plaintext, 8, 8)));
      * </code>
      * <code>
-     *    echo $des->decrypt($des->encrypt(substr($plaintext, 8, 8)));
+     *    print $des->decrypt($des->encrypt(substr($plaintext, 8, 8)));
      * </code>
      *
      * With the continuous buffer disabled, these would yield the same output.  With it enabled, they yield different

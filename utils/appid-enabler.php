@@ -33,18 +33,18 @@ function disable_appid($actions, $xmlDoc1, $configInput, $Connector)
         //THIS is a NON available XPATH | TODO: swaschkut 20190115 validate it!!!
         $tmp_application_status = DH::findXPath('/config/devices/entry/vsys/entry/application-status/entry', $xmlDoc1);
         if( $tmp_application_status->length == 0 )
-            print PH::boldText("\nNO disabled APP-IDs available\n");
+            PH::print_stdout( PH::boldText("\nNO disabled APP-IDs available\n") );
     }
 
 
     foreach( $tmp_application_status as $app_status )
     {
-        print "----------------\n";
-        print "name: " . DH::findAttribute('name', $app_status) . "\n";
+        PH::print_stdout( "----------------" );
+        PH::print_stdout( "name: " . DH::findAttribute('name', $app_status) );
 
 
         if( $actions == 'display' )
-            print " - status: " . DH::findAttribute('status', $app_status);
+            PH::print_stdout( " - status: " . DH::findAttribute('status', $app_status) );
         elseif( $actions == 'enable' )
         {
             $apiArgs = array();
@@ -54,7 +54,7 @@ function disable_appid($actions, $xmlDoc1, $configInput, $Connector)
             if( $configInput['type'] == 'api' )
             {
                 $response = $Connector->sendRequest($apiArgs);
-                print " - status: enable";
+                $text = " - status: enable";
             }
             else
             {
@@ -64,7 +64,7 @@ function disable_appid($actions, $xmlDoc1, $configInput, $Connector)
 
         }
 
-        print "\n";
+        PH::print_stdout( $text );
     }
 }
 
@@ -79,11 +79,10 @@ $supportedArguments['actions'] = array('niceName' => 'Actions', 'shortHelp' => '
 
 $usageMsg = PH::boldText('USAGE: ') . "php " . basename(__FILE__) . " in=api://[MGMT-IP] [cycleconnectedFirewalls] [actions=enable]";
 
-if( !PH::$shadow_json )
-{
-    print "\n***********************************************\n";
-    print "************ APP-ID ENABLE UTILITY ****************\n\n";
-}
+PH::print_stdout("");
+PH::print_stdout("***********************************************");
+PH::print_stdout("*********** " . basename(__FILE__) . " UTILITY **************");
+PH::print_stdout("");
 
 $util = new UTIL("custom", $argv, __FILE__, $supportedArguments, $usageMsg);
 $util->utilInit();
@@ -111,7 +110,7 @@ if( $cycleConnectedFirewalls && $util->configType == 'panorama' )
     foreach( $firewallSerials as $fw )
     {
         $countFW++;
-        print " ** Handling FW #{$countFW}/" . count($firewallSerials) . " : serial/{$fw['serial']}   hostname/{$fw['hostname']} **\n";
+        PH::print_stdout( " ** Handling FW #{$countFW}/" . count($firewallSerials) . " : serial/{$fw['serial']}   hostname/{$fw['hostname']} **" );
         $tmpConnector = $inputConnector->cloneForPanoramaManagedDevice($fw['serial']);
 
         if( $debugAPI )
@@ -131,14 +130,11 @@ else
 ##########################################
 if( !PH::$shadow_json )
 {
-    print "\n\n\n";
+    PH::print_stdout( "" );
 }
 
 $util->save_our_work();
 
-if( !PH::$shadow_json )
-{
-    print "\n\n************ END OF APP-ID ENABLE UTILITY ************\n";
-    print     "**************************************************\n";
-    print "\n\n";
-}
+PH::print_stdout("");
+PH::print_stdout("************* END OF SCRIPT " . basename(__FILE__) . " ************" );
+PH::print_stdout("");

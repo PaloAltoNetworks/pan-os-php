@@ -107,9 +107,8 @@ function filterArgument(&$pickFilter = null, &$excludeFilter = null, &$upperLeve
         $errMsg = '';
         if( $pickFilter->parseFromString(PH::$args['pickfilter'], $errMsg) === FALSE )
             derr("invalid pickFilter was input: " . $errMsg);
-        echo " - pickFilter was input: ";
+        PH::print_stdout( " - pickFilter was input: ");
         $pickFilter->display();
-        echo "\n";
     }
     $excludeFilter = null;
     if( isset(PH::$args['excludefilter']) )
@@ -118,9 +117,8 @@ function filterArgument(&$pickFilter = null, &$excludeFilter = null, &$upperLeve
         $errMsg = '';
         if( $excludeFilter->parseFromString(PH::$args['excludefilter'], $errMsg) === FALSE )
             derr("invalid pickFilter was input: " . $errMsg);
-        echo " - excludeFilter was input: ";
+        PH::print_stdout( " - excludeFilter was input: ");
         $excludeFilter->display();
-        echo "\n";
     }
     $upperLevelSearch = FALSE;
     if( isset(PH::$args['allowmergingwithupperlevel']) )

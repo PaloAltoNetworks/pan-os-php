@@ -32,18 +32,17 @@ $supportedArguments = array();
 $supportedArguments['in'] = array('niceName' => 'in', 'shortHelp' => 'input file or api. ie: in=config.xml  or in=api://192.168.1.1 or in=api://0018CAEC3@panorama.company.com', 'argDesc' => '[filename]|[api://IP]|[api://serial@IP]');
 $supportedArguments['cmd'] = array('niceName' => 'cmd', 'shortHelp' => 'PAN-OS XML API - command');
 $supportedArguments['debugapi'] = array('niceName' => 'DebugAPI', 'shortHelp' => 'prints API calls when they happen');
-$supportedArguments['shadow-json'] = array('niceName' => 'shadow-JSON', 'shortHelp' => 'print out ONLY JSON string');
+$supportedArguments['shadow-json'] = array('niceName' => 'shadow-JSON', 'shortHelp' => 'display ONLY JSON string');
 $supportedArguments['help'] = array('niceName' => 'help', 'shortHelp' => 'this message');
 $supportedArguments['cycleconnectedfirewalls'] = array('niceName' => 'cycleConnectedFirewalls', 'shortHelp' => 'a listing of all devices connected to Panorama will be collected through API then each firewall will be queried for bpa generator');
 
 
 $usageMsg = PH::boldText('USAGE: ') . "php " . basename(__FILE__) . " in=api://[MGMT-IP] [cycleconnectedFirewalls] [actions=enable]";
 
-if( !PH::$shadow_json )
-{
-    print "\n********************************************************\n";
-    print "************ PAN OP - XML to JSON UTILITY ****************\n\n";
-}
+PH::print_stdout("");
+PH::print_stdout("***********************************************");
+PH::print_stdout("*********** " . basename(__FILE__) . " UTILITY **************");
+PH::print_stdout("");
 
 $util = new UTIL("custom", $argv, __FILE__, $supportedArguments, $usageMsg);
 $util->utilInit();
@@ -81,7 +80,7 @@ if( isset(PH::$args['cmd'] ) )
             foreach( $firewallSerials as $fw )
             {
                 $countFW++;
-                print " ** Handling FW #{$countFW}/" . count($firewallSerials) . " : serial/{$fw['serial']}   hostname/{$fw['hostname']} **\n";
+                PH::print_stdout( " ** Handling FW #{$countFW}/" . count($firewallSerials) . " : serial/{$fw['serial']}   hostname/{$fw['hostname']} **" );
                 $tmpConnector = $inputConnector->cloneForPanoramaManagedDevice($fw['serial']);
 
                 if( $util->debugAPI )
@@ -115,36 +114,25 @@ else
     $xml_string = "<response status=\"error\"><error>pan-os-php - cmd argument not found</error></response>";
 
 
-if( !PH::$shadow_json )
-{
-    print "\n\n\n";
-    print "XML response: \n";
-    print $xml_string . "\n";
-}
+PH::print_stdout("");
+PH::print_stdout( "XML response:");
+PH::print_stdout( $xml_string );
 
 $xml = simplexml_load_string($xml_string);
 $json =  json_encode($xml, JSON_PRETTY_PRINT);
 
-if( !PH::$shadow_json )
-{
-    print "\n\n\n";
-    print "JSON:\n";
-}
-print $json;
+PH::print_stdout("");
+PH::print_stdout( "JSON:");
+//this is the original JSON, so pring it out
+print $json ;
 
 
 ##########################################
 ##########################################
-if( !PH::$shadow_json )
-{
-    print "\n\n\n";
-}
+PH::print_stdout("");
 
 $util->save_our_work();
 
-if( !PH::$shadow_json )
-{
-    print "\n\n************ END PAN OP - XML to JSON UTILITY ************\n";
-    print     "**********************************************************\n";
-    print "\n\n";
-}
+PH::print_stdout("");
+PH::print_stdout("************* END OF SCRIPT " . basename(__FILE__) . " ************" );
+PH::print_stdout("");

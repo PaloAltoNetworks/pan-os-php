@@ -1,6 +1,8 @@
 <?php
 
-print "\n*********** START OF SCRIPT ".basename(__FILE__)." ************\n\n";
+PH::print_stdout("");
+PH::print_stdout("*********** START OF SCRIPT ".basename(__FILE__)." ************" );
+PH::print_stdout("");
 
 // load PAN-PHP-FRAMEWORK library
 require_once("lib/pan_php_framework.php");
@@ -58,7 +60,9 @@ $apiMode = $util->apiMode;
 /** @var array $args */
 $args = PH::$args;
 
-print "\n\n    **********     **********\n\n";
+PH::print_stdout("");
+PH::print_stdout( "    **********     **********" );
+PH::print_stdout("");
 
 /*********************************
  * *
@@ -77,5 +81,7 @@ print "\n\n    **********     **********\n\n";
 
 
 $util->save_our_work();
-print "\n************* END OF SCRIPT ".basename(__FILE__)." ************\n\n";
+PH::print_stdout("");
+PH::print_stdout( "************* END OF SCRIPT ".basename(__FILE__)." ************" );
+PH::print_stdout("");
 

@@ -38,11 +38,11 @@ $supportedArguments['location'] = array('niceName' => 'Location', 'shortHelp' =>
 
 $usageMsg = PH::boldText('USAGE: ') . "php " . basename(__FILE__) . " in=api:://[MGMT-IP] [cycleconnectedFirewalls] [actions=enable]";
 
-if( !PH::$shadow_json )
-{
-    print "\n***********************************************\n";
-    print "************ APP-ID ENABLE UTILITY ****************\n\n";
-}
+PH::print_stdout("" );
+PH::print_stdout("***********************************************" );
+PH::print_stdout("************ CSV IMPORT UTILITY ****************" );
+PH::print_stdout("" );
+
 
 $util = new UTIL("custom", $argv, __FILE__, $supportedArguments, $usageMsg);
 $util->utilInit();
@@ -123,7 +123,8 @@ if( $actions == "display" )
                 }
 
                 $secrule = $rule_location->securityRules->newSecurityRule($rulename);
-                print "\n * create SecurityRule: " . $rulename . "\n";
+                PH::print_stdout( "");
+                PH::print_stdout(  " * create SecurityRule: " . $rulename );
 
             }
 
@@ -155,7 +156,7 @@ if( $actions == "display" )
 
                             if( $tmp_tag != null )
                             {
-                                print "  - add Tag: " . $name . "\n";
+                                PH::print_stdout(  "  - add Tag: " . $name );
                                 $secrule->tags->addTag($tmp_tag);
                             }
                         }
@@ -184,7 +185,7 @@ if( $actions == "display" )
                     {
                         if( $name == "any" )
                         {
-                            print "   - from Zone set ANY\n";
+                            PH::print_stdout(  "   - from Zone set ANY" );
                             $secrule->from->setAny();
                         }
                         else
@@ -208,7 +209,7 @@ if( $actions == "display" )
 
                             if( $tmp_from_zone != null )
                             {
-                                print "   - add from Zone: " . $name . "\n";
+                                PH::print_stdout(  "   - add from Zone: " . $name );
                                 $secrule->from->addZone($tmp_from_zone);
                             }
                         }
@@ -224,7 +225,7 @@ if( $actions == "display" )
                     {
                         if( $name == "any" )
                         {
-                            print "   - source set ANY\n";
+                            PH::print_stdout(  "   - source set ANY" );
                             $secrule->source->setAny();
                         }
                         else
@@ -244,7 +245,7 @@ if( $actions == "display" )
 
                             if( $tmp_address != null )
                             {
-                                print "   - source add: " . $name . "\n";
+                                PH::print_stdout(  "   - source add: " . $name );
                                 $secrule->source->addObject($tmp_address);
                             }
                         }
@@ -261,7 +262,7 @@ if( $actions == "display" )
                     {
                         if( $name == "any" )
                         {
-                            print "   - to Zone set ANY\n";
+                            PH::print_stdout(  "   - to Zone set ANY" );
                             $secrule->to->setAny();
                         }
                         else
@@ -284,7 +285,7 @@ if( $actions == "display" )
                             }
                             if( $tmp_to_zone != null )
                             {
-                                print "   - add to Zone: " . $name . "\n";
+                                PH::print_stdout(  "   - add to Zone: " . $name );
                                 $secrule->to->addZone($tmp_to_zone);
                             }
                         }
@@ -301,7 +302,7 @@ if( $actions == "display" )
                     {
                         if( $name == "any" )
                         {
-                            print "   - destination set ANY\n";
+                            PH::print_stdout(  "   - destination set ANY" );
                             $secrule->destination->setAny();
                         }
                         else
@@ -320,7 +321,7 @@ if( $actions == "display" )
                             }
                             if( $tmp_address != null )
                             {
-                                print "   - destination add: " . $name . "\n";
+                                PH::print_stdout(  "   - destination add: " . $name );
                                 $secrule->destination->addObject($tmp_address);
                             }
                         }
@@ -346,19 +347,19 @@ if( $actions == "display" )
                             }
                             else
                             {
-                                print "   - service add: " . $name . "\n";
+                                PH::print_stdout(  "   - service add: " . $name );
                                 $secrule->services->add($tmp_service);
                             }
                         }
                         elseif( $name == "any" )
                         {
-                            print "   - service set any\n";
+                            PH::print_stdout(  "   - service set any" );
                             $secrule->services->setAny();
                         }
 
                         elseif( $name == "application-default" )
                         {
-                            print "   - service set application-default\n";
+                            PH::print_stdout(  "   - service set application-default" );
                             $secrule->services->setApplicationDefault();
                         }
 
@@ -382,7 +383,7 @@ if( $actions == "display" )
                             }
                             else
                             {
-                                print "   - appID add: " . $name . "\n";
+                                PH::print_stdout(  "   - appID add: " . $name );
                                 $secrule->apps->addApp($tmp_app);
                             }
                         }
@@ -397,7 +398,7 @@ if( $actions == "display" )
                 if( isset($rule['Action']) )
                 {
                     $name = $rule['Action'];
-                    print "   - add Rule action to: " . $name . "\n";
+                    PH::print_stdout(  "   - add Rule action to: " . $name );
                     $secrule->setAction($name);
                 }
 
@@ -409,7 +410,7 @@ if( $actions == "display" )
 
                     if( $name != "none" )
                     {
-                        print " * add security profile group: " . $name . "\n";
+                        PH::print_stdout(  " * add security profile group: " . $name );
                         $secrule->setSecurityProfileGroup($name);
                     }
                 }
@@ -477,16 +478,10 @@ if( $actions == "display" )
 
 ##########################################
 ##########################################
-if( !PH::$shadow_json )
-{
-    print "\n\n\n";
-}
 
 $util->save_our_work();
 
-if( !PH::$shadow_json )
-{
-    print "\n\n************ END OF APP-ID ENABLE UTILITY ************\n";
-    print     "**************************************************\n";
-    print "\n\n";
-}
+PH::print_stdout("" );
+PH::print_stdout("************ END OFCSV IMPORT UTILITY ****************" );
+PH::print_stdout("***********************************************" );
+PH::print_stdout("" );

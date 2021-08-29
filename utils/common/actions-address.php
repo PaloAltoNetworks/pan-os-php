@@ -577,7 +577,7 @@ AddressCallContext::$supportedActions[] = array(
                 $object->tags->API_removeTag($tag);
             else
                 $object->tags->removeTag($tag);
-            $text .= "OK!";
+
             PH::print_stdout( $text );
         }
     },
@@ -606,7 +606,7 @@ AddressCallContext::$supportedActions[] = array(
                     $object->tags->API_removeTag($tag);
                 else
                     $object->tags->removeTag($tag);
-                $text .= "OK!";
+
                 PH::print_stdout( $text );
             }
         }
@@ -1093,7 +1093,7 @@ AddressCallContext::$supportedActions[] = array(
                 $object->API_setName($newName);
             else
                 $object->setName($newName);
-            $text .= "OK!";
+
             PH::print_stdout( $text );
         }
 
@@ -1152,7 +1152,7 @@ AddressCallContext::$supportedActions[] = array(
                 $object->API_setName($newName);
             else
                 $object->setName($newName);
-            $text .= "OK!";
+
             PH::print_stdout( $text );
         }
 

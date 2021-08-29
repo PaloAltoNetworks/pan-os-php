@@ -51,7 +51,7 @@ function getDirContents($dir, &$results = array())
 
 function myAutoloader($className)
 {
-    echo "Checking: $className\n";
+    print "Checking: $className\n";
 
     //not working as DIR is using by the actual CLI dir, and not using the expedition installation folder;
     #$classPaths = array( './',); //'lib/', './parser/', './utils/');

@@ -28,7 +28,9 @@ if( $vsys1 === null )
 	derr("vsys1 was not found ? Exit\n");
 }
 
-print "\n***********************************************\n\n";
+PH::print_stdout("" );
+PH::print_stdout("***********************************************" );
+PH::print_stdout("" );
 
 //display rules
 $vsys1->securityRules->display();
@@ -39,7 +41,7 @@ if( $object === null )
 	derr("Error: object not found\n");
 
 // want to know xpath of an object ?
-print "displaying XPATH of object named ".$object->name()." : ".$object->getXPath()."\r\n";
+PH::print_stdout("displaying XPATH of object named ".$object->name()." : ".$object->getXPath() );
 
 // let's rename it in API
 $object->API_setName('another-name');
@@ -65,7 +67,8 @@ $rule->source->API_remove($object);
 
 
 // display some statiscs for debug and exit program!
-print "\n\n***********************************************\n";
+PH::print_stdout("" );
+PH::print_stdout("***********************************************" );
 $vsys1->display_statistics();
 
 

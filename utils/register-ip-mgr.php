@@ -18,12 +18,16 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-echo "\n***********************************************\n";
-echo "*********** " . basename(__FILE__) . " UTILITY **************\n\n";
 
 set_include_path(dirname(__FILE__) . '/../' . PATH_SEPARATOR . get_include_path());
 require_once dirname(__FILE__)."/../lib/pan_php_framework.php";
 require_once(dirname(__FILE__) . '/common/misc.php');
+
+
+PH::print_stdout("");
+PH::print_stdout("***********************************************");
+PH::print_stdout("*********** " . basename(__FILE__) . " UTILITY **************");
+PH::print_stdout("");
 
 $debugAPI = FALSE;
 
@@ -93,9 +97,9 @@ elseif( $configInput['type'] == 'api' )
 {
     if( $debugAPI )
         $configInput['connector']->setShowApiCalls(TRUE);
-    print " - Downloading config from API... ";
+    PH::print_stdout( " - Downloading config from API... ");
     $xmlDoc = $configInput['connector']->getCandidateConfig();
-    print "OK!\n";
+
 }
 else
     derr('not supported yet');
@@ -118,7 +122,7 @@ if( $configType == 'panos' )
 else
     $pan = new PanoramaConf();
 
-print " - Detected platform type is '{$configType}'\n";
+PH::print_stdout( " - Detected platform type is '{$configType}'");
 
 if( $configInput['type'] == 'api' )
     $pan->connector = $configInput['connector'];
@@ -127,10 +131,10 @@ $connector = $pan->connector;
 
 // </editor-fold>
 
-echo " - Connected to API at {$connector->apihost} / {$connector->info_hostname}\n";
-echo " - PANOS version: {$connector->info_PANOS_version}\n";
-echo " - PANOS model: {$connector->info_model}\n";
-echo "\n";
+PH::print_stdout( " - Connected to API at {$connector->apihost} / {$connector->info_hostname}");
+PH::print_stdout( " - PANOS version: {$connector->info_PANOS_version}");
+PH::print_stdout( " - PANOS model: {$connector->info_model}");
+PH::print_stdout( "");
 
 
 if( !isset(PH::$args['actions']) )
@@ -138,11 +142,11 @@ if( !isset(PH::$args['actions']) )
 
 $location = 'vsys1';
 if( !isset(PH::$args['location']) )
-    echo " - no 'location' was provided, using default VSYS1\n";
+    PH::print_stdout( " - no 'location' was provided, using default VSYS1");
 else
 {
     $location = PH::$args['location'];
-    echo " - location '{$location}' was provided\n";
+    PH::print_stdout( " - location '{$location}' was provided");
 }
 
 #if( $configType != 'panos' )
@@ -153,8 +157,8 @@ $action = strtolower(PH::$args['actions']);
 
 if( $action == 'display' || $action == 'unregister-unused' )
 {
-    echo " - action is '$action'\n";
-    print "\n\n\n";
+    PH::print_stdout( " - action is '$action'");
+    PH::print_stdout( "");
 
     $unregister_array = array();
 
@@ -171,18 +175,18 @@ if( $action == 'display' || $action == 'unregister-unused' )
     {
         $unregister_array[$sub->name()] = array();
 
-        print "\n\n##################################\n";
-        echo PH::boldText(" - " . $sub->name() . "\n");
+        PH::print_stdout( "##################################" );
+        PH::print_stdout( PH::boldText(" - " . $sub->name() ) );
 
         $register_ip_array = $connector->register_getIp($sub->name());
-        print "     - registered-ips: [" . count($register_ip_array) . "]\n";
+        PH::print_stdout( "     - registered-ips: [" . count($register_ip_array) . "]");
 
         foreach( $register_ip_array as $ip => $reg )
         {
             $first_value = reset($reg); // First Element's Value
             $first_key = key($reg); // First Element's Key
 
-            print "          " . $ip . " - " . $first_key . "\n";
+            PH::print_stdout( "          " . $ip . " - " . $first_key );
         }
 
         if( $configType == 'panos' )
@@ -195,13 +199,13 @@ if( $action == 'display' || $action == 'unregister-unused' )
         $shared_address_groups = $pan->addressStore->addressGroups();
 
         $address_groups = array_merge($shared_address_groups, $address_groups);
-        print "     - DAGs: \n";
+        PH::print_stdout( "     - DAGs: ");
         /*
         foreach( $shared_address_groups as $addressGroup)
         {
             if( $addressGroup->isDynamic() )
             {
-                print "          ".$addressGroup->name()." filter: ".$addressGroup->filter."\n";
+                PH::print_stdout( "          ".$addressGroup->name()." filter: ".$addressGroup->filter );
             }
         }
         */
@@ -212,7 +216,7 @@ if( $action == 'display' || $action == 'unregister-unused' )
             {
                 $tags = $addressGroup->tags->tags();
 
-                print "          " . $addressGroup->name() . " filter: " . $addressGroup->filter . "\n";
+                PH::print_stdout( "          " . $addressGroup->name() . " filter: " . $addressGroup->filter );
 
                 $dynamicAddressGroup_array = $connector->dynamicAddressGroup_get( $sub->name(), $configType );
                 if( isset($dynamicAddressGroup_array[$addressGroup->name()]) )
@@ -220,27 +224,25 @@ if( $action == 'display' || $action == 'unregister-unused' )
                     {
                         if( $key != 'name' )
                         {
-                            print "           - " . $key . "\n";
+                            PH::print_stdout( "           - " . $key );
                         }
-
                     }
-
             }
         }
 
 
-        print "\n\n----------------------------------\n";
-        print "VALIDATION:\n\n";
+        PH::print_stdout( "----------------------------------");
+        PH::print_stdout( "VALIDATION:");
 
         if( empty($register_ip_array) )
         {
-            print "nothing registered\n";
+            PH::print_stdout( "nothing registered");
         }
         else
         {
-            #print "which registered-ip can be deleted because:\n";
-            #print "  - no DAG for tag is available\n";
-            #print "  - DAG is not used, so no registered-ip for DAG\n";
+            #PH::print_stdout( "which registered-ip can be deleted because:");
+            #PH::print_stdout( "  - no DAG for tag is available");
+            #PH::print_stdout( "  - DAG is not used, so no registered-ip for DAG");
 
 
             foreach( $register_ip_array as $ip => $reg )
@@ -251,21 +253,21 @@ if( $action == 'display' || $action == 'unregister-unused' )
                 if( empty($dynamicAddressGroup_array) )
                 {
                     $unregister_array[$sub->name()][$ip] = $reg;
-                    #print "unregister: ".$ip."\n";
+                    #PH::print_stdout( "unregister: ".$ip );
                 }
 
                 foreach( $dynamicAddressGroup_array as $key => $group )
                 {
-                    #print "KEY: ".$key."\n";
+                    #PH::print_stdout( "KEY: ".$key );
                     #print_r( $group );
                     if( !isset($group[$ip]) )
                     {
                         $unregister_array[$sub->name()][$ip] = $reg;
-                        #print "unregister: ".$ip."\n";
+                        #PH::print_stdout( "unregister: ".$ip );
                     }
                     else
                     {
-                        #print "unset: ".$ip."\n";
+                        #PH::print_stdout( "unset: ".$ip );
                         unset($unregister_array[$sub->name()][$ip]);
                         break;
                     }
@@ -274,18 +276,18 @@ if( $action == 'display' || $action == 'unregister-unused' )
         }
 
 
-        print "possible IPs for UNREGISTER:\n";
+        PH::print_stdout( "possible IPs for UNREGISTER:");
         #print_r( $unregister_array );
         foreach( $unregister_array[$sub->name()] as $unregister_ip => $tags )
         {
-            print " - " . $unregister_ip . "\n";
+            PH::print_stdout( " - " . $unregister_ip );
         }
 
-        print "DAGs can be deleted (because they are not used in Ruleset):\n";
+        PH::print_stdout( "DAGs can be deleted (because they are not used in Ruleset):" );
         foreach( $dynamicAddressGroup_array as $key => $group )
         {
             if( count($group) <= 1 )
-                print " - " . $key . "\n";
+                PH::print_stdout( " - " . $key );
         }
     }
 }
@@ -298,17 +300,17 @@ elseif( $action == 'fakeregister' )
     $records = array();
 
 
-    echo "  - Generating {$numberOfIPs} fake records starting at IP " . long2ip($startingIP) . "... ";
+    PH::print_stdout( "  - Generating {$numberOfIPs} fake records starting at IP " . long2ip($startingIP) . "... " );
     for( $i = 1; $i <= $numberOfIPs; $i++ )
     {
         $records[long2ip($startingIP + $i)] = array($tag);
     }
-    echo "OK!\n";
 
 
-    echo " - now sending records to API ... ";
+
+    PH::print_stdout( " - now sending records to API ... ");
     $connector->register_sendUpdate($records, null, 'vsys1');
-    echo "OK!\n";
+
 
 }
 else
@@ -319,14 +321,13 @@ if( $action == 'unregister-unused' )
 {
     foreach( $virtualsystems as $sub )
     {
-        echo " - now sending records to API ... ";
+        PH::print_stdout( " - now sending records to API ... ");
         $connector->register_sendUpdate(null, $unregister_array[$sub->name()], $sub->name());
-        echo "OK!\n";
     }
 }
 
 
-echo "\n\n***********************************************\n";
-echo "************* END OF SCRIPT " . basename(__FILE__) . " ************\n";
-echo "***********************************************\n\n";
+PH::print_stdout("");
+PH::print_stdout("************* END OF SCRIPT " . basename(__FILE__) . " ************" );
+PH::print_stdout("");
 

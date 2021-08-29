@@ -161,7 +161,7 @@ elseif( $vendor != "" )
 $handle = fopen("php://stdin", "r");
 if( $user == "" )
 {
-    print "** Please enter username below and hit enter:  ";
+    PH::print_stdout( "** Please enter username below and hit enter:  ");
 
     #$handle = fopen("php://stdin", "r");
     $line = fgets($handle);
@@ -176,7 +176,7 @@ if( $RSAkey == null )
 else
 {
     $pw_prompt = " --- using USER: '" . $user . "' , and private key.";
-    print $pw_prompt . "\n";
+    PH::print_stdout( $pw_prompt );
 
     $password = new Crypt_RSA();
     $private_key = file_get_contents($RSAkey);
@@ -188,24 +188,24 @@ else
 //START SSH connection
 ############################################
 
-print "\n\n\n";
+PH::print_stdout("");
 
 $ssh = new Net_SSH2($ip);
 
 PH::enableExceptionSupport();
-print " - connect to " . $ip . "...\n";
+PH::print_stdout( " - connect to " . $ip . "...");
 try
 {
     if( !$ssh->login($user, $password) )
     {
-        print "\n\nLogin Failed\n\n";
-        #echo $ssh->getLog();
+        PH::print_stdout( "Login Failed");
+        #PH::print_stdout( $ssh->getLog() );
         exit('END');
     }
 } catch(Exception $e)
 {
     PH::disableExceptionSupport();
-    print " ***** an error occured : " . $e->getMessage() . "\n\n";
+    PH::print_stdout( " ***** an error occured : " . $e->getMessage() );
     return;
 }
 PH::disableExceptionSupport();
@@ -220,11 +220,11 @@ $lastElementKey = key($commands);
 
 foreach( $commands as $k => $command )
 {
-    print "\n\n" . strtoupper($command) . ":\n";
+    PH::print_stdout(  strtoupper($command) . ":");
     $ssh->write($command . "\n");
 
     $tmp_string = $ssh->read();
-    print $tmp_string;
+    PH::print_stdout( $tmp_string );
 
     if( isset(PH::$args['command']) )
         $output_string .= $tmp_string;
@@ -239,12 +239,12 @@ foreach( $commands as $k => $command )
 
 if( $debug )
 {
-    print "\n\n\nLOG: \n";
-    echo $ssh->getLog();
+    PH::print_stdout( "LOG:" );
+    PH::print_stdout( $ssh->getLog() );
 }
 
 
-print "\n\n";
+PH::print_stdout("");
 
 ############################################
 //START output string manipulation
@@ -303,12 +303,12 @@ if( $manipulate )
 
 if( isset(PH::$args['command']) )
 {
-    print "write output into file: " . $outfile . "\n";
+    PH::print_stdout( "write output into file: " . $outfile );
     file_put_contents($outfile, $output_string);
 }
 else
 {
-    print "write output into file: " . $vendor . "-config.txt\n";
+    PH::print_stdout( "write output into file: " . $vendor . "-config.txt");
     file_put_contents($vendor . "-config.txt", $output_string);
 }
 

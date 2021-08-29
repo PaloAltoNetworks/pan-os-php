@@ -135,7 +135,7 @@ elseif ( $configInput['type'] == 'api'  )
         $inputConnector->setShowApiCalls(true);
     print " - Downloading config from API... ";
     $xmlDoc = $inputConnector->getCandidateConfig();
-    print "OK!\n";
+
 }
 else
     derr('not supported yet');
@@ -157,7 +157,7 @@ if( file_exists($ruleStatFile) )
 {
     print " - Previous rule stats found, loading from file $ruleStatFile... ";
     $ruleStats->load_from_file($ruleStatFile);
-    print "OK!\n";
+
 }
 else
     print " - No cached stats found (missing file '$ruleStatFile')\n";
@@ -217,7 +217,7 @@ $loadEndTime = microtime(true);
 $loadEndMem = memory_get_usage(true);
 $loadElapsedTime = number_format( ($loadEndTime - $loadStartTime), 2, '.', '');
 $loadUsedMem = convert($loadEndMem - $loadStartMem);
-print "OK! ($loadElapsedTime seconds, $loadUsedMem memory)\n";
+print ($loadElapsedTime seconds, $loadUsedMem memory)\n";
 // --------------------
 
 $subSystem  = $pan->findSubSystemByName($location);
@@ -277,7 +277,7 @@ foreach($rules as $legacyRule)
             $legacyRule->tags->API_addTag(TH::$tag_misc_unused_tagObject);
         else
             $legacyRule->tags->addTag(TH::$tag_misc_unused_tagObject);
-        print "OK!\n";
+
         continue;
     }
 
@@ -486,12 +486,12 @@ if( $bundleApiCalls  )
             $xpath = $subSystem->getXPath().'/pre-rulebase/security/rules';
             print " - syncing pre-rulebase ... ";
             $pan->connector->sendEditRequest($xpath, DH::dom_to_xml($subSystem->securityRules->xmlroot));
-            print "OK!\n";
+
 
             $xpath = $subSystem->getXPath().'/post-rulebase/security/rules';
             print " - syncing post-rulebase ... ";
             $pan->connector->sendEditRequest($xpath, DH::dom_to_xml($subSystem->securityRules->postRulesRoot));
-            print "OK!\n";
+
         }
         else
             derr("unsupported yet");

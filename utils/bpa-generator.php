@@ -64,7 +64,7 @@ function send_bpa_api($url, $type = "GET", $config = null, $system_info = null, 
 
         if( $generate_zip )
         {
-            print " - generate_zip_bundle\n";
+            PH::print_stdout( " - generate_zip_bundle" );
             $generate_zip_value = 'true';
         }
         else
@@ -109,7 +109,7 @@ function send_bpa_api($url, $type = "GET", $config = null, $system_info = null, 
     {
         #PH::disableExceptionSupport();
         // Write exception code later
-        echo "Exception (): " . $e->getMessage() . "\n";
+        PH::print_stdout( "Exception (): " . $e->getMessage() );
     }
 
     curl_close($curl);
@@ -153,13 +153,14 @@ function request_bpa($connector)
     $clock .= $response_end;
 
     // Submit job to BPA API
-    echo "\n - Attempting to generate BPA for {$connector->info_hostname}\n";
+    PH::print_stdout("");
+    PH::print_stdout( " - Attempting to generate BPA for {$connector->info_hostname}" );
 
     $result[$connector->info_serial] = send_bpa_api($bpa_url . 'create/', "POST", $config, $system_info, $license, $clock, $generate_zip);
     //Array( [ #SERIAL ] => TASKID )
 
 
-    #echo "Pausing to allow processing. sleep " . $sleep_seconds . " seconds\n";
+    #PH::print_stdout( "Pausing to allow processing. sleep " . $sleep_seconds . " seconds" );
     #sleep($sleep_seconds);
 
     #print_r( $result );
@@ -171,13 +172,14 @@ function request_bpa($connector)
     {
         if( isset($result[$connector->info_serial]) )
         {
-            echo "\n - Checking " . $connector->info_hostname . " job ID " . $result[$connector->info_serial] . "\n";
+            PH::print_stdout("");
+            PH::print_stdout( " - Checking " . $connector->info_hostname . " job ID " . $result[$connector->info_serial] );
             $reply = send_bpa_api($bpa_url . 'results/' . $result[$connector->info_serial] . '/', "GET");
             $parsed_reply = json_decode($reply, TRUE);
             #print_r( $parsed_reply );
             if( $parsed_reply['status'] == 'processing' )
             {
-                echo "  * Sleep for another " . $sleep_seconds . " seconds\n";
+                PH::print_stdout( "  * Sleep for another " . $sleep_seconds . " seconds" );
                 sleep($sleep_seconds);
                 continue;
             }
@@ -185,24 +187,24 @@ function request_bpa($connector)
             {
                 $loop = FALSE;  // Exit outer while loop
                 // Got BPA is JSON format in $reply
-                print "  * store JSON response into: ".$filename_prefix . $connector->info_serial . ".json\n";
+                PH::print_stdout( "  * store JSON response into: ".$filename_prefix . $connector->info_serial . ".json" );
                 file_put_contents($filename_prefix . $connector->info_serial . '.json', $reply);
                 if( $generate_zip )
                 {
                     //Todo: swaschkut 20210350 ZIP download no longer working WHY???
-                    print " - Downloading zip for " . $connector->info_hostname . " job ID " . $result[$connector->info_serial] . "\n";
+                    PH::print_stdout( " - Downloading zip for " . $connector->info_hostname . " job ID " . $result[$connector->info_serial] );
                     $reply = send_bpa_api($bpa_url . 'results/' . $result[$connector->info_serial] . '/download/', "GET");
 
-                    print "  * ZIP file content length: ".strlen( $reply )."\n";
+                    PH::print_stdout( "  * ZIP file content length: ".strlen( $reply ) );
 
-                    print "  * store ZIP response into: ".$filename_prefix . $connector->info_serial . ".zip\n";
+                    PH::print_stdout( "  * store ZIP response into: ".$filename_prefix . $connector->info_serial . ".zip" );
                     file_put_contents($filename_prefix . $connector->info_serial . '.zip', $reply);
 
                     if( strpos( $reply, "Could not find report bundle") !== false )
                     {
-                        print PH::boldText( "\n\n##########################################\n\n" );
-                        print PH::boldText( "report bundle not found on BPA server\n" );
-                        print PH::boldText( "\n\n##########################################\n" );
+                        PH::print_stdout( PH::boldText( "##########################################" );
+                        PH::print_stdout( PH::boldText( "report bundle not found on BPA server" ) );
+                        PH::print_stdout( PH::boldText( "##########################################" ) );
 
                     }
                 }
@@ -210,7 +212,7 @@ function request_bpa($connector)
             elseif ($parsed_reply['status'] == 'error') {
                 $loop = false;  // Exit outer while loop
                 //print_r($parsed_reply);
-                echo $reply . "\n";
+                PH::print_stdout( $reply );
             }
             else
             {
@@ -234,11 +236,10 @@ $supportedArguments['bpakey'] = array('niceName' => 'bpaKey', 'shortHelp' => 'BP
 
 $usageMsg = PH::boldText('USAGE: ') . "php " . basename(__FILE__) . " in=api:://[MGMT-IP] [cycleconnectedFirewalls] bpakey=[BPA-API-KEY]";
 
-if( !PH::$shadow_json )
-{
-    print "\n***********************************************\n";
-    print "************ GENERATE BPA UTILITY ****************\n\n";
-}
+PH::print_stdout("");
+PH::print_stdout("***********************************************");
+PH::print_stdout("*********** " . basename(__FILE__) . " UTILITY **************");
+PH::print_stdout("");
 
 $util = new UTIL("custom", $argv, __FILE__, $supportedArguments, $usageMsg);
 $util->utilInit();
@@ -267,7 +268,7 @@ else
 
 ##########################################
 
-print " - request info from Device\n";
+PH::print_stdout( " - request info from Device" );
 request_bpa($util->pan->connector);
 
 
@@ -279,7 +280,7 @@ if( $cycleConnectedFirewalls && $configType == 'panorama' )
     foreach( $firewallSerials as $fw )
     {
         $countFW++;
-        print " ** Handling FW #{$countFW}/" . count($firewallSerials) . " : serial/{$fw['serial']}   hostname/{$fw['hostname']} **\n";
+        PH::print_stdout(" ** Handling FW #{$countFW}/" . count($firewallSerials) . " : serial/{$fw['serial']}   hostname/{$fw['hostname']} **" );
         $tmpConnector = $inputConnector->cloneForPanoramaManagedDevice($fw['serial']);
 
         if( $util->debugAPI )
@@ -291,13 +292,6 @@ if( $cycleConnectedFirewalls && $configType == 'panorama' )
 
 ##########################################
 ##########################################
-if( !PH::$shadow_json )
-{
-    print "\n\n\n";
-
-    #$util->save_our_work();
-
-    print "\n\n************ END OF GENERATE BPA UTILITY ************\n";
-    print     "**************************************************\n";
-    print "\n\n";
-}
+PH::print_stdout("");
+PH::print_stdout("************* END OF SCRIPT " . basename(__FILE__) . " ************" );
+PH::print_stdout("");

@@ -22,7 +22,7 @@
  *
  *    $plaintext = str_repeat('a', 1024);
  *
- *    echo $rc2->decrypt($rc2->encrypt($plaintext));
+ *    print $rc2->decrypt($rc2->encrypt($plaintext));
  * ?>
  * </code>
  *

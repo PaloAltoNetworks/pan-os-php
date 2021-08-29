@@ -18,12 +18,15 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-echo "\n***********************************************\n";
-echo "*********** " . basename(__FILE__) . " UTILITY **************\n\n";
 
 set_include_path(dirname(__FILE__) . '/../' . PATH_SEPARATOR . get_include_path());
 require_once dirname(__FILE__)."/../lib/pan_php_framework.php";
 require_once(dirname(__FILE__) . '/common/misc.php');
+
+PH::print_stdout("");
+PH::print_stdout("***********************************************");
+PH::print_stdout("*********** " . basename(__FILE__) . " UTILITY **************");
+PH::print_stdout("");
 
 $debugAPI = FALSE;
 
@@ -95,10 +98,10 @@ else
     derr('method not supported yet');
 // </editor-fold>
 
-echo " - Connected to API at {$connector->apihost} / {$connector->info_hostname}\n";
-echo " - PANOS version: {$connector->info_PANOS_version}\n";
-echo " - PANOS model: {$connector->info_model}\n";
-echo "\n";
+PH::print_stdout( " - Connected to API at {$connector->apihost} / {$connector->info_hostname}");
+PH::print_stdout( " - PANOS version: {$connector->info_PANOS_version}");
+PH::print_stdout( " - PANOS model: {$connector->info_model}");
+PH::print_stdout( "");
 
 
 if( !isset(PH::$args['action']) )
@@ -106,11 +109,11 @@ if( !isset(PH::$args['action']) )
 
 $location = 'vsys1';
 if( !isset(PH::$args['location']) )
-    echo " - no 'location' was provided, using default VSYS1\n";
+    PH::print_stdout( " - no 'location' was provided, using default VSYS1");
 else
 {
     $location = PH::$args['location'];
-    echo " - location '{$location}' was provided\n";
+    PH::print_stdout( " - location '{$location}' was provided");
 }
 
 
@@ -118,12 +121,12 @@ $action = strtolower(PH::$args['action']);
 
 if( $action == 'register' || $action == 'unregister' )
 {
-    echo " - action is '$action'\n";
+    PH::print_stdout( " - action is '$action'");
     $records = array();
 
     if( isset(PH::$args['records']) )
     {
-        echo " - a list of 'records' was provided on CLI, now parsing it...";
+        PH::print_stdout( " - a list of 'records' was provided on CLI, now parsing it...");
         $explode = explode('/', PH::$args['records']);
         foreach( $explode as $record )
         {
@@ -148,11 +151,11 @@ if( $action == 'register' || $action == 'unregister' )
             $records[$ipaddress] = $username;
         }
 
-        echo "OK!\n";
+
     }
     elseif( isset(PH::$args['recordfile']) )
     {
-        echo " - record file was provided, now parsing it...";
+        PH::print_stdout( " - record file was provided, now parsing it...");
 
         $explode = file_get_contents(PH::$args['recordfile']);
         $explode = explode("\n", $explode);
@@ -183,25 +186,25 @@ if( $action == 'register' || $action == 'unregister' )
             $records[$ipaddress] = $username;
         }
 
-        echo "OK!\n";
+
     }
     else
         derr("you need to provide 'records' or 'recordfile' argument");
 
     $count = count($records);
-    echo " - found {$count} records:\n";
+    PH::print_stdout( " - found {$count} records:");
     foreach( $records as $ip => $user )
     {
-        echo "   - " . str_pad($ip, 16) . " / {$user}\n";
+        PH::print_stdout( "   - " . str_pad($ip, 16) . " / {$user}");
     }
 
-    echo " - now sending records to API ... ";
+    PH::print_stdout( " - now sending records to API ... ");
     if( $action == 'register' )
         $connector->userIDLogin(array_keys($records), $records, $location);
     else
         $connector->userIDLogout(array_keys($records), $records, $location);
 
-    echo "OK!\n";
+
 
 }
 elseif( $action == 'fakeregister' )
@@ -213,24 +216,24 @@ elseif( $action == 'fakeregister' )
     $records = array();
 
 
-    echo "  - Generating {$numberOfIPs} fake records starting at IP " . long2ip($startingIP) . "... ";
+    PH::print_stdout( "  - Generating {$numberOfIPs} fake records starting at IP " . long2ip($startingIP) . "... ");
     for( $i = 1; $i <= $numberOfIPs; $i++ )
     {
         $records[long2ip($startingIP + $i)] = $userPrefix . $i;
     }
-    echo "OK!\n";
 
 
-    echo " - now sending records to API ... ";
+
+    PH::print_stdout( " - now sending records to API ... ");
     $connector->userIDLogin(array_keys($records), $records, $location);
-    echo "OK!\n";
+
 
 }
 else
     derr("action '{$action}' is not supported");
 
 
-echo "\n\n***********************************************\n";
-echo "************* END OF SCRIPT " . basename(__FILE__) . " ************\n";
-echo "***********************************************\n\n";
+PH::print_stdout("");
+PH::print_stdout("************* END OF SCRIPT " . basename(__FILE__) . " ************" );
+PH::print_stdout("");
 

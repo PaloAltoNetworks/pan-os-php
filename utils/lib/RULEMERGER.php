@@ -204,7 +204,7 @@ class RULEMERGER extends UTIL
     function UTIL_calculate_rule_hash( )
     {
 
-        print " - Calculating all rules hash, please be patient... ";
+        PH::print_stdout( " - Calculating all rules hash, please be patient... " );
         foreach( array_keys($this->UTIL_rulesToProcess) as $index )
         {
             $rule = $this->UTIL_rulesToProcess[$index];
@@ -255,7 +255,7 @@ class RULEMERGER extends UTIL
 
     function UTIL_rule_merging( )
     {
-        print "\n**** NOW STARTING TO MERGE RULES\n";
+        PH::print_stdout( "**** NOW STARTING TO MERGE RULES");
 
 
         $loopCount = -1;
@@ -278,7 +278,7 @@ class RULEMERGER extends UTIL
             if( $this->UTIL_filterQuery !== null && !$this->UTIL_filterQuery->matchSingleObject($rule) )
                 continue;
 
-            print "\n";
+            PH::print_stdout( "");
 
             /** @var SecurityRule[] $matchingHashTable */
             $matchingHashTable = $this->UTIL_hashTable[$rule->mergeHash];
@@ -294,11 +294,11 @@ class RULEMERGER extends UTIL
 
             if( count($matchingHashTable) == 1 )
             {
-                print "- no match for rule #$loopCount '{$rule->name()}''\n";
+                PH::print_stdout( "- no match for rule #$loopCount '{$rule->name()}''");
                 continue;
             }
 
-            print "- Processing rule #$loopCount\n";
+            PH::print_stdout( "- Processing rule #$loopCount");
             $rule->display(4);
 
             $nextDenyRule = FALSE;
@@ -319,21 +319,21 @@ class RULEMERGER extends UTIL
                 if( $loopCount > $ruleToComparePosition )
                 {
                     unset($matchingHashTable[$ruleToCompare->serial]);
-                    print "    - ignoring rule #{$ruleToComparePosition} '{$ruleToCompare->name()}' because it's placed before\n";
+                    PH::print_stdout( "    - ignoring rule #{$ruleToComparePosition} '{$ruleToCompare->name()}' because it's placed before");
                 }
                 else if( $nextDenyRule !== FALSE && $nextDenyRulePosition < $ruleToComparePosition )
                 {
                     if( !$this->UTIL_mergeDenyRules )
                     {
                         unset($matchingHashTable[$ruleToCompare->serial]);
-                        print "    - ignoring rule #{$ruleToComparePosition} '{$ruleToCompare->name()}' because DENY rule #{$nextDenyRulePosition} '{$nextDenyRule->name()}' is placed before\n";
+                        PH::print_stdout( "    - ignoring rule #{$ruleToComparePosition} '{$ruleToCompare->name()}' because DENY rule #{$nextDenyRulePosition} '{$nextDenyRule->name()}' is placed before");
                     }
 
                 }
                 elseif( $this->UTIL_filterQuery !== null && !$this->UTIL_filterQuery->matchSingleObject($ruleToCompare) )
                 {
                     unset($matchingHashTable[$ruleToCompare->serial]);
-                    print "    - ignoring rule #{$ruleToComparePosition} '{$ruleToCompare->name()}' because it's not matchin the filter query\n";
+                    PH::print_stdout( "    - ignoring rule #{$ruleToComparePosition} '{$ruleToCompare->name()}' because it's not matchin the filter query");
                 }
                 elseif( ($rule->sourceIsNegated() or $rule->destinationIsNegated()) or ($ruleToCompare->sourceIsNegated() or $ruleToCompare->destinationIsNegated()) )
                 {
@@ -344,7 +344,7 @@ class RULEMERGER extends UTIL
                     else
                     {
                         unset($matchingHashTable[$ruleToCompare->serial]);
-                        print "    - ignoring rule #{$ruleToComparePosition} '{$ruleToCompare->name()}' because it's source / destination is not matching NEGATION of original Rule\n";
+                        PH::print_stdout( "    - ignoring rule #{$ruleToComparePosition} '{$ruleToCompare->name()}' because it's source / destination is not matching NEGATION of original Rule");
                     }
 
                 }
@@ -352,7 +352,7 @@ class RULEMERGER extends UTIL
 
             if( count($matchingHashTable) == 0 )
             {
-                print "    - no more rules to match with\n";
+                PH::print_stdout( "    - no more rules to match with");
                 unset($this->UTIL_hashTable[$rule->mergeHash][$rule->serial]);
                 continue;
             }
@@ -360,7 +360,7 @@ class RULEMERGER extends UTIL
             $adjacencyPositionReference = $rulePosition;
 
 
-            print "       - Now merging with the following " . count($matchingHashTable) . " rules:\n";
+            PH::print_stdout( "       - Now merging with the following " . count($matchingHashTable) . " rules:");
 
             foreach( $matchingHashTable as $ruleToCompare )
             {
@@ -373,10 +373,10 @@ class RULEMERGER extends UTIL
 
                     if( $adjacencyPositionDiff > 1 )
                     {
-                        print "    - ignored '{$ruleToCompare->name()}' because of option 'mergeAdjacentOnly'\n";
+                        PH::print_stdout( "    - ignored '{$ruleToCompare->name()}' because of option 'mergeAdjacentOnly'");
                         break;
                     }
-                    //print "    - adjacencyDiff={$adjacencyPositionDiff}\n";
+                    //PH::print_stdout( "    - adjacencyDiff={$adjacencyPositionDiff}" );
 
                     $adjacencyPositionReference = $ruleToComparePosition;
                 }
@@ -387,7 +387,7 @@ class RULEMERGER extends UTIL
                     {
                         if( !$ruleToCompare->services->isApplicationDefault() )
                         {
-                            print "    - ignored '{$ruleToCompare->name()}' because it is not Application-Default\n";
+                            PH::print_stdout( "    - ignored '{$ruleToCompare->name()}' because it is not Application-Default");
                             break;
                         }
                     }
@@ -395,7 +395,7 @@ class RULEMERGER extends UTIL
                     {
                         if( $ruleToCompare->services->isApplicationDefault() )
                         {
-                            print "    - ignored '{$ruleToCompare->name()}' because it is Application-Default\n";
+                            PH::print_stdout( "    - ignored '{$ruleToCompare->name()}' because it is Application-Default");
                             break;
                         }
                     }
@@ -406,7 +406,7 @@ class RULEMERGER extends UTIL
                 $mergedRulesCount++;
             }
 
-            print "    - Rule after merge:\n";
+            PH::print_stdout( "    - Rule after merge:");
             $rule->display(5);
 
             if( $this->configInput['type'] == 'api' && $this->configOutput == null )
@@ -415,7 +415,7 @@ class RULEMERGER extends UTIL
 
         }
 
-        print "\n*** MERGING DONE : {$mergedRulesCount} rules merged over " . count($this->UTIL_rulesToProcess) . " in total (" . (count($this->UTIL_rulesToProcess) - $mergedRulesCount) . " remaining) ***\n";
+        PH::print_stdout( "*** MERGING DONE : {$mergedRulesCount} rules merged over " . count($this->UTIL_rulesToProcess) . " in total (" . (count($this->UTIL_rulesToProcess) - $mergedRulesCount) . " remaining) ***");
     }
 
 }

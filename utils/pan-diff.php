@@ -22,7 +22,10 @@
 //Todo: 20210630 swaschkut
 // - rule order check needed
 
-print "\n************* START OF SCRIPT " . basename(__FILE__) . " ************\n\n";
+PH::print_stdout("");
+PH::print_stdout("***********************************************");
+PH::print_stdout("*********** " . basename(__FILE__) . " UTILITY **************");
+PH::print_stdout("");
 
 set_include_path(dirname(__FILE__) . '/../' . PATH_SEPARATOR . get_include_path());
 require_once dirname(__FILE__)."/../lib/pan_php_framework.php";
@@ -33,11 +36,10 @@ PH::processCliArgs();
 function display_usage_and_exit()
 {
     global $argv;
-    print PH::boldText("USAGE: ") . "php " . basename(__FILE__) . " [in=api://192.168.10.1] file1=original.xml file2=compare.xml" .
-        "\n";
-    print "    argument example: \"filter=/config/devices/entry[@name='localhost.localdomain']/vsys/entry[@name='vsys1']/tag\"\n";
-    print "                      \"filter=/config/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='DG-test']\"\n";
-    print "\n";
+    PH::print_stdout( PH::boldText("USAGE: ") . "php " . basename(__FILE__) . " [in=api://192.168.10.1] file1=original.xml file2=compare.xml" );
+    PH::print_stdout( "    argument example: \"filter=/config/devices/entry[@name='localhost.localdomain']/vsys/entry[@name='vsys1']/tag\"" );
+    PH::print_stdout( "                      \"filter=/config/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='DG-test']\"" );
+    PH::print_stdout("");
 
     exit(1);
 }
@@ -67,17 +69,17 @@ if( isset(PH::$args['in']) )
         $connector = $configInput['connector'];
         if( $debugAPI )
             $connector->setShowApiCalls(TRUE);
-        print " - Downloading config from API... \n";
+        PH::print_stdout( " - Downloading config from API... ");
 
-        print "Opening ORIGINAL 'RunningConfig' XML file... \n";
+        PH::print_stdout( "Opening ORIGINAL 'RunningConfig' XML file... ");
         $doc1 = new DOMDocument();
         $doc1 = $connector->getRunningConfig();
-        print "OK!\n";
 
-        print "Opening COMPARE 'Candidate' XML file... \n";
+
+        PH::print_stdout( "Opening COMPARE 'Candidate' XML file... ");
         $doc2 = new DOMDocument();
         $doc2 = $connector->getCandidateConfig();
-        print "OK!\n";
+
     }
     else
         derr('only API is supported');
@@ -96,17 +98,17 @@ else
     if( !is_string($file2) || strlen($file2) < 1 )
         display_error_usage_exit('"file1" argument is not a valid string');
 
-    print "Opening ORIGINAL '{$file1}' XML file... ";
+    PH::print_stdout( "Opening ORIGINAL '{$file1}' XML file... ");
     $doc1 = new DOMDocument();
     if( $doc1->load($file1) === FALSE )
         derr('Error while parsing xml:' . libxml_get_last_error()->message);
-    print "OK!\n";
 
-    print "Opening COMPARE '{$file2}' XML file... ";
+
+    PH::print_stdout( "Opening COMPARE '{$file2}' XML file... ");
     $doc2 = new DOMDocument();
     if( $doc2->load($file2) === FALSE )
         derr('Error while parsing xml:' . libxml_get_last_error()->message);
-    print "OK!\n";
+
 }
 
 if( isset(PH::$args['filter']) )
@@ -114,9 +116,9 @@ if( isset(PH::$args['filter']) )
     $filter = PH::$args['filter'];
     #$filter = '/config/devices/entry[@name="localhost.localdomain"]/vsys/entry[@name="vsys1"]/tag';
 
-    print "\n";
-    print "FILTER is set to: '" . PH::boldText($filter) . "'\n";
-    print "\n";
+    PH::print_stdout( "");
+    PH::print_stdout( "FILTER is set to: '" . PH::boldText($filter) . "'");
+    PH::print_stdout( "");
 
 }
 
@@ -124,7 +126,7 @@ else
     $filter = FALSE;
 
 
-print "*** NOW DISPLAY DIFF ***\n\n";
+PH::print_stdout( "*** NOW DISPLAY DIFF ***");
 
 function endsWith($haystack, $needle) {
     $length = strlen($needle);
@@ -162,8 +164,8 @@ function checkRuleOrder( $xpath )
     $posFile2 = array_search($name_string, array_keys($el2rulebase));
     if( $posFile1 !== $posFile2 )
     {
-        print "\nXPATH: $xpath\n";
-        print "x different RULE position: file1: pos".$posFile1." / file2: pos".$posFile2."\n";
+        PH::print_stdout( "\nXPATH: $xpath");
+        PH::print_stdout( "x different RULE position: file1: pos".$posFile1." / file2: pos".$posFile2 );
     }
 }
 
@@ -176,11 +178,11 @@ function compareElements($el1, $el2, $xpath = null)
     global $el1rulebase;
     global $el2rulebase;
 
-    #print "argument XPATH: ".$xpath."\n";
+    #PH::print_stdout( "argument XPATH: ".$xpath );
     if( $xpath == null )
         $xpath = DH::elementToPanXPath($el1);
 
-    #print "*** COMPARING {$xpath}\n";
+    #PH::print_stdout( "*** COMPARING {$xpath}" );
 
     /** @var DOMElement[][] $el1Elements */
     $el1Elements = array();
@@ -232,8 +234,8 @@ function compareElements($el1, $el2, $xpath = null)
 
             if( $text != '' )
             {
-                print "\nXPATH: $xpath\n";
-                print "$text\n";
+                PH::print_stdout( "\nXPATH: $xpath" );
+                PH::print_stdout( "$text" );
             }
         }
         return;
@@ -264,7 +266,7 @@ function compareElements($el1, $el2, $xpath = null)
     // conflicting objects
     foreach( $el1Elements as $tagName => &$nodeArray1 )
     {
-        //print "checking $xpath/$tagName\n";
+        //PH::print_stdout( "checking $xpath/$tagName" );
         $nodeArray2 = &$el2Elements[$tagName];
 
         $el1BasicNode = null;
@@ -275,7 +277,7 @@ function compareElements($el1, $el2, $xpath = null)
                 if( $el1BasicNode === null )
                 {
                     $el1BasicNode = $node;
-                    //print "found in EL1\n";
+                    //PH::print_stdout( "found in EL1" );
                 }
                 else
                 {
@@ -304,7 +306,7 @@ function compareElements($el1, $el2, $xpath = null)
                 if( $el2BasicNode === null )
                 {
                     $el2BasicNode = $node;
-                    //print "found in EL2\n";
+                    //PH::print_stdout( "found in EL2" );
                 }
                 else
                 {
@@ -475,8 +477,8 @@ function compareElements($el1, $el2, $xpath = null)
 
     if( $text != '' )
     {
-        print "\nXPATH: $xpath\n";
-        print "$text\n";
+        PH::print_stdout( "\nXPATH: $xpath" );
+        PH::print_stdout( "$text" );
     }
 
 }
@@ -515,13 +517,13 @@ else
     if( $doc1Root == FALSE )
     {
         $doc1Root = $config;
-        print "doc1Root : false\n";
+        PH::print_stdout( "doc1Root : false" );
     }
 
     if( $doc2Root == FALSE )
     {
         $doc2Root = $config;
-        print "doc2Root : false\n";
+        PH::print_stdout( "doc2Root : false" );
     }
 
     /*
@@ -543,7 +545,7 @@ else
     #$doc2Root = DH::findXPath( $filter, $doc2);
 
 
-    #print "path: ".$doc1Root->getNodePath()."\n";
+    #PH::print_stdout( "path: ".$doc1Root->getNodePath() );
     #print_r( $doc1Root );
 
 
@@ -556,7 +558,9 @@ else
 }
 
 
-print "\n\n************* END OF SCRIPT " . basename(__FILE__) . " ************\n\n";
+PH::print_stdout("");
+PH::print_stdout("************* END OF SCRIPT " . basename(__FILE__) . " ************" );
+PH::print_stdout("");
 
 
 

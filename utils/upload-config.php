@@ -19,8 +19,10 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-print "***********************************************\n";
-print "************ UPLOAD CONFIG UTILITY ************\n\n";
+PH::print_stdout("");
+PH::print_stdout("***********************************************");
+PH::print_stdout("*********** " . basename(__FILE__) . " UTILITY **************");
+PH::print_stdout("");
 
 set_include_path(dirname(__FILE__) . '/../' . PATH_SEPARATOR . get_include_path());
 require_once dirname(__FILE__)."/../lib/pan_php_framework.php";
@@ -30,7 +32,7 @@ function dirname_cleanup_win()
     $tmp_dirname = dirname(__FILE__);
     $tmp_dirname = str_replace("\\", "/", $tmp_dirname);
 
-    #print $tmp_dirname."\n";
+    #PH::print_stdout( $tmp_dirname );
 
     $tmp_search = "pan-os-php/utils";
     $tmp_replace = "git";
@@ -42,33 +44,33 @@ function dirname_cleanup_win()
 
 function display_usage_and_exit($shortMessage = FALSE)
 {
-    print PH::boldText("USAGE: ") . "php " . basename(__FILE__) . " in=file.xml|api://... out=file.xml|api://... [more arguments]\n";
+    PH::print_stdout( PH::boldText("USAGE: ") . "php " . basename(__FILE__) . " in=file.xml|api://... out=file.xml|api://... [more arguments]");
 
-    print PH::boldText("\nExamples:\n");
-    print " - php " . basename(__FILE__) . " help          : more help messages\n";
-    print " - php " . basename(__FILE__) . " in=api://192.169.50.10/running-config out=local.xml'\n";
-    print " - php " . basename(__FILE__) . " in=local.xml out=api://192.169.50.10 preserveMgmtsystem injectUserAdmin2\n";
-    print " - php " . basename(__FILE__) . " in=local.xml out=api://192.169.50.10 toXpath=/config/shared/address\n";
+    PH::print_stdout( PH::boldText("\nExamples:") );
+    PH::print_stdout( " - php " . basename(__FILE__) . " help          : more help messages" );
+    PH::print_stdout( " - php " . basename(__FILE__) . " in=api://192.169.50.10/running-config out=local.xml'" );
+    PH::print_stdout( " - php " . basename(__FILE__) . " in=local.xml out=api://192.169.50.10 preserveMgmtsystem injectUserAdmin2" );
+    PH::print_stdout( " - php " . basename(__FILE__) . " in=local.xml out=api://192.169.50.10 toXpath=/config/shared/address" );
 
     if( !$shortMessage )
     {
-        print PH::boldText("\nListing available arguments\n\n");
+        PH::print_stdout( PH::boldText("\nListing available arguments") );
 
         global $supportedArguments;
 
         ksort($supportedArguments);
         foreach( $supportedArguments as &$arg )
         {
-            print " - " . PH::boldText($arg['niceName']);
+            $text = " - " . PH::boldText($arg['niceName']);
             if( isset($arg['argDesc']) )
-                print '=' . $arg['argDesc'];
+                $text .= '=' . $arg['argDesc'];
             //."=";
             if( isset($arg['shortHelp']) )
-                print "\n     " . $arg['shortHelp'];
-            print "\n\n";
+                $text .= "\n     " . $arg['shortHelp'];
+            PH::print_stdout($text);
         }
 
-        print "\n\n";
+        PH::print_stdout("");
     }
 
     exit(1);
@@ -82,7 +84,7 @@ function display_error_usage_exit($msg)
 
 function recursive_XML( &$doc2, $toXpath, $test = 0 )
 {
-    print $test."\n";
+    PH::print_stdout( $test);
     $test++;
 
     $explode = explode( "/", $toXpath );
@@ -94,10 +96,10 @@ function recursive_XML( &$doc2, $toXpath, $test = 0 )
         if( $i+1 < count( $explode )-1 )
             $string .= "/";
     }
-    print "find string: ".$string."\n";
+    PH::print_stdout( "find string: ".$string);
     $foundOutputXpathList = DH::findXPath($string, $doc2);
 
-    print "length: ".$foundOutputXpathList->length."\n";
+    PH::print_stdout( "length: ".$foundOutputXpathList->length);
     if( $foundOutputXpathList->length == 1 )
     {
         /** @var DOMElement $entryNode */
@@ -106,7 +108,7 @@ function recursive_XML( &$doc2, $toXpath, $test = 0 )
         $string = str_replace( "]", "", $explode[ count( $explode )-1 ]  );
         $str_array = explode( "[", $string);
 
-        print "create Element: ".$str_array[0]."\n";
+        PH::print_stdout( "create Element: ".$str_array[0]);
         $newNode = $doc2->createElement( $str_array[0] );
 
         if( isset($str_array[1]) && strpos( $str_array[1], "@" ) !== false )
@@ -117,7 +119,7 @@ function recursive_XML( &$doc2, $toXpath, $test = 0 )
             $name = $str_array[0];
             $value = str_replace( "'", "", $str_array[1] );
 
-            print "set Attribute: Name: ".$name." value: ".$value."\n";
+            PH::print_stdout( "set Attribute: Name: ".$name." value: ".$value);
             $newNode->setAttribute( $name, $value );
         }
         $entryNode->appendChild( $newNode );
@@ -130,7 +132,7 @@ function recursive_XML( &$doc2, $toXpath, $test = 0 )
 
     return $foundOutputXpathList;
 }
-print "\n";
+PH::print_stdout("");
 
 $configInput = null;
 $configOutput = null;
@@ -211,7 +213,7 @@ if( isset(PH::$args['fromxpath']) )
         $tmp_dirname = dirname_cleanup_win();
 
         $fromXpath = str_replace($tmp_dirname, "", $fromXpath);
-        print "|" . $fromXpath . "|\n";
+        PH::print_stdout( "|" . $fromXpath . "|");
     }
 }
 if( isset(PH::$args['toxpath']) )
@@ -225,7 +227,7 @@ if( isset(PH::$args['toxpath']) )
         $tmp_dirname = dirname_cleanup_win();
 
         $toXpath = str_replace($tmp_dirname, "", $toXpath);
-        print "|" . $toXpath . "|\n";
+        PH::print_stdout( "|" . $toXpath . "|");
     }
 }
 
@@ -242,7 +244,7 @@ if( isset(PH::$args['extrafiltersout']) )
 
 $doc = new DOMDocument();
 
-print "Opening/downloading original configuration...";
+PH::print_stdout( "Opening/downloading original configuration...");
 
 //
 // What kind of config input do we have.
@@ -258,7 +260,7 @@ if( $configInput['status'] == 'fail' )
 
 if( $configInput['type'] == 'file' )
 {
-    print "{$configInput['filename']} ... ";
+    PH::print_stdout( "{$configInput['filename']} ... ");
     $doc->Load($configInput['filename'], XML_PARSE_BIG_LINES);
 }
 elseif( $configInput['type'] == 'api' )
@@ -266,7 +268,7 @@ elseif( $configInput['type'] == 'api' )
     if( $debugAPI )
         $configInput['connector']->setShowApiCalls(TRUE);
 
-    print "{$configInput['connector']->apihost} ... ";
+    PH::print_stdout( "{$configInput['connector']->apihost} ... ");
 
     /** @var PanAPIConnector $inputConnector */
     $inputConnector = $configInput['connector'];
@@ -281,37 +283,32 @@ elseif( $configInput['type'] == 'api' )
         $doc = $inputConnector->getPanoramaPushedConfig();
     else
         $doc = $inputConnector->getSavedConfig($configInput['filename']);
-
-
 }
 else
     derr('not supported yet');
 
-print " OK!!\n\n";
-
 
 if( $extraFiltersOut !== null )
 {
-    print " * extraFiltersOut was specified and holds '" . count($extraFiltersOut) . " queries'\n";
+    PH::print_stdout( " * extraFiltersOut was specified and holds '" . count($extraFiltersOut) . " queries'");
     foreach( $extraFiltersOut as $filter )
     {
-        print "  - processing XPath '''{$filter} ''' ";
+        PH::print_stdout( "  - processing XPath '''{$filter} ''' ");
         $xpathQ = new DOMXPath($doc);
         $results = $xpathQ->query($filter);
 
         if( $results->length == 0 )
-            print " 0 results found!\n";
+            PH::print_stdout( " 0 results found!");
         else
         {
-            print " {$results->length} matching nodes found!\n";
+            PH::print_stdout( " {$results->length} matching nodes found!");
             foreach( $results as $node )
             {
                 /** @var DOMElement $node */
                 $panXpath = DH::elementToPanXPath($node);
-                print "     - deleting $panXpath\n";
+                PH::print_stdout( "     - deleting $panXpath");
                 $node->parentNode->removeChild($node);
             }
-
         }
         unset($xpathQ);
     }
@@ -320,7 +317,7 @@ if( $extraFiltersOut !== null )
 
 if( isset($fromXpath) )
 {
-    print " * fromXPath is specified with value '" . $fromXpath . "'\n";
+    PH::print_stdout( " * fromXPath is specified with value '" . $fromXpath . "'");
     $foundInputXpathList = DH::findXPath($fromXpath, $doc);
 
     if( $foundInputXpathList === FALSE )
@@ -329,14 +326,14 @@ if( isset($fromXpath) )
     if( $foundInputXpathList->length == 0 )
         derr("xpath returned empty results");
 
-    print "    * found " . $foundInputXpathList->length . " results from Xpath:\n";
+    PH::print_stdout( "    * found " . $foundInputXpathList->length . " results from Xpath:");
 
     foreach( $foundInputXpathList as $xpath )
     {
-        print "       - " . DH::elementToPanXPath($xpath) . "\n";
+        PH::print_stdout( "       - " . DH::elementToPanXPath($xpath) );
     }
 
-    print "\n";
+    PH::print_stdout( "");
 }
 
 
@@ -361,7 +358,7 @@ if( $configOutput['type'] == 'file' )
         $doc2 = new DOMDocument();
         if( !file_exists( $configOutput['filename'] ) )
         {
-            print "strpos|".strpos( $toXpath, "/config/devices/entry/vsys" )."|\n";
+            PH::print_stdout( "strpos|".strpos( $toXpath, "/config/devices/entry/vsys" )."|");
             if( strpos( $toXpath, "/vsys/entry[" ) !== false )
                 $doc2->Load( dirname(__FILE__) . "/../parser/panos_baseconfig.xml", XML_PARSE_BIG_LINES);
             else
@@ -369,13 +366,13 @@ if( $configOutput['type'] == 'file' )
         }
         elseif( file_exists( $configOutput['filename'] ) )
         {
-            print "{$configOutput['filename']} ... \n";
+            PH::print_stdout( "{$configOutput['filename']} ... ");
             $doc2 = new DOMDocument();
             $doc2->Load($configOutput['filename'], XML_PARSE_BIG_LINES);
         }
 
-        print " * toXPath is specified with value '" . $toXpath . "'\n";
-        print "toXpath from above\n";
+        PH::print_stdout( " * toXPath is specified with value '" . $toXpath . "'");
+        PH::print_stdout( "toXpath from above");
         $foundOutputXpathList = DH::findXPath($toXpath, $doc2);
 
         if( $foundOutputXpathList === FALSE )
@@ -405,8 +402,8 @@ if( $configOutput['type'] == 'file' )
                 if( $i+1 < 6 )
                     $string .= "/";
             }
-            print "\nDG: ".$string."\n";
-            print "path: ".$path."\n";
+            PH::print_stdout( "DG: ".$string );
+            PH::print_stdout( "path: ".$path );
             //how to update -> /config/readonly/max-internal-id - handle different PAN-OS
             //how to create -> /config/readonly/devices/entry/device-group/XYZ
 
@@ -416,34 +413,30 @@ if( $configOutput['type'] == 'file' )
         if( $foundOutputXpathList->length != 1 )
             derr("toXpath returned too many results");
 
-        print "    * found " . $foundOutputXpathList->length . " results from Xpath:\n";
+        PH::print_stdout( "    * found " . $foundOutputXpathList->length . " results from Xpath:");
 
         foreach( $foundOutputXpathList as $xpath )
-            print "       - " . DH::elementToPanXPath($xpath) . "\n";
+            PH::print_stdout( "       - " . DH::elementToPanXPath($xpath) );
 
 
         /** @var DOMElement $entryNode */
         $entryNode = $foundOutputXpathList[0];
 
         //Todo: what happen if xpath is already available; e.g. import of objects into DG/address; actual it creates another DG/address(objects), address(objects)
-        #print "import\n";
+        #PH::print_stdout( "import" );
         $node = $doc2->importNode($foundInputXpathList[0], true);
-        #print "append\n";
+        #PH::print_stdout( "append" );
         $entryNode->appendChild( $node );
 
-        print "\nNow saving configuration to ";
-        print "{$configOutput['filename']}... ";
+        PH::print_stdout( "Now saving configuration to ");
+        PH::print_stdout( "{$configOutput['filename']}... " );
         $doc2->save($configOutput['filename']);
-        print "OK!\n";
-
-
     }
     else
     {
-        print "\nNow saving configuration to ";
-        print "{$configOutput['filename']}... ";
+        PH::print_stdout( "Now saving configuration to ");
+        PH::print_stdout( "{$configOutput['filename']}... ");
         $doc->save($configOutput['filename']);
-        print "OK!\n";
     }
 
 }
@@ -454,7 +447,7 @@ elseif( $configOutput['type'] == 'api' )
 
     if( isset($toXpath) )
     {
-        print "Sending SET command to API...";
+        PH::print_stdout( "Sending SET command to API...");
         if( isset($toXpath) )
         {
             $stringToSend = '';
@@ -467,7 +460,7 @@ elseif( $configOutput['type'] == 'api' )
             $stringToSend = DH::dom_to_xml(DH::firstChildElement($doc), -1, FALSE);
 
         $configOutput['connector']->sendSetRequest($toXpath, $stringToSend);
-        print "OK!";
+
     }
     else
     {
@@ -475,9 +468,9 @@ elseif( $configOutput['type'] == 'api' )
             isset(PH::$args['preservemgmtusers']) ||
             isset(PH::$args['preservemgmtsystem']) )
         {
-            print "Option 'preserveXXXXX was used, we will first download the running config of target device...";
+            PH::print_stdout( "Option 'preserveXXXXX was used, we will first download the running config of target device...");
             $runningConfig = $configOutput['connector']->getRunningConfig();
-            print "OK!\n";
+
 
             $xpathQrunning = new DOMXPath($runningConfig);
             $xpathQlocal = new DOMXPath($doc);
@@ -580,7 +573,7 @@ elseif( $configOutput['type'] == 'api' )
             $usersNode = DH::findXPathSingleEntryOrDie('/config/mgt-config/users', $doc);
             $newUserNode = DH::importXmlStringOrDie($doc, '<entry name="admin2"><phash>$1$bgnqjgob$HmenJzuuUAYmETzsMcdfJ/</phash><permissions><role-based><superuser>yes</superuser></role-based></permissions></entry>');
             $usersNode->appendChild($newUserNode);
-            print "Injected 'admin2' with 'admin' password\n";
+            PH::print_stdout( "Injected 'admin2' with 'admin' password");
         }
 
         if( $debugAPI )
@@ -591,10 +584,10 @@ elseif( $configOutput['type'] == 'api' )
         else
             $saveName = 'stage0.xml';
 
-        print "Now saving/uploading that configuration to ";
-        print "{$configOutput['connector']->apihost}/$saveName ... ";
+        PH::print_stdout( "Now saving/uploading that configuration to ");
+        PH::print_stdout( "{$configOutput['connector']->apihost}/$saveName ... ");
         $configOutput['connector']->uploadConfiguration(DH::firstChildElement($doc), $saveName, FALSE);
-        print "OK!\n";
+
     }
 }
 else
@@ -603,7 +596,7 @@ else
 
 if( $loadConfigAfterUpload && $configInput['type'] != 'api' )
 {
-    print "Loading config in the firewall (will display warnings if any) ...\n";
+    PH::print_stdout( "Loading config in the firewall (will display warnings if any) ...");
     /** @var PanAPIConnector $targetConnector */
     $targetConnector = $configOutput['connector'];
     $xmlResponse = $targetConnector->sendCmdRequest('<load><config><from>' . $saveName . '</from></config></load>', TRUE, 600);
@@ -633,16 +626,12 @@ if( $loadConfigAfterUpload && $configInput['type'] != 'api' )
             if( $msg->nodeType != 1 )
                 continue;
 
-            print " - " . $msg->nodeValue . "\n";
+            PH::print_stdout( " - " . $msg->nodeValue );
         }
     }
 }
 
 
-print "\n************ DONE: UPLOAD CONFIG UTILITY ************\n";
-print   "*****************************************************";
-print "\n\n";
-
-
-
-
+PH::print_stdout("");
+PH::print_stdout("************* END OF SCRIPT " . basename(__FILE__) . " ************" );
+PH::print_stdout("");

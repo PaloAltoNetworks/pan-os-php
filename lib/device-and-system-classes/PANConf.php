@@ -682,7 +682,7 @@ class PANConf
 
         $this->connector->sendRequest($url, FALSE, DH::dom_to_xml($this->xmlroot), $config_name);
 
-        print "OK!\n";
+
 
     }
 

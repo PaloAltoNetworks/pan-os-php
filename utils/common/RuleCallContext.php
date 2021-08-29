@@ -171,7 +171,7 @@ class RuleCallContext extends CallContext
         {
             $text = $this->padding . ' - sending API call for SHARED... ';
             $this->connector->sendSetRequest('/config/shared', $setString);
-            $text .= "OK!";
+
             PH::print_stdout( $text );
         }
         $setString = $this->generateRuleMergedApiChangeString(FALSE);
@@ -179,7 +179,7 @@ class RuleCallContext extends CallContext
         {
             $text = $this->padding . ' - sending API call for Device-Groups/VSYS... ';
             $this->connector->sendSetRequest("/config/devices/entry[@name='localhost.localdomain']", $setString);
-            $text .= "OK!";
+
             PH::print_stdout( $text );
         }
     }

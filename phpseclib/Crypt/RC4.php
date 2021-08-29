@@ -30,7 +30,7 @@
  *        $plaintext.= 'a';
  *    }
  *
- *    echo $rc4->decrypt($rc4->encrypt($plaintext));
+ *    print $rc4->decrypt($rc4->encrypt($plaintext));
  * ?>
  * </code>
  *

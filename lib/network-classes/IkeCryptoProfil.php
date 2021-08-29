@@ -158,7 +158,7 @@ class IkeCryptoProfil
         if( preg_match('/[^0-9a-zA-Z_\-\s]/', $name) )
         {
             $name = preg_replace('/[^0-9a-zA-Z_\-\s]/', "", $name);
-            #print "new name: ".$name." \n";
+            #PH::print_stdout( "new name: ".$name );
             #mwarning( 'Name will be replaced with: '.$name."\n" );
         }
 
@@ -194,7 +194,7 @@ class IkeCryptoProfil
         {
             $dhgroup = preg_replace('/\D/', '', $dhgroup);
             $dhgroup = "group" . $dhgroup;
-            #print " *** new dhgroup name: ".$dhgroup."\n";
+            #PH::print_stdout( " *** new dhgroup name: ".$dhgroup );
         }
 
         $this->dhgroup = $dhgroup;
@@ -214,7 +214,7 @@ class IkeCryptoProfil
         if( !isset(self::$hashs[$hash]) )
         {
             $hash = str_replace("-", "", $hash);
-            print " *** hash: '" . $hash . "' wrong\n";
+            PH::print_stdout( " *** hash: '" . $hash . "' wrong" );
             mwarning('authentication wrong');
         }
 
@@ -235,7 +235,7 @@ class IkeCryptoProfil
         if( !isset(self::$encryptions[$encryption]) )
         {
             $encryption = str_replace("-", "", $encryption);
-            print " *** encryption: '" . $encryption . "' wrong\n";
+            PH::print_stdout( " *** encryption: '" . $encryption . "' wrong" );
             #mwarning( 'authentication wrong' );
         }
 

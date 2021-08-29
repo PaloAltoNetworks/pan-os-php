@@ -91,7 +91,7 @@ if( !extension_loaded('dom') )
  */
 function show_backtrace($str)
 {
-    echo "\nBacktrace\n: $str";
+    PH::print_stdout("\nBacktrace\n: $str" );
     var_dump(debug_backtrace());
 }
 
@@ -575,8 +575,6 @@ function derr($msg, $object = null, $print_backtrace = TRUE)
             $skip++;
             $count++;
         }
-
-        echo "\n";
     }
 
 

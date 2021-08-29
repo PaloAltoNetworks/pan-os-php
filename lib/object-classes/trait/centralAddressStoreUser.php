@@ -25,7 +25,7 @@ trait centralAddressStoreUser
                     $currentOwner->owner->addressStore !== null )
                 {
                     $this->parentAddressStore = $currentOwner->owner->addressStore;
-                    //print $this->toString()." : found a parent central store: ".$parentCentralStore->toString()."\n";
+                    //PH::print_stdout( $this->toString()." : found a parent central store: ".$parentCentralStore->toString() );
                     return;
                 }
                 $currentOwner = $currentOwner->owner;

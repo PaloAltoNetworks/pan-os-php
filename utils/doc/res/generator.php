@@ -19,11 +19,14 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-echo "\n***********************************************\n";
-echo "************ DOC GENERATOR  **************\n\n";
 
 require_once("../../../lib/pan_php_framework.php");
 require_once("../../common/actions.php");
+
+PH::print_stdout("");
+PH::print_stdout("***********************************************");
+PH::print_stdout("*********** " . basename(__FILE__) . " UTILITY **************");
+PH::print_stdout("");
 
 $dataFile = __DIR__ . '/data.js';
 
@@ -127,4 +130,4 @@ $data = 'var data = ' . json_encode($data, JSON_PRETTY_PRINT) . ';';
 
 file_put_contents($dataFile, $data);
 
-echo "\nDOC GENERATED !!!\n\n";
+PH::print_stdout( "DOC GENERATED !!!" );

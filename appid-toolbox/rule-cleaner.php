@@ -19,7 +19,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-echo "\n************* START OF SCRIPT ".basename(__FILE__)." ************\n\n";
+print "\n************* START OF SCRIPT ".basename(__FILE__)." ************\n\n";
 
 require_once dirname(__FILE__) . "/lib/common.php";
 
@@ -35,12 +35,12 @@ function display_usage_and_exit()
         "\n\n";
 
 
-    echo "Listing optional arguments:\n\n";
+    print "Listing optional arguments:\n\n";
 
-    echo " - confirm : no change will be made to the config unless you use this argument\n";
-    echo " - daysSinceLastReport=X : (default=1) if a legacy rule last report is older than X days, it will not be cleaned\n";
+    print " - confirm : no change will be made to the config unless you use this argument\n";
+    print " - daysSinceLastReport=X : (default=1) if a legacy rule last report is older than X days, it will not be cleaned\n";
 
-    echo "\n\n";
+    print "\n\n";
 
     exit(1);
 }
@@ -100,10 +100,10 @@ if( isset(PH::$args['dayssincelastreport']) )
     if( !is_numeric($skipIfLastReportIsMoreThanX_DaysOld) )
         derr("'daysSinceLastReport' value must be an integer, default is 1, provided '{$skipIfLastReportIsMoreThanX_DaysOld}'");
 
-    echo " - skipCleaningIfReportOlderThan {$skipIfLastReportIsMoreThanX_DaysOld} days\n";
+    print " - skipCleaningIfReportOlderThan {$skipIfLastReportIsMoreThanX_DaysOld} days\n";
 }
 else
-    echo " - skipCleaningIfReportOlderThan {$skipIfLastReportIsMoreThanX_DaysOld} days (default)\n";
+    print " - skipCleaningIfReportOlderThan {$skipIfLastReportIsMoreThanX_DaysOld} days (default)\n";
 
 
 /** @var $inputConnector PanAPIConnector */
@@ -138,7 +138,7 @@ elseif ( $configInput['type'] == 'api'  )
         $inputConnector->setShowApiCalls(true);
     print " - Downloading config from API... ";
     $xmlDoc = $inputConnector->getCandidateConfig();
-    print "OK!\n";
+
 }
 else
     derr('not supported yet');
@@ -157,9 +157,9 @@ $ruleStats = new DeviceGroupRuleAppUsage();
 
 if( file_exists($ruleStatFile) )
 {
-    echo " - Previous rule stats found, loading from file $ruleStatFile... ";
+    print " - Previous rule stats found, loading from file $ruleStatFile... ";
     $ruleStats->load_from_file($ruleStatFile);
-    echo "OK!\n";
+
 }
 else
     derr("No cached stats found (missing file '$ruleStatFile')");
@@ -185,7 +185,7 @@ if( $configType == 'panos' )
 else
     $pan = new PanoramaConf();
 
-echo " - Detected platform type is '{$configType}'\n";
+print " - Detected platform type is '{$configType}'\n";
 
 if( $configInput['type'] == 'api' )
     $pan->connector = $inputConnector;
@@ -194,7 +194,7 @@ if( $configInput['type'] == 'api' )
 //
 // load the config
 //
-echo " - Loading configuration through PAN-PHP-framework library... ";
+print " - Loading configuration through PAN-PHP-framework library... ";
 $loadStartMem = memory_get_usage(true);
 $loadStartTime = microtime(true);
 $pan->load_from_domxml($xmlDoc);
@@ -202,7 +202,7 @@ $loadEndTime = microtime(true);
 $loadEndMem = memory_get_usage(true);
 $loadElapsedTime = number_format( ($loadEndTime - $loadStartTime), 2, '.', '');
 $loadUsedMem = convert($loadEndMem - $loadStartMem);
-echo "OK! ($loadElapsedTime seconds, $loadUsedMem memory)\n";
+print ($loadElapsedTime seconds, $loadUsedMem memory)\n";
 // --------------------
 
 $subSystem  = $pan->findSubSystemByName($location);
@@ -210,9 +210,9 @@ $subSystem  = $pan->findSubSystemByName($location);
 if( $subSystem === null )
     derr("cannot find vsys/dg named '$location', available locations list is : ");
 
-echo " - Found DG/Vsys '$location'\n";
+print " - Found DG/Vsys '$location'\n";
 
-echo " - Looking/creating for necessary Tags to mark rules\n";
+print " - Looking/creating for necessary Tags to mark rules\n";
 TH::createTags($pan, $configInput['type']);
 
 
@@ -223,9 +223,9 @@ TH::createTags($pan, $configInput['type']);
 $ridTagLibrary = new RuleIDTagLibrary();
 $ridTagLibrary->readFromRuleArray($subSystem->securityRules->rules());
 
-echo " - Total number of RID tags found: {$ridTagLibrary->tagCount()}\n";
+print " - Total number of RID tags found: {$ridTagLibrary->tagCount()}\n";
 
-echo "\n*** PROCESSING !!!\n\n";
+print "\n*** PROCESSING !!!\n\n";
 
 $countCleaned = 0;
 $countSkipped1_TooManyRules = 0;
@@ -248,17 +248,17 @@ foreach( $ridTagLibrary->_tagsToObjects as $tagName => &$taggedRules )
 {
     /** @var SecurityRule $rule */
 
-    echo "\n\n* tag {$tagName} with " . count($taggedRules) . " rules\n";
+    print "\n\n* tag {$tagName} with " . count($taggedRules) . " rules\n";
 
     foreach ($taggedRules as $rule)
     {
-        echo " - rule '{$rule->name()}'\n";
+        print " - rule '{$rule->name()}'\n";
     }
-    echo "\n";
+    print "\n";
 
     if( count($taggedRules) > 2 )
     {
-        echo " - SKIPPED#1 : more than 2 rules are tagged with this appRID, please fix\n";
+        print " - SKIPPED#1 : more than 2 rules are tagged with this appRID, please fix\n";
         $countSkipped1_TooManyRules++;
         continue;
     }
@@ -269,7 +269,7 @@ foreach( $ridTagLibrary->_tagsToObjects as $tagName => &$taggedRules )
         $rule = reset($taggedRules);
         if( $rule->tags->hasTag(TH::$tag_misc_ignore) )
         {
-            echo " - SKIPPED#10 : appid#ignore flag\n";
+            print " - SKIPPED#10 : appid#ignore flag\n";
             $countSkipped10_ignore++;
             continue;
         }
@@ -277,28 +277,28 @@ foreach( $ridTagLibrary->_tagsToObjects as $tagName => &$taggedRules )
         {
             if( !$ruleStats->isRuleUsed($rule->name() ) === FALSE )
             {
-                echo " - SKIPPED#15 : rule was marked as unused but is now used with the following apps: ";
+                print " - SKIPPED#15 : rule was marked as unused but is now used with the following apps: ";
                 $apps = $ruleStats->getRuleStats( $rule->name() );
-                echo ".  You should run it through cloner&activation scripts now\n";
-                echo " - removed 'appid#unused' tag\n";
+                print ".  You should run it through cloner&activation scripts now\n";
+                print " - removed 'appid#unused' tag\n";
                 $rule->tags->removeTag(TH::$tag_misc_unused_tagObject);
                 $countSkipped15_ruleUsedToBeUnused++;
                 continue;
             }
 
-            echo " - SKIPPED#13 : original rule is unused\n";
+            print " - SKIPPED#13 : original rule is unused\n";
             $countSkipped13_ruleUnused++;
             continue;
         }
         elseif( $rule->apps->isAny() && $rule->tags->hasTagRegex('/^'.TH::$tagNtbrBase.'/') )
         {
-            echo " - SKIPPED#6 : original rule has NTBR tags\n";
+            print " - SKIPPED#6 : original rule has NTBR tags\n";
             $countSkipped6_OriginalRuleHasNTBR++;
             continue;
         }
         else
         {
-            echo " - SKIPPED#2 : only 1 rule is part of this appRID, needs manual cleaning?\n";
+            print " - SKIPPED#2 : only 1 rule is part of this appRID, needs manual cleaning?\n";
             $countSkipped2_OnlyOneRule++;
             continue;
         }
@@ -325,44 +325,44 @@ foreach( $ridTagLibrary->_tagsToObjects as $tagName => &$taggedRules )
 
     if( $legacyRule === null && $appidRule === null )
     {
-        echo "SKIPPED#8 : rules mismatch, please fix manually\n";
+        print "SKIPPED#8 : rules mismatch, please fix manually\n";
         continue;
     }
 
     if( $legacyRule === null )
     {
-        echo " - SKIPPED#3 : original rule not found, cleaning appRID now\n";
+        print " - SKIPPED#3 : original rule not found, cleaning appRID now\n";
         $countSkipped3_OriginalRuleNotFound++;
-        echo " - cleaning tagRID\n";
+        print " - cleaning tagRID\n";
         RuleIDTagLibrary::cleanRuleDescription($appidRule);
-        echo " - cleaning activationTag\n";
+        print " - cleaning activationTag\n";
         TH::cleanActivatedTag($appidRule);
         continue;
     }
 
     if( $legacyRule->tags->hasTag(TH::$tag_misc_ignore) )
     {
-        echo " - SKIPPED#10 : appid#ignore flag\n";
+        print " - SKIPPED#10 : appid#ignore flag\n";
         $countSkipped10_ignore++;
 
         if( $appidRule !== null )
         {
-            echo " - removed AppID rule\n";
+            print " - removed AppID rule\n";
             $appidRule->owner->remove($appidRule);
         }
 
-        echo " - cleaning tagRID\n";
+        print " - cleaning tagRID\n";
         RuleIDTagLibrary::cleanRuleDescription($legacyRule);
         continue;
     }
 
     if( $appidRule === null )
     {
-        echo " - SKIPPED#4 : appID rule not found\n";
+        print " - SKIPPED#4 : appID rule not found\n";
         $countSkipped4_ClonedRuleNotFound++;
-        echo " - cleaning tagRID\n";
+        print " - cleaning tagRID\n";
         RuleIDTagLibrary::cleanRuleDescription($legacyRule);
-        echo " - cleaning activationTag\n";
+        print " - cleaning activationTag\n";
         TH::cleanActivatedTag($legacyRule);
 
         continue;
@@ -370,28 +370,28 @@ foreach( $ridTagLibrary->_tagsToObjects as $tagName => &$taggedRules )
 
     if( $legacyRule->tags->hasTagRegex('/^'.TH::$tagNtbrBase.'/') )
     {
-        echo " - SKIPPED#6 : original rule has NTBR tags\n";
+        print " - SKIPPED#6 : original rule has NTBR tags\n";
         $countSkipped6_OriginalRuleHasNTBR++;
         continue;
     }
 
     if( $appidRule->isDisabled() || !$appidRule->tags->hasTagRegex('/^'.TH::$tagActivatedBase.'/') )
     {
-        echo " - SKIPPED#7 : appidID rule is disabled or was not activated.\n";
+        print " - SKIPPED#7 : appidID rule is disabled or was not activated.\n";
         $countSkipped7_AppidRuleDisabled++;
         continue;
     }
 
     if( $appidRule->tags->hasTag(TH::$tag_misc_ignore) )
     {
-        echo " - SKIPPED#10 : appid#ignore flag\n";
+        print " - SKIPPED#10 : appid#ignore flag\n";
         $countSkipped10_ignore++;
         if( $appidRule !== null )
         {
-            echo " - removed appID rule\n";
+            print " - removed appID rule\n";
             $appidRule->owner->remove($appidRule);
         }
-        echo " - cleaning tagRID\n";
+        print " - cleaning tagRID\n";
         RuleIDTagLibrary::cleanRuleDescription($legacyRule);
         continue;
     }
@@ -399,14 +399,14 @@ foreach( $ridTagLibrary->_tagsToObjects as $tagName => &$taggedRules )
     $statsUpdateTimestamp = $ruleStats->getRuleUpdateTimestamp($legacyRule->name());
     if( $statsUpdateTimestamp === null )
     {
-        echo " - SKIPPED#14 : no timestamp found please run a report\n";
+        print " - SKIPPED#14 : no timestamp found please run a report\n";
         $countSkipped14_statsTimeStampNotFoundOrTooOld++;
         continue;
     }
     $daysSinceLastReport = days_between_timestamps(time(), $statsUpdateTimestamp);
     if(  $daysSinceLastReport > $skipIfLastReportIsMoreThanX_DaysOld )
     {
-        echo " - SKIPPED#14 : report was generated a long time ago (".timestamp_to_date($statsUpdateTimestamp)."), please run reports again\n";
+        print " - SKIPPED#14 : report was generated a long time ago (".timestamp_to_date($statsUpdateTimestamp)."), please run reports again\n";
         $countSkipped14_statsTimeStampNotFoundOrTooOld++;
         continue;
     }
@@ -415,7 +415,7 @@ foreach( $ridTagLibrary->_tagsToObjects as $tagName => &$taggedRules )
     $apps = $ruleStats->getRuleStats($legacyRule->name());
     if( $apps === null )
     {
-        echo " - SKIPPED#12 : no stats available please run a report\n";
+        print " - SKIPPED#12 : no stats available please run a report\n";
         $countSkipped12_noStats++;
         continue;
     }
@@ -429,33 +429,33 @@ foreach( $ridTagLibrary->_tagsToObjects as $tagName => &$taggedRules )
 
     if( count($apps) > 0 )
     {
-        echo " - SKIPPED#11: legacy rule still in use with the following app(s): ";
+        print " - SKIPPED#11: legacy rule still in use with the following app(s): ";
         $apps = array_keys($apps);
         print PH::list_to_string($apps, ',');
-        echo "\n";
+        print "\n";
         $appidRule->display(4);
         $countSkipped11_stillUsed++;
         continue;
     }
 
 
-    echo " * Good for cleaning !!!!!\n";
-    echo " - removing legacy rule\n";
+    print " * Good for cleaning !!!!!\n";
+    print " - removing legacy rule\n";
     $legacyRule->owner->remove($legacyRule);
-    echo " - remove activationTag\n";
+    print " - remove activationTag\n";
     TH::cleanActivatedTag($appidRule);
 
-    echo " - remove clonedRule tag\n";
+    print " - remove clonedRule tag\n";
     TH::cleanClonedTag($appidRule);
 
-    echo " - removeing appRID# from description\n";
+    print " - removeing appRID# from description\n";
     RuleIDTagLibrary::cleanRuleDescription($appidRule);
 
 
     $countCleaned++;
 }
 
-echo "\n**** SYNCING RULES WITH DEVICE ****\n\n";
+print "\n**** SYNCING RULES WITH DEVICE ****\n\n";
 
 if( !$dryRun )
 {
@@ -464,21 +464,21 @@ if( !$dryRun )
         if( $pan->isPanorama() )
         {
             $xpath = $subSystem->getXPath().'/pre-rulebase/security/rules';
-            echo " - syncing pre-rulebase ... ";
+            print " - syncing pre-rulebase ... ";
             $pan->connector->sendEditRequest($xpath, DH::dom_to_xml($subSystem->securityRules->xmlroot));
-            echo "OK!\n";
+
 
             $xpath = $subSystem->getXPath().'/post-rulebase/security/rules';
-            echo " - syncing post-rulebase ... ";
+            print " - syncing post-rulebase ... ";
             $pan->connector->sendEditRequest($xpath, DH::dom_to_xml($subSystem->securityRules->postRulesRoot));
-            echo "OK!\n";
+
         }
         else
         {
             $xpath = $subSystem->getXPath().'/rulebase/security/rules';
-            echo " - syncing rulebase ... ";
+            print " - syncing rulebase ... ";
             $pan->connector->sendEditRequest($xpath, DH::dom_to_xml($subSystem->securityRules->xmlroot));
-            echo "OK!\n";
+
         }
     }
 
@@ -486,19 +486,19 @@ if( !$dryRun )
 }
 
 
-echo "\n**** SUMMARY ****\n\n";
+print "\n**** SUMMARY ****\n\n";
 
-echo "Number of tags: ".count($ridTagLibrary->_tagsToObjects)."\n";
+print "Number of tags: ".count($ridTagLibrary->_tagsToObjects)."\n";
 if( $dryRun )
 {
-    echo "Cleaned: $countCleaned (( if 'confirm' option had been used ))\n";
+    print "Cleaned: $countCleaned (( if 'confirm' option had been used ))\n";
 }
 else
 {
-    echo "Cleaned: $countCleaned\n";
+    print "Cleaned: $countCleaned\n";
 }
 
-echo "\n";
+print "\n";
 
 $lineLength = 50;
 print str_pad("SKIPPED#1 Too many rules :", $lineLength).str_pad($countSkipped1_TooManyRules,8,' ',STR_PAD_LEFT)."\n";
@@ -518,7 +518,7 @@ print str_pad("SKIPPED#14 report was too old",$lineLength).str_pad($countSkipped
 print str_pad("SKIPPED#15 legacy rule is not unused anymore:",$lineLength).str_pad($countSkipped15_ruleUsedToBeUnused,8,' ',STR_PAD_LEFT)."\n";
 if( $dryRun )
 {
-    echo "\n\n**** WARNING : no changes were made because you didn't use 'confirm' argument in the command line ****\n\n";
+    print "\n\n**** WARNING : no changes were made because you didn't use 'confirm' argument in the command line ****\n\n";
 }
 elseif( $configInput['type'] == 'file' )
 {
@@ -532,9 +532,9 @@ elseif( $configInput['type'] == 'file' )
         }
     }
 }
-echo "\n\n";
+print "\n\n";
 
 
-echo "\n\n";
+print "\n\n";
 
-echo "\n************* END OF SCRIPT ".basename(__FILE__)." ************\n\n";
+print "\n************* END OF SCRIPT ".basename(__FILE__)." ************\n\n";

@@ -51,7 +51,7 @@ InterfaceCallContext::$supportedActions['display'] = Array(
                 else
                 {
                     #$object = $sub->addressStore->find( $ip_address );
-                    #print $ip_address." ({$object->value()}) ,";
+                    #PH::print_stdout( $ip_address." ({$object->value()}) ,");
                 }
             }
         }
@@ -65,7 +65,7 @@ InterfaceCallContext::$supportedActions['display'] = Array(
                 else
                 {
                     #$object = $sub->addressStore->find( $ip_address );
-                    #print $ip_address." ({$object->value()}) ,";
+                    #PH::print_stdout($text); $ip_address." ({$object->value()}) ,");
                 }
             }
         }

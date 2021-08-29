@@ -353,7 +353,7 @@ class UTIL
             elseif( $this->utilType == 'device' )
                 DeviceCallContext::prepareSupportedActions();
 
-            PH::print_stdout( "OK!" );
+
         }
     }
 
@@ -644,7 +644,7 @@ class UTIL
             PH::print_stdout( " - Reading XML file from disk... ".$this->configInput['filename'] );
             if( !$this->xmlDoc->load($this->configInput['filename'], XML_PARSE_BIG_LINES) )
                 derr("error while reading xml config file");
-            PH::print_stdout( "OK!" );
+
         }
         elseif( $this->configInput['type'] == 'api' )
         {
@@ -653,7 +653,7 @@ class UTIL
             $this->apiMode = TRUE;
             PH::print_stdout( " - Downloading config from API... " );
             $this->xmlDoc = $this->configInput['connector']->getCandidateConfig( $this->apiTimeoutValue );
-            PH::print_stdout( "OK!" );
+
         }
         else
             derr('not supported yet');
@@ -912,7 +912,7 @@ class UTIL
 
         $this->loadEnd();
 
-        PH::print_stdout( "OK! ($this->loadElapsedTime seconds, $this->loadUsedMem memory)" );
+        PH::print_stdout( "($this->loadElapsedTime seconds, $this->loadUsedMem memory)" );
         // --------------------
     }
 

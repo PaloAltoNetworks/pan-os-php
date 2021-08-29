@@ -20,8 +20,10 @@
  */
 
 
-echo "\n***********************************************\n";
-echo "*********** " . basename(__FILE__) . " UTILITY **************\n\n";
+PH::print_stdout("");
+PH::print_stdout("***********************************************");
+PH::print_stdout("*********** " . basename(__FILE__) . " UTILITY **************");
+PH::print_stdout("");
 
 set_include_path(dirname(__FILE__) . '/../' . PATH_SEPARATOR . get_include_path());
 require_once dirname(__FILE__)."/../lib/pan_php_framework.php";
@@ -51,11 +53,11 @@ foreach( PH::$args as $index => &$arg )
     }
 }
 
-echo " - loading keystore from file in user home directory... ";
+PH::print_stdout( " - loading keystore from file in user home directory... ");
 PanAPIConnector::loadConnectorsFromUserHome();
-echo "OK!\n";
 
-echo "\n";
+
+PH::print_stdout("");
 
 $noArgProvided = TRUE;
 
@@ -73,7 +75,7 @@ if( isset(PH::$args['delete']) )
 {
     $noArgProvided = FALSE;
     $deleteHost = PH::$args['delete'];
-    echo " - requested to delete Host/IP '{$deleteHost}'\n";
+    PH::print_stdout( " - requested to delete Host/IP '{$deleteHost}'");
     if( !is_string($deleteHost) )
         derr("argument of 'delete' must be a string , wrong input provided");
 
@@ -83,20 +85,20 @@ if( isset(PH::$args['delete']) )
         if( $connector->apihost == $deleteHost )
         {
             $foundConnector = TRUE;
-            echo " - found and deleted\n\n";
+            PH::print_stdout( " - found and deleted)" );
             unset(PanAPIConnector::$savedConnectors[$cIndex]);
             PanAPIConnector::saveConnectorsToUserHome();
         }
     }
     if( !$foundConnector )
-        echo "\n\n **WARNING** no host or IP named '{$deleteHost}' was found so it could not be deleted\n\n";
+        PH::print_stdout( "\n\n **WARNING** no host or IP named '{$deleteHost}' was found so it could not be deleted" );
 }
 
 if( isset(PH::$args['add']) )
 {
     $noArgProvided = FALSE;
     $addHost = PH::$args['add'];
-    echo " - requested to add Host/IP '{$addHost}'\n";
+    PH::print_stdout( " - requested to add Host/IP '{$addHost}'");
 
     if( !isset(PH::$args['apikey']) )
         PanAPIConnector::findOrCreateConnectorFromHost($addHost, null, TRUE, TRUE, $hiddenPW, $debugAPI);
@@ -114,7 +116,7 @@ if( isset(PH::$args['test']) )
         foreach( PanAPIConnector::$savedConnectors as $connector )
         {
             $checkHost = $connector->apihost;
-            echo " - requested to test Host/IP '{$checkHost}'\n";
+            PH::print_stdout( " - requested to test Host/IP '{$checkHost}'");
 
             PH::enableExceptionSupport();
             try
@@ -128,16 +130,16 @@ if( isset(PH::$args['test']) )
             } catch(Exception $e)
             {
                 PH::disableExceptionSupport();
-                print "   ***** API Error occured : " . $e->getMessage() . "\n\n";
+                PH::print_stdout( "   ***** API Error occured : " . $e->getMessage() );
             }
 
             PH::disableExceptionSupport();
-            print "\n";
+            PH::print_stdout("");
         }
     }
     else
     {
-        echo " - requested to test Host/IP '{$checkHost}'\n";
+        PH::print_stdout( " - requested to test Host/IP '{$checkHost}'");
         if( !isset(PH::$args['apikey']) )
             $connector = PanAPIConnector::findOrCreateConnectorFromHost($checkHost, null, TRUE, TRUE, $hiddenPW, $debugAPI);
         else
@@ -145,12 +147,12 @@ if( isset(PH::$args['test']) )
 
         $connector->testConnectivity();
 
-        print "\n";
+        PH::print_stdout("");
     }
 }
 
 $keyCount = count(PanAPIConnector::$savedConnectors);
-echo "Listing available keys:\n";
+PH::print_stdout( "Listing available keys:");
 
 $connectorList = array();
 foreach( PanAPIConnector::$savedConnectors as $connector )
@@ -166,16 +168,18 @@ foreach( $connectorList as $connector )
         $key = substr($key, 0, 12) . '...' . substr($key, strlen($key) - 12);
     $host = str_pad($connector->apihost, 15, ' ', STR_PAD_RIGHT);
 
-    echo " - Host {$host}: key={$key}\n";
+    PH::print_stdout( " - Host {$host}: key={$key}");
 }
 
 if( $noArgProvided )
 {
-    print "\n";
+    PH::print_stdout("");
     display_usage_and_exit();
 }
 
-echo "\n************* END OF SCRIPT " . basename(__FILE__) . " ************\n\n";
+PH::print_stdout("");
+PH::print_stdout("************* END OF SCRIPT " . basename(__FILE__) . " ************" );
+PH::print_stdout("");
 
 
 

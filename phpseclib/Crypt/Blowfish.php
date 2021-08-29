@@ -22,7 +22,7 @@
  *
  *    $plaintext = str_repeat('a', 1024);
  *
- *    echo $blowfish->decrypt($blowfish->encrypt($plaintext));
+ *    print $blowfish->decrypt($blowfish->encrypt($plaintext));
  * ?>
  * </code>
  *

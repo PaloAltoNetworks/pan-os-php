@@ -35,7 +35,7 @@
  *        $plaintext.= 'a';
  *    }
  *
- *    echo $aes->decrypt($aes->encrypt($plaintext));
+ *    print $aes->decrypt($aes->encrypt($plaintext));
  * ?>
  * </code>
  *

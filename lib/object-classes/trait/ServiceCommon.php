@@ -331,7 +331,7 @@ trait ServiceCommon
         foreach( $this->refrules as $objectRef )
         {
             if( $displayOutput )
-                echo $outputPadding . "- replacing in {$objectRef->toString()}\n";
+                print $outputPadding . "- replacing in {$objectRef->toString()}\n";
             if( $apiMode )
                 $objectRef->API_replaceReferencedObject($this, $withObject);
             else

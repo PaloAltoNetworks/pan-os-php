@@ -28,7 +28,7 @@
  *        $plaintext.= 'a';
  *    }
  *
- *    echo $des->decrypt($des->encrypt($plaintext));
+ *    print $des->decrypt($des->encrypt($plaintext));
  * ?>
  * </code>
  *

@@ -20,7 +20,9 @@ $p = new PanoramaConf();
 // and load it from a XML file
 $p->load_from_file($inputfile);
 
-print "\n***********************************************\n\n";
+PH::print_stdout("");
+PH::print_stdout("***********************************************" );
+PH::print_stdout("");
 
 
 
@@ -38,7 +40,7 @@ foreach( $p->deviceGroups as $dv )
 
 foreach( $centralstores as $store )
 {
-	print "-- Handling store '".$store->toString()."'\n";
+    PH::print_stdout( "-- Handling store '".$store->toString()."'" );
 	$objects = $store->all();
 
 	foreach( $objects as $o)
@@ -53,7 +55,7 @@ foreach( $centralstores as $store )
 			}
 			if( $o->countReferences() == 0 )
 			{
-				print "unused object found: ".$o->toString()."\n";
+                PH::print_stdout( "unused object found: ".$o->toString() );
 				$countUnused++;
 			}
 		}
@@ -61,7 +63,7 @@ foreach( $centralstores as $store )
 		{
 			if( $o->countReferences() == 0 )
 			{
-				print "unused object found: ".$o->toString()."\n";
+                PH::print_stdout( "unused object found: ".$o->toString() );
 				$countUnused++;
 			}
 		}
@@ -69,14 +71,18 @@ foreach( $centralstores as $store )
 			derr("this class of object is not supported!");
 	}
 
-	print "\n\n";
+    PH::print_stdout("");
 }
 
-print "\n\nFound $countUnused unused objects\n\n";
-
+PH::print_stdout("");
+PH::print_stdout("");
+PH::print_stdout( "Found $countUnused unused objects");
+PH::print_stdout("");
 
 // display some statiscs for debug and exit program!
-print "\n\n***********************************************\n";
+PH::print_stdout("");
+PH::print_stdout("");
+PH::print_stdout("***********************************************" );
 $p->display_statistics();
 
 
