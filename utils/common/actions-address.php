@@ -26,7 +26,7 @@ AddressCallContext::$supportedActions[] = array(
 
         if( $object->countReferences() != 0 )
         {
-            print $context->padding . "  * SKIPPED: this object is used by other objects and cannot be deleted (use delete-Force to try anyway)\n";
+            PH::print_stdout( $context->padding . "  * SKIPPED: this object is used by other objects and cannot be deleted (use delete-Force to try anyway)" );
             return;
         }
 
@@ -44,7 +44,7 @@ AddressCallContext::$supportedActions[] = array(
 
         if( $object->countReferences() != 0 )
         {
-            print $context->padding . "  * WARNING : this object seems to be used so deletion may fail.\n";
+            PH::print_stdout( $context->padding . "  * WARNING : this object seems to be used so deletion may fail." );
         }
 
         if( $context->isAPI )
@@ -94,8 +94,8 @@ AddressCallContext::$supportedActions[] = array(
             {
                 if( $object->countReferences() != 0 )
                 {
-                    print "delete all references: \n";
-                    print $object->display_references();
+                    PH::print_stdout( "delete all references: " );
+                    $object->display_references();
 
                     if( $context->isAPI )
                         $object->API_removeWhereIamUsed(TRUE);
@@ -107,7 +107,9 @@ AddressCallContext::$supportedActions[] = array(
         }
     },
     'GlobalFinishFunction' => function (AddressCallContext $context) {
-        print "\n\n" . PH::boldText("DELETE ADDRESS OBJECTS:") . "\n";
+        PH::print_stdout("" );
+        PH::print_stdout("" );
+        PH::print_stdout( PH::boldText("DELETE ADDRESS OBJECTS:") );
         foreach( $context->objecttodelete as $object )
         {
             //error handling enabled because of address object reference settings in :
@@ -122,14 +124,16 @@ AddressCallContext::$supportedActions[] = array(
                     $object->owner->API_remove($object);
                 else
                     $object->owner->remove($object);
-                print "finally delete address object: " . $object->name() . "\n";
+                PH::print_stdout( "finally delete address object: " . $object->name() );
 
             } catch(Exception $e)
             {
                 PH::disableExceptionSupport();
-                print "\n\n " . PH::boldText("  ***** an error occured : ") . $e->getMessage() . "\n\n";
+                PH::print_stdout("" );
+                PH::print_stdout("" );
+                PH::print_stdout( PH::boldText("  ***** an error occured : ") . $e->getMessage() );
 
-                print PH::boldText("address object: " . $object->name() . " can not be removed. Check error message above.\n");
+                PH::print_stdout( PH::boldText("address object: " . $object->name() . " can not be removed. Check error message above.") );
 
                 return;
             }
@@ -1875,7 +1879,7 @@ AddressCallContext::$supportedActions[] = array(
             // if this group has more members than $largeGroupsCount then we must split it
             if( $membersCount > $largeGroupsCount )
             {
-                print "     AddressGroup named '" . $group->name() . "' with $membersCount members \n";
+                PH::print_stdout( "     AddressGroup named '" . $group->name() . "' with $membersCount members");
 
                 // get member list in $members
                 $members = $group->members();
@@ -1901,7 +1905,7 @@ AddressCallContext::$supportedActions[] = array(
                             $newGroup = $group->owner->API_newAddressGroup($group->name() . '--' . ($i / $splitCount));
                         else
                             $newGroup = $group->owner->newAddressGroup($group->name() . '--' . ($i / $splitCount));
-                        print "      New AddressGroup object created with name: " . $newGroup->name() . "\n";
+                        PH::print_stdout( "      New AddressGroup object created with name: " . $newGroup->name() );
 
                         // add this new sub-group to the original one. Don't rewrite XML for performance reasons.
                         if( $context->isAPI )
@@ -1932,15 +1936,14 @@ AddressCallContext::$supportedActions[] = array(
                 // Now we can rewrite XML
                 $group->rewriteXML();
 
-                print "     AddressGroup count after split: " . $group->count() . " \n";
-
-                print "\n";
+                PH::print_stdout("     AddressGroup count after split: " . $group->count() );
+                PH::print_stdout("" );
             }
             else
-                print "     * SKIP: ADDRESS GROUP members count is smaller as largeGroupsCount argument is set: " . $largeGroupsCount . " \n";
+                PH::print_stdout( "     * SKIP: ADDRESS GROUP members count is smaller as largeGroupsCount argument is set: " . $largeGroupsCount );
         }
         else
-            print "     * SKIP: address object is not a ADDRESS GROUP. \n";
+            PH::print_stdout("     * SKIP: address object is not a ADDRESS GROUP." );
 
     },
     'args' => array('largeGroupsCount' => array('type' => 'string', 'default' => '2490')
@@ -1954,19 +1957,19 @@ AddressCallContext::$supportedActions[] = array(
 
         if( $object->isTmpAddr() )
         {
-            echo $context->padding . "     *  SKIPPED because object is already tmp address\n";
+            PH::print_stdout( $context->padding . "     *  SKIPPED because object is already tmp address" );
             return;
         }
 
         if( $object->isGroup() )
         {
-            echo $context->padding . "     *  SKIPPED because object is address group\n";
+            PH::print_stdout( $context->padding . "     *  SKIPPED because object is address group" );
             return;
         }
 
         if( !$object->isType_ipRange() && !$object->isType_ipNetmask() && !$object->isAddress() )
         {
-            echo $context->padding . "     *  SKIPPED because object is not an IP address/netmask\n";
+            PH::print_stdout( $context->padding . "     *  SKIPPED because object is not an IP address/netmask" );
             return;
         }
 
@@ -1988,7 +1991,7 @@ AddressCallContext::$supportedActions[] = array(
             if( $class != 'AddressRuleContainer' && $class != 'NatRule' )
             {
                 $clearForAction = FALSE;
-                echo $context->padding . "     *  SKIPPED because its used in unsupported class $class\n";
+                PH::print_stdout( $context->padding . "     *  SKIPPED because its used in unsupported class $class" );
                 return;
             }
         }
@@ -2013,13 +2016,13 @@ AddressCallContext::$supportedActions[] = array(
 
             if( $mask > 32 || $mask < 0 )
             {
-                echo $context->padding . "    * SKIPPED because of invalid mask detected : '$mask'\n";
+                PH::print_stdout( $context->padding . "    * SKIPPED because of invalid mask detected : '$mask'" );
                 return;
             }
 
             if( filter_var($name, FILTER_VALIDATE_IP) === FALSE )
             {
-                echo $context->padding . "    * SKIPPED because of invalid IP detected : '$name'\n";
+                PH::print_stdout( $context->padding . "    * SKIPPED because of invalid IP detected : '$name'" );
                 return;
             }
 
@@ -2039,7 +2042,7 @@ AddressCallContext::$supportedActions[] = array(
             $newName = $explode[0] . '-' . $explode[1];
         }
 
-        echo $context->padding . "    * new object name will be $newName\n";
+        PH::print_stdout( $context->padding . "    * new object name will be $newName" );
 
 
         $objToReplace = $object->owner->find($newName);
@@ -2068,7 +2071,7 @@ AddressCallContext::$supportedActions[] = array(
                 $objMap = IP4Map::mapFromText($name . '/' . $mask);
                 if( !$objMap->equals($objToReplace->getIP4Mapping()) )
                 {
-                    echo "    * SKIPPED because an object with same name exists but has different value\n";
+                    PH::print_stdout( "    * SKIPPED because an object with same name exists but has different value" );
                     return;
                 }
             }
@@ -2085,14 +2088,14 @@ AddressCallContext::$supportedActions[] = array(
                 if( $class == 'AddressRuleContainer' )
                 {
                     /** @var AddressRuleContainer $objectRef */
-                    echo $context->padding . "     - replacing in {$objectRef->toString()}\n";
+                    PH::print_stdout( $context->padding . "     - replacing in {$objectRef->toString()}" );
 
                     if( $objectRef->owner->isNatRule()
                         && $objectRef->name == 'snathosts'
                         && $objectRef->owner->sourceNatTypeIs_DIPP()
                         && $objectRef->owner->snatinterface !== null )
                     {
-                        echo $context->padding . "        -  SKIPPED because it's a SNAT with Interface IP address\n";
+                        PH::print_stdout( $context->padding . "        -  SKIPPED because it's a SNAT with Interface IP address" );
                         continue;
                     }
 
@@ -2140,7 +2143,7 @@ AddressCallContext::$supportedActions[] = array(
 
         if( $object->isTmpAddr() )
         {
-            echo $context->padding . "     *  SKIPPED because object is temporary \n";
+            PH::print_stdout( $context->padding . "     *  SKIPPED because object is temporary" );
             return;
         }
 
@@ -2156,7 +2159,7 @@ AddressCallContext::$supportedActions[] = array(
             #if( $class != 'NatRule' )
             {
                 $clearForAction = FALSE;
-                echo $context->padding . "     *  SKIPPED it is not used in NAT rule\n";
+                PH::print_stdout( $context->padding . "     *  SKIPPED it is not used in NAT rule" );
                 return;
             }
 
@@ -2171,7 +2174,7 @@ AddressCallContext::$supportedActions[] = array(
                 #print "CLASS: ".$class."\n";
                 if( $class != "natrule" )
                 {
-                    echo $context->padding . "     *  SKIPPED it is not used in NAT rule\n";
+                    PH::print_stdout( $context->padding . "     *  SKIPPED it is not used in NAT rule" );
                     return;
                 }
 
@@ -2181,60 +2184,57 @@ AddressCallContext::$supportedActions[] = array(
                 {
                     //SNAT
 
-                    print $context->padding . $objRef_owner->source->toString_inline()."";
-                    print " => ".$objRef_owner->snathosts->toString_inline()."";
-                    print "\n";
+                    $text = $context->padding . $objRef_owner->source->toString_inline()."";
+                    $text .= " => ".$objRef_owner->snathosts->toString_inline()."";
+                    PH::print_stdout( $text );
 
+                    $text = "";
                     foreach( $objRef_owner->source->members() as $key =>$member )
                     {
                         if( $object === $member )
-                            print $context->padding . PH::boldText( $member->value() );
+                            $text .= $context->padding . PH::boldText( $member->value() );
                         else
-                            print $context->padding . $member->value();
+                            $text .= $context->padding . $member->value();
                     }
                     foreach( $objRef_owner->snathosts->members() as $key => $member )
                     {
-                        print " => ";
+                        $text .= " => ";
                         if( $object === $member )
-                            print PH::boldText( $member->value() );
+                            $text .= PH::boldText( $member->value() );
                         else
-                            print $member->value();
+                            $text .= $member->value();
                     }
 
 
                     if( $objRef_owner->isBiDirectional() )
                     {
                         //Bidir
-                        print $context->padding . "rule is bidir-NAT\n";
-                        print $context->padding . "name: ".$objRef_owner->name()."\n";
+                        $text .= $context->padding . "rule is bidir-NAT";
+                        $text .= $context->padding . "name: ".$objRef_owner->name();
                     }
+                    PH::print_stdout( $text );
                 }
                 elseif( $objRef_owner->destinationNatIsEnabled() )
                 {
                     //DNAT
 
-                    print $context->padding . $objRef_owner->destination->toString_inline()."";
-                    print " => ".$objRef_owner->dnathost->name()."";
-                    print "\n";
+                    $text = $context->padding . $objRef_owner->destination->toString_inline()."";
+                    $text .= " => ".$objRef_owner->dnathost->name()."";
+                    PH::print_stdout( $text );
 
+                    $text = "";
                     foreach( $objRef_owner->destination->members() as $key => $member )
                     {
                         if( $object === $member )
-                            print $context->padding . PH::boldText( $member->value() );
+                            $text .= $context->padding . PH::boldText( $member->value() );
                         else
-                            print $context->padding .  $member->value();
+                            $text .= $context->padding .  $member->value();
                     }
-                    print " => ";
-                    print $objRef_owner->dnathost->value()."\n";
+                    $text .= " => ";
+                    $text .= $objRef_owner->dnathost->value();
+                    PH::print_stdout( $text );
                 }
-
             }
-
-
-
-
         }
-
-
     },
 );
