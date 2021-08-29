@@ -23,16 +23,14 @@ VirtualWireCallContext::$supportedActions['display'] = Array(
     'MainFunction' => function ( VirtualWireCallContext $context )
     {
         $object = $context->object;
-        print "     * ".get_class($object)." '{$object->name()}'  \n";
+        PH::print_stdout("     * ".get_class($object)." '{$object->name()}'" );
 
-        print "       - ";
-        print "interface1: ".$object->attachedInterface1." - ";
-        print "interface2: ".$object->attachedInterface2."\n";
+        $text = "       - ";
+        $text .= "interface1: ".$object->attachedInterface1." - ";
+        $text .= "interface2: ".$object->attachedInterface2;
+        PH::print_stdout( $text );
 
-
-
-        print "\n";
-
+        PH::print_stdout( "" );
     },
 
 );

@@ -51,8 +51,8 @@ ThreatCallContext::$supportedActions[] = array(
 
     },
     'GlobalFinishFunction' => function (ThreatCallContext $context) {
-        print "spyware: ".$context->counter_spyware."\n";
-        print "vulnerability: ".$context->counter_vulnerability."\n";
+        PH::print_stdout("spyware: ".$context->counter_spyware );
+        PH::print_stdout("vulnerability: ".$context->counter_vulnerability );
     }
 );
 

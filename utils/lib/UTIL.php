@@ -671,12 +671,12 @@ class UTIL
         $xpathResult = $xpathResult->item(0);
         $fawkes_config_version = DH::findAttribute('fawkes-config-version', $xpathResult);
         if( $fawkes_config_version != null )
-            print "FAWKES-CONFIG-VERSION: ".$fawkes_config_version."\n";
+            PH::print_stdout( "FAWKES-CONFIG-VERSION: ".$fawkes_config_version );
         else
         {
             $fawkes_config_version = DH::findAttribute('fawkes-config', $xpathResult);
             if( $fawkes_config_version != null )
-                print "FAWKES-CONFIG-VERSION: ".$fawkes_config_version."\n";
+                PH::print_stdout( "FAWKES-CONFIG-VERSION: ".$fawkes_config_version );
         }
 
 

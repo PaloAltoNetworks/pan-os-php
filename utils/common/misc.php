@@ -147,27 +147,32 @@ function display_usage_and_exit($shortMessage = FALSE)
 {
     global $usageMsg;
     global $supportedArguments;
-    print $usageMsg;
-
-    print "\n\n";
+    PH::print_stdout( $usageMsg );
+    PH::print_stdout( "" );
 
     if( !$shortMessage )
     {
-        print PH::boldText("\nListing available arguments\n\n");
+        PH::print_stdout( "" );
+        PH::print_stdout( PH::boldText("Listing available arguments") );
+        PH::print_stdout( "" );
 
         ksort($supportedArguments);
         foreach( $supportedArguments as &$arg )
         {
-            print " - " . PH::boldText($arg['niceName']);
+            $text = " - " . PH::boldText($arg['niceName']);
             if( isset($arg['argDesc']) )
-                print '=' . $arg['argDesc'];
+                $text .= '=' . $arg['argDesc'];
             //."=";
             if( isset($arg['shortHelp']) )
-                print "\n     " . $arg['shortHelp'];
-            print "\n\n";
+            {
+                PH::print_stdout( "" );
+                PH::print_stdout("     " . $arg['shortHelp'] );
+            }
+            PH::print_stdout( "" );
         }
 
-        print "\n\n";
+        PH::print_stdout( "" );
+        PH::print_stdout( "" );
     }
 
     exit(1);

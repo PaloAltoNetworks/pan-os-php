@@ -87,7 +87,7 @@ class SecurityProfile
 
         $this->_load_description_from_domxml();
 
-        #print "object named '".$this->name."' found\n";
+        #PH::print_stdout(  "object named '".$this->name."' found" );
 
 
         $typeFound = FALSE;
@@ -144,7 +144,7 @@ class SecurityProfile
 
     public function display()
     {
-        print "     * " . get_class($this) . " '" . $this->name() . "'    \n";
+        PH::print_stdout(  "     * " . get_class($this) . " '" . $this->name() . "'" );
     }
 
     /**

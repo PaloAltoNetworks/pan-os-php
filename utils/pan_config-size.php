@@ -105,9 +105,16 @@ $xml_reduced = &DH::dom_to_xml( $util->xmlDoc, $indentingXml, $lineReturn, -1, $
 
 $len_xml = strlen( $xml );
 $len_xml_reduced = strlen( $xml_reduced );
+$len_overhead = $len_xml-$len_xml_reduced;
+$len_overhead_percent = round( ( $len_overhead / $len_xml ) * 100, 0);
 
 #print "\nLENGTH str:".$len_xml." [ reduced: ".$len_xml_reduced." | overhead: ".($len_xml-$len_xml_reduced)." ]\n";
-print "\nLENGTH str:".$len_xml_reduced." [xml overhead: ".($len_xml-$len_xml_reduced)." ]\n";
+
+
+
+
+
+print "\nLENGTH str:".$len_xml_reduced." [xml overhead: ".($len_overhead)." (".$len_overhead_percent."%) ]\n";
 
 print_length( $util->xmlDoc );
 
@@ -175,7 +182,9 @@ function print_length( $xmlRoot, $depth = -1, $padding = "", $previousNode = "" 
 
             #print " | LENGTH: ".$length1." - strlen:" .$length2. "\n";
             #print " | " .$padding.str_pad( $length2. " kB [red:".$length_reduced." kB | overh:".($length2-$length_reduced)."kB]" , 10, " ", STR_PAD_LEFT)."\n";
-            print " | " .$padding.str_pad( $length_reduced. "kB [xml overhead:".($length2-$length_reduced)."kB]" , 10, " ", STR_PAD_LEFT)."\n";
+            $length2_overhead = $length2-$length_reduced;
+            $length2_overhead_percent = round( ( $length2_overhead / $length2 ) * 100, 0);
+            print " | " .$padding.str_pad( $length_reduced. "kB [xml overhead:".($length2_overhead)."kB (".$length2_overhead_percent."%)]" , 10, " ", STR_PAD_LEFT)."\n";
 
             if( $depth == 3 )
                 $previousNode = $nodeName;
@@ -191,6 +200,13 @@ function print_length( $xmlRoot, $depth = -1, $padding = "", $previousNode = "" 
 #print "\n\n\n";
 
 $util->save_our_work();
+
+
+$filesize = filesize( $util->configInput['filename'] );
+print "\n\n";
+$reduce_percent = round( ($len_xml_reduced/$filesize)*100 );
+print "The size of your original file is ".convert($filesize )." [100%]. It can be reduces to ".convert($len_xml_reduced)." [".$reduce_percent."%] (which is a reduction of ".convert($filesize-$len_xml_reduced)." [".(100-$reduce_percent)."%])\n";
+print PH::boldText( "Please be aware of that PAN-OS is automatically adding the xml overhead during the next configuration load to the device\n" );
 
 print "\n\n************ END OF PAN-OS config size ************\n";
 print     "**************************************************\n";

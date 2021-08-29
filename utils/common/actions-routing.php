@@ -25,25 +25,26 @@ RoutingCallContext::$supportedActions['display'] = Array(
     'MainFunction' => function ( RoutingCallContext $context )
     {
         $object = $context->object;
-        print "     * ".get_class($object)." '{$object->name()}'  \n";
+        PH::print_stdout("     * ".get_class($object)." '{$object->name()}'" );
 
-
+        $text = "";
         foreach( $object->staticRoutes() as $staticRoute )
         {
-            print "       - NAME: " . str_pad($staticRoute->name(), 20);
-            print " - DEST: " . str_pad($staticRoute->destination(), 20);
-            print " - NEXTHOP: " . str_pad($staticRoute->nexthopIP(), 20);
+            $text .= "       - NAME: " . str_pad($staticRoute->name(), 20);
+            $text .= " - DEST: " . str_pad($staticRoute->destination(), 20);
+            $text .= " - NEXTHOP: " . str_pad($staticRoute->nexthopIP(), 20);
             if( $staticRoute->nexthopInterface() != null )
-                print "\n           - NEXT INTERFACE: " . str_pad($staticRoute->nexthopInterface()->toString(), 20);
+            {
+                $text .= "\n           - NEXT INTERFACE: " . str_pad($staticRoute->nexthopInterface()->toString(), 20);
+            }
 
-            print "\n";
+            PH::print_stdout( $text );
         }
 
-        print "\n- - - - - - - - - - - - - - - - \n\n";
-
-
-        print "\n";
-
+        PH::print_stdout( "" );
+        PH::print_stdout( "- - - - - - - - - - - - - - - -" );
+        PH::print_stdout( "" );
+        PH::print_stdout( "" );
     },
 
     //Todo: display routes to zone / Interface IP

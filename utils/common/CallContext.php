@@ -95,7 +95,7 @@ class CallContext
 
     public function executeGlobalInitAction()
     {
-        print "   - action '{$this->actionRef['name']}' has tasks to process before start.\n";
+        PH::print_stdout("   - action '{$this->actionRef['name']}' has tasks to process before start." );
         $this->actionRef['GlobalInitFunction']($this);
     }
 
@@ -106,7 +106,7 @@ class CallContext
 
     public function executeGlobalFinishAction()
     {
-        print "   - action '{$this->actionRef['name']}' has tasks to process before shutdown.\n";
+        PH::print_stdout("   - action '{$this->actionRef['name']}' has tasks to process before shutdown." );
         $this->actionRef['GlobalFinishFunction']($this);
     }
 

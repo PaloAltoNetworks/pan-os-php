@@ -616,9 +616,9 @@ class RQuery
     public function display($indentLevel = 0)
     {
         if( $indentLevel == 0 )
-            print $this->sanitizedString();
+            PH::print_stdout( $this->sanitizedString() );
         else
-            print str_pad($this->sanitizedString(), $indentLevel);
+            PH::print_stdout( str_pad($this->sanitizedString(), $indentLevel) );
     }
 
     public function sanitizedString()
