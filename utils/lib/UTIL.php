@@ -116,7 +116,11 @@ class UTIL
         $this->save_our_work(TRUE);
 
         if( PH::$shadow_json )
+        {
+            PH::$JSON_OUT['log'] = PH::$JSON_OUTlog;
             print json_encode( PH::$JSON_OUT, JSON_PRETTY_PRINT );
+        }
+
 
 
         $this->log->info("END UTIL: " . $this->PHP_FILE);

@@ -996,82 +996,82 @@ class SecurityRule extends RuleWithUserID
             $destinationNegated = '*negated*';
 
 
-        print $padding . "*Rule named '{$this->name}' $dis";
+        $text = $padding . "*Rule named '{$this->name}' $dis";
         if( $this->owner->version >= 70 )
-            print " UUID: '" . $this->uuid() . "'";
-        print "\n";
-        print $padding . "  Action: {$this->action()}    Type:{$this->type()}\n";
-        print $padding . "  From: " . $this->from->toString_inline() . "  |  To:  " . $this->to->toString_inline() . "\n";
-        print $padding . "  Source: $sourceNegated " . $this->source->toString_inline() . "\n";
-        print $padding . "  Destination: $destinationNegated " . $this->destination->toString_inline() . "\n";
-        print $padding . "  Service:  " . $this->services->toString_inline() . "    Apps:  " . $this->apps->toString_inline() . "\n";
+            $text .= " UUID: '" . $this->uuid() . "'";
+        PH::print_stdout( $text );
+        PH::print_stdout( $padding . "  Action: {$this->action()}    Type:{$this->type()}");
+
+        PH::print_stdout( $padding . "  From: " . $this->from->toString_inline() . "  |  To:  " . $this->to->toString_inline() );
+        PH::print_stdout( $padding . "  Source: $sourceNegated " . $this->source->toString_inline() );
+        PH::print_stdout( $padding . "  Destination: $destinationNegated " . $this->destination->toString_inline() );
+        PH::print_stdout( $padding . "  Service:  " . $this->services->toString_inline() . "    Apps:  " . $this->apps->toString_inline() );
+        $text = "";
         if( !$this->userID_IsCustom() )
-            print $padding . "  User: *" . $this->userID_type() . "*";
+            $text .= $padding . "  User: *" . $this->userID_type() . "*";
         else
         {
             $users = $this->userID_getUsers();
-            print $padding . "  User:  " . PH::list_to_string($users) . "";
+            $text .= $padding . "  User:  " . PH::list_to_string($users) . "";
         }
         if( !$this->hipProfileIsBlank() )
         {
-            print $padding . "  HIP:   " . PH::list_to_string($this->hipprofProfiles) . "\n";
+            $text .= $padding . "  HIP:   " . PH::list_to_string($this->hipprofProfiles);
         }
-        else
-        {
-            print "\n";
-        }
-        print $padding . "  Tags:  " . $this->tags->toString_inline() . "\n";
+        PH::print_stdout( $text );
+        PH::print_stdout( $padding . "  Tags:  " . $this->tags->toString_inline() );
 
         if( $this->_targets !== null )
-            print $padding . "  Targets:  " . $this->targets_toString() . "\n";
+            PH::print_stdout( $padding . "  Targets:  " . $this->targets_toString() );
 
         if( strlen($this->_description) > 0 )
-            print $padding . "  Desc:  " . $this->_description . "\n";
+            PH::print_stdout( $padding . "  Desc:  " . $this->_description );
         else
-            print $padding . "  Desc:  \n";
+            PH::print_stdout( $padding . "  Desc:  ");
 
         if( !$this->securityProfileIsBlank() )
         {
             if( $this->securityProfileType() == "group" )
-                print $padding . "  SecurityProfil: [SECGROUP] => '" . $this->securityProfileGroup() . "'\n";
+                PH::print_stdout( $padding . "  SecurityProfil: [SECGROUP] => '" . $this->securityProfileGroup() . "'");
             else
             {
-                print $padding . "  SecurityProfil: ";
+                $text = $padding . "  SecurityProfil: ";
                 foreach( $this->securityProfiles() as $id => $profile )
-                    print "[" . $id . "] => '" . $profile . "'  ";
-                print "\n";
+                    $text .= "[" . $id . "] => '" . $profile . "'  ";
+                PH::print_stdout( $text );
             }
         }
         else
-            print $padding . "  SecurityProfil:\n";
+            PH::print_stdout( $padding . "  SecurityProfil:");
 
 
-        print $padding . "  LogSetting: ";
+        $text = $padding . "  LogSetting: ";
         if( !empty($this->logSetting()) )
-            print "[LogProfile] => '" . $this->logSetting() . "'";
-        print " ( ";
+            $text .= "[LogProfile] => '" . $this->logSetting() . "'";
+        $text .= " ( ";
         if( $this->logStart() )
-            print "log at start";
+            $text .= "log at start";
         if( $this->logStart() && $this->logEnd() )
-            print " - ";
+            $text .= " - ";
         if( $this->logEnd() )
-            print "log at end";
-        print " ) \n";
+            $text .= "log at end";
+        $text .= " )";
+        PH::print_stdout( $text );
 
-
-        print $padding . "  URL Category: ";
+        $text = $padding . "  URL Category: ";
         if( !empty($this->_urlCategories) )
-            print PH::list_to_string($this->_urlCategories) . "\n";
+            $text .= PH::list_to_string($this->_urlCategories) . "\n";
         else
-            echo "*ANY*\n";
+            $text .= "*ANY*";
+        PH::print_stdout( $text );
 
         if( $this->dsri )
-            print $padding . "  DSRI: disabled\n";
+            PH::print_stdout( $padding . "  DSRI: disabled");
 
         if( $this->schedule !== null )
-            print $padding . "  Schedule:  " . $this->schedule->name() . "\n";
+            PH::print_stdout( $padding . "  Schedule:  " . $this->schedule->name() );
 
-        print "\n";
+        PH::print_stdout( "" );
     }
 
 
@@ -1890,20 +1890,20 @@ class SecurityRule extends RuleWithUserID
         if( $SRC_A->getIP4Mapping()->includesOtherMap( $SRC_B->getIP4Mapping()) == 0 )
         {
             if( $print )
-                print "Source not matching\n";
+                PH::print_stdout( "Source not matching");
             return false;
         }
         elseif( $SRC_A->getIP4Mapping()->includesOtherMap( $SRC_B->getIP4Mapping()) == 2 )
         {
             if( $print )
-                print "Source partial matching\n";
+                PH::print_stdout( "Source partial matching");
             if( $action == "remove" )
             {
                 $result = $SRC_A->getMembersDiff( $SRC_B);
                 foreach( $result['minus'] as $plus )
                 {
                     if( $print )
-                        print "remove SRC: ".$plus->name()."\n";
+                        PH::print_stdout( "remove SRC: ".$plus->name() );
                     if( $isAPI )
                         $this->source->API_remove( $plus );
                     else
@@ -1919,20 +1919,20 @@ class SecurityRule extends RuleWithUserID
         if( $DST_A->getIP4Mapping()->includesOtherMap( $DST_B->getIP4Mapping()) == 0 )
         {
             if( $print )
-                print "Destination not matching\n";
+                PH::print_stdout( "Destination not matching");
             return false;
         }
         elseif( $DST_A->getIP4Mapping()->includesOtherMap( $DST_B->getIP4Mapping()) == 2 )
         {
             if( $print )
-                print "Destination partial matching\n";
+                PH::print_stdout( "Destination partial matching");
             if( $action == "remove" )
             {
                 $result = $DST_A->getMembersDiff( $DST_B);
                 foreach( $result['minus'] as $plus )
                 {
                     if( $print )
-                        print "remove DST: " . $plus->name() . "\n";
+                        PH::print_stdout( "remove DST: " . $plus->name() );
                     if( $isAPI )
                         $this->destination->API_remove($plus);
                     else
@@ -1955,13 +1955,13 @@ class SecurityRule extends RuleWithUserID
             foreach( $result['minus'] as $plus )
             {
                 if( $print )
-                    print "remove service: " . $plus->name() . "\n";
+                    PH::print_stdout( "remove service: " . $plus->name() );
                 $this->services->remove($plus, TRUE, TRUE);
 
                 if( $this->services->isAny() )
                 {
                     if( $print )
-                        print "Service not\n";
+                        PH::print_stdout( "Service not");
                     return FALSE;
                 }
             }
@@ -1974,7 +1974,7 @@ class SecurityRule extends RuleWithUserID
         if( !$SVC_A->includesContainer( $SVC_B) )
         {
             if( $print )
-                print "Service not\n";
+                PH::print_stdout( "Service not");
             return false;
         }
 

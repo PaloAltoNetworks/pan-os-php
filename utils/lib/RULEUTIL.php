@@ -30,6 +30,12 @@ class RULEUTIL extends UTIL
         $this->stats();
 
         $this->save_our_work(TRUE);
+
+        if( PH::$shadow_json )
+        {
+            PH::$JSON_OUT['log'] = PH::$JSON_OUTlog;
+            print json_encode( PH::$JSON_OUT, JSON_PRETTY_PRINT );
+        }
     }
 
     public function supportedArguments()

@@ -639,9 +639,7 @@ function mdeb($msg)
  */
 function mwarning($msg, $object = null, $print_backtrace = TRUE)
 {
-    global $PANC_WARN;
-
-    if( isset($PANC_WARN) && $PANC_WARN == 0 )
+    if( !PH::$PANC_WARN )
         return;
 
     if( $object !== null )
