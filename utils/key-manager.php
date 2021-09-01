@@ -20,15 +20,14 @@
  */
 
 
-PH::print_stdout("");
-PH::print_stdout("***********************************************");
-PH::print_stdout("*********** " . basename(__FILE__) . " UTILITY **************");
-PH::print_stdout("");
-
 set_include_path(dirname(__FILE__) . '/../' . PATH_SEPARATOR . get_include_path());
 require_once dirname(__FILE__)."/../lib/pan_php_framework.php";
 require_once(dirname(__FILE__) . '/common/misc.php');
 
+PH::print_stdout("");
+PH::print_stdout("***********************************************");
+PH::print_stdout("*********** " . basename(__FILE__) . " UTILITY **************");
+PH::print_stdout("");
 
 $supportedArguments = array();
 $supportedArguments[] = array('niceName' => 'delete', 'shortHelp' => 'Clears API key for hostname/IP provided as an argument.', 'argDesc' => '[hostname or IP]');

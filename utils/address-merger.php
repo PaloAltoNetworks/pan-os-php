@@ -18,16 +18,17 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-PH::print_stdout("");
-PH::print_stdout("***********************************************");
-PH::print_stdout("*********** " . basename(__FILE__) . " UTILITY **************");
-PH::print_stdout("");
+
 
 set_include_path(dirname(__FILE__) . '/../' . PATH_SEPARATOR . get_include_path());
 require_once dirname(__FILE__)."/../lib/pan_php_framework.php";
 
 require_once dirname(__FILE__)."/../utils/lib/UTIL.php";
 
+PH::print_stdout("");
+PH::print_stdout("***********************************************");
+PH::print_stdout("*********** " . basename(__FILE__) . " UTILITY **************");
+PH::print_stdout("");
 
 $supportedArguments = array();
 $supportedArguments[] = array('niceName' => 'in', 'shortHelp' => 'input file or api. ie: in=config.xml  or in=api://192.168.1.1 or in=api://0018CAEC3@panorama.company.com', 'argDesc' => '[filename]|[api://IP]|[api://serial@IP]');
