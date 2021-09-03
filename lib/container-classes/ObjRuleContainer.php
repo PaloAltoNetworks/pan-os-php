@@ -53,10 +53,10 @@ class ObjRuleContainer
     {
         if( count($ostore->o) != count($this->o) )
         {
-            //print "Not same count '".count($ostore->o)."':'".count($this->o)."'\n";
+            //PH::print_stdout( "Not same count '".count($ostore->o)."':'".count($this->o)."'" );
             return FALSE;
         }
-        //print "passed\n";
+        //PH::print_stdout( "passed" );
         foreach( $this->o as $o )
         {
             if( !in_array($o, $ostore->o, TRUE) )
@@ -179,12 +179,13 @@ class ObjRuleContainer
 
         $c = count($this->o);
 
-        echo "$indent";
-        print "Displaying the $c object(s) in " . $this->toString() . "\n";
+        $text = "$indent";
+        $text .= "Displaying the $c object(s) in " . $this->toString();
+        PH::print_stdout( $text );
 
         foreach( $this->o as $o )
         {
-            print $indent . $o->name() . "\n";
+            PH::print_stdout($indent . $o->name() );
         }
     }
 
@@ -404,7 +405,7 @@ class ObjRuleContainer
         if( $toString )
             return $retString;
 
-        print $retString;
+        PH::print_stdout( $retString );
     }
 
     public function name()

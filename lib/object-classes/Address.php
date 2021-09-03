@@ -108,7 +108,7 @@ class Address
 
         $this->_load_description_from_domxml();
 
-        //print "object named '".$this->name."' found\n";
+        //PH::print_stdout( "object named '".$this->name."' found" );
 
 
         $typeFound = FALSE;
@@ -604,7 +604,7 @@ class Address
     {
         foreach( $this->tags->getAll() as $tag )
         {
-            echo "     - merge TAG: '{$tag->name()}' before deleting...\n";
+            print "     - merge TAG: '{$tag->name()}' before deleting...\n";
             /** @var  Tag $tag*/
             if( !$pickedObject->tags->hasTag( $tag ) )
             {

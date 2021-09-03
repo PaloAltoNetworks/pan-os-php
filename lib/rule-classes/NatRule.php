@@ -112,7 +112,7 @@ class NatRule extends Rule
             derr("name not found\n");
 
         $this->load_common_from_domxml();
-        //print "found rule name '".$this->name."'\n";
+        //PH::print_stdout( "found rule name '".$this->name."'" );
 
         $this->load_from();
         $this->load_to();
@@ -153,7 +153,7 @@ class NatRule extends Rule
 
         if( $this->dnatroot !== FALSE )
         {
-            //print "rule '".$this->name."' has destination-translation\n";
+            //PH::print_stdout( "rule '".$this->name."' has destination-translation" );
             if( $this->dnatroot->hasChildNodes() )
             {
                 $this->subdnatTAroot = DH::findFirstElement('translated-address', $this->dnatroot);
@@ -182,7 +182,7 @@ class NatRule extends Rule
         $this->snatroot = DH::findFirstElement('source-translation', $xml);
         if( $this->snatroot !== FALSE )
         {
-            //print "we have found a source NAT\n";
+            //PH::print_stdout( "we have found a source NAT" );
             // next <tag> will determine NAT type
             $firstE = DH::firstChildElement($this->snatroot);
             $this->snattype = $firstE->nodeName;
@@ -191,7 +191,7 @@ class NatRule extends Rule
             if( $this->snattype != "static-ip" && $this->snattype != "dynamic-ip-and-port" && $this->snattype != "dynamic-ip" )
                 derr("SNAT type '" . $this->snattype . "' for rule '" . $this->name . "' is not supported, EXIT\n");
 
-            //print "Determined NAT type ".$tcur['name']."\n";
+            //PH::print_stdout( "Determined NAT type ".$tcur['name'] );
 
 
             if( $this->snattype == "static-ip" )
@@ -327,7 +327,7 @@ class NatRule extends Rule
             $lname = $this->serviceroot->textContent;
             if( strtolower($lname) != 'any' )
             {
-                //print "found service named $lname in  NAT rule '".$this->name."'\n";
+                //PH::print_stdout( "found service named $lname in  NAT rule '".$this->name."'" );
                 $f = $this->parentServiceStore->findOrCreate($lname, $this, TRUE);
                 if( !$f )
                 {
@@ -886,52 +886,52 @@ class NatRule extends Rule
         if( $this->service )
             $s = $this->service->name();
 
-        print $padding . "*Rule named {$this->name}  $dis\n";
-        print $padding . "  From: " . $this->from->toString_inline() . "  |  To:  " . $this->to->toString_inline() . "\n";
-        print $padding . "  Source: " . $this->source->toString_inline() . "\n";
+        PH::print_stdout( $padding . "*Rule named {$this->name}  $dis" );
+        PH::print_stdout( $padding . "  From: " . $this->from->toString_inline() . "  |  To:  " . $this->to->toString_inline() );
+        PH::print_stdout( $padding . "  Source: " . $this->source->toString_inline() );
 
         if( $this->_destinationInterface !== null )
-            print $padding . "  Destination Interface: " . $this->destinationInterface() . "\n";
+            PH::print_stdout( $padding . "  Destination Interface: " . $this->destinationInterface() );
 
-        print $padding . "  Destination: " . $this->destination->toString_inline() . "\n";
-        print $padding . "  Service:  " . $s . "\n";
+        PH::print_stdout( $padding . "  Destination: " . $this->destination->toString_inline() );
+        PH::print_stdout( $padding . "  Service:  " . $s );
 
         if( $this->snattype == 'static-ip' )
-            print $padding . "  SNAT Type: " . $this->snattype . "   BiDir: " . $this->_snatbidir . "\n";
+            PH::print_stdout( $padding . "  SNAT Type: " . $this->snattype . "   BiDir: " . $this->_snatbidir );
         else
-            print $padding . "  SNAT Type: " . $this->snattype . "\n";
+            PH::print_stdout( $padding . "  SNAT Type: " . $this->snattype );
 
 
         if( $this->snattype != 'none' )
         {
             if( $this->snatinterface !== null )
-                print $padding . "   SNAT HOSTS: {$this->snatinterface}/{$this->snathosts->toString_inline()}\n";
+                PH::print_stdout( $padding . "   SNAT HOSTS: {$this->snatinterface}/{$this->snathosts->toString_inline()}" );
             else
-                print $padding . "   SNAT HOSTS: {$this->snathosts->toString_inline()}\n";
+                PH::print_stdout( $padding . "   SNAT HOSTS: {$this->snathosts->toString_inline()}" );
         }
 
         if( $this->dnathost === null )
-            print $padding . "  DNAT: none\n";
+            PH::print_stdout( $padding . "  DNAT: none" );
         else
         {
-            print $padding . "  DNAT: " . $this->dnathost->name();
+            $text = $padding . "  DNAT: " . $this->dnathost->name();
             if( $this->dnatports != "" )
-                print " dport: " . $this->dnatports;
-            print "\n";
+                $text .= " dport: " . $this->dnatports;
+            PH::print_stdout( $text );
         }
 
 
-        print $padding . "    Tags:  " . $this->tags->toString_inline() . "\n";
+        PH::print_stdout( $padding . "    Tags:  " . $this->tags->toString_inline()  );
 
         if( $this->_targets !== null )
-            print $padding . "  Targets:  " . $this->targets_toString() . "\n";
+            PH::print_stdout( $padding . "  Targets:  " . $this->targets_toString() );
 
         if( strlen($this->_description) > 0 )
-            print $padding . "  Desc:  " . $this->_description . "\n";
+            PH::print_stdout( $padding . "  Desc:  " . $this->_description );
         else
-            print $padding . "  Desc:  \n";
+            PH::print_stdout( $padding . "  Desc:  " );
 
-        print "\n";
+        PH::print_stdout( "" );
     }
 
     /**

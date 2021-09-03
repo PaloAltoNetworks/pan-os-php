@@ -122,11 +122,11 @@ class ServiceDstPortMapping
         for( $i = 0; $i < $mapCount; $i++ )
         {
             $current = &$newMapping[$mapKeys[$i]];
-            //print "     - handling ".long2ip($current['start'])."-".long2ip($current['end'])."\n";
+            //PH::print_stdout( "     - handling ".long2ip($current['start'])."-".long2ip($current['end']) );
             for( $j = $i + 1; $j < $mapCount; $j++ )
             {
                 $compare = &$newMapping[$mapKeys[$j]];
-                //print "       - vs ".long2ip($compare['start'])."-".long2ip($compare['end'])."\n";
+                //PH::print_stdout( "       - vs ".long2ip($compare['start'])."-".long2ip($compare['end']) );
 
                 if( $compare['start'] > $current['end'] + 1 )
                     break;
@@ -147,11 +147,11 @@ class ServiceDstPortMapping
         for( $i = 0; $i < $mapCount; $i++ )
         {
             $current = &$newMapping[$mapKeys[$i]];
-            //print "     - handling ".long2ip($current['start'])."-".long2ip($current['end'])."\n";
+            //PH::print_stdout( "     - handling ".long2ip($current['start'])."-".long2ip($current['end']) );
             for( $j = $i + 1; $j < $mapCount; $j++ )
             {
                 $compare = &$newMapping[$mapKeys[$j]];
-                //print "       - vs ".long2ip($compare['start'])."-".long2ip($compare['end'])."\n";
+                //PH::print_stdout( "       - vs ".long2ip($compare['start'])."-".long2ip($compare['end']) );
 
                 if( $compare['start'] > $current['end'] + 1 )
                     break;

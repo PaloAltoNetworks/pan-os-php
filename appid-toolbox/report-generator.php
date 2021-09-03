@@ -176,7 +176,7 @@ if($debugAPI)
     $connector->setShowApiCalls(true);
 print " - Downloading config from API... ";
 $xmlDoc = $connector->getCandidateConfig();
-print "OK!\n";
+
 
 
 //
@@ -214,7 +214,7 @@ $loadEndTime = microtime(true);
 $loadEndMem = memory_get_usage(true);
 $loadElapsedTime = number_format( ($loadEndTime - $loadStartTime), 2, '.', '');
 $loadUsedMem = convert($loadEndMem - $loadStartMem);
-print "OK! ($loadElapsedTime seconds, $loadUsedMem memory)\n";
+print ($loadElapsedTime seconds, $loadUsedMem memory)\n";
 // --------------------
 
 
@@ -233,7 +233,7 @@ if( file_exists($ruleStatFile) )
 {
     print " - Previous rule stats found, loading from file $ruleStatFile... ";
     $ruleStats->load_from_file($ruleStatFile);
-    print "OK!\n";
+
 }
 else
     print " - No cached stats found (missing file '$ruleStatFile')\n";
@@ -313,7 +313,7 @@ foreach($rules as $rule)
     {
         $reports = $rule->API_getAppContainerStats2(time() - ($logHistory * 24 * 3600),time()+0, false);
     }
-    print "OK!\n";
+
 
     $ruleStats->createRuleStats($rule->name());
 

@@ -15,7 +15,7 @@
  *        exit('Login Failed');
  *    }
  *
- *    echo $ssh->exec('ls -la');
+ *    print $ssh->exec('ls -la');
  * ?>
  * </code>
  *
@@ -29,9 +29,9 @@
  *        exit('Login Failed');
  *    }
  *
- *    echo $ssh->read('username@username:~$');
+ *    print $ssh->read('username@username:~$');
  *    $ssh->write("ls -la\n");
- *    echo $ssh->read('username@username:~$');
+ *    print $ssh->read('username@username:~$');
  * ?>
  * </code>
  *
@@ -1658,7 +1658,7 @@ class Net_SSH1
             // passwords won't be filtered out and select other packets may not be correctly
             // identified
             case NET_SSH1_LOG_REALTIME:
-                echo "<pre>\r\n" . $this->_format_log(array($message), array($protocol_flags)) . "\r\n</pre>\r\n";
+                print "<pre>\r\n" . $this->_format_log(array($message), array($protocol_flags)) . "\r\n</pre>\r\n";
                 @flush();
                 @ob_flush();
                 break;

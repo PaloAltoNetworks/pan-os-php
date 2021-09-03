@@ -313,7 +313,7 @@ class TagStore extends ObjStore
                 $ref->tagStore !== null )
             {
                 $this->parentCentralStore = $ref->tagStore;
-                //print $this->toString()." : found a parent central store: ".$parentCentralStore->toString()."\n";
+                //PH::print_stdout( $this->toString()." : found a parent central store: ".$parentCentralStore->toString() );
                 return;
             }
             $cur = $ref;

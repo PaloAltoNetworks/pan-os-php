@@ -173,7 +173,7 @@ class SecurityProfileGroup
                     else
                     {
                         //Todo: not a profile - default profile
-                        #print "PROFILE: ".$tmp_type->nodeValue." not found\n";
+                        #PH::print_stdout( "PROFILE: ".$tmp_type->nodeValue." not found");
                         $this->secprofiles[ $secprof_type ] = $tmp_type->nodeValue;
                     }
 
@@ -521,16 +521,7 @@ class SecurityProfileGroup
 
                 $tmp1->appendChild( $tmp );
             }
-
         }
-
-        /*
-        $newdoc = new DOMDocument;
-        $node = $newdoc->importNode($this->xmlroot, true);
-        $newdoc->appendChild($node);
-        print "secProfGroup\n";
-        print $newdoc->saveXML();
-        */
     }
 
     static public $templatexml = '<entry name="**temporarynamechangeme**"></entry>';

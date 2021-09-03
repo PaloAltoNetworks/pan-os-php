@@ -12,20 +12,29 @@ if( strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' )
 
     $system_timezone = strtoupper($result);
 
-    print "WINDOWS\n";
+    PH::print_stdout( "WINDOWS" );
 }
 else
 {
     $system_timezone = exec('date +%Z');
-    print "UNIX\n";
+    PH::print_stdout( "UNIX" );
 }
 
-print "\n\n-------------------------------------------------\n\n";
-print "|".$system_timezone."|";
-print "\n\n-------------------------------------------------\n\n";
-
+PH::print_stdout( "" );
+PH::print_stdout( "" );
+PH::print_stdout("-------------------------------------------------" );
+PH::print_stdout( "" );
+PH::print_stdout("|".$system_timezone."|" );
+PH::print_stdout( "" );
+PH::print_stdout("-------------------------------------------------" );
+PH::print_stdout( "" );
 $timezone_name = timezone_name_from_abbr( $system_timezone );
 
-print "\n\n-------------------------------------------------\n\n";
-print "|".$timezone_name."|";
-print "\n\n-------------------------------------------------\n\n";
+PH::print_stdout( "" );
+PH::print_stdout( "" );
+PH::print_stdout("-------------------------------------------------" );
+PH::print_stdout( "" );
+PH::print_stdout("|".$timezone_name."|" );
+PH::print_stdout( "" );
+PH::print_stdout("-------------------------------------------------" );
+PH::print_stdout( "" );

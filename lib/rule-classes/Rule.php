@@ -957,12 +957,12 @@ class Rule
         {
             print $padding . " - REPLACE MODE, syncing with (" . count($resolvedZones) . ") resolved zones.";
             if( $addressContainer->isAny() )
-                echo $padding . " *** IGNORED because value is 'ANY' ***\n";
+                print $padding . " *** IGNORED because value is 'ANY' ***\n";
             elseif( count($resolvedZones) == 0 )
-                echo $padding . " *** IGNORED because no zone was resolved ***\n";
+                print $padding . " *** IGNORED because no zone was resolved ***\n";
             elseif( count($minus) == 0 && count($plus) == 0 )
             {
-                echo $padding . " *** IGNORED because there is no diff ***\n";
+                print $padding . " *** IGNORED because there is no diff ***\n";
             }
             else
             {
@@ -978,7 +978,7 @@ class Rule
                             $newRule = $this->owner->cloneRule($this, $newRuleName);
                             $newRule->to->setAny();
                             $newRule->to->addZone($zoneStore->findOrCreate($zoneToAdd));
-                            echo $padding . " - cloned NAT rule with name '{$newRuleName}' and TO zone='{$zoneToAdd}'\n";
+                            print $padding . " - cloned NAT rule with name '{$newRuleName}' and TO zone='{$zoneToAdd}'\n";
                             if( $isAPI )
                             {
                                 $newRule->API_sync();
@@ -997,7 +997,7 @@ class Rule
                         {
                             $this->to->setAny();
                             $this->to->addZone($zoneStore->findOrCreate($zoneToAdd));
-                            echo $padding . " - changed original NAT 'TO' zone='{$zoneToAdd}'\n";
+                            print $padding . " - changed original NAT 'TO' zone='{$zoneToAdd}'\n";
                             if( $isAPI )
                                 $this->to->API_sync();
                             $first = FALSE;
@@ -1007,7 +1007,7 @@ class Rule
                         $newRule = $this->owner->cloneRule($this, $newRuleName);
                         $newRule->to->setAny();
                         $newRule->to->addZone($zoneStore->findOrCreate($zoneToAdd));
-                        echo $padding . " - cloned NAT rule with name '{$newRuleName}' and TO zone='{$zoneToAdd}'\n";
+                        print $padding . " - cloned NAT rule with name '{$newRuleName}' and TO zone='{$zoneToAdd}'\n";
                         if( $isAPI )
                         {
                             $newRule->API_sync();
@@ -1105,7 +1105,7 @@ class Rule
             $newRule->to->setAny();
 
             $newRule->to->addZone($zoneStore->findOrCreate($zoneToAdd));
-            echo $padding . " - cloned NAT rule with name '{$newRuleName}' and TO zone='{$zoneToAdd}'\n";
+            print $padding . " - cloned NAT rule with name '{$newRuleName}' and TO zone='{$zoneToAdd}'\n";
             if( $isAPI )
             {
                 $newRule->API_sync();

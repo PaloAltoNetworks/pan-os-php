@@ -170,15 +170,6 @@ class Schedule
                                 if( $childNode->nodeType != XML_ELEMENT_NODE )
                                     continue;
 
-                                /*
-                                if( $childNode != null )
-                                {
-                                    $newdoc = new DOMDocument;
-                                    $node = $newdoc->importNode($childNode, true);
-                                    $newdoc->appendChild($node);
-                                    print $newdoc->saveXML();
-                                }*/
-
                                 foreach( $childNode->childNodes as $member )
                                 {
                                     if( $member->nodeType != XML_ELEMENT_NODE )

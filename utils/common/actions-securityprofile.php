@@ -25,7 +25,7 @@ SecurityProfileCallContext::$supportedActions['delete'] = array(
 
         if( $object->countReferences() != 0 )
         {
-            print $context->padding . "  * SKIPPED: this object is used by other objects and cannot be deleted (use deleteForce to try anyway)\n";
+            PH::print_stdout( $context->padding . "  * SKIPPED: this object is used by other objects and cannot be deleted (use deleteForce to try anyway)" );
             return;
         }
         //Todo: continue improvement for SecProf
@@ -44,7 +44,7 @@ SecurityProfileCallContext::$supportedActions['deleteforce'] = array(
         $object = $context->object;
 
         if( $object->countReferences() != 0 )
-            print $context->padding . "  * WARNING : this object seems to be used so deletion may fail.\n";
+            PH::print_stdout( $context->padding . "  * WARNING : this object seems to be used so deletion may fail." );
         //Todo: continue improvement for SecProf
         /*
         if( $context->isAPI )
@@ -64,14 +64,14 @@ SecurityProfileCallContext::$supportedActions['name-addprefix'] = array(
 
         if( $object->isTmp() )
         {
-            echo $context->padding . " *** SKIPPED : not applicable to TMP objects\n";
+            PH::print_stdout( $context->padding . " *** SKIPPED : not applicable to TMP objects" );
             return;
         }
 
-        print $context->padding . " - new name will be '{$newName}'\n";
+        PH::print_stdout( $context->padding . " - new name will be '{$newName}'" );
         if( strlen($newName) > 127 )
         {
-            print " *** SKIPPED : resulting name is too long\n";
+            PH::print_stdout( " *** SKIPPED : resulting name is too long" );
             return;
         }
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
@@ -79,7 +79,7 @@ SecurityProfileCallContext::$supportedActions['name-addprefix'] = array(
         if( $rootObject->isPanorama() && $object->owner->find($newName, null, FALSE) !== null ||
             $rootObject->isFirewall() && $object->owner->find($newName, null, TRUE) !== null )
         {
-            print " *** SKIPPED : an object with same name already exists\n";
+            PH::print_stdout( " *** SKIPPED : an object with same name already exists" );
             return;
         }
         if( $context->isAPI )
@@ -99,14 +99,14 @@ SecurityProfileCallContext::$supportedActions['name-addsuffix'] = array(
 
         if( $object->isTmp() )
         {
-            echo $context->padding . " *** SKIPPED : not applicable to TMP objects\n";
+            PH::print_stdout( $context->padding . " *** SKIPPED : not applicable to TMP objects" );
             return;
         }
 
-        print $context->padding . " - new name will be '{$newName}'\n";
+        PH::print_stdout( $context->padding . " - new name will be '{$newName}'" );
         if( strlen($newName) > 127 )
         {
-            print " *** SKIPPED : resulting name is too long\n";
+            PH::print_stdout( " *** SKIPPED : resulting name is too long" );
             return;
         }
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
@@ -114,7 +114,7 @@ SecurityProfileCallContext::$supportedActions['name-addsuffix'] = array(
         if( $rootObject->isPanorama() && $object->owner->find($newName, null, FALSE) !== null ||
             $rootObject->isFirewall() && $object->owner->find($newName, null, TRUE) !== null )
         {
-            print " *** SKIPPED : an object with same name already exists\n";
+            PH::print_stdout( " *** SKIPPED : an object with same name already exists" );
             return;
         }
         if( $context->isAPI )
@@ -133,31 +133,31 @@ SecurityProfileCallContext::$supportedActions['name-removeprefix'] = array(
 
         if( $object->isTmp() )
         {
-            echo $context->padding . " *** SKIPPED : not applicable to TMP objects\n";
+            PH::print_stdout( $context->padding . " *** SKIPPED : not applicable to TMP objects" );
             return;
         }
 
         if( strpos($object->name(), $prefix) !== 0 )
         {
-            echo $context->padding . " *** SKIPPED : prefix not found\n";
+            PH::print_stdout( $context->padding . " *** SKIPPED : prefix not found" );
             return;
         }
         $newName = substr($object->name(), strlen($prefix));
 
         if( !preg_match("/^[a-zA-Z0-9]/", $newName[0]) )
         {
-            echo $context->padding . " *** SKIPPED : object name contains not allowed character at the beginning\n";
+            PH::print_stdout( $context->padding . " *** SKIPPED : object name contains not allowed character at the beginning" );
             return;
         }
 
-        echo $context->padding . " - new name will be '{$newName}'\n";
+        PH::print_stdout( $context->padding . " - new name will be '{$newName}'" );
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
 
         if( $rootObject->isPanorama() && $object->owner->find($newName, null, FALSE) !== null ||
             $rootObject->isFirewall() && $object->owner->find($newName, null, TRUE) !== null )
         {
-            echo $context->padding . " *** SKIPPED : an object with same name already exists\n";
+            PH::print_stdout( $context->padding . " *** SKIPPED : an object with same name already exists" );
             return;
         }
         if( $context->isAPI )
@@ -177,25 +177,25 @@ SecurityProfileCallContext::$supportedActions['name-removesuffix'] = array(
 
         if( $object->isTmp() )
         {
-            echo $context->padding . " *** SKIPPED : not applicable to TMP objects\n";
+            PH::print_stdout( $context->padding . " *** SKIPPED : not applicable to TMP objects" );
             return;
         }
 
         if( substr($object->name(), $suffixStartIndex, strlen($object->name())) != $suffix )
         {
-            echo $context->padding . " *** SKIPPED : suffix not found\n";
+            PH::print_stdout( $context->padding . " *** SKIPPED : suffix not found" );
             return;
         }
         $newName = substr($object->name(), 0, $suffixStartIndex);
 
-        echo $context->padding . " - new name will be '{$newName}'\n";
+        PH::print_stdout( $context->padding . " - new name will be '{$newName}'" );
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
 
         if( $rootObject->isPanorama() && $object->owner->find($newName, null, FALSE) !== null ||
             $rootObject->isFirewall() && $object->owner->find($newName, null, TRUE) !== null )
         {
-            echo $context->padding . " *** SKIPPED : an object with same name already exists\n";
+            PH::print_stdout( $context->padding . " *** SKIPPED : an object with same name already exists" );
             return;
         }
         if( $context->isAPI )
@@ -216,23 +216,23 @@ SecurityProfileCallContext::$supportedActions['name-touppercase'] = array(
 
         if( $object->isTmp() )
         {
-            echo $context->padding . " *** SKIPPED : not applicable to TMP objects\n";
+            PH::print_stdout( $context->padding . " *** SKIPPED : not applicable to TMP objects" );
             return;
         }
 
-        print $context->padding . " - new name will be '{$newName}'\n";
+        PH::print_stdout( $context->padding . " - new name will be '{$newName}'" );
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
 
         if( $newName === $object->name() )
         {
-            print " *** SKIPPED : object is already uppercase\n";
+            PH::print_stdout( " *** SKIPPED : object is already uppercase" );
             return;
         }
 
         if( $rootObject->isPanorama() && $object->owner->find($newName, null, FALSE) !== null ||
             $rootObject->isFirewall() && $object->owner->find($newName, null, TRUE) !== null )
         {
-            print " *** SKIPPED : an object with same name already exists\n";
+            PH::print_stdout( " *** SKIPPED : an object with same name already exists" );
             #use existing uppercase TAG and replace old lowercase where used with this existing uppercase TAG
             return;
         }
@@ -252,24 +252,24 @@ SecurityProfileCallContext::$supportedActions['name-tolowercase'] = array(
 
         if( $object->isTmp() )
         {
-            echo $context->padding . " *** SKIPPED : not applicable to TMP objects\n";
+            PH::print_stdout( $context->padding . " *** SKIPPED : not applicable to TMP objects" );
             return;
         }
 
-        print $context->padding . " - new name will be '{$newName}'\n";
+        PH::print_stdout( $context->padding . " - new name will be '{$newName}'" );
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
 
         if( $newName === $object->name() )
         {
-            print " *** SKIPPED : object is already lowercase\n";
+            PH::print_stdout( " *** SKIPPED : object is already lowercase" );
             return;
         }
 
         if( $rootObject->isPanorama() && $object->owner->find($newName, null, FALSE) !== null ||
             $rootObject->isFirewall() && $object->owner->find($newName, null, TRUE) !== null )
         {
-            print " *** SKIPPED : an object with same name already exists\n";
+            PH::print_stdout( " *** SKIPPED : an object with same name already exists" );
             #use existing lowercase TAG and replace old uppercase where used with this
             return;
         }
@@ -290,24 +290,24 @@ SecurityProfileCallContext::$supportedActions['name-toucwords'] = array(
 
         if( $object->isTmp() )
         {
-            echo $context->padding . " *** SKIPPED : not applicable to TMP objects\n";
+            PH::print_stdout( $context->padding . " *** SKIPPED : not applicable to TMP objects" );
             return;
         }
 
-        print $context->padding . " - new name will be '{$newName}'\n";
+        PH::print_stdout( $context->padding . " - new name will be '{$newName}'" );
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
 
         if( $newName === $object->name() )
         {
-            print " *** SKIPPED : object is already UCword\n";
+            PH::print_stdout( " *** SKIPPED : object is already UCword" );
             return;
         }
 
         if( $rootObject->isPanorama() && $object->owner->find($newName, null, FALSE) !== null ||
             $rootObject->isFirewall() && $object->owner->find($newName, null, TRUE) !== null )
         {
-            print " *** SKIPPED : an object with same name already exists\n";
+            PH::print_stdout( " *** SKIPPED : an object with same name already exists" );
             #use existing lowercase TAG and replace old uppercase where used with this
             return;
         }
@@ -348,7 +348,7 @@ SecurityProfileCallContext::$supportedActions['action-set'] = array(
 
         $object->setAction($action, $filter);
 
-        print "\n\n";
+        PH::print_stdout( "\n" );
     },
     'args' => array(
         'action' => array('type' => 'string', 'default' => '*nodefault*',

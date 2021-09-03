@@ -120,7 +120,7 @@ elseif ( $configInput['type'] == 'api'  )
         $inputConnector->setShowApiCalls(true);
     print " - Downloading config from API... ";
     $xmlDoc = $inputConnector->getCandidateConfig();
-    print "OK!\n";
+
 }
 else
     derr('not supported yet');
@@ -163,7 +163,7 @@ $loadEndTime = microtime(true);
 $loadEndMem = memory_get_usage(true);
 $loadElapsedTime = number_format( ($loadEndTime - $loadStartTime), 2, '.', '');
 $loadUsedMem = convert($loadEndMem - $loadStartMem);
-print "OK! ($loadElapsedTime seconds, $loadUsedMem memory)\n";
+print ($loadElapsedTime seconds, $loadUsedMem memory)\n";
 // --------------------
 
 $subSystem  = $pan->findSubSystemByName($location);

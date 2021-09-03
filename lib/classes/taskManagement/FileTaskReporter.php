@@ -7,7 +7,7 @@ class FileTaskReporter implements TaskReporter
     public function start()
     {
         // TODO: Implement start() method.
-        echo "The conversion start\n";
+        print "The conversion start\n";
     }
 
     /**
@@ -16,7 +16,7 @@ class FileTaskReporter implements TaskReporter
     public function isCancelled()
     {
         // TODO: Implement isCancelled() method.
-        #echo "The conversion is cancelled\n";
+        #print "The conversion is cancelled\n";
         return FALSE;
     }
 
@@ -37,7 +37,7 @@ class FileTaskReporter implements TaskReporter
     public function setToRelaunch( $timeUnit,  $timeValue,  $submessage)
     {
         // TODO: Implement setToRelaunch() method.
-        echo "Oj, oj. We will have to rerun this execution. Didn't work now\n";
+        print "Oj, oj. We will have to rerun this execution. Didn't work now\n";
     }
 
     /***
@@ -47,7 +47,7 @@ class FileTaskReporter implements TaskReporter
     public function setCompleted( $submessage = null,  $resultCode = null)
     {
         // TODO: Implement setCompleted() method.
-        echo "We are DONE\n";
+        print "We are DONE\n";
     }
 
     /***
@@ -67,7 +67,7 @@ class FileTaskReporter implements TaskReporter
     public function setFailed( $subMessage = null,  $resultCode = null)
     {
         // TODO: Implement setFailed() method.
-        echo "FAILED\n";
+        print "FAILED\n";
     }
 
     /***
@@ -83,13 +83,13 @@ class FileTaskReporter implements TaskReporter
     public function increaseFailed()
     {
         // TODO: Implement increaseFailed() method.
-        echo "This part failed\n";
+        print "This part failed\n";
     }
 
     public function increaseCompleted()
     {
         // TODO: Implement increaseCompleted() method.
-        echo "This part completed\n";
+        print "This part completed\n";
     }
 
     /***

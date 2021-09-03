@@ -28,21 +28,15 @@ require_once dirname(__FILE__)."/../utils/lib/UTIL.php";
 
 
 
-if( !PH::$shadow_json )
-{
-    print "\n***********************************************\n";
-    print "************ ROUTING-EDIT UTILITY  ****************\n\n";
-}
+PH::print_stdout("");
+PH::print_stdout("***********************************************");
+PH::print_stdout("*********** " . basename(__FILE__) . " UTILITY **************");
+PH::print_stdout("");
 
 
 $util = new NETWORKUTIL("routing", $argv, __FILE__);
 
 
-if( !PH::$shadow_json )
-{
-    print "\n\n\n";
-
-    print "\n\n************ END OF ROUTING-EDIT UTILITY ************\n";
-    print     "**************************************************\n";
-    print "\n\n";
-}
+PH::print_stdout("");
+PH::print_stdout("************* END OF SCRIPT " . basename(__FILE__) . " ************" );
+PH::print_stdout("");

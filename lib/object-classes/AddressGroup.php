@@ -188,7 +188,7 @@ class AddressGroup
                     $tmp_found_addresses = $this->owner->all($tagFilter);
                     foreach( $tmp_found_addresses as $address )
                     {
-                        #print "object: ".$address->name()." add ref to ".$this->name()."\n";
+                        #PH::print_stdout( "object: ".$address->name()." add ref to ".$this->name() );
                         //how to find out all objects which are related to this filter???
                         #$this->members[] = $address;
                         $address->addReference($this);
@@ -721,7 +721,7 @@ class AddressGroup
         if( $toString )
             return $retString;
 
-        print $retString;
+        PH::print_stdout( $retString );
     }
 
     /**
@@ -992,13 +992,13 @@ class AddressGroup
     {
         if( !$this->isGroup() )
         {
-            echo $padding . " - SKIPPED : it's not a group\n";
+            PH::print_stdout( $padding . " - SKIPPED : it's not a group" );
             return;
         }
 
         if( $this->owner === null )
         {
-            echo $padding . " -  SKIPPED : object was previously removed\n";
+            PH::print_stdout( $padding . " -  SKIPPED : object was previously removed" );
             return;
         }
 
@@ -1010,7 +1010,7 @@ class AddressGroup
             if( $class != 'AddressRuleContainer' && $class != 'AddressGroup' )
             {
                 $clearForAction = FALSE;
-                echo "- SKIPPED : it's used in unsupported class $class\n";
+                PH::print_stdout( "- SKIPPED : it's used in unsupported class $class" );
                 return;
             }
         }
@@ -1023,11 +1023,11 @@ class AddressGroup
 
                 if( $objectRef->owner === null )
                 {
-                    echo $padding . "  - SKIPPED because object already removed ({$objectRef->toString()})\n";
+                    PH::print_stdout( $padding . "  - SKIPPED because object already removed ({$objectRef->toString()})" );
                     continue;
                 }
 
-                echo $padding . "  - adding members in {$objectRef->toString()}\n";
+                PH::print_stdout( $padding . "  - adding members in {$objectRef->toString()}" );
 
                 if( $class == 'AddressRuleContainer' )
                 {
@@ -1039,7 +1039,7 @@ class AddressGroup
                         else
                             $objectRef->addObject($objectMember);
 
-                        echo $padding . "     -> {$objectMember->toString()}\n";
+                        PH::print_stdout( $padding . "     -> {$objectMember->toString()}" );
                     }
                     if( $isAPI )
                         $objectRef->API_remove($this, $forceAny);
@@ -1055,7 +1055,7 @@ class AddressGroup
                             $objectRef->API_addMember($objectMember);
                         else
                             $objectRef->addMember($objectMember);
-                        echo $padding . "     -> {$objectMember->toString()}\n";
+                        PH::print_stdout( $padding . "     -> {$objectMember->toString()}" );
                     }
                     if( $isAPI )
                         $objectRef->API_removeMember($this);

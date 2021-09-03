@@ -127,7 +127,7 @@ RQuery::$defaultFilters['address']['object']['operators']['is.ipv4'] = Array(
         {
             if( $object->isType_FQDN() )
             {
-                #print "SKIPPED: object is FQDN\n";
+                #PH::print_stdout( "SKIPPED: object is FQDN");
                 return false;
             }
 
@@ -161,7 +161,7 @@ RQuery::$defaultFilters['address']['object']['operators']['is.ipv4'] = Array(
         }
         else #howto check if group is IPv4 only
         {
-            #print "object: ".$object->name()." is group. not supported yet\n";
+            #PH::print_stdout( "object: ".$object->name()." is group. not supported yet" );
             return false;
         }
 
@@ -179,7 +179,7 @@ RQuery::$defaultFilters['address']['object']['operators']['is.ipv6'] = Array(
         {
             if( $object->isType_FQDN() )
             {
-                #print "SKIPPED: object is FQDN\n";
+                #PH::print_stdout( "SKIPPED: object is FQDN");
                 return false;
             }
 
@@ -204,7 +204,7 @@ RQuery::$defaultFilters['address']['object']['operators']['is.ipv6'] = Array(
         }
         else #howto check if group is IPv6 only
         {
-            #print "object: ".$object->name()." is group. not supported yet\n";
+            #PH::print_stdout( "object: ".$object->name()." is group. not supported yet" );
             return false;
         }
 
@@ -568,13 +568,13 @@ RQuery::$defaultFilters['address']['location']['operators']['is.child.of'] = arr
         $DG = $sub->findDeviceGroup($context->value);
         if( $DG == null )
         {
-            print "ERROR: location '$context->value' was not found. Here is a list of available ones:\n";
-            print " - shared\n";
+            PH::print_stdout( "ERROR: location '$context->value' was not found. Here is a list of available ones:");
+            PH::print_stdout( " - shared");
             foreach( $sub->getDeviceGroups() as $sub1 )
             {
-                print " - " . $sub1->name() . "\n";
+                PH::print_stdout( " - " . $sub1->name() );
             }
-            print "\n\n";
+            PH::print_stdout("");
             exit(1);
         }
 
@@ -608,7 +608,7 @@ RQuery::$defaultFilters['address']['location']['operators']['is.parent.of'] = ar
 
         if( get_class($sub) == "PANConf" )
         {
-            print "ERROR: filter location is.child.of is not working against a firewall configuration";
+            PH::print_stdout( "ERROR: filter location is.child.of is not working against a firewall configuration");
             return FALSE;
         }
 
@@ -618,13 +618,13 @@ RQuery::$defaultFilters['address']['location']['operators']['is.parent.of'] = ar
         $DG = $sub->findDeviceGroup($context->value);
         if( $DG == null )
         {
-            print "ERROR: location '$context->value' was not found. Here is a list of available ones:\n";
-            print " - shared\n";
+            PH::print_stdout( "ERROR: location '$context->value' was not found. Here is a list of available ones:");
+            PH::print_stdout( " - shared");
             foreach( $sub->getDeviceGroups() as $sub1 )
             {
-                print " - " . $sub1->name() . "\n";
+                PH::print_stdout( " - " . $sub1->name() );
             }
-            print "\n\n";
+            PH::print_stdout("");
             exit(1);
         }
 

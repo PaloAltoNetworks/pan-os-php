@@ -17,7 +17,7 @@ require_once ( dirname(__FILE__)."/../../../lib/UTIL.php");
 set_exception_handler(function ($e) {
     $code = $e->getCode() ?: 400;
     header("Content-Type: application/json", NULL, $code);
-    echo json_encode(["error" => $e->getMessage()]);
+    print json_encode(["error" => $e->getMessage()]);
     exit;
 });
 
@@ -188,4 +188,4 @@ switch($verb) {
 }
 
 #header("Content-Type: application/json");
-#echo json_encode($data);
+#print json_encode($data);

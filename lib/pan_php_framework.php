@@ -91,7 +91,7 @@ if( !extension_loaded('dom') )
  */
 function show_backtrace($str)
 {
-    echo "\nBacktrace\n: $str";
+    PH::print_stdout("\nBacktrace\n: $str" );
     var_dump(debug_backtrace());
 }
 
@@ -446,7 +446,7 @@ function convert($size)
     if( $size == 0 )
         return '0';
     elseif( $size < 0 )
-        return '[how is this possible?] <0';
+        return '0 b';
     $unit = array('b', 'kb', 'mb', 'gb', 'tb', 'pb');
     return @round($size / pow(1024, ($i = floor(log($size, 1024)))), 2) . ' ' . $unit[$i];
 }
@@ -575,8 +575,6 @@ function derr($msg, $object = null, $print_backtrace = TRUE)
             $skip++;
             $count++;
         }
-
-        echo "\n";
     }
 
 
@@ -639,9 +637,7 @@ function mdeb($msg)
  */
 function mwarning($msg, $object = null, $print_backtrace = TRUE)
 {
-    global $PANC_WARN;
-
-    if( isset($PANC_WARN) && $PANC_WARN == 0 )
+    if( !PH::$PANC_WARN )
         return;
 
     if( $object !== null )

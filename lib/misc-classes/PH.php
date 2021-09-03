@@ -90,6 +90,7 @@ class PH
             elseif( $arg == 'shadow-json' )
             {
                 PH::$shadow_json = TRUE;
+                PH::$PANC_WARN = FALSE;
                 unset(PH::$argv[$argIndex]);
                 if( !isset( $_SERVER['REQUEST_METHOD'] ) )
                     $argc--;
@@ -131,12 +132,15 @@ class PH
 
     public static $shadow_json = FALSE;
     public static $JSON_OUT = array();
+    public static $JSON_OUTlog = "";
+
+    public static $PANC_WARN = TRUE;
 
     public static $basedir;
 
     private static $library_version_major = 2;
     private static $library_version_sub = 0;
-    private static $library_version_bugfix = 1;
+    private static $library_version_bugfix = 10;
 
     //BASIC AUTH PAN-OS 7.1
     public static $softwareupdate_key = "658d787f293e631196dac9fb29490f1cc1bb3827";
@@ -488,12 +492,17 @@ class PH
             {
                 PH::$JSON_OUT[] = $text;
             }
-            else
-            {
+
+            #else{
+
                 #$stdoutarray = reset($text);
                 $stdoutarray = $text;
 
-                print $stdoutarray['header']."\n";
+                $string =  $stdoutarray['header']."\n";
+                if( !PH::$shadow_json )
+                    print $string;
+                else
+                    PH::$JSON_OUTlog .= $string;
                 unset( $stdoutarray['header'] );
                 foreach( $stdoutarray as $key => $entry )
                 {
@@ -516,23 +525,35 @@ class PH
                             }
                             $i++;
                         }
-                        print "- ".$tmp_entry2." ".$tmp_key2." - ".$key."\n";
+                        $string =  "- ".$tmp_entry2." ".$tmp_key2." - ".$key."\n";
+                        if( !PH::$shadow_json )
+                            print $string;
+                        else
+                            PH::$JSON_OUTlog .= $string;
                     }
                     else
                     {
-                        print "- " . $entry . " ". $key . "\n";
+                        $string =  "- " . $entry . " ". $key . "\n";
+                        if( !PH::$shadow_json )
+                            print $string;
+                        else
+                            PH::$JSON_OUTlog .= $string;
                     }
                 }
-                print "\n";
-            }
+                $string =  "\n";
+                if( !PH::$shadow_json )
+                    print $string;
+                else
+                    PH::$JSON_OUTlog .= $string;
+            #}
         }
         else
         {
+            $string = $text."\n";
             if( !PH::$shadow_json )
-            {
-                #print "X";
-                print $text."\n";
-            }
+                print $string;
+            else
+                PH::$JSON_OUTlog .= $string;
 
         }
 

@@ -18,42 +18,43 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-print "***********************************************\n";
-print "************ OVERRIDE-FINDER UTILITY ************\n\n";
 
 set_include_path(dirname(__FILE__) . '/../' . PATH_SEPARATOR . get_include_path());
 require_once dirname(__FILE__)."/../lib/pan_php_framework.php";
 
 function display_usage_and_exit($shortMessage = FALSE)
 {
-    print PH::boldText("USAGE: ") . "php " . basename(__FILE__) . " in=file.xml|api://... [more arguments]" . "\n";
-    print "php " . basename(__FILE__) . " help          : more help messages\n";
-    print PH::boldText("\nExamples:\n");
-    print " - php " . basename(__FILE__) . " in=api://192.169.50.10 cycleConnectedFirewalls'\n";
-    print " - php " . basename(__FILE__) . " in=api://001C55663D@panorama-host\n";
+    PH::print_stdout( PH::boldText("USAGE: ") . "php " . basename(__FILE__) . " in=file.xml|api://... [more arguments]" );
+    PH::print_stdout( "php " . basename(__FILE__) . " help          : more help messages" );
+    PH::print_stdout( PH::boldText("Examples:") );
+    PH::print_stdout( " - php " . basename(__FILE__) . " in=api://192.169.50.10 cycleConnectedFirewalls'" );
+    PH::print_stdout( " - php " . basename(__FILE__) . " in=api://001C55663D@panorama-host" );
 
     if( !$shortMessage )
     {
-        print PH::boldText("\nListing available arguments\n\n");
+        PH::print_stdout( PH::boldText("\nListing available arguments") );
 
         global $supportedArguments;
 
         ksort($supportedArguments);
         foreach( $supportedArguments as &$arg )
         {
-            print " - " . PH::boldText($arg['niceName']);
+            $text = " - " . PH::boldText($arg['niceName']);
             if( isset($arg['argDesc']) )
-                print '=' . $arg['argDesc'];
+                $text .= '=' . $arg['argDesc'];
             //."=";
             if( isset($arg['shortHelp']) )
-                print "\n     " . $arg['shortHelp'];
-            print "\n\n";
+            {
+                PH::print_stdout( $text );
+                $text = "     " . $arg['shortHelp'];
+            }
+            PH::print_stdout( $text );
         }
 
-        print "\n\n";
+        PH::print_stdout("" );
     }
 
-    print "\n";
+    PH::print_stdout("" );
     exit(1);
 }
 
@@ -64,7 +65,10 @@ function display_error_usage_exit($msg)
 }
 
 
-print "\n";
+PH::print_stdout("");
+PH::print_stdout("***********************************************");
+PH::print_stdout("*********** " . basename(__FILE__) . " UTILITY **************");
+PH::print_stdout("");
 
 $supportedArguments = array();
 $supportedArguments['in'] = array('niceName' => 'in', 'shortHelp' => 'input file or api. ie: in=config.xml  or in=api://192.168.1.1 or in=api://0018CAEC3@panorama.company.com', 'argDesc' => '[filename]|[api://IP]|[api://serial@IP]');
@@ -177,10 +181,10 @@ function diffNodes(DOMElement $template, DOMElement $candidate, $padding)
 
                 if( $exclusionFound )
                 {
-                    print $padding . "* " . DH::elementToPanXPath($candidate) . "\n";
+                    PH::print_stdout( $padding . "* " . DH::elementToPanXPath($candidate) );
                 }
                 else
-                    print $padding . "* " . DH::elementToPanXPath($templateNode) . " (defined in template but missing in Firewall config)\n";
+                    PH::print_stdout( $padding . "* " . DH::elementToPanXPath($templateNode) . " (defined in template but missing in Firewall config)" );
             }
             else
                 diffNodes($templateNode, $candidateNode, $padding);
@@ -227,7 +231,7 @@ function diffNodes(DOMElement $template, DOMElement $candidate, $padding)
         else
             $identicalText = '';
 
-        print $padding . "* " . DH::elementToPanXPath($candidate) . "{$identicalText}\n";
+        PH::print_stdout( $padding . "* " . DH::elementToPanXPath($candidate) . "{$identicalText}" );
     }
 }
 
@@ -238,42 +242,45 @@ function diffNodes(DOMElement $template, DOMElement $candidate, $padding)
 function checkFirewallOverride($apiConnector, $padding)
 {
     PH::enableExceptionSupport();
-    print $padding . " - Downloading candidate config...";
+    $text = $padding . " - Downloading candidate config...";
     $request = 'type=config&action=get&xpath=/config';
 
     try
     {
         $candidateDoc = $apiConnector->sendSimpleRequest($request);
 
-        print "OK!\n";
 
-        print $padding . " - Looking for root /config xpath...";
+        PH::print_stdout( $text );
+
+        $text = $padding . " - Looking for root /config xpath...";
         $configRoot = DH::findXPathSingleEntryOrDie('/response/result/config', $candidateDoc);
-        print "OK!\n";
+
+        PH::print_stdout( $text );
 
         DH::makeElementAsRoot($configRoot, $candidateDoc);
 
-        print $padding . " - Looking for root /config/template/config xpath...";
+        $text = $padding . " - Looking for root /config/template/config xpath...";
         $templateRoot = DH::findXPathSingleEntry('template/config', $configRoot);
 
-        print "OK!\n";
+
+        PH::print_stdout( $text );
 
         if( $templateRoot === FALSE )
         {
-            echo $padding . " - SKIPPED because no template applied!\n";
+            PH::print_stdout( $padding . " - SKIPPED because no template applied!" );
         }
         else
         {
-            print "\n";
+            PH::print_stdout( "" );
 
-            print $padding . " ** Looking for overrides **\n";
+            PH::print_stdout( $padding . " ** Looking for overrides **" );
 
             diffNodes($templateRoot, $configRoot, $padding);
         }
     } catch(Exception $e)
     {
         PH::disableExceptionSupport();
-        print $padding . " ***** an error occured : " . $e->getMessage() . "\n\n";
+        PH::print_stdout( $padding . " ***** an error occured : " . $e->getMessage() );
         return;
     }
 
@@ -288,7 +295,7 @@ if( $cycleConnectedFirewalls )
     foreach( $firewallSerials as $fw )
     {
         $countFW++;
-        print " ** Handling FW #{$countFW}/" . count($firewallSerials) . " : serial/{$fw['serial']}   hostname/{$fw['hostname']} **\n";
+        PH::print_stdout( " ** Handling FW #{$countFW}/" . count($firewallSerials) . " : serial/{$fw['serial']}   hostname/{$fw['hostname']} **" );
         $tmpConnector = $inputConnector->cloneForPanoramaManagedDevice($fw['serial']);
         checkFirewallOverride($tmpConnector, '    ');
     }
@@ -299,7 +306,7 @@ else
 }
 
 
-print "\n************ DONE: OVERRIDE-FINDER UTILITY ************\n";
-print   "*****************************************************";
-print "\n\n";
+PH::print_stdout("");
+PH::print_stdout("************* END OF SCRIPT " . basename(__FILE__) . " ************" );
+PH::print_stdout("");
 

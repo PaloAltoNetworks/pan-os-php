@@ -133,10 +133,10 @@ trait ReferenceableObject
     public function display_references($indent = 0)
     {
         $strpad = str_pad('', $indent);
-        print $strpad . "* Displaying referencers for " . $this->toString() . "\n";
+        PH::print_stdout( $strpad . "* Displaying referencers for " . $this->toString() );
         foreach( $this->refrules as $o )
         {
-            print $strpad . '  - ' . $o->toString() . "\n";
+            PH::print_stdout( $strpad . '  - ' . $o->toString() );
         }
     }
 

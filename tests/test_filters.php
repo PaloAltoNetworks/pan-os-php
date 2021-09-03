@@ -19,8 +19,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-echo "\n*************************************************\n";
-echo "**************** FILTER TESTERS *****************\n\n";
+print "\n*************************************************\n";
+print "**************** FILTER TESTERS *****************\n\n";
 
 set_include_path(dirname(__FILE__) . '/../' . PATH_SEPARATOR . get_include_path());
 require_once dirname(__FILE__)."/../lib/pan_php_framework.php";
@@ -96,7 +96,7 @@ foreach( RQuery::$defaultFilters as $type => &$filtersByField )
             if( $operator == '>,<,=,!' )
                 $operator = '<';
 
-            echo "\n\n\n *** Processing filter: {$type} / ({$fieldName} {$operator})\n";
+            print "\n\n\n *** Processing filter: {$type} / ({$fieldName} {$operator})\n";
 
             $ci = &$filter['ci'];
 
@@ -121,41 +121,41 @@ foreach( RQuery::$defaultFilters as $type => &$filtersByField )
 
             elseif( $type == 'securityprofile' )
             {
-                echo "******* SKIPPED for now *******\n";
+                print "******* SKIPPED for now *******\n";
                 continue;
             }
             elseif( $type == 'securityprofilegroup' )
             {
-                echo "******* SKIPPED for now *******\n";
+                print "******* SKIPPED for now *******\n";
                 continue;
             }
             elseif( $type == 'app' )
             {
-                echo "******* SKIPPED for now *******\n";
+                print "******* SKIPPED for now *******\n";
                 continue;
             }elseif( $type == 'application' )
             {
-                echo "******* SKIPPED for now *******\n";
+                print "******* SKIPPED for now *******\n";
                 continue;
             }
             elseif( $type == 'interface' )
             {
-                echo "******* SKIPPED for now *******\n";
+                print "******* SKIPPED for now *******\n";
                 continue;
             }
             elseif( $type == 'virtualwire' )
             {
-                echo "******* SKIPPED for now *******\n";
+                print "******* SKIPPED for now *******\n";
                 continue;
             }
             elseif( $type == 'routing' )
             {
-                echo "******* SKIPPED for now *******\n";
+                print "******* SKIPPED for now *******\n";
                 continue;
             }
             elseif( $type == 'device' )
             {
-                echo "******* SKIPPED for now *******\n";
+                print "******* SKIPPED for now *******\n";
                 continue;
             }
             else
@@ -176,7 +176,7 @@ foreach( RQuery::$defaultFilters as $type => &$filtersByField )
 
             $cli .= ' 2>&1';
 
-            echo " * Executing CLI: {$cli}\n";
+            print " * Executing CLI: {$cli}\n";
 
             $output = array();
             $retValue = 0;
@@ -185,31 +185,31 @@ foreach( RQuery::$defaultFilters as $type => &$filtersByField )
 
             foreach( $output as $line )
             {
-                echo '   ##  ';
-                echo $line;
-                echo "\n";
+                print '   ##  ';
+                print $line;
+                print "\n";
             }
 
             if( $retValue != 0 )
                 derr("CLI exit with error code '{$retValue}'");
 
-            echo "\n";
+            print "\n";
 
         }
     }
 }
 
-echo "\n*****  *****\n";
-echo " - Processed {$totalFilterCount} filters\n";
-echo " - Found {$totalFilterWithCiCount} that are CI enabled\n";
+print "\n*****  *****\n";
+print " - Processed {$totalFilterCount} filters\n";
+print " - Found {$totalFilterWithCiCount} that are CI enabled\n";
 
-echo "\n\n";
-echo " - the following filters has no test argument:\n";
+print "\n\n";
+print " - the following filters has no test argument:\n";
 print_r($missing_filters);
 
-echo "\n";
-echo "\n*********** FINISHED TESTING FILTERS ************\n";
-echo "*************************************************\n\n";
+print "\n";
+print "\n*********** FINISHED TESTING FILTERS ************\n";
+print "*************************************************\n\n";
 
 
 

@@ -145,7 +145,6 @@ else
     $pan = new PanoramaConf();
 }
 $pan->load_from_file($inputFile);
-print "OK!\n\n";
 
 
 // Variable that will hold all groups to be processed

@@ -86,6 +86,8 @@ class UTIL
         $this->utilLogger();
         $this->log->info("start UTIL: " . $this->PHP_FILE . " | " . implode(", ", $argv));
 
+        PH::print_stdout( "PAN-OS-PHP version: ".PH::frameworkVersion() );
+
         if( $utilType != "custom" )
             $this->utilStart();
     }
@@ -116,7 +118,11 @@ class UTIL
         $this->save_our_work(TRUE);
 
         if( PH::$shadow_json )
+        {
+            PH::$JSON_OUT['log'] = PH::$JSON_OUTlog;
             print json_encode( PH::$JSON_OUT, JSON_PRETTY_PRINT );
+        }
+
 
 
         $this->log->info("END UTIL: " . $this->PHP_FILE);
@@ -349,7 +355,7 @@ class UTIL
             elseif( $this->utilType == 'device' )
                 DeviceCallContext::prepareSupportedActions();
 
-            PH::print_stdout( "OK!" );
+
         }
     }
 
@@ -640,7 +646,7 @@ class UTIL
             PH::print_stdout( " - Reading XML file from disk... ".$this->configInput['filename'] );
             if( !$this->xmlDoc->load($this->configInput['filename'], XML_PARSE_BIG_LINES) )
                 derr("error while reading xml config file");
-            PH::print_stdout( "OK!" );
+
         }
         elseif( $this->configInput['type'] == 'api' )
         {
@@ -649,7 +655,7 @@ class UTIL
             $this->apiMode = TRUE;
             PH::print_stdout( " - Downloading config from API... " );
             $this->xmlDoc = $this->configInput['connector']->getCandidateConfig( $this->apiTimeoutValue );
-            PH::print_stdout( "OK!" );
+
         }
         else
             derr('not supported yet');
@@ -667,12 +673,12 @@ class UTIL
         $xpathResult = $xpathResult->item(0);
         $fawkes_config_version = DH::findAttribute('fawkes-config-version', $xpathResult);
         if( $fawkes_config_version != null )
-            print "FAWKES-CONFIG-VERSION: ".$fawkes_config_version."\n";
+            PH::print_stdout( "FAWKES-CONFIG-VERSION: ".$fawkes_config_version );
         else
         {
             $fawkes_config_version = DH::findAttribute('fawkes-config', $xpathResult);
             if( $fawkes_config_version != null )
-                print "FAWKES-CONFIG-VERSION: ".$fawkes_config_version."\n";
+                PH::print_stdout( "FAWKES-CONFIG-VERSION: ".$fawkes_config_version );
         }
 
 
@@ -908,7 +914,7 @@ class UTIL
 
         $this->loadEnd();
 
-        PH::print_stdout( "OK! ($this->loadElapsedTime seconds, $this->loadUsedMem memory)" );
+        PH::print_stdout( "($this->loadElapsedTime seconds, $this->loadUsedMem memory)" );
         // --------------------
     }
 

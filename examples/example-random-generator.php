@@ -27,7 +27,8 @@ if( $v === null )
 	derr("vsys1 was not found ? Exit\n");
 }
 
-print "\n***********************************************\n\n";
+PH::print_stdout( "***********************************************" );
+PH::print_stdout("" );
 
 
 $v->securityRules->removeAll();
@@ -69,8 +70,9 @@ for( $i=0; $i < 1500; $i++ )
 
 
 
+PH::print_stdout("" );
+PH::print_stdout( "***********************************************" );
 
-print "\n***********************************************\n";
 $v->display_statistics();
 
 $panc->save_to_file($output);

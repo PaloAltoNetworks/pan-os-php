@@ -19,11 +19,15 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-print "\n*********** START OF SCRIPT " . basename(__FILE__) . " ************\n\n";
 
 set_include_path(dirname(__FILE__) . '/../' . PATH_SEPARATOR . get_include_path());
 // load PAN-PHP-FRAMEWORK library
 require_once dirname(__FILE__)."/../lib/pan_php_framework.php";
+
+PH::print_stdout("");
+PH::print_stdout("***********************************************");
+PH::print_stdout("*********** " . basename(__FILE__) . " UTILITY **************");
+PH::print_stdout("");
 
 function checkRemoveDuplicateMembers( $locationNode, $locationName, $tagName, &$tagNameArray, &$tagNameIndex, &$totalTagNameFixed )
 {
@@ -53,11 +57,11 @@ function checkRemoveDuplicateMembers( $locationNode, $locationName, $tagName, &$
     //
     //
 
-    print "\n\n";
-    print "#####     #####     #####     #####     #####     #####     #####     #####     #####     #####     #####\n";
-    print " - parsed ". count($tagNameArray) . " ".$tagName."\n";
-    print "\n";
-    print "\n - Scanning for ".$tagName." with duplicate members...\n";
+    PH::print_stdout( "");
+    PH::print_stdout( "#####     #####     #####     #####     #####     #####     #####     #####     #####     #####     #####");
+    PH::print_stdout( " - parsed ". count($tagNameArray) . " ".$tagName );
+    PH::print_stdout( "");
+    PH::print_stdout( " - Scanning for ".$tagName." with duplicate members..." );
 
     foreach( $tagNameArray as $objectName => $nodes )
     {
@@ -89,7 +93,7 @@ function checkRemoveDuplicateMembers( $locationNode, $locationName, $tagName, &$
 
                 if( isset($membersIndex[$memberName]) )
                 {
-                    echo "    - group '{$objectName}' from DG/VSYS {$locationName} has a duplicate member named '{$memberName}' ... *FIXED*\n";
+                    PH::print_stdout( "    - group '{$objectName}' from DG/VSYS {$locationName} has a duplicate member named '{$memberName}' ... *FIXED*" );
                     $staticNode->removeChild($NodeMember);
                     $totalTagNameFixed++;
                     continue;
@@ -149,9 +153,9 @@ elseif( $configInput['type'] == 'api' )
     $connector = $configInput['connector'];
     if( $debugAPI )
         $connector->setShowApiCalls(TRUE);
-    print " - Downloading config from API... ";
+    PH::print_stdout( " - Downloading config from API... ");
     $xmlDoc = $connector->getRunningConfig();
-    print "OK!\n";
+
 }
 else
     derr('not supported yet');
@@ -164,12 +168,12 @@ $xpathResult = DH::findXPath('/config', $xmlDoc);
 $xpathResult = $xpathResult->item(0);
 $fawkes_config_version = DH::findAttribute('fawkes-config-version', $xpathResult);
 if( $fawkes_config_version != null )
-    print "FAWKES-CONFIG-VERSION: ".$fawkes_config_version."\n";
+    PH::print_stdout( "FAWKES-CONFIG-VERSION: ".$fawkes_config_version);
 else
 {
     $fawkes_config_version = DH::findAttribute('fawkes-config', $xpathResult);
     if( $fawkes_config_version != null )
-        print "FAWKES-CONFIG-VERSION: ".$fawkes_config_version."\n";
+        PH::print_stdout( "FAWKES-CONFIG-VERSION: ".$fawkes_config_version);
 }
 
 $xpathResult = DH::findXPath('/config/devices/entry/vsys', $xmlDoc);
@@ -187,7 +191,7 @@ else
     $configType = 'panos';
 unset($xpathResult);
 
-print " - Detected platform type is '{$configType}'\n";
+PH::print_stdout( " - Detected platform type is '{$configType}'");
 
 ///////////////////////////////////////////////////////////
 //clean stage config / delete all <deleted> entries
@@ -219,7 +223,7 @@ foreach( $cursor->childNodes as $region_entry )
         continue;
 
     $region_name = DH::findAttribute('name', $region_entry);
-    #print $region_name."\n";
+    #PH::print_stdout( $region_name );
     $region_array[$region_name] = $region_entry;
 }
 
@@ -304,15 +308,15 @@ elseif( $configType == 'fawkes' )
 foreach( $tmpNodes as $node )
     $locationNodes[$node->getAttribute('name')] = $node;
 
-print " - Found " . count($locationNodes) . " locations (VSYS/DG/Container/DeviceCloud)\n";
+PH::print_stdout( " - Found " . count($locationNodes) . " locations (VSYS/DG/Container/DeviceCloud)");
 foreach( $locationNodes as $key => $tmpNode )
-    print "   - ".$key."\n";
+    PH::print_stdout( "   - ".$key);
 
-print "\n *******   ********   ********\n\n";
+PH::print_stdout( "*******   ********   ********");
 
 foreach( $locationNodes as $locationName => $locationNode )
 {
-    print "\n** PARSING VSYS/DG/Container/DeviceCloud '{$locationName}' **\n";
+    PH::print_stdout( "** PARSING VSYS/DG/Container/DeviceCloud '{$locationName}' **");
 
     $addressObjects = array();
     $addressGroups = array();
@@ -382,25 +386,25 @@ foreach( $locationNodes as $locationName => $locationNode )
     }
 
 
-    print "\n\n";
-    print "#####     #####     #####     #####     #####     #####     #####     #####     #####     #####     #####\n";
-    print " - parsed " . count($addressObjects) . " address objects and " . count($addressGroups) . " groups\n";
-    print "\n";
+    PH::print_stdout( "");
+    PH::print_stdout( "#####     #####     #####     #####     #####     #####     #####     #####     #####     #####     #####");
+    PH::print_stdout( " - parsed " . count($addressObjects) . " address objects and " . count($addressGroups) . " groups");
+    PH::print_stdout( "");
 
     //
     //
     //
-    print "\n - Scanning for address / addressgroup with same name as REGION objects...\n";
+    PH::print_stdout( " - Scanning for address / addressgroup with same name as REGION objects...");
     foreach( $address_region as $objectName => $nodes )
     {
-        echo "    - address object '{$objectName}' from DG/VSYS {$locationName} has lower precedence as REGION object ... (*FIX_MANUALLY*) at XML line #{$node->getLineNo()}\n";
+        PH::print_stdout( "    - address object '{$objectName}' from DG/VSYS {$locationName} has lower precedence as REGION object ... (*FIX_MANUALLY*) at XML line #{$node->getLineNo()}");
         $countMissconfiguredAddressRegionObjects++;
     }
 
     //
     //
     //
-    print "\n - Scanning for address with missing IP-netmask/IP-range/FQDN information...\n";
+    PH::print_stdout( " - Scanning for address with missing IP-netmask/IP-range/FQDN information...");
     foreach( $addressObjects as $objectName => $nodes )
     {
         foreach( $nodes as $node )
@@ -410,8 +414,8 @@ foreach( $locationNodes as $locationName => $locationNode )
             $fqdnNode = DH::findFirstElement('fqdn', $node);
             if( $ip_netmaskNode === FALSE && $ip_rangeNode === FALSE && $fqdnNode === FALSE )
             {
-                echo "    - address object '{$objectName}' from DG/VSYS {$locationName} has missing IP configuration ... (*FIX_MANUALLY*)\n";
-                print "       - type 'Address' at XML line #{$node->getLineNo()}\n";
+                PH::print_stdout( "    - address object '{$objectName}' from DG/VSYS {$locationName} has missing IP configuration ... (*FIX_MANUALLY*)");
+                PH::print_stdout( "       - type 'Address' at XML line #{$node->getLineNo()}");
                 $countMissconfiguredAddressObjects++;
             }
         }
@@ -420,7 +424,7 @@ foreach( $locationNodes as $locationName => $locationNode )
     //
     //
     //
-    print "\n - Scanning for address groups with empty members...\n";
+    PH::print_stdout( " - Scanning for address groups with empty members...");
     foreach( $addressGroups as $objectName => $nodes )
     {
         foreach( $nodes as $node )
@@ -429,8 +433,8 @@ foreach( $locationNodes as $locationName => $locationNode )
             $dynamicNode = DH::findFirstElement('dynamic', $node);
             if( $staticNode === FALSE && $dynamicNode === FALSE )
             {
-                echo "    - addressgroup object '{$objectName}' from DG/VSYS {$locationName} has no member ... (*FIX_MANUALLY*)\n";
-                print "       - type 'AddressGroup' at XML line #{$node->getLineNo()}\n";
+                PH::print_stdout( "    - addressgroup object '{$objectName}' from DG/VSYS {$locationName} has no member ... (*FIX_MANUALLY*)");
+                PH::print_stdout( "       - type 'AddressGroup' at XML line #{$node->getLineNo()}");
                 $countEmptyAddressGroup++;
             }
         }
@@ -440,7 +444,7 @@ foreach( $locationNodes as $locationName => $locationNode )
     //
     //
     //
-    print "\n - Scanning for address groups with duplicate members...\n";
+    PH::print_stdout( " - Scanning for address groups with duplicate members...");
     foreach( $addressGroups as $objectName => $nodes )
     {
         foreach( $nodes as $node )
@@ -463,7 +467,7 @@ foreach( $locationNodes as $locationName => $locationNode )
 
                 if( isset($membersIndex[$memberName]) )
                 {
-                    echo "    - group '{$objectName}' from DG/VSYS {$locationName} has a duplicate member named '{$memberName}' ... *FIXED*\n";
+                    PH::print_stdout( "    - group '{$objectName}' from DG/VSYS {$locationName} has a duplicate member named '{$memberName}' ... *FIXED*");
                     $nodesToRemove[] = $staticNodeMember;
                     $totalAddressGroupsFixed++;
                     continue;
@@ -480,7 +484,7 @@ foreach( $locationNodes as $locationName => $locationNode )
     //
     //
     //
-    print "\n - Scanning for address groups with own membership as subgroup...\n";
+    PH::print_stdout( " - Scanning for address groups with own membership as subgroup...");
     foreach( $addressGroups as $objectName => $nodes )
     {
         foreach( $nodes as $node )
@@ -503,7 +507,7 @@ foreach( $locationNodes as $locationName => $locationNode )
 
                 if( $objectName == $memberName )
                 {
-                    echo "    - group '{$objectName}' from DG/VSYS {$locationName} has itself as member '{$memberName}' ... *FIXED*\n";
+                    PH::print_stdout( "    - group '{$objectName}' from DG/VSYS {$locationName} has itself as member '{$memberName}' ... *FIXED*");
                     $staticNodeMember->parentNode->removeChild($staticNodeMember);
                     $totalAddressGroupsSubGroupFixed++;
                     continue;
@@ -516,7 +520,7 @@ foreach( $locationNodes as $locationName => $locationNode )
     //
     //
     //
-    print "\n - Scanning for duplicate address objects...\n";
+    PH::print_stdout( " - Scanning for duplicate address objects...");
     foreach( $addressIndex as $objectName => $objectNodes )
     {
         $dupCount = count($objectNodes['regular']) + count($objectNodes['group']);
@@ -524,7 +528,7 @@ foreach( $locationNodes as $locationName => $locationNode )
         if( $dupCount < 2 )
             continue;
 
-        print "   - found address object named '{$objectName}' that exists " . $dupCount . " time (*FIX_MANUALLY*):\n";
+        PH::print_stdout( "   - found address object named '{$objectName}' that exists " . $dupCount . " time (*FIX_MANUALLY*):");
 
         $tmp_addr_array = array();
         foreach( $objectNodes['regular'] as $objectNode )
@@ -534,7 +538,7 @@ foreach( $locationNodes as $locationName => $locationNode )
             if( $ip_netmaskNode !== FALSE )
             {
                 /** @var DOMElement $objectNode */
-                print "       - type 'Address' value: '" . $ip_netmaskNode->nodeValue . "' at XML line #{$objectNode->getLineNo()}";
+                $text = "       - type 'Address' value: '" . $ip_netmaskNode->nodeValue . "' at XML line #{$objectNode->getLineNo()}";
 
                 //Todo: check if address object value is same, then delete it
                 //TODO: VALIDATION needed if working as expected
@@ -544,19 +548,18 @@ foreach( $locationNodes as $locationName => $locationNode )
                 else
                 {
                     $objectNode->parentNode->removeChild($objectNode);
-                    print PH::boldText(" (removed)");
+                    $text .= PH::boldText(" (removed)");
                     $countDuplicateAddressObjects--;
                 }
 
-                print "\n";
+                PH::print_stdout( $text );
 
                 $countDuplicateAddressObjects++;
             }
             elseif( $ip_fqdnNode !== FALSE )
             {
                 /** @var DOMElement $objectNode */
-                print "       - type 'Address' value: '" . $ip_fqdnNode->nodeValue . "' at XML line #{$objectNode->getLineNo()}";
-                print "\n";
+                PH::print_stdout( "       - type 'Address' value: '" . $ip_fqdnNode->nodeValue . "' at XML line #{$objectNode->getLineNo()}");
 
                 $countDuplicateAddressObjects++;
             }
@@ -582,10 +585,9 @@ foreach( $locationNodes as $locationName => $locationNode )
 
                 $txt .= $member->nodeValue;
             }
-            //print "|".$txt."|\n";
 
             /** @var DOMElement $objectNode */
-            print "       - type 'AddressGroup' at XML line #{$objectNode->getLineNo()}";
+            $text = "       - type 'AddressGroup' at XML line #{$objectNode->getLineNo()}";
 
             //Todo: check if servicegroup object value is same, then delete it
             //TODO: VALIDATION needed if working as expected
@@ -595,10 +597,10 @@ foreach( $locationNodes as $locationName => $locationNode )
             else
             {
                 $objectNode->parentNode->removeChild($objectNode);
-                print PH::boldText(" (removed)");
+                $text .= PH::boldText(" (removed)");
                 $countDuplicateAddressObjects--;
             }
-            print "\n";
+            PH::print_stdout( $text);
 
 
             $countDuplicateAddressObjects++;
@@ -659,15 +661,15 @@ foreach( $locationNodes as $locationName => $locationNode )
         }
     }
 
-    print "\n\n";
-    print "#####     #####     #####     #####     #####     #####     #####     #####     #####     #####     #####\n";
-    print " - parsed " . count($serviceObjects) . " service objects and " . count($serviceGroups) . " groups\n";
-    print "\n";
+    PH::print_stdout( "");
+    PH::print_stdout( "#####     #####     #####     #####     #####     #####     #####     #####     #####     #####     #####");
+    PH::print_stdout( " - parsed " . count($serviceObjects) . " service objects and " . count($serviceGroups) . " groups");
+    PH::print_stdout( "");
 
     //
     //
     //
-    print "\n - Scanning for service with missing protocol information...\n";
+    PH::print_stdout( " - Scanning for service with missing protocol information...");
     foreach( $serviceObjects as $objectName => $nodes )
     {
         foreach( $nodes as $node )
@@ -675,8 +677,8 @@ foreach( $locationNodes as $locationName => $locationNode )
             $protocolNode = DH::findFirstElement('protocol', $node);
             if( $protocolNode === FALSE )
             {
-                echo "    - service object '{$objectName}' from DG/VSYS {$locationName} has missing protocol configuration ... (*FIX_MANUALLY*)\n";
-                print "       - type 'Service' at XML line #{$node->getLineNo()}\n";
+                PH::print_stdout( "    - service object '{$objectName}' from DG/VSYS {$locationName} has missing protocol configuration ... (*FIX_MANUALLY*)");
+                PH::print_stdout( "       - type 'Service' at XML line #{$node->getLineNo()}");
                 $countMissconfiguredServiceObjects++;
             }
         }
@@ -685,7 +687,7 @@ foreach( $locationNodes as $locationName => $locationNode )
     //
     //
     //
-    print "\n - Scanning for service groups with empty members...\n";
+    PH::print_stdout( " - Scanning for service groups with empty members...");
     foreach( $serviceGroups as $objectName => $nodes )
     {
         foreach( $nodes as $node )
@@ -693,14 +695,14 @@ foreach( $locationNodes as $locationName => $locationNode )
             $staticNode = DH::findFirstElement('members', $node);
             if( $staticNode === FALSE )
             {
-                echo "    - servicegroup object '{$objectName}' from DG/VSYS {$locationName} has no member ... (*FIX_MANUALLY*)\n";
-                print "       - type 'ServiceGroup' at XML line #{$node->getLineNo()}\n";
+                PH::print_stdout( "    - servicegroup object '{$objectName}' from DG/VSYS {$locationName} has no member ... (*FIX_MANUALLY*)");
+                PH::print_stdout( "       - type 'ServiceGroup' at XML line #{$node->getLineNo()}");
                 $countEmptyServiceGroup++;
             }
         }
     }
 
-    print "\n - Scanning for service groups with duplicate members...\n";
+    PH::print_stdout( " - Scanning for service groups with duplicate members...");
     foreach( $serviceGroups as $objectName => $nodes )
     {
         foreach( $nodes as $node )
@@ -723,7 +725,7 @@ foreach( $locationNodes as $locationName => $locationNode )
 
                 if( isset($membersIndex[$memberName]) )
                 {
-                    echo "    - group '{$objectName}' from DG/VSYS {$locationName} has a duplicate member named '{$memberName}' ... *FIXED*\n";
+                    PH::print_stdout( "    - group '{$objectName}' from DG/VSYS {$locationName} has a duplicate member named '{$memberName}' ... *FIXED*");
                     $nodesToRemove[] = $staticNodeMember;
                     $totalServiceGroupsFixed++;
                     continue;
@@ -741,7 +743,7 @@ foreach( $locationNodes as $locationName => $locationNode )
     //
     //
     //
-    print "\n - Scanning for service groups with own membership as subgroup...\n";
+    PH::print_stdout( " - Scanning for service groups with own membership as subgroup...");
     foreach( $serviceGroups as $objectName => $nodes )
     {
         foreach( $nodes as $node )
@@ -764,7 +766,7 @@ foreach( $locationNodes as $locationName => $locationNode )
 
                 if( $objectName == $memberName )
                 {
-                    echo "    - group '{$objectName}' from DG/VSYS {$locationName} has itself as member '{$memberName}' ... *FIXED*\n";
+                    PH::print_stdout( "    - group '{$objectName}' from DG/VSYS {$locationName} has itself as member '{$memberName}' ... *FIXED*");
                     $staticNodeMember->parentNode->removeChild($staticNodeMember);
                     $totalServiceGroupsSubGroupFixed++;
                     continue;
@@ -774,7 +776,7 @@ foreach( $locationNodes as $locationName => $locationNode )
     }
 
 
-    print "\n - Scanning for duplicate service objects...\n";
+    PH::print_stdout( " - Scanning for duplicate service objects...");
     foreach( $serviceIndex as $objectName => $objectNodes )
     {
         $dupCount = count($objectNodes['regular']) + count($objectNodes['group']);
@@ -782,7 +784,7 @@ foreach( $locationNodes as $locationName => $locationNode )
         if( $dupCount < 2 )
             continue;
 
-        print "   - found service object named '{$objectName}' that exists " . $dupCount . " time (*FIX_MANUALLY*):\n";
+        PH::print_stdout( "   - found service object named '{$objectName}' that exists " . $dupCount . " time (*FIX_MANUALLY*):");
         $tmp_srv_array = array();
         foreach( $objectNodes['regular'] as $objectNode )
         {
@@ -791,7 +793,7 @@ foreach( $locationNodes as $locationName => $locationNode )
                 continue;
 
             /** @var DOMElement $objectNode */
-            print "       - type 'Service' value: '" . $protocolNode->nodeValue . "' at XML line #{$objectNode->getLineNo()}";
+            $text = "       - type 'Service' value: '" . $protocolNode->nodeValue . "' at XML line #{$objectNode->getLineNo()}";
 
             //Todo: check if service object value is same, then delete it
             //TODO: VALIDATION needed if working as expected
@@ -801,10 +803,10 @@ foreach( $locationNodes as $locationName => $locationNode )
             else
             {
                 $objectNode->parentNode->removeChild($objectNode);
-                print PH::boldText(" (removed)");
+                $text .= PH::boldText(" (removed)");
                 $countDuplicateServiceObjects--;
             }
-            print "\n";
+            PH::print_stdout( $text);
 
             $countDuplicateServiceObjects++;
         }
@@ -818,7 +820,7 @@ foreach( $locationNodes as $locationName => $locationNode )
 
 
             /** @var DOMElement $objectNode */
-            print "       - type 'ServiceGroup' at XML line #{$objectNode->getLineNo()}";
+            $text = "       - type 'ServiceGroup' at XML line #{$objectNode->getLineNo()}";
 
             //Todo: check if servicegroup object value is same, then delete it
             //TODO: VALIDATION needed if working as expected
@@ -828,10 +830,10 @@ foreach( $locationNodes as $locationName => $locationNode )
             else
             {
                 $objectNode->parentNode->removeChild($objectNode);
-                print PH::boldText(" (removed)");
+                $text .= PH::boldText(" (removed)");
                 $countDuplicateServiceObjects--;
             }
-            print "\n";
+            PH::print_stdout( $text);
 
             $countDuplicateServiceObjects++;
         }
@@ -886,10 +888,10 @@ foreach( $locationNodes as $locationName => $locationNode )
         
         if( $objectTypeNode_rulebase !== FALSE )
         {
-            print "\n\n";
-            print "#####     #####     #####     #####     #####     #####     #####     #####     #####     #####     #####\n";
+            PH::print_stdout( "");
+            PH::print_stdout( "#####     #####     #####     #####     #####     #####     #####     #####     #####     #####     #####");
 
-            print "[".$key."]\n";
+            PH::print_stdout( "[".$key."]");
 
             foreach( $objectTypeNode_rulebase->childNodes as $objectNode_ruletype )
             {
@@ -933,9 +935,10 @@ foreach( $locationNodes as $locationName => $locationNode )
                                 if( isset($secRuleServices[$objectServiceName]) )
                                 {
                                     //Secrule service has twice same service added
-                                    print "     - Secrule: ".$objectName." has same service defined twice: ".$objectServiceName;
+                                    $text = "     - Secrule: ".$objectName." has same service defined twice: ".$objectServiceName;
                                     $objectNode_services->removeChild($objectService);
-                                    print PH::boldText(" (removed)")."\n";
+                                    $text .= PH::boldText(" (removed)");
+                                    PH::print_stdout( $text );
                                 }
                                 else
                                     $secRuleServices[$objectServiceName] = $objectService;
@@ -945,7 +948,7 @@ foreach( $locationNodes as $locationName => $locationNode )
                                 if( count($secRuleServices) > 1 )
                                 {
                                     $secRuleServiceIndex[$objectName] = $secRuleServices['application-default'];
-                                    #print "     - Rule: '" . $objectName . "' has service application-default + something else defined.\n";
+                                    #PH::print_stdout( "     - Rule: '" . $objectName . "' has service application-default + something else defined.");
                                     #print_r($secRuleServices);
                                 }
                                 else
@@ -968,9 +971,10 @@ foreach( $locationNodes as $locationName => $locationNode )
                                 $objectApplicationName = $objectApplication->textContent;
                                 if( isset($secRuleApplication[$objectApplicationName]) )
                                 {
-                                    print "     - Secrule: ".$objectName." has same application defined twice: ".$objectApplicationName;
+                                    $text = "     - Secrule: ".$objectName." has same application defined twice: ".$objectApplicationName;
                                     $objectNode_applications->removeChild($objectNode_applications);
-                                    print PH::boldText(" (removed)")."\n";
+                                    $text .=PH::boldText(" (removed)")."\n";
+                                    PH::print_stdout( $text );
                                 }
                                 else
                                     $secRuleApplication[$objectApplicationName] = $objectApplication;
@@ -978,7 +982,7 @@ foreach( $locationNodes as $locationName => $locationNode )
                             if( isset($secRuleApplication['any']) and count($secRuleApplication) > 1 )
                             {
                                 $secRuleApplicationIndex[$objectName] = $secRuleApplication['any'];
-                                #print "     - Rule: '".$objectName."' has application 'any' + something else defined.\n" ;
+                                #PH::print_stdout( "     - Rule: '".$objectName."' has application 'any' + something else defined.\n" ;
                             }
 
                             $objectNode_category = DH::findFirstElement('category', $objectNode);
@@ -997,22 +1001,23 @@ foreach( $locationNodes as $locationName => $locationNode )
                                 $objectSourceName = $objectSource->textContent;
                                 if( isset($secRuleSource[$objectSourceName]) )
                                 {
-                                    print "     - Secrule: ".$objectName." has same source defined twice: ".$objectSourceName;
+                                    $text = "     - Secrule: ".$objectName." has same source defined twice: ".$objectSourceName;
                                     $objectNode_sources->removeChild($objectSource);
-                                    print PH::boldText(" (removed)")."\n";
+                                    $text .=PH::boldText(" (removed)");
+                                    PH::print_stdout( $text );
                                     $countMissconfiguredSecRuleSourceObjects++;
                                 }
                                 else
                                 {
                                     $secRuleSource[$objectSourceName] = $objectSource;
-                                    #print $objectName.'add to array: '.$objectSourceName."\n";
+                                    #PH::print_stdout( $objectName.'add to array: '.$objectSourceName );
                                 }
 
                             }
                             if( isset($secRuleSource['any']) and count($secRuleSource) > 1 )
                             {
                                 $secRuleSourceIndex[$objectName] = $secRuleSource['any'];
-                                print "     - Rule: '".$objectName."' has source 'any' + something else defined.\n" ;
+                                PH::print_stdout( "     - Rule: '".$objectName."' has source 'any' + something else defined." );
                             }
 
                             //check if destination has 'any' and additional
@@ -1025,12 +1030,13 @@ foreach( $locationNodes as $locationName => $locationNode )
                                     continue;
 
                                 $objectDestinationName = $objectDestination->textContent;
-                                #print "rule: ".$objectName." name: ".$objectDestinationName."\n";
+                                #PH::print_stdout( "rule: ".$objectName." name: ".$objectDestinationName);
                                 if( isset($secRuleDestination[$objectDestinationName]) )
                                 {
-                                    print "     - Secrule: ".$objectName." has same destination defined twice: ".$objectDestinationName;
+                                    $text = "     - Secrule: ".$objectName." has same destination defined twice: ".$objectDestinationName;
                                     $objectNode_destinations->removeChild($objectDestination);
-                                    print PH::boldText(" (removed)")."\n";
+                                    $text .= PH::boldText(" (removed)")."\n";
+                                    PH::print_stdout( $text );
                                     $countMissconfiguredSecRuleDestinationObjects++;
                                 }
                                 else
@@ -1041,14 +1047,14 @@ foreach( $locationNodes as $locationName => $locationNode )
                             if( isset($secRuleDestination['any']) and count($secRuleDestination) > 1 )
                             {
                                 $secRuleDestinationIndex[$objectName] = $secRuleDestination['any'];
-                                #print "     - Rule: '".$objectName."' has application 'any' + something else defined.\n" ;
+                                #PH::print_stdout( "     - Rule: '".$objectName."' has application 'any' + something else defined.") ;
                             }
                         }
 
                     }
 
-                    print " - parsed " . count($secRules) . " Security Rules\n";
-                    print "\n";
+                    PH::print_stdout( " - parsed " . count($secRules) . " Security Rules");
+                    PH::print_stdout( "");
                 }
 
                 elseif( $objectNode_ruletype->nodeName == "nat" )
@@ -1077,15 +1083,15 @@ foreach( $locationNodes as $locationName => $locationNode )
                     }
 
 
-                    print " - parsed " . count($natRules) . " NAT Rules\n";
-                    print "\n";
+                    PH::print_stdout( " - parsed " . count($natRules) . " NAT Rules");
+                    PH::print_stdout( "");
                 }
 
             }
 
 
 
-            print "\n - Scanning for duplicate Security Rules...\n";
+            PH::print_stdout( " - Scanning for duplicate Security Rules...");
             foreach( $secRuleIndex as $objectName => $objectNodes )
             {
                 $dupCount = count($objectNodes['regular']) + count($objectNodes['group']);
@@ -1093,29 +1099,34 @@ foreach( $locationNodes as $locationName => $locationNode )
                 if( $dupCount < 2 )
                     continue;
 
-                print "   - found Security Rule named '{$objectName}' that exists " . $dupCount . " time:\n";
+                PH::print_stdout( "   - found Security Rule named '{$objectName}' that exists " . $dupCount . " time:");
 
                 $tmp_secrule_array = array();
                 foreach( $objectNodes['regular'] as $objectNode )
                 {
 
                     /** @var DOMElement $objectNode */
-                    print "       - type 'Security Rules' at XML line #{$objectNode->getLineNo()}";
+                    $text = "       - type 'Security Rules' at XML line #{$objectNode->getLineNo()}";
 
                     $newName = $key . $objectNode->getAttribute('name');
                     if( !isset($secRuleIndex[$newName]) )
                     {
                         $objectNode->setAttribute('name', $newName);
-                        print PH::boldText(" - new name: " . $newName . " (fixed)\n");
+                        $text .= PH::boldText(" - new name: " . $newName . " (fixed)");
+                        PH::print_stdout( $text );
                     }
                     else
-                        print " - Rulename can not be fixed: '" . $newName . "' is also available\n";
+                    {
+                        $text .= " - Rulename can not be fixed: '" . $newName . "' is also available";
+                        PH::print_stdout( $text );
+                    }
+
 
                     $countDuplicateSecRuleObjects++;
                 }
             }
 
-            print "\n - Scanning for duplicate NAT Rules...\n";
+            PH::print_stdout( "\n - Scanning for duplicate NAT Rules...");
             foreach( $natRuleIndex as $objectName => $objectNodes )
             {
                 $dupCount = count($objectNodes['regular']) + count($objectNodes['group']);
@@ -1123,70 +1134,75 @@ foreach( $locationNodes as $locationName => $locationNode )
                 if( $dupCount < 2 )
                     continue;
 
-                print "   - found NAT Rule named '{$objectName}' that exists " . $dupCount . " time:\n";
+                PH::print_stdout( "   - found NAT Rule named '{$objectName}' that exists " . $dupCount . " time:");
                 $tmp_natrule_array = array();
                 foreach( $objectNodes['regular'] as $key => $objectNode )
                 {
 
                     /** @var DOMElement $objectNode */
-                    print "       - type 'NAT Rules' at XML line #{$objectNode->getLineNo()}";
+                    $text = "       - type 'NAT Rules' at XML line #{$objectNode->getLineNo()}";
 
 
                     $newName = $key . $objectNode->getAttribute('name');
                     if( !isset($natRuleIndex[$newName]) )
                     {
                         $objectNode->setAttribute('name', $newName);
-                        print PH::boldText(" - new name: " . $newName . " (fixed)\n");
+                        $text .= PH::boldText(" - new name: " . $newName . " (fixed)\n");
+                        PH::print_stdout( $text );
                     }
                     else
-                        print " - Rulename can not be fixed: '" . $newName . "' is also available\n";
+                    {
+                        $text .= " - Rulename can not be fixed: '" . $newName . "' is also available";
+                        PH::print_stdout( $text );
+                    }
+
 
                     $countDuplicateNATRuleObjects++;
                 }
             }
 
-            print "\n - Scanning for missconfigured Source Field in Security Rules...\n";
+            PH::print_stdout( "\n - Scanning for missconfigured Source Field in Security Rules...");
             foreach( $secRuleSourceIndex as $objectName => $objectNode )
             {
-                print "   - found Security Rule named '{$objectName}' that has source 'any' and additional source configured at XML line #{$objectNode->getLineNo()}\n";
+                PH::print_stdout( "   - found Security Rule named '{$objectName}' that has source 'any' and additional source configured at XML line #{$objectNode->getLineNo()}");
                 $countMissconfiguredSecRuleSourceObjects++;
             }
 
-            print "\n - Scanning for missconfigured Destination Field in Security Rules...\n";
+            PH::print_stdout( " - Scanning for missconfigured Destination Field in Security Rules...");
             foreach( $secRuleDestinationIndex as $objectName => $objectNode )
             {
-                print "   - found Security Rule named '{$objectName}' that has destination 'any' and additional destination configured at XML line #{$objectNode->getLineNo()}\n";
+                PH::print_stdout( "   - found Security Rule named '{$objectName}' that has destination 'any' and additional destination configured at XML line #{$objectNode->getLineNo()}");
                 $countMissconfiguredSecRuleDestinationObjects++;
             }
 
-            print "\n - Scanning for missconfigured Service Field in Security Rules...\n";
+            PH::print_stdout( " - Scanning for missconfigured Service Field in Security Rules...");
             foreach( $secRuleServiceIndex as $objectName => $objectNode )
             {
-                print "   - found Security Rule named '{$objectName}' that has service 'application-default' and an additional service configured at XML line #{$objectNode->getLineNo()}\n";
+                PH::print_stdout( "   - found Security Rule named '{$objectName}' that has service 'application-default' and an additional service configured at XML line #{$objectNode->getLineNo()}");
                 $countMissconfiguredSecRuleServiceObjects++;
             }
 
 
-            print "\n - Scanning for missconfigured Application Field in Security Rules...\n";
+            PH::print_stdout( " - Scanning for missconfigured Application Field in Security Rules...");
             foreach( $secRuleApplicationIndex as $objectName => $objectNode )
             {
-                print "   - found Security Rule named '{$objectName}' that has application 'any' and additional application configured at XML line #{$objectNode->getLineNo()}\n";
+                PH::print_stdout( "   - found Security Rule named '{$objectName}' that has application 'any' and additional application configured at XML line #{$objectNode->getLineNo()}");
                 $countMissconfiguredSecRuleApplicationObjects++;
             }
 
-            print "\n - Scanning for missconfigured Category Field in Security Rules...\n";
+            PH::print_stdout( " - Scanning for missconfigured Category Field in Security Rules...");
             foreach( $secRuleCategoryIndex as $objectName => $objectNode )
             {
-                print "   - found Security Rule named '{$objectName}' that has XML element 'category' but not child element 'member' configured at XML line #{$objectNode->getLineNo()}\n";
+                PH::print_stdout( "   - found Security Rule named '{$objectName}' that has XML element 'category' but not child element 'member' configured at XML line #{$objectNode->getLineNo()}");
                 $countMissconfiguredSecRuleCategoryObjects++;
             }
 
             if( $service_app_default_available )
             {
-                print "\n - Scanning for Security Rules with 'application-default' set | service object 'application-default' is available ...\n";
+                PH::print_stdout( " - Scanning for Security Rules with 'application-default' set | service object 'application-default' is available ...");
                 foreach( $secRuleServiceAppDefaultIndex as $objectName => $objectNode )
                 {
-                    print "   - found Security Rule named '{$objectName}' that is using SERVICE OBJECT at XML line #{$objectNode->getLineNo()}\n";
+                    PH::print_stdout( "   - found Security Rule named '{$objectName}' that is using SERVICE OBJECT at XML line #{$objectNode->getLineNo()}");
                     $countMissconfiguredSecRuleServiceAppDefaultObjects++;
                 }
             }
@@ -1197,7 +1213,7 @@ foreach( $locationNodes as $locationName => $locationNode )
     ///config/readonly/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='mn053-mnr-int']/address-group
     ///
     ///
-    print "\n - Scanning for /config/readonly/devices/entry[@name='localhost.localdomain']/device-group/ for duplicate address-group ...\n";
+    PH::print_stdout( " - Scanning for /config/readonly/devices/entry[@name='localhost.localdomain']/device-group/ for duplicate address-group ...");
     $tmpReadOnly = DH::findXPath("/config/readonly/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='".$locationName."']", $xmlDoc);
     $readOnly = array();
 
@@ -1226,9 +1242,10 @@ foreach( $locationNodes as $locationName => $locationNode )
         $objectAddressGroupName = $objectAddressGroup->getAttribute('name');
         if( isset($readonlyDGAddressgroups[$objectAddressGroupName]) )
         {
-            print "     - readOnly DG: ".$locationName." has same addressgroup defined twice: ".$objectAddressGroupName;
+            $text = "     - readOnly DG: ".$locationName." has same addressgroup defined twice: ".$objectAddressGroupName;
             $readonlyAddressgroups->removeChild($objectAddressGroup);
-            print PH::boldText(" (removed)")."\n";
+            $text .= PH::boldText(" (removed)");
+            PH::print_stdout($text);
         }
         else
             $readonlyDGAddressgroups[$objectAddressGroupName] = $objectAddressGroup;
@@ -1264,15 +1281,15 @@ foreach( $locationNodes as $locationName => $locationNode )
 
     }
 
-    print "\n\n";
-    print "#####     #####     #####     #####     #####     #####     #####     #####     #####     #####     #####\n";
-    print " - parsed " . count($zoneObjects) . " zone objects \n";
-    print "\n";
+    PH::print_stdout( "");
+    PH::print_stdout( "#####     #####     #####     #####     #####     #####     #####     #####     #####     #####     #####");
+    PH::print_stdout( " - parsed " . count($zoneObjects) . " zone objects");
+    PH::print_stdout( "");
 
     //
     //
     //
-    print "\n - Scanning for zones with wrong zone type (e.g. Layer3 instead of layer3 - case sensitive - Expedition issue?)...\n";
+    PH::print_stdout( " - Scanning for zones with wrong zone type (e.g. Layer3 instead of layer3 - case sensitive - Expedition issue?)...");
     foreach( $zoneObjects as $objectName => $nodes )
     {
         foreach( $nodes as $node )
@@ -1291,24 +1308,20 @@ foreach( $locationNodes as $locationName => $locationNode )
                 {
                     if( isset($results[0][0]) )
                     {
-                        print "       - type 'Zone' name: '" . $node->getAttribute('name') . "' - '" . $results[0][0] . "' at XML line #{$zone_type->getLineNo()} (*FIX_MANUALLY*)\n";
-
+                        PH::print_stdout( "       - type 'Zone' name: '" . $node->getAttribute('name') . "' - '" . $results[0][0] . "' at XML line #{$zone_type->getLineNo()} (*FIX_MANUALLY*)");
                     }
-
                 }
-
-
             }
         }
     }
 
-    print "\n** ** ** ** ** ** **\n";
+    PH::print_stdout( "** ** ** ** ** ** **");
 }
 
 ///
 ///
 ///
-print "\n - Scanning for /config/readonly/shared for duplicate address-group ...\n";
+PH::print_stdout( " - Scanning for /config/readonly/shared for duplicate address-group ...");
 $tmpReadOnly = DH::findXPath("/config/readonly/shared", $xmlDoc);
 $readOnly = array();
 
@@ -1337,55 +1350,66 @@ foreach( $demo as $objectAddressGroup )
     $objectAddressGroupName = $objectAddressGroup->getAttribute('name');
     if( isset($readonlyDGAddressgroups[$objectAddressGroupName]) )
     {
-        print "     - readOnly shared has same addressgroup defined twice: ".$objectAddressGroupName;
+        $text = "     - readOnly shared has same addressgroup defined twice: ".$objectAddressGroupName;
         $readonlyAddressgroups->removeChild($objectAddressGroup);
-        print PH::boldText(" (removed)")."\n";
+        $text .=PH::boldText(" (removed)");
+        PH::print_stdout($text);
     }
     else
         $readonlyDGAddressgroups[$objectAddressGroupName] = $objectAddressGroup;
 }
 
 
-echo "\nSummary:\n";
-echo " - FIXED: duplicate address-group members: {$totalAddressGroupsFixed}\n";
-echo " - FIXED: duplicate service-group members: {$totalServiceGroupsFixed}\n";
-echo " - FIXED: own address-group as subgroup member: {$totalAddressGroupsSubGroupFixed}\n";
-echo " - FIXED: own service-group as subgroup members: {$totalServiceGroupsSubGroupFixed}\n";
+PH::print_stdout( "");
+PH::print_stdout( "Summary:");
+PH::print_stdout( " - FIXED: duplicate address-group members: {$totalAddressGroupsFixed}");
+PH::print_stdout( " - FIXED: duplicate service-group members: {$totalServiceGroupsFixed}");
+PH::print_stdout( " - FIXED: own address-group as subgroup member: {$totalAddressGroupsSubGroupFixed}");
+PH::print_stdout( " - FIXED: own service-group as subgroup members: {$totalServiceGroupsSubGroupFixed}");
 
-echo " - FIXED: duplicate application-group members: {$totalApplicationGroupsFixed}\n";
+PH::print_stdout( " - FIXED: duplicate application-group members: {$totalApplicationGroupsFixed}");
 
-echo "\n\nIssues that could not be fixed (look in logs for FIX_MANUALLY keyword):\n";
-echo " - FIX_MANUALLY: address objects with same name as REGION: {$countMissconfiguredAddressRegionObjects} (look in the logs)\n\n";
+PH::print_stdout( "\n\nIssues that could not be fixed (look in logs for FIX_MANUALLY keyword):");
+PH::print_stdout( " - FIX_MANUALLY: address objects with same name as REGION: {$countMissconfiguredAddressRegionObjects} (look in the logs)");
+PH::print_stdout( "");
 
-echo " - FIX_MANUALLY: duplicate address objects: {$countDuplicateAddressObjects} (look in the logs )\n";
-echo " - FIX_MANUALLY: duplicate service objects: {$countDuplicateServiceObjects} (look in the logs)\n\n";
+PH::print_stdout( " - FIX_MANUALLY: duplicate address objects: {$countDuplicateAddressObjects} (look in the logs )");
+PH::print_stdout( " - FIX_MANUALLY: duplicate service objects: {$countDuplicateServiceObjects} (look in the logs)");
+PH::print_stdout( "");
 
-echo " - FIX_MANUALLY: missconfigured address objects: {$countMissconfiguredAddressObjects} (look in the logs)\n";
-echo " - FIX_MANUALLY: empty address-group: {$countEmptyAddressGroup} (look in the logs)\n\n";
-echo " - FIX_MANUALLY: missconfigured service objects: {$countMissconfiguredServiceObjects} (look in the logs)\n";
-echo " - FIX_MANUALLY: empty service-group: {$countEmptyServiceGroup} (look in the logs)\n\n";
+PH::print_stdout( " - FIX_MANUALLY: missconfigured address objects: {$countMissconfiguredAddressObjects} (look in the logs)");
+PH::print_stdout( " - FIX_MANUALLY: empty address-group: {$countEmptyAddressGroup} (look in the logs)");
+PH::print_stdout( "");
 
-echo " - FIX_MANUALLY: duplicate Security Rules: {$countDuplicateSecRuleObjects} (look in the logs )\n";
-echo " - FIX_MANUALLY: duplicate NAT Rules: {$countDuplicateNATRuleObjects} (look in the logs )\n\n";
+PH::print_stdout( " - FIX_MANUALLY: missconfigured service objects: {$countMissconfiguredServiceObjects} (look in the logs)");
+PH::print_stdout( " - FIX_MANUALLY: empty service-group: {$countEmptyServiceGroup} (look in the logs)");
+PH::print_stdout( "");
 
-echo " - FIX_MANUALLY: missconfigured Source Field in Security Rules: {$countMissconfiguredSecRuleSourceObjects} (look in the logs )\n";
-echo " - FIX_MANUALLY: missconfigured Destination Field in Security Rules: {$countMissconfiguredSecRuleDestinationObjects} (look in the logs )\n";
-echo " - FIX_MANUALLY: missconfigured Service Field in Security Rules: {$countMissconfiguredSecRuleServiceObjects} (look in the logs )\n";
-echo " - FIX_MANUALLY: missconfigured Application Field in Security Rules: {$countMissconfiguredSecRuleApplicationObjects} (look in the logs )\n";
-echo " - FIX_MANUALLY: missconfigured Category Field in Security Rules: {$countMissconfiguredSecRuleCategoryObjects} (look in the logs )\n\n";
+PH::print_stdout( " - FIX_MANUALLY: duplicate Security Rules: {$countDuplicateSecRuleObjects} (look in the logs )");
+PH::print_stdout( " - FIX_MANUALLY: duplicate NAT Rules: {$countDuplicateNATRuleObjects} (look in the logs )");
+PH::print_stdout( "");
+
+PH::print_stdout( " - FIX_MANUALLY: missconfigured Source Field in Security Rules: {$countMissconfiguredSecRuleSourceObjects} (look in the logs )");
+PH::print_stdout( " - FIX_MANUALLY: missconfigured Destination Field in Security Rules: {$countMissconfiguredSecRuleDestinationObjects} (look in the logs )");
+PH::print_stdout( " - FIX_MANUALLY: missconfigured Service Field in Security Rules: {$countMissconfiguredSecRuleServiceObjects} (look in the logs )");
+PH::print_stdout( " - FIX_MANUALLY: missconfigured Application Field in Security Rules: {$countMissconfiguredSecRuleApplicationObjects} (look in the logs )");
+PH::print_stdout( " - FIX_MANUALLY: missconfigured Category Field in Security Rules: {$countMissconfiguredSecRuleCategoryObjects} (look in the logs )");
+PH::print_stdout( "");
 
 if( $service_app_default_available )
-    echo " - FIX_MANUALLY: SERVICE OBJECT 'application-default' available and used in Security Rules: {$countMissconfiguredSecRuleServiceAppDefaultObjects} (look in the logs )\n\n";
-
+{
+    PH::print_stdout( " - FIX_MANUALLY: SERVICE OBJECT 'application-default' available and used in Security Rules: {$countMissconfiguredSecRuleServiceAppDefaultObjects} (look in the logs )");
+    PH::print_stdout( "");
+}
 
 if( $configInput['type'] == 'api' )
-    echo "\n\nINPUT mode API detected: FIX is ONLY saved in offline file.\n";
+    PH::print_stdout( "\n\nINPUT mode API detected: FIX is ONLY saved in offline file.");
 
 
 // save our work !!!
 if( $configOutput !== null )
 {
-    echo "\n\nSaving to file: " . PH::$args['out'] . "\n";
+    PH::print_stdout( "\n\nSaving to file: " . PH::$args['out'] );
     if( $configOutput != '/dev/null' )
     {
         $xmlDoc->save(PH::$args['out']);
@@ -1393,5 +1417,7 @@ if( $configOutput !== null )
 }
 
 
-print "\n************* END OF SCRIPT " . basename(__FILE__) . " ************\n\n";
+PH::print_stdout("");
+PH::print_stdout("************* END OF SCRIPT " . basename(__FILE__) . " ************" );
+PH::print_stdout("");
 

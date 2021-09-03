@@ -1,6 +1,15 @@
 CHANGELOG
 
-2.0.9
+2.0.10
+UTILS:
+* move to the general PH::print_stdout
+
+BUGFIX:
+
+GENERAL:
+
+
+2.0.9 (20210903)
 UTILS:
 * pa_application-edit | introduce actions=move
 * pa_rule-edit actions=exporttoexcel - extend with rule target information

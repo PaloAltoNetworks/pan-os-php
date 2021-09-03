@@ -130,7 +130,7 @@ class RQuery
 
         if( count($this->subQueries) == 0 )
         {
-            // print $this->padded."about to eval\n";
+            // PH::print_stdout( $this->padded."about to eval" );
             if( isset($this->refOperator['Function']) )
             {
                 $boolReturn = $this->contextObject->execute($object, $nestedQueries);
@@ -383,7 +383,7 @@ class RQuery
         $findOpen = strpos($text, '(', $start);
         $findClose = strpos($text, ')', $start);
 
-        //print $this->padded."Parsing \"$text\"\n";
+        //PH::print_stdout( $this->padded."Parsing \"$text\"" );
 
         while( $findOpen !== FALSE && ($findClose > $findOpen) )
         {
@@ -412,12 +412,12 @@ class RQuery
 
                 $this->subQueriesOperators[] = $operator;
 
-                ////print $this->padded."raw operator found: '$operator'\n";
+                ////PH::print_stdout( $this->padded."raw operator found: '$operator'" );
             }
 
 
             $previousClose = $findOpen + $res;
-            //print $this->padded.'remains to be parsed after subQ extracted: '.substr($text,$previousClose+1)."\n";
+            //PH::print_stdout( $this->padded.'remains to be parsed after subQ extracted: '.substr($text,$previousClose+1) );
 
             $start = $findOpen + $res + 1;
             $findOpen = strpos($text, '(', $start);
@@ -430,7 +430,7 @@ class RQuery
             if( $findClose === FALSE )
             {
                 $errorMessage = 'cannot find closing )';
-                //print $this->padded."test\n";
+                //PH::print_stdout( $this->padded."test" );
                 return FALSE;
             }
             elseif( count($this->subQueries) == 0 )
@@ -455,7 +455,7 @@ class RQuery
         // here we are at top level
         if( count($this->subQueries) == 0 )
         {
-            //print $this->padded."No subquery found, this is an expression: $text\n";
+            //PH::print_stdout( $this->padded."No subquery found, this is an expression: $text" );
             $this->text = $text;
             if( !$this->extractWordsFromText($this->text, $supportedFilters, $errorMessage) )
             {
@@ -464,7 +464,7 @@ class RQuery
         }
         else
         {
-            //print $this->padded . "Sub-queries found\n";
+            //PH::print_stdout( $this->padded . "Sub-queries found" );
             $this->text = $text;
         }
 
@@ -616,9 +616,9 @@ class RQuery
     public function display($indentLevel = 0)
     {
         if( $indentLevel == 0 )
-            print $this->sanitizedString();
+            PH::print_stdout( $this->sanitizedString() );
         else
-            print str_pad($this->sanitizedString(), $indentLevel);
+            PH::print_stdout( str_pad($this->sanitizedString(), $indentLevel) );
     }
 
     public function sanitizedString()

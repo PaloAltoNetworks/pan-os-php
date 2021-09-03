@@ -149,12 +149,12 @@ class AppStore extends ObjStore
                 $ref->appStore !== null )
             {
                 $this->parentCentralStore = $ref->appStore;
-                #print $this->toString()." : found a parent central store: ".$this->parentCentralStore->toString()."\n";
+                #PH::print_stdout( $this->toString()." : found a parent central store: ".$this->parentCentralStore->toString() );
                 return;
             }
             $cur = $ref;
         }
-        //print $this->toString().": no parent store found\n";
+        //PH::print_stdout( $this->toString().": no parent store found");
 
     }
 

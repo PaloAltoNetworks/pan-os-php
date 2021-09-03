@@ -27,7 +27,7 @@
  *
  *  $con = PanAPIConnector::findOrCreateConnectorFromHost( 'fw1.company.com' );
  *  $infos = $con->getSoftwareVersion();
- *  print "Platform: ".$infos['type']." Version: ".$infos['version'];
+ *  PH::print_stdout( "Platform: ".$infos['type']." Version: ".$infos['version'] );
  *  $pan = new PANConf()
  *
  *  $pan->API_load_from_candidate();
@@ -411,13 +411,11 @@ class PanAPIConnector
         elseif( $promptForKey )
         {
             if( $wrongLogin )
-                print "** Request API access to host '$host' but invalid credentials were detected'\n";
+                PH::print_stdout( "** Request API access to host '$host' but invalid credentials were detected'" );
             else
-                print "** Request API access to host '$host' but API was not found in cache.\n";
+                PH::print_stdout( "** Request API access to host '$host' but API was not found in cache." );
 
-            print "** Please enter API key or username below and hit enter:  ";
-
-
+            PH::print_stdout( "** Please enter API key or username below and hit enter:  " );
             $handle = fopen("php://stdin", "r");
             $line = fgets($handle);
             $apiKey = trim($line);
@@ -429,9 +427,9 @@ class PanAPIConnector
 
                 $password = self::hiddenPWvalidation($user, $hiddenPW, $handle);
 
-                print "\n";
+                PH::print_stdout();
 
-                print "* Now generating an API key from '$host'...";
+                PH::print_stdout( "* Now generating an API key from '$host'..." );
                 $con = new PanAPIConnector($host, '', 'panos', null, $port);
 
                 $url = "type=keygen&user=" . urlencode($user) . "&password=" . urlencode($password);
@@ -453,7 +451,8 @@ class PanAPIConnector
 
                 $apiKey = $res->textContent;
 
-                print "OK, key is $apiKey\n\n";
+                PH::print_stdout( "OK, key is $apiKey");
+                PH::print_stdout("");
 
             }
 
@@ -480,11 +479,11 @@ class PanAPIConnector
 
     public function testConnectivity()
     {
-        print " Testing API connectivity... ";
+        PH::print_stdout( " Testing API connectivity... ");
 
         $this->refreshSystemInfos();
 
-        print "OK!\n";
+
 
     }
 
@@ -766,7 +765,7 @@ class PanAPIConnector
                 continue;
 
             $counter = $node->nodeValue;
-            print " - registered-ip: " . $counter . "\n";
+            PH::print_stdout( " - registered-ip: " . $counter );
         }
 
         $start = 1;
@@ -1048,8 +1047,8 @@ class PanAPIConnector
                 . $filecontent . "\r\n"
                 . "----ABC1234--\r\n";
 
-            #print "content length = ".strlen($encodedContent)."\n";
-            #print "content  = ".$encodedContent."\n";
+            #PH::print_stdout( "content length = ".strlen($encodedContent) );
+            #PH::print_stdout( "content  = ".$encodedContent );
             if( !PH::$sendAPIkeyviaHeader )
                 curl_setopt($this->_curl_handle, CURLOPT_HTTPHEADER, array('Content-Type: multipart/form-data; boundary=--ABC1234'));
             else
@@ -1079,11 +1078,11 @@ class PanAPIConnector
                     $paramURl .= '&' . $paramIndex . '=' . str_replace('#', '%23', $param);
                 }
 
-                print("API call through POST: \"" . $finalUrl . $paramURl . "\"\r\n");
-                print "RAW HTTP POST Content: {$properParams}\n\n";
+                PH::print_stdout("API call through POST: \"" . $finalUrl . $paramURl . "\"");
+                PH::print_stdout( "RAW HTTP POST Content: {$properParams}" );
             }
             else
-                print("API call: \"" . $finalUrl . "\"\r\n");
+                PH::print_stdout("API call: \"" . $finalUrl . "\"" );
         }
 
         $httpReplyContent = curl_exec($this->_curl_handle);
@@ -1095,9 +1094,9 @@ class PanAPIConnector
 
         if( $curlHttpStatusCode != 200 )
         {
-            print PH::boldText( "\n####################################\n\n");
-            print "For " . PH::boldText("PAN-OS version < 9.0") . " please use additional argument " . PH::boldText("'shadow-apikeynohidden'" ) . " in your script command\n" ;
-            print PH::boldText( "\n####################################\n\n\n");
+            PH::print_stdout( PH::boldText( "\n####################################") );
+            PH::print_stdout( "For " . PH::boldText("PAN-OS version < 9.0") . " please use additional argument " . PH::boldText("'shadow-apikeynohidden'" ) . " in your script command" );
+            PH::print_stdout( PH::boldText( "\n####################################") );
             derr("HTTP API returned (code : {$curlHttpStatusCode}); " . $httpReplyContent, null, false);
         }
 
@@ -1112,9 +1111,10 @@ class PanAPIConnector
         } catch(Exception $e)
         {
             PH::disableExceptionSupport();
-            print " ***** an error occured : " . $e->getMessage() . "\n\n";
-
-            print "\n" . $httpReplyContent . "\n";
+            PH::print_stdout( " ***** an error occured : " . $e->getMessage() );
+            PH::print_stdout("");
+            PH::print_stdout(  $httpReplyContent );
+            PH::print_stdout("");
 
             return;
         }
@@ -1228,7 +1228,7 @@ class PanAPIConnector
     {
         $ret = $this->sendRequest($req);
 
-        //print DH::dom_to_xml($ret, 0, true, 4);
+        //PH::print_stdout( DH::dom_to_xml($ret, 0, true, 4) );
 
         $cursor = DH::findXPathSingleEntryOrDie('/response', $ret);
         $cursor = DH::findFirstElement('result', $cursor);
@@ -1260,7 +1260,7 @@ class PanAPIConnector
                 sleep(1);
                 $query = '&type=report&action=get&job-id=' . $jobid;
                 $ret = $this->sendRequest($query);
-                //print DH::dom_to_xml($ret, 0, true, 5);
+                //PH::print_stdout( DH::dom_to_xml($ret, 0, true, 5) );
 
                 $cursor = DH::findFirstElement('result', DH::findXPathSingleEntryOrDie('/response', $ret));
 
@@ -1681,14 +1681,11 @@ class PanAPIConnector
     public function uploadConfiguration($configDomXml, $configName = 'stage0.xml', $verbose = TRUE, $apiTimeOut = 7)
     {
         if( $verbose )
-            print "Uploadig config to device {$this->apihost}/{$configName}....";
+            PH::print_stdout( "Uploadig config to device {$this->apihost}/{$configName}...." );
 
         $url = "type=import&category=configuration&category=configuration";
 
         $answer = $this->sendRequest($url, FALSE, DH::dom_to_xml($configDomXml), $configName, array('timeout' => $apiTimeOut));
-
-        if( $verbose )
-            print "OK!\n";
 
         return $answer;
     }
@@ -1740,15 +1737,15 @@ class PanAPIConnector
         {
             if( strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' )
             {
-                $pwd = shell_exec('powershell.exe -Command "$Password=Read-Host -assecurestring ' . $pw_prompt . ' ; $PlainPassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($Password)) ; echo $PlainPassword;"');
+                $pwd = shell_exec('powershell.exe -Command "$Password=Read-Host -assecurestring ' . $pw_prompt . ' ; $PlainPassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($Password)) ; print $PlainPassword;"');
                 $pwd = explode("\n", $pwd);
                 $password = $pwd[0];
             }
             else
             {
-                print $pw_prompt;
+                PH::print_stdout( $pw_prompt );
                 $oldStyle = shell_exec('stty -g');
-                shell_exec('stty -icanon -echo min 1 time 0');
+                shell_exec('stty -icanon -print min 1 time 0');
 
                 $password = '';
                 while( TRUE )
@@ -1776,7 +1773,7 @@ class PanAPIConnector
         }
         else
         {
-            print $pw_prompt;
+            PH::print_stdout( $pw_prompt );
             $line = fgets($handle);
             $password = trim($line);
         }

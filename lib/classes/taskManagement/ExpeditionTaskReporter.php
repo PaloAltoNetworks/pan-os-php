@@ -54,7 +54,7 @@ class ExpeditionTaskReporter implements TaskReporter
     public function log( $msg, $level = 1)
     {
         //TODO
-        echo "$msg";
+        print "$msg";
 //        require_once INC_ROOT.'/libs/common/MTLogger.php';
 //        $logger = (new MTLogger)->getInstance();
 //        $logger->log($msg, $level);
@@ -153,7 +153,7 @@ class ExpeditionTaskReporter implements TaskReporter
 
         if( $result->num_rows == 0 )
         { //Log there was a problem finding the job
-            echo "Job not found\n";
+            print "Job not found\n";
             return FALSE;
         }
 
@@ -189,7 +189,7 @@ class ExpeditionTaskReporter implements TaskReporter
         $result = $this->dbConnection->query($query);
         if( $result->num_rows == 0 )
         { //Log there was a problem finding the job
-            echo "Job not found\n";
+            print "Job not found\n";
             return;
         }
 
@@ -260,7 +260,7 @@ class ExpeditionTaskReporter implements TaskReporter
     public function notifyCompletedTaskJob()
     {
 
-        echo "Calling notifyCompletedTaskJob\n";
+        print "Calling notifyCompletedTaskJob\n";
         $query = "SELECT job_id FROM tasks WHERE id=$this->taskId LIMIT 1";
 
         $result = $this->dbConnection->query($query);

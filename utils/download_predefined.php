@@ -22,11 +22,10 @@
 set_include_path(dirname(__FILE__) . '/../' . PATH_SEPARATOR . get_include_path());
 require_once dirname(__FILE__)."/../lib/pan_php_framework.php";
 
-if( !PH::$shadow_json )
-{
-    print "\n***********************************************\n";
-    print "************ DOWNLOAD predefined.xml UTILITY ****************\n\n";
-}
+PH::print_stdout("");
+PH::print_stdout("***********************************************");
+PH::print_stdout("*********** " . basename(__FILE__) . " UTILITY **************");
+PH::print_stdout("");
 
 
 
@@ -34,30 +33,30 @@ if( !PH::$shadow_json )
 function display_usage_and_exit($shortMessage = FALSE)
 {
     global $argv;
-    print PH::boldText("USAGE: ") . "php " . basename(__FILE__) . " in=inputfile.xml location=vsys1 " .
-        "actions=action1:arg1 ['filter=(type is.group) or (name contains datacenter-)']\n";
-    print "php " . basename(__FILE__) . " help          : more help messages\n";
+    PH::print_stdout( PH::boldText("USAGE: ") . "php " . basename(__FILE__) . " in=inputfile.xml location=vsys1 " .
+        "actions=action1:arg1 ['filter=(type is.group) or (name contains datacenter-)']" );
+    PH::print_stdout( "php " . basename(__FILE__) . " help          : more help messages" );
 
 
     if( !$shortMessage )
     {
-        print PH::boldText("\nListing available arguments\n\n");
+        PH::print_stdout( PH::boldText("\nListing available arguments") );
 
         global $supportedArguments;
 
         ksort($supportedArguments);
         foreach( $supportedArguments as &$arg )
         {
-            print " - " . PH::boldText($arg['niceName']);
+            $text = " - " . PH::boldText($arg['niceName']);
             if( isset($arg['argDesc']) )
-                print '=' . $arg['argDesc'];
+                $text .= '=' . $arg['argDesc'];
             //."=";
             if( isset($arg['shortHelp']) )
-                print "\n     " . $arg['shortHelp'];
-            print "\n\n";
+                $text .= "\n     " . $arg['shortHelp'];
+            PH::print_stdout($text);
         }
 
-        print "\n\n";
+        PH::print_stdout("");
     }
 
     exit(1);
@@ -69,8 +68,6 @@ function display_error_usage_exit($msg)
     display_usage_and_exit(TRUE);
 }
 
-
-print "\n";
 
 $configType = null;
 $configInput = null;
@@ -157,11 +154,11 @@ elseif( $configInput['type'] == 'api' )
 
     if( $debugAPI )
         $configInput['connector']->setShowApiCalls(TRUE);
-    print " - Downloading config from API... ";
+    PH::print_stdout( " - Downloading config from API... " );
 
     if( isset(PH::$args['loadpanoramapushedconfig']) )
     {
-        print " - 'loadPanoramaPushedConfig' was requested, downloading it through API...";
+        PH::print_stdout( " - 'loadPanoramaPushedConfig' was requested, downloading it through API..." );
         $xmlDoc1 = $configInput['connector']->getPanoramaPushedConfig();
     }
     else
@@ -172,8 +169,6 @@ elseif( $configInput['type'] == 'api' )
     $hostname = $configInput['connector']->info_hostname;
 
     #$xmlDoc1->save( $offline_folder."/orig/".$hostname."_prod_new.xml" );
-
-    print "OK!\n";
 
 }
 else
@@ -197,7 +192,7 @@ else
     $configType = 'panos';
 unset($xpathResult1);
 
-print " - Detected platform type is '{$configType}'\n";
+PH::print_stdout( " - Detected platform type is '{$configType}'" );
 
 ############## actual not used
 
@@ -205,7 +200,7 @@ if( $configType == 'panos' )
 {
     if( isset(PH::$args['loadpanoramapushedconfig']) )
     {
-        print " - 'loadPanoramaPushedConfig' was requested, downloading it through API...";
+        PH::print_stdout(" - 'loadPanoramaPushedConfig' was requested, downloading it through API..." );
         $panoramaDoc = $inputConnector->getPanoramaPushedConfig();
 
         $xpathResult = DH::findXPath('/panorama/vsys', $panoramaDoc);
@@ -221,7 +216,7 @@ if( $configType == 'panos' )
         $inputConnector->refreshSystemInfos();
         $newDGRoot = $xpathResult->item(0);
         $panoramaString = "<config version=\"{$inputConnector->info_PANOS_version}\"><shared></shared><devices><entry name=\"localhost.localdomain\"><device-group>" . DH::domlist_to_xml($newDGRoot->childNodes) . "</device-group></entry></devices></config>";
-        #print $panoramaString;
+        #PH::print_stdout( $panoramaString);
         $fakePanorama->load_from_xmlstring($panoramaString);
 
         $pan = new PANConf($fakePanorama);
@@ -253,17 +248,17 @@ else
 {
     if( $configType == 'panos' )
     {
-        print " - No 'location' provided so using default ='vsys1'\n";
+        PH::print_stdout( " - No 'location' provided so using default ='vsys1'" );
         $objectslocation = 'vsys1';
     }
     elseif( $configType == 'panorama' )
     {
-        print " - No 'location' provided so using default ='shared'\n";
+        PH::print_stdout( " - No 'location' provided so using default ='shared'" );
         $objectslocation = 'shared';
     }
     elseif( $configType == 'pushed_panorama' )
     {
-        print " - No 'location' provided so using default ='vsys1'\n";
+        PH::print_stdout( " - No 'location' provided so using default ='vsys1'" );
         $objectslocation = 'vsys1';
     }
 }
@@ -282,7 +277,7 @@ try
 } catch(Exception $e)
 {
     PH::disableExceptionSupport();
-    print " ***** an error occured : " . $e->getMessage() . "\n\n";
+    PH::print_stdout( " ***** an error occured : " . $e->getMessage() );
 }
 
 
@@ -320,26 +315,23 @@ $pan_c_appid = explode("-", $panc_version);
 
 if( intval($pan_c_appid[0]) > intval($external_appid[0]) )
 {
-    print "\n\n - PAN-PHP-FRAMEWORK has already a newer APP-id version '" . $panc_version . "' installed. Device App-ID version: " . $exernal_version . "\n";
+    PH::print_stdout( "\n\n - PAN-PHP-FRAMEWORK has already a newer APP-id version '" . $panc_version . "' installed. Device App-ID version: " . $exernal_version );
 }
 elseif( intval($pan_c_appid[0]) == intval($external_appid[0]) )
 {
-    print "\n\n - same app-id version '" . $panc_version . "' available => do nothing\n";
+    PH::print_stdout( " - same app-id version '" . $panc_version . "' available => do nothing");
 }
 else
 {
-    print "\n\n - PAN-PHP-FRAMEWORK has an old app-id version '" . $panc_version . "' available. Device App-ID version: " . $exernal_version . "\n";
+    PH::print_stdout( " - PAN-PHP-FRAMEWORK has an old app-id version '" . $panc_version . "' available. Device App-ID version: " . $exernal_version );
 
     $predefined_path = '/../lib/object-classes/predefined.xml';
 
-    print "\n\n *** predefined.xml is saved to '" . __DIR__ . $predefined_path . "''\n\n";
+    PH::print_stdout( " *** predefined.xml is saved to '" . __DIR__ . $predefined_path . "''" );
     file_put_contents(__DIR__ . $predefined_path, $xmlDoc->saveXML());
 }
 
-if( !PH::$shadow_json )
-{
-    print "\n\n************ END OF DOWNLOAD predefined.xml UTILITY ************\n";
-    print     "**************************************************\n";
-    print "\n\n";
-}
+PH::print_stdout("");
+PH::print_stdout("************* END OF SCRIPT " . basename(__FILE__) . " ************" );
+PH::print_stdout("");
 

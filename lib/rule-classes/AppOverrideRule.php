@@ -126,18 +126,18 @@ class AppOverrideRule extends Rule
             $destinationNegated = '*negated*';
 
 
-        print $padding . "*Rule named '{$this->name}' $dis\n";
-        print $padding . "  From: " . $this->from->toString_inline() . "  |  To:  " . $this->to->toString_inline() . "\n";
-        print $padding . "  Source: $sourceNegated " . $this->source->toString_inline() . "\n";
-        print $padding . "  Destination: $destinationNegated " . $this->destination->toString_inline() . "\n";
-        print $padding . "  Application:  " . $this->_app->name() . "\n";
-        print $padding . "  Protocol:  " . $this->_protocol . "    Port:  " . $this->_ports . "\n";
-        print $padding . "    Tags:  " . $this->tags->toString_inline() . "\n";
+        PH::print_stdout( $padding . "*Rule named '{$this->name}' $dis" );
+        PH::print_stdout( $padding . "  From: " . $this->from->toString_inline() . "  |  To:  " . $this->to->toString_inline() );
+        PH::print_stdout( $padding . "  Source: $sourceNegated " . $this->source->toString_inline() );
+        PH::print_stdout( $padding . "  Destination: $destinationNegated " . $this->destination->toString_inline() );
+        PH::print_stdout( $padding . "  Application:  " . $this->_app->name() );
+        PH::print_stdout( $padding . "  Protocol:  " . $this->_protocol . "    Port:  " . $this->_ports );
+        PH::print_stdout( $padding . "    Tags:  " . $this->tags->toString_inline() );
 
         if( strlen($this->_description) > 0 )
-            print $padding . "  Desc:  " . $this->_description . "\n";
+            PH::print_stdout( $padding . "  Desc:  " . $this->_description );
 
-        print "\n";
+        PH::print_stdout("");
     }
 
 

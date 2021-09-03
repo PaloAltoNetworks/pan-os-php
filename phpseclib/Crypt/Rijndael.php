@@ -40,7 +40,7 @@
  *        $plaintext.= 'a';
  *    }
  *
- *    echo $rijndael->decrypt($rijndael->encrypt($plaintext));
+ *    print $rijndael->decrypt($rijndael->encrypt($plaintext));
  * ?>
  * </code>
  *

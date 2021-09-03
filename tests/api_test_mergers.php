@@ -19,8 +19,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-echo "\n*************************************************\n";
-echo "**************** MERGER TESTERS *****************\n\n";
+print "\n*************************************************\n";
+print "**************** MERGER TESTERS *****************\n\n";
 
 set_include_path(dirname(__FILE__) . '/../' . PATH_SEPARATOR . get_include_path());
 require_once dirname(__FILE__)."/../lib/pan_php_framework.php";
@@ -46,7 +46,7 @@ else
     derr('"in" argument must be of type API [in=api://192.168.55.208]');
 
 $cli = "php ../utils/upload-config.php in=input/panorama-10.0-merger.xml out=api://{$api_ip_address} loadAfterUpload injectUserAdmin2  2>&1";
-echo " * Executing CLI: {$cli}\n";
+print " * Executing CLI: {$cli}\n";
 
 $output = array();
 $retValue = 0;
@@ -55,14 +55,14 @@ exec($cli, $output, $retValue);
 
 foreach( $output as $line )
 {
-    echo '   ##  ';
-    echo $line;
-    echo "\n";
+    print '   ##  ';
+    print $line;
+    print "\n";
 }
 
 if( $retValue != 0 )
     derr("CLI exit with error code '{$retValue}'");
-echo "\n";
+print "\n";
 
 function display_error_usage_exit($msg)
 {
@@ -116,7 +116,7 @@ $test_merger = array('address', 'service', 'addressgroup', 'servicegroup');
 
 foreach( $test_merger as $merger )
 {
-    echo "\n\n\n *** Processing merger: {$merger} \n";
+    print "\n\n\n *** Processing merger: {$merger} \n";
 
     $dupalgorithm_array = array();
     if( $merger == 'address' )
@@ -161,7 +161,7 @@ foreach( $test_merger as $merger )
 
         $cli .= ' 2>&1';
 
-        echo " * Executing CLI: {$cli}\n";
+        print " * Executing CLI: {$cli}\n";
 
         $output = array();
         $retValue = 0;
@@ -170,27 +170,27 @@ foreach( $test_merger as $merger )
 
         foreach( $output as $line )
         {
-            echo '   ##  ';
-            echo $line;
-            echo "\n";
+            print '   ##  ';
+            print $line;
+            print "\n";
         }
 
         if( $retValue != 0 )
             derr("CLI exit with error code '{$retValue}'");
 
-        echo "\n";
+        print "\n";
     }
 
 
 }
 
-echo "\n*****  *****\n";
-#echo " - Processed {$totalFilterCount} filters\n";
-#echo " - Found {$totalFilterWithCiCount} that are CI enabled\n";
+print "\n*****  *****\n";
+#print " - Processed {$totalFilterCount} filters\n";
+#print " - Found {$totalFilterWithCiCount} that are CI enabled\n";
 
-echo "\n";
-echo "\n*********** FINISHED TESTING MERGERS ************\n";
-echo "*************************************************\n\n";
+print "\n";
+print "\n*********** FINISHED TESTING MERGERS ************\n";
+print "*************************************************\n\n";
 
 
 

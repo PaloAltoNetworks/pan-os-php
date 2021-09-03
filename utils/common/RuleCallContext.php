@@ -169,16 +169,18 @@ class RuleCallContext extends CallContext
         $setString = $this->generateRuleMergedApiChangeString(TRUE);
         if( $setString !== null )
         {
-            print $this->padding . ' - sending API call for SHARED... ';
+            $text = $this->padding . ' - sending API call for SHARED... ';
             $this->connector->sendSetRequest('/config/shared', $setString);
-            print "OK!\n";
+
+            PH::print_stdout( $text );
         }
         $setString = $this->generateRuleMergedApiChangeString(FALSE);
         if( $setString !== null )
         {
-            print $this->padding . ' - sending API call for Device-Groups/VSYS... ';
+            $text = $this->padding . ' - sending API call for Device-Groups/VSYS... ';
             $this->connector->sendSetRequest("/config/devices/entry[@name='localhost.localdomain']", $setString);
-            print "OK!\n";
+
+            PH::print_stdout( $text );
         }
     }
 
@@ -197,7 +199,7 @@ class RuleCallContext extends CallContext
         }
         else
         {
-            print "  PAN-OS version must be 9.0 or higher";
+            PH::print_stdout("  PAN-OS version must be 9.0 or higher" );
         }
     }
 

@@ -606,7 +606,6 @@ function tagObjects(&$list, $tagName, $modePANOS, PanAPIConnector $connector)
     $xpath = '/config/shared/tag';
     $element = "<entry name='" . $tagName . "'></entry>";
     $connector->sendSetRequest($xpath, $element);
-    print " OK!\n";
 
     foreach( $list as &$o )
     {
@@ -630,7 +629,7 @@ function tagObjects(&$list, $tagName, $modePANOS, PanAPIConnector $connector)
         print "Tagging object " . $o['sub'] . "/" . $o['name'] . "... ";
         //$connector->setShowApiCalls(true);
         $connector->sendSetRequest($xpath, $element);
-        print "OK!\n";
+
     }
 }
 
@@ -702,7 +701,7 @@ print "PANOS version: " . $version['content'] . " OK (>=6.0)!\n";
 //
 print "Downloading config from device...";
 $res = &$con->getRunningConfig();
-print "OK!\n";
+
 
 
 $sharedCursor = &searchForName('name', 'shared', $res['children']);
@@ -861,7 +860,7 @@ else
 }
 
 $con->sendSetRequest($xpath, $element);
-print "OK!\n\n SUCCESS , don't forget to commit !\n\n";
+print "SUCCESS , don't forget to commit !\n\n";
 
 
 

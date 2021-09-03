@@ -27,25 +27,18 @@ require_once ( "utils/lib/UTIL.php");
 
 //------------------------------------------------------------------------------------------------------
 
-if( !PH::$shadow_json )
-{
-    print "\n\n";
-    print "************************************************\n";
-    print "************ RULE-STATS UTILITY ****************\n";
-    print "\n\n";
-}
+PH::print_stdout("");
+PH::print_stdout("***********************************************");
+PH::print_stdout("*********** " . basename(__FILE__) . " UTILITY **************");
+PH::print_stdout("");
 
 $util = new STATSUTIL( "stats", $argv, __FILE__);
 
 //------------------------------------------------------------------------------------------------------
 
-if( !PH::$shadow_json )
-{
-    print "\n";
-    print "************ END OF RULE-STATS UTILITY ************\n";
-    print "***************************************************\n";
-    print "\n\n";
-}
+PH::print_stdout("");
+PH::print_stdout("************* END OF SCRIPT " . basename(__FILE__) . " ************" );
+PH::print_stdout("");
 
 
 

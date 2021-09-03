@@ -158,12 +158,12 @@ class ObjStore
         $c = count($this->o);
         $k = array_keys($this->o);
 
-        echo "$indent";
-        print "Displaying the $c " . $this->classn . "(s) in " . $this->toString() . "\n";
+        PH::print_stdout( "$indent" );
+        PH::print_stdout( "Displaying the $c " . $this->classn . "(s) in " . $this->toString() );
 
         for( $i = 0; $i < $c; $i++ )
         {
-            print $indent . $this->o[$k[$i]]->name . "\n";
+            PH::print_stdout( $indent . $this->o[$k[$i]]->name );
         }
     }
 

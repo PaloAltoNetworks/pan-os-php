@@ -333,14 +333,14 @@ class ServiceStore
                     $curo->owner->serviceStore !== null )
                 {
                     $this->parentCentralStore = $curo->owner->serviceStore;
-                    //print $this->toString()." : found a parent central store: ".$parentCentralStore->toString()."\n";
+                    //PH::print_stdout( $this->toString()." : found a parent central store: ".$parentCentralStore->toString() );
                     return;
                 }
                 $curo = $curo->owner;
             }
         }
 
-        //print $this->toString().": no parent store found\n";
+        //PH::print_stdout( $this->toString().": no parent store found" );
 
     }
 
@@ -966,10 +966,10 @@ class ServiceStore
 
         foreach( $objectRefs as $objectRef )
         {
-            print $padding . " * replacing in {$objectRef->toString()}\n";
+            PH::print_stdout( $padding . " * replacing in {$objectRef->toString()}" );
             if( $objectRef === $foundObject || $objectRef->name() == $foundObject->name() )
             {
-                print $padding . "   - SKIPPED : cannot replace an object by itself\n";
+                PH::print_stdout( $padding . "   - SKIPPED : cannot replace an object by itself" );
                 continue;
             }
             if( $isAPI )

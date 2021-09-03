@@ -26,7 +26,7 @@ TagCallContext::$supportedActions['delete'] = array(
 
         if( $object->countReferences() != 0 )
         {
-            print $context->padding . "  * SKIPPED: this object is used by other objects and cannot be deleted (use deleteForce to try anyway)\n";
+            PH::print_stdout( $context->padding . "  * SKIPPED: this object is used by other objects and cannot be deleted (use deleteForce to try anyway)" );
             return;
         }
         if( $context->isAPI )
@@ -42,7 +42,7 @@ TagCallContext::$supportedActions['deleteforce'] = array(
         $object = $context->object;
 
         if( $object->countReferences() != 0 )
-            print $context->padding . "  * WARNING : this object seems to be used so deletion may fail.\n";
+            PH::print_stdout( $context->padding . "  * WARNING : this object seems to be used so deletion may fail." );
         if( $context->isAPI )
             $object->owner->API_removeTag($object);
         else
@@ -59,14 +59,14 @@ TagCallContext::$supportedActions['name-addprefix'] = array(
 
         if( $object->isTmp() )
         {
-            echo $context->padding . " *** SKIPPED : not applicable to TMP objects\n";
+            PH::print_stdout( $context->padding . " *** SKIPPED : not applicable to TMP objects" );
             return;
         }
 
-        print $context->padding . " - new name will be '{$newName}'\n";
+        PH::print_stdout( $context->padding . " - new name will be '{$newName}'" );
         if( strlen($newName) > 127 )
         {
-            print " *** SKIPPED : resulting name is too long\n";
+            PH::print_stdout( " *** SKIPPED : resulting name is too long" );
             return;
         }
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
@@ -74,7 +74,7 @@ TagCallContext::$supportedActions['name-addprefix'] = array(
         if( $rootObject->isPanorama() && $object->owner->find($newName, null, FALSE) !== null ||
             $rootObject->isFirewall() && $object->owner->find($newName, null, TRUE) !== null )
         {
-            print " *** SKIPPED : an object with same name already exists\n";
+            PH::print_stdout( " *** SKIPPED : an object with same name already exists" );
             return;
         }
         if( $context->isAPI )
@@ -94,14 +94,14 @@ TagCallContext::$supportedActions['name-addsuffix'] = array(
 
         if( $object->isTmp() )
         {
-            echo $context->padding . " *** SKIPPED : not applicable to TMP objects\n";
+            PH::print_stdout( $context->padding . " *** SKIPPED : not applicable to TMP objects" );
             return;
         }
 
-        print $context->padding . " - new name will be '{$newName}'\n";
+        PH::print_stdout( $context->padding . " - new name will be '{$newName}'" );
         if( strlen($newName) > 127 )
         {
-            print " *** SKIPPED : resulting name is too long\n";
+            PH::print_stdout( " *** SKIPPED : resulting name is too long" );
             return;
         }
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
@@ -109,7 +109,7 @@ TagCallContext::$supportedActions['name-addsuffix'] = array(
         if( $rootObject->isPanorama() && $object->owner->find($newName, null, FALSE) !== null ||
             $rootObject->isFirewall() && $object->owner->find($newName, null, TRUE) !== null )
         {
-            print " *** SKIPPED : an object with same name already exists\n";
+            PH::print_stdout( " *** SKIPPED : an object with same name already exists" );
             return;
         }
         if( $context->isAPI )
@@ -128,31 +128,31 @@ TagCallContext::$supportedActions['name-removeprefix'] = array(
 
         if( $object->isTmp() )
         {
-            echo $context->padding . " *** SKIPPED : not applicable to TMP objects\n";
+            PH::print_stdout( $context->padding . " *** SKIPPED : not applicable to TMP objects" );
             return;
         }
 
         if( strpos($object->name(), $prefix) !== 0 )
         {
-            echo $context->padding . " *** SKIPPED : prefix not found\n";
+            PH::print_stdout( $context->padding . " *** SKIPPED : prefix not found" );
             return;
         }
         $newName = substr($object->name(), strlen($prefix));
 
         if( !preg_match("/^[a-zA-Z0-9]/", $newName[0]) )
         {
-            echo $context->padding . " *** SKIPPED : object name contains not allowed character at the beginning\n";
+            PH::print_stdout( $context->padding . " *** SKIPPED : object name contains not allowed character at the beginning" );
             return;
         }
 
-        echo $context->padding . " - new name will be '{$newName}'\n";
+        PH::print_stdout( $context->padding . " - new name will be '{$newName}'" );
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
 
         if( $rootObject->isPanorama() && $object->owner->find($newName, null, FALSE) !== null ||
             $rootObject->isFirewall() && $object->owner->find($newName, null, TRUE) !== null )
         {
-            echo $context->padding . " *** SKIPPED : an object with same name already exists\n";
+            PH::print_stdout( $context->padding . " *** SKIPPED : an object with same name already exists" );
             return;
         }
         if( $context->isAPI )
@@ -172,25 +172,25 @@ TagCallContext::$supportedActions['name-removesuffix'] = array(
 
         if( $object->isTmp() )
         {
-            echo $context->padding . " *** SKIPPED : not applicable to TMP objects\n";
+            PH::print_stdout( $context->padding . " *** SKIPPED : not applicable to TMP objects" );
             return;
         }
 
         if( substr($object->name(), $suffixStartIndex, strlen($object->name())) != $suffix )
         {
-            echo $context->padding . " *** SKIPPED : suffix not found\n";
+            PH::print_stdout( $context->padding . " *** SKIPPED : suffix not found" );
             return;
         }
         $newName = substr($object->name(), 0, $suffixStartIndex);
 
-        echo $context->padding . " - new name will be '{$newName}'\n";
+        PH::print_stdout( $context->padding . " - new name will be '{$newName}'" );
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
 
         if( $rootObject->isPanorama() && $object->owner->find($newName, null, FALSE) !== null ||
             $rootObject->isFirewall() && $object->owner->find($newName, null, TRUE) !== null )
         {
-            echo $context->padding . " *** SKIPPED : an object with same name already exists\n";
+            PH::print_stdout( $context->padding . " *** SKIPPED : an object with same name already exists" );
             return;
         }
         if( $context->isAPI )
@@ -210,23 +210,23 @@ TagCallContext::$supportedActions['name-touppercase'] = array(
 
         if( $object->isTmp() )
         {
-            echo $context->padding . " *** SKIPPED : not applicable to TMP objects\n";
+            PH::print_stdout( $context->padding . " *** SKIPPED : not applicable to TMP objects" );
             return;
         }
 
-        print $context->padding . " - new name will be '{$newName}'\n";
+        PH::print_stdout( $context->padding . " - new name will be '{$newName}'" );
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
 
         if( $newName === $object->name() )
         {
-            print " *** SKIPPED : object is already uppercase\n";
+            PH::print_stdout( " *** SKIPPED : object is already uppercase" );
             return;
         }
 
         if( $rootObject->isPanorama() && $object->owner->find($newName, null, FALSE) !== null ||
             $rootObject->isFirewall() && $object->owner->find($newName, null, TRUE) !== null )
         {
-            print " *** SKIPPED : an object with same name already exists\n";
+            PH::print_stdout( " *** SKIPPED : an object with same name already exists" );
             #use existing uppercase TAG and replace old lowercase where used with this existing uppercase TAG
             return;
         }
@@ -246,24 +246,24 @@ TagCallContext::$supportedActions['name-tolowercase'] = array(
 
         if( $object->isTmp() )
         {
-            echo $context->padding . " *** SKIPPED : not applicable to TMP objects\n";
+            PH::print_stdout( $context->padding . " *** SKIPPED : not applicable to TMP objects" );
             return;
         }
 
-        print $context->padding . " - new name will be '{$newName}'\n";
+        PH::print_stdout( $context->padding . " - new name will be '{$newName}'" );
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
 
         if( $newName === $object->name() )
         {
-            print " *** SKIPPED : object is already lowercase\n";
+            PH::print_stdout( " *** SKIPPED : object is already lowercase" );
             return;
         }
 
         if( $rootObject->isPanorama() && $object->owner->find($newName, null, FALSE) !== null ||
             $rootObject->isFirewall() && $object->owner->find($newName, null, TRUE) !== null )
         {
-            print " *** SKIPPED : an object with same name already exists\n";
+            PH::print_stdout( " *** SKIPPED : an object with same name already exists" );
             #use existing lowercase TAG and replace old uppercase where used with this
             return;
         }
@@ -284,24 +284,24 @@ TagCallContext::$supportedActions['name-toucwords'] = array(
 
         if( $object->isTmp() )
         {
-            echo $context->padding . " *** SKIPPED : not applicable to TMP objects\n";
+            PH::print_stdout( $context->padding . " *** SKIPPED : not applicable to TMP objects" );
             return;
         }
 
-        print $context->padding . " - new name will be '{$newName}'\n";
+        PH::print_stdout( $context->padding . " - new name will be '{$newName}'" );
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
 
         if( $newName === $object->name() )
         {
-            print " *** SKIPPED : object is already UCword\n";
+            PH::print_stdout( " *** SKIPPED : object is already UCword" );
             return;
         }
 
         if( $rootObject->isPanorama() && $object->owner->find($newName, null, FALSE) !== null ||
             $rootObject->isFirewall() && $object->owner->find($newName, null, TRUE) !== null )
         {
-            print " *** SKIPPED : an object with same name already exists\n";
+            PH::print_stdout( " *** SKIPPED : an object with same name already exists" );
             #use existing lowercase TAG and replace old uppercase where used with this
             return;
         }
@@ -384,7 +384,7 @@ TagCallContext::$supportedActions[] = array(
         /*
         if( $object->isTmpAddr() )
         {
-            echo $context->padding." * SKIPPED this is a temporary object\n";
+            PH::print_stdout( $context->padding." * SKIPPED this is a temporary object" );
             return;
         }
         */
@@ -399,7 +399,7 @@ TagCallContext::$supportedActions[] = array(
 
         if( $localLocation == $targetLocation )
         {
-            echo $context->padding . " * SKIPPED because original and target destinations are the same: $targetLocation\n";
+            PH::print_stdout( $context->padding . " * SKIPPED because original and target destinations are the same: $targetLocation" );
             return;
         }
 
@@ -437,7 +437,7 @@ TagCallContext::$supportedActions[] = array(
 
                     if( $skipped )
                     {
-                        echo $context->padding . "   * SKIPPED : moving from SHARED to sub-level is NOT possible because of references\n";
+                        PH::print_stdout( $context->padding . "   * SKIPPED : moving from SHARED to sub-level is NOT possible because of references" );
                         return;
                     }
                 }
@@ -448,11 +448,11 @@ TagCallContext::$supportedActions[] = array(
         {
             if( $context->baseObject->isFirewall() )
             {
-                echo $context->padding . "   * SKIPPED : moving between VSYS is not supported\n";
+                PH::print_stdout( $context->padding . "   * SKIPPED : moving between VSYS is not supported" );
                 return;
             }
 
-            #echo $context->padding."   * SKIPPED : moving between 2 VSYS/DG is not supported yet\n";
+            #PH::print_stdout( $context->padding."   * SKIPPED : moving between 2 VSYS/DG is not supported yet" );
             #return;
             foreach( $object->getReferences() as $ref )
             {
@@ -469,7 +469,7 @@ TagCallContext::$supportedActions[] = array(
 
                     if( $skipped )
                     {
-                        echo $context->padding . "   * SKIPPED : moving between 2 VSYS/DG is not possible because of references on higher DG level\n";
+                        PH::print_stdout( $context->padding . "   * SKIPPED : moving between 2 VSYS/DG is not possible because of references on higher DG level" );
                         return;
                     }
                 }
@@ -479,7 +479,7 @@ TagCallContext::$supportedActions[] = array(
         $conflictObject = $targetStore->find($object->name(), null, FALSE);
         if( $conflictObject === null )
         {
-            echo $context->padding . "   * moved, no conflict\n";
+            PH::print_stdout( $context->padding . "   * moved, no conflict" );
             if( $context->isAPI )
             {
                 $oldXpath = $object->getXPath();
@@ -498,16 +498,16 @@ TagCallContext::$supportedActions[] = array(
 
         if( $context->arguments['mode'] == 'skipifconflict' )
         {
-            echo $context->padding . "   * SKIPPED : there is an object with same name. Choose another mode to to resolve this conflict\n";
+            PH::print_stdout( $context->padding . "   * SKIPPED : there is an object with same name. Choose another mode to to resolve this conflict" );
             return;
         }
 
-        echo $context->padding . "   - there is a conflict with an object of same name ";
+        PH::print_stdout( $context->padding . "   - there is a conflict with an object of same name" );
 
 
         if( $object->equals($conflictObject) )
         {
-            echo "    * Removed because target has same content\n";
+            PH::print_stdout( "    * Removed because target has same content" );
             $object->replaceMeGlobally($conflictObject);
 
             if( $context->isAPI )
@@ -681,7 +681,7 @@ TagCallContext::$supportedActions['create'] = array(
 
         $newName = $context->arguments['name'];
 
-        print "     + create Tag object : '" . $newName . "'\n";
+        PH::print_stdout( "     + create Tag object : '" . $newName . "'" );
 
         if( $context->isAPI )
             $tagStore->API_createTag($newName);

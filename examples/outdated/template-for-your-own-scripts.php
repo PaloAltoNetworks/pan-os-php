@@ -50,7 +50,7 @@ elseif ( $configInput['type'] == 'api'  )
         $configInput['connector']->setShowApiCalls(true);
     print " - Downloading config from API... ";
     $xmlDoc = $configInput['connector']->getCandidateConfig();
-    print "OK!\n";
+
 }
 else
     derr('not supported yet');

@@ -25,7 +25,7 @@ VsysCallContext::$supportedActions['display'] = array(
     },
     'MainFunction' => function (VsysCallContext $context) {
         $object = $context->object;
-        print "     * " . get_class($object) . " '{$object->name()}'  ";
+        $text = "     * " . get_class($object) . " '{$object->name()}'";
 
 
         foreach( $object->importedInterfaces as $interfacecontainer )
@@ -39,29 +39,29 @@ VsysCallContext::$supportedActions['display'] = array(
                     {
                         if( $tmp_vsys->name() == $object->name() )
                         {
-                            print "\n       - " . $interface->type . " - ";
+                            $text .= "       - " . $interface->type . " - ";
                             if( $interface->type == "layer3" )
                             {
                                 if( $interface->isSubInterface() )
-                                    print "subinterface - ";
+                                    $text .= "subinterface - ";
                                 else
-                                    print "count subinterface: " . $interface->countSubInterfaces() . " - ";
+                                    $text .= "count subinterface: " . $interface->countSubInterfaces() . " - ";
                             }
                             elseif( $interface->type == "aggregate-group" )
                             {
                                 #$interface->
                             }
 
-                            print $interface->name() . ", ip-addresse(s): ";
+                            $text .= $interface->name() . ", ip-addresse(s): ";
                             if( $interface->type == "layer3" )
                             {
                                 foreach( $interface->getLayer3IPv4Addresses() as $ip_address )
-                                    print $ip_address . ",";
+                                    $text .= $ip_address . ",";
                             }
                             elseif( $interface->type == "tunnel" )
                             {
                                 foreach( $interface->getIPv4Addresses() as $ip_address )
-                                    print $ip_address . ",";
+                                    $text .= $ip_address . ",";
                             }
                         }
                     }
@@ -71,38 +71,41 @@ VsysCallContext::$supportedActions['display'] = array(
             }
         }
 
-        print "\n\n";
+        PH::print_stdout( $text );
+        PH::print_stdout( "" );
     },
     'GlobalFinishFunction' => function (VsysCallContext $context) {
-        print PH::boldText("\n\nall interfaces NOT attached to an vsys:\n");
+        PH::print_stdout( PH::boldText("\n\nall interfaces NOT attached to an vsys:") );
+
         foreach( $context->interface_wo_vsys as $interface )
         {
-            print "\n  - " . $interface->type . " - ";
+            $text = "  - " . $interface->type . " - ";
             if( $interface->type == "layer3" )
             {
                 if( $interface->isSubInterface() )
-                    print "subinterface - ";
+                    $text .= "subinterface - ";
                 else
-                    print "count subinterface: " . $interface->countSubInterfaces() . " - ";
+                    $text .= "count subinterface: " . $interface->countSubInterfaces() . " - ";
             }
             elseif( $interface->type == "aggregate-group" )
             {
                 #$interface->
             }
 
-            print $interface->name() . ", ip-address(es): ";
+            $text .= $interface->name() . ", ip-address(es): ";
             if( $interface->type == "layer3" )
             {
                 foreach( $interface->getLayer3IPv4Addresses() as $ip_address )
-                    print $ip_address . ",";
+                    $text .= $ip_address . ",";
             }
             elseif( $interface->type == "tunnel" )
             {
                 foreach( $interface->getIPv4Addresses() as $ip_address )
-                    print $ip_address . ",";
+                    $text .= $ip_address . ",";
             }
 
-            print "\n\n\n";
+            PH::print_stdout( $text );
+            PH::print_stdout( "" );
         }
     },
 );

@@ -58,19 +58,20 @@ else if( $mode == 'panos')
 }
 else 
 	derr('Please set mode="panos" or mode ="panorama"');
-	
 
-print "\n***********\n\n";
+PH::print_stdout("");
+PH::print_stdout( "***********" );
+PH::print_stdout("");
 
 
 // For every VSYS/DeviceGroups we're going to list Groups and count their members.
 foreach($subs as $sub )
 {
-	print "Found DeviceGroup/VirtualSystem named '".$sub->name()."'\n";
+    PH::print_stdout( "Found DeviceGroup/VirtualSystem named '".$sub->name()."'" );
 	
 	$countGroups = $sub->addressStore->countAddressGroups();
-	
-	print "  Found $countGroups AddressGroups in this DV";
+
+    PH::print_stdout( "  Found $countGroups AddressGroups in this DV" );
 	
 	$Groups = $sub->addressStore->addressGroups();
 	
@@ -81,7 +82,7 @@ foreach($subs as $sub )
 		// if this group has more members than $largeGroupsCount then we must split it
 		if( $membersCount > $largeGroupsCount )
 		{
-			print "     AddressGroup named '".$group->name()."' with $membersCount members \n";
+            PH::print_stdout( "     AddressGroup named '".$group->name()."' with $membersCount members" );
 			
 			// get member list in $members
 			$members = $group->members();
@@ -104,7 +105,7 @@ foreach($subs as $sub )
 
 					// create a new sub-group with name 'original--1'
 					$newGroup = $sub->addressStore->newAddressGroup( $group->name().'--'.($i/$splitCount) );
-					print "      New AddressGroup object created with name: ".$newGroup->name()."\n";
+                    PH::print_stdout( "      New AddressGroup object created with name: ".$newGroup->name() );
 
 					// add this new sub-group to the original one. Don't rewrite XML for performance reasons.
 					$group->addMember($newGroup, false);
@@ -126,9 +127,8 @@ foreach($subs as $sub )
 			// Now we can rewrite XML
 			$group->rewriteXML();
 
-			print "     AddressGroup count after split: ".$group->count()." \n";
-			
-			print "\n";
+            PH::print_stdout( "     AddressGroup count after split: ".$group->count() );
+            PH::print_stdout("");
 			
 		}
 	}
@@ -136,7 +136,8 @@ foreach($subs as $sub )
 }
 
 
-print "\n\n";
+PH::print_stdout("");
+PH::print_stdout("");
 
 
 $p->save_to_file($outputfile);

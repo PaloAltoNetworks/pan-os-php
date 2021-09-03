@@ -18,14 +18,17 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-echo "\n***********************************************\n";
-echo "*********** " . basename(__FILE__) . " UTILITY **************\n\n";
+
 
 set_include_path(dirname(__FILE__) . '/../' . PATH_SEPARATOR . get_include_path());
 require_once dirname(__FILE__)."/../lib/pan_php_framework.php";
 
 require_once dirname(__FILE__)."/../utils/lib/UTIL.php";
 
+PH::print_stdout("");
+PH::print_stdout("***********************************************");
+PH::print_stdout("*********** " . basename(__FILE__) . " UTILITY **************");
+PH::print_stdout("");
 
 $supportedArguments = array();
 $supportedArguments[] = array('niceName' => 'in', 'shortHelp' => 'input file ie: in=config.xml', 'argDesc' => '[filename]');
@@ -45,7 +48,7 @@ $supportedArguments[] = array('niceName' => 'pickFilter',
 $supportedArguments[] = array('niceName' => 'excludeFilter', 'shortHelp' => 'specify a filter to exclude objects from merging process entirely', 'argDesc' => '(name regex /^g/)');
 $supportedArguments[] = array('niceName' => 'allowMergingWithUpperLevel', 'shortHelp' => 'when this argument is specified, it instructs the script to also look for duplicates in upper level');
 $supportedArguments[] = array('niceName' => 'help', 'shortHelp' => 'this message');
-$supportedArguments[] = array('niceName' => 'exportCSV', 'shortHelp' => 'when this argument is specified, it instructs the script to print out the kept and removed objects per value');
+$supportedArguments[] = array('niceName' => 'exportCSV', 'shortHelp' => 'when this argument is specified, it instructs the script to display the kept and removed objects per value');
 $supportedArguments[] = array('niceName' => 'DebugAPI', 'shortHelp' => 'prints API calls when they happen');
 
 
@@ -88,10 +91,12 @@ if( isset(PH::$args['exportcsv']) )
     {
         if( !isset($object_name['kept']) )
             print_r($object_name);
-        print $obj_index . "," . $object_name['kept'] . "," . $object_name['removed'] . "\n";
+        PH::print_stdout( $obj_index . "," . $object_name['kept'] . "," . $object_name['removed'] );
     }
 }
 
 
-echo "\n************* END OF SCRIPT " . basename(__FILE__) . " ************\n\n";
+PH::print_stdout("");
+PH::print_stdout("************* END OF SCRIPT " . basename(__FILE__) . " ************" );
+PH::print_stdout("");
 

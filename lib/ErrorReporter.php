@@ -75,7 +75,7 @@ class ErrorReporter
             $count++;
         }
 
-        echo "\n";
+        print "\n";
 
         exit(1);
     }

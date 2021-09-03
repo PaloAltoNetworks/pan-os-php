@@ -121,30 +121,30 @@ class DecryptionRule extends RuleWithUserID
         if( $this->destinationIsNegated() )
             $destinationNegated = '*negated*';
 
-        print $padding . "*Rule named '{$this->name}' $dis\n";
-        print $padding . "  From: " . $this->from->toString_inline() . "  |  To:  " . $this->to->toString_inline() . "\n";
-        print $padding . "  Source: $sourceNegated " . $this->source->toString_inline() . "\n";
-        print $padding . "  Destination: $destinationNegated " . $this->destination->toString_inline() . "\n";
-        print $padding . "  Service:  " . $this->services->toString_inline() . "\n";
+        PH::print_stdout( $padding . "*Rule named '{$this->name}' $dis");
+        PH::print_stdout( $padding . "  From: " . $this->from->toString_inline() . "  |  To:  " . $this->to->toString_inline() );
+        PH::print_stdout( $padding . "  Source: $sourceNegated " . $this->source->toString_inline() );
+        PH::print_stdout( $padding . "  Destination: $destinationNegated " . $this->destination->toString_inline() );
+        PH::print_stdout( $padding . "  Service:  " . $this->services->toString_inline() );
         if( !$this->userID_IsCustom() )
-            print $padding . "  User: *" . $this->userID_type() . "*\n";
+            PH::print_stdout( $padding . "  User: *" . $this->userID_type() . "*");
         else
         {
             $users = $this->userID_getUsers();
-            print $padding . " User:  " . PH::list_to_string($users) . "\n";
+            PH::print_stdout( $padding . " User:  " . PH::list_to_string($users) );
         }
-        print $padding . "  Tags:  " . $this->tags->toString_inline() . "\n";
+        PH::print_stdout( $padding . "  Tags:  " . $this->tags->toString_inline() );
 
         if( $this->_targets !== null )
-            print $padding . "  Targets:  " . $this->targets_toString() . "\n";
+            PH::print_stdout( $padding . "  Targets:  " . $this->targets_toString() );
 
         if( strlen($this->_description) > 0 )
-            print $padding . "  Desc:  " . $this->_description . "\n";
+            PH::print_stdout( $padding . "  Desc:  " . $this->_description );
 
         if( $this->_profile !== null )
-            print $padding . "  Profil:  " . $this->getDecryptionProfile() . "\n";
+            PH::print_stdout( $padding . "  Profil:  " . $this->getDecryptionProfile() );
 
-        print "\n";
+        PH::print_stdout("");
     }
 
     public function getDecryptionProfile()

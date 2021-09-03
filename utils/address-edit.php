@@ -27,17 +27,13 @@ require_once dirname(__FILE__)."/../lib/pan_php_framework.php";
 
 require_once dirname(__FILE__)."/../utils/lib/UTIL.php";
 
-if( !PH::$shadow_json )
-{
-    echo "\n***********************************************\n";
-    echo "*********** ADDRESS-EDIT UTILITY **************\n\n";
-}
+PH::print_stdout("");
+PH::print_stdout("***********************************************");
+PH::print_stdout("*********** " . basename(__FILE__) . " UTILITY **************");
+PH::print_stdout("");
 
 $util = new UTIL("address", $argv, __FILE__);
 
-if( !PH::$shadow_json )
-{
-    echo "\n\n********** END OF ADDRESS-EDIT UTILITY ***********\n";
-    echo "**************************************************\n";
-    echo "\n\n";
-}
+PH::print_stdout("");
+PH::print_stdout("************* END OF SCRIPT " . basename(__FILE__) . " ************" );
+PH::print_stdout("");

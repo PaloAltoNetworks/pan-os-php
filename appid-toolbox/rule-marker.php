@@ -108,7 +108,7 @@ elseif ( $configInput['type'] == 'api'  )
         $inputConnector->setShowApiCalls(true);
     print " - Downloading config from API... ";
     $xmlDoc = $inputConnector->getCandidateConfig();
-    print "OK!\n";
+
 }
 else
     derr('not supported yet');
@@ -148,7 +148,7 @@ $loadEndTime = microtime(true);
 $loadEndMem = memory_get_usage(true);
 $loadElapsedTime = number_format( ($loadEndTime - $loadStartTime), 2, '.', '');
 $loadUsedMem = convert($loadEndMem - $loadStartMem);
-print "OK! ($loadElapsedTime seconds, $loadUsedMem memory)\n";
+print ($loadElapsedTime seconds, $loadUsedMem memory)\n";
 // --------------------
 
 $subSystem  = $pan->findSubSystemByName($location);
@@ -193,7 +193,7 @@ foreach($rules as $rule)
     $newTagName = $ridTagLibrary->findAvailableTagName('appRID#');
     print "\n";
     print "    * creating Virtual TAG '$newTagName' ... ";
-    print "OK!\n";
+
     print "    * applying tag to rule description... ";
 
     $newDescription = $rule->description().' '.$newTagName;
@@ -207,7 +207,7 @@ foreach($rules as $rule)
     else
         $xmlPreRules .= "<entry name=\"{$rule->name()}\"><description>".htmlspecialchars($rule->description())."</description></entry>";
 
-    print "OK!\n";
+
 }
 
 print "\n\nNumber of rules marked: {$markedRules}    (vs already marked: {$alreadyMarked}\n";
@@ -237,7 +237,7 @@ else
             }
         }
 
-    print "OK!\n";
+
 }
 
 print "\n\n";

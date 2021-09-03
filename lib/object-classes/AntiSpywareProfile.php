@@ -90,7 +90,7 @@ class AntiSpywareProfile
         if( $this->name === FALSE )
             derr("Spyware SecurityProfile name not found\n");
 
-        #print "\nsecprofURL TMP: object named '".$this->name."' found\n";
+        #PH::print_stdout( "\nsecprofURL TMP: object named '".$this->name."' found" );
 
         #$this->owner->_SecurityProfiles[$this->secprof_type][$this->name] = $this;
         #$this->owner->_all[$this->secprof_type][$this->name] = $this;
@@ -222,12 +222,12 @@ class AntiSpywareProfile
 
     public function display()
     {
-        print "     * " . get_class($this) . " '" . $this->name() . "'    \n\n";
+        PH::print_stdout( "     * " . get_class($this) . " '" . $this->name() . "'");
+        PH::print_stdout("");
+        //Todo: continue for display out
 
-        //Todo: continue for print out
 
-
-        #print "\n\n";
+        #PH::print_stdout( "" );
     }
 
 

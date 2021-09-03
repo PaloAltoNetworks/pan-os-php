@@ -13,7 +13,7 @@
  * <?php
  *    include 'Crypt/Random.php';
  *
- *    echo bin2hex(crypt_random_string(8));
+ *    print bin2hex(crypt_random_string(8));
  * ?>
  * </code>
  *

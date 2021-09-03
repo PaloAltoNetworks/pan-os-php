@@ -744,7 +744,8 @@ class RuleStore
     {
         if( $ruleToBeMoved === $ruleRef )
         {
-            print "\n   - skip object '" . PH::boldText($ruleToBeMoved->name()) . "' can't move after self!\n";
+            PH::print_stdout("");
+            PH::print_stdout( "   - skip object '" . PH::boldText($ruleToBeMoved->name()) . "' can't move after self!" );
             return;
         }
 
@@ -795,7 +796,8 @@ class RuleStore
     {
         if( $ruleToBeMoved === $ruleRef )
         {
-            print "\n   - skipp object '" . PH::boldText($ruleToBeMoved->name()) . "' can't move before self!\n";
+            PH::print_stdout("");
+            PH::print_stdout( "   - skipp object '" . PH::boldText($ruleToBeMoved->name()) . "' can't move before self!" );
             return;
         }
 
@@ -918,7 +920,8 @@ class RuleStore
     {
         if( $ruleToBeMoved === $ruleRef )
         {
-            print "\n   - skipp object '" . PH::boldText($ruleToBeMoved->name()) . "' can't move befor self!\n";
+            PH::print_stdout("");
+            PH::print_stdout( "   - skipp object '" . PH::boldText($ruleToBeMoved->name()) . "' can't move befor self!" );
             return;
         }
         $this->moveRuleBefore($ruleToBeMoved, $ruleRef, $rewritexml);

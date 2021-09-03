@@ -116,7 +116,7 @@ class VlanIfStore extends ObjStore
         {
             $con = findConnectorOrDie($this);
             $xpath = $s->getXPath();
-            #print 'XPATH: '.$xpath->textContent."\n";
+            #PH::print_stdout( 'XPATH: '.$xpath->textContent );
             $con->sendSetRequest($xpath, DH::domlist_to_xml($s->xmlroot->childNodes, -1, FALSE));
         }
 

@@ -38,7 +38,7 @@
  *
  *    $c = $a->add($b);
  *
- *    echo $c->toString(); // outputs 5
+ *    print $c->toString(); // outputs 5
  * ?>
  * </code>
  *
@@ -233,7 +233,7 @@ class Math_BigInteger
      *
      *    $a = new Math_BigInteger('0x32', 16); // 50 in base-16
      *
-     *    echo $a->toString(); // outputs 50
+     *    print $a->toString(); // outputs 50
      * ?>
      * </code>
      *
@@ -532,7 +532,7 @@ class Math_BigInteger
      *
      *    $a = new Math_BigInteger('65');
      *
-     *    echo $a->toBytes(); // outputs chr(65)
+     *    print $a->toBytes(); // outputs chr(65)
      * ?>
      * </code>
      *
@@ -633,7 +633,7 @@ class Math_BigInteger
      *
      *    $a = new Math_BigInteger('65');
      *
-     *    echo $a->toHex(); // outputs '41'
+     *    print $a->toHex(); // outputs '41'
      * ?>
      * </code>
      *
@@ -660,7 +660,7 @@ class Math_BigInteger
      *
      *    $a = new Math_BigInteger('65');
      *
-     *    echo $a->toBits(); // outputs '1000001'
+     *    print $a->toBits(); // outputs '1000001'
      * ?>
      * </code>
      *
@@ -698,7 +698,7 @@ class Math_BigInteger
      *
      *    $a = new Math_BigInteger('50');
      *
-     *    echo $a->toString(); // outputs 50
+     *    print $a->toString(); // outputs 50
      * ?>
      * </code>
      *
@@ -882,7 +882,7 @@ class Math_BigInteger
      *
      *    $c = $a->add($b);
      *
-     *    echo $c->toString(); // outputs 30
+     *    print $c->toString(); // outputs 30
      * ?>
      * </code>
      *
@@ -1013,7 +1013,7 @@ class Math_BigInteger
      *
      *    $c = $a->subtract($b);
      *
-     *    echo $c->toString(); // outputs -10
+     *    print $c->toString(); // outputs -10
      * ?>
      * </code>
      *
@@ -1149,7 +1149,7 @@ class Math_BigInteger
      *
      *    $c = $a->multiply($b);
      *
-     *    echo $c->toString(); // outputs 200
+     *    print $c->toString(); // outputs 200
      * ?>
      * </code>
      *
@@ -1433,9 +1433,9 @@ class Math_BigInteger
      *
      *    list($quotient, $remainder) = $a->divide($b);
      *
-     *    echo $quotient->toString(); // outputs 0
-     *    echo "\r\n";
-     *    echo $remainder->toString(); // outputs 10
+     *    print $quotient->toString(); // outputs 0
+     *    print "\r\n";
+     *    print $remainder->toString(); // outputs 10
      * ?>
      * </code>
      *
@@ -1655,7 +1655,7 @@ class Math_BigInteger
      *
      *    $c = $a->modPow($b, $c);
      *
-     *    echo $c->toString(); // outputs 10
+     *    print $c->toString(); // outputs 10
      * ?>
      * </code>
      *
@@ -2466,13 +2466,13 @@ class Math_BigInteger
      *    $b = new Math_BigInteger(17);
      *
      *    $c = $a->modInverse($b);
-     *    echo $c->toString(); // outputs 4
+     *    print $c->toString(); // outputs 4
      *
-     *    echo "\r\n";
+     *    print "\r\n";
      *
      *    $d = $a->multiply($c);
      *    list(, $d) = $d->divide($b);
-     *    echo $d; // outputs 1 (as per the definition of modular inverse)
+     *    print $d; // outputs 1 (as per the definition of modular inverse)
      * ?>
      * </code>
      *
@@ -2535,8 +2535,8 @@ class Math_BigInteger
      *
      *    extract($a->extendedGCD($b));
      *
-     *    echo $gcd->toString() . "\r\n"; // outputs 21
-     *    echo $a->toString() * $x->toString() + $b->toString() * $y->toString(); // outputs 21
+     *    print $gcd->toString() . "\r\n"; // outputs 21
+     *    print $a->toString() * $x->toString() + $b->toString() * $y->toString(); // outputs 21
      * ?>
      * </code>
      *
@@ -2670,7 +2670,7 @@ class Math_BigInteger
      *
      *    $gcd = a->extendedGCD($b);
      *
-     *    echo $gcd->toString() . "\r\n"; // outputs 21
+     *    print $gcd->toString() . "\r\n"; // outputs 21
      * ?>
      * </code>
      *

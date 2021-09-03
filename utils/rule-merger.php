@@ -19,13 +19,15 @@
  */
 
 
-print "\n*************************************************\n";
-print   "************ RULE-MERGER UTILITY ****************\n\n";
-
 set_include_path(dirname(__FILE__) . '/../' . PATH_SEPARATOR . get_include_path());
 require_once dirname(__FILE__)."/../lib/pan_php_framework.php";
 require_once dirname(__FILE__)."/../utils/lib/UTIL.php";
 
+
+PH::print_stdout("");
+PH::print_stdout("***********************************************");
+PH::print_stdout("*********** " . basename(__FILE__) . " UTILITY **************");
+PH::print_stdout("");
 
 
 $supportedArguments = array();
@@ -110,7 +112,7 @@ if( isset(PH::$args['filter']) )
     $rulemerger->UTIL_filterQuery = new RQuery('rule');
     if( !$rulemerger->UTIL_filterQuery->parseFromString(PH::$args['filter'], $errorMessage) )
         derr($errorMessage);
-    print " - rule filter after sanitizing : ";
+    PH::print_stdout( " - rule filter after sanitizing : ");
     $rulemerger->UTIL_filterQuery->display();
 }
 
@@ -218,7 +220,7 @@ $rulemerger->UTIL_method = $supportedMethods[$rulemerger->UTIL_method];
 
 if( !isset(PH::$args['mergedenyrules']) )
 {
-    print " - No 'mergeDenyRule' argument provided, using default 'no'\n";
+    PH::print_stdout( " - No 'mergeDenyRule' argument provided, using default 'no'");
     $rulemerger->UTIL_mergeDenyRules = FALSE;
 }
 else
@@ -236,7 +238,7 @@ else
 
 if( !isset(PH::$args['stopmergingifdenyseen']) )
 {
-    print " - No 'stopMergingIfDenySeen' argument provided, using default 'yes'\n";
+    PH::print_stdout( " - No 'stopMergingIfDenySeen' argument provided, using default 'yes'");
     $rulemerger->UTIL_stopMergingIfDenySeen = TRUE;
 }
 else
@@ -257,7 +259,7 @@ else
 
 if( !isset(PH::$args['mergeadjacentonly']) )
 {
-    print " - No 'mergeAdjacentOnly' argument provided, using default 'no'\n";
+    PH::print_stdout( " - No 'mergeAdjacentOnly' argument provided, using default 'no'");
     $rulemerger->UTIL_mergeAdjacentOnly = FALSE;
 }
 else
@@ -278,7 +280,7 @@ else
         $rulemerger->UTIL_mergeAdjacentOnly = FALSE;
     else
         $rulemerger->display_error_usage_exit("(mergeAdjacentOnly' argument was given unsupported value '" . PH::$args['mergeadjacentonly'] . "'");
-    print " - mergeAdjacentOnly = " . boolYesNo($rulemerger->UTIL_mergeAdjacentOnly) . "\n";
+    PH::print_stdout( " - mergeAdjacentOnly = " . boolYesNo($rulemerger->UTIL_mergeAdjacentOnly) );
 }
 
 ########################################################################################################################
@@ -295,10 +297,10 @@ $rulemerger->UTIL_hashTable = array();
 $rulemerger->UTIL_denyRules = array();
 
 $rulemerger->UTIL_calculate_rule_hash();
-print "OK!\n";
 
 
-print "\nStats before merging :\n";
+PH::print_stdout("");
+PH::print_stdout( "Stats before merging :");
 $processedLocation->display_statistics();
 
 ##################
@@ -307,7 +309,8 @@ $rulemerger->UTIL_rule_merging( );
 
 ##################
 
-print "\nStats after merging :\n";
+PH::print_stdout("");
+PH::print_stdout( "Stats after merging :");
 $processedLocation->display_statistics();
 
 
@@ -315,3 +318,7 @@ $processedLocation->display_statistics();
 #    save to file
 ##################
 $rulemerger->save_our_work( true );
+
+PH::print_stdout("");
+PH::print_stdout("************* END OF SCRIPT " . basename(__FILE__) . " ************" );
+PH::print_stdout("");

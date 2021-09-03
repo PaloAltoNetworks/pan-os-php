@@ -32,8 +32,9 @@ if( $vsys1 === null )
 	derr("vsys1 was not found ? Exit\n");
 }
 
-print "\n***********************************************\n\n";
-
+PH::print_stdout("");
+PH::print_stdout("***********************************************" );
+PH::print_stdout("");
 
 // first get the list of rules in an array
 $rules = $vsys1->securityRules->rules();
@@ -42,13 +43,14 @@ $rules = $vsys1->securityRules->rules();
 // for every rule we set the security profile
 foreach( $rules as $rule )
 {
-    print "- Updating rule '".$rule->name()."' with security profile '$targetProfile'\n";
+    PH::print_stdout("- Updating rule '".$rule->name()."' with security profile '$targetProfile'" );
 	$rule->setSecurityProfileGroup($targetProfile);
 }
 
 
 
-print "\n***********************************************\n";
+PH::print_stdout("");
+PH::print_stdout("***********************************************" );
 
 // Save resulting config to a file
 $panc->save_to_file($outputfile);

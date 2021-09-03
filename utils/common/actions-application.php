@@ -62,21 +62,21 @@ ApplicationCallContext::$supportedActions[] = array(
             {
                 $app->print_appdetails( $context->padding );
 
-                print $context->padding." - is container: \n";
+                PH::print_stdout( $context->padding." - is container: " );
                 foreach( $app->containerApps() as $app1 )
                 {
                     if( $app1->isContainer() )
                     {
-                        print "is container: \n";
+                        PH::print_stdout( "is container: " );
                         foreach( $app1->containerApps() as $app2 )
                         {
-                            print "     ->" . $app2->type . " | ";
+                            PH::print_stdout( "     ->" . $app2->type . " | " );
                             $app2->print_appdetails( $context->padding, true );
                         }
                     }
                     else
                     {
-                        print "     ->" . $app1->type . " | ";
+                        PH::print_stdout( "     ->" . $app1->type . " | " );
                         $app1->print_appdetails( $context->padding, true );
                     }
                 }
@@ -84,7 +84,7 @@ ApplicationCallContext::$supportedActions[] = array(
         }
         else
         {
-            print $context->padding." - ".$app->type;
+            PH::print_stdout( $context->padding." - ".$app->type );
             $printflag = true;
             $app->print_appdetails( $context->padding, $printflag );
         }
@@ -100,7 +100,7 @@ ApplicationCallContext::$supportedActions[] = array(
         {
             $context->counter_custom_app++;
             if( $app->custom_signature )
-                print "custom_signature is set\n";
+                PH::print_stdout( "custom_signature is set" );
         }
 
         if( $app->isApplicationFilter() )
@@ -135,7 +135,7 @@ ApplicationCallContext::$supportedActions[] = array(
         {
             if( isset($app_explicit[$implApp->name()]) )
             {
-                print str_pad($app->name(), 30) . " has app-id: " . str_pad($implApp->name(), 20) . " as explicit and implicit used\n";
+                PH::print_stdout( str_pad($app->name(), 30) . " has app-id: " . str_pad($implApp->name(), 20) . " as explicit and implicit used" );
                 if( isset($app->implicitUse) && $context->print_dependencies )
                 {
                     if( !isset($dependency_app[$app->name()]) )
@@ -143,17 +143,17 @@ ApplicationCallContext::$supportedActions[] = array(
                         if( count($app->calculateDependencies()) > 0 )
                         {
                             $dependency_app[$app->name()] = $app->name();
-                            print str_pad($app->name(), 30);
-                            print "     dependencies: ";
+                            $text = str_pad($app->name(), 30);
+                            $text .= "     dependencies: ";
                             $context->counter_dependencies++;
                         }
 
                         foreach( $app->calculateDependencies() as $dependency )
                         {
-                            print $dependency->name() . ",";
+                            $text .= $dependency->name() . ",";
                         }
                         if( count($app->calculateDependencies()) > 0 )
-                            print "\n";
+                            PH::print_stdout( $text );
                     }
 
                 }
@@ -167,7 +167,7 @@ ApplicationCallContext::$supportedActions[] = array(
             if( !isset($app_implicit[$implApp->name()]) )
             {
                 if( count($app_implicit) > 0 )
-                    print str_pad($app->name(), 30) . " has app-id: " . str_pad($implApp->name(), 20) . " as explicit but NOT implicit used\n";
+                    PH::print_stdout( str_pad($app->name(), 30) . " has app-id: " . str_pad($implApp->name(), 20) . " as explicit but NOT implicit used" );
             }
         }
 
@@ -175,23 +175,23 @@ ApplicationCallContext::$supportedActions[] = array(
         {
             if( !isset($app_explicit[$implApp->name()]) )
             {
-                print str_pad($app->name(), 30) . " has app-id: " . str_pad($implApp->name(), 20) . " as implicit but NOT explicit used\n";
+                PH::print_stdout( str_pad($app->name(), 30) . " has app-id: " . str_pad($implApp->name(), 20) . " as implicit but NOT explicit used" );
 
             }
         }
 
-        #print "#############################################\n";
+        #PH::print_stdout( "#############################################" );
     },
     'GlobalFinishFunction' => function (ApplicationCallContext $context) {
-        print "tmp_counter: ".$context->tmpcounter."\n";
-        print "predefined_counter: ".$context->counter_predefined."\n";
-        print "dependency_app_counter: ".$context->counter_dependencies."\n";
+        PH::print_stdout( "tmp_counter: ".$context->tmpcounter."" );
+        PH::print_stdout( "predefined_counter: ".$context->counter_predefined."" );
+        PH::print_stdout( "dependency_app_counter: ".$context->counter_dependencies."" );
 
-        print "container_counter: ".$context->counter_containers."\n";
+        PH::print_stdout( "container_counter: ".$context->counter_containers."" );
 
-        print "custom_app_counter: ".$context->counter_custom_app."\n";
-        print "app_filter_counter: ".$context->counter_app_filter."\n";
-        print "app_group_counter: ".$context->counter_app_group."\n";
+        PH::print_stdout( "custom_app_counter: ".$context->counter_custom_app."" );
+        PH::print_stdout( "app_filter_counter: ".$context->counter_app_filter."" );
+        PH::print_stdout( "app_group_counter: ".$context->counter_app_group."" );
     }
 );
 
@@ -202,7 +202,7 @@ ApplicationCallContext::$supportedActions[] = array(
 
         if( !$object->isApplicationCustom() && !$object->isApplicationFilter() && !$object->isApplicationGroup() )
         {
-            echo $context->padding . " * SKIPPED this is NOT a custom application object. TYPE: ".$object->type."\n";
+            PH::print_stdout( $context->padding . " * SKIPPED this is NOT a custom application object. TYPE: ".$object->type."" );
             return;
         }
 
@@ -216,7 +216,7 @@ ApplicationCallContext::$supportedActions[] = array(
 
         if( $localLocation == $targetLocation )
         {
-            echo $context->padding . " * SKIPPED because original and target destinations are the same: $targetLocation\n";
+            PH::print_stdout( $context->padding . " * SKIPPED because original and target destinations are the same: $targetLocation" );
             return;
         }
 
@@ -254,7 +254,7 @@ ApplicationCallContext::$supportedActions[] = array(
 
                     if( $skipped )
                     {
-                        echo $context->padding . "   * SKIPPED : moving from SHARED to sub-level is NOT possible because of references on higher DG level\n";
+                        PH::print_stdout( $context->padding . "   * SKIPPED : moving from SHARED to sub-level is NOT possible because of references on higher DG level" );
                         return;
                     }
                 }
@@ -265,11 +265,11 @@ ApplicationCallContext::$supportedActions[] = array(
         {
             if( $context->baseObject->isFirewall() )
             {
-                echo $context->padding . "   * SKIPPED : moving between VSYS is not supported\n";
+                PH::print_stdout( $context->padding . "   * SKIPPED : moving between VSYS is not supported" );
                 return;
             }
 
-            #echo $context->padding."   * SKIPPED : moving between 2 VSYS/DG is not supported yet\n";
+            #PH::print_stdout( $context->padding."   * SKIPPED : moving between 2 VSYS/DG is not supported yet" );
             #return;
 
             foreach( $object->getReferences() as $ref )
@@ -287,7 +287,7 @@ ApplicationCallContext::$supportedActions[] = array(
 
                     if( $skipped )
                     {
-                        echo $context->padding . "   * SKIPPED : moving between 2 VSYS/DG is not possible because of references on higher DG level\n";
+                        PH::print_stdout( $context->padding . "   * SKIPPED : moving between 2 VSYS/DG is not possible because of references on higher DG level" );
                         return;
                     }
                 }
@@ -297,7 +297,7 @@ ApplicationCallContext::$supportedActions[] = array(
         $conflictObject = $targetStore->find($object->name(), null);
         if( $conflictObject === null )
         {
-            echo $context->padding . "   * moved, no conflict\n";
+            PH::print_stdout( $context->padding . "   * moved, no conflict" );
             if( $context->isAPI )
             {
                 $oldXpath = $object->getXPath();
@@ -316,27 +316,27 @@ ApplicationCallContext::$supportedActions[] = array(
 
         if( $context->arguments['mode'] == 'skipifconflict' )
         {
-            echo $context->padding . "   * SKIPPED : there is an object with same name. Choose another mode to resolve this conflict\n";
+            PH::print_stdout( $context->padding . "   * SKIPPED : there is an object with same name. Choose another mode to resolve this conflict" );
             return;
         }
 
-        echo $context->padding . "   - there is a conflict with an object of same name and type. Please use address-merger.php script with argument 'allowmergingwithupperlevel'";
+        PH::print_stdout( $context->padding . "   - there is a conflict with an object of same name and type. Please use address-merger.php script with argument 'allowmergingwithupperlevel'" );
         #if( $conflictObject->isGroup() )
-        #    echo " - Group\n";
+        #    PH::print_stdout( " - Group" );
         #else
-            echo " - ".$conflictObject->type() . "\n";
+            PH::print_stdout( " - ".$conflictObject->type() . "" );
 
         /*
         if( $conflictObject->isGroup() && !$object->isGroup() || !$conflictObject->isGroup() && $object->isGroup() )
         {
-            echo $context->padding . "   * SKIPPED because conflict has mismatching types\n";
+            PH::print_stdout( $context->padding . "   * SKIPPED because conflict has mismatching types" );
             return;
         }*/
 
         /*
         if( $conflictObject->isTmpAddr() )
         {
-            echo $context->padding . "   * SKIPPED because the conflicting object is TMP| value: ".$conflictObject->value()."\n";
+            PH::print_stdout( $context->padding . "   * SKIPPED because the conflicting object is TMP| value: ".$conflictObject->value()."" );
             //normally the $object must be moved and the conflicting TMP object must be replaced by this $object
             return;
         }
@@ -345,7 +345,7 @@ ApplicationCallContext::$supportedActions[] = array(
         /*
         if( $object->equals($conflictObject) )
         {
-            echo "    * Removed because target has same content\n";
+            PH::print_stdout( "    * Removed because target has same content" );
             $object->replaceMeGlobally($conflictObject);
 
             if( $context->isAPI )
@@ -359,7 +359,7 @@ ApplicationCallContext::$supportedActions[] = array(
         if( $context->arguments['mode'] == 'removeifmatch' )
             return;
 
-        echo "    * Removed because target has same numerical value\n";
+        PH::print_stdout( "    * Removed because target has same numerical value" );
 
         $object->replaceMeGlobally($conflictObject);
         if( $context->isAPI )

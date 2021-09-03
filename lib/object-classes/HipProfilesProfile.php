@@ -125,21 +125,21 @@ class HipProfilesProfile
 
     public function display()
     {
-        print "     * " . get_class($this) . " '" . $this->name() . "'    \n";
+        PH::print_stdout( "     * " . get_class($this) . " '" . $this->name() . "'" );
 
         /*
-        //Todo: continue for print out
+        //Todo: continue for display
         foreach( $this->tmp_url_prof_array as $url_type )
         {
-            print "       ".PH::boldText( strtoupper( $url_type ) )."\n";
+            PH::print_stdout( "       ".PH::boldText( strtoupper( $url_type ) ) );
             foreach( $this->$url_type as $member )
             {
-                print "         - ".$member."\n";
+                PH::print_stdout( "         - ".$member );
             }
         }*/
 
 
-        print "\n\n";
+        PH::print_stdout("");
     }
 
     static public $templatexml = '<entry name="**temporarynamechangeme**"></entry>';

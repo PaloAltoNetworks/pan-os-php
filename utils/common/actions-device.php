@@ -32,19 +32,16 @@ DeviceCallContext::$supportedActions['display'] = array(
     'name' => 'display',
     'MainFunction' => function (DeviceCallContext $context) {
         $object = $context->object;
-        print "     * " . get_class($object) . " '{$object->name()}'  ";
-        print "\n";
-
+        PH::print_stdout( "     * " . get_class($object) . " '{$object->name()}'" );
 
         if( get_class($object) == "TemplateStack" )
         {
             $used_templates = $object->templates;
             foreach( $used_templates as $template )
             {
-                print $context->padding." - " . get_class($template) . " '{$template->name()}'  ";
-                print "\n";
+                PH::print_stdout( $context->padding." - " . get_class($template) . " '{$template->name()}'" );
             }
-            //Todo: print where this TemplateStack is used SERIAL
+            //Todo: PH::print_stdout( where this TemplateStack is used SERIAL
         }
         elseif( get_class($object) == "DeviceGroup" )
         {
@@ -55,10 +52,10 @@ DeviceCallContext::$supportedActions['display'] = array(
             $tmp_padding = "";
             foreach( array_reverse( $parentDGS ) as $key => $DG)
             {
-                print $context->padding.$tmp_padding."- ".$key."\n";
+                PH::print_stdout( $context->padding.$tmp_padding."- ".$key );
                 $tmp_padding .= "  ";
             }
-            //Todo: print complete DG Hierarchy
+            //Todo: PH::print_stdout( complete DG Hierarchy
         }
         elseif( get_class($object) == "ManagedDevice" )
         {
@@ -69,18 +66,18 @@ DeviceCallContext::$supportedActions['display'] = array(
             /** @var ManagedDevice */
 
             if( $managedDevice->getDeviceGroup() != null )
-                print $padding."DG: ".$managedDevice->getDeviceGroup()."\n";
+                PH::print_stdout( $padding."DG: ".$managedDevice->getDeviceGroup() );
             if( $managedDevice->getTemplate() != null )
-                print $padding."Template: ".$managedDevice->getTemplate()."\n";
+                PH::print_stdout( $padding."Template: ".$managedDevice->getTemplate() );
             if( $managedDevice->getTemplateStack() != null )
             {
-                print $padding."TempalteStack: ".$managedDevice->getTemplateStack()."\n";
+                PH::print_stdout( $padding."TempalteStack: ".$managedDevice->getTemplateStack() );
                 $templatestack = $device->findTemplateStack( $managedDevice->getTemplateStack() );
                 foreach( $templatestack->templates as $template )
                 {
                     $template_obj = $device->findTemplate( $template );
                     if( $template_obj !== null )
-                        print " - ".$template_obj->name()."\n";
+                        PH::print_stdout( " - ".$template_obj->name() );
                 }
             }
 
@@ -89,10 +86,10 @@ DeviceCallContext::$supportedActions['display'] = array(
         }
         elseif( get_class($object) == "Template" )
         {
-            //Todo: print where this template is used // full templateStack hierarchy
+            //Todo: PH::print_stdout( where this template is used // full templateStack hierarchy
         }
 
-        print "\n";
+        PH::print_stdout( "" );
     },
 );
 DeviceCallContext::$supportedActions['displayreferences'] = array(
@@ -123,7 +120,7 @@ DeviceCallContext::$supportedActions['DeviceGroupcreate'] = array(
             $tmp_parentdg = $pan->findDeviceGroup( $parentDG );
             if( $tmp_parentdg === null )
             {
-                print "     - SKIP parentDG set with '".$parentDG."' but not found on this config\n";
+                PH::print_stdout( "     - SKIP parentDG set with '".$parentDG."' but not found on this config" );
                 $parentDG = null;
             }
         }
@@ -131,11 +128,11 @@ DeviceCallContext::$supportedActions['DeviceGroupcreate'] = array(
         $tmp_dg = $pan->findDeviceGroup( $dgName );
         if( $tmp_dg === null )
         {
-            print "     * create DeviceGroup: ".$dgName."\n";
+            PH::print_stdout( "     * create DeviceGroup: ".$dgName );
             $pan->createDeviceGroup( $dgName, $parentDG );
         }
         else
-            print "     * DeviceGroup with name: ".$dgName." already available!\n";
+            PH::print_stdout( "     * DeviceGroup with name: ".$dgName." already available!" );
     },
     'args' => array(
         'name' => array('type' => 'string', 'default' => 'false'),
@@ -297,7 +294,7 @@ DeviceCallContext::$supportedActions['template-add'] = array(
 
             if( $template == null )
             {
-                print "     - SKIP adding template '".$templateName."' because it is not found in this config\n";
+                PH::print_stdout( "     - SKIP adding template '".$templateName."' because it is not found in this config" );
                 return null;
             }
 
@@ -306,7 +303,7 @@ DeviceCallContext::$supportedActions['template-add'] = array(
             else
                 $object->addTemplate( $template, $position );
         }
-        print "\n";
+        PH::print_stdout( "" );
     },
     'args' => array(
         'templateName' => array('type' => 'string', 'default' => 'false'),
