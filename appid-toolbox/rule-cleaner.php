@@ -22,7 +22,7 @@
 print "\n************* START OF SCRIPT ".basename(__FILE__)." ************\n\n";
 
 require_once dirname(__FILE__) . "/lib/common.php";
-
+PH::print_stdout( "PAN-OS-PHP version: ".PH::frameworkVersion() );
 $debugAPI = false;
 $dryRun = true;
 $skipIfLastReportIsMoreThanX_DaysOld = 1;
@@ -202,7 +202,7 @@ $loadEndTime = microtime(true);
 $loadEndMem = memory_get_usage(true);
 $loadElapsedTime = number_format( ($loadEndTime - $loadStartTime), 2, '.', '');
 $loadUsedMem = convert($loadEndMem - $loadStartMem);
-print ($loadElapsedTime seconds, $loadUsedMem memory)\n";
+print "($loadElapsedTime seconds, $loadUsedMem memory)\n";
 // --------------------
 
 $subSystem  = $pan->findSubSystemByName($location);

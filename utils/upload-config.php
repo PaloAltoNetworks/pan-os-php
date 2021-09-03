@@ -30,6 +30,8 @@ PH::print_stdout("***********************************************");
 PH::print_stdout("*********** " . basename(__FILE__) . " UTILITY **************");
 PH::print_stdout("");
 
+PH::print_stdout( "PAN-OS-PHP version: ".PH::frameworkVersion() );
+
 function dirname_cleanup_win()
 {
     $tmp_dirname = dirname(__FILE__);

@@ -23,6 +23,7 @@
 require_once dirname(__FILE__) . "/lib/common.php";
 
 print "\n************* START OF SCRIPT ".basename(__FILE__)." ************\n\n";
+PH::print_stdout( "PAN-OS-PHP version: ".PH::frameworkVersion() );
 
 $debugAPI = false;
 $bundleApiCalls = false;

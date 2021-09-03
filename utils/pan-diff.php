@@ -215,7 +215,11 @@ function compareElements($el1, $el2, $xpath = null)
 
     //calculating rule order
     if( endsWith( $xpath, "/rules" ) && strpos( $xpath, "rulebase/") !== false )
-        calculateRuleorder( $el1Elements, $el2Elements);
+    {
+        if( isset( $el1Elements['entry'] ) && isset( $el2Elements['entry'] ) )
+            calculateRuleorder( $el1Elements, $el2Elements);
+    }
+
 
 
     if( count($el1Elements) == 0 && count($el2Elements) == 0 )
