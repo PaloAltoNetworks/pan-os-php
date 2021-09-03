@@ -202,7 +202,7 @@ function request_bpa($connector)
 
                     if( strpos( $reply, "Could not find report bundle") !== false )
                     {
-                        PH::print_stdout( PH::boldText( "##########################################" );
+                        PH::print_stdout( PH::boldText( "##########################################" ) );
                         PH::print_stdout( PH::boldText( "report bundle not found on BPA server" ) );
                         PH::print_stdout( PH::boldText( "##########################################" ) );
 

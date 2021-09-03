@@ -20,9 +20,9 @@
  */
 
 
-print "\n************* START OF SCRIPT ".basename(__FILE__)." ************\n\n";
-
 require_once dirname(__FILE__) . "/lib/common.php";
+
+print "\n************* START OF SCRIPT ".basename(__FILE__)." ************\n\n";
 
 $debugAPI = false;
 $bundleApiCalls = false;
@@ -217,7 +217,7 @@ $loadEndTime = microtime(true);
 $loadEndMem = memory_get_usage(true);
 $loadElapsedTime = number_format( ($loadEndTime - $loadStartTime), 2, '.', '');
 $loadUsedMem = convert($loadEndMem - $loadStartMem);
-print ($loadElapsedTime seconds, $loadUsedMem memory)\n";
+print "($loadElapsedTime seconds, $loadUsedMem memory)\n";
 // --------------------
 
 $subSystem  = $pan->findSubSystemByName($location);
@@ -234,6 +234,7 @@ TH::createTags($pan, $configInput['type']);
 //
 // REAL JOB STARTS HERE
 //
+$string =
 $rules = $subSystem->securityRules->rules("(description regex /".RuleIDTagLibrary::$tagBaseName."/) and !(tag has ".TH::$tag_misc_convertedRule.") and !(tag has ".TH::$tag_misc_ignore.") and !(tag has.regex /^".TH::$tagNtbrBase."/) and !(tag has ".TH::$tag_misc_clonedRule.")");
 
 print " - Total number of rules: {$subSystem->securityRules->count()} vs ".count($rules)." potentially clonable\n";
