@@ -86,6 +86,8 @@ class UTIL
         $this->utilLogger();
         $this->log->info("start UTIL: " . $this->PHP_FILE . " | " . implode(", ", $argv));
 
+        PH::print_stdout( "PAN-OS-PHP version: ".PH::frameworkVersion() );
+
         if( $utilType != "custom" )
             $this->utilStart();
     }
