@@ -5,6 +5,7 @@ UTILS:
 * move to the general PH::print_stdout
 
 BUGFIX:
+* pa_rule-edit | bugfix 'filter=(service is.udp/is.udp.only/is.tcp/is.tcp.only)
 
 GENERAL:
 

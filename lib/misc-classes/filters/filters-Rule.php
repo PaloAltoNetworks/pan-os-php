@@ -1340,11 +1340,8 @@ RQuery::$defaultFilters['rule']['service']['operators']['is.tcp.only'] = array(
 
                 if( strpos($port_mapping_text, "udp") !== FALSE )
                     return FALSE;
-
-                return TRUE;
             }
-
-            if( $object->isUdp() )
+            elseif( $object->isUdp() )
                 return FALSE;
         }
 
@@ -1381,11 +1378,8 @@ RQuery::$defaultFilters['rule']['service']['operators']['is.udp.only'] = array(
 
                 if( strpos($port_mapping_text, "tcp") !== FALSE )
                     return FALSE;
-
-                return TRUE;
             }
-
-            if( $object->isTcp() )
+            elseif( $object->isTcp() )
                 return FALSE;
         }
 
@@ -1424,8 +1418,6 @@ RQuery::$defaultFilters['rule']['service']['operators']['is.tcp'] = array(
 
                 if( strpos($port_mapping_text, "tcp") !== FALSE )
                     $isTCP = TRUE;
-                else
-                    $isTCP = FALSE;
             }
             elseif( $object->isTcp() )
                 $isTCP = TRUE;
@@ -1465,8 +1457,6 @@ RQuery::$defaultFilters['rule']['service']['operators']['is.udp'] = array(
 
                 if( strpos($port_mapping_text, "udp") !== FALSE )
                     $isUDP = TRUE;
-                else
-                    $isUDP = FALSE;
             }
             elseif( $object->isUdp() )
                 $isUDP = TRUE;

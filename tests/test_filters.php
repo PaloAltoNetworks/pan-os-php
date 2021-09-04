@@ -158,6 +158,11 @@ foreach( RQuery::$defaultFilters as $type => &$filtersByField )
                 print "******* SKIPPED for now *******\n";
                 continue;
             }
+            elseif( $type == 'threat' )
+            {
+                print "******* SKIPPED for now *******\n";
+                continue;
+            }
             else
             {
                 derr('unsupported');
