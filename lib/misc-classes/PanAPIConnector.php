@@ -427,7 +427,7 @@ class PanAPIConnector
 
                 $password = self::hiddenPWvalidation($user, $hiddenPW, $handle);
 
-                PH::print_stdout();
+                PH::print_stdout( "" );
 
                 PH::print_stdout( "* Now generating an API key from '$host'..." );
                 $con = new PanAPIConnector($host, '', 'panos', null, $port);
@@ -1745,7 +1745,7 @@ class PanAPIConnector
             {
                 PH::print_stdout( $pw_prompt );
                 $oldStyle = shell_exec('stty -g');
-                shell_exec('stty -icanon -print min 1 time 0');
+                shell_exec('stty -icanon -echo min 1 time 0');
 
                 $password = '';
                 while( TRUE )
