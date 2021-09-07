@@ -1,8 +1,9 @@
 CHANGELOG
 
-2.0.10
+2.0.10 (20210907)
 UTILS:
 * move to the general PH::print_stdout
+* introducing script pan-os-php.php with alias pan-os-php - used as a single entry script
 
 BUGFIX:
 * pa_rule-edit | bugfix 'filter=(service is.udp/is.udp.only/is.tcp/is.tcp.only)

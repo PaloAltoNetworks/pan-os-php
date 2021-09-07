@@ -86,7 +86,7 @@ class UTIL
         $this->utilLogger();
         $this->log->info("start UTIL: " . $this->PHP_FILE . " | " . implode(", ", $argv));
 
-        PH::print_stdout( "PAN-OS-PHP version: ".PH::frameworkVersion() );
+        PH::print_stdout( " - PAN-OS-PHP version: ".PH::frameworkVersion() );
 
         if( $utilType != "custom" )
             $this->utilStart();
@@ -464,14 +464,14 @@ class UTIL
 
     public function usageMessage()
     {
-        PH::print_stdout( PH::boldText("USAGE: ") . "php " . basename($this->PHP_FILE) . " in=inputfile.xml out=outputfile.xml location=all|shared|sub " .
+        PH::print_stdout( PH::boldText("USAGE: ") . "php " . $this->PHP_FILE . " in=inputfile.xml out=outputfile.xml location=any|shared|sub " .
             "actions=action1:arg1 ['filter=(type is.group) or (name contains datacenter-)']" );
-        PH::print_stdout( "php " . basename($this->PHP_FILE) . " listactions   : list supported actions" );
-        PH::print_stdout( "php " . basename($this->PHP_FILE) . " listfilters   : list supported filter" );
-        PH::print_stdout( "php " . basename($this->PHP_FILE) . " help          : more help messages" );
+        PH::print_stdout( "php " . $this->PHP_FILE . " listactions   : list supported actions" );
+        PH::print_stdout( "php " . $this->PHP_FILE . " listfilters   : list supported filter" );
+        PH::print_stdout( "php " . $this->PHP_FILE . " help          : more help messages" );
         PH::print_stdout( PH::boldText("\nExamples:") );
-        PH::print_stdout( " - php " . basename($this->PHP_FILE) . " type=panorama in=api://192.169.50.10 location=DMZ-Firewall-Group actions=displayReferences 'filter=(name eq Mail-Host1)'" );
-        PH::print_stdout( " - php " . basename($this->PHP_FILE) . " type=panos in=config.xml out=output.xml location=any actions=delete" );
+        PH::print_stdout( " - php " . $this->PHP_FILE . " in=api://192.169.50.10 location=DMZ-Firewall-Group actions=displayReferences 'filter=(name eq Mail-Host1)'" );
+        PH::print_stdout( " - php " . $this->PHP_FILE . " in=config.xml out=output.xml location=any actions=delete" );
         PH::print_stdout( "" );
         PH::print_stdout( "" );
         PH::print_stdout( PH::boldText("PAN-OS API connections for version < 9.0 now need additional argument: 'shadow-apikeynohidden'") );
@@ -914,8 +914,11 @@ class UTIL
 
         $this->loadEnd();
 
-        PH::print_stdout( "($this->loadElapsedTime seconds, $this->loadUsedMem memory)" );
+        PH::print_stdout( "   ($this->loadElapsedTime seconds, $this->loadUsedMem memory)" );
         // --------------------
+
+        $panc_version = $this->pan->appStore->predefinedStore_appid_version;
+        PH::print_stdout( " - PAN-OS APP-ID version: ".$panc_version );
     }
 
     public function loadStart()

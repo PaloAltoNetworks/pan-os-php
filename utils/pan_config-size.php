@@ -175,12 +175,12 @@ function print_length( $xmlRoot, $depth = -1, $padding = "", $previousNode = "" 
                 }
             }
 
-            PH::print_stdout( str_pad( $padding."<".$nodeName.">", $pad_length) );
+            $string = str_pad( $padding."<".$nodeName.">", $pad_length);
 
 
             $length2_overhead = $length2-$length_reduced;
             $length2_overhead_percent = round( ( $length2_overhead / $length2 ) * 100, 0);
-            PH::print_stdout( " | " .$padding.str_pad( $length_reduced. "kB [xml overhead:".($length2_overhead)."kB (".$length2_overhead_percent."%)]" , 10, " ", STR_PAD_LEFT));
+            PH::print_stdout( $string." | " .$padding.str_pad( $length_reduced. "kB [xml overhead:".($length2_overhead)."kB (".$length2_overhead_percent."%)]" , 10, " ", STR_PAD_LEFT));
 
             if( $depth == 3 )
                 $previousNode = $nodeName;
