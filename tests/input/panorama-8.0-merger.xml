@@ -1307,14 +1307,5 @@
                 </private-key>
             </entry>
         </certificate>
-        <ssl-tls-service-profile>
-            <entry name="webgui">
-                <protocol-settings>
-                    <min-version>tls1-0</min-version>
-                    <max-version>max</max-version>
-                </protocol-settings>
-                <certificate>webgui2</certificate>
-            </entry>
-        </ssl-tls-service-profile>
     </panorama>
 </config>

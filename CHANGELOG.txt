@@ -7,7 +7,7 @@ BUGFIX:
 * class PanAPIConnector - create PAN-OS XML API key
 
 GENERAL:
-
+* test | remove ssl-tls-service-profile on all test config files
 
 2.0.10 (20210907)
 UTILS:
