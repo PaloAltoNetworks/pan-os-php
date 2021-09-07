@@ -4,6 +4,7 @@ CHANGELOG
 UTILS:
 
 BUGFIX:
+* class PanAPIConnector - create PAN-OS XML API key
 
 GENERAL:
 
