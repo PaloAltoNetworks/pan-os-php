@@ -161,9 +161,9 @@ function display_usage_and_exit($shortMessage = FALSE)
             if( isset($arg['argDesc']) )
                 $text .= '=' . $arg['argDesc'];
             //."=";
+            PH::print_stdout( $text );
             if( isset($arg['shortHelp']) )
             {
-                PH::print_stdout( "" );
                 PH::print_stdout("     " . $arg['shortHelp'] );
             }
             PH::print_stdout( "" );

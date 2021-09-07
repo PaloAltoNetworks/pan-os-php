@@ -34,7 +34,7 @@ $argv[0] = "Standard input code";
 $argv[1] = "in=".dirname(__FILE__)."/../../../../tests/input/panorama-10.0-merger.xml";
 #$argv[2] = "shadow-json";
 
-$supportedRoute = array('stats', 'address', 'service', 'tag', 'rule', 'device', 'securityprofile', 'securityprofilegroup', 'zone', 'schedule', 'interface', 'virtualwire', 'routing', 'application');
+$supportedRoute = array('stats', 'address', 'service', 'tag', 'rule', 'device', 'securityprofile', 'securityprofilegroup', 'zone', 'schedule', 'interface', 'virtualwire', 'routing', 'application', 'threat');
 sort($supportedRoute );
 
 // catch this here, we don't support many routes yet
@@ -105,38 +105,33 @@ switch($verb) {
 
             header("Content-Type: application/json");
             if( $url_pieces[1] == 'stats' )
-                $util = new STATSUTIL( "stats", $argv, __FILE__);
+                $util = new STATSUTIL( $url_pieces[1], $argv, __FILE__);
 
-            elseif( $url_pieces[1] == 'address' )
-                $util = new UTIL( "address", $argv, __FILE__);
-            elseif( $url_pieces[1] == 'service' )
-                $util = new UTIL( "service", $argv, __FILE__);
-            elseif( $url_pieces[1] == 'tag' )
-                $util = new UTIL( "tag", $argv, __FILE__);
-            elseif( $url_pieces[1] == 'schedule' )
-                $util = new UTIL( "schedule", $argv, __FILE__);
-            elseif( $url_pieces[1] == 'securityprofilegroup' )
-                $util = new UTIL( "securityprofilegroup", $argv, __FILE__);
-            elseif( $url_pieces[1] == 'application' )
-                $util = new UTIL( "application", $argv, __FILE__);
+            elseif( $url_pieces[1] == 'address'
+                || $url_pieces[1] == 'service'
+                || $url_pieces[1] == 'tag'
+                || $url_pieces[1] == 'schedule'
+                || $url_pieces[1] == 'securityprofilegroup'
+                || $url_pieces[1] == 'application'
+                || $url_pieces[1] == 'threat'
+            )
+                $util = new UTIL( $url_pieces[1], $argv, __FILE__);
 
             elseif( $url_pieces[1] == 'rule' )
-                $util = new RULEUTIL( "rule", $argv, __FILE__);
+                $util = new RULEUTIL( $url_pieces[1], $argv, __FILE__);
 
             elseif( $url_pieces[1] == 'device' )
-                $util = new DEVICEUTIL( "device", $argv, __FILE__);
+                $util = new DEVICEUTIL( $url_pieces[1], $argv, __FILE__);
 
-            elseif( $url_pieces[1] == 'zone' )
-                $util = new NETWORKUTIL( "zone", $argv, __FILE__);
-            elseif( $url_pieces[1] == 'interface' )
-                $util = new NETWORKUTIL( "interface", $argv, __FILE__);
-            elseif( $url_pieces[1] == 'routing' )
-                $util = new NETWORKUTIL( "routing", $argv, __FILE__);
-            elseif( $url_pieces[1] == 'virtualwire' )
-                $util = new NETWORKUTIL( "virtualwire", $argv, __FILE__);
+            elseif( $url_pieces[1] == 'zone'
+                || $url_pieces[1] == 'interface'
+                || $url_pieces[1] == 'routing'
+                || $url_pieces[1] == 'virtualwire'
+            )
+                $util = new NETWORKUTIL( $url_pieces[1], $argv, __FILE__);
 
             elseif( $url_pieces[1] == 'securityprofile' )
-                $util = new SECURITYPROFILEUTIL( "securityprofile", $argv, __FILE__);
+                $util = new SECURITYPROFILEUTIL( $url_pieces[1], $argv, __FILE__);
 
         }
         break;
