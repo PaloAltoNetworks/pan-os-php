@@ -1358,13 +1358,5 @@
         <algorithm>RSA</algorithm>
       </entry>
     </certificate>
-    <ssl-tls-service-profile>
-      <entry name="webgui">
-        <protocol-settings>
-          <min-version>tls1-0</min-version>
-          <max-version>max</max-version>
-        </protocol-settings>
-      </entry>
-    </ssl-tls-service-profile>
   </panorama>
 </config>
