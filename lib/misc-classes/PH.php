@@ -485,7 +485,6 @@ class PH
 
     static public function print_stdout( $text  )
     {
-
         if( is_array( $text ) )
         {
             if( PH::$shadow_json )

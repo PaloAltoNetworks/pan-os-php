@@ -29,7 +29,13 @@ PH::print_stdout("***********************************************");
 PH::print_stdout("*********** " . basename(__FILE__) . " UTILITY **************");
 PH::print_stdout("");
 
-PH::print_stdout( "PAN-OS-PHP version: ".PH::frameworkVersion() );
+$tmp_array = array();
+$tmp_array['header'] = " - PAN-OS-PHP version: ";
+$tmp_array['version']['pan-os-php'] = PH::frameworkVersion();
+
+PH::print_stdout( $tmp_array );
+
+#PH::print_stdout( " - PAN-OS-PHP version: ".PH::frameworkVersion() );
 
 $supportedArguments = array();
 $supportedArguments[] = array('niceName' => 'delete', 'shortHelp' => 'Clears API key for hostname/IP provided as an argument.', 'argDesc' => '[hostname or IP]');
@@ -189,5 +195,9 @@ PH::print_stdout("");
 PH::print_stdout("************* END OF SCRIPT " . basename(__FILE__) . " ************" );
 PH::print_stdout("");
 
-
+if( PH::$shadow_json )
+{
+    PH::$JSON_OUT['log'] = PH::$JSON_OUTlog;
+    print json_encode( PH::$JSON_OUT, JSON_PRETTY_PRINT );
+}
 

@@ -163,7 +163,14 @@ class SecurityRule extends RuleWithUserID
         //														//
         // Begin <application> application extraction			//
         //														//
-        $tmp = DH::findFirstElementOrCreate('application', $xml);
+        #$tmp = DH::findFirstElementOrCreate('application', $xml);
+        $tmp = DH::findFirstElement('application', $xml);
+        if( $tmp === false )
+        {
+            $tmp = DH::findFirstElementOrCreate('application', $xml);
+            $tmp_member = DH::findFirstElementOrCreate('member', $tmp);
+            $tmp_member->textContent= 'any';
+        }
         $this->apps->load_from_domxml($tmp);
         // end of <application> application extraction
 
@@ -171,7 +178,14 @@ class SecurityRule extends RuleWithUserID
         //										//
         // Begin <service> extraction			//
         //										//
-        $tmp = DH::findFirstElementOrCreate('service', $xml);
+        #$tmp = DH::findFirstElementOrCreate('service', $xml);
+        $tmp = DH::findFirstElement('service', $xml);
+        if( $tmp === false )
+        {
+            $tmp = DH::findFirstElementOrCreate('service', $xml);
+            $tmp_member = DH::findFirstElementOrCreate('member', $tmp);
+            $tmp_member->textContent= 'any';
+        }
         $this->services->load_from_domxml($tmp);
         // end of <service> zone extraction
 
