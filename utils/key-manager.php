@@ -39,6 +39,7 @@ $supportedArguments[] = array('niceName' => 'apikey', 'shortHelp' => 'can be use
 $supportedArguments[] = array('niceName' => 'hiddenpw', 'shortHelp' => 'Use this if the entered password should not be displayed.');
 $supportedArguments[] = array('niceName' => 'help', 'shortHelp' => 'this message');
 $supportedArguments[] = array('niceName' => 'DebugAPI', 'shortHelp' => 'prints API calls when they happen');
+$supportedArguments['shadow-apikeynohidden'] = array('niceName' => 'shadow-apikeynohidden', 'shortHelp' => 'send API-KEY in clear text via URL. this is needed for all PAN-OS version <9.0 if API mode is used. ');
 
 $usageMsg = PH::boldText('USAGE: ') . "php " . basename(__FILE__) . " [delete=hostOrIP] [add=hostOrIP] [test=hostOrIP] [hiddenPW]";
 
@@ -125,7 +126,10 @@ if( isset(PH::$args['test']) )
                 if( !isset(PH::$args['apikey']) )
                     $connector = PanAPIConnector::findOrCreateConnectorFromHost($checkHost, null, TRUE, TRUE, $hiddenPW, $debugAPI);
                 else
-                    $connector = PanAPIConnector::findOrCreateConnectorFromHost($checkHost, PH::$args['apikey']);
+                    $connector = PanAPIConnector::findOrCreateConnectorFromHost($checkHost, PH::$args['apikey'], TRUE, TRUE, TRUE, $debugAPI);
+
+                if( $debugAPI )
+                    $connector->showApiCalls = true;
 
                 $connector->testConnectivity();
             } catch(Exception $e)
@@ -144,7 +148,10 @@ if( isset(PH::$args['test']) )
         if( !isset(PH::$args['apikey']) )
             $connector = PanAPIConnector::findOrCreateConnectorFromHost($checkHost, null, TRUE, TRUE, $hiddenPW, $debugAPI);
         else
-            $connector = PanAPIConnector::findOrCreateConnectorFromHost($checkHost, PH::$args['apikey']);
+            $connector = PanAPIConnector::findOrCreateConnectorFromHost($checkHost, PH::$args['apikey'], TRUE, TRUE, TRUE, $debugAPI);
+
+        if( $debugAPI )
+            $connector->showApiCalls = true;
 
         $connector->testConnectivity();
 
