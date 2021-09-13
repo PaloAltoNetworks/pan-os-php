@@ -21,7 +21,7 @@
 
 set_include_path(dirname(__FILE__) . '/../' . PATH_SEPARATOR . get_include_path());
 require_once dirname(__FILE__)."/../lib/pan_php_framework.php";
-PH::print_stdout( "PAN-OS-PHP version: ".PH::frameworkVersion() );
+PH::print_stdout( " - PAN-OS-PHP version: ".PH::frameworkVersion() );
 
 function display_usage_and_exit($shortMessage = FALSE)
 {

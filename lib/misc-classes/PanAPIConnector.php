@@ -479,7 +479,7 @@ class PanAPIConnector
 
     public function testConnectivity()
     {
-        PH::print_stdout( " Testing API connectivity... ");
+        PH::print_stdout( " - Testing API connectivity... ");
 
         $this->refreshSystemInfos( true );
 
