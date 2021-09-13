@@ -29,13 +29,8 @@ PH::print_stdout("***********************************************");
 PH::print_stdout("*********** " . basename(__FILE__) . " UTILITY **************");
 PH::print_stdout("");
 
-$tmp_array = array();
-$tmp_array['header'] = " - PAN-OS-PHP version: ";
-$tmp_array['version']['pan-os-php'] = PH::frameworkVersion();
 
-PH::print_stdout( $tmp_array );
-
-#PH::print_stdout( " - PAN-OS-PHP version: ".PH::frameworkVersion() );
+PH::print_stdout( " - PAN-OS-PHP version: ".PH::frameworkVersion() );
 
 $supportedArguments = array();
 $supportedArguments[] = array('niceName' => 'delete', 'shortHelp' => 'Clears API key for hostname/IP provided as an argument.', 'argDesc' => '[hostname or IP]');

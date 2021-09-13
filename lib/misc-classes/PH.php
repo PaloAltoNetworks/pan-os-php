@@ -172,7 +172,10 @@ class PH
 
     static public function frameworkVersion()
     {
-        return self::$library_version_major . '.' . self::$library_version_sub . '.' . self::$library_version_bugfix;
+        $system = 'UNIX';
+        if( strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' )
+            $system = 'WIN';
+        return self::$library_version_major . '.' . self::$library_version_sub . '.' . self::$library_version_bugfix . ' ['.$system.']';
     }
 
     /**
