@@ -6,6 +6,7 @@ UTILS:
 
 BUGFIX:
 * class PanAPIConnector - create PAN-OS XML API key
+* class SecurityRule - [thanks to Brian Trost for finding this] if XMLNode service is not available also add <member>any</member> and not only an empty XML node <service\>
 
 GENERAL:
 * test | remove ssl-tls-service-profile on all test config files
