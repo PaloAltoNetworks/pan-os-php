@@ -2,6 +2,7 @@ CHANGELOG
 
 2.0.11
 UTILS:
+* pa_key-manager - improve debugapi, to display also testAPI command - extend help with argument shadow-apikeynohidden for PAN-OS <9.0
 
 BUGFIX:
 * class PanAPIConnector - create PAN-OS XML API key
