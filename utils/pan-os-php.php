@@ -72,7 +72,7 @@ if( isset(PH::$args['version']) )
     exit();
 elseif( !isset(PH::$args['type']) )
 {
-    $typeUTIL->display_usage_and_exit();
+    $typeUTIL->display_error_usage_exit('"type" is missing from arguments');
 }
 elseif( isset(PH::$args['type']) )
 {
