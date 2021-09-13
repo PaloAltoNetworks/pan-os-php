@@ -482,6 +482,8 @@ class PanAPIConnector
         PH::print_stdout( " Testing API connectivity... ");
 
         $this->refreshSystemInfos( true );
+
+        PH::print_stdout( " - PAN-OS version: ".$this->info_PANOS_version );
     }
 
 
