@@ -400,7 +400,7 @@ class SecurityProfileGroupStore extends ObjStore
         DH::clearDomNodeChilds($this->xmlroot);
         foreach( $this->o as $o )
         {
-            print "OBJ: ".$o->name()."\n";
+            #print "OBJ: ".$o->name()."\n";
             $this->xmlroot->appendChild($o->xmlroot);
         }
     }

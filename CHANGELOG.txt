@@ -6,7 +6,7 @@ UTILS:
 BUGFIX:
 
 GENERAL:
-
+* move from print to PH::print_stdout - in preparation for JSON response, some missing parts fixed
 
 2.0.11 (20210915)
 UTILS:
