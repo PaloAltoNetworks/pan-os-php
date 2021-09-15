@@ -19,6 +19,7 @@ UTILS:
 
 BUGFIX:
 * pa_rule-edit | bugfix 'filter=(service is.udp/is.udp.only/is.tcp/is.tcp.only)
+* framework | class PanAPIConnector - fix for hidden PW prompt on Windows systems
 
 GENERAL:
 

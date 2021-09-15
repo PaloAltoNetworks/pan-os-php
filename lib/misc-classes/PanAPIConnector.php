@@ -1727,7 +1727,7 @@ class PanAPIConnector
 
     static public function hiddenPWvalidation($user, $hiddenPW, $handle)
     {
-        $pw_prompt = "* you input user '" . $user . "' , please enter password now, password is ";
+        $pw_prompt = "** you input user '" . $user . "' , please enter password now, password is ";
         if( $hiddenPW )
             $pw_prompt .= "hidden : ";
         else
@@ -1736,7 +1736,7 @@ class PanAPIConnector
         {
             if( strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' )
             {
-                $pwd = shell_exec('powershell.exe -Command "$Password=Read-Host -assecurestring ' . $pw_prompt . ' ; $PlainPassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($Password)) ; print $PlainPassword;"');
+                $pwd = shell_exec('powershell.exe -Command "$Password=Read-Host -assecurestring ' . $pw_prompt . '; $PlainPassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($Password)); echo $PlainPassword;"');
                 $pwd = explode("\n", $pwd);
                 $password = $pwd[0];
             }
