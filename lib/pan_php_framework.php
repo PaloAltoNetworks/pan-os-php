@@ -537,49 +537,81 @@ function derr($msg, $object = null, $print_backtrace = TRUE)
         throw $ex;
     }
 
-    fwrite(STDERR, PH::boldText("\n* ** ERROR ** * ") . $msg . "\n\n");
+    if( PH::$shadow_json )
+        PH::$JSON_OUT['error'] = $msg;
+    else
+        fwrite(STDERR, PH::boldText("\n* ** ERROR ** * ") . $msg . "\n\n");
+
+
 
     if( $print_backtrace )
     {
-        //debug_print_backtrace();
+        backtrace_print();
+    }
 
-        $d = debug_backtrace();
-
-        $skip = 0;
-
-        fwrite(STDERR, " *** Backtrace ***\n");
-
-        $count = 0;
-
-        foreach( $d as $l )
-        {
-            if( $skip >= 0 )
-            {
-                fwrite(STDERR, "$count ****\n");
-                if( isset($l['object']) && method_exists($l['object'], 'toString') )
-                {
-                    fwrite(STDERR, '   ' . $l['object']->toString() . "\n");
-                }
-                $file = '';
-                if( isset($l['file']) )
-                    $file = $l['file'];
-                $line = '';
-                if( isset($l['line']) )
-                    $line = $l['line'];
-
-                if( isset($l['object']) )
-                    fwrite(STDERR, '       ' . PH::boldText($l['class'] . '::' . $l['function'] . "()") . " @\n           {$file} line {$line}\n");
-                else
-                    fwrite(STDERR, "       " . PH::boldText($l['function']) . "()\n       ::{$file} line {$line}\n");
-            }
-            $skip++;
-            $count++;
-        }
+    if( PH::$shadow_json )
+    {
+        PH::$JSON_OUT['log'] = PH::$JSON_OUTlog;
+        print json_encode( PH::$JSON_OUT, JSON_PRETTY_PRINT );
     }
 
 
-
     exit(1);
+}
+
+
+function derr_print( $string )
+{
+    PH::$JSON_OUTlog .= $string;
+    if( !PH::$shadow_json )
+        fwrite(STDERR, $string);
+}
+
+function backtrace_print()
+{
+    $d = debug_backtrace();
+
+    $skip = 0;
+
+    $string = " *** Backtrace ***\n";
+    derr_print( $string );
+
+    $count = 0;
+
+    foreach( $d as $l )
+    {
+        if( $skip >= 0 )
+        {
+            $string = "$count ****\n";
+            derr_print( $string );
+
+            if( isset($l['object']) && method_exists($l['object'], 'toString') )
+            {
+                $string = '   ' . $l['object']->toString() . "\n";
+                derr_print( $string );
+            }
+
+            $file = '';
+            if( isset($l['file']) )
+                $file = $l['file'];
+            $line = '';
+            if( isset($l['line']) )
+                $line = $l['line'];
+
+            if( isset($l['object']) )
+            {
+                $string = '       ' . PH::boldText($l['class'] . '::' . $l['function'] . "()") . " @\n           {$file} line {$line}\n";
+                derr_print( $string );
+            }
+            else
+            {
+                $string = "       " . PH::boldText($l['function']) . "()\n       ::{$file} line {$line}\n";
+                derr_print( $string );
+            }
+        }
+        $skip++;
+        $count++;
+    }
 }
 
 /**
@@ -655,47 +687,26 @@ function mwarning($msg, $object = null, $print_backtrace = TRUE)
         throw $ex;
     }
 
-    fwrite(STDERR, PH::boldText("\n* ** WARNING ** * ") . $msg . "\n\n");
+    if( PH::$shadow_json )
+    {
+        if( isset(PH::$JSON_OUT['warning']) )
+        {
+            PH::$JSON_OUT['warning'][] = $msg;
+        }
+        else
+            PH::$JSON_OUT['warning'][0] = $msg;
+    }
 
-    //debug_print_backtrace();
+    else
+        fwrite(STDERR, PH::boldText("\n* ** WARNING ** * ") . $msg . "\n\n");
+
 
     if( $print_backtrace )
     {
-        $d = debug_backtrace();
+        backtrace_print();
 
-        $skip = 0;
-
-        fwrite(STDERR, " *** Backtrace ***\n");
-
-        $count = 0;
-
-        foreach( $d as $l )
-        {
-            if( $skip >= 0 )
-            {
-                fwrite(STDERR, "$count ****\n");
-                if( isset($l['object']) && method_exists($l['object'], 'toString') )
-                {
-                    fwrite(STDERR, '   ' . $l['object']->toString() . "\n");
-                }
-
-                $file = '';
-                if( isset($l['file']) )
-                    $file = $l['file'];
-                $line = '';
-                if( isset($l['line']) )
-                    $line = $l['line'];
-
-                if( isset($l['object']) )
-                    fwrite(STDERR, '       ' . PH::boldText($l['class'] . '::' . $l['function'] . "()") . " @\n           {$file} line {$line}\n");
-                else
-                    fwrite(STDERR, "       " . PH::boldText($l['function']) . "()\n       ::{$file} line {$line}\n");
-            }
-            $skip++;
-            $count++;
-        }
-
-        fwrite(STDERR, "\n\n");
+        $string = "\n\n";
+        derr_print( $string );
     }
 
 }
