@@ -410,7 +410,7 @@ class FawkesConf
     public function save_to_file($fileName, $printMessage = TRUE, $lineReturn = TRUE, $indentingXml = 0, $indentingXmlIncreament = 1)
     {
         if( $printMessage )
-            print "Now saving FawkesConf to file '$fileName'...";
+            PH::print_stdout( "Now saving FawkesConf to file '$fileName'..." );
 
         //Todo: swaschkut check
         //$indentingXmlIncreament was 2 per default for Panroama
@@ -423,7 +423,7 @@ class FawkesConf
         file_put_contents($fileName, $xml);
 
         if( $printMessage )
-            print "     done!\n\n";
+            PH::print_stdout( "     done!" );
     }
 
     /**

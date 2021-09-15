@@ -629,7 +629,7 @@ class PANConf
     public function save_to_file($fileName, $printMessage = TRUE, $lineReturn = TRUE, $indentingXml = 0, $indentingXmlIncreament = 1)
     {
         if( $printMessage )
-            print "Now saving PANConf to file '$fileName'...";
+            PH::print_stdout( "Now saving PANConf to file '$fileName'...");
 
         $xml = &DH::dom_to_xml($this->xmlroot, $indentingXml, $lineReturn, -1, $indentingXmlIncreament);
 
@@ -640,7 +640,7 @@ class PANConf
         file_put_contents($fileName, $xml);
 
         if( $printMessage )
-            print "     done!\n\n";
+            PH::print_stdout( "     done!" );
     }
 
     /**
