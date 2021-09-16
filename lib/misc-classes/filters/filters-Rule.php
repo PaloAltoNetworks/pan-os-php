@@ -222,6 +222,50 @@ RQuery::$defaultFilters['rule']['to']['operators']['is.in.file'] = array(
     'arg' => TRUE,
     'help' => 'returns TRUE if rule name matches one of the names found in text file provided in argument'
 );
+RQuery::$defaultFilters['rule']['from']['operators']['has.same.to.zone'] = array(
+    'Function' => function (RuleRQueryContext $context) {
+        if( $context->object->isPbfRule() )
+            return null;
+
+        $fromZones = $context->object->from;
+        $toZones = $context->object->to;
+
+        if( count($fromZones->zones()) === count($toZones->zones()))
+        {
+            if( $fromZones->includesContainer( $toZones ) && $toZones->includesContainer( $fromZones ) )
+                return TRUE;
+        }
+
+        return FALSE;
+    },
+    'arg' => FALSE,
+    'ci' => array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['rule']['to']['operators']['has.same.from.zone'] = array(
+    'Function' => function (RuleRQueryContext $context) {
+        if( $context->object->isPbfRule() )
+            return null;
+
+        $fromZones = $context->object->from;
+        $toZones = $context->object->to;
+
+        if( count($fromZones->zones()) === count($toZones->zones()))
+        {
+            if( $fromZones->includesContainer( $toZones ) && $toZones->includesContainer( $fromZones ) )
+            return TRUE;
+        }
+
+        return FALSE;
+    },
+    'arg' => FALSE,
+    'ci' => array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 //                                              //
 //                NAT Dst/Src Based Actions     //
 //                                              //

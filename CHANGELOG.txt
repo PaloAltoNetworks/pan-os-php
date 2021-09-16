@@ -2,11 +2,13 @@ CHANGELOG
 
 2.0.12
 UTILS:
+* pa_rule-edit - introduce new 'filter=(from has.same.to.zone)'/'filter=(to has.same.from.zone)'
 
 BUGFIX:
 
 GENERAL:
 * move from print to PH::print_stdout - in preparation for JSON response, some missing parts fixed
+
 
 2.0.11 (20210915)
 UTILS:
