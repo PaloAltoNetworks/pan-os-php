@@ -317,6 +317,17 @@ class PH
         #print_r(PH::$args);
     }
 
+    public static function resetCliArgs( $arguments )
+    {
+        $argv = $arguments;
+        PH::$args = array();
+        PH::$argv = array();
+
+        PH::$argv = $argv;
+
+        #print_r( $argv );
+    }
+    
     public static function generate_arguments($in = "", $out = "", $location = "", $actions = "", $filter = "", $subquery = "", $additional = "")
     {
         $i = 0;
@@ -765,6 +776,22 @@ class PH
         $panObject->load_from_domxml($doc);
 
         return $panObject;
+    }
+
+    public static function getFilesInFolder( $folder )
+    {
+        $files = scandir($folder);
+        foreach( $files as $key => $file )
+        {
+            $path = realpath($folder . DIRECTORY_SEPARATOR . $file);
+            if( is_dir($path) || strpos($file, ".") === 0 )
+            {
+                unset( $files[$key] );
+            }
+        }
+        PH::print_stdout( "'".$folder."' with files: ".(count($files)) );
+
+        return $files;
     }
 
 }
