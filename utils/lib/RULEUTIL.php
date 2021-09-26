@@ -41,7 +41,7 @@ class RULEUTIL extends UTIL
     public function supportedArguments()
     {
         parent::supportedArguments();
-        $this->supportedArguments['ruletype'] = array('niceName' => 'ruleType', 'shortHelp' => 'specify which type(s) of you rule want to edit, (default is "security". ie: ruletype=any  ruletype=security,nat', 'argDesc' => 'all|any|security|nat|decryption|pbf|qos|dos|appoverride');
+        $this->supportedArguments['ruletype'] = array('niceName' => 'ruleType', 'shortHelp' => 'specify which type(s) of you rule want to edit, (default is "security". ie: ruletype=any  ruletype=security,nat', 'argDesc' => 'any|security|nat|decryption|pbf|qos|dos|appoverride');
     }
 
     public function location_filter_object()
@@ -58,7 +58,6 @@ class RULEUTIL extends UTIL
                 {
                     if( isset(PH::$args['loadpanoramapushedconfig']) )
                     {
-                        #if( ($location == 'any' || $location == 'all' || $location == $sub->name() && !isset($ruleStoresToProcess[$sub->name()])) )
                         if( ($location == 'any' || $location == $sub->name() && !isset($ruleStoresToProcess[$sub->name()])) )
                         {
                             if( array_search('any', $this->ruleTypes) !== FALSE || array_search('security', $this->ruleTypes) !== FALSE )
@@ -102,7 +101,6 @@ class RULEUTIL extends UTIL
                     }
                     else
                     {
-                        #if( ($location == 'any' || $location == 'all' || $location == $sub->name() && !isset($ruleStoresToProcess[$sub->name()])) )
                         if( ($location == 'any' || $location == $sub->name() && !isset($ruleStoresToProcess[$sub->name()])) )
                         {
                             if( array_search('any', $this->ruleTypes) !== FALSE || array_search('security', $this->ruleTypes) !== FALSE )
@@ -145,12 +143,11 @@ class RULEUTIL extends UTIL
                         }
                     }
 
-                    self::GlobalInitAction($sub);
+                    self::GlobalInitAction($sub, $this->ruleTypes);
                 }
             }
             else
             {
-                #if( $this->configType == 'panorama' && ( $location == 'shared' || $location == 'any' || $location == 'all' ) )
                 if( $this->configType == 'panorama' && ( $location == 'shared' || $location == 'any' ) )
                 {
                     if( array_search('any', $this->ruleTypes) !== FALSE || array_search('security', $this->ruleTypes) !== FALSE )
@@ -205,7 +202,6 @@ class RULEUTIL extends UTIL
 
                 foreach( $subGroups as $sub )
                 {
-                    #if( $location == 'any' || $location == 'all' || $location == $sub->name() )
                     if( $location == 'any' || $location == $sub->name() )
                     {
                         if( array_search('any', $this->ruleTypes) !== FALSE || array_search('security', $this->ruleTypes) !== FALSE )
@@ -247,7 +243,7 @@ class RULEUTIL extends UTIL
                         $locationFound = TRUE;
                     }
 
-                    self::GlobalInitAction($sub);
+                    self::GlobalInitAction($sub, $this->ruleTypes);
                 }
             }
 
@@ -261,7 +257,6 @@ class RULEUTIL extends UTIL
         //
         // Determine rule types
         //
-        #$supportedRuleTypes = array('all', 'any', 'security', 'nat', 'decryption', 'appoverride', 'captiveportal', 'authentication', 'pbf', 'qos', 'dos');
         $supportedRuleTypes = array( 'any', 'security', 'nat', 'decryption', 'appoverride', 'captiveportal', 'authentication', 'pbf', 'qos', 'dos');
         if( !isset(PH::$args['ruletype']) )
         {
@@ -276,7 +271,7 @@ class RULEUTIL extends UTIL
                 $rType = strtolower($rType);
                 if( array_search($rType, $supportedRuleTypes) === FALSE )
                 {
-                    $this->display_error_usage_exit("'ruleType' has unsupported value: '" . $rType . "'. Supported values are: " . PH::list_to_string($supportedRuleTypes));
+                    $this->display_error_usage_exit("'ruleType' has unsupported value: '" . $rType . "'. Supported values are: " . PH::list_to_string($supportedRuleTypes, ','));
                 }
                 if( $rType == 'all' )
                     $rType = 'any';
@@ -307,6 +302,7 @@ class RULEUTIL extends UTIL
             foreach( $this->doActions as $doAction )
             {
                 $doAction->subSystem = $store->owner;
+                $doAction->store = $store;
             }
 
             PH::print_stdout( "" );

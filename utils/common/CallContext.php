@@ -37,6 +37,9 @@ class CallContext
     /** @var  $subSystem VirtualSystem|PANConf|PanoramaConf|DeviceGroup */
     public $subSystem;
 
+    /** @var  $ruletype array */
+    public $ruletype;
+
     /** @var PanAPIConnector */
     public $connector = null;
 

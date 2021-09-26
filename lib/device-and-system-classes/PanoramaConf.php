@@ -1474,6 +1474,56 @@ class PanoramaConf
     }
 
     /**
+     * Remove a device group.
+     * @param DeviceGroup $DG
+     **/
+    public function removeDeviceGroup( $DG )
+    {
+        $DGname = $DG->name();
+        $childDGs = $DG->_childDeviceGroups;
+        if( count( $childDGs ) !== 0 )
+        {
+            mwarning("DeviceGroup '$DGname' has ChildDGs. Delete of DG not possible.");
+            return;
+        }
+        else
+        {
+            //remove DG from XML
+            $xPath = "/config/devices/entry[@name='localhost.localdomain']/device-group";
+            $dgNode = DH::findXPathSingleEntryOrDie($xPath, $this->xmlroot);
+            $dgNode->removeChild( $DG->xmlroot );
+
+            //remove DG from DG Meta
+            if( $this->version >= 80 )
+                $dgMetaDataNode = DH::findXPathSingleEntryOrDie('/config/readonly/devices/entry[@name="localhost.localdomain"]/device-group', $this->xmlroot);
+            else
+                $dgMetaDataNode = DH::findXPathSingleEntryOrDie('/config/readonly/dg-meta-data/dg-info', $this->xmlroot);
+
+            $DGmetaData = DH::findFirstElementByNameAttrOrDie('entry', $DGname, $dgMetaDataNode);
+            $dgMetaDataNode->removeChild( $DGmetaData );
+
+            //Todo: cleanup memory
+        }
+
+
+        //API: send empty DG node
+        /*
+        $xpath = "/config/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='".$objectsLocation."']";
+
+        $apiArgs = Array();
+        $apiArgs['type'] = 'config';
+        $apiArgs['action'] = 'delete';
+        $apiArgs['xpath'] = &$xpath;
+
+        print "     "."*** delete each member from ".$entry." \n";
+
+        if( $configInput['type'] == 'api' )
+            $response = $pan->connector->sendRequest($apiArgs);
+         */
+
+
+    }
+    /**
      * @return DeviceGroup[]
      */
     public function getDeviceGroups()

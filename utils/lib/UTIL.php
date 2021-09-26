@@ -1223,13 +1223,15 @@ class UTIL
         exit(1);
     }
 
-    public function GlobalInitAction($sub)
+    public function GlobalInitAction($sub, $ruletype = null)
     {
         foreach( $this->doActions as $doAction )
         {
             if( $doAction->hasGlobalInitAction() )
             {
                 $doAction->subSystem = $sub;
+                if( $ruletype != null )
+                    $doAction->ruletype = $ruletype;
                 $doAction->executeGlobalInitAction();
             }
         }
