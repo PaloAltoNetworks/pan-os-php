@@ -19,11 +19,11 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-PH::print_stdout( "\n*************************************************" );
-PH::print_stdout( "**************** FILTER TESTERS *****************\n" );
-
 set_include_path(dirname(__FILE__) . '/../' . PATH_SEPARATOR . get_include_path());
 require_once dirname(__FILE__)."/../lib/pan_php_framework.php";
+
+PH::print_stdout( "\n*************************************************" );
+PH::print_stdout( "**************** FILTER TESTERS *****************\n" );
 
 PH::processCliArgs();
 
