@@ -302,7 +302,6 @@ class Container
         //
         $tmp = DH::findFirstElementOrCreate('address', $xml);
         $this->addressStore->load_addresses_from_domxml($tmp);
-        //print "VirtualSystem '".$this->name."' address objectsloaded\n" ;
         // End of address objects extraction
 
 
@@ -311,7 +310,6 @@ class Container
         //
         $tmp = DH::findFirstElementOrCreate('address-group', $xml);
         $this->addressStore->load_addressgroups_from_domxml($tmp);
-        //print "VirtualSystem '".$this->name."' address groups loaded\n" ;
         // End of address groups extraction
 
 
@@ -320,7 +318,6 @@ class Container
         //												//
         $tmp = DH::findFirstElementOrCreate('service', $xml);
         $this->serviceStore->load_services_from_domxml($tmp);
-        //print "VirtualSystem '".$this->name."' service objects\n" ;
         // End of <service> extraction
 
 
@@ -329,7 +326,6 @@ class Container
         //												//
         $tmp = DH::findFirstElementOrCreate('service-group', $xml);
         $this->serviceStore->load_servicegroups_from_domxml($tmp);
-        //print "VirtualSystem '".$this->name."' service groups loaded\n" ;
         // End of <service-group> extraction
 
         //
@@ -739,7 +735,6 @@ class Container
             }
             else
             {
-                //print "No vsys for device '$devname'\n";
                 $vsyslist['vsys1'] = 'vsys1';
             }
 

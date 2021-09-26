@@ -212,12 +212,10 @@ class WildfireProfile
 
     public function display()
     {
-        print "     * " . get_class($this) . " '" . $this->name() . "'    \n\n";
+        PH::print_stdout(  "     * " . get_class($this) . " '" . $this->name() . "'    " );
 
-        //Todo: continue for print out
+        //Todo: continue for PH::print_stdout( ); out
 
-
-        #print "\n\n";
     }
 
 

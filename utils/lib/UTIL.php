@@ -458,7 +458,10 @@ class UTIL
 
     public function display_error_usage_exit($msg)
     {
-        fwrite(STDERR, PH::boldText("\n**ERROR** ") . $msg . "\n\n");
+        if( PH::$shadow_json )
+            PH::$JSON_OUT['error'] = $msg;
+        else
+            fwrite(STDERR, PH::boldText("\n**ERROR** ") . $msg . "\n\n");
         $this->display_usage_and_exit(TRUE);
     }
 

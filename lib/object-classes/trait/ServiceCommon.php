@@ -66,7 +66,7 @@ trait ServiceCommon
             {
                 /** @var ServiceGroup $ref */
                 if( $displayOutput )
-                    print $outputPadding . "- adding in {$ref->_PANC_shortName()}\n";
+                    PH::print_stdout( $outputPadding . "- adding in {$ref->_PANC_shortName()}" );
                 $ref->addMember($objectToAdd);
             }
             elseif( $refClass == 'ServiceRuleContainer' )
@@ -77,7 +77,7 @@ trait ServiceCommon
                 if( $ruleClass == 'SecurityRule' )
                 {
                     if( $displayOutput )
-                        print $outputPadding . "- adding in {$ref->owner->_PANC_shortName()}\n";
+                        PH::print_stdout( $outputPadding . "- adding in {$ref->owner->_PANC_shortName()}" );
 
                     $ref->add($objectToAdd);
                 }
@@ -114,7 +114,7 @@ trait ServiceCommon
             {
                 /** @var ServiceGroup $ref */
                 if( $displayOutput )
-                    print $outputPadding . "- adding in {$ref->_PANC_shortName()}\n";
+                    PH::print_stdout( $outputPadding . "- adding in {$ref->_PANC_shortName()}" );
                 $ref->API_addMember($objectToAdd);
             }
             elseif( $refClass == 'ServiceRuleContainer' )
@@ -125,7 +125,7 @@ trait ServiceCommon
                 if( $ruleClass == 'SecurityRule' )
                 {
                     if( $displayOutput )
-                        print $outputPadding . "- adding in {$ref->owner->_PANC_shortName()}\n";
+                        PH::print_stdout( $outputPadding . "- adding in {$ref->owner->_PANC_shortName()}" );
 
                     $ref->API_add($objectToAdd);
                 }
@@ -165,7 +165,7 @@ trait ServiceCommon
             {
                 /** @var ServiceGroup $ref */
                 if( $displayOutput )
-                    print $outputPadding . "- removing from {$ref->_PANC_shortName()}\n";
+                    PH::print_stdout( $outputPadding . "- removing from {$ref->_PANC_shortName()}" );
                 if( $apiMode )
                     $ref->API_removeMember($this);
                 else
@@ -177,7 +177,7 @@ trait ServiceCommon
                 if( $ref->count() <= 1 && $actionIfLastInRule == 'delete' )
                 {
                     if( $displayOutput )
-                        print $outputPadding . "- last member so deleting {$ref->_PANC_shortName()}\n";
+                        PH::print_stdout( $outputPadding . "- last member so deleting {$ref->_PANC_shortName()}" );
                     $rule = $ref->owner;
                     if( $apiMode )
                     {
@@ -185,7 +185,7 @@ trait ServiceCommon
                         if( isset($rule->appConvertedRule) )
                         {
                             if( $displayOutput )
-                                print $outputPadding . "  - due to rule: '".$rule->name()."' deleting, rename 'app' one with original rulename\n";
+                                PH::print_stdout( $outputPadding . "  - due to rule: '".$rule->name()."' deleting, rename 'app' one with original rulename" );
                             $rule->appConvertedRule->API_setName($rule->name());
                         }
 
@@ -196,7 +196,7 @@ trait ServiceCommon
                         if( isset($rule->appConvertedRule) )
                         {
                             if( $displayOutput )
-                                print $outputPadding . "  - due to rule: '".$rule->name()."' deleting, rename 'app' one with original rulename\n";
+                                PH::print_stdout( $outputPadding . "  - due to rule: '".$rule->name()."' deleting, rename 'app' one with original rulename" );
                             $rule->appConvertedRule->setName($rule->name());
                         }
 
@@ -206,7 +206,7 @@ trait ServiceCommon
                 elseif( $ref->count() <= 1 && $actionIfLastInRule == 'setany' )
                 {
                     if( $displayOutput )
-                        print $outputPadding . "- last member so setting ANY {$ref->_PANC_shortName()}\n";
+                        PH::print_stdout( $outputPadding . "- last member so setting ANY {$ref->_PANC_shortName()}" );
                     if( $apiMode )
                         $ref->API_setAny();
                     else
@@ -215,7 +215,7 @@ trait ServiceCommon
                 elseif( $ref->count() <= 1 && $actionIfLastInRule == 'disable' )
                 {
                     if( $displayOutput )
-                        print $outputPadding . "- last member so disabling rule {$ref->_PANC_shortName()}\n";
+                        PH::print_stdout( $outputPadding . "- last member so disabling rule {$ref->_PANC_shortName()}" );
                     if( $apiMode )
                         $ref->owner->API_setDisabled(TRUE);
                     else
@@ -224,7 +224,7 @@ trait ServiceCommon
                 else
                 {
                     if( $displayOutput )
-                        print $outputPadding . "- removing from {$ref->_PANC_shortName()}\n";
+                        PH::print_stdout( $outputPadding . "- removing from {$ref->_PANC_shortName()}" );
                     if( $apiMode )
                         $ref->API_remove($this);
                     else
@@ -237,7 +237,7 @@ trait ServiceCommon
                 if( $actionIfLastInRule == 'delete' )
                 {
                     if( $displayOutput )
-                        print $outputPadding . "- last member so deleting {$ref->_PANC_shortName()}\n";
+                        PH::print_stdout( $outputPadding . "- last member so deleting {$ref->_PANC_shortName()}" );
                     if( $apiMode )
                         $ref->owner->API_remove($ref, TRUE);
                     else
@@ -246,7 +246,7 @@ trait ServiceCommon
                 elseif( $actionIfLastInRule == 'setany' )
                 {
                     if( $displayOutput )
-                        print $outputPadding . "- last member so setting ANY {$ref->_PANC_shortName()}\n";
+                        PH::print_stdout( $outputPadding . "- last member so setting ANY {$ref->_PANC_shortName()}" );
                     if( $apiMode )
                         $ref->API_setService(null);
                     else
@@ -255,7 +255,7 @@ trait ServiceCommon
                 elseif( $actionIfLastInRule == 'disable' )
                 {
                     if( $displayOutput )
-                        print $outputPadding . "- last member so disabling rule {$ref->_PANC_shortName()}\n";
+                        PH::print_stdout( $outputPadding . "- last member so disabling rule {$ref->_PANC_shortName()}" );
                     if( $apiMode )
                         $ref->API_setDisabled(TRUE);
                     else
@@ -331,7 +331,7 @@ trait ServiceCommon
         foreach( $this->refrules as $objectRef )
         {
             if( $displayOutput )
-                print $outputPadding . "- replacing in {$objectRef->toString()}\n";
+                PH::print_stdout( $outputPadding . "- replacing in {$objectRef->toString()}" );
             if( $apiMode )
                 $objectRef->API_replaceReferencedObject($this, $withObject);
             else

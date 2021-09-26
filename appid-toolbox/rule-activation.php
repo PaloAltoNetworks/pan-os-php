@@ -19,9 +19,9 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-print "\n************* START OF SCRIPT ".basename(__FILE__)." ************\n\n";
-
 require_once dirname(__FILE__) . "/lib/common.php";
+
+PH::print_stdout( "************* START OF SCRIPT ".basename(__FILE__)." ************" );
 PH::print_stdout( " - PAN-OS-PHP version: ".PH::frameworkVersion() );
 
 $debugAPI = false;
@@ -34,16 +34,15 @@ PH::processCliArgs();
 function display_usage_and_exit()
 {
     global $argv;
-    print PH::boldText("USAGE: ")."php ".basename(__FILE__)." in=api://xxxx location=deviceGroup2 [confirm] [tagIssues]".
-        "\n\n";
+    PH::print_stdout( PH::boldText("USAGE: ")."php ".basename(__FILE__)." in=api://xxxx location=deviceGroup2 [confirm] [tagIssues]");
 
 
-    print "Listing optional arguments:\n\n";
+    PH::print_stdout( "Listing optional arguments:" );
 
-    print " - confirm : no change will be made to the config unless you use this argument\n";
-    print " - tagIssues : adds a tag to rules which cannot be activated\n";
+    PH::print_stdout( " - confirm : no change will be made to the config unless you use this argument" );
+    PH::print_stdout( " - tagIssues : adds a tag to rules which cannot be activated" );
 
-    print "\n\n";
+    PH::print_stdout( "" );
 
 
     exit(1);
@@ -51,7 +50,10 @@ function display_usage_and_exit()
 
 function display_error_usage_exit($msg)
 {
-    fwrite(STDERR, PH::boldText("\n**ERROR** ").$msg."\n\n");
+    if( PH::$shadow_json )
+        PH::$JSON_OUT['error'] = $msg;
+    else
+        fwrite(STDERR, PH::boldText("**ERROR** ").$msg."");
     display_usage_and_exit();
 }
 
@@ -119,7 +121,7 @@ elseif ( $configInput['type'] == 'api'  )
     $inputConnector = $configInput['connector'];
     if($debugAPI)
         $inputConnector->setShowApiCalls(true);
-    print " - Downloading config from API... ";
+    PH::print_stdout( " - Downloading config from API... ");
     $xmlDoc = $inputConnector->getCandidateConfig();
 
 }
@@ -148,7 +150,7 @@ if( $configType == 'panos' )
 else
     $pan = new PanoramaConf();
 
-print " - Detected platform type is '{$configType}'\n";
+PH::print_stdout( " - Detected platform type is '{$configType}'" );
 
 if( $configInput['type'] == 'api' )
     $pan->connector = $inputConnector;
@@ -156,7 +158,7 @@ if( $configInput['type'] == 'api' )
 //
 // load the config
 //
-print " - Loading configuration through PAN-PHP-framework library... ";
+PH::print_stdout( " - Loading configuration through PAN-PHP-framework library... ");
 $loadStartMem = memory_get_usage(true);
 $loadStartTime = microtime(true);
 $pan->load_from_domxml($xmlDoc);
@@ -164,7 +166,7 @@ $loadEndTime = microtime(true);
 $loadEndMem = memory_get_usage(true);
 $loadElapsedTime = number_format( ($loadEndTime - $loadStartTime), 2, '.', '');
 $loadUsedMem = convert($loadEndMem - $loadStartMem);
-print "($loadElapsedTime seconds, $loadUsedMem memory)\n";
+PH::print_stdout( "($loadElapsedTime seconds, $loadUsedMem memory)" );
 // --------------------
 
 $subSystem  = $pan->findSubSystemByName($location);
@@ -172,8 +174,8 @@ $subSystem  = $pan->findSubSystemByName($location);
 if( $subSystem === null )
     derr("cannot find vsys/dg named '$location', available locations list is : ");
 
-print " - Found DG/Vsys '$location'\n";
-print " - Looking/creating for necessary Tags to mark rules\n";
+PH::print_stdout( " - Found DG/Vsys '$location'" );
+PH::print_stdout( " - Looking/creating for necessary Tags to mark rules" );
 TH::createTags($pan, $configInput['type']);
 
 
@@ -184,10 +186,10 @@ TH::createTags($pan, $configInput['type']);
 $ridTagLibrary = new RuleIDTagLibrary();
 $ridTagLibrary->readFromRuleArray($subSystem->securityRules->rules());
 
-print " - Total number of RID tags found: {$ridTagLibrary->tagCount()}\n";
+PH::print_stdout( " - Total number of RID tags found: {$ridTagLibrary->tagCount()}" );
 
 
-print "\n*** PROCESSING !!!\n\n";
+PH::print_stdout( "*** PROCESSING !!!" );
 
 $countAlreadyActivated = 0;
 $countActivated = 0;
@@ -211,17 +213,17 @@ foreach( $ridTagLibrary->_tagsToObjects as $tagName => &$taggedRules )
 {
     /** @var SecurityRule $rule */
 
-    print "\n\n* tag {$tagName} with ".count($taggedRules)." rules\n";
+    PH::print_stdout( "* tag {$tagName} with ".count($taggedRules)." rules" );
 
     foreach( $taggedRules as $rule )
     {
-        print " - rule '{$rule->name()}'\n";
+        PH::print_stdout( " - rule '{$rule->name()}'" );
     }
-    print "\n";
+    PH::print_stdout( "" );
 
     if( count($taggedRules) > 2 )
     {
-        print " - SKIPPED#1 : more than 2 rules are tagged with this appRID, please fix\n";
+        PH::print_stdout( " - SKIPPED#1 : more than 2 rules are tagged with this appRID, please fix" );
         $countSkipped1_TooManyRules++;
         continue;
     }
@@ -231,22 +233,22 @@ foreach( $ridTagLibrary->_tagsToObjects as $tagName => &$taggedRules )
         $rule = reset($taggedRules);
         if( $rule->tags->hasTag(TH::$tag_misc_ignore) )
         {
-            print " - SKIPPED#10 : appid#ignore flag\n";
+            PH::print_stdout( " - SKIPPED#10 : appid#ignore flag" );
             $countSkipped10_ignore++;
         }
         elseif( $rule->apps->isAny() && $rule->tags->hasTagRegex('/^'.TH::$tag_misc_unused.'/') )
         {
-            print " - SKIPPED#13 : original rule is unused\n";
+            PH::print_stdout( " - SKIPPED#13 : original rule is unused" );
             $countSkipped13_ruleUnused++;
         }
         elseif( $rule->apps->isAny() && $rule->tags->hasTagRegex('/^'.TH::$tagNtbrBase.'/') )
         {
-            print " - SKIPPED#6 : original rule has NTBR tags\n";
+            PH::print_stdout( " - SKIPPED#6 : original rule has NTBR tags" );
             $countSkipped6_OriginalRuleHasNTBR++;
         }
         else
         {
-            print " - SKIPPED#2 : only 1 rule is part of this appRID, needs cleaning?\n";
+            PH::print_stdout( " - SKIPPED#2 : only 1 rule is part of this appRID, needs cleaning?" );
             $countSkipped2_OnlyOneRule++;
         }
         continue;
@@ -274,56 +276,56 @@ foreach( $ridTagLibrary->_tagsToObjects as $tagName => &$taggedRules )
 
     if( $legacyRule === null )
     {
-        print " - SKIPPED#3 : original rule not found, please fix\n";
+        PH::print_stdout( " - SKIPPED#3 : original rule not found, please fix" );
         $countSkipped3_OriginalRuleNotFound++;
         continue;
     }
 
     if( $legacyRule->tags->hasTag(TH::$tag_misc_ignore) )
     {
-        print " - SKIPPED#10 : appid#ignore flag\n";
+        PH::print_stdout( " - SKIPPED#10 : appid#ignore flag" );
         $countSkipped10_ignore++;
         continue;
     }
 
     if( $appidRule === null )
     {
-        print " - SKIPPED#4 : cloned rule not found, please fix\n";
+        PH::print_stdout( " - SKIPPED#4 : cloned rule not found, please fix" );
         $countSkipped4_ClonedRuleNotFound++;
         continue;
     }
 
     if( $appidRule->tags->hasTag(TH::$tag_misc_ignore) )
     {
-        print " - SKIPPED#10 : appid#ignore flag\n";
+        PH::print_stdout( " - SKIPPED#10 : appid#ignore flag" );
         $countSkipped10_ignore++;
         continue;
     }
 
     if( $appidRule->isEnabled() )
     {
-        print " - SKIPPED : already activated\n";
+        PH::print_stdout( " - SKIPPED : already activated" );
         $countAlreadyActivated++;
         continue;
     }
 
     if( $legacyRule->isDisabled() )
     {
-        print " - SKIPPED#7 : original rule is disabled\n";
+        PH::print_stdout( " - SKIPPED#7 : original rule is disabled" );
         $countSkipped7_OriginalRuleDisabled++;
         continue;
     }
 
     if( $appidRule->tags->hasTagRegex('/^appid#NTBR/') )
     {
-        print " - SKIPPED#5 cloned rule has NTBR tags\n";
+        PH::print_stdout( " - SKIPPED#5 cloned rule has NTBR tags" );
         $countSkipped5_ClonedRuleHasNTBR++;
         continue;
     }
 
     if( $legacyRule->tags->hasTagRegex('/^appid#NTBR/') )
     {
-        print " - SKIPPED#6 cloned rule has NTBR tags\n";
+        PH::print_stdout( " - SKIPPED#6 cloned rule has NTBR tags" );
         $countSkipped6_OriginalRuleHasNTBR++;
         continue;
     }
@@ -339,7 +341,7 @@ foreach( $ridTagLibrary->_tagsToObjects as $tagName => &$taggedRules )
         //|| ! $originalRule->services->equals($clonedRule->services)
       )
     {
-        print " - SKIPPED#8 original and cloned rules aren't the same\n";
+        PH::print_stdout( " - SKIPPED#8 original and cloned rules aren't the same" );
         if( !$legacyRule->source->equals($appidRule->source) )
         {
             $legacyRule->source->displayMembersDiff($appidRule->source, 4);
@@ -354,7 +356,7 @@ foreach( $ridTagLibrary->_tagsToObjects as $tagName => &$taggedRules )
 
     if( $subSystem->securityRules->getRulePosition($legacyRule) < $subSystem->securityRules->getRulePosition($appidRule) )
     {
-        print " - SKIPPED#9 legacy rule is placed before AppID one\n";
+        PH::print_stdout( " - SKIPPED#9 legacy rule is placed before AppID one" );
         $countSkipped9_MisOrderedRules++;
         continue;
     }
@@ -369,7 +371,7 @@ foreach( $ridTagLibrary->_tagsToObjects as $tagName => &$taggedRules )
     $legacyRuleNewName = $subSystem->securityRules->findAvailableName($legacyRuleNewName);
     $legacyRuleOldName = $legacyRule->name();
 
-    print " - legacy rule will be renamed to '{$legacyRuleNewName}'\n";
+    PH::print_stdout( " - legacy rule will be renamed to '{$legacyRuleNewName}'" );
 
     if( $todayActivationTag === null )
     {
@@ -377,7 +379,7 @@ foreach( $ridTagLibrary->_tagsToObjects as $tagName => &$taggedRules )
         $todayActivationTag = $subSystem->tagStore->find($todayActivationTagName);
         if( $todayActivationTag === null )
         {
-            print " - created today activation tag: '{$todayActivationTagName}'\n";
+            PH::print_stdout( " - created today activation tag: '{$todayActivationTagName}'" );
             if( $dryRun || $configInput['type'] == 'file')
                 $todayActivationTag = $subSystem->tagStore->createTag($todayActivationTagName);
             elseif( $configInput['type'] == 'api' )
@@ -391,61 +393,61 @@ foreach( $ridTagLibrary->_tagsToObjects as $tagName => &$taggedRules )
 
     if( $dryRun )
     {
-        print " - no action taken because 'confirm' argument was not used\n";
+        PH::print_stdout( " - no action taken because 'confirm' argument was not used" );
         continue;
     }
 
     if( $configInput['type'] == 'api' )
     {
-        print " - renaming legacy rule... ";
+        PH::print_stdout( " - renaming legacy rule... ");
         $legacyRule->API_setName($legacyRuleNewName);
-        print "OK\n";
+        PH::print_stdout( "OK" );
 
-        print " - applying log at start on legacy rule... ";
+        PH::print_stdout( " - applying log at start on legacy rule... ");
         $legacyRule->API_setLogStart(true);
-        print "OK\n";
+        PH::print_stdout( "OK" );
 
-        print " - tagging legacy rule with activation day... ";
+        PH::print_stdout( " - tagging legacy rule with activation day... ");
         $legacyRule->tags->API_addTag($todayActivationTag);
-        print "OK\n";
+        PH::print_stdout( "OK" );
 
-        print " - renaming appID rule with legacy rule name... ";
+        PH::print_stdout( " - renaming appID rule with legacy rule name... ");
         $appidRule->API_setName($legacyRuleOldName);
-        print "OK\n";
+        PH::print_stdout( "OK" );
 
-        print " - tagging appID rule with activation day... ";
+        PH::print_stdout( " - tagging appID rule with activation day... ");
         $appidRule->tags->API_addTag($todayActivationTag);
-        print "OK\n";
+        PH::print_stdout( "OK" );
 
         $appidRule->API_setEnabled(true);
-        print " - enabling appID rule... ";
-        print "OK\n";
+        PH::print_stdout( " - enabling appID rule... ");
+        PH::print_stdout( "OK" );
     }
     else
     {
-        print " - renaming legacy rule... ";
+        PH::print_stdout( " - renaming legacy rule... ");
         $legacyRule->setName($legacyRuleNewName);
-        print "OK\n";
+        PH::print_stdout( "OK" );
 
-        print " - applying log at start on legacy rule... ";
+        PH::print_stdout( " - applying log at start on legacy rule... ");
         $legacyRule->setLogStart(true);
-        print "OK\n";
+        PH::print_stdout( "OK" );
 
-        print " - tagging legacy rule with activation day... ";
+        PH::print_stdout( " - tagging legacy rule with activation day... ");
         $legacyRule->tags->addTag($todayActivationTag);
-        print "OK\n";
+        PH::print_stdout( "OK" );
 
-        print " - renaming appID rule with legacy rule name... ";
+        PH::print_stdout( " - renaming appID rule with legacy rule name... ");
         $appidRule->setName($legacyRuleOldName);
-        print "OK\n";
+        PH::print_stdout( "OK" );
 
-        print " - tagging appID rule with activation day... ";
+        PH::print_stdout( " - tagging appID rule with activation day... ");
         $appidRule->tags->addTag($todayActivationTag);
-        print "OK\n";
+        PH::print_stdout( "OK" );
 
         $appidRule->setEnabled(true);
-        print " - enabling appID rule... ";
-        print "OK\n";
+        PH::print_stdout( " - enabling appID rule... ");
+        PH::print_stdout( "OK" );
     }
 
 
@@ -453,34 +455,34 @@ foreach( $ridTagLibrary->_tagsToObjects as $tagName => &$taggedRules )
 
 }
 
-print "\n**** SUMMARY ****\n\n";
+PH::print_stdout( "**** SUMMARY ****" );
 
-print "Number of tags: ".count($ridTagLibrary->_tagsToObjects)."\n";
+PH::print_stdout( "Number of tags: ".count($ridTagLibrary->_tagsToObjects) );
 if( $dryRun )
 {
-    print "Activated: $countActivated (( if 'confirm' option had been used ))\n";
+    PH::print_stdout( "Activated: $countActivated (( if 'confirm' option had been used ))" );
 }
 else
 {
-    print "Activated: $countActivated\n";
+    PH::print_stdout( "Activated: $countActivated" );
 }
-print "Already Activated: $countAlreadyActivated\n\n";
-print str_pad("SKIPPED#1 Too many rules :", 40).str_pad($countSkipped1_TooManyRules,8,' ',STR_PAD_LEFT)."\n";
-print str_pad("SKIPPED#2 Only 1 rule :",40).str_pad($countSkipped2_OnlyOneRule,8,' ',STR_PAD_LEFT)."\n";
-print str_pad("SKIPPED#3 Original rule not found:",40).str_pad($countSkipped3_OriginalRuleNotFound,8,' ',STR_PAD_LEFT)."\n";
-print str_pad("SKIPPED#4 Cloned rule not found:",40).str_pad($countSkipped4_ClonedRuleNotFound,8,' ',STR_PAD_LEFT)."\n";
-print str_pad("SKIPPED#5 Cloned rule has NTBR tags:",40).str_pad($countSkipped5_ClonedRuleHasNTBR,8,' ',STR_PAD_LEFT)."\n";
-print str_pad("SKIPPED#6 Original rule has NTBR tags:",40).str_pad($countSkipped6_OriginalRuleHasNTBR,8,' ',STR_PAD_LEFT)."\n";
-print str_pad("SKIPPED#7 Original rule is disabled:",40).str_pad($countSkipped7_OriginalRuleDisabled,8,' ',STR_PAD_LEFT)."\n";
-print str_pad("SKIPPED#8 rules mismatch:",40).str_pad($countSkipped8_RulesMismatch,8,' ',STR_PAD_LEFT)."\n";
-print str_pad("SKIPPED#9 legacy rule placed before AppID:",40).str_pad($countSkipped9_MisOrderedRules,8,' ',STR_PAD_LEFT)."\n";
-print str_pad("SKIPPED#10 appid#ignore flag:",40).str_pad($countSkipped10_ignore,8,' ',STR_PAD_LEFT)."\n";
-print str_pad("SKIPPED#13 legacy rule unused:",40).str_pad($countSkipped13_ruleUnused,8,' ',STR_PAD_LEFT)."\n";
+PH::print_stdout( "Already Activated: $countAlreadyActivated" );
+PH::print_stdout( str_pad("SKIPPED#1 Too many rules :", 40).str_pad($countSkipped1_TooManyRules,8,' ',STR_PAD_LEFT) );
+PH::print_stdout( str_pad("SKIPPED#2 Only 1 rule :",40).str_pad($countSkipped2_OnlyOneRule,8,' ',STR_PAD_LEFT) );
+PH::print_stdout( str_pad("SKIPPED#3 Original rule not found:",40).str_pad($countSkipped3_OriginalRuleNotFound,8,' ',STR_PAD_LEFT) );
+PH::print_stdout( str_pad("SKIPPED#4 Cloned rule not found:",40).str_pad($countSkipped4_ClonedRuleNotFound,8,' ',STR_PAD_LEFT) );
+PH::print_stdout( str_pad("SKIPPED#5 Cloned rule has NTBR tags:",40).str_pad($countSkipped5_ClonedRuleHasNTBR,8,' ',STR_PAD_LEFT) );
+PH::print_stdout( str_pad("SKIPPED#6 Original rule has NTBR tags:",40).str_pad($countSkipped6_OriginalRuleHasNTBR,8,' ',STR_PAD_LEFT) );
+PH::print_stdout( str_pad("SKIPPED#7 Original rule is disabled:",40).str_pad($countSkipped7_OriginalRuleDisabled,8,' ',STR_PAD_LEFT) );
+PH::print_stdout( str_pad("SKIPPED#8 rules mismatch:",40).str_pad($countSkipped8_RulesMismatch,8,' ',STR_PAD_LEFT) );
+PH::print_stdout( str_pad("SKIPPED#9 legacy rule placed before AppID:",40).str_pad($countSkipped9_MisOrderedRules,8,' ',STR_PAD_LEFT) );
+PH::print_stdout( str_pad("SKIPPED#10 appid#ignore flag:",40).str_pad($countSkipped10_ignore,8,' ',STR_PAD_LEFT) );
+PH::print_stdout( str_pad("SKIPPED#13 legacy rule unused:",40).str_pad($countSkipped13_ruleUnused,8,' ',STR_PAD_LEFT) );
 
 
 if( $dryRun )
 {
-    print "\n\n**** WARNING : no changes were made because you didn't use 'confirm' argument in the command line ****\n\n";
+    PH::print_stdout( "**** WARNING : no changes were made because you didn't use 'confirm' argument in the command line ****" );
 }
 elseif( $configInput['type'] == 'file' )
 {
@@ -489,12 +491,12 @@ elseif( $configInput['type'] == 'file' )
     {
         if( $configOutput != '/dev/null' )
         {
-            print "\n\n";
+            PH::print_stdout( "" );
             $pan->save_to_file($configOutput);
         }
     }
 }
-print "\n\n";
+PH::print_stdout( "" );
 
-print "\n************* END OF SCRIPT ".basename(__FILE__)." ************\n\n";
+PH::print_stdout( "************* END OF SCRIPT ".basename(__FILE__)." ************" );
 

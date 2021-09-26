@@ -1,9 +1,11 @@
 <?php
 
-print "\n*********** START OF SCRIPT ".basename(__FILE__)." ************\n\n";
+
 
 // load PAN-PHP-FRAMEWORK library
 require_once("lib/pan_php_framework.php");
+
+PH::print_stdout( "*********** START OF SCRIPT ".basename(__FILE__)." ************" );
 
 PH::processCliArgs();
 
@@ -48,7 +50,7 @@ elseif ( $configInput['type'] == 'api'  )
     $apiMode = true;
     if($debugAPI)
         $configInput['connector']->setShowApiCalls(true);
-    print " - Downloading config from API... ";
+    PH::print_stdout( " - Downloading config from API... " );
     $xmlDoc = $configInput['connector']->getCandidateConfig();
 
 }
@@ -72,7 +74,7 @@ if( $configType == 'panos' )
 else
     $pan = new PanoramaConf();
 
-print " - Detected platform type is '{$configType}'\n";
+PH::print_stdout( " - Detected platform type is '{$configType}'" );
 if( $configInput['type'] == 'api' )
     $pan->connector = $configInput['connector'];
 
@@ -82,17 +84,17 @@ if( isset(PH::$args['location']) )
     $sub = $pan->findSubSystemByName($location);
     if( $sub === null )
     {
-        print " - specific location '{$location}' was not found. EXIT!!\n\n";
+        PH::print_stdout( " - specific location '{$location}' was not found. EXIT!!" );
         exit(1);
     }
 }
 else
 {
     $location = 'undefined';
-    print " - no 'location' provided so \$sub is not set\n";
+    PH::print_stdout( " - no 'location' provided so \$sub is not set" );
 }
 
-print "\n\n    **********     **********\n\n";
+PH::print_stdout( "    **********     **********" );
 
 /*********************************
  * *
@@ -109,5 +111,5 @@ print "\n\n    **********     **********\n\n";
 
 
 
-print "\n************* END OF SCRIPT ".basename(__FILE__)." ************\n\n";
+PH::print_stdout( "************* END OF SCRIPT ".basename(__FILE__)." ************" );
 

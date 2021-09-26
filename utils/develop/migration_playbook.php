@@ -102,29 +102,21 @@ $in = "";
 
 foreach( $command_array as $key => $command )
 {
-    $argv = array();
-    PH::$args = array();
-    PH::$argv = array();
-    PH::$argv[0] = $argv[0];
-    PH::$argv[0] = "";
+    $arguments = array();
+    $arguments[0] = "migration_playbook";
 
     $script = $command[0];
     unset( $command[0] );
     $arg_string = "";
 
 
-
-    foreach( $command as $argument )
-    {
-        PH::$argv[] = $argument;
-        $argv[] = $argument;
-    }
-
+    foreach( $command as $arg )
+        $arguments[] = $arg;
 
 
 
     ###############################################################################
-    //IN / OUT specificaiton
+    //IN / OUT specification
     ###############################################################################
     if( $key == 0 && $script == $pa_migration_parser )
         $out_counter = 0;
@@ -138,21 +130,13 @@ foreach( $command_array as $key => $command )
 
 
     if( $script != $pa_migration_parser )
-    {
-        PH::$argv[] = "in=".$in;
-        $argv[] = "in=".$in;
-    }
-
+        $arguments[] = "in=".$in;
 
     if( $script != $pa_rule_stats )
-    {
-        $out = $stage_name.$out_counter.".xml";
-        PH::$argv[] = "out=".$out;
-        $argv[] = "out=".$out;
-    }
+        $arguments[] = "out=".$stage_name.$out_counter.".xml";
 
 
-
+    PH::resetCliArgs( $arguments);
 
 
     if( $script == $pa_rule_edit )

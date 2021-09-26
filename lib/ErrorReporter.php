@@ -75,7 +75,7 @@ class ErrorReporter
             $count++;
         }
 
-        print "\n";
+        PH::print_stdout(  "" );
 
         exit(1);
     }

@@ -470,9 +470,9 @@ class ServiceGroup
         $indent = str_pad(' ', $indent);
 
         if( !$toString )
-            print $indent . "Diff between " . $this->_PANC_shortName() . " vs " . $otherObject->_PANC_shortName() . "\n";
+            PH::print_stdout(  $indent . "Diff between " . $this->_PANC_shortName() . " vs " . $otherObject->_PANC_shortName() );
         else
-            $retString .= $indent . "Diff for between " . $this->_PANC_shortName() . " vs " . $otherObject->_PANC_shortName() . "\n";
+            $retString .= $indent . "Diff for between " . $this->_PANC_shortName() . " vs " . $otherObject->_PANC_shortName() ."\n" ;
 
         $lO = array();
         $oO = array();
@@ -496,7 +496,7 @@ class ServiceGroup
             foreach( $diff as $d )
             {
                 if( !$toString )
-                    print $indent . " - $d\n";
+                    PH::print_stdout(  $indent . " - $d" );
                 else
                     $retString .= $indent . " - $d\n";
             }
@@ -507,7 +507,7 @@ class ServiceGroup
             foreach( $diff as $d )
             {
                 if( !$toString )
-                    print $indent . " + $d\n";
+                    PH::print_stdout(  $indent . " + $d");
                 else
                     $retString .= $indent . " + $d\n";
             }
@@ -665,24 +665,24 @@ class ServiceGroup
 
         if( $this->isService() )
         {
-            print $padding . " *** SKIPPED : this is not a group\n";
+            PH::print_stdout(  $padding . " *** SKIPPED : this is not a group" );
             return;
         }
         if( !$this->isGroup() )
         {
-            print $padding . " *** SKIPPED : unsupported object type\n";
+            PH::print_stdout(  $padding . " *** SKIPPED : unsupported object type" );
             return;
         }
         if( $this->count() < 1 )
         {
-            print $padding . " *** SKIPPED : group has no member\n";
+            PH::print_stdout( $padding . " *** SKIPPED : group has no member" );
             return;
         }
 
         $mapping = $this->dstPortMapping();
         if( $mapping->hasTcpMappings() && $mapping->hasUdpMappings() )
         {
-            print $padding . " *** SKIPPED : group has a mix of UDP and TCP based mappings, they cannot be merged in a single object\n";
+            PH::print_stdout( $padding . " *** SKIPPED : group has a mix of UDP and TCP based mappings, they cannot be merged in a single object" );
             return;
         }
 
@@ -690,7 +690,7 @@ class ServiceGroup
         {
             if( $member->isTmpSrv() )
             {
-                print $padding . " *** SKIPPED : temporary services detected\n";
+                PH::print_stdout( $padding . " *** SKIPPED : temporary services detected" );
                 return;
             }
         }
@@ -708,9 +708,9 @@ class ServiceGroup
         $this->replaceMeGlobally($newService);
 
         if( $mapping->hasUdpMappings() )
-            print $padding . " * replaced by service with same name and value: udp/{$newService->dstPortMapping()->udpMappingToText()}\n";
+            PH::print_stdout( $padding . " * replaced by service with same name and value: udp/{$newService->dstPortMapping()->udpMappingToText()}" );
         else
-            print $padding . " * replaced by service with same name and value: tcp/{$newService->dstPortMapping()->tcpMappingToText()}\n";
+            PH::print_stdout( $padding . " * replaced by service with same name and value: tcp/{$newService->dstPortMapping()->tcpMappingToText()}" );
 
         return TRUE;
     }
@@ -720,7 +720,7 @@ class ServiceGroup
     {
         if( !$this->isGroup() )
         {
-            print $padding . "     *  skipped it's not a group\n";
+            PH::print_stdout( $padding . "     *  skipped it's not a group" );
             return;
         }
 
@@ -734,7 +734,7 @@ class ServiceGroup
             if( $class != 'ServiceRuleContainer' && $class != 'ServiceGroup' )
             {
                 $clearForAction = FALSE;
-                print "     *  skipped because its used in unsupported class $class\n";
+                PH::print_stdout( "     *  skipped because its used in unsupported class $class" );
                 return;
             }
         }
@@ -747,10 +747,10 @@ class ServiceGroup
                 {
                     /** @var ServiceRuleContainer $thisRef */
 
-                    print $padding . "    - in Reference: {$thisRef->toString()}\n";
+                    PH::print_stdout( $padding . "    - in Reference: {$thisRef->toString()}" );
                     foreach( $this->members() as $thisMember )
                     {
-                        print $padding . "      - adding {$thisMember->name()}\n";
+                        PH::print_stdout( $padding . "      - adding {$thisMember->name()}" );
                         if( $isAPI )
                             $thisRef->API_add($thisMember, $rewriteXml);
                         else
@@ -765,10 +765,10 @@ class ServiceGroup
                 {
                     /** @var ServiceGroup $thisRef */
 
-                    print $padding . "    - in Reference: {$thisRef->toString()}\n";
+                    PH::print_stdout( $padding . "    - in Reference: {$thisRef->toString()}" );
                     foreach( $this->members() as $thisMember )
                     {
-                        print $padding . "      - adding {$thisMember->name()}\n";
+                        PH::print_stdout( $padding . "      - adding {$thisMember->name()}" );
                         if( $isAPI )
                             $thisRef->API_addMember($thisMember);
                         else

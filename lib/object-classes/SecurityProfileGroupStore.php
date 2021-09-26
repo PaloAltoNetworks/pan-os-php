@@ -400,7 +400,7 @@ class SecurityProfileGroupStore extends ObjStore
         DH::clearDomNodeChilds($this->xmlroot);
         foreach( $this->o as $o )
         {
-            #print "OBJ: ".$o->name()."\n";
+            #PH::print_stdout(  "OBJ: ".$o->name() );
             $this->xmlroot->appendChild($o->xmlroot);
         }
     }
@@ -422,7 +422,7 @@ class SecurityProfileGroupStore extends ObjStore
                 $ref->SecurityProfileGroupStore !== null )
             {
                 $this->parentCentralStore = $ref->SecurityProfileGroupStore;
-                //print $this->toString()." : found a parent central store: ".$parentCentralStore->toString()."\n";
+                //PH::print_stdout(  $this->toString()." : found a parent central store: ".$parentCentralStore->toString() );
                 return;
             }
             $cur = $ref;

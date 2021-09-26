@@ -611,8 +611,6 @@ class cidr
         $ip = inet_ntop(pack('N4', $parts[1], $parts[2], $parts[3], $parts[4]));
 
 
-        print "1".$ip."\n";
-
         // fix IPv4 by removing :: from the beginning
         if (strpos($ip, '.') !== false)
             return substr($ip, 2);

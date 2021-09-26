@@ -787,7 +787,7 @@ class PanoramaConf
             $ldv = new Template('*tmp*', $this);
             $ldv->load_from_domxml($node);
             $this->templates[] = $ldv;
-            #print "Template '{$ldv->name()}' found\n";
+            #PH::print_stdout(  "Template '{$ldv->name()}' found" );
         }
         //
         // end of Templates
@@ -803,7 +803,7 @@ class PanoramaConf
             $ldv = new TemplateStack('*tmp*', $this);
             $ldv->load_from_domxml($node);
             $this->templatestacks[] = $ldv;
-            //print "TemplateStack '{$ldv->name()}' found\n";
+            //PH::print_stdout(  "TemplateStack '{$ldv->name()}' found" );
 
             //Todo: add templates to templatestack
         }
@@ -820,7 +820,7 @@ class PanoramaConf
             {
                 if( $node->nodeType != XML_ELEMENT_NODE ) continue;
                 //$lvname = $node->nodeName;
-                //print "Device Group '$lvname' found\n";
+                //PH::print_stdout(  "Device Group '$lvname' found" );
 
                 $ldv = new DeviceGroup($this);
                 $ldv->load_from_domxml($node);
@@ -880,7 +880,7 @@ class PanoramaConf
 
                 if( count($dgLoadOrder) <= $dgLoadOrderCount )
                 {
-                    print "Problems could be available with the following DeviceGroup(s)\n";
+                    PH::print_stdout(  "Problems could be available with the following DeviceGroup(s)" );
                     print_r($dgLoadOrder);
                     derr('dg-meta-data seems to be corrupted, parent.child template cannot be calculated ', $dgMetaDataNode);
                 }
@@ -888,9 +888,9 @@ class PanoramaConf
 
             }
 
-            /*print "DG loading order:\n";
+            /*PH::print_stdout(  "DG loading order:" );
             foreach( $dgLoadOrder as &$dgName )
-                print " - {$dgName}\n";*/
+                PH::print_stdout(  " - {$dgName}");*/
 
 
             $deviceGroupNodes = array();
@@ -972,7 +972,7 @@ class PanoramaConf
             $ldv = new LogCollectorGroup( $this);
             $ldv->load_from_domxml($node);
             $this->logCollectorGroups[] = $ldv;
-            //print "TemplateStack '{$ldv->name()}' found\n";
+            //PH::print_stdout(  "TemplateStack '{$ldv->name()}' found" );
 
             //Todo: add templates to templatestack
         }
@@ -1306,7 +1306,7 @@ class PanoramaConf
      */
     public function API_uploadConfig($config_filename = 'panconfigurator-default.xml')
     {
-        print "Uploadig config to device....";
+        PH::print_stdout(  "Uploadig config to device...." );
 
         $url = "&type=import&category=configuration&category=configuration";
         $this->connector->sendRequest($url, FALSE, DH::dom_to_xml($this->xmlroot), $config_filename);
@@ -1359,7 +1359,7 @@ class PanoramaConf
                     //if( $fc === FALSE )
                     //	derr("could not open file '$file'");
 
-                    print "Loading FW '$serial' from file '$file'.\n";
+                    PH::print_stdout(  "Loading FW '$serial' from file '$file'.");
 
                     $fw = new PANConf($this, $serial);
                     $fw->panorama = $this;
@@ -1391,7 +1391,7 @@ class PanoramaConf
         if( $vsysName === null || strlen($vsysName) < 1 )
             derr('invalid vsys provided!');
 
-        //print "looking for serial $deviceSerial  and vsys $vsysName\n";
+        //PH::print_stdout(  "looking for serial $deviceSerial  and vsys $vsysName" );
 
         foreach( $this->deviceGroups as $dv )
         {
@@ -1400,10 +1400,10 @@ class PanoramaConf
             {
                 if( $d['serial'] == $deviceSerial )
                 {
-                    //print "serial found\n";
+                    //PH::print_stdout(  "serial found" );
                     if( array_search($vsysName, $d['vsyslist']) !== FALSE )
                     {
-                        //print "match!\n";
+                        //PH::print_stdout(  "match!" );
                         return $dv;
                     }
                 }
@@ -1515,7 +1515,7 @@ class PanoramaConf
         $apiArgs['action'] = 'delete';
         $apiArgs['xpath'] = &$xpath;
 
-        print "     "."*** delete each member from ".$entry." \n";
+        PH::print_stdout(  "     "."*** delete each member from ".$entry." " );
 
         if( $configInput['type'] == 'api' )
             $response = $pan->connector->sendRequest($apiArgs);

@@ -2312,13 +2312,13 @@ RQuery::$defaultFilters['rule']['location']['operators']['is.child.of'] = array(
         $DG = $sub->findDeviceGroup($context->value);
         if( $DG == null )
         {
-            print "ERROR: location '$context->value' was not found. Here is a list of available ones:\n";
-            print " - shared\n";
+            PH::print_stdout( "ERROR: location '$context->value' was not found. Here is a list of available ones:" );
+            PH::print_stdout( " - shared" );
             foreach( $sub->getDeviceGroups() as $sub1 )
             {
-                print " - " . $sub1->name() . "\n";
+                PH::print_stdout( " - " . $sub1->name()  );
             }
-            print "\n\n";
+            PH::print_stdout( "" );
             exit(1);
         }
 
@@ -2352,7 +2352,7 @@ RQuery::$defaultFilters['rule']['location']['operators']['is.parent.of'] = array
 
         if( get_class($sub) == "PANConf" )
         {
-            print "ERROR: filter location is.child.of is not working against a firewall configuration";
+            PH::print_stdout( "ERROR: filter location is.child.of is not working against a firewall configuration" );
             return FALSE;
         }
 
@@ -2362,13 +2362,13 @@ RQuery::$defaultFilters['rule']['location']['operators']['is.parent.of'] = array
         $DG = $sub->findDeviceGroup($context->value);
         if( $DG == null )
         {
-            print "ERROR: location '$context->value' was not found. Here is a list of available ones:\n";
-            print " - shared\n";
+            PH::print_stdout( "ERROR: location '$context->value' was not found. Here is a list of available ones:" );
+            PH::print_stdout( " - shared" );
             foreach( $sub->getDeviceGroups() as $sub1 )
             {
-                print " - " . $sub1->name() . "\n";
+                PH::print_stdout( " - " . $sub1->name() . "" );
             }
-            print "\n\n";
+            PH::print_stdout( "\n" );
             exit(1);
         }
 
@@ -2408,7 +2408,7 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.unused.fast'] = array(
         $sub = $object->owner->owner;
         if( !$sub->isVirtualSystem() && !$sub->isDeviceGroup() )
         {
-            print PH::boldText("   **WARNING**:") . "this filter is only supported on non Shared rules " . $object->toString() . "\n";
+            PH::print_stdout( PH::boldText("   **WARNING**:") . "this filter is only supported on non Shared rules " . $object->toString() . "" );
             return null;
         }
 
@@ -2438,7 +2438,7 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.unused.fast'] = array(
 
             if( $sub->isVirtualSystem() )
             {
-                print "Firewall: " . $connector->info_hostname . " (serial: '" . $connector->info_serial . "', PAN-OS: '" . $connector->info_PANOS_version . "') was rebooted '" . $connector->info_uptime . "' ago.\n";
+                PH::print_stdout( "Firewall: " . $connector->info_hostname . " (serial: '" . $connector->info_serial . "', PAN-OS: '" . $connector->info_PANOS_version . "') was rebooted '" . $connector->info_uptime . "' ago." );
                 $apiResult = $connector->sendCmdRequest($apiCmd);
 
                 $rulesXml = DH::findXPath('/result/rules/entry', $apiResult);
@@ -2454,7 +2454,7 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.unused.fast'] = array(
                     $apiCmd2 .= '<all></all>';
                     $apiCmd2 .= '</rules></entry></rule-base></entry></vsys-name></vsys></rule-hit-count></show>';
 
-                    print "additional check needed as PAN-OS >= 8.1.X\n";
+                    PH::print_stdout( "additional check needed as PAN-OS >= 8.1.X" );
 
                     $apiResult = $connector->sendCmdRequest($apiCmd2);
 
@@ -2486,7 +2486,7 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.unused.fast'] = array(
                     if( !isset($connectedDevices[$device['serial']]) )
                     {
                         unset($devices[$id]);
-                        print "\n  - firewall device with serial: " . $device['serial'] . " is not connected.\n";
+                        PH::print_stdout( "\n  - firewall device with serial: " . $device['serial'] . " is not connected." );
                     }
                 }
 
@@ -2497,7 +2497,7 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.unused.fast'] = array(
                     $newConnector = new PanAPIConnector($connector->apihost, $connector->apikey, 'panos-via-panorama', $device['serial']);
                     $newConnector->setShowApiCalls($connector->showApiCalls);
                     $newConnector->refreshSystemInfos();
-                    print "Firewall: " . $newConnector->info_hostname . " (serial: '" . $newConnector->info_serial . "', PAN-OS: '" . $newConnector->info_PANOS_version . "') was rebooted '" . $newConnector->info_uptime . "' ago.\n";
+                    PH::print_stdout( "Firewall: " . $newConnector->info_hostname . " (serial: '" . $newConnector->info_serial . "', PAN-OS: '" . $newConnector->info_PANOS_version . "') was rebooted '" . $newConnector->info_uptime . "' ago." );
                     $tmpCache = array();
 
                     foreach( $device['vsyslist'] as $vsys )
@@ -2528,7 +2528,7 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.unused.fast'] = array(
                             $apiCmd2 .= '<all></all>';
                             $apiCmd2 .= '</rules></entry></rule-base></entry></vsys-name></vsys></rule-hit-count></show>';
 
-                            print "additional check needed as PAN-OS >= 8.1.X\n";
+                            PH::print_stdout( "additional check needed as PAN-OS >= 8.1.X" );
 
                             $apiResult = $newConnector->sendCmdRequest($apiCmd2);
 
@@ -3081,16 +3081,18 @@ RQuery::$defaultFilters['rule']['app']['operators']['has.missing.dependencies'] 
                 if( $first )
                 {
                     $first = FALSE;
-                    print "   - app-id: ";
+                    $string = "   - app-id: ";
                 }
-                print $app . ", ";
+                $string .= $app . ", ";
                 $missing_dependencies = TRUE;
             }
         }
 
+        PH::print_stdout( $string );
+
         if( $missing_dependencies )
         {
-            print " |  is missing in rule:\n";
+            PH::print_stdout( " |  is missing in rule:" );
             return TRUE;
         }
 

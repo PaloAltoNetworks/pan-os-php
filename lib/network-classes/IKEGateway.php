@@ -321,7 +321,7 @@ class IKEGateway
                     $tmp_int_main = $this->owner->owner->network->findInterface($int_name);
                     if( !is_object($tmp_int_main) )
                     {
-                        print " - create interface: " . $int_name . "\n";
+                        PH::print_stdout(  " - create interface: " . $int_name );
                         $tmp_int_main = $this->owner->owner->network->ethernetIfStore->newEthernetIf($int_name, 'layer3');
                         #$v->importedInterfaces->addInterface( $tmp_int_main );
                     }

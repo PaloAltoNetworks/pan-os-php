@@ -383,13 +383,13 @@ RQuery::$defaultFilters['service']['location']['operators']['is.child.of'] = arr
         $DG = $sub->findDeviceGroup($context->value);
         if( $DG == null )
         {
-            print "ERROR: location '$context->value' was not found. Here is a list of available ones:\n";
-            print " - shared\n";
+            PH::print_stdout( "ERROR: location '$context->value' was not found. Here is a list of available ones:" );
+            PH::print_stdout( " - shared" );
             foreach( $sub->getDeviceGroups() as $sub1 )
             {
-                print " - " . $sub1->name() . "\n";
+                PH::print_stdout( " - " . $sub1->name() );
             }
-            print "\n\n";
+            PH::print_stdout( "" );
             exit(1);
         }
 
@@ -423,7 +423,7 @@ RQuery::$defaultFilters['service']['location']['operators']['is.parent.of'] = ar
 
         if( get_class($sub) == "PANConf" )
         {
-            print "ERROR: filter location is.child.of is not working against a firewall configuration";
+            PH::print_stdout( "ERROR: filter location is.child.of is not working against a firewall configuration");
             return FALSE;
         }
 
@@ -433,13 +433,13 @@ RQuery::$defaultFilters['service']['location']['operators']['is.parent.of'] = ar
         $DG = $sub->findDeviceGroup($context->value);
         if( $DG == null )
         {
-            print "ERROR: location '$context->value' was not found. Here is a list of available ones:\n";
-            print " - shared\n";
+            PH::print_stdout( "ERROR: location '$context->value' was not found. Here is a list of available ones:" );
+            PH::print_stdout( " - shared" );
             foreach( $sub->getDeviceGroups() as $sub1 )
             {
-                print " - " . $sub1->name() . "\n";
+                PH::print_stdout( " - " . $sub1->name() );
             }
-            print "\n\n";
+            PH::print_stdout( "\n" );
             exit(1);
         }
 

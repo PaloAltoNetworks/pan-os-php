@@ -122,7 +122,7 @@ trait InterfaceType
 
         if( !array_key_exists($ip, $tmp_IPv4) )
         {
-            print "\n ** skipped ** IP Address: " . $ip . " is not set on interface: " . $this->name() . "\n";
+            PH::print_stdout(  " ** skipped ** IP Address: " . $ip . " is not set on interface: " . $this->name() );
             return FALSE;
         }
 
