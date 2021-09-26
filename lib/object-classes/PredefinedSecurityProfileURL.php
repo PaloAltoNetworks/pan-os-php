@@ -112,9 +112,9 @@ class PredefinedSecurityProfileURL
 
     public function display()
     {
-        print "     * " . get_class($this) . " '" . $this->name() . "'    \n";
+        PH::print_stdout(  "     * " . get_class($this) . " '" . $this->name() . "'    " );
 
-        print "\n\n";
+        PH::print_stdout(  "" );
     }
 
     static public $templatexml = '<entry name="**temporarynamechangeme**"></entry>';

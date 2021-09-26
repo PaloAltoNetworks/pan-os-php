@@ -400,7 +400,6 @@ class App
         if( $this->proto != "" )
             PH::print_stdout($padding_10."IP-Protocol: '".$this->proto."'" );
 
-        #print "\n";
 
         $text = "";
         if( isset( $this->timeout ) )
@@ -435,7 +434,6 @@ class App
             }
         }
 
-        #print "\n";
         if( isset( $this->icmpsub )  )
         {
             PH::print_stdout( "               icmp type: ". $this->icmpsub );
@@ -455,7 +453,7 @@ class App
         /*
             if( isset($app->_characteristics) )
             {
-                #print PH::list_to_string($app->_characteristics);
+                #PH::print_stdout(  PH::list_to_string($app->_characteristics) );
                 print_r( $app->_characteristics );
             }
         */

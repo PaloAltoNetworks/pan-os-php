@@ -291,10 +291,10 @@ class ObjStore
                 continue;
             }
 
-            //print $this->toString()."\n";
+
             $newObj = new $this->classn('**tmp**', $this);
             $newObj->load_from_domxml($node);
-            //print $this->toString()." : new Tag '".$newTag->name()."' found\n";
+
 
             $this->o[] = $newObj;
             $this->nameIndex[$newObj->name()] = $newObj;

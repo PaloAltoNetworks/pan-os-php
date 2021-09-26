@@ -331,7 +331,7 @@ class AddressStore
                     $curo->owner->addressStore !== null )
                 {
                     $this->parentCentralStore = $curo->owner->addressStore;
-                    //print $this->toString()." : found a parent central store: ".$this->parentCentralStore->toString()."\n";
+                    #PH::print_stdout( $this->toString()." : found a parent central store: ".$this->parentCentralStore->toString() );
                     return;
                 }
                 $curo = $curo->owner;
@@ -415,13 +415,13 @@ class AddressStore
 
     public function displayTmpAddresss()
     {
-        print "Tmp addresses for " . $this->toString() . "\n";
+        PH::print_stdout( "Tmp addresses for " . $this->toString() );
         foreach( $this->_tmpAddresses as $object )
         {
-            print " - " . $object->name() . "\n";
+            PH::print_stdout(  " - " . $object->name() );
         }
 
-        print "\n";
+        PH::print_stdout(  "" );
     }
 
 
@@ -935,24 +935,24 @@ class AddressStore
 /*
         foreach( $objects_overwritten as $key => $DGs )
         {
-            print "NAME: ".$key."\n";
+            PH::print_stdout(  "NAME: ".$key."\n";
             foreach( $DGs as $key2 => $object )
             {
                 if( $object->isAddress() )
                 {
-                    print "   - DG: ".$key2." value: ".$object->value();
-                    print "\n";
+                    PH::print_stdout(  "   - DG: ".$key2." value: ".$object->value() );
+                    PH::print_stdout(  "");
                     $object->display_references(7);
                 }
                 else
                 {
-                    print "   - DG: ".$key2;
-                    print "\n";
+                    PH::print_stdout(  "   - DG: ".$key2 );
+
                     $object->display_references(7);
                 }
             }
 
-            print "\n";
+            PH::print_stdout(  "");
         }*/
 
         return $objects;

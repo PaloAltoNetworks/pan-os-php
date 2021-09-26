@@ -47,7 +47,10 @@ function display_usage_and_exit()
 
 function display_error_usage_exit($msg)
 {
-    fwrite(STDERR, PH::boldText("\n**ERROR** ") . $msg . "\n\n");
+    if( PH::$shadow_json )
+        PH::$JSON_OUT['error'] = $msg;
+    else
+        fwrite(STDERR, PH::boldText("\n**ERROR** ") . $msg . "\n\n");
     display_usage_and_exit();
 }
 

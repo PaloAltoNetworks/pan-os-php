@@ -39,10 +39,10 @@ PH::print_stdout( " - PAN-OS-PHP version: ".PH::frameworkVersion() );
 function display_usage_and_exit()
 {
     global $argv;
-    print "\nusage: php " . basename(__FILE__) . " type=panos|panorama in=inputfile.xml out=outputfile.xml location=shared|sub " .
+    PH::print_stdout( "\nusage: php " . basename(__FILE__) . " type=panos|panorama in=inputfile.xml out=outputfile.xml location=shared|sub " .
         "group=groupName||groupfile=listGroupFile.txt\n" .
         "Example: php " . basename(__FILE__) . " type=panos in=original.xml out=final.xml location=shared group=group_internal_excl_dmz\n" .
-        "         php " . basename(__FILE__) . " type=panorama in=original.xml out=final.xml location=dmz-firewalls groupfile=grouplist.txt\n\n";
+        "         php " . basename(__FILE__) . " type=panorama in=original.xml out=final.xml location=dmz-firewalls groupfile=grouplist.txt" );
     exit(1);
 }
 
@@ -113,7 +113,7 @@ if( isset(PH::$args['group']) )
     }
     else
     {
-        print " notice : missing argument 'location', assuming 'shared'\n";
+        PH::print_stdout( " notice : missing argument 'location', assuming 'shared'" );
         $groupLocation = 'shared';
     }
 }
@@ -129,13 +129,13 @@ $configType = strtolower(PH::$args['type']);
 if( $configType != 'panos' && $configType != 'panorama' )
     derr("\n**ERROR** Unsupported config type '$configType'. Check your CLI arguments\n\n");
 
-print "Config type is '$configType', intput filename is '$inputFile'\n";
+PH::print_stdout( "Config type is '$configType', intput filename is '$inputFile'" );
 
 if( !file_exists($inputFile) )
     derr("\n**ERROR** Input file '" . $inputFile . "' doesn't exists!\n\n");
 
 
-print "Loading config file '" . $inputFile . "'... ";
+PH::print_stdout( "Loading config file '" . $inputFile . "'... " );
 if( $configType == 'panos' )
 {
     $pan = new PANConf();
@@ -161,7 +161,7 @@ else
     $groupsToProcess[] = $groupLocation . '/' . $groupName;
 }
 
-print "Sanitizing and listing groups from input:\n";
+PH::print_stdout( "Sanitizing and listing groups from input:" );
 foreach( $groupsToProcess as $index => &$group )
 {
     if( strlen($group) < 3 )
@@ -170,25 +170,25 @@ foreach( $groupsToProcess as $index => &$group )
     $expl = explode('/', $group);
     if( count($expl) != 2 )
     {
-        print " * group '$group' has no location set, assuming";
+        PH::print_stdout( " * group '$group' has no location set, assuming");
         $group = 'shared/' . $group;
-        print " '$group'\n";
+        PH::print_stdout( " '$group'" );
     }
     else
     {
-        print " - '$group'\n";
+        PH::print_stdout( " - '$group'" );
     }
 }
 unset($group);
-print "Listing done\n\n";
+PH::print_stdout( "Listing done" );
 
 
-print "**Now processing each group one by one to calculation exclusions**\n\n";
+PH::print_stdout( "**Now processing each group one by one to calculation exclusions**" );
 
 foreach( $groupsToProcess as $group )
 {
     $expl = explode('/', $group);
-    print "* Group '$expl[1]' from location '$expl[0]'\n";
+    PH::print_stdout( "* Group '$expl[1]' from location '$expl[0]'" );
 
 
     //
@@ -232,7 +232,7 @@ foreach( $groupsToProcess as $group )
     $membersKeys = array_keys($members);
     $incGroup = $members[$membersKeys[0]];
     $exclGroup = $members[$membersKeys[1]];
-    print "   * incGroup is '" . $incGroup->name() . "' and excGroup is '" . $exclGroup->name() . "'\n";
+    PH::print_stdout( "   * incGroup is '" . $incGroup->name() . "' and excGroup is '" . $exclGroup->name() . "'" );
     $incGroupExpanded = $incGroup->expand();
     $exclGroupExpanded = $exclGroup->expand();
 
@@ -255,31 +255,31 @@ foreach( $groupsToProcess as $group )
     //
     foreach( $exclGroupExpanded as $index => &$excl )
     {
-        print "     ** Processing excl object '" . $excl['object']->name() . " (" . $excl['startip'] . "-" . $excl['endip'] . ")'\n";
+        PH::print_stdout( "     ** Processing excl object '" . $excl['object']->name() . " (" . $excl['startip'] . "-" . $excl['endip'] . ")'" );
         foreach( $incGroupExpanded as &$incl )
         {
             // this object was already fully matched so we skip
             if( $incl['status'] == 2 ) continue;
 
-            print "       - against '" . $incl['object']->name() . "' " . $incl['startip'] . "-" . $incl['endip'] . " ... ";
+            PH::print_stdout( "       - against '" . $incl['object']->name() . "' " . $incl['startip'] . "-" . $incl['endip'] . " ... ");
 
             if( $incl['start'] >= $excl['start'] && $incl['end'] <= $excl['end'] )
             {
-                print "FULL match\n";
+                PH::print_stdout( "FULL match" );
                 $incl['status'] = 2;
             }
             elseif( $incl['start'] >= $excl['start'] && $incl['start'] <= $excl['end'] ||
                 $incl['end'] >= $excl['start'] && $incl['end'] <= $excl['end'] ||
                 $incl['start'] <= $excl['start'] && $incl['end'] >= $excl['end'] )
             {
-                print "PARTIAL match\n";
+                PH::print_stdout( "PARTIAL match" );
                 $incl['status'] = 1;
             }
             else
-                print "NO match\n";
+                PH::print_stdout( "NO match" );
         }
 
-        print "\n";
+        PH::print_stdout( "" );
     }
 
     //
@@ -290,17 +290,17 @@ foreach( $groupsToProcess as $group )
     //
     $inclPartial = array();
     $inclNo = array();
-    print "   * Sorting incl objects in Partial and No arrays\n";
+    PH::print_stdout( "   * Sorting incl objects in Partial and No arrays" );
     foreach( $incGroupExpanded as &$incl )
     {
         if( $incl['status'] == 1 )
         {
-            print "     - obj '" . $incl['object']->name() . "' is PARTIAL\n";
+            PH::print_stdout( "     - obj '" . $incl['object']->name() . "' is PARTIAL" );
             $inclPartial[] = &$incl;
         }
         elseif( $incl['status'] == 2 )
         {
-            print "     - obj '" . $incl['object']->name() . "' is NO match\n";
+            PH::print_stdout( "     - obj '" . $incl['object']->name() . "' is NO match" );
             $inclNo[] = &$incl;
         }
     }
@@ -308,7 +308,7 @@ foreach( $groupsToProcess as $group )
     //
     // Sort incl objects IP mappings by Start IP
     //
-    print "\n   * Sorting incl obj by StartIP\n";
+    PH::print_stdout( "\n   * Sorting incl obj by StartIP" );
     $inclMapping = array();
     $tmp = array();
     foreach( $inclPartial as &$incl )
@@ -323,7 +323,7 @@ foreach( $groupsToProcess as $group )
         {
             if( $value == $incl['start'] )
             {
-                print "     -'" . $incl['object']->name() . " (" . $incl['startip'] . "-" . $incl['endip'] . ")'\n";
+                PH::print_stdout( "     -'" . $incl['object']->name() . " (" . $incl['startip'] . "-" . $incl['endip'] . ")'" );
                 $inclMapping[] = $incl;
             }
         }
@@ -333,7 +333,7 @@ foreach( $groupsToProcess as $group )
     //
     // Sort incl objects IP mappings by Start IP
     //
-    print "\n   * Sorting excl obj by StartIP\n";
+    PH::print_stdout( "\n   * Sorting excl obj by StartIP" );
     $exclMapping = array();
     $tmp = array();
     foreach( $exclGroupExpanded as &$excl )
@@ -348,7 +348,7 @@ foreach( $groupsToProcess as $group )
         {
             if( $value == $excl['start'] )
             {
-                print "     -'" . $excl['object']->name() . " (" . $excl['startip'] . "-" . $excl['endip'] . ")'\n";
+                PH::print_stdout( "     -'" . $excl['object']->name() . " (" . $excl['startip'] . "-" . $excl['endip'] . ")'" );
                 $exclMapping[] = $excl;
             }
         }
@@ -358,17 +358,17 @@ foreach( $groupsToProcess as $group )
     //
     // Merge overlapping or Incl joint entries
     //
-    print "\n   * Merging overlapping Incl entries\n";
+    PH::print_stdout( "\n   * Merging overlapping Incl entries" );
     $mapKeys = array_keys($inclMapping);
     $mapCount = count($inclMapping);
     for( $i = 0; $i < $mapCount; $i++ )
     {
         $current = &$inclMapping[$mapKeys[$i]];
-        print "     - handling " . $current['startip'] . "-" . $current['endip'] . "\n";
+        PH::print_stdout( "     - handling " . $current['startip'] . "-" . $current['endip'] . "" );
         for( $j = $i + 1; $j < $mapCount; $j++ )
         {
             $compare = &$inclMapping[$mapKeys[$j]];
-            print "       - vs " . $compare['startip'] . "-" . $compare['endip'] . "\n";
+            PH::print_stdout( "       - vs " . $compare['startip'] . "-" . $compare['endip'] . "" );
 
             if( $compare['start'] > $current['end'] + 1 )
                 break;
@@ -376,9 +376,9 @@ foreach( $groupsToProcess as $group )
             $current['end'] = $compare['end'];
             $current['endip'] = $compare['endip'];
 
-            print "             MERGED ->" . $current['startip'] . "-" . $current['endip'] . " \n";
+            PH::print_stdout( "             MERGED ->" . $current['startip'] . "-" . $current['endip'] . " " );
 
-            unset($inclMappting[$mapKeys[$j]]);
+            unset($inclMapping[$mapKeys[$j]]);
 
             $i++;
         }
@@ -388,17 +388,17 @@ foreach( $groupsToProcess as $group )
     //
     // Merge overlapping or joint Excl entries
     //
-    print "\n   * Merging overlapping Excl entries\n";
+    PH::print_stdout( "\n   * Merging overlapping Excl entries" );
     $mapKeys = array_keys($exclMapping);
     $mapCount = count($exclMapping);
     for( $i = 0; $i < $mapCount; $i++ )
     {
         $current = &$exclMapping[$mapKeys[$i]];
-        print "     - handling " . $current['startip'] . "-" . $current['endip'] . "\n";
+        PH::print_stdout( "     - handling " . $current['startip'] . "-" . $current['endip'] . "" );
         for( $j = $i + 1; $j < $mapCount; $j++ )
         {
             $compare = &$exclMapping[$mapKeys[$j]];
-            print "       - vs " . $compare['startip'] . "-" . $compare['endip'] . "\n";
+            PH::print_stdout( "       - vs " . $compare['startip'] . "-" . $compare['endip'] . "" );
 
             if( $compare['start'] > $current['end'] + 1 )
                 break;
@@ -406,7 +406,7 @@ foreach( $groupsToProcess as $group )
             $current['end'] = $compare['end'];
             $current['endip'] = $compare['endip'];
 
-            print "             MERGED ->" . $current['startip'] . "-" . $current['endip'] . " \n";
+            PH::print_stdout( "             MERGED ->" . $current['startip'] . "-" . $current['endip'] . " " );
 
             unset($exclMapping[$mapKeys[$j]]);
 
@@ -418,11 +418,11 @@ foreach( $groupsToProcess as $group )
     //
     // Now starts the REAL JOB : calculate IP RANGE HOLES !!!
     //
-    print "\n   ** IP RANGE HOLES CALCULATION NOW !!! **\n";
+    PH::print_stdout( "\n   ** IP RANGE HOLES CALCULATION NOW !!! **" );
     foreach( $inclMapping as $index => &$incl )
     {
         $current = &$incl;
-        print "     - processing incl entry" . $incl['startip'] . "-" . $incl['endip'] . "\n";
+        PH::print_stdout( "     - processing incl entry" . $incl['startip'] . "-" . $incl['endip'] . "" );
         foreach( $exclMapping as &$excl )
         {
             if( $excl['start'] > $current['end'] )
@@ -430,12 +430,12 @@ foreach( $groupsToProcess as $group )
             if( $excl['start'] < $current['start'] && $excl['end'] < $current['start'] )
                 continue;
 
-            print "        - vs " . $excl['startip'] . "-" . $excl['endip'] . ": ";
+            PH::print_stdout( "        - vs " . $excl['startip'] . "-" . $excl['endip'] . ": ");
 
             // if this excl object is including ALL
             if( $excl['start'] <= $current['start'] && $excl['end'] >= $current['end'] )
             {
-                print "FULL  -> discarded\n";
+                PH::print_stdout( "FULL  -> discarded" );
                 unset($inclMapping[$index]);
                 break;
             }
@@ -443,18 +443,18 @@ foreach( $groupsToProcess as $group )
             {
                 $current['start'] = $excl['end'];
                 $current['startip'] = $excl['endip'];
-                print "LOWER COMPOUND";
+                PH::print_stdout( "LOWER COMPOUND");
             }
             elseif( $excl['start'] > $current['start'] && $excl['end'] >= $current['end'] )
             {
                 $current['end'] = $excl['start'] - 1;
                 $current['endip'] = long2ip($current['end']);
-                print "UPPER COMPOUND ";
+                PH::print_stdout( "UPPER COMPOUND ");
                 break;
             }
             elseif( $excl['start'] > $current['start'] && $excl['end'] < $current['end'] )
             {
-                print "MIDDLE COMPOUND";
+                PH::print_stdout( "MIDDLE COMPOUND");
                 $oldEnd = $current['end'];
                 $oldEndIP = $current['endip'];
                 $current['end'] = $excl['start'] - 1;
@@ -474,7 +474,7 @@ foreach( $groupsToProcess as $group )
             }
 
 
-            print "  : " . $current['startip'] . "-" . $current['endip'] . "\n";
+            PH::print_stdout( "  : " . $current['startip'] . "-" . $current['endip'] . "" );
         }
     }
 
@@ -490,7 +490,7 @@ foreach( $groupsToProcess as $group )
     //
     // Sort incl objects IP mappings by Start IP
     //
-    print "\n   * Sorting incl obj by StartIP again before creating final objects\n";
+    PH::print_stdout( "\n   * Sorting incl obj by StartIP again before creating final objects" );
     $finalInclMapping = array();
     $tmp = array();
     foreach( $inclMapping as &$incl )
@@ -508,7 +508,7 @@ foreach( $groupsToProcess as $group )
                 $oValue = $incl['startip'] . "-" . $incl['endip'];
                 $oName = 'R-' . $incl['startip'] . "-" . $incl['endip'];
 
-                print "     - (" . $incl['startip'] . "-" . $incl['endip'] . "): ";
+                PH::print_stdout( "     - (" . $incl['startip'] . "-" . $incl['endip'] . "): ");
                 $finalInclMapping[] = $incl;
 
                 $newO = null;
@@ -538,7 +538,7 @@ foreach( $groupsToProcess as $group )
                     $newOcounter++;
                 }
 
-                print " --> " . $newO->name() . "\n";
+                PH::print_stdout( " --> " . $newO->name() . "" );
                 $groupToProcess->addMember($newO, FALSE);
             }
         }
@@ -547,10 +547,10 @@ foreach( $groupsToProcess as $group )
     $groupToProcess->rewriteXML();
     $store->rewriteAddressStoreXML();
 
-    print "\n  ** Total Ranges dynamically needed for group '" . $groupToProcess->name() . "' : " . count($finalInclMapping) . "\n";
+    PH::print_stdout( "\n  ** Total Ranges dynamically needed for group '" . $groupToProcess->name() . "' : " . count($finalInclMapping) . "" );
 
 
-    print "\n*    done    *\n\n";
+    PH::print_stdout( "\n*    done    *" );
 }
 
 

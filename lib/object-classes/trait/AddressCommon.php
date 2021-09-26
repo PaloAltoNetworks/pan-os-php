@@ -68,7 +68,7 @@ trait AddressCommon
         if( $this === $objectToAdd )
         {
             if( $displayOutput )
-                print $outputPadding . "**SKIPPED** argument is same object\n";
+                PH::print_stdout(  $outputPadding . "**SKIPPED** argument is same object" );
             return;
         }
 
@@ -79,7 +79,7 @@ trait AddressCommon
             {
                 /** @var AddressGroup $ref */
                 if( $displayOutput )
-                    print $outputPadding . "- adding in {$ref->_PANC_shortName()}\n";
+                    PH::print_stdout(  $outputPadding . "- adding in {$ref->_PANC_shortName()}" );
                 $ref->addMember($objectToAdd);
             }
             elseif( $refClass == 'AddressRuleContainer' )
@@ -90,7 +90,7 @@ trait AddressCommon
                 if( $ruleClass == 'SecurityRule' || $ruleClass == 'DecryptionRule' || $ruleClass == 'AppOverrideRule' || $ruleClass == 'CaptivePortalRule' || $ruleClass == 'AuthenticationRule' )
                 {
                     if( $displayOutput )
-                        print $outputPadding . "- adding in {$ref->owner->_PANC_shortName()}\n";
+                        PH::print_stdout(  $outputPadding . "- adding in {$ref->owner->_PANC_shortName()}" );
 
                     $ref->addObject($objectToAdd);
                 }
@@ -99,7 +99,7 @@ trait AddressCommon
                     if( $skipNatRules )
                     {
                         if( $displayOutput )
-                            print $outputPadding . "- SKIPPED {$ref->owner->_PANC_shortName()} because request by user\n";
+                            PH::print_stdout(  $outputPadding . "- SKIPPED {$ref->owner->_PANC_shortName()} because request by user" );
                         continue;
                     }
                     if( $ref->name == 'snathosts' )
@@ -108,7 +108,7 @@ trait AddressCommon
                         derr('unsupported use case with static-ip NAT and source insertion in ' . $ref->owner->_PANC_shortName());
 
                     if( $displayOutput )
-                        print $outputPadding . "- adding in {$ref->owner->_PANC_shortName()}\n";
+                        PH::print_stdout(  $outputPadding . "- adding in {$ref->owner->_PANC_shortName()}" );
 
                     $ref->addObject($objectToAdd);
                 }
@@ -140,7 +140,7 @@ trait AddressCommon
         if( $this === $objectToAdd )
         {
             if( $displayOutput )
-                print $outputPadding . "**SKIPPED** argument is same object\n";
+                PH::print_stdout(  $outputPadding . "**SKIPPED** argument is same object" );
             return;
         }
 
@@ -151,7 +151,7 @@ trait AddressCommon
             {
                 /** @var AddressGroup $ref */
                 if( $displayOutput )
-                    print $outputPadding . "- adding in {$ref->_PANC_shortName()}\n";
+                    PH::print_stdout(  $outputPadding . "- adding in {$ref->_PANC_shortName()}" );
                 $ref->API_addMember($objectToAdd);
             }
             elseif( $refClass == 'AddressRuleContainer' )
@@ -162,7 +162,7 @@ trait AddressCommon
                 if( $ruleClass == 'SecurityRule' || $ruleClass == 'DecryptionRule' || $ruleClass == 'AppOverrideRule' || $ruleClass == 'CaptivePortalRule' || $ruleClass == 'AuthenticationRule' )
                 {
                     if( $displayOutput )
-                        print $outputPadding . "- adding in {$ref->owner->_PANC_shortName()}\n";
+                        PH::print_stdout(  $outputPadding . "- adding in {$ref->owner->_PANC_shortName()}" );
 
                     $ref->API_add($objectToAdd);
                 }
@@ -171,7 +171,7 @@ trait AddressCommon
                     if( $skipNatRules )
                     {
                         if( $displayOutput )
-                            print $outputPadding . "- SKIPPED {$ref->owner->_PANC_shortName()} because request by user\n";
+                            PH::print_stdout( $outputPadding . "- SKIPPED {$ref->owner->_PANC_shortName()} because request by user" );
                         continue;
                     }
                     if( $ref->name == 'snathosts' )
@@ -180,7 +180,7 @@ trait AddressCommon
                         derr('unsupported use case with static-ip NAT and source insertion in ' . $ref->owner->_PANC_shortName());
 
                     if( $displayOutput )
-                        print $outputPadding . "- adding in {$ref->owner->_PANC_shortName()}\n";
+                        PH::print_stdout( $outputPadding . "- adding in {$ref->owner->_PANC_shortName()}" );
 
                     $ref->API_add($objectToAdd);
                 }
@@ -218,7 +218,7 @@ trait AddressCommon
             {
                 /** @var AddressGroup $ref */
                 if( $displayOutput )
-                    print $outputPadding . "- removing from {$ref->_PANC_shortName()}\n";
+                    PH::print_stdout( $outputPadding . "- removing from {$ref->_PANC_shortName()}" );
                 if( $apiMode )
                     $ref->API_removeMember($this);
                 else
@@ -227,7 +227,7 @@ trait AddressCommon
                 if( count($ref->members()) == 0 )
                 {
                     if( $displayOutput )
-                        print $outputPadding . "- last addressgroup member so deleting {$ref->_PANC_shortName()}\n";
+                        PH::print_stdout( $outputPadding . "- last addressgroup member so deleting {$ref->_PANC_shortName()}" );
                     if( $apiMode )
                         $ref->API_removeWhereIamUsed(TRUE);
                     else
@@ -246,7 +246,7 @@ trait AddressCommon
                 if( $ref->count() <= 1 && $actionIfLastInRule == 'delete' )
                 {
                     if( $displayOutput )
-                        print $outputPadding . "- last member so deleting {$ref->_PANC_shortName()}\n";
+                        PH::print_stdout( $outputPadding . "- last member so deleting {$ref->_PANC_shortName()}" );
 
                     //if rule already deleted based no need to do it again
                     if( $ref->name() == "snathosts" )
@@ -262,19 +262,19 @@ trait AddressCommon
                             $ref->owner->owner->remove($ref->owner, TRUE);
                     }
                     else
-                        print "reference already deleted\n";
+                        PH::print_stdout( "reference already deleted" );
                 }
                 elseif( $ref->count() <= 1 && $actionIfLastInRule == 'setany' )
                 {
                     if( $displayOutput )
-                        print $outputPadding . "- last member so setting ANY {$ref->_PANC_shortName()}\n";
+                        PH::print_stdout( $outputPadding . "- last member so setting ANY {$ref->_PANC_shortName()}" );
 
                     if( $ref->name() !== "snathosts" )
                     {
                         if( $ref->name() == "source" )
                         {
                             if( $displayOutput )
-                                print $outputPadding . "  - set source to ANY\n";
+                                PH::print_stdout( $outputPadding . "  - set source to ANY" );
                             if( $apiMode )
                                 $ref->owner->source->API_setAny();
                             else
@@ -283,7 +283,7 @@ trait AddressCommon
                         if( $ref->name() == "destination" )
                         {
                             if( $displayOutput )
-                                print $outputPadding . "  - set destination to ANY\n";
+                                PH::print_stdout( $outputPadding . "  - set destination to ANY" );
                             if( $apiMode )
                                 $ref->owner->destination->API_setAny();
                             else
@@ -295,7 +295,7 @@ trait AddressCommon
                         if( !$ref->owner->sourceNatTypeIs_None() )
                         {
                             if( $displayOutput )
-                                print $outputPadding . "  - setNoSNAT\n";
+                                PH::print_stdout( $outputPadding . "  - setNoSNAT" );
                             if( $apiMode )
                                 $ref->owner->API_setNoSNAT();
                             else
@@ -308,7 +308,7 @@ trait AddressCommon
                 elseif( $ref->count() <= 1 && $actionIfLastInRule == 'disable' )
                 {
                     if( $displayOutput )
-                        print $outputPadding . "- last member so disabling rule {$ref->_PANC_shortName()}\n";
+                        PH::print_stdout( $outputPadding . "- last member so disabling rule {$ref->_PANC_shortName()}" );
                     if( $apiMode )
                         $ref->owner->API_setDisabled(TRUE);
                     else
@@ -317,7 +317,7 @@ trait AddressCommon
                 else
                 {
                     if( $displayOutput )
-                        print $outputPadding . "- removing from {$ref->_PANC_shortName()}\n";
+                        PH::print_stdout( $outputPadding . "- removing from {$ref->_PANC_shortName()}" );
                     if( $apiMode )
                         $ref->API_remove($this);
                     else
@@ -330,7 +330,7 @@ trait AddressCommon
                 if( $actionIfLastInRule == 'delete' )
                 {
                     if( $displayOutput )
-                        print $outputPadding . "- last member so deleting {$ref->_PANC_shortName()}\n";
+                        PH::print_stdout( $outputPadding . "- last member so deleting {$ref->_PANC_shortName()}" );
 
                     //if rule already deleted based no need to do it again
                     if( is_object($ref->owner) )
@@ -344,12 +344,12 @@ trait AddressCommon
                 elseif( $actionIfLastInRule == 'setany' )
                 {
                     if( $displayOutput )
-                        print $outputPadding . "- last member so setting ANY {$ref->_PANC_shortName()}\n";
+                        PH::print_stdout( $outputPadding . "- last member so setting ANY {$ref->_PANC_shortName()}" );
 
                     if( !$ref->sourceNatTypeIs_None() )
                     {
                         if( $displayOutput )
-                            print $outputPadding . "  - setNoSNAT\n";
+                            PH::print_stdout( $outputPadding . "  - setNoSNAT" );
                         if( $apiMode )
                             $ref->API_setNoSNAT();
                         else
@@ -359,7 +359,7 @@ trait AddressCommon
                     if( $ref->destinationNatIsEnabled() )
                     {
                         if( $displayOutput )
-                            print $outputPadding . "  - setNoDNAT\n";
+                            PH::print_stdout( $outputPadding . "  - setNoDNAT" );
                         if( $apiMode )
                             $ref->API_setNoDNAT();
                         else
@@ -369,7 +369,7 @@ trait AddressCommon
                 elseif( $actionIfLastInRule == 'disable' )
                 {
                     if( $displayOutput )
-                        print $outputPadding . "- last member so disabling rule {$ref->_PANC_shortName()}\n";
+                        PH::print_stdout( $outputPadding . "- last member so disabling rule {$ref->_PANC_shortName()}" );
                     if( $apiMode )
                         $ref->API_setDisabled(TRUE);
                     else
@@ -385,7 +385,7 @@ trait AddressCommon
                 if( $actionIfLastInRule == 'delete' )
                 {
                     if( $displayOutput )
-                        print $outputPadding . "- last member so deleting {$ref->_PANC_shortName()}\n";
+                        PH::print_stdout( $outputPadding . "- last member so deleting {$ref->_PANC_shortName()}" );
 
                     //Todo: delete interface? check needed
                     if( $apiMode )
@@ -396,7 +396,7 @@ trait AddressCommon
                 elseif( $actionIfLastInRule == 'setany' )
                 {
                     if( $displayOutput )
-                        print $outputPadding . "- last member so setting ANY {$ref->_PANC_shortName()}\n";
+                        PH::print_stdout( $outputPadding . "- last member so setting ANY {$ref->_PANC_shortName()}" );
 
                     //Todo:
                     if( $apiMode )
@@ -407,7 +407,7 @@ trait AddressCommon
                 elseif( $actionIfLastInRule == 'disable' )
                 {
                     if( $displayOutput )
-                        print $outputPadding . "- last member so disabling rule {$ref->_PANC_shortName()}\n";
+                        PH::print_stdout( $outputPadding . "- last member so disabling rule {$ref->_PANC_shortName()}" );
 
                     //Todo: anything else, how to disable?
                     if( $apiMode )
@@ -494,7 +494,7 @@ trait AddressCommon
             {
                 if( $this->type() !== $withObject->type() )
                 {
-                    print "- SKIP: not possible due to different object type\n";
+                    PH::print_stdout( "- SKIP: not possible due to different object type" );
                     continue;
                 }
 
@@ -514,7 +514,7 @@ trait AddressCommon
 
                 if( !$tmp_addr->isAddress() )
                 {
-                    print "- SKIP: not possible due to different object type\n";
+                    PH::print_stdout( "- SKIP: not possible due to different object type" );
                     continue;
                 }
                 
@@ -522,8 +522,8 @@ trait AddressCommon
                 {
                     if( $this->type() !== $withObject->type() || $withObject->getNetworkValue() !== $tmp_addr->getNetworkValue())
                     {
-                        print "- SKIP: not possible to replace due to different value: {$objectRef->toString()}";
-                        print " - '".$withObject->value()."' | '".$tmp_addr->value()."'\n";
+                        PH::print_stdout( "- SKIP: not possible to replace due to different value: {$objectRef->toString()}" );
+                        PH::print_stdout( " - '".$withObject->value()."' | '".$tmp_addr->value()."'" );
                         continue;
                     }
                 }
@@ -532,7 +532,7 @@ trait AddressCommon
 
 
             if( $displayOutput )
-                print $outputPadding . "- replacing in {$objectRef->toString()}\n";
+                PH::print_stdout( $outputPadding . "- replacing in {$objectRef->toString()}" );
             if( $apiMode )
                 $objectRef->API_replaceReferencedObject($this, $withObject);
             else

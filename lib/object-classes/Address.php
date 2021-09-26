@@ -604,7 +604,7 @@ class Address
     {
         foreach( $this->tags->getAll() as $tag )
         {
-            print "     - merge TAG: '{$tag->name()}' before deleting...\n";
+            PH::print_stdout( "     - merge TAG: '{$tag->name()}' before deleting...");
             /** @var  Tag $tag*/
             if( !$pickedObject->tags->hasTag( $tag ) )
             {

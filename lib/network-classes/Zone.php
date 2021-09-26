@@ -181,33 +181,28 @@ class Zone
             elseif( $node->tagName == 'tap' )
             {
                 $this->_type = $node->tagName;
-                //print "node->tagName ".$node->tagName." found\n";
             }
             elseif( $node->tagName == 'tunnel' )
             {
                 $this->_type = $node->tagName;
-                //print "node->tagName ".$node->tagName." found\n";
             }
             elseif( $node->tagName == 'layer2' )
             {
                 $this->_type = $node->tagName;
-                //print "node->tagName ".$node->tagName." found\n";
             }
 
 
             elseif( $node->tagName == 'zone-protection-profile' )
             {
                 $this->zoneProtectionProfile = $node->textContent;
-                //print "node->tagName ".$node->tagName." found\n";
             }
             elseif( $node->tagName == 'log-setting' )
             {
                 $this->logsetting = $node->textContent;
-                //print "node->tagName ".$node->tagName." found\n";
             }
             elseif( $node->tagName == 'enable-packet-buffer-protection' )
             {
-                //print "node->tagName ".$node->tagName." found\n";
+
             }
             else
                 mwarning("zone type: " . $node->tagName . " is not yet supported.");

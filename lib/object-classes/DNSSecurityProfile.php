@@ -101,7 +101,7 @@ class DNSSecurityProfile
         }
 
 
-        #print "\nsecprofURL TMP: object named '".$this->name."' found\n";
+        #PH::print_stdout(  "\nsecprofURL TMP: object named '".$this->name."' found" );
 
         #$this->owner->_SecurityProfiles[$this->secprof_type][$this->name] = $this;
         #$this->owner->_all[$this->secprof_type][$this->name] = $this;
@@ -236,12 +236,10 @@ class DNSSecurityProfile
 
     public function display()
     {
-        print "     * " . get_class($this) . " '" . $this->name() . "'    \n\n";
+        PH::print_stdout(  "     * " . get_class($this) . " '" . $this->name() . "'    " );
 
-        //Todo: continue for print out
+        //Todo: continue for PH::print_stdout( ); out
 
-
-        #print "\n\n";
     }
 
 

@@ -56,7 +56,7 @@ function derr($msg)
             {
                 fwrite(STDERR, $l['object']->toString() . "\n");
             }
-            print $l['function'] . "()\n";
+            print $l['function'] . "()\n" ;
             if( isset($l['object']) )
                 fwrite(STDERR, '       ' . $l['class'] . '::' . $l['file'] . " line " . $l['line'] . "\n");
             else
@@ -421,7 +421,7 @@ class mycurl
                 . $this->_infilecontent . "\r\n"
                 . "----ABC1234--\r\n";
 
-            //print "content length = ".strlen($content)."\n";            
+            //PH::print_stdout( "content length = ".strlen($content)."" );            
             curl_setopt($s, CURLOPT_HTTPHEADER, array('Content-Type: multipart/form-data; boundary=--ABC1234'));
             curl_setopt($s, CURLOPT_POST, TRUE);
             curl_setopt($s, CURLOPT_POSTFIELDS, $content);
@@ -474,7 +474,7 @@ class XmlArray
     {
         $node = simplexml_import_dom($xml);
 
-        //print "Before node reading\n";
+        //PH::print_stdout( "Before node reading" );
 
         return $this->add_node($node);
     }
@@ -482,7 +482,7 @@ class XmlArray
     public function &load_string($s)
     {
         $node = simplexml_load_string($s);
-        //print "Before node reading\n";
+        //PH::print_stdout( "Before node reading" );
         $ret = $this->add_node($node);
         return $ret;
     }
@@ -590,7 +590,7 @@ function &resolveGroupOrDie(&$objects, $subname, &$group)
             die("Error : cannot resolve member named '$member'\n\n");
 
 
-        print "member: " . $m['sub'] . "/" . $m['name'] . "\n";
+        PH::print_stdout( "member: " . $m['sub'] . "/" . $m['name'] . "" );
 
         $ret[] = $m;
     }
@@ -602,7 +602,7 @@ function &resolveGroupOrDie(&$objects, $subname, &$group)
 function tagObjects(&$list, $tagName, $modePANOS, PanAPIConnector $connector)
 {
 
-    print "creating tag '$tagName'...";
+    PH::print_stdout( "creating tag '$tagName'..." );
     $xpath = '/config/shared/tag';
     $element = "<entry name='" . $tagName . "'></entry>";
     $connector->sendSetRequest($xpath, $element);
@@ -626,7 +626,7 @@ function tagObjects(&$list, $tagName, $modePANOS, PanAPIConnector $connector)
 
         }
 
-        print "Tagging object " . $o['sub'] . "/" . $o['name'] . "... ";
+        PH::print_stdout( "Tagging object " . $o['sub'] . "/" . $o['name'] . "... ");
         //$connector->setShowApiCalls(true);
         $connector->sendSetRequest($xpath, $element);
 
@@ -642,7 +642,7 @@ function tagObjects(&$list, $tagName, $modePANOS, PanAPIConnector $connector)
 $con = new PanAPIConnector($argv[1], '');
 //$con->setShowApiCalls(true);
 
-print "Requesting API key...";
+PH::print_stdout( "Requesting API key...");
 $res = &$con->sendRequest("type=keygen&user=$argv[2]&password=$argv[3]");
 
 $res = &searchForName('name', 'result', $res);
@@ -657,12 +657,12 @@ if( strlen($res['content']) < 1 )
     derr('error');
 
 $con->apikey = $res['content'];
-print "OK, key is $con->apikey\n\n";
+PH::print_stdout( "OK, key is $con->apikey" );
 // end of API key extraction
 
 
 // PANOS or Panorama ?
-print "Determining is PANOS or Panorama... ";
+PH::print_stdout( "Determining is PANOS or Panorama... ");
 $res = &$con->sendRequest("type=op&cmd=<show><system><info></info></system></show>");
 
 $res = &searchForName('name', 'result', $res);
@@ -684,22 +684,22 @@ if( $res === null )
 if( $res['content'] == 'Panorama' )
 {
     $panos = FALSE;
-    print "Panorama found!\n";
+    PH::print_stdout( "Panorama found!" );
 }
 else
 {
     $panos = TRUE;
-    print "PANOS found!\n";
+    PH::print_stdout( "PANOS found!" );
 }
 
 $vex = explode('.', $version['content']);
 if( count($vex) != 3 || $vex[0] < 6 )
     die("ERROR! Unsupported PANOS version :  " . $version['content'] . "\n\n");
 
-print "PANOS version: " . $version['content'] . " OK (>=6.0)!\n";
+PH::print_stdout( "PANOS version: " . $version['content'] . " OK (>=6.0)!" );
 
 //
-print "Downloading config from device...";
+PH::print_stdout( "Downloading config from device...");
 $res = &$con->getRunningConfig();
 
 
@@ -717,7 +717,7 @@ if( $tmp !== null )
 {
     foreach( $tmp['children'] as &$o )
     {
-        //print "address object named '".$o['attributes']['name']."' found\n";
+        //PH::print_stdout( "address object named '".$o['attributes']['name']."' found" );
         $newa = array();
         $newa['type'] = 'address';
         $objects['shared']['address'][$o['attributes']['name']] = $newa;
@@ -729,7 +729,7 @@ if( $tmp !== null )
 {
     foreach( $tmp['children'] as &$o )
     {
-        //print "address group object named '".$o['attributes']['name']."' found\n";
+        //PH::print_stdout( "address group object named '".$o['attributes']['name']."' found" );
 
         $newa = array();
         $newa['type'] = 'address-group';
@@ -743,7 +743,7 @@ if( $tmp !== null )
 
             foreach( $grouproot['children'] as &$member )
             {
-                //print "found group member: ".$member['content']."\n";
+                //PH::print_stdout( "found group member: ".$member['content']."" );
                 $newa['members'][] = $member['content'];
             }
         }
@@ -771,7 +771,7 @@ if( $subs !== null )
 {
     foreach( $subs['children'] as &$sub )
     {
-        print "sub system '" . $sub['attributes']['name'] . "' found\n";
+        PH::print_stdout( "sub system '" . $sub['attributes']['name'] . "' found" );
         $lname = $sub['attributes']['name'];
         $objects[$lname] = array();
         $objects[$lname]['address'] = array();
@@ -783,7 +783,7 @@ if( $subs !== null )
         {
             foreach( $tmp['children'] as &$o )
             {
-                //print "address object named '".$o['attributes']['name']."' found\n";
+                //PH::print_stdout( "address object named '".$o['attributes']['name']."' found" );
                 $newa = array();
                 $newa['type'] = 'address';
                 $objects[$lname]['address'][$o['attributes']['name']] = $newa;
@@ -795,7 +795,7 @@ if( $subs !== null )
         {
             foreach( $tmp['children'] as &$o )
             {
-                //print "address group object named '".$o['attributes']['name']."' found\n";
+                //PH::print_stdout( "address group object named '".$o['attributes']['name']."' found" );
 
                 $newa = array();
                 $newa['type'] = 'address-group';
@@ -809,7 +809,7 @@ if( $subs !== null )
 
                     foreach( $grouproot['children'] as &$member )
                     {
-                        //print "found group member: ".$member['content']."\n";
+                        //PH::print_stdout( "found group member: ".$member['content']."" );
                         $newa['members'][] = $member['content'];
                     }
                 }
@@ -834,7 +834,7 @@ if( $group === null )
 if( $group['subtype'] != 'static' )
     die("Error: $requestSubSystem/$requestGroup is not a static group\n\n");
 
-print "\n\nGroup $requestSubSystem/$requestGroup was found and contains " . count($group['members']) . " objects, now resolving its members...\n";
+PH::print_stdout( "\n\nGroup $requestSubSystem/$requestGroup was found and contains " . count($group['members']) . " objects, now resolving its members..." );
 
 $members = resolveGroupOrDie($objects, $requestSubSystem, $group);
 
@@ -842,7 +842,7 @@ $tagname = 'grp.' . $requestGroup;
 
 tagObjects($members, $tagname, $panos, $con);
 
-print "All objects are tagged, now changing static group into a dynamic one...";
+PH::print_stdout( "All objects are tagged, now changing static group into a dynamic one...");
 
 $xpath = "/address-group/entry[@name='" . $requestGroup . "']";
 $element = "<dynamic><filter>'" . $tagname . "'</filter></dynamic>";
@@ -860,7 +860,7 @@ else
 }
 
 $con->sendSetRequest($xpath, $element);
-print "SUCCESS , don't forget to commit !\n\n";
+PH::print_stdout( "SUCCESS , don't forget to commit !" );
 
 
 

@@ -106,12 +106,9 @@ class SaasSecurityProfile
 
     public function display()
     {
-        print "     * " . get_class($this) . " '" . $this->name() . "'    \n\n";
+        PH::print_stdout(  "     * " . get_class($this) . " '" . $this->name() . "'    ");
 
-        //Todo: continue for print out
-
-
-        #print "\n\n";
+        //Todo: continue for PH::print_stdout( ); out
     }
 
 

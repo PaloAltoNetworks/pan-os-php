@@ -30,6 +30,7 @@ $supportedUTILTypes = array(
     "address", "service", "tag", "schedule", "application", "threat", "securityprofilegroup",
     "rule",
     "securityprofile",
+    "stats",
     "device",
     "routing", "zone", "interface", "virtualwire"
     );
@@ -52,7 +53,7 @@ $supportedMERGERTypes = array(
  * override-finder
  * pan-diff
  * pan-config-size
- * panos-xml-ssue-detector
+ * panos-xml-issue-detector
  * panXML_op_JSON
  * register-ip-mgr
  * upload-config

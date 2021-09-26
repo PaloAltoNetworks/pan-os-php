@@ -161,7 +161,7 @@ trait ReferenceableObject
             if( isset($cur->owner) && $cur->owner !== null )
             {
                 $class = get_class($cur->owner);
-                //print $cur->owner->toString()."\n";
+
                 if( $class == $type )
                 {
                     if( !in_array($cur->owner, $ret, TRUE) )

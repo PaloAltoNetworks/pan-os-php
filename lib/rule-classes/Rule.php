@@ -690,7 +690,7 @@ class Rule
         }
         else
         {
-            print "  PAN-OS version must be 9.0 or higher";
+            PH::print_stdout( "  PAN-OS version must be 9.0 or higher" );
         }
 
         return null;
@@ -807,7 +807,7 @@ class Rule
                     if( $deletedNodesCount === FALSE )
                         derr("xpath issue");
 
-                    //print "\n\n deleted $deletedNodesCount nodes \n\n";
+                    //PH::print_stdout( "\n\n deleted $deletedNodesCount nodes " );
 
                     $firewall->load_from_domxml($doc);
 
@@ -896,7 +896,7 @@ class Rule
                     }
                 }
 
-                print $padding . " - VSYS/DG '{$system->name()}' has interfaces attached to " . count($foundRouters) . " virtual routers\n";
+                PH::print_stdout( $padding . " - VSYS/DG '{$system->name()}' has interfaces attached to " . count($foundRouters) . " virtual routers" );
                 if( count($foundRouters) > 1 )
                     derr("more than 1 suitable virtual routers found, please specify one fo the following: " . PH::list_to_string($foundRouters));
                 if( count($foundRouters) == 0 )
@@ -912,7 +912,7 @@ class Rule
 
         if( $addressContainer->isAny() && $this->isSecurityRule() )
         {
-            print $padding . " - SKIPPED : address container is ANY()\n";
+            PH::print_stdout( $padding . " - SKIPPED : address container is ANY()" );
             return;
         }
 
@@ -923,7 +923,7 @@ class Rule
 
         if( count($resolvedZones) == 0 )
         {
-            print $padding . " - WARNING : no zone resolved (FQDN? IPv6?)\n";
+            PH::print_stdout( $padding . " - WARNING : no zone resolved (FQDN? IPv6?)" );
             return;
         }
 
@@ -947,26 +947,26 @@ class Rule
         }
 
         if( count($common) > 0 )
-            print $padding . " - untouched zones: " . PH::list_to_string($common) . "\n";
+            PH::print_stdout( $padding . " - untouched zones: " . PH::list_to_string($common) . "" );
         if( count($minus) > 0 )
-            print $padding . " - missing zones: " . PH::list_to_string($minus) . "\n";
+            PH::print_stdout( $padding . " - missing zones: " . PH::list_to_string($minus) . "" );
         if( count($plus) > 0 )
-            print $padding . " - unneeded zones: " . PH::list_to_string($plus) . "\n";
+            PH::print_stdout( $padding . " - unneeded zones: " . PH::list_to_string($plus) . "" );
 
         if( $mode == 'replace' )
         {
-            print $padding . " - REPLACE MODE, syncing with (" . count($resolvedZones) . ") resolved zones.";
+            PH::print_stdout( $padding . " - REPLACE MODE, syncing with (" . count($resolvedZones) . ") resolved zones.");
             if( $addressContainer->isAny() )
-                print $padding . " *** IGNORED because value is 'ANY' ***\n";
+                PH::print_stdout( $padding . " *** IGNORED because value is 'ANY' ***" );
             elseif( count($resolvedZones) == 0 )
-                print $padding . " *** IGNORED because no zone was resolved ***\n";
+                PH::print_stdout( $padding . " *** IGNORED because no zone was resolved ***" );
             elseif( count($minus) == 0 && count($plus) == 0 )
             {
-                print $padding . " *** IGNORED because there is no diff ***\n";
+                PH::print_stdout( $padding . " *** IGNORED because there is no diff ***" );
             }
             else
             {
-                print "\n";
+                PH::print_stdout( "" );
 
                 if( $this->isNatRule() && $fromOrTo == 'to' )
                 {
@@ -978,7 +978,7 @@ class Rule
                             $newRule = $this->owner->cloneRule($this, $newRuleName);
                             $newRule->to->setAny();
                             $newRule->to->addZone($zoneStore->findOrCreate($zoneToAdd));
-                            print $padding . " - cloned NAT rule with name '{$newRuleName}' and TO zone='{$zoneToAdd}'\n";
+                            PH::print_stdout( $padding . " - cloned NAT rule with name '{$newRuleName}' and TO zone='{$zoneToAdd}'" );
                             if( $isAPI )
                             {
                                 $newRule->API_sync();
@@ -997,7 +997,7 @@ class Rule
                         {
                             $this->to->setAny();
                             $this->to->addZone($zoneStore->findOrCreate($zoneToAdd));
-                            print $padding . " - changed original NAT 'TO' zone='{$zoneToAdd}'\n";
+                            PH::print_stdout( $padding . " - changed original NAT 'TO' zone='{$zoneToAdd}'" );
                             if( $isAPI )
                                 $this->to->API_sync();
                             $first = FALSE;
@@ -1007,7 +1007,7 @@ class Rule
                         $newRule = $this->owner->cloneRule($this, $newRuleName);
                         $newRule->to->setAny();
                         $newRule->to->addZone($zoneStore->findOrCreate($zoneToAdd));
-                        print $padding . " - cloned NAT rule with name '{$newRuleName}' and TO zone='{$zoneToAdd}'\n";
+                        PH::print_stdout( $padding . " - cloned NAT rule with name '{$newRuleName}' and TO zone='{$zoneToAdd}'" );
                         if( $isAPI )
                         {
                             $newRule->API_sync();
@@ -1029,7 +1029,7 @@ class Rule
         }
         elseif( $mode == 'append' )
         {
-            print $padding . " - APPEND MODE: adding missing (" . count($minus) . ") zones only.";
+            PH::print_stdout( $padding . " - APPEND MODE: adding missing (" . count($minus) . ") zones only.");
 
             if( $addressContainer->isAny() )
             {
@@ -1041,13 +1041,13 @@ class Rule
                     self::zoneCalculationNatClone( $allZones, $zoneStore, $padding, $isAPI );
                 }
                 else
-                    print " *** IGNORED because value is 'ANY' ***\n";
+                    PH::print_stdout( " *** IGNORED because value is 'ANY' ***" );
             }
             elseif( count($minus) == 0 )
-                print " *** IGNORED because no missing zones were found ***\n";
+                PH::print_stdout( " *** IGNORED because no missing zones were found ***" );
             else
             {
-                print "\n";
+                PH::print_stdout( "" );
 
                 if( $this->isNatRule() && $fromOrTo == 'to' )
                 {
@@ -1067,15 +1067,15 @@ class Rule
         }
         elseif( $mode == 'unneeded-tag-add' )
         {
-            print $padding . " - UNNEEDED-TAG-ADD MODE: adding rule tag for unneeded zones.";
+            PH::print_stdout( $padding . " - UNNEEDED-TAG-ADD MODE: adding rule tag for unneeded zones.");
 
             if( $addressContainer->isAny() )
-                print " *** IGNORED because value is 'ANY' ***\n";
+                PH::print_stdout( " *** IGNORED because value is 'ANY' ***" );
             elseif( count($plus) == 0 )
-                print " *** IGNORED because no unneeded zones were found ***\n";
+                PH::print_stdout( " *** IGNORED because no unneeded zones were found ***" );
             else
             {
-                print "\n";
+                PH::print_stdout( "" );
 
                 if( $this->isNatRule() && $fromOrTo == 'to' )
                 {
@@ -1105,7 +1105,7 @@ class Rule
             $newRule->to->setAny();
 
             $newRule->to->addZone($zoneStore->findOrCreate($zoneToAdd));
-            print $padding . " - cloned NAT rule with name '{$newRuleName}' and TO zone='{$zoneToAdd}'\n";
+            PH::print_stdout( $padding . " - cloned NAT rule with name '{$newRuleName}' and TO zone='{$zoneToAdd}'" );
             if( $isAPI )
             {
                 $newRule->API_sync();
@@ -1117,7 +1117,7 @@ class Rule
 
         if( $this->to->isAny() )
         {
-            print " remove origin NAT rule as TO zone ANY is not allowed\n";
+            PH::print_stdout( " remove origin NAT rule as TO zone ANY is not allowed" );
             $this->owner->remove( $this );
         }
     }

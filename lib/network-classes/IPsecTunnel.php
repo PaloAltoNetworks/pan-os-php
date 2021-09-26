@@ -454,7 +454,7 @@ class IPsecTunnel
         if( preg_match('/[^0-9a-zA-Z_\-\s]/', $name) )
         {
             $name = preg_replace('/[^0-9a-zA-Z_\-\s]/', "", $name);
-            print " *** new name: " . $name . " \n";
+            PH::print_stdout( " *** new name: " . $name );
             #mwarning( 'Name will be replaced with: '.$name."\n" );
         }
 
@@ -489,7 +489,7 @@ class IPsecTunnel
         if( preg_match('/[^0-9a-zA-Z_\-\s]/', $gateway_name) )
         {
             $gateway_name = preg_replace('/[^0-9a-zA-Z_\-\s]/', "", $gateway_name);
-            print " *** new Gateway name: " . $gateway_name . "\n";
+            PH::print_stdout(  " *** new Gateway name: " . $gateway_name );
             #mwarning( 'Name will be replaced with: '.$gateway_name."\n" );
         }
 
@@ -511,8 +511,8 @@ class IPsecTunnel
         if( preg_match('/[^0-9a-zA-Z_\-\s]/', $proposal) )
         {
             $proposal = preg_replace('/[^0-9a-zA-Z_\-\s]/', "", $proposal);
-            print " *** new proposal name: " . $proposal . "\n";
-            mwarning('Name will be replaced with: ' . $proposal . "\n");
+            PH::print_stdout(  " *** new proposal name: " . $proposal );
+            mwarning('Name will be replaced with: ' . $proposal);
         }
 
         $this->proposal = $proposal;

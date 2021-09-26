@@ -166,22 +166,19 @@ class AntiVirusProfile
 
     public function display()
     {
-        print "     * " . get_class($this) . " '" . $this->name() . "'    \n\n";
+        PH::print_stdout(  "     * " . get_class($this) . " '" . $this->name() . "'    ");
 
         //Todo: continue for print out
 
         foreach( $this->tmp_virus_prof_array as $key => $type )
         {
-            print "       o " . PH::boldText($type) . "\n";
+            PH::print_stdout(  "       o " . PH::boldText($type) );
             //was not set in specific config files
             if( isset( $this->$type['action'] ) )
-                print "          - action:          '" . $this->$type['action'] . "'\n";
+                PH::print_stdout(  "          - action:          '" . $this->$type['action'] . "'");
             if( isset( $this->$type['wildfire-action'] ) )
-                print "          - wildfire-action: '" . $this->$type['wildfire-action'] . "'\n";
+                PH::print_stdout(  "          - wildfire-action: '" . $this->$type['wildfire-action'] . "'" );
         }
-
-
-        #print "\n\n";
     }
 
 

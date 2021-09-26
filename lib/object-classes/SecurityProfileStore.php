@@ -650,7 +650,7 @@ class SecurityProfileStore extends ObjStore
                 $ref->$profileType !== null )
             {
                 $this->parentCentralStore = $ref->$profileType;
-                #print $this->toString()." : found a parent central store: ".$this->parentCentralStore->toString()."\n";
+                #PH::print_stdout(  $this->toString()." : found a parent central store: ".$this->parentCentralStore->toString() );
                 return;
             }
             $cur = $ref;

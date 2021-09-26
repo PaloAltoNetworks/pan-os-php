@@ -188,7 +188,7 @@ class IPSecCryptoProfil
         if( preg_match('/[^0-9a-zA-Z_\-\s]/', $name) )
         {
             $name = preg_replace('/[^0-9a-zA-Z_\-\s]/', "", $name);
-            print "new name: " . $name . " \n";
+            PH::print_stdout(  "new name: " . $name );
             #mwarning( 'Name will be replaced with: '.$name."\n" );
         }
 
@@ -248,7 +248,7 @@ class IPSecCryptoProfil
         if( !isset(self::$authentications[$authentication]) )
         {
             $authentication = str_replace("-", "", $authentication);
-            print " *** authentication: " . $authentication . " wrong\n";
+            PH::print_stdout(  " *** authentication: " . $authentication . " wrong" );
             #mwarning( 'authentication wrong' );
         }
 
@@ -270,7 +270,7 @@ class IPSecCryptoProfil
         if( !isset(self::$encryptions[$encryption]) )
         {
             $encryption = str_replace("-", "", $encryption);
-            print " *** encryption: " . $encryption . " wrong\n";
+            PH::print_stdout(  " *** encryption: " . $encryption . " wrong" );
             #mwarning( 'authentication wrong' );
         }
 
@@ -334,8 +334,8 @@ class IPSecCryptoProfil
         #if( $this->encryption == $encryption )
         #return true;
 
-        print "TYPE: ".$sizetype."\n";
-        print "SIZE: ".$size."\n";
+        PH::print_stdout(  "TYPE: ".$sizetype );
+        PH::print_stdout(  "SIZE: ".$size );
 
         do
         {
@@ -352,8 +352,8 @@ class IPSecCryptoProfil
 
         } while( $size > 65535 );
 
-        print "TYPE: ".$sizetype."\n";
-        print "SIZE: ".$size."\n";
+        PH::print_stdout( "TYPE: ".$sizetype );
+        PH::print_stdout(  "SIZE: ".$size );
 
         if( $sizetype == 'kb' )
             $this->lifesize_kb = $size;

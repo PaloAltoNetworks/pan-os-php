@@ -196,14 +196,14 @@ class ZoneStore extends ObjStore
                     $curo->owner->zoneStore !== null )
                 {
                     $this->parentCentralStore = $curo->owner->zoneStore;
-                    //print $this->toString()." : found a parent central store: ".$parentCentralStore->toString()."\n";
+                    //PH::print_stdout(  $this->toString()." : found a parent central store: ".$parentCentralStore->toString() );
                     return;
                 }
                 $curo = $curo->owner;
             }
         }
 
-        //print $this->toString().": no parent store found\n";
+        //PH::print_stdout( $this->toString().": no parent store found" );
 
     }
 

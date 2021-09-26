@@ -310,7 +310,7 @@ class ScheduleStore extends ObjStore
                 $ref->scheduleStore !== null )
             {
                 $this->parentCentralStore = $ref->scheduleStore;
-                //print $this->toString()." : found a parent central store: ".$parentCentralStore->toString()."\n";
+                //PH::print_stdout(  $this->toString()." : found a parent central store: ".$parentCentralStore->toString() );
                 return;
             }
             $cur = $ref;

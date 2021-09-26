@@ -323,7 +323,6 @@ class DeviceCloud
             }
         }
 
-        //print "VSYS '".$this->name."' found\n";
 
         // this VSYS has a display-name ?
         $displayNameNode = DH::findFirstElement('display-name', $xml);
@@ -365,7 +364,6 @@ class DeviceCloud
             //
             $tmp = DH::findFirstElementOrCreate('address', $xml);
             $this->addressStore->load_addresses_from_domxml($tmp);
-            //print "VSYS '".$this->name."' address objectsloaded\n" ;
             // End of address objects extraction
 
 
@@ -374,7 +372,6 @@ class DeviceCloud
             //
             $tmp = DH::findFirstElementOrCreate('address-group', $xml);
             $this->addressStore->load_addressgroups_from_domxml($tmp);
-            //print "VSYS '".$this->name."' address groups loaded\n" ;
             // End of address groups extraction
 
 
@@ -383,7 +380,6 @@ class DeviceCloud
             //												//
             $tmp = DH::findFirstElementOrCreate('service', $xml);
             $this->serviceStore->load_services_from_domxml($tmp);
-            //print "VSYS '".$this->name."' service objects\n" ;
             // End of <service> extraction
 
 
@@ -392,7 +388,6 @@ class DeviceCloud
             //												//
             $tmp = DH::findFirstElementOrCreate('service-group', $xml);
             $this->serviceStore->load_servicegroups_from_domxml($tmp);
-            //print "VSYS '".$this->name."' service groups loaded\n" ;
             // End of <service-group> extraction
 
             //

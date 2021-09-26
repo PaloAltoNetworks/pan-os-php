@@ -19,11 +19,13 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-print "\n*************************************************\n";
-print "**************** MERGER TESTERS *****************\n\n";
+
 
 set_include_path(dirname(__FILE__) . '/../' . PATH_SEPARATOR . get_include_path());
 require_once dirname(__FILE__)."/../lib/pan_php_framework.php";
+
+PH::print_stdout( "\n*************************************************" );
+PH::print_stdout(  "**************** MERGER TESTERS *****************" );
 
 PH::processCliArgs();
 
@@ -78,7 +80,7 @@ foreach( $test_merger as $merger )
     #$ci['input'] = 'input/panorama-8.0-merger.xml';
     $ci['input'] = 'input/panorama-10.0-merger.xml';
 
-    print "\n\n\n *** Processing merger: {$merger} \n";
+    PH::print_stdout( "\n\n\n *** Processing merger: {$merger} " );
 
     $dupalgorithm_array = array();
     if( $merger == 'address' )
@@ -135,7 +137,7 @@ foreach( $test_merger as $merger )
 
             $cli .= ' 2>&1';
 
-            print " * Executing CLI: {$cli}\n";
+            PH::print_stdout( " * Executing CLI: {$cli}" );
 
             $output = array();
             $retValue = 0;
@@ -144,28 +146,28 @@ foreach( $test_merger as $merger )
 
             foreach( $output as $line )
             {
-                print '   ##  ';
-                print $line;
-                print "\n";
+                $string = '   ##  ';
+                $string .= $line;
+                PH::print_stdout( $string );
             }
 
             if( $retValue != 0 )
                 derr("CLI exit with error code '{$retValue}'");
 
-            print "\n";
+            PH::print_stdout( "" );
         }
     }
 
 
 }
 
-print "\n*****  *****\n";
-#print " - Processed {$totalFilterCount} filters\n";
-#print " - Found {$totalFilterWithCiCount} that are CI enabled\n";
+PH::print_stdout( "\n*****  *****" );
+#PH::print_stdout( " - Processed {$totalFilterCount} filters" );
+#PH::print_stdout( " - Found {$totalFilterWithCiCount} that are CI enabled" );
 
-print "\n";
-print "\n*********** FINISHED TESTING MERGERS ************\n";
-print "*************************************************\n\n";
+PH::print_stdout( "" );
+PH::print_stdout( "\n*********** FINISHED TESTING MERGERS ************" );
+PH::print_stdout( "*************************************************" );
 
 
 

@@ -36,8 +36,7 @@ exec($cli, $output, $retValue);
 
 foreach( $output as $line )
 {
-    print $line;
-    print "\n";
+    PH::print_stdout( $line );
 }
 */
 

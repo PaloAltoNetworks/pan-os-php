@@ -22,7 +22,7 @@
 
 require_once dirname(__FILE__) . "/lib/common.php";
 
-print "\n************* START OF SCRIPT ".basename(__FILE__)." ************\n\n";
+PH::print_stdout( "************* START OF SCRIPT ".basename(__FILE__)." ************");
 PH::print_stdout( " - PAN-OS-PHP version: ".PH::frameworkVersion() );
 
 $debugAPI = false;
@@ -34,10 +34,8 @@ PH::processCliArgs();
 function display_usage_and_exit()
 {
     global $argv;
-    print PH::boldText("USAGE: ")."php ".basename(__FILE__)." in=api://xxxx location=deviceGroup2 [bundleApiCalls] [ignoreApps=app1,app2...]".
-        "\n";
+    PH::print_stdout( PH::boldText("USAGE: ")."php ".basename(__FILE__)." in=api://xxxx location=deviceGroup2 [bundleApiCalls] [ignoreApps=app1,app2...]");
 
-    print "\n\n";
 
     exit(1);
 }
@@ -47,7 +45,10 @@ if( isset(PH::$args['help']))
 
 function display_error_usage_exit($msg)
 {
-    fwrite(STDERR, PH::boldText("\n**ERROR** ").$msg."\n\n");
+    if( PH::$shadow_json )
+        PH::$JSON_OUT['error'] = $msg;
+    else
+        fwrite(STDERR, PH::boldText("\n**ERROR** ").$msg."\n\n");
     display_usage_and_exit();
 }
 
@@ -97,11 +98,11 @@ elseif ( $configInput['type'] != 'api' )
 
 if( isset(PH::$args['bundleapicalls']) ||  $configInput['type'] == 'file' )
 {
-    print " - BundleApiCalls is ON\n";
+    PH::print_stdout( " - BundleApiCalls is ON");
     $bundleApiCalls = true;
 }
 else
-    print " - BundleApiCalls is OFF\n";
+    PH::print_stdout( " - BundleApiCalls is OFF");
 
 
 /** @var $inputConnector PanAPIConnector */
@@ -134,7 +135,7 @@ elseif ( $configInput['type'] == 'api'  )
     $inputConnector = $configInput['connector'];
     if($debugAPI)
         $inputConnector->setShowApiCalls(true);
-    print " - Downloading config from API... ";
+    PH::print_stdout( " - Downloading config from API... ");
     $xmlDoc = $inputConnector->getCandidateConfig();
 
 }
@@ -156,12 +157,12 @@ $ruleStatFile = $device_serial.'-'.$location.'-stats.xml';
 
 if( file_exists($ruleStatFile) )
 {
-    print " - Previous rule stats found, loading from file $ruleStatFile... ";
+    PH::print_stdout( " - Previous rule stats found, loading from file $ruleStatFile... ");
     $ruleStats->load_from_file($ruleStatFile);
 
 }
 else
-    print " - No cached stats found (missing file '$ruleStatFile')\n";
+    PH::print_stdout( " - No cached stats found (missing file '$ruleStatFile')");
 
 
 $manualIgnoreApps = Array();
@@ -179,7 +180,7 @@ if( isset(PH::$args['ignoreApps']) )
     unset($i);
     if( count($manualIgnoreApps) > 0 )
     {
-        print " - The following applications will be ignored : ".PH::list_to_string($manualIgnoreApps)."\n";
+        PH::print_stdout( " - The following applications will be ignored : ".PH::list_to_string($manualIgnoreApps) );
     }
 }
 
@@ -202,7 +203,7 @@ if( $configType == 'panos' )
 else
     $pan = new PanoramaConf();
 
-print " - Detected platform type is '{$configType}'\n";
+PH::print_stdout( " - Detected platform type is '{$configType}'");
 
 if( $configInput['type'] == 'api' )
     $pan->connector = $inputConnector;
@@ -210,7 +211,7 @@ if( $configInput['type'] == 'api' )
 //
 // load the config
 //
-print " - Loading configuration through PAN-PHP-framework library... ";
+PH::print_stdout( " - Loading configuration through PAN-PHP-framework library... ");
 $loadStartMem = memory_get_usage(true);
 $loadStartTime = microtime(true);
 $pan->load_from_domxml($xmlDoc);
@@ -218,7 +219,7 @@ $loadEndTime = microtime(true);
 $loadEndMem = memory_get_usage(true);
 $loadElapsedTime = number_format( ($loadEndTime - $loadStartTime), 2, '.', '');
 $loadUsedMem = convert($loadEndMem - $loadStartMem);
-print "($loadElapsedTime seconds, $loadUsedMem memory)\n";
+PH::print_stdout( "($loadElapsedTime seconds, $loadUsedMem memory)");
 // --------------------
 
 $subSystem  = $pan->findSubSystemByName($location);
@@ -226,9 +227,9 @@ $subSystem  = $pan->findSubSystemByName($location);
 if( $subSystem === null )
     derr("cannot find vsys/dg named '$location', available locations list is : ");
 
-print " - Found DG/Vsys '$location'\n";
+PH::print_stdout( " - Found DG/Vsys '$location'");
 
-print " - Looking/creating for necessary Tags to mark rules\n";
+PH::print_stdout( " - Looking/creating for necessary Tags to mark rules");
 TH::createTags($pan, $configInput['type']);
 
 
@@ -238,9 +239,9 @@ TH::createTags($pan, $configInput['type']);
 $string =
 $rules = $subSystem->securityRules->rules("(description regex /".RuleIDTagLibrary::$tagBaseName."/) and !(tag has ".TH::$tag_misc_convertedRule.") and !(tag has ".TH::$tag_misc_ignore.") and !(tag has.regex /^".TH::$tagNtbrBase."/) and !(tag has ".TH::$tag_misc_clonedRule.")");
 
-print " - Total number of rules: {$subSystem->securityRules->count()} vs ".count($rules)." potentially clonable\n";
-
-print "\n*** PROCESSING !!!\n\n";
+PH::print_stdout( " - Total number of rules: {$subSystem->securityRules->count()} vs ".count($rules)." potentially clonable");
+PH::print_stdout( "");
+PH::print_stdout( "*** PROCESSING !!!");
 
 $count_ClonedRules = 0;
 $array_ClonedRules = Array();
@@ -257,12 +258,12 @@ foreach($rules as $legacyRule)
 {
     /** @var SecurityRule $legacyRule */
     $loopCount++;
-    print "\nRule #{$loopCount} out of ".count($rules)."\n";
-    print $legacyRule->display(1);
+    PH::print_stdout( "Rule #{$loopCount} out of ".count($rules));
+    PH::print_stdout( $legacyRule->display(1) );
     $apps = $ruleStats->getRuleStats($legacyRule->name());
     if( $apps === null )
     {
-        print "  - NO STATS AVAILABLE FOR THIS RULE\n";
+        PH::print_stdout( "  - NO STATS AVAILABLE FOR THIS RULE");
         continue;
     }
 
@@ -271,10 +272,10 @@ foreach($rules as $legacyRule)
         $count_unused++;
         if( $legacyRule->tags->hasTag(TH::$tag_misc_unused) )
         {
-            print "  - This rule was and is still unused\n";
+            PH::print_stdout( "  - This rule was and is still unused");
             continue;
         }
-        print "  - This rule seems to be unused, tagging it...";
+        PH::print_stdout( "  - This rule seems to be unused, tagging it..." );
         if( !$bundleApiCalls )
             $legacyRule->tags->API_addTag(TH::$tag_misc_unused_tagObject);
         else
@@ -289,7 +290,7 @@ foreach($rules as $legacyRule)
     {
         $ruleToBeRevised = true;
         $count_notUnusedAnymore++;
-        print " - This rule was marked as Unused but is not anymore, removing unused Tag...\n";
+        PH::print_stdout( " - This rule was marked as Unused but is not anymore, removing unused Tag...");
         if( !$bundleApiCalls )
             $legacyRule->tags->API_removeTag(TH::$tag_misc_unused_tagObject);
         else
@@ -299,7 +300,7 @@ foreach($rules as $legacyRule)
 
     if( !$legacyRule->apps->isAny() )
     {
-        print "  - original rule apps != ANY , tagging\n";
+        PH::print_stdout( "  - original rule apps != ANY , tagging");
         if( !$bundleApiCalls )
             $legacyRule->tags->API_addTag(TH::$tag_NTBR_appNotAny_tagObject);
         else
@@ -312,12 +313,12 @@ foreach($rules as $legacyRule)
         continue;
     }
 
-    print " - Found the following apps : ";
+    $string = " - Found the following apps : ";
     foreach($apps as $app)
     {
-        print $app['name'].',';
+        $string .= $app['name'].',';
     }
-    print "\n";
+    PH::print_stdout( $string );
 
     $appsToPutInRule = Array();
 
@@ -336,14 +337,14 @@ foreach($rules as $legacyRule)
     {
         if( !$legacyRule->tags->hasTag(TH::$tag_NTBR_onlyInvalidApps) )
         {
-            print " - This rule has only invalid applications, tagging it\n";
+            PH::print_stdout( " - This rule has only invalid applications, tagging it");
             if( !$bundleApiCalls )
                 $legacyRule->tags->API_addTag(TH::$tag_NTBR_onlyInvalidApps_tagObject);
             else
                 $legacyRule->tags->addTag(TH::$tag_NTBR_onlyInvalidApps_tagObject);
         }
         else
-            print " - only invalid apps, but it was already the case\n";
+            PH::print_stdout( " - only invalid apps, but it was already the case");
 
 
         if( isset($apps['insufficient-data']) )
@@ -366,7 +367,7 @@ foreach($rules as $legacyRule)
         $ruleToBeRevised = true;
         $count_revised_NTBR++;
 
-        print " - removed tag '".TH::$tag_NTBR_onlyInvalidApps."'";
+        PH::print_stdout( " - removed tag '".TH::$tag_NTBR_onlyInvalidApps."'");
         if( !$bundleApiCalls )
             $legacyRule->tags->API_removeTag(TH::$tag_NTBR_onlyInvalidApps_tagObject);
         else
@@ -374,23 +375,23 @@ foreach($rules as $legacyRule)
     }
 
 
-    print " - The following apps will be added : ";
+    $string = " - The following apps will be added : ";
     foreach($appsToPutInRule as $app)
     {
-        print $app.',';
+        $string .= $app.',';
     }
-    print "\n";
-    print " - now calculating dependencies\n";
+    PH::print_stdout( $string );
+    PH::print_stdout( " - now calculating dependencies");
     foreach($appsToPutInRule as $app)
     {
-        print "  - $app\n";
+        PH::print_stdout( "  - $app");
         $appObject = $pan->appStore->find($app);
         if( $appObject !== null )
         {
             $explicits =  $appObject->calculateDependencies();
             if( count($explicits) > 0 )
             {
-                print "    - ".PH::list_to_string($explicits)."\n";
+                PH::print_stdout( "    - ".PH::list_to_string($explicits));
                 foreach($explicits as $explicit)
                     $appsToPutInRule[$explicit->name()] = $explicit->name();
             }
@@ -398,13 +399,13 @@ foreach($rules as $legacyRule)
     }
 
     $newName = $legacyRule->owner->findAvailableName($legacyRule->name(), '-app');
-    print " - cloned rule name will be '{$newName}'\n";
+    PH::print_stdout( " - cloned rule name will be '{$newName}'");
     if( !$bundleApiCalls )
         $appidRule = $subSystem->securityRules->API_cloneRule($legacyRule, $newName);
     else
         $appidRule = $subSystem->securityRules->cloneRule($legacyRule, $newName);
 
-    print " - created rule '{$appidRule->name()}'\n";
+    PH::print_stdout( " - created rule '{$appidRule->name()}'");
     if( !$bundleApiCalls )
     {
         $appidRule->API_setDisabled(true);
@@ -427,7 +428,7 @@ foreach($rules as $legacyRule)
 
     if( $appidRule->apps->count() > 10 )
     {
-        print " - cloned rule has too many apps, NTBR\n";
+        PH::print_stdout( " - cloned rule has too many apps, NTBR");
         if( !$bundleApiCalls )
             $appidRule->tags->API_addTag(TH::$tag_NTBR_tooManyApps_tagObject);
         else
@@ -436,7 +437,7 @@ foreach($rules as $legacyRule)
 
     if( isset($appsToPutInRule['unknown-tcp']) || isset($appsToPutInRule['unknown-udp']) || isset($appsToPutInRule['unknown-p2p']) )
     {
-        print " - cloned rule has unknown apps, NTBR\n";
+        PH::print_stdout( " - cloned rule has unknown apps, NTBR");
         if( !$bundleApiCalls )
             $appidRule->tags->API_addTag(TH::$tag_NTBR_hasUnknownApps_tagObject);
         else
@@ -471,9 +472,9 @@ foreach($rules as $legacyRule)
     $count_ClonedRules++;
     $array_ClonedRules[] = $legacyRule;
 
-    print "- * RULE IS CLONED *\n";
+    PH::print_stdout( "- * RULE IS CLONED *");
 
-    print "\n\n";
+    PH::print_stdout( "");
 
 }
 
@@ -481,17 +482,17 @@ if( $bundleApiCalls  )
 {
     if( $configInput['type'] == 'api' )
     {
-        print "*** NOW DOING BUNDLED API CALL TO SYNC RULES ****\n";
+        PH::print_stdout( "*** NOW DOING BUNDLED API CALL TO SYNC RULES ****" );
 
         if( $pan->isPanorama() )
         {
             $xpath = $subSystem->getXPath().'/pre-rulebase/security/rules';
-            print " - syncing pre-rulebase ... ";
+            PH::print_stdout( " - syncing pre-rulebase ... ");
             $pan->connector->sendEditRequest($xpath, DH::dom_to_xml($subSystem->securityRules->xmlroot));
 
 
             $xpath = $subSystem->getXPath().'/post-rulebase/security/rules';
-            print " - syncing post-rulebase ... ";
+            PH::print_stdout( " - syncing post-rulebase ... ");
             $pan->connector->sendEditRequest($xpath, DH::dom_to_xml($subSystem->securityRules->postRulesRoot));
 
         }
@@ -511,23 +512,23 @@ if( $bundleApiCalls  )
 }
 
 
-print "\nlist of cloned Rules: \n";
+PH::print_stdout( "\nlist of cloned Rules:");
 
 foreach( $array_ClonedRules as $rule )
 {
-    print " - {$rule->name()}\n";
+    PH::print_stdout( " - {$rule->name()}");
 }
 
-print "\n\n**** SUMMARY *****\n\n";
+PH::print_stdout( "\n\n**** SUMMARY *****");
 
-print " - cloned rules : {$count_ClonedRules}\n";
-print " - unused : {$count_unused}\n";
-print " - rules with fatal NTBR : {$count_NTBR}\n";
-print " - revised unused rules : {$count_notUnusedAnymore}\n";
-print " - revised rules fatal NTBR: {$count_revised_NTBR}\n";
+PH::print_stdout( " - cloned rules : {$count_ClonedRules}");
+PH::print_stdout( " - unused : {$count_unused}");
+PH::print_stdout( " - rules with fatal NTBR : {$count_NTBR}");
+PH::print_stdout( " - revised unused rules : {$count_notUnusedAnymore}");
+PH::print_stdout( " - revised rules fatal NTBR: {$count_revised_NTBR}");
 
 
 
-print "\n\n";
-print "\n************* END OF SCRIPT ".basename(__FILE__)." ************\n\n";
+PH::print_stdout( "" );
+PH::print_stdout( "************* END OF SCRIPT ".basename(__FILE__)." ************");
 

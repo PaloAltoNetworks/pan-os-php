@@ -267,22 +267,22 @@ class IP4Map
     {
         $newMapping = sortArrayByStartValue($this->_map);
 
-        //print "\nafter sorting\n";
+        //PH::print_stdout(  "\nafter sorting" );
         //foreach($this->_map as $map)
-        //    print long2ip($map['start']).'-'.long2ip($map['end'])."\n";
+        //    PH::print_stdout(  long2ip($map['start']).'-'.long2ip($map['end']) );
 
         $mapKeys = array_keys($newMapping);
         $mapCount = count($newMapping);
         for( $i = 0; $i < $mapCount; $i++ )
         {
             $current = &$newMapping[$mapKeys[$i]];
-            //print "\nhandling row ".long2ip($current['start']).'-'.long2ip($current['end'])."\n";
+            //PH::print_stdout(  "\nhandling row ".long2ip($current['start']).'-'.long2ip($current['end']) );
             for( $j = $i + 1; $j < $mapCount; $j++ )
             {
                 //$i++;
                 $compare = &$newMapping[$mapKeys[$j]];
 
-                //print "   vs ".long2ip($compare['start']).'-'.long2ip($compare['end'])."\n";
+                //PH::print_stdout(  "   vs ".long2ip($compare['start']).'-'.long2ip($compare['end']) );
 
                 if( $compare['start'] > $current['end'] + 1 )
                     break;
@@ -290,7 +290,7 @@ class IP4Map
                 if( $current['end'] < $compare['end'] )
                     $current['end'] = $compare['end'];
 
-                //print "     upgraded to ".long2ip($current['start']).'-'.long2ip($current['end'])."\n";
+                //PH::print_stdout(  "     upgraded to ".long2ip($current['start']).'-'.long2ip($current['end']) );
                 unset($newMapping[$mapKeys[$j]]);
 
                 $i++;

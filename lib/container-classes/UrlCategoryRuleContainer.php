@@ -175,7 +175,7 @@ class UrlCategoryRuleContainer extends ObjRuleContainer
      */
     public function load_from_domxml($xml)
     {
-        //print "started to extract '".$this->toString()."' from xml\n";
+        #PH::print_stdout( "started to extract '".$this->toString()."' from xml");
         $this->xmlroot = $xml;
         $i = 0;
         foreach( $xml->childNodes as $node )
@@ -231,7 +231,7 @@ class UrlCategoryRuleContainer extends ObjRuleContainer
                     $currentObject->owner->customURLProfileStore !== null )
                 {
                     $this->parentCentralStore = $currentObject->owner->customURLProfileStore;
-                    //print $this->toString()." : found a parent central store: ".$parentCentralStore->toString()."\n";
+                    //PH::print_stdout(  $this->toString()." : found a parent central store: ".$parentCentralStore->toString() );
                     return;
                 }
                 $currentObject = $currentObject->owner;

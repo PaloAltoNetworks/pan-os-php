@@ -19,8 +19,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-print "\n*************************************************\n";
-print "**************** FILTER TESTERS *****************\n\n";
+PH::print_stdout( "\n*************************************************" );
+PH::print_stdout( "**************** FILTER TESTERS *****************\n" );
 
 set_include_path(dirname(__FILE__) . '/../' . PATH_SEPARATOR . get_include_path());
 require_once dirname(__FILE__)."/../lib/pan_php_framework.php";
@@ -96,7 +96,7 @@ foreach( RQuery::$defaultFilters as $type => &$filtersByField )
             if( $operator == '>,<,=,!' )
                 $operator = '<';
 
-            print "\n\n\n *** Processing filter: {$type} / ({$fieldName} {$operator})\n";
+            PH::print_stdout( " *** Processing filter: {$type} / ({$fieldName} {$operator})" );
 
             $ci = &$filter['ci'];
 
@@ -121,46 +121,46 @@ foreach( RQuery::$defaultFilters as $type => &$filtersByField )
 
             elseif( $type == 'securityprofile' )
             {
-                print "******* SKIPPED for now *******\n";
+                PH::print_stdout( "******* SKIPPED for now *******" );
                 continue;
             }
             elseif( $type == 'securityprofilegroup' )
             {
-                print "******* SKIPPED for now *******\n";
+                PH::print_stdout( "******* SKIPPED for now *******" );
                 continue;
             }
             elseif( $type == 'app' )
             {
-                print "******* SKIPPED for now *******\n";
+                PH::print_stdout( "******* SKIPPED for now *******" );
                 continue;
             }elseif( $type == 'application' )
             {
-                print "******* SKIPPED for now *******\n";
+                PH::print_stdout( "******* SKIPPED for now *******" );
                 continue;
             }
             elseif( $type == 'interface' )
             {
-                print "******* SKIPPED for now *******\n";
+                PH::print_stdout( "******* SKIPPED for now *******" );
                 continue;
             }
             elseif( $type == 'virtualwire' )
             {
-                print "******* SKIPPED for now *******\n";
+                PH::print_stdout( "******* SKIPPED for now *******" );
                 continue;
             }
             elseif( $type == 'routing' )
             {
-                print "******* SKIPPED for now *******\n";
+                PH::print_stdout( "******* SKIPPED for now *******" );
                 continue;
             }
             elseif( $type == 'device' )
             {
-                print "******* SKIPPED for now *******\n";
+                PH::print_stdout( "******* SKIPPED for now *******" );
                 continue;
             }
             elseif( $type == 'threat' )
             {
-                print "******* SKIPPED for now *******\n";
+                PH::print_stdout( "******* SKIPPED for now *******" );
                 continue;
             }
             else
@@ -181,7 +181,7 @@ foreach( RQuery::$defaultFilters as $type => &$filtersByField )
 
             $cli .= ' 2>&1';
 
-            print " * Executing CLI: {$cli}\n";
+            PH::print_stdout( " * Executing CLI: {$cli}" );
 
             $output = array();
             $retValue = 0;
@@ -190,31 +190,31 @@ foreach( RQuery::$defaultFilters as $type => &$filtersByField )
 
             foreach( $output as $line )
             {
-                print '   ##  ';
-                print $line;
-                print "\n";
+                $string = '   ##  ';
+                $string .= $line;
+                PH::print_stdout( $string );
             }
 
             if( $retValue != 0 )
                 derr("CLI exit with error code '{$retValue}'");
 
-            print "\n";
+            PH::print_stdout( "" );
 
         }
     }
 }
 
-print "\n*****  *****\n";
-print " - Processed {$totalFilterCount} filters\n";
-print " - Found {$totalFilterWithCiCount} that are CI enabled\n";
+PH::print_stdout( "\n*****  *****" );
+PH::print_stdout( " - Processed {$totalFilterCount} filters" );
+PH::print_stdout( " - Found {$totalFilterWithCiCount} that are CI enabled" );
 
-print "\n\n";
-print " - the following filters has no test argument:\n";
+PH::print_stdout( "\n" );
+PH::print_stdout( " - the following filters has no test argument:" );
 print_r($missing_filters);
 
-print "\n";
-print "\n*********** FINISHED TESTING FILTERS ************\n";
-print "*************************************************\n\n";
+PH::print_stdout( "" );
+PH::print_stdout( "\n*********** FINISHED TESTING FILTERS ************" );
+PH::print_stdout( "*************************************************\n" );
 
 
 

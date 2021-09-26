@@ -1,9 +1,10 @@
 <?php
-
-print "\n*************************************************\n";
-print   "**************** FILTER TESTERS *****************\n\n";
-
 require_once("lib/pan_php_framework.php");
+
+PH::print_stdout( "*************************************************");
+PH::print_stdout(   "**************** FILTER TESTERS *****************");
+
+
 
 
 PH::processCliArgs();
@@ -69,7 +70,7 @@ foreach( $cli_array as $cli )
 {
             $cli .= ' 2>&1';
 
-            print " * Executing CLI: {$cli}\n";
+            PH::print_stdout( " * Executing CLI: {$cli}" );
 
             $output = Array();
             $retValue = 0;
@@ -78,20 +79,22 @@ foreach( $cli_array as $cli )
 
             foreach($output as $line)
             {
-                print '   ##  '; print $line; print "\n";
+                $string =  '   ##  ';
+                $string .= $line;
+                PH::print_stdout( $string );
             }
 
             if( $retValue != 0 )
                 derr("CLI exit with error code '{$retValue}'");
 
-            print "\n";
+    PH::print_stdout(  "");
 }
 
 
-print "\n*****  *****\n";
-#print " - Processed {$totalFilterCount} filters\n";
-#print " - Found {$totalFilterWithCiCount} that are CI enabled\n";
-print "\n*****  *****\n";
+PH::print_stdout(  "*****  *****");
+#PH::print_stdout(  " - Processed {$totalFilterCount} filters");
+#PH::print_stdout(  " - Found {$totalFilterWithCiCount} that are CI enabled");
+PH::print_stdout(  "*****  *****");
 
 
 
@@ -118,14 +121,16 @@ foreach( $stage_array as $item )
 
     $cli .= "  2>&1";
 
-    print " * Executing CLI: {$cli}\n";
+    PH::print_stdout(  " * Executing CLI: {$cli}");
 
     exec($cli, $output, $retValue );
 
     $counter = 0;
     foreach($output as $line)
     {
-        print '   ##  '; print $line; print "\n";
+        $string = '   ##  ';
+        $string .= $line;
+        PH::print_stdout( $string );
         $counter++;
     }
 
@@ -137,7 +142,7 @@ foreach( $stage_array as $item )
     if( $retValue != 0 )
         derr("CLI exit with error code '{$retValue}'");
 
-    print "\n";
+    PH::print_stdout(  "");
 }
 
 
@@ -151,9 +156,9 @@ foreach( $stage_array as $item )
 
 
 
-print "\n";
-print "\n*********** FINISHED TESTING FILTERS ************\n";
-print   "*************************************************\n\n";
+PH::print_stdout(  "");
+PH::print_stdout(  "\n*********** FINISHED TESTING FILTERS ************");
+PH::print_stdout(    "*************************************************");
 
 
 

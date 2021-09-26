@@ -327,7 +327,7 @@ class PH
 
         #print_r( $argv );
     }
-    
+
     public static function generate_arguments($in = "", $out = "", $location = "", $actions = "", $filter = "", $subquery = "", $additional = "")
     {
         $i = 0;

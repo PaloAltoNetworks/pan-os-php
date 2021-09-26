@@ -106,7 +106,7 @@ function memory_and_gc($str)
     $gcs = gc_collect_cycles();
     $after = memory_get_usage(TRUE);
 
-    print "Memory usage at the $str : " . convert($before) . ". After GC: " . convert($after) . " and freed $gcs variables\n";
+    PH::print_stdout( "Memory usage at the $str : " . convert($before) . ". After GC: " . convert($after) . " and freed $gcs variables" );
 }
 
 function myErrorHandler($errno, $errstr, $errfile, $errline)
@@ -501,8 +501,7 @@ function __CmpObjMemID($objA, $objB)
 
 function printn($msg)
 {
-    print $msg;
-    print "\n";
+    PH::print_stdout( $msg );
 }
 
 
@@ -811,7 +810,7 @@ function &sortArrayByStartValue(&$arrayToSort)
     //
     // Sort incl objects IP mappings by Start IP
     //
-    //print "\n   * Sorting incl obj by StartIP\n";
+    //PH::print_stdout(  "\n   * Sorting incl obj by StartIP" );
     $returnMap = array();
     $tmp = array();
     foreach( $arrayToSort as &$incl )

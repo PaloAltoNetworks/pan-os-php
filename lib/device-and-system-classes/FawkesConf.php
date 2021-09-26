@@ -234,9 +234,9 @@ class FawkesConf
 
 
 /*
-        print "1Container loading order:\n";
+        PH::print_stdout( "1Container loading order:" );
         foreach( $containerLoadOrder as &$dgName )
-            print " - {$dgName}\n";
+            PH::print_stdout(  " - {$dgName}" );
 */
 
         $containerNodes = array();
@@ -291,9 +291,9 @@ class FawkesConf
 
             if( count($containerLoadOrder) <= $containerLoadOrderCount )
             {
-                print "Problems could be available with the following Container(s)\n";
-                print "COUNT LoadOrder: ".count($containerLoadOrder)."\n";
-                print "COUNT LoadOrderCount: ".$containerLoadOrderCount."\n";
+                PH::print_stdout(  "Problems could be available with the following Container(s)" );
+                PH::print_stdout(  "COUNT LoadOrder: ".count($containerLoadOrder) );
+                PH::print_stdout(  "COUNT LoadOrderCount: ".$containerLoadOrderCount );
                 print_r($containerLoadOrder);
                 #derr('container-meta-data seems to be corrupted, parent.child template cannot be calculated ', $containerMetaDataNode);
             }

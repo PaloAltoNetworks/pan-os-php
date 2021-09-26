@@ -19,11 +19,13 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-print "\n*************************************************\n";
-print "**************** FILTER TESTERS *****************\n\n";
+
 
 set_include_path(dirname(__FILE__) . '/../' . PATH_SEPARATOR . get_include_path());
 require_once dirname(__FILE__)."/../lib/pan_php_framework.php";
+
+PH::print_stdout(  "\n*************************************************");
+PH::print_stdout(  "**************** FILTER TESTERS *****************");
 
 PH::processCliArgs();
 
@@ -48,7 +50,7 @@ else
 if( isset(PH::$args['upload']) )
 {
     $cli = "php ../utils/upload-config.php in=input/panorama-8.0.xml out=api://{$api_ip_address} loadAfterUpload injectUserAdmin2  2>&1";
-    print " * Executing CLI: {$cli}\n";
+    PH::print_stdout( " * Executing CLI: {$cli}" );
 
     $output = array();
     $retValue = 0;
@@ -57,21 +59,24 @@ if( isset(PH::$args['upload']) )
 
     foreach( $output as $line )
     {
-        print '   ##  ';
-        print $line;
-        print "\n";
+        $string = '   ##  ';
+        $string .= $line;
+        PH::print_stdout( $string );
     }
 
     if( $retValue != 0 )
         derr("CLI exit with error code '{$retValue}'");
-    print "\n";
+    PH::print_stdout( "" );
 }
 
 //$api_ip_address = "192.168.55.208";
 
 function display_error_usage_exit($msg)
 {
-    fwrite(STDERR, PH::boldText("\n**ERROR** ") . $msg . "\n\n");
+    if( PH::$shadow_json )
+        PH::$JSON_OUT['error'] = $msg;
+    else
+        fwrite(STDERR, PH::boldText("\n**ERROR** ") . $msg . "\n\n");
     #display_usage_and_exit(true);
 }
 
@@ -133,7 +138,7 @@ foreach( RQuery::$defaultFilters as $type => &$filtersByField )
             if( $operator == '>,<,=,!' )
                 $operator = '<';
 
-            print "\n\n\n *** Processing filter: {$type} / ({$fieldName} {$operator})\n";
+            PH::print_stdout( "\n\n\n *** Processing filter: {$type} / ({$fieldName} {$operator})" );
 
             $ci = &$filter['ci'];
 
@@ -152,32 +157,32 @@ foreach( RQuery::$defaultFilters as $type => &$filtersByField )
                 $util = '../utils/zone-edit.php';
             elseif( $type == 'securityprofile' )
             {
-                print "******* SKIPPED for now *******\n";
+                PH::print_stdout( "******* SKIPPED for now *******" );
                 continue;
             }
             elseif( $type == 'app' )
             {
-                print "******* SKIPPED for now *******\n";
+                PH::print_stdout( "******* SKIPPED for now *******" );
                 continue;
             }
             elseif( $type == 'interface' )
             {
-                print "******* SKIPPED for now *******\n";
+                PH::print_stdout( "******* SKIPPED for now *******" );
                 continue;
             }
             elseif( $type == 'virtual-wire' )
             {
-                print "******* SKIPPED for now *******\n";
+                PH::print_stdout( "******* SKIPPED for now *******" );
                 continue;
             }
             elseif( $type == 'routing' )
             {
-                print "******* SKIPPED for now *******\n";
+                PH::print_stdout( "******* SKIPPED for now *******" );
                 continue;
             }
             elseif( $type == 'device' )
             {
-                print "******* SKIPPED for now *******\n";
+                PH::print_stdout( "******* SKIPPED for now *******" );
                 continue;
             }
             else
@@ -199,7 +204,7 @@ foreach( RQuery::$defaultFilters as $type => &$filtersByField )
 
             $cli .= ' 2>&1';
 
-            print " * Executing CLI: {$cli}\n";
+            PH::print_stdout( " * Executing CLI: {$cli}" );
 
             $output = array();
             $retValue = 0;
@@ -208,27 +213,27 @@ foreach( RQuery::$defaultFilters as $type => &$filtersByField )
 
             foreach( $output as $line )
             {
-                print '   ##  ';
-                print $line;
-                print "\n";
+                $string = '   ##  ';
+                $string .= $line;
+                PH::print_stdout( $string );
             }
 
             if( $retValue != 0 )
                 derr("CLI exit with error code '{$retValue}'");
 
-            print "\n";
+            PH::print_stdout( "" );
 
         }
     }
 }
 
-print "\n*****  *****\n";
-print " - Processed {$totalFilterCount} filters\n";
-print " - Found {$totalFilterWithCiCount} that are CI enabled\n";
+PH::print_stdout( "\n*****  *****" );
+PH::print_stdout( " - Processed {$totalFilterCount} filters" );
+PH::print_stdout( " - Found {$totalFilterWithCiCount} that are CI enabled" );
 
-print "\n";
-print "\n*********** FINISHED TESTING FILTERS ************\n";
-print "*************************************************\n\n";
+PH::print_stdout( "" );
+PH::print_stdout( "\n*********** FINISHED TESTING FILTERS ************" );
+PH::print_stdout( "*************************************************\n" );
 
 
 

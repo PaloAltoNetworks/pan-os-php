@@ -521,7 +521,7 @@ class PANConf
         foreach( $this->vsyssroot->childNodes as $node )
         {
             if( $node->nodeType != 1 ) continue;
-            //print "DOM type: ".$node->nodeType."\n";
+            //PH::print_stdout(  "DOM type: ".$node->nodeType );
 
             $localVirtualSystemName = DH::findAttribute('name', $node);
 
@@ -676,7 +676,7 @@ class PANConf
     public function API_uploadConfig($config_name = 'panconfigurator-default.xml')
     {
 
-        print "Uploadig config to device....";
+        PH::print_stdout(  "Uploadig config to device...." );
 
         $url = "&type=import&category=configuration";
 

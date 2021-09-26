@@ -216,9 +216,9 @@ class TagRuleContainer extends ObjRuleContainer
                 if( $refClass == "Address" || $refClass == "AddressGroup" )
                     foreach( $f->refrules as $ref )
                     {
-                        #print '  - ' . $ref->toString() . "\n";
+                        #PH::print_stdout(  '  - ' . $ref->toString() );
                         $refClass = get_class($ref);
-                        #print "refclass: " . $refClass . "\n";
+                        #PH::print_stdout(  "refclass: " . $refClass );
                         if( $refClass == 'AddressGroup' )
                         {
                             /** @var AddressGroup $ref */

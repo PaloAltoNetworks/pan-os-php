@@ -121,7 +121,6 @@ class LoopbackIfStore extends ObjStore
         {
             $con = findConnectorOrDie($this);
             $xpath = $s->getXPath();
-            #print 'XPATH: '.$xpath->textContent."\n";
             $con->sendSetRequest($xpath, DH::domlist_to_xml($s->xmlroot->childNodes, -1, FALSE));
         }
 
