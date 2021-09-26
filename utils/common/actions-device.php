@@ -100,10 +100,8 @@ DeviceCallContext::$supportedActions['displayreferences'] = array(
         $object->display_references(7);
     },
 );
-DeviceCallContext::$supportedActions['DeviceGroupcreate'] = array(
-    'name' => 'devicegroupcreate',
-    'GlobalInitFunction' => function (DeviceCallContext $context) {
-    },
+DeviceCallContext::$supportedActions['DeviceGroup-create'] = array(
+    'name' => 'devicegroup-create',
     'MainFunction' => function (DeviceCallContext $context) {
     },
     'GlobalFinishFunction' => function (DeviceCallContext $context) {
@@ -138,6 +136,30 @@ DeviceCallContext::$supportedActions['DeviceGroupcreate'] = array(
         'name' => array('type' => 'string', 'default' => 'false'),
         'parentdg' => array('type' => 'string', 'default' => 'null'),
     ),
+);
+DeviceCallContext::$supportedActions['DeviceGroup-delete'] = array(
+    'name' => 'devicegroup-delete',
+    'MainFunction' => function (DeviceCallContext $context) {
+
+        $object = $context->object;
+        $name = $object->name();
+
+        $pan = $context->subSystem;
+        if( !$pan->isPanorama() )
+            derr( "only supported on Panorama config" );
+
+        if( get_class($object) == "DeviceGroup" )
+        {
+            $childDG = $object->_childDeviceGroups;
+            if( count($childDG) != 0 )
+                PH::print_stdout("     - SKIP DG with name: '" . $name . "' has ChildDGs. DG can not removed");
+            else
+            {
+                PH::print_stdout("     * delete DeviceGroup: " . $name);
+                $pan->removeDeviceGroup($object);
+            }
+        }
+    }
 );
 DeviceCallContext::$supportedActions[] = array(
     'name' => 'exportToExcel',
@@ -284,6 +306,10 @@ DeviceCallContext::$supportedActions['template-add'] = array(
         /** @var TemplateStack $object */
         $object = $context->object;
 
+        $pan = $context->subSystem;
+        if( !$pan->isPanorama() )
+            derr( "only supported on Panorama config" );
+
         if( get_class($object) == "TemplateStack" )
         {
             $templateName = $context->arguments['templateName'];
@@ -309,4 +335,34 @@ DeviceCallContext::$supportedActions['template-add'] = array(
         'templateName' => array('type' => 'string', 'default' => 'false'),
         'position' => array('type' => 'string', 'default' => 'bottom'),
     ),
+);
+DeviceCallContext::$supportedActions['AddressStore-rewrite'] = array(
+    'name' => 'addressstore-rewrite',
+    'GlobalInitFunction' => function (DeviceCallContext $context) {
+        $context->first = true;
+    },
+    'MainFunction' => function (DeviceCallContext $context) {
+
+        /** @var DeviceGroup $object */
+        $object = $context->object;
+
+        $pan = $context->subSystem;
+        if( !$pan->isPanorama() )
+            derr( "only supported on Panorama config" );
+
+        if( get_class($object) == "DeviceGroup" )
+        {
+            if( $context->first )
+            {
+                $object->owner->addressStore->rewriteAddressStoreXML();
+                $object->owner->addressStore->rewriteAddressGroupStoreXML();
+                $context->first = false;
+            }
+
+            $object->addressStore->rewriteAddressStoreXML();
+            $object->addressStore->rewriteAddressGroupStoreXML();
+        }
+
+    }
+  //rewriteAddressStoreXML()
 );
