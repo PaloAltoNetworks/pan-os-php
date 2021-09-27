@@ -43,6 +43,11 @@ DeviceCallContext::$supportedActions['display'] = array(
             }
             //Todo: PH::print_stdout( where this TemplateStack is used SERIAL
         }
+        elseif( get_class($object) == "VirtualSystem" )
+        {
+            /** @var VirtualSystem $object */
+            PH::print_stdout( $context->padding." - Name: '{$object->alternativeName()}'" );
+        }
         elseif( get_class($object) == "DeviceGroup" )
         {
             $parentDGS = $object->parentDeviceGroups();
