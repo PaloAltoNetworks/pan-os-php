@@ -5,6 +5,7 @@ UTILS:
 * pa_rule-edit - introduce new 'filter=(from has.same.to.zone)'/'filter=(to has.same.from.zone)'
 * pa_device-edit - introduce new actions=DeviceGroup-remove / actions=AddressStore-rewrite
 * pa_key-manager - introduce argument 'user' and 'pw' to create PAN-OS API-key without CLI interaction
+* pa_key-manager - display .panconfkeystore filepath if using argument 'debugapi'
 
 BUGFIX:
 

@@ -58,11 +58,6 @@ foreach( PH::$args as $index => &$arg )
     }
 }
 
-PH::print_stdout( " - loading keystore from file in user home directory... ");
-PanAPIConnector::loadConnectorsFromUserHome();
-
-
-PH::print_stdout("");
 
 $noArgProvided = TRUE;
 
@@ -85,6 +80,14 @@ if( isset(PH::$args['pw']) )
     $cliPW = PH::$args['pw'];
 else
     $cliPW = null;
+
+
+PH::print_stdout( " - loading keystore from file in user home directory... ");
+PanAPIConnector::loadConnectorsFromUserHome( $debugAPI);
+
+
+PH::print_stdout("");
+
 
 if( isset(PH::$args['delete']) )
 {
