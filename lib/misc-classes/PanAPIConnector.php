@@ -277,7 +277,7 @@ class PanAPIConnector
         return array('type' => $this->info_deviceType, 'version' => $this->info_PANOS_version_int);
     }
 
-    static public function loadConnectorsFromUserHome()
+    static public function loadConnectorsFromUserHome( $debug = false)
     {
         if( self::$keyStoreInitialized )
             return;
@@ -295,6 +295,9 @@ class PanAPIConnector
         }
         else
             $file = getenv('HOME') . '/' . self::$keyStoreFileName;
+
+        if( $debug )
+            PH::print_stdout( " - FILE: ".$file );
 
         if( file_exists($file) )
         {
