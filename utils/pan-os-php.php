@@ -70,7 +70,10 @@ $typeUTIL->supportedArguments['version'] = array('niceName' => 'version', 'short
 
 
 if( isset(PH::$args['version']) )
+{
+    PH::print_stdout( " - ".dirname(__FILE__) );
     exit();
+}
 elseif( !isset(PH::$args['type']) )
 {
     $typeUTIL->display_error_usage_exit('"type" is missing from arguments');
