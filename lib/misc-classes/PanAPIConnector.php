@@ -354,7 +354,7 @@ class PanAPIConnector
      * @param bool $hiddenPW
      * @return PanAPIConnector
      */
-    static public function findOrCreateConnectorFromHost($host, $apiKey = null, $promptForKey = TRUE, $checkConnectivity = TRUE, $hiddenPW = TRUE, $debugAPI = false)
+    static public function findOrCreateConnectorFromHost($host, $apiKey = null, $promptForKey = TRUE, $checkConnectivity = TRUE, $hiddenPW = TRUE, $debugAPI = false, $cliUSER = null, $cliPW = null)
     {
         self::loadConnectorsFromUserHome();
 
@@ -415,17 +415,28 @@ class PanAPIConnector
             else
                 PH::print_stdout( "** Request API access to host '$host' but API was not found in cache." );
 
-            PH::print_stdout( "** Please enter API key or username below and hit enter:  " );
-            $handle = fopen("php://stdin", "r");
-            $line = fgets($handle);
-            $apiKey = trim($line);
+            if( $cliUSER === null )
+            {
+                PH::print_stdout( "** Please enter API key or username below and hit enter:  " );
+                $handle = fopen("php://stdin", "r");
+                $line = fgets($handle);
+                $apiKey = trim($line);
+            }
+            else
+            {
+                $apiKey = $cliUSER;
+                $handle = fopen("php://stdin", "r");
+            }
+
 
             if( strlen($apiKey) < 19 )
             {
                 $user = $apiKey;
 
-
-                $password = self::hiddenPWvalidation($user, $hiddenPW, $handle);
+                if( $cliPW === null )
+                    $password = self::hiddenPWvalidation($user, $hiddenPW, $handle);
+                else
+                    $password = $cliPW;
 
                 PH::print_stdout( "" );
 
@@ -468,6 +479,7 @@ class PanAPIConnector
         if( $checkConnectivity )
         {
             $connector->testConnectivity();
+            PH::print_stdout("");
             if( !$wrongLogin )
                 self::$savedConnectors[] = $connector;
             if( PH::$saveAPIkey )

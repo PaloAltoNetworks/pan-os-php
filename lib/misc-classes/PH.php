@@ -89,6 +89,7 @@ class PH
             }
             elseif( $arg == 'shadow-json' )
             {
+                PH::disableOutputFormatting();
                 PH::$shadow_json = TRUE;
                 PH::$PANC_WARN = FALSE;
                 unset(PH::$argv[$argIndex]);
