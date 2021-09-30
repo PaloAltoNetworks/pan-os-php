@@ -680,7 +680,7 @@ class RuleCallContext extends CallContext
         if( $string )
             $tmp_return = $app->name().",".$string_category.",".$string_subcategory.",".$risk;
         else
-            $tmp_return = array( $app->name(), $string_category, $string_subcategory, $risk );
+            $tmp_return = array( "name" => $app->name(), "category" => $string_category, "subcatecory" => $string_subcategory, "risk" => $risk );
 
         return $tmp_return;
     }
