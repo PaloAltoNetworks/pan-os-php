@@ -349,7 +349,7 @@ class App
         $text_tcp = "";
         if( isset($this->tcp) )
         {
-            $text_tcp = $padding_10 . "tcp/";
+            $text_tcp = "tcp/";
             foreach( $this->tcp as $tcp )
             {
                 if( $tcp[0] == "single" )
@@ -362,11 +362,12 @@ class App
                     $text_tcp .= "implode:" . implode("','", $tcp) . "";
             }
             $subarray[$this->name()]['tcp'] = $text_tcp;
+            $text_tcp = $padding_10 . $text_tcp;
         }
         $text_udp = "";
         if( isset($this->udp) )
         {
-            $text_udp = $padding_10 . "udp/";
+            $text_udp = "udp/";
             foreach( $this->udp as $udp )
             {
                 if( $udp[0] == "single" )
@@ -379,6 +380,7 @@ class App
                     $text_udp .= "implode:" . implode("','", $udp) . "";
             }
             $subarray[$this->name()]['udp'] = $text_udp;
+            $text_udp = $padding_10 . $text_udp;
         }
         PH::print_stdout($text_tcp . $text_udp);
 

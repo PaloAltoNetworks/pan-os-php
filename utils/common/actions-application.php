@@ -165,14 +165,16 @@ ApplicationCallContext::$supportedActions[] = array(
                             $context->counter_dependencies++;
                         }
 
+                        $tmpstring = "";
                         foreach( $app->calculateDependencies() as $dependency )
                         {
                             $text .= $dependency->name() . ",";
+                            $tmpstring .= $dependency->name() . ",";
                         }
                         if( count($app->calculateDependencies()) > 0 )
                         {
                             PH::print_stdout( $text );
-                            PH::$JSON_TMP['sub']['object'][$app->name()]['dependencies'] = $text;
+                            PH::$JSON_TMP['sub']['object'][$app->name()]['dependencies'] = $tmpstring;
                         }
 
                     }
