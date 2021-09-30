@@ -3,6 +3,7 @@ CHANGELOG
 2.0.13
 UTILS:
 * pa_rule-edit actions=display:ResolveAddressSummary|ResolveServiceSummary introduce summary output if argument shadow-json is used
+* pa_rule-edit introduce additionalargument 'ResolveApplicationSummary' for actions=display:ResolveApplicationSummary and actions=exporttoexcel:file,ResolveApplicationSummary
 
 BUGFIX:
 

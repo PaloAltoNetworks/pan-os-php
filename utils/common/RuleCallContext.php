@@ -365,6 +365,12 @@ class RuleCallContext extends CallContext
             return self::enclose($rule->apps->getAll(), $wrap);
         }
 
+        if( $fieldName == 'application_resolved_sum' )
+        {
+            $port_mapping_text = $this->ApplicationResolveSummary( $rule, true );
+            return self::enclose($port_mapping_text);
+        }
+
         if( $fieldName == 'security-profile' )
         {
             if( !$rule->isSecurityRule() )
@@ -605,6 +611,78 @@ class RuleCallContext extends CallContext
         }
 
         return $port_mapping_text;
+    }
+
+    public function ApplicationResolveSummary( $rule, $returnString = false )
+    {
+        $app_mapping = array();
+
+        /** @var SecurityRule $rule */
+        if( $rule->isDecryptionRule() || $rule->isNatRule() || $rule->isAuthenticationRule() || $rule->isCaptivePortalRule() )
+            return '';
+        if( $rule->isAppOverrideRule() )
+            return $rule->application();
+
+        if( $rule->apps->isAny() )
+        {
+            #return 'any';
+        }
+
+
+        $applications = $rule->apps->getAll();
+        foreach( $applications as $app )
+        {
+            /** @var App $app */
+            if( $app->isApplicationGroup() )
+            {
+                foreach( $app->groupApps() as $app1 )
+                    $app_mapping[] = $this->appReturn( $app1, $returnString );
+            }
+            elseif( $app->isApplicationFilter() )
+            {
+                $app_mapping[] = $this->appReturn( $app, $returnString );
+            }
+            elseif( $app->isApplicationCustom() )
+            {
+                $app_mapping[] = $this->appReturn( $app, $returnString );
+            }
+            elseif( $app->isContainer() )
+            {
+                foreach( $app->containerApps() as $app1 )
+                    $app_mapping[] = $this->appReturn( $app1, $returnString );
+            }
+            else
+            {
+                $app_mapping[] = $this->appReturn( $app, $returnString );
+            }
+        }
+
+        return $app_mapping;
+    }
+
+    public function appReturn( $app, $string = false )
+    {
+        if( isset($app->app_filter_details['category']) )
+            $string_category = implode( "|", $app->app_filter_details['category'] );
+        else
+            $string_category = $app->category;
+
+        if( isset($app->app_filter_details['subcategory']) )
+            $string_subcategory = implode( "|", $app->app_filter_details['subcategory'] );
+        else
+            $string_subcategory = $app->subCategory;
+
+        if( isset($app->risk) )
+            $risk = $app->risk;
+        else
+            $risk = "";
+
+        if( $string )
+            $tmp_return = $app->name().",".$string_category.",".$string_subcategory.",".$risk;
+        else
+            $tmp_return = array( $app->name(), $string_category, $string_subcategory, $risk );
+
+        return $tmp_return;
     }
 }
 
