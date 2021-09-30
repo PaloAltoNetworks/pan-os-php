@@ -113,29 +113,76 @@ class AppOverrideRule extends Rule
     {
         $padding = str_pad('', $padding);
 
+        PH::$JSON_TMP['sub']['object'][$this->name()]['name'] = $this->name();
+        PH::$JSON_TMP['sub']['object'][$this->name()]['type'] = get_class($this);
+
         $dis = '';
         if( $this->disabled )
+        {
             $dis = '<disabled>';
+            PH::$JSON_TMP['sub']['object'][$this->name()]['disabled'] = "true";
+        }
+        else
+            PH::$JSON_TMP['sub']['object'][$this->name()]['disabled'] = "false";
+
 
         $sourceNegated = '';
         if( $this->sourceIsNegated() )
+        {
             $sourceNegated = '*negated*';
+            PH::$JSON_TMP['sub']['object'][$this->name()]['sourcenegated'] = "true";
+        }
+        else
+            PH::$JSON_TMP['sub']['object'][$this->name()]['sourcenegated'] = "false";
+
 
         $destinationNegated = '';
         if( $this->destinationIsNegated() )
+        {
             $destinationNegated = '*negated*';
+            PH::$JSON_TMP['sub']['object'][$this->name()]['destinationnegated'] = "true";
+        }
+        else
+            PH::$JSON_TMP['sub']['object'][$this->name()]['destinationnegated'] = "false";
 
 
-        PH::print_stdout( $padding . "*Rule named '{$this->name}' $dis" );
+
+        $text = $padding . "*Rule named '{$this->name}' $dis";
+        if( $this->owner->version >= 70 )
+        {
+            $text .= " UUID: '" . $this->uuid() . "'";
+            PH::$JSON_TMP['sub']['object'][$this->name()]['uuid'] = $this->uuid();
+        }
+        PH::print_stdout( $text );
+
+
         PH::print_stdout( $padding . "  From: " . $this->from->toString_inline() . "  |  To:  " . $this->to->toString_inline() );
+        PH::$JSON_TMP['sub']['object'][$this->name()]['from'] = $this->from->toString_inline();
+        PH::$JSON_TMP['sub']['object'][$this->name()]['to'] = $this->to->toString_inline();
+
+
         PH::print_stdout( $padding . "  Source: $sourceNegated " . $this->source->toString_inline() );
+        PH::$JSON_TMP['sub']['object'][$this->name()]['source'] = $this->source->toString_inline();
+
         PH::print_stdout( $padding . "  Destination: $destinationNegated " . $this->destination->toString_inline() );
+        PH::$JSON_TMP['sub']['object'][$this->name()]['destination'] = $this->destination->toString_inline();
+
         PH::print_stdout( $padding . "  Application:  " . $this->_app->name() );
+        PH::$JSON_TMP['sub']['object'][$this->name()]['application'] = $this->_app->name();
+
         PH::print_stdout( $padding . "  Protocol:  " . $this->_protocol . "    Port:  " . $this->_ports );
+        PH::$JSON_TMP['sub']['object'][$this->name()]['protocol'] = $this->_protocol;
+        PH::$JSON_TMP['sub']['object'][$this->name()]['port'] = $this->_ports;
+
         PH::print_stdout( $padding . "    Tags:  " . $this->tags->toString_inline() );
+        PH::$JSON_TMP['sub']['object'][$this->name()]['tag'] = $this->tags->toString_inline();
 
         if( strlen($this->_description) > 0 )
+        {
             PH::print_stdout( $padding . "  Desc:  " . $this->_description );
+            PH::$JSON_TMP['sub']['object'][$this->name()]['description'] = $this->_description;
+        }
+
 
         PH::print_stdout("");
     }

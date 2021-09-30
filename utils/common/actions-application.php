@@ -55,12 +55,18 @@ ApplicationCallContext::$supportedActions[] = array(
         $app = $context->object;
 
         PH::print_stdout( $context->padding . "* " . get_class($app) . " '{$app->name()}' " );
+        PH::$JSON_TMP['sub']['object'][$app->name()]['name'] = $app->name();
+        PH::$JSON_TMP['sub']['object'][$app->name()]['type'] = get_class($app);
+
+
         if( $app->isContainer() )
         {
             $context->counter_containers++;
             if( $context->print_container )
             {
-                $app->print_appdetails( $context->padding );
+                $tmparray = array();
+                $app->print_appdetails( $context->padding, true, $tmparray );
+                PH::$JSON_TMP['sub']['object'][$app->name()]['container'] = $tmparray;
 
                 PH::print_stdout( $context->padding." - is container: " );
                 foreach( $app->containerApps() as $app1 )
@@ -70,23 +76,29 @@ ApplicationCallContext::$supportedActions[] = array(
                         PH::print_stdout( "is container: " );
                         foreach( $app1->containerApps() as $app2 )
                         {
+                            $tmparray = array();
                             PH::print_stdout( "     ->" . $app2->type . " | " );
-                            $app2->print_appdetails( $context->padding, true );
+                            $app2->print_appdetails( $context->padding, true, $tmparray );
+                            PH::$JSON_TMP['sub']['object'][$app->name()]['container']['containerapp'][] = $tmparray;
                         }
                     }
                     else
                     {
+                        $tmparray = array();
                         PH::print_stdout( "     ->" . $app1->type . " | " );
-                        $app1->print_appdetails( $context->padding, true );
+                        $app1->print_appdetails( $context->padding, true, $tmparray );
+                        PH::$JSON_TMP['sub']['object'][$app->name()]['container']['app'][] = $tmparray;
                     }
                 }
             }
         }
         else
         {
+            $tmparray = array();
             PH::print_stdout( $context->padding." - ".$app->type );
             $printflag = true;
-            $app->print_appdetails( $context->padding, $printflag );
+            $app->print_appdetails( $context->padding, $printflag, $tmparray );
+            PH::$JSON_TMP['sub']['object'][$app->name()]['app'][] = $tmparray;
         }
 
         if( $app->type == 'tmp' )
@@ -100,7 +112,11 @@ ApplicationCallContext::$supportedActions[] = array(
         {
             $context->counter_custom_app++;
             if( $app->custom_signature )
+            {
                 PH::print_stdout( "custom_signature is set" );
+                PH::$JSON_TMP['sub']['object'][$app->name()]['custom_signature'] = "available";
+            }
+
         }
 
         if( $app->isApplicationFilter() )
@@ -136,6 +152,7 @@ ApplicationCallContext::$supportedActions[] = array(
             if( isset($app_explicit[$implApp->name()]) )
             {
                 PH::print_stdout( str_pad($app->name(), 30) . " has app-id: " . str_pad($implApp->name(), 20) . " as explicit and implicit used" );
+                PH::$JSON_TMP['sub']['object'][$app->name()]['explicitANDimplicit'][$implApp->name()]['name'] = $implApp->name();
                 if( isset($app->implicitUse) && $context->print_dependencies )
                 {
                     if( !isset($dependency_app[$app->name()]) )
@@ -148,12 +165,18 @@ ApplicationCallContext::$supportedActions[] = array(
                             $context->counter_dependencies++;
                         }
 
+                        $tmpstring = "";
                         foreach( $app->calculateDependencies() as $dependency )
                         {
                             $text .= $dependency->name() . ",";
+                            $tmpstring .= $dependency->name() . ",";
                         }
                         if( count($app->calculateDependencies()) > 0 )
+                        {
                             PH::print_stdout( $text );
+                            PH::$JSON_TMP['sub']['object'][$app->name()]['dependencies'] = $tmpstring;
+                        }
+
                     }
 
                 }
@@ -167,7 +190,11 @@ ApplicationCallContext::$supportedActions[] = array(
             if( !isset($app_implicit[$implApp->name()]) )
             {
                 if( count($app_implicit) > 0 )
+                {
                     PH::print_stdout( str_pad($app->name(), 30) . " has app-id: " . str_pad($implApp->name(), 20) . " as explicit but NOT implicit used" );
+                    PH::$JSON_TMP['sub']['object'][$app->name()]['explicitNOTimplicit'][$implApp->name()]['name'] = $implApp->name();
+                }
+
             }
         }
 
@@ -176,7 +203,7 @@ ApplicationCallContext::$supportedActions[] = array(
             if( !isset($app_explicit[$implApp->name()]) )
             {
                 PH::print_stdout( str_pad($app->name(), 30) . " has app-id: " . str_pad($implApp->name(), 20) . " as implicit but NOT explicit used" );
-
+                PH::$JSON_TMP['sub']['object'][$app->name()]['implicitNOTexplicit'][$implApp->name()]['name'] = $implApp->name();
             }
         }
 
@@ -192,6 +219,17 @@ ApplicationCallContext::$supportedActions[] = array(
         PH::print_stdout( "custom_app_counter: ".$context->counter_custom_app."" );
         PH::print_stdout( "app_filter_counter: ".$context->counter_app_filter."" );
         PH::print_stdout( "app_group_counter: ".$context->counter_app_group."" );
+
+
+        PH::$JSON_TMP['sub']['tmp_counter'] = $context->tmpcounter;
+        PH::$JSON_TMP['sub']['predefined_counter'] = $context->counter_predefined;
+        PH::$JSON_TMP['sub']['dependency_app_counter'] = $context->counter_dependencies;
+
+        PH::$JSON_TMP['sub']['container_counter'] = $context->counter_containers;
+
+        PH::$JSON_TMP['sub']['custom_app_counter'] = $context->counter_custom_app;
+        PH::$JSON_TMP['sub']['app_filter_counter'] = $context->counter_app_filter;
+        PH::$JSON_TMP['sub']['app_group_counter'] = $context->counter_app_group;
     }
 );
 

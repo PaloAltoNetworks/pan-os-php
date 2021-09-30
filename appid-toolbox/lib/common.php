@@ -27,7 +27,7 @@ $maximumVersion = "2.1.0";
 
 // Check version of PAN-PHP-framework for compatibility
 if( ! PH::frameworkVersion_isGreaterThan($minimumVersion) || PH::frameworkVersion_isGreaterThan($maximumVersion) )
-    derr("AppID Toolbox requires PAN-PHP-framework version  > {$minimumVersion} and  < $maximumVersion while current version is ".PH::frameworkVersion()."\n");
+    derr("AppID Toolbox requires PAN-PHP-framework version  > {$minimumVersion} and  < $maximumVersion while current version is ".PH::frameworkVersion() . " [".PH::frameworkInstalledOS()."]"."\n");
 
 if( strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' )
 {

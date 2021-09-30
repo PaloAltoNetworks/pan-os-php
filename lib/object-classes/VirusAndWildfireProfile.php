@@ -273,7 +273,8 @@ class VirusAndWildfireProfile
     public function display()
     {
         PH::print_stdout(  "     * " . get_class($this) . " '" . $this->name() . "'    ");
-
+        PH::$JSON_TMP['sub']['object'][$this->name()]['name'] = $this->name();
+        PH::$JSON_TMP['sub']['object'][$this->name()]['type'] = get_class($this);
         //Todo: continue for PH::print_stdout( ); out
 
     }

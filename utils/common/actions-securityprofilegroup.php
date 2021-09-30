@@ -35,14 +35,23 @@ SecurityProfileGroupCallContext::$supportedActions[] = array(
         $object = $context->object;
 
         PH::print_stdout( $context->padding . "* " . get_class($object) . " '{$object->name()}' (".count($object->secprofiles )." members)" );
+        PH::$JSON_TMP['sub']['object'][$object->name()]['name'] = $object->name();
+        PH::$JSON_TMP['sub']['object'][$object->name()]['type'] = get_class($object);
+        PH::$JSON_TMP['sub']['object'][$object->name()]['securityprofiles']['count'] = count($object->secprofiles );
+
         foreach( $object->secprofiles as $key => $prof )
         {
             if( is_object( $prof ) )
+            {
                 PH::print_stdout( "          - {$key}  '{$prof->name()}'" );
+                PH::$JSON_TMP['sub']['object'][$object->name()]['securityprofiles'][$key] = $prof->name();
+            }
+
             else
             {
                 //defautl prof is string not an object
                 PH::print_stdout( "          - {$key}  '{$prof}'" );
+                PH::$JSON_TMP['sub']['object'][$object->name()]['securityprofiles'][$key] = $prof;
             }
         }
 

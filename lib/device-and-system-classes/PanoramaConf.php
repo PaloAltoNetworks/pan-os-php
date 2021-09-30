@@ -1279,7 +1279,7 @@ class PanoramaConf
         $return['PanoramaConf-stat'] = $stdoutarray;
 
         #PH::print_stdout( $return );
-        PH::print_stdout( $stdoutarray );
+        PH::print_stdout( $stdoutarray, true );
 
 
     }

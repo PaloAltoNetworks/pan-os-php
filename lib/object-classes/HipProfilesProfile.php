@@ -126,7 +126,8 @@ class HipProfilesProfile
     public function display()
     {
         PH::print_stdout( "     * " . get_class($this) . " '" . $this->name() . "'" );
-
+        PH::$JSON_TMP['sub']['object'][$this->name()]['name'] = $this->name();
+        PH::$JSON_TMP['sub']['object'][$this->name()]['type'] = get_class($this);
         /*
         //Todo: continue for display
         foreach( $this->tmp_url_prof_array as $url_type )

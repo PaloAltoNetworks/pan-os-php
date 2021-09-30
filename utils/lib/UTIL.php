@@ -48,10 +48,13 @@ class UTIL
     public $usageMsg = "";
     public $apiMode = FALSE;
 
+    public $runStartTime = 0;
+
     public $loadStartTime = 0;
     public $loadStartMem = 0;
     public $loadElapsedTime = 0;
     public $loadUsedMem = 0;
+    public $loadArrayMem = array( "0", "b");
 
     public $expedition = null;
     public $expedition_db_ip = null;
@@ -69,6 +72,8 @@ class UTIL
 
     function __construct($utilType, $argv, $PHP_FILE, $_supportedArguments = array(), $_usageMsg = "")
     {
+        $this->runStartTime = microtime(TRUE);
+
         $argc = array();
         $tmp_ph = new PH($argv, $argc);
 
@@ -86,10 +91,15 @@ class UTIL
         $this->utilLogger();
         $this->log->info("start UTIL: " . $this->PHP_FILE . " | " . implode(", ", $argv));
 
-        PH::print_stdout( " - PAN-OS-PHP version: ".PH::frameworkVersion() );
+
 
         if( $utilType != "custom" )
+        {
+            PH::print_stdout( " - PAN-OS-PHP version: ".PH::frameworkVersion() . " [".PH::frameworkInstalledOS()."]" );
+            PH::print_stdout( array( "version" => PH::frameworkVersion(), "os" => PH::frameworkInstalledOS() ), false, 'PAN-OS-PHP');
             $this->utilStart();
+        }
+
     }
 
     public function utilStart()
@@ -113,19 +123,22 @@ class UTIL
         PH::print_stdout( "**** PROCESSING OF $this->totalObjectsProcessed OBJECTS DONE ****" );
         PH::print_stdout( "" );
 
+        PH::print_stdout( array("PROCESSING OF $this->totalObjectsProcessed OBJECTS DONE"), false,'summary' );
+
         $this->stats();
 
         $this->save_our_work(TRUE);
+
+        $this->log->info("END UTIL: " . $this->PHP_FILE);
+
+        $runtime = number_format((microtime(TRUE) - $this->runStartTime), 2, '.', '');
+        PH::print_stdout( array( 'value' => $runtime, 'type' => "seconds" ), false,'runtime' );
 
         if( PH::$shadow_json )
         {
             PH::$JSON_OUT['log'] = PH::$JSON_OUTlog;
             print json_encode( PH::$JSON_OUT, JSON_PRETTY_PRINT );
         }
-
-
-
-        $this->log->info("END UTIL: " . $this->PHP_FILE);
     }
 
     /*
@@ -211,6 +224,8 @@ class UTIL
             foreach( RQuery::$defaultFilters[$this->utilType] as $index => &$filter )
             {
                 PH::print_stdout( "* " . $index . "" );
+                PH::$JSON_TMP[$index]['name'] = $index;
+
                 ksort($filter['operators']);
 
                 foreach( $filter['operators'] as $oindex => &$operator )
@@ -219,8 +234,18 @@ class UTIL
                     $output = "    - $oindex";
 
                     PH::print_stdout( $output . "" );
+                    PH::$JSON_TMP[$index]['operators'][$oindex]['name'] = $oindex;
+                    PH::$JSON_TMP[$index]['operators'][$oindex]['operator'] = $operator;
                 }
                 PH::print_stdout( "" );
+            }
+
+            PH::print_stdout( PH::$JSON_TMP, false, 'listfilters' );
+            PH::$JSON_TMP = array();
+            if( PH::$shadow_json )
+            {
+                PH::$JSON_OUT['log'] = PH::$JSON_OUTlog;
+                print json_encode( PH::$JSON_OUT, JSON_PRETTY_PRINT );
             }
 
             exit(0);
@@ -288,7 +313,7 @@ class UTIL
             {
 
                 $output = "* " . $action['name'];
-
+                PH::$JSON_TMP['arg'][$action['name']]['name'] = $action['name'];
                 $output = str_pad($output, 28) . '|';
 
                 if( isset($action['args']) )
@@ -301,9 +326,14 @@ class UTIL
                             $output .= "\n" . str_pad('', 28) . '|';
 
                         $output .= " " . str_pad("#$count $argName:{$arg['type']}", 24) . "| " . str_pad("{$arg['default']}", 12) . "| ";
+                        PH::$JSON_TMP['arg'][$action['name']]['arguments'][$count]['argument'] = $argName;
+                        PH::$JSON_TMP['arg'][$action['name']]['arguments'][$count]['type'] = $arg['type'];
+                        PH::$JSON_TMP['arg'][$action['name']]['arguments'][$count]['default'] = $arg['default'];
+
                         if( isset($arg['choices']) )
                         {
                             $output .= PH::list_to_string($arg['choices']);
+                            PH::$JSON_TMP['arg'][$action['name']]['arguments'][$count]['choices'] = $arg['choices'];
                         }
 
                         $count++;
@@ -314,6 +344,14 @@ class UTIL
 
                 PH::print_stdout( $output );
                 PH::print_stdout( str_pad('', 100, '=') );
+            }
+
+            PH::print_stdout( PH::$JSON_TMP, false, 'listactions' );
+            PH::$JSON_TMP = array();
+            if( PH::$shadow_json )
+            {
+                PH::$JSON_OUT['log'] = PH::$JSON_OUTlog;
+                print json_encode( PH::$JSON_OUT, JSON_PRETTY_PRINT );
             }
 
             exit(0);
@@ -429,6 +467,7 @@ class UTIL
                     PH::print_stdout( "" );
                     PH::print_stdout( "" );
                 }
+
             }
 
 
@@ -467,17 +506,28 @@ class UTIL
 
     public function usageMessage()
     {
-        PH::print_stdout( PH::boldText("USAGE: ") . "php " . $this->PHP_FILE . " in=inputfile.xml out=outputfile.xml location=any|shared|sub " .
-            "actions=action1:arg1 ['filter=(type is.group) or (name contains datacenter-)']" );
-        PH::print_stdout( "php " . $this->PHP_FILE . " listactions   : list supported actions" );
-        PH::print_stdout( "php " . $this->PHP_FILE . " listfilters   : list supported filter" );
-        PH::print_stdout( "php " . $this->PHP_FILE . " help          : more help messages" );
-        PH::print_stdout( PH::boldText("\nExamples:") );
-        PH::print_stdout( " - php " . $this->PHP_FILE . " in=api://192.169.50.10 location=DMZ-Firewall-Group actions=displayReferences 'filter=(name eq Mail-Host1)'" );
-        PH::print_stdout( " - php " . $this->PHP_FILE . " in=config.xml out=output.xml location=any actions=delete" );
-        PH::print_stdout( "" );
-        PH::print_stdout( "" );
-        PH::print_stdout( PH::boldText("PAN-OS API connections for version < 9.0 now need additional argument: 'shadow-apikeynohidden'") );
+        $string = PH::boldText("USAGE: ") . "php " . $this->PHP_FILE . " in=inputfile.xml out=outputfile.xml location=any|shared|sub " .
+            "actions=action1:arg1 ['filter=(type is.group) or (name contains datacenter-)']\n";
+
+        $string .= "php " . $this->PHP_FILE . " listactions   : list supported actions\n";
+
+        $string .= "php " . $this->PHP_FILE . " listfilters   : list supported filter\n";
+
+        $string .= "php " . $this->PHP_FILE . " help          : more help messages";
+
+        $string .= PH::boldText("\nExamples:\n");
+
+        $string .= " - php " . $this->PHP_FILE . " in=api://192.169.50.10 location=DMZ-Firewall-Group actions=displayReferences 'filter=(name eq Mail-Host1)'";
+
+        $string .= " - php " . $this->PHP_FILE . " in=config.xml out=output.xml location=any actions=delete\n";
+
+        $string .= "\n\n";
+
+        $string .= PH::boldText("PAN-OS API connections for version < 9.0 now need additional argument: 'shadow-apikeynohidden'")."\n";
+
+
+        PH::print_stdout( $string );
+        PH::$JSON_TMP['usage'] = $string;
     }
 
     public function display_usage_and_exit($shortMessage = FALSE)
@@ -485,7 +535,11 @@ class UTIL
         if( $this->usageMsg == "" )
             $this->usageMessage();
         else
+        {
             PH::print_stdout( $this->usageMsg );
+            PH::$JSON_TMP['usage'] = $this->usageMsg;
+        }
+
         PH::print_stdout( "" );
         PH::print_stdout( "" );
 
@@ -498,15 +552,38 @@ class UTIL
             ksort($this->supportedArguments);
             foreach( $this->supportedArguments as &$arg )
             {
-                $tmp_text = " - " . PH::boldText($arg['niceName']);
+
+                PH::$JSON_TMP['arguments'][$arg['niceName']]['name'] = $arg['niceName'];
+
+                $tmp_text = PH::boldText($arg['niceName']);
                 if( isset($arg['argDesc']) )
+                {
                     $tmp_text .= '=' . $arg['argDesc'] ;
+                    PH::$JSON_TMP['arguments'][$arg['niceName']]['argdescription'] = $arg['argDesc'];
+                }
+
                 //."=";
-                PH::print_stdout( $tmp_text );
+                PH::print_stdout( " - " .$tmp_text );
+                PH::$JSON_TMP['arguments'][$arg['niceName']]['example'] = $tmp_text;
+
+
+
                 if( isset($arg['shortHelp']) )
+                {
                     PH::print_stdout( "     " . $arg['shortHelp'] );
+                    PH::$JSON_TMP['arguments'][$arg['niceName']]['shorthelp'] = $arg['shortHelp'];
+                }
+
 
                 PH::print_stdout( "" );
+            }
+
+            PH::print_stdout( PH::$JSON_TMP, false, 'help' );
+            PH::$JSON_TMP = array();
+            if( PH::$shadow_json )
+            {
+                PH::$JSON_OUT['log'] = PH::$JSON_OUTlog;
+                print json_encode( PH::$JSON_OUT, JSON_PRETTY_PRINT );
             }
 
             PH::print_stdout( "" );
@@ -740,6 +817,7 @@ class UTIL
             derr( "configType: ".$this->configType." not supported." );
 
         PH::print_stdout( " - Detected platform type is '{$this->configType}'" );
+        PH::print_stdout( array( get_class( $this->pan ) ), false, "platform" );
 
         if( isset($this->configInput['type']) && $this->configInput['type'] == 'api' )
             $this->pan->connector = $this->configInput['connector'];
@@ -771,7 +849,7 @@ class UTIL
 
             PH::print_stdout( " - No 'location' provided so using default ='".$this->objectsLocation."'" );
         }
-
+        PH::print_stdout( array( $this->objectsLocation ), false, "location");
         //
         // Template provided in CLI ?
         //
@@ -795,6 +873,7 @@ class UTIL
 
             PH::print_stdout( " - No 'template' provided so using default ='".$this->objectsTemplate."'" );
         }
+        PH::print_stdout( array( $this->objectsTemplate ), false, "template");
     }
 
     public function extracting_actions( $utilType = null)
@@ -899,6 +978,7 @@ class UTIL
             }
 
             PH::print_stdout( " - filter after sanitization : " . $this->objectFilterRQuery->sanitizedString() );
+            PH::print_stdout( array( $this->objectFilterRQuery->sanitizedString() ), false, "filter");
         }
         // --------------------
     }
@@ -918,10 +998,14 @@ class UTIL
         $this->loadEnd();
 
         PH::print_stdout( "   ($this->loadElapsedTime seconds, $this->loadUsedMem memory)" );
+        PH::print_stdout( array( "value" => $this->loadElapsedTime, "type" => " seconds") , false, "loadtime");
+
+        PH::print_stdout( array( "value" => $this->loadArrayMem[0], "type" => $this->loadArrayMem[1]) , false, "loadmemory");
         // --------------------
 
         $panc_version = $this->pan->appStore->predefinedStore_appid_version;
         PH::print_stdout( " - PAN-OS APP-ID version: ".$panc_version );
+        PH::print_stdout( array( $panc_version ), false, "PAN-OS APP-ID version" );
     }
 
     public function loadStart()
@@ -935,7 +1019,7 @@ class UTIL
         $this->loadEndTime = microtime(TRUE);
         $this->loadEndMem = memory_get_usage(TRUE);
         $this->loadElapsedTime = number_format(($this->loadEndTime - $this->loadStartTime), 2, '.', '');
-        $this->loadUsedMem = convert($this->loadEndMem - $this->loadStartMem);
+        $this->loadUsedMem = convert($this->loadEndMem - $this->loadStartMem, $this->loadArrayMem);
     }
 
     public function location_filter()
@@ -1255,15 +1339,31 @@ class UTIL
             $objects = &$objectsRecord['objects'];
 
             PH::print_stdout( "" );
-            PH::print_stdout( "* processing store '" . PH::boldText($store->toString()) . "' that holds " . count($objects) . " objects" );
+            $string = "* processing store '" . PH::boldText($store->toString()) . "' that holds " . count($objects) . " objects";
+            PH::print_stdout( $string );
+
+            PH::$JSON_TMP = array();
+            PH::$JSON_TMP['header'] = $string;
 
             foreach( $this->doActions as $doAction )
             {
                 if( is_object($store->owner) )
+                {
                     $doAction->subSystem = $store->owner;
+                    PH::$JSON_TMP['sub']['name'] = $store->owner->name();
+                    PH::$JSON_TMP['sub']['type'] = get_class( $store->owner );
+                }
+
                 else
+                {
                     $doAction->subSystem = $store;
+                    PH::$JSON_TMP['sub']['name'] = $store->name();
+                    PH::$JSON_TMP['sub']['type'] = "shared";
+                }
+
             }
+
+            PH::$JSON_TMP['sub']['store'] = get_class( $store );
 
             if( count($objects) > 0 )
             {
@@ -1296,9 +1396,22 @@ class UTIL
             elseif( is_object($store) )
                 $tmp_name = $store->name();
 
+            if( isset($store->owner->owner) && is_object($store->owner->owner) )
+                $tmp_platform = get_class( $store->owner->owner );
+            elseif( isset($store->owner->owner) && is_object($store->owner) )
+                $tmp_platform = get_class( $store->owner );
+            else
+                $tmp_platform = get_class( $store );
+
+
             PH::print_stdout( "" );
             PH::print_stdout( "* objects processed in DG/Vsys '{$tmp_name}' : $subObjectsProcessed" );
             PH::print_stdout( "" );
+            PH::$JSON_TMP['sub']['summary']['processed'] = $subObjectsProcessed;
+            PH::$JSON_TMP['sub']['summary']['available'] = $store->count();
+
+            PH::print_stdout( PH::$JSON_TMP, false, $tmp_platform );
+            PH::$JSON_TMP = array();
         }
         // </editor-fold>
     }
@@ -1369,16 +1482,20 @@ class UTIL
 
         if( $additional_output )
         {
+            $arg_array = array();
             if( $this->configInput['type'] != 'api' && $this->configOutput == "/dev/null" )
             {
                 PH::print_stdout( "" );
                 PH::print_stdout( "argument 'out' was used with '/dev/null' - nothing is saved to an output file" );
+                $arg_array['out'] = "/dev/null";
             }
 
             if( isset(PH::$args['actions']) && PH::$args['actions'] == "display" )
             {
                 PH::print_stdout( "argument 'actions' was used with 'display'" );
+                $arg_array['actions'] = "display";
             }
+            PH::print_stdout( $arg_array, false, 'argument' );
         }
 
         $this->log->info("END UTIL: " . $this->PHP_FILE);

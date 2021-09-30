@@ -167,6 +167,8 @@ class AntiVirusProfile
     public function display()
     {
         PH::print_stdout(  "     * " . get_class($this) . " '" . $this->name() . "'    ");
+        PH::$JSON_TMP['sub']['object'][$this->name()]['name'] = $this->name();
+        PH::$JSON_TMP['sub']['object'][$this->name()]['type'] = get_class($this);
 
         //Todo: continue for print out
 
@@ -175,9 +177,16 @@ class AntiVirusProfile
             PH::print_stdout(  "       o " . PH::boldText($type) );
             //was not set in specific config files
             if( isset( $this->$type['action'] ) )
+            {
                 PH::print_stdout(  "          - action:          '" . $this->$type['action'] . "'");
+                PH::$JSON_TMP['sub']['object'][$this->name()]['name'][$type]['action'] = $this->$type['action'];
+            }
+
             if( isset( $this->$type['wildfire-action'] ) )
+            {
                 PH::print_stdout(  "          - wildfire-action: '" . $this->$type['wildfire-action'] . "'" );
+                PH::$JSON_TMP['sub']['object'][$this->name()]['type'][$type]['wildfire-action'] = $this->$type['wildfire-action'];
+            }
         }
     }
 

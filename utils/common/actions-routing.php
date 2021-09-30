@@ -26,16 +26,25 @@ RoutingCallContext::$supportedActions['display'] = Array(
     {
         $object = $context->object;
         PH::print_stdout("     * ".get_class($object)." '{$object->name()}'" );
+        PH::$JSON_TMP['sub']['object'][$object->name()]['name'] = $object->name();
+        PH::$JSON_TMP['sub']['object'][$object->name()]['type'] = get_class($object);
 
         $text = "";
         foreach( $object->staticRoutes() as $staticRoute )
         {
             $text .= "       - NAME: " . str_pad($staticRoute->name(), 20);
+            PH::$JSON_TMP['sub']['object'][$object->name()]['staticroute'][$staticRoute->name()]['name'] = $staticRoute->name();
+
             $text .= " - DEST: " . str_pad($staticRoute->destination(), 20);
+            PH::$JSON_TMP['sub']['object'][$object->name()]['staticroute'][$staticRoute->name()]['destination'] = $staticRoute->destination();
+
             $text .= " - NEXTHOP: " . str_pad($staticRoute->nexthopIP(), 20);
+            PH::$JSON_TMP['sub']['object'][$object->name()]['staticroute'][$staticRoute->name()]['nexthop'] = $staticRoute->nexthopIP();
+
             if( $staticRoute->nexthopInterface() != null )
             {
                 $text .= "\n           - NEXT INTERFACE: " . str_pad($staticRoute->nexthopInterface()->toString(), 20);
+                PH::$JSON_TMP['sub']['object'][$object->name()]['staticroute'][$staticRoute->name()]['nexthopinterface'] = $staticRoute->nexthopInterface()->name();
             }
 
             PH::print_stdout( $text );

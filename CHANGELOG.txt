@@ -6,6 +6,9 @@ UTILS:
 * pa_device-edit - introduce new actions=DeviceGroup-remove / actions=AddressStore-rewrite
 * pa_key-manager - introduce argument 'user' and 'pw' to create PAN-OS API-key without CLI interaction
 * pa_key-manager - display .panconfkeystore filepath if using argument 'debugapi'
+* introduce JSON response for most of the UTIL scripts with argument shadow-json - not available for pa_rule-edit and pa_application-edit yet
+* pa_rule-edit introduce JSON response with argument shadow-json
+* pa_application-edit introduce JSON response with argument shadow-json
 
 BUGFIX:
 

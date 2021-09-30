@@ -293,7 +293,7 @@ class App
         return FALSE;
     }
 
-    function print_appdetails( $padding_above, $printName = true  )
+    function print_appdetails( $padding_above, $printName = true, &$subarray = array()  )
     {
         global $print_explicit;
         global $print_implicit;
@@ -305,113 +305,157 @@ class App
         if( $printName )
         {
             PH::print_stdout("");
-            $text .= $padding_above." - ".str_pad( PH::boldText($this->name() ), $padding )." - ";
+            $text .= $padding_above . " - " . str_pad(PH::boldText($this->name()), $padding) . " - ";
         }
+        $subarray[$this->name()]['name'] = $this->name();
 
 
         if( isset($this->obsolete) )
-            $text .=  $padding_above."  - (obsolete) ";
+        {
+            $text .= $padding_above . "  - (obsolete) ";
+            $subarray[$this->name()]['obsolete'] = "true";
+        }
+
 
         if( isset($this->category) )
-            $text .=  $padding_above."  - category|".str_pad( $this->category, $padding ) . " - ";
+        {
+            $text .= $padding_above . "  - category|" . str_pad($this->category, $padding) . " - ";
+            $subarray[$this->name()]['category'] = $this->category;
+        }
 
 
         if( isset($this->subCategory) )
-            $text .=  "subcategory|".str_pad( $this->subCategory, $padding ) . " - ";
+        {
+            $text .= "subcategory|" . str_pad($this->subCategory, $padding) . " - ";
+            $subarray[$this->name()]['subcategory'] = $this->subCategory;
+        }
 
 
         if( isset($this->technology) )
-            $text .=  "technology|".str_pad ( $this->technology, $padding ) . " - ";
+        {
+            $text .= "technology|" . str_pad($this->technology, $padding) . " - ";
+            $subarray[$this->name()]['technology'] = $this->technology;
+        }
 
         if( isset($this->risk) )
-            $text .=  "risk|".$this->risk . " - ";
+        {
+            $text .= "risk|" . $this->risk . " - ";
+            $subarray[$this->name()]['risk'] = $this->risk;
+        }
+
 
         PH::print_stdout($text);
 
-        $text = "";
+        $text_tcp = "";
         if( isset($this->tcp) )
         {
-            $text .= $padding_10."tcp/";
+            $text_tcp = "tcp/";
             foreach( $this->tcp as $tcp )
             {
                 if( $tcp[0] == "single" )
-                    $text .=  $tcp[1].",";
+                    $text_tcp .= $tcp[1] . ",";
                 elseif( $tcp[0] == "dynamic" )
-                    $text .= "dynamic";
+                    $text_tcp .= "dynamic";
                 elseif( $tcp[0] == "range" )
-                    $text .= $tcp[1]. "-".$tcp[2].",";
+                    $text_tcp .= $tcp[1] . "-" . $tcp[2] . ",";
                 else
-                    $text .= "implode:".implode("','",$tcp)."";
+                    $text_tcp .= "implode:" . implode("','", $tcp) . "";
             }
+            $subarray[$this->name()]['tcp'] = $text_tcp;
+            $text_tcp = $padding_10 . $text_tcp;
         }
+        $text_udp = "";
         if( isset($this->udp) )
         {
-            $text .= $padding_10."udp/";
+            $text_udp = "udp/";
             foreach( $this->udp as $udp )
             {
                 if( $udp[0] == "single" )
-                    $text .= $udp[1].",";
+                    $text_udp .= $udp[1] . ",";
                 elseif( $udp[0] == "dynamic" )
-                    $text .= "dynamic";
+                    $text_udp .= "dynamic";
                 elseif( $udp[0] == "range" )
-                    $text .= $udp[1]. "-".$udp[2].",";
+                    $text_udp .= $udp[1] . "-" . $udp[2] . ",";
                 else
-                    $text .= "implode:".implode("','",$udp)."";
+                    $text_udp .= "implode:" . implode("','", $udp) . "";
             }
+            $subarray[$this->name()]['udp'] = $text_udp;
+            $text_udp = $padding_10 . $text_udp;
         }
-        PH::print_stdout($text);
+        PH::print_stdout($text_tcp . $text_udp);
 
         //secure ports:
-        $text = "";
+        $text_tcp = "";
         if( isset($this->tcp_secure) )
         {
-            $text .= $padding_10."secure - tcp/";
+            $text_tcp .= $padding_10 . "secure - tcp/";
             foreach( $this->tcp_secure as $tcp )
             {
                 if( $tcp[0] == "single" )
-                    $text .= $tcp[1].",";
+                    $text_tcp .= $tcp[1] . ",";
                 elseif( $tcp[0] == "dynamic" )
-                    $text .= "dynamic";
+                    $text_tcp .= "dynamic";
                 elseif( $tcp[0] == "range" )
-                    $text .= $tcp[1]. "-".$tcp[2].",";
+                    $text_tcp .= $tcp[1] . "-" . $tcp[2] . ",";
                 else
-                    $text .= "implode:".implode("','",$tcp)."";
+                    $text_tcp .= "implode:" . implode("','", $tcp) . "";
             }
-
+            $subarray[$this->name()]['tcpsecure'] = $text_tcp;
         }
+        $text_udp = "";
         if( isset($this->udp_secure) )
         {
-            $text .= $padding_10."secure - udp/";
+            $text_udp .= $padding_10 . "secure - udp/";
             foreach( $this->udp_secure as $udp )
             {
                 if( $udp[0] == "single" )
-                    $text .= $udp[1].",";
+                    $text_udp .= $udp[1] . ",";
                 elseif( $udp[0] == "dynamic" )
-                    $text .= "dynamic";
+                    $text_udp .= "dynamic";
                 elseif( $udp[0] == "range" )
-                    $text .= $udp[1]. "-".$udp[2].",";
+                    $text_udp .= $udp[1] . "-" . $udp[2] . ",";
                 else
-                    $text .= "implode:".implode("','",$udp)."";
+                    $text_udp .= "implode:" . implode("','", $udp) . "";
             }
-
+            $subarray[$this->name()]['udpsecure'] = $text_udp;
         }
-        PH::print_stdout($text);
+        PH::print_stdout($text_tcp . $text_udp);
 
         if( $this->proto != "" )
-            PH::print_stdout($padding_10."IP-Protocol: '".$this->proto."'" );
+        {
+            PH::print_stdout($padding_10 . "IP-Protocol: '" . $this->proto . "'");
+            $subarray[$this->name()]['ipprotocol'] = $this->proto;
+        }
 
 
         $text = "";
-        if( isset( $this->timeout ) )
-            $text .= $padding_10."timeout|".$this->timeout . " - ";
-        if( isset( $this->tcp_timeout ) )
-            $text .= $padding_10."tcp-timeout|".$this->tcp_timeout . " - ";
-        if( isset( $this->tcp_half_closed_timeout ) )
-            $text .= $padding_10."tcp-half-closed-timeout|".$this->tcp_half_closed_timeout . " - ";
+        if( isset($this->timeout) )
+        {
+            $text .= $padding_10 . "timeout|" . $this->timeout . " - ";
+            $subarray[$this->name()]['timeout'] = $this->timeout;
+        }
+
+        if( isset($this->tcp_timeout) )
+        {
+            $text .= $padding_10 . "tcp-timeout|" . $this->tcp_timeout . " - ";
+            $subarray[$this->name()]['tcp-timeout'] = $this->tcp_timeout;
+        }
+        if( isset($this->tcp_half_closed_timeout) )
+        {
+            $text .= $padding_10 . "tcp-half-closed-timeout|" . $this->tcp_half_closed_timeout . " - ";
+            $subarray[$this->name()]['tcp-half-closed-timeout'] = $this->tcp_half_closed_timeout;
+        }
         if( isset( $this->tcp_time_wait_timeout ) )
+        {
             $text .= $padding_10."tcp-time-wait-timeout|".$this->tcp_time_wait_timeout . " - ";
+            $subarray[$this->name()]['tcp-time-wait-timeout'] = $this->tcp_time_wait_timeout;
+        }
         if( isset( $this->udp_timeout ) )
+        {
             $text .= $padding_10."udp-timeout|".$this->udp_timeout . " - ";
+            $subarray[$this->name()]['udp-timeout'] = $this->udp_timeout;
+        }
+            
         PH::print_stdout($text);
 
         if( isset( $this->explicitUse ) && $print_explicit )
@@ -420,7 +464,9 @@ class App
             {
                 PH::print_stdout( "           explicit->" . $app1->type . " | " );
 
-                $app1->print_appdetails( $padding_above );
+                $tmparray = array();
+                $app1->print_appdetails( $padding_above, true, $tmparray );
+                $subarray['implicit'][] = $tmparray;
             }
         }
 
@@ -430,25 +476,31 @@ class App
             {
                 PH::print_stdout( "           implicit->" . $app2->type . " | " );
 
-                $app2->print_appdetails( $padding_above );
+                $tmparray = array();
+                $app2->print_appdetails( $padding_above, true, $tmparray );
+                $subarray['implicit'][] = $tmparray;
             }
         }
 
         if( isset( $this->icmpsub )  )
         {
             PH::print_stdout( "               icmp type: ". $this->icmpsub );
+            $subarray[$this->name()]['icmp'] = $this->icmpsub;
         }
         if( isset( $this->icmp6sub )  )
         {
             PH::print_stdout( "               icmpv6 type: ". $this->icmp6sub );
+            $subarray[$this->name()]['icmpv6'] = $this->icmp6sub;
         }
         if( isset( $this->icmpcode )  )
         {
             PH::print_stdout( "               icmp code: ". $this->icmpcode );
+            $subarray[$this->name()]['icmpcode'] = $this->icmpcode;
         }
         if( isset( $this->icmp6code )  )
         {
             PH::print_stdout( "               icmpv6 code: ". $this->icmp6code );
+            $subarray[$this->name()]['icmpv6code'] = $this->icmp6code;
         }
         /*
             if( isset($app->_characteristics) )
@@ -472,7 +524,12 @@ class App
             if( isset( $this->groupapps ) )
             {
                 foreach( $this->groupapps as $tmpapp)
-                    $tmpapp->print_appdetails( $padding_above );
+                {
+                    $tmparray = array();
+                    $tmpapp->print_appdetails( $padding_above, true, $tmparray );
+                    $subarray['application-group'][] = $tmparray;
+                }
+
             }
         }
     }

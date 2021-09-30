@@ -86,6 +86,9 @@ class CallContext
             }
         }
 
+        PH::$JSON_TMP['sub']['object'][$object->name()]['name'] = $object->name();
+        PH::$JSON_TMP['sub']['object'][$object->name()]['actions'] = $this->actionRef['name'];
+
         PH::print_stdout( $tmp_txt );
 
         $this->actionRef['MainFunction']($this);

@@ -997,93 +997,189 @@ class SecurityRule extends RuleWithUserID
     {
         $padding = str_pad('', $padding);
 
+        PH::$JSON_TMP['sub']['object'][$this->name()]['name'] = $this->name();
+        PH::$JSON_TMP['sub']['object'][$this->name()]['type'] = get_class($this);
+
         $dis = '';
         if( $this->disabled )
+        {
             $dis = '<disabled>';
+            PH::$JSON_TMP['sub']['object'][$this->name()]['disabled'] = "true";
+        }
+        else
+            PH::$JSON_TMP['sub']['object'][$this->name()]['disabled'] = "false";
+
 
         $sourceNegated = '';
         if( $this->sourceIsNegated() )
+        {
             $sourceNegated = '*negated*';
+            PH::$JSON_TMP['sub']['object'][$this->name()]['sourcenegated'] = "true";
+        }
+        else
+            PH::$JSON_TMP['sub']['object'][$this->name()]['sourcenegated'] = "false";
+
 
         $destinationNegated = '';
         if( $this->destinationIsNegated() )
+        {
             $destinationNegated = '*negated*';
+            PH::$JSON_TMP['sub']['object'][$this->name()]['destinationnegated'] = "true";
+        }
+        else
+            PH::$JSON_TMP['sub']['object'][$this->name()]['destinationnegated'] = "false";
+        //until here same for appoverride
 
 
         $text = $padding . "*Rule named '{$this->name}' $dis";
         if( $this->owner->version >= 70 )
+        {
             $text .= " UUID: '" . $this->uuid() . "'";
+            PH::$JSON_TMP['sub']['object'][$this->name()]['uuid'] = $this->uuid();
+        }
         PH::print_stdout( $text );
+
         PH::print_stdout( $padding . "  Action: {$this->action()}    Type:{$this->type()}");
+        PH::$JSON_TMP['sub']['object'][$this->name()]['action'] = $this->action();
+        PH::$JSON_TMP['sub']['object'][$this->name()]['ruletype'] = $this->type();
+
 
         PH::print_stdout( $padding . "  From: " . $this->from->toString_inline() . "  |  To:  " . $this->to->toString_inline() );
+        PH::$JSON_TMP['sub']['object'][$this->name()]['from'] = $this->from->toString_inline();
+        PH::$JSON_TMP['sub']['object'][$this->name()]['to'] = $this->to->toString_inline();
+
         PH::print_stdout( $padding . "  Source: $sourceNegated " . $this->source->toString_inline() );
+        PH::$JSON_TMP['sub']['object'][$this->name()]['source'] = $this->source->toString_inline();
+
         PH::print_stdout( $padding . "  Destination: $destinationNegated " . $this->destination->toString_inline() );
+        PH::$JSON_TMP['sub']['object'][$this->name()]['destination'] = $this->destination->toString_inline();
+
         PH::print_stdout( $padding . "  Service:  " . $this->services->toString_inline() . "    Apps:  " . $this->apps->toString_inline() );
+        PH::$JSON_TMP['sub']['object'][$this->name()]['service'] = $this->services->toString_inline();
+        PH::$JSON_TMP['sub']['object'][$this->name()]['application'] = $this->apps->toString_inline();
+
         $text = "";
         if( !$this->userID_IsCustom() )
+        {
             $text .= $padding . "  User: *" . $this->userID_type() . "*";
+            PH::$JSON_TMP['sub']['object'][$this->name()]['user'] = $this->userID_type();
+        }
         else
         {
             $users = $this->userID_getUsers();
             $text .= $padding . "  User:  " . PH::list_to_string($users) . "";
+            PH::$JSON_TMP['sub']['object'][$this->name()]['user'] = PH::list_to_string($users);
         }
         if( !$this->hipProfileIsBlank() )
         {
             $text .= $padding . "  HIP:   " . PH::list_to_string($this->hipprofProfiles);
+            PH::$JSON_TMP['sub']['object'][$this->name()]['hip'] = PH::list_to_string($this->hipprofProfiles);
         }
         PH::print_stdout( $text );
         PH::print_stdout( $padding . "  Tags:  " . $this->tags->toString_inline() );
+        PH::$JSON_TMP['sub']['object'][$this->name()]['tag'] = $this->tags->toString_inline();
 
         if( $this->_targets !== null )
+        {
             PH::print_stdout( $padding . "  Targets:  " . $this->targets_toString() );
+            PH::$JSON_TMP['sub']['object'][$this->name()]['target'] = $this->targets_toString();
+        }
+
 
         if( strlen($this->_description) > 0 )
+        {
             PH::print_stdout( $padding . "  Desc:  " . $this->_description );
+            PH::$JSON_TMP['sub']['object'][$this->name()]['description'] = $this->_description;
+        }
         else
+        {
             PH::print_stdout( $padding . "  Desc:  ");
+            PH::$JSON_TMP['sub']['object'][$this->name()]['description'] = "";
+        }
+
 
         if( !$this->securityProfileIsBlank() )
         {
             if( $this->securityProfileType() == "group" )
+            {
                 PH::print_stdout( $padding . "  SecurityProfil: [SECGROUP] => '" . $this->securityProfileGroup() . "'");
+                PH::$JSON_TMP['sub']['object'][$this->name()]['securityprofilegroup'] = $this->securityProfileGroup();
+            }
+
             else
             {
                 $text = $padding . "  SecurityProfil: ";
                 foreach( $this->securityProfiles() as $id => $profile )
+                {
                     $text .= "[" . $id . "] => '" . $profile . "'  ";
+                    PH::$JSON_TMP['sub']['object'][$this->name()]['securityprofile'][$id] = $profile;
+                }
+
                 PH::print_stdout( $text );
             }
         }
         else
+        {
             PH::print_stdout( $padding . "  SecurityProfil:");
+            PH::$JSON_TMP['sub']['object'][$this->name()]['securityprofilegroup'] = "null";
+            PH::$JSON_TMP['sub']['object'][$this->name()]['securityprofile'] = "null";
+        }
+
 
 
         $text = $padding . "  LogSetting: ";
         if( !empty($this->logSetting()) )
+        {
             $text .= "[LogProfile] => '" . $this->logSetting() . "'";
+            PH::$JSON_TMP['sub']['object'][$this->name()]['logsetting']['logprofile'] = $this->logSetting();
+        }
+
         $text .= " ( ";
         if( $this->logStart() )
+        {
             $text .= "log at start";
+            PH::$JSON_TMP['sub']['object'][$this->name()]['logsetting']['start'] = "true";
+        }
+
         if( $this->logStart() && $this->logEnd() )
             $text .= " - ";
         if( $this->logEnd() )
+        {
             $text .= "log at end";
+            PH::$JSON_TMP['sub']['object'][$this->name()]['logsetting']['end'] = "true";
+        }
+
         $text .= " )";
         PH::print_stdout( $text );
 
         $text = $padding . "  URL Category: ";
         if( !empty($this->_urlCategories) )
+        {
             $text .= PH::list_to_string($this->_urlCategories) . "\n";
+            foreach( $this->_urlCategories as $tmp )
+                PH::$JSON_TMP['sub']['object'][$this->name()]['urlcategory'][] = $tmp;
+        }
         else
-            $text .= "*ANY*";
+        {
+            $text .= "**ANY**";
+            PH::$JSON_TMP['sub']['object'][$this->name()]['urlcategory'][] = "**ANY**";
+        }
+
         PH::print_stdout( $text );
 
         if( $this->dsri )
+        {
             PH::print_stdout( $padding . "  DSRI: disabled");
+            PH::$JSON_TMP['sub']['object'][$this->name()]['dsri'][] = "disabled";
+        }
+
 
         if( $this->schedule !== null )
+        {
             PH::print_stdout( $padding . "  Schedule:  " . $this->schedule->name() );
+            PH::$JSON_TMP['sub']['object'][$this->name()]['schedule'][] = $this->schedule->name();
+        }
+
 
         PH::print_stdout( "" );
     }

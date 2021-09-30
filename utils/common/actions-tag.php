@@ -328,6 +328,10 @@ TagCallContext::$supportedActions['display'] = array(
         $object = $context->object;
         PH::print_stdout( "     * " . get_class($object) . " '{$object->name()}'  color: '{$object->getColor()}'  comments: '{$object->getComments()}'" );
 
+        PH::$JSON_TMP['sub']['object'][$object->name()]['name'] = $object->name();
+        PH::$JSON_TMP['sub']['object'][$object->name()]['type'] = get_class($object);
+        PH::$JSON_TMP['sub']['object'][$object->name()]['color'] = $object->getColor();
+        PH::$JSON_TMP['sub']['object'][$object->name()]['comments'] = $object->getComments();
     },
 );
 TagCallContext::$supportedActions['color-set'] = array(

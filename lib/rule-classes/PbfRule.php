@@ -114,38 +114,85 @@ class PbfRule extends RuleWithUserID
     {
         $padding = str_pad('', $padding);
 
+        PH::$JSON_TMP['sub']['object'][$this->name()]['name'] = $this->name();
+        PH::$JSON_TMP['sub']['object'][$this->name()]['type'] = get_class($this);
+
         $dis = '';
         if( $this->disabled )
+        {
             $dis = '<disabled>';
+            PH::$JSON_TMP['sub']['object'][$this->name()]['disabled'] = "true";
+        }
+        else
+            PH::$JSON_TMP['sub']['object'][$this->name()]['disabled'] = "false";
+
 
         $sourceNegated = '';
         if( $this->sourceIsNegated() )
+        {
             $sourceNegated = '*negated*';
+            PH::$JSON_TMP['sub']['object'][$this->name()]['sourcenegated'] = "true";
+        }
+        else
+            PH::$JSON_TMP['sub']['object'][$this->name()]['sourcenegated'] = "false";
+
 
         $destinationNegated = '';
         if( $this->destinationIsNegated() )
+        {
             $destinationNegated = '*negated*';
+            PH::$JSON_TMP['sub']['object'][$this->name()]['destinationnegated'] = "true";
+        }
+        else
+            PH::$JSON_TMP['sub']['object'][$this->name()]['destinationnegated'] = "false";
 
 
-        PH::print_stdout( $padding . "*Rule named '{$this->name}' $dis");
+        $text = $padding . "*Rule named '{$this->name}' $dis";
+        if( $this->owner->version >= 70 )
+        {
+            $text .= " UUID: '" . $this->uuid() . "'";
+            PH::$JSON_TMP['sub']['object'][$this->name()]['uuid'] = $this->uuid();
+        }
+        PH::print_stdout( $text );
+
         PH::print_stdout( $padding . "  From: " . $this->from->toString_inline() );
+        PH::$JSON_TMP['sub']['object'][$this->name()]['from'] = $this->from->toString_inline();
+
         PH::print_stdout( $padding . "  Source: $sourceNegated " . $this->source->toString_inline() );
+        PH::$JSON_TMP['sub']['object'][$this->name()]['source'] = $this->source->toString_inline();
+
         PH::print_stdout( $padding . "  Destination: $destinationNegated " . $this->destination->toString_inline() );
+        PH::$JSON_TMP['sub']['object'][$this->name()]['destination'] = $this->destination->toString_inline();
+
         PH::print_stdout( $padding . "  Service:  " . $this->services->toString_inline() );
+        PH::$JSON_TMP['sub']['object'][$this->name()]['service'] = $this->services->toString_inline();
+
         if( !$this->userID_IsCustom() )
+        {
             PH::print_stdout( $padding . "  User: *" . $this->userID_type() . "*");
+            PH::$JSON_TMP['sub']['object'][$this->name()]['user'] = $this->userID_type();
+        }
         else
         {
             $users = $this->userID_getUsers();
             PH::print_stdout( $padding . " User:  " . PH::list_to_string($users) );
+            PH::$JSON_TMP['sub']['object'][$this->name()]['user'] = PH::list_to_string($users);
         }
         PH::print_stdout( $padding . "  Tags:  " . $this->tags->toString_inline() );
+        PH::$JSON_TMP['sub']['object'][$this->name()]['tag'] = $this->tags->toString_inline();
 
         if( $this->_targets !== null )
+        {
             PH::print_stdout( $padding . "  Targets:  " . $this->targets_toString() );
+            PH::$JSON_TMP['sub']['object'][$this->name()]['target'] = $this->targets_toString();
+        }
+
 
         if( strlen($this->_description) > 0 )
+        {
             PH::print_stdout( $padding . "  Desc:  " . $this->_description );
+            PH::$JSON_TMP['sub']['object'][$this->name()]['description'] = $this->_description;
+        }
         PH::print_stdout("");
     }
 

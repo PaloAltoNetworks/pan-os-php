@@ -798,7 +798,7 @@ class FawkesConf
         else
             {
             #PH::print_stdout( $return );
-            PH::print_stdout( $stdoutarray );
+            PH::print_stdout( $stdoutarray, true  );
         }
     }
 
