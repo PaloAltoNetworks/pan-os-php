@@ -224,6 +224,8 @@ class UTIL
             foreach( RQuery::$defaultFilters[$this->utilType] as $index => &$filter )
             {
                 PH::print_stdout( "* " . $index . "" );
+                PH::$JSON_TMP[$index]['name'] = $index;
+
                 ksort($filter['operators']);
 
                 foreach( $filter['operators'] as $oindex => &$operator )
@@ -232,8 +234,18 @@ class UTIL
                     $output = "    - $oindex";
 
                     PH::print_stdout( $output . "" );
+                    PH::$JSON_TMP[$index]['operators'][$oindex]['name'] = $oindex;
+                    PH::$JSON_TMP[$index]['operators'][$oindex]['operator'] = $operator;
                 }
                 PH::print_stdout( "" );
+            }
+
+            PH::print_stdout( PH::$JSON_TMP, false, 'listfilters' );
+            PH::$JSON_TMP = array();
+            if( PH::$shadow_json )
+            {
+                PH::$JSON_OUT['log'] = PH::$JSON_OUTlog;
+                print json_encode( PH::$JSON_OUT, JSON_PRETTY_PRINT );
             }
 
             exit(0);
@@ -301,7 +313,7 @@ class UTIL
             {
 
                 $output = "* " . $action['name'];
-
+                PH::$JSON_TMP['arg'][$action['name']]['name'] = $action['name'];
                 $output = str_pad($output, 28) . '|';
 
                 if( isset($action['args']) )
@@ -314,9 +326,14 @@ class UTIL
                             $output .= "\n" . str_pad('', 28) . '|';
 
                         $output .= " " . str_pad("#$count $argName:{$arg['type']}", 24) . "| " . str_pad("{$arg['default']}", 12) . "| ";
+                        PH::$JSON_TMP['arg'][$action['name']]['arguments'][$count]['argument'] = $argName;
+                        PH::$JSON_TMP['arg'][$action['name']]['arguments'][$count]['type'] = $arg['type'];
+                        PH::$JSON_TMP['arg'][$action['name']]['arguments'][$count]['default'] = $arg['default'];
+
                         if( isset($arg['choices']) )
                         {
                             $output .= PH::list_to_string($arg['choices']);
+                            PH::$JSON_TMP['arg'][$action['name']]['arguments'][$count]['choices'] = $arg['choices'];
                         }
 
                         $count++;
@@ -327,6 +344,14 @@ class UTIL
 
                 PH::print_stdout( $output );
                 PH::print_stdout( str_pad('', 100, '=') );
+            }
+
+            PH::print_stdout( PH::$JSON_TMP, false, 'listactions' );
+            PH::$JSON_TMP = array();
+            if( PH::$shadow_json )
+            {
+                PH::$JSON_OUT['log'] = PH::$JSON_OUTlog;
+                print json_encode( PH::$JSON_OUT, JSON_PRETTY_PRINT );
             }
 
             exit(0);
@@ -442,6 +467,7 @@ class UTIL
                     PH::print_stdout( "" );
                     PH::print_stdout( "" );
                 }
+
             }
 
 
@@ -480,17 +506,28 @@ class UTIL
 
     public function usageMessage()
     {
-        PH::print_stdout( PH::boldText("USAGE: ") . "php " . $this->PHP_FILE . " in=inputfile.xml out=outputfile.xml location=any|shared|sub " .
-            "actions=action1:arg1 ['filter=(type is.group) or (name contains datacenter-)']" );
-        PH::print_stdout( "php " . $this->PHP_FILE . " listactions   : list supported actions" );
-        PH::print_stdout( "php " . $this->PHP_FILE . " listfilters   : list supported filter" );
-        PH::print_stdout( "php " . $this->PHP_FILE . " help          : more help messages" );
-        PH::print_stdout( PH::boldText("\nExamples:") );
-        PH::print_stdout( " - php " . $this->PHP_FILE . " in=api://192.169.50.10 location=DMZ-Firewall-Group actions=displayReferences 'filter=(name eq Mail-Host1)'" );
-        PH::print_stdout( " - php " . $this->PHP_FILE . " in=config.xml out=output.xml location=any actions=delete" );
-        PH::print_stdout( "" );
-        PH::print_stdout( "" );
-        PH::print_stdout( PH::boldText("PAN-OS API connections for version < 9.0 now need additional argument: 'shadow-apikeynohidden'") );
+        $string = PH::boldText("USAGE: ") . "php " . $this->PHP_FILE . " in=inputfile.xml out=outputfile.xml location=any|shared|sub " .
+            "actions=action1:arg1 ['filter=(type is.group) or (name contains datacenter-)']\n";
+
+        $string .= "php " . $this->PHP_FILE . " listactions   : list supported actions\n";
+
+        $string .= "php " . $this->PHP_FILE . " listfilters   : list supported filter\n";
+
+        $string .= "php " . $this->PHP_FILE . " help          : more help messages";
+
+        $string .= PH::boldText("\nExamples:\n");
+
+        $string .= " - php " . $this->PHP_FILE . " in=api://192.169.50.10 location=DMZ-Firewall-Group actions=displayReferences 'filter=(name eq Mail-Host1)'";
+
+        $string .= " - php " . $this->PHP_FILE . " in=config.xml out=output.xml location=any actions=delete\n";
+
+        $string .= "\n\n";
+
+        $string .= PH::boldText("PAN-OS API connections for version < 9.0 now need additional argument: 'shadow-apikeynohidden'")."\n";
+
+
+        PH::print_stdout( $string );
+        PH::$JSON_TMP['usage'] = $string;
     }
 
     public function display_usage_and_exit($shortMessage = FALSE)
@@ -498,7 +535,11 @@ class UTIL
         if( $this->usageMsg == "" )
             $this->usageMessage();
         else
+        {
             PH::print_stdout( $this->usageMsg );
+            PH::$JSON_TMP['usage'] = $this->usageMsg;
+        }
+
         PH::print_stdout( "" );
         PH::print_stdout( "" );
 
@@ -511,15 +552,38 @@ class UTIL
             ksort($this->supportedArguments);
             foreach( $this->supportedArguments as &$arg )
             {
-                $tmp_text = " - " . PH::boldText($arg['niceName']);
+
+                PH::$JSON_TMP['arguments'][$arg['niceName']]['name'] = $arg['niceName'];
+
+                $tmp_text = PH::boldText($arg['niceName']);
                 if( isset($arg['argDesc']) )
+                {
                     $tmp_text .= '=' . $arg['argDesc'] ;
+                    PH::$JSON_TMP['arguments'][$arg['niceName']]['argdescription'] = $arg['argDesc'];
+                }
+
                 //."=";
-                PH::print_stdout( $tmp_text );
+                PH::print_stdout( " - " .$tmp_text );
+                PH::$JSON_TMP['arguments'][$arg['niceName']]['example'] = $tmp_text;
+
+
+
                 if( isset($arg['shortHelp']) )
+                {
                     PH::print_stdout( "     " . $arg['shortHelp'] );
+                    PH::$JSON_TMP['arguments'][$arg['niceName']]['shorthelp'] = $arg['shortHelp'];
+                }
+
 
                 PH::print_stdout( "" );
+            }
+
+            PH::print_stdout( PH::$JSON_TMP, false, 'help' );
+            PH::$JSON_TMP = array();
+            if( PH::$shadow_json )
+            {
+                PH::$JSON_OUT['log'] = PH::$JSON_OUTlog;
+                print json_encode( PH::$JSON_OUT, JSON_PRETTY_PRINT );
             }
 
             PH::print_stdout( "" );
