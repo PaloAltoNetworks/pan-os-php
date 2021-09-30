@@ -431,13 +431,20 @@ class SECURITYPROFILEUTIL extends UTIL
 
             }
 
+            if( isset($store->owner->owner) && is_object($store->owner->owner) )
+                $tmp_platform = get_class( $store->owner->owner );
+            elseif( isset($store->owner->owner) && is_object($store->owner) )
+                $tmp_platform = get_class( $store->owner );
+            else
+                $tmp_platform = get_class( $store );
+
             PH::print_stdout( "" );
             PH::print_stdout( "* objects processed in DG/Vsys '{$tmp_name}' : $subObjectsProcessed" );
             PH::print_stdout( "" );
 
             PH::$JSON_TMP['sub']['summary']['processed'] = $subObjectsProcessed;
             PH::$JSON_TMP['sub']['summary']['available'] = $store->count();
-            PH::print_stdout( PH::$JSON_TMP, false, get_class( $store->owner->owner ) );
+            PH::print_stdout( PH::$JSON_TMP, false, get_class( $tmp_platform ) );
             PH::$JSON_TMP = array();
             #PH::print_stdout( "* objects processed in DG/Vsys '{$store->owner->name()}' : $subObjectsProcessed filtered over {$store->count()} available\n\n" );
         }

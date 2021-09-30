@@ -198,13 +198,20 @@ class DEVICEUTIL extends UTIL
                 }
             }
 
+            if( isset($store->owner->owner) && is_object($store->owner->owner) )
+                $tmp_platform = get_class( $store->owner->owner );
+            elseif( isset($store->owner->owner) && is_object($store->owner) )
+                $tmp_platform = get_class( $store->owner );
+            else
+                $tmp_platform = get_class( $store );
+
             //what todo for devicetype???
             #PH::print_stdout( "* objects processed in DG/Vsys '{$store->owner->name()}' : $subObjectsProcessed filtered over {$store->count()} available" );
             #PH::print_stdout( "* objects processed in DG/Vsys/Template/TemplateStack/Container/ " );
-
             #PH::$JSON_TMP['sub']['summary']['processed'] = $subObjectsProcessed;
             #PH::$JSON_TMP['sub']['summary']['available'] = $store->count();
-            PH::print_stdout( PH::$JSON_TMP, false, get_class( $store ) );
+
+            PH::print_stdout( PH::$JSON_TMP, false, $tmp_platform );
             PH::$JSON_TMP = array();
         }
         PH::print_stdout( "" );
