@@ -433,7 +433,7 @@ class AddressStore
 
         if( $c == 0 )
         {
-            $ret = '*ANY*';
+            $ret = '**ANY**';
             return $ret;
         }
 

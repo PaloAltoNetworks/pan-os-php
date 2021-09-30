@@ -878,58 +878,108 @@ class NatRule extends Rule
     {
         $padding = str_pad('', $padding);
 
+        PH::$JSON_TMP['sub']['object'][$this->name()]['name'] = $this->name();
+        PH::$JSON_TMP['sub']['object'][$this->name()]['type'] = get_class($this);
+
         $dis = '';
         if( $this->disabled )
+        {
             $dis = '<disabled>';
+            PH::$JSON_TMP['sub']['object'][$this->name()]['disabled'] = "true";
+        }
+        else
+            PH::$JSON_TMP['sub']['object'][$this->name()]['disabled'] = "false";
 
-        $s = '*ANY*';
+        $s = '**ANY**';
         if( $this->service )
             $s = $this->service->name();
 
-        PH::print_stdout( $padding . "*Rule named {$this->name}  $dis" );
+        $text = $padding . "*Rule named '{$this->name}' $dis";
+        if( $this->owner->version >= 70 )
+        {
+            $text .= " UUID: '" . $this->uuid() . "'";
+            PH::$JSON_TMP['sub']['object'][$this->name()]['uuid'] = $this->uuid();
+        }
+        PH::print_stdout( $text );
+
         PH::print_stdout( $padding . "  From: " . $this->from->toString_inline() . "  |  To:  " . $this->to->toString_inline() );
+        PH::$JSON_TMP['sub']['object'][$this->name()]['from'] = $this->from->toString_inline();
+        PH::$JSON_TMP['sub']['object'][$this->name()]['to'] = $this->to->toString_inline();
+
         PH::print_stdout( $padding . "  Source: " . $this->source->toString_inline() );
+        PH::$JSON_TMP['sub']['object'][$this->name()]['source'] = $this->source->toString_inline();
 
         if( $this->_destinationInterface !== null )
             PH::print_stdout( $padding . "  Destination Interface: " . $this->destinationInterface() );
 
         PH::print_stdout( $padding . "  Destination: " . $this->destination->toString_inline() );
+        PH::$JSON_TMP['sub']['object'][$this->name()]['destination'] = $this->destination->toString_inline();
+
         PH::print_stdout( $padding . "  Service:  " . $s );
+        PH::$JSON_TMP['sub']['object'][$this->name()]['service'] = $s;
 
         if( $this->snattype == 'static-ip' )
+        {
+            PH::$JSON_TMP['sub']['object'][$this->name()]['snat'][$this->snattype]['bidir'] = $this->_snatbidir;
             PH::print_stdout( $padding . "  SNAT Type: " . $this->snattype . "   BiDir: " . $this->_snatbidir );
+        }
         else
+        {
             PH::print_stdout( $padding . "  SNAT Type: " . $this->snattype );
+            PH::$JSON_TMP['sub']['object'][$this->name()]['snat'][$this->snattype]['bidir'] = "false";
+        }
+
 
 
         if( $this->snattype != 'none' )
         {
             if( $this->snatinterface !== null )
+            {
                 PH::print_stdout( $padding . "   SNAT HOSTS: {$this->snatinterface}/{$this->snathosts->toString_inline()}" );
+                PH::$JSON_TMP['sub']['object'][$this->name()]['snat'][$this->snattype]['host'] = "{$this->snatinterface}/{$this->snathosts->toString_inline()}";
+            }
             else
+            {
                 PH::print_stdout( $padding . "   SNAT HOSTS: {$this->snathosts->toString_inline()}" );
+                PH::$JSON_TMP['sub']['object'][$this->name()]['snat'][$this->snattype]['host'] = "{$this->snathosts->toString_inline()}";
+            }
         }
 
         if( $this->dnathost === null )
+        {
             PH::print_stdout( $padding . "  DNAT: none" );
+            PH::$JSON_TMP['sub']['object'][$this->name()]['dnat']['none'] = "none";
+        }
         else
         {
             $text = $padding . "  DNAT: " . $this->dnathost->name();
             if( $this->dnatports != "" )
                 $text .= " dport: " . $this->dnatports;
             PH::print_stdout( $text );
+            PH::$JSON_TMP['sub']['object'][$this->name()]['dnat']['host'] = $this->dnathost->name();
+            PH::$JSON_TMP['sub']['object'][$this->name()]['dnat']['dport'] = $this->dnatports;
         }
 
 
-        PH::print_stdout( $padding . "    Tags:  " . $this->tags->toString_inline()  );
+        PH::print_stdout( $padding . "  Tags:  " . $this->tags->toString_inline() );
+        PH::$JSON_TMP['sub']['object'][$this->name()]['tag'] = $this->tags->toString_inline();
 
         if( $this->_targets !== null )
+        {
             PH::print_stdout( $padding . "  Targets:  " . $this->targets_toString() );
+            PH::$JSON_TMP['sub']['object'][$this->name()]['target'] = $this->targets_toString();
+        }
 
         if( strlen($this->_description) > 0 )
+        {
             PH::print_stdout( $padding . "  Desc:  " . $this->_description );
+            PH::$JSON_TMP['sub']['object'][$this->name()]['description'] = $this->_description;
+        }
         else
-            PH::print_stdout( $padding . "  Desc:  " );
+        {
+            PH::print_stdout( $padding . "  Desc:  ");
+            PH::$JSON_TMP['sub']['object'][$this->name()]['description'] = "";
+        }
 
         PH::print_stdout( "" );
     }

@@ -576,7 +576,7 @@ class ServiceRuleContainer extends ObjRuleContainer
 
         if( $c == 0 )
         {
-            $ret = '*ANY*';
+            $ret = '**ANY**';
             return $ret;
         }
 
