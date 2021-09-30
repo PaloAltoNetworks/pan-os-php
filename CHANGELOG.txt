@@ -2,6 +2,7 @@ CHANGELOG
 
 2.0.13
 UTILS:
+* pa_rule-edit actions=display:ResolveAddressSummary|ResolveServiceSummary introduce summary output if argument shadow-json is used
 
 BUGFIX:
 

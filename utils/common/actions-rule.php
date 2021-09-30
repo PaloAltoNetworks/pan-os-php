@@ -2843,8 +2843,54 @@ RuleCallContext::$supportedActions[] = array(
 RuleCallContext::$supportedActions[] = array(
     'name' => 'display',
     'MainFunction' => function (RuleCallContext $context) {
+
+        $rule = $context->object;
         $context->object->display(7);
-    }
+
+
+        $addResolvedAddressSummary = FALSE;
+        $addResolvedServiceSummary = FALSE;
+        $addResolvedApplicationSummary = FALSE;
+
+        $optionalFields = &$context->arguments['additionalFields'];
+
+        if( isset($optionalFields['ResolveAddressSummary']) )
+            $addResolvedAddressSummary = TRUE;
+        if( isset($optionalFields['ResolveServiceSummary']) )
+            $addResolvedServiceSummary = TRUE;
+        if( isset($optionalFields['ResolveApplicationSummary']) )
+            $addResolvedApplicationSummary = TRUE;
+
+        if( get_class( $context->object ) === "SecurityRule" )
+        {
+            if( $addResolvedAddressSummary )
+            {
+                PH::$JSON_TMP['sub']['object'][$rule->name()]['src_resolved_sum'] = $context->AddressResolveSummary( $rule, "source" );
+                PH::$JSON_TMP['sub']['object'][$rule->name()]['dst_resolved_sum'] = $context->AddressResolveSummary( $rule, "destination" );
+            }
+
+            if( $addResolvedServiceSummary )
+            {
+                PH::$JSON_TMP['sub']['object'][$rule->name()]['srv_resolved_sum'] = $context->ServiceResolveSummary( $rule );
+            }
+
+            if( $addResolvedApplicationSummary )
+            {
+                #PH::$JSON_TMP['sub']['object'][$this->name()]['app_resolved_sum'] = $this->_description;
+            }
+        }
+    },
+    'args' => array(
+        'additionalFields' =>
+        array('type' => 'pipeSeparatedList',
+            'subtype' => 'string',
+            'default' => '*NONE*',
+            'choices' => array('ResolveAddressSummary', 'ResolveServiceSummary', 'ResolveApplicationSummary'),
+            'help' => "pipe(|) separated list of additional field to include in the report. The following is available:\n" .
+                "  - ResolveAddressSummary : fields with address objects will be resolved to IP addressed and summarized in a new column)\n" .
+                "  - ResolveServiceSummary : fields with service objects will be resolved to their value and summarized in a new column)\n"
+        )
+    )
 );
 RuleCallContext::$supportedActions[] = array(
     'name' => 'invertPreAndPost',
