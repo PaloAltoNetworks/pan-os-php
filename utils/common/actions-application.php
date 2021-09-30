@@ -55,6 +55,10 @@ ApplicationCallContext::$supportedActions[] = array(
         $app = $context->object;
 
         PH::print_stdout( $context->padding . "* " . get_class($app) . " '{$app->name()}' " );
+        PH::$JSON_TMP['sub']['object'][$app->name()]['name'] = $app->name();
+        PH::$JSON_TMP['sub']['object'][$app->name()]['type'] = get_class($app);
+
+
         if( $app->isContainer() )
         {
             $context->counter_containers++;

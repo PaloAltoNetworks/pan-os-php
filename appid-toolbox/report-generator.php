@@ -22,7 +22,7 @@
 require_once dirname(__FILE__) . "/lib/common.php";
 
 PH::print_stdout( "\n************* START OF SCRIPT ".basename(__FILE__)." ************" );
-PH::print_stdout( " - PAN-OS-PHP version: ".PH::frameworkVersion() );
+PH::print_stdout( " - PAN-OS-PHP version: ".PH::frameworkVersion() . " [".PH::frameworkInstalledOS()."]" );
 PH::processCliArgs();
 
 function display_usage_and_exit()

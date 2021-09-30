@@ -26,7 +26,8 @@ VsysCallContext::$supportedActions['display'] = array(
     'MainFunction' => function (VsysCallContext $context) {
         $object = $context->object;
         $text = "     * " . get_class($object) . " '{$object->name()}'";
-
+        PH::$JSON_TMP['sub']['object'][$object->name()]['name'] = $object->name();
+        PH::$JSON_TMP['sub']['object'][$object->name()]['type'] = get_class($object);
 
         foreach( $object->importedInterfaces as $interfacecontainer )
         {

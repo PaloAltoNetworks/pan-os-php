@@ -44,6 +44,12 @@ ThreatCallContext::$supportedActions[] = array(
 
         PH::print_stdout( "          - Threatname: '{$threat->threatname()}'  category: '{$threat->category()}' severity: '{$threat->severity()}'  default-action: '{$threat->defaultAction()}'" );
 
+        PH::$JSON_TMP['sub']['object'][$threat->name()]['name'] = $threat->name();
+        PH::$JSON_TMP['sub']['object'][$threat->name()]['type'] = get_class($threat);
+        PH::$JSON_TMP['sub']['object'][$threat->name()]['category'] = $threat->category();
+        PH::$JSON_TMP['sub']['object'][$threat->name()]['severity'] = $threat->severity();
+        PH::$JSON_TMP['sub']['object'][$threat->name()]['default-action'] = $threat->defaultAction();
+
         if( $threat->type() == "vulnerability" )
             $context->counter_vulnerability++;
         elseif( $threat->type() == "spyware" )
@@ -53,6 +59,9 @@ ThreatCallContext::$supportedActions[] = array(
     'GlobalFinishFunction' => function (ThreatCallContext $context) {
         PH::print_stdout("spyware: ".$context->counter_spyware );
         PH::print_stdout("vulnerability: ".$context->counter_vulnerability );
+
+        PH::$JSON_TMP['sub']['summary']['spyware'] = $context->counter_spyware;
+        PH::$JSON_TMP['sub']['summary']['vulnerability'] = $context->counter_vulnerability;
     }
 );
 

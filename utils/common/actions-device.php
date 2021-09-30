@@ -33,6 +33,8 @@ DeviceCallContext::$supportedActions['display'] = array(
     'MainFunction' => function (DeviceCallContext $context) {
         $object = $context->object;
         PH::print_stdout( "     * " . get_class($object) . " '{$object->name()}'" );
+        PH::$JSON_TMP['sub']['object'][$object->name()]['name'] = $object->name();
+        PH::$JSON_TMP['sub']['object'][$object->name()]['type'] = get_class($object);
 
         if( get_class($object) == "TemplateStack" )
         {
@@ -40,6 +42,7 @@ DeviceCallContext::$supportedActions['display'] = array(
             foreach( $used_templates as $template )
             {
                 PH::print_stdout( $context->padding." - " . get_class($template) . " '{$template->name()}'" );
+                PH::$JSON_TMP['sub']['object'][$object->name()]['template'][] = $template->name();
             }
             //Todo: PH::print_stdout( where this TemplateStack is used SERIAL
         }
@@ -47,6 +50,7 @@ DeviceCallContext::$supportedActions['display'] = array(
         {
             /** @var VirtualSystem $object */
             PH::print_stdout( $context->padding." - Name: '{$object->alternativeName()}'" );
+            PH::$JSON_TMP['sub']['object'][$object->name()]['alternativename'] = $object->alternativeName();
         }
         elseif( get_class($object) == "DeviceGroup" )
         {
@@ -60,6 +64,7 @@ DeviceCallContext::$supportedActions['display'] = array(
                 PH::print_stdout( $context->padding.$tmp_padding."- ".$key );
                 $tmp_padding .= "  ";
             }
+            PH::$JSON_TMP['sub']['object'][$object->name()]['hierarchy'] = array_reverse( $parentDGS );
             //Todo: PH::print_stdout( complete DG Hierarchy
         }
         elseif( get_class($object) == "ManagedDevice" )
@@ -71,18 +76,34 @@ DeviceCallContext::$supportedActions['display'] = array(
             /** @var ManagedDevice */
 
             if( $managedDevice->getDeviceGroup() != null )
+            {
                 PH::print_stdout( $padding."DG: ".$managedDevice->getDeviceGroup() );
+                PH::$JSON_TMP['sub']['object'][$object->name()]['dg'] = $managedDevice->getDeviceGroup();
+            }
+
+
             if( $managedDevice->getTemplate() != null )
+            {
                 PH::print_stdout( $padding."Template: ".$managedDevice->getTemplate() );
+                PH::$JSON_TMP['sub']['object'][$object->name()]['template'] = $managedDevice->getTemplate();
+            }
+
+
             if( $managedDevice->getTemplateStack() != null )
             {
                 PH::print_stdout( $padding."TempalteStack: ".$managedDevice->getTemplateStack() );
+                PH::$JSON_TMP['sub']['object'][$object->name()]['templatestack'][$managedDevice->getTemplateStack()]['name'] = $managedDevice->getTemplateStack();
+
                 $templatestack = $device->findTemplateStack( $managedDevice->getTemplateStack() );
                 foreach( $templatestack->templates as $template )
                 {
                     $template_obj = $device->findTemplate( $template );
                     if( $template_obj !== null )
+                    {
                         PH::print_stdout( " - ".$template_obj->name() );
+                        PH::$JSON_TMP['sub']['object'][$object->name()]['templatestack'][$managedDevice->getTemplateStack()]['templates'][] = $template_obj->name();
+                    }
+
                 }
             }
 

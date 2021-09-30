@@ -25,6 +25,11 @@ VirtualWireCallContext::$supportedActions['display'] = Array(
         $object = $context->object;
         PH::print_stdout("     * ".get_class($object)." '{$object->name()}'" );
 
+        PH::$JSON_TMP['sub']['object'][$object->name()]['name'] = $object->name();
+        PH::$JSON_TMP['sub']['object'][$object->name()]['type'] = get_class($object);
+        PH::$JSON_TMP['sub']['object'][$object->name()]['interface1'] = $object->attachedInterface1;
+        PH::$JSON_TMP['sub']['object'][$object->name()]['interface2'] = $object->attachedInterface2;
+
         $text = "       - ";
         $text .= "interface1: ".$object->attachedInterface1." - ";
         $text .= "interface2: ".$object->attachedInterface2;

@@ -24,20 +24,34 @@ InterfaceCallContext::$supportedActions['display'] = Array(
     {
         $object = $context->object;
         PH::print_stdout("     * ".get_class($object)." '{$object->name()}'" );
+        PH::$JSON_TMP['sub']['object'][$object->name()]['name'] = $object->name();
+        PH::$JSON_TMP['sub']['object'][$object->name()]['type'] = get_class($object);
 
         //Todo: optimization needed, same process as for other utiles
 
         $text = "       - " . $object->type . " - ";
+
         if( $object->type == "layer3" || $object->type == "virtual-wire" || $object->type == "layer2" )
         {
             if( $object->isSubInterface() )
+            {
                 $text .= "subinterface - ";
+                PH::$JSON_TMP['sub']['object'][$object->name()][$object->type]['subinterface'] = "yes";
+                PH::$JSON_TMP['sub']['object'][$object->name()][$object->type]['subinterfacecount'] = "0";
+            }
+
             else
+            {
                 $text .= "count subinterface: " . $object->countSubInterfaces() . " - ";
+                PH::$JSON_TMP['sub']['object'][$object->name()][$object->type]['subinterface'] = "false";
+                PH::$JSON_TMP['sub']['object'][$object->name()][$object->type]['subinterfacecount'] = $object->countSubInterfaces();
+            }
+
         }
         elseif( $object->type == "aggregate-group" )
         {
             $text .= "".$object->ae()." - ";
+            PH::$JSON_TMP['sub']['object'][$object->name()][$object->type]['ae'] = $object->ae();
         }
 
 
@@ -47,7 +61,11 @@ InterfaceCallContext::$supportedActions['display'] = Array(
             foreach( $object->getLayer3IPv4Addresses() as $ip_address )
             {
                 if( strpos( $ip_address, "." ) !== false )
+                {
                     $text .= $ip_address . ",";
+                    PH::$JSON_TMP['sub']['object'][$object->name()][$object->type]['ipaddress'][] = $ip_address;
+                }
+
                 else
                 {
                     #$object = $sub->addressStore->find( $ip_address );
@@ -61,7 +79,11 @@ InterfaceCallContext::$supportedActions['display'] = Array(
             foreach( $object->getIPv4Addresses() as $ip_address )
             {
                 if( strpos( $ip_address, "." ) !== false )
+                {
                     $text .= $ip_address . ",";
+                    PH::$JSON_TMP['sub']['object'][$object->name()][$object->type]['ipaddress'][] = $ip_address;
+                }
+
                 else
                 {
                     #$object = $sub->addressStore->find( $ip_address );
@@ -74,6 +96,8 @@ InterfaceCallContext::$supportedActions['display'] = Array(
             $text .= " - IPsec config";
             $text .= " - IKE gateway: " . $object->gateway;
             $text .= " - interface: " . $object->interface;
+            PH::$JSON_TMP['sub']['object'][$object->name()][$object->type]['ike']['gw'] = $object->gateway;
+            PH::$JSON_TMP['sub']['object'][$object->name()][$object->type]['ike']['interface'] = $object->interface;
         }
 
         PH::print_stdout( $text );

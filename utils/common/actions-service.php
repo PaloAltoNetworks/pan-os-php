@@ -972,31 +972,50 @@ ServiceCallContext::$supportedActions[] = array(
     'MainFunction' => function (ServiceCallContext $context) {
         $object = $context->object;
         #PH::print_stdout( "     * " . get_class($object) . " '{$object->name()}'    " );
+
+        PH::$JSON_TMP['sub']['object'][$object->name()]['name'] = $object->name();
+        PH::$JSON_TMP['sub']['object'][$object->name()]['type'] = get_class($object);
+
         if( $object->isGroup() )
         {
             PH::print_stdout( "     * " . get_class($object) . " '{$object->name()}'" );
             foreach( $object->members() as $member )
             {
+                PH::$JSON_TMP['sub']['object'][$object->name()]['members'][$member->name()]['name'] = $member->name();
+
                 if( $member->isGroup() )
                     $tmp_txt = "          - {$member->name()}";
                 else
                 {
                     $tmp_txt = "          - {$member->name()}";
                     $tmp_txt .= "    value: '{$member->protocol()}/{$member->getDestPort()}'";
+                    PH::$JSON_TMP['sub']['object'][$object->name()]['members'][$member->name()]['value'] = "{$member->protocol()}/{$member->getDestPort()}";
 
                     if( $member->description() != "" )
                         $tmp_txt .= "    desc: '{$member->description()}'";
+                    PH::$JSON_TMP['sub']['object'][$object->name()]['members'][$member->name()]['description'] = $member->description();
 
                     if( $member->getSourcePort() != "" )
                         $tmp_txt .= "    sourceport: '" . $member->getSourcePort() . "'";
+                    PH::$JSON_TMP['sub']['object'][$object->name()]['members'][$member->name()]['sourceport'] = $member->getSourcePort();
+
 
                     if( $member->getTimeout() != "" )
                         $tmp_txt .= "    timeout: '" . $member->getTimeout() . "'";
+                    PH::$JSON_TMP['sub']['object'][$object->name()]['members'][$member->name()]['timeout'] = $member->getTimeout();
+
+                    if( $member->getHalfcloseTimeout() != "" )
+                        $tmp_txt .= "    HalfcloseTimeout: '" . $member->getHalfcloseTimeout() . "'";
+                    PH::$JSON_TMP['sub']['object'][$object->name()]['members'][$member->name()]['halfclosetimeout'] = $member->getHalfcloseTimeout();
+
+                    if( $member->getTimewaitTimeout() != "" )
+                        $tmp_txt .= "    TimewaitTimeout: '" . $member->getTimewaitTimeout() . "'";
+                    PH::$JSON_TMP['sub']['object'][$object->name()]['members'][$member->name()]['timewaittimeout'] = $member->getTimewaitTimeout();
 
                     if( strpos($member->getDestPort(), ",") !== FALSE )
-                    {
                         $tmp_txt .= "    count values: '" . (substr_count($member->getDestPort(), ",") + 1) . "' length: " . strlen($member->getDestPort());
-                    }
+                    PH::$JSON_TMP['sub']['object'][$object->name()]['members'][$member->name()]['count values'] = (substr_count($member->getDestPort(), ",") + 1);
+                    PH::$JSON_TMP['sub']['object'][$object->name()]['members'][$member->name()]['string legth'] = strlen($member->getDestPort());
                 }
                 PH::print_stdout( $tmp_txt );
             }
@@ -1004,26 +1023,32 @@ ServiceCallContext::$supportedActions[] = array(
         else
         {
             $tmp_txt = "     * " . get_class($object) . " '{$object->name()}'     value: '{$object->protocol()}/{$object->getDestPort()}'";
+            PH::$JSON_TMP['sub']['object'][$object->name()]['value'] = "{$object->protocol()}/{$object->getDestPort()}";
 
             if( $object->description() != "" )
                 $tmp_txt .= "    desc: '{$object->description()}'";
+            PH::$JSON_TMP['sub']['object'][$object->name()]['description'] = $object->description();
 
             if( $object->getSourcePort() != "" )
                 $tmp_txt .= "    sourceport: '" . $object->getSourcePort() . "'";
+            PH::$JSON_TMP['sub']['object'][$object->name()]['sourceport'] = $object->getSourcePort();
 
             if( $object->getTimeout() != "" )
                 $tmp_txt .= "    timeout: '" . $object->getTimeout() . "'";
+            PH::$JSON_TMP['sub']['object'][$object->name()]['timeout'] = $object->getTimeout();
 
             if( $object->getHalfcloseTimeout() != "" )
                 $tmp_txt .= "    HalfcloseTimeout: '" . $object->getHalfcloseTimeout() . "'";
+            PH::$JSON_TMP['sub']['object'][$object->name()]['halfclosetimeout'] = $object->getHalfcloseTimeout();
 
             if( $object->getTimewaitTimeout() != "" )
                 $tmp_txt .= "    TimewaitTimeout: '" . $object->getTimewaitTimeout() . "'";
+            PH::$JSON_TMP['sub']['object'][$object->name()]['timewaittimeout'] = $object->getTimewaitTimeout();
 
             if( strpos($object->getDestPort(), ",") !== FALSE )
-            {
                 $tmp_txt .= "    count values: '" . (substr_count($object->getDestPort(), ",") + 1) . "' length: " . strlen($object->getDestPort());
-            }
+            PH::$JSON_TMP['sub']['object'][$object->name()]['count values'] = (substr_count($object->getDestPort(), ",") + 1);
+            PH::$JSON_TMP['sub']['object'][$object->name()]['string legth'] = strlen($object->getDestPort());
 
             PH::print_stdout( $tmp_txt );
         }

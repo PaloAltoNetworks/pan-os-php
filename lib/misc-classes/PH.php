@@ -133,6 +133,7 @@ class PH
 
     public static $shadow_json = FALSE;
     public static $JSON_OUT = array();
+    public static $JSON_TMP = array();
     public static $JSON_OUTlog = "";
 
     public static $PANC_WARN = TRUE;
@@ -173,10 +174,15 @@ class PH
 
     static public function frameworkVersion()
     {
+        return self::$library_version_major . '.' . self::$library_version_sub . '.' . self::$library_version_bugfix;
+    }
+
+    static public function frameworkInstalledOS()
+    {
         $system = 'UNIX';
         if( strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' )
             $system = 'WIN';
-        return self::$library_version_major . '.' . self::$library_version_sub . '.' . self::$library_version_bugfix . ' ['.$system.']';
+        return $system;
     }
 
     /**
@@ -498,25 +504,45 @@ class PH
 
     }
 
-    static public function print_stdout( $text  )
+    static public function print_stdout( $text, $printArray = false, $arrayKey = null  )
     {
         if( is_array( $text ) )
         {
             if( PH::$shadow_json )
             {
-                PH::$JSON_OUT[] = $text;
+                /*
+                reset($text);
+                $first_key = key($text);
+
+                PH::$JSON_OUT[ $first_key ] = $text[ $first_key ];
+                */
+
+                if( $arrayKey != null )
+                    PH::$JSON_OUT[$arrayKey][] = $text;
+                else
+                    PH::$JSON_OUT[] = $text;
             }
 
-            #else{
-
+            if( $printArray )
+            {
+                // until now only for pa_rule-stats
                 #$stdoutarray = reset($text);
                 $stdoutarray = $text;
 
-                $string =  $stdoutarray['header']."\n";
-                if( !PH::$shadow_json )
-                    print $string;
+                if( isset( $stdoutarray['header'] ) )
+                    $string =  $stdoutarray['header']."\n";
                 else
-                    PH::$JSON_OUTlog .= $string;
+                    $string = "";
+
+                if( !PH::$shadow_json )
+                {
+                    print $string;
+                }
+                else
+                {
+                    #PH::$JSON_OUTlog .= $string;
+                }
+
                 unset( $stdoutarray['header'] );
                 foreach( $stdoutarray as $key => $entry )
                 {
@@ -529,37 +555,56 @@ class PH
                         {
                             if( $i == 0 )
                             {
-                                $tmp_entry2 = $entry2;
-                                $tmp_key2 = $key2;
+                                if( !is_array($entry2) )
+                                {
+                                    $tmp_entry2 = $entry2;
+                                    $tmp_key2 = $key2;
+                                }
                             }
                             else
                             {
-                                $tmp_entry2 .= "/".$entry2;
-                                $tmp_key2 .= "/".$key2;
+                                if( !is_array($entry2) )
+                                {
+                                    $tmp_entry2 .= "/".$entry2;
+                                    $tmp_key2 .= "/".$key2;
+                                }
+
                             }
                             $i++;
                         }
-                        $string =  "- ".$tmp_entry2." ".$tmp_key2." - ".$key."\n";
+                        $string =  " - ".$tmp_entry2." ".$tmp_key2." - ".$key."\n";
                         if( !PH::$shadow_json )
+                        {
                             print $string;
+                        }
                         else
-                            PH::$JSON_OUTlog .= $string;
+                        {
+                            #PH::$JSON_OUTlog .= $string;
+                        }
                     }
                     else
                     {
-                        $string =  "- " . $entry . " ". $key . "\n";
+                        $string =  " - " . $entry . " ". $key . "\n";
                         if( !PH::$shadow_json )
+                        {
                             print $string;
+                        }
                         else
-                            PH::$JSON_OUTlog .= $string;
+                        {
+                            #PH::$JSON_OUTlog .= $string;
+                        }
                     }
                 }
                 $string =  "\n";
                 if( !PH::$shadow_json )
+                {
                     print $string;
+                }
                 else
-                    PH::$JSON_OUTlog .= $string;
-            #}
+                {
+                    #PH::$JSON_OUTlog .= $string;
+                }
+            }
         }
         else
         {

@@ -334,6 +334,11 @@ ZoneCallContext::$supportedActions['display'] = array(
             $tmp_txt .= "Log Setting: " . $object->logsetting;
         PH::print_stdout( $tmp_txt );
 
+        PH::$JSON_TMP['sub']['object'][$object->name()]['name'] = $object->name();
+        PH::$JSON_TMP['sub']['object'][$object->name()]['type'] = get_class($object);
+        PH::$JSON_TMP['sub']['object'][$object->name()]['zpp'] = $object->zoneProtectionProfile;
+        PH::$JSON_TMP['sub']['object'][$object->name()]['log'] = $object->logsetting;
+
         //DISPLAY interfaces attached to zones
         $interfaces = $object->attachedInterfaces;
         foreach( $interfaces->getAll() as $interface )
@@ -347,13 +352,21 @@ ZoneCallContext::$supportedActions['display'] = array(
                 foreach( $interface->getLayer3IPv4Addresses() as $ip_address )
                     PH::print_stdout( $ip_address.",";
             }*/
+            $tmp_ips = "";
             if( $interface->type == "layer3" )
             {
                 $tmp_txt .= ", ip-addresse(s): ";
                 foreach( $interface->getLayer3IPv4Addresses() as $ip_address )
+                {
                     $tmp_txt .= $ip_address . ",";
+                    PH::$JSON_TMP['sub']['object'][$object->name()]['interfaces'][$interface->type][$interface->name()]['ip-address'][] = $ip_address;
+                }
                 foreach( $interface->getLayer3IPv6Addresses() as $ip_address )
+                {
                     $tmp_txt .= $ip_address . ",";
+                    PH::$JSON_TMP['sub']['object'][$object->name()]['interfaces'][$interface->type][$interface->name()]['ip-address'][] = $ip_address;
+                }
+
             }
             elseif( $interface->type == "tunnel" || $interface->type == "loopback" || $interface->type == "vlan" )
             {
@@ -361,12 +374,17 @@ ZoneCallContext::$supportedActions['display'] = array(
                 foreach( $interface->getIPv4Addresses() as $ip_address )
                 {
                     if( strpos($ip_address, ".") !== FALSE )
+                    {
                         $tmp_txt .= $ip_address . ",";
+                        PH::$JSON_TMP['sub']['object'][$object->name()]['interfaces'][$interface->type][$interface->name()]['ip-address'][] = $ip_address;
+                    }
+
                     else
                     {
                         #$object = $sub->addressStore->find( $ip_address );
                         #PH::print_stdout( $ip_address." ({$object->value()}) ,";
                         $tmp_txt .= 'XXX,';
+                        PH::$JSON_TMP['sub']['object'][$object->name()]['interfaces'][$interface->type][$interface->name()]['ip-address'][] = "XXX";
                     }
                 }
             }
@@ -375,8 +393,11 @@ ZoneCallContext::$supportedActions['display'] = array(
                 $tmp_txt .= " - IPsec config";
                 $tmp_txt .= " - IKE gateway: " . $interface->gateway;
                 $tmp_txt .= " - interface: " . $interface->interface;
+                PH::$JSON_TMP['sub']['object'][$object->name()]['interfaces'][$interface->type][$interface->name()]['ike']['gw'] = $interface->gateway;
+                PH::$JSON_TMP['sub']['object'][$object->name()]['interfaces'][$interface->type][$interface->name()]['ike']['interface'] = $interface->interface;
             }
             PH::print_stdout( $tmp_txt );
+            PH::$JSON_TMP['sub']['object'][$object->name()]['interfaces'][$interface->type][$interface->name()]['name'] = $interface->name();
 
         }
         #PH::print_stdout( "\n" );

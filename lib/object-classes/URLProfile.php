@@ -181,6 +181,8 @@ class URLProfile
     public function display()
     {
         PH::print_stdout(  "     * " . get_class($this) . " '" . $this->name() . "'    " );
+        PH::$JSON_TMP['sub']['object'][$this->name()]['name'] = $this->name();
+        PH::$JSON_TMP['sub']['object'][$this->name()]['type'] = get_class($this);
 
         //Todo: continue for PH::print_stdout( ); out
         foreach( $this->tmp_url_prof_array as $url_type )
@@ -190,6 +192,7 @@ class URLProfile
             foreach( $this->$url_type as $member )
             {
                 PH::print_stdout(  "         - " . $member );
+                PH::$JSON_TMP['sub']['object'][$this->name()][strtoupper($url_type)][] = $member;
             }
         }
     }

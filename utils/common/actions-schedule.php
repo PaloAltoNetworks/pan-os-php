@@ -337,6 +337,9 @@ ScheduleCallContext::$supportedActions['display'] = array(
         $tmp_txt = "     * " . get_class($object) . " '{$object->name()}'  ";
 
         PH::print_stdout( $tmp_txt );
+        PH::$JSON_TMP['sub']['object'][$object->name()]['name'] = $object->name();
+        PH::$JSON_TMP['sub']['object'][$object->name()]['type'] = get_class($object);
+
 
         $tmp_array = $object->getRecurring();
 
@@ -346,7 +349,10 @@ ScheduleCallContext::$supportedActions['display'] = array(
             $string = "";
             foreach( $tmp_array['daily'] as $entry )
             {
-                PH::print_stdout( $context->padding . "   - ".$entry['start']." - ".$entry['end'] );
+                $string = $entry['start']."-".$entry['end'];
+                PH::print_stdout( $context->padding . "   - ".$string );
+                PH::$JSON_TMP['sub']['object'][$object->name()]['daily'][$string]['start'] = $entry['start'];
+                PH::$JSON_TMP['sub']['object'][$object->name()]['daily'][$string]['end'] = $entry['end'];
             }
         }
 
@@ -361,6 +367,8 @@ ScheduleCallContext::$supportedActions['display'] = array(
                 {
                     $string2 = $day_entry['start']."-".$day_entry['end'];
                     PH::print_stdout( $context->padding . "   - ".$string.$string2 );
+                    PH::$JSON_TMP['sub']['object'][$object->name()]['weekly'][$key][$string2]['start'] = $day_entry['start'];
+                    PH::$JSON_TMP['sub']['object'][$object->name()]['weekly'][$key][$string2]['end'] = $day_entry['end'];
                 }
             }
 
@@ -373,6 +381,9 @@ ScheduleCallContext::$supportedActions['display'] = array(
             foreach( $tmp_array['non-recurring'] as $entry )
             {
                 PH::print_stdout( $context->padding . "   - ".$entry['start']." - ".$entry['end'] );
+
+                PH::$JSON_TMP['sub']['object'][$object->name()]['non-recurring'][$entry['start']." - ".$entry['end']]['start'] = $entry['start'];
+                PH::$JSON_TMP['sub']['object'][$object->name()]['non-recurring'][$entry['start']." - ".$entry['end']]['end'] = $entry['end'];
             }
 
         }

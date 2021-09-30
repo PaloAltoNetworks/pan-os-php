@@ -30,7 +30,7 @@ PH::print_stdout("*********** " . basename(__FILE__) . " UTILITY **************"
 PH::print_stdout("");
 
 
-PH::print_stdout( " - PAN-OS-PHP version: ".PH::frameworkVersion() );
+PH::print_stdout( " - PAN-OS-PHP version: ".PH::frameworkVersion() . " [".PH::frameworkInstalledOS()."]" );
 
 $supportedArguments = array();
 $supportedArguments[] = array('niceName' => 'delete', 'shortHelp' => 'Clears API key for hostname/IP provided as an argument.', 'argDesc' => '[hostname or IP]');
@@ -204,6 +204,9 @@ if( $noArgProvided )
 PH::print_stdout("");
 PH::print_stdout("************* END OF SCRIPT " . basename(__FILE__) . " ************" );
 PH::print_stdout("");
+
+$runtime = number_format((microtime(TRUE) - $this->runStartTime), 2, '.', '');
+PH::print_stdout( array( 'value' => $runtime, 'type' => "seconds" ), false,'runtime' );
 
 if( PH::$shadow_json )
 {

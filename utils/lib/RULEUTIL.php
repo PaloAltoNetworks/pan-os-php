@@ -31,6 +31,9 @@ class RULEUTIL extends UTIL
 
         $this->save_our_work(TRUE);
 
+        $runtime = number_format((microtime(TRUE) - $this->runStartTime), 2, '.', '');
+        PH::print_stdout( array( 'value' => $runtime, 'type' => "seconds" ), false,'runtime' );
+
         if( PH::$shadow_json )
         {
             PH::$JSON_OUT['log'] = PH::$JSON_OUTlog;
@@ -279,6 +282,7 @@ class RULEUTIL extends UTIL
 
             $this->ruleTypes = array_unique($this->ruleTypes);
         }
+        PH::print_stdout( $this->ruleTypes, false, "ruletype");
     }
 
     public function time_to_process_objects()
@@ -306,8 +310,14 @@ class RULEUTIL extends UTIL
             }
 
             PH::print_stdout( "" );
-            PH::print_stdout( "* processing ruleset '" . $store->toString() . "' that holds " . count($rules) . " rules" );
+            $string = "* processing ruleset '" . $store->toString() . "' that holds " . count($rules) . " rules";
+            PH::print_stdout( $string );
 
+            PH::$JSON_TMP = array();
+            PH::$JSON_TMP['header'] = $string;
+            PH::$JSON_TMP['sub']['name'] = $store->owner->name();
+            PH::$JSON_TMP['sub']['store'] = $store->name();
+            PH::$JSON_TMP['sub']['type'] = get_class( $store->owner );
 
             foreach( $rules as $rule )
             {
@@ -334,6 +344,10 @@ class RULEUTIL extends UTIL
 
             PH::print_stdout( "* objects processed in DG/Vsys '{$store->owner->name()}' : $subObjectsProcessed filtered over {$store->count()} available" );
             PH::print_stdout( "" );
+            PH::$JSON_TMP['sub']['summary']['processed'] = $subObjectsProcessed;
+            PH::$JSON_TMP['sub']['summary']['available'] = $store->count();
+            PH::print_stdout( PH::$JSON_TMP, false, get_class( $store->owner->owner ) );
+            PH::$JSON_TMP = array();
         }
         PH::print_stdout( "" );
         // </editor-fold>

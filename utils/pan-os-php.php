@@ -71,6 +71,7 @@ $typeUTIL->supportedArguments['version'] = array('niceName' => 'version', 'short
 
 if( isset(PH::$args['version']) )
 {
+    PH::print_stdout( " - PAN-OS-PHP version: ".PH::frameworkVersion() . " [".PH::frameworkInstalledOS()."]" );
     PH::print_stdout( " - ".dirname(__FILE__) );
     exit();
 }

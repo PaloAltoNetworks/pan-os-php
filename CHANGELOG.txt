@@ -11,6 +11,7 @@ BUGFIX:
 
 GENERAL:
 * move from print to PH::print_stdout - in preparation for JSON response, some missing parts fixed
+* introduce JSON response for most of the UTIL scripts with argument shadow-json - not available for pa_rule-edit and pa_application-edit yet
 
 
 2.0.11 (20210915)

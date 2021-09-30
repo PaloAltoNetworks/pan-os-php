@@ -30,6 +30,15 @@ class DEVICEUTIL extends UTIL
         $this->stats();
 
         $this->save_our_work(TRUE);
+
+        $runtime = number_format((microtime(TRUE) - $this->runStartTime), 2, '.', '');
+        PH::print_stdout( array( 'value' => $runtime, 'type' => "seconds" ), false,'runtime' );
+
+        if( PH::$shadow_json )
+        {
+            PH::$JSON_OUT['log'] = PH::$JSON_OUTlog;
+            print json_encode( PH::$JSON_OUT, JSON_PRETTY_PRINT );
+        }
     }
 
     public function supportedArguments()
@@ -128,6 +137,7 @@ class DEVICEUTIL extends UTIL
 
             $this->deviceTypes = array_unique($this->deviceTypes);
         }
+        PH::print_stdout( $this->deviceTypes, false, "devicetype");
     }
     
     public function time_to_process_objects()
@@ -156,8 +166,14 @@ class DEVICEUTIL extends UTIL
 
             PH::print_stdout( "" );
             #PH::print_stdout( "* processing deviceset '" . $store->toString() . "' that holds " . count($objects) . " rules" );
-            PH::print_stdout( "* processing deviceset '" . $store->name()."'" );
+            $string = "* processing deviceset '" . $store->name()."'";
+            PH::print_stdout( $string );
 
+            PH::$JSON_TMP = array();
+            PH::$JSON_TMP['header'] = $string;
+            PH::$JSON_TMP['sub']['name'] = $store->name();
+            PH::$JSON_TMP['sub']['store'] = $store->name();
+            PH::$JSON_TMP['sub']['type'] = get_class( $store );
 
             foreach( $objects as $object )
             {
@@ -185,7 +201,11 @@ class DEVICEUTIL extends UTIL
             //what todo for devicetype???
             #PH::print_stdout( "* objects processed in DG/Vsys '{$store->owner->name()}' : $subObjectsProcessed filtered over {$store->count()} available" );
             #PH::print_stdout( "* objects processed in DG/Vsys/Template/TemplateStack/Container/ " );
-            PH::print_stdout( "" );
+
+            #PH::$JSON_TMP['sub']['summary']['processed'] = $subObjectsProcessed;
+            #PH::$JSON_TMP['sub']['summary']['available'] = $store->count();
+            PH::print_stdout( PH::$JSON_TMP, false, get_class( $store ) );
+            PH::$JSON_TMP = array();
         }
         PH::print_stdout( "" );
         // </editor-fold>

@@ -1618,6 +1618,8 @@ AddressCallContext::$supportedActions[] = array(
     'MainFunction' => function (AddressCallContext $context) {
         $object = $context->object;
 
+        PH::$JSON_TMP['sub']['object'][$object->name()]['name'] = $object->name();
+
         if( $object->isGroup() )
         {
             if( $object->isDynamic() )
@@ -1626,20 +1628,31 @@ AddressCallContext::$supportedActions[] = array(
                 if( count($object->tags->tags()) > 0 )
                     $tag_string = "tag: '".$object->tags->toString_inline()."'";
                 PH::print_stdout( $context->padding . "* " . get_class($object) . " '{$object->name()}' (DYNAMIC)    desc: '{$object->description()}' $tag_string filter: '{$object->filter}" );
-
+                PH::$JSON_TMP['sub']['object'][$object->name()]['type'] = get_class($object)." (DYNAMIC)";
+                PH::$JSON_TMP['sub']['object'][$object->name()]['description'] = $object->description();
+                PH::$JSON_TMP['sub']['object'][$object->name()]['tag'] = $tag_string;
+                PH::$JSON_TMP['sub']['object'][$object->name()]['filter'] = $object->filter;
             }
             else
             {
                 PH::print_stdout( $context->padding . "* " . get_class($object) . " '{$object->name()}' ({$object->count()} members)   desc: '{$object->description()}'" );
+                PH::$JSON_TMP['sub']['object'][$object->name()]['type'] = get_class($object);
+                PH::$JSON_TMP['sub']['object'][$object->name()]['memberscount'] = $object->count();
+                PH::$JSON_TMP['sub']['object'][$object->name()]['description'] = $object->description();
 
                 foreach( $object->members() as $member )
                 {
+                    PH::$JSON_TMP['sub']['object'][$object->name()]['members'][$member->name()]['name'] = $member->name();
+                    PH::$JSON_TMP['sub']['object'][$object->name()]['members'][$member->name()]['type'] = get_class( $member );
+
                     if( $member->isAddress() )
+                    {
                         PH::print_stdout( "          - {$member->name()}  value: '{$member->value()}'" );
+                        PH::$JSON_TMP['sub']['object'][$object->name()]['members'][$member->name()]['value'] = $member->value();
+                    }
                     else
                         PH::print_stdout( "          - {$member->name()}" );
                 }
-
             }
         }
         else
@@ -1647,7 +1660,12 @@ AddressCallContext::$supportedActions[] = array(
             $tag_string = "";
             if( count($object->tags->tags()) > 0 )
                 $tag_string = "tag: '".$object->tags->toString_inline()."'";
+
             PH::print_stdout( $context->padding . "* " . get_class($object) . " '{$object->name()}'  value: '{$object->value()}'  desc: '{$object->description()}' $tag_string" );
+            PH::$JSON_TMP['sub']['object'][$object->name()]['type'] = get_class($object);
+            PH::$JSON_TMP['sub']['object'][$object->name()]['value'] = $object->value();
+            PH::$JSON_TMP['sub']['object'][$object->name()]['tag'] = $tag_string;
+            PH::$JSON_TMP['sub']['object'][$object->name()]['description'] = $object->description();
         }
 
 
