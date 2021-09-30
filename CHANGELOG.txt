@@ -6,6 +6,7 @@ UTILS:
 BUGFIX:
 
 GENERAL:
+* framework class PH - introduce function ACTIONstatus - make use in pa_tag-edit
 
 
 2.0.12 (20210930)

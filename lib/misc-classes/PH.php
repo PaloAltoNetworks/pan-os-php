@@ -618,6 +618,13 @@ class PH
 
     }
 
+    static public function ACTIONstatus( $context, $status, $string )
+    {
+        PH::print_stdout( $context->padding . " *** ".$status." : ".$string );
+        PH::$JSON_TMP['sub']['object'][$context->object->name()]['status']['type'] = $status;
+        PH::$JSON_TMP['sub']['object'][$context->object->name()]['status']['message'] = $string;
+    }
+
     static public function &boldText($msg)
     {
         $term = getenv('TERM');
