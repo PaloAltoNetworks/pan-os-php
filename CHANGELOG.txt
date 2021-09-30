@@ -1,6 +1,14 @@
 CHANGELOG
 
-2.0.12
+2.0.13
+UTILS:
+
+BUGFIX:
+
+GENERAL:
+
+
+2.0.12 (20210930)
 UTILS:
 * pa_rule-edit - introduce new 'filter=(from has.same.to.zone)'/'filter=(to has.same.from.zone)'
 * pa_device-edit - introduce new actions=DeviceGroup-remove / actions=AddressStore-rewrite
