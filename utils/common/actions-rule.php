@@ -2843,8 +2843,55 @@ RuleCallContext::$supportedActions[] = array(
 RuleCallContext::$supportedActions[] = array(
     'name' => 'display',
     'MainFunction' => function (RuleCallContext $context) {
+
+        $rule = $context->object;
         $context->object->display(7);
-    }
+
+
+        $addResolvedAddressSummary = FALSE;
+        $addResolvedServiceSummary = FALSE;
+        $addResolvedApplicationSummary = FALSE;
+
+        $optionalFields = &$context->arguments['additionalFields'];
+
+        if( isset($optionalFields['ResolveAddressSummary']) )
+            $addResolvedAddressSummary = TRUE;
+        if( isset($optionalFields['ResolveServiceSummary']) )
+            $addResolvedServiceSummary = TRUE;
+        if( isset($optionalFields['ResolveApplicationSummary']) )
+            $addResolvedApplicationSummary = TRUE;
+
+        if( get_class( $context->object ) === "SecurityRule" )
+        {
+            if( $addResolvedAddressSummary )
+            {
+                PH::$JSON_TMP['sub']['object'][$rule->name()]['src_resolved_sum'] = $context->AddressResolveSummary( $rule, "source" );
+                PH::$JSON_TMP['sub']['object'][$rule->name()]['dst_resolved_sum'] = $context->AddressResolveSummary( $rule, "destination" );
+            }
+
+            if( $addResolvedServiceSummary )
+            {
+                PH::$JSON_TMP['sub']['object'][$rule->name()]['srv_resolved_sum'] = $context->ServiceResolveSummary( $rule );
+            }
+
+            if( $addResolvedApplicationSummary )
+            {
+                PH::$JSON_TMP['sub']['object'][$rule->name()]['app_resolved_sum'] = $context->ApplicationResolveSummary( $rule );
+            }
+        }
+    },
+    'args' => array(
+        'additionalFields' =>
+        array('type' => 'pipeSeparatedList',
+            'subtype' => 'string',
+            'default' => '*NONE*',
+            'choices' => array('ResolveAddressSummary', 'ResolveServiceSummary', 'ResolveApplicationSummary'),
+            'help' => "pipe(|) separated list of additional field to include in the report. The following is available:\n" .
+                "  - ResolveAddressSummary : fields with address objects will be resolved to IP addressed and summarized in a new column)\n" .
+                "  - ResolveServiceSummary : fields with service objects will be resolved to their value and summarized in a new column)\n"  .
+                "  - ResolveApplicationSummary : fields with application objects will be resolved to their category and risk)\n"
+        )
+    )
 );
 RuleCallContext::$supportedActions[] = array(
     'name' => 'invertPreAndPost',
@@ -3200,6 +3247,8 @@ RuleCallContext::$supportedActions[] = array(
             $addResolvedAddressSummary = TRUE;
         if( isset($optionalFields['ResolveServiceSummary']) )
             $addResolvedServiceSummary = TRUE;
+        if( isset($optionalFields['ResolveApplicationSummary']) )
+            $addResolvedApplicationSummary = TRUE;
 
         $fields = array(
             'location' => 'location',
@@ -3217,6 +3266,7 @@ RuleCallContext::$supportedActions[] = array(
             'service' => 'service',
             'service_resolved_sum' => 'service_resolved_sum',
             'application' => 'application',
+            'application_resolved_sum' => 'application_resolved_sum',
             'action' => 'action',
             'security' => 'security-profile',
             'disabled' => 'disabled',
@@ -3254,7 +3304,8 @@ RuleCallContext::$supportedActions[] = array(
                 {
                     if( (($fieldName == 'src_resolved_sum' || $fieldName == 'dst_resolved_sum' ||
                                 $fieldName == 'dnat_host_resolved_sum' || $fieldName == 'snat_address_resolved_sum') && !$addResolvedAddressSummary) ||
-                        (($fieldName == 'service_resolved_sum') && !$addResolvedServiceSummary)
+                        (($fieldName == 'service_resolved_sum') && !$addResolvedServiceSummary) ||
+                        (($fieldName == 'application_resolved_sum') && !$addResolvedApplicationSummary)
                     )
                         continue;
                     $lines .= $context->ruleFieldHtmlExport($rule, $fieldID);
@@ -3272,7 +3323,8 @@ RuleCallContext::$supportedActions[] = array(
         {
             if( (($fieldName == 'src_resolved_sum' || $fieldName == 'dst_resolved_sum' ||
                         $fieldName == 'dnat_host_resolved_sum' || $fieldName == 'snat_address_resolved_sum') && !$addResolvedAddressSummary) ||
-                (($fieldName == 'service_resolved_sum') && !$addResolvedServiceSummary)
+                (($fieldName == 'service_resolved_sum') && !$addResolvedServiceSummary) ||
+                (($fieldName == 'application_resolved_sum') && !$addResolvedApplicationSummary)
             )
                 continue;
             $tableHeaders .= "<th>{$fieldName}</th>\n";
@@ -3299,10 +3351,11 @@ RuleCallContext::$supportedActions[] = array(
             array('type' => 'pipeSeparatedList',
                 'subtype' => 'string',
                 'default' => '*NONE*',
-                'choices' => array('ResolveAddressSummary', 'ResolveServiceSummary'),
+                'choices' => array('ResolveAddressSummary', 'ResolveServiceSummary', 'ResolveApplicationSummary'),
                 'help' => "pipe(|) separated list of additional field to include in the report. The following is available:\n" .
                     "  - ResolveAddressSummary : fields with address objects will be resolved to IP addressed and summarized in a new column)\n" .
-                    "  - ResolveServiceSummary : fields with service objects will be resolved to their value and summarized in a new column)\n"
+                    "  - ResolveServiceSummary : fields with service objects will be resolved to their value and summarized in a new column)\n"  .
+                    "  - ResolveApplicationSummary : fields with application objects will be resolved to their category and risk)\n"
             )
     )
 );

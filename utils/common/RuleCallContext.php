@@ -350,76 +350,7 @@ class RuleCallContext extends CallContext
 
         if( $fieldName == 'service_resolved_sum' )
         {
-            if( $rule->isDecryptionRule() )
-                return self::enclose('');
-            if( $rule->isAppOverrideRule() )
-                return self::enclose($rule->ports());
-
-
-            if( $rule->isNatRule() )
-            {
-                if( $rule->service !== null )
-                    return self::enclose(array($rule->service));
-                return self::enclose('any');
-            }
-
-            if( $rule->services->isAny() )
-                return self::enclose('any');
-            if( $rule->services->isApplicationDefault() )
-                return self::enclose('application-default');
-
-            $objects = $rule->services->getAll();
-
-            $array = array();
-            foreach( $objects as $object )
-            {
-                $port_mapping = $object->dstPortMapping();
-                $mapping_texts = $port_mapping->mappingToText();
-
-                //TODO: handle predefined service objects in a different way
-                if( $object->name() == 'service-http' )
-                    $mapping_texts = 'tcp/80';
-                if( $object->name() == 'service-https' )
-                    $mapping_texts = 'tcp/443';
-
-
-                if( strpos($mapping_texts, " ") !== FALSE )
-                    $mapping_text_array = explode(" ", $mapping_texts);
-                else
-                    $mapping_text_array[] = $mapping_texts;
-
-
-                foreach( $mapping_text_array as $mapping_text )
-                {
-                    $protocol = "tmp";
-                    if( strpos($mapping_text, "tcp/") !== FALSE )
-                        $protocol = "tcp/";
-                    elseif( strpos($mapping_text, "udp/") !== FALSE )
-                        $protocol = "udp/";
-
-                    $mapping_text = str_replace($protocol, "", $mapping_text);
-                    $mapping_text = explode(",", $mapping_text);
-
-                    foreach( $mapping_text as $mapping )
-                    {
-                        if( !isset($array[$protocol . $mapping]) )
-                        {
-                            $port_mapping_text[$protocol . $mapping] = $protocol . $mapping;
-
-                            if( strpos($mapping, "-") !== FALSE )
-                            {
-                                $array[$protocol . $mapping] = $protocol . $mapping;
-                                $range = explode("-", $mapping);
-                                for( $i = $range[0]; $i <= $range[1]; $i++ )
-                                    $array[$protocol . $i] = $protocol . $i;
-                            }
-                            else
-                                $array[$protocol . $mapping] = $protocol . $mapping;
-                        }
-                    }
-                }
-            }
-
+            $port_mapping_text = $this->ServiceResolveSummary( $rule );
             return self::enclose($port_mapping_text);
         }
 
@@ -432,6 +363,12 @@ class RuleCallContext extends CallContext
                 return self::enclose('any');
 
             return self::enclose($rule->apps->getAll(), $wrap);
+        }
+
+        if( $fieldName == 'application_resolved_sum' )
+        {
+            $port_mapping_text = $this->ApplicationResolveSummary( $rule, true );
+            return self::enclose($port_mapping_text);
         }
 
         if( $fieldName == 'security-profile' )
@@ -534,61 +471,25 @@ class RuleCallContext extends CallContext
 
         if( $fieldName == 'src_resolved_sum' )
         {
-            if( $rule->source->isAny() )
-                return self::enclose('');
-
-            $mapping = $rule->source->getIP4Mapping();
-            $strMapping = explode(',', $mapping->dumpToString());
-
-            foreach( array_keys($mapping->unresolved) as $unresolved )
-                $strMapping[] = $unresolved;
-
+            $strMapping = $this->AddressResolveSummary( $rule, "source" );
             return self::enclose($strMapping);
         }
 
         if( $fieldName == 'dst_resolved_sum' )
         {
-            if( $rule->destination->isAny() )
-                return self::enclose('');
-
-            $mapping = $rule->destination->getIP4Mapping();
-            $strMapping = explode(',', $mapping->dumpToString());
-
-            foreach( array_keys($mapping->unresolved) as $unresolved )
-                $strMapping[] = $unresolved;
-
+            $strMapping = $this->AddressResolveSummary( $rule, "destination" );
             return self::enclose($strMapping);
         }
 
         if( $fieldName == 'dnat_host_resolved_sum' )
         {
-            if( !$rule->isNatRule() )
-                return self::enclose('');
-
-            if( $rule->dnathost === null )
-                return self::enclose('');
-
-            $mapping = $rule->dnathost->getIP4Mapping();
-            $strMapping = explode(',', $mapping->dumpToString());
-
-            foreach( array_keys($mapping->unresolved) as $unresolved )
-                $strMapping[] = $unresolved;
-
+            $strMapping = $this->NatAddressResolveSummary( $rule, "dnathost" );
             return self::enclose($strMapping);
         }
 
         if( $fieldName == 'snat_address_resolved_sum' )
         {
-            if( !$rule->isNatRule() )
-                return self::enclose('');
-
-            $mapping = $rule->snathosts->getIP4Mapping();
-            $strMapping = explode(',', $mapping->dumpToString());
-
-            foreach( array_keys($mapping->unresolved) as $unresolved )
-                $strMapping[] = $unresolved;
-
-
+            $strMapping = $this->NatAddressResolveSummary( $rule, "snathosts" );
             return self::enclose($strMapping);
         }
 
@@ -604,6 +505,184 @@ class RuleCallContext extends CallContext
 
         return self::enclose('unsupported');
 
+    }
+
+    public function AddressResolveSummary( $rule, $typeSrcDst )
+    {
+        if( $rule->$typeSrcDst->isAny() )
+            return '';
+
+        $mapping = $rule->$typeSrcDst->getIP4Mapping();
+        $strMapping = explode(',', $mapping->dumpToString());
+
+        foreach( array_keys($mapping->unresolved) as $unresolved )
+            $strMapping[] = $unresolved;
+
+        return $strMapping;
+    }
+
+    public function NatAddressResolveSummary( $rule, $typeSrcDst )
+    {
+        if( !$rule->isNatRule() )
+            return '';
+
+        if( $rule->$typeSrcDst === null )
+            return '';
+
+        $mapping = $rule->$typeSrcDst->getIP4Mapping();
+        $strMapping = explode(',', $mapping->dumpToString());
+
+        foreach( array_keys($mapping->unresolved) as $unresolved )
+            $strMapping[] = $unresolved;
+
+        return $strMapping;
+    }
+
+    public function ServiceResolveSummary( $rule )
+    {
+        if( $rule->isDecryptionRule() )
+            return '';
+        if( $rule->isAppOverrideRule() )
+            return $rule->ports();
+
+
+        if( $rule->isNatRule() )
+        {
+            if( $rule->service !== null )
+                return array($rule->service);
+            return 'any';
+        }
+
+        if( $rule->services->isAny() )
+            return 'any';
+        if( $rule->services->isApplicationDefault() )
+            return 'application-default';
+
+        $objects = $rule->services->getAll();
+
+        $array = array();
+        foreach( $objects as $object )
+        {
+            $port_mapping = $object->dstPortMapping();
+            $mapping_texts = $port_mapping->mappingToText();
+
+            //TODO: handle predefined service objects in a different way
+            if( $object->name() == 'service-http' )
+                $mapping_texts = 'tcp/80';
+            if( $object->name() == 'service-https' )
+                $mapping_texts = 'tcp/443';
+
+
+            if( strpos($mapping_texts, " ") !== FALSE )
+                $mapping_text_array = explode(" ", $mapping_texts);
+            else
+                $mapping_text_array[] = $mapping_texts;
+
+
+            foreach( $mapping_text_array as $mapping_text )
+            {
+                $protocol = "tmp";
+                if( strpos($mapping_text, "tcp/") !== FALSE )
+                    $protocol = "tcp/";
+                elseif( strpos($mapping_text, "udp/") !== FALSE )
+                    $protocol = "udp/";
+
+                $mapping_text = str_replace($protocol, "", $mapping_text);
+                $mapping_text = explode(",", $mapping_text);
+
+                foreach( $mapping_text as $mapping )
+                {
+                    if( !isset($array[$protocol . $mapping]) )
+                    {
+                        $port_mapping_text[$protocol . $mapping] = $protocol . $mapping;
+
+                        if( strpos($mapping, "-") !== FALSE )
+                        {
+                            $array[$protocol . $mapping] = $protocol . $mapping;
+                            $range = explode("-", $mapping);
+                            for( $i = $range[0]; $i <= $range[1]; $i++ )
+                                $array[$protocol . $i] = $protocol . $i;
+                        }
+                        else
+                            $array[$protocol . $mapping] = $protocol . $mapping;
+                    }
+                }
+            }
+        }
+
+        return $port_mapping_text;
+    }
+
+    public function ApplicationResolveSummary( $rule, $returnString = false )
+    {
+        $app_mapping = array();
+
+        /** @var SecurityRule $rule */
+        if( $rule->isDecryptionRule() || $rule->isNatRule() || $rule->isAuthenticationRule() || $rule->isCaptivePortalRule() )
+            return '';
+        if( $rule->isAppOverrideRule() )
+            return $rule->application();
+
+        if( $rule->apps->isAny() )
+        {
+            #return 'any';
+        }
+
+
+        $applications = $rule->apps->getAll();
+        foreach( $applications as $app )
+        {
+            /** @var App $app */
+            if( $app->isApplicationGroup() )
+            {
+                foreach( $app->groupApps() as $app1 )
+                    $app_mapping[] = $this->appReturn( $app1, $returnString );
+            }
+            elseif( $app->isApplicationFilter() )
+            {
+                $app_mapping[] = $this->appReturn( $app, $returnString );
+            }
+            elseif( $app->isApplicationCustom() )
+            {
+                $app_mapping[] = $this->appReturn( $app, $returnString );
+            }
+            elseif( $app->isContainer() )
+            {
+                foreach( $app->containerApps() as $app1 )
+                    $app_mapping[] = $this->appReturn( $app1, $returnString );
+            }
+            else
+            {
+                $app_mapping[] = $this->appReturn( $app, $returnString );
+            }
+        }
+
+        return $app_mapping;
+    }
+
+    public function appReturn( $app, $string = false )
+    {
+        if( isset($app->app_filter_details['category']) )
+            $string_category = implode( "|", $app->app_filter_details['category'] );
+        else
+            $string_category = $app->category;
+
+        if( isset($app->app_filter_details['subcategory']) )
+            $string_subcategory = implode( "|", $app->app_filter_details['subcategory'] );
+        else
+            $string_subcategory = $app->subCategory;
+
+        if( isset($app->risk) )
+            $risk = $app->risk;
+        else
+            $risk = "";
+
+        if( $string )
+            $tmp_return = $app->name().",".$string_category.",".$string_subcategory.",".$risk;
+        else
+            $tmp_return = array( $app->name(), $string_category, $string_subcategory, $risk );
+
+        return $tmp_return;
     }
 }
 

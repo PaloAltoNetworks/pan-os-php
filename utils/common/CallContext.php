@@ -72,22 +72,26 @@ class CallContext
 
         $tmp_txt = "   - object '" . PH::boldText($object->name()) . "' passing through Action='{$this->actionRef['name']}'";
 
+        PH::$JSON_TMP['sub']['object'][$object->name()]['name'] = $object->name();
+        PH::$JSON_TMP['sub']['object'][$object->name()]['actions'][$this->actionRef['name']]['name'] = $this->actionRef['name'];
+
         if( count($this->arguments) != 0 )
         {
             $tmp_txt .= " Args: ";
             foreach( $this->arguments as $argName => $argValue )
             {
+                $tmp_arg = "";
                 if( is_bool($argValue) )
-                    $tmp_txt .= "$argName=" . boolYesNo($argValue) . ", ";
+                    $tmp_arg = boolYesNo($argValue);
                 elseif( is_array($argValue) )
-                    $tmp_txt .= "$argName=" . PH::list_to_string($argValue, '|') . ", ";
+                    $tmp_arg = PH::list_to_string($argValue, '|');
                 else
-                    $tmp_txt .= "$argName=$argValue, ";
+                    $tmp_arg = $argValue;
+
+                PH::$JSON_TMP['sub']['object'][$object->name()]['actions'][$this->actionRef['name']]['arg'][$argName] = $tmp_arg;
+                $tmp_txt .= $argName . "=" . $tmp_arg . ", ";
             }
         }
-
-        PH::$JSON_TMP['sub']['object'][$object->name()]['name'] = $object->name();
-        PH::$JSON_TMP['sub']['object'][$object->name()]['actions'] = $this->actionRef['name'];
 
         PH::print_stdout( $tmp_txt );
 

@@ -134,6 +134,14 @@ class App
         return $this->subapps;
     }
 
+    public function groupApps()
+    {
+        if( !$this->isApplicationGroup() )
+            derr('cannot be be called on a non ApplicationGroup app');
+
+        return $this->groupapps;
+    }
+
     /**
      * returns true if application is using dynamic ports
      * @return bool
