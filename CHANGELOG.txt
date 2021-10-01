@@ -12,6 +12,7 @@ BUGFIX:
 
 GENERAL:
 * framework class PH - introduce function ACTIONstatus - make use in pa_tag-edit
+* predefined.xml update to version 8465-6967
 
 
 2.0.12 (20210930)
