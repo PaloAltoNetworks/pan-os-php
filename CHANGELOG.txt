@@ -7,6 +7,7 @@ UTILS:
 * pa_rule-edit - add array keys for actions=display:ResolveApplicationSummary
 
 BUGFIX:
+* pa_device-edit - bugfix to print DG hierarchy in JSON
 
 GENERAL:
 * framework class PH - introduce function ACTIONstatus - make use in pa_tag-edit

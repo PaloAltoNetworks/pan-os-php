@@ -63,9 +63,8 @@ DeviceCallContext::$supportedActions['display'] = array(
             {
                 PH::print_stdout( $context->padding.$tmp_padding."- ".$key );
                 $tmp_padding .= "  ";
+                PH::$JSON_TMP['sub']['object'][$object->name()]['hierarchy'][] = $key;
             }
-            PH::$JSON_TMP['sub']['object'][$object->name()]['hierarchy'] = array_reverse( $parentDGS );
-            //Todo: PH::print_stdout( complete DG Hierarchy
         }
         elseif( get_class($object) == "ManagedDevice" )
         {
