@@ -65,6 +65,13 @@ DeviceCallContext::$supportedActions['display'] = array(
                 $tmp_padding .= "  ";
                 PH::$JSON_TMP['sub']['object'][$object->name()]['hierarchy'][] = $key;
             }
+            foreach( $object->getDevicesInGroup() as $key => $device )
+            {
+                PH::print_stdout( $context->padding."- ".$key );
+                PH::$JSON_TMP['sub']['object'][$object->name()]['devices'][] = $key;
+            }
+
+
         }
         elseif( get_class($object) == "ManagedDevice" )
         {

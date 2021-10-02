@@ -471,25 +471,33 @@ class RuleCallContext extends CallContext
 
         if( $fieldName == 'src_resolved_sum' )
         {
-            $strMapping = $this->AddressResolveSummary( $rule, "source" );
+            $unresolvedArray = array();
+            $strMapping = $this->AddressResolveSummary( $rule, "source", $unresolvedArray );
+            $strMapping = array_merge( $strMapping, $unresolvedArray );
             return self::enclose($strMapping);
         }
 
         if( $fieldName == 'dst_resolved_sum' )
         {
-            $strMapping = $this->AddressResolveSummary( $rule, "destination" );
+            $unresolvedArray = array();
+            $strMapping = $this->AddressResolveSummary( $rule, "destination", $unresolvedArray );
+            $strMapping = array_merge( $strMapping, $unresolvedArray );
             return self::enclose($strMapping);
         }
 
         if( $fieldName == 'dnat_host_resolved_sum' )
         {
-            $strMapping = $this->NatAddressResolveSummary( $rule, "dnathost" );
+            $unresolvedArray = array();
+            $strMapping = $this->NatAddressResolveSummary( $rule, "dnathost", $unresolvedArray );
+            $strMapping = array_merge( $strMapping, $unresolvedArray );
             return self::enclose($strMapping);
         }
 
         if( $fieldName == 'snat_address_resolved_sum' )
         {
-            $strMapping = $this->NatAddressResolveSummary( $rule, "snathosts" );
+            $unresolvedArray = array();
+            $strMapping = $this->NatAddressResolveSummary( $rule, "snathosts", $unresolvedArray );
+            $strMapping = array_merge( $strMapping, $unresolvedArray );
             return self::enclose($strMapping);
         }
 
@@ -507,33 +515,45 @@ class RuleCallContext extends CallContext
 
     }
 
-    public function AddressResolveSummary( $rule, $typeSrcDst )
+    public function AddressResolveSummary( $rule, $typeSrcDst, &$unresolvedArray = array() )
     {
         if( $rule->$typeSrcDst->isAny() )
-            return '';
+            return array();
 
         $mapping = $rule->$typeSrcDst->getIP4Mapping();
         $strMapping = explode(',', $mapping->dumpToString());
 
         foreach( array_keys($mapping->unresolved) as $unresolved )
-            $strMapping[] = $unresolved;
+        {
+            #$strMapping[] = $unresolved;
+            $unresolvedArray[] = $unresolved;
+        }
+
+        if( count( $strMapping) === 1 && empty( $strMapping[0] ) )
+            $strMapping = array();
 
         return $strMapping;
     }
 
-    public function NatAddressResolveSummary( $rule, $typeSrcDst )
+    public function NatAddressResolveSummary( $rule, $typeSrcDst, &$unresolvedArray = array() )
     {
         if( !$rule->isNatRule() )
-            return '';
+            return array();
 
         if( $rule->$typeSrcDst === null )
-            return '';
+            return array();
 
         $mapping = $rule->$typeSrcDst->getIP4Mapping();
         $strMapping = explode(',', $mapping->dumpToString());
 
         foreach( array_keys($mapping->unresolved) as $unresolved )
-            $strMapping[] = $unresolved;
+        {
+            #$strMapping[] = $unresolved;
+            $unresolvedArray[] = $unresolved;
+        }
+
+        if( count( $strMapping) === 1 && empty( $strMapping[0] ) )
+            $strMapping = array();
 
         return $strMapping;
     }
@@ -541,7 +561,7 @@ class RuleCallContext extends CallContext
     public function ServiceResolveSummary( $rule )
     {
         if( $rule->isDecryptionRule() )
-            return '';
+            return array();
         if( $rule->isAppOverrideRule() )
             return $rule->ports();
 
@@ -550,13 +570,13 @@ class RuleCallContext extends CallContext
         {
             if( $rule->service !== null )
                 return array($rule->service);
-            return 'any';
+            return array( 'any' );
         }
 
         if( $rule->services->isAny() )
-            return 'any';
+            return array( 'any' );
         if( $rule->services->isApplicationDefault() )
-            return 'application-default';
+            return array( 'application-default' );
 
         $objects = $rule->services->getAll();
 
