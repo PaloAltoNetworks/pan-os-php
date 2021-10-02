@@ -40,7 +40,8 @@ sort($supportedRoute );
 // catch this here, we don't support many routes yet
 if( empty( $url_pieces) || ( isset($url_pieces[1]) && !in_array( $url_pieces[1], $supportedRoute ) ) )
 {
-    $message = 'Unknown endpoint. supported: '.implode( ", ", $supportedRoute );
+    $example = "http://localhost:8082/utils/develop/api/v1/tool.php/address?shadow-json";
+    $message = 'Unknown endpoint. supported: '.implode( ", ", $supportedRoute ).' Example: '.$example;
     throw new Exception($message, 404);
 }
 
