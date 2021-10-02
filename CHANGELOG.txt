@@ -10,6 +10,7 @@ UTILS:
 BUGFIX:
 * pa_device-edit - bugfix to print DG hierarchy in JSON
 * pa_application-edit - bugfix to print APP information optimised in JSON
+* pa_address-edit | bugfix for is.included-in.name if object is tmp and value is available
 
 GENERAL:
 * framework class PH - introduce function ACTIONstatus - make use in pa_tag-edit

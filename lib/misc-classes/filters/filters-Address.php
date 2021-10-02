@@ -981,13 +981,13 @@ RQuery::$defaultFilters['address']['value']['operators']['is.included-in.name'] 
     {
         $object = $context->object;
 
-        if( $object->isTmpAddr() || $object->isGroup()  )
+        if( $object->isGroup()  )
         {
             return null;
         }
 
 
-        if( $object->isType_ipNetmask() || $object->isType_ipRange() || $object->isType_FQDN() )
+        if( $object->isType_ipNetmask() || $object->isType_ipRange() || $object->isType_FQDN() || $object->isType_TMP() )
         {
             $name = $object->name();
             if(  $object->isType_ipRange())
@@ -996,12 +996,12 @@ RQuery::$defaultFilters['address']['value']['operators']['is.included-in.name'] 
                 $addr_value = explode( '-', $addr_value);
                 $addr_value = $addr_value[0];
             }
-            elseif( $object->isType_FQDN() )
+            elseif( $object->isType_FQDN() || $object->isType_TMP() )
                 $addr_value = $object->value();
             else
                 $addr_value = $object->getNetworkValue();
 
-            if( strpos(strtolower($name), strtolower($addr_value) ) !== FALSE )
+            if( !empty( $addr_value ) && strpos(strtolower($name), strtolower($addr_value) ) !== FALSE )
                 return true;
         }
 
