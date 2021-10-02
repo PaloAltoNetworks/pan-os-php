@@ -7,6 +7,7 @@ UTILS:
 * pa_rule-edit - add array keys for actions=display:ResolveApplicationSummary
 * apigui - add example in error output
 * pa_device-edit - add serial# in output
+* pa_rule-edit actions=display:ResolveAddressSummary - for shadow-json - split static and dynamic output - dynamic are tmp objects without value
 
 BUGFIX:
 * pa_device-edit - bugfix to print DG hierarchy in JSON

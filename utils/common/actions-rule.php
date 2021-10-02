@@ -2865,8 +2865,12 @@ RuleCallContext::$supportedActions[] = array(
         {
             if( $addResolvedAddressSummary )
             {
-                PH::$JSON_TMP['sub']['object'][$rule->name()]['src_resolved_sum'] = $context->AddressResolveSummary( $rule, "source" );
-                PH::$JSON_TMP['sub']['object'][$rule->name()]['dst_resolved_sum'] = $context->AddressResolveSummary( $rule, "destination" );
+                $unresolvedArray = array();
+                PH::$JSON_TMP['sub']['object'][$rule->name()]['src_resolved_sum']['static'] = $context->AddressResolveSummary( $rule, "source", $unresolvedArray );
+                PH::$JSON_TMP['sub']['object'][$rule->name()]['src_resolved_sum']['dynamic'] = $unresolvedArray;
+                $unresolvedArray = array();
+                PH::$JSON_TMP['sub']['object'][$rule->name()]['dst_resolved_sum']['static'] = $context->AddressResolveSummary( $rule, "destination", $unresolvedArray );
+                PH::$JSON_TMP['sub']['object'][$rule->name()]['dst_resolved_sum']['dynamic'] = $unresolvedArray;
             }
 
             if( $addResolvedServiceSummary )
