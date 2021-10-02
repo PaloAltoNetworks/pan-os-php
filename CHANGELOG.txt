@@ -6,6 +6,7 @@ UTILS:
 * pa_rule-edit introduce additionalargument 'ResolveApplicationSummary' for actions=display:ResolveApplicationSummary and actions=exporttoexcel:file,ResolveApplicationSummary
 * pa_rule-edit - add array keys for actions=display:ResolveApplicationSummary
 * apigui - add example in error output
+* pa_device-edit - add serial# in output
 
 BUGFIX:
 * pa_device-edit - bugfix to print DG hierarchy in JSON
