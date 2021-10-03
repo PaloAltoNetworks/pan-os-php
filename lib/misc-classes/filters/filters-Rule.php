@@ -2773,9 +2773,11 @@ RQuery::$defaultFilters['rule']['user']['operators']['has.regex'] = array(
 
         foreach( $users as $user )
         {
-            $matching = preg_match($context->value, $user);
+            $searchString = str_replace( "\\", "\\\\", $context->value);
+
+            $matching = preg_match($searchString, $user);
             if( $matching === FALSE )
-                derr("regular expression error on '{$context->value}'");
+                derr("regular expression error on '{$searchString}'");
             if( $matching === 1 )
                 return TRUE;
         }
@@ -2788,7 +2790,64 @@ RQuery::$defaultFilters['rule']['user']['operators']['has.regex'] = array(
         'input' => 'input/panorama-8.0.xml'
     )
 );
+RQuery::$defaultFilters['rule']['user']['operators']['is.in.file'] = array(
+    'Function' => function (RuleRQueryContext $context) {
+        $object = $context->object;
 
+        if( !isset($context->cachedList) )
+        {
+            $text = file_get_contents($context->value);
+
+            if( $text === FALSE )
+                derr("cannot open file '{$context->value}");
+
+            $lines = explode("\n", $text);
+            foreach( $lines as $line )
+            {
+                $line = trim($line);
+                if( strlen($line) == 0 )
+                    continue;
+                $list[$line] = TRUE;
+            }
+
+            $context->cachedList = &$list;
+        }
+        else
+            $list = &$context->cachedList;
+
+        $return = FALSE;
+        foreach( $list as $listuser => $truefalse )
+        {
+            $searchString = str_replace( "\\", "\\\\", $listuser);
+            $searchString = "/".$searchString."/";
+
+            $users = $object->userID_getUsers();
+
+            foreach( $users as $user )
+            {
+                $matching = preg_match($searchString, $user);
+                if( $matching === 1 )
+                    return TRUE;
+            }
+        }
+
+        return $return;
+    },
+    'arg' => TRUE,
+    'help' => 'returns TRUE if rule name matches one of the names found in text file provided in argument'
+);
+RQuery::$defaultFilters['rule']['user.count']['operators']['>,<,=,!'] = array(
+    'eval' => "\$object->userID_count() !operator! !value!",
+    'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP% 1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
+//                                              //
+//                Url.category properties             //
+//                                              //
 RQuery::$defaultFilters['rule']['url.category']['operators']['is.any'] = array(
     'Function' => function (RuleRQueryContext $context) {
         $rule = $context->object;

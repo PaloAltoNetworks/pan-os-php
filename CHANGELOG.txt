@@ -8,11 +8,13 @@ UTILS:
 * apigui - add example in error output
 * pa_device-edit - add serial# in output
 * pa_rule-edit actions=display:ResolveAddressSummary - for shadow-json - split static and dynamic output - dynamic are tmp objects without value
+* pa_rule-edit introduce 'filter=(user.count '<,>,+,!)' - )' / 'filter=(user is.in.file FILENAME)'
 
 BUGFIX:
 * pa_device-edit - bugfix to print DG hierarchy in JSON
 * pa_application-edit - bugfix to print APP information optimised in JSON
 * pa_address-edit | bugfix for is.included-in.name if object is tmp and value is available
+* pa_rule-edit bugfix for 'filter=(user has.regex /USER-group/)'
 
 GENERAL:
 * framework class PH - introduce function ACTIONstatus - make use in pa_tag-edit
