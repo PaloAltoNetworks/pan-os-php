@@ -1045,18 +1045,26 @@ class SecurityRule extends RuleWithUserID
 
 
         PH::print_stdout( $padding . "  From: " . $this->from->toString_inline() . "  |  To:  " . $this->to->toString_inline() );
-        PH::$JSON_TMP['sub']['object'][$this->name()]['from'] = $this->from->toString_inline();
-        PH::$JSON_TMP['sub']['object'][$this->name()]['to'] = $this->to->toString_inline();
+        foreach( $this->from->getAll() as $from )
+            PH::$JSON_TMP['sub']['object'][$this->name()]['from'][] = $from->name();
+
+        foreach( $this->to->getAll() as $to )
+            PH::$JSON_TMP['sub']['object'][$this->name()]['to'][] = $to->name();
+
 
         PH::print_stdout( $padding . "  Source: $sourceNegated " . $this->source->toString_inline() );
-        PH::$JSON_TMP['sub']['object'][$this->name()]['source'] = $this->source->toString_inline();
+        foreach( $this->source->getAll() as $src )
+            PH::$JSON_TMP['sub']['object'][$this->name()]['source'][] = $src->name();
 
         PH::print_stdout( $padding . "  Destination: $destinationNegated " . $this->destination->toString_inline() );
-        PH::$JSON_TMP['sub']['object'][$this->name()]['destination'] = $this->destination->toString_inline();
+        foreach( $this->destination->getAll() as $dst )
+            PH::$JSON_TMP['sub']['object'][$this->name()]['destination'][] = $dst->name();
 
         PH::print_stdout( $padding . "  Service:  " . $this->services->toString_inline() . "    Apps:  " . $this->apps->toString_inline() );
-        PH::$JSON_TMP['sub']['object'][$this->name()]['service'] = $this->services->toString_inline();
-        PH::$JSON_TMP['sub']['object'][$this->name()]['application'] = $this->apps->toString_inline();
+        foreach( $this->services->getAll() as $srv )
+            PH::$JSON_TMP['sub']['object'][$this->name()]['service'][] = $srv->name();
+        foreach( $this->apps->getAll() as $app )
+            PH::$JSON_TMP['sub']['object'][$this->name()]['application'][] = $app->name();
 
         $text = "";
         if( !$this->userID_IsCustom() )
@@ -1068,21 +1076,25 @@ class SecurityRule extends RuleWithUserID
         {
             $users = $this->userID_getUsers();
             $text .= $padding . "  User:  " . PH::list_to_string($users) . "";
-            PH::$JSON_TMP['sub']['object'][$this->name()]['user'] = PH::list_to_string($users);
+            foreach( $users as $user )
+                PH::$JSON_TMP['sub']['object'][$this->name()]['user'][] = $user;
         }
         if( !$this->hipProfileIsBlank() )
         {
             $text .= $padding . "  HIP:   " . PH::list_to_string($this->hipprofProfiles);
-            PH::$JSON_TMP['sub']['object'][$this->name()]['hip'] = PH::list_to_string($this->hipprofProfiles);
+            foreach( $this->hipprofProfiles as $hipProf )
+                PH::$JSON_TMP['sub']['object'][$this->name()]['hip'][] = $hipProf;
         }
         PH::print_stdout( $text );
         PH::print_stdout( $padding . "  Tags:  " . $this->tags->toString_inline() );
-        PH::$JSON_TMP['sub']['object'][$this->name()]['tag'] = $this->tags->toString_inline();
+        foreach( $this->tags->getAll() as $tag )
+            PH::$JSON_TMP['sub']['object'][$this->name()]['tag'][] = $tag->name();
 
         if( $this->_targets !== null )
         {
             PH::print_stdout( $padding . "  Targets:  " . $this->targets_toString() );
-            PH::$JSON_TMP['sub']['object'][$this->name()]['target'] = $this->targets_toString();
+            foreach( $this->targets() as $target )
+                PH::$JSON_TMP['sub']['object'][$this->name()]['target'][] = $target;
         }
 
 
