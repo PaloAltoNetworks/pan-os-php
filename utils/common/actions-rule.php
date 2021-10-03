@@ -2866,11 +2866,11 @@ RuleCallContext::$supportedActions[] = array(
             if( $addResolvedAddressSummary )
             {
                 $unresolvedArray = array();
-                PH::$JSON_TMP['sub']['object'][$rule->name()]['src_resolved_sum']['static'] = $context->AddressResolveSummary( $rule, "source", $unresolvedArray );
-                PH::$JSON_TMP['sub']['object'][$rule->name()]['src_resolved_sum']['dynamic'] = $unresolvedArray;
+                PH::$JSON_TMP['sub']['object'][$rule->name()]['src_resolved_sum']['resolved'] = $context->AddressResolveSummary( $rule, "source", $unresolvedArray );
+                PH::$JSON_TMP['sub']['object'][$rule->name()]['src_resolved_sum']['unresolved'] = $unresolvedArray;
                 $unresolvedArray = array();
-                PH::$JSON_TMP['sub']['object'][$rule->name()]['dst_resolved_sum']['static'] = $context->AddressResolveSummary( $rule, "destination", $unresolvedArray );
-                PH::$JSON_TMP['sub']['object'][$rule->name()]['dst_resolved_sum']['dynamic'] = $unresolvedArray;
+                PH::$JSON_TMP['sub']['object'][$rule->name()]['dst_resolved_sum']['resolved'] = $context->AddressResolveSummary( $rule, "destination", $unresolvedArray );
+                PH::$JSON_TMP['sub']['object'][$rule->name()]['dst_resolved_sum']['unresolved'] = $unresolvedArray;
             }
 
             if( $addResolvedServiceSummary )
