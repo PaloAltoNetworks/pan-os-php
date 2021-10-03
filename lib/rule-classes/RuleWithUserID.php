@@ -78,6 +78,11 @@ class RuleWithUserID extends Rule
         return $this->_users;
     }
 
+    function userID_count()
+    {
+        return count( $this->_users );
+    }
+
     /**
      * For developers only
      */
