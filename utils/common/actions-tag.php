@@ -27,7 +27,7 @@ TagCallContext::$supportedActions['delete'] = array(
         if( $object->countReferences() != 0 )
         {
             $string = "this object is used by other objects and cannot be deleted (use deleteForce to try anyway)";
-            PH::ACTIONstatus( $context, "SKIPPED", $string );;
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         if( $context->isAPI )
@@ -69,7 +69,8 @@ TagCallContext::$supportedActions['name-addprefix'] = array(
             return;
         }
 
-        PH::print_stdout( $context->padding . " - new name will be '{$newName}'" );
+        $string = " - new name will be '{$newName}'";
+        PH::ACTIONlog( $context, $string );
         if( strlen($newName) > 127 )
         {
             $string =  "resulting name is too long";
@@ -107,7 +108,8 @@ TagCallContext::$supportedActions['name-addsuffix'] = array(
             return;
         }
 
-        PH::print_stdout( $context->padding . " - new name will be '{$newName}'" );
+        $string = " - new name will be '{$newName}'";
+        PH::ACTIONlog( $context, $string );
         if( strlen($newName) > 127 )
         {
             $string = "resulting name is too long";
@@ -159,7 +161,8 @@ TagCallContext::$supportedActions['name-removeprefix'] = array(
             return;
         }
 
-        PH::print_stdout( $context->padding . " - new name will be '{$newName}'" );
+        $string = " - new name will be '{$newName}'";
+        PH::ACTIONlog( $context, $string );
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
 
@@ -200,7 +203,8 @@ TagCallContext::$supportedActions['name-removesuffix'] = array(
         }
         $newName = substr($object->name(), 0, $suffixStartIndex);
 
-        PH::print_stdout( $context->padding . " - new name will be '{$newName}'" );
+        $string = " - new name will be '{$newName}'";
+        PH::ACTIONlog( $context, $string );
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
 
@@ -233,7 +237,9 @@ TagCallContext::$supportedActions['name-touppercase'] = array(
             return;
         }
 
-        PH::print_stdout( $context->padding . " - new name will be '{$newName}'" );
+        $string = " - new name will be '{$newName}'";
+        PH::ACTIONlog( $context, $string );
+
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
 
         if( $newName === $object->name() )
@@ -272,7 +278,8 @@ TagCallContext::$supportedActions['name-tolowercase'] = array(
             return;
         }
 
-        PH::print_stdout( $context->padding . " - new name will be '{$newName}'" );
+        $string = " - new name will be '{$newName}'";
+        PH::ACTIONlog( $context, $string );
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
 
@@ -313,7 +320,8 @@ TagCallContext::$supportedActions['name-toucwords'] = array(
             return;
         }
 
-        PH::print_stdout( $context->padding . " - new name will be '{$newName}'" );
+        $string = " - new name will be '{$newName}'";
+        PH::ACTIONlog( $context, $string );
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
 
@@ -504,7 +512,9 @@ TagCallContext::$supportedActions[] = array(
         $conflictObject = $targetStore->find($object->name(), null, FALSE);
         if( $conflictObject === null )
         {
-            PH::print_stdout( $context->padding . "   * moved, no conflict" );
+            $string = "   * moved, no conflict";
+            PH::ACTIONlog( $context, $string );
+
             if( $context->isAPI )
             {
                 $oldXpath = $object->getXPath();
@@ -528,12 +538,13 @@ TagCallContext::$supportedActions[] = array(
             return;
         }
 
-        PH::print_stdout( $context->padding . "   - there is a conflict with an object of same name" );
-
+        $string = "   - there is a conflict with an object of same name";
+        PH::ACTIONlog( $context, $string );
 
         if( $object->equals($conflictObject) )
         {
-            PH::print_stdout( "    * Removed because target has same content" );
+            $string = "    * Removed because target has same content";
+            PH::ACTIONlog( $context, $string );
             $object->replaceMeGlobally($conflictObject);
 
             if( $context->isAPI )
@@ -707,7 +718,8 @@ TagCallContext::$supportedActions['create'] = array(
 
         $newName = $context->arguments['name'];
 
-        PH::print_stdout( "     + create Tag object : '" . $newName . "'" );
+        $string = "     + create Tag object : '" . $newName . "'";
+        PH::ACTIONlog( $context, $string );
 
         if( $context->isAPI )
             $tagStore->API_createTag($newName);
