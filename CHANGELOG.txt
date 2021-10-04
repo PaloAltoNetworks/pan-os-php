@@ -12,6 +12,7 @@ UTILS:
 * pa_rule-edt | introduce actions=xml-extract - to extract rule xml information of matching rules - only working with additional argument shadow-json
 * all | with "shadow-json out=yes" full PAN-OS XML config is available in stdout JSONarray ['out']['xmldoc']
 * pa_rule-edit | introduce actions=user-add:USER / actions=user-remove:USER
+* pa_rule-edit | introduce actions=user-set-any
 
 BUGFIX:
 * pa_device-edit - bugfix to print DG hierarchy in JSON
@@ -22,7 +23,8 @@ BUGFIX:
 GENERAL:
 * framework class PH - introduce function ACTIONstatus - make use in pa_tag-edit
 * predefined.xml update to version 8465-6967
-* framwork - class PH | introduce method ACTIONstatus() - make use of this in pa_tag-edit actions
+* framwork - class PH | introduce method ACTIONlog() - make use of this in pa_tag-edit actions
+
 
 2.0.12 (20210930)
 UTILS:
