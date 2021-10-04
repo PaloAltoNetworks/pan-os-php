@@ -271,6 +271,12 @@ class RuleCallContext extends CallContext
                 return self::enclose('');
         }
 
+        if( $fieldName == 'schedule_resolved_sum' )
+        {
+            $port_mapping_text = $this->ScheduleResolveSummary( $rule, true );
+            return self::enclose($port_mapping_text);
+        }
+
 
         if( $fieldName == 'tags' )
             return self::enclose($rule->tags->getAll(), $wrap);
@@ -704,5 +710,35 @@ class RuleCallContext extends CallContext
 
         return $tmp_return;
     }
+
+    public function ScheduleResolveSummary( $rule, $returnString = false )
+    {
+        if( !$rule->isSecurityRule() )
+            return '';
+        $schedule = $rule->schedule();
+        if( $schedule == null )
+            return '';
+
+        /** @var Schedule $schedule */
+        if( strlen($schedule->name()) > 0 )
+        {
+            $expired = false;
+            $timestampString = array();
+            $recurring = $schedule->getRecurring();
+            foreach( $recurring['non-recurring'] as $member )
+            {
+                #$d2 = DateTime::createFromFormat('Y/m/d@H:i', $member['end']);
+                #$timestamp = $d2->getTimestamp();
+                $timestampString[] = $member['end'];
+            }
+            $timestampString = implode( ",", $timestampString );
+            return $timestampString;
+        }
+
+        else
+            return '';
+    }
+
 }
+
 

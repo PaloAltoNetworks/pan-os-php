@@ -14,6 +14,7 @@ UTILS:
 * pa_rule-edit | introduce actions=user-add:USER / actions=user-remove:USER
 * pa_rule-edit | introduce actions=user-set-any
 * pa_rule-edit/pa_schedule-edit | introduce 'filter(schedule expire.in.days XYZ)' / 'filter=(object expire.in.days XYZ)' to display information about shortly expired rules/schedule
+* pa_rule-edit | actions=exporttoexcel / actions=display introduce additionField: ResolveScheduleSummary - to display expire date for schedule objects
 
 BUGFIX:
 * pa_device-edit - bugfix to print DG hierarchy in JSON

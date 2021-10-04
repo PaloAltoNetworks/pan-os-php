@@ -2851,6 +2851,7 @@ RuleCallContext::$supportedActions[] = array(
         $addResolvedAddressSummary = FALSE;
         $addResolvedServiceSummary = FALSE;
         $addResolvedApplicationSummary = FALSE;
+        $addResolvedScheduleSummary = FALSE;
 
         $optionalFields = &$context->arguments['additionalFields'];
 
@@ -2860,6 +2861,8 @@ RuleCallContext::$supportedActions[] = array(
             $addResolvedServiceSummary = TRUE;
         if( isset($optionalFields['ResolveApplicationSummary']) )
             $addResolvedApplicationSummary = TRUE;
+        if( isset($optionalFields['ResolveScheduleSummary']) )
+            $addResolvedScheduleSummary = TRUE;
 
         if( get_class( $context->object ) === "SecurityRule" )
         {
@@ -2877,10 +2880,13 @@ RuleCallContext::$supportedActions[] = array(
             {
                 PH::$JSON_TMP['sub']['object'][$rule->name()]['srv_resolved_sum'] = $context->ServiceResolveSummary( $rule );
             }
-
             if( $addResolvedApplicationSummary )
             {
                 PH::$JSON_TMP['sub']['object'][$rule->name()]['app_resolved_sum'] = $context->ApplicationResolveSummary( $rule );
+            }
+            if( $addResolvedScheduleSummary )
+            {
+                PH::$JSON_TMP['sub']['object'][$rule->name()]['schedule_resolved_sum'] = $context->ScheduleResolveSummary( $rule );
             }
         }
     },
@@ -2889,11 +2895,12 @@ RuleCallContext::$supportedActions[] = array(
         array('type' => 'pipeSeparatedList',
             'subtype' => 'string',
             'default' => '*NONE*',
-            'choices' => array('ResolveAddressSummary', 'ResolveServiceSummary', 'ResolveApplicationSummary'),
+            'choices' => array('ResolveAddressSummary', 'ResolveServiceSummary', 'ResolveApplicationSummary', 'ResolveScheduleSummary'),
             'help' => "pipe(|) separated list of additional field to include in the report. The following is available:\n" .
                 "  - ResolveAddressSummary : fields with address objects will be resolved to IP addressed and summarized in a new column)\n" .
                 "  - ResolveServiceSummary : fields with service objects will be resolved to their value and summarized in a new column)\n"  .
-                "  - ResolveApplicationSummary : fields with application objects will be resolved to their category and risk)\n"
+                "  - ResolveApplicationSummary : fields with application objects will be resolved to their category and risk)\n"  .
+                "  - ResolveScheduleSummary : fields with schedule objects will be resolved to their expire time)\n"
         )
     )
 );
@@ -3244,6 +3251,8 @@ RuleCallContext::$supportedActions[] = array(
 
         $addResolvedAddressSummary = FALSE;
         $addResolvedServiceSummary = FALSE;
+        $addResolvedApplicationSummary = FALSE;
+        $addResolvedScheduleSummary = FALSE;
 
         $optionalFields = &$context->arguments['additionalFields'];
 
@@ -3253,7 +3262,8 @@ RuleCallContext::$supportedActions[] = array(
             $addResolvedServiceSummary = TRUE;
         if( isset($optionalFields['ResolveApplicationSummary']) )
             $addResolvedApplicationSummary = TRUE;
-
+        if( isset($optionalFields['ResolveScheduleSummary']) )
+            $addResolvedScheduleSummary = TRUE;
         $fields = array(
             'location' => 'location',
             'type' => 'type',
@@ -3286,6 +3296,7 @@ RuleCallContext::$supportedActions[] = array(
             'dnat_host_resolved_sum' => 'dnat_host_resolved_sum',
             'description' => 'description',
             'schedule' => 'schedule',
+            'schedule_resolved_sum' => 'schedule_resolved_sum',
             'target' => 'target'
         );
 
@@ -3309,7 +3320,8 @@ RuleCallContext::$supportedActions[] = array(
                     if( (($fieldName == 'src_resolved_sum' || $fieldName == 'dst_resolved_sum' ||
                                 $fieldName == 'dnat_host_resolved_sum' || $fieldName == 'snat_address_resolved_sum') && !$addResolvedAddressSummary) ||
                         (($fieldName == 'service_resolved_sum') && !$addResolvedServiceSummary) ||
-                        (($fieldName == 'application_resolved_sum') && !$addResolvedApplicationSummary)
+                        (($fieldName == 'application_resolved_sum') && !$addResolvedApplicationSummary) ||
+                        (($fieldName == 'schedule_resolved_sum') && !$addResolvedScheduleSummary)
                     )
                         continue;
                     $lines .= $context->ruleFieldHtmlExport($rule, $fieldID);
@@ -3355,11 +3367,12 @@ RuleCallContext::$supportedActions[] = array(
             array('type' => 'pipeSeparatedList',
                 'subtype' => 'string',
                 'default' => '*NONE*',
-                'choices' => array('ResolveAddressSummary', 'ResolveServiceSummary', 'ResolveApplicationSummary'),
+                'choices' => array('ResolveAddressSummary', 'ResolveServiceSummary', 'ResolveApplicationSummary', 'ResolveScheduleSummary'),
                 'help' => "pipe(|) separated list of additional field to include in the report. The following is available:\n" .
                     "  - ResolveAddressSummary : fields with address objects will be resolved to IP addressed and summarized in a new column)\n" .
                     "  - ResolveServiceSummary : fields with service objects will be resolved to their value and summarized in a new column)\n"  .
-                    "  - ResolveApplicationSummary : fields with application objects will be resolved to their category and risk)\n"
+                    "  - ResolveApplicationSummary : fields with application objects will be resolved to their category and risk)\n" .
+                    "  - ResolveScheduleSummary : fields with schedule objects will be resolved to their expire time)\n"
             )
     )
 );
