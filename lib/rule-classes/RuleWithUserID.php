@@ -127,7 +127,7 @@ class RuleWithUserID extends Rule
     }
 
 
-    function userID_setUsers($newUser)
+    function userID_addUser($newUser)
     {
         $tmpRoot = DH::findFirstElementOrCreate('source-user', $this->xmlroot);
 
@@ -136,6 +136,20 @@ class RuleWithUserID extends Rule
             return FALSE;
 
         $this->_users[] = $newUser;
+
+        DH::Hosts_to_xmlDom($tmpRoot, $this->_users, 'member', FALSE, 'any', FALSE);
+    }
+
+    function userID_removeUser($newUser)
+    {
+        $tmpRoot = DH::findFirstElementOrCreate('source-user', $this->xmlroot);
+
+        $newUser = utf8_encode($newUser);
+        if (($key = array_search($newUser, $this->_users)) !== FALSE) {
+            unset($this->_users[$key]);
+        }
+        else
+            return FALSE;
 
         DH::Hosts_to_xmlDom($tmpRoot, $this->_users, 'member', FALSE, 'any', FALSE);
     }

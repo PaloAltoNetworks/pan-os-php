@@ -625,6 +625,12 @@ class PH
         PH::$JSON_TMP['sub']['object'][$context->object->name()]['status']['message'] = $string;
     }
 
+    static public function ACTIONlog( $context, $string )
+    {
+        PH::print_stdout( $context->padding . " - ". $string );
+        PH::$JSON_TMP['sub']['object'][$context->object->name()]['log'][] = $string;
+    }
+
     static public function &boldText($msg)
     {
         $term = getenv('TERM');

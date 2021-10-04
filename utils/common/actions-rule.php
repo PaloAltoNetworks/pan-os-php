@@ -3546,9 +3546,9 @@ RuleCallContext::$supportedActions[] = array(
 //                User Based Actions     //
 //
 //Todo: implementation needed, someting got lost!!!
-/*                                                   //
+                                                   //
 RuleCallContext::$supportedActions[] = Array(
-    'name' => 'user-Set',
+    'name' => 'user-Add',
     'MainFunction' =>  function(RuleCallContext $context)
     {
         $rule = $context->object;
@@ -3560,13 +3560,47 @@ RuleCallContext::$supportedActions[] = Array(
         }
 
         if( $context->isAPI )
-            $rule->API_setUser($context->arguments['userName']);
+        {
+            #$rule->API_setUser($context->arguments['userName']);
+            derr("user-add via API not available yet");
+        }
         else
-            $rule->setUser($context->arguments['userName']);
+            $rule->userID_addUser($context->arguments['userName']);
     },
     'args' => Array( 'userName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) )
 );
-*/
+RuleCallContext::$supportedActions[] = Array(
+    'name' => 'user-remove',
+    'MainFunction' =>  function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+
+        if( !$rule->isSecurityRule() )
+        {
+            PH::print_stdout( $context->padding."  - SKIPPED : this is not a Security rule" );
+            return;
+        }
+
+        if( $context->isAPI )
+        {
+            #$rule->API_setUser($context->arguments['userName']);
+            derr("user-add via API not available yet");
+        }
+        else
+            $rule->userID_removeUser($context->arguments['userName']);
+
+        if( $rule->userID_count() < 1 )
+        {
+            PH::print_stdout( $context->padding . " * no USER objects remaining so the Rule will be disabled...");
+            if( $context->isAPI )
+                $rule->API_setDisabled(TRUE);
+            else
+                $rule->setDisabled(TRUE);
+        }
+    },
+    'args' => Array( 'userName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) )
+);
+
 
 //                                                   //
 //                HIP Based Actions     //

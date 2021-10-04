@@ -30,10 +30,12 @@ ScheduleCallContext::$supportedActions['delete'] = array(
         }
         if( $context->isAPI )
         {
+            derr("action delete via API not available yet");
             # $object->owner->API_removeZone($object);
         }
         else
         {
+            derr("action delete not available yet");
             #$object->owner->removeZone($object);
         }
     },
@@ -48,10 +50,12 @@ ScheduleCallContext::$supportedActions['deleteforce'] = array(
             PH::print_stdout( $context->padding . "  * WARNING : this object seems to be used so deletion may fail." );
         if( $context->isAPI )
         {
+            derr("action delete via API not available yet");
             # $object->owner->API_removeZone($object);
         }
         else
         {
+            derr("action delete not available yet");
             #$object->owner->removeZone($object);
         }
     },
