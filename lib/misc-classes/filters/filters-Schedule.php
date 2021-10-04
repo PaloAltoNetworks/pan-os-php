@@ -28,6 +28,14 @@ RQuery::$defaultFilters['schedule']['object']['operators']['is.expired'] = array
     },
     'arg' => false,
 );
+RQuery::$defaultFilters['schedule']['object']['operators']['expire.in.days'] = array(
+    'Function' => function (ScheduleRQueryContext $context) {
+        $value = $context->object;
+
+        return $value->isExpired( $context->value );
+    },
+    'arg' => true,
+);
 RQuery::$defaultFilters['schedule']['name']['operators']['is.in.file'] = array(
     'Function' => function (ScheduleRQueryContext $context) {
         $object = $context->object;
