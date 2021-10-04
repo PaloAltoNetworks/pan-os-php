@@ -3681,7 +3681,48 @@ RuleCallContext::$supportedActions[] = array(
     },
 );
 
+RuleCallContext::$supportedActions[] = array(
+    'name' => 'xml-extract',
+    'GlobalInitFunction' => function( RuleCallContext $context)
+    {
+        $context->newdoc = new DOMDocument;
+        $context->rule = $context->newdoc->createElement('rules');
+        $context->newdoc->appendChild($context->rule);
 
+        $context->store = null;
+    },
+    'MainFunction' => function( RuleCallContext $context)
+    {
+        $rule = $context->object;
+
+        if( $context->store === null )
+            $context->store = $rule->owner;
+
+
+        $node = $context->newdoc->importNode($rule->xmlroot, true);
+        $context->rule->appendChild($node);
+
+
+
+    },
+    'GlobalFinishFunction' => function(RuleCallContext $context)
+    {
+        PH::$JSON_TMP['xmlroot-actions'] = $context->newdoc->saveXML();
+
+        $store = $context->store;
+
+        if( isset($store->owner->owner) && is_object($store->owner->owner) )
+            $tmp_platform = get_class( $store->owner->owner );
+        elseif( isset($store->owner->owner) && is_object($store->owner) )
+            $tmp_platform = get_class( $store->owner );
+        else
+            $tmp_platform = get_class( $store );
+
+        PH::print_stdout( PH::$JSON_TMP, false, "xmlroot-actions" );
+        PH::$JSON_TMP = array();
+
+    },
+);
 /************************************ */
 
 
