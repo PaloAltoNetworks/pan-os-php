@@ -3713,7 +3713,7 @@ RuleCallContext::$supportedActions[] = array(
 
         if( isset($store->owner->owner) && is_object($store->owner->owner) )
             $tmp_platform = get_class( $store->owner->owner );
-        elseif( isset($store->owner->owner) && is_object($store->owner) )
+        elseif( isset($store->owner) && is_object($store->owner) )
             $tmp_platform = get_class( $store->owner );
         else
             $tmp_platform = get_class( $store );
