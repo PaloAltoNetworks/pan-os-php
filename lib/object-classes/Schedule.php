@@ -342,12 +342,16 @@ class Schedule
         return $this->recurring_type;
     }
 
-    public function isExpired( )
+    public function isExpired( $futuredate = 0 )
     {
         if( $this->recurring_type != 'non-recurring' )
             return false;
 
         $d = time();
+        if( $futuredate !== 0 )
+        {
+            $d = $d + ($futuredate)*24*3600;
+        }
         $expired = false;
         foreach( $this->recurring_array['non-recurring'] as $member )
         {
