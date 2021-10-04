@@ -26,7 +26,8 @@ ServiceCallContext::$supportedActions[] = array(
 
         if( $object->countReferences() != 0 )
         {
-            PH::print_stdout( $context->padding . "  * SKIPPED: this object is used by other objects and cannot be deleted (use deleteForce to try anyway)" );
+            $string = "this object is used by other objects and cannot be deleted (use deleteForce to try anyway)";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -42,10 +43,13 @@ ServiceCallContext::$supportedActions[] = array(
     'MainFunction' => function (ServiceCallContext $context) {
         $object = $context->object;
 
-        mwarning( 'this action "deleteForce" is deprecated, you should use "delete-Force" instead!' );
+        mwarning('this action "deleteForce" is deprecated, you should use "delete-Force" instead!');
 
         if( $object->countReferences() != 0 )
-            PH::print_stdout( $context->padding."  * WARNING : this object seems to be used so deletion may fail." );
+        {
+            $string = "this object seems to be used so deletion may fail.";
+            PH::ACTIONstatus($context, "WARNING", $string);
+        }
 
         if( $context->isAPI )
             $object->owner->API_remove($object);
@@ -57,12 +61,14 @@ ServiceCallContext::$supportedActions[] = array(
 
 ServiceCallContext::$supportedActions[] = Array(
     'name' => 'delete-Force',
-    'MainFunction' => function ( ServiceCallContext $context )
-    {
+    'MainFunction' => function ( ServiceCallContext $context ) {
         $object = $context->object;
 
         if( $object->countReferences() != 0 )
-            PH::print_stdout( $context->padding . "  * WARNING : this object seems to be used so deletion may fail." );
+        {
+            $string = "this object seems to be used so deletion may fail.";
+            PH::ACTIONstatus($context, "WARNING", $string);
+        }
 
         if( $context->isAPI )
             $object->owner->API_remove($object);
@@ -89,7 +95,8 @@ ServiceCallContext::$supportedActions[] = array(
             if( $class != 'ServiceRuleContainer' && $class != 'ServiceGroup' )
             {
                 $clearForAction = FALSE;
-                PH::print_stdout( "     *  skipped because its used in unsupported class $class" );
+                $string = "because its used in unsupported class $class";
+                PH::ACTIONstatus( $context, "SKIPPED", $string );
                 break;
             }
         }
@@ -100,7 +107,9 @@ ServiceCallContext::$supportedActions[] = array(
                 $class = get_class($objectRef);
                 if( $class == 'ServiceRuleContainer' || $class == 'ServiceGroup' )
                 {
-                    PH::print_stdout( $context->padding . " - adding in {$objectRef->toString()}" );
+                    $string = " - adding in {$objectRef->toString()}";
+                    PH::ACTIONlog( $context, $string );
+
                     if( $context->isAPI )
                         $objectRef->API_add($foundObject);
                     else
@@ -132,10 +141,13 @@ ServiceCallContext::$supportedActions[] = array(
 
         foreach( $objectRefs as $objectRef )
         {
-            PH::print_stdout( $context->padding . " * replacing in {$objectRef->toString()}" );
+            $string = " * replacing in {$objectRef->toString()}";
+            PH::ACTIONlog( $context, $string );
+
             if( $objectRef === $foundObject || $objectRef->name() == $foundObject->name() )
             {
-                PH::print_stdout( $context->padding . "   - SKIPPED : cannot replace an object by itself" );
+                $string = "cannot replace an object by itself";
+                PH::ACTIONstatus( $context, "SKIPPED", $string );
                 continue;
             }
             if( $context->isAPI )
@@ -327,7 +339,8 @@ ServiceCallContext::$supportedActions[] = array(
 
         if( $object->isTmpSrv() )
         {
-            PH::print_stdout( $context->padding . "   * SKIPPED because this object is Tmp" );
+            $string = "because this object is Tmp";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -341,7 +354,8 @@ ServiceCallContext::$supportedActions[] = array(
 
         if( $localLocation == $targetLocation )
         {
-            PH::print_stdout( $context->padding . "   * SKIPPED because original and target destinations are the same: $targetLocation" );
+            $string = "because original and target destinations are the same: $targetLocation";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -379,7 +393,8 @@ ServiceCallContext::$supportedActions[] = array(
 
                     if( $skipped )
                     {
-                        PH::print_stdout( $context->padding . "   * SKIPPED : moving from SHARED to sub-level is NOT possible because of references" );
+                        $string = "moving from SHARED to sub-level is NOT possible because of references";
+                        PH::ACTIONstatus( $context, "SKIPPED", $string );
                         return;
                     }
                 }
@@ -390,12 +405,11 @@ ServiceCallContext::$supportedActions[] = array(
         {
             if( $context->baseObject->isFirewall() )
             {
-                PH::print_stdout( $context->padding . "   * SKIPPED : moving between VSYS is not supported" );
+                $string = "moving between VSYS is not supported";
+                PH::ACTIONstatus( $context, "SKIPPED", $string );
                 return;
             }
 
-            #PH::print_stdout( $context->padding."   * SKIPPED : moving between 2 VSYS/DG is not supported yet" );
-            #return;
             foreach( $object->getReferences() as $ref )
             {
                 if( PH::getLocationString($ref) != $targetLocation )
@@ -411,7 +425,8 @@ ServiceCallContext::$supportedActions[] = array(
 
                     if( $skipped )
                     {
-                        PH::print_stdout( $context->padding . "   * SKIPPED : moving between 2 VSYS/DG is not possible because of references on higher DG level" );
+                        $string = "moving between 2 VSYS/DG is not possible because of references on higher DG level";
+                        PH::ACTIONstatus( $context, "SKIPPED", $string );
                         return;
                     }
                 }
@@ -426,12 +441,15 @@ ServiceCallContext::$supportedActions[] = array(
                 foreach( $object->members() as $memberObject )
                     if( $targetStore->find($memberObject->name()) === null )
                     {
-                        PH::print_stdout( $context->padding . "   * SKIPPED : this group has an object named '{$memberObject->name()} that does not exist in target location '{$targetLocation}'" );
+                        $string = "this group has an object named '{$memberObject->name()} that does not exist in target location '{$targetLocation}'";
+                        PH::ACTIONstatus( $context, "SKIPPED", $string );
                         return;
                     }
             }
 
-            PH::print_stdout( $context->padding . "   * moved, no conflict" );
+            $string =  "   * moved, no conflict";
+            PH::ACTIONlog( $context, $string );
+
             if( $context->isAPI )
             {
                 $oldXpath = $object->getXPath();
@@ -450,7 +468,8 @@ ServiceCallContext::$supportedActions[] = array(
 
         if( $context->arguments['mode'] == 'skipifconflict' )
         {
-            PH::print_stdout( $context->padding . "   * SKIPPED : there is an object with same name. Choose another mode to to resolve this conflict" );
+            $string = "there is an object with same name. Choose another mode to to resolve this conflict";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -459,11 +478,13 @@ ServiceCallContext::$supportedActions[] = array(
             $text .= "Group";
         else
             $text .= "Service";
-        PH::print_stdout( $text);
+        $string = $text;
+        PH::ACTIONlog( $context, $string );
 
         if( $conflictObject->isGroup() && !$object->isGroup() || !$conflictObject->isGroup() && $object->isGroup() )
         {
-            PH::print_stdout( $context->padding . "   * SKIPPED because conflict has mismatching types" );
+            $string = "because conflict has mismatching types";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -477,7 +498,9 @@ ServiceCallContext::$supportedActions[] = array(
         {
             if( $object->equals($conflictObject) )
             {
-                PH::print_stdout( "    * Removed because target has same content" );
+                $string = "    * Removed because target has same content";
+                PH::ACTIONlog( $context, $string );
+
                 goto do_replace;
             }
             else
@@ -485,7 +508,8 @@ ServiceCallContext::$supportedActions[] = array(
                 $object->displayValueDiff($conflictObject, 9);
                 if( $context->arguments['mode'] == 'removeifmatch' )
                 {
-                    PH::print_stdout( $context->padding . "    * SKIPPED because of mismatching group content" );
+                    $string = "because of mismatching group content";
+                    PH::ACTIONstatus( $context, "SKIPPED", $string );
                     return;
                 }
 
@@ -494,11 +518,13 @@ ServiceCallContext::$supportedActions[] = array(
 
                 if( !$localMap->equals($targetMap) )
                 {
-                    PH::print_stdout( $context->padding . "    * SKIPPED because of mismatching group content and numerical values" );
+                    $string = "because of mismatching group content and numerical values";
+                    PH::ACTIONstatus( $context, "SKIPPED", $string );
                     return;
                 }
 
-                PH::print_stdout( "    * Removed because it has same numerical value" );
+                $string = "    * Removed because it has same numerical value";
+                PH::ACTIONlog( $context, $string );
 
                 goto do_replace;
 
@@ -508,7 +534,9 @@ ServiceCallContext::$supportedActions[] = array(
 
         if( $object->equals($conflictObject) )
         {
-            PH::print_stdout( "    * Removed because target has same content" );
+            $string = "    * Removed because target has same content";
+            PH::ACTIONlog( $context, $string );
+
             goto do_replace;
         }
 
@@ -520,11 +548,13 @@ ServiceCallContext::$supportedActions[] = array(
 
         if( !$localMap->equals($targetMap) )
         {
-            PH::print_stdout( $context->padding . "    * SKIPPED because of mismatching content and numerical values" );
+            $string = "because of mismatching content and numerical values";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
-        PH::print_stdout( "    * Removed because target has same numerical value" );
+        $string = "    * Removed because target has same numerical value";
+        PH::ACTIONlog( $context, $string );
 
         do_replace:
 
@@ -568,7 +598,8 @@ ServiceCallContext::$supportedActions[] = array(
 
         if( $object->isService() )
         {
-            PH::print_stdout( $context->padding." *** SKIPPED : this is not a group" );
+            $string = "this is not a group";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -583,7 +614,8 @@ ServiceCallContext::$supportedActions[] = array(
 
         if( !$object->isGroup() )
         {
-            PH::print_stdout( $context->padding."     *  skipped it's not a group" );
+            $string = "this is not a group";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -677,15 +709,19 @@ ServiceCallContext::$supportedActions[] = array(
 
         if( $object->isTmpSrv() )
         {
-            PH::print_stdout( $context->padding . " *** SKIPPED : not applicable to TMP objects" );
+            $string = "not applicable to TMP objects";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
         $newName = $context->arguments['prefix'] . $object->name();
-        PH::print_stdout( $context->padding . " - new name will be '{$newName}'" );
+        $string = " - new name will be '{$newName}'";
+        PH::ACTIONlog( $context, $string );
+
         if( strlen($newName) > 63 )
         {
-            PH::print_stdout( " *** SKIPPED : resulting name is too long" );
+            $string = "resulting name is too long";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
@@ -693,7 +729,8 @@ ServiceCallContext::$supportedActions[] = array(
         if( $rootObject->isPanorama() && $object->owner->find($newName, null, FALSE) !== null ||
             $rootObject->isFirewall() && $object->owner->find($newName, null, TRUE) !== null )
         {
-            PH::print_stdout( " *** SKIPPED : an object with same name already exists" );
+            $string = "an object with same name already exists";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         if( $context->isAPI )
@@ -711,15 +748,19 @@ ServiceCallContext::$supportedActions[] = array(
 
         if( $object->isTmpSrv() )
         {
-            PH::print_stdout( $context->padding . " *** SKIPPED : not applicable to TMP objects" );
+            $string = "not applicable to TMP objects";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
         $newName = $object->name() . $context->arguments['suffix'];
-        PH::print_stdout( $context->padding . " - new name will be '{$newName}'" );
+        $string = " - new name will be '{$newName}'";
+        PH::ACTIONlog( $context, $string );
+
         if( strlen($newName) > 63 )
         {
-            PH::print_stdout( " *** SKIPPED : resulting name is too long" );
+            $string = "resulting name is too long";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
@@ -727,7 +768,8 @@ ServiceCallContext::$supportedActions[] = array(
         if( $rootObject->isPanorama() && $object->owner->find($newName, null, FALSE) !== null ||
             $rootObject->isFirewall() && $object->owner->find($newName, null, TRUE) !== null )
         {
-            PH::print_stdout( " *** SKIPPED : an object with same name already exists" );
+            $string = "an object with same name already exists";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         if( $context->isAPI )
@@ -746,31 +788,36 @@ ServiceCallContext::$supportedActions[] = array(
 
         if( $object->isTmpSrv() )
         {
-            PH::print_stdout( $context->padding . " *** SKIPPED : not applicable to TMP objects" );
+            $string = "not applicable to TMP objects";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
         if( strpos($object->name(), $prefix) !== 0 )
         {
-            PH::print_stdout( $context->padding . " *** SKIPPED : prefix not found" );
+            $string = "prefix not found";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         $newName = substr($object->name(), strlen($prefix));
 
         if( !preg_match("/^[a-zA-Z0-9]/", $newName[0]) )
         {
-            PH::print_stdout( $context->padding . " *** SKIPPED : object name contains not allowed character at the beginning" );
+            $string = "object name contains not allowed character at the beginning";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
-        PH::print_stdout( $context->padding . " - new name will be '{$newName}'" );
+        $string = " - new name will be '{$newName}'";
+        PH::ACTIONlog( $context, $string );
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
 
         if( $rootObject->isPanorama() && $object->owner->find($newName, null, FALSE) !== null ||
             $rootObject->isFirewall() && $object->owner->find($newName, null, TRUE) !== null )
         {
-            PH::print_stdout( $context->padding . " *** SKIPPED : an object with same name already exists" );
+            $string = "an object with same name already exists";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         if( $context->isAPI )
@@ -789,7 +836,8 @@ ServiceCallContext::$supportedActions[] = array(
 
         if( $object->isTmpSrv() )
         {
-            PH::print_stdout( $context->padding . " *** SKIPPED : not applicable to TMP objects" );
+            $string = "not applicable to TMP objects";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -797,19 +845,22 @@ ServiceCallContext::$supportedActions[] = array(
 
         if( substr($object->name(), $suffixStartIndex, strlen($object->name())) != $suffix )
         {
-            PH::print_stdout( $context->padding . " *** SKIPPED : suffix not found" );
+            $string = "suffix not found";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         $newName = substr($object->name(), 0, $suffixStartIndex);
 
-        PH::print_stdout( $context->padding . " - new name will be '{$newName}'" );
+        $string = " - new name will be '{$newName}'";
+        PH::ACTIONlog( $context, $string );
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
 
         if( $rootObject->isPanorama() && $object->owner->find($newName, null, FALSE) !== null ||
             $rootObject->isFirewall() && $object->owner->find($newName, null, TRUE) !== null )
         {
-            PH::print_stdout( $context->padding . " *** SKIPPED : an object with same name already exists" );
+            $string = "an object with same name already exists";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         if( $context->isAPI )
@@ -828,12 +879,14 @@ ServiceCallContext::$supportedActions[] = array(
 
         if( $object->isTmpSrv() )
         {
-            PH::print_stdout( $context->padding . " *** SKIPPED : not applicable to TMP objects" );
+            $string = "not applicable to TMP objects";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         if( $object->isGroup() )
         {
-            PH::print_stdout( $context->padding . " *** SKIPPED : not applicable to Group objects" );
+            $string = "not applicable to Group objects";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -865,27 +918,30 @@ ServiceCallContext::$supportedActions[] = array(
 
         if( $object->name() == $newName )
         {
-            PH::print_stdout( $context->padding . " *** SKIPPED : new name and old name are the same" );
+            $string = "new name and old name are the same";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
-        PH::print_stdout( $context->padding . " - new name will be '{$newName}'" );
+        $string = " - new name will be '{$newName}'";
+        PH::ACTIONlog( $context, $string );
 
         $findObject = $object->owner->find($newName);
         if( $findObject !== null )
         {
-            PH::print_stdout( $context->padding . " *** SKIPPED : an object with same name already exists" );
+            $string = "an object with same name already exists";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         else
         {
-            $text = $context->padding . " - renaming object... ";
+            $string = $context->padding . " - renaming object... ";
             if( $context->isAPI )
                 $object->API_setName($newName);
             else
                 $object->setName($newName);
 
-            PH::print_stdout( $text );
+            PH::ACTIONlog( $context, $string );
         }
 
     },
@@ -911,7 +967,8 @@ ServiceCallContext::$supportedActions[] = array(
 
         if( $object->isTmpSrv() )
         {
-            PH::print_stdout( $context->padding . " *** SKIPPED : not applicable to TMP objects" );
+            $string = "not applicable to TMP objects";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -924,27 +981,30 @@ ServiceCallContext::$supportedActions[] = array(
 
         if( $object->name() == $newName )
         {
-            PH::print_stdout( $context->padding . " *** SKIPPED : new name and old name are the same" );
+            $string = "new name and old name are the same";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
-        PH::print_stdout( $context->padding . " - new name will be '{$newName}'" );
+        $string = " - new name will be '{$newName}'";
+        PH::ACTIONlog( $context, $string );
 
         $findObject = $object->owner->find($newName);
         if( $findObject !== null )
         {
-            PH::print_stdout( $context->padding . " *** SKIPPED : an object with same name already exists" );
+            $string = "an object with same name already exists";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         else
         {
-            $text = $context->padding . " - renaming object... ";
+            $string = $context->padding . " - renaming object... ";
             if( $context->isAPI )
                 $object->API_setName($newName);
             else
                 $object->setName($newName);
 
-            PH::print_stdout( $text );
+            PH::ACTIONlog( $context, $string );
         }
 
     },
@@ -971,7 +1031,6 @@ ServiceCallContext::$supportedActions[] = array(
     'name' => 'display',
     'MainFunction' => function (ServiceCallContext $context) {
         $object = $context->object;
-        #PH::print_stdout( "     * " . get_class($object) . " '{$object->name()}'    " );
 
         PH::$JSON_TMP['sub']['object'][$object->name()]['name'] = $object->name();
         PH::$JSON_TMP['sub']['object'][$object->name()]['type'] = get_class($object);
@@ -1115,13 +1174,13 @@ ServiceCallContext::$supportedActions[] = array(
         $object = $context->object;
         foreach( $object->tags->tags() as $tag )
         {
-            $text = $context->padding . "  - removing tag {$tag->name()}... ";
+            $string = $context->padding . "  - removing tag {$tag->name()}... ";
             if( $context->isAPI )
                 $object->tags->API_removeTag($tag);
             else
                 $object->tags->removeTag($tag);
 
-            PH::print_stdout( $text );
+            PH::ACTIONlog( $context, $string );
         }
     },
     //'args' => Array( 'tagName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
@@ -1139,13 +1198,13 @@ ServiceCallContext::$supportedActions[] = array(
                 derr("'$pattern' is not a valid regex");
             if( $result == 1 )
             {
-                $text = $context->padding . "  - removing tag {$tag->name()}... ";
+                $string = $context->padding . "  - removing tag {$tag->name()}... ";
                 if( $context->isAPI )
                     $object->tags->API_removeTag($tag);
                 else
                     $object->tags->removeTag($tag);
 
-                PH::print_stdout( $text );
+                PH::ACTIONlog( $context, $string );
             }
         }
     },
@@ -1158,12 +1217,14 @@ ServiceCallContext::$supportedActions[] = array(
         $service = $context->object;
         if( $service->isGroup() )
         {
-            PH::print_stdout(  $context->padding . " *** SKIPPED : a service group has no description" );
+            $string = "a service group has no description";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         if( $service->isTmpSrv() )
         {
-            PH::print_stdout(  $context->padding . " *** SKIPPED : object is tmp" );
+            $string = "object is tmp" ;
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         $description = $service->description();
@@ -1180,7 +1241,8 @@ ServiceCallContext::$supportedActions[] = array(
 
         if( strlen($description) + strlen($textToAppend) > $max_length )
         {
-            PH::print_stdout(  $context->padding . " - SKIPPED : resulting description is too long" );
+            $string = "resulting description is too long";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -1190,7 +1252,8 @@ ServiceCallContext::$supportedActions[] = array(
         else
             $service->setDescription($description . $textToAppend);
         $text .= "OK";
-        PH::print_stdout( $text );
+        $string = $text;
+        PH::ACTIONlog( $context, $string );
     },
     'args' => array('text' => array('type' => 'string', 'default' => '*nodefault*'))
 );
@@ -1201,18 +1264,21 @@ ServiceCallContext::$supportedActions[] = array(
 
         if( $service->isGroup() )
         {
-            PH::print_stdout( $context->padding . " *** SKIPPED : a service group has no description" );
+            $string = "a service group has no description";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         if( $service->isTmpSrv() )
         {
-            PH::print_stdout($context->padding . " *** SKIPPED : object is tmp" );
+            $string = "object is tmp";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         $description = $service->description();
         if( $description == "" )
         {
-            PH::print_stdout( $context->padding . " *** SKIPPED : no description available" );
+            $string = "no description available";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -1223,7 +1289,8 @@ ServiceCallContext::$supportedActions[] = array(
         else
             $service->setDescription("");
         $text .= "OK";
-        PH::print_stdout( $text );
+        $string = $text;
+        PH::ACTIONlog( $context, $string );
     },
 );
 ServiceCallContext::$supportedActions[] = array(
@@ -1236,7 +1303,8 @@ ServiceCallContext::$supportedActions[] = array(
         $class = get_class($object);
         if( $class === 'ServiceGroup' )
         {
-            PH::print_stdout( "     *  skipped because object is ServiceGroup" );
+            $string = "because object is ServiceGroup";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return null;
         }
 
