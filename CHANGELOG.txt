@@ -9,6 +9,7 @@ UTILS:
 * pa_device-edit - add serial# in output
 * pa_rule-edit actions=display:ResolveAddressSummary - for shadow-json - split static and dynamic output - dynamic are tmp objects without value
 * pa_rule-edit introduce 'filter=(user.count '<,>,+,!)' - )' / 'filter=(user is.in.file FILENAME)'
+* pa_rule-edt | introduce actions=xml-extract - to extract rule xml information of matching rules - only working with additional argument shadow-json
 
 BUGFIX:
 * pa_device-edit - bugfix to print DG hierarchy in JSON
