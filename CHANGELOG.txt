@@ -4,6 +4,7 @@ CHANGELOG
 UTILS:
 
 BUGFIX:
+* class SecurityProfileGroup | bugfix for SaasSecurityProfileStore
 
 GENERAL:
 
