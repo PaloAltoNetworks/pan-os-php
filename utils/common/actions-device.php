@@ -143,26 +143,32 @@ DeviceCallContext::$supportedActions['DeviceGroup-create'] = array(
         $pan = $context->subSystem;
 
         if( !$pan->isPanorama() )
-            derr( "only supported on Panorama config" );
+            derr("only supported on Panorama config");
 
         if( $parentDG != 'false' )
         {
-            $tmp_parentdg = $pan->findDeviceGroup( $parentDG );
+            $tmp_parentdg = $pan->findDeviceGroup($parentDG);
             if( $tmp_parentdg === null )
             {
-                PH::print_stdout( "     - SKIP parentDG set with '".$parentDG."' but not found on this config" );
+                $string = "parentDG set with '" . $parentDG . "' but not found on this config";
+                PH::ACTIONstatus($context, "SKIPPED", $string);
                 $parentDG = null;
             }
         }
 
-        $tmp_dg = $pan->findDeviceGroup( $dgName );
+        $tmp_dg = $pan->findDeviceGroup($dgName);
         if( $tmp_dg === null )
         {
-            PH::print_stdout( "     * create DeviceGroup: ".$dgName );
-            $pan->createDeviceGroup( $dgName, $parentDG );
+            $string = "     * create DeviceGroup: " . $dgName;
+            PH::ACTIONlog($context, $string);
+
+            $pan->createDeviceGroup($dgName, $parentDG);
         }
         else
-            PH::print_stdout( "     * DeviceGroup with name: ".$dgName." already available!" );
+        {
+            $string = "     * DeviceGroup with name: " . $dgName . " already available!";
+            PH::ACTIONlog( $context, $string );
+        }
     },
     'args' => array(
         'name' => array('type' => 'string', 'default' => 'false'),
@@ -184,10 +190,14 @@ DeviceCallContext::$supportedActions['DeviceGroup-delete'] = array(
         {
             $childDG = $object->_childDeviceGroups;
             if( count($childDG) != 0 )
-                PH::print_stdout("     - SKIP DG with name: '" . $name . "' has ChildDGs. DG can not removed");
+            {
+                $string = "DG with name: '" . $name . "' has ChildDGs. DG can not removed";
+                PH::ACTIONstatus($context, "SKIPPED", $string);
+            }
             else
             {
-                PH::print_stdout("     * delete DeviceGroup: " . $name);
+                $string ="     * delete DeviceGroup: " . $name;
+                PH::ACTIONlog( $context, $string );
                 $pan->removeDeviceGroup($object);
             }
         }
@@ -352,7 +362,9 @@ DeviceCallContext::$supportedActions['template-add'] = array(
 
             if( $template == null )
             {
-                PH::print_stdout( "     - SKIP adding template '".$templateName."' because it is not found in this config" );
+                $string = "adding template '".$templateName."' because it is not found in this config";
+                PH::ACTIONstatus( $context, "SKIPPED", $string );
+
                 return null;
             }
 
