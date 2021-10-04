@@ -754,12 +754,20 @@ class UTIL
         $xpathResult = $xpathResult->item(0);
         $fawkes_config_version = DH::findAttribute('fawkes-config-version', $xpathResult);
         if( $fawkes_config_version != null )
-            PH::print_stdout( "FAWKES-CONFIG-VERSION: ".$fawkes_config_version );
+        {
+            PH::print_stdout( " - FAWKES-CONFIG-VERSION: ".$fawkes_config_version );
+            PH::print_stdout( array( $fawkes_config_version ), false, "fawkes-config-version" );
+        }
+
         else
         {
             $fawkes_config_version = DH::findAttribute('fawkes-config', $xpathResult);
             if( $fawkes_config_version != null )
-                PH::print_stdout( "FAWKES-CONFIG-VERSION: ".$fawkes_config_version );
+            {
+                PH::print_stdout( " - FAWKES-CONFIG-VERSION: ".$fawkes_config_version );
+                PH::print_stdout( array( $fawkes_config_version ), false, "fawkes-config-version" );
+            }
+
         }
 
 

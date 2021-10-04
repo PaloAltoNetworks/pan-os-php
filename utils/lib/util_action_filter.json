@@ -1891,7 +1891,21 @@
             },
             "display": {
                 "name": "display",
-                "MainFunction": {}
+                "MainFunction": {},
+                "args": {
+                    "additionalFields": {
+                        "type": "pipeSeparatedList",
+                        "subtype": "string",
+                        "default": "*NONE*",
+                        "choices": [
+                            "ResolveAddressSummary",
+                            "ResolveServiceSummary",
+                            "ResolveApplicationSummary",
+                            "ResolveScheduleSummary"
+                        ],
+                        "help": "pipe(|) separated list of additional field to include in the report. The following is available:\n  - ResolveAddressSummary : fields with address objects will be resolved to IP addressed and summarized in a new column)\n  - ResolveServiceSummary : fields with service objects will be resolved to their value and summarized in a new column)\n  - ResolveApplicationSummary : fields with application objects will be resolved to their category and risk)\n  - ResolveScheduleSummary : fields with schedule objects will be resolved to their expire time)\n"
+                    }
+                }
             },
             "dnat-set": {
                 "name": "DNat-set",
@@ -2033,9 +2047,11 @@
                         "default": "*NONE*",
                         "choices": [
                             "ResolveAddressSummary",
-                            "ResolveServiceSummary"
+                            "ResolveServiceSummary",
+                            "ResolveApplicationSummary",
+                            "ResolveScheduleSummary"
                         ],
-                        "help": "pipe(|) separated list of additional field to include in the report. The following is available:\n  - ResolveAddressSummary : fields with address objects will be resolved to IP addressed and summarized in a new column)\n  - ResolveServiceSummary : fields with service objects will be resolved to their value and summarized in a new column)\n"
+                        "help": "pipe(|) separated list of additional field to include in the report. The following is available:\n  - ResolveAddressSummary : fields with address objects will be resolved to IP addressed and summarized in a new column)\n  - ResolveServiceSummary : fields with service objects will be resolved to their value and summarized in a new column)\n  - ResolveApplicationSummary : fields with application objects will be resolved to their category and risk)\n  - ResolveScheduleSummary : fields with schedule objects will be resolved to their expire time)\n"
                     }
                 }
             },
@@ -2832,6 +2848,36 @@
                 "name": "to-Set-Any",
                 "section": "zone",
                 "MainFunction": {}
+            },
+            "user-add": {
+                "name": "user-Add",
+                "MainFunction": {},
+                "args": {
+                    "userName": {
+                        "type": "string",
+                        "default": "*nodefault*"
+                    }
+                }
+            },
+            "user-remove": {
+                "name": "user-remove",
+                "MainFunction": {},
+                "args": {
+                    "userName": {
+                        "type": "string",
+                        "default": "*nodefault*"
+                    }
+                }
+            },
+            "user-set-any": {
+                "name": "user-set-any",
+                "MainFunction": {}
+            },
+            "xml-extract": {
+                "name": "xml-extract",
+                "GlobalInitFunction": {},
+                "MainFunction": {},
+                "GlobalFinishFunction": {}
             }
         },
         "filter": {
@@ -3234,6 +3280,14 @@
                         "Function": {},
                         "arg": true,
                         "help": "returns TRUE if rule name matches one of the names found in text file provided in argument"
+                    },
+                    "has.same.to.zone": {
+                        "Function": {},
+                        "arg": false,
+                        "ci": {
+                            "fString": "(%PROP%)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
                     }
                 }
             },
@@ -3483,6 +3537,10 @@
                     "is.expired": {
                         "Function": {},
                         "arg": false
+                    },
+                    "expire.in.days": {
+                        "Function": {},
+                        "arg": true
                     }
                 }
             },
@@ -4034,6 +4092,14 @@
                         "Function": {},
                         "arg": true,
                         "help": "returns TRUE if rule name matches one of the names found in text file provided in argument"
+                    },
+                    "has.same.from.zone": {
+                        "Function": {},
+                        "arg": false,
+                        "ci": {
+                            "fString": "(%PROP%)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
                     }
                 }
             },
@@ -4116,6 +4182,23 @@
                         "arg": true,
                         "ci": {
                             "fString": "(%PROP% \/^test\/)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    },
+                    "is.in.file": {
+                        "Function": {},
+                        "arg": true,
+                        "help": "returns TRUE if rule name matches one of the names found in text file provided in argument"
+                    }
+                }
+            },
+            "user.count": {
+                "operators": {
+                    ">,<,=,!": {
+                        "eval": "$object->userID_count() !operator! !value!",
+                        "arg": true,
+                        "ci": {
+                            "fString": "(%PROP% 1)",
                             "input": "input\/panorama-8.0.xml"
                         }
                     }
@@ -4903,6 +4986,10 @@
                         "Function": {},
                         "arg": false
                     },
+                    "expire.in.days": {
+                        "Function": {},
+                        "arg": true
+                    },
                     "is.tmp": {
                         "Function": {},
                         "arg": false,
@@ -5039,9 +5126,13 @@
     },
     "device": {
         "action": {
-            "devicegroupcreate": {
-                "name": "devicegroupcreate",
+            "addressstore-rewrite": {
+                "name": "addressstore-rewrite",
                 "GlobalInitFunction": {},
+                "MainFunction": {}
+            },
+            "devicegroup-create": {
+                "name": "devicegroup-create",
                 "MainFunction": {},
                 "GlobalFinishFunction": {},
                 "args": {
@@ -5055,8 +5146,16 @@
                     }
                 }
             },
+            "devicegroup-delete": {
+                "name": "devicegroup-delete",
+                "MainFunction": {}
+            },
             "display": {
                 "name": "display",
+                "MainFunction": {}
+            },
+            "displayreferences": {
+                "name": "displayReferences",
                 "MainFunction": {}
             },
             "exporttoexcel": {
@@ -5140,6 +5239,28 @@
             "displayreferences": {
                 "name": "displayReferences",
                 "MainFunction": {}
+            },
+            "exporttoexcel": {
+                "name": "exportToExcel",
+                "MainFunction": {},
+                "GlobalInitFunction": {},
+                "GlobalFinishFunction": {},
+                "args": {
+                    "filename": {
+                        "type": "string",
+                        "default": "*nodefault*"
+                    },
+                    "additionalFields": {
+                        "type": "pipeSeparatedList",
+                        "subtype": "string",
+                        "default": "*NONE*",
+                        "choices": [
+                            "WhereUsed",
+                            "UsedInLocation"
+                        ],
+                        "help": "pipe(|) separated list of additional field to include in the report. The following is available:\n  - WhereUsed : list places where object is used (rules, groups ...)\n  - UsedInLocation : list locations (vsys,dg,shared) where object is used\n"
+                    }
+                }
             },
             "securityprofile-remove": {
                 "name": "securityProfile-Remove",
@@ -5279,6 +5400,18 @@
                         "arg": false,
                         "ci": {
                             "fString": "(%PROP%)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    }
+                }
+            },
+            "refcount": {
+                "operators": {
+                    ">,<,=,!": {
+                        "eval": "$object->countReferences() !operator! !value!",
+                        "arg": true,
+                        "ci": {
+                            "fString": "(%PROP% 1)",
                             "input": "input\/panorama-8.0.xml"
                         }
                     }

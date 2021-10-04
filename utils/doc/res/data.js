@@ -209,7 +209,21 @@ var data = {
             {
                 "name": "display",
                 "help": null,
-                "args": false
+                "args": [
+                    {
+                        "type": "pipeSeparatedList",
+                        "subtype": "string",
+                        "default": "*NONE*",
+                        "choices": [
+                            "ResolveAddressSummary",
+                            "ResolveServiceSummary",
+                            "ResolveApplicationSummary",
+                            "ResolveScheduleSummary"
+                        ],
+                        "help": "pipe(|) separated list of additional field to include in the report. The following is available:\n  - ResolveAddressSummary : fields with address objects will be resolved to IP addressed and summarized in a new column)\n  - ResolveServiceSummary : fields with service objects will be resolved to their value and summarized in a new column)\n  - ResolveApplicationSummary : fields with application objects will be resolved to their category and risk)\n  - ResolveScheduleSummary : fields with schedule objects will be resolved to their expire time)\n",
+                        "name": "additionalFields"
+                    }
+                ]
             },
             {
                 "name": "DNat-set",
@@ -353,9 +367,11 @@ var data = {
                         "default": "*NONE*",
                         "choices": [
                             "ResolveAddressSummary",
-                            "ResolveServiceSummary"
+                            "ResolveServiceSummary",
+                            "ResolveApplicationSummary",
+                            "ResolveScheduleSummary"
                         ],
-                        "help": "pipe(|) separated list of additional field to include in the report. The following is available:\n  - ResolveAddressSummary : fields with address objects will be resolved to IP addressed and summarized in a new column)\n  - ResolveServiceSummary : fields with service objects will be resolved to their value and summarized in a new column)\n",
+                        "help": "pipe(|) separated list of additional field to include in the report. The following is available:\n  - ResolveAddressSummary : fields with address objects will be resolved to IP addressed and summarized in a new column)\n  - ResolveServiceSummary : fields with service objects will be resolved to their value and summarized in a new column)\n  - ResolveApplicationSummary : fields with application objects will be resolved to their category and risk)\n  - ResolveScheduleSummary : fields with schedule objects will be resolved to their expire time)\n",
                         "name": "additionalFields"
                     }
                 ]
@@ -1160,6 +1176,38 @@ var data = {
             },
             {
                 "name": "to-Set-Any",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "user-Add",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "userName"
+                    }
+                ]
+            },
+            {
+                "name": "user-remove",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "userName"
+                    }
+                ]
+            },
+            {
+                "name": "user-set-any",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "xml-extract",
                 "help": null,
                 "args": false
             }
@@ -2215,6 +2263,28 @@ var data = {
                 "args": false
             },
             {
+                "name": "exportToExcel",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "filename"
+                    },
+                    {
+                        "type": "pipeSeparatedList",
+                        "subtype": "string",
+                        "default": "*NONE*",
+                        "choices": [
+                            "WhereUsed",
+                            "UsedInLocation"
+                        ],
+                        "help": "pipe(|) separated list of additional field to include in the report. The following is available:\n  - WhereUsed : list places where object is used (rules, groups ...)\n  - UsedInLocation : list locations (vsys,dg,shared) where object is used\n",
+                        "name": "additionalFields"
+                    }
+                ]
+            },
+            {
                 "name": "securityProfile-Remove",
                 "help": null,
                 "args": [
@@ -2263,7 +2333,12 @@ var data = {
         ],
         "device": [
             {
-                "name": "devicegroupcreate",
+                "name": "addressstore-rewrite",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "devicegroup-create",
                 "help": null,
                 "args": [
                     {
@@ -2279,7 +2354,17 @@ var data = {
                 ]
             },
             {
+                "name": "devicegroup-delete",
+                "help": null,
+                "args": false
+            },
+            {
                 "name": "display",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "displayReferences",
                 "help": null,
                 "args": false
             },
@@ -2746,6 +2831,11 @@ var data = {
                         "argument": "*required*"
                     },
                     {
+                        "name": "has.same.to.zone",
+                        "help": null,
+                        "argument": null
+                    },
+                    {
                         "name": "is.any",
                         "help": null,
                         "argument": null
@@ -2927,6 +3017,11 @@ var data = {
                 "name": "schedule",
                 "help": null,
                 "operators": [
+                    {
+                        "name": "expire.in.days",
+                        "help": null,
+                        "argument": "*required*"
+                    },
                     {
                         "name": "has.regex",
                         "help": null,
@@ -3353,6 +3448,11 @@ var data = {
                         "argument": "*required*"
                     },
                     {
+                        "name": "has.same.from.zone",
+                        "help": null,
+                        "argument": null
+                    },
+                    {
                         "name": "is.any",
                         "help": null,
                         "argument": null
@@ -3411,6 +3511,11 @@ var data = {
                         "argument": null
                     },
                     {
+                        "name": "is.in.file",
+                        "help": "returns TRUE if rule name matches one of the names found in text file provided in argument",
+                        "argument": "*required*"
+                    },
+                    {
                         "name": "is.known",
                         "help": null,
                         "argument": null
@@ -3424,6 +3529,17 @@ var data = {
                         "name": "is.unknown",
                         "help": null,
                         "argument": null
+                    }
+                ]
+            },
+            {
+                "name": "user.count",
+                "help": null,
+                "operators": [
+                    {
+                        "name": ">,<,=,!",
+                        "help": null,
+                        "argument": "*required*"
                     }
                 ]
             }
@@ -4569,6 +4685,17 @@ var data = {
                 ]
             },
             {
+                "name": "refcount",
+                "help": null,
+                "operators": [
+                    {
+                        "name": ">,<,=,!",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
                 "name": "reflocation",
                 "help": null,
                 "operators": [
@@ -4813,6 +4940,11 @@ var data = {
                 "name": "object",
                 "help": null,
                 "operators": [
+                    {
+                        "name": "expire.in.days",
+                        "help": null,
+                        "argument": "*required*"
+                    },
                     {
                         "name": "is.expired",
                         "help": null,
