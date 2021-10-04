@@ -154,4 +154,13 @@ class RuleWithUserID extends Rule
         DH::Hosts_to_xmlDom($tmpRoot, $this->_users, 'member', FALSE, 'any', FALSE);
     }
 
+    function userID_setany()
+    {
+        $tmpRoot = DH::findFirstElementOrCreate('source-user', $this->xmlroot);
+
+        $this->_users = array();
+
+        DH::Hosts_to_xmlDom($tmpRoot, $this->_users, 'member', FALSE, 'any', FALSE);
+    }
+
 }

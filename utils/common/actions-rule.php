@@ -3600,7 +3600,28 @@ RuleCallContext::$supportedActions[] = Array(
     },
     'args' => Array( 'userName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) )
 );
+RuleCallContext::$supportedActions[] = Array(
+    'name' => 'user-set-any',
+    'MainFunction' =>  function(RuleCallContext $context)
+    {
+        $rule = $context->object;
 
+        if( !$rule->isSecurityRule() )
+        {
+            PH::print_stdout( $context->padding."  - SKIPPED : this is not a Security rule" );
+            return;
+        }
+
+        if( $context->isAPI )
+        {
+            #$rule->API_setUser($context->arguments['userName']);
+            derr("user-add via API not available yet");
+        }
+        else
+            $rule->userID_setany();
+
+    }
+);
 
 //                                                   //
 //                HIP Based Actions     //
