@@ -89,7 +89,8 @@ SecurityProfileGroupCallContext::$supportedActions[] = array(
 
         if( !$ret )
         {
-            PH::print_stdout( $context->padding . " * SKIPPED : no change detected");
+            $string = "no change detected";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -147,7 +148,8 @@ SecurityProfileGroupCallContext::$supportedActions[] = array(
         {
             if( !$ret )
             {
-                PH::print_stdout( $context->padding . " * SKIPPED : no change detected");
+                $string = "no change detected";
+                PH::ACTIONstatus( $context, "SKIPPED", $string );
                 return;
             }
 

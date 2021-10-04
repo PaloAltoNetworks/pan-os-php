@@ -238,7 +238,8 @@ ApplicationCallContext::$supportedActions[] = array(
 
         if( !$object->isApplicationCustom() && !$object->isApplicationFilter() && !$object->isApplicationGroup() )
         {
-            PH::print_stdout( $context->padding . " * SKIPPED this is NOT a custom application object. TYPE: ".$object->type."" );
+            $string = "this is NOT a custom application object. TYPE: ".$object->type."";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -252,7 +253,8 @@ ApplicationCallContext::$supportedActions[] = array(
 
         if( $localLocation == $targetLocation )
         {
-            PH::print_stdout( $context->padding . " * SKIPPED because original and target destinations are the same: $targetLocation" );
+            $string = "because original and target destinations are the same: $targetLocation";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -290,7 +292,8 @@ ApplicationCallContext::$supportedActions[] = array(
 
                     if( $skipped )
                     {
-                        PH::print_stdout( $context->padding . "   * SKIPPED : moving from SHARED to sub-level is NOT possible because of references on higher DG level" );
+                        $string = "moving from SHARED to sub-level is NOT possible because of references on higher DG level";
+                        PH::ACTIONstatus( $context, "SKIPPED", $string );
                         return;
                     }
                 }
@@ -301,12 +304,10 @@ ApplicationCallContext::$supportedActions[] = array(
         {
             if( $context->baseObject->isFirewall() )
             {
-                PH::print_stdout( $context->padding . "   * SKIPPED : moving between VSYS is not supported" );
+                $string = "moving between VSYS is not supported";
+                PH::ACTIONstatus( $context, "SKIPPED", $string );
                 return;
             }
-
-            #PH::print_stdout( $context->padding."   * SKIPPED : moving between 2 VSYS/DG is not supported yet" );
-            #return;
 
             foreach( $object->getReferences() as $ref )
             {
@@ -323,7 +324,8 @@ ApplicationCallContext::$supportedActions[] = array(
 
                     if( $skipped )
                     {
-                        PH::print_stdout( $context->padding . "   * SKIPPED : moving between 2 VSYS/DG is not possible because of references on higher DG level" );
+                        $string = "moving between 2 VSYS/DG is not possible because of references on higher DG level";
+                        PH::ACTIONstatus( $context, "SKIPPED", $string );
                         return;
                     }
                 }
@@ -333,7 +335,9 @@ ApplicationCallContext::$supportedActions[] = array(
         $conflictObject = $targetStore->find($object->name(), null);
         if( $conflictObject === null )
         {
-            PH::print_stdout( $context->padding . "   * moved, no conflict" );
+            $string = "   * moved, no conflict";
+            PH::ACTIONlog( $context, $string );
+
             if( $context->isAPI )
             {
                 $oldXpath = $object->getXPath();
@@ -352,15 +356,18 @@ ApplicationCallContext::$supportedActions[] = array(
 
         if( $context->arguments['mode'] == 'skipifconflict' )
         {
-            PH::print_stdout( $context->padding . "   * SKIPPED : there is an object with same name. Choose another mode to resolve this conflict" );
+            $string = "there is an object with same name. Choose another mode to resolve this conflict";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
-        PH::print_stdout( $context->padding . "   - there is a conflict with an object of same name and type. Please use address-merger.php script with argument 'allowmergingwithupperlevel'" );
+        $string = "   - there is a conflict with an object of same name and type. Please use address-merger.php script with argument 'allowmergingwithupperlevel'";
+        PH::ACTIONlog( $context, $string );
         #if( $conflictObject->isGroup() )
         #    PH::print_stdout( " - Group" );
         #else
-            PH::print_stdout( " - ".$conflictObject->type() . "" );
+            $string = " - ".$conflictObject->type() . "";
+            PH::ACTIONlog( $context, $string );
 
         /*
         if( $conflictObject->isGroup() && !$object->isGroup() || !$conflictObject->isGroup() && $object->isGroup() )
@@ -395,7 +402,8 @@ ApplicationCallContext::$supportedActions[] = array(
         if( $context->arguments['mode'] == 'removeifmatch' )
             return;
 
-        PH::print_stdout( "    * Removed because target has same numerical value" );
+        $string ="    * Removed because target has same numerical value";
+        PH::ACTIONlog( $context, $string );
 
         $object->replaceMeGlobally($conflictObject);
         if( $context->isAPI )

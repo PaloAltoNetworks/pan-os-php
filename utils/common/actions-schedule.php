@@ -25,7 +25,8 @@ ScheduleCallContext::$supportedActions['delete'] = array(
 
         if( $object->countReferences() != 0 )
         {
-            PH::print_stdout( $context->padding . "  * SKIPPED: this object is used by other objects and cannot be deleted (use deleteForce to try anyway)" );
+            $string = "this object is used by other objects and cannot be deleted (use deleteForce to try anyway)";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         if( $context->isAPI )
@@ -47,7 +48,10 @@ ScheduleCallContext::$supportedActions['deleteforce'] = array(
         $object = $context->object;
 
         if( $object->countReferences() != 0 )
-            PH::print_stdout( $context->padding . "  * WARNING : this object seems to be used so deletion may fail." );
+        {
+            $string = "this object seems to be used so deletion may fail.";
+            PH::ACTIONstatus( $context, "WARNING", $string );
+        }
         if( $context->isAPI )
         {
             derr("action delete via API not available yet");
@@ -70,14 +74,18 @@ ScheduleCallContext::$supportedActions['name-addprefix'] = array(
 
         if( $object->isTmp() )
         {
-            PH::print_stdout( $context->padding . " *** SKIPPED : not applicable to TMP objects" );
+            $string = "not applicable to TMP objects";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
-        PH::print_stdout( $context->padding . " - new name will be '{$newName}'" );
+        $string = " - new name will be '{$newName}'";
+        PH::ACTIONlog( $context, $string );
+
         if( strlen($newName) > 127 )
         {
-            PH::print_stdout( " *** SKIPPED : resulting name is too long" );
+            $string = "resulting name is too long";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
@@ -85,7 +93,8 @@ ScheduleCallContext::$supportedActions['name-addprefix'] = array(
         if( $rootObject->isPanorama() && $object->owner->find($newName, null, FALSE) !== null ||
             $rootObject->isFirewall() && $object->owner->find($newName, null, TRUE) !== null )
         {
-            PH::print_stdout( " *** SKIPPED : an object with same name already exists" );
+            $string = "an object with same name already exists";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         if( $context->isAPI )
@@ -105,14 +114,18 @@ ScheduleCallContext::$supportedActions['name-addsuffix'] = array(
 
         if( $object->isTmp() )
         {
-            PH::print_stdout( $context->padding . " *** SKIPPED : not applicable to TMP objects" );
+            $string = "not applicable to TMP objects";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
-        PH::print_stdout( $context->padding . " - new name will be '{$newName}'" );
+        $string = " - new name will be '{$newName}'";
+        PH::ACTIONlog( $context, $string );
+
         if( strlen($newName) > 127 )
         {
-            PH::print_stdout( " *** SKIPPED : resulting name is too long" );
+            $string = "resulting name is too long";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
@@ -120,7 +133,8 @@ ScheduleCallContext::$supportedActions['name-addsuffix'] = array(
         if( $rootObject->isPanorama() && $object->owner->find($newName, null, FALSE) !== null ||
             $rootObject->isFirewall() && $object->owner->find($newName, null, TRUE) !== null )
         {
-            PH::print_stdout( " *** SKIPPED : an object with same name already exists" );
+            $string = "an object with same name already exists";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         if( $context->isAPI )
@@ -139,31 +153,36 @@ ScheduleCallContext::$supportedActions['name-removeprefix'] = array(
 
         if( $object->isTmp() )
         {
-            PH::print_stdout( $context->padding . " *** SKIPPED : not applicable to TMP objects" );
+            $string = "not applicable to TMP objects";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
         if( strpos($object->name(), $prefix) !== 0 )
         {
-            PH::print_stdout( $context->padding . " *** SKIPPED : prefix not found" );
+            $string = "prefix not found";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         $newName = substr($object->name(), strlen($prefix));
 
         if( !preg_match("/^[a-zA-Z0-9]/", $newName[0]) )
         {
-            PH::print_stdout( $context->padding . " *** SKIPPED : object name contains not allowed character at the beginning" );
+            $string = "object name contains not allowed character at the beginning";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
-        PH::print_stdout( $context->padding . " - new name will be '{$newName}'" );
+        $string = " - new name will be '{$newName}'";
+        PH::ACTIONlog( $context, $string );
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
 
         if( $rootObject->isPanorama() && $object->owner->find($newName, null, FALSE) !== null ||
             $rootObject->isFirewall() && $object->owner->find($newName, null, TRUE) !== null )
         {
-            PH::print_stdout( $context->padding . " *** SKIPPED : an object with same name already exists" );
+            $string = "an object with same name already exists";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         if( $context->isAPI )
@@ -183,25 +202,29 @@ ScheduleCallContext::$supportedActions['name-removesuffix'] = array(
 
         if( $object->isTmp() )
         {
-            PH::print_stdout( $context->padding . " *** SKIPPED : not applicable to TMP objects" );
+            $string = "not applicable to TMP objects";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
         if( substr($object->name(), $suffixStartIndex, strlen($object->name())) != $suffix )
         {
-            PH::print_stdout( $context->padding . " *** SKIPPED : suffix not found" );
+            $string = "suffix not found";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         $newName = substr($object->name(), 0, $suffixStartIndex);
 
-        PH::print_stdout( $context->padding . " - new name will be '{$newName}'" );
+        $string = " - new name will be '{$newName}'";
+        PH::ACTIONlog( $context, $string );
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
 
         if( $rootObject->isPanorama() && $object->owner->find($newName, null, FALSE) !== null ||
             $rootObject->isFirewall() && $object->owner->find($newName, null, TRUE) !== null )
         {
-            PH::print_stdout( $context->padding . " *** SKIPPED : an object with same name already exists" );
+            $string = "an object with same name already exists";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         if( $context->isAPI )
@@ -222,24 +245,28 @@ ScheduleCallContext::$supportedActions['name-touppercase'] = array(
 
         if( $object->isTmp() )
         {
-            PH::print_stdout( $context->padding . " *** SKIPPED : not applicable to TMP objects" );
+            $string = "not applicable to TMP objects";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
-        PH::print_stdout( $context->padding . " - new name will be '{$newName}'" );
+        $string = " - new name will be '{$newName}'";
+        PH::ACTIONlog( $context, $string );
+
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
 
         if( $newName === $object->name() )
         {
-            PH::print_stdout( " *** SKIPPED : object is already uppercase" );
+            $string = "object is already uppercase";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
         if( $rootObject->isPanorama() && $object->owner->find($newName, null, FALSE) !== null ||
             $rootObject->isFirewall() && $object->owner->find($newName, null, TRUE) !== null )
         {
-            PH::print_stdout( " *** SKIPPED : an object with same name already exists" );
-            #use existing uppercase TAG and replace old lowercase where used with this existing uppercase TAG
+            $string = "an object with same name already exists";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         if( $context->isAPI )
@@ -258,25 +285,27 @@ ScheduleCallContext::$supportedActions['name-tolowercase'] = array(
 
         if( $object->isTmp() )
         {
-            PH::print_stdout( $context->padding . " *** SKIPPED : not applicable to TMP objects" );
+            $string = "not applicable to TMP objects";
             return;
         }
 
-        PH::print_stdout( $context->padding . " - new name will be '{$newName}'" );
+        $string = " - new name will be '{$newName}'";
+        PH::ACTIONlog( $context, $string );
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
 
         if( $newName === $object->name() )
         {
-            PH::print_stdout( " *** SKIPPED : object is already lowercase" );
+            $string = "object is already lowercase";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
         if( $rootObject->isPanorama() && $object->owner->find($newName, null, FALSE) !== null ||
             $rootObject->isFirewall() && $object->owner->find($newName, null, TRUE) !== null )
         {
-            PH::print_stdout( " *** SKIPPED : an object with same name already exists" );
-            #use existing lowercase TAG and replace old uppercase where used with this
+            $string = "an object with same name already exists";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         if( $context->isAPI )
@@ -296,25 +325,28 @@ ScheduleCallContext::$supportedActions['name-toucwords'] = array(
 
         if( $object->isTmp() )
         {
-            PH::print_stdout( $context->padding . " *** SKIPPED : not applicable to TMP objects" );
+            $string = "not applicable to TMP objects";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
-        PH::print_stdout( $context->padding . " - new name will be '{$newName}'" );
+        $string = " - new name will be '{$newName}'";
+        PH::ACTIONlog( $context, $string );
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
 
         if( $newName === $object->name() )
         {
-            PH::print_stdout( " *** SKIPPED : object is already UCword" );
+            $string = "object is already UCword";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
         if( $rootObject->isPanorama() && $object->owner->find($newName, null, FALSE) !== null ||
             $rootObject->isFirewall() && $object->owner->find($newName, null, TRUE) !== null )
         {
-            PH::print_stdout( " *** SKIPPED : an object with same name already exists" );
-            #use existing lowercase TAG and replace old uppercase where used with this
+            $string = "an object with same name already exists";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         if( $context->isAPI )
@@ -350,7 +382,6 @@ ScheduleCallContext::$supportedActions['display'] = array(
         if( isset($tmp_array['daily']) )
         {
             PH::print_stdout( $context->padding . "  daily:");
-            $string = "";
             foreach( $tmp_array['daily'] as $entry )
             {
                 $string = $entry['start']."-".$entry['end'];
@@ -359,7 +390,6 @@ ScheduleCallContext::$supportedActions['display'] = array(
                 PH::$JSON_TMP['sub']['object'][$object->name()]['daily'][$string]['end'] = $entry['end'];
             }
         }
-
 
         if( isset($tmp_array['weekly']) )
         {
@@ -375,7 +405,6 @@ ScheduleCallContext::$supportedActions['display'] = array(
                     PH::$JSON_TMP['sub']['object'][$object->name()]['weekly'][$key][$string2]['end'] = $day_entry['end'];
                 }
             }
-
         }
 
         if( isset($tmp_array['non-recurring']) )
@@ -389,11 +418,7 @@ ScheduleCallContext::$supportedActions['display'] = array(
                 PH::$JSON_TMP['sub']['object'][$object->name()]['non-recurring'][$entry['start']." - ".$entry['end']]['start'] = $entry['start'];
                 PH::$JSON_TMP['sub']['object'][$object->name()]['non-recurring'][$entry['start']." - ".$entry['end']]['end'] = $entry['end'];
             }
-
         }
-
-
-
     },
 );
 
@@ -417,7 +442,9 @@ ScheduleCallContext::$supportedActions[] = array(
 
             if( $tmp_class == "ZoneRuleContainer" )
             {
-                PH::print_stdout( $context->padding . " * replacing in {$objectRef->toString()}" );
+                $string = " * replacing in {$objectRef->toString()}";
+                PH::ACTIONlog( $context, $string );
+
                 if( $context->isAPI )
                     $objectRef->API_replaceReferencedObject($object, $foundObject);
                 else
@@ -425,7 +452,8 @@ ScheduleCallContext::$supportedActions[] = array(
             }
             else
             {
-                PH::print_stdout( $context->padding . "  * SKIPPED: CLASS: " . $tmp_class . " is not supported" );
+                $string = "CLASS: " . $tmp_class . " is not supported";
+                PH::ACTIONstatus( $context, "SKIPPED", $string );
             }
         }
     },
