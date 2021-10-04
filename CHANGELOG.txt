@@ -19,6 +19,7 @@ BUGFIX:
 * pa_application-edit - bugfix to print APP information optimised in JSON
 * pa_address-edit | bugfix for is.included-in.name if object is tmp and value is available
 * pa_rule-edit bugfix for 'filter=(user has.regex /USER-group/)'
+* pa_rule-edit | bugfix for ANY actions=display shadow-json
 
 GENERAL:
 * framework class PH - introduce function ACTIONstatus - make use in pa_tag-edit
