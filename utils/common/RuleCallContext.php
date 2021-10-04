@@ -518,7 +518,7 @@ class RuleCallContext extends CallContext
     public function AddressResolveSummary( $rule, $typeSrcDst, &$unresolvedArray = array() )
     {
         if( $rule->$typeSrcDst->isAny() )
-            return array( '0.0.0.0/0');
+            return array( '0.0.0.0-255.255.255.255');
 
         $mapping = $rule->$typeSrcDst->getIP4Mapping();
         $strMapping = explode(',', $mapping->dumpToString());
