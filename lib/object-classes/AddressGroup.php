@@ -988,17 +988,19 @@ class AddressGroup
     }
 
 
-    public function replaceByMembersAndDelete($padding = "", $isAPI = FALSE, $rewriteXml = TRUE, $forceAny = FALSE)
+    public function replaceByMembersAndDelete($context, $isAPI = FALSE, $rewriteXml = TRUE, $forceAny = FALSE)
     {
         if( !$this->isGroup() )
         {
-            PH::print_stdout( $padding . " - SKIPPED : it's not a group" );
+            $string = "it's not a group";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
         if( $this->owner === null )
         {
-            PH::print_stdout( $padding . " -  SKIPPED : object was previously removed" );
+            $string = "object was previously removed";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -1010,7 +1012,8 @@ class AddressGroup
             if( $class != 'AddressRuleContainer' && $class != 'AddressGroup' )
             {
                 $clearForAction = FALSE;
-                PH::print_stdout( "- SKIPPED : it's used in unsupported class $class" );
+                $string = "it's used in unsupported class $class";
+                PH::ACTIONstatus( $context, "SKIPPED", $string );
                 return;
             }
         }
@@ -1023,11 +1026,13 @@ class AddressGroup
 
                 if( $objectRef->owner === null )
                 {
-                    PH::print_stdout( $padding . "  - SKIPPED because object already removed ({$objectRef->toString()})" );
+                    $string = "because object already removed ({$objectRef->toString()})";
+                    PH::ACTIONstatus( $context, "SKIPPED", $string );
                     continue;
                 }
 
-                PH::print_stdout( $padding . "  - adding members in {$objectRef->toString()}" );
+                $string = "  - adding members in {$objectRef->toString()}";
+                PH::ACTIONlog( $context, $string );
 
                 if( $class == 'AddressRuleContainer' )
                 {
@@ -1039,7 +1044,8 @@ class AddressGroup
                         else
                             $objectRef->addObject($objectMember);
 
-                        PH::print_stdout( $padding . "     -> {$objectMember->toString()}" );
+                        $string = "     -> {$objectMember->toString()}";
+                        PH::ACTIONlog( $context, $string );
                     }
                     if( $isAPI )
                         $objectRef->API_remove($this, $forceAny);
@@ -1055,7 +1061,8 @@ class AddressGroup
                             $objectRef->API_addMember($objectMember);
                         else
                             $objectRef->addMember($objectMember);
-                        PH::print_stdout( $padding . "     -> {$objectMember->toString()}" );
+                        $string = "     -> {$objectMember->toString()}";
+                        PH::ACTIONlog( $context, $string );
                     }
                     if( $isAPI )
                         $objectRef->API_removeMember($this);

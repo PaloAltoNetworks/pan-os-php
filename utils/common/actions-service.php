@@ -478,8 +478,7 @@ ServiceCallContext::$supportedActions[] = array(
             $text .= "Group";
         else
             $text .= "Service";
-        $string = $text;
-        PH::ACTIONlog( $context, $string );
+        PH::ACTIONlog( $context, $text );
 
         if( $conflictObject->isGroup() && !$object->isGroup() || !$conflictObject->isGroup() && $object->isGroup() )
         {
@@ -603,7 +602,7 @@ ServiceCallContext::$supportedActions[] = array(
             return;
         }
 
-        $object->replaceGroupbyService($context->padding);
+        $object->replaceGroupbyService( $context );
     },
 );
 
@@ -619,86 +618,7 @@ ServiceCallContext::$supportedActions[] = array(
             return;
         }
 
-        $object->replaceByMembersAndDelete($context->padding, $context->isAPI);
-        /*
-                if( !$object->isGroup() )
-                {
-                    PH::print_stdout( $context->padding."     *  skipped it's not a group" );
-                    return;
-                }
-
-
-                $objectRefs = $object->getReferences();
-
-                $clearForAction = true;
-                foreach( $objectRefs as $objectRef )
-                {
-                    $class = get_class($objectRef);
-                    if( $class != 'ServiceRuleContainer' && $class != 'ServiceGroup' )
-                    {
-                        $clearForAction = false;
-                        PH::print_stdout( "     *  skipped because its used in unsupported class $class" );
-                        return;
-                    }
-                }
-                if( $clearForAction )
-                {
-                    foreach ($objectRefs as $objectRef)
-                    {
-                        $class = get_class($objectRef);
-                        if( $class == 'ServiceRuleContainer' )
-                        {
-                            /** @var ServiceRuleContainer $objectRef */
-        /*
-                PH::print_stdout( $context->padding."    - in Reference: {$objectRef->toString()}" );
-                foreach ($object->members() as $objectMember)
-                {
-                    PH::print_stdout( $context->padding."      - adding {$objectMember->name()}" );
-                    if( $context->isAPI )
-                        $objectRef->API_add($objectMember);
-                    else
-                        $objectRef->add($objectMember);
-                }
-                if( $context->isAPI )
-                    $objectRef->API_remove($object);
-                else
-                    $objectRef->remove($object);
-            }
-                        elseif( $class == 'ServiceGroup' )
-        {
-            */
-        /** @var ServiceGroup $objectRef */
-
-        /*
-    PH::print_stdout( $context->padding."    - in Reference: {$objectRef->toString()}" );
-                        foreach ($object->members() as $objectMember)
-                        {
-                            PH::print_stdout( $context->padding."      - adding {$objectMember->name()}" );
-                            if( $context->isAPI )
-                                $objectRef->API_addMember($objectMember);
-                            else
-                                $objectRef->addMember($objectMember);
-                        }
-                        if( $context->isAPI )
-                            $objectRef->API_removeMember($object);
-                        else
-                            $objectRef->removeMember($object);
-                    }
-                    else
-                    {
-                        derr('unsupported class');
-                    }
-
-                }
-                if( $context->isAPI )
-                    $object->owner->API_remove($object, true);
-                else
-                    $object->owner->remove($object, true);
-
-            }
-
-        */
-
+        $object->replaceByMembersAndDelete($context, $context->isAPI);
     },
 );
 
@@ -1252,8 +1172,7 @@ ServiceCallContext::$supportedActions[] = array(
         else
             $service->setDescription($description . $textToAppend);
         $text .= "OK";
-        $string = $text;
-        PH::ACTIONlog( $context, $string );
+        PH::ACTIONlog( $context, $text );
     },
     'args' => array('text' => array('type' => 'string', 'default' => '*nodefault*'))
 );
@@ -1289,8 +1208,7 @@ ServiceCallContext::$supportedActions[] = array(
         else
             $service->setDescription("");
         $text .= "OK";
-        $string = $text;
-        PH::ACTIONlog( $context, $string );
+        PH::ACTIONlog( $context, $text );
     },
 );
 ServiceCallContext::$supportedActions[] = array(

@@ -657,7 +657,7 @@ class ServiceGroup
     }
 
 
-    public function replaceGroupbyService($padding = "")
+    public function replaceGroupbyService( $context )
     {
         #if( $context->isAPI )
         #    derr("action 'replaceGroupByService' is not support in API/online mode yet");
@@ -665,24 +665,28 @@ class ServiceGroup
 
         if( $this->isService() )
         {
-            PH::print_stdout(  $padding . " *** SKIPPED : this is not a group" );
+            $string = "this is not a group";
+            PH::ACTIONstatus($context, "SKIPPED", $string);
             return;
         }
         if( !$this->isGroup() )
         {
-            PH::print_stdout(  $padding . " *** SKIPPED : unsupported object type" );
+            $string = "unsupported object type";
+            PH::ACTIONstatus($context, "SKIPPED", $string);
             return;
         }
         if( $this->count() < 1 )
         {
-            PH::print_stdout( $padding . " *** SKIPPED : group has no member" );
+            $string = "group has no member";
+            PH::ACTIONstatus($context, "SKIPPED", $string);
             return;
         }
 
         $mapping = $this->dstPortMapping();
         if( $mapping->hasTcpMappings() && $mapping->hasUdpMappings() )
         {
-            PH::print_stdout( $padding . " *** SKIPPED : group has a mix of UDP and TCP based mappings, they cannot be merged in a single object" );
+            $string = "group has a mix of UDP and TCP based mappings, they cannot be merged in a single object";
+            PH::ACTIONstatus($context, "SKIPPED", $string);
             return;
         }
 
@@ -690,7 +694,8 @@ class ServiceGroup
         {
             if( $member->isTmpSrv() )
             {
-                PH::print_stdout( $padding . " *** SKIPPED : temporary services detected" );
+                $string = "temporary services detected";
+                PH::ACTIONstatus($context, "SKIPPED", $string);
                 return;
             }
         }
@@ -708,19 +713,26 @@ class ServiceGroup
         $this->replaceMeGlobally($newService);
 
         if( $mapping->hasUdpMappings() )
-            PH::print_stdout( $padding . " * replaced by service with same name and value: udp/{$newService->dstPortMapping()->udpMappingToText()}" );
+        {
+            $string = " * replaced by service with same name and value: udp/{$newService->dstPortMapping()->udpMappingToText()}";
+            PH::ACTIONlog($context, $string);
+        }
         else
-            PH::print_stdout( $padding . " * replaced by service with same name and value: tcp/{$newService->dstPortMapping()->tcpMappingToText()}" );
+        {
+            $string = " * replaced by service with same name and value: tcp/{$newService->dstPortMapping()->tcpMappingToText()}";
+            PH::ACTIONlog($context, $string);
+        }
 
         return TRUE;
     }
 
 
-    public function replaceByMembersAndDelete($padding = "", $isAPI = FALSE, $rewriteXml = TRUE, $forceAny = FALSE)
+    public function replaceByMembersAndDelete($context, $isAPI = FALSE, $rewriteXml = TRUE, $forceAny = FALSE)
     {
         if( !$this->isGroup() )
         {
-            PH::print_stdout( $padding . "     *  skipped it's not a group" );
+            $string = "it's not a group";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -734,7 +746,8 @@ class ServiceGroup
             if( $class != 'ServiceRuleContainer' && $class != 'ServiceGroup' )
             {
                 $clearForAction = FALSE;
-                PH::print_stdout( "     *  skipped because its used in unsupported class $class" );
+                $string = "because its used in unsupported class $class";
+                PH::ACTIONstatus( $context, "SKIPPED", $string );
                 return;
             }
         }
@@ -747,10 +760,14 @@ class ServiceGroup
                 {
                     /** @var ServiceRuleContainer $thisRef */
 
-                    PH::print_stdout( $padding . "    - in Reference: {$thisRef->toString()}" );
+                    $string = "    - in Reference: {$thisRef->toString()}";
+                    PH::ACTIONlog( $context, $string );
+
                     foreach( $this->members() as $thisMember )
                     {
-                        PH::print_stdout( $padding . "      - adding {$thisMember->name()}" );
+                        $string = "      - adding {$thisMember->name()}";
+                        PH::ACTIONlog( $context, $string );
+
                         if( $isAPI )
                             $thisRef->API_add($thisMember, $rewriteXml);
                         else
@@ -765,10 +782,14 @@ class ServiceGroup
                 {
                     /** @var ServiceGroup $thisRef */
 
-                    PH::print_stdout( $padding . "    - in Reference: {$thisRef->toString()}" );
+                    $string = "    - in Reference: {$thisRef->toString()}";
+                    PH::ACTIONlog( $context, $string );
+
                     foreach( $this->members() as $thisMember )
                     {
-                        PH::print_stdout( $padding . "      - adding {$thisMember->name()}" );
+                        $string = "      - adding {$thisMember->name()}";
+                        PH::ACTIONlog( $context, $string );
+
                         if( $isAPI )
                             $thisRef->API_addMember($thisMember);
                         else

@@ -198,7 +198,8 @@ RuleCallContext::$commonActionFunctions['calculate-zones'] = array(
                     }
                 }
 
-                PH::print_stdout( $context->padding . " - VSYS/DG '{$system->name()}' has interfaces attached to " . count($foundRouters) . " virtual routers" );
+                $string = " - VSYS/DG '{$system->name()}' has interfaces attached to " . count($foundRouters) . " virtual routers";
+                PH::ACTIONlog($context, $string);
                 if( count($foundRouters) > 1 )
                     derr("more than 1 suitable virtual routers found, please specify one fo the following: " . PH::list_to_string($foundRouters));
                 if( count($foundRouters) == 0 )
@@ -214,7 +215,8 @@ RuleCallContext::$commonActionFunctions['calculate-zones'] = array(
 
         if( $addressContainer->isAny() )
         {
-            PH::print_stdout( $context->padding . " - SKIPPED : address container is ANY()" );
+            $string = "address container is ANY()";
+            PH::ACTIONstatus($context, "SKIPPED", $string);
             return;
         }
 
@@ -225,7 +227,8 @@ RuleCallContext::$commonActionFunctions['calculate-zones'] = array(
 
         if( count($resolvedZones) == 0 )
         {
-            PH::print_stdout( $context->padding . " - WARNING : no zone resolved (FQDN? IPv6?)" );
+            $string = "no zone resolved (FQDN? IPv6?)";
+            PH::ACTIONstatus($context, "WARNING", $string);
             return;
         }
 
@@ -249,11 +252,20 @@ RuleCallContext::$commonActionFunctions['calculate-zones'] = array(
         }
 
         if( count($common) > 0 )
-            PH::print_stdout( $context->padding . " - untouched zones: " . PH::list_to_string($common) );
+        {
+            $string = " - untouched zones: " . PH::list_to_string($common);
+            PH::ACTIONlog( $context, $string );
+        }
         if( count($minus) > 0 )
-            PH::print_stdout( $context->padding . " - missing zones: " . PH::list_to_string($minus) );
+        {
+            $string = " - missing zones: " . PH::list_to_string($minus);
+            PH::ACTIONlog( $context, $string );
+        }
         if( count($plus) > 0 )
-            PH::print_stdout( $context->padding . " - unneeded zones: " . PH::list_to_string($plus) );
+        {
+            $string = " - unneeded zones: " . PH::list_to_string($plus);
+            PH::ACTIONlog( $context, $string );
+        }
 
         if( $mode == 'replace' )
         {
@@ -261,17 +273,17 @@ RuleCallContext::$commonActionFunctions['calculate-zones'] = array(
             if( $addressContainer->isAny() )
             {
                 $text .= $context->padding . " *** IGNORED because value is 'ANY' ***";
-                PH::print_stdout( $text );
+                PH::ACTIONlog( $context, $text );
             }
             elseif( count($resolvedZones) == 0 )
             {
                 $text .= $context->padding . " *** IGNORED because no zone was resolved ***" ;
-                PH::print_stdout( $text );
+                PH::ACTIONlog( $context, $text );
             }
             elseif( count($minus) == 0 && count($plus) == 0 )
             {
                 $text .= $context->padding . " *** IGNORED because there is no diff ***" ;
-                PH::print_stdout( $text );
+                PH::ACTIONlog( $context, $text );
             }
             else
             {
@@ -287,7 +299,9 @@ RuleCallContext::$commonActionFunctions['calculate-zones'] = array(
                             $newRule = $rule->owner->cloneRule($rule, $newRuleName);
                             $newRule->to->setAny();
                             $newRule->to->addZone($zoneContainer->parentCentralStore->findOrCreate($zoneToAdd));
-                            PH::print_stdout( $context->padding . " - cloned NAT rule with name '{$newRuleName}' and TO zone='{$zoneToAdd}'" );
+                            $string = " - cloned NAT rule with name '{$newRuleName}' and TO zone='{$zoneToAdd}'";
+                            PH::ACTIONlog( $context, $string );
+
                             if( $context->isAPI )
                             {
                                 $newRule->API_sync();
@@ -306,7 +320,9 @@ RuleCallContext::$commonActionFunctions['calculate-zones'] = array(
                         {
                             $rule->to->setAny();
                             $rule->to->addZone($zoneContainer->parentCentralStore->findOrCreate($zoneToAdd));
-                            PH::print_stdout( $context->padding . " - changed original NAT 'TO' zone='{$zoneToAdd}'" );
+                            $string = " - changed original NAT 'TO' zone='{$zoneToAdd}'";
+                            PH::ACTIONlog( $context, $string );
+
                             if( $context->isAPI )
                                 $rule->to->API_sync();
                             $first = FALSE;
@@ -316,7 +332,9 @@ RuleCallContext::$commonActionFunctions['calculate-zones'] = array(
                         $newRule = $rule->owner->cloneRule($rule, $newRuleName);
                         $newRule->to->setAny();
                         $newRule->to->addZone($zoneContainer->parentCentralStore->findOrCreate($zoneToAdd));
-                        PH::print_stdout( $context->padding . " - cloned NAT rule with name '{$newRuleName}' and TO zone='{$zoneToAdd}'" );
+                        $string = " - cloned NAT rule with name '{$newRuleName}' and TO zone='{$zoneToAdd}'";
+                        PH::ACTIONlog( $context, $string );
+
                         if( $context->isAPI )
                         {
                             $newRule->API_sync();
@@ -343,16 +361,16 @@ RuleCallContext::$commonActionFunctions['calculate-zones'] = array(
             if( $addressContainer->isAny() )
             {
                 $text .= " *** IGNORED because value is 'ANY' ***";
-                PH::print_stdout( $text);
+                PH::ACTIONlog( $context, $text );
             }
             elseif( count($minus) == 0 )
             {
                 $text .= " *** IGNORED because no missing zones were found ***";
-                PH::print_stdout( $text);
+                PH::ACTIONlog( $context, $text );
             }
             else
             {
-                PH::print_stdout( $text);
+                PH::ACTIONlog( $context, $text );
 
                 if( $rule->isNatRule() && $fromOrTo == 'to' )
                 {
@@ -362,7 +380,9 @@ RuleCallContext::$commonActionFunctions['calculate-zones'] = array(
                         $newRule = $rule->owner->cloneRule($rule, $newRuleName);
                         $newRule->to->setAny();
                         $newRule->to->addZone($zoneContainer->parentCentralStore->findOrCreate($zoneToAdd));
-                        PH::print_stdout( $context->padding . " - cloned NAT rule with name '{$newRuleName}' and TO zone='{$zoneToAdd}'" );
+                        $string = " - cloned NAT rule with name '{$newRuleName}' and TO zone='{$zoneToAdd}'";
+                        PH::ACTIONlog( $context, $string );
+
                         if( $context->isAPI )
                         {
                             $newRule->API_sync();
@@ -387,12 +407,12 @@ RuleCallContext::$commonActionFunctions['calculate-zones'] = array(
             if( $addressContainer->isAny() )
             {
                 $text .= " *** IGNORED because value is 'ANY' ***";
-                PH::print_stdout( $text );
+                PH::ACTIONlog( $context, $text );
             }
             elseif( count($plus) == 0 )
             {
                 $text .= " *** IGNORED because no unneeded zones were found ***";
-                PH::print_stdout( $text );
+                PH::ACTIONlog( $context, $text );
             }
             else
             {
@@ -502,7 +522,8 @@ RuleCallContext::$commonActionFunctions['zone-replace'] = array(
             if( $rule->isPbfRule() && $rule->isInterfaceBased()
                 || $rule->isDoSRule() && !$rule->isZoneBasedFrom() )
             {
-                PH::print_stdout( $context->padding . " * SKIPPED : TO is Interface based." );
+                $string = "TO is Interface based.";
+                PH::ACTIONstatus( $context, "SKIPPED", $string );
                 return;
             }
             $zoneContainer = $rule->from;
@@ -511,12 +532,14 @@ RuleCallContext::$commonActionFunctions['zone-replace'] = array(
         {
             if( $rule->isPbfRule() )
             {
-                PH::print_stdout( $context->padding . " * SKIPPED : there is no TO in PBF rules." );
+                $string = "there is no TO in PBF rules.";
+                PH::ACTIONstatus( $context, "SKIPPED", $string );
                 return;
             }
             if( $rule->isDoSRule() && !$rule->isZoneBasedTo() )
             {
-                PH::print_stdout( $context->padding . " * SKIPPED : TO is Interface based." );
+                $string = "TO is Interface based.";
+                PH::ACTIONstatus( $context, "SKIPPED", $string );
                 return;
             }
             $zoneContainer = $rule->to;
@@ -531,7 +554,8 @@ RuleCallContext::$commonActionFunctions['zone-replace'] = array(
 
         if( !$zoneContainer->hasZone($zoneToReplace) )
         {
-            PH::print_stdout( $context->padding . " * SKIPPED : no zone with that name in the container" );
+            $string = "no zone with that name in the container";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -599,7 +623,8 @@ RuleCallContext::$supportedActions[] = array(
         $rule = $context->object;
         if( ($rule->isPbfRule() && $rule->isZoneBased()) || ($rule->isDoSRule() && $rule->isZoneBasedFrom()) )
         {
-            PH::print_stdout( $context->padding . " * SKIPPED: FROM is Zone based, not supported yet." );
+            $string = "FROM is Zone based, not supported yet.";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -618,7 +643,8 @@ RuleCallContext::$supportedActions[] = array(
         $rule = $context->object;
         if( ($rule->isPbfRule() && $rule->isZoneBased()) || ($rule->isDoSRule() && $rule->isZoneBasedFrom()) )
         {
-            PH::print_stdout( $context->padding . " * SKIPPED: FROM is Zone based, not supported yet.");
+            $string = "FROM is Zone based, not supported yet.";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         $f = RuleCallContext::$commonActionFunctions['zone-add']['function'];
@@ -635,12 +661,14 @@ RuleCallContext::$supportedActions[] = array(
 
         if( ($rule->isPbfRule() && $rule->isZoneBased()) || ($rule->isDoSRule() && $rule->isZoneBasedFrom()) )
         {
-            PH::print_stdout( $context->padding . " * SKIPPED: FROM is Zone based, not supported yet.");
+            $string = "FROM is Zone based, not supported yet.";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         if( !$rule->from->hasZone($context->arguments['zoneName']) )
         {
-            PH::print_stdout( $context->padding . " * SKIPPED : no zone with requested name was found");
+            $string = "no zone with requested name was found";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -663,12 +691,14 @@ RuleCallContext::$supportedActions[] = array(
 
         if( ($rule->isPbfRule() && $rule->isZoneBased()) || ($rule->isDoSRule() && $rule->isZoneBasedFrom()) )
         {
-            PH::print_stdout( $context->padding . " * SKIPPED: FROM is Zone based, not supported yet.");
+            $string = "FROM is Zone based, not supported yet.";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         if( !$rule->from->hasZone($context->arguments['zoneName']) )
         {
-            PH::print_stdout( $context->padding . " * SKIPPED : no zone with requested name was found");
+            $string = "no zone with requested name was found";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -700,7 +730,8 @@ RuleCallContext::$supportedActions[] = array(
 
         if( ($rule->isPbfRule() && $rule->isZoneBased()) || ($rule->isDoSRule() && $rule->isZoneBasedFrom()) )
         {
-            PH::print_stdout( $context->padding . " * SKIPPED: FROM is Zone based, not supported yet." );
+            $string = "FROM is Zone based, not supported yet.";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -718,12 +749,14 @@ RuleCallContext::$supportedActions[] = array(
         $rule = $context->object;
         if( $rule->isDoSRule() && $rule->isZoneBasedTo() )
         {
-            PH::print_stdout( $context->padding . " * SKIPPED: TO is Zone based, not supported yet." );
+            $string = "TO is Zone based, not supported yet.";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         if( $rule->isPbfRule() )
         {
-            PH::print_stdout( $context->padding . " * SKIPPED: there is no TO in PBF Rules." );
+            $string = "there is no TO in PBF Rules.";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -741,12 +774,14 @@ RuleCallContext::$supportedActions[] = array(
         $rule = $context->object;
         if( $rule->isDoSRule() && $rule->isZoneBasedTo() )
         {
-            PH::print_stdout( $context->padding . " * SKIPPED: TO is Zone based, not supported yet." );
+            $string = "TO is Zone based, not supported yet.";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         if( $rule->isPbfRule() )
         {
-            PH::print_stdout( $context->padding . " * SKIPPED: there is no TO in PBF Rules." );
+            $string = "there is no TO in PBF Rules.";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -764,17 +799,20 @@ RuleCallContext::$supportedActions[] = array(
 
         if( $rule->isDoSRule() && $rule->isZoneBasedTo() )
         {
-            PH::print_stdout( $context->padding . " * SKIPPED: TO is Zone based, not supported yet." );
+            $string = "TO is Zone based, not supported yet.";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         if( $rule->isPbfRule() )
         {
-            PH::print_stdout( $context->padding . " * SKIPPED: there is no TO in PBF Rules." );
+            $string = "there is no TO in PBF Rules.";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         if( !$rule->to->hasZone($context->arguments['zoneName']) )
         {
-            PH::print_stdout( $context->padding . " * SKIPPED : no zone with requested name was found");
+            $string = "no zone with requested name was found";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -797,17 +835,20 @@ RuleCallContext::$supportedActions[] = array(
 
         if( $rule->isDoSRule() && $rule->isZoneBasedTo() )
         {
-            PH::print_stdout( $context->padding . " * SKIPPED: TO is Zone based, not supported yet." );
+            $string = "TO is Zone based, not supported yet.";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         if( $rule->isPbfRule() )
         {
-            PH::print_stdout( $context->padding . " * SKIPPED: there is no TO in PBF Rules." );
+            $string = "there is no TO in PBF Rules.";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         if( !$rule->to->hasZone($context->arguments['zoneName']) )
         {
-            PH::print_stdout( $context->padding . " * SKIPPED : no zone with requested name was found");
+            $string = "no zone with requested name was found";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -839,12 +880,14 @@ RuleCallContext::$supportedActions[] = array(
 
         if( $rule->isDoSRule() && $rule->isZoneBasedTo() )
         {
-            PH::print_stdout( $context->padding . " * SKIPPED: TO is Zone based, not supported yet." );
+            $string = "TO is Zone based, not supported yet.";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         if( $rule->isPbfRule() )
         {
-            PH::print_stdout( $context->padding . " * SKIPPED: there is no TO in PBF Rules." );
+            $string = "there is no TO in PBF Rules.";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -863,7 +906,8 @@ RuleCallContext::$supportedActions[] = array(
 
         if( ($rule->isPbfRule() && $rule->isZoneBased()) || ($rule->isDoSRule() && $rule->isZoneBasedFrom()) )
         {
-            PH::print_stdout( $context->padding . " * SKIPPED: FROM is Zone based, not supported yet." );
+            $string = "FROM is Zone based, not supported yet.";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -882,12 +926,14 @@ RuleCallContext::$supportedActions[] = array(
         $rule = $context->object;
         if( $rule->isDoSRule() && $rule->isZoneBasedTo() )
         {
-            PH::print_stdout( $context->padding . " * SKIPPED: TO is Zone based, not supported yet." );
+            $string = "TO is Zone based, not supported yet.";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         if( $rule->isPbfRule() )
         {
-            PH::print_stdout( $context->padding . " * SKIPPED: there is no TO in PBF Rules." );
+            $string = "there is no TO in PBF Rules.";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -961,7 +1007,9 @@ RuleCallContext::$supportedActions[] = array(
         {
             if( $rQuery->matchSingleObject($member) )
             {
-                PH::print_stdout( $context->padding . "  - removing object '{$member->name()}'... ");
+                $string = "  - removing object '{$member->name()}'... ";
+                PH::ACTIONlog( $context, $string );
+                
                 if( $context->isAPI )
                     $rule->source->API_remove($member, TRUE);
                 else
@@ -972,7 +1020,8 @@ RuleCallContext::$supportedActions[] = array(
 
         if( $rule->source->count() < 1 )
         {
-            PH::print_stdout( $context->padding . " * no objects remaining so the Rule will be disabled...");
+            $string = " * no objects remaining so the Rule will be disabled...";
+            PH::ACTIONlog( $context, $string );
             if( $context->isAPI )
                 $rule->API_setDisabled(TRUE);
             else
@@ -1052,7 +1101,8 @@ RuleCallContext::$supportedActions[] = array(
         {
             if( $rQuery->matchSingleObject($member) )
             {
-                PH::print_stdout( $context->padding . "  - removing object '{$member->name()}'... ");
+                $string = "  - removing object '{$member->name()}'... ";
+                PH::ACTIONlog( $context, $string );
                 if( $context->isAPI )
                     $rule->destination->API_remove($member, TRUE);
                 else
@@ -1063,7 +1113,8 @@ RuleCallContext::$supportedActions[] = array(
 
         if( $rule->destination->count() < 1 )
         {
-            PH::print_stdout( $context->padding . " * no objects remaining so the Rule will be disabled...");
+            $string = " * no objects remaining so the Rule will be disabled...";
+            PH::ACTIONlog( $context, $string );
             if( $context->isAPI )
                 $rule->API_setDisabled(TRUE);
             else
@@ -1104,7 +1155,8 @@ RuleCallContext::$supportedActions[] = array(
         {
             if( $rQuery->matchSingleObject($member) )
             {
-                PH::print_stdout( $context->padding . "  - removing object '{$member->name()}'... ");
+                $string =  "  - removing object '{$member->name()}'... ";
+                PH::ACTIONlog( $context, $string );
                 if( $context->isAPI )
                     $rule->services->API_remove($member, TRUE, $forceAny);
                 else
@@ -1114,7 +1166,8 @@ RuleCallContext::$supportedActions[] = array(
 
         if( $rule->services->count() < 1 )
         {
-            PH::print_stdout( $context->padding . " * no objects remaining so the Rule will be disabled...");
+            $string = " * no objects remaining so the Rule will be disabled...";
+            PH::ACTIONlog( $context, $string );
             if( $context->isAPI )
                 $rule->API_setDisabled(TRUE);
             else
@@ -1324,7 +1377,8 @@ RuleCallContext::$supportedActions[] = array(
         $rule = $context->object;
         foreach( $rule->tags->tags() as $tag )
         {
-            PH::print_stdout( $context->padding . "  - removing tag {$tag->name()}... ");
+            $string = "  - removing tag {$tag->name()}... ";
+            PH::ACTIONlog( $context, $string );
             if( $context->isAPI )
                 $rule->tags->API_removeTag($tag);
             else
@@ -1347,7 +1401,8 @@ RuleCallContext::$supportedActions[] = array(
                 derr("'$pattern' is not a valid regex");
             if( $result == 1 )
             {
-                PH::print_stdout( $context->padding . "  - removing tag {$tag->name()}... ");
+                $string = "  - removing tag {$tag->name()}... ";
+                PH::ACTIONlog( $context, $string );
                 if( $context->isAPI )
                     $rule->tags->API_removeTag($tag);
                 else
@@ -1463,7 +1518,8 @@ RuleCallContext::$supportedActions[] = array(
         if( $objectFind === null )
             derr("application named '{$appName}' not found");
 
-        PH::print_stdout( $context->padding . " - adding application '{$appName}'... ");
+        $string = " - adding application '{$appName}'... ";
+        PH::ACTIONlog( $context, $string );
 
         if( $context->isAPI )
             $rule->apps->API_addApp($objectFind);
@@ -1558,7 +1614,8 @@ RuleCallContext::$supportedActions[] = array(
                         $rule->apps->addApp($add_app);
                 }
 
-                PH::print_stdout( "        - app-id: " . $app . " is missing in rule");
+                $string = "        - app-id: " . $app . " is missing in rule";
+                PH::ACTIONlog( $context, $string );
             }
         }
     },
@@ -1575,7 +1632,10 @@ RuleCallContext::$supportedActions[] = array(
         if( $context->isAPI )
             $rule->API_clearPolicyAppUsageDATA();
         else
-            PH::print_stdout( "only supported via API");
+        {
+            $string = "only supported via API";
+            PH::ACTIONlog( $context, $string );
+        }
     },
 );
 
@@ -1613,7 +1673,8 @@ RuleCallContext::$supportedActions[] = array(
 
         if( $rule->target_isAny() )
         {
-            PH::print_stdout( $context->padding . "   * SKIPPED : target is already ANY");
+            $string = "target is already ANY";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -1631,7 +1692,8 @@ RuleCallContext::$supportedActions[] = array(
 
         if( $rule->target_isNegated() == $context->arguments['trueOrFalse'] )
         {
-            PH::print_stdout( $context->padding . "   * SKIPPED : target negation is already '" . boolYesNo($rule->target_isNegated()) . "''");
+            $string = "target negation is already '" . boolYesNo($rule->target_isNegated()) . "''";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -1655,7 +1717,8 @@ RuleCallContext::$supportedActions[] = array(
 
         if( $rule->target_hasDeviceAndVsys($serial, $vsys) )
         {
-            PH::print_stdout( $context->padding . "   * SKIPPED : firewall/vsys is already in the target");
+            $string = "firewall/vsys is already in the target";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -1682,7 +1745,8 @@ RuleCallContext::$supportedActions[] = array(
 
         if( !$rule->target_hasDeviceAndVsys($serial, $vsys) )
         {
-            PH::print_stdout( $context->padding . "   * SKIPPED : firewall/vsys does not have this Device/VSYS");
+            $string = "firewall/vsys does not have this Device/VSYS";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -1709,7 +1773,8 @@ RuleCallContext::$supportedActions[] = array(
 
         if( !$rule->isSecurityRule() )
         {
-            PH::print_stdout( $context->padding . "   * SKIPPED : this is not a security rule");
+            $string = "this is not a security rule";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -1728,7 +1793,8 @@ RuleCallContext::$supportedActions[] = array(
 
         if( !$rule->isSecurityRule() )
         {
-            PH::print_stdout( $context->padding . "   * SKIPPED : this is not a security rule" );
+            $string = "this is not a security rule";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -1747,7 +1813,8 @@ RuleCallContext::$supportedActions[] = array(
 
         if( !$rule->isSecurityRule() )
         {
-            PH::print_stdout( $context->padding . "   * SKIPPED : this is not a security rule" );
+            $string = "this is not a security rule";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -1756,7 +1823,8 @@ RuleCallContext::$supportedActions[] = array(
 
         if( $rule->setLogStart(TRUE) )
         {
-            PH::print_stdout( $context->padding . " - QUEUED for bundled API call" );
+            $string = " - QUEUED for bundled API call";
+            PH::ACTIONlog( $context, $string );
             $context->addRuleToMergedApiChange('<log-start>yes</log-start>');
         }
     },
@@ -1773,7 +1841,8 @@ RuleCallContext::$supportedActions[] = array(
 
         if( !$rule->isSecurityRule() )
         {
-            PH::print_stdout( $context->padding . "   * SKIPPED : this is not a security rule" );
+            $string = "this is not a security rule" ;
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -1782,7 +1851,8 @@ RuleCallContext::$supportedActions[] = array(
 
         if( $rule->setLogStart(FALSE) )
         {
-            PH::print_stdout( $context->padding . " - QUEUED for bundled API call" );
+            $string = " - QUEUED for bundled API call";
+            PH::ACTIONlog( $context, $string );
             $context->addRuleToMergedApiChange('<log-start>no</log-start>');
         }
     },
@@ -1800,7 +1870,8 @@ RuleCallContext::$supportedActions[] = array(
 
         if( !$rule->isSecurityRule() )
         {
-            PH::print_stdout( $context->padding . "   * SKIPPED : this is not a security rule" );
+            $string = "this is not a security rule" ;
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -1820,7 +1891,8 @@ RuleCallContext::$supportedActions[] = array(
 
         if( !$rule->isSecurityRule() )
         {
-            PH::print_stdout( $context->padding . "   * SKIPPED : this is not a security rule" );
+            $string = "this is not a security rule" ;
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -1839,7 +1911,8 @@ RuleCallContext::$supportedActions[] = array(
 
         if( !$rule->isSecurityRule() )
         {
-            PH::print_stdout( $context->padding . "   * SKIPPED : this is not a security rule" );
+            $string = "this is not a security rule" ;
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -1848,7 +1921,8 @@ RuleCallContext::$supportedActions[] = array(
 
         if( $rule->setLogEnd(FALSE) )
         {
-            PH::print_stdout( $context->padding . " - QUEUED for bundled API call" );
+            $string = " - QUEUED for bundled API call";
+            PH::ACTIONlog( $context, $string );
             $context->addRuleToMergedApiChange('<log-end>no</log-end>');
         }
     },
@@ -1865,7 +1939,8 @@ RuleCallContext::$supportedActions[] = array(
 
         if( !$rule->isSecurityRule() )
         {
-            PH::print_stdout( $context->padding . "   * SKIPPED : this is not a security rule" );
+            $string = "this is not a security rule" ;
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -1874,7 +1949,8 @@ RuleCallContext::$supportedActions[] = array(
 
         if( $rule->setLogEnd(TRUE) )
         {
-            PH::print_stdout( $context->padding . " - QUEUED for bundled API call" );
+            $string = " - QUEUED for bundled API call";
+            PH::ACTIONlog( $context, $string );
             $context->addRuleToMergedApiChange('<log-end>yes</log-end>');
         }
     },
@@ -1891,7 +1967,8 @@ RuleCallContext::$supportedActions[] = array(
 
         if( !$rule->isSecurityRule() )
         {
-            PH::print_stdout( $context->padding . "   * SKIPPED : this is not a security rule" );
+            $string = "this is not a security rule" ;
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -1912,7 +1989,8 @@ RuleCallContext::$supportedActions[] = array(
 
         if( !$rule->isSecurityRule() )
         {
-            PH::print_stdout( $context->padding . "   * SKIPPED : this is not a security rule" );
+            $string = "this is not a security rule" ;
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -1921,7 +1999,8 @@ RuleCallContext::$supportedActions[] = array(
 
         if( $rule->setLogSetting($context->arguments['profName']) )
         {
-            PH::print_stdout( $context->padding . " - QUEUED for bundled API call" );
+            $string = " - QUEUED for bundled API call";
+            PH::ACTIONlog( $context, $string );
             $context->addRuleToMergedApiChange('<log-setting>' . $context->arguments['profName'] . '</log-setting>');
         }
     },
@@ -1940,7 +2019,8 @@ RuleCallContext::$supportedActions[] = array(
 
         if( !$rule->isSecurityRule() )
         {
-            PH::print_stdout( $context->padding . "   * SKIPPED : this is not a security rule" );
+            $string = "this is not a security rule" ;
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -1963,7 +2043,8 @@ RuleCallContext::$supportedActions[] = array(
 
         if( !$rule->isSecurityRule() )
         {
-            PH::print_stdout( $context->padding . "  - SKIPPED : this is not a Security rule" );
+            $string = "this is not a Security rule" ;
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -1981,7 +2062,8 @@ RuleCallContext::$supportedActions[] = array(
 
         if( !$rule->isSecurityRule() )
         {
-            PH::print_stdout( $context->padding . "  - SKIPPED : this is not a Security rule" );
+            $string = "this is not a Security rule" ;
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -2033,7 +2115,8 @@ RuleCallContext::$supportedActions[] = Array(
 
         if( $secprofgroup != null )
         {
-            PH::print_stdout( "        * set SecurityProfileGroup: ".PH::boldText( $secprofgroup->name() ) );
+            $string ="        * set SecurityProfileGroup: ".PH::boldText( $secprofgroup->name() );
+            PH::ACTIONlog( $context, $string );
 
             $rule->setSecurityProfileGroup( $secprofgroup->name() );
             if( $context->isAPI )
@@ -2051,7 +2134,8 @@ RuleCallContext::$supportedActions[] = array(
 
         if( !$rule->isSecurityRule() )
         {
-            PH::print_stdout( $context->padding . "  - SKIPPED : this is not a Security rule" );
+            $string = "this is not a Security rule";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -2076,7 +2160,8 @@ RuleCallContext::$supportedActions[] = array(
 
         if( !$ret )
         {
-            PH::print_stdout( $context->padding . " * SKIPPED : no change detected" );
+            $string = "no change detected" ;
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -2103,7 +2188,8 @@ RuleCallContext::$supportedActions[] = array(
 
         if( !$rule->isSecurityRule() )
         {
-            PH::print_stdout( $context->padding . "  - SKIPPED : this is not a Security rule" );
+            $string = "this is not a Security rule" ;
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -2138,8 +2224,9 @@ RuleCallContext::$supportedActions[] = array(
         {
             if( !$ret )
             {
-                PH::print_stdout( $context->padding . " * SKIPPED : no change detected" );
-                return;
+                $string = "no change detected" ;
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
             }
 
 
@@ -2165,7 +2252,8 @@ RuleCallContext::$supportedActions[] = array(
 
         if( !$rule->isSecurityRule() )
         {
-            PH::print_stdout( $context->padding . "  - SKIPPED : this is not a Security rule" );
+            $string = "this is not a Security rule" ;
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -2174,7 +2262,8 @@ RuleCallContext::$supportedActions[] = array(
 
         if( $rule->removeSecurityProfile() )
         {
-            PH::print_stdout( $context->padding . " - QUEUED for bundled API call" );
+            $string = " - QUEUED for bundled API call";
+            PH::ACTIONlog( $context, $string );
             $context->addRuleToMergedApiChange('<profile-setting><profiles/></profile-setting>');
         }
     },
@@ -2190,7 +2279,8 @@ RuleCallContext::$supportedActions[] = array(
 
         if( !$rule->isSecurityRule() )
         {
-            PH::print_stdout( $context->padding . " - SKIPPED : this is not a Security rule" );
+            $string = "this is not a Security rule" ;
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -2199,7 +2289,8 @@ RuleCallContext::$supportedActions[] = array(
 
         if( $rule->setSecurityProfileGroup($context->arguments['profName']) )
         {
-            PH::print_stdout( $context->padding . " - QUEUED for bundled API call" );
+            $string = " - QUEUED for bundled API call";
+            PH::ACTIONlog( $context, $string );
             $context->addRuleToMergedApiChange('<profile-setting><group><member>' . $context->arguments['profName'] . '</member></group></profile-setting>');
         }
     },
@@ -2230,11 +2321,13 @@ RuleCallContext::$supportedActions[] = array(
 
         if( strlen($description) + strlen($textToAppend) > $max_length )
         {
-            PH::print_stdout( $context->padding . " - SKIPPED : resulting description is too long" );
+            $string = "resulting description is too long" ;
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
-        PH::print_stdout( $context->padding . " - new description will be: '{$description}{$textToAppend}' ... ");
+        $string = " - new description will be: '{$description}{$textToAppend}' ... ";
+        PH::ACTIONlog( $context, $string );
 
         if( $context->isAPI )
             $rule->API_setDescription($description . $textToAppend);
@@ -2262,11 +2355,13 @@ RuleCallContext::$supportedActions[] = array(
 
         if( strlen($description) + strlen($textToPrepend) > $max_length )
         {
-            PH::print_stdout( $context->padding . " - SKIPPED : resulting description is too long" );
+            $string = "resulting description is too long" ;
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
-        PH::print_stdout( $context->padding . " - new description will be: '{$textToPrepend}{$description}' ... ");
+        $string = " - new description will be: '{$textToPrepend}{$description}' ... ";
+        PH::ACTIONlog( $context, $string );
 
         if( $context->isAPI )
             $rule->API_setDescription($textToPrepend . $description);
@@ -2293,11 +2388,14 @@ RuleCallContext::$supportedActions[] = array(
 
         if( $description == $newDescription )
         {
-            PH::print_stdout( $context->padding . " *** SKIPPED : new and old description are the same" );
+            $string = "new and old description are the same" ;
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
-        PH::print_stdout( $context->padding . " - new description will be '{$newDescription}'");
+        $string = " - new description will be '{$newDescription}'";
+        PH::ACTIONlog( $context, $string );
+        
         if( $context->isAPI )
             $object->API_setDescription($newDescription);
         else
@@ -2335,7 +2433,8 @@ RuleCallContext::$supportedActions[] = array(
 
         if( $rule->setEnabled($context->arguments['trueOrFalse']) )
         {
-            PH::print_stdout( $context->padding . " - QUEUED for bundled API call" );
+            $string = " - QUEUED for bundled API call";
+            PH::ACTIONlog( $context, $string );
             $context->addRuleToMergedApiChange('<disabled>' . boolYesNo(!$context->arguments['trueOrFalse']) . '</disabled>');
         }
     },
@@ -2364,7 +2463,8 @@ RuleCallContext::$supportedActions[] = array(
 
         if( $rule->setDisabled($context->arguments['trueOrFalse']) )
         {
-            PH::print_stdout( $context->padding . " - QUEUED for bundled API call" );
+            $string = " - QUEUED for bundled API call";
+            PH::ACTIONlog( $context, $string );
             $context->addRuleToMergedApiChange('<disabled>' . boolYesNo($context->arguments['trueOrFalse']) . '</disabled>');
         }
     },
@@ -2390,7 +2490,8 @@ RuleCallContext::$supportedActions[] = array(
 
         if( !$rule->isSecurityRule() )
         {
-            PH::print_stdout( $context->padding . " * SKIPPED it's not a security rule" );
+            $string = "it's not a security rule" ;
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -2408,7 +2509,8 @@ RuleCallContext::$supportedActions[] = array(
 
         if( !$rule->isSecurityRule() )
         {
-            PH::print_stdout( $context->padding . " * SKIPPED it's not a security rule" );
+            $string = "it's not a security rule" ;
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -2417,7 +2519,8 @@ RuleCallContext::$supportedActions[] = array(
 
         if( $rule->setDsri($context->arguments['trueOrFalse']) )
         {
-            PH::print_stdout( $context->padding . " - QUEUED for bundled API call" );
+            $string = " - QUEUED for bundled API call";
+            PH::ACTIONlog( $context, $string );
             $context->addRuleToMergedApiChange('<option><disable-server-response-inspection>' . boolYesNo($context->arguments['trueOrFalse']) . '</disable-server-response-inspection></option>');
         }
     },
@@ -2433,14 +2536,16 @@ RuleCallContext::$supportedActions[] = array(
 
         if( !$rule->isNatRule() )
         {
-            PH::print_stdout( $context->padding . " * SKIPPED it's not a NAT rule" );
+            $string = "it's not a NAT rule" ;
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         /** @var NatRule $rule */
 
         if( !$rule->isBiDirectional() )
         {
-            PH::print_stdout( $context->padding . " * SKIPPED because NAT rule is not bi-directional" );
+            $string = "because NAT rule is not bi-directional" ;
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -2478,7 +2583,8 @@ RuleCallContext::$supportedActions[] = array(
 
         if( !$rule->isNatRule() )
         {
-            PH::print_stdout( $context->padding . " * SKIPPED it's not a NAT rule" );
+            $string = "it's not a NAT rule" ;
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         /** @var NatRule $rule */
@@ -2486,7 +2592,7 @@ RuleCallContext::$supportedActions[] = array(
         if( $rule->isBiDirectional() )
         {
             //Todo: validation if something is needed
-            //PH::print_stdout( $context->padding . " * SKIPPED because NAT rule is bi-directional" );
+            //$string = "because NAT rule is bi-directional" );
         }
 
         $dnattype = $context->arguments['DNATtype'];
@@ -2532,18 +2638,21 @@ RuleCallContext::$supportedActions[] = array(
             }
             else
             {
-                PH::print_stdout( $context->padding . " * SKIPPED because new name '{$newName}' is too long" );
-                return;
+                $string = "because new name '{$newName}' is too long" ;
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
             }
         }
 
         if( !$rule->owner->isRuleNameAvailable($newName) )
         {
-            PH::print_stdout( $context->padding . " * SKIPPED because name '{$newName}' is not available" );
+            $string = "because name '{$newName}' is not available" ;
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
-        PH::print_stdout( $context->padding . " - new name will be '{$newName}'" );
+        $string = " - new name will be '{$newName}'" ;
+        PH::ACTIONlog( $context, $string );
         
         if( $context->isAPI )
         {
@@ -2557,9 +2666,10 @@ RuleCallContext::$supportedActions[] = array(
     'GlobalFinishFunction' => function (RuleCallContext $context) {
         if( $context->object->owner->owner->version > 80 && !$context->object->owner->owner->isFirewall() && $context->arguments['accept63characters'] )
         {
-            PH::print_stdout( PH::boldText("Panorama PAN-OS version 8.1 allow rule name >31 and <63 characters.\n" .
+            $string = PH::boldText("Panorama PAN-OS version 8.1 allow rule name >31 and <63 characters.\n" .
                 "Please be aware that there is no validation available if DeviceGroup is connected to a firewall running PAN-OS <8.1.\n" .
-                "If DG connected Firewall is PAN-OS version <8.1, Panorama push to device will fail with an error message.") );
+                "If DG connected Firewall is PAN-OS version <8.1, Panorama push to device will fail with an error message.");
+            PH::ACTIONlog( $context, $string );
         }
     },
     'args' => array('text' => array('type' => 'string', 'default' => '*nodefault*'),
@@ -2586,18 +2696,21 @@ RuleCallContext::$supportedActions[] = array(
             }
             else
             {
-                PH::print_stdout( $context->padding . " * SKIPPED because new name '{$newName}' is too long" );
-                return;
+                $string = "because new name '{$newName}' is too long" ;
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
             }
         }
 
         if( !$rule->owner->isRuleNameAvailable($newName) )
         {
-            PH::print_stdout( $context->padding . " * SKIPPED because name '{$newName}' is not available" );
+            $string = "because name '{$newName}' is not available" ;
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
-        PH::print_stdout( $context->padding . " - new name will be '{$newName}'" );
+        $string = " - new name will be '{$newName}'";
+        PH::ACTIONlog( $context, $string );
 
         if( $context->isAPI )
         {
@@ -2611,9 +2724,10 @@ RuleCallContext::$supportedActions[] = array(
     'GlobalFinishFunction' => function (RuleCallContext $context) {
         if( $context->object->owner->owner->version > 80 && !$context->object->owner->owner->isFirewall() && $context->arguments['accept63characters'] )
         {
-            PH::print_stdout( PH::boldText("\nPanorama PAN-OS version 8.1 allow rule name >31 and <63 characters.\n" .
+            $string = PH::boldText("\nPanorama PAN-OS version 8.1 allow rule name >31 and <63 characters.\n" .
                 "Please be aware that there is no validation available if DeviceGroup is connected to a firewall running PAN-OS <8.1.\n" .
-                "If DG connected Firewall is PAN-OS version <8.1, Panorama push to device will fail with an error message.") );
+                "If DG connected Firewall is PAN-OS version <8.1, Panorama push to device will fail with an error message.");
+            PH::ACTIONlog( $context, $string );
         }
     },
     'args' => array('text' => array('type' => 'string', 'default' => '*nodefault*'),
@@ -2633,24 +2747,28 @@ RuleCallContext::$supportedActions[] = array(
 
         if( strpos($object->name(), $prefix) !== 0 )
         {
-            PH::print_stdout( $context->padding . " *** SKIPPED : prefix not found" );
+            $string = "prefix not found" ;
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         $newName = substr($object->name(), strlen($prefix));
 
         if( !preg_match("/^[a-zA-Z0-9]/", $newName[0]) )
         {
-            PH::print_stdout( $context->padding . " *** SKIPPED : object name contains not allowed character at the beginning" );
+            $string = "object name contains not allowed character at the beginning" ;
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
-        PH::print_stdout( $context->padding . " - new name will be '{$newName}'" );
+        $string = " - new name will be '{$newName}'";
+        PH::ACTIONlog( $context, $string );
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
 
         if( $object->owner->find($newName) !== null )
         {
-            PH::print_stdout( $context->padding . " *** SKIPPED : an object with same name already exists" );
+            $string = "an object with same name already exists" ;
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         if( $context->isAPI )
@@ -2670,18 +2788,21 @@ RuleCallContext::$supportedActions[] = array(
 
         if( substr($object->name(), $suffixStartIndex, strlen($object->name())) != $suffix )
         {
-            PH::print_stdout( $context->padding . " *** SKIPPED : suffix not found" );
+            $string = "suffix not found" ;
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         $newName = substr($object->name(), 0, $suffixStartIndex);
 
-        PH::print_stdout( $context->padding . " - new name will be '{$newName}'" );
+        $string = " - new name will be '{$newName}'";
+        PH::ACTIONlog( $context, $string );
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
 
         if( $object->owner->find($newName) !== null )
         {
-            PH::print_stdout( $context->padding . " *** SKIPPED : an object with same name already exists" );
+            $string = "an object with same name already exists" ;
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         if( $context->isAPI )
@@ -2717,18 +2838,21 @@ RuleCallContext::$supportedActions[] = array(
             }
             else
             {
-                PH::print_stdout( $context->padding . " * SKIPPED because new name '{$newName}' is too long" );
-                return;
+                $string = "because new name '{$newName}' is too long" ;
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
             }
         }
 
         if( !$rule->owner->isRuleNameAvailable($newName) )
         {
-            PH::print_stdout( $context->padding . " * SKIPPED because name '{$newName}' is not available" );
+            $string = "because name '{$newName}' is not available" ;
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
-        PH::print_stdout( $context->padding . " - new name will be '{$newName}'" );
+        $string = " - new name will be '{$newName}'";
+        PH::ACTIONlog( $context, $string );
 
         if( $context->isAPI )
         {
@@ -2742,9 +2866,10 @@ RuleCallContext::$supportedActions[] = array(
     'GlobalFinishFunction' => function (RuleCallContext $context) {
         if( $context->object->owner->owner->version > 80 && !$context->object->owner->owner->isFirewall() && $context->arguments['accept63characters'] )
         {
-            PH::print_stdout( PH::boldText("Panorama PAN-OS version 8.1 allow rule name >31 and <63 characters.\n" .
+            $string = PH::boldText("Panorama PAN-OS version 8.1 allow rule name >31 and <63 characters.\n" .
                 "Please be aware that there is no validation available if DeviceGroup is connected to a firewall running PAN-OS <8.1.\n" .
-                "If DG connected Firewall is PAN-OS version <8.1, Panorama push to device will fail with an error message.") );
+                "If DG connected Firewall is PAN-OS version <8.1, Panorama push to device will fail with an error message.");
+            PH::ACTIONlog( $context, $string );
         }
     },
 
@@ -2783,17 +2908,20 @@ RuleCallContext::$supportedActions[] = array(
 
         if( strlen($newName) > 31 && $context->object->owner->owner->version < 81 )
         {
-            PH::print_stdout( $context->padding . " * SKIPPED because new name '{$newName}' is too long" );
+            $string = "because new name '{$newName}' is too long";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
         if( !$rule->owner->isRuleNameAvailable($newName) )
         {
-            PH::print_stdout( $context->padding . " * SKIPPED because name '{$newName}' is not available" );
+            $string = "because name '{$newName}' is not available";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
-        PH::print_stdout( $context->padding . " - new name will be '{$newName}'" );
+        $string = " - new name will be '{$newName}'";
+        PH::ACTIONlog( $context, $string );
 
         if( $context->isAPI )
         {
@@ -2823,7 +2951,8 @@ RuleCallContext::$supportedActions[] = array(
 
         if( !$rule->isSecurityRule() )
         {
-            PH::print_stdout( $context->padding . " * SKIPPED it's not a security rule" );
+            $string = "it's not a security rule" ;
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -3092,11 +3221,13 @@ RuleCallContext::$supportedActions[] = array(
 
         if( $referenceRule === $rule )
         {
-            PH::print_stdout( $context->padding . " * SKIPPED because it is already the first rule" );
+            $string = "because it is already the first rule";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
-        PH::print_stdout( $context->padding . " - MOVING to top ... ");
+        $string = " - MOVING to top ... ";
+        PH::ACTIONlog( $context, $string );
 
         if( $firstTimeHere )
         {
@@ -3132,11 +3263,13 @@ RuleCallContext::$supportedActions[] = array(
 
         if( $referenceRule === $rule )
         {
-            PH::print_stdout( $context->padding . " * SKIPPED because it is already the last rule" );
+            $string = "because it is already the last rule";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
-        PH::print_stdout( $context->padding . " - MOVING to bottom ... ");
+        $string = " - MOVING to bottom ... ";
+        PH::ACTIONlog( $context, $string );
         if( $context->isAPI )
             $ruleStore->API_moveRuleAfter($rule, $referenceRule);
         else
@@ -3155,23 +3288,27 @@ RuleCallContext::$supportedActions[] = array(
 
         if( $referenceRule === null )
         {
-            PH::print_stdout( $context->padding . " * SKIPPED reference rule '{$context->arguments['rulename']}' was not found" );
+            $string = "reference rule '{$context->arguments['rulename']}' was not found";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
         if( $referenceRule->isPreRule() !== $rule->isPreRule() )
         {
-            PH::print_stdout( $context->padding . " * SKIPPED reference rule '{$context->arguments['rulename']}' and this rule should both be PRE or POST, not a mix" );
+            $string = "reference rule '{$context->arguments['rulename']}' and this rule should both be PRE or POST, not a mix";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
         if( $referenceRule === $rule )
         {
-            PH::print_stdout( $context->padding . " * SKIPPED because it is already the last rule" );
+            $string = "because it is already the last rule";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
-        PH::print_stdout( $context->padding . " - MOVING to before '{$context->arguments['rulename']}' ... ");
+        $string = " - MOVING to before '{$context->arguments['rulename']}' ... ";
+        PH::ACTIONlog( $context, $string );
         if( $context->isAPI )
             $ruleStore->API_moveRuleBefore($rule, $referenceRule);
         else
@@ -3199,7 +3336,8 @@ RuleCallContext::$supportedActions[] = array(
             $referenceRule = $ruleStore->find($context->arguments['rulename']);
             if( $referenceRule === null )
             {
-                PH::print_stdout( $context->padding . " * SKIPPED reference rule '{$context->arguments['rulename']}' was not found" );
+                $string = "reference rule '{$context->arguments['rulename']}' was not found";
+                PH::ACTIONstatus( $context, "SKIPPED", $string );
                 return;
             }
             $context->cache[$storeSerial] = $referenceRule;
@@ -3207,19 +3345,22 @@ RuleCallContext::$supportedActions[] = array(
 
         if( $referenceRule->isPreRule() !== $rule->isPreRule() )
         {
-            PH::print_stdout( $context->padding . " * SKIPPED reference rule '{$context->arguments['rulename']}' and this rule should both be PRE or POST, not a mix" );
+            $string = "reference rule '{$context->arguments['rulename']}' and this rule should both be PRE or POST, not a mix";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
         if( $context->arguments['rulename'] === $rule->name() )
         {
-            PH::print_stdout( $context->padding . " * SKIPPED this was the referenced rulename in argument" );
+            $string = "this was the referenced rulename in argument";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
         $context->cache[$storeSerial] = $rule;
 
-        PH::print_stdout( $context->padding . " - MOVING to after '{$referenceRule->name()}' ... ");
+        $string = " - MOVING to after '{$referenceRule->name()}' ... ";
+        PH::ACTIONlog( $context, $string );
         if( $context->isAPI )
             $ruleStore->API_moveRuleAfter($rule, $referenceRule);
         else
@@ -3384,7 +3525,8 @@ RuleCallContext::$supportedActions[] = array(
 
         $newName = $rule->owner->findAvailableName($rule->name(), $context->arguments['suffix']);
 
-        PH::print_stdout( $context->padding . "   - cloned rule name will be '{$newName}'" );
+        $string = "   - cloned rule name will be '{$newName}'";
+        PH::ACTIONlog( $context, $string );
 
         if( $context->isAPI )
         {
@@ -3415,19 +3557,22 @@ RuleCallContext::$supportedActions[] = array(
 
         if( !$rule->isSecurityRule() )
         {
-            PH::print_stdout( $context->padding . " - IGNORED because rule is not type 'Security'" );
+            $string = "because rule is not type 'Security'" ;
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
         if( $rule->actionIsNegative() )
         {
-            PH::print_stdout( $context->padding . " - IGNORED because Action is DENY" );
+            $string = "because Action is DENY" ;
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
         if( !$rule->apps->isAny() )
         {
-            PH::print_stdout( $context->padding . " - IGNORED because Application is NOT EQUAL ANY" );
+            $string = "because Application is NOT EQUAL ANY" ;
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -3491,7 +3636,8 @@ RuleCallContext::$supportedActions[] = array(
 
             if( count($services) == 0 )
             {
-                PH::print_stdout( $context->padding . " - IGNORED because NO MATCHING SERVICE FOUND" );
+                $string = "because NO MATCHING SERVICE FOUND" ;
+                PH::ACTIONstatus( $context, "SKIPPED", $string );
                 return;
             }
             $portMapping->mergeWithArrayOfServiceObjects($services);
@@ -3499,7 +3645,9 @@ RuleCallContext::$supportedActions[] = array(
 
         $application = $rule->apps->parentCentralStore->findOrCreate($context->arguments['applicationName']);
 
-        PH::print_stdout( $context->padding . " - Port mapping to import in AppOverride: " . $portMapping->mappingToText()  );
+        $string = " - Port mapping to import in AppOverride: " . $portMapping->mappingToText() ;
+        PH::ACTIONlog( $context, $string );
+
         if( count($portMapping->tcpPortMap) > 0 )
         {
             $newName = $rule->owner->owner->appOverrideRules->findAvailableName($rule->name(), '');
@@ -3519,7 +3667,8 @@ RuleCallContext::$supportedActions[] = array(
 
             if( $context->isAPI )
                 $newRule->API_sync();
-            PH::print_stdout( $context->padding . " - created TCP appOverride rule '{$newRule->name()}'" );
+            $string = " - created TCP appOverride rule '{$newRule->name()}'";
+            PH::ACTIONlog( $context, $string );
         }
         if( count($portMapping->udpPortMap) > 0 )
         {
@@ -3540,7 +3689,8 @@ RuleCallContext::$supportedActions[] = array(
 
             if( $context->isAPI )
                 $newRule->API_sync();
-            PH::print_stdout( $context->padding . " - created TCP appOverride rule '{$newRule->name()}'" );
+            $string = " - created TCP appOverride rule '{$newRule->name()}'";
+            PH::ACTIONlog( $context, $string );
         }
 
 
@@ -3568,7 +3718,8 @@ RuleCallContext::$supportedActions[] = Array(
 
         if( !$rule->isSecurityRule() )
         {
-            PH::print_stdout( $context->padding."  - SKIPPED : this is not a Security rule" );
+            $string = "this is not a Security rule";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -3590,7 +3741,8 @@ RuleCallContext::$supportedActions[] = Array(
 
         if( !$rule->isSecurityRule() )
         {
-            PH::print_stdout( $context->padding."  - SKIPPED : this is not a Security rule" );
+            $string = "this is not a Security rule";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -3604,7 +3756,9 @@ RuleCallContext::$supportedActions[] = Array(
 
         if( $rule->userID_count() < 1 )
         {
-            PH::print_stdout( $context->padding . " * no USER objects remaining so the Rule will be disabled...");
+            $string = " * no USER objects remaining so the Rule will be disabled...";
+            PH::ACTIONlog( $context, $string );
+
             if( $context->isAPI )
                 $rule->API_setDisabled(TRUE);
             else
@@ -3621,7 +3775,8 @@ RuleCallContext::$supportedActions[] = Array(
 
         if( !$rule->isSecurityRule() )
         {
-            PH::print_stdout( $context->padding."  - SKIPPED : this is not a Security rule" );
+            $string = "this is not a Security rule";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -3646,7 +3801,8 @@ RuleCallContext::$supportedActions[] = array(
 
         if( !$rule->isSecurityRule() )
         {
-            PH::print_stdout( $context->padding . "  - SKIPPED : this is not a Security rule" );
+            $string = "this is not a Security rule";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -3669,7 +3825,8 @@ RuleCallContext::$supportedActions[] = array(
 
         if( !$rule->isSecurityRule() )
         {
-            PH::print_stdout( $context->padding . "  - SKIPPED : this is not a Security rule" );
+            $string = "this is not a Security rule";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -3688,7 +3845,8 @@ RuleCallContext::$supportedActions[] = array(
 
         if( !$rule->isSecurityRule() )
         {
-            PH::print_stdout( $context->padding . "  - SKIPPED : this is not a Security rule" );
+            $string = "this is not a Security rule";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -3714,7 +3872,8 @@ RuleCallContext::$supportedActions[] = array(
 
         if( !$rule->isSecurityRule() )
         {
-            PH::print_stdout( $context->padding . "  - SKIPPED : this is not a Security rule" );
+            $string = "this is not a Security rule";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -3738,7 +3897,8 @@ RuleCallContext::$supportedActions[] = array(
 
         if( !$rule->isSecurityRule() )
         {
-            PH::print_stdout( $context->padding . "  - SKIPPED : this is not a Security rule" );
+            $string = "this is not a Security rule";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
