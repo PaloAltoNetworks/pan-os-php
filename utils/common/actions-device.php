@@ -159,14 +159,14 @@ DeviceCallContext::$supportedActions['DeviceGroup-create'] = array(
         $tmp_dg = $pan->findDeviceGroup($dgName);
         if( $tmp_dg === null )
         {
-            $string = "     * create DeviceGroup: " . $dgName;
+            $string = "create DeviceGroup: " . $dgName;
             PH::ACTIONlog($context, $string);
 
             $pan->createDeviceGroup($dgName, $parentDG);
         }
         else
         {
-            $string = "     * DeviceGroup with name: " . $dgName . " already available!";
+            $string = "DeviceGroup with name: " . $dgName . " already available!";
             PH::ACTIONlog( $context, $string );
         }
     },

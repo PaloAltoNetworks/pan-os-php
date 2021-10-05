@@ -107,7 +107,7 @@ ServiceCallContext::$supportedActions[] = array(
                 $class = get_class($objectRef);
                 if( $class == 'ServiceRuleContainer' || $class == 'ServiceGroup' )
                 {
-                    $string = " - adding in {$objectRef->toString()}";
+                    $string = "adding in {$objectRef->toString()}";
                     PH::ACTIONlog( $context, $string );
 
                     if( $context->isAPI )
@@ -141,7 +141,7 @@ ServiceCallContext::$supportedActions[] = array(
 
         foreach( $objectRefs as $objectRef )
         {
-            $string = " * replacing in {$objectRef->toString()}";
+            $string = "replacing in {$objectRef->toString()}";
             PH::ACTIONlog( $context, $string );
 
             if( $objectRef === $foundObject || $objectRef->name() == $foundObject->name() )
@@ -497,7 +497,7 @@ ServiceCallContext::$supportedActions[] = array(
         {
             if( $object->equals($conflictObject) )
             {
-                $string = "    * Removed because target has same content";
+                $string = "Removed because target has same content";
                 PH::ACTIONlog( $context, $string );
 
                 goto do_replace;
@@ -522,7 +522,7 @@ ServiceCallContext::$supportedActions[] = array(
                     return;
                 }
 
-                $string = "    * Removed because it has same numerical value";
+                $string = "Removed because it has same numerical value";
                 PH::ACTIONlog( $context, $string );
 
                 goto do_replace;
@@ -533,7 +533,7 @@ ServiceCallContext::$supportedActions[] = array(
 
         if( $object->equals($conflictObject) )
         {
-            $string = "    * Removed because target has same content";
+            $string = "Removed because target has same content";
             PH::ACTIONlog( $context, $string );
 
             goto do_replace;
@@ -552,7 +552,7 @@ ServiceCallContext::$supportedActions[] = array(
             return;
         }
 
-        $string = "    * Removed because target has same numerical value";
+        $string = "Removed because target has same numerical value";
         PH::ACTIONlog( $context, $string );
 
         do_replace:
@@ -635,7 +635,7 @@ ServiceCallContext::$supportedActions[] = array(
         }
 
         $newName = $context->arguments['prefix'] . $object->name();
-        $string = " - new name will be '{$newName}'";
+        $string = "new name will be '{$newName}'";
         PH::ACTIONlog( $context, $string );
 
         if( strlen($newName) > 63 )
@@ -674,7 +674,7 @@ ServiceCallContext::$supportedActions[] = array(
         }
 
         $newName = $object->name() . $context->arguments['suffix'];
-        $string = " - new name will be '{$newName}'";
+        $string = "new name will be '{$newName}'";
         PH::ACTIONlog( $context, $string );
 
         if( strlen($newName) > 63 )
@@ -728,7 +728,7 @@ ServiceCallContext::$supportedActions[] = array(
             return;
         }
 
-        $string = " - new name will be '{$newName}'";
+        $string = "new name will be '{$newName}'";
         PH::ACTIONlog( $context, $string );
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
@@ -771,7 +771,7 @@ ServiceCallContext::$supportedActions[] = array(
         }
         $newName = substr($object->name(), 0, $suffixStartIndex);
 
-        $string = " - new name will be '{$newName}'";
+        $string = "new name will be '{$newName}'";
         PH::ACTIONlog( $context, $string );
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
@@ -843,7 +843,7 @@ ServiceCallContext::$supportedActions[] = array(
             return;
         }
 
-        $string = " - new name will be '{$newName}'";
+        $string = "new name will be '{$newName}'";
         PH::ACTIONlog( $context, $string );
 
         $findObject = $object->owner->find($newName);
@@ -906,7 +906,7 @@ ServiceCallContext::$supportedActions[] = array(
             return;
         }
 
-        $string = " - new name will be '{$newName}'";
+        $string = "new name will be '{$newName}'";
         PH::ACTIONlog( $context, $string );
 
         $findObject = $object->owner->find($newName);

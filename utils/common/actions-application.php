@@ -335,7 +335,7 @@ ApplicationCallContext::$supportedActions[] = array(
         $conflictObject = $targetStore->find($object->name(), null);
         if( $conflictObject === null )
         {
-            $string = "   * moved, no conflict";
+            $string = "moved, no conflict";
             PH::ACTIONlog( $context, $string );
 
             if( $context->isAPI )
@@ -361,12 +361,12 @@ ApplicationCallContext::$supportedActions[] = array(
             return;
         }
 
-        $string = "   - there is a conflict with an object of same name and type. Please use address-merger.php script with argument 'allowmergingwithupperlevel'";
+        $string = "there is a conflict with an object of same name and type. Please use address-merger.php script with argument 'allowmergingwithupperlevel'";
         PH::ACTIONlog( $context, $string );
         #if( $conflictObject->isGroup() )
         #    PH::print_stdout( " - Group" );
         #else
-            $string = " - ".$conflictObject->type() . "";
+            $string = $conflictObject->type() . "";
             PH::ACTIONlog( $context, $string );
 
         /*

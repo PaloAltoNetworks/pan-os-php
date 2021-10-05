@@ -73,7 +73,7 @@ SecurityProfileCallContext::$supportedActions['name-addprefix'] = array(
             return;
         }
 
-        $string = " - new name will be '{$newName}'";
+        $string = "new name will be '{$newName}'";
         PH::ACTIONlog( $context, $string );
 
         if( strlen($newName) > 127 )
@@ -113,7 +113,7 @@ SecurityProfileCallContext::$supportedActions['name-addsuffix'] = array(
             return;
         }
 
-        $string = " - new name will be '{$newName}'";
+        $string = "new name will be '{$newName}'";
         PH::ACTIONlog( $context, $string );
 
         if( strlen($newName) > 127 )
@@ -167,7 +167,7 @@ SecurityProfileCallContext::$supportedActions['name-removeprefix'] = array(
             return;
         }
 
-        $string = " - new name will be '{$newName}'";
+        $string = "new name will be '{$newName}'";
         PH::ACTIONlog( $context, $string );
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
@@ -211,7 +211,7 @@ SecurityProfileCallContext::$supportedActions['name-removesuffix'] = array(
         }
         $newName = substr($object->name(), 0, $suffixStartIndex);
 
-        $string = " - new name will be '{$newName}'";
+        $string = "new name will be '{$newName}'";
         PH::ACTIONlog( $context, $string );
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
@@ -248,7 +248,7 @@ SecurityProfileCallContext::$supportedActions['name-touppercase'] = array(
             return;
         }
 
-        $string = " - new name will be '{$newName}'";
+        $string = "new name will be '{$newName}'";
         PH::ACTIONlog( $context, $string );
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
@@ -290,7 +290,7 @@ SecurityProfileCallContext::$supportedActions['name-tolowercase'] = array(
             return;
         }
 
-        $string = " - new name will be '{$newName}'";
+        $string = "new name will be '{$newName}'";
         PH::ACTIONlog( $context, $string );
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
@@ -331,7 +331,7 @@ SecurityProfileCallContext::$supportedActions['name-toucwords'] = array(
             return;
         }
 
-        $string = " - new name will be '{$newName}'";
+        $string = "new name will be '{$newName}'";
         PH::ACTIONlog( $context, $string );
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
