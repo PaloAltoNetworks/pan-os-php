@@ -662,7 +662,10 @@ class RuleCallContext extends CallContext
             $this->appGetRecursive( $app, $returnString, $app_mapping );
         }
 
-        return $app_mapping;
+        if( $returnString )
+            return $app_mapping;
+        else
+            return $app_mapping;
     }
 
     public function appGetRecursive( $app, $returnString = false, &$app_mapping = array() )
@@ -721,7 +724,7 @@ class RuleCallContext extends CallContext
                 $risk = "";
 
             if( $returnString )
-                $tmp_return = $app->name().",".$string_category.",".$string_subcategory.",".$risk;
+                $app_mapping[] = $app->name().",".$string_category.",".$string_subcategory.",".$risk;
             else
                 $app_mapping[] = array( "name" => $app->name(), "category" => $string_category, "subcatecory" => $string_subcategory, "risk" => $risk );
         }
