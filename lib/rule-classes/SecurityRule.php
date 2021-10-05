@@ -1066,8 +1066,15 @@ class SecurityRule extends RuleWithUserID
         PH::print_stdout( $padding . "  Service:  " . $this->services->toString_inline() . "    Apps:  " . $this->apps->toString_inline() );
         foreach( $this->services->getAll() as $srv )
             PH::$JSON_TMP['sub']['object'][$this->name()]['service'][] = $srv->name();
+        if( $this->services->isApplicationDefault() )
+            PH::$JSON_TMP['sub']['object'][$this->name()]['service'][] = "application-default";
+        if( $this->services->isAny() )
+            PH::$JSON_TMP['sub']['object'][$this->name()]['service'][] = "any";
+
         foreach( $this->apps->getAll() as $app )
             PH::$JSON_TMP['sub']['object'][$this->name()]['application'][] = $app->name();
+        if( $this->apps->isAny() )
+            PH::$JSON_TMP['sub']['object'][$this->name()]['application'][] = "any";
 
         $text = "";
         if( !$this->userID_IsCustom() )
