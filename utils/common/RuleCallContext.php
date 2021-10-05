@@ -659,56 +659,73 @@ class RuleCallContext extends CallContext
         foreach( $applications as $app )
         {
             /** @var App $app */
-            if( $app->isApplicationGroup() )
-            {
-                foreach( $app->groupApps() as $app1 )
-                    $app_mapping[] = $this->appReturn( $app1, $returnString );
-            }
-            elseif( $app->isApplicationFilter() )
-            {
-                $app_mapping[] = $this->appReturn( $app, $returnString );
-            }
-            elseif( $app->isApplicationCustom() )
-            {
-                $app_mapping[] = $this->appReturn( $app, $returnString );
-            }
-            elseif( $app->isContainer() )
-            {
-                foreach( $app->containerApps() as $app1 )
-                    $app_mapping[] = $this->appReturn( $app1, $returnString );
-            }
-            else
-            {
-                $app_mapping[] = $this->appReturn( $app, $returnString );
-            }
+            $this->appGetRecursive( $app, $returnString, $app_mapping );
         }
 
         return $app_mapping;
     }
 
-    public function appReturn( $app, $string = false )
+    public function appGetRecursive( $app, $returnString = false, &$app_mapping = array() )
     {
-        if( isset($app->app_filter_details['category']) )
-            $string_category = implode( "|", $app->app_filter_details['category'] );
+        if( $app->isApplicationGroup() )
+        {
+            foreach( $app->groupApps() as $app1 )
+                $this->appReturn( $app1, $returnString, $app_mapping );
+        }
+        elseif( $app->isApplicationFilter() )
+        {
+            $this->appReturn( $app, $returnString, $app_mapping );
+        }
+        elseif( $app->isApplicationCustom() )
+        {
+            $this->appReturn( $app, $returnString, $app_mapping );
+        }
+        elseif( $app->isContainer() )
+        {
+            foreach( $app->containerApps() as $app1 )
+                $this->appReturn( $app1, $returnString, $app_mapping );
+        }
         else
-            $string_category = $app->category;
+        {
+            $this->appReturn( $app, $returnString, $app_mapping );
+        }
+    }
 
-        if( isset($app->app_filter_details['subcategory']) )
-            $string_subcategory = implode( "|", $app->app_filter_details['subcategory'] );
+    public function appReturn( $app, $returnString = false, &$app_mapping = array() )
+    {
+        if( $app->isApplicationGroup() )
+        {
+            foreach( $app->groupApps() as $app1 )
+                $this->appReturn( $app1, $returnString, $app_mapping );
+        }
+        elseif( $app->isContainer() )
+        {
+            foreach( $app->containerApps() as $app1 )
+                $this->appReturn( $app1, $returnString, $app_mapping );
+        }
         else
-            $string_subcategory = $app->subCategory;
+        {
+            if( isset($app->app_filter_details['category']) )
+                $string_category = implode( "|", $app->app_filter_details['category'] );
+            else
+                $string_category = $app->category;
 
-        if( isset($app->risk) )
-            $risk = $app->risk;
-        else
-            $risk = "";
+            if( isset($app->app_filter_details['subcategory']) )
+                $string_subcategory = implode( "|", $app->app_filter_details['subcategory'] );
+            else
+                $string_subcategory = $app->subCategory;
 
-        if( $string )
-            $tmp_return = $app->name().",".$string_category.",".$string_subcategory.",".$risk;
-        else
-            $tmp_return = array( "name" => $app->name(), "category" => $string_category, "subcatecory" => $string_subcategory, "risk" => $risk );
+            if( isset($app->risk) )
+                $risk = $app->risk;
+            else
+                $risk = "";
 
-        return $tmp_return;
+            if( $returnString )
+                $tmp_return = $app->name().",".$string_category.",".$string_subcategory.",".$risk;
+            else
+                $app_mapping[] = array( "name" => $app->name(), "category" => $string_category, "subcatecory" => $string_subcategory, "risk" => $risk );
+        }
+
     }
 
     public function ScheduleResolveSummary( $rule, $returnString = false )

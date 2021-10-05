@@ -6,6 +6,7 @@ UTILS:
 BUGFIX:
 * class SecurityProfileGroup | bugfix for SaasSecurityProfileStore
 * pa_rule-edit | bugfix for 'filter=(user.count XYZ)'
+* pa_rule-edit | bugfix for resolveapplicationsummary shadow-json
 
 GENERAL:
 
