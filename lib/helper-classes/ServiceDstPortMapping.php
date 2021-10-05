@@ -204,12 +204,12 @@ class ServiceDstPortMapping
             foreach( $this->tcpPortMap as &$map )
             {
                 if( $map['start'] == $map['end'] )
-                    $mapsText[] = (string)$map['start'];
+                    $mapsText[] = "tcp/".(string)$map['start'];
                 else
-                    $mapsText[] = $map['start'] . '-' . $map['end'];
+                    $mapsText[] = "tcp/".$map['start'] . '-' . $map['end'];
             }
 
-            $returnText = PH::list_to_string($mapsText);
+            $returnText = PH::list_to_string($mapsText, ",");
         }
 
         return $returnText;
@@ -218,7 +218,7 @@ class ServiceDstPortMapping
     /**
      * @return string
      */
-    public function &udpMappingToText()
+    public function &udpMappingToText( )
     {
         $returnText = '';
 
@@ -228,12 +228,12 @@ class ServiceDstPortMapping
             foreach( $this->udpPortMap as &$map )
             {
                 if( $map['start'] == $map['end'] )
-                    $mapsText[] = (string)$map['start'];
+                    $mapsText[] = "udp/".(string)$map['start'];
                 else
-                    $mapsText[] = $map['start'] . '-' . $map['end'];
+                    $mapsText[] = "udp/".$map['start'] . '-' . $map['end'];
             }
 
-            $returnText = PH::list_to_string($mapsText);
+            $returnText = PH::list_to_string($mapsText, ",");
         }
 
         return $returnText;
@@ -313,13 +313,19 @@ class ServiceDstPortMapping
         $returnText = '';
 
         if( $this->hasTcpMappings() )
-            $returnText .= 'tcp/' . $this->tcpMappingToText();
+        {
+            $returnText .= $this->tcpMappingToText();
+        }
+
 
         if( $this->hasTcpMappings() && $this->hasUdpMappings() )
+        {
             $returnText .= ' ';
+        }
+
 
         if( $this->hasUdpMappings() )
-            $returnText .= 'udp/' . $this->udpMappingToText();
+            $returnText .= $this->udpMappingToText();
 
         return $returnText;
     }
