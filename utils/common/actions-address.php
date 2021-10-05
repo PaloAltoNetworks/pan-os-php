@@ -233,7 +233,7 @@ AddressCallContext::$supportedActions[] = array(
             $newName = "R-" . $explode[0] . '-' . $explode[1];
         }
 
-        $string = "    * new object name will be $newName";
+        $string = "new object name will be $newName";
         PH::ACTIONlog( $context, $string );
 
         $objToReplace = $object->owner->find($newName);
@@ -275,7 +275,7 @@ AddressCallContext::$supportedActions[] = array(
                 if( $class == 'AddressRuleContainer' )
                 {
                     /** @var AddressRuleContainer $objectRef */
-                    $string = "     - replacing in {$objectRef->toString()}";
+                    $string = "replacing in {$objectRef->toString()}";
                     PH::ACTIONlog( $context, $string );
 
                     if( $objectRef->owner->isNatRule()
@@ -302,7 +302,7 @@ AddressCallContext::$supportedActions[] = array(
                 elseif( $class == 'NatRule' )
                 {
                     /** @var NatRule $objectRef */
-                    $string = "     - replacing in {$objectRef->toString()}";
+                    $string = "replacing in {$objectRef->toString()}";
                     PH::ACTIONlog( $context, $string );
 
                     if( $context->isAPI )
@@ -505,7 +505,7 @@ AddressCallContext::$supportedActions[] = array(
 
         foreach( $objectRefs as $objectRef )
         {
-            $string = " * replacing in {$objectRef->toString()}";
+            $string = "replacing in {$objectRef->toString()}";
             PH::ACTIONlog( $context, $string );
             if( $context->isAPI )
                 $objectRef->API_replaceReferencedObject($object, $foundObject);
@@ -697,7 +697,7 @@ AddressCallContext::$supportedActions[] = array(
             $object->addMember($newObject);
         }
 
-        $string = "  - group had " . count($members) . " expanded members vs {$mapping->count()} IP4 entries and " . count($listOfNotConvertibleObjects) . " unsupported objects";
+        $string = "group had " . count($members) . " expanded members vs {$mapping->count()} IP4 entries and " . count($listOfNotConvertibleObjects) . " unsupported objects";
         PH::ACTIONlog( $context, $string );
 
     },
@@ -1036,7 +1036,7 @@ AddressCallContext::$supportedActions[] = array(
             return;
         }
 
-        $string = " - new name will be '{$newName}'";
+        $string = "new name will be '{$newName}'";
         PH::ACTIONlog( $context, $string );
 
         $findObject = $object->owner->find($newName);
@@ -1099,7 +1099,7 @@ AddressCallContext::$supportedActions[] = array(
             return;
         }
 
-        $string = " - new name will be '{$newName}'";
+        $string = "new name will be '{$newName}'";
         PH::ACTIONlog( $context, $string );
 
         $findObject = $object->owner->find($newName);
@@ -1141,7 +1141,7 @@ AddressCallContext::$supportedActions[] = array(
         }
 
         $newName = $context->arguments['prefix'] . $object->name();
-        $string = " - new name will be '{$newName}'";
+        $string = "new name will be '{$newName}'";
         PH::ACTIONlog( $context, $string );
 
         if( strlen($newName) > 63 )
@@ -1152,7 +1152,7 @@ AddressCallContext::$supportedActions[] = array(
         }
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
 
-        if( $object->owner->find($newName) !== null )
+        if( $object->owner->find($newName ) !== null )
         {
             $string = "an object with same name already exists";
             PH::ACTIONstatus( $context, "SKIPPED", $string );
@@ -1179,7 +1179,7 @@ AddressCallContext::$supportedActions[] = array(
         }
 
         $newName = $object->name() . $context->arguments['suffix'];
-        $string = " - new name will be '{$newName}'";
+        $string = "new name will be '{$newName}'";
         PH::ACTIONlog( $context, $string );
 
         if( strlen($newName) > 63 )
@@ -1233,7 +1233,7 @@ AddressCallContext::$supportedActions[] = array(
             return;
         }
 
-        $string = " - new name will be '{$newName}'";
+        $string = "new name will be '{$newName}'";
         PH::ACTIONlog( $context, $string );
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
@@ -1275,7 +1275,7 @@ AddressCallContext::$supportedActions[] = array(
         }
         $newName = substr($object->name(), 0, $suffixStartIndex);
 
-        $string = " - new name will be '{$newName}'";
+        $string = "new name will be '{$newName}'";
         PH::ACTIONlog( $context, $string );
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
@@ -1411,7 +1411,7 @@ AddressCallContext::$supportedActions[] = array(
                     }
             }
 
-            $string = "   * moved, no conflict";
+            $string = "moved, no conflict";
             PH::ACTIONlog( $context, $string );
 
             if( $context->isAPI )
@@ -1463,7 +1463,7 @@ AddressCallContext::$supportedActions[] = array(
         {
             if( $object->equals($conflictObject) )
             {
-                $string = "    * Removed because target has same content";
+                $string = "Removed because target has same content";
                 PH::ACTIONlog( $context, $string );
 
                 $object->replaceMeGlobally($conflictObject);
@@ -1494,7 +1494,7 @@ AddressCallContext::$supportedActions[] = array(
                     return;
                 }
 
-                $string = "    * Removed because it has same numerical value";
+                $string = "Removed because it has same numerical value";
                 PH::ACTIONlog( $context, $string );
 
                 $object->replaceMeGlobally($conflictObject);
@@ -1510,7 +1510,7 @@ AddressCallContext::$supportedActions[] = array(
 
         if( $object->equals($conflictObject) )
         {
-            $string = "    * Removed because target has same content";
+            $string = "Removed because target has same content";
             PH::ACTIONlog( $context, $string );
 
             $object->replaceMeGlobally($conflictObject);
@@ -1525,7 +1525,7 @@ AddressCallContext::$supportedActions[] = array(
         {
             if( str_replace('/32', '', $conflictObject->value()) == str_replace('/32', '', $object->value()) )
             {
-                $string = "    * Removed because target has same content";
+                $string = "Removed because target has same content";
                 PH::ACTIONlog( $context, $string );
 
                 $object->replaceMeGlobally($conflictObject);
@@ -1551,7 +1551,7 @@ AddressCallContext::$supportedActions[] = array(
             return;
         }
 
-        $string = "    * Removed because target has same numerical value";
+        $string = "Removed because target has same numerical value";
         PH::ACTIONlog( $context, $string );
 
         $object->replaceMeGlobally($conflictObject);
@@ -1582,7 +1582,7 @@ AddressCallContext::$supportedActions[] = array(
             foreach( $resolvMap->getMapArray() as &$resolvRecord )
             {
                 //Todo: swaschkut 20210421 - long2ip not working with IPv6 use cidr::inet_itop
-                $string = " - " . str_pad(long2ip($resolvRecord['start']), 14) . " - " . long2ip($resolvRecord['end']);
+                $string = str_pad(long2ip($resolvRecord['start']), 14) . " - " . long2ip($resolvRecord['end']);
                 PH::ACTIONlog( $context, $string );
             }
             /*foreach($resolvMap['unresolved'] as &$resolvRecord)
@@ -1600,12 +1600,12 @@ AddressCallContext::$supportedActions[] = array(
                 $resolvMap = $object->getIP4Mapping()->getMapArray();
                 $resolvMap = reset($resolvMap);
                 //Todo: swaschkut 20210421 - long2ip not working with IPv6 use cidr::inet_itop
-                $string = " - " . str_pad(long2ip($resolvMap['start']), 14) . " - " . long2ip($resolvMap['end']);
+                $string = str_pad(long2ip($resolvMap['start']), 14) . " - " . long2ip($resolvMap['end']);
                 PH::ACTIONlog($context, $string);
             }
             else
             {
-                $string = " - UNSUPPORTED";
+                $string = "UNSUPPORTED";
                 PH::ACTIONlog( $context, $string );
             }
         }
@@ -1926,7 +1926,7 @@ AddressCallContext::$supportedActions[] = array(
             // if this group has more members than $largeGroupsCount then we must split it
             if( $membersCount > $largeGroupsCount )
             {
-                $string = "     AddressGroup named '" . $group->name() . "' with $membersCount members";
+                $string = "AddressGroup named '" . $group->name() . "' with $membersCount members";
                 PH::ACTIONlog( $context, $string );
 
                 // get member list in $members
@@ -1953,7 +1953,7 @@ AddressCallContext::$supportedActions[] = array(
                             $newGroup = $group->owner->API_newAddressGroup($group->name() . '--' . ($i / $splitCount));
                         else
                             $newGroup = $group->owner->newAddressGroup($group->name() . '--' . ($i / $splitCount));
-                        $string = "      New AddressGroup object created with name: " . $newGroup->name();
+                        $string = "New AddressGroup object created with name: " . $newGroup->name();
                         PH::ACTIONlog( $context, $string );
 
                         // add this new sub-group to the original one. Don't rewrite XML for performance reasons.
@@ -1985,7 +1985,7 @@ AddressCallContext::$supportedActions[] = array(
                 // Now we can rewrite XML
                 $group->rewriteXML();
 
-                $string = "     AddressGroup count after split: " . $group->count();
+                $string = "AddressGroup count after split: " . $group->count();
                 PH::ACTIONlog( $context, $string );
                 PH::print_stdout("");
             }
@@ -2106,7 +2106,7 @@ AddressCallContext::$supportedActions[] = array(
             $newName = $explode[0] . '-' . $explode[1];
         }
 
-        $string = "    * new object name will be $newName";
+        $string = "new object name will be $newName";
         PH::ACTIONlog( $context, $string );
 
 
@@ -2154,7 +2154,7 @@ AddressCallContext::$supportedActions[] = array(
                 if( $class == 'AddressRuleContainer' )
                 {
                     /** @var AddressRuleContainer $objectRef */
-                    $string = "     - replacing in {$objectRef->toString()}";
+                    $string = "replacing in {$objectRef->toString()}";
                     PH::ACTIONlog( $context, $string );
 
                     if( $objectRef->owner->isNatRule()
@@ -2181,7 +2181,7 @@ AddressCallContext::$supportedActions[] = array(
                 elseif( $class == 'NatRule' )
                 {
                     /** @var NatRule $objectRef */
-                    $string = "     - replacing in {$objectRef->toString()}";
+                    $string = "replacing in {$objectRef->toString()}";
                     PH::ACTIONlog( $context, $string );
 
                     if( $context->isAPI )

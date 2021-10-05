@@ -57,6 +57,8 @@ class TagStore extends ObjStore
      * @param bool $nested
      * @return null|Tag
      */
+    //Todo: check if $nested = false; must be set
+    #NEW - public function find($name, $ref = null, $nested = FALSE)
     public function find($name, $ref = null, $nested = TRUE)
     {
         $f = $this->findByName($name, $ref);
