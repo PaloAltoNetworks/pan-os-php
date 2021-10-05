@@ -627,7 +627,7 @@ class PH
 
     static public function ACTIONlog( $context, $string )
     {
-        PH::print_stdout( $context->padding . " - ". $string );
+        PH::print_stdout( $context->padding . " * ". $string );
         PH::$JSON_TMP['sub']['object'][$context->object->name()]['log'][] = $string;
     }
 

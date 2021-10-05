@@ -240,7 +240,7 @@ class SecurityProfileStore extends ObjStore
                 return $f;
         }
 
-        if( $nested && $this->parentCentralStore )
+        if( $nested && $this->parentCentralStore !== null )
         {
             $f = $this->parentCentralStore->find($objectName, $ref, $nested);
         }

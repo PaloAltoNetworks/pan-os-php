@@ -231,7 +231,6 @@ class AddressStore
 
             $this->_addressGroups[$name] = $ns;
             $this->_all[$name] = $ns;
-
         }
 
         foreach( $duplicatesRemoval as $node )
@@ -346,6 +345,8 @@ class AddressStore
      * @param bool $nested
      * @return Address|AddressGroup|null
      */
+    //Todo: check if $nested = false; must be set
+    #NEW - public function find($objectName, $ref = null, $nested = FALSE)
     public function find($objectName, $ref = null, $nested = TRUE)
     {
         $f = null;
@@ -373,7 +374,7 @@ class AddressStore
                 return $f;
         }
 
-        if( $nested && $this->parentCentralStore )
+        if( $nested && $this->parentCentralStore !== null )
         {
             $f = $this->parentCentralStore->find($objectName, $ref, $nested);
         }

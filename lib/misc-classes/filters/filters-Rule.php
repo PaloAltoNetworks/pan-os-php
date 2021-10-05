@@ -2837,7 +2837,7 @@ RQuery::$defaultFilters['rule']['user']['operators']['is.in.file'] = array(
     'help' => 'returns TRUE if rule name matches one of the names found in text file provided in argument'
 );
 RQuery::$defaultFilters['rule']['user.count']['operators']['>,<,=,!'] = array(
-    'eval' => "\$object->userID_count() !operator! !value!",
+    'eval' => "\$object->isSecurityRule() && \$object->userID_count() !operator! !value!",
     'arg' => TRUE,
     'ci' => array(
         'fString' => '(%PROP% 1)',
