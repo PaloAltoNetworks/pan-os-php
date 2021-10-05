@@ -8,6 +8,7 @@ BUGFIX:
 * pa_rule-edit | bugfix for 'filter=(user.count XYZ)'
 * pa_rule-edit | bugfix for resolveapplicationsummary shadow-json
 * pa_rule-edit | bugfix for shadow-json to display from/to zone
+* pa_rule-edit actions=display shadow-json | bugfix for SRC/DST if any for resolveAddressSummary
 
 GENERAL:
 
