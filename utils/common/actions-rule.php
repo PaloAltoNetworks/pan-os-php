@@ -198,7 +198,7 @@ RuleCallContext::$commonActionFunctions['calculate-zones'] = array(
                     }
                 }
 
-                $string = " - VSYS/DG '{$system->name()}' has interfaces attached to " . count($foundRouters) . " virtual routers";
+                $string = "VSYS/DG '{$system->name()}' has interfaces attached to " . count($foundRouters) . " virtual routers";
                 PH::ACTIONlog($context, $string);
                 if( count($foundRouters) > 1 )
                     derr("more than 1 suitable virtual routers found, please specify one fo the following: " . PH::list_to_string($foundRouters));
@@ -253,17 +253,17 @@ RuleCallContext::$commonActionFunctions['calculate-zones'] = array(
 
         if( count($common) > 0 )
         {
-            $string = " - untouched zones: " . PH::list_to_string($common);
+            $string = "untouched zones: " . PH::list_to_string($common);
             PH::ACTIONlog( $context, $string );
         }
         if( count($minus) > 0 )
         {
-            $string = " - missing zones: " . PH::list_to_string($minus);
+            $string = "missing zones: " . PH::list_to_string($minus);
             PH::ACTIONlog( $context, $string );
         }
         if( count($plus) > 0 )
         {
-            $string = " - unneeded zones: " . PH::list_to_string($plus);
+            $string = "unneeded zones: " . PH::list_to_string($plus);
             PH::ACTIONlog( $context, $string );
         }
 
@@ -299,7 +299,7 @@ RuleCallContext::$commonActionFunctions['calculate-zones'] = array(
                             $newRule = $rule->owner->cloneRule($rule, $newRuleName);
                             $newRule->to->setAny();
                             $newRule->to->addZone($zoneContainer->parentCentralStore->findOrCreate($zoneToAdd));
-                            $string = " - cloned NAT rule with name '{$newRuleName}' and TO zone='{$zoneToAdd}'";
+                            $string = "cloned NAT rule with name '{$newRuleName}' and TO zone='{$zoneToAdd}'";
                             PH::ACTIONlog( $context, $string );
 
                             if( $context->isAPI )
@@ -320,7 +320,7 @@ RuleCallContext::$commonActionFunctions['calculate-zones'] = array(
                         {
                             $rule->to->setAny();
                             $rule->to->addZone($zoneContainer->parentCentralStore->findOrCreate($zoneToAdd));
-                            $string = " - changed original NAT 'TO' zone='{$zoneToAdd}'";
+                            $string = "changed original NAT 'TO' zone='{$zoneToAdd}'";
                             PH::ACTIONlog( $context, $string );
 
                             if( $context->isAPI )
@@ -332,7 +332,7 @@ RuleCallContext::$commonActionFunctions['calculate-zones'] = array(
                         $newRule = $rule->owner->cloneRule($rule, $newRuleName);
                         $newRule->to->setAny();
                         $newRule->to->addZone($zoneContainer->parentCentralStore->findOrCreate($zoneToAdd));
-                        $string = " - cloned NAT rule with name '{$newRuleName}' and TO zone='{$zoneToAdd}'";
+                        $string = "cloned NAT rule with name '{$newRuleName}' and TO zone='{$zoneToAdd}'";
                         PH::ACTIONlog( $context, $string );
 
                         if( $context->isAPI )
@@ -380,7 +380,7 @@ RuleCallContext::$commonActionFunctions['calculate-zones'] = array(
                         $newRule = $rule->owner->cloneRule($rule, $newRuleName);
                         $newRule->to->setAny();
                         $newRule->to->addZone($zoneContainer->parentCentralStore->findOrCreate($zoneToAdd));
-                        $string = " - cloned NAT rule with name '{$newRuleName}' and TO zone='{$zoneToAdd}'";
+                        $string = "cloned NAT rule with name '{$newRuleName}' and TO zone='{$zoneToAdd}'";
                         PH::ACTIONlog( $context, $string );
 
                         if( $context->isAPI )
@@ -1007,7 +1007,7 @@ RuleCallContext::$supportedActions[] = array(
         {
             if( $rQuery->matchSingleObject($member) )
             {
-                $string = "  - removing object '{$member->name()}'... ";
+                $string = "removing object '{$member->name()}'... ";
                 PH::ACTIONlog( $context, $string );
                 
                 if( $context->isAPI )
@@ -1020,7 +1020,7 @@ RuleCallContext::$supportedActions[] = array(
 
         if( $rule->source->count() < 1 )
         {
-            $string = " * no objects remaining so the Rule will be disabled...";
+            $string = "no objects remaining so the Rule will be disabled...";
             PH::ACTIONlog( $context, $string );
             if( $context->isAPI )
                 $rule->API_setDisabled(TRUE);
@@ -1101,7 +1101,7 @@ RuleCallContext::$supportedActions[] = array(
         {
             if( $rQuery->matchSingleObject($member) )
             {
-                $string = "  - removing object '{$member->name()}'... ";
+                $string = "removing object '{$member->name()}'... ";
                 PH::ACTIONlog( $context, $string );
                 if( $context->isAPI )
                     $rule->destination->API_remove($member, TRUE);
@@ -1113,7 +1113,7 @@ RuleCallContext::$supportedActions[] = array(
 
         if( $rule->destination->count() < 1 )
         {
-            $string = " * no objects remaining so the Rule will be disabled...";
+            $string = "no objects remaining so the Rule will be disabled...";
             PH::ACTIONlog( $context, $string );
             if( $context->isAPI )
                 $rule->API_setDisabled(TRUE);
@@ -1166,7 +1166,7 @@ RuleCallContext::$supportedActions[] = array(
 
         if( $rule->services->count() < 1 )
         {
-            $string = " * no objects remaining so the Rule will be disabled...";
+            $string = "no objects remaining so the Rule will be disabled...";
             PH::ACTIONlog( $context, $string );
             if( $context->isAPI )
                 $rule->API_setDisabled(TRUE);
@@ -1377,7 +1377,7 @@ RuleCallContext::$supportedActions[] = array(
         $rule = $context->object;
         foreach( $rule->tags->tags() as $tag )
         {
-            $string = "  - removing tag {$tag->name()}... ";
+            $string = "removing tag {$tag->name()}... ";
             PH::ACTIONlog( $context, $string );
             if( $context->isAPI )
                 $rule->tags->API_removeTag($tag);
@@ -1401,7 +1401,7 @@ RuleCallContext::$supportedActions[] = array(
                 derr("'$pattern' is not a valid regex");
             if( $result == 1 )
             {
-                $string = "  - removing tag {$tag->name()}... ";
+                $string = "removing tag {$tag->name()}... ";
                 PH::ACTIONlog( $context, $string );
                 if( $context->isAPI )
                     $rule->tags->API_removeTag($tag);
@@ -1518,7 +1518,7 @@ RuleCallContext::$supportedActions[] = array(
         if( $objectFind === null )
             derr("application named '{$appName}' not found");
 
-        $string = " - adding application '{$appName}'... ";
+        $string = "adding application '{$appName}'... ";
         PH::ACTIONlog( $context, $string );
 
         if( $context->isAPI )
@@ -1614,7 +1614,7 @@ RuleCallContext::$supportedActions[] = array(
                         $rule->apps->addApp($add_app);
                 }
 
-                $string = "        - app-id: " . $app . " is missing in rule";
+                $string = "app-id: " . $app . " is missing in rule";
                 PH::ACTIONlog( $context, $string );
             }
         }
@@ -1823,7 +1823,7 @@ RuleCallContext::$supportedActions[] = array(
 
         if( $rule->setLogStart(TRUE) )
         {
-            $string = " - QUEUED for bundled API call";
+            $string = "QUEUED for bundled API call";
             PH::ACTIONlog( $context, $string );
             $context->addRuleToMergedApiChange('<log-start>yes</log-start>');
         }
@@ -1851,7 +1851,7 @@ RuleCallContext::$supportedActions[] = array(
 
         if( $rule->setLogStart(FALSE) )
         {
-            $string = " - QUEUED for bundled API call";
+            $string = "QUEUED for bundled API call";
             PH::ACTIONlog( $context, $string );
             $context->addRuleToMergedApiChange('<log-start>no</log-start>');
         }
@@ -1921,7 +1921,7 @@ RuleCallContext::$supportedActions[] = array(
 
         if( $rule->setLogEnd(FALSE) )
         {
-            $string = " - QUEUED for bundled API call";
+            $string = "QUEUED for bundled API call";
             PH::ACTIONlog( $context, $string );
             $context->addRuleToMergedApiChange('<log-end>no</log-end>');
         }
@@ -1949,7 +1949,7 @@ RuleCallContext::$supportedActions[] = array(
 
         if( $rule->setLogEnd(TRUE) )
         {
-            $string = " - QUEUED for bundled API call";
+            $string = "QUEUED for bundled API call";
             PH::ACTIONlog( $context, $string );
             $context->addRuleToMergedApiChange('<log-end>yes</log-end>');
         }
@@ -1999,7 +1999,7 @@ RuleCallContext::$supportedActions[] = array(
 
         if( $rule->setLogSetting($context->arguments['profName']) )
         {
-            $string = " - QUEUED for bundled API call";
+            $string = "QUEUED for bundled API call";
             PH::ACTIONlog( $context, $string );
             $context->addRuleToMergedApiChange('<log-setting>' . $context->arguments['profName'] . '</log-setting>');
         }
@@ -2262,7 +2262,7 @@ RuleCallContext::$supportedActions[] = array(
 
         if( $rule->removeSecurityProfile() )
         {
-            $string = " - QUEUED for bundled API call";
+            $string = "QUEUED for bundled API call";
             PH::ACTIONlog( $context, $string );
             $context->addRuleToMergedApiChange('<profile-setting><profiles/></profile-setting>');
         }
@@ -2289,7 +2289,7 @@ RuleCallContext::$supportedActions[] = array(
 
         if( $rule->setSecurityProfileGroup($context->arguments['profName']) )
         {
-            $string = " - QUEUED for bundled API call";
+            $string = "QUEUED for bundled API call";
             PH::ACTIONlog( $context, $string );
             $context->addRuleToMergedApiChange('<profile-setting><group><member>' . $context->arguments['profName'] . '</member></group></profile-setting>');
         }
@@ -2326,7 +2326,7 @@ RuleCallContext::$supportedActions[] = array(
             return;
         }
 
-        $string = " - new description will be: '{$description}{$textToAppend}' ... ";
+        $string = "new description will be: '{$description}{$textToAppend}' ... ";
         PH::ACTIONlog( $context, $string );
 
         if( $context->isAPI )
@@ -2360,7 +2360,7 @@ RuleCallContext::$supportedActions[] = array(
             return;
         }
 
-        $string = " - new description will be: '{$textToPrepend}{$description}' ... ";
+        $string = "new description will be: '{$textToPrepend}{$description}' ... ";
         PH::ACTIONlog( $context, $string );
 
         if( $context->isAPI )
@@ -2393,7 +2393,7 @@ RuleCallContext::$supportedActions[] = array(
             return;
         }
 
-        $string = " - new description will be '{$newDescription}'";
+        $string = "new description will be '{$newDescription}'";
         PH::ACTIONlog( $context, $string );
         
         if( $context->isAPI )
@@ -2433,7 +2433,7 @@ RuleCallContext::$supportedActions[] = array(
 
         if( $rule->setEnabled($context->arguments['trueOrFalse']) )
         {
-            $string = " - QUEUED for bundled API call";
+            $string = "QUEUED for bundled API call";
             PH::ACTIONlog( $context, $string );
             $context->addRuleToMergedApiChange('<disabled>' . boolYesNo(!$context->arguments['trueOrFalse']) . '</disabled>');
         }
@@ -2463,7 +2463,7 @@ RuleCallContext::$supportedActions[] = array(
 
         if( $rule->setDisabled($context->arguments['trueOrFalse']) )
         {
-            $string = " - QUEUED for bundled API call";
+            $string = "QUEUED for bundled API call";
             PH::ACTIONlog( $context, $string );
             $context->addRuleToMergedApiChange('<disabled>' . boolYesNo($context->arguments['trueOrFalse']) . '</disabled>');
         }
@@ -2519,7 +2519,7 @@ RuleCallContext::$supportedActions[] = array(
 
         if( $rule->setDsri($context->arguments['trueOrFalse']) )
         {
-            $string = " - QUEUED for bundled API call";
+            $string = "QUEUED for bundled API call";
             PH::ACTIONlog( $context, $string );
             $context->addRuleToMergedApiChange('<option><disable-server-response-inspection>' . boolYesNo($context->arguments['trueOrFalse']) . '</disable-server-response-inspection></option>');
         }
@@ -2651,7 +2651,7 @@ RuleCallContext::$supportedActions[] = array(
             return;
         }
 
-        $string = " - new name will be '{$newName}'" ;
+        $string = "new name will be '{$newName}'" ;
         PH::ACTIONlog( $context, $string );
         
         if( $context->isAPI )
@@ -2709,7 +2709,7 @@ RuleCallContext::$supportedActions[] = array(
             return;
         }
 
-        $string = " - new name will be '{$newName}'";
+        $string = "new name will be '{$newName}'";
         PH::ACTIONlog( $context, $string );
 
         if( $context->isAPI )
@@ -2760,7 +2760,7 @@ RuleCallContext::$supportedActions[] = array(
             return;
         }
 
-        $string = " - new name will be '{$newName}'";
+        $string = "new name will be '{$newName}'";
         PH::ACTIONlog( $context, $string );
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
@@ -2794,7 +2794,7 @@ RuleCallContext::$supportedActions[] = array(
         }
         $newName = substr($object->name(), 0, $suffixStartIndex);
 
-        $string = " - new name will be '{$newName}'";
+        $string = "new name will be '{$newName}'";
         PH::ACTIONlog( $context, $string );
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
@@ -2851,7 +2851,7 @@ RuleCallContext::$supportedActions[] = array(
             return;
         }
 
-        $string = " - new name will be '{$newName}'";
+        $string = "new name will be '{$newName}'";
         PH::ACTIONlog( $context, $string );
 
         if( $context->isAPI )
@@ -2920,7 +2920,7 @@ RuleCallContext::$supportedActions[] = array(
             return;
         }
 
-        $string = " - new name will be '{$newName}'";
+        $string = "new name will be '{$newName}'";
         PH::ACTIONlog( $context, $string );
 
         if( $context->isAPI )
@@ -3226,7 +3226,7 @@ RuleCallContext::$supportedActions[] = array(
             return;
         }
 
-        $string = " - MOVING to top ... ";
+        $string = "MOVING to top ... ";
         PH::ACTIONlog( $context, $string );
 
         if( $firstTimeHere )
@@ -3268,7 +3268,7 @@ RuleCallContext::$supportedActions[] = array(
             return;
         }
 
-        $string = " - MOVING to bottom ... ";
+        $string = "MOVING to bottom ... ";
         PH::ACTIONlog( $context, $string );
         if( $context->isAPI )
             $ruleStore->API_moveRuleAfter($rule, $referenceRule);
@@ -3307,7 +3307,7 @@ RuleCallContext::$supportedActions[] = array(
             return;
         }
 
-        $string = " - MOVING to before '{$context->arguments['rulename']}' ... ";
+        $string = "MOVING to before '{$context->arguments['rulename']}' ... ";
         PH::ACTIONlog( $context, $string );
         if( $context->isAPI )
             $ruleStore->API_moveRuleBefore($rule, $referenceRule);
@@ -3359,7 +3359,7 @@ RuleCallContext::$supportedActions[] = array(
 
         $context->cache[$storeSerial] = $rule;
 
-        $string = " - MOVING to after '{$referenceRule->name()}' ... ";
+        $string = "MOVING to after '{$referenceRule->name()}' ... ";
         PH::ACTIONlog( $context, $string );
         if( $context->isAPI )
             $ruleStore->API_moveRuleAfter($rule, $referenceRule);
@@ -3525,7 +3525,7 @@ RuleCallContext::$supportedActions[] = array(
 
         $newName = $rule->owner->findAvailableName($rule->name(), $context->arguments['suffix']);
 
-        $string = "   - cloned rule name will be '{$newName}'";
+        $string = "cloned rule name will be '{$newName}'";
         PH::ACTIONlog( $context, $string );
 
         if( $context->isAPI )
@@ -3645,7 +3645,7 @@ RuleCallContext::$supportedActions[] = array(
 
         $application = $rule->apps->parentCentralStore->findOrCreate($context->arguments['applicationName']);
 
-        $string = " - Port mapping to import in AppOverride: " . $portMapping->mappingToText() ;
+        $string = "Port mapping to import in AppOverride: " . $portMapping->mappingToText() ;
         PH::ACTIONlog( $context, $string );
 
         if( count($portMapping->tcpPortMap) > 0 )
@@ -3667,7 +3667,7 @@ RuleCallContext::$supportedActions[] = array(
 
             if( $context->isAPI )
                 $newRule->API_sync();
-            $string = " - created TCP appOverride rule '{$newRule->name()}'";
+            $string = "created TCP appOverride rule '{$newRule->name()}'";
             PH::ACTIONlog( $context, $string );
         }
         if( count($portMapping->udpPortMap) > 0 )
@@ -3689,7 +3689,7 @@ RuleCallContext::$supportedActions[] = array(
 
             if( $context->isAPI )
                 $newRule->API_sync();
-            $string = " - created TCP appOverride rule '{$newRule->name()}'";
+            $string = "created TCP appOverride rule '{$newRule->name()}'";
             PH::ACTIONlog( $context, $string );
         }
 
@@ -3756,7 +3756,7 @@ RuleCallContext::$supportedActions[] = Array(
 
         if( $rule->userID_count() < 1 )
         {
-            $string = " * no USER objects remaining so the Rule will be disabled...";
+            $string = "no USER objects remaining so the Rule will be disabled...";
             PH::ACTIONlog( $context, $string );
 
             if( $context->isAPI )

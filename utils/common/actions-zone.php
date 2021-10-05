@@ -67,7 +67,7 @@ ZoneCallContext::$supportedActions['name-addprefix'] = array(
             return;
         }
 
-        $string = " - new name will be '{$newName}'";
+        $string = "new name will be '{$newName}'";
         PH::ACTIONlog( $context, $string );
 
         if( strlen($newName) > 127 )
@@ -107,7 +107,7 @@ ZoneCallContext::$supportedActions['name-addsuffix'] = array(
             return;
         }
 
-        $string = " - new name will be '{$newName}'";
+        $string = "new name will be '{$newName}'";
         PH::ACTIONlog( $context, $string );
 
         if( strlen($newName) > 127 )
@@ -161,7 +161,7 @@ ZoneCallContext::$supportedActions['name-removeprefix'] = array(
             return;
         }
 
-        $string = " - new name will be '{$newName}'";
+        $string = "new name will be '{$newName}'";
         PH::ACTIONlog( $context, $string );
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
@@ -203,7 +203,7 @@ ZoneCallContext::$supportedActions['name-removesuffix'] = array(
         }
         $newName = substr($object->name(), 0, $suffixStartIndex);
 
-        $string = " - new name will be '{$newName}'";
+        $string = "new name will be '{$newName}'";
         PH::ACTIONlog( $context, $string );
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
@@ -238,7 +238,7 @@ ZoneCallContext::$supportedActions['name-touppercase'] = array(
             return;
         }
 
-        $string = " - new name will be '{$newName}'";
+        $string = "new name will be '{$newName}'";
         PH::ACTIONlog( $context, $string );
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
@@ -279,7 +279,7 @@ ZoneCallContext::$supportedActions['name-tolowercase'] = array(
             return;
         }
 
-        $string = " - new name will be '{$newName}'";
+        $string = "new name will be '{$newName}'";
         PH::ACTIONlog( $context, $string );
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
@@ -320,7 +320,7 @@ ZoneCallContext::$supportedActions['name-toucwords'] = array(
             return;
         }
 
-        $string = " - new name will be '{$newName}'";
+        $string = "new name will be '{$newName}'";
         PH::ACTIONlog( $context, $string );
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
@@ -450,7 +450,7 @@ ZoneCallContext::$supportedActions['zpp-set'] = array(
             return;
         }
 
-        $string = " - new ZPP will be '{$newzpp}'";
+        $string = "new ZPP will be '{$newzpp}'";
         PH::ACTIONlog( $context, $string );
 
 
@@ -482,7 +482,7 @@ ZoneCallContext::$supportedActions['packetbufferprotection-set'] = array(
         else
             $value = "disabled";
 
-        $string = " - PacketBufferProtection will be '{$value}'";
+        $string = "PacketBufferProtection will be '{$value}'";
         PH::ACTIONlog( $context, $string );
 
 
@@ -514,7 +514,7 @@ ZoneCallContext::$supportedActions[] = array(
 
             if( $tmp_class == "ZoneRuleContainer" )
             {
-                $string = " * replacing in {$objectRef->toString()}";
+                $string = "replacing in {$objectRef->toString()}";
                 PH::ACTIONlog( $context, $string );
                 if( $context->isAPI )
                     $objectRef->API_replaceReferencedObject($object, $foundObject);
@@ -540,7 +540,7 @@ ZoneCallContext::$supportedActions['logsetting-set'] = array(
         $object = $context->object;
         $newLogSetting = $context->arguments['logforwardingprofile-name'];
 
-        $string = " - new Log Setting will be '{$newLogSetting}'";
+        $string = "new Log Setting will be '{$newLogSetting}'";
         PH::ACTIONlog( $context, $string );
 
 

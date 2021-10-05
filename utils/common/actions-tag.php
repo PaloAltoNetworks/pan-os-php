@@ -69,7 +69,7 @@ TagCallContext::$supportedActions['name-addprefix'] = array(
             return;
         }
 
-        $string = " - new name will be '{$newName}'";
+        $string = "new name will be '{$newName}'";
         PH::ACTIONlog( $context, $string );
         if( strlen($newName) > 127 )
         {
@@ -108,7 +108,7 @@ TagCallContext::$supportedActions['name-addsuffix'] = array(
             return;
         }
 
-        $string = " - new name will be '{$newName}'";
+        $string = "new name will be '{$newName}'";
         PH::ACTIONlog( $context, $string );
         if( strlen($newName) > 127 )
         {
@@ -161,7 +161,7 @@ TagCallContext::$supportedActions['name-removeprefix'] = array(
             return;
         }
 
-        $string = " - new name will be '{$newName}'";
+        $string = "new name will be '{$newName}'";
         PH::ACTIONlog( $context, $string );
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
@@ -203,7 +203,7 @@ TagCallContext::$supportedActions['name-removesuffix'] = array(
         }
         $newName = substr($object->name(), 0, $suffixStartIndex);
 
-        $string = " - new name will be '{$newName}'";
+        $string = "new name will be '{$newName}'";
         PH::ACTIONlog( $context, $string );
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
@@ -237,7 +237,7 @@ TagCallContext::$supportedActions['name-touppercase'] = array(
             return;
         }
 
-        $string = " - new name will be '{$newName}'";
+        $string = "new name will be '{$newName}'";
         PH::ACTIONlog( $context, $string );
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
@@ -278,7 +278,7 @@ TagCallContext::$supportedActions['name-tolowercase'] = array(
             return;
         }
 
-        $string = " - new name will be '{$newName}'";
+        $string = "new name will be '{$newName}'";
         PH::ACTIONlog( $context, $string );
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
@@ -320,7 +320,7 @@ TagCallContext::$supportedActions['name-toucwords'] = array(
             return;
         }
 
-        $string = " - new name will be '{$newName}'";
+        $string = "new name will be '{$newName}'";
         PH::ACTIONlog( $context, $string );
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
@@ -512,7 +512,7 @@ TagCallContext::$supportedActions[] = array(
         $conflictObject = $targetStore->find($object->name(), null, FALSE);
         if( $conflictObject === null )
         {
-            $string = "   * moved, no conflict";
+            $string = "moved, no conflict";
             PH::ACTIONlog( $context, $string );
 
             if( $context->isAPI )
@@ -538,12 +538,12 @@ TagCallContext::$supportedActions[] = array(
             return;
         }
 
-        $string = "   - there is a conflict with an object of same name";
+        $string = "there is a conflict with an object of same name";
         PH::ACTIONlog( $context, $string );
 
         if( $object->equals($conflictObject) )
         {
-            $string = "    * Removed because target has same content";
+            $string = "Removed because target has same content";
             PH::ACTIONlog( $context, $string );
             $object->replaceMeGlobally($conflictObject);
 
@@ -718,7 +718,7 @@ TagCallContext::$supportedActions['create'] = array(
 
         $newName = $context->arguments['name'];
 
-        $string = "     + create Tag object : '" . $newName . "'";
+        $string = "create Tag object : '" . $newName . "'";
         PH::ACTIONlog( $context, $string );
 
         if( $context->isAPI )
