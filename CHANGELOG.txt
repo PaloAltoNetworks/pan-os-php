@@ -7,6 +7,7 @@ BUGFIX:
 * class SecurityProfileGroup | bugfix for SaasSecurityProfileStore
 * pa_rule-edit | bugfix for 'filter=(user.count XYZ)'
 * pa_rule-edit | bugfix for resolveapplicationsummary shadow-json
+* pa_rule-edit | bugfix for shadow-json to display from/to zone
 
 GENERAL:
 

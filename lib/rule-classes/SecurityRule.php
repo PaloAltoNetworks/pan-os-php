@@ -1045,12 +1045,15 @@ class SecurityRule extends RuleWithUserID
 
 
         PH::print_stdout( $padding . "  From: " . $this->from->toString_inline() . "  |  To:  " . $this->to->toString_inline() );
-        foreach( $this->from->getAll() as $from )
+        foreach( $this->from->zones() as $from )
             PH::$JSON_TMP['sub']['object'][$this->name()]['from'][] = $from->name();
+        if( count( $this->from->zones() ) == 0 )
+            PH::$JSON_TMP['sub']['object'][$this->name()]['from'][] = "any";
 
-        foreach( $this->to->getAll() as $to )
+        foreach( $this->to->zones() as $to )
             PH::$JSON_TMP['sub']['object'][$this->name()]['to'][] = $to->name();
-
+        if( count( $this->to->zones() ) == 0 )
+            PH::$JSON_TMP['sub']['object'][$this->name()]['to'][] = "any";
 
         PH::print_stdout( $padding . "  Source: $sourceNegated " . $this->source->toString_inline() );
         foreach( $this->source->getAll() as $src )
