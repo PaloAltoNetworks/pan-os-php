@@ -1437,7 +1437,7 @@ AddressCallContext::$supportedActions[] = array(
             return;
         }
 
-        $text = $context->padding . "   - there is a conflict with an object of same name and type. Please use address-merger.php script with argument 'allowmergingwithupperlevel'";
+        $text = "there is a conflict with an object of same name and type. Please use address-merger.php script with argument 'allowmergingwithupperlevel'";
         if( $conflictObject->isGroup() )
             $text .= " - Group";
         else

@@ -2,6 +2,7 @@ CHANGELOG
 
 2.0.14
 UTILS:
+* merger script extend for JSON output
 
 BUGFIX:
 * class SecurityProfileGroup | bugfix for SaasSecurityProfileStore
@@ -11,6 +12,7 @@ BUGFIX:
 * pa_rule-edit actions=display shadow-json | bugfix for SRC/DST if any for resolveAddressSummary
 * pa_rule-edit actions=display:resolveservicesummary shadow-json | bugfix to display service resolve correctly
 * pa_rule-edit actions=exporttoexcel:FILE.html,ResolveApplicationsummary | bugfix to display app-id resolvesummary correctly
+
 GENERAL:
 
 
