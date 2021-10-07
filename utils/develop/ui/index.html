@@ -124,18 +124,24 @@
                         >
                     </td>
                 </tr>
-                <tr id="R${Idx}"><td colspan="5">
+                <tr id="R${Idx}"><td colspan="4">
                 <input type="text" disabled style="width:100%"
                             id="command${Idx}" name="command${Idx}"
-                        ><button onclick="copyTextButton( ${Idx} )">Copy text</button>
+                        >
+                        </td><td colspan="1"><button onclick="copyTextButton( ${Idx} )">Copy text</button>
 
                 </td></tr>
-                <tr id="R${Idx}"><td colspan="5">
+                <tr id="R${Idx}"><td colspan="4">
                 <a
                             id="commandapi${Idx}" name="commandapi${Idx}" href="http://localhost:8082/utils/develop/api/v1/tool.php"
                             target="_blank"
                         ></a>
-                </td></tr>
+                </td>
+                <td colspan="1">
+                <button onclick="runButton( ${Idx} )">RUN</button>
+                </td>
+                </tr>
+
                 `);
 
 
@@ -459,6 +465,8 @@
 
             $("#commandapi" + Idx).text( message2 );
             $("#commandapi" + Idx).attr("href",message2);
+
+            document.user_form.action = message2;
         }
 
         function sortKeys(obj_1) {
@@ -497,6 +505,9 @@
             document.execCommand('copy');
             document.body.removeChild(el);
         }
+        function runButton( Idx) {
+
+        }
 
     </script>
 
@@ -521,6 +532,8 @@
             Store JSON
         </button>
     </div>
+
+    <form id="user_form" target="_blank" name="user_form" method="post" enctype="multipart/form-data">
 
     <div class="input-output" style="border:1px solid black; padding: 30px;">
         INPUT-config:
@@ -547,6 +560,8 @@
             </form>
         </table>
     </div>
+    </form>
+
     <button class="btn btn-md btn-primary"
             id="addBtn" type="button">
         Add new Row
