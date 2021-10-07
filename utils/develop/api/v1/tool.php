@@ -21,6 +21,56 @@ set_exception_handler(function ($e) {
     exit;
 });
 
+
+$file_tmp_name = "";
+$upload_dir = "";
+if( isset($_FILES['file']) )
+{
+    #header('Content-Type: application/json; charset=utf-8');
+    #header("Access-Control-Allow-Origin: *");
+    #header("Access-Control-Allow-Methods: PUT, GET, POST");
+
+    $response = array();
+    $upload_dir = 'uploads/';
+    $server_url = 'http://localhost:8082/utils/develop/upload/';
+
+    $file_name = $_FILES["file"]["name"];
+    $file_tmp_name = $_FILES["file"]["tmp_name"];
+    $error = $_FILES["file"]["error"];
+
+    if($error > 0)
+    {
+        $message = "Error uploading the file!";
+        throw new Exception($message, 404);
+    }
+    else
+    {
+        $random = rand(1000,1000000);
+        $random_name = $random."-".$file_name;
+        $upload_name = $upload_dir.strtolower($random_name);
+        $upload_name = preg_replace('/\s+/', '-', $upload_name);
+
+        /*
+        if( move_uploaded_file( $file_tmp_name , $upload_name  ) )
+        {
+            $response = array(
+                "status" => "success",
+                "error" => false,
+                "message" => "File uploaded successfully",
+                "url" => $server_url."/".$upload_name,
+                "filename" => $upload_name
+            );
+        }
+        else
+        {
+            $message = "Error uploading the file!";
+            throw new Exception($message, 404);
+        }
+        */
+    }
+}
+
+
 // assume JSON, handle requests by verb and path
 $verb = $_SERVER['REQUEST_METHOD'];
 if( isset( $_SERVER['PATH_INFO'] ) )
@@ -31,8 +81,16 @@ else
 
 $argv = array();
 $argv[0] = "Standard input code";
-$argv[1] = "in=".dirname(__FILE__)."/../../../../tests/input/panorama-10.0-merger.xml";
-#$argv[2] = "shadow-json";
+
+if( isset( $_FILES['file'] ) ){
+    $argv[] = "in=".$file_tmp_name;
+    #$argv[] = "out=".$upload_dir.$random."-new.xml";
+    $argv[] = "out=true";
+}else{
+    $argv[] = "in=".dirname(__FILE__)."/../../../../tests/input/panorama-10.0-merger.xml";
+}
+
+$argv[] = "shadow-json";
 
 $supportedRoute = array('stats', 'address', 'service', 'tag', 'rule', 'device', 'securityprofile', 'securityprofilegroup', 'zone', 'schedule', 'interface', 'virtualwire', 'routing', 'application', 'threat');
 sort($supportedRoute );
@@ -45,96 +103,12 @@ if( empty( $url_pieces) || ( isset($url_pieces[1]) && !in_array( $url_pieces[1],
     throw new Exception($message, 404);
 }
 
+
+
 switch($verb) {
     case 'GET':
-        if(isset($url_pieces[2]))
-        {
-            try
-            {
-                #$data = $storage->getOne($url_pieces[2]);
-            } catch (UnexpectedValueException $e) {
-                throw new Exception("Resource does not exist", 404);
-            }
-        }
-        else
-        {
-            if (isset($_GET['help']))
-            {
-                $argv = array();
-                $argv[0] = "Standard input code";
-                foreach( $_GET as $key => $get )
-                {
-                    $argv[] = $key;
-                }
-            }
-            elseif (isset($_GET['listactions']))
-            {
-                $argv = array();
-                $argv[0] = "Standard input code";
-                $argv[1] = "listactions";
-            }
-            elseif (isset($_GET['listfilters']))
-            {
-                $argv = array();
-                $argv[0] = "Standard input code";
-                $argv[1] = "listfilters";
-            }
-            else
-            {
-                foreach( $_GET as $key => $get )
-                {
-                    if( $key == "in" )
-                    {
-                        unset( $argv[1] );
-                        if( strpos( $get, "api" ) === false )
-                            $get = dirname(__FILE__)."/../../../../projects/".$get;
-                        else
-                            throw new Exception( "PAN-OS XML API mode is NOT yet supported.", 404);
-                    }
-                    elseif( $key == "out" )
-                    {
-                        $get = dirname(__FILE__)."/../../../../projects/".$get;
-                    }
+        UTILcaller( $url_pieces, $argv );
 
-                    if( !empty($get) )
-                        $value = $key."=".$get;
-                    else
-                        $value = $key;
-                    $argv[] = $value;
-                }
-            }
-
-            header("Content-Type: application/json");
-            if( $url_pieces[1] == 'stats' )
-                $util = new STATSUTIL( $url_pieces[1], $argv, __FILE__);
-
-            elseif( $url_pieces[1] == 'address'
-                || $url_pieces[1] == 'service'
-                || $url_pieces[1] == 'tag'
-                || $url_pieces[1] == 'schedule'
-                || $url_pieces[1] == 'securityprofilegroup'
-                || $url_pieces[1] == 'application'
-                || $url_pieces[1] == 'threat'
-            )
-                $util = new UTIL( $url_pieces[1], $argv, __FILE__);
-
-            elseif( $url_pieces[1] == 'rule' )
-                $util = new RULEUTIL( $url_pieces[1], $argv, __FILE__);
-
-            elseif( $url_pieces[1] == 'device' )
-                $util = new DEVICEUTIL( $url_pieces[1], $argv, __FILE__);
-
-            elseif( $url_pieces[1] == 'zone'
-                || $url_pieces[1] == 'interface'
-                || $url_pieces[1] == 'routing'
-                || $url_pieces[1] == 'virtualwire'
-            )
-                $util = new NETWORKUTIL( $url_pieces[1], $argv, __FILE__);
-
-            elseif( $url_pieces[1] == 'securityprofile' )
-                $util = new SECURITYPROFILEUTIL( $url_pieces[1], $argv, __FILE__);
-
-        }
         break;
     // two cases so similar we'll just share code
     case 'POST':
@@ -142,8 +116,11 @@ switch($verb) {
         #print_r($_POST);
         #print_r($HTTP_POST_FILES);
         #print_r($HTTP_POST_VARS);
+
+
     case 'PUT':
         // read the JSON
+        /*
         $params = json_decode(file_get_contents("php://input"), true);
         if(!$params) {
             throw new Exception("Data missing or invalid");
@@ -156,11 +133,20 @@ switch($verb) {
             #$item = $storage->create($params);
             $status = 201;
         }
+        */
         #$storage->save();
 
         // send header, avoid output handler
         #header("Location: " . $item['url'], null,$status);
-        exit;
+        #exit;
+        #break;
+
+        #throw new Exception("PUT");
+
+
+        UTILcaller( $url_pieces, $argv );
+
+
         break;
     case 'DELETE':
         $id = $url_pieces[2];
@@ -185,3 +171,101 @@ switch($verb) {
 
 #header("Content-Type: application/json");
 #print json_encode($data);
+
+function UTILcaller( $url_pieces, $argv )
+{
+    if(isset($url_pieces[2]))
+    {
+        try
+        {
+            #$data = $storage->getOne($url_pieces[2]);
+        } catch (UnexpectedValueException $e) {
+            throw new Exception("Resource does not exist", 404);
+        }
+    }
+    else
+    {
+        if (isset($_GET['help']))
+        {
+            $argv = array();
+            $argv[0] = "Standard input code";
+            $argv[] = "shadow-json";
+            foreach( $_GET as $key => $get )
+            {
+                $argv[] = $key;
+            }
+        }
+        elseif (isset($_GET['listactions']))
+        {
+            $argv = array();
+            $argv[0] = "Standard input code";
+            $argv[] = "shadow-json";
+            $argv[] = "listactions";
+        }
+        elseif (isset($_GET['listfilters']))
+        {
+            $argv = array();
+            $argv[0] = "Standard input code";
+            $argv[] = "shadow-json";
+            $argv[] = "listfilters";
+        }
+        else
+        {
+            foreach( $_GET as $key => $get )
+            {
+                if( $key == "in" )
+                {
+                    unset( $argv[1] );
+                    if( strpos( $get, "api" ) === false )
+                        $get = dirname(__FILE__)."/../../../../projects/".$get;
+                    else
+                    {
+                        throw new Exception( "PAN-OS XML API mode is NOT yet supported.", 404);
+                    }
+
+                }
+                elseif( $key == "out" )
+                {
+                    $get = dirname(__FILE__)."/../../../../projects/".$get;
+                }
+
+                if( !empty($get) )
+                    $value = $key."=".$get;
+                else
+                    $value = $key;
+                $argv[] = $value;
+            }
+        }
+
+        header("Content-Type: application/json");
+        if( $url_pieces[1] == 'stats' )
+            $util = new STATSUTIL( $url_pieces[1], $argv, __FILE__);
+
+        elseif( $url_pieces[1] == 'address'
+            || $url_pieces[1] == 'service'
+            || $url_pieces[1] == 'tag'
+            || $url_pieces[1] == 'schedule'
+            || $url_pieces[1] == 'securityprofilegroup'
+            || $url_pieces[1] == 'application'
+            || $url_pieces[1] == 'threat'
+        )
+            $util = new UTIL( $url_pieces[1], $argv, __FILE__);
+
+        elseif( $url_pieces[1] == 'rule' )
+            $util = new RULEUTIL( $url_pieces[1], $argv, __FILE__);
+
+        elseif( $url_pieces[1] == 'device' )
+            $util = new DEVICEUTIL( $url_pieces[1], $argv, __FILE__);
+
+        elseif( $url_pieces[1] == 'zone'
+            || $url_pieces[1] == 'interface'
+            || $url_pieces[1] == 'routing'
+            || $url_pieces[1] == 'virtualwire'
+        )
+            $util = new NETWORKUTIL( $url_pieces[1], $argv, __FILE__);
+
+        elseif( $url_pieces[1] == 'securityprofile' )
+            $util = new SECURITYPROFILEUTIL( $url_pieces[1], $argv, __FILE__);
+
+    }
+}
