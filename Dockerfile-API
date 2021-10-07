@@ -1,0 +1,36 @@
+FROM php:8.0-apache
+
+
+SHELL ["/bin/bash", "-c"]
+ENV DEBIAN_FRONTEND=noninteractive
+
+ENV PHP_MEMORY_LIMIT=128M
+
+RUN apt-get update -y --fix-missing
+RUN apt-get install -y tzdata
+
+# libraries for PHP
+RUN apt-get install -y libcurl3-openssl-dev libxml2-dev libonig-dev
+# PHP Extensions
+RUN docker-php-ext-install -j$(nproc) curl dom mbstring
+
+
+COPY appid-toolbox /var/www/html/appid-toolbox
+COPY lib /var/www/html/lib
+COPY phpseclib /var/www/html/phpseclib
+COPY utils /var/www/html/utils
+COPY tests /var/www/html/tests
+
+
+# PHP library of pan-os-php
+RUN echo 'include_path = "/usr/local/lib/php:/var/www/html"' >> /usr/local/etc/php/php.ini
+
+#upload
+RUN touch /usr/local/etc/php/conf.d/uploads.ini \
+    && echo "file_uploads = On;" >> /usr/local/etc/php/conf.d/uploads.ini \
+    && echo "memory_limit = 500M;" >> /usr/local/etc/php/conf.d/uploads.ini \
+    && echo "upload_max_filesize = 500M;" >> /usr/local/etc/php/conf.d/uploads.ini \
+    && echo "post_max_size = 500M;" >> /usr/local/etc/php/conf.d/uploads.ini \
+    && echo "max_execution_time = 600;" >> /usr/local/etc/php/conf.d/uploads.ini
+
+EXPOSE 80

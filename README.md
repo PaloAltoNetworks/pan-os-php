@@ -236,7 +236,7 @@ Docker build
 Docker PAN-OS-PHP API
 ============
    ```bash
-   docker run -d -p 8082:80 --mount type=bind,source="[absolute_ROOTFOLDER]]/pan-os-php",target=/var/www/html php:apache
+   docker run -d -p 8082:80 --mount type=bind,source="[absolute_ROOTFOLDER]]/pan-os-php",target=/var/www/html -v /var/docker/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini php:apache
    ```
 The PAN-OS-PHP API is right now under development, but please feel free to try it out:
    ```bash

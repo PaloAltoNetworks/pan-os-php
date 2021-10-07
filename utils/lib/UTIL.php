@@ -1479,19 +1479,20 @@ class UTIL
         {
             if( $this->configOutput != '/dev/null' )
             {
-                // destroy destination file if it exists
-                if( file_exists($this->configOutput) && is_file($this->configOutput) )
-                    unlink($this->configOutput);
-
-                $this->pan->save_to_file($this->configOutput, $printMessage, $lineReturn, $indentingXml, $indentingXmlIncreament);
-
-
                 if( PH::$shadow_json )
                 {
                     //store it JSON out
                     PH::$JSON_TMP['xmldoc'] = &DH::dom_to_xml($this->pan->xmlroot, $indentingXml, $lineReturn, -1, $indentingXmlIncreament);
                     PH::print_stdout(PH::$JSON_TMP, false, "out");
                     PH::$JSON_TMP = array();
+                }
+                else
+                {
+                    // destroy destination file if it exists
+                    if( file_exists($this->configOutput) && is_file($this->configOutput) )
+                        unlink($this->configOutput);
+
+                    $this->pan->save_to_file($this->configOutput, $printMessage, $lineReturn, $indentingXml, $indentingXmlIncreament);
                 }
             }
         }
