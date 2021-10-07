@@ -24,7 +24,7 @@ set_exception_handler(function ($e) {
 
 $file_tmp_name = "";
 $upload_dir = "";
-if( isset($_FILES['file']) )
+if( isset($_FILES['configInput']) )
 {
     #header('Content-Type: application/json; charset=utf-8');
     #header("Access-Control-Allow-Origin: *");
@@ -34,9 +34,9 @@ if( isset($_FILES['file']) )
     $upload_dir = 'uploads/';
     $server_url = 'http://localhost:8082/utils/develop/upload/';
 
-    $file_name = $_FILES["file"]["name"];
-    $file_tmp_name = $_FILES["file"]["tmp_name"];
-    $error = $_FILES["file"]["error"];
+    $file_name = $_FILES['configInput']["name"];
+    $file_tmp_name = $_FILES['configInput']["tmp_name"];
+    $error = $_FILES['configInput']["error"];
 
     if($error > 0)
     {
@@ -82,7 +82,7 @@ else
 $argv = array();
 $argv[0] = "Standard input code";
 
-if( isset( $_FILES['file'] ) ){
+if( isset( $_FILES['configInput'] ) ){
     $argv[] = "in=".$file_tmp_name;
     #$argv[] = "out=".$upload_dir.$random."-new.xml";
     $argv[] = "out=true";
