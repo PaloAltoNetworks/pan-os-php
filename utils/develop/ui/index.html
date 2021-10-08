@@ -128,6 +128,7 @@
                     <td>
                     shadow-json
                     <input type="checkbox" id="shadowjson${Idx}" name="shadowjson${Idx}"
+                    checked
                     >
                 </td>
                 <td>
@@ -323,9 +324,10 @@
                     updateScriptsyntax( Idx );
                 });
 
-                $("#shadowjson" + Idx ).click( function()
+
+                $("#shadowjson" + Idx ).change( function()
                 {
-                    checkboxShadowJson( Idx );
+                    updateScriptsyntax( Idx );
                 });
 
                 $( "#location" + Idx ).change(function(){
@@ -552,74 +554,6 @@
             document.body.removeChild(el);
         }
         function runButton( Idx) {
-
-        }
-
-        function checkboxShadowJson( Idx = "0" ) {
-
-            var COMMAND = $("#command" + Idx);
-            var COMMANDAPI = $("#commandapi" + Idx);
-
-            var message = COMMAND.val();
-
-            //var checkedValue = document.getElementById('shadowjson').checked;
-            var checkedValue = $( "#shadowjson" + Idx ).is(':checked');
-            if( checkedValue )
-                if(message.indexOf(" shadow-json") === -1)
-                    message += " shadow-json";
-            else
-            {
-                message.replace(" shadow-json", "");
-            }
-
-
-            //var locationValue = document.getElementById('location').value;
-            var locationValue = $( "#location" + Idx ).val();
-            if( locationValue !== "---" )
-            {
-                if(message.indexOf(" location=") === -1)
-                {
-                    message += " location=";
-                    message += locationValue;
-                }
-            }
-            else
-            {
-                message.replace(" location=", "");
-            }
-
-            console.log( message );
-
-            COMMAND.val( message );
-
-            var message2 = COMMANDAPI.val();
-
-
-            if( checkedValue && (message2.indexOf("&shadow-json") === -1) )
-                message2 += "&shadow-json";
-            else
-            {
-                message2.replace("&shadow-json", "");
-            }
-
-            if( locationValue !== "---" && (message2.indexOf("&location=") === -1) )
-            {
-                message2 += "&location=";
-                message2 += locationValue;
-            }
-            else
-            {
-                message2.replace(" location=", "");
-            }
-
-
-            console.log( message2 );
-
-            COMMANDAPI.val( message2 );
-            //$("#commandapi" + Idx).text( message2 );
-            //$("#commandapi" + Idx).attr("href",message2);
-
-            document.user_form.action = message2;
 
         }
 
