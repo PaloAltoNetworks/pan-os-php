@@ -124,24 +124,35 @@
                         >
                     </td>
                 </tr>
-                <tr id="R${Idx}"><td colspan="4">
-                <input type="text" disabled style="width:100%"
-                            id="command${Idx}" name="command${Idx}"
-                        >
-                        </td><td colspan="1"><button onclick="copyTextButton( ${Idx} )">Copy text</button>
-
-                </td></tr>
-                <tr id="R${Idx}"><td colspan="4">
-                <a
-                            id="commandapi${Idx}" name="commandapi${Idx}" href="http://localhost:8082/utils/develop/api/v1/tool.php"
-                            target="_blank"
-                        ></a>
+                <tr id="R${Idx}">
+                    <td>
+                    shadow-json
+                    <input type="checkbox" id="shadowjson${Idx}" name="shadowjson${Idx}"
+                    >
                 </td>
-                <td colspan="1">
-                <button onclick="runButton( ${Idx} )">RUN</button>
+                <td>
+                    location
+                    <input type="text" id="location${Idx}" name="location${Idx}" value="any" />
                 </td>
                 </tr>
-
+                <tr id="R${Idx}">
+                    <td colspan="4">
+                        <input type="text" disabled style="width:100%"
+                            id="command${Idx}" name="command${Idx}"
+                        >
+                    </td>
+                    <td colspan="1"><button onclick="copyTextButton( ${Idx} )">Copy text</button></td>
+                </tr>
+                <tr id="R${Idx}">
+                    <td colspan="4">
+                        <input type="text" disabled style="width:100%"
+                            id="commandapi${Idx}" name="commandapi${Idx}"
+                        >
+                    </td>
+                    <td colspan="1">
+                        <button onclick="runButton( ${Idx} )">RUN</button>
+                    </td>
+                </tr>
                 `);
 
 
@@ -312,6 +323,14 @@
                     updateScriptsyntax( Idx );
                 });
 
+                $("#shadowjson" + Idx ).click( function()
+                {
+                    checkboxShadowJson( Idx );
+                });
+
+                $( "#location" + Idx ).change(function(){
+                    updateScriptsyntax( Idx );
+                });
             });
 
             // jQuery button click event to remove a row.
@@ -342,6 +361,8 @@
                 });
 
                 // Removing the current row.
+                $(this).closest('tr').next().remove();
+                $(this).closest('tr').next().remove();
                 $(this).closest('tr').next().remove();
                 $(this).closest('tr').remove();
 
@@ -452,6 +473,20 @@
             message += Actiontext;
             message += Filtertext;
 
+
+            //var checkedValue = document.getElementById('shadowjson').checked;
+            var checkedValue = $( "#shadowjson" + Idx ).is(':checked');
+            if( checkedValue )
+                message += " shadow-json";
+
+            //var locationValue = document.getElementById('location').value;
+            var locationValue = $( "#location" + Idx ).val();
+            if( locationValue !== "---" )
+            {
+                message += " location=";
+                message += locationValue;
+            }
+
             console.log( message );
             $("#command" + Idx).val( message );
 
@@ -460,11 +495,22 @@
             message2 += Filtertextapi;
 
 
+            if( checkedValue )
+                message2 += "&shadow-json";
+
+
+            if( locationValue !== "---" )
+            {
+                message2 += "&location=";
+                message2 += locationValue;
+            }
+
 
             console.log( message2 );
 
-            $("#commandapi" + Idx).text( message2 );
-            $("#commandapi" + Idx).attr("href",message2);
+            $("#commandapi" + Idx).val( message2 );
+            //$("#commandapi" + Idx).text( message2 );
+            //$("#commandapi" + Idx).attr("href",message2);
 
             document.user_form.action = message2;
         }
@@ -509,6 +555,74 @@
 
         }
 
+        function checkboxShadowJson( Idx = "0" ) {
+
+            var COMMAND = $("#command" + Idx);
+            var COMMANDAPI = $("#commandapi" + Idx);
+
+            var message = COMMAND.val();
+
+            //var checkedValue = document.getElementById('shadowjson').checked;
+            var checkedValue = $( "#shadowjson" + Idx ).is(':checked');
+            if( checkedValue )
+                if(message.indexOf(" shadow-json") === -1)
+                    message += " shadow-json";
+            else
+            {
+                message.replace(" shadow-json", "");
+            }
+
+
+            //var locationValue = document.getElementById('location').value;
+            var locationValue = $( "#location" + Idx ).val();
+            if( locationValue !== "---" )
+            {
+                if(message.indexOf(" location=") === -1)
+                {
+                    message += " location=";
+                    message += locationValue;
+                }
+            }
+            else
+            {
+                message.replace(" location=", "");
+            }
+
+            console.log( message );
+
+            COMMAND.val( message );
+
+            var message2 = COMMANDAPI.val();
+
+
+            if( checkedValue && (message2.indexOf("&shadow-json") === -1) )
+                message2 += "&shadow-json";
+            else
+            {
+                message2.replace("&shadow-json", "");
+            }
+
+            if( locationValue !== "---" && (message2.indexOf("&location=") === -1) )
+            {
+                message2 += "&location=";
+                message2 += locationValue;
+            }
+            else
+            {
+                message2.replace(" location=", "");
+            }
+
+
+            console.log( message2 );
+
+            COMMANDAPI.val( message2 );
+            //$("#commandapi" + Idx).text( message2 );
+            //$("#commandapi" + Idx).attr("href",message2);
+
+            document.user_form.action = message2;
+
+        }
+
     </script>
 
 </head>
@@ -536,10 +650,14 @@
     <form id="user_form" target="_blank" name="user_form" method="post" enctype="multipart/form-data">
 
     <div class="input-output" style="border:1px solid black; padding: 30px;">
-        INPUT-config:
-        <input type="file"
-               id="configInput" name="configInput"
-               > [optional]
+        <table class="table table-bordered" style="width:100%">
+            <tr>
+                <td>
+                    INPUT-config:
+                    <input type="file" id="configInput" name="configInput" >
+                </td>
+            </tr>
+        </table>
     </div>
 
     <div class="table-responsive" style="border:1px solid black; padding: 30px; width:100%">

@@ -87,10 +87,11 @@ if( isset( $_FILES['configInput'] ) ){
     #$argv[] = "out=".$upload_dir.$random."-new.xml";
     $argv[] = "out=true";
 }else{
-    $argv[] = "in=".dirname(__FILE__)."/../../../../tests/input/panorama-10.0-merger.xml";
+    #$argv[] = "in=".dirname(__FILE__)."/../../../../tests/input/panorama-10.0-merger.xml";
+    $message = 'No File available with argument in=';
+    throw new Exception($message, 404);
 }
 
-$argv[] = "shadow-json";
 
 $supportedRoute = array('stats', 'address', 'service', 'tag', 'rule', 'device', 'securityprofile', 'securityprofilegroup', 'zone', 'schedule', 'interface', 'virtualwire', 'routing', 'application', 'threat');
 sort($supportedRoute );

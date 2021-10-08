@@ -4,6 +4,7 @@ CHANGELOG
 UTILS:
 * merger script extend for JSON output
 * API | introduce POST to send XML file directly to PAN-OS-PHP API
+* API and API-UI | improvments
 
 BUGFIX:
 * class SecurityProfileGroup | bugfix for SaasSecurityProfileStore
