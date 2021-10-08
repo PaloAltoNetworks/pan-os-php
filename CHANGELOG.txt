@@ -5,6 +5,7 @@ UTILS:
 * merger script extend for JSON output
 * API | introduce POST to send XML file directly to PAN-OS-PHP API
 * API and API-UI | improvments
+* pa_application-edit | introduce 'filter=(tcp has XYZ)' / 'filter=(udp has XYZ)'
 
 BUGFIX:
 * class SecurityProfileGroup | bugfix for SaasSecurityProfileStore

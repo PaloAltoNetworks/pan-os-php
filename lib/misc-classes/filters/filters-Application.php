@@ -224,6 +224,44 @@ RQuery::$defaultFilters['application']['tcp']['operators']['is.set'] = array(
         'input' => 'input/panorama-8.0.xml'
     )
 );
+RQuery::$defaultFilters['application']['tcp']['operators']['has'] = array(
+    'Function' => function (ApplicationRQueryContext $context) {
+        if( isset( $context->object->tcp) )
+        {
+            foreach( $context->object->tcp as &$port )
+            {
+                if( $port[0] == "single" )
+                    if( isset( $port[1] ) && $port[1] == $context->value )
+                        return TRUE;
+                    elseif( $port[0] == "range" )
+                    {
+                        //range missing
+                    }
+            }
+        }
+
+        if( isset( $context->object->tcp_secure) )
+        {
+            foreach( $context->object->tcp_secure as &$port )
+            {
+                if( $port[0] == "single" )
+                    if( isset( $port[1] ) && $port[1] == $context->value )
+                        return TRUE;
+                    elseif( $port[0] == "range" )
+                    {
+                        //range missing
+                    }
+            }
+        }
+
+        return FALSE;
+    },
+    'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 RQuery::$defaultFilters['application']['udp']['operators']['is.set'] = array(
     'Function' => function (ApplicationRQueryContext $context) {
         if( isset( $context->object->udp) )
@@ -232,6 +270,44 @@ RQuery::$defaultFilters['application']['udp']['operators']['is.set'] = array(
         return FALSE;
     },
     'arg' => FALSE,
+    'ci' => array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['application']['udp']['operators']['has'] = array(
+    'Function' => function (ApplicationRQueryContext $context) {
+        if( isset( $context->object->udp) )
+        {
+            foreach( $context->object->udp as &$port )
+            {
+                if( $port[0] == "single" )
+                    if( isset( $port[1] ) && $port[1] == $context->value )
+                        return TRUE;
+                elseif( $port[0] == "range" )
+                {
+                    //range missing
+                }
+            }
+        }
+
+        if( isset( $context->object->udp_secure) )
+        {
+            foreach( $context->object->udp_secure as &$port )
+            {
+                if( $port[0] == "single" )
+                    if( isset( $port[1] ) && $port[1] == $context->value )
+                        return TRUE;
+                    elseif( $port[0] == "range" )
+                    {
+                        //range missing
+                    }
+            }
+        }
+
+        return FALSE;
+    },
+    'arg' => TRUE,
     'ci' => array(
         'fString' => '(%PROP%)',
         'input' => 'input/panorama-8.0.xml'
