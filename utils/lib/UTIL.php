@@ -1486,7 +1486,7 @@ class UTIL
                     PH::print_stdout(PH::$JSON_TMP, false, "out");
                     PH::$JSON_TMP = array();
                 }
-                else
+                elseif( $this->configOutput != 'test' )
                 {
                     // destroy destination file if it exists
                     if( file_exists($this->configOutput) && is_file($this->configOutput) )
