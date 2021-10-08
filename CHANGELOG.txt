@@ -5,6 +5,7 @@ UTILS:
 * merger script extend for JSON output
 * API | introduce POST to send XML file directly to PAN-OS-PHP API
 * API and API-UI | improvments
+* pa_application-edit | introduce 'filter=(tcp has XYZ)' / 'filter=(udp has XYZ)'
 
 BUGFIX:
 * class SecurityProfileGroup | bugfix for SaasSecurityProfileStore
@@ -28,7 +29,7 @@ UTILS:
 * pa_rule-edit actions=display:ResolveAddressSummary - for shadow-json - split static and dynamic output - dynamic are tmp objects without value
 * pa_rule-edit introduce 'filter=(user.count '<,>,+,!)' - )' / 'filter=(user is.in.file FILENAME)'
 * pa_rule-edt | introduce actions=xml-extract - to extract rule xml information of matching rules - only working with additional argument shadow-json
-* all | with "shadow-json out=yes" full PAN-OS XML config is available in stdout JSONarray ['out']['xmldoc']
+* all | with "shadow-json out=true" full PAN-OS XML config is available in stdout JSONarray ['out']['xmldoc']
 * pa_rule-edit | introduce actions=user-add:USER / actions=user-remove:USER
 * pa_rule-edit | introduce actions=user-set-any
 * pa_rule-edit/pa_schedule-edit | introduce 'filter(schedule expire.in.days XYZ)' / 'filter=(object expire.in.days XYZ)' to display information about shortly expired rules/schedule

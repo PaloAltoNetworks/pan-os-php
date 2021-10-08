@@ -31,8 +31,8 @@ if( isset($_FILES['configInput']) )
     #header("Access-Control-Allow-Methods: PUT, GET, POST");
 
     $response = array();
-    $upload_dir = 'uploads/';
-    $server_url = 'http://localhost:8082/utils/develop/upload/';
+    $upload_dir = '';
+    $server_url = 'http://localhost:8082/utils/develop/api/v1';
 
     $file_name = $_FILES['configInput']["name"];
     $file_tmp_name = $_FILES['configInput']["tmp_name"];
