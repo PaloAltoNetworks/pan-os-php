@@ -1223,6 +1223,8 @@ class UTIL
                         $this->objectsToProcess[] = array('store' => $this->pan->threatStore, 'objects' => $this->pan->threatStore->getAll());
 
                     $locationFound = TRUE;
+
+                    self::GlobalInitAction($this->pan);
                 }
                 elseif( $this->configType == 'fawkes' && ($location == 'ANY' || $location == 'any') )
                 {
@@ -1232,6 +1234,8 @@ class UTIL
                         $this->objectsToProcess[] = array('store' => $this->pan->threatStore, 'objects' => $this->pan->threatStore->getAll());
 
                     $locationFound = TRUE;
+
+                    self::GlobalInitAction($this->pan);
                 }
 
 
