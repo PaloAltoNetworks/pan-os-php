@@ -5,7 +5,13 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: PUT, GET, POST");
 $response = array();
 $upload_dir = 'project/';
-$server_url = 'http://127.0.0.1:8082';
+
+if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
+    $server_url = "https://";
+else
+    $server_url = "http://";
+$server_url.= $_SERVER['HTTP_HOST'];
+
 if($_FILES['configInput'])
 {
     $avatar_name = $_FILES["configInput"]["name"];

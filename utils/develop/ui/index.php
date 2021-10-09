@@ -564,7 +564,7 @@
         }
         function runButton( Idx)
         {
-            document.getElementById("user_form").submit();
+            //document.getElementById("user_form").submit();
         }
 
         function uploadButton( )
@@ -596,6 +596,7 @@
                     <button class="btn btn-md btn-primary" id="storeBtn" type="button">Store JSON </button>
                 </td>
             </tr>
+        </table>
     </div>
 
     <form id="user_form" target="_blank" name="user_form" method="post" enctype="multipart/form-data">
@@ -641,13 +642,14 @@
             </tbody>
             </form>
         </table>
+        <button class="btn btn-md btn-primary"
+                id="addBtn" type="button">
+            Add new Row
+        </button>
     </div>
     </form>
 
-    <button class="btn btn-md btn-primary"
-            id="addBtn" type="button">
-        Add new Row
-    </button>
+
 </div>
 
 missing stuff:</br>
@@ -657,11 +659,11 @@ missing stuff:</br>
 4) additional arguments like location=vsys1 and shadow-xyz</br>
 5) migration part with vendor select</br>
 
-6) user login [create first default project]
-7) project creation
-8) upload config
-9) display uploaded config -
-10) after running - possible to download: 1) log 2) XML file 3) JSON 4) full bundle
+6) user login [create first default project]</br>
+7) project creation</br>
+8) upload config</br>
+9) display uploaded config -</br>
+10) after running - possible to download: 1) log 2) XML file 3) JSON 4) full bundle</br>
 
 </body>
 

@@ -92,6 +92,9 @@ elseif( isset($_GET['in']) )
 {
     $argv[] = "out=true";
 }
+elseif( isset($_GET['help']) || isset($_GET['listfilters']) || isset($_GET['listactions']) )
+{
+}
 else{
     #$argv[] = "in=".dirname(__FILE__)."/../../../../tests/input/panorama-10.0-merger.xml";
     $message = 'No File available with argument in=';

@@ -20,7 +20,10 @@ COPY lib /var/www/html/lib
 COPY phpseclib /var/www/html/phpseclib
 COPY utils /var/www/html/utils
 COPY tests /var/www/html/tests
+COPY log /var/www/html/log
 
+RUN chmod -R 777 /var/www/html/utils/develop/api/v1/project
+RUN chmod -R 777 /var/www/html/log
 
 # PHP library of pan-os-php
 RUN echo 'include_path = "/usr/local/lib/php:/var/www/html"' >> /usr/local/etc/php/php.ini
