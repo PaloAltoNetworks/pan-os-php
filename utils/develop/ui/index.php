@@ -490,6 +490,16 @@
                 message += locationValue;
             }
 
+            var e = document.getElementById("configSelect");
+            var dropdownselection = e.options[e.selectedIndex].text;
+            console.log( "DropDown: "+dropdownselection );
+
+            if( dropdownselection !== "---" )
+            {
+                message += " in=";
+                message += dropdownselection;
+            }
+
             console.log( message );
             $("#command" + Idx).val( message );
 
@@ -507,10 +517,6 @@
                 message2 += locationValue;
             }
 
-
-            var e = document.getElementById("configSelect");
-            var dropdownselection = e.options[e.selectedIndex].text;
-            console.log( "DropDown: "+dropdownselection );
             if( dropdownselection !== "---" )
             {
                 message2 += "&in=";
