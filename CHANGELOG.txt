@@ -1,6 +1,14 @@
 CHANGELOG
 
-2.0.14
+2.0.15
+UTILS:
+
+BUGFIX:
+
+GENERAL:
+
+
+2.0.14 (20211010)
 UTILS:
 * merger script extend for JSON output
 * API | introduce POST to send XML file directly to PAN-OS-PHP API
