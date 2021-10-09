@@ -664,12 +664,14 @@ missing stuff:</br>
 3) rule filter operator has.from.query subquery1 -> add this automatically and define based on filter src/dst/srv what subquery can be done and prefill the part there</br>
 4) additional arguments like location=vsys1 and shadow-xyz</br>
 5) migration part with vendor select</br>
-
+</br>
 6) user login [create first default project]</br>
 7) project creation</br>
 8) upload config</br>
 9) display uploaded config -</br>
 10) after running - possible to download: 1) log 2) XML file 3) JSON 4) full bundle</br>
+</br>
+11)PAN-OS XML API mode - how to create .panconfkeystore in Container user folder? how to add PAN-OS XML API key for specific IP and user?
 
 </body>
 

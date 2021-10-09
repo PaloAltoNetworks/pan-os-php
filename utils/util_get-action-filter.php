@@ -28,7 +28,7 @@ require_once dirname(__FILE__)."/../utils/lib/UTIL.php";
 $util = new UTIL("custom", $argv, __FILE__);
 
 
-$array = array( 'address', 'service', 'tag', 'rule', 'zone', 'securityprofile', 'schedule','virtualwire','routing','interface','device', 'securityprofilegroup');
+$array = array( 'address', 'service', 'tag', 'rule', 'zone', 'securityprofile', 'schedule','virtualwire','routing','interface','device', 'securityprofilegroup', 'application', 'threat');
 
 
 
