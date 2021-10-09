@@ -78,6 +78,9 @@ ThreatCallContext::$supportedActions[] = array(
         $args = &$context->arguments;
         $filename = $args['filename'];
 
+        if( isset( $_SERVER['REQUEST_METHOD'] ) )
+            $filename = "project/html/".$filename;
+
         $lines = '';
         $encloseFunction = function ($value, $nowrap = TRUE) {
             if( is_string($value) )

@@ -717,6 +717,9 @@ AddressCallContext::$supportedActions[] = array(
         $args = &$context->arguments;
         $filename = $args['filename'];
 
+        if( isset( $_SERVER['REQUEST_METHOD'] ) )
+            $filename = "project/html/".$filename;
+
         $addWhereUsed = FALSE;
         $addUsedInLocation = FALSE;
         $addResolveGroupIPCoverage = FALSE;

@@ -3390,6 +3390,9 @@ RuleCallContext::$supportedActions[] = array(
         $args = &$context->arguments;
         $filename = $args['filename'];
 
+        if( isset( $_SERVER['REQUEST_METHOD'] ) )
+            $filename = "project/html/".$filename;
+
         $addResolvedAddressSummary = FALSE;
         $addResolvedServiceSummary = FALSE;
         $addResolvedApplicationSummary = FALSE;
