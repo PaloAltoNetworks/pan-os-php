@@ -132,6 +132,7 @@ function my_shutdown()
 
 $basedir = dirname(__FILE__);
 
+require_once $basedir . '/../phpseclib/Math/BigInteger.php';
 
 require_once $basedir . '/ErrorReporter.php';
 require_once $basedir . '/classes/taskManagement/TaskReporter.php';
