@@ -21,10 +21,11 @@ set_exception_handler(function ($e) {
     exit;
 });
 
+$projects_folder = "/project/";
 
 $file_tmp_name = "";
 $upload_dir = "";
-if( isset($_FILES['configInput']) )
+if( !isset( $_GET['in'] ) && isset($_FILES['configInput']) )
 {
     #header('Content-Type: application/json; charset=utf-8');
     #header("Access-Control-Allow-Origin: *");
@@ -32,7 +33,7 @@ if( isset($_FILES['configInput']) )
 
     $response = array();
     $upload_dir = '';
-    $server_url = 'http://localhost:8082/utils/develop/api/v1';
+    //$server_url = 'http://localhost:8082/utils/develop/api/v1';
 
     $file_name = $_FILES['configInput']["name"];
     $file_tmp_name = $_FILES['configInput']["tmp_name"];
@@ -82,11 +83,16 @@ else
 $argv = array();
 $argv[0] = "Standard input code";
 
-if( isset( $_FILES['configInput'] ) ){
+if( !isset($_GET['in']) && isset( $_FILES['configInput'] ) ){
     $argv[] = "in=".$file_tmp_name;
     #$argv[] = "out=".$upload_dir.$random."-new.xml";
     $argv[] = "out=true";
-}else{
+}
+elseif( isset($_GET['in']) )
+{
+    $argv[] = "out=true";
+}
+else{
     #$argv[] = "in=".dirname(__FILE__)."/../../../../tests/input/panorama-10.0-merger.xml";
     $message = 'No File available with argument in=';
     throw new Exception($message, 404);
@@ -175,6 +181,8 @@ switch($verb) {
 
 function UTILcaller( $url_pieces, $argv )
 {
+    global $projects_folder;
+
     if(isset($url_pieces[2]))
     {
         try
@@ -218,7 +226,7 @@ function UTILcaller( $url_pieces, $argv )
                 {
                     unset( $argv[1] );
                     if( strpos( $get, "api" ) === false )
-                        $get = dirname(__FILE__)."/../../../../projects/".$get;
+                        $get = dirname(__FILE__).$projects_folder.$get;
                     else
                     {
                         throw new Exception( "PAN-OS XML API mode is NOT yet supported.", 404);
@@ -227,7 +235,7 @@ function UTILcaller( $url_pieces, $argv )
                 }
                 elseif( $key == "out" )
                 {
-                    $get = dirname(__FILE__)."/../../../../projects/".$get;
+                    $get = dirname(__FILE__).$projects_folder.$get;
                 }
 
                 if( !empty($get) )
