@@ -190,6 +190,8 @@ class RULEUTIL extends UTIL
                         $this->objectsToProcess[] = array('store' => $this->pan->dosRules, 'rules' => $this->pan->dosRules->rules());
                     }
                     $locationFound = TRUE;
+
+                    self::GlobalInitAction($this->pan, $this->ruleTypes);
                 }
 
                 if( $this->configType == 'panorama' )

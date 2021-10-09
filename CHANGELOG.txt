@@ -6,6 +6,8 @@ UTILS:
 * API | introduce POST to send XML file directly to PAN-OS-PHP API
 * API and API-UI | improvments
 * pa_application-edit | introduce 'filter=(tcp has XYZ)' / 'filter=(udp has XYZ)'
+* all script actions=exportToExcel - for PAN-OS-API usage, specify project/html folder as file destination storage
+* API extend JSON file with application and threat action/filter
 
 BUGFIX:
 * class SecurityProfileGroup | bugfix for SaasSecurityProfileStore
