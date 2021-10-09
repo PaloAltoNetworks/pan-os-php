@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>test page</title>
+    <title>PAN-OS-PHP UI</title>
     <link rel="stylesheet" href=
             "https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
           integrity=
@@ -29,7 +29,10 @@
                     "https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js">
     </script>
 
+
     <script>
+
+        var server_url = window.location.protocol + "//" + window.location.host;
 
         $(document).ready(function () {
 
@@ -118,16 +121,12 @@
                         >no description
                         </p>
                     </td>
-                    <td class="row-index text-center">
-                        <input type="text" disabled style="width:100%"
-                            id="additionalArg-input${Idx}" name="additionalArg-input${Idx}"
-                        >
-                    </td>
                 </tr>
                 <tr id="R${Idx}">
                     <td>
                     shadow-json
                     <input type="checkbox" id="shadowjson${Idx}" name="shadowjson${Idx}"
+                    checked
                     >
                 </td>
                 <td>
@@ -136,22 +135,24 @@
                 </td>
                 </tr>
                 <tr id="R${Idx}">
-                    <td colspan="4">
+                    <td colspan="1"><button onclick="copyTextButton( ${Idx} )">Copy command</button></td>
+                    <td colspan="3">
                         <input type="text" disabled style="width:100%"
                             id="command${Idx}" name="command${Idx}"
                         >
                     </td>
-                    <td colspan="1"><button onclick="copyTextButton( ${Idx} )">Copy text</button></td>
+
                 </tr>
                 <tr id="R${Idx}">
-                    <td colspan="4">
+                    <td colspan="1">
+                        <button onclick="runButton( ${Idx} )">RUN single command</button>
+                    </td>
+                    <td colspan="3">
                         <input type="text" disabled style="width:100%"
                             id="commandapi${Idx}" name="commandapi${Idx}"
                         >
                     </td>
-                    <td colspan="1">
-                        <button onclick="runButton( ${Idx} )">RUN</button>
-                    </td>
+
                 </tr>
                 `);
 
@@ -323,9 +324,10 @@
                     updateScriptsyntax( Idx );
                 });
 
-                $("#shadowjson" + Idx ).click( function()
+
+                $("#shadowjson" + Idx ).change( function()
                 {
-                    checkboxShadowJson( Idx );
+                    updateScriptsyntax( Idx );
                 });
 
                 $( "#location" + Idx ).change(function(){
@@ -372,6 +374,7 @@
                 // Decreasing total number of rows by 1.
                 //rowIdx--;
             });
+
         });
 
         function produceOptions(programming_languages) {
@@ -490,14 +493,13 @@
             console.log( message );
             $("#command" + Idx).val( message );
 
-            var message2 = "http://localhost:8082/utils/develop/api/v1/tool.php/" +SCRIPT+ "?";
+
+            var message2 = server_url + "/utils/develop/api/v1/tool.php/" +SCRIPT+ "?";
             message2 += Actiontextapi;
             message2 += Filtertextapi;
 
-
             if( checkedValue )
                 message2 += "&shadow-json";
-
 
             if( locationValue !== "---" )
             {
@@ -506,12 +508,20 @@
             }
 
 
+            var e = document.getElementById("configSelect");
+            var dropdownselection = e.options[e.selectedIndex].text;
+            console.log( "DropDown: "+dropdownselection );
+            if( dropdownselection !== "---" )
+            {
+                message2 += "&in=";
+                message2 += dropdownselection;
+            }
+
             console.log( message2 );
 
             $("#commandapi" + Idx).val( message2 );
-            //$("#commandapi" + Idx).text( message2 );
-            //$("#commandapi" + Idx).attr("href",message2);
 
+            //document.getElementById("user_form").action = message2;
             document.user_form.action = message2;
         }
 
@@ -540,7 +550,8 @@
             return obj_1;
         }
 
-        function copyTextButton( Idx) {
+        function copyTextButton( Idx)
+        {
 
             string = $( "#command" + Idx ).val();
 
@@ -551,76 +562,16 @@
             document.execCommand('copy');
             document.body.removeChild(el);
         }
-        function runButton( Idx) {
-
+        function runButton( Idx)
+        {
+            //document.getElementById("user_form").submit();
         }
 
-        function checkboxShadowJson( Idx = "0" ) {
-
-            var COMMAND = $("#command" + Idx);
-            var COMMANDAPI = $("#commandapi" + Idx);
-
-            var message = COMMAND.val();
-
-            //var checkedValue = document.getElementById('shadowjson').checked;
-            var checkedValue = $( "#shadowjson" + Idx ).is(':checked');
-            if( checkedValue )
-                if(message.indexOf(" shadow-json") === -1)
-                    message += " shadow-json";
-            else
-            {
-                message.replace(" shadow-json", "");
-            }
-
-
-            //var locationValue = document.getElementById('location').value;
-            var locationValue = $( "#location" + Idx ).val();
-            if( locationValue !== "---" )
-            {
-                if(message.indexOf(" location=") === -1)
-                {
-                    message += " location=";
-                    message += locationValue;
-                }
-            }
-            else
-            {
-                message.replace(" location=", "");
-            }
-
-            console.log( message );
-
-            COMMAND.val( message );
-
-            var message2 = COMMANDAPI.val();
-
-
-            if( checkedValue && (message2.indexOf("&shadow-json") === -1) )
-                message2 += "&shadow-json";
-            else
-            {
-                message2.replace("&shadow-json", "");
-            }
-
-            if( locationValue !== "---" && (message2.indexOf("&location=") === -1) )
-            {
-                message2 += "&location=";
-                message2 += locationValue;
-            }
-            else
-            {
-                message2.replace(" location=", "");
-            }
-
-
-            console.log( message2 );
-
-            COMMANDAPI.val( message2 );
-            //$("#commandapi" + Idx).text( message2 );
-            //$("#commandapi" + Idx).attr("href",message2);
-
-            document.user_form.action = message2;
-
+        function uploadButton( )
+        {
+            var message = server_url + "/utils/develop/api/v1/file_upload.php"
+            document.getElementById("user_form").action = message;
+            document.getElementById("user_form").submit();
         }
 
     </script>
@@ -630,37 +581,52 @@
 <body>
 
 
+<div style="border:0px solid #000000; padding: 10px; width:100%">
 
-<div class="container pt-4" style="border:1px solid #000000; padding: 0px; width:auto">
-    <p><b>Migration Playbook CREATOR</b></p>
-    <div class="load-json" style="border:1px solid #000000; padding: 30px; width:100%">
-        load Migration-Playbook from JSON-file:
-        <input type="file"
-               id="json-input" name="json-input"
-        >
-    </br>
-        store Migration-Playbook to JSON-file:
-        <input type="text" id="json-output" />
-        <button class="btn btn-md btn-primary"
-                id="storeBtn" type="button">
-            Store JSON
-        </button>
-    </div>
-
-    <form id="user_form" target="_blank" name="user_form" method="post" enctype="multipart/form-data">
-
-    <div class="input-output" style="border:1px solid black; padding: 30px;">
+    <div class="load-json" style="border:1px solid #000000; padding: 10px; width:100%">
         <table class="table table-bordered" style="width:100%">
             <tr>
+                <td style="width:50%" >
+                    load Playbook from JSON-file:
+                    <input type="file" id="json-input" name="json-input" >
+                </td>
                 <td>
-                    INPUT-config:
-                    <input type="file" id="configInput" name="configInput" >
+                    store Playbook to JSON-file:
+                    <input type="text" id="json-output" />
+                    <button class="btn btn-md btn-primary" id="storeBtn" type="button">Store JSON </button>
                 </td>
             </tr>
         </table>
     </div>
 
-    <div class="table-responsive" style="border:1px solid black; padding: 30px; width:100%">
+    <form id="user_form" target="_blank" name="user_form" method="post" enctype="multipart/form-data">
+
+    <div class="input-output" style="border:1px solid black; padding: 10px;">
+        <table class="table table-bordered" style="width:100%">
+            <tr>
+                <td style="width:50%" >
+                    INPUT-config:<br/>
+                    <input type="file" id="configInput" name="configInput" >
+                    <button onclick="uploadButton( )" id="uploadBtn" type="button">Upload</button>
+                </td>
+                <td style="width:50%" >
+                    select Project file:
+                    <select id="configSelect" name="configSelect" class="form-control input-sm">
+                        <option value="---" selected>---</option>
+                        <?php
+                        foreach(glob(dirname(__FILE__) . '/../api/v1/project/*') as $filename)
+                        {
+                            $filename = basename($filename);
+                            echo "<option value='" . $filename . "'>".$filename. "</option>";
+                        }
+                        ?>
+                    </select>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="table-responsive" style="border:1px solid black; padding: 10px; width:100%">
         <table class="table table-bordered" style="width:100%">
             <thead>
             <tr>
@@ -668,7 +634,6 @@
                 <th class="text-center">SCRIPT</th>
                 <th class="text-center">ACTION</th>
                 <th class="text-center">FILTER</th>
-                <th class="text-center">additional arguments</th>
             </tr>
             </thead>
             <form id="json-store">
@@ -677,22 +642,28 @@
             </tbody>
             </form>
         </table>
+        <button class="btn btn-md btn-primary"
+                id="addBtn" type="button">
+            Add new Row
+        </button>
     </div>
     </form>
 
-    <button class="btn btn-md btn-primary"
-            id="addBtn" type="button">
-        Add new Row
-    </button>
+
 </div>
 
-missing stuff:
-1) add additional action
-2) add additional filter, with and / or
-3) rule filter operator has.from.query subquery1 -> add this automatically and define based on filter src/dst/srv what subquery can be done and prefill the part there
-4) additional arguments like location=vsys1 and shadow-xyz
-5) migration part with vendor select
+missing stuff:</br>
+1) add additional action</br>
+2) add additional filter, with and / or</br>
+3) rule filter operator has.from.query subquery1 -> add this automatically and define based on filter src/dst/srv what subquery can be done and prefill the part there</br>
+4) additional arguments like location=vsys1 and shadow-xyz</br>
+5) migration part with vendor select</br>
 
+6) user login [create first default project]</br>
+7) project creation</br>
+8) upload config</br>
+9) display uploaded config -</br>
+10) after running - possible to download: 1) log 2) XML file 3) JSON 4) full bundle</br>
 
 </body>
 

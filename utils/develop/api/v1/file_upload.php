@@ -1,10 +1,17 @@
 <?php
+#https://www.techiediaries.com/php-file-upload-tutorial/
 header('Content-Type: application/json; charset=utf-8');
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: PUT, GET, POST");
 $response = array();
-$upload_dir = '';
-$server_url = 'http://127.0.0.1:8082';
+$upload_dir = 'project/';
+
+if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
+    $server_url = "https://";
+else
+    $server_url = "http://";
+$server_url.= $_SERVER['HTTP_HOST'];
+
 if($_FILES['configInput'])
 {
     $avatar_name = $_FILES["configInput"]["name"];
