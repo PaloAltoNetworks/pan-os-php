@@ -29,67 +29,7 @@ PH::print_stdout("***********************************************");
 PH::print_stdout("*********** " . basename(__FILE__) . " UTILITY **************");
 PH::print_stdout("");
 
-$supportedArguments = array();
-$supportedArguments[] = array('niceName' => 'in', 'shortHelp' => 'input file ie: in=config.xml', 'argDesc' => '[filename]');
-$supportedArguments[] = array('niceName' => 'out', 'shortHelp' => 'output file to save config after changes. Only required when input is a file. ie: out=save-config.xml', 'argDesc' => '[filename]');
-$supportedArguments[] = array(
-    'niceName' => 'DupAlgorithm',
-    'shortHelp' =>
-        "Specifies how to detect duplicates:\n" .
-        "  - SameMembers: groups holding same members replaced by the one picked first (default)\n" .
-        "  - SamePortMapping: groups resolving the same port mapping coverage will be replaced by the one picked first\n" .
-        "  - WhereUsed: groups used exactly in the same location will be merged into 1 single groups with all members together\n",
-    'argDesc' => 'SamePorts|WhereUsed');
-$supportedArguments[] = array('niceName' => 'Location', 'shortHelp' => 'specify if you want to limit your query to a VSYS/DG. By default location=shared for Panorama, =vsys1 for PANOS', 'argDesc' => 'vsys1|shared|dg1');
-$supportedArguments[] = array('niceName' => 'mergeCountLimit', 'shortHelp' => 'stop operations after X objects have been merged', 'argDesc' => '100');
-$supportedArguments[] = array('niceName' => 'pickFilter', 'shortHelp' => 'specify a filter a pick which object will be kept while others will be replaced by this one', 'argDesc' => '(name regex /^g/)');
-$supportedArguments[] = array('niceName' => 'excludeFilter', 'shortHelp' => 'specify a filter to exclude objects from merging process entirely', 'argDesc' => '(name regex /^g/)');
-$supportedArguments[] = array('niceName' => 'allowMergingWithUpperLevel', 'shortHelp' => 'when this argument is specified, it instructs the script to also look for duplicates in upper level');
-$supportedArguments[] = array('niceName' => 'help', 'shortHelp' => 'this message');
-
 
 $usageMsg = PH::boldText('USAGE: ') . "php " . basename(__FILE__) . " in=inputfile.xml [out=outputfile.xml] location=shared [DupAlgorithm=SameMembers] ['pickFilter=(name regex /^H-/)'] ...";
 
-
-$PHP_FILE = __FILE__;
-$utilType = "service-merger";
-
-
-$merger = new MERGER($utilType, $argv, $PHP_FILE, $supportedArguments, $usageMsg);
-
-
-if( isset(PH::$args['mergecountlimit']) )
-    $merger->mergeCountLimit = PH::$args['mergecountlimit'];
-
-
-
-if( isset(PH::$args['allowaddingmissingobjects']) )
-    $merger->addMissingObjects = TRUE;
-
-if( isset(PH::$args['dupalgorithm']) )
-{
-    $merger->dupAlg = strtolower(PH::$args['dupalgorithm']);
-    if( $merger->dupAlg != 'samemembers' && $merger->dupAlg != 'sameportmapping' && $merger->dupAlg != 'whereused' )
-        $merger->display_error_usage_exit('unsupported value for dupAlgorithm: ' . PH::$args['dupalgorithm']);
-}
-else
-    $merger->dupAlg = 'samemembers';
-
-
-$merger->servicegroup_merging();
-
-
-$merger->save_our_work( true );
-
-PH::print_stdout("");
-PH::print_stdout("************* END OF SCRIPT " . basename(__FILE__) . " ************" );
-PH::print_stdout("");
-
-$runtime = number_format((microtime(TRUE) - $merger->runStartTime), 2, '.', '');
-PH::print_stdout( array( 'value' => $runtime, 'type' => "seconds" ), false,'runtime' );
-
-if( PH::$shadow_json )
-{
-    PH::$JSON_OUT['log'] = PH::$JSON_OUTlog;
-    print json_encode( PH::$JSON_OUT, JSON_PRETTY_PRINT );
-}
+$merger = new MERGER("servicegroup-merger", $argv, __FILE__, array(), $usageMsg);

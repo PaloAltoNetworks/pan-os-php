@@ -15,6 +15,9 @@ class MERGER extends UTIL
 
     public function utilStart()
     {
+        $this->add_supported_arguments();
+
+
         $this->prepareSupportedArgumentsArray();
 
         PH::processCliArgs();
@@ -31,6 +34,25 @@ class MERGER extends UTIL
 
 
         $this->filterArgument( );
+
+
+        $this->merger_arguments( );
+
+
+        if( $this->utilType == "address-merger" )
+            $this->address_merging();
+        elseif( $this->utilType == "addressgroup-merger" )
+            $this->addressgroup_merging();
+        elseif( $this->utilType == "service-merger" )
+            $this->service_merging();
+        elseif( $this->utilType == "servicegroup-merger" )
+            $this->servicegroup_merging();
+        elseif( $this->utilType == "tag-merger" )
+            $this->tag_merging();
+
+
+        $this->merger_final_step();
+
     }
 
     function merger_location_array($utilType, $objectsLocation, $pan)
@@ -67,12 +89,12 @@ class MERGER extends UTIL
                     $this->locationNotFound( $objectsLocation );
                     #derr("cannot find DeviceGroup/VSYS named '{$objectsLocation}', check case or syntax");
 
-                if( $this->utilType == "address-merger" )
+                if( $this->utilType == "address-merger" || $this->utilType == "addressgroup-merger" )
                 {
                     $store = $findLocation->addressStore;
                     $parentStore = $findLocation->owner->addressStore;
                 }
-                elseif( $this->utilType == "service-merger" )
+                elseif( $this->utilType == "service-merger" || $this->utilType == "servicegroup-merger" )
                 {
                     $store = $findLocation->serviceStore;
                     $parentStore = $findLocation->owner->serviceStore;
@@ -110,9 +132,9 @@ class MERGER extends UTIL
             if( !$pan->isFawkes() )
             {
                 $location_array[$key + 1]['findLocation'] = 'shared';
-                if( $this->utilType == "address-merger" )
+                if( $this->utilType == "address-merger" || $this->utilType == "addressgroup-merger" )
                     $location_array[$key + 1]['store'] = $pan->addressStore;
-                elseif( $this->utilType == "service-merger" )
+                elseif( $this->utilType == "service-merger" || $this->utilType == "servicegroup-merger" )
                     $location_array[$key + 1]['store'] = $pan->serviceStore;
                 elseif( $this->utilType == "tag-merger" )
                     $location_array[$key + 1]['store'] = $pan->tagStore;
@@ -127,9 +149,9 @@ class MERGER extends UTIL
         {
             if( !$pan->isFawkes() && $objectsLocation == 'shared' )
             {
-                if( $this->utilType == "address-merger" )
+                if( $this->utilType == "address-merger" || $this->utilType == "addressgroup-merger" )
                     $store = $pan->addressStore;
-                elseif( $this->utilType == "service-merger" )
+                elseif( $this->utilType == "service-merger" || $this->utilType == "servicegroup-merger" )
                     $store = $pan->serviceStore;
                 elseif( $this->utilType == "tag-merger" )
                     $store = $pan->tagStore;
@@ -146,7 +168,7 @@ class MERGER extends UTIL
                     $this->locationNotFound( $objectsLocation );
                     #derr("cannot find DeviceGroup/VSYS named '{$objectsLocation}', check case or syntax");
 
-                if( $this->utilType == "address-merger" )
+                if( $this->utilType == "address-merger" || $this->utilType == "addressgroup-merger" )
                 {
                     $store = $findLocation->addressStore;
 
@@ -157,7 +179,7 @@ class MERGER extends UTIL
                     else
                         $parentStore = $findLocation->owner->addressStore;
                 }
-                elseif( $this->utilType == "service-merger" )
+                elseif( $this->utilType == "service-merger" || $this->utilType == "servicegroup-merger" )
                 {
                     $store = $findLocation->serviceStore;
 
@@ -261,6 +283,138 @@ class MERGER extends UTIL
                 break;
             }
         }
+
+    }
+
+    function add_supported_arguments()
+    {
+        $this->supportedArguments[] = array('niceName' => 'in', 'shortHelp' => 'input file ie: in=config.xml', 'argDesc' => '[filename]');
+        $this->supportedArguments[] = array('niceName' => 'out', 'shortHelp' => 'output file to save config after changes. Only required when input is a file. ie: out=save-config.xml', 'argDesc' => '[filename]');
+        $this->supportedArguments[] = array('niceName' => 'Location', 'shortHelp' => 'specify if you want to limit your query to a VSYS/DG. By default location=shared for Panorama, =vsys1 for PANOS', 'argDesc' => '=sys1|shared|dg1');
+
+        $this->supportedArguments[] = array('niceName' => 'mergeCountLimit', 'shortHelp' => 'stop operations after X objects have been merged', 'argDesc' => '100');
+
+        if( $this->utilType == "service-merger" )
+        {
+            $this->supportedArguments[] = array('niceName' => 'pickFilter',
+                'shortHelp' => "specify a filter a pick which object will be kept while others will be replaced by this one.\n" .
+                    "   ie: 2 services are found to be mergeable: 'H-1.1.1.1' and 'Server-ABC'. Then by using pickFilter=(name regex /^H-/) you would ensure that object H-1.1.1.1 would remain and Server-ABC be replaced by it.",
+                'argDesc' => '(name regex /^g/)');
+            $this->supportedArguments[] = array('niceName' => 'DupAlgorithm',
+                'shortHelp' => "Specifies how to detect duplicates:\n" .
+                    "  - SameDstSrcPorts: objects with same Dst and Src ports will be replaced by the one picked (default)\n" .
+                    "  - SamePorts: objects with same Dst ports will be replaced by the one picked\n" .
+                    "  - WhereUsed: objects used exactly in the same location will be merged into 1 single object and all ports covered by these objects will be aggregated\n",
+                'argDesc' => 'SameDstSrcPorts|SamePorts|WhereUsed');
+        }
+        else
+            $this->supportedArguments[] = array('niceName' => 'pickFilter', 'shortHelp' => 'specify a filter a pick which object will be kept while others will be replaced by this one', 'argDesc' => '(name regex /^g/)');
+
+        if( $this->utilType == "address-merger" )
+        {
+            $this->supportedArguments[] = array('niceName' => 'DupAlgorithm',
+                'shortHelp' => "Specifies how to detect duplicates:\n" .
+                    "  - SameAddress: objects with same Network-Value will be replaced by the one picked (default)\n" .
+                    "  - Identical: objects with same network-value and same name will be replaced by the one picked\n" .
+                    "  - WhereUsed: objects used exactly in the same location will be merged into 1 single object and all ports covered by these objects will be aggregated\n",
+                'argDesc' => 'SameAddress | Identical | WhereUsed');
+        }
+        elseif( $this->utilType == "addressgroup-merger" )
+        {
+            $this->supportedArguments[] = array('niceName' => 'DupAlgorithm',
+                'shortHelp' => "Specifies how to detect duplicates:\n" .
+                    "  - SameMembers: groups holding same members replaced by the one picked first (default)\n" .
+                    "  - SameIP4Mapping: groups resolving the same IP4 coverage will be replaced by the one picked first\n" .
+                    "  - WhereUsed: groups used exactly in the same location will be merged into 1 single groups with all members together\n",
+                'argDesc' => 'SameMembers|SameIP4Mapping|WhereUsed');
+        }
+        elseif( $this->utilType == "servicegroup-merger" )
+        {
+            $this->supportedArguments[] = array('niceName' => 'DupAlgorithm',
+                'shortHelp' => "Specifies how to detect duplicates:\n" .
+                    "  - SameMembers: groups holding same members replaced by the one picked first (default)\n" .
+                    "  - SamePortMapping: groups resolving the same port mapping coverage will be replaced by the one picked first\n" .
+                    "  - WhereUsed: groups used exactly in the same location will be merged into 1 single groups with all members together\n",
+                'argDesc' => 'SamePorts|WhereUsed');
+        }
+        elseif( $this->utilType == "tag-merger" )
+        {
+            $this->supportedArguments[] = array('niceName' => 'DupAlgorithm',
+                'shortHelp' => "Specifies how to detect duplicates:\n" .
+                    "  - SameColor: objects with same TAG-color will be replaced by the one picked (default)\n" .
+                    "  - Identical: objects with same TAG-color and same name will be replaced by the one picked\n" .
+                    "  - WhereUsed: objects used exactly in the same location will be merged into 1 single object and all ports covered by these objects will be aggregated\n",
+                'argDesc' => 'SameColor | Identical | WhereUsed');
+        }
+
+        $this->supportedArguments[] = array('niceName' => 'excludeFilter', 'shortHelp' => 'specify a filter to exclude objects from merging process entirely', 'argDesc' => '(name regex /^g/)');
+        $this->supportedArguments[] = array('niceName' => 'allowMergingWithUpperLevel', 'shortHelp' => 'when this argument is specified, it instructs the script to also look for duplicates in upper level');
+        $this->supportedArguments[] = array('niceName' => 'allowaddingmissingobjects', 'shortHelp' => 'when this argument is specified, it instructs the script to also add missing objects for duplicates in upper level');
+        $this->supportedArguments[] = array('niceName' => 'help', 'shortHelp' => 'this message');
+        $this->supportedArguments[] = array('niceName' => 'DebugAPI', 'shortHelp' => 'prints API calls when they happen');
+
+        $this->supportedArguments[] = array('niceName' => 'exportCSV', 'shortHelp' => 'when this argument is specified, it instructs the script to display the kept and removed objects per value');
+    }
+
+    function merger_arguments( )
+    {
+        $display_error = false;
+
+
+        if( isset(PH::$args['mergecountlimit']) )
+            $this->mergeCountLimit = PH::$args['mergecountlimit'];
+
+
+        if( $this->utilType == "address-merger" )
+        {
+            if( $this->dupAlg != 'sameaddress' && $this->dupAlg != 'whereused' && $this->dupAlg != 'identical' )
+                $display_error = true;
+
+            $defaultDupAlg = 'sameaddress';
+        }
+        elseif( $this->utilType == "addressgroup-merger" )
+        {
+            if( $this->dupAlg != 'samemembers' && $this->dupAlg != 'sameip4mapping' && $this->dupAlg != 'whereused' )
+                $display_error = true;
+
+            if( isset(PH::$args['allowaddingmissingobjects']) )
+                $this->addMissingObjects = TRUE;
+
+            $defaultDupAlg = 'samemembers';
+        }
+        elseif( $this->utilType == "service-merger" )
+        {
+            if( $this->dupAlg != 'sameports' && $this->dupAlg != 'whereused' && $this->dupAlg != 'samedstsrcports' )
+                $display_error = true;
+
+            $defaultDupAlg = 'samedstsrcports';
+        }
+        elseif( $this->utilType == "servicegroup-merger" )
+        {
+            if( $this->dupAlg != 'samemembers' && $this->dupAlg != 'sameportmapping' && $this->dupAlg != 'whereused' )
+                $display_error = true;
+
+            $defaultDupAlg = 'samemembers';
+        }
+        elseif( $this->utilType == "tag-merger" )
+        {
+            if( $this->dupAlg != 'samecolor' && $this->dupAlg != 'whereused' && $this->dupAlg != 'identical' )
+                $display_error = true;
+
+            $defaultDupAlg = 'identical';
+        }
+
+
+
+
+        if( isset(PH::$args['dupalgorithm']) )
+        {
+            $this->dupAlg = strtolower(PH::$args['dupalgorithm']);
+            if( $display_error )
+                $this->display_error_usage_exit('unsupported value for dupAlgorithm: ' . PH::$args['dupalgorithm']);
+        }
+        else
+            $this->dupAlg = $defaultDupAlg;
 
     }
 
@@ -764,8 +918,6 @@ class MERGER extends UTIL
             PH::print_stdout( "\n" );
         }    
     }
-
-
 
     function address_merging()
     {
@@ -2624,6 +2776,35 @@ class MERGER extends UTIL
 
             PH::print_stdout( "\n\n***********************************************\n" );
 
+        }
+    }
+
+
+    function merger_final_step()
+    {
+        $this->save_our_work( true );
+
+        if( isset(PH::$args['exportcsv']) )
+        {
+            foreach( $this->deletedObjects as $obj_index => $object_name )
+            {
+                if( !isset($object_name['kept']) )
+                    print_r($object_name);
+                PH::print_stdout($obj_index . "," . $object_name['kept'] . "," . $object_name['removed'] );
+            }
+        }
+
+        PH::print_stdout("");
+        PH::print_stdout("************* END OF SCRIPT " . basename(__FILE__) . " ************" );
+        PH::print_stdout("");
+
+        $runtime = number_format((microtime(TRUE) - $this->runStartTime), 2, '.', '');
+        PH::print_stdout( array( 'value' => $runtime, 'type' => "seconds" ), false,'runtime' );
+
+        if( PH::$shadow_json )
+        {
+            PH::$JSON_OUT['log'] = PH::$JSON_OUTlog;
+            print json_encode( PH::$JSON_OUT, JSON_PRETTY_PRINT );
         }
     }
 }
