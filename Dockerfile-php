@@ -10,14 +10,15 @@ RUN apt-get install -y tzdata
 # libraries for PHP
 RUN apt-get install -y libcurl3-openssl-dev libxml2-dev libonig-dev
 # PHP Extensions
-RUN docker-php-ext-install -j$(nproc) curl dom mbstring
+RUN docker-php-ext-install -j$(nproc) curl dom mbstring bcmath
 
 
-RUN mkdir /tools; mkdir /tools/pan-os-php;
+RUN mkdir /tools; mkdir /tools/pan-os-php; mkdir /tools/pan-os-php/log;
 COPY appid-toolbox /tools/pan-os-php/appid-toolbox
 COPY lib /tools/pan-os-php/lib
 COPY phpseclib /tools/pan-os-php/phpseclib
 COPY utils /tools/pan-os-php/utils
+COPY tests /tools/pan-os-php/tests
 
 
 # PHP library of pan-os-php
