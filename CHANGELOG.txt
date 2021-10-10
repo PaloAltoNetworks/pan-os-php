@@ -2,6 +2,7 @@ CHANGELOG
 
 2.0.15
 UTILS:
+* optimise all object merger scripts to use class MERGER
 
 BUGFIX:
 
