@@ -15,6 +15,8 @@ class MERGER extends UTIL
 
     public function utilStart()
     {
+        $this->usageMsg = PH::boldText('USAGE: ') . "php " . basename(__FILE__) . " in=inputfile.xml [out=outputfile.xml] location=shared [DupAlgorithm=XYZ] [MergeCountLimit=100] ['pickFilter=(name regex /^H-/)'] ...";
+
         $this->add_supported_arguments();
 
 
