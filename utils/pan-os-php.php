@@ -32,34 +32,35 @@ $supportedUTILTypes = array(
     "securityprofile",
     "stats",
     "device",
-    "routing", "zone", "interface", "virtualwire"
-    );
-//Todo: all merger script need to be optimized to only a single class call
-//$merger = new MERGER($utilType, $argv, $PHP_FILE, $supportedArguments, $usageMsg);
-$supportedMERGERTypes = array(
-    "address-merger",
-    "service-merger",
+    "routing", "zone", "interface", "virtualwire",
+    "key-manager",
+    "address-merger", "addressgroup-merger",
+    "service-merger", "servicegroup-merger",
     "tag-merger"
     );
 //Todo: not supported scripts:
+//custom
 /*
  * appid-enabler
  * bpa-generator
- * checkpoint-exclude
  * csv-import
- * download-predefined
- * grp-static-to-dynamic
- * key-manager
- * override-finder
- * pan-diff
- * pan-config-size
- * panos-xml-issue-detector
  * panXML_op_JSON
  * register-ip-mgr
+ * util get action filter
+ * pan-config-size
+*/
+//open
+/*
+* override-finder
+ * pan-diff
+
+ * panos-xml-issue-detector
  * upload-config
+ * download-predefined
+ * checkpoint-exclude
+ * grp-static-to-dynamic
  * userid-mgr
  */
-
 $supportedArguments = array();
 $usageMsg = PH::boldText('USAGE: ') . "php " . __FILE__ . " in=[filename]|[api://IP]|[api://serial@IP] type=address";
 
@@ -116,6 +117,15 @@ elseif( isset(PH::$args['type']) )
 
     elseif( $type == "device" )
         $util = new DEVICEUTIL($type, $argv, __FILE__." type=".$type);
+
+    elseif( $type == "key-manager" )
+        $util = new KEYMANGER($type, $argv, __FILE__." type=".$type);
+
+    elseif( $type == "address-merger" || $type == "addressgroup-merger" ||
+        $type == "service-merger" || $type == "servicegroup-merger" ||
+        $type == "tag-merger"
+    )
+        $util = new MERGER($type, $argv, __FILE__." type=".$type);
 
     else
         $util = new UTIL($type, $argv, __FILE__." type=".$type);
