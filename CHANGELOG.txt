@@ -8,6 +8,7 @@ UTILS:
 * pa_download-predefined | make use of CLASS PREDEFINED
 
 BUGFIX:
+* pa_securityprofile-edit | bugfix to handle JSON output for shared and other DG/VSYS correctly
 
 GENERAL:
 * framework | finalise renaming to PAN-OS-PHP

@@ -385,8 +385,23 @@ class SECURITYPROFILEUTIL extends UTIL
 
             foreach( $this->doActions as $doAction )
             {
-                $doAction->subSystem = $store->owner;
+                if( is_object($store->owner) )
+                {
+                    $doAction->subSystem = $store->owner;
+                    PH::$JSON_TMP['sub']['name'] = $store->owner->name();
+                    PH::$JSON_TMP['sub']['type'] = get_class( $store->owner );
+                }
+
+                else
+                {
+                    $doAction->subSystem = $store;
+                    PH::$JSON_TMP['sub']['name'] = $store->name();
+                    PH::$JSON_TMP['sub']['type'] = "shared";
+                }
+
             }
+
+            PH::$JSON_TMP['sub']['store'] = get_class( $store );
 
             PH::print_stdout( "" );
             $string = "* processing SecurityProfileset '" . $store->toString() . " that holds " . count($rules) . "' SecurityProfiles";
@@ -394,9 +409,7 @@ class SECURITYPROFILEUTIL extends UTIL
 
             PH::$JSON_TMP = array();
             PH::$JSON_TMP['header'] = $string;
-            PH::$JSON_TMP['sub']['name'] = $store->owner->name();
-            PH::$JSON_TMP['sub']['store'] = $store->name();
-            PH::$JSON_TMP['sub']['type'] = get_class( $store->owner );
+
 
             foreach( $rules as $rule )
             {
@@ -444,7 +457,7 @@ class SECURITYPROFILEUTIL extends UTIL
 
             PH::$JSON_TMP['sub']['summary']['processed'] = $subObjectsProcessed;
             PH::$JSON_TMP['sub']['summary']['available'] = $store->count();
-            PH::print_stdout( PH::$JSON_TMP, false, get_class( $tmp_platform ) );
+            PH::print_stdout( PH::$JSON_TMP, false, $tmp_platform );
             PH::$JSON_TMP = array();
             #PH::print_stdout( "* objects processed in DG/Vsys '{$store->owner->name()}' : $subObjectsProcessed filtered over {$store->count()} available\n\n" );
         }
