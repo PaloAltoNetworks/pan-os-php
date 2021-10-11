@@ -102,7 +102,12 @@ else{
 }
 
 
-$supportedRoute = array('stats', 'address', 'service', 'tag', 'rule', 'device', 'securityprofile', 'securityprofilegroup', 'zone', 'schedule', 'interface', 'virtualwire', 'routing', 'application', 'threat');
+$supportedRoute = array(
+    'stats',
+    'address', 'service', 'tag', 'rule', 'device', 'securityprofile', 'securityprofilegroup',
+    'zone', 'schedule', 'interface', 'virtualwire', 'routing', 'application', 'threat',
+    'key-manager',
+    'address-merger', 'addressgroup-merger', 'service-merger', 'servicegroup-merger', 'tag-merger' );
 sort($supportedRoute );
 
 // catch this here, we don't support many routes yet
@@ -279,5 +284,15 @@ function UTILcaller( $url_pieces, $argv )
         elseif( $url_pieces[1] == 'securityprofile' )
             $util = new SECURITYPROFILEUTIL( $url_pieces[1], $argv, __FILE__);
 
+        elseif( $url_pieces[1] == "key-manager" )
+            $util = new KEYMANGER($url_pieces[1], $argv, __FILE__);
+
+        elseif( $url_pieces[1] == "address-merger"
+            || $url_pieces[1] == "addressgroup-merger"
+            || $url_pieces[1] == "service-merger"
+            || $url_pieces[1] == "servicegroup-merger"
+            || $url_pieces[1] == "tag-merger"
+        )
+            $util = new MERGER($url_pieces[1], $argv, __FILE__);
     }
 }
