@@ -2,14 +2,14 @@
 
 /*****************************************************************************
 *
-*	 This script is doing basic use PAN-PHP-FRAMEWORK API.
+*	 This script is doing basic use PAN-OS-PHP API.
 *		
 *	It will load a sample PANOS config and make some rules and object 
 *	editing.
 *
 *****************************************************************************/
 
-// load PAN-PHP-FRAMEWORK library
+// load PAN-OS-PHP library
 require_once("../lib/pan_php_framework.php");
 
 // input and output files

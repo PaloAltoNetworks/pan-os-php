@@ -5,10 +5,14 @@ UTILS:
 * optimise all object merger scripts to use class MERGER
 * pa_key-manager - introduce class KEYMANAGER - make use of main class UTIL
 * pa_rule-edit | actions=display:resolveservicesummary - improve output for JSON response
+* pa_download-predefined | make use of CLASS PREDEFINED
+* pan-os-php | introduce key-manager and all other object merger script
 
 BUGFIX:
+* pa_securityprofile-edit | bugfix to handle JSON output for shared and other DG/VSYS correctly
 
 GENERAL:
+* framework | finalise renaming to PAN-OS-PHP
 
 
 2.0.14 (20211010)
