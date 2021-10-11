@@ -566,6 +566,8 @@ class RuleCallContext extends CallContext
 
     public function ServiceResolveSummary( $rule )
     {
+        $port_mapping_text = array();
+
         if( $rule->isDecryptionRule() )
             return array();
         if( $rule->isAppOverrideRule() )
@@ -618,9 +620,10 @@ class RuleCallContext extends CallContext
 
                 foreach( $mapping_text as $mapping )
                 {
-                    if( !isset($array[$protocol . $mapping]) )
+
+                    if( !in_array( $protocol . $mapping, $port_mapping_text ) )
                     {
-                        $port_mapping_text[$protocol . $mapping] = $protocol . $mapping;
+                        $port_mapping_text[] = $protocol . $mapping;
 
                         if( strpos($mapping, "-") !== FALSE )
                         {
