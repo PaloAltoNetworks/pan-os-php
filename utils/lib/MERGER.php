@@ -2794,17 +2794,6 @@ class MERGER extends UTIL
             }
         }
 
-        PH::print_stdout("");
-        PH::print_stdout("************* END OF SCRIPT " . basename(__FILE__) . " ************" );
-        PH::print_stdout("");
-
-        $runtime = number_format((microtime(TRUE) - $this->runStartTime), 2, '.', '');
-        PH::print_stdout( array( 'value' => $runtime, 'type' => "seconds" ), false,'runtime' );
-
-        if( PH::$shadow_json )
-        {
-            PH::$JSON_OUT['log'] = PH::$JSON_OUTlog;
-            print json_encode( PH::$JSON_OUT, JSON_PRETTY_PRINT );
-        }
+        $this->endOfScript();
     }
 }
