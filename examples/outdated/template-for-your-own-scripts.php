@@ -2,7 +2,7 @@
 
 
 
-// load PAN-PHP-FRAMEWORK library
+// load PAN-OS-PHP library
 require_once("lib/pan_php_framework.php");
 
 PH::print_stdout( "*********** START OF SCRIPT ".basename(__FILE__)." ************" );
@@ -105,7 +105,7 @@ PH::print_stdout( "    **********     **********" );
  * * $location : string with location name or undefined if not provided on CLI
  * * $sub : DeviceGroup or VirtualSystem found after looking from cli 'location' argument
  * * $apiMode : if config file was downloaded from API directly
- * * PH::$args : array with all CLI arguments processed by PAN-PHP-FRAMEWORK
+ * * PH::$args : array with all CLI arguments processed by PAN-OS-PHP
  * *
  */
 

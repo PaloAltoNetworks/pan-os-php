@@ -9,6 +9,7 @@ UTILS:
 BUGFIX:
 
 GENERAL:
+* framework | finalise renaming to PAN-OS-PHP
 
 
 2.0.14 (20211010)

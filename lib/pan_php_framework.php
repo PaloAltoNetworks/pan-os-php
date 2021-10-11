@@ -20,7 +20,7 @@
  */
 
 if( PHP_MAJOR_VERSION <= 5 && PHP_MINOR_VERSION <= 4 )
-    die("\n*** ERROR **** PAN-PHP-FRAMEWORK requires PHP version >= 5.5\n");
+    die("\n*** ERROR **** PAN-OS-PHP requires PHP version >= 5.5\n");
 
 set_time_limit(0);
 ini_set("memory_limit", "14512M");

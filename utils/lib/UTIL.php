@@ -14,6 +14,7 @@ require_once(dirname(__FILE__)."/MERGER.php");
 require_once(dirname(__FILE__)."/RULEMERGER.php");
 
 require_once(dirname(__FILE__)."/KEYMANGER.php");
+require_once(dirname(__FILE__)."/PREDEFINED.php");
 
 class UTIL
 {
@@ -993,7 +994,7 @@ class UTIL
         //
         // load the config
         //
-        PH::print_stdout( " - Loading configuration through PAN-PHP-FRAMEWORK library... " );
+        PH::print_stdout( " - Loading configuration through PAN-OS-PHP library... " );
 
         $this->loadStart();
 

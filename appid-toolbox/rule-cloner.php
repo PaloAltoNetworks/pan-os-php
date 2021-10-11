@@ -211,7 +211,7 @@ if( $configInput['type'] == 'api' )
 //
 // load the config
 //
-PH::print_stdout( " - Loading configuration through PAN-PHP-framework library... ");
+PH::print_stdout( " - Loading configuration through PAN-OS-PHP library... ");
 $loadStartMem = memory_get_usage(true);
 $loadStartTime = microtime(true);
 $pan->load_from_domxml($xmlDoc);

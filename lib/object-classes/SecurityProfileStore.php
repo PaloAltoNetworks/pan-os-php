@@ -147,7 +147,7 @@ class SecurityProfileStore extends ObjStore
                 {
                     if( isset($this->nameIndex[$nr->name()]) )
                     {
-                        mwarning("SecProf named '{$nr->name()}' is present twice on the config and was cleaned by PAN-PHP-FRAMEWORK");
+                        mwarning("SecProf named '{$nr->name()}' is present twice on the config and was cleaned by PAN-OS-PHP");
                         $duplicatesRemoval[] = $node;
                         continue;
                     }
