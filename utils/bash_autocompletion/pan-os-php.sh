@@ -53,7 +53,7 @@ __pan-os-php_scripts()
 
 
 		arguments=('type=' 'in=' 'out=' 'actions=' 'filter=' 'location=' 'loadpanoramapushedconfig' 'loadplugin=' 'help'  'listactions' 'listfilters' 'debugapi' 'apitimeout=' 'shadow-apikeynohidden' 'shadow-apikeynosave' 'shadow-disableoutputformatting' 'shadow-displaycurlrequest' 'shadow-enablexmlduplicatesdeletion' 'shadow-ignoreinvalidaddressobjects' 'shadow-json' 'shadow-recudexml' 'stats' 'template=')
-    type=('address' 'service' 'tag' 'schedule' 'application' 'threat' 'securityprofilegroup' 'rule' 'securityprofile' 'device' 'routing' 'zone' 'interface' 'virtualwire' 'stats')
+    type=('address' 'service' 'tag' 'schedule' 'application' 'threat' 'securityprofilegroup' 'rule' 'securityprofile' 'device' 'routing' 'zone' 'interface' 'virtualwire' 'stats' 'key-manager' 'address-merger' 'addressgroup-merger' 'service-merger' 'servicegroup-merger' 'tag-merger')
 		checkArray=('in' 'out' 'actions' 'filter' 'location')
 
 		prev2=${COMP_WORDS[COMP_CWORD-2]}
