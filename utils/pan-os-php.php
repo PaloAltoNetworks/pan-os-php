@@ -53,10 +53,8 @@ $supportedUTILTypes = array(
 /*
 * override-finder
  * pan-diff
-
  * panos-xml-issue-detector
  * upload-config
- * download-predefined
  * checkpoint-exclude
  * grp-static-to-dynamic
  * userid-mgr

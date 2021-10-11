@@ -57,6 +57,13 @@ function display_usage_and_exit($shortMessage = FALSE)
     PH::print_stdout( " - php " . basename(__FILE__) . " in=local.xml out=api://192.169.50.10 preserveMgmtsystem injectUserAdmin2" );
     PH::print_stdout( " - php " . basename(__FILE__) . " in=local.xml out=api://192.169.50.10 toXpath=/config/shared/address" );
 
+    PH::print_stdout( " - php " . basename(__FILE__) . " in=local.xml out=api://192.168.50.10" );
+    PH::print_stdout( "            'fromXpath=/config/devices/entry[@name=\"localhost.localdomain\"]/vsys/entry[@name=\"vsys1\"]/*[name()=\"address\" or name()=\"address-group\" or name()=\"service\" or name()=\"service-group\" or name()=\"tag\"]'" );
+    PH::print_stdout( "            'toXpath=/config/devices/entry[@name=\"localhost.localdomain\"]/vsys/entry[@name=\"vsys1\"]' shadow-apikeynohidden" );
+
+    PH::print_stdout( " - php " . basename(__FILE__) . " in=staging/proserv-xpath.xml out=api://192.168.50.10 'fromXpath=/config/tag/*' 'toXpath=/config/devices/entry/device-group/entry[@name=\"DG-NAME\"]/tag' apiTimeout=2000" );
+    PH::print_stdout( " - php " . basename(__FILE__) . " in=staging/proserv-xpath.xml out=api://192.168.50.13 'fromXpath=/config/*[name()=\"rules\"]' 'toXpath=/config/devices/entry/device-group/entry[@name=\"DG-NAME\"]/pre-rulebase/security' apiTimeout=2000" );
+
     if( !$shortMessage )
     {
         PH::print_stdout( PH::boldText("\nListing available arguments") );
