@@ -13,6 +13,8 @@ require_once(dirname(__FILE__)."/NETWORKUTIL.php");
 require_once(dirname(__FILE__)."/MERGER.php");
 require_once(dirname(__FILE__)."/RULEMERGER.php");
 
+require_once(dirname(__FILE__)."/KEYMANGER.php");
+
 class UTIL
 {
 
@@ -131,14 +133,7 @@ class UTIL
 
         $this->log->info("END UTIL: " . $this->PHP_FILE);
 
-        $runtime = number_format((microtime(TRUE) - $this->runStartTime), 2, '.', '');
-        PH::print_stdout( array( 'value' => $runtime, 'type' => "seconds" ), false,'runtime' );
-
-        if( PH::$shadow_json )
-        {
-            PH::$JSON_OUT['log'] = PH::$JSON_OUTlog;
-            print json_encode( PH::$JSON_OUT, JSON_PRETTY_PRINT );
-        }
+        $this->endOfScript();
     }
 
     /*
@@ -1549,5 +1544,18 @@ class UTIL
     static public function shadow_ignoreInvalidAddressObjects()
     {
         PH::$ignoreInvalidAddressObjects = TRUE;
+    }
+
+    public function endOfScript()
+    {
+
+        $runtime = number_format((microtime(TRUE) - $this->runStartTime), 2, '.', '');
+        PH::print_stdout( array( 'value' => $runtime, 'type' => "seconds" ), false,'runtime' );
+
+        if( PH::$shadow_json )
+        {
+            PH::$JSON_OUT['log'] = PH::$JSON_OUTlog;
+            print json_encode( PH::$JSON_OUT, JSON_PRETTY_PRINT );
+        }
     }
 }

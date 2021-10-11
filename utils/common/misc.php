@@ -1,5 +1,6 @@
 <?php
 
+/*
 function merger_location_array($utilType, $objectsLocation, $pan)
 {
     #global $pan;
@@ -124,6 +125,7 @@ function filterArgument(&$pickFilter = null, &$excludeFilter = null, &$upperLeve
     if( isset(PH::$args['allowmergingwithupperlevel']) )
         $upperLevelSearch = TRUE;
 }
+*/
 
 function prepareSupportedArgumentsArray(&$supportedArguments)
 {

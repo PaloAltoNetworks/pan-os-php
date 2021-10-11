@@ -33,3 +33,7 @@ PH::print_stdout("");
 $usageMsg = PH::boldText('USAGE: ') . "php " . basename(__FILE__) . " in=inputfile.xml [out=outputfile.xml] location=shared [DupAlgorithm=SameMembers] ['pickFilter=(name regex /^H-/)'] ...";
 
 $merger = new MERGER("servicegroup-merger", $argv, __FILE__, array(), $usageMsg);
+
+PH::print_stdout("");
+PH::print_stdout("************* END OF SCRIPT " . basename(__FILE__) . " ************" );
+PH::print_stdout("");

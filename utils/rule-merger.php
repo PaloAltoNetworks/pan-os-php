@@ -43,7 +43,7 @@ $supportedArguments[] = array('niceName' => 'stopMergingIfDenySeen', 'shortHelp'
 $supportedArguments[] = array('niceName' => 'mergeAdjacentOnly', 'shortHelp' => 'merge only rules that are adjacent to each other', 'argDesc' => '=[yes|no|true|false]');
 $supportedArguments[] = array('niceName' => 'filter', 'shortHelp' => 'filter rules that can be converted');
 $supportedArguments[] = array('niceName' => 'additionalMatch', 'shortHelp' => 'add additional matching criterial; only =tag is supported yet', 'argDesc' => '=tag');
-$supportedArguments['debugapi'] = array('niceName' => 'DebugAPI', 'shortHelp' => 'prints API calls when they happen');
+$supportedArguments[] = array('niceName' => 'DebugAPI', 'shortHelp' => 'prints API calls when they happen');
 
 $tmpArray = array();
 foreach( $supportedArguments as &$arg )
