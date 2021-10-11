@@ -15,6 +15,7 @@ require_once(dirname(__FILE__)."/RULEMERGER.php");
 
 require_once(dirname(__FILE__)."/KEYMANGER.php");
 require_once(dirname(__FILE__)."/PREDEFINED.php");
+require_once(dirname(__FILE__)."/UPLOAD.php");
 
 class UTIL
 {

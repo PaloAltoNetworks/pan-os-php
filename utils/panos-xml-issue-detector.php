@@ -117,6 +117,10 @@ if( !isset(PH::$args['in']) )
     derr("missing 'in' argument");
 
 
+if( !isset(PH::$args['out']) )
+{
+    PH::$args['out'] = "/dev/null";
+}
 if( isset(PH::$args['out']) )
 {
     $configOutput = PH::$args['out'];
@@ -124,7 +128,11 @@ if( isset(PH::$args['out']) )
         derr('"out" argument is not a valid string');
 }
 else
-    derr('"out" is missing from arguments');
+{
+    #derr('"out" is missing from arguments');
+}
+
+
 
 if( isset(PH::$args['debugapi']) )
     $debugAPI = TRUE;
