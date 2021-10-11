@@ -5,6 +5,7 @@ UTILS:
 * optimise all object merger scripts to use class MERGER
 * pa_key-manager - introduce class KEYMANAGER - make use of main class UTIL
 * pa_rule-edit | actions=display:resolveservicesummary - improve output for JSON response
+* pa_download-predefined | make use of CLASS PREDEFINED
 
 BUGFIX:
 
