@@ -92,7 +92,7 @@ elseif( isset($_GET['in']) )
 {
     $argv[] = "out=true";
 }
-elseif( isset($_GET['help']) || isset($_GET['listfilters']) || isset($_GET['listactions']) )
+elseif( isset($_GET['help']) || isset($_GET['listfilters']) || isset($_GET['listactions']) || $url_pieces[1] == "key-manager" )
 {
 }
 else{
@@ -237,7 +237,7 @@ function UTILcaller( $url_pieces, $argv )
                         $get = dirname(__FILE__).$projects_folder.$get;
                     else
                     {
-                        throw new Exception( "PAN-OS XML API mode is NOT yet supported.", 404);
+                        #throw new Exception( "PAN-OS XML API mode is NOT yet supported.", 404);
                     }
 
                 }

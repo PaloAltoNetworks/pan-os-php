@@ -53,8 +53,6 @@ $supportedUTILTypes = array(
 /*
  * override-finder
  * pan-diff
- * panos-xml-issue-detector
- * upload-config
  *
  *
  * checkpoint-exclude

@@ -7,6 +7,7 @@ UTILS:
 * pa_rule-edit | actions=display:resolveservicesummary - improve output for JSON response
 * pa_download-predefined | make use of CLASS PREDEFINED
 * pan-os-php | introduce key-manager and all other object merger script
+* pa_panos-xml-issue-detector | introduce class XMLISSUE extend UTIL - make use of XMLISSUE within script pa_panos-xml-issue-detecotor
 
 BUGFIX:
 * pa_securityprofile-edit | bugfix to handle JSON output for shared and other DG/VSYS correctly

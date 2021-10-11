@@ -284,17 +284,7 @@ class PanAPIConnector
 
         self::$keyStoreInitialized = TRUE;
 
-        if( strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' )
-        {
-            if( strlen(getenv('USERPROFILE')) > 0 )
-                $file = getenv('USERPROFILE') . "\\" . self::$keyStoreFileName;
-            elseif( strlen(getenv('HOMEDRIVE')) > 0 )
-                $file = getenv('HOMEDRIVE') . "\\\\" . getenv('HOMEPATH') . "\\" . self::$keyStoreFileName;
-            else
-                $file = getenv('HOMEPATH') . "\\" . self::$keyStoreFileName;
-        }
-        else
-            $file = getenv('HOME') . '/' . self::$keyStoreFileName;
+        $file = self::findFileConnectorsUserHome();
 
         if( $debug )
             PH::print_stdout( " - FILE: ".$file );
@@ -334,6 +324,13 @@ class PanAPIConnector
                 $content = $content . $conn->apihost . ':' . $conn->apikey . "\n";
         }
 
+        $file = self::findFileConnectorsUserHome();
+
+        file_put_contents($file, $content);
+    }
+
+    static public function findFileConnectorsUserHome()
+    {
         if( strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' )
         {
             if( strlen(getenv('USERPROFILE')) > 0 )
@@ -343,10 +340,15 @@ class PanAPIConnector
             else
                 $file = getenv('HOMEPATH') . "\\" . self::$keyStoreFileName;
         }
-        else
+        elseif( !empty( getenv('HOME') ) )
             $file = getenv('HOME') . '/' . self::$keyStoreFileName;
+        else
+        {
+            //optimise this for API usage
+            $file = "project/" . self::$keyStoreFileName;
+        }
 
-        file_put_contents($file, $content);
+        return $file;
     }
 
     /**
@@ -414,13 +416,13 @@ class PanAPIConnector
         elseif( $promptForKey )
         {
             if( $wrongLogin )
-                PH::print_stdout( "** Request API access to host '$host' but invalid credentials were detected'" );
+                PH::print_stdout( " ** Request API access to host '$host' but invalid credentials were detected'" );
             else
-                PH::print_stdout( "** Request API access to host '$host' but API was not found in cache." );
+                PH::print_stdout( " ** Request API access to host '$host' but API was not found in cache." );
 
             if( $cliUSER === null )
             {
-                PH::print_stdout( "** Please enter API key or username below and hit enter:  " );
+                PH::print_stdout( " ** Please enter API key or username below and hit enter:  " );
                 $handle = fopen("php://stdin", "r");
                 $line = fgets($handle);
                 $apiKey = trim($line);
@@ -443,7 +445,7 @@ class PanAPIConnector
 
                 PH::print_stdout( "" );
 
-                PH::print_stdout( "* Now generating an API key from '$host'..." );
+                PH::print_stdout( " * Now generating an API key from '$host'..." );
                 $con = new PanAPIConnector($host, '', 'panos', null, $port);
 
                 $url = "type=keygen&user=" . urlencode($user) . "&password=" . urlencode($password);
@@ -465,7 +467,7 @@ class PanAPIConnector
 
                 $apiKey = $res->textContent;
 
-                PH::print_stdout( "OK, key is $apiKey");
+                PH::print_stdout( " OK, key is $apiKey");
                 PH::print_stdout("");
 
             }
@@ -486,7 +488,9 @@ class PanAPIConnector
             if( !$wrongLogin )
                 self::$savedConnectors[] = $connector;
             if( PH::$saveAPIkey )
+            {
                 self::saveConnectorsToUserHome();
+            }
         }
 
         return $connector;
