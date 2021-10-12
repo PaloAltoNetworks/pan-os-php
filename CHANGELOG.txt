@@ -10,7 +10,9 @@ UTILS:
 * pa_panos-xml-issue-detector | introduce class XMLISSUE extend UTIL - make use of XMLISSUE within script pa_panos-xml-issue-detecotor
 * pa_key-manager - optimisation to support better JSON response
 * pa_diff | introduce class DIFF extends UTIL - make use of XMLISSUE within script pa_diff
-* pa_override-finder | introduce class OVERRIDe extend UTIL - make use of this in pa_override-finder
+* pa_override-finder | introduce class OVERRIDE extend UTIL - make use of this in pa_override-finder
+* pa_appid-enabler | introduce class APPIDENABLER extend UTIL - make use of it in pa_appid-enabler - to support PAN-OS-PHP API in the future
+
 
 BUGFIX:
 * pa_securityprofile-edit | bugfix to handle JSON output for shared and other DG/VSYS correctly

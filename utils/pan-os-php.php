@@ -52,10 +52,8 @@ $supportedUTILTypes = array(
  * panXML_op_JSON
  * csv-import
 
-
  * register-ip-mgr
  * util get action filter
-
 */
 //open
 /*
