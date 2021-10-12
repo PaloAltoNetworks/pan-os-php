@@ -16,13 +16,13 @@ class DIFF extends UTIL
         #$this->arg_validation();
 
 
-        $this->mainKEY();
+        $this->main();
 
 
         $this->endOfScript();
     }
 
-    public function mainKEY()
+    public function main()
     {
         if( isset(PH::$args['debugapi']) )
             $debugAPI = TRUE;

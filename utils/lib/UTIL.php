@@ -19,6 +19,9 @@ require_once(dirname(__FILE__)."/UPLOAD.php");
 require_once(dirname(__FILE__)."/XMLISSUE.php");
 require_once(dirname(__FILE__)."/DIFF.php");
 require_once(dirname(__FILE__)."/OVERRIDEFINDER.php");
+require_once(dirname(__FILE__)."/APPIDENABLER.php");
+require_once(dirname(__FILE__)."/CONFIGSIZE.php");
+require_once(dirname(__FILE__)."/BPAGENERATOR.php");
 
 class UTIL
 {
