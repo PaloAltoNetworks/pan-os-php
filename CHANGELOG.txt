@@ -1,6 +1,14 @@
 CHANGELOG
 
-2.0.15
+2.0.16
+UTILS:
+
+BUGFIX:
+
+GENERAL:
+
+
+2.0.15 (20211012)
 UTILS:
 * optimise all object merger scripts to use class MERGER
 * pa_key-manager - introduce class KEYMANAGER - make use of main class UTIL
