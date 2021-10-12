@@ -9,6 +9,7 @@ UTILS:
 * pan-os-php | introduce key-manager and all other object merger script
 * pa_panos-xml-issue-detector | introduce class XMLISSUE extend UTIL - make use of XMLISSUE within script pa_panos-xml-issue-detecotor
 * pa_key-manager - optimisation to support better JSON response
+* pa_diff | introduce class DIFF extends UTIL - make use of XMLISSUE within script pa_diff
 
 BUGFIX:
 * pa_securityprofile-edit | bugfix to handle JSON output for shared and other DG/VSYS correctly
