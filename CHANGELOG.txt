@@ -14,9 +14,11 @@ UTILS:
 * pa_appid-enabler | introduce class APPIDENABLER extend UTIL - make use of it in pa_appid-enabler - to support PAN-OS-PHP API in the future
 * pa_config-size | introduce class CONFIGSIZE extend UTIL - make us in pa_config-size and prepare for future API usage
 * pa_bpa-generator - introduce class BPAGENERATOR - make use of it in pa_bpa-generator
+* UTIL api - introduce support for override-finder/diff/upload/xml-issue/appid-enabler/config-size
 
 BUGFIX:
 * pa_securityprofile-edit | bugfix to handle JSON output for shared and other DG/VSYS correctly
+* pa_xml-issue-detector | bugfix to handle ip-wildcard not as as missing IP configuration
 
 GENERAL:
 * framework | finalise renaming to PAN-OS-PHP

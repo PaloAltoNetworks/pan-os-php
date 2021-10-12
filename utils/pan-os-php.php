@@ -37,19 +37,16 @@ $supportedUTILTypes = array(
     "address-merger", "addressgroup-merger",
     "service-merger", "servicegroup-merger",
     "tag-merger",
-
     "override-finder",
     "diff",
     "upload",
-    "xml-issue"
-    #"appid-enalber"
-    #"config-size"
+    "xml-issue",
+    "appid-enabler",
+    "config-size"
     );
 //Todo: API not supported scripts:
 //custom
 /*
-
- * bpa-generator
  * panXML_op_JSON
  * csv-import
 
@@ -71,6 +68,7 @@ $supportedUTILTypes = array(
  * upload
  * xmlissue
  * pan-config-size
+ * bpa-generator
  */
 $supportedArguments = array();
 $usageMsg = PH::boldText('USAGE: ') . "php " . __FILE__ . " in=[filename]|[api://IP]|[api://serial@IP] type=address";

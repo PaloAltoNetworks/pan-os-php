@@ -343,7 +343,8 @@ class XMLISSUE extends UTIL
                     $ip_netmaskNode = DH::findFirstElement('ip-netmask', $node);
                     $ip_rangeNode = DH::findFirstElement('ip-range', $node);
                     $fqdnNode = DH::findFirstElement('fqdn', $node);
-                    if( $ip_netmaskNode === FALSE && $ip_rangeNode === FALSE && $fqdnNode === FALSE )
+                    $ip_wildcardNode = DH::findFirstElement('ip-wildcard', $node);
+                    if( $ip_netmaskNode === FALSE && $ip_rangeNode === FALSE && $fqdnNode === FALSE && $ip_wildcardNode === FALSE )
                     {
                         PH::print_stdout( "    - address object '{$objectName}' from DG/VSYS {$locationName} has missing IP configuration ... (*FIX_MANUALLY*)");
                         PH::print_stdout( "       - type 'Address' at XML line #{$node->getLineNo()}");
