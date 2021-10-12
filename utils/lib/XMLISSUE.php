@@ -16,7 +16,7 @@ class XMLISSUE extends UTIL
 
         PH::processCliArgs();
 
-        #$this->help(PH::$args);
+        $this->help(PH::$args);
 
         #$this->arg_validation();
         #$this->init_arguments();
@@ -1335,19 +1335,6 @@ class XMLISSUE extends UTIL
 
         if( $configInput['type'] == 'api' )
             PH::print_stdout( "\n\nINPUT mode API detected: FIX is ONLY saved in offline file.");
-
-
-        /*
-        // save our work !!!
-        if( $configOutput !== null )
-        {
-            PH::print_stdout( "\n\nSaving to file: " . PH::$args['out'] );
-            if( $configOutput != '/dev/null' )
-            {
-                $xmlDoc->save(PH::$args['out']);
-            }
-        }
-        */
     }
 
     public function supportedArguments()
@@ -1356,16 +1343,9 @@ class XMLISSUE extends UTIL
         $this->supportedArguments['in'] = array('niceName' => 'in', 'shortHelp' => 'input file or api. ie: in=config.xml  or in=api://192.168.1.1 or in=api://0018CAEC3@panorama.company.com', 'argDesc' => '[filename]|[api://IP]|[api://serial@IP]');
         $this->supportedArguments['out'] = array('niceName' => 'out', 'shortHelp' => 'output file to save config after changes. Only required when input is a file. ie: out=save-config.xml', 'argDesc' => '[filename]');
         $this->supportedArguments['debugapi'] = array('niceName' => 'DebugAPI', 'shortHelp' => 'prints API calls when they happen');
-        $this->supportedArguments['fromxpath'] = array('niceName' => 'fromXpath', 'shortHelp' => 'select which part of the config to inject in destination');
-        $this->supportedArguments['toxpath'] = array('niceName' => 'toXpath', 'shortHelp' => 'inject xml directly in some parts of the candidate config');
-        $this->supportedArguments['loadafterupload'] = array('niceName' => 'loadAfterUpload', 'shortHelp' => 'load configuration after upload happened');
         $this->supportedArguments['help'] = array('niceName' => 'help', 'shortHelp' => 'this message');
         $this->supportedArguments['apitimeout'] = array('niceName' => 'apiTimeout', 'shortHelp' => 'in case API takes too long time to answer, increase this value (default=60)');
-        $this->supportedArguments['preservemgmtconfig'] = array('niceName' => 'preserveMgmtConfig', 'shortHelp' => "tries to preserve most of management settings like IP address, admins and passwords etc. note it's not a smart feature and may break your config a bit and requires manual fix in GUI before you can actually commit");
-        $this->supportedArguments['preservemgmtusers'] = array('niceName' => 'preserveMgmtUsers', 'shortHelp' => "preserve administrators so they are not overwritten and you don't loose access after a commit");
-        $this->supportedArguments['preservemgmtsystem'] = array('niceName' => 'preserveMgmtSystem', 'shortHelp' => 'preserves what is in /config/devices/entry/deviceconfig/system');
-        $this->supportedArguments['injectuseradmin2'] = array('niceName' => 'injectUserAdmin2', 'shortHelp' => 'adds user "admin2" with password "admin" in administrators');
-        $this->supportedArguments['extrafiltersout'] = array('niceName' => 'extraFiltersOut', 'shortHelp' => 'list of xpath separated by | character that will be stripped from the XML before going to output');
+
     }
 
     function check_region( $name, $object, &$address_region )

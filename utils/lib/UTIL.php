@@ -18,6 +18,7 @@ require_once(dirname(__FILE__)."/PREDEFINED.php");
 require_once(dirname(__FILE__)."/UPLOAD.php");
 require_once(dirname(__FILE__)."/XMLISSUE.php");
 require_once(dirname(__FILE__)."/DIFF.php");
+require_once(dirname(__FILE__)."/OVERRIDEFINDER.php");
 
 class UTIL
 {
