@@ -18,6 +18,7 @@ UTILS:
 
 BUGFIX:
 * pa_securityprofile-edit | bugfix to handle JSON output for shared and other DG/VSYS correctly
+* pa_xml-issue-detector | bugfix to handle ip-wildcard not as as missing IP configuration
 
 GENERAL:
 * framework | finalise renaming to PAN-OS-PHP
