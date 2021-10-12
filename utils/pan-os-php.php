@@ -36,28 +36,40 @@ $supportedUTILTypes = array(
     "key-manager",
     "address-merger", "addressgroup-merger",
     "service-merger", "servicegroup-merger",
-    "tag-merger"
+    "tag-merger",
+
+    "override-finder",
+    "diff",
+    "upload",
+    "xml-issue"
     );
 //Todo: not supported scripts:
 //custom
 /*
  * appid-enabler
+ * pan-config-size
  * bpa-generator
- * csv-import
  * panXML_op_JSON
+ * csv-import
+
+
  * register-ip-mgr
  * util get action filter
- * pan-config-size
+
 */
 //open
 /*
- * override-finder
- * pan-diff
- *
- *
  * checkpoint-exclude
  * grp-static-to-dynamic
  * userid-mgr
+ */
+//more JSON support needed
+/*
+ * override-finder
+ * pan-diff
+ * all object merger
+ * upload
+ * xmlissue
  */
 $supportedArguments = array();
 $usageMsg = PH::boldText('USAGE: ') . "php " . __FILE__ . " in=[filename]|[api://IP]|[api://serial@IP] type=address";
@@ -124,6 +136,15 @@ elseif( isset(PH::$args['type']) )
         $type == "tag-merger"
     )
         $util = new MERGER($type, $argv, __FILE__." type=".$type);
+
+    elseif( $type == "override-finder" )
+        $util = new OVERRIDEFINDER($type, $argv, __FILE__);
+    elseif( $type == "diff" )
+        $util = new DIFF($type, $argv, __FILE__);
+    elseif( $type == "upload" )
+        $util = new UPLOAD($type, $argv, __FILE__);
+    elseif( $type == "xml-issue" )
+        $util = new XMLISSUE($type, $argv, __FILE__);
 
     else
         $util = new UTIL($type, $argv, __FILE__." type=".$type);

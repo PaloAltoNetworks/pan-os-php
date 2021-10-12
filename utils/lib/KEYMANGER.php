@@ -148,7 +148,9 @@ class KEYMANGER extends UTIL
                     } catch(Exception $e)
                     {
                         PH::disableExceptionSupport();
-                        PH::print_stdout( "   ***** API Error occured : " . $e->getMessage() );
+                        $string = "   ***** API Error occured : " . $e->getMessage();
+                        PH::$JSON_TMP[$checkHost]['error'] = $string;
+                        PH::print_stdout( $string );
                     }
 
                     PH::disableExceptionSupport();
