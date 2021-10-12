@@ -81,11 +81,18 @@ else
 
 
 $supportedRoute = array(
-    'stats',
-    'address', 'service', 'tag', 'rule', 'device', 'securityprofile', 'securityprofilegroup',
-    'zone', 'schedule', 'interface', 'virtualwire', 'routing', 'application', 'threat',
-    'key-manager',
-    'address-merger', 'addressgroup-merger', 'service-merger', 'servicegroup-merger', 'tag-merger' );
+    "stats",
+    "address", "service", "tag", "rule", "device", "securityprofile", "securityprofilegroup",
+    "zone", "schedule", "interface", "virtualwire", "routing", "application", "threat",
+    "key-manager",
+    "address-merger", "addressgroup-merger", "service-merger", "servicegroup-merger", "tag-merger",
+    "override-finder",
+    "diff",
+    "upload",
+    "xml-issue",
+    "appid-enabler",
+    "config-size"
+    );
 sort($supportedRoute );
 
 // catch this here, we don't support many routes yet
@@ -298,5 +305,19 @@ function UTILcaller( $url_pieces, $argv )
             || $url_pieces[1] == "tag-merger"
         )
             $util = new MERGER($url_pieces[1], $argv, __FILE__);
+
+        elseif( $url_pieces[1] == "override-finder" )
+            $util = new OVERRIDEFINDER($url_pieces[1], $argv, __FILE__);
+        elseif( $url_pieces[1] == "diff" )
+            $util = new DIFF($url_pieces[1], $argv, __FILE__);
+        elseif( $url_pieces[1] == "upload" )
+            $util = new UPLOAD($url_pieces[1], $argv, __FILE__);
+        elseif( $url_pieces[1] == "xml-issue" )
+            $util = new XMLISSUE($url_pieces[1], $argv, __FILE__);
+        elseif( $url_pieces[1] == "appid-enabler" )
+            $util = new APPIDENABLER($url_pieces[1], $argv, __FILE__);
+        elseif( $url_pieces[1] == "config-size" )
+            $util = new CONFIGSIZE($url_pieces[1], $argv, __FILE__);
+
     }
 }
