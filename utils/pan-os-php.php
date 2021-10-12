@@ -42,12 +42,12 @@ $supportedUTILTypes = array(
     "diff",
     "upload",
     "xml-issue"
+    #"appid-enalber"
     );
-//Todo: not supported scripts:
+//Todo: API not supported scripts:
 //custom
 /*
- * appid-enabler
- * pan-config-size
+
  * bpa-generator
  * panXML_op_JSON
  * csv-import
@@ -61,13 +61,15 @@ $supportedUTILTypes = array(
  * grp-static-to-dynamic
  * userid-mgr
  */
-//more JSON support needed
+//Todo: more JSON support needed
 /*
+ * appid-enabler
  * override-finder
  * pan-diff
  * all object merger
  * upload
  * xmlissue
+ * pan-config-size
  */
 $supportedArguments = array();
 $usageMsg = PH::boldText('USAGE: ') . "php " . __FILE__ . " in=[filename]|[api://IP]|[api://serial@IP] type=address";

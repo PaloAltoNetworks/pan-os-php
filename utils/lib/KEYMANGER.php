@@ -16,13 +16,13 @@ class KEYMANGER extends UTIL
         $this->arg_validation();
 
 
-        $this->mainKEY();
+        $this->main();
 
 
         $this->endOfScript();
     }
 
-    public function mainKEY()
+    public function main()
     {
 
         $noArgProvided = TRUE;
