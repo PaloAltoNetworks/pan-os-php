@@ -468,6 +468,8 @@ class PanAPIConnector
                 $apiKey = $res->textContent;
 
                 PH::print_stdout( " OK, key is $apiKey");
+                PH::$JSON_TMP[$host]['status'] = "OK";
+                PH::$JSON_TMP[$host]['key'] = $apiKey;
                 PH::print_stdout("");
 
             }
@@ -483,7 +485,7 @@ class PanAPIConnector
 
         if( $checkConnectivity )
         {
-            $connector->testConnectivity();
+            $connector->testConnectivity( $host );
             PH::print_stdout("");
             if( !$wrongLogin )
                 self::$savedConnectors[] = $connector;
@@ -496,13 +498,15 @@ class PanAPIConnector
         return $connector;
     }
 
-    public function testConnectivity()
+    public function testConnectivity( $checkHost = "" )
     {
         PH::print_stdout( " - Testing API connectivity... ");
 
         $this->refreshSystemInfos( true );
 
         PH::print_stdout( " - PAN-OS version: ".$this->info_PANOS_version );
+        PH::$JSON_TMP[$checkHost]['panos']['version'] = $this->info_PANOS_version;
+        PH::$JSON_TMP[$checkHost]['panos']['type'] = $this->info_deviceType;
     }
 
 

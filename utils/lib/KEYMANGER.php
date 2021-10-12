@@ -59,7 +59,13 @@ class KEYMANGER extends UTIL
         {
             $noArgProvided = FALSE;
             $deleteHost = PH::$args['delete'];
-            PH::print_stdout( " - requested to delete Host/IP '{$deleteHost}'");
+
+            $string = "requested to delete Host/IP '{$deleteHost}'";
+            PH::print_stdout( " - ".$string );
+            PH::$JSON_TMP = array();
+            PH::$JSON_TMP['header'] = $string;
+
+
             if( !is_string($deleteHost) )
                 derr("argument of 'delete' must be a string , wrong input provided");
 
@@ -69,25 +75,46 @@ class KEYMANGER extends UTIL
                 if( $connector->apihost == $deleteHost )
                 {
                     $foundConnector = TRUE;
-                    PH::print_stdout( " - found and deleted" );
+                    $string = "found and deleted";
+                    PH::print_stdout( " - ".$string );
+
+                    PH::$JSON_TMP[ $deleteHost ]['name'] = $deleteHost;
+                    PH::$JSON_TMP[ $deleteHost ]['status'] = $string;
+
                     unset(PanAPIConnector::$savedConnectors[$cIndex]);
                     PanAPIConnector::saveConnectorsToUserHome();
                 }
             }
+
             if( !$foundConnector )
-                PH::print_stdout( "\n\n **WARNING** no host or IP named '{$deleteHost}' was found so it could not be deleted" );
+            {
+                $string = "**WARNING** no host or IP named '{$deleteHost}' was found so it could not be deleted";
+                PH::print_stdout( "\n\n ".$string );
+                PH::$JSON_TMP[ $deleteHost ]['name'] = $deleteHost;
+                PH::$JSON_TMP[ $deleteHost ]['status'] = $string;
+            }
+
+            PH::print_stdout( PH::$JSON_TMP, false, 'delete' );
+            PH::$JSON_TMP = array();
         }
 
         if( isset(PH::$args['add']) )
         {
             $noArgProvided = FALSE;
             $addHost = PH::$args['add'];
-            PH::print_stdout( " - requested to add Host/IP '{$addHost}'");
+            $string = "requested to add Host/IP '{$addHost}'";
+            PH::print_stdout( " - ".$string );
+            PH::$JSON_TMP = array();
+            PH::$JSON_TMP['header'] = $string;
+            PH::$JSON_TMP[$addHost]['name'] = $addHost;
 
             if( !isset(PH::$args['apikey']) )
                 $connector = PanAPIConnector::findOrCreateConnectorFromHost($addHost, null, TRUE, TRUE, $hiddenPW, $debugAPI, $cliUSER, $cliPW);
             else
                 $connector = PanAPIConnector::findOrCreateConnectorFromHost($addHost, PH::$args['apikey']);
+
+            PH::print_stdout( PH::$JSON_TMP, false, 'add' );
+            PH::$JSON_TMP = array();
         }
 
         if( isset(PH::$args['test']) )
@@ -95,12 +122,16 @@ class KEYMANGER extends UTIL
             $noArgProvided = FALSE;
             $checkHost = PH::$args['test'];
 
+            PH::$JSON_TMP = array();
+            PH::$JSON_TMP['header'] = "requested to test Host/IP";
+
             if( $checkHost == 'any' || $checkHost == 'all' )
             {
                 foreach( PanAPIConnector::$savedConnectors as $connector )
                 {
                     $checkHost = $connector->apihost;
                     PH::print_stdout( " - requested to test Host/IP '{$checkHost}'");
+                    PH::$JSON_TMP[$checkHost]['name'] = $checkHost;
 
                     PH::enableExceptionSupport();
                     try
@@ -113,7 +144,7 @@ class KEYMANGER extends UTIL
                         if( $debugAPI )
                             $connector->showApiCalls = true;
 
-                        $connector->testConnectivity();
+                        $connector->testConnectivity( $checkHost );
                     } catch(Exception $e)
                     {
                         PH::disableExceptionSupport();
@@ -127,6 +158,8 @@ class KEYMANGER extends UTIL
             else
             {
                 PH::print_stdout( " - requested to test Host/IP '{$checkHost}'");
+                PH::$JSON_TMP[$checkHost]['name'] = $checkHost;
+
                 if( !isset(PH::$args['apikey']) )
                     $connector = PanAPIConnector::findOrCreateConnectorFromHost($checkHost, null, TRUE, TRUE, $hiddenPW, $debugAPI, $cliUSER, $cliPW);
                 else
@@ -135,14 +168,19 @@ class KEYMANGER extends UTIL
                 if( $debugAPI )
                     $connector->showApiCalls = true;
 
-                $connector->testConnectivity();
+                $connector->testConnectivity( $checkHost );
 
                 PH::print_stdout("");
             }
+            PH::print_stdout( PH::$JSON_TMP, false, 'test' );
+            PH::$JSON_TMP = array();
         }
 
         $keyCount = count(PanAPIConnector::$savedConnectors);
-        PH::print_stdout( "Listing available keys:");
+        $string = "Listing available keys:";
+        PH::print_stdout( $string );
+        PH::$JSON_TMP = array();
+        PH::$JSON_TMP['header'] = $string;
 
         $connectorList = array();
         foreach( PanAPIConnector::$savedConnectors as $connector )
@@ -159,7 +197,13 @@ class KEYMANGER extends UTIL
             $host = str_pad($connector->apihost, 15, ' ', STR_PAD_RIGHT);
 
             PH::print_stdout( " - Host {$host}: key={$key}");
+
+            PH::$JSON_TMP[$host]['name'] = $host;
+            PH::$JSON_TMP[$host]['key'] = $key;
+
         }
+        PH::print_stdout( PH::$JSON_TMP, false, 'api-key' );
+        PH::$JSON_TMP = array();
 
         if( $noArgProvided )
         {

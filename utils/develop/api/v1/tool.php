@@ -80,6 +80,24 @@ else
     $url_pieces = array();
 
 
+$supportedRoute = array(
+    'stats',
+    'address', 'service', 'tag', 'rule', 'device', 'securityprofile', 'securityprofilegroup',
+    'zone', 'schedule', 'interface', 'virtualwire', 'routing', 'application', 'threat',
+    'key-manager',
+    'address-merger', 'addressgroup-merger', 'service-merger', 'servicegroup-merger', 'tag-merger' );
+sort($supportedRoute );
+
+// catch this here, we don't support many routes yet
+if( empty( $url_pieces) || ( isset($url_pieces[1]) && !in_array( $url_pieces[1], $supportedRoute ) ) )
+{
+    $example = "http://localhost:8082/utils/develop/api/v1/tool.php/address?shadow-json";
+    $message = 'Unknown endpoint. supported: '.implode( ", ", $supportedRoute ).' Example: '.$example;
+
+    throw new Exception($message, 404);
+}
+
+
 $argv = array();
 $argv[0] = "Standard input code";
 
@@ -102,21 +120,7 @@ else{
 }
 
 
-$supportedRoute = array(
-    'stats',
-    'address', 'service', 'tag', 'rule', 'device', 'securityprofile', 'securityprofilegroup',
-    'zone', 'schedule', 'interface', 'virtualwire', 'routing', 'application', 'threat',
-    'key-manager',
-    'address-merger', 'addressgroup-merger', 'service-merger', 'servicegroup-merger', 'tag-merger' );
-sort($supportedRoute );
 
-// catch this here, we don't support many routes yet
-if( empty( $url_pieces) || ( isset($url_pieces[1]) && !in_array( $url_pieces[1], $supportedRoute ) ) )
-{
-    $example = "http://localhost:8082/utils/develop/api/v1/tool.php/address?shadow-json";
-    $message = 'Unknown endpoint. supported: '.implode( ", ", $supportedRoute ).' Example: '.$example;
-    throw new Exception($message, 404);
-}
 
 
 
