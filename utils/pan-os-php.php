@@ -43,6 +43,7 @@ $supportedUTILTypes = array(
     "upload",
     "xml-issue"
     #"appid-enalber"
+    #"config-size"
     );
 //Todo: API not supported scripts:
 //custom
@@ -58,7 +59,7 @@ $supportedUTILTypes = array(
 //open
 /*
  * checkpoint-exclude
- * grp-static-to-dynamic
+ * grp-static-to-dynamic //very old; create action for pa_address-edit
  * userid-mgr
  */
 //Todo: more JSON support needed
