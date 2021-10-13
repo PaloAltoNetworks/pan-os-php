@@ -27,12 +27,11 @@ require_once dirname(__FILE__)."/../utils/lib/UTIL.php";
 PH::processCliArgs();
 
 $supportedUTILTypes = array(
-    "address", "service", "tag", "schedule", "application", "threat", "securityprofilegroup",
-    "rule",
-    "securityprofile",
     "stats",
-    "device",
-    "routing", "zone", "interface", "virtualwire",
+    "address", "service", "tag", "schedule", "application", "threat",
+    "rule",
+    "device", "securityprofile", "securityprofilegroup",
+    "zone",  "interface", "virtualwire", "routing",
     "key-manager",
     "address-merger", "addressgroup-merger",
     "service-merger", "servicegroup-merger",
@@ -42,7 +41,8 @@ $supportedUTILTypes = array(
     "upload",
     "xml-issue",
     "appid-enabler",
-    "config-size"
+    "config-size",
+    "download-predefined"
     );
 //Todo: API not supported scripts:
 //custom
@@ -121,7 +121,11 @@ elseif( isset(PH::$args['type']) )
     elseif( $type == "securityprofile" )
         $util = new SECURITYPROFILEUTIL($type, $argv, __FILE__." type=".$type);
 
-    elseif( $type == "routing" | $type == "zone" | $type == "interface" | $type == "virtualwire" )
+    elseif( $type == "zone"
+        || $type == "interface"
+        || $type == "routing"
+        || $type == "virtualwire"
+    )
         $util = new NETWORKUTIL($type, $argv, __FILE__." type=".$type);
 
     elseif( $type == "device" )
@@ -130,9 +134,11 @@ elseif( isset(PH::$args['type']) )
     elseif( $type == "key-manager" )
         $util = new KEYMANGER($type, $argv, __FILE__." type=".$type);
 
-    elseif( $type == "address-merger" || $type == "addressgroup-merger" ||
-        $type == "service-merger" || $type == "servicegroup-merger" ||
-        $type == "tag-merger"
+    elseif( $type == "address-merger"
+        || $type == "addressgroup-merger"
+        || $type == "service-merger"
+        || $type == "servicegroup-merger"
+        || $type == "tag-merger"
     )
         $util = new MERGER($type, $argv, __FILE__." type=".$type);
 
@@ -144,6 +150,14 @@ elseif( isset(PH::$args['type']) )
         $util = new UPLOAD($type, $argv, __FILE__);
     elseif( $type == "xml-issue" )
         $util = new XMLISSUE($type, $argv, __FILE__);
+
+    elseif( $type == "appid-enabler" )
+        $util = new APPIDENABLER($type, $argv, __FILE__);
+    elseif( $type == "config-size" )
+        $util = new CONFIGSIZE($type, $argv, __FILE__);
+
+    elseif( $type == "download-predefined" )
+        $util = new PREDEFINED($type, $argv, __FILE__);
 
     else
         $util = new UTIL($type, $argv, __FILE__." type=".$type);

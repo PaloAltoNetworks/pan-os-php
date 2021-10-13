@@ -6,6 +6,8 @@ class XMLISSUE extends UTIL
     public $utilType = null;
 
 
+    //Todo: optimisation needed to use class UTIL available parent methods
+
     public function utilStart()
     {
         $this->usageMsg = PH::boldText("USAGE: ") . "php " . basename(__FILE__) . " in=api://[MGMT-IP-Address] ";
@@ -15,11 +17,10 @@ class XMLISSUE extends UTIL
 
 
         PH::processCliArgs();
-
         $this->help(PH::$args);
+        $this->init_arguments();
+        $this->load_config();
 
-        #$this->arg_validation();
-        #$this->init_arguments();
 
         $this->main();
 
@@ -34,110 +35,9 @@ class XMLISSUE extends UTIL
     {
 
 
-        $configInput = null;
-        $configOutput = null;
-
-
-        if( !isset(PH::$args['in']) )
-            derr("missing 'in' argument");
-
-
-        if( !isset(PH::$args['out']) )
-        {
-            PH::$args['out'] = "/dev/null";
-        }
-        if( isset(PH::$args['out']) )
-        {
-            $configOutput = PH::$args['out'];
-            if( !is_string($configOutput) || strlen($configOutput) < 1 )
-                derr('"out" argument is not a valid string');
-        }
-        else
-        {
-            #derr('"out" is missing from arguments');
-        }
-
-
-
-        if( isset(PH::$args['debugapi']) )
-            $debugAPI = TRUE;
-        else
-            $debugAPI = FALSE;
-
-        $configInput = PH::processIOMethod(PH::$args['in'], TRUE);
-        if( $configInput['status'] == 'fail' )
-            derr($configInput['msg']);
-
-
-        $apiMode = FALSE;
-
-        if( $configInput['type'] == 'file' )
-        {
-            if( !file_exists($configInput['filename']) )
-                derr("file '{$configInput['filename']}' not found");
-
-            $xmlDoc = new DOMDocument();
-            if( !$xmlDoc->load($configInput['filename'], 4194304) )
-                derr("error while reading xml config file");
-
-        }
-        elseif( $configInput['type'] == 'api' )
-        {
-            $apiMode = TRUE;
-            /** @var PanAPIConnector $connector */
-            $connector = $configInput['connector'];
-            if( $debugAPI )
-                $connector->setShowApiCalls(TRUE);
-            PH::print_stdout( " - Downloading config from API... ");
-            $xmlDoc = $connector->getRunningConfig();
-
-        }
-        else
-            derr('not supported yet');
-
-
-//
-// Determine if PANOS or Panorama
-//
-        $xpathResult = DH::findXPath('/config', $xmlDoc);
-        $xpathResult = $xpathResult->item(0);
-        $fawkes_config_version = DH::findAttribute('fawkes-config-version', $xpathResult);
-        if( $fawkes_config_version != null )
-        {
-            PH::print_stdout( " - FAWKES-CONFIG-VERSION: ".$fawkes_config_version);
-            PH::print_stdout( array( $fawkes_config_version ), false, "fawkes-config-version" );
-        }
-        else
-        {
-            $fawkes_config_version = DH::findAttribute('fawkes-config', $xpathResult);
-            if( $fawkes_config_version != null )
-            {
-                PH::print_stdout( " - FAWKES-CONFIG-VERSION: ".$fawkes_config_version);
-                PH::print_stdout( array( $fawkes_config_version ), false, "fawkes-config-version" );
-            }
-
-        }
-
-        $xpathResult = DH::findXPath('/config/devices/entry/vsys', $xmlDoc);
-        if( $xpathResult === FALSE )
-            derr('XPath error happened');
-        if( $xpathResult->length < 1 )
-        {
-            if( $fawkes_config_version != null )
-                $configType = 'fawkes';
-            else
-                $configType = 'panorama';
-        }
-
-        else
-            $configType = 'panos';
-        unset($xpathResult);
-
-        PH::print_stdout( " - Detected platform type is '{$configType}'");
-
 ///////////////////////////////////////////////////////////
 //clean stage config / delete all <deleted> entries
-        $xpath = new DOMXpath($xmlDoc);
+        $xpath = new DOMXpath($this->xmlDoc);
 
 // example 1: for everything with an id
         $elements = $xpath->query("//deleted");
@@ -221,18 +121,18 @@ class XMLISSUE extends UTIL
 
         /** @var DOMElement[] $locationNodes */
         $locationNodes = array();
-        $tmp_shared_node = DH::findXPathSingleEntry('/config/shared', $xmlDoc);
+        $tmp_shared_node = DH::findXPathSingleEntry('/config/shared', $this->xmlDoc);
         if( $tmp_shared_node !== false )
             $locationNodes['shared'] = $tmp_shared_node;
 
-        if( $configType == 'panos' )
-            $tmpNodes = DH::findXPath('/config/devices/entry/vsys/entry', $xmlDoc);
-        elseif( $configType == 'panorama' )
-            $tmpNodes = DH::findXPath('/config/devices/entry/device-group/entry', $xmlDoc);
-        elseif( $configType == 'fawkes' )
+        if( $this->configType == 'panos' )
+            $tmpNodes = DH::findXPath('/config/devices/entry/vsys/entry', $this->xmlDoc);
+        elseif( $this->configType == 'panorama' )
+            $tmpNodes = DH::findXPath('/config/devices/entry/device-group/entry', $this->xmlDoc);
+        elseif( $this->configType == 'fawkes' )
         {
             $search_array = array( '/config/devices/entry/container/entry','/config/devices/entry/device/cloud/entry' );
-            $tmpNodes = DH::findXPath($search_array, $xmlDoc);
+            $tmpNodes = DH::findXPath($search_array, $this->xmlDoc);
 
         }
 
@@ -1146,7 +1046,7 @@ class XMLISSUE extends UTIL
             ///
             ///
             PH::print_stdout( " - Scanning for /config/readonly/devices/entry[@name='localhost.localdomain']/device-group/ for duplicate address-group ...");
-            $tmpReadOnly = DH::findXPath("/config/readonly/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='".$locationName."']", $xmlDoc);
+            $tmpReadOnly = DH::findXPath("/config/readonly/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='".$locationName."']", $this->xmlDoc);
             $readOnly = array();
 
             foreach( $tmpReadOnly as $node )
@@ -1254,7 +1154,7 @@ class XMLISSUE extends UTIL
 ///
 ///
         PH::print_stdout( " - Scanning for /config/readonly/shared for duplicate address-group ...");
-        $tmpReadOnly = DH::findXPath("/config/readonly/shared", $xmlDoc);
+        $tmpReadOnly = DH::findXPath("/config/readonly/shared", $this->xmlDoc);
         $readOnly = array();
 
         foreach( $tmpReadOnly as $node )
@@ -1334,7 +1234,7 @@ class XMLISSUE extends UTIL
             PH::print_stdout( "");
         }
 
-        if( $configInput['type'] == 'api' )
+        if( $this->configInput['type'] == 'api' )
             PH::print_stdout( "\n\nINPUT mode API detected: FIX is ONLY saved in offline file.");
     }
 

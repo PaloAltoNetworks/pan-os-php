@@ -82,16 +82,21 @@ else
 
 $supportedRoute = array(
     "stats",
-    "address", "service", "tag", "rule", "device", "securityprofile", "securityprofilegroup",
-    "zone", "schedule", "interface", "virtualwire", "routing", "application", "threat",
+    "address", "service", "tag", "schedule", "application", "threat",
+    "rule",
+    "device", "securityprofile", "securityprofilegroup",
+    "zone",  "interface", "virtualwire", "routing",
     "key-manager",
-    "address-merger", "addressgroup-merger", "service-merger", "servicegroup-merger", "tag-merger",
+    "address-merger", "addressgroup-merger",
+    "service-merger", "servicegroup-merger",
+    "tag-merger",
     "override-finder",
     "diff",
     "upload",
     "xml-issue",
     "appid-enabler",
-    "config-size"
+    "config-size",
+    "download-predefined"
     );
 sort($supportedRoute );
 
@@ -115,7 +120,8 @@ if( !isset($_GET['in']) && isset( $_FILES['configInput'] ) ){
 }
 elseif( isset($_GET['in']) )
 {
-    $argv[] = "out=true";
+    if( !isset($_GET['out']) )
+        $argv[] = "out=true";
 }
 elseif( isset($_GET['help']) || isset($_GET['listfilters']) || isset($_GET['listactions']) || $url_pieces[1] == "key-manager" )
 {
@@ -266,24 +272,14 @@ function UTILcaller( $url_pieces, $argv )
         }
 
         header("Content-Type: application/json");
-        if( $url_pieces[1] == 'stats' )
-            $util = new STATSUTIL( $url_pieces[1], $argv, __FILE__);
-
-        elseif( $url_pieces[1] == 'address'
-            || $url_pieces[1] == 'service'
-            || $url_pieces[1] == 'tag'
-            || $url_pieces[1] == 'schedule'
-            || $url_pieces[1] == 'securityprofilegroup'
-            || $url_pieces[1] == 'application'
-            || $url_pieces[1] == 'threat'
-        )
-            $util = new UTIL( $url_pieces[1], $argv, __FILE__);
-
-        elseif( $url_pieces[1] == 'rule' )
+        if( $url_pieces[1] == 'rule' )
             $util = new RULEUTIL( $url_pieces[1], $argv, __FILE__);
 
-        elseif( $url_pieces[1] == 'device' )
-            $util = new DEVICEUTIL( $url_pieces[1], $argv, __FILE__);
+        elseif( $url_pieces[1] == 'stats' )
+            $util = new STATSUTIL( $url_pieces[1], $argv, __FILE__);
+
+        elseif( $url_pieces[1] == 'securityprofile' )
+            $util = new SECURITYPROFILEUTIL( $url_pieces[1], $argv, __FILE__);
 
         elseif( $url_pieces[1] == 'zone'
             || $url_pieces[1] == 'interface'
@@ -292,8 +288,8 @@ function UTILcaller( $url_pieces, $argv )
         )
             $util = new NETWORKUTIL( $url_pieces[1], $argv, __FILE__);
 
-        elseif( $url_pieces[1] == 'securityprofile' )
-            $util = new SECURITYPROFILEUTIL( $url_pieces[1], $argv, __FILE__);
+        elseif( $url_pieces[1] == 'device' )
+            $util = new DEVICEUTIL( $url_pieces[1], $argv, __FILE__);
 
         elseif( $url_pieces[1] == "key-manager" )
             $util = new KEYMANGER($url_pieces[1], $argv, __FILE__);
@@ -314,10 +310,24 @@ function UTILcaller( $url_pieces, $argv )
             $util = new UPLOAD($url_pieces[1], $argv, __FILE__);
         elseif( $url_pieces[1] == "xml-issue" )
             $util = new XMLISSUE($url_pieces[1], $argv, __FILE__);
+
         elseif( $url_pieces[1] == "appid-enabler" )
             $util = new APPIDENABLER($url_pieces[1], $argv, __FILE__);
         elseif( $url_pieces[1] == "config-size" )
             $util = new CONFIGSIZE($url_pieces[1], $argv, __FILE__);
+
+        elseif( $url_pieces[1] == "download-predefined" )
+            $util = new PREDEFINED($url_pieces[1], $argv, __FILE__);
+
+        elseif( $url_pieces[1] == 'address'
+            || $url_pieces[1] == 'service'
+            || $url_pieces[1] == 'tag'
+            || $url_pieces[1] == 'schedule'
+            || $url_pieces[1] == 'securityprofilegroup'
+            || $url_pieces[1] == 'application'
+            || $url_pieces[1] == 'threat'
+        )
+            $util = new UTIL( $url_pieces[1], $argv, __FILE__);
 
     }
 }
