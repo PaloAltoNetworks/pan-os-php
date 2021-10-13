@@ -170,11 +170,15 @@ class FawkesConf
         else
         {
             if( isset($this->connector) && $this->connector !== null )
+            {
                 $version = $this->connector->getSoftwareVersion();
-            else
-                derr('cannot find PANOS version used for make this config');
+                $this->version = $version['version'];
+            }
 
-            $this->version = $version['version'];
+            else
+                $this->version = "not defined";
+
+
         }
 
 
@@ -218,18 +222,19 @@ class FawkesConf
         $containerToParent = array();
         $parentToDG = array();
 
-        foreach( $containerMetaDataNode->childNodes as $node )
-        {
-            if( $node->nodeType != XML_ELEMENT_NODE )
-                continue;
+        if( $containerMetaDataNode !== false )
+            foreach( $containerMetaDataNode->childNodes as $node )
+            {
+                if( $node->nodeType != XML_ELEMENT_NODE )
+                    continue;
 
-            $containerName = DH::findAttribute('name', $node);
-            if( $containerName === FALSE )
-                derr("Container name attribute not found in container-meta-data", $node);
+                $containerName = DH::findAttribute('name', $node);
+                if( $containerName === FALSE )
+                    derr("Container name attribute not found in container-meta-data", $node);
 
-            $containerLoadOrder[] = $containerName;
-            //parent information not available in fawkes read-only; direct
-        }
+                $containerLoadOrder[] = $containerName;
+                //parent information not available in fawkes read-only; direct
+            }
 
 
 

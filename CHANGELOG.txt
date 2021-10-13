@@ -6,6 +6,7 @@ UTILS:
 * pa_appid-enabler / pa_config-size / pa_upload-config - improve to use parent available methods from class UTIL
 
 BUGFIX:
+* pa_appid-enabler | bugfix
 
 GENERAL:
 
