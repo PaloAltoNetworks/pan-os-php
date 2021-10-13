@@ -94,6 +94,7 @@ class APPIDENABLER extends UTIL
             PH::print_stdout( "----------------" );
             PH::print_stdout( "name: " . DH::findAttribute('name', $app_status) );
 
+            $text = "";
 
             if( $this->actions == 'display' )
                 PH::print_stdout( " - status: " . DH::findAttribute('status', $app_status) );
