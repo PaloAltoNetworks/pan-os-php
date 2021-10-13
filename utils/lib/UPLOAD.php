@@ -5,6 +5,7 @@ class UPLOAD extends UTIL
 {
     public $utilType = null;
 
+    //Todo: optimisation needed to use class UTIL available parent methods
 
     public function utilStart()
     {
@@ -108,10 +109,10 @@ class UPLOAD extends UTIL
 
         PH::print_stdout( " - Opening/downloading original configuration...");
 
-//
-// What kind of config input do we have.
-//     File or API ?
-//
+        //
+        // What kind of config input do we have.
+        //     File or API ?
+        //
         $configInput = PH::processIOMethod($configInput, TRUE);
 
         if( $configInput['status'] == 'fail' )

@@ -3,8 +3,8 @@
 
 class APPIDENABLER extends UTIL
 {
-    public $utilType = null;
-
+    public $cycleConnectedFirewalls = FALSE;
+    public $actions = 'display';
 
     public function utilStart()
     {
@@ -16,30 +16,27 @@ class APPIDENABLER extends UTIL
 
         $this->main();
 
+        $this->save_our_work();
 
         $this->endOfScript();
     }
 
     public function main()
     {
-        $actions = null;
-
         ##########################################
         ##########################################
 
         if( isset(PH::$args['cycleconnectedfirewalls']) )
-            $cycleConnectedFirewalls = TRUE;
-        else
-            $cycleConnectedFirewalls = FALSE;
+            $this->cycleConnectedFirewalls = TRUE;
 
         if( !isset(PH::$args['actions']) || strtolower(PH::$args['actions']) == 'display' )
-            $actions = 'display';
+            $this->actions = 'display';
         elseif( strtolower(PH::$args['actions']) == 'enable' )
-            $actions = 'enable';
+            $this->actions = 'enable';
 
         ##########################################
 
-        if( $cycleConnectedFirewalls && $this->configType == 'panorama' )
+        if( $this->cycleConnectedFirewalls && $this->configType == 'panorama' )
         {
             $firewallSerials = $this->pan->connector->panorama_getConnectedFirewallsSerials();
 
@@ -54,13 +51,13 @@ class APPIDENABLER extends UTIL
                     $tmpConnector->setShowApiCalls(TRUE);
                 $this->xmlDoc = $tmpConnector->getCandidateConfig();
 
-                $this->disable_appid($actions, $this->xmlDoc, $this->configInput, $tmpConnector);
+                $this->disable_appid( $tmpConnector);
             }
         }
         else
         {
             $this->load_config();
-            $this->disable_appid($actions, $this->xmlDoc, $this->configInput, $this->pan->connector);
+            $this->disable_appid( $this->pan->connector);
         }
 
         ##########################################
@@ -68,7 +65,7 @@ class APPIDENABLER extends UTIL
         if( !PH::$shadow_json )
             PH::print_stdout( "" );
 
-        $this->save_our_work();
+
     }
 
     public function supportedArguments()
@@ -80,9 +77,9 @@ class APPIDENABLER extends UTIL
         $this->supportedArguments['actions'] = array('niceName' => 'Actions', 'shortHelp' => 'action to apply on each disabled app-id. ie: actions=display / actions=enable', 'argDesc' => 'action:arg1[,arg2]');
     }
 
-    function disable_appid($actions, $xmlDoc1, $configInput, $Connector)
+    function disable_appid( $Connector)
     {
-        $tmp_application_status = DH::findXPath('/config/shared/application-status/entry', $xmlDoc1);
+        $tmp_application_status = DH::findXPath('/config/shared/application-status/entry', $this->xmlDoc);
 
         if( $tmp_application_status->length == 0 )
         {
@@ -92,22 +89,21 @@ class APPIDENABLER extends UTIL
                 PH::print_stdout( PH::boldText("\nNO disabled APP-IDs available\n") );
         }
 
-
         foreach( $tmp_application_status as $app_status )
         {
             PH::print_stdout( "----------------" );
             PH::print_stdout( "name: " . DH::findAttribute('name', $app_status) );
 
 
-            if( $actions == 'display' )
+            if( $this->actions == 'display' )
                 PH::print_stdout( " - status: " . DH::findAttribute('status', $app_status) );
-            elseif( $actions == 'enable' )
+            elseif( $this->actions == 'enable' )
             {
                 $apiArgs = array();
                 $apiArgs['type'] = 'op';
                 $apiArgs['cmd'] = '<request><set-application-status-recursive><application>' . DH::findAttribute('name', $app_status) . '</application><status>enabled</status></set-application-status-recursive></request>';
 
-                if( $configInput['type'] == 'api' )
+                if( $this->configInput['type'] == 'api' )
                 {
                     $response = $Connector->sendRequest($apiArgs);
                     $text = " - status: enable";
@@ -117,7 +113,6 @@ class APPIDENABLER extends UTIL
                     //Todo: remove the entry in the XML, then offline mode should be supported
                     derr("this script is working only in API mode\n");
                 }
-
             }
 
             PH::print_stdout( $text );

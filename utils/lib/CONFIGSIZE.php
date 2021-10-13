@@ -5,6 +5,13 @@ class CONFIGSIZE extends UTIL
 {
     public $utilType = null;
 
+    public $minKiloByte = 1000;
+    public $pad_length = 60;
+    public $showalldg = false;
+
+    public $lineReturn = false;
+    public $indentingXml = -1;
+    public $indentingXmlIncreament = 0;
 
     public function utilStart()
     {
@@ -16,6 +23,7 @@ class CONFIGSIZE extends UTIL
 
         $this->main();
 
+        $this->save_our_work();
 
         $this->endOfScript();
     }
@@ -25,27 +33,22 @@ class CONFIGSIZE extends UTIL
         $file = null;
 ##########################################
 ##########################################
-        $pad_length = 60;
+
         if( isset(PH::$args['minkilobyte'])  )
         {
-            $minKiloByte = PH::$args['minkilobyte'];
-            if( $minKiloByte <= 5 )
-                $pad_length = 80;
+            $this->minKiloByte = PH::$args['minkilobyte'];
+            if( $this->minKiloByte <= 5 )
+                $this->pad_length = 80;
         }
-        else
-        {
-            $minKiloByte = 1000;
-        }
+
         #$minKiloByte = $minKiloByte*1000;
-        PH::print_stdout( " - display only XML content which is greater then: ".$minKiloByte."kB");
+        PH::print_stdout( " - display only XML content which is greater then: ".$this->minKiloByte."kB");
 
         if( isset(PH::$args['padlength'])  )
-            $pad_length = PH::$args['padlength'];
+            $this->pad_length = PH::$args['padlength'];
 
         if( isset(PH::$args['showalldg'])  )
-            $showalldg = true;
-        else
-            $showalldg = false;
+            $this->showalldg = true;
 
         $this->load_config();
         $this->location_filter();
@@ -72,25 +75,23 @@ class CONFIGSIZE extends UTIL
         }
 
 
-##########################################
-//Todo start writing here
+        ##########################################
+        //Todo start writing here
 
         $this->xmlDoc->preserveWhiteSpace = false;
         $this->xmlDoc->formatOutput = true;
 
-        $lineReturn = false;
-        $indentingXml = -1;
-        $indentingXmlIncreament = 0;
+
 
         $xml = &DH::dom_to_xml( $this->xmlDoc );
-        $xml_reduced = &DH::dom_to_xml( $this->xmlDoc, $indentingXml, $lineReturn, -1, $indentingXmlIncreament );
+        $xml_reduced = &DH::dom_to_xml( $this->xmlDoc, $this->indentingXml, $this->lineReturn, -1, $this->indentingXmlIncreament );
 
         $len_xml = strlen( $xml );
         $len_xml_reduced = strlen( $xml_reduced );
         $len_overhead = $len_xml-$len_xml_reduced;
         $len_overhead_percent = round( ( $len_overhead / $len_xml ) * 100, 0);
 
-#PH::print_stdout( "\nLENGTH str:".$len_xml." [ reduced: ".$len_xml_reduced." | overhead: ".($len_xml-$len_xml_reduced)." ]");
+        #PH::print_stdout( "\nLENGTH str:".$len_xml." [ reduced: ".$len_xml_reduced." | overhead: ".($len_xml-$len_xml_reduced)." ]");
 
 
 
@@ -100,13 +101,7 @@ class CONFIGSIZE extends UTIL
 
         $this->print_length( $this->xmlDoc );
 
-
-
-##########################################
-
-
-        $this->save_our_work();
-
+        ##########################################
         PH::print_stdout("");
 
         //Todo: what about API mode - filename is empty
@@ -119,7 +114,6 @@ class CONFIGSIZE extends UTIL
         }
 
         PH::print_stdout( PH::boldText( "Please be aware of that PAN-OS is automatically adding the xml overhead again during the next configuration load to the device" ) );
-
     }
 
     public function supportedArguments()
@@ -136,14 +130,6 @@ class CONFIGSIZE extends UTIL
 
     function print_length( $xmlRoot, $depth = -1, $padding = "", $previousNode = "" )
     {
-        global $minKiloByte;
-        global $pad_length;
-        global $util;
-        global $showalldg;
-        global $lineReturn;
-        global $indentingXml;
-        global $indentingXmlIncreament;
-
         $depth++;
         foreach( $xmlRoot->childNodes as $node )
         {
@@ -154,7 +140,7 @@ class CONFIGSIZE extends UTIL
             $nodeValue = $node->nodeValue;
 
             $xml = &DH::dom_to_xml( $node );
-            $xml_reduced = &DH::dom_to_xml( $node, $indentingXml, $lineReturn, -1, $indentingXmlIncreament );
+            $xml_reduced = &DH::dom_to_xml( $node, $this->indentingXml, $this->lineReturn, -1, $this->indentingXmlIncreament );
 
             $length2 = strlen( $xml );
             $length2 = round( $length2/1000 );
@@ -163,8 +149,8 @@ class CONFIGSIZE extends UTIL
             $length_reduced = round( $length_reduced/1000 );
 
             if( $depth <= 1
-                || $length2 > $minKiloByte
-                || ( ( $previousNode == "device-group" || $previousNode == "template" || $previousNode == "container" ) && $showalldg )
+                || $length2 > $this->minKiloByte
+                || ( ( $previousNode == "device-group" || $previousNode == "template" || $previousNode == "container" ) && $this->showalldg )
             )
             {
                 #PH::print_stdout( "");
@@ -188,7 +174,7 @@ class CONFIGSIZE extends UTIL
                     }
                 }
 
-                $string = str_pad( $padding."<".$nodeName.">", $pad_length);
+                $string = str_pad( $padding."<".$nodeName.">", $this->pad_length);
 
 
                 $length2_overhead = $length2-$length_reduced;
