@@ -7,6 +7,7 @@ UTILS:
 * UTIL - pa_config-size / pa_diff / pa_override-finder / pa_upload - optimisation to use more of class UTIL
 * pa_application-edit | introduce 'filter=(object has.member XYZ)'
 * pa_application-edit - improve actions=display for applicationGroup
+* pa_rule-merger | move everything into class RULEMERGER
 
 BUGFIX:
 * pa_appid-enabler | bugfix regarding how variables are used, after moving over to class APPIDENABLER()
