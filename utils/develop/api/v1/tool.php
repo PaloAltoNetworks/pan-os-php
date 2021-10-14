@@ -90,6 +90,7 @@ $supportedRoute = array(
     "address-merger", "addressgroup-merger",
     "service-merger", "servicegroup-merger",
     "tag-merger",
+    "rule-merger",
     "override-finder",
     "diff",
     "upload",
@@ -301,6 +302,9 @@ function UTILcaller( $url_pieces, $argv )
             || $url_pieces[1] == "tag-merger"
         )
             $util = new MERGER($url_pieces[1], $argv, __FILE__);
+
+        elseif( $url_pieces[1] == "rule-merger" )
+            $util = new RULEMERGER($url_pieces[1], $argv, __FILE__);
 
         elseif( $url_pieces[1] == "override-finder" )
             $util = new OVERRIDEFINDER($url_pieces[1], $argv, __FILE__);
