@@ -3,7 +3,8 @@
 
 class XMLISSUE extends UTIL
 {
-    public $utilType = null;
+    public $region_array = array();
+
 
 
     //Todo: optimisation needed to use class UTIL available parent methods
@@ -50,8 +51,6 @@ class XMLISSUE extends UTIL
 ///////////////////////////////////////////////////////////
 
 //REGION objects
-        $region_array = array();
-
 
         $filename = dirname(__FILE__) . '/../../lib/object-classes/predefined.xml';
 
@@ -66,7 +65,7 @@ class XMLISSUE extends UTIL
 
             $region_name = DH::findAttribute('name', $region_entry);
             #PH::print_stdout( $region_name );
-            $region_array[$region_name] = $region_entry;
+            $this->region_array[$region_name] = $region_entry;
         }
 
 
@@ -1251,11 +1250,9 @@ class XMLISSUE extends UTIL
 
     function check_region( $name, $object, &$address_region )
     {
-        global $region_array;
-
         if( strlen( $name ) == 2 && ctype_upper( $name ) )
         {
-            if( array_key_exists( $name, $region_array ) )
+            if( array_key_exists( $name, $this->region_array ) )
             {
                 $address_region[ $name ] = $object;
             }

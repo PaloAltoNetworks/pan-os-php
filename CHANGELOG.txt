@@ -7,7 +7,9 @@ UTILS:
 * UTIL - pa_config-size / pa_diff / pa_override-finder / pa_upload - optimisation to use more of class UTIL
 
 BUGFIX:
-* pa_appid-enabler | bugfix
+* pa_appid-enabler | bugfix regarding how variables are used, after moving over to class APPIDENABLER()
+* pa_address-merger | bugfix for call class MERGER()
+* pa_panos-xml-issue-detector | bugfix how variables are used after moving to class XMLISSUE
 
 GENERAL:
 
