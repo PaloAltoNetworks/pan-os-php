@@ -54,12 +54,6 @@ $util->prepareSupportedArgumentsArray();
 $util->utilInit();
 
 
-$util->inDebugapiArgument();
-
-$util->inputValidation();
-
-$util->location_provided();
-
 
 PH::print_stdout( " - Connected to API at {$util->pan->connector->apihost} / {$util->pan->connector->info_hostname}");
 PH::print_stdout( " - PANOS version: {$util->pan->connector->info_PANOS_version}");
