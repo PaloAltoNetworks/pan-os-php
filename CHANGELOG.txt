@@ -8,6 +8,7 @@ UTILS:
 * pa_application-edit | introduce 'filter=(object has.member XYZ)'
 * pa_application-edit - improve actions=display for applicationGroup
 * pa_rule-merger | move everything into class RULEMERGER
+* pa_upload-config | skip adding user admin2 if already available
 
 BUGFIX:
 * pa_appid-enabler | bugfix regarding how variables are used, after moving over to class APPIDENABLER()
