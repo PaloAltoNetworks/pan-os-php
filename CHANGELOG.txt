@@ -3,6 +3,7 @@ CHANGELOG
 2.0.17
 UTILS:
 * pan-os-php and API | introduce support for rule-merger
+* XML_op_JSON | move to class XMLOPJSON extend UTIL
 
 BUGFIX:
 

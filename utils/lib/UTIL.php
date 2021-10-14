@@ -22,6 +22,7 @@ require_once(dirname(__FILE__)."/OVERRIDEFINDER.php");
 require_once(dirname(__FILE__)."/APPIDENABLER.php");
 require_once(dirname(__FILE__)."/CONFIGSIZE.php");
 require_once(dirname(__FILE__)."/BPAGENERATOR.php");
+require_once(dirname(__FILE__)."/XMLOPJSON.php");
 
 class UTIL
 {
