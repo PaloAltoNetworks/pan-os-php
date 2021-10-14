@@ -737,8 +737,21 @@ class UTIL
             if( $this->debugAPI )
                 $this->configInput['connector']->setShowApiCalls(TRUE);
             $this->apiMode = TRUE;
+
+
             PH::print_stdout( " - Downloading config from API... " );
-            $this->xmlDoc = $this->configInput['connector']->getCandidateConfig( $this->apiTimeoutValue );
+
+
+            if( !isset($configInput['filename']) || $configInput['filename'] == '' || $configInput['filename'] == 'candidate-config' )
+                $this->xmlDoc = $this->configInput['connector']->getCandidateConfig( $this->apiTimeoutValue );
+            elseif( $configInput['filename'] == 'running-config' )
+                $this->xmlDoc = $this->configInput['connector']->getRunningConfig();
+            elseif( $configInput['filename'] == 'merged-config' || $configInput['filename'] == 'merged' )
+                $this->xmlDoc = $this->configInput['connector']->getMergedConfig();
+            elseif( $configInput['filename'] == 'panorama-pushed-config' || $configInput['filename'] == 'panorama-pushed' )
+                $this->xmlDoc = $this->configInput['connector']->getPanoramaPushedConfig();
+            else
+                $this->xmlDoc = $this->configInput['connector']->getSavedConfig($configInput['filename']);
 
         }
         else

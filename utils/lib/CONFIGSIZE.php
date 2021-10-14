@@ -53,7 +53,7 @@ class CONFIGSIZE extends UTIL
         $this->load_config();
         $this->location_filter();
 
-
+/*
         if( $this->configType == 'panos' )
         {
             // Did we find VSYS1 ?
@@ -73,7 +73,7 @@ class CONFIGSIZE extends UTIL
             if( $v == null )
                 $v = $this->pan->createContainer( $this->objectsLocation[0] );
         }
-
+*/
 
         ##########################################
         //Todo start writing here
@@ -90,11 +90,6 @@ class CONFIGSIZE extends UTIL
         $len_xml_reduced = strlen( $xml_reduced );
         $len_overhead = $len_xml-$len_xml_reduced;
         $len_overhead_percent = round( ( $len_overhead / $len_xml ) * 100, 0);
-
-        #PH::print_stdout( "\nLENGTH str:".$len_xml." [ reduced: ".$len_xml_reduced." | overhead: ".($len_xml-$len_xml_reduced)." ]");
-
-
-
 
 
         PH::print_stdout( "LENGTH str:".$len_xml_reduced." [xml overhead: ".($len_overhead)." (".$len_overhead_percent."%) ]");
@@ -165,6 +160,7 @@ class CONFIGSIZE extends UTIL
                     $attname = DH::findAttribute('name', $node);
                     $nodeName = $nodeName." name=".$attname;
 
+                    /*
                     if( $this->configType != 'panos' && $depth == 4 )
                     {
                         if( $this->configType == 'fawkes' )
@@ -172,6 +168,7 @@ class CONFIGSIZE extends UTIL
                         else
                             $v = $this->pan->findDeviceGroup( $attname );
                     }
+                    */
                 }
 
                 $string = str_pad( $padding."<".$nodeName.">", $this->pad_length);
