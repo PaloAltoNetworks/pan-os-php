@@ -21,16 +21,20 @@
 
 set_include_path(dirname(__FILE__) . '/../' . PATH_SEPARATOR . get_include_path());
 require_once dirname(__FILE__)."/../lib/pan_php_framework.php";
-require_once(dirname(__FILE__) . '/common/misc.php');
+#require_once(dirname(__FILE__) . '/common/misc.php');
+
+require_once dirname(__FILE__)."/../utils/lib/UTIL.php";
 
 PH::print_stdout("");
 PH::print_stdout("***********************************************");
 PH::print_stdout("*********** " . basename(__FILE__) . " UTILITY **************");
 PH::print_stdout("");
 
-PH::print_stdout( " - PAN-OS-PHP version: ".PH::frameworkVersion() . " [".PH::frameworkInstalledOS()."]" );
 
-$debugAPI = FALSE;
+//Todo:
+//- introduce action=display
+//- unregister "unused"??? possible?
+
 
 $supportedArguments = array();
 $supportedArguments[] = array('niceName' => 'Action', 'shortHelp' => 'type of action you want to perform against API', 'argDesc' => 'register|unregister|fakeregister');
@@ -44,82 +48,34 @@ $supportedArguments[] = array('niceName' => 'DebugAPI', 'shortHelp' => 'prints A
 $usageMsg = PH::boldText('USAGE EXAMPLES: ') . "\n - php " . basename(__FILE__) . " in=api://1.2.3.4 action=register location=vsys1 records=10.0.0.1,domain\\user2/10.2.3.4,domain\\user3"
     . "\n - php " . basename(__FILE__) . " in=api://1.2.3.4 action=register location=vsys1 recordFile=users.txt";
 
-prepareSupportedArgumentsArray($supportedArguments);
-
-PH::processCliArgs();
-
-// check that only supported arguments were provided
-foreach( PH::$args as $index => &$arg )
-{
-    if( !isset($supportedArguments[$index]) )
-        display_error_usage_exit("unsupported argument provided: '$index'");
-}
-
-if( isset(PH::$args['help']) )
-    display_usage_and_exit();
 
 
-if( !isset(PH::$args['in']) )
-    display_error_usage_exit(' "in=" argument is missing');
+$util = new UTIL("custom", $argv, __FILE__, $supportedArguments, $usageMsg);
+
+$util->prepareSupportedArgumentsArray();
+
+$util->utilInit();
 
 
-if( isset(PH::$args['debugapi']) )
-{
-    $debugAPI = TRUE;
-}
+$util->inDebugapiArgument();
 
-//
-// What kind of config input do we have.
-//     File or API ?
-//
-// <editor-fold desc="  ****  input method validation and PANOS vs Panorama auto-detect  ****" defaultstate="collapsed" >
-$configInput = PH::processIOMethod(PH::$args['in'], TRUE);
-$xmlDoc = null;
+$util->inputValidation();
 
-if( $configInput['status'] == 'fail' )
-{
-    fwrite(STDERR, "\n\n**ERROR** " . $configInput['msg'] . "\n\n");
-    exit(1);
-}
+$util->location_provided();
 
-/** @var PanAPIConnector $connector */
-$connector = null;
 
-if( $configInput['type'] == 'file' )
-{
-    derr("Only API method is supported for input, please fix your 'in' argument");
 
-}
-elseif( $configInput['type'] == 'api' )
-{
-    $connector = $configInput['connector'];
-    if( $debugAPI )
-        $connector->setShowApiCalls(TRUE);
-}
-else
-    derr('method not supported yet');
-// </editor-fold>
-
-PH::print_stdout( " - Connected to API at {$connector->apihost} / {$connector->info_hostname}");
-PH::print_stdout( " - PANOS version: {$connector->info_PANOS_version}");
-PH::print_stdout( " - PANOS model: {$connector->info_model}");
+PH::print_stdout( " - Connected to API at {$util->pan->connector->apihost} / {$util->pan->connector->info_hostname}");
+PH::print_stdout( " - PANOS version: {$util->pan->connector->info_PANOS_version}");
+PH::print_stdout( " - PANOS model: {$util->pan->connector->info_model}");
 PH::print_stdout( "");
 
 
-if( !isset(PH::$args['action']) )
-    display_error_usage_exit("no 'action' was defined");
-
-$location = 'vsys1';
-if( !isset(PH::$args['location']) )
-    PH::print_stdout( " - no 'location' was provided, using default VSYS1");
-else
-{
-    $location = PH::$args['location'];
-    PH::print_stdout( " - location '{$location}' was provided");
-}
+if( !isset(PH::$args['actions']) )
+    $util->display_error_usage_exit("no 'action' was defined");
 
 
-$action = strtolower(PH::$args['action']);
+$action = strtolower(PH::$args['actions']);
 
 if( $action == 'register' || $action == 'unregister' )
 {
@@ -134,21 +90,21 @@ if( $action == 'register' || $action == 'unregister' )
         {
             $lrecord = explode(',', $record);
             if( count($lrecord) != 2 )
-                display_error_usage_exit("the following record does not have the right syntax: '{$record}'");
+                $util->display_error_usage_exit("the following record does not have the right syntax: '{$record}'");
             $username = trim($lrecord[1]);
             $ipaddress = trim($lrecord[0]);
 
             if( strlen($username) < 1 )
-                display_error_usage_exit("blank username in record '{$record}'");
+                $util->display_error_usage_exit("blank username in record '{$record}'");
 
             if( strlen($ipaddress) < 1 )
-                display_error_usage_exit("blank IP in record '{$record}'");
+                $util->display_error_usage_exit("blank IP in record '{$record}'");
 
             if( isset($records[$ipaddress]) && $records[$ipaddress] != $username )
-                display_error_usage_exit("record '{$ipaddress}\\{$username}' conflicts with '{$ipaddress}\\{$records[$ipaddress]}'");
+                $util->display_error_usage_exit("record '{$ipaddress}\\{$username}' conflicts with '{$ipaddress}\\{$records[$ipaddress]}'");
 
             if( !filter_var($ipaddress, FILTER_VALIDATE_IP) )
-                display_error_usage_exit("IP address '{$ipaddress}' is not valid in record '{$record}'");
+                $util->display_error_usage_exit("IP address '{$ipaddress}' is not valid in record '{$record}'");
 
             $records[$ipaddress] = $username;
         }
@@ -169,21 +125,21 @@ if( $action == 'register' || $action == 'unregister' )
 
             $lrecord = explode(',', $record);
             if( count($lrecord) != 2 )
-                display_error_usage_exit("the following record does not have the right syntax: '{$record}'");
+                $util->display_error_usage_exit("the following record does not have the right syntax: '{$record}'");
             $username = trim($lrecord[1]);
             $ipaddress = trim($lrecord[0]);
 
             if( strlen($username) < 1 )
-                display_error_usage_exit("blank username in record '{$record}'");
+                $util->display_error_usage_exit("blank username in record '{$record}'");
 
             if( strlen($ipaddress) < 1 )
-                display_error_usage_exit("blank IP in record '{$record}'");
+                $util->display_error_usage_exit("blank IP in record '{$record}'");
 
             if( isset($records[$ipaddress]) && $records[$ipaddress] != $username )
-                display_error_usage_exit("record '{$ipaddress}\\{$username}' conflicts with '{$ipaddress}\\{$records[$ipaddress]}'");
+                $util->display_error_usage_exit("record '{$ipaddress}\\{$username}' conflicts with '{$ipaddress}\\{$records[$ipaddress]}'");
 
             if( !filter_var($ipaddress, FILTER_VALIDATE_IP) )
-                display_error_usage_exit("IP address '{$ipaddress}' is not valid in record '{$record}'");
+                $util->display_error_usage_exit("IP address '{$ipaddress}' is not valid in record '{$record}'");
 
             $records[$ipaddress] = $username;
         }
@@ -202,9 +158,9 @@ if( $action == 'register' || $action == 'unregister' )
 
     PH::print_stdout( " - now sending records to API ... ");
     if( $action == 'register' )
-        $connector->userIDLogin(array_keys($records), $records, $location);
+        $util->pan->connector->userIDLogin(array_keys($records), $records, $util->location);
     else
-        $connector->userIDLogout(array_keys($records), $records, $location);
+        $util->pan->connector->userIDLogout(array_keys($records), $records, $util->location);
 
 
 
@@ -212,6 +168,7 @@ if( $action == 'register' || $action == 'unregister' )
 elseif( $action == 'fakeregister' )
 {
     $numberOfIPs = 500;
+    $numberOfIPs = 10;
     $userPrefix = 'acme\\Bob_';
     $startingIP = ip2long('10.0.0.0');
 
@@ -227,7 +184,7 @@ elseif( $action == 'fakeregister' )
 
 
     PH::print_stdout( " - now sending records to API ... ");
-    $connector->userIDLogin(array_keys($records), $records, $location);
+    $util->pan->connector->userIDLogin(array_keys($records), $records, $util->location);
 
 
 }
@@ -238,4 +195,3 @@ else
 PH::print_stdout("");
 PH::print_stdout("************* END OF SCRIPT " . basename(__FILE__) . " ************" );
 PH::print_stdout("");
-

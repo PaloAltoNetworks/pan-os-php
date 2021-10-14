@@ -49,15 +49,14 @@ $supportedUTILTypes = array(
 //custom
 /*
  * csv-import
+ * register-ip-mgr
+ * userid-mgr
 
  * util get action filter
 */
 
 //open
 /*
- * userid-mgr
- * register-ip-mgr
-
  * checkpoint-exclude
  * grp-static-to-dynamic //very old; create action for pa_address-edit
  */
