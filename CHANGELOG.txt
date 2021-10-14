@@ -9,6 +9,7 @@ UTILS:
 * pa_application-edit - improve actions=display for applicationGroup
 * pa_rule-merger | move everything into class RULEMERGER
 * pa_upload-config | skip adding user admin2 if already available
+* pa_rule-merger | introduce functionality for location=any to run rule-merger with a single run against all DG
 
 BUGFIX:
 * pa_appid-enabler | bugfix regarding how variables are used, after moving over to class APPIDENABLER()

@@ -5,19 +5,23 @@ class RULEMERGER extends UTIL
     public $location_array = array();
 
     public $UTIL_hashTable = array();
-    public $UTIL_method;
-    public $UTIL_additionalMatch;
-    public $UTIL_rulesToProcess;
-    public $UTIL_stopMergingIfDenySeen;
+    public $UTIL_rulesArrayIndex = array();
     public $UTIL_denyRules = array();
-    public $UTIL_mergeAdjacentOnly;
-    public $UTIL_rulesArrayIndex;
 
-    public $UTIL_mergeDenyRules;
-    public $UTIL_filterQuery;
+    public $UTIL_rulesToProcess = array();
 
+
+    public $UTIL_method = null;
+    public $UTIL_additionalMatch = null;
+
+    public $UTIL_stopMergingIfDenySeen = TRUE;
+    public $UTIL_mergeAdjacentOnly = FALSE;
+    public $UTIL_mergeDenyRules = FALSE;
+    public $panoramaPreRuleSelected = TRUE;
+    public $upperLevelSearch = FALSE;
+
+    public $UTIL_filterQuery = null;
     public $supportedMethods = array();
-
     public $processedLocation = null;
 
     public function utilStart()
@@ -60,7 +64,7 @@ class RULEMERGER extends UTIL
         
         $this->load_config();
 
-        #$this->location_array = $this->merger_location_array($this->utilType, $this->objectsLocation, $this->pan);
+        $this->location_array = $this->merger_location_array($this->utilType, $this->objectsLocation, $this->pan);
 
 
         $this->mergerArguments();
@@ -70,23 +74,87 @@ class RULEMERGER extends UTIL
         #      merging
         ########################################################################################################################
 
-        $this->UTIL_calculate_rule_hash();
+        if( count( $this->location_array ) > 1 )
+        {
+            PH::print_stdout("");
+            PH::print_stdout("#####################################");
+            PH::print_stdout("");
+
+            $this->pan->display_statistics();
+
+            PH::print_stdout("");
+            PH::print_stdout("#####################################");
+            PH::print_stdout("");
+        }
 
 
-        PH::print_stdout("");
-        PH::print_stdout( "Stats before merging :");
-        $this->processedLocation->display_statistics();
+        foreach( $this->location_array as $tmp_location )
+        {
+            $store = $tmp_location['store'];
+            $sub = $tmp_location['findLocation'];
+            $parentStore = $tmp_location['parentStore'];
+            if( $this->upperLevelSearch )
+                $childDeviceGroups = $tmp_location['childDeviceGroups'];
+            else
+                $childDeviceGroups = array();
 
-        ##################
+            if( $store == null )
+                continue;
 
-        $this->UTIL_rule_merging( );
+            if( $this->pan->isPanorama() || ( $this->pan->isFawkes() && $sub->isContainer()) )
+            {
+                if( $this->panoramaPreRuleSelected )
+                    $this->UTIL_rulesToProcess = $store->preRules();
+                else
+                    $this->UTIL_rulesToProcess = $store->postRules();
+            }
+            else
+                $this->UTIL_rulesToProcess = $store->rules();
 
-        ##################
 
-        PH::print_stdout("");
-        PH::print_stdout( "Stats after merging :");
-        $this->processedLocation->display_statistics();
+            if( is_object($sub) )
+                $this->processedLocation = $sub;
+            elseif( $sub == "shared" )
+                $this->processedLocation = $this->pan;
 
+
+            $this->UTIL_rulesArrayIndex = array();
+            $this->UTIL_hashTable = array();
+            $this->UTIL_denyRules = array();
+
+
+            if( count( $this->UTIL_rulesToProcess ) === 0 )
+            {
+                if( is_object($sub) )
+                    PH::print_stdout("Location: ".$sub->name()." skipped - empty");
+                else
+                    PH::print_stdout("Location: shared -  skipped - empty");
+                continue;
+            }
+
+
+
+            $this->UTIL_calculate_rule_hash();
+
+
+            PH::print_stdout("");
+            PH::print_stdout("Stats before merging :");
+            $this->processedLocation->display_statistics();
+
+            ##################
+
+            $this->UTIL_rule_merging();
+
+            ##################
+
+            PH::print_stdout("");
+            PH::print_stdout("Stats after merging :");
+            $this->processedLocation->display_statistics();
+
+            PH::print_stdout("");
+            PH::print_stdout("#####################################");
+            PH::print_stdout("");
+        }
 
         ##################
         #    save to file
@@ -192,18 +260,17 @@ class RULEMERGER extends UTIL
      */
     function UTIL_mergeRules($rule, $ruleToMerge)
     {
-        /*          'matchFromToSrcDstApp'  => 1 ,
-                                    'matchFromToSrcDstSvc'  => 2 ,
-                                    'matchFromToSrcSvcApp'  => 3 ,
-                                    'matchFromToDstSvcApp'  => 4 ,
-                                    'matchFromSrcDstSvcApp' => 5 ,
-                                    'matchToSrcDstSvcApp'   => 6 ,
-                                    'matchToDstSvcApp'   => 7 ,
-                                    'matchFromSrcSvcApp' => 8 ,
-                                    'matchFromSrcSvcApp' => 9 ,
-
+        /*
+            'matchFromToSrcDstApp'  => 1 ,
+            'matchFromToSrcDstSvc'  => 2 ,
+            'matchFromToSrcSvcApp'  => 3 ,
+            'matchFromToDstSvcApp'  => 4 ,
+            'matchFromSrcDstSvcApp' => 5 ,
+            'matchToSrcDstSvcApp'   => 6 ,
+            'matchToDstSvcApp'   => 7 ,
+            'matchFromSrcSvcApp' => 8 ,
+            'matchFromSrcSvcApp' => 9 ,
         */
-
 
         if( $this->UTIL_method == 1 )
         {
@@ -282,7 +349,6 @@ class RULEMERGER extends UTIL
      * @param $denyRules SecurityRule[]
      * @throws Exception
      */
-
     function UTIL_calculate_rule_hash( )
     {
 
@@ -343,7 +409,6 @@ class RULEMERGER extends UTIL
         $loopCount = -1;
         $this->UTIL_rulesArrayIndex = array_flip(array_keys($this->UTIL_rulesToProcess));
         $mergedRulesCount = 0;
-
 
 
         foreach( $this->UTIL_rulesToProcess as $index => $rule )
@@ -410,7 +475,6 @@ class RULEMERGER extends UTIL
                         unset($matchingHashTable[$ruleToCompare->serial]);
                         PH::print_stdout( "    - ignoring rule #{$ruleToComparePosition} '{$ruleToCompare->name()}' because DENY rule #{$nextDenyRulePosition} '{$nextDenyRule->name()}' is placed before");
                     }
-
                 }
                 elseif( $this->UTIL_filterQuery !== null && !$this->UTIL_filterQuery->matchSingleObject($ruleToCompare) )
                 {
@@ -428,7 +492,6 @@ class RULEMERGER extends UTIL
                         unset($matchingHashTable[$ruleToCompare->serial]);
                         PH::print_stdout( "    - ignoring rule #{$ruleToComparePosition} '{$ruleToCompare->name()}' because it's source / destination is not matching NEGATION of original Rule");
                     }
-
                 }
             }
 
@@ -494,7 +557,6 @@ class RULEMERGER extends UTIL
             if( $this->configInput['type'] == 'api' && $this->configOutput == null )
                 $rule->API_sync();
             unset($this->UTIL_hashTable[$rule->mergeHash][$rule->serial]);
-
         }
 
         PH::print_stdout( "*** MERGING DONE : {$mergedRulesCount} rules merged over " . count($this->UTIL_rulesToProcess) . " in total (" . (count($this->UTIL_rulesToProcess) - $mergedRulesCount) . " remaining) ***");
@@ -545,7 +607,6 @@ class RULEMERGER extends UTIL
     {
         if( $this->pan->isPanorama() )
         {
-            $this->panoramaPreRuleSelected = TRUE;
             if( !isset(PH::$args[strtolower('panoramaPreRules')]) && !isset(PH::$args[strtolower('panoramaPostRules')]) )
                 $this->display_error_usage_exit("Panorama was detected but no Pre or Post rules were selected, use CLI argument 'panoramaPreRules' or 'panoramaPostRules'");
 
@@ -555,49 +616,17 @@ class RULEMERGER extends UTIL
             if( isset(PH::$args[strtolower('panoramaPostRules')]) )
                 $this->panoramaPreRuleSelected = FALSE;
 
-            if( $this->objectsLocation == 'any' )
-            {
-                #derr( "ANY is not supported yet" );
-                $this->locationNotFound($this->objectsLocation);
-            }
-            elseif( $this->objectsLocation == 'shared' )
-            {
-                $this->processedLocation = $this->pan;
-                if( $this->panoramaPreRuleSelected )
-                    $this->UTIL_rulesToProcess = $this->pan->securityRules->preRules();
-                else
-                    $this->UTIL_rulesToProcess = $this->pan->securityRules->postRules();
-            }
-            else
-            {
-                $sub = $this->pan->findDeviceGroup($this->objectsLocation);
-                if( $sub === null )
-                    $this->locationNotFound($this->objectsLocation);
-
-                if( $this->panoramaPreRuleSelected )
-                    $this->UTIL_rulesToProcess = $sub->securityRules->preRules();
-                else
-                    $this->UTIL_rulesToProcess = $sub->securityRules->postRules();
-
-                $this->processedLocation = $sub;
-            }
         }
         elseif( $this->pan->isFawkes() )
         {
-            if( $this->objectsLocation == 'any' )
-                #derr( "ANY is not supported yet" );
-                $this->locationNotFound($this->objectsLocation);
-
             $sub = $this->pan->findContainer($this->objectsLocation);
             if( $sub === null )
                 $sub = $this->pan->findDeviceCloud($this->objectsLocation);
             if( $sub === null )
                 $this->locationNotFound($this->objectsLocation);
 
-
             if( $sub->isContainer() )
             {
-                $this->panoramaPreRuleSelected = TRUE;
                 if( !isset(PH::$args[strtolower('panoramaPreRules')]) && !isset(PH::$args[strtolower('panoramaPostRules')]) )
                     $this->display_error_usage_exit("Fawkes Container was detected but no Pre or Post rules were selected, use CLI argument 'panoramaPreRules' or 'panoramaPostRules'");
 
@@ -606,27 +635,7 @@ class RULEMERGER extends UTIL
 
                 if( isset(PH::$args[strtolower('panoramaPostRules')]) )
                     $this->panoramaPreRuleSelected = FALSE;
-
-                if( $this->panoramaPreRuleSelected )
-                    $this->UTIL_rulesToProcess = $sub->securityRules->preRules();
-                else
-                    $this->UTIL_rulesToProcess = $sub->securityRules->postRules();
             }
-            else
-            {
-                $this->UTIL_rulesToProcess = $sub->securityRules->rules();
-            }
-
-            $this->processedLocation = $sub;
-        }
-        else
-        {
-            $sub = $this->pan->findVirtualSystem($this->objectsLocation);
-            if( $sub === null )
-                #derr("VirtualSystem named '{$this->objectsLocation}' not found");
-                $this->locationNotFound($this->objectsLocation);
-            $this->UTIL_rulesToProcess = $sub->securityRules->rules();
-            $this->processedLocation = $sub;
         }
 
 
@@ -702,5 +711,145 @@ class RULEMERGER extends UTIL
                 $this->display_error_usage_exit("(mergeAdjacentOnly' argument was given unsupported value '" . PH::$args['mergeadjacentonly'] . "'");
             PH::print_stdout( " - mergeAdjacentOnly = " . boolYesNo($this->UTIL_mergeAdjacentOnly) );
         }
+    }
+
+    function merger_location_array($utilType, $objectsLocation, $pan)
+    {
+        $this->utilType = $utilType;
+
+        if( $objectsLocation == 'any' )
+        {
+            if( $pan->isPanorama() )
+            {
+                $alldevicegroup = $pan->deviceGroups;
+            }
+            elseif( $pan->isFawkes() )
+            {
+                $subGroups = $pan->getContainers();
+                $subGroups2 = $pan->getDeviceClouds();
+
+                $alldevicegroup = array_merge( $subGroups, $subGroups2 );
+            }
+            elseif( $pan->isFirewall() )
+                $alldevicegroup = $pan->virtualSystems;
+            else
+                $alldevicegroup = $pan->virtualSystems;
+
+            $location_array = array();
+            foreach( $alldevicegroup as $key => $tmp_location )
+            {
+                $objectsLocation = $tmp_location->name();
+                $findLocation = $pan->findSubSystemByName($objectsLocation);
+                if( $findLocation === null )
+                    $this->locationNotFound( $objectsLocation );
+
+                if( $this->utilType == "rule-merger" )
+                {
+                    /** @var DeviceGroup $findLocation */
+                    $store = $findLocation->securityRules;
+                    if( isset( $findLocation->owner->securityRules ) )
+                        $parentStore = $findLocation->owner->securityRules;
+                    else
+                        $parentStore = null;
+                }
+
+                if( get_class( $findLocation->owner ) == "FawkesConf" )
+                    $parentStore = null;
+
+
+                $location_array[$key]['findLocation'] = $findLocation;
+                $location_array[$key]['store'] = $store;
+                $location_array[$key]['parentStore'] = $parentStore;
+                if( $pan->isPanorama() )
+                {
+                    $childDeviceGroups = $findLocation->childDeviceGroups(TRUE);
+                    $location_array[$key]['childDeviceGroups'] = $childDeviceGroups;
+                }
+                elseif( $pan->isFawkes() )
+                {
+                    //child Container/CloudDevices
+                    //Todo: swaschkut 20210414
+                    $location_array[$key]['childDeviceGroups'] = array();
+                }
+                else
+                    $location_array[$key]['childDeviceGroups'] = array();
+            }
+
+            $location_array = array_reverse($location_array);
+
+            if( !$pan->isFawkes() )
+            {
+                $location_array[$key + 1]['findLocation'] = 'shared';
+                if( $this->utilType == "rule-merger"  )
+                {
+                    if( isset( $pan->securityRules ) )
+                        $location_array[$key + 1]['store'] = $pan->securityRules;
+                    else
+                        $location_array[$key + 1]['store'] = null;
+                }
+
+
+                $location_array[$key + 1]['parentStore'] = null;
+                $location_array[$key + 1]['childDeviceGroups'] = $alldevicegroup;
+            }
+        }
+        else
+        {
+            if( !$pan->isFawkes() && $objectsLocation == 'shared' )
+            {
+                if( $this->utilType == "rule-merger"  )
+                    $store = $pan->securityRules;
+
+                $parentStore = null;
+                $location_array[0]['findLocation'] = $objectsLocation;
+                $location_array[0]['store'] = $store;
+                $location_array[0]['parentStore'] = $parentStore;
+            }
+            else
+            {
+                $findLocation = $pan->findSubSystemByName($objectsLocation);
+                if( $findLocation === null )
+                    $this->locationNotFound( $objectsLocation );
+
+                if( $this->utilType == "rule-merger"  )
+                {
+                    $store = $findLocation->securityRules;
+
+                    if( $pan->isPanorama() && isset($findLocation->parentDeviceGroup) && $findLocation->parentDeviceGroup !== null )
+                        $parentStore = $findLocation->parentDeviceGroup->securityRules;
+                    elseif( $pan->isFawkes() && isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
+                        $parentStore = $findLocation->parentContainer->securityRules;
+                    elseif( isset( $findLocation->owner->securityRules ) )
+                        $parentStore = $findLocation->owner->securityRules;
+                    else
+                        $parentStore = null;
+                }
+                if( get_class( $findLocation->owner ) == "FawkesConf" )
+                    $parentStore = null;
+
+                $location_array[0]['findLocation'] = $findLocation;
+                $location_array[0]['store'] = $store;
+                $location_array[0]['parentStore'] = $parentStore;
+            }
+
+            if( $pan->isPanorama() )
+            {
+                if( $objectsLocation == 'shared' )
+                    $childDeviceGroups = $pan->deviceGroups;
+                else
+                    $childDeviceGroups = $findLocation->childDeviceGroups(TRUE);
+                $location_array[0]['childDeviceGroups'] = $childDeviceGroups;
+            }
+            elseif( $pan->isFawkes() )
+            {
+                //child Container/CloudDevices
+                //Todo: swaschkut 20210414
+                $location_array[0]['childDeviceGroups'] = array();
+            }
+            else
+                $location_array[0]['childDeviceGroups'] = array();
+        }
+
+        return $location_array;
     }
 }
