@@ -2,6 +2,7 @@ CHANGELOG
 
 2.0.17
 UTILS:
+* pan-os-php and API | introduce support for rule-merger
 
 BUGFIX:
 

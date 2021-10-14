@@ -36,6 +36,7 @@ $supportedUTILTypes = array(
     "address-merger", "addressgroup-merger",
     "service-merger", "servicegroup-merger",
     "tag-merger",
+    "rule-merger",
     "override-finder",
     "diff",
     "upload",
@@ -141,6 +142,9 @@ elseif( isset(PH::$args['type']) )
         || $type == "tag-merger"
     )
         $util = new MERGER($type, $argv, __FILE__." type=".$type);
+
+    elseif( $type == "rule-merger" )
+        $util = new RULEMERGER($type, $argv, __FILE__ );
 
     elseif( $type == "override-finder" )
         $util = new OVERRIDEFINDER($type, $argv, __FILE__);
