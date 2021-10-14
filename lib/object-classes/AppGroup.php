@@ -50,13 +50,20 @@ class AppGroup extends App
             $groupapp = $this->owner->find($function->textContent);
 
             if( $groupapp !== null )
-                $this->groupapps[] = $groupapp;
+            {
+                $this->groupapps[$groupapp->name()] = $groupapp;
+                $groupapp->addReference( $this );
+            }
             else
             {
                 $groupapp = $this->owner->findOrCreate($function->textContent);
-                $this->groupapps[] = $groupapp;
+                $this->groupapps[$groupapp->name()] = $groupapp;
+                $groupapp->addReference( $this );
             }
         }
+
+        ksort( $this->groupapps );
+
     }
 
 }

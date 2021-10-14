@@ -710,6 +710,7 @@ class AppStore extends ObjStore
 
                 $subapp = $this->findOrCreate($function->textContent);
                 $app->subapps[] = $subapp;
+                $subapp->addReference( $app );
             }
 
         }
