@@ -2,19 +2,101 @@
 
 class RULEMERGER extends UTIL
 {
+    public $location_array = array();
 
-    public $UTIL_hashTable;
+    public $UTIL_hashTable = array();
     public $UTIL_method;
     public $UTIL_additionalMatch;
     public $UTIL_rulesToProcess;
     public $UTIL_stopMergingIfDenySeen;
-    public $UTIL_denyRules;
+    public $UTIL_denyRules = array();
     public $UTIL_mergeAdjacentOnly;
     public $UTIL_rulesArrayIndex;
 
     public $UTIL_mergeDenyRules;
     public $UTIL_filterQuery;
 
+    public $supportedMethods = array();
+
+    public $processedLocation = null;
+
+    public function utilStart()
+    {
+        $this->usageMsg = PH::boldText("USAGE: ") . "php " . basename(__FILE__) . " in=inputfile.xml|api://... location=shared|sub [out=outputfile.xml]" .
+            " ['filter=(from has external) or (to has dmz)']";
+        
+        $this->add_supported_arguments();
+
+        $this->prepareSupportedArgumentsArray();
+
+        $this->supportedMethods();
+
+
+        PH::processCliArgs();
+
+        $this->arg_validation();
+        $this->help(PH::$args);
+        $this->inDebugapiArgument();
+        $this->inputValidation();
+        $this->location_provided();
+
+        if( isset(PH::$args['additionalmatch']) )
+        {
+            $this->UTIL_additionalMatch = strtolower( PH::$args['additionalmatch'] );
+            if( $this->UTIL_additionalMatch != "tag" )
+                derr( "additionalMatch argument support until now ONLY 'tag'" );
+        }
+
+        $errorMessage = '';
+        if( isset(PH::$args['filter']) )
+        {
+            $this->UTIL_filterQuery = new RQuery('rule');
+            if( !$this->UTIL_filterQuery->parseFromString(PH::$args['filter'], $errorMessage) )
+                derr($errorMessage);
+            PH::print_stdout( " - rule filter after sanitizing : ");
+            $this->UTIL_filterQuery->display();
+        }
+        
+        
+        $this->load_config();
+
+        #$this->location_array = $this->merger_location_array($this->utilType, $this->objectsLocation, $this->pan);
+
+
+        $this->mergerArguments();
+
+
+        ########################################################################################################################
+        #      merging
+        ########################################################################################################################
+
+        $this->UTIL_calculate_rule_hash();
+
+
+        PH::print_stdout("");
+        PH::print_stdout( "Stats before merging :");
+        $this->processedLocation->display_statistics();
+
+        ##################
+
+        $this->UTIL_rule_merging( );
+
+        ##################
+
+        PH::print_stdout("");
+        PH::print_stdout( "Stats after merging :");
+        $this->processedLocation->display_statistics();
+
+
+        ##################
+        #    save to file
+        ##################
+        $this->save_our_work( true );
+
+
+        $this->endOfScript();
+    }
+    
     /**
      * @param $rule SecurityRule
      * @param $method
@@ -417,5 +499,208 @@ class RULEMERGER extends UTIL
 
         PH::print_stdout( "*** MERGING DONE : {$mergedRulesCount} rules merged over " . count($this->UTIL_rulesToProcess) . " in total (" . (count($this->UTIL_rulesToProcess) - $mergedRulesCount) . " remaining) ***");
     }
+    
+    function supportedMethods()
+    {
+        //
+        //  methods array preparation
+        //
+        $supportedMethods_tmp = array(
+            'matchFromToSrcDstApp' => 1,
+            'matchFromToSrcDstSvc' => 2,
+            'matchFromToSrcSvcApp' => 3,
+            'matchFromToDstSvcApp' => 4,
+            'matchFromSrcDstSvcApp' => 5,
+            'matchToSrcDstSvcApp' => 6,
+            'matchToDstSvcApp' => 7,
+            'matchFromSrcSvcApp' => 8,
+            'identical' => 9,
+        );
+        foreach( $supportedMethods_tmp as $methodName => $method )
+        {
+            $this->supportedMethods[strtolower($methodName)] = $method;
+        }
+        $methodsNameList = array_flip($supportedMethods_tmp);
+        $this->supportedArguments['method']['shortHelp'] .= PH::list_to_string($methodsNameList);
+    }
 
+    function add_supported_arguments()
+    {
+        $this->supportedArguments[] = array('niceName' => 'in', 'shortHelp' => 'input file or api. ie: in=config.xml  or in=api://192.168.1.1 or in=api://0018CAEC3@panorama.company.com', 'argDesc' => '=[filename]|[api://IP]|[api://serial@IP]');
+        $this->supportedArguments[] = array('niceName' => 'out', 'shortHelp' => 'output file to save config after changes, API is not supported because it could be a heavy duty on management. ie: out=save-config.xml', 'argDesc' => '=[filename]');
+        $this->supportedArguments[] = array('niceName' => 'Location', 'shortHelp' => 'specify if you want to limit your query to a VSYS/DG. By default location=shared for Panorama, =vsys1 for PANOS. ie: location=any or location=vsys2,vsys1', 'argDesc' => '=sub1');
+        $this->supportedArguments[] = array('niceName' => 'Method', 'shortHelp' => 'rules will be merged if they match given a specific method, available methods are: ', 'argDesc' => '=method1');
+        $this->supportedArguments[] = array('niceName' => 'help', 'shortHelp' => 'this message');
+        $this->supportedArguments[] = array('niceName' => 'panoramaPreRules', 'shortHelp' => 'when using panorama, select pre-rulebase for merging');
+        $this->supportedArguments[] = array('niceName' => 'panoramaPostRules', 'shortHelp' => 'when using panorama, select post-rulebase for merging');
+        $this->supportedArguments[] = array('niceName' => 'mergeDenyRules', 'shortHelp' => 'deny rules wont be merged', 'argDesc' => '=[yes|no|true|false]');
+        $this->supportedArguments[] = array('niceName' => 'stopMergingIfDenySeen', 'shortHelp' => 'deny rules wont be merged', 'argDesc' => '=[yes|no|true|false]');
+        $this->supportedArguments[] = array('niceName' => 'mergeAdjacentOnly', 'shortHelp' => 'merge only rules that are adjacent to each other', 'argDesc' => '=[yes|no|true|false]');
+        $this->supportedArguments[] = array('niceName' => 'filter', 'shortHelp' => 'filter rules that can be converted');
+        $this->supportedArguments[] = array('niceName' => 'additionalMatch', 'shortHelp' => 'add additional matching criterial; only =tag is supported yet', 'argDesc' => '=tag');
+        $this->supportedArguments[] = array('niceName' => 'DebugAPI', 'shortHelp' => 'prints API calls when they happen');
+    }
+
+    function mergerArguments()
+    {
+        if( $this->pan->isPanorama() )
+        {
+            $this->panoramaPreRuleSelected = TRUE;
+            if( !isset(PH::$args[strtolower('panoramaPreRules')]) && !isset(PH::$args[strtolower('panoramaPostRules')]) )
+                $this->display_error_usage_exit("Panorama was detected but no Pre or Post rules were selected, use CLI argument 'panoramaPreRules' or 'panoramaPostRules'");
+
+            if( isset(PH::$args[strtolower('panoramaPreRules')]) && isset(PH::$args[strtolower('panoramaPostRules')]) )
+                $this->display_error_usage_exit("both panoramaPreRules and panoramaPostRules were selected, please choose one of them");
+
+            if( isset(PH::$args[strtolower('panoramaPostRules')]) )
+                $this->panoramaPreRuleSelected = FALSE;
+
+            if( $this->objectsLocation == 'any' )
+            {
+                #derr( "ANY is not supported yet" );
+                $this->locationNotFound($this->objectsLocation);
+            }
+            elseif( $this->objectsLocation == 'shared' )
+            {
+                $this->processedLocation = $this->pan;
+                if( $this->panoramaPreRuleSelected )
+                    $this->UTIL_rulesToProcess = $this->pan->securityRules->preRules();
+                else
+                    $this->UTIL_rulesToProcess = $this->pan->securityRules->postRules();
+            }
+            else
+            {
+                $sub = $this->pan->findDeviceGroup($this->objectsLocation);
+                if( $sub === null )
+                    $this->locationNotFound($this->objectsLocation);
+
+                if( $this->panoramaPreRuleSelected )
+                    $this->UTIL_rulesToProcess = $sub->securityRules->preRules();
+                else
+                    $this->UTIL_rulesToProcess = $sub->securityRules->postRules();
+
+                $this->processedLocation = $sub;
+            }
+        }
+        elseif( $this->pan->isFawkes() )
+        {
+            if( $this->objectsLocation == 'any' )
+                #derr( "ANY is not supported yet" );
+                $this->locationNotFound($this->objectsLocation);
+
+            $sub = $this->pan->findContainer($this->objectsLocation);
+            if( $sub === null )
+                $sub = $this->pan->findDeviceCloud($this->objectsLocation);
+            if( $sub === null )
+                $this->locationNotFound($this->objectsLocation);
+
+
+            if( $sub->isContainer() )
+            {
+                $this->panoramaPreRuleSelected = TRUE;
+                if( !isset(PH::$args[strtolower('panoramaPreRules')]) && !isset(PH::$args[strtolower('panoramaPostRules')]) )
+                    $this->display_error_usage_exit("Fawkes Container was detected but no Pre or Post rules were selected, use CLI argument 'panoramaPreRules' or 'panoramaPostRules'");
+
+                if( isset(PH::$args[strtolower('panoramaPreRules')]) && isset(PH::$args[strtolower('panoramaPostRules')]) )
+                    $this->display_error_usage_exit("both panoramaPreRules and panoramaPostRules were selected, please choose one of them");
+
+                if( isset(PH::$args[strtolower('panoramaPostRules')]) )
+                    $this->panoramaPreRuleSelected = FALSE;
+
+                if( $this->panoramaPreRuleSelected )
+                    $this->UTIL_rulesToProcess = $sub->securityRules->preRules();
+                else
+                    $this->UTIL_rulesToProcess = $sub->securityRules->postRules();
+            }
+            else
+            {
+                $this->UTIL_rulesToProcess = $sub->securityRules->rules();
+            }
+
+            $this->processedLocation = $sub;
+        }
+        else
+        {
+            $sub = $this->pan->findVirtualSystem($this->objectsLocation);
+            if( $sub === null )
+                #derr("VirtualSystem named '{$this->objectsLocation}' not found");
+                $this->locationNotFound($this->objectsLocation);
+            $this->UTIL_rulesToProcess = $sub->securityRules->rules();
+            $this->processedLocation = $sub;
+        }
+
+
+        if( !isset(PH::$args['method']) )
+            $this->display_error_usage_exit(' no method was provided');
+        $this->UTIL_method = strtolower(PH::$args['method']);
+        if( !isset($this->supportedMethods[$this->UTIL_method]) )
+            $this->display_error_usage_exit("unsupported method '" . PH::$args['method'] . "' provided");
+        $this->UTIL_method = $this->supportedMethods[$this->UTIL_method];
+
+
+        if( !isset(PH::$args['mergedenyrules']) )
+        {
+            PH::print_stdout( " - No 'mergeDenyRule' argument provided, using default 'no'");
+            $this->UTIL_mergeDenyRules = FALSE;
+        }
+        else
+        {
+            if( PH::$args['mergedenyrules'] === null || strlen(PH::$args['mergedenyrules']) == 0 )
+                $this->UTIL_mergeDenyRules = TRUE;
+            elseif( strtolower(PH::$args['mergedenyrules']) == 'yes' || strtolower(PH::$args['mergedenyrules']) == 'true' )
+                $this->UTIL_mergeDenyRules = TRUE;
+            elseif( strtolower(PH::$args['mergedenyrules']) == 'no' || strtolower(PH::$args['mergedenyrules']) == 'false' )
+                $this->UTIL_mergeDenyRules = FALSE;
+            else
+                $this->display_error_usage_exit("'mergeDenyRules' argument was given unsupported value '" . PH::$args['mergedenyrules'] . "'");
+        }
+
+
+        if( !isset(PH::$args['stopmergingifdenyseen']) )
+        {
+            PH::print_stdout( " - No 'stopMergingIfDenySeen' argument provided, using default 'yes'");
+            $this->UTIL_stopMergingIfDenySeen = TRUE;
+        }
+        else
+        {
+            if( PH::$args['stopmergingifdenyseen'] === null || strlen(PH::$args['stopmergingifdenyseen']) == 0 )
+                $this->UTIL_stopMergingIfDenySeen = TRUE;
+            elseif( strtolower(PH::$args['stopmergingifdenyseen']) == 'yes'
+                || strtolower(PH::$args['stopmergingifdenyseen']) == 'true'
+                || strtolower(PH::$args['stopmergingifdenyseen']) == 1 )
+                $this->UTIL_stopMergingIfDenySeen = TRUE;
+            elseif( strtolower(PH::$args['stopmergingifdenyseen']) == 'no'
+                || strtolower(PH::$args['stopmergingifdenyseen']) == 'false'
+                || strtolower(PH::$args['stopmergingifdenyseen']) == 0 )
+                $this->UTIL_stopMergingIfDenySeen = FALSE;
+            else
+                $this->display_error_usage_exit("'stopMergingIfDenySeen' argument was given unsupported value '" . PH::$args['stopmergingifdenyseen'] . "'");
+        }
+
+        if( !isset(PH::$args['mergeadjacentonly']) )
+        {
+            PH::print_stdout( " - No 'mergeAdjacentOnly' argument provided, using default 'no'");
+            $this->UTIL_mergeAdjacentOnly = FALSE;
+        }
+        else
+        {
+            if( PH::$args['mergeadjacentonly'] === null || strlen(PH::$args['mergeadjacentonly']) == 0 )
+                $this->UTIL_mergeAdjacentOnly = TRUE;
+
+            elseif( strtolower(PH::$args['mergeadjacentonly']) == 'yes'
+                || strtolower(PH::$args['mergeadjacentonly']) == 'true'
+                || strtolower(PH::$args['mergeadjacentonly']) == 1 )
+
+                $this->UTIL_mergeAdjacentOnly = TRUE;
+
+            elseif( strtolower(PH::$args['mergeadjacentonly']) == 'no'
+                || strtolower(PH::$args['mergeadjacentonly']) == 'false'
+                || strtolower(PH::$args['mergeadjacentonly']) == 0 )
+
+                $this->UTIL_mergeAdjacentOnly = FALSE;
+            else
+                $this->display_error_usage_exit("(mergeAdjacentOnly' argument was given unsupported value '" . PH::$args['mergeadjacentonly'] . "'");
+            PH::print_stdout( " - mergeAdjacentOnly = " . boolYesNo($this->UTIL_mergeAdjacentOnly) );
+        }
+    }
 }

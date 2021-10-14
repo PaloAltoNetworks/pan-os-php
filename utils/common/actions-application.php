@@ -65,7 +65,7 @@ ApplicationCallContext::$supportedActions[] = array(
             if( $context->print_container )
             {
                 $tmparray = array();
-                $app->print_appdetails( $context->padding, true, $tmparray );
+                #$app->print_appdetails( $context->padding, true, $tmparray );
                 PH::$JSON_TMP['sub']['object'][$app->name()]['container'] = $tmparray;
 
                 PH::print_stdout( $context->padding." - is container: " );
@@ -90,6 +90,16 @@ ApplicationCallContext::$supportedActions[] = array(
                         PH::$JSON_TMP['sub']['object'][$app->name()]['container']['app'][] = $tmparray;
                     }
                 }
+            }
+        }
+        elseif( $app->isApplicationGroup() )
+        {
+            foreach( $app->groupApps() as $app1 )
+            {
+                $tmparray = array();
+                PH::print_stdout( "     ->" . $app1->type . " | " );
+                $app1->print_appdetails( $context->padding, true, $tmparray );
+                PH::$JSON_TMP['sub']['object'][$app->name()]['group']['app'][] = $tmparray;
             }
         }
         else

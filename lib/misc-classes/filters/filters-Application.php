@@ -392,6 +392,36 @@ RQuery::$defaultFilters['application']['udp_timeout']['operators']['is.set'] = a
     )
 );
 
+RQuery::$defaultFilters['application']['object']['operators']['has.member'] = array(
+    'Function' => function (ApplicationRQueryContext $context) {
+        if( !$context->object->isApplicationGroup() &&  !$context->object->isContainer())
+            return FALSE;
 
+        if( isset( $context->object->udp_timeout) )
+            return TRUE;
+
+        $member = $context->object->owner->find( $context->value );
+        if( $member !== null)
+        {
+            $references = $member->getReferences();
+            foreach( $references as $ref )
+            {
+                /** @var ReferenceableObject $ref */
+                if( get_class( $ref->owner ) == "AppStore" )
+                {
+                    if( $ref === $context->object )
+                        return TRUE;
+                }
+            }
+        }
+
+        return FALSE;
+    },
+    'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 
 // </editor-fold>
