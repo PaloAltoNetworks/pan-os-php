@@ -376,8 +376,16 @@ class UPLOAD extends UTIL
                 {
                     $usersNode = DH::findXPathSingleEntryOrDie('/config/mgt-config/users', $this->xmlDoc);
                     $newUserNode = DH::importXmlStringOrDie($this->xmlDoc, '<entry name="admin2"><phash>$1$bgnqjgob$HmenJzuuUAYmETzsMcdfJ/</phash><permissions><role-based><superuser>yes</superuser></role-based></permissions></entry>');
-                    $usersNode->appendChild($newUserNode);
-                    PH::print_stdout( " - Injected 'admin2' with 'admin' password");
+
+                    $checkAdmin2 = DH::findFirstElementByNameAttr( "entry", "admin2", $usersNode );
+                    if( $checkAdmin2 === false )
+                    {
+                        $usersNode->appendChild($newUserNode);
+                        PH::print_stdout( " - Injected 'admin2' with 'admin' password");
+                    }
+                    else
+                        PH::print_stdout( " - Injected 'admin2' skipped - already available");
+
                 }
 
                 if( $this->debugAPI )
