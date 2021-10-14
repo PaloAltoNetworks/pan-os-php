@@ -13,6 +13,7 @@ BUGFIX:
 * pa_appid-enabler | bugfix regarding how variables are used, after moving over to class APPIDENABLER()
 * pa_address-merger | bugfix for call class MERGER()
 * pa_panos-xml-issue-detector | bugfix how variables are used after moving to class XMLISSUE
+* pa_upload-config | bugfix for out= type file
 
 GENERAL:
 

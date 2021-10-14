@@ -87,18 +87,17 @@ class UPLOAD extends UTIL
         }
 
 
-        $doc = new DOMDocument();
 
         PH::print_stdout( " - Opening/downloading original configuration...");
 
 
         if( $this->extraFiltersOut !== null )
         {
-            PH::print_stdout( " * extraFiltersOut was specified and holds '" . count($extraFiltersOut) . " queries'");
+            PH::print_stdout( " * extraFiltersOut was specified and holds '" . count($this->extraFiltersOut) . " queries'");
             foreach( $this->extraFiltersOut as $filter )
             {
                 PH::print_stdout( "  - processing XPath '''{$filter} ''' ");
-                $xpathQ = new DOMXPath($doc);
+                $xpathQ = new DOMXPath($this->xmlDoc);
                 $results = $xpathQ->query($filter);
 
                 if( $results->length == 0 )
@@ -122,7 +121,7 @@ class UPLOAD extends UTIL
         if( isset($fromXpath) )
         {
             PH::print_stdout( " * fromXPath is specified with value '" . $fromXpath . "'");
-            $foundInputXpathList = DH::findXPath($fromXpath, $doc);
+            $foundInputXpathList = DH::findXPath($fromXpath, $this->xmlDoc);
 
             if( $foundInputXpathList === FALSE )
                 derr("invalid xpath syntax");
@@ -241,7 +240,7 @@ class UPLOAD extends UTIL
             {
                 PH::print_stdout( " - Now saving configuration to ");
                 PH::print_stdout( " - {$this->configOutput['filename']}... ");
-                $doc->save($this->configOutput['filename']);
+                $this->xmlDoc->save($this->configOutput['filename']);
             }
 
         }
@@ -262,7 +261,7 @@ class UPLOAD extends UTIL
                     }
                 }
                 else
-                    $stringToSend = DH::dom_to_xml(DH::firstChildElement($doc), -1, FALSE);
+                    $stringToSend = DH::dom_to_xml(DH::firstChildElement($this->xmlDoc), -1, FALSE);
 
                 $this->configOutput['connector']->sendSetRequest($toXpath, $stringToSend);
 
@@ -278,7 +277,7 @@ class UPLOAD extends UTIL
 
 
                     $xpathQrunning = new DOMXPath($runningConfig);
-                    $xpathQlocal = new DOMXPath($doc);
+                    $xpathQlocal = new DOMXPath($this->xmlDoc);
 
                     $xpathQueryList = array();
 
@@ -340,7 +339,7 @@ class UPLOAD extends UTIL
                         {
                             $localParentNode = $xpathResultsLocal->item(0)->parentNode;
                             $localParentNode->removeChild($xpathResultsLocal->item(0));
-                            $newNode = $doc->importNode($xpathResults->item(0), TRUE);
+                            $newNode = $this->xmlDoc->importNode($xpathResults->item(0), TRUE);
                             $localParentNode->appendChild($newNode);
                             continue;
                         }
@@ -360,7 +359,7 @@ class UPLOAD extends UTIL
                                 derr('unsupported, debug xpath query: ' . $newXpath);
                             }
 
-                            $newNode = $doc->importNode($xpathResults->item(0), TRUE);
+                            $newNode = $this->xmlDoc->importNode($xpathResults->item(0), TRUE);
                             $localParentNode = $xpathResultsLocal->item(0);
                             $localParentNode->appendChild($newNode);
 
@@ -375,8 +374,8 @@ class UPLOAD extends UTIL
 
                 if( isset(PH::$args['injectuseradmin2']) )
                 {
-                    $usersNode = DH::findXPathSingleEntryOrDie('/config/mgt-config/users', $doc);
-                    $newUserNode = DH::importXmlStringOrDie($doc, '<entry name="admin2"><phash>$1$bgnqjgob$HmenJzuuUAYmETzsMcdfJ/</phash><permissions><role-based><superuser>yes</superuser></role-based></permissions></entry>');
+                    $usersNode = DH::findXPathSingleEntryOrDie('/config/mgt-config/users', $this->xmlDoc);
+                    $newUserNode = DH::importXmlStringOrDie($this->xmlDoc, '<entry name="admin2"><phash>$1$bgnqjgob$HmenJzuuUAYmETzsMcdfJ/</phash><permissions><role-based><superuser>yes</superuser></role-based></permissions></entry>');
                     $usersNode->appendChild($newUserNode);
                     PH::print_stdout( " - Injected 'admin2' with 'admin' password");
                 }
@@ -391,7 +390,7 @@ class UPLOAD extends UTIL
 
                 PH::print_stdout( " - Now saving/uploading that configuration to ");
                 PH::print_stdout( " - {$this->configOutput['connector']->apihost}/$saveName ... ");
-                $this->configOutput['connector']->uploadConfiguration(DH::firstChildElement($doc), $saveName, FALSE);
+                $this->configOutput['connector']->uploadConfiguration(DH::firstChildElement($this->xmlDoc), $saveName, FALSE);
 
             }
         }
