@@ -37,7 +37,7 @@ PH::print_stdout("");
 
 
 $supportedArguments = array();
-$supportedArguments[] = array('niceName' => 'Action', 'shortHelp' => 'type of action you want to perform against API', 'argDesc' => 'register|unregister|fakeregister');
+$supportedArguments[] = array('niceName' => 'Actions', 'shortHelp' => 'type of action you want to perform against API', 'argDesc' => 'register|unregister|fakeregister');
 $supportedArguments[] = array('niceName' => 'in', 'shortHelp' => 'the target PANOS device ie: in=api://1.2.3.4', 'argDesc' => 'api://[hostname or IP]');
 $supportedArguments[] = array('niceName' => 'Location', 'shortHelp' => 'defines the VSYS target of the UserID request', 'argDesc' => 'vsys1[,vsys2,...]');
 $supportedArguments[] = array('niceName' => 'records', 'shortHelp' => 'list of userid records to register/unregister in API', 'argDesc' => '10.0.0.1,domain\user2/10.2.3.4,domain\user3');
@@ -55,13 +55,6 @@ $util = new UTIL("custom", $argv, __FILE__, $supportedArguments, $usageMsg);
 $util->prepareSupportedArgumentsArray();
 
 $util->utilInit();
-
-
-$util->inDebugapiArgument();
-
-$util->inputValidation();
-
-$util->location_provided();
 
 
 
