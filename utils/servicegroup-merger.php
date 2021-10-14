@@ -29,7 +29,7 @@ PH::print_stdout("***********************************************");
 PH::print_stdout("*********** " . basename(__FILE__) . " UTILITY **************");
 PH::print_stdout("");
 
-$merger = new MERGER("servicegroup-merger", $argv, __FILE__, array(), $usageMsg);
+$merger = new MERGER("servicegroup-merger", $argv, __FILE__, array() );
 
 PH::print_stdout("");
 PH::print_stdout("************* END OF SCRIPT " . basename(__FILE__) . " ************" );

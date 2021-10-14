@@ -59,7 +59,6 @@ class MERGER extends UTIL
 
     function merger_location_array($utilType, $objectsLocation, $pan)
     {
-        #global $pan;
         $this->utilType = $utilType;
 
         #if( $objectsLocation == 'any' || $objectsLocation == 'all' )

@@ -3,8 +3,8 @@
 
 class DIFF extends UTIL
 {
-    public $utilType = null;
-
+    public $el1rulebase = array();
+    public $el2rulebase = array();
 
     public function utilStart()
     {
@@ -102,12 +102,6 @@ class DIFF extends UTIL
         PH::print_stdout( "*** NOW DISPLAY DIFF ***");
 
 
-
-
-
-        $el1rulebase = array();
-        $el2rulebase = array();
-
         if( $filter == FALSE )
         {
             $doc1Root = DH::firstChildElement($doc1);
@@ -148,34 +142,6 @@ class DIFF extends UTIL
                 PH::print_stdout( "doc2Root : false" );
             }
 
-            /*
-                #$xml = simplexml_load_string($doc1Root);
-                $xml = simplexml_import_dom($doc1Root);
-                $json = json_encode($xml);
-                $array = json_decode($json,TRUE);
-                print_r( $array );
-
-                #$xml = simplexml_load_string($doc1Root);
-                $xml = simplexml_import_dom($doc2Root);
-                $json = json_encode($xml);
-                $array = json_decode($json,TRUE);
-                print_r( $array );
-            */
-            ##########################################
-
-            #$doc1Root = DH::findXPath( $filter, $doc1);
-            #$doc2Root = DH::findXPath( $filter, $doc2);
-
-
-            #PH::print_stdout( "path: ".$doc1Root->getNodePath() );
-            #print_r( $doc1Root );
-
-
-            ##########################################
-
-            #$doc1Root = DH::firstChildElement( $doc1Root->parentNode->parentNode->firstChild );
-            #$doc2Root = DH::firstChildElement( $doc2Root->firstChild );
-
             $this->compareElements($doc1Root, $doc2Root, $filter);
         }
     }
@@ -188,7 +154,6 @@ class DIFF extends UTIL
 
     function display_usage_and_exit( $shortmessage = false)
     {
-        global $argv;
         PH::print_stdout( PH::boldText("USAGE: ") . "php " . basename(__FILE__) . " [in=api://192.168.10.1] file1=original.xml file2=compare.xml" );
         PH::print_stdout( "    argument example: \"filter=/config/devices/entry[@name='localhost.localdomain']/vsys/entry[@name='vsys1']/tag\"" );
         PH::print_stdout( "                      \"filter=/config/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='DG-test']\"" );
@@ -205,33 +170,27 @@ class DIFF extends UTIL
 
     function calculateRuleorder( $el1Elements, $el2Elements)
     {
-        global $el1rulebase;
-        global $el2rulebase;
-
-        $el1rulebase = array();
+        $this->el1rulebase = array();
         foreach( $el1Elements['entry'] as $key => $rule )
         {
             $name = $rule->getAttribute('name');
-            $el1rulebase[$name] = $name;
+            $this->el1rulebase[$name] = $name;
         }
-        $el2rulebase = array();
+        $this->el2rulebase = array();
         foreach( $el2Elements['entry'] as $key => $rule )
         {
             $name = $rule->getAttribute('name');
-            $el2rulebase[$name] = $name;
+            $this->el2rulebase[$name] = $name;
         }
     }
     function checkRuleOrder( $xpath )
     {
-        global $el1rulebase;
-        global $el2rulebase;
-
         $start = strpos( $xpath, '/rules/entry[@name=\'' );
         $name_string =  substr( $xpath, $start+20);
         $name_string = str_replace( "']", '', $name_string );
 
-        $posFile1 = array_search($name_string, array_keys($el1rulebase));
-        $posFile2 = array_search($name_string, array_keys($el2rulebase));
+        $posFile1 = array_search($name_string, array_keys($this->el1rulebase));
+        $posFile2 = array_search($name_string, array_keys($this->el2rulebase));
         if( $posFile1 !== $posFile2 )
         {
             PH::print_stdout( "\nXPATH: $xpath");
@@ -245,9 +204,6 @@ class DIFF extends UTIL
      */
     function compareElements($el1, $el2, $xpath = null)
     {
-        global $el1rulebase;
-        global $el2rulebase;
-
         #PH::print_stdout( "argument XPATH: ".$xpath );
         if( $xpath == null )
             $xpath = DH::elementToPanXPath($el1);
@@ -508,8 +464,8 @@ class DIFF extends UTIL
                         unset($el1NameSorted[$nodeName]);
 
                         $nodeName = $node->getAttribute('name');
-                        if( isset( $el1rulebase[$nodeName] ) )
-                            unset( $el1rulebase[$nodeName] );
+                        if( isset( $this->el1rulebase[$nodeName] ) )
+                            unset( $this->el1rulebase[$nodeName] );
                     }
                 }
                 foreach( $el2NameSorted as $nodeName => $node )
@@ -520,8 +476,8 @@ class DIFF extends UTIL
                         unset($el2NameSorted[$nodeName]);
 
                         $nodeName = $node->getAttribute('name');
-                        if( isset( $el2rulebase[$nodeName] ) )
-                            unset( $el2rulebase[$nodeName] );
+                        if( isset( $this->el2rulebase[$nodeName] ) )
+                            unset( $this->el2rulebase[$nodeName] );
                     }
                 }
 
