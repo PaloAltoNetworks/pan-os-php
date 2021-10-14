@@ -4,6 +4,7 @@ CHANGELOG
 UTILS:
 * pa_panos-xml-issue-detector | improvement to use parent methods from class UTIL
 * pa_appid-enabler / pa_config-size / pa_upload-config - improve to use parent available methods from class UTIL
+* UTIL - pa_config-size / pa_diff / pa_override-finder / pa_upload - optimisation to use more of class UTIL
 
 BUGFIX:
 * pa_appid-enabler | bugfix

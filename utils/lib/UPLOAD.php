@@ -3,7 +3,9 @@
 
 class UPLOAD extends UTIL
 {
-    public $utilType = null;
+    public $loadConfigAfterUpload = FALSE;
+    public $extraFiltersOut = null;
+
 
     //Todo: optimisation needed to use class UTIL available parent methods
 
@@ -14,13 +16,16 @@ class UPLOAD extends UTIL
 
         $this->prepareSupportedArgumentsArray();
 
-
+        //from utilInit
         PH::processCliArgs();
-
         $this->help(PH::$args);
-
         $this->arg_validation();
-        #$this->init_arguments();
+
+
+        //from init_arguments - which is triggered by utilInit
+        $this->inDebugapiArgument();
+        $this->inputValidation();
+
 
         $this->main();
 
@@ -30,36 +35,15 @@ class UPLOAD extends UTIL
 
     public function main()
     {
-        $configInput = null;
-        $configOutput = null;
-        $errorMessage = '';
-        $debugAPI = FALSE;
-        $loadConfigAfterUpload = FALSE;
-        $extraFiltersOut = null;
-
-
-
-        if( !isset(PH::$args['in']) )
-            $this->display_error_usage_exit('"in" is missing from arguments');
-        $configInput = PH::$args['in'];
-        if( !is_string($configInput) || strlen($configInput) < 1 )
-            $this->display_error_usage_exit('"in" argument is not a valid string');
-
-        if( !isset(PH::$args['out']) )
-            $this->display_error_usage_exit('"out" is missing from arguments');
-        $configOutput = PH::$args['out'];
-        if( !is_string($configOutput) || strlen($configOutput) < 1 )
-            $this->display_error_usage_exit('"out" argument is not a valid string');
-
-
-        if( isset(PH::$args['debugapi']) )
-            $debugAPI = TRUE;
-        else
-            $debugAPI = FALSE;
-
         if( isset(PH::$args['loadafterupload']) )
+            $this->loadConfigAfterUpload = TRUE;
+
+        //needed as UPLOAD must calculate FILE/API also for configOutput
+        if( isset(PH::$args['out']) )
         {
-            $loadConfigAfterUpload = TRUE;
+            $this->configOutput = PH::$args['out'];
+            if( !is_string($this->configOutput) || strlen($this->configOutput) < 1 )
+                $this->display_error_usage_exit('"out" argument is not a valid string');
         }
 
         if( isset(PH::$args['fromxpath']) )
@@ -82,8 +66,8 @@ class UPLOAD extends UTIL
         if( isset(PH::$args['toxpath']) )
         {
             $toXpath = str_replace('"', "'", PH::$args['toxpath']);
-            if( $loadConfigAfterUpload )
-                $loadConfigAfterUpload = FALSE;
+            if( $this->loadConfigAfterUpload )
+                $this->loadConfigAfterUpload = FALSE;
 
             if( strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' )
             {
@@ -94,14 +78,12 @@ class UPLOAD extends UTIL
             }
         }
 
-        if( !isset(PH::$args['apiTimeout']) )
-            $apiTimeoutValue = 30;
-        else
-            $apiTimeoutValue = PH::$args['apiTimeout'];
+        if( isset(PH::$args['apiTimeout']) )
+            $this->apiTimeoutValue = PH::$args['apiTimeout'];
 
         if( isset(PH::$args['extrafiltersout']) )
         {
-            $extraFiltersOut = explode('|', PH::$args['extrafiltersout']);
+            $this->extraFiltersOut = explode('|', PH::$args['extrafiltersout']);
         }
 
 
@@ -109,52 +91,11 @@ class UPLOAD extends UTIL
 
         PH::print_stdout( " - Opening/downloading original configuration...");
 
-        //
-        // What kind of config input do we have.
-        //     File or API ?
-        //
-        $configInput = PH::processIOMethod($configInput, TRUE);
 
-        if( $configInput['status'] == 'fail' )
-        {
-            fwrite(STDERR, "\n\n**ERROR** " . $configInput['msg'] . "\n\n");
-            exit(1);
-        }
-
-        if( $configInput['type'] == 'file' )
-        {
-            PH::print_stdout( " - {$configInput['filename']} ... ");
-            $doc->Load($configInput['filename'], XML_PARSE_BIG_LINES);
-        }
-        elseif( $configInput['type'] == 'api' )
-        {
-            if( $debugAPI )
-                $configInput['connector']->setShowApiCalls(TRUE);
-
-            PH::print_stdout( " - {$configInput['connector']->apihost} ... ");
-
-            /** @var PanAPIConnector $inputConnector */
-            $inputConnector = $configInput['connector'];
-
-            if( !isset($configInput['filename']) || $configInput['filename'] == '' || $configInput['filename'] == 'candidate-config' )
-                $doc = $inputConnector->getCandidateConfig();
-            elseif( $configInput['filename'] == 'running-config' )
-                $doc = $inputConnector->getRunningConfig();
-            elseif( $configInput['filename'] == 'merged-config' || $configInput['filename'] == 'merged' )
-                $doc = $inputConnector->getMergedConfig();
-            elseif( $configInput['filename'] == 'panorama-pushed-config' || $configInput['filename'] == 'panorama-pushed' )
-                $doc = $inputConnector->getPanoramaPushedConfig();
-            else
-                $doc = $inputConnector->getSavedConfig($configInput['filename']);
-        }
-        else
-            derr('not supported yet');
-
-
-        if( $extraFiltersOut !== null )
+        if( $this->extraFiltersOut !== null )
         {
             PH::print_stdout( " * extraFiltersOut was specified and holds '" . count($extraFiltersOut) . " queries'");
-            foreach( $extraFiltersOut as $filter )
+            foreach( $this->extraFiltersOut as $filter )
             {
                 PH::print_stdout( "  - processing XPath '''{$filter} ''' ");
                 $xpathQ = new DOMXPath($doc);
@@ -201,25 +142,26 @@ class UPLOAD extends UTIL
 
 
 //
+// SOMETHING SPECIAL FOR UPLOAD SCRIPT - ALSO OUTPUT CAN HAVE FILE OR API MODE
 // What kind of config output do we have.
 //     File or API ?
 //
-        $configOutput = PH::processIOMethod($configOutput, FALSE);
+        $this->configOutput = PH::processIOMethod($this->configOutput, FALSE);
 
-        if( $configOutput['status'] == 'fail' )
+        if( $this->configOutput['status'] == 'fail' )
         {
-            fwrite(STDERR, "\n\n**ERROR** " . $configOutput['msg'] . "\n\n");
+            fwrite(STDERR, "\n\n**ERROR** " . $this->configOutput['msg'] . "\n\n");
             exit(1);
         }
 
-        if( $configOutput['type'] == 'file' )
+        if( $this->configOutput['type'] == 'file' )
         {
             if( isset($toXpath) )
             {
                 derr("toXpath options was used, it's incompatible with a file output. Make a feature request !!!  ;)");
 
                 $doc2 = new DOMDocument();
-                if( !file_exists( $configOutput['filename'] ) )
+                if( !file_exists( $this->configOutput['filename'] ) )
                 {
                     PH::print_stdout( " - strpos|".strpos( $toXpath, "/config/devices/entry/vsys" )."|");
                     if( strpos( $toXpath, "/vsys/entry[" ) !== false )
@@ -227,11 +169,11 @@ class UPLOAD extends UTIL
                     else
                         $doc2->Load( dirname(__FILE__) . "/../parser/panorama_baseconfig.xml", XML_PARSE_BIG_LINES);
                 }
-                elseif( file_exists( $configOutput['filename'] ) )
+                elseif( file_exists( $this->configOutput['filename'] ) )
                 {
-                    PH::print_stdout( " - {$configOutput['filename']} ... ");
+                    PH::print_stdout( " - {$this->configOutput['filename']} ... ");
                     $doc2 = new DOMDocument();
-                    $doc2->Load($configOutput['filename'], XML_PARSE_BIG_LINES);
+                    $doc2->Load($this->configOutput['filename'], XML_PARSE_BIG_LINES);
                 }
 
                 PH::print_stdout( " * toXPath is specified with value '" . $toXpath . "'");
@@ -292,21 +234,21 @@ class UPLOAD extends UTIL
                 $entryNode->appendChild( $node );
 
                 PH::print_stdout( " - Now saving configuration to ");
-                PH::print_stdout( " - {$configOutput['filename']}... " );
-                $doc2->save($configOutput['filename']);
+                PH::print_stdout( " - {$this->configOutput['filename']}... " );
+                $doc2->save($this->configOutput['filename']);
             }
             else
             {
                 PH::print_stdout( " - Now saving configuration to ");
-                PH::print_stdout( " - {$configOutput['filename']}... ");
-                $doc->save($configOutput['filename']);
+                PH::print_stdout( " - {$this->configOutput['filename']}... ");
+                $doc->save($this->configOutput['filename']);
             }
 
         }
-        elseif( $configOutput['type'] == 'api' )
+        elseif( $this->configOutput['type'] == 'api' )
         {
-            if( $debugAPI )
-                $configOutput['connector']->setShowApiCalls(TRUE);
+            if( $this->debugAPI )
+                $this->configOutput['connector']->setShowApiCalls(TRUE);
 
             if( isset($toXpath) )
             {
@@ -322,7 +264,7 @@ class UPLOAD extends UTIL
                 else
                     $stringToSend = DH::dom_to_xml(DH::firstChildElement($doc), -1, FALSE);
 
-                $configOutput['connector']->sendSetRequest($toXpath, $stringToSend);
+                $this->configOutput['connector']->sendSetRequest($toXpath, $stringToSend);
 
             }
             else
@@ -332,7 +274,7 @@ class UPLOAD extends UTIL
                     isset(PH::$args['preservemgmtsystem']) )
                 {
                     PH::print_stdout( " - Option 'preserveXXXXX was used, we will first download the running config of target device...");
-                    $runningConfig = $configOutput['connector']->getRunningConfig();
+                    $runningConfig = $this->configOutput['connector']->getRunningConfig();
 
 
                     $xpathQrunning = new DOMXPath($runningConfig);
@@ -439,17 +381,17 @@ class UPLOAD extends UTIL
                     PH::print_stdout( " - Injected 'admin2' with 'admin' password");
                 }
 
-                if( $debugAPI )
-                    $configOutput['connector']->setShowApiCalls(TRUE);
+                if( $this->debugAPI )
+                    $this->configOutput['connector']->setShowApiCalls(TRUE);
 
-                if( $configOutput['filename'] !== null )
-                    $saveName = $configOutput['filename'];
+                if( $this->configOutput['filename'] !== null )
+                    $saveName = $this->configOutput['filename'];
                 else
                     $saveName = 'stage0.xml';
 
                 PH::print_stdout( " - Now saving/uploading that configuration to ");
-                PH::print_stdout( " - {$configOutput['connector']->apihost}/$saveName ... ");
-                $configOutput['connector']->uploadConfiguration(DH::firstChildElement($doc), $saveName, FALSE);
+                PH::print_stdout( " - {$this->configOutput['connector']->apihost}/$saveName ... ");
+                $this->configOutput['connector']->uploadConfiguration(DH::firstChildElement($doc), $saveName, FALSE);
 
             }
         }
@@ -457,11 +399,11 @@ class UPLOAD extends UTIL
             derr('not supported yet');
 
 
-        if( $loadConfigAfterUpload && $configInput['type'] != 'api' )
+        if( $this->loadConfigAfterUpload && $this->configInput['type'] != 'api' )
         {
             PH::print_stdout( " - Loading config in the firewall (will display warnings if any) ...");
             /** @var PanAPIConnector $targetConnector */
-            $targetConnector = $configOutput['connector'];
+            $targetConnector = $this->configOutput['connector'];
             $xmlResponse = $targetConnector->sendCmdRequest('<load><config><from>' . $saveName . '</from></config></load>', TRUE, 600);
 
             if( $xmlResponse === null )

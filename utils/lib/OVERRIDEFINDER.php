@@ -3,8 +3,7 @@
 
 class OVERRIDEFINDER extends UTIL
 {
-    public $utilType = null;
-
+    public $cycleConnectedFirewalls = FALSE;
 
     public function utilStart()
     {
@@ -13,8 +12,17 @@ class OVERRIDEFINDER extends UTIL
         $this->prepareSupportedArgumentsArray();
         PH::processCliArgs();
 
+        $this->help(PH::$args);
+
         $this->arg_validation();
 
+        $this->inDebugapiArgument();
+
+        if( isset(PH::$args['cycleconnectedfirewalls']) )
+            $this->cycleConnectedFirewalls = TRUE;
+
+
+        $this->inputValidation();
 
         $this->main();
 
@@ -24,77 +32,21 @@ class OVERRIDEFINDER extends UTIL
 
     public function main()
     {
-
-        if( isset(PH::$args['help']) )
+        if( $this->cycleConnectedFirewalls )
         {
-            $this->display_usage_and_exit();
-        }
-
-
-        if( !isset(PH::$args['in']) )
-            $this->display_error_usage_exit('"in" is missing from arguments');
-        $configInput = PH::$args['in'];
-        if( !is_string($configInput) || strlen($configInput) < 1 )
-            $this->display_error_usage_exit('"in" argument is not a valid string');
-
-        if( isset(PH::$args['debugapi']) )
-            $debugAPI = TRUE;
-        else
-            $debugAPI = FALSE;
-
-        if( isset(PH::$args['cycleconnectedfirewalls']) )
-            $cycleConnectedFirewalls = TRUE;
-        else
-            $cycleConnectedFirewalls = FALSE;
-
-//
-// What kind of config input do we have.
-//     File or API ?
-//
-        $configInput = PH::processIOMethod($configInput, TRUE);
-
-        if( $configInput['status'] == 'fail' )
-        {
-            fwrite(STDERR, "\n\n**ERROR** " . $configInput['msg'] . "\n\n");
-            exit(1);
-        }
-
-        if( $configInput['type'] == 'file' )
-        {
-            derr("Only API mode is supported, please provide an API input");
-        }
-        elseif( $configInput['type'] == 'api' )
-        {
-            /** @var PanAPIConnector $inputConnector */
-            $inputConnector = $configInput['connector'];
-
-            if( $debugAPI )
-                $inputConnector->setShowApiCalls(TRUE);
-        }
-        else
-            derr('not supported yet');
-
-
-
-
-
-        if( $cycleConnectedFirewalls )
-        {
-            $firewallSerials = $inputConnector->panorama_getConnectedFirewallsSerials();
+            $firewallSerials = $this->pan->connector->panorama_getConnectedFirewallsSerials();
 
             $countFW = 0;
             foreach( $firewallSerials as $fw )
             {
                 $countFW++;
                 PH::print_stdout( " ** Handling FW #{$countFW}/" . count($firewallSerials) . " : serial/{$fw['serial']}   hostname/{$fw['hostname']} **" );
-                $tmpConnector = $inputConnector->cloneForPanoramaManagedDevice($fw['serial']);
+                $tmpConnector = $this->pan->connector->cloneForPanoramaManagedDevice($fw['serial']);
                 $this->checkFirewallOverride($tmpConnector, '    ');
             }
         }
         else
-        {
-            $this->checkFirewallOverride($inputConnector, ' ');
-        }
+            $this->checkFirewallOverride($this->pan->connector, ' ');
     }
 
     public function supportedArguments()
@@ -108,9 +60,7 @@ class OVERRIDEFINDER extends UTIL
 
     function diffNodes(DOMElement $template, DOMElement $candidate, $padding)
     {
-        static $excludeXpathList = array('/config/devices/entry/deviceconfig/system/update-schedule/*/recurring'
-
-        );
+        static $excludeXpathList = array( '/config/devices/entry/deviceconfig/system/update-schedule/*/recurring' );
 
         if( $candidate->hasAttribute('src') && $candidate->getAttribute('src') == 'tpl' )
         {
@@ -146,11 +96,8 @@ class OVERRIDEFINDER extends UTIL
                             break;
                     }
 
-
                     if( $exclusionFound )
-                    {
                         PH::print_stdout( $padding . "* " . DH::elementToPanXPath($candidate) );
-                    }
                     else
                         PH::print_stdout( $padding . "* " . DH::elementToPanXPath($templateNode) . " (defined in template but missing in Firewall config)" );
                 }
@@ -160,10 +107,10 @@ class OVERRIDEFINDER extends UTIL
         }
         else
         {
-            static $manualCheckXpathList = array('/config/mgt-config/users/entry/phash',
+            static $manualCheckXpathList = array(
+                '/config/mgt-config/users/entry/phash',
                 '/config/shared/local-user-database/user/entry/phash',
                 '/config/shared/certificate/entry/private-key'
-
             );
 
             $exclusionFound = FALSE;
@@ -287,14 +234,5 @@ class OVERRIDEFINDER extends UTIL
 
         PH::print_stdout("" );
         exit(1);
-    }
-
-    function display_error_usage_exit($msg)
-    {
-        if( PH::$shadow_json )
-            PH::$JSON_OUT['error'] = $msg;
-        else
-            fwrite(STDERR, PH::boldText("\n**ERROR** ") . $msg . "\n\n");
-        $this->display_usage_and_exit(FALSE);
     }
 }
