@@ -8,6 +8,7 @@ BUGFIX:
 
 GENERAL:
 * dockerfile - introduce bash_autocompletion for Dockerfile-cli - usage of ubuntu CLI with PAN-OS-PHP installed
+* framework - update ubuntu_set_path_variable.sh - full installation is now possible, if Ubuntu is pre-installed
 
 
 2.0.17 (20211015)
