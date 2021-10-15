@@ -97,7 +97,9 @@ $supportedRoute = array(
     "xml-issue",
     "appid-enabler",
     "config-size",
-    "download-predefined"
+    "download-predefined",
+    "register-ip-mgr",
+    "userid-mgr"
     );
 sort($supportedRoute );
 
@@ -322,6 +324,12 @@ function UTILcaller( $url_pieces, $argv )
 
         elseif( $url_pieces[1] == "download-predefined" )
             $util = new PREDEFINED($url_pieces[1], $argv, __FILE__);
+
+        elseif( $url_pieces[1] == "register-ip-mgr" )
+            $util = new REGISTERIP($url_pieces[1], $argv, __FILE__ );
+
+        elseif( $url_pieces[1] == "userid-mgr" )
+            $util = new USERIDMGR($url_pieces[1], $argv, __FILE__ );
 
         elseif( $url_pieces[1] == 'address'
             || $url_pieces[1] == 'service'
