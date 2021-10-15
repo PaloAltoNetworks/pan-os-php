@@ -1,6 +1,14 @@
 CHANGELOG
 
-2.0.17
+2.0.18
+UTILS:
+
+BUGFIX:
+
+GENERAL:
+
+
+2.0.17 (20211015)
 UTILS:
 * pan-os-php and API | introduce support for rule-merger
 * XML_op_JSON | move to class XMLOPJSON extend UTIL
@@ -16,7 +24,7 @@ BUGFIX:
 GENERAL:
 
 
-2.0.16  (20211014)
+2.0.16 (20211014)
 UTILS:
 * pa_panos-xml-issue-detector | improvement to use parent methods from class UTIL
 * pa_appid-enabler / pa_config-size / pa_upload-config - improve to use parent available methods from class UTIL
