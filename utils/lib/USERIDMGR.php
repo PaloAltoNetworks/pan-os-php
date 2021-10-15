@@ -8,8 +8,8 @@ class USERIDMGR extends UTIL
 
     public function utilStart()
     {
-        $this->usageMsg = PH::boldText('USAGE EXAMPLES: ') . "\n - php " . basename(__FILE__) . " in=api://1.2.3.4 action=register location=vsys1 records=10.0.0.1,domain\\user2/10.2.3.4,domain\\user3"
-            . "\n - php " . basename(__FILE__) . " in=api://1.2.3.4 action=register location=vsys1 recordFile=users.txt";
+        $this->usageMsg = PH::boldText('USAGE EXAMPLES: ') . "\n - php " . basename(__FILE__) . " in=api://1.2.3.4 actions=register location=vsys1 records=10.0.0.1,domain\\user2/10.2.3.4,domain\\user3"
+            . "\n - php " . basename(__FILE__) . " in=api://1.2.3.4 actions=register location=vsys1 recordFile=users.txt";
         
         $this->prepareSupportedArgumentsArray();
         
@@ -53,7 +53,6 @@ class USERIDMGR extends UTIL
                 $virtualsystems = $this->pan->getDeviceGroups();
 
 
-            $all = array();
             foreach( $virtualsystems as $sub )
             {
                 $unregister_array[$sub->name()] = array();
@@ -66,9 +65,6 @@ class USERIDMGR extends UTIL
 
                 foreach( $register_ip_array as $ip => $reg )
                 {
-                    #$first_value = reset($reg); // First Element's Value
-                    #$first_key = key($reg); // First Element's Key
-
                     PH::print_stdout("          " . $ip . " - " . $reg['user'] );#. " - " . $reg['type']);
                     $unregister_array[$sub->name()]['ip'][] = $ip;
                     $unregister_array[$sub->name()]['user'][] = $reg['user'];
@@ -77,12 +73,13 @@ class USERIDMGR extends UTIL
 
             if( $action == 'unregister-all' )
             {
-
                 foreach( $unregister_array as $vsysName => $vsys )
                 {
-                    $response = $this->pan->connector->userIDLogout($vsys['ip'], $vsys['user'], $vsysName)  ;
+                    PH::print_stdout("" );
+                    PH::print_stdout("     * unregister all userid information from VSYS: ".$vsysName );
+                    if( isset( $vsys['ip'] ) && isset( $vsys['user'] ) )
+                        $response = $this->pan->connector->userIDLogout($vsys['ip'], $vsys['user'], $vsysName)  ;
                 }
-
             }
         }
         elseif( $action == 'register' || $action == 'unregister' )
@@ -116,8 +113,6 @@ class USERIDMGR extends UTIL
 
                     $records[$ipaddress] = $username;
                 }
-
-
             }
             elseif( isset(PH::$args['recordfile']) )
             {
@@ -151,8 +146,6 @@ class USERIDMGR extends UTIL
 
                     $records[$ipaddress] = $username;
                 }
-
-
             }
             else
                 derr("you need to provide 'records' or 'recordfile' argument");
@@ -169,9 +162,6 @@ class USERIDMGR extends UTIL
                 $this->pan->connector->userIDLogin(array_keys($records), $records, $this->location);
             else
                 $this->pan->connector->userIDLogout(array_keys($records), $records, $this->location);
-
-
-
         }
         elseif( $action == 'fakeregister' )
         {
@@ -190,14 +180,11 @@ class USERIDMGR extends UTIL
             }
 
 
-
             PH::print_stdout( " - now sending records to API ... ");
             $this->pan->connector->userIDLogin(array_keys($records), $records, $this->location);
-
-
         }
         else
-            derr("action '{$action}' is not supported");
+            derr("actions '{$action}' is not supported");
     }
 
     public function supportedArguments()

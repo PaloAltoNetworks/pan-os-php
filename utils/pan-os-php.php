@@ -90,10 +90,27 @@ if( isset(PH::$args['version']) )
 {
     PH::print_stdout( " - PAN-OS-PHP version: ".PH::frameworkVersion() . " [".PH::frameworkInstalledOS()."]" );
     PH::print_stdout( " - ".dirname(__FILE__) );
+
+    PH::$JSON_TMP['version'] = PH::frameworkVersion();
+    PH::$JSON_TMP['os'] = PH::frameworkInstalledOS();
+    PH::$JSON_TMP['folder'] = dirname(__FILE__);
+
+    PH::print_stdout( PH::$JSON_TMP, false, 'pan-os-php' );
+    PH::$JSON_TMP = array();
+    if( PH::$shadow_json )
+    {
+        PH::$JSON_OUT['log'] = PH::$JSON_OUTlog;
+        print json_encode( PH::$JSON_OUT, JSON_PRETTY_PRINT );
+    }
+
     exit();
 }
 elseif( !isset(PH::$args['type']) )
 {
+    foreach( $supportedUTILTypes as $type )
+        PH::$JSON_TMP[] = $type;
+    PH::print_stdout( PH::$JSON_TMP, false, 'type' );
+
     $typeUTIL->display_error_usage_exit('"type" is missing from arguments');
 }
 elseif( isset(PH::$args['type']) )
@@ -117,6 +134,7 @@ elseif( isset(PH::$args['type']) )
     PH::print_stdout("");
     PH::print_stdout("***********************************************");
     PH::print_stdout("*********** " . strtoupper( $type ) . " UTILITY **************");
+    PH::print_stdout("***********************************************");
     PH::print_stdout("");
 
     if( $type == "rule" )
@@ -150,42 +168,44 @@ elseif( isset(PH::$args['type']) )
         $util = new MERGER($type, $argv, __FILE__." type=".$type);
 
     elseif( $type == "rule-merger" )
-        $util = new RULEMERGER($type, $argv, __FILE__ );
+        $util = new RULEMERGER($type, $argv, __FILE__." type=".$type );
 
     elseif( $type == "override-finder" )
-        $util = new OVERRIDEFINDER($type, $argv, __FILE__);
+        $util = new OVERRIDEFINDER($type, $argv, __FILE__." type=".$type);
     elseif( $type == "diff" )
-        $util = new DIFF($type, $argv, __FILE__);
+        $util = new DIFF($type, $argv, __FILE__." type=".$type);
     elseif( $type == "upload" )
-        $util = new UPLOAD($type, $argv, __FILE__);
+        $util = new UPLOAD($type, $argv, __FILE__." type=".$type);
     elseif( $type == "xml-issue" )
-        $util = new XMLISSUE($type, $argv, __FILE__);
+        $util = new XMLISSUE($type, $argv, __FILE__." type=".$type);
 
     elseif( $type == "appid-enabler" )
-        $util = new APPIDENABLER($type, $argv, __FILE__);
+        $util = new APPIDENABLER($type, $argv, __FILE__." type=".$type);
     elseif( $type == "config-size" )
-        $util = new CONFIGSIZE($type, $argv, __FILE__);
+        $util = new CONFIGSIZE($type, $argv, __FILE__." type=".$type);
 
     elseif( $type == "download-predefined" )
-        $util = new PREDEFINED($type, $argv, __FILE__);
+        $util = new PREDEFINED($type, $argv, __FILE__." type=".$type);
 
     elseif( $type == "register-ip-mgr" )
-        $util = new REGISTERIP($type, $argv, __FILE__ );
+        $util = new REGISTERIP($type, $argv, __FILE__." type=".$type );
 
     elseif( $type == "userid-mgr" )
-        $util = new USERIDMGR($type, $argv, __FILE__ );
+        $util = new USERIDMGR($type, $argv, __FILE__." type=".$type);
 
     elseif( $type == "xml-op-json" )
-        $util = new XMLOPJSON($type, $argv, __FILE__ );
+        $util = new XMLOPJSON($type, $argv, __FILE__." type=".$type );
 
     elseif( $type == "bpa-generator" )
-        $util = new BPAGENERATOR($type, $argv, __FILE__);
+        $util = new BPAGENERATOR($type, $argv, __FILE__." type=".$type);
 
     else
-        $util = new UTIL($type, $argv, __FILE__." type=".$type);
+        $util = new UTIL($type, $argv, __FILE__." type=".$type." type=".$type);
 
     PH::print_stdout("");
+    PH::print_stdout("***********************************************");
     PH::print_stdout("************* END OF SCRIPT " . strtoupper( $type ) . " ************" );
+    PH::print_stdout("***********************************************");
     PH::print_stdout("");
 
 }
