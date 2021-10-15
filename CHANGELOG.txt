@@ -9,6 +9,7 @@ UTILS:
 * pa_userid-mgr | introduce actions=display and unregister-all
 * pa_register-ip-mgr and pa_userid-mgr | introduce class REGISTERIP and USERIDMGR
 * pan-os-php and API | extend to support register-ip-mgr and userid-mgr
+* pan-os-php bash-autocompletion - extend with all available UTIL script - to finalise the single entry by using PAN-OS-PHP framework
 
 BUGFIX:
 
