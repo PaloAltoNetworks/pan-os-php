@@ -45,7 +45,9 @@ $supportedUTILTypes = array(
     "config-size",
     "download-predefined",
     "register-ip-mgr",
-    "userid-mgr"
+    "userid-mgr",
+    "xml-op-json",
+    "bpa-generator"
     );
 //Todo: API not supported scripts:
 //custom
@@ -172,6 +174,12 @@ elseif( isset(PH::$args['type']) )
 
     elseif( $type == "userid-mgr" )
         $util = new USERIDMGR($type, $argv, __FILE__ );
+
+    elseif( $type == "xml-op-json" )
+        $util = new XMLOPJSON($type, $argv, __FILE__ );
+
+    elseif( $type == "bpa-generator" )
+        $util = new BPAGENERATOR($type, $argv, __FILE__);
 
     else
         $util = new UTIL($type, $argv, __FILE__." type=".$type);
