@@ -70,7 +70,54 @@ if( !isset(PH::$args['actions']) )
 
 $action = strtolower(PH::$args['actions']);
 
-if( $action == 'register' || $action == 'unregister' )
+if( $action == 'display' || $action == 'unregister-all' )
+{
+    PH::print_stdout(" - action is '$action'");
+    PH::print_stdout("");
+
+    $unregister_array = array();
+
+    $util->pan->load_from_domxml($util->xmlDoc);
+
+    if( $util->configType == 'panos' )
+        $virtualsystems = $util->pan->getVirtualSystems();
+    elseif( $util->configType == 'panorama' )
+        $virtualsystems = $util->pan->getDeviceGroups();
+
+
+    $all = array();
+    foreach( $virtualsystems as $sub )
+    {
+        $unregister_array[$sub->name()] = array();
+
+        PH::print_stdout("##################################");
+        PH::print_stdout(PH::boldText(" - " . $sub->name()));
+
+        $register_ip_array = $util->pan->connector->userid_getIp($sub->name());
+        PH::print_stdout("     - user-ip-mappings: [" . count($register_ip_array) . "]");
+
+        foreach( $register_ip_array as $ip => $reg )
+        {
+            #$first_value = reset($reg); // First Element's Value
+            #$first_key = key($reg); // First Element's Key
+
+            PH::print_stdout("          " . $ip . " - " . $reg['user'] );#. " - " . $reg['type']);
+            $unregister_array[$sub->name()]['ip'][] = $ip;
+            $unregister_array[$sub->name()]['user'][] = $reg['user'];
+        }
+    }
+
+    if( $action == 'unregister-all' )
+    {
+
+        foreach( $unregister_array as $vsysName => $vsys )
+        {
+            $response = $util->pan->connector->userIDLogout($vsys['ip'], $vsys['user'], $vsysName)  ;
+        }
+
+    }
+}
+elseif( $action == 'register' || $action == 'unregister' )
 {
     PH::print_stdout( " - action is '$action'");
     $records = array();

@@ -670,6 +670,54 @@ class PanAPIConnector
 
     }
 
+    /**
+     * @param string $vsys
+     * @return string[][] $registered ie: Array( '1.1.1.1' => Array('tag1', 'tag3'), '2.3.4.5' => Array('tag7') )
+     */
+    public function userid_getIp($vsys = 'vsys1')
+    {
+        $cmd = "<show><user><ip-user-mapping><all></all></ip-user-mapping></user></show>";
+
+        $ip_array = array();
+
+        $params = array();
+        $params['type'] = 'op';
+        $params['vsys'] = $vsys;
+        $params['cmd'] = &$cmd;
+
+        $r = $this->sendRequest($params, TRUE);
+
+        $configRoot = DH::findFirstElement('result', $r);
+        if( $configRoot === FALSE )
+            derr("<result> was not found", $r);
+
+        $count = DH::findFirstElement('count', $configRoot);
+        if( $count !== false )
+            $count = $count->nodeValue;
+
+        $entries = $configRoot->getElementsByTagName('entry');
+        foreach( $entries as $entry )
+        {
+
+            /** @var DOMElement $entry */
+            $ip = DH::findFirstElement( "ip", $entry);
+            $vsys = DH::findFirstElement( "vsys", $entry);
+            $type = DH::findFirstElement( "type", $entry);
+            $user = DH::findFirstElement( "user", $entry);
+            $idleTimeout = DH::findFirstElement( "idle_timeout", $entry);
+            $timeout = DH::findFirstElement( "timeout", $entry);
+
+            $ip = $ip->nodeValue;
+            $ip_array[$ip] = array();
+            $ip_array[$ip]['vsys'] = $vsys->nodeValue;
+            $ip_array[$ip]['type'] = $type->nodeValue;
+            $ip_array[$ip]['user'] = $user->nodeValue;
+            $ip_array[$ip]['idle'] = $idleTimeout->nodeValue;
+            $ip_array[$ip]['timeout'] = $timeout->nodeValue;
+        }
+
+        return $ip_array;
+    }
 
     /**
      * @param string[] $ips
