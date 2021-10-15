@@ -6,6 +6,7 @@ UTILS:
 * XML_op_JSON | move to class XMLOPJSON extend UTIL
 * register-ip-mgr | move to class UTIL( 'custom' )
 * userid-mgr | move to class UTIL( 'custom' )
+* pa_userid-mgr | introduce actions=display and unregister-all
 
 BUGFIX:
 
