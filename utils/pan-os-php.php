@@ -43,14 +43,14 @@ $supportedUTILTypes = array(
     "xml-issue",
     "appid-enabler",
     "config-size",
-    "download-predefined"
+    "download-predefined",
+    "register-ip-mgr",
+    "userid-mgr"
     );
 //Todo: API not supported scripts:
 //custom
 /*
  * csv-import
- * register-ip-mgr
- * userid-mgr
 
  * util get action filter
 */
@@ -72,6 +72,8 @@ $supportedUTILTypes = array(
  * pan-config-size
  * bpa-generator
  * panXML_op_JSON
+ * register-ip-mgr
+ * userid-mgr
  */
 $supportedArguments = array();
 $usageMsg = PH::boldText('USAGE: ') . "php " . __FILE__ . " in=[filename]|[api://IP]|[api://serial@IP] type=address";
@@ -164,6 +166,12 @@ elseif( isset(PH::$args['type']) )
 
     elseif( $type == "download-predefined" )
         $util = new PREDEFINED($type, $argv, __FILE__);
+
+    elseif( $type == "register-ip-mgr" )
+        $util = new REGISTERIP($type, $argv, __FILE__ );
+
+    elseif( $type == "userid-mgr" )
+        $util = new USERIDMGR($type, $argv, __FILE__ );
 
     else
         $util = new UTIL($type, $argv, __FILE__." type=".$type);

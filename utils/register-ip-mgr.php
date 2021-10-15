@@ -29,7 +29,7 @@ PH::print_stdout("***********************************************");
 PH::print_stdout("*********** " . basename(__FILE__) . " UTILITY **************");
 PH::print_stdout("");
 
-$util = new REGISTERIP("register-ip", $argv, __FILE__ );
+$util = new REGISTERIP("register-ip-mgr", $argv, __FILE__ );
 
 PH::print_stdout("");
 PH::print_stdout("************* END OF SCRIPT " . basename(__FILE__) . " ************" );
