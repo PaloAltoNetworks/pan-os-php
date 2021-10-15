@@ -7,6 +7,7 @@ UTILS:
 * register-ip-mgr | move to class UTIL( 'custom' )
 * userid-mgr | move to class UTIL( 'custom' )
 * pa_userid-mgr | introduce actions=display and unregister-all
+* pa_register-ip-mgr and pa_userid-mgr | introduce class REGISTERIP and USERIDMGR
 
 BUGFIX:
 

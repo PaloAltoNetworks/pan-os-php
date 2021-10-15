@@ -13,6 +13,7 @@ require_once(dirname(__FILE__)."/NETWORKUTIL.php");
 require_once(dirname(__FILE__)."/MERGER.php");
 require_once(dirname(__FILE__)."/RULEMERGER.php");
 
+
 require_once(dirname(__FILE__)."/KEYMANGER.php");
 require_once(dirname(__FILE__)."/PREDEFINED.php");
 require_once(dirname(__FILE__)."/UPLOAD.php");
@@ -23,6 +24,9 @@ require_once(dirname(__FILE__)."/APPIDENABLER.php");
 require_once(dirname(__FILE__)."/CONFIGSIZE.php");
 require_once(dirname(__FILE__)."/BPAGENERATOR.php");
 require_once(dirname(__FILE__)."/XMLOPJSON.php");
+require_once(dirname(__FILE__)."/REGISTERIP.php");
+require_once(dirname(__FILE__)."/USERIDMGR.php");
+
 
 class UTIL
 {
