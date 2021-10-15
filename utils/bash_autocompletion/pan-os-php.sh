@@ -73,6 +73,8 @@ __pan-os-php_scripts()
       "download-predefined"
       "register-ip-mgr"
       "userid-mgr"
+      "xml-op-json"
+      "bpa-generator"
     )
 
 		checkArray=('in' 'out' 'actions' 'filter' 'location')

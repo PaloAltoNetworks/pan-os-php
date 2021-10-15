@@ -99,7 +99,9 @@ $supportedRoute = array(
     "config-size",
     "download-predefined",
     "register-ip-mgr",
-    "userid-mgr"
+    "userid-mgr",
+    "xml-op-json",
+    "bpa-generator"
     );
 sort($supportedRoute );
 
@@ -275,71 +277,78 @@ function UTILcaller( $url_pieces, $argv )
         }
 
         header("Content-Type: application/json");
-        if( $url_pieces[1] == 'rule' )
-            $util = new RULEUTIL( $url_pieces[1], $argv, __FILE__);
+        $type = $url_pieces[1];
+        if( $type == 'rule' )
+            $util = new RULEUTIL( $type, $argv, __FILE__);
 
-        elseif( $url_pieces[1] == 'stats' )
-            $util = new STATSUTIL( $url_pieces[1], $argv, __FILE__);
+        elseif( $type == 'stats' )
+            $util = new STATSUTIL( $type, $argv, __FILE__);
 
-        elseif( $url_pieces[1] == 'securityprofile' )
-            $util = new SECURITYPROFILEUTIL( $url_pieces[1], $argv, __FILE__);
+        elseif( $type == 'securityprofile' )
+            $util = new SECURITYPROFILEUTIL( $type, $argv, __FILE__);
 
-        elseif( $url_pieces[1] == 'zone'
-            || $url_pieces[1] == 'interface'
-            || $url_pieces[1] == 'routing'
-            || $url_pieces[1] == 'virtualwire'
+        elseif( $type == 'zone'
+            || $type == 'interface'
+            || $type == 'routing'
+            || $type == 'virtualwire'
         )
-            $util = new NETWORKUTIL( $url_pieces[1], $argv, __FILE__);
+            $util = new NETWORKUTIL( $type, $argv, __FILE__);
 
-        elseif( $url_pieces[1] == 'device' )
-            $util = new DEVICEUTIL( $url_pieces[1], $argv, __FILE__);
+        elseif( $type == 'device' )
+            $util = new DEVICEUTIL( $type, $argv, __FILE__);
 
-        elseif( $url_pieces[1] == "key-manager" )
-            $util = new KEYMANGER($url_pieces[1], $argv, __FILE__);
+        elseif( $type == "key-manager" )
+            $util = new KEYMANGER($type, $argv, __FILE__);
 
-        elseif( $url_pieces[1] == "address-merger"
-            || $url_pieces[1] == "addressgroup-merger"
-            || $url_pieces[1] == "service-merger"
-            || $url_pieces[1] == "servicegroup-merger"
-            || $url_pieces[1] == "tag-merger"
+        elseif( $type == "address-merger"
+            || $type == "addressgroup-merger"
+            || $type == "service-merger"
+            || $type == "servicegroup-merger"
+            || $type == "tag-merger"
         )
-            $util = new MERGER($url_pieces[1], $argv, __FILE__);
+            $util = new MERGER($type, $argv, __FILE__);
 
-        elseif( $url_pieces[1] == "rule-merger" )
-            $util = new RULEMERGER($url_pieces[1], $argv, __FILE__);
+        elseif( $type == "rule-merger" )
+            $util = new RULEMERGER($type, $argv, __FILE__);
 
-        elseif( $url_pieces[1] == "override-finder" )
-            $util = new OVERRIDEFINDER($url_pieces[1], $argv, __FILE__);
-        elseif( $url_pieces[1] == "diff" )
-            $util = new DIFF($url_pieces[1], $argv, __FILE__);
-        elseif( $url_pieces[1] == "upload" )
-            $util = new UPLOAD($url_pieces[1], $argv, __FILE__);
-        elseif( $url_pieces[1] == "xml-issue" )
-            $util = new XMLISSUE($url_pieces[1], $argv, __FILE__);
+        elseif( $type == "override-finder" )
+            $util = new OVERRIDEFINDER($type, $argv, __FILE__);
+        elseif( $type == "diff" )
+            $util = new DIFF($type, $argv, __FILE__);
+        elseif( $type == "upload" )
+            $util = new UPLOAD($type, $argv, __FILE__);
+        elseif( $type == "xml-issue" )
+            $util = new XMLISSUE($type, $argv, __FILE__);
 
-        elseif( $url_pieces[1] == "appid-enabler" )
-            $util = new APPIDENABLER($url_pieces[1], $argv, __FILE__);
-        elseif( $url_pieces[1] == "config-size" )
-            $util = new CONFIGSIZE($url_pieces[1], $argv, __FILE__);
+        elseif( $type == "appid-enabler" )
+            $util = new APPIDENABLER($type, $argv, __FILE__);
+        elseif( $type == "config-size" )
+            $util = new CONFIGSIZE($type, $argv, __FILE__);
 
-        elseif( $url_pieces[1] == "download-predefined" )
-            $util = new PREDEFINED($url_pieces[1], $argv, __FILE__);
+        elseif( $type == "download-predefined" )
+            $util = new PREDEFINED($type, $argv, __FILE__);
 
-        elseif( $url_pieces[1] == "register-ip-mgr" )
-            $util = new REGISTERIP($url_pieces[1], $argv, __FILE__ );
+        elseif( $type == "register-ip-mgr" )
+            $util = new REGISTERIP($type, $argv, __FILE__ );
 
-        elseif( $url_pieces[1] == "userid-mgr" )
-            $util = new USERIDMGR($url_pieces[1], $argv, __FILE__ );
+        elseif( $type == "userid-mgr" )
+            $util = new USERIDMGR($type, $argv, __FILE__ );
 
-        elseif( $url_pieces[1] == 'address'
-            || $url_pieces[1] == 'service'
-            || $url_pieces[1] == 'tag'
-            || $url_pieces[1] == 'schedule'
-            || $url_pieces[1] == 'securityprofilegroup'
-            || $url_pieces[1] == 'application'
-            || $url_pieces[1] == 'threat'
+        elseif( $type == "xml-op-json" )
+            $util = new XMLOPJSON($type, $argv, __FILE__ );
+
+        elseif( $type == "bpa-generator" )
+            $util = new BPAGENERATOR( $type, $argv, __FILE__);
+        
+        elseif( $type == 'address'
+            || $type == 'service'
+            || $type == 'tag'
+            || $type == 'schedule'
+            || $type == 'securityprofilegroup'
+            || $type == 'application'
+            || $type == 'threat'
         )
-            $util = new UTIL( $url_pieces[1], $argv, __FILE__);
+            $util = new UTIL( $type, $argv, __FILE__);
 
     }
 }
