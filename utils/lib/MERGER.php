@@ -365,6 +365,10 @@ class MERGER extends UTIL
         if( isset(PH::$args['mergecountlimit']) )
             $this->mergeCountLimit = PH::$args['mergecountlimit'];
 
+        if( isset(PH::$args['dupalgorithm']) )
+        {
+            $this->dupAlg = strtolower(PH::$args['dupalgorithm']);
+        }
 
         if( $this->utilType == "address-merger" )
         {
@@ -410,7 +414,7 @@ class MERGER extends UTIL
 
         if( isset(PH::$args['dupalgorithm']) )
         {
-            $this->dupAlg = strtolower(PH::$args['dupalgorithm']);
+            #$this->dupAlg = strtolower(PH::$args['dupalgorithm']);
             if( $display_error )
                 $this->display_error_usage_exit('unsupported value for dupAlgorithm: ' . PH::$args['dupalgorithm']);
         }

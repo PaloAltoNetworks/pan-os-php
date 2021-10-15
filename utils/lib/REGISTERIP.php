@@ -8,8 +8,8 @@ class REGISTERIP extends UTIL
 
     public function utilStart()
     {
-        $this->usageMsg = PH::boldText('USAGE EXAMPLES: ') . "\n - php " . basename(__FILE__) . " in=api://1.2.3.4 action=register location=vsys1 records=10.0.0.1,domain\\user2/10.2.3.4,domain\\user3"
-            . "\n - php " . basename(__FILE__) . " in=api://1.2.3.4 action=register location=vsys1 recordFile=users.txt";
+        $this->usageMsg = PH::boldText('USAGE EXAMPLES: ') . "\n - php " . basename(__FILE__) . " in=api://1.2.3.4 actions=register location=vsys1 records=10.0.0.1,domain\\user2/10.2.3.4,domain\\user3"
+            . "\n - php " . basename(__FILE__) . " in=api://1.2.3.4 actions=register location=vsys1 recordFile=users.txt";
         
         
         $this->prepareSupportedArgumentsArray();
@@ -181,7 +181,7 @@ class REGISTERIP extends UTIL
             $this->pan->connector->register_sendUpdate($records, null, 'vsys1');
         }
         else
-            derr("action '{$action}' is not supported");
+            derr("actions '{$action}' is not supported");
 
 
         if( $action == 'unregister-unused' )

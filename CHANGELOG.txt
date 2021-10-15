@@ -5,6 +5,7 @@ UTILS:
 * pan-os-php / API / bash_autocompletion | extend with script xml-op-json and bpa-generator
 
 BUGFIX:
+* UTIL all object merger script | bugfix to support argument DupAlgorithm
 
 GENERAL:
 * dockerfile - introduce bash_autocompletion for Dockerfile-cli - usage of ubuntu CLI with PAN-OS-PHP installed
