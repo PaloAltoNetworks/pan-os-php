@@ -56,7 +56,7 @@ alias pa_register-ip-mgr='php -r "require_once '"'"'utils/register-ip-mgr.php'"'
 
 alias pa_key-manager='php -r "require_once '"'"'utils/key-manager.php'"'"';" $@'
 
-alias pa_ckp-exclude='php -r "require_once '"'"'utils/checkpoint-exclude.php'"'"';" $@'
+alias pa_ckp-exclude='php -r "require_once '"'"'utils/develop/checkpoint-exclude.php'"'"';" $@'
 
 alias pa_download-predefined='php -r "require_once '"'"'utils/download_predefined.php'"'"';" $@'
 alias pa_diff='php -r "require_once '"'"'utils/pan-diff.php'"'"';" $@'
