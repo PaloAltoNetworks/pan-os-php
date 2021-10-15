@@ -1,5 +1,6 @@
-pa_rule-edit filter describtion for SRC and DST
+pa_rule-edit filter description for SRC and DST
 [ghost/TMP objects are IP-address directly defined in Rules]
+
     - has
 		- based on object names (not values)
 		- the filter will first check whether the object even exists (ignores ghost/TMP objects)
