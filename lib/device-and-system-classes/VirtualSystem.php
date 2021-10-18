@@ -679,6 +679,8 @@ class VirtualSystem
         $return = array();
         $return['VSYS-stat'] = $stdoutarray;
 
+        PH::$JSON_TMP[] = $stdoutarray;
+
         #PH::print_stdout( $return );
         PH::print_stdout( $stdoutarray, true );
 

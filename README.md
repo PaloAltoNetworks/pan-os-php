@@ -239,7 +239,7 @@ final production Container:
    ```bash
     cd [pan-os-php Root folder]
     docker build -t pan-os-php:latest -f Dockerfile-API .
-    docker run -d -p 8082:80 pan-os-php-site:latest
+    docker run -d -p 8082:80 pan-os-php:latest
    ```
 local Development Container:
    ```bash

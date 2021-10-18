@@ -30,7 +30,10 @@ class STATSUTIL extends RULEUTIL
 
 
         PH::$args['stats'] = "stats";
+        PH::$JSON_TMP = array();
         $this->stats();
+        PH::print_stdout(PH::$JSON_TMP, false, "statistic");
+        PH::$JSON_TMP = array();
 
         $runtime = number_format((microtime(TRUE) - $this->runStartTime), 2, '.', '');
         PH::print_stdout( array( 'value' => $runtime, 'type' => "seconds" ), false,'runtime' );

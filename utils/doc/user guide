@@ -1,6 +1,9 @@
-    - has 
+pa_rule-edit filter description for SRC and DST
+[ghost/TMP objects are IP-address directly defined in Rules]
+
+    - has
 		- based on object names (not values)
-		- the filter will first check whether the object even exists (ignores ghost objects)
+		- the filter will first check whether the object even exists (ignores ghost/TMP objects)
 		- the filter will return partial AND full matches
 		- this filter does not match "any"
 		- example: 
@@ -9,7 +12,7 @@
     - has.from.query
     - has.only 
 		- based on object names (not values)
-		- the filter will first check whether the object even exists (ignores ghost objects)
+		- the filter will first check whether the object even exists (ignores ghost/TMP objects)
 		- the filter will return only full matches
 		- this filter does not match "any"
 		- example:
@@ -26,7 +29,7 @@
     - includes.partial
     - is.any
     - is.fully.included.in.list 
-		- this search is based on object values (including ghost objects)
+		- this search is based on object values (including ghost/TMP objects)
 		- this will search inside groups, nested groups and object values
 		- the filter will return only full matches
 		- this filter does not match "any"
@@ -42,7 +45,7 @@
 			- filter is 10.0.0.0/8 and the rule destination is 10.11.11.0/24 and 10.11.11.0/16 and 1.1.1.1/32, it will not match
     - is.negated
     - is.partially.included.in.list
-		- this search is based on object values (including ghost objects)
+		- this search is based on object values (including ghost/TMP objects)
 		- this will search inside groups, nested groups and object values
 		- the filter will return only partial matches
 		- this filter does not match "any"
@@ -57,7 +60,7 @@
 			- filter is 10.0.0.0/8 and the rule destination is 10.11.11.0/24 and 10.11.11.0/16, it will not match
 			- filter is 10.0.0.0/8 and the rule destination is 10.11.11.0/24 and 10.11.11.0/16 and 1.1.1.1/32, it will match
     - is.partially.or.fully.included.in.list 
-		- this search is based on object values (including ghost objects)
+		- this search is based on object values (including ghost/TMP objects)
 		- this will search inside groups, nested groups and object values
 		- the filter will return partial AND full matches
 		- this filter does not match "any"
