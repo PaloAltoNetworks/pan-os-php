@@ -28,7 +28,7 @@ PH::print_stdout("***********************************************");
 PH::print_stdout("*********** " . basename(__FILE__) . " UTILITY **************");
 PH::print_stdout("");
 
-$util = new APPIDENABLER("appid-enabler", $argv, __FILE__);
+$util = new APPIDENABLER("appid-enabler", $argv, $argc, __FILE__);
 
 PH::print_stdout("");
 PH::print_stdout("************* END OF SCRIPT " . basename(__FILE__) . " ************" );

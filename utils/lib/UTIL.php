@@ -85,11 +85,10 @@ class UTIL
     public $sub = null;
     public $template = null;
 
-    function __construct($utilType, $argv, $PHP_FILE, $_supportedArguments = array(), $_usageMsg = "")
+    function __construct($utilType, $argv, $argc, $PHP_FILE, $_supportedArguments = array(), $_usageMsg = "")
     {
         $this->runStartTime = microtime(TRUE);
 
-        $argc = array();
         $tmp_ph = new PH($argv, $argc);
 
         $this->utilType = $utilType;

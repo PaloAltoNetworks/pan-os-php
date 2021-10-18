@@ -8,6 +8,7 @@ UTILS:
 
 BUGFIX:
 * UTIL all object merger script | bugfix to support argument DupAlgorithm [thanks to Necip Cebeci for finding and reporting this bug]
+* framework | bugfix to support PHP version 8.0.X
 
 GENERAL:
 * dockerfile - introduce bash_autocompletion for Dockerfile-cli - usage of ubuntu CLI with PAN-OS-PHP installed

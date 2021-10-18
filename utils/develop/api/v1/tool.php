@@ -144,7 +144,7 @@ else{
 
 switch($verb) {
     case 'GET':
-        UTILcaller( $url_pieces, $argv );
+        UTILcaller( $url_pieces, $argv, $argc );
 
         break;
     // two cases so similar we'll just share code
@@ -181,7 +181,7 @@ switch($verb) {
         #throw new Exception("PUT");
 
 
-        UTILcaller( $url_pieces, $argv );
+        UTILcaller( $url_pieces, $argv, $argc );
 
 
         break;
@@ -209,7 +209,7 @@ switch($verb) {
 #header("Content-Type: application/json");
 #print json_encode($data);
 
-function UTILcaller( $url_pieces, $argv )
+function UTILcaller( $url_pieces, $argv, $argc )
 {
     global $projects_folder;
 
@@ -279,26 +279,26 @@ function UTILcaller( $url_pieces, $argv )
         header("Content-Type: application/json");
         $type = $url_pieces[1];
         if( $type == 'rule' )
-            $util = new RULEUTIL( $type, $argv, __FILE__);
+            $util = new RULEUTIL( $type, $argv, $argc, __FILE__);
 
         elseif( $type == 'stats' )
-            $util = new STATSUTIL( $type, $argv, __FILE__);
+            $util = new STATSUTIL( $type, $argv, $argc, __FILE__);
 
         elseif( $type == 'securityprofile' )
-            $util = new SECURITYPROFILEUTIL( $type, $argv, __FILE__);
+            $util = new SECURITYPROFILEUTIL( $type, $argv, $argc, __FILE__);
 
         elseif( $type == 'zone'
             || $type == 'interface'
             || $type == 'routing'
             || $type == 'virtualwire'
         )
-            $util = new NETWORKUTIL( $type, $argv, __FILE__);
+            $util = new NETWORKUTIL( $type, $argv, $argc, __FILE__);
 
         elseif( $type == 'device' )
-            $util = new DEVICEUTIL( $type, $argv, __FILE__);
+            $util = new DEVICEUTIL( $type, $argv, $argc, __FILE__);
 
         elseif( $type == "key-manager" )
-            $util = new KEYMANGER($type, $argv, __FILE__);
+            $util = new KEYMANGER($type, $argv, $argc, __FILE__);
 
         elseif( $type == "address-merger"
             || $type == "addressgroup-merger"
@@ -306,27 +306,27 @@ function UTILcaller( $url_pieces, $argv )
             || $type == "servicegroup-merger"
             || $type == "tag-merger"
         )
-            $util = new MERGER($type, $argv, __FILE__);
+            $util = new MERGER($type, $argv, $argc, __FILE__);
 
         elseif( $type == "rule-merger" )
-            $util = new RULEMERGER($type, $argv, __FILE__);
+            $util = new RULEMERGER($type, $argv, $argc, __FILE__);
 
         elseif( $type == "override-finder" )
-            $util = new OVERRIDEFINDER($type, $argv, __FILE__);
+            $util = new OVERRIDEFINDER($type, $argv, $argc, __FILE__);
         elseif( $type == "diff" )
-            $util = new DIFF($type, $argv, __FILE__);
+            $util = new DIFF($type, $argv, $argc, __FILE__);
         elseif( $type == "upload" )
-            $util = new UPLOAD($type, $argv, __FILE__);
+            $util = new UPLOAD($type, $argv, $argc, __FILE__);
         elseif( $type == "xml-issue" )
-            $util = new XMLISSUE($type, $argv, __FILE__);
+            $util = new XMLISSUE($type, $argv, $argc, __FILE__);
 
         elseif( $type == "appid-enabler" )
-            $util = new APPIDENABLER($type, $argv, __FILE__);
+            $util = new APPIDENABLER($type, $argv, $argc, __FILE__);
         elseif( $type == "config-size" )
-            $util = new CONFIGSIZE($type, $argv, __FILE__);
+            $util = new CONFIGSIZE($type, $argv, $argc, __FILE__);
 
         elseif( $type == "download-predefined" )
-            $util = new PREDEFINED($type, $argv, __FILE__);
+            $util = new PREDEFINED($type, $argv, $argc, __FILE__);
 
         elseif( $type == "register-ip-mgr" )
             $util = new REGISTERIP($type, $argv, __FILE__ );
@@ -338,7 +338,7 @@ function UTILcaller( $url_pieces, $argv )
             $util = new XMLOPJSON($type, $argv, __FILE__ );
 
         elseif( $type == "bpa-generator" )
-            $util = new BPAGENERATOR( $type, $argv, __FILE__);
+            $util = new BPAGENERATOR( $type, $argv, $argc, __FILE__);
         
         elseif( $type == 'address'
             || $type == 'service'
@@ -348,7 +348,7 @@ function UTILcaller( $url_pieces, $argv )
             || $type == 'application'
             || $type == 'threat'
         )
-            $util = new UTIL( $type, $argv, __FILE__);
+            $util = new UTIL( $type, $argv, $argc, __FILE__);
 
     }
 }

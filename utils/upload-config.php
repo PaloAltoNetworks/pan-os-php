@@ -32,7 +32,7 @@ PH::print_stdout("***********************************************");
 PH::print_stdout("*********** " . basename(__FILE__) . " UTILITY **************");
 PH::print_stdout("");
 
-$upload = new UPLOAD("upload", $argv, __FILE__);
+$upload = new UPLOAD("upload", $argv, $argc, __FILE__);
 
 PH::print_stdout("");
 PH::print_stdout("************* END OF SCRIPT " . basename(__FILE__) . " ************" );

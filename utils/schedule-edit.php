@@ -33,7 +33,7 @@ PH::print_stdout("");
 
 PH::print_stdout("");
 
-$util = new UTIL("schedule", $argv, __FILE__);
+$util = new UTIL("schedule", $argv, $argc, __FILE__);
 
 PH::print_stdout("");
 PH::print_stdout("************* END OF SCRIPT " . basename(__FILE__) . " ************" );
