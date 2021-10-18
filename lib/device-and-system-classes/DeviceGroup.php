@@ -844,6 +844,9 @@ class DeviceGroup
         $return = array();
         $return['DG-stat'] = $stdoutarray;
         #PH::print_stdout( $return );
+
+        PH::$JSON_TMP[] = $stdoutarray;
+
         PH::print_stdout( $stdoutarray, true );
 
     }
