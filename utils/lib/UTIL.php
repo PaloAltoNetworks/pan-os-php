@@ -110,8 +110,8 @@ class UTIL
 
         if( $utilType != "custom" )
         {
-            PH::print_stdout( " - PAN-OS-PHP version: ".PH::frameworkVersion() . " [".PH::frameworkInstalledOS()."]" );
-            PH::print_stdout( array( "version" => PH::frameworkVersion(), "os" => PH::frameworkInstalledOS() ), false, 'PAN-OS-PHP');
+            PH::print_stdout( " - PAN-OS-PHP version: ".PH::frameworkVersion() . " [".PH::frameworkInstalledOS()."]" . " [" . phpversion() ."]" );
+            PH::print_stdout( array( "version" => PH::frameworkVersion(), "os" => PH::frameworkInstalledOS(), "php-version" => phpversion() ), false, 'PAN-OS-PHP');
             $this->utilStart();
         }
 
