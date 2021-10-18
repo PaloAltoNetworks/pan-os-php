@@ -167,7 +167,7 @@ foreach( $command_array as $key => $command )
     {
         $tool = "pa_".$script."-edit";
         print_tool_usage( $tool, PH::$argv );
-        $util = new UTIL($script, $argv, $tool );
+        $util = new UTIL($script, $argv, $argc, $tool );
     }
 
     PH::print_stdout("");
