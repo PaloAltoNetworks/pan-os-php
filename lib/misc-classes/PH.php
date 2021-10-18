@@ -518,9 +518,15 @@ class PH
                 */
 
                 if( $arrayKey != null )
+                {
                     PH::$JSON_OUT[$arrayKey][] = $text;
+                }
                 else
+                {
+                    //FAWKES???
+                    //at least rule-stats
                     PH::$JSON_OUT[] = $text;
+                }
             }
 
             if( $printArray )

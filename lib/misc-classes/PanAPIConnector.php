@@ -390,11 +390,13 @@ class PanAPIConnector
                 } catch(Exception $e)
                 {
                     PH::$useExceptions = $exceptionUse;
-                    $wrongLogin = TRUE;
 
-                    if( strpos($e->getMessage(), "Invalid credentials.") === FALSE )
-                        derr($e->getMessage());
-
+                    if( $host != "bpa-apikey" && $host != "license-apikey" )
+                    {
+                        $wrongLogin = TRUE;
+                        if( strpos($e->getMessage(), "Invalid credentials.") === FALSE )
+                            derr($e->getMessage());
+                    }
                 }
                 PH::$useExceptions = $exceptionUse;
 
@@ -482,6 +484,12 @@ class PanAPIConnector
                 $connector = new PanAPIConnector($host, $apiKey, 'panos', null, $port);
         }
 
+        if( $host == "bpa-apikey" || $host == "license-apikey" )
+        {
+            $checkConnectivity = false;
+            self::$savedConnectors[] = $connector;
+            self::saveConnectorsToUserHome();
+        }
 
         if( $checkConnectivity )
         {
