@@ -40,14 +40,12 @@ class BPAGENERATOR extends UTIL
         if( isset(PH::$args['bpa-apikey']) )
         {
             $this->bpa_key = PH::$args['bpa-apikey'];
-            //Todo: add this to .panconfkeystore
             //store key in .panconfkeystore
             $connector = PanAPIConnector::findOrCreateConnectorFromHost( 'bpa-apikey', $this->bpa_key );
         }
         else
         {
-            //Todo: check if available via .panconfigkeystore
-            #derr("argument 'bpa-apikey=' is missing");
+            //check if available via .panconfigkeystore
             $connector = PanAPIConnector::findOrCreateConnectorFromHost( 'bpa-apikey' );
             $this->bpa_key = $connector->apikey;
         }
