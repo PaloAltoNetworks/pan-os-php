@@ -44,7 +44,7 @@ PH::print_stdout("************ CSV IMPORT UTILITY ****************" );
 PH::print_stdout("" );
 
 
-$util = new UTIL("custom", $argv, __FILE__, $supportedArguments, $usageMsg);
+$util = new UTIL("custom", $argv, $argc,__FILE__, $supportedArguments, $usageMsg);
 $util->utilInit();
 
 ##########################################

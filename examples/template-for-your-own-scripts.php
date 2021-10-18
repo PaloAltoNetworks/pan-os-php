@@ -36,7 +36,7 @@ $supportedArguments['optional_argument2'] = array('niceName' => 'Optional_Argume
 $usageMsg = PH::boldText('USAGE: ') . "php " . basename(__FILE__) . " in=api:://[MGMT-IP] argument1 [optional_argument2]";
 
 
-$util = new UTIL("custom", $argv, __FILE__, $supportedArguments, $usageMsg );
+$util = new UTIL("custom", $argv, $argc,__FILE__, $supportedArguments, $usageMsg );
 
 $util->utilInit();
 

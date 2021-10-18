@@ -291,7 +291,7 @@ RQuery::$defaultFilters['schedule']['reflocation']['operators']['is'] = array(
             $DG = $owner->findDeviceGroup($context->value);
             if( $DG == null )
             {
-                $test = new UTIL("custom", array(), "");
+                $test = new UTIL("custom", array(), 0,"");
                 $test->configType = "panorama";
                 $test->locationNotFound($context->value, null, $owner);
             }
