@@ -2,10 +2,10 @@
 
 class STATSUTIL extends RULEUTIL
 {
-    function __construct($utilType, $argv, $PHP_FILE, $_supportedArguments = array(), $_usageMsg = "")
+    function __construct($utilType, $argv, $argc, $PHP_FILE, $_supportedArguments = array(), $_usageMsg = "")
     {
         $_usageMsg =  PH::boldText('USAGE: ')."php ".basename(__FILE__)." in=api:://[MGMT-IP] [location=vsys2]";;
-        parent::__construct($utilType, $argv, $PHP_FILE, $_supportedArguments, $_usageMsg);
+        parent::__construct($utilType, $argv, $argc, $PHP_FILE, $_supportedArguments, $_usageMsg);
     }
 
     public function utilStart()

@@ -94,6 +94,8 @@ class UTIL
         $this->utilType = $utilType;
         $this->PHP_FILE = $PHP_FILE;
 
+
+
         if( empty($_supportedArguments) )
             $this->supportedArguments();
         else
@@ -514,7 +516,7 @@ class UTIL
     public function usageMessage()
     {
         $string = PH::boldText("USAGE: ") . "php " . $this->PHP_FILE . " in=inputfile.xml out=outputfile.xml location=any|shared|sub " .
-            "actions=action1:arg1 ['filter=(type is.group) or (name contains datacenter-)']\n";
+                "actions=action1:arg1 ['filter=(type is.group) or (name contains datacenter-)']\n";
 
         $string .= "php " . $this->PHP_FILE . " listactions   : list supported actions\n";
 
