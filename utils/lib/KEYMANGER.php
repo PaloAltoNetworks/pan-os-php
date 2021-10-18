@@ -8,7 +8,12 @@ class KEYMANGER extends UTIL
 
     public function utilStart()
     {
-        $this->usageMsg = PH::boldText('USAGE: ') . "php " . basename(__FILE__) . " [delete=hostOrIP] [add=hostOrIP] [test=hostOrIP] [hiddenPW]";
+        $this->usageMsg = PH::boldText('USAGE: ') . "php " . basename(__FILE__) . " [delete=hostOrIP] [add=hostOrIP] [test=hostOrIP] [hiddenPW]" .
+        "
+    Examples:
+            
+    - php " . basename(__FILE__) . " add=license-apikey apikey=[ your personal company license API key account can be found via https://support.paloaltonetworks.com -> Assets -> API key management - only super user can see this ]
+    - php " . basename(__FILE__) . " add=bpa-apikey apikey=[ PAN-OS BPA can be request via: bpa@paloaltonetworks.com ]";
 
         $this->prepareSupportedArgumentsArray();
         PH::processCliArgs();
