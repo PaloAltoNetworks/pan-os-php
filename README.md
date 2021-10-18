@@ -10,7 +10,7 @@ It will work seamlessly on local config file or API.
 **Homepage** : download latest sources on [GitHub](https://github.com/PaloAltoNetworks/pan-os-php).
 Windows package with PHP binaries here: [Git PAN-OS-PHP Windows Package](https://github.com/PaloAltoNetworks/pan-os-php-windows-package)
 
-**Requirements** : PHP 7.1 with curl module
+**Requirements** : PHP 7.4 with curl module
 
 **Usage**: include the file lib/pan_php_framework.php in your own script to load the necessary classes.
 ```php
