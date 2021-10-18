@@ -108,10 +108,26 @@ class KEYMANGER extends UTIL
             PH::$JSON_TMP['header'] = $string;
             PH::$JSON_TMP[$addHost]['name'] = $addHost;
 
-            if( !isset(PH::$args['apikey']) )
-                $connector = PanAPIConnector::findOrCreateConnectorFromHost($addHost, null, TRUE, TRUE, $hiddenPW, $debugAPI, $cliUSER, $cliPW);
+            if( $addHost == "bpa-apikey" || $addHost == "license-apikey" )
+            {
+                if( !isset(PH::$args['apikey']) )
+                    derr( "argument apikey - must be set to add BPA-/License-APIkey" );
+
+                PanAPIConnector::$savedConnectors[] = new PanAPIConnector($addHost, PH::$args['apikey']);
+                PanAPIConnector::saveConnectorsToUserHome();
+
+                PH::print_stdout( "" );
+                PH::print_stdout( "adding 'BPA-/License-APIkey' to .panconfkeystore not implemented yet" );
+                PH::print_stdout( "" );
+            }
             else
-                $connector = PanAPIConnector::findOrCreateConnectorFromHost($addHost, PH::$args['apikey']);
+            {
+                if( !isset(PH::$args['apikey']) )
+                    $connector = PanAPIConnector::findOrCreateConnectorFromHost($addHost, null, TRUE, TRUE, $hiddenPW, $debugAPI, $cliUSER, $cliPW);
+                else
+                    $connector = PanAPIConnector::findOrCreateConnectorFromHost($addHost, PH::$args['apikey']);
+            }
+
 
             PH::print_stdout( PH::$JSON_TMP, false, 'add' );
             PH::$JSON_TMP = array();
@@ -132,6 +148,12 @@ class KEYMANGER extends UTIL
                     $checkHost = $connector->apihost;
                     PH::print_stdout( " - requested to test Host/IP '{$checkHost}'");
                     PH::$JSON_TMP[$checkHost]['name'] = $checkHost;
+
+                    if( $checkHost == "bpa-apikey" || $checkHost == "license-apikey" )
+                    {
+                        PH::$JSON_TMP[$checkHost]['status'] = "skipped can not be tested";
+                        continue;
+                    }
 
                     PH::enableExceptionSupport();
                     try
@@ -162,15 +184,22 @@ class KEYMANGER extends UTIL
                 PH::print_stdout( " - requested to test Host/IP '{$checkHost}'");
                 PH::$JSON_TMP[$checkHost]['name'] = $checkHost;
 
-                if( !isset(PH::$args['apikey']) )
-                    $connector = PanAPIConnector::findOrCreateConnectorFromHost($checkHost, null, TRUE, TRUE, $hiddenPW, $debugAPI, $cliUSER, $cliPW);
+                if( $checkHost == "bpa-apikey" || $checkHost == "license-apikey" )
+                {
+                    PH::$JSON_TMP[$checkHost]['status'] = "skipped can not be tested";
+                }
                 else
-                    $connector = PanAPIConnector::findOrCreateConnectorFromHost($checkHost, PH::$args['apikey'], TRUE, TRUE, TRUE, $debugAPI);
+                {
+                    if( !isset(PH::$args['apikey']) )
+                        $connector = PanAPIConnector::findOrCreateConnectorFromHost($checkHost, null, TRUE, TRUE, $hiddenPW, $debugAPI, $cliUSER, $cliPW);
+                    else
+                        $connector = PanAPIConnector::findOrCreateConnectorFromHost($checkHost, PH::$args['apikey'], TRUE, TRUE, TRUE, $debugAPI);
 
-                if( $debugAPI )
-                    $connector->showApiCalls = true;
+                    if( $debugAPI )
+                        $connector->showApiCalls = true;
 
-                $connector->testConnectivity( $checkHost );
+                    $connector->testConnectivity( $checkHost );
+                }
 
                 PH::print_stdout("");
             }

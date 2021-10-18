@@ -17,7 +17,7 @@ class BPAGENERATOR extends UTIL
     {
         $this->filename_prefix = date('Ymd_hi_');
 
-        $this->usageMsg = PH::boldText('USAGE: ') . "php " . basename(__FILE__) . " in=api:://[MGMT-IP] [cycleconnectedFirewalls] bpakey=[BPA-API-KEY]";
+        $this->usageMsg = PH::boldText('USAGE: ') . "php " . basename(__FILE__) . " in=api:://[MGMT-IP] [cycleconnectedFirewalls] bpa-apikey=[BPA-API-KEY]";
 
         $this->prepareSupportedArgumentsArray();
 
@@ -37,17 +37,19 @@ class BPAGENERATOR extends UTIL
             $cycleConnectedFirewalls = FALSE;
 
 
-        if( isset(PH::$args['bpakey']) )
+        if( isset(PH::$args['bpa-apikey']) )
         {
-            $this->bpa_key = PH::$args['bpakey'];
+            $this->bpa_key = PH::$args['bpa-apikey'];
             //Todo: add this to .panconfkeystore
-
-            //bpa.paloaltonetworks.com
+            //store key in .panconfkeystore
+            $connector = PanAPIConnector::findOrCreateConnectorFromHost( 'bpa-apikey', $this->bpa_key );
         }
         else
         {
             //Todo: check if available via .panconfigkeystore
-            derr("argument 'bpakey=' is missing");
+            #derr("argument 'bpa-apikey=' is missing");
+            $connector = PanAPIConnector::findOrCreateConnectorFromHost( 'bpa-apikey' );
+            $this->bpa_key = $connector->apikey;
         }
 
         ##########################################
@@ -81,7 +83,7 @@ class BPAGENERATOR extends UTIL
         $this->supportedArguments['debugapi'] = array('niceName' => 'DebugAPI', 'shortHelp' => 'prints API calls when they happen');
         $this->supportedArguments['help'] = array('niceName' => 'help', 'shortHelp' => 'this message');
         $this->supportedArguments['cycleconnectedfirewalls'] = array('niceName' => 'cycleConnectedFirewalls', 'shortHelp' => 'a listing of all devices connected to Panorama will be collected through API then each firewall will be queried for bpa generator');
-        $this->supportedArguments['bpakey'] = array('niceName' => 'bpaKey', 'shortHelp' => 'BPA API Key, this can be requested via bpa@paloaltonetworks.com');
+        $this->supportedArguments['bpa-apikey'] = array('niceName' => 'bpa-APIKey', 'shortHelp' => 'BPA API Key, this can be requested via bpa@paloaltonetworks.com');
     }
 
     function strip_hidden_chars($str)
