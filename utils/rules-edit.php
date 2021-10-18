@@ -49,7 +49,7 @@ PH::print_stdout("*********** " . basename(__FILE__) . " UTILITY **************"
 PH::print_stdout("");
 
 
-$util = new RULEUTIL("rule", $argv, __FILE__);
+$util = new RULEUTIL("rule", $argv, $argc, __FILE__);
 
 
 PH::print_stdout("");

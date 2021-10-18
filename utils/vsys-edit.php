@@ -32,7 +32,7 @@ PH::print_stdout("***********************************************");
 PH::print_stdout("*********** " . basename(__FILE__) . " UTILITY **************");
 PH::print_stdout("");
 
-$util = new UTIL("vsys", $argv, __FILE__);
+$util = new UTIL("vsys", $argv, $argc, __FILE__);
 
 
 PH::print_stdout("");

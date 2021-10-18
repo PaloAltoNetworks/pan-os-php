@@ -34,7 +34,7 @@ PH::print_stdout("*********** " . basename(__FILE__) . " UTILITY **************"
 PH::print_stdout("");
 
 
-$util = new NETWORKUTIL("interface", $argv, __FILE__);
+$util = new NETWORKUTIL("interface", $argv, $argc, __FILE__);
 
 
 PH::print_stdout("");

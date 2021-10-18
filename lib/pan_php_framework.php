@@ -303,7 +303,7 @@ require_once $basedir . '/rule-classes/DoSRule.php';
 if( isset( $_SERVER['REQUEST_METHOD'] ) )
 {
     $argv = array();
-    $argc = array();
+    $argc = 0;
 }
 $tmp_ph = new PH($argv, $argc);
 PH::$basedir = $basedir;

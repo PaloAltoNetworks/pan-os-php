@@ -32,7 +32,7 @@ PH::print_stdout("*********** " . basename(__FILE__) . " UTILITY **************"
 PH::print_stdout("");
 
 
-$util = new SECURITYPROFILEUTIL("securityprofile", $argv, __FILE__);
+$util = new SECURITYPROFILEUTIL("securityprofile", $argv, $argc, __FILE__);
 
 
 PH::print_stdout("");

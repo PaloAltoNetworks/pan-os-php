@@ -31,7 +31,7 @@ PH::print_stdout("***********************************************");
 PH::print_stdout("*********** " . basename(__FILE__) . " UTILITY **************");
 PH::print_stdout("");
 
-$util = new DEVICEUTIL("device", $argv, __FILE__);
+$util = new DEVICEUTIL("device", $argv, $argc, __FILE__);
 
 PH::print_stdout("");
 PH::print_stdout("************* END OF SCRIPT " . basename(__FILE__) . " ************" );
