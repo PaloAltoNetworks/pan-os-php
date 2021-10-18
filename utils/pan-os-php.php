@@ -90,10 +90,12 @@ if( isset(PH::$args['version']) )
 {
     PH::print_stdout( " - PAN-OS-PHP version: ".PH::frameworkVersion() . " [".PH::frameworkInstalledOS()."]" );
     PH::print_stdout( " - ".dirname(__FILE__) );
+    PH::print_stdout( " - PHP version: " . phpversion() );
 
     PH::$JSON_TMP['version'] = PH::frameworkVersion();
     PH::$JSON_TMP['os'] = PH::frameworkInstalledOS();
     PH::$JSON_TMP['folder'] = dirname(__FILE__);
+    PH::$JSON_TMP['php-version'] = phpversion();
 
     PH::print_stdout( PH::$JSON_TMP, false, 'pan-os-php' );
     PH::$JSON_TMP = array();

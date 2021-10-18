@@ -4,6 +4,7 @@ CHANGELOG
 UTILS:
 * pan-os-php / API / bash_autocompletion | extend with script xml-op-json and bpa-generator
 * pa_key-manager | introduce support for license-apikey/bpa-api-key | extend class PanAPIConnector to store both apikey in .panconfkeystore
+* pan-os-php | version include now php version
 
 BUGFIX:
 * UTIL all object merger script | bugfix to support argument DupAlgorithm [thanks to Necip Cebeci for finding and reporting this bug]
