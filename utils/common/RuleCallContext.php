@@ -648,13 +648,13 @@ class RuleCallContext extends CallContext
 
         /** @var SecurityRule $rule */
         if( $rule->isDecryptionRule() || $rule->isNatRule() || $rule->isAuthenticationRule() || $rule->isCaptivePortalRule() )
-            return '';
+            return array( '' );
         if( $rule->isAppOverrideRule() )
             return $rule->application();
 
         if( $rule->apps->isAny() )
         {
-            #return 'any';
+            return array( 'any' );
         }
 
 
