@@ -2,6 +2,7 @@ CHANGELOG
 
 2.0.19
 UTILS:
+* extend tests scripts for more QA
 
 BUGFIX:
 
