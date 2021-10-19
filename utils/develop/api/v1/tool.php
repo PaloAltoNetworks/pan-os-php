@@ -329,13 +329,13 @@ function UTILcaller( $url_pieces, $argv, $argc )
             $util = new PREDEFINED($type, $argv, $argc, __FILE__);
 
         elseif( $type == "register-ip-mgr" )
-            $util = new REGISTERIP($type, $argv, __FILE__ );
+            $util = new REGISTERIP($type, $argv, $argc,__FILE__ );
 
         elseif( $type == "userid-mgr" )
-            $util = new USERIDMGR($type, $argv, __FILE__ );
+            $util = new USERIDMGR($type, $argv, $argc,__FILE__ );
 
         elseif( $type == "xml-op-json" )
-            $util = new XMLOPJSON($type, $argv, __FILE__ );
+            $util = new XMLOPJSON($type, $argv, $argc,__FILE__ );
 
         elseif( $type == "bpa-generator" )
             $util = new BPAGENERATOR( $type, $argv, $argc, __FILE__);

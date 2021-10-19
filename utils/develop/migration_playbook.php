@@ -143,7 +143,7 @@ foreach( $command_array as $key => $command )
     {
         $tool = "pa_rule-edit";
         print_tool_usage( $tool, PH::$argv );
-        $util = new RULEUTIL($script, $argv, $tool);
+        $util = new RULEUTIL($script, $argv, $argc, $tool);
     }
     elseif( $script == $pa_migration_parser )
     {
@@ -155,13 +155,13 @@ foreach( $command_array as $key => $command )
     {
         $tool = "pa_rule-stats";
         print_tool_usage( $tool, PH::$argv );
-        $stats = new STATSUTIL( $script, $argv, $tool );
+        $stats = new STATSUTIL( $script, $argv, $argc, $tool );
     }
     elseif( $script == $pa_rule_edit )
     {
         $tool = "pa_rule-edit";
         print_tool_usage( $tool, PH::$argv );
-        $util = new RULEUTIL($script, $argv, $tool);
+        $util = new RULEUTIL($script, $argv, $argc, $tool);
     }
     else
     {
