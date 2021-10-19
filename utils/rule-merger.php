@@ -29,7 +29,7 @@ PH::print_stdout("***********************************************");
 PH::print_stdout("*********** " . basename(__FILE__) . " UTILITY **************");
 PH::print_stdout("");
 
-$rulemerger = new RULEMERGER("rule-merger", $argv, __FILE__ );
+$rulemerger = new RULEMERGER("rule-merger", $argv, $argc,__FILE__ );
 
 PH::print_stdout("");
 PH::print_stdout("************* END OF SCRIPT " . basename(__FILE__) . " ************" );
