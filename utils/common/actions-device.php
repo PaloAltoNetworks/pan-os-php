@@ -145,7 +145,7 @@ DeviceCallContext::$supportedActions['DeviceGroup-create'] = array(
         if( !$pan->isPanorama() )
             derr("only supported on Panorama config");
 
-        if( $parentDG != 'false' )
+        if( $parentDG != 'null' )
         {
             $tmp_parentdg = $pan->findDeviceGroup($parentDG);
             if( $tmp_parentdg === null )
@@ -160,9 +160,12 @@ DeviceCallContext::$supportedActions['DeviceGroup-create'] = array(
         if( $tmp_dg === null )
         {
             $string = "create DeviceGroup: " . $dgName;
-            PH::ACTIONlog($context, $string);
+            #PH::ACTIONlog($context, $string);
+            if( $parentDG === 'null' )
+                $parentDG = null;
 
-            $pan->createDeviceGroup($dgName, $parentDG);
+            $dg = $pan->createDeviceGroup($dgName, $parentDG);
+
         }
         else
         {

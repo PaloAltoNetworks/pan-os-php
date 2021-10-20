@@ -1693,8 +1693,10 @@ class RuleStore
             $ruleTypeForXml = self::$storeNameByType[$this->type]['xpathRoot'];
             if( $this->owner->isVirtualSystem() || $this->owner->isDeviceCloud() )
                 $xml = DH::findFirstElementOrCreate('rulebase', $this->owner->xmlroot);
-            else
+            elseif( $this->owner->isDeviceGroup() )
                 $xml = DH::findFirstElementOrCreate('pre-rulebase', $this->owner->xmlroot);
+            elseif( $this->owner->isPanorama() )
+                $xml = DH::findFirstElementOrCreate('pre-rulebase', $this->owner->sharedroot);
 
             $xml = DH::findFirstElementOrCreate($ruleTypeForXml, $xml);
             $this->xmlroot = DH::findFirstElementOrCreate('rules', $xml);

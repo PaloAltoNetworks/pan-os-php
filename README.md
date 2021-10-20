@@ -274,6 +274,8 @@ The following "RESTAPI" routes are available:
 - /securityprofilegroup
 - /schedule
 
+- /applicaton
+- /threat
 
 - /device
 
@@ -283,7 +285,26 @@ The following "RESTAPI" routes are available:
 - /routing
 - /virtualwire
 
+- /key-manager
 
+- /address-merger
+- /addressgroup-merger
+- /service-merger
+- /servicegroup-merger
+- /tag-merger
+- /rule-merger
+
+- /override-finder
+- /diff
+- /upload
+- /xml-issue
+- /appid-enabler
+- /config-size
+- /download-predefined
+- /register-ip-mgr
+- /userid-mgr
+- /xml-op-json
+- /bpa-generator
 
 PAN-OS-PHP API is NOT working yet with PAN-OS XML API but it is possible to run it against PAN-OS FW and Panorama offline configuration files, and manipulate in the same way as on PAN-OS-PHP ClI:
    ```bash

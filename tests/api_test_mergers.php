@@ -47,7 +47,7 @@ if( strpos($configInput, "api://") !== FALSE )
 else
     derr('"in" argument must be of type API [in=api://192.168.55.208]');
 
-$cli = "php ../utils/upload-config.php in=input/panorama-10.0-merger.xml out=api://{$api_ip_address} loadAfterUpload injectUserAdmin2  2>&1";
+$cli = "php ../utils/upload-config.php in=input/panorama-10.0-merger.xml out=api://{$api_ip_address} loadAfterUpload injectUserAdmin2  debugapi 2>&1";
 PH::print_stdout( " * Executing CLI: {$cli}" );
 
 $output = array();
@@ -163,6 +163,8 @@ foreach( $test_merger as $merger )
 
         if( $merger != 'address' )
             $cli .= " DupAlgorithm={$dupalgorithm}";
+
+        $cli .= ' debugapi';
 
         $cli .= ' 2>&1';
 
