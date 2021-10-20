@@ -989,6 +989,9 @@ class PanoramaConf
      */
     public function findDeviceGroup($name)
     {
+        if( $name == "shared" )
+            return $this;
+
         foreach( $this->deviceGroups as $dg )
         {
             if( $dg->name() == $name )

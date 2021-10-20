@@ -6,6 +6,7 @@ UTILS:
 
 BUGFIX:
 * pa_device-edit | bugfix for actions=devicegroupe-create:NAME if 'shared' is used as parentDG
+* class RuleStore | bugfix to create shared pre-rulebase at correct place if not existent
 
 GENERAL:
 
