@@ -5,6 +5,7 @@ UTILS:
 * extend tests scripts for more QA
 
 BUGFIX:
+* pa_device-edit | bugfix for actions=devicegroupe-create:NAME if 'shared' is used as parentDG
 
 GENERAL:
 
