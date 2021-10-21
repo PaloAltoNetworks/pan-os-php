@@ -3,10 +3,13 @@ CHANGELOG
 2.0.19
 UTILS:
 * extend tests scripts for more QA
+* sendGARP - introduce class RUNSSH - make use of in sendGARP
+* sendGARP | extend command preparation with DNAT DST ip-address for test arp gratuitous
 
 BUGFIX:
 * pa_device-edit | bugfix for actions=devicegroupe-create:NAME if 'shared' is used as parentDG
 * class RuleStore | bugfix to create shared pre-rulebase at correct place if not existent
+* class IPsecTunnel | bugfix for not reading XML correctly for protocol part of a IPsec tunnel
 
 GENERAL:
 
