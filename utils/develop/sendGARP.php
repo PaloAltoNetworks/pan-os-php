@@ -28,6 +28,8 @@ print "\n***********************************************\n";
 print "************ gratuitous ARP UTILITY ****************\n\n";
 
 $offline_config_test = false;
+$user = "";
+$password = "";
 
 set_include_path(dirname(__FILE__) . '/../' . PATH_SEPARATOR . get_include_path());
 require_once dirname(__FILE__)."/../../lib/pan_php_framework.php";
@@ -42,6 +44,7 @@ $supportedArguments = Array();
 $supportedArguments['in'] = Array('niceName' => 'in', 'shortHelp' => 'input file or api. ie: in=config.xml  or in=api://192.168.1.1 or in=api://0018CAEC3@panorama.company.com', 'argDesc' => '[filename]|[api://IP]|[api://serial@IP]');
 $supportedArguments['debugapi'] = Array('niceName' => 'DebugAPI', 'shortHelp' => 'prints API calls when they happen');
 $supportedArguments['help'] = Array('niceName' => 'help', 'shortHelp' => 'this message');
+$supportedArguments['test'] = Array('niceName' => 'test', 'shortHelp' => 'command to test against offline config file');
 $supportedArguments['user'] = array('niceName' => 'user', 'shortHelp' => 'can be used in combination with "add" argument to use specific Username provided as an argument.', 'argDesc' => '[USERNAME]');
 $supportedArguments['pw'] = array('niceName' => 'pw', 'shortHelp' => 'can be used in combination with "add" argument to use specific Password provided as an argument.', 'argDesc' => '[PASSWORD]');
 
@@ -49,15 +52,15 @@ $usageMsg = PH::boldText('USAGE: ')."php ".basename(__FILE__)." in=api:://[MGMT-
 
 PH::processCliArgs();
 
+if( isset(PH::$args['test']) )
+    $offline_config_test = true;
+
 if( isset(PH::$args['in']) )
 {
     $configInput = PH::$args['in'];
 
     if( strpos( $configInput, "api://" ) === false && !$offline_config_test )
-    {
         derr( "only PAN-OS API connection is supported" );
-    }
-
 
     $configInput = str_replace( "api://", "", $configInput);
 }
@@ -67,12 +70,19 @@ else
 if( isset(PH::$args['user']) )
     $user = PH::$args['user'];
 else
-    derr( "argument 'user' is needed" );
+{
+    if( !$offline_config_test )
+        derr( "argument 'user' is needed" );
+}
 
 if( isset(PH::$args['pw']) )
     $password = PH::$args['pw'];
 else
-    derr( "argument 'pw' is needed" );
+{
+    if( !$offline_config_test )
+        derr( "argument 'pw' is needed" );
+}
+
 
 $argv2 = array();
 PH::$args = array();
