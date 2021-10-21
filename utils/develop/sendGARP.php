@@ -93,11 +93,12 @@ if( !$util->pan->isFirewall() )
 $inputConnector = $util->pan->connector;
 
 
-$cmd = "<show><interface>all</interface></show>";
-$response = $inputConnector->sendOpRequest( $cmd );
-#$xmlDoc = new DOMDocument();
-#$xmlDoc->loadXML($response);
-#echo $response->saveXML();
+
+#$cmd = "<show><interface>all</interface></show>";
+#$response = $inputConnector->sendOpRequest( $cmd );
+##$xmlDoc = new DOMDocument();
+##$xmlDoc->loadXML($response);
+##echo $response->saveXML();
 
 $interfaces = $util->pan->network->getAllInterfaces();
 $commands = array();
@@ -108,10 +109,7 @@ foreach($interfaces as $int)
     /** @var EthernetInterface $int */
     $name = $int->name();
 
-    #print "NAME: ".$name."\n";
-    #print "TYPE: ".$int->type()."\n";
-
-    if( $int->type() == "layer3" )
+    if( $int->type() !== "layer2" )
         $ips = $int->getLayer3IPAddresses();
     else
         $ips = array();
@@ -161,54 +159,10 @@ print_r( $commands );
 
 ##############################################
 ##############################################
+$output_string = "";
+$ssh = new RUNSSH( $configInput, $user, $password, $commands, $output_string );
 
-PH::print_stdout("");
+print $output_string;
+##############################################
+##############################################
 
-$ip = $configInput;
-
-$ssh = new Net_SSH2($ip);
-
-PH::enableExceptionSupport();
-PH::print_stdout( " - connect to " . $ip . "...");
-try
-{
-    if( !$ssh->login($user, $password) )
-    {
-        PH::print_stdout( "Login Failed");
-        #PH::print_stdout( $ssh->getLog() );
-        exit('END');
-    }
-} catch(Exception $e)
-{
-    PH::disableExceptionSupport();
-    PH::print_stdout( " ***** an error occured : " . $e->getMessage() );
-    return;
-}
-PH::disableExceptionSupport();
-
-$ssh->read();
-
-############################################
-
-end($commands);
-//fetch key of the last element of the array.
-$lastElementKey = key($commands);
-
-foreach( $commands as $k => $command )
-{
-    PH::print_stdout(  strtoupper($command) . ":");
-    $ssh->write($command . "\n");
-
-    $tmp_string = $ssh->read();
-    PH::print_stdout( $tmp_string );
-}
-
-
-if( isset(PH::$args['debugapi']) )
-{
-    PH::print_stdout( "LOG:" );
-    PH::print_stdout( $ssh->getLog() );
-}
-
-
-PH::print_stdout("");

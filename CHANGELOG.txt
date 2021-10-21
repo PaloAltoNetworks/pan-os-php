@@ -3,6 +3,7 @@ CHANGELOG
 2.0.19
 UTILS:
 * extend tests scripts for more QA
+* sendGARP - introduce class RUNSSH - make use of in sendGARP
 
 BUGFIX:
 * pa_device-edit | bugfix for actions=devicegroupe-create:NAME if 'shared' is used as parentDG
