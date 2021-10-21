@@ -336,7 +336,7 @@ class MERGER extends UTIL
                     "  - SameMembers: groups holding same members replaced by the one picked first (default)\n" .
                     "  - SamePortMapping: groups resolving the same port mapping coverage will be replaced by the one picked first\n" .
                     "  - WhereUsed: groups used exactly in the same location will be merged into 1 single groups with all members together\n",
-                'argDesc' => 'SamePorts|WhereUsed');
+                'argDesc' => 'SameMembers|SamePortMapping|WhereUsed');
         }
         elseif( $this->utilType == "tag-merger" )
         {

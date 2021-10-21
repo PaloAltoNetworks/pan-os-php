@@ -5,11 +5,13 @@ UTILS:
 * extend tests scripts for more QA
 * sendGARP - introduce class RUNSSH - make use of in sendGARP
 * sendGARP | extend command preparation with DNAT DST ip-address for test arp gratuitous
+* pa_servicegroup-merger help | fix typo for argument dupalgorithm [thanks to Necip Cebeci ]
 
 BUGFIX:
 * pa_device-edit | bugfix for actions=devicegroupe-create:NAME if 'shared' is used as parentDG
 * class RuleStore | bugfix to create shared pre-rulebase at correct place if not existent
 * class IPsecTunnel | bugfix for not reading XML correctly for protocol part of a IPsec tunnel
+* pa_address-merger / pa_service-merger | bugfix if picked object type differ from the parentDG choosen object [thanks to Olivier Straehler ]
 
 GENERAL:
 
