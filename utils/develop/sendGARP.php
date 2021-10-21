@@ -27,6 +27,7 @@
 print "\n***********************************************\n";
 print "************ gratuitous ARP UTILITY ****************\n\n";
 
+$offline_config_test = false;
 
 set_include_path(dirname(__FILE__) . '/../' . PATH_SEPARATOR . get_include_path());
 require_once dirname(__FILE__)."/../../lib/pan_php_framework.php";
@@ -51,6 +52,13 @@ PH::processCliArgs();
 if( isset(PH::$args['in']) )
 {
     $configInput = PH::$args['in'];
+
+    if( strpos( $configInput, "api://" ) === false && !$offline_config_test )
+    {
+        derr( "only PAN-OS API connection is supported" );
+    }
+
+
     $configInput = str_replace( "api://", "", $configInput);
 }
 else
@@ -75,8 +83,8 @@ $argv2[] = "user=".$user;
 $argv2[] = "pw=".$password;
 $argc2 = count($argv2);
 
-
-$util = new KEYMANGER( "key-manager", $argv2, $argc2, __FILE__ );
+if( !$offline_config_test )
+    $util = new KEYMANGER( "key-manager", $argv2, $argc2, __FILE__ );
 
 PH::$args = array();
 PH::$argv = array();
@@ -89,6 +97,9 @@ $util->load_config();
 
 if( !$util->pan->isFirewall() )
     derr( "only PAN-OS FW is supported" );
+
+if( !$util->apiMode && !$offline_config_test )
+    derr( "only PAN-OS API connection is supported" );
 
 $inputConnector = $util->pan->connector;
 
@@ -103,13 +114,18 @@ $inputConnector = $util->pan->connector;
 $interfaces = $util->pan->network->getAllInterfaces();
 $commands = array();
 $interfaceIP = array();
+$ipRangeInt = array();
 
 foreach($interfaces as $int)
 {
     /** @var EthernetInterface $int */
     $name = $int->name();
 
-    if( $int->type() !== "layer2" )
+    #print "CLASS: ".get_class( $int )."\n";
+    if( get_class( $int ) !== "EthernetInterface" )
+        continue;
+
+    if( $int->type() === "layer3" )
         $ips = $int->getLayer3IPAddresses();
     else
         $ips = array();
@@ -120,47 +136,104 @@ foreach($interfaces as $int)
         $intIP = $intIP[0];
 
         if( $key == 0)
+        {
             $interfaceIP[ $name ] = $intIP;
+        }
+        $ipRangeInt[$ip] = $name;
+
         $commands[] = "test arp gratuitous ip ".$intIP." interface ".$name;
     }
 }
 
 
+//get all vsys
+$vsyss = $util->pan->getVirtualSystems();
+
+foreach( $vsyss as $vsys )
+{
+    //Todo: get DNAT DST ip from NAT rule
+    $natDNATrules = $vsys->natRules->rules( '(dnat is.set)' );
+    foreach( $natDNATrules as $rule )
+    {
+        #print "NAME: ".$rule->name()."\n";
+
+        $TO = $rule->to->getAll();
+        #print "Zone to: ".$TO[0]->name()."\n";
+
+        $DST = $rule->destination->getAll();
+        if( count( $DST ) == 1)
+        {
+            #print "DST: ".$DST[0]->name()."\n";
+            #print "IP: ".$DST[0]->value()."\n";
+
+            $dstIP = $DST[0]->value();
+
+            #print_r( $ipRangeInt );
+            foreach( $ipRangeInt as $key => $intName )
+            {
+
+                $IP_network = explode( "/", $key);
+
+                $network = cidr::cidr2network($IP_network[0], $IP_network[1]);
 
 
-$cmd = "<show><arp><entry name = 'all'/></arp></show>";
-$response = $inputConnector->sendOpRequest( $cmd );
+                if( cidr::cidr_match( $DST[0]->value(), $network, $IP_network[1] ) )
+                    $commands[] = "test arp gratuitous ip ".$dstIP." interface ".$intName;
+            }
+        }
+
+    }
+}
+
+
+if( !$offline_config_test )
+{
+    $cmd = "<show><arp><entry name = 'all'/></arp></show>";
+    $response = $inputConnector->sendOpRequest( $cmd );
 #$xmlDoc = new DOMDocument();
 #$xmlDoc->loadXML($response);
 #echo $response->saveXML();
 
-$result = DH::findFirstElement( "result", $response);
-$entries = DH::findFirstElement( "entries", $result);
-foreach( $entries->childNodes as $entry )
+    $result = DH::findFirstElement( "result", $response);
+    $entries = DH::findFirstElement( "entries", $result);
+    foreach( $entries->childNodes as $entry )
+    {
+        if( $entry->nodeType != XML_ELEMENT_NODE )
+            continue;
+
+        $ip = DH::findFirstElement( "ip", $entry);
+        $interface = DH::findFirstElement( "interface", $entry);
+
+        $intIP = $interfaceIP[ $interface->textContent ];
+        $intIP = explode("/",$intIP );
+        $intIP = $intIP[0];
+
+        $commands[] = "ping source ".$intIP." count 2 host ".$ip->textContent;
+    }
+}
+else
 {
-    if( $entry->nodeType != XML_ELEMENT_NODE )
-        continue;
-
-    $ip = DH::findFirstElement( "ip", $entry);
-    $interface = DH::findFirstElement( "interface", $entry);
-
-    $intIP = $interfaceIP[ $interface->textContent ];
-    $intIP = explode("/",$intIP );
-    $intIP = $intIP[0];
-
-    $commands[] = "ping source ".$intIP." count 2 host ".$ip->textContent;
+    PH::print_stdout( "" );
+    PH::print_stdout( "ping commands can not be prepared in offline" );
+    PH::print_stdout( "" );
 }
 
 
-print_r( $commands );
+PH::print_stdout( "" );
+PH::print_stdout( "Display the commands like to send to the FW:");
+PH::print_stdout( "" );
 
+foreach( $commands as $command )
+    PH::print_stdout( $command );
 
 
 
 ##############################################
 ##############################################
+PH::print_stdout( "" );
 $output_string = "";
-$ssh = new RUNSSH( $configInput, $user, $password, $commands, $output_string );
+if( !$offline_config_test )
+    $ssh = new RUNSSH( $configInput, $user, $password, $commands, $output_string );
 
 print $output_string;
 ##############################################

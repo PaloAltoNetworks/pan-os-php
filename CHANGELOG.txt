@@ -4,6 +4,7 @@ CHANGELOG
 UTILS:
 * extend tests scripts for more QA
 * sendGARP - introduce class RUNSSH - make use of in sendGARP
+* sendGARP | extend command preparation with DNAT DST ip-address for test arp gratuitous
 
 BUGFIX:
 * pa_device-edit | bugfix for actions=devicegroupe-create:NAME if 'shared' is used as parentDG
