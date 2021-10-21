@@ -1241,4 +1241,48 @@ ServiceCallContext::$supportedActions[] = array(
     },
     'args' => array('timeoutValue' => array('type' => 'string', 'default' => '*nodefault*')),
 );
+ServiceCallContext::$supportedActions[] = array(
+    'name' => 'sourceport-set',
+    'MainFunction' => function (ServiceCallContext $context) {
+        $object = $context->object;
+        $newSourcePort = $context->arguments['sourceportValue'];
 
+        $class = get_class($object);
+        if( $class === 'ServiceGroup' )
+        {
+            $string = "because object is ServiceGroup";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return null;
+        }
+
+        $tmp_sourceport = $object->getSourcePort();
+
+        if( $tmp_sourceport != $newSourcePort )
+        {
+            if( $context->isAPI )
+                $object->API_setSourcePort($newSourcePort);
+            else
+                $object->setSourcePort($newSourcePort);
+        }
+    },
+    'args' => array('sourceportValue' => array('type' => 'string', 'default' => '*nodefault*')),
+);
+ServiceCallContext::$supportedActions[] = array(
+    'name' => 'sourceport-delete',
+    'MainFunction' => function (ServiceCallContext $context) {
+        $object = $context->object;
+
+        $class = get_class($object);
+        if( $class === 'ServiceGroup' )
+        {
+            $string = "because object is ServiceGroup";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return null;
+        }
+
+        if( $context->isAPI )
+            $object->API_setSourcePort("");
+        else
+            $object->setSourcePort("");
+    }
+);

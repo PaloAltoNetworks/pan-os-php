@@ -215,6 +215,20 @@ class Service
         return TRUE;
     }
 
+    /**
+     * @param string $newPorts
+     * @return bool
+     */
+    public function API_setSourcePort($newPorts)
+    {
+        $ret = $this->setSourcePort($newPorts);
+        $connector = findConnectorOrDie($this);
+
+        $this->API_sync();
+
+        return $ret;
+    }
+
     public function isTcp()
     {
         if( $this->_protocol == 'tcp' )

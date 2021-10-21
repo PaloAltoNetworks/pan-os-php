@@ -6,6 +6,7 @@ UTILS:
 * sendGARP - introduce class RUNSSH - make use of in sendGARP
 * sendGARP | extend command preparation with DNAT DST ip-address for test arp gratuitous
 * pa_servicegroup-merger help | fix typo for argument dupalgorithm [thanks to Necip Cebeci ]
+* pa_service-edit | introduce filter for sourceport.value and action sourceport-set / sourceport-delete
 
 BUGFIX:
 * pa_device-edit | bugfix for actions=devicegroupe-create:NAME if 'shared' is used as parentDG

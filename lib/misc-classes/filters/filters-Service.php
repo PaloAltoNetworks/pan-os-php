@@ -700,6 +700,124 @@ RQuery::$defaultFilters['service']['value']['operators']['regex'] = array(
     )
 );
 
+###########
+RQuery::$defaultFilters['service']['sourceport.value']['operators']['string.eq'] = array(
+    'Function' => function (ServiceRQueryContext $context) {
+        $object = $context->object;
+
+        if( $object->isGroup() )
+            return null;
+
+        if( $object->isService() )
+        {
+            if( $object->getSourcePort() == $context->value )
+                return TRUE;
+        }
+        return FALSE;
+    },
+    'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP% 80)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['service']['sourceport.value']['operators']['>,<,=,!'] = array(
+    'eval' => '!$object->isGroup() && $object->getSourcePort() !operator! !value!',
+    'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP% 1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['service']['sourceport.value']['operators']['is.single.port'] = array(
+    'Function' => function (ServiceRQueryContext $context) {
+        $object = $context->object;
+        if( $object->isTmpSrv() )
+            return FALSE;
+
+        if( $object->isGroup() )
+            return FALSE;
+
+        if( strpos($object->getSourcePort(), ",") !== FALSE )
+            return FALSE;
+
+        if( strpos($object->getSourcePort(), "-") !== FALSE )
+            return FALSE;
+
+        return TRUE;
+    },
+    'arg' => FALSE,
+    'ci' => array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['service']['sourceport.value']['operators']['is.port.range'] = array(
+    'Function' => function (ServiceRQueryContext $context) {
+        $object = $context->object;
+        if( $object->isTmpSrv() )
+            return FALSE;
+
+        if( $object->isGroup() )
+            return FALSE;
+
+        if( strpos($object->getSourcePort(), "-") !== FALSE )
+            return TRUE;
+
+        return FALSE;
+    },
+    'arg' => FALSE,
+    'ci' => array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['service']['sourceport.value']['operators']['is.comma.separated'] = array(
+    'Function' => function (ServiceRQueryContext $context) {
+        $object = $context->object;
+        if( $object->isTmpSrv() )
+            return FALSE;
+
+        if( $object->isGroup() )
+            return FALSE;
+
+        if( strpos($object->getSourcePort(), ",") !== FALSE )
+            return TRUE;
+
+        return FALSE;
+    },
+    'arg' => FALSE,
+    'ci' => array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['service']['sourceport.value']['operators']['regex'] = array(
+    'Function' => function (ServiceRQueryContext $context) {
+        $object = $context->object;
+        $value = $context->value;
+
+        if( $object->isTmpSrv() )
+            return FALSE;
+
+        if( $object->isGroup() )
+            return FALSE;
+
+
+        $matching = preg_match($value, $object->getSourcePort());
+        if( $matching === FALSE )
+            derr("regular expression error on '{$value}'");
+        if( $matching === 1 )
+            return TRUE;
+        return FALSE;
+    },
+    'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP% /tcp/)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+#################
 RQuery::$defaultFilters['service']['value.length']['operators']['>,<,=,!'] = array(
     'eval' => '!$object->isGroup() && strlen($object->getDestPort()) !operator! !value!',
     'arg' => TRUE,
