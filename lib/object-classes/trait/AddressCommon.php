@@ -479,6 +479,8 @@ trait AddressCommon
     {
         /** @var Address|AddressGroup $this */
 
+        $success = true;
+
         if( is_numeric($outputPadding) )
             $outputPadding = str_pad(' ', $outputPadding);
 
@@ -515,6 +517,7 @@ trait AddressCommon
                 if( !$tmp_addr->isAddress() )
                 {
                     PH::print_stdout( "- SKIP: not possible due to different object type" );
+                    $success = false;
                     continue;
                 }
                 
@@ -524,6 +527,7 @@ trait AddressCommon
                     {
                         PH::print_stdout( "- SKIP: not possible to replace due to different value: {$objectRef->toString()}" );
                         PH::print_stdout( " - '".$withObject->value()."' | '".$tmp_addr->value()."'" );
+                        $success = false;
                         continue;
                     }
                 }
@@ -539,6 +543,8 @@ trait AddressCommon
                 $objectRef->replaceReferencedObject($this, $withObject);
         }
 
+
+        return $success;
     }
 
     /**
