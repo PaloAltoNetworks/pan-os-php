@@ -777,17 +777,20 @@ class MERGER extends UTIL
                     else
                     {
                         PH::print_stdout( "    - replacing '{$object->_PANC_shortName()}' ..." );
-                        $object->__replaceWhereIamUsed($this->apiMode, $pickedObject, TRUE, 5);
+                        $success = $object->__replaceWhereIamUsed($this->apiMode, $pickedObject, TRUE, 5);
 
-                        PH::print_stdout( "    - deleting '{$object->_PANC_shortName()}'" );
-                        if( $this->apiMode )
+                        if( $success )
                         {
-                            //true flag needed for nested groups in a specific constellation
-                            $object->owner->API_remove($object, TRUE);
-                        }
-                        else
-                        {
-                            $object->owner->remove($object, TRUE);
+                            PH::print_stdout( "    - deleting '{$object->_PANC_shortName()}'" );
+                            if( $this->apiMode )
+                            {
+                                //true flag needed for nested groups in a specific constellation
+                                $object->owner->API_remove($object, TRUE);
+                            }
+                            else
+                            {
+                                $object->owner->remove($object, TRUE);
+                            }
                         }
                     }
 
@@ -900,17 +903,18 @@ class MERGER extends UTIL
                         PH::print_stdout( "    - group '{$object->name()}' DG: '".$object->owner->owner->name()."' merged with its ancestor at DG: '".$store->owner->name()."', deleting this one... " );
 
                         PH::print_stdout( "    - replacing '{$object->_PANC_shortName()}' ..." );
-                        $object->__replaceWhereIamUsed($this->apiMode, $tmp_address, TRUE, 5);
+                        $success = $object->__replaceWhereIamUsed($this->apiMode, $tmp_address, TRUE, 5);
 
-                        if( $this->apiMode )
-                            $object->owner->API_remove($object, TRUE);
-                        else
-                            $object->owner->remove($object, TRUE);
+                        if( $success )
+                        {
+                            if( $this->apiMode )
+                                $object->owner->API_remove($object, TRUE);
+                            else
+                                $object->owner->remove($object, TRUE);
 
-                        $countChildRemoved++;
+                            $countChildRemoved++;
+                        }
                     }
-
-
                 }
             }
 
@@ -1297,22 +1301,26 @@ class MERGER extends UTIL
                     if( $this->dupAlg != 'identical' )
                     {
                         PH::print_stdout( "    - replacing '{$object->_PANC_shortName()}' ..." );
-                        $object->__replaceWhereIamUsed($this->apiMode, $pickedObject, TRUE, 5);
+                        $success = $object->__replaceWhereIamUsed($this->apiMode, $pickedObject, TRUE, 5);
 
                         $object->merge_tag_description_to( $pickedObject, $this->apiMode );
 
-                        PH::print_stdout( "    - deleting '{$object->_PANC_shortName()}'" );
-                        $this->deletedObjects[$index]['kept'] = $pickedObject->name();
-                        if( $this->deletedObjects[$index]['removed'] == "" )
-                            $this->deletedObjects[$index]['removed'] = $object->name();
-                        else
-                            $this->deletedObjects[$index]['removed'] .= "|" . $object->name();
-                        if( $this->apiMode )
-                            $object->owner->API_remove($object);
-                        else
-                            $object->owner->remove($object);
+                        if( $success )
+                        {
+                            PH::print_stdout( "    - deleting '{$object->_PANC_shortName()}'" );
+                            $this->deletedObjects[$index]['kept'] = $pickedObject->name();
+                            if( $this->deletedObjects[$index]['removed'] == "" )
+                                $this->deletedObjects[$index]['removed'] = $object->name();
+                            else
+                                $this->deletedObjects[$index]['removed'] .= "|" . $object->name();
+                            if( $this->apiMode )
+                                $object->owner->API_remove($object);
+                            else
+                                $object->owner->remove($object);
 
-                        $countRemoved++;
+                            $countRemoved++;
+                        }
+
 
                         if( $this->mergeCountLimit !== FALSE && $countRemoved >= $this->mergeCountLimit )
                         {

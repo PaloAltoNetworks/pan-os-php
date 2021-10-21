@@ -13,6 +13,7 @@ BUGFIX:
 * class IPsecTunnel | bugfix for not reading XML correctly for protocol part of a IPsec tunnel
 * pa_address-merger / pa_service-merger | bugfix if picked object type differ from the parentDG choosen object [thanks to Olivier Straehler ]
 * class IKEGateway | bugfix to not set XML nodes, which were not available at start
+* pa_address-merger | bugfix do not delete picked address object if replacement was skipped once
 
 GENERAL:
 
