@@ -12,6 +12,7 @@ BUGFIX:
 * class RuleStore | bugfix to create shared pre-rulebase at correct place if not existent
 * class IPsecTunnel | bugfix for not reading XML correctly for protocol part of a IPsec tunnel
 * pa_address-merger / pa_service-merger | bugfix if picked object type differ from the parentDG choosen object [thanks to Olivier Straehler ]
+* class IKEGateway | bugfix to not set XML nodes, which were not available at start
 
 GENERAL:
 
