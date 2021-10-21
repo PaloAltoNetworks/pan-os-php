@@ -1383,10 +1383,10 @@ class MERGER extends UTIL
                     else
                     {
                         $string = "    - SKIP: object name '{$pickedObject->name()}' [with value '{$pickedObject->value()}'] is not IDENTICAL to object name DG: '".$tmp_DG_name."' '{$tmp_address->name()}'";
-                        if( $pickedObject->isAddress() )
+                        if( $tmp_address->isAddress() )
                             $string .= " [with value '{$tmp_address->value()}']";
                         else
-                            $string .= " [ AdressGroup] ";
+                            $string .= " [AdressGroup] ";
                         PH::print_stdout( $string );
 
                         continue;
@@ -2199,10 +2199,10 @@ class MERGER extends UTIL
                         else
                         {
                             $string = "    - SKIP: object name '{$pickedObject->name()}' [with value '{$pickedObject->getDestPort()}'] is not IDENTICAL to object name DG: '".$tmp_DG_name."' '{$tmp_service->name()}'";
-                            if( $pickedObject->isAddress() )
+                            if( $tmp_service->isService() )
                                 $string .= " [with value '{$tmp_service->getDestPort()}']";
                             else
-                                $string .= " [ ServiceGroup] ";
+                                $string .= " [ServiceGroup] ";
                             PH::print_stdout( $string );
 
                             continue;
