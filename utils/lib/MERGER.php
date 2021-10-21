@@ -1382,11 +1382,20 @@ class MERGER extends UTIL
                     }
                     else
                     {
-                        $string = "    - SKIP: object name '{$pickedObject->name()}' [with value '{$pickedObject->value()}'] is not IDENTICAL to object name DG: '".$tmp_DG_name."' '{$tmp_address->name()}'";
+                        $string = "    - SKIP: object name '{$pickedObject->name()}'";
+
+                        if( $pickedObject->isAddress() )
+                            $string .= " [with value '{$pickedObject->value()}']";
+                        else
+                            $string .= " [AdressGroup]";
+
+                        $string .= " is not IDENTICAL to object name DG: '".$tmp_DG_name."' '{$tmp_address->name()}'";
+
                         if( $tmp_address->isAddress() )
                             $string .= " [with value '{$tmp_address->value()}']";
                         else
-                            $string .= " [AdressGroup] ";
+                            $string .= " [AdressGroup]";
+
                         PH::print_stdout( $string );
 
                         continue;
@@ -2198,11 +2207,19 @@ class MERGER extends UTIL
                         }
                         else
                         {
-                            $string = "    - SKIP: object name '{$pickedObject->name()}' [with value '{$pickedObject->getDestPort()}'] is not IDENTICAL to object name DG: '".$tmp_DG_name."' '{$tmp_service->name()}'";
+                            $string = "    - SKIP: object name '{$pickedObject->name()}'";
+                            if( $pickedObject->isService() )
+                                $string .= " [with value '{$pickedObject->getDestPort()}']";
+                            else
+                                $string .= " [ServiceGroup] ";
+
+                            $string .= " is not IDENTICAL to object name DG: '".$tmp_DG_name."' '{$tmp_service->name()}'";
+
                             if( $tmp_service->isService() )
                                 $string .= " [with value '{$tmp_service->getDestPort()}']";
                             else
                                 $string .= " [ServiceGroup] ";
+
                             PH::print_stdout( $string );
 
                             continue;
