@@ -1382,7 +1382,13 @@ class MERGER extends UTIL
                     }
                     else
                     {
-                        PH::print_stdout( "    - SKIP: object name '{$pickedObject->name()}' [with value '{$pickedObject->value()}'] is not IDENTICAL to object name DG: '".$tmp_DG_name."' '{$tmp_address->name()}' [with value '{$tmp_address->value()}'] " );
+                        $string = "    - SKIP: object name '{$pickedObject->name()}' [with value '{$pickedObject->value()}'] is not IDENTICAL to object name DG: '".$tmp_DG_name."' '{$tmp_address->name()}'";
+                        if( $pickedObject->isAddress() )
+                            $string .= " [with value '{$tmp_address->value()}']";
+                        else
+                            $string .= " [ AdressGroup] ";
+                        PH::print_stdout( $string );
+
                         continue;
                     }
                 }
@@ -2192,7 +2198,13 @@ class MERGER extends UTIL
                         }
                         else
                         {
-                            PH::print_stdout( "    - SKIP: object name '{$pickedObject->name()}' [with value '{$pickedObject->getDestPort()}'] is not IDENTICAL to object name DG: '".$tmp_DG_name."' '{$tmp_service->name()}' [with value '{$tmp_service->getDestPort()}'] " );
+                            $string = "    - SKIP: object name '{$pickedObject->name()}' [with value '{$pickedObject->getDestPort()}'] is not IDENTICAL to object name DG: '".$tmp_DG_name."' '{$tmp_service->name()}'";
+                            if( $pickedObject->isAddress() )
+                                $string .= " [with value '{$tmp_service->getDestPort()}']";
+                            else
+                                $string .= " [ ServiceGroup] ";
+                            PH::print_stdout( $string );
+
                             continue;
                         }
                     }
