@@ -145,6 +145,12 @@ class IPsecTunnel
                         }
 
 
+                        $protocol_ports = null;
+                        $protocol = "any";
+                        $localport = '';
+                        $remoteport = '';
+
+
                         if( $protocol_tcp !== FALSE )
                         {
                             $protocol = "tcp";
@@ -158,7 +164,7 @@ class IPsecTunnel
                         elseif( $protocol_number !== FALSE )
                         {
                             $protocol = "number";
-                            $protocol_ports = null;
+
 
                             $localport = $protocol_number->nodeValue;
                             $remoteport = $localport;
@@ -167,7 +173,7 @@ class IPsecTunnel
                         elseif( $protocol_any !== FALSE )
                         {
                             $protocol = "any";
-                            $protocol_ports = null;
+
                             $localport = '';
                             $remoteport = '';
                         }
