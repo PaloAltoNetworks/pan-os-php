@@ -91,7 +91,7 @@ class IKEGateway
             {
                 $tmp_psk = DH::findFirstElement('pre-shared-key', $node);
                 if( $tmp_psk != null )
-                    $this->preSharedKey = DH::findFirstElementOrCreate('key', $tmp_psk)->textContent;
+                    $this->preSharedKey = DH::findFirstElement('key', $tmp_psk)->textContent;
             }
 
             if( $node->nodeName == 'local-address' )
@@ -179,25 +179,25 @@ class IKEGateway
 
             if( $node->nodeName == 'protocol-common' )
             {
-                $tmp_natT = DH::findFirstElementOrCreate('nat-traversal', $node);
+                $tmp_natT = DH::findFirstElement('nat-traversal', $node);
                 if( $tmp_natT != null )
-                    $this->natTraversal = DH::findFirstElementOrCreate('enable', $tmp_natT)->textContent;
+                    $this->natTraversal = DH::findFirstElement('enable', $tmp_natT)->textContent;
 
-                $tmp_frag = DH::findFirstElementOrCreate('fragmentation', $node);
+                $tmp_frag = DH::findFirstElement('fragmentation', $node);
                 if( $tmp_frag != null )
-                    $this->fragmentation = DH::findFirstElementOrCreate('enable', $tmp_frag)->textContent;
+                    $this->fragmentation = DH::findFirstElement('enable', $tmp_frag)->textContent;
             }
 
             if( $node->nodeName == 'local-id' )
             {
-                $this->localID = DH::findFirstElementOrCreate('id', $node)->textContent;
-                $this->localIDtype = DH::findFirstElementOrCreate('type', $node)->textContent;
+                $this->localID = DH::findFirstElement('id', $node)->textContent;
+                $this->localIDtype = DH::findFirstElement('type', $node)->textContent;
             }
 
             if( $node->nodeName == 'peer-id' )
             {
-                $this->peerID = DH::findFirstElementOrCreate('id', $node)->textContent;
-                $this->peerIDtype = DH::findFirstElementOrCreate('type', $node)->textContent;
+                $this->peerID = DH::findFirstElement('id', $node)->textContent;
+                $this->peerIDtype = DH::findFirstElement('type', $node)->textContent;
             }
 
 
