@@ -211,6 +211,7 @@ class ObjRuleContainer
 
         $pos = array_search($old, $this->o, TRUE);
 
+        /*
         // this object was not found so we exit and return false
         if( $pos === FALSE )
             return FALSE;
@@ -230,6 +231,34 @@ class ObjRuleContainer
         $this->rewriteXML();
 
         return TRUE;
+*/
+        if( $pos !== FALSE )
+        {
+            while( $pos !== FALSE )
+            {
+                unset($this->o[$pos]);
+                $pos = array_search($old, $this->o, TRUE);
+            }
+
+            #if( $new !== null && !$this->has($new) )
+            if( $new !== null && array_search($new, $this->o, TRUE) === FALSE )
+            {
+                $this->o[] = $new;
+                $new->addReference($this);
+            }
+            $old->removeReference($this);
+
+            if( $new === null || $new->name() != $old->name() )
+                $this->rewriteXML();
+
+            return TRUE;
+        }
+        #elseif( !$this->isDynamic() )
+        #    mwarning("object is not part of this group: " . $old->toString());
+
+
+
+        return FALSE;
     }
 
     public function API_replaceReferencedObject($old, $new)

@@ -330,6 +330,46 @@ trait ServiceCommon
 
         foreach( $this->refrules as $objectRef )
         {
+
+            if( ($this->isService() && $withObject->isService()) )
+            {
+                if( $this->type !== $withObject->type )
+                {
+                    PH::print_stdout("- SKIP: not possible due to different object type");
+                    continue;
+                }
+
+                $tmp_store = null;
+                if(  (get_class($objectRef) == "ServiceGroup") )
+                    $tmp_store = $objectRef->owner;
+                elseif(  (get_class($objectRef) == "NatRule") )
+                    $tmp_store = $objectRef->owner->owner->serviceStore;
+                elseif( (get_class($objectRef) == "ServiceRuleContainer") )
+                    $tmp_store = $objectRef->owner->owner->owner->serviceStore;
+                else
+                    $tmp_store = $objectRef->owner->owner->owner->serviceStore;
+
+                $tmp_addr = $tmp_store->find( $withObject->name() );
+                if( $tmp_addr === null )
+                    $tmp_addr = $tmp_store->parentCentralStore->find( $withObject->name() );
+
+                if( !$tmp_addr->isService() )
+                {
+                    PH::print_stdout( "- SKIP: not possible due to different object type" );
+                    $success = false;
+                    continue;
+                }
+
+                if( $withObject->getDestPort() !== $tmp_addr->getDestPort() || $withObject->getSourcePort() !== $tmp_addr->getSourcePort()  )
+                {
+                    PH::print_stdout( "- SKIP: not possible to replace due to different value: {$objectRef->toString()}" );
+                    PH::print_stdout( " - '".$withObject->getDestPort()."[".$withObject->getSourcePort()."]"."' | '".$tmp_addr->getDestPort()."[".$tmp_addr->getSourcePort()."]"."'" );
+                    $success = false;
+                    continue;
+                }
+
+            }
+
             if( $displayOutput )
                 PH::print_stdout( $outputPadding . "- replacing in {$objectRef->toString()}" );
             if( $apiMode )
