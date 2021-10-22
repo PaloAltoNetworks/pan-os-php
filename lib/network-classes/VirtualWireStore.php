@@ -93,7 +93,7 @@ class VirtualWireStore extends ObjStore
 
         $con = findConnectorOrDie($this);
         //$xpath = $newvw->getXPath();
-        $xpath = $this->getEthernetIfStoreXPath();
+        $xpath = $this->getVirtualWireIfStoreXPath();
         $con->sendSetRequest($xpath, "<entry name='{$newvw->name()}'/>", TRUE);
 
         return $newvw;
@@ -147,7 +147,7 @@ class VirtualWireStore extends ObjStore
         {
             $con = findConnectorOrDie($this);
 
-            $xpath = $this->getEthernetIfStoreXPath();
+            $xpath = $this->getVirtualWireIfStoreXPath();
 
             $con->sendSetRequest($xpath, "<entry name='{$s->name()}'/>");
         }
@@ -186,7 +186,7 @@ class VirtualWireStore extends ObjStore
         return $str;
     }
 
-    public function &getEthernetIfStoreXPath()
+    public function &getVirtualWireIfStoreXPath()
     {
         $path = $this->getBaseXPath() . '/virtual-wire';
         return $path;
