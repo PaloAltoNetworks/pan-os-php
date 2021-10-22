@@ -305,7 +305,9 @@ class ServiceGroup
         if( $old === null )
             derr("\$old cannot be null");
 
-        if( in_array($old, $this->members, TRUE) )
+        $pos = array_search($old, $this->members, TRUE);
+
+        if( $pos !== FALSE )
         {
             if( $new !== null )
             {
@@ -339,6 +341,9 @@ class ServiceGroup
 
     public function rewriteXML()
     {
+        if( !isset($this->owner->owner) )
+            return;
+
         if( $this->owner->owner->version >= 60 )
         {
             $membersRoot = DH::findFirstElement('members', $this->xmlroot);
