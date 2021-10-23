@@ -10,7 +10,9 @@ It will work seamlessly on local config file or API.
 **Homepage** : download latest sources on [GitHub](https://github.com/PaloAltoNetworks/pan-os-php).
 Windows package with PHP binaries here: [Git PAN-OS-PHP Windows Package](https://github.com/PaloAltoNetworks/pan-os-php-windows-package)
 
-**Requirements** : PHP 7.4 with curl module
+**Requirements** :
+ - PHP 7.4 with curl module [ already tested with PHP 8.0.11 ]
+ - php-curl php-dom php-mbstring php-bcmath
 
 **Usage**: include the file lib/pan_php_framework.php in your own script to load the necessary classes.
 ```php
@@ -65,7 +67,7 @@ Want to know where an object is used ?
 ```php
     $object = $pan->addressStore->find('H-WebServer4');
     foreach( $object->getReferences() as $ref )
-       print $ref->toString()."\n";
+       PH::print_stdout( $ref->toString() );
 ```
 
 Replace that object by another one :

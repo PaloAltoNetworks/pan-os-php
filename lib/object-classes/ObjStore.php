@@ -78,6 +78,9 @@ class ObjStore
             return $o;
         }
 
+        if( get_class( $this ) == "EthernetIfStore" || get_class( $this ) == "AggregateEthernetIfStore" || get_class( $this ) == "VirtuelWireStore" )
+            return null;
+
         if( $nested && $this->parentCentralStore !== null )
         {
             $f = $this->parentCentralStore->findbyName($name, $ref, $nested);

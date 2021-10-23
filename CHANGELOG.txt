@@ -4,6 +4,7 @@ CHANGELOG
 UTILS:
 
 BUGFIX:
+* pa_appid-enabler | bugfix related to methods move to class UTIL
 
 GENERAL:
 

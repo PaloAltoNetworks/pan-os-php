@@ -84,7 +84,7 @@ class APPIDENABLER extends UTIL
         if( $tmp_application_status->length == 0 )
         {
             //THIS is a NON available XPATH | TODO: swaschkut 20190115 validate it!!!
-            $tmp_application_status = DH::findXPath('/config/devices/entry/vsys/entry/application-status/entry', $xmlDoc1);
+            $tmp_application_status = DH::findXPath('/config/devices/entry/vsys/entry/application-status/entry', $this->xmlDoc);
             if( $tmp_application_status->length == 0 )
                 PH::print_stdout( PH::boldText("\nNO disabled APP-IDs available\n") );
         }
