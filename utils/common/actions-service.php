@@ -78,6 +78,89 @@ ServiceCallContext::$supportedActions[] = Array(
 );
 
 ServiceCallContext::$supportedActions[] = array(
+    'name' => 'decommission',
+    'MainFunction' => function (ServiceCallContext $context) {
+        $object = $context->object;
+
+        if( $context->arguments['file'] !== "false" )
+        {
+            if( !isset($context->cachedList) )
+            {
+                $text = file_get_contents($context->arguments['file']);
+
+                if( $text === FALSE )
+                    derr("cannot open file '{$context->arguments['file']}");
+
+                $lines = explode("\n", $text);
+                foreach( $lines as $line )
+                {
+                    $line = trim($line);
+                    if( strlen($line) == 0 )
+                        continue;
+                    $list[$line] = TRUE;
+                }
+
+                $context->cachedList = &$list;
+            }
+            else
+                $list = &$context->cachedList;
+        }
+        else
+            $list[] = $object->name();
+
+        foreach( $list as $key => $item )
+        {
+            if( $object->countReferences() != 0 )
+            {
+                $string = "delete all references: " ;
+                PH::ACTIONlog( $context, $string );
+                $object->display_references();
+
+                if( $context->isAPI )
+                    $object->API_removeWhereIamUsed(TRUE);
+                else
+                    $object->removeWhereIamUsed(TRUE);
+            }
+
+            //error handling enabled because of address object reference settings in :
+            //- interfaces: ethernet/vlan/loopback/tunnel
+            //- IKE gateway
+            // is not implemented yet
+            PH::enableExceptionSupport();
+            try
+            {
+                if( $object->owner != null )
+                {
+                    if( $context->isAPI )
+                        $object->owner->API_remove($object);
+                    else
+                        $object->owner->remove($object);
+                    $string = "finally delete address object: " . $object->name();
+                    PH::ACTIONlog( $context, $string );
+                }
+
+
+            } catch(Exception $e)
+            {
+                PH::disableExceptionSupport();
+                PH::print_stdout("" );
+                PH::print_stdout("" );
+                $string = PH::boldText("  ***** an error occured : ") . $e->getMessage();
+                PH::ACTIONlog( $context, $string );
+
+                $string = PH::boldText("address object: " . $object->name() . " can not be removed. Check error message above.");
+                PH::ACTIONlog( $context, $string );
+
+                return;
+            }
+        }
+    },
+    'args' => array(
+        'file' => array('type' => 'string', 'default' => 'false'),
+    ),
+);
+
+ServiceCallContext::$supportedActions[] = array(
     'name' => 'addObjectWhereUsed',
     'MainFunction' => function (ServiceCallContext $context) {
         $object = $context->object;
