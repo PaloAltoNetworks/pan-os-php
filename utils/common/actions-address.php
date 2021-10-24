@@ -679,7 +679,7 @@ AddressCallContext::$supportedActions[] = array(
         {
             //Todo: swaschkut 20210421 - long2ip not working with IPv6 use cidr::inet_itop
             $objectName = 'R-' . long2ip($entry['start']) . '-' . long2ip($entry['start']);
-            $newObject = $object->owner->find($objectName);
+            $newObject = $object->owner->find($objectName, null, false);
             if( $newObject === null )
                 $newObject = $object->owner->newAddress($objectName, 'ip-range', long2ip($entry['start']) . '-' . long2ip($entry['start']));
             $object->addMember($newObject);
@@ -1030,7 +1030,7 @@ AddressCallContext::$supportedActions[] = array(
         $string = "new name will be '{$newName}'";
         PH::ACTIONlog( $context, $string );
 
-        $findObject = $object->owner->find($newName);
+        $findObject = $object->owner->find($newName, null, false);
         if( $findObject !== null )
         {
             $string = "an object with same name already exists";
@@ -1093,7 +1093,7 @@ AddressCallContext::$supportedActions[] = array(
         $string = "new name will be '{$newName}'";
         PH::ACTIONlog( $context, $string );
 
-        $findObject = $object->owner->find($newName);
+        $findObject = $object->owner->find($newName, null, false);
         if( $findObject !== null )
         {
             $string = "an object with same name already exists";
@@ -1143,7 +1143,7 @@ AddressCallContext::$supportedActions[] = array(
         }
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
 
-        if( $object->owner->find($newName ) !== null )
+        if( $object->owner->find($newName, null, false ) !== null )
         {
             $string = "an object with same name already exists";
             PH::ACTIONstatus( $context, "SKIPPED", $string );
@@ -1181,7 +1181,7 @@ AddressCallContext::$supportedActions[] = array(
         }
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
 
-        if( $object->owner->find($newName) !== null )
+        if( $object->owner->find($newName, null, false ) !== null )
         {
             $string = "an object with same name already exists";
             PH::ACTIONstatus( $context, "SKIPPED", $string );
@@ -1229,7 +1229,7 @@ AddressCallContext::$supportedActions[] = array(
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
 
-        if( $object->owner->find($newName) !== null )
+        if( $object->owner->find($newName , null, false ) !== null )
         {
             $string = "an object with same name already exists";
             PH::ACTIONstatus( $context, "SKIPPED", $string );
@@ -1271,7 +1271,7 @@ AddressCallContext::$supportedActions[] = array(
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
 
-        if( $object->owner->find($newName) !== null )
+        if( $object->owner->find($newName, null, false ) !== null )
         {
             $string = "an object with same name already exists";
             PH::ACTIONstatus( $context, "SKIPPED", $string );
@@ -1394,7 +1394,7 @@ AddressCallContext::$supportedActions[] = array(
             if( $object->isGroup() && !$object->isDynamic() )
             {
                 foreach( $object->members() as $memberObject )
-                    if( $targetStore->find($memberObject->name()) === null )
+                    if( $targetStore->find($memberObject->name(), null, false ) === null )
                     {
                         $string = "this group has an object named '{$memberObject->name()} that does not exist in target location '{$targetLocation}'";
                         PH::ACTIONstatus( $context, "SKIPPED", $string );
@@ -2102,7 +2102,7 @@ AddressCallContext::$supportedActions[] = array(
         PH::ACTIONlog( $context, $string );
 
 
-        $objToReplace = $object->owner->find($newName);
+        $objToReplace = $object->owner->find($newName, null, false );
         if( $objToReplace === null )
         {
             if( $context->isAPI )
