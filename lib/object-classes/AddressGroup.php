@@ -515,7 +515,7 @@ class AddressGroup
                 $pos = array_search($old, $this->members, TRUE);
             }
 
-            if( $new !== null && !$this->has($new) )
+            if( $new !== null && !$this->has( $new->name() ) )
             {
                 $this->members[] = $new;
                 $new->addReference($this);
@@ -551,9 +551,39 @@ class AddressGroup
      * @param $obj Address|AddressGroup
      * @return bool
      */
-    public function has($obj)
+    public function has($obj, $caseSensitive = TRUE)
     {
-        return array_search($obj, $this->members, TRUE) !== FALSE;
+        #return array_search($obj, $this->members, TRUE) !== FALSE;
+        if( is_string($obj) )
+        {
+            if( !$caseSensitive )
+                $obj = strtolower($obj);
+
+            foreach( $this->members as $o )
+            {
+                if( !$caseSensitive )
+                {
+                    if( $obj == strtolower($o->name()) )
+                    {
+                        return TRUE;
+                    }
+                }
+                else
+                {
+                    if( $obj == $o->name() )
+                        return TRUE;
+                }
+            }
+            return FALSE;
+        }
+
+        foreach( $this->members as $o )
+        {
+            if( $o === $obj )
+                return TRUE;
+        }
+
+        return FALSE;
     }
 
     /**
