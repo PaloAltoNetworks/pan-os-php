@@ -791,6 +791,23 @@ class EthernetInterface
         return $str;
     }
 
+    public function referencedObjectRenamed($h, $old)
+    {
+        if( is_object($h) )
+        {
+            if( get_class( $h ) == "Address" )
+            {
+                #$this->addIPv4Address( $h );
+
+                #$this->removeIPv4Address( $old );
+            }
+
+            return;
+        }
+
+        mwarning("object is not part of this static route : {$h->toString()}");
+    }
+
     static public $templatexml = '<entry name="**temporarynamechangeme**">
   <layer3>
     <ipv6>
