@@ -92,30 +92,18 @@ AddressCallContext::$supportedActions[] = array(
 
         foreach( $list as $key => $item )
         {
-            if( $object->name() == $key )
+            if( $object->countReferences() != 0 )
             {
-                if( $object->countReferences() != 0 )
-                {
-                    $string = "delete all references: " ;
-                    PH::ACTIONlog( $context, $string );
-                    $object->display_references();
+                $string = "delete all references: " ;
+                PH::ACTIONlog( $context, $string );
+                $object->display_references();
 
-                    if( $context->isAPI )
-                        $object->API_removeWhereIamUsed(TRUE);
-                    else
-                        $object->removeWhereIamUsed(TRUE);
-                }
-                $context->objecttodelete[] = $object;
+                if( $context->isAPI )
+                    $object->API_removeWhereIamUsed(TRUE);
+                else
+                    $object->removeWhereIamUsed(TRUE);
             }
-        }
-    },
-    'GlobalFinishFunction' => function (AddressCallContext $context) {
-        PH::print_stdout("" );
-        PH::print_stdout("" );
-        $string = PH::boldText("DELETE ADDRESS OBJECTS:");
-        PH::ACTIONlog( $context, $string );
-        foreach( $context->objecttodelete as $object )
-        {
+
             //error handling enabled because of address object reference settings in :
             //- interfaces: ethernet/vlan/loopback/tunnel
             //- IKE gateway
@@ -123,13 +111,16 @@ AddressCallContext::$supportedActions[] = array(
             PH::enableExceptionSupport();
             try
             {
+                if( $object->owner != null )
+                {
+                    if( $context->isAPI )
+                        $object->owner->API_remove($object);
+                    else
+                        $object->owner->remove($object);
+                    $string = "finally delete address object: " . $object->name();
+                    PH::ACTIONlog( $context, $string );
+                }
 
-                if( $context->isAPI )
-                    $object->owner->API_remove($object);
-                else
-                    $object->owner->remove($object);
-                $string = "finally delete address object: " . $object->name();
-                PH::ACTIONlog( $context, $string );
 
             } catch(Exception $e)
             {

@@ -309,7 +309,7 @@ class ServiceGroup
 
         if( $pos !== FALSE )
         {
-            if( $new !== null )
+            if( $new !== null && !$this->has( $new->name() ) )
             {
                 $this->addMember($new, FALSE);
                 if( $old->name() == $new->name() )
@@ -338,6 +338,44 @@ class ServiceGroup
         return $ret;
     }
 
+    /**
+     * @param $obj Address|AddressGroup
+     * @return bool
+     */
+    public function has($obj, $caseSensitive = TRUE)
+    {
+        #return array_search($obj, $this->members, TRUE) !== FALSE;
+        if( is_string($obj) )
+        {
+            if( !$caseSensitive )
+                $obj = strtolower($obj);
+
+            foreach( $this->members as $o )
+            {
+                if( !$caseSensitive )
+                {
+                    if( $obj == strtolower($o->name()) )
+                    {
+                        return TRUE;
+                    }
+                }
+                else
+                {
+                    if( $obj == $o->name() )
+                        return TRUE;
+                }
+            }
+            return FALSE;
+        }
+
+        foreach( $this->members as $o )
+        {
+            if( $o === $obj )
+                return TRUE;
+        }
+
+        return FALSE;
+    }
 
     public function rewriteXML()
     {
