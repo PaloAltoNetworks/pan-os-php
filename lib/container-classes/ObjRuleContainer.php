@@ -143,7 +143,6 @@ class ObjRuleContainer
         }
 
         return FALSE;
-
     }
 
     /**
@@ -211,27 +210,6 @@ class ObjRuleContainer
 
         $pos = array_search($old, $this->o, TRUE);
 
-        /*
-        // this object was not found so we exit and return false
-        if( $pos === FALSE )
-            return FALSE;
-
-        // remove $old from the list and unreference it
-        unset($this->o[$pos]);
-        $old->removeReference($this);
-
-        // is $new already in the list ? if not then we insert it
-        if( $new !== null && array_search($new, $this->o, TRUE) === FALSE )
-        {
-            $this->o[] = $new;
-            $new->addReference($this);
-        }
-
-        // let's update XML code
-        $this->rewriteXML();
-
-        return TRUE;
-*/
         if( $pos !== FALSE )
         {
             while( $pos !== FALSE )
@@ -240,8 +218,7 @@ class ObjRuleContainer
                 $pos = array_search($old, $this->o, TRUE);
             }
 
-            #if( $new !== null && !$this->has($new) )
-            if( $new !== null && array_search($new, $this->o, TRUE) === FALSE )
+            if( $new !== null && !$this->has($new->name()) )
             {
                 $this->o[] = $new;
                 $new->addReference($this);
