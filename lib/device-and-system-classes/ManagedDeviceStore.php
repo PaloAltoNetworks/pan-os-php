@@ -85,7 +85,7 @@ class ManagedDeviceStore extends ObjStore
      */
     public function find($serial, $ref = null, $nested = TRUE)
     {
-        $f = $this->findByName($serial, $ref);
+        $f = $this->findByName($serial, $ref, $nested);
 
         if( $f !== null )
             return $f;

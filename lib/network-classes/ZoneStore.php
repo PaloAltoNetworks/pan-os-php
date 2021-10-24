@@ -55,7 +55,7 @@ class ZoneStore extends ObjStore
      */
     public function find($name, $ref = null, $nested = false)
     {
-        return $this->findByName($name, $ref);
+        return $this->findByName($name, $ref, $nested);
     }
 
 

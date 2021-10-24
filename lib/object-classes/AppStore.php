@@ -94,7 +94,7 @@ class AppStore extends ObjStore
      */
     public function find($name, $ref = null, $nested = TRUE )
     {
-        $f = $this->findByName($name, $ref);
+        $f = $this->findByName($name, $ref, $nested);
         if( $f !== null )
             return $f;
 
