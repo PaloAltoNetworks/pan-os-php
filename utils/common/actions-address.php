@@ -58,9 +58,6 @@ AddressCallContext::$supportedActions[] = array(
 
 AddressCallContext::$supportedActions[] = array(
     'name' => 'decommission',
-    'GlobalInitFunction' => function (AddressCallContext $context) {
-        $context->objecttodelete = array();
-    },
     'MainFunction' => function (AddressCallContext $context) {
         $object = $context->object;
 
