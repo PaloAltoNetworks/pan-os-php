@@ -11,6 +11,7 @@ BUGFIX:
 * class ObjRulecontainer / AddressGroup - to add object with same name but different owner of DG hierarchy only once
 * class AddressGroup add members to dynamic Addressgroups
 * pa_address-edit - fix all actions where method find() is used to NOT search nested
+* pa_service-edit - improve all actions if method find() is used
 
 GENERAL:
 * class ServiceGroup | introduce method has() - for better usage in pa_servicegroup-merger
