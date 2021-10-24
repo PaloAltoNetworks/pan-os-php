@@ -4,10 +4,12 @@ CHANGELOG
 UTILS:
 * pa_address-edit | actions=decommission - improvement for better object decommission handling
 * pa_service-edit | introduce actions=decommission
+* pa_address-edit | improve actions=display for dynamic Addressgroup
 
 BUGFIX:
 * pa_appid-enabler | bugfix related to methods move to class UTIL
 * class ObjRulecontainer / AddressGroup - to add object with same name but different owner of DG hierarchy only once
+* class AddressGroup add members to dynamic Addressgroups
 
 GENERAL:
 * class ServiceGroup | introduce method has() - for better usage in pa_servicegroup-merger

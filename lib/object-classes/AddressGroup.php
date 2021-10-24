@@ -188,9 +188,7 @@ class AddressGroup
                     $tmp_found_addresses = $this->owner->all($tagFilter);
                     foreach( $tmp_found_addresses as $address )
                     {
-                        #PH::print_stdout( "object: ".$address->name()." add ref to ".$this->name() );
-                        //how to find out all objects which are related to this filter???
-                        #$this->members[] = $address;
+                        $this->members[] = $address;
                         $address->addReference($this);
                     }
                 }
@@ -609,8 +607,6 @@ class AddressGroup
      */
     public function count()
     {
-        if( $this->isDynamic )
-            mwarning('unsupported with Dynamic Address Groups');
         return count($this->members);
     }
 
