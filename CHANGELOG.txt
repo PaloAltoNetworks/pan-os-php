@@ -2,6 +2,7 @@ CHANGELOG
 
 2.0.20
 UTILS:
+* pa_address-edit | actions=decommission - improvement for better object decommission handling
 
 BUGFIX:
 * pa_appid-enabler | bugfix related to methods move to class UTIL
