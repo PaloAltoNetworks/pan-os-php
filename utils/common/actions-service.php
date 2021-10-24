@@ -932,7 +932,7 @@ ServiceCallContext::$supportedActions[] = array(
         $string = "new name will be '{$newName}'";
         PH::ACTIONlog( $context, $string );
 
-        $findObject = $object->owner->find($newName);
+        $findObject = $object->owner->find($newName, null, false);
         if( $findObject !== null )
         {
             $string = "an object with same name already exists";
@@ -995,7 +995,7 @@ ServiceCallContext::$supportedActions[] = array(
         $string = "new name will be '{$newName}'";
         PH::ACTIONlog( $context, $string );
 
-        $findObject = $object->owner->find($newName);
+        $findObject = $object->owner->find($newName, null, false);
         if( $findObject !== null )
         {
             $string = "an object with same name already exists";
