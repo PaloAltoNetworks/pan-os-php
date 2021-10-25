@@ -5,6 +5,7 @@ UTILS:
 * pa_address-edit | actions=decommission - improvement for better object decommission handling
 * pa_service-edit | introduce actions=decommission
 * pa_address-edit | improve actions=display for dynamic Addressgroup
+* pa_address-edit | improve 'filter=((name regex /$$ipv4$$/) and (value is.included-in.name) )' - to match only full IP-Address
 
 BUGFIX:
 * pa_appid-enabler | bugfix related to methods move to class UTIL
