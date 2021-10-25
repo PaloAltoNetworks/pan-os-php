@@ -1,6 +1,14 @@
 CHANGELOG
 
-2.0.20
+2.0.21
+UTILS:
+
+BUGFIX:
+
+GENERAL:
+
+
+2.0.20 (20211025)
 UTILS:
 * pa_address-edit | actions=decommission - improvement for better object decommission handling
 * pa_service-edit | introduce actions=decommission
