@@ -323,6 +323,8 @@ trait ServiceCommon
     {
         /** @var Service|ServiceGroup $this */
 
+        $success = true;
+
         if( is_numeric($outputPadding) )
             $outputPadding = str_pad(' ', $outputPadding);
 
@@ -378,6 +380,7 @@ trait ServiceCommon
                 $objectRef->replaceReferencedObject($this, $withObject);
         }
 
+        return $success;
     }
 
 }

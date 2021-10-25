@@ -1002,7 +1002,15 @@ RQuery::$defaultFilters['address']['value']['operators']['is.included-in.name'] 
                 $addr_value = $object->getNetworkValue();
 
             if( !empty( $addr_value ) && strpos(strtolower($name), strtolower($addr_value) ) !== FALSE )
+            {
+                $tmpPos = strpos( $name, $addr_value );
+                $tmpPos += strlen( $addr_value);
+                $substr = substr($name, $tmpPos, 1); //returns b
+                if( is_numeric( $substr ) )
+                    return FALSE;
+
                 return true;
+            }
         }
 
         return false;
