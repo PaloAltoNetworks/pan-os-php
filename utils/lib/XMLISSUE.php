@@ -1190,6 +1190,50 @@ class XMLISSUE extends UTIL
                 $readonlyDGAddressgroups[$objectAddressGroupName] = $objectAddressGroup;
         }
 
+        ////////////////////////////////////////////////////////////
+        ///config/readonly/devices/entry[@name='localhost.localdomain']/template
+
+        PH::print_stdout( " - Scanning for config/readonly/devices/entry[@name='localhost.localdomain'] for duplicate template ...");
+        $tmpReadOnly = DH::findXPath("/config/readonly/devices/entry[@name='localhost.localdomain']", $this->xmlDoc);
+        $readOnly = array();
+
+        foreach( $tmpReadOnly as $node )
+            $readOnly[] = $node;
+
+        $readonlyTemplatesArray = array();
+
+        if( isset( $readOnly[0] ) )
+        {
+            $readonlyTemplates = DH::findFirstElement('template', $readOnly[0]);
+            if( $readonlyTemplates !== false )
+                $demo = iterator_to_array($readonlyTemplates->childNodes);
+            else
+                $demo = array();
+        }
+        else
+            $demo = array();
+
+        foreach( $demo as $objectTemplate )
+        {
+            /** @var DOMElement $objectTemplate */
+            if( $objectTemplate->nodeType != XML_ELEMENT_NODE )
+                continue;
+
+            $objectTemplateName = $objectTemplate->getAttribute('name');
+            if( isset($readonlyTemplatesArray[$objectTemplateName]) )
+            {
+                $text = "     - readOnly /config/readonly/devices/entry[@name='localhost.localdomain']/template has same Template defined twice: ".$objectTemplateName;
+                $readonlyTemplates->removeChild($objectTemplate);
+                $text .=PH::boldText(" (removed)");
+                PH::print_stdout($text);
+            }
+            else
+                $readonlyTemplatesArray[$objectTemplateName] = $objectTemplate;
+        }
+
+
+
+        ////////////////////////////////////////////////////////////
 
         PH::print_stdout( "");
         PH::print_stdout( "Summary:");
