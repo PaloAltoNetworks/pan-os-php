@@ -243,6 +243,9 @@ class UTIL
                 {
                     //if( $operator['arg'] )
                     $output = "    - $oindex";
+                    $output = str_pad($output, 40);
+                    if( isset($operator['help']) )
+                        $output .= ": ".$operator['help'];
 
                     PH::print_stdout( $output . "" );
                     PH::$JSON_TMP[$index]['operators'][$oindex]['name'] = $oindex;

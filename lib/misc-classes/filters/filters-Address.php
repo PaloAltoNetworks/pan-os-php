@@ -415,6 +415,7 @@ RQuery::$defaultFilters['address']['name']['operators']['regex'] = array(
         return FALSE;
     },
     'arg' => TRUE,
+    'help' => 'possible variables to bring in as argument: $$value$$ / $$ipv4$$ / $$ipv6$$ / $$value.no-netmask$$ / $$netmask$$ / $$netmask.blank32$$',
     'ci' => array(
         'fString' => '(%PROP% /n-/)',
         'input' => 'input/panorama-8.0.xml'
