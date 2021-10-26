@@ -89,7 +89,7 @@ if( $configInput['status'] != 'ok' )
 }
 if( $configInput['type'] == 'file' )
 {
-    #derr("file type input is not supported, only API");
+    //derr("file type input is not supported, only API");
 }
 elseif ( $configInput['type'] != 'api'  )
     derr('unsupported yet');

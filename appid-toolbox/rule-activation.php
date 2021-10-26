@@ -89,7 +89,7 @@ if( $configInput['status'] != 'ok' )
 }
 if( $configInput['type'] == 'file' )
 {
-    #derr("file type input is not supported, only API");
+    //derr("file type input is not supported, only API");
 }
 elseif ( $configInput['type'] != 'api'  )
     derr('unsupported yet');
@@ -366,7 +366,7 @@ foreach( $ridTagLibrary->_tagsToObjects as $tagName => &$taggedRules )
     $countActivated++;
 
     // TODO: 20180216 for diff between files the rand() operation is a problem - search for something different
-    #$legacyRuleNewName = str_replace('#', '-',$tagName).'-'.rand(10000,99999);
+    //$legacyRuleNewName = str_replace('#', '-',$tagName).'-'.rand(10000,99999);
     $legacyRuleNewName = str_replace('#', '-',$tagName).'-'.mt_rand(10000,99999);
     $legacyRuleNewName = $subSystem->securityRules->findAvailableName($legacyRuleNewName);
     $legacyRuleOldName = $legacyRule->name();

@@ -2,6 +2,7 @@ CHANGELOG
 
 2.0.21
 UTILS:
+* pa_securityprofile-edit | extend class with threatException - display it with actions=display
 
 BUGFIX:
 
