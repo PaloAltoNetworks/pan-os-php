@@ -451,4 +451,50 @@ RQuery::$defaultFilters['securityprofile']['override']['operators']['has'] = arr
     )
 );
 
+RQuery::$defaultFilters['securityprofile']['exception']['operators']['has'] = array(
+    'Function' => function (SecurityProfileRQueryContext $context) {
+        $object = $context->object;
+        $value = $context->value;
+
+        if( $object->secprof_type == 'virus' || $object->secprof_type == 'spyware' || $object->secprof_type == 'vulnerability' )
+        {
+            if( !empty( $object->threatException ) )
+            {
+                foreach( $object->threatException as $threatname => $threat )
+                {
+                    if( $threatname == $value )
+                        return TRUE;
+                }
+            }
+        }
+
+        return FALSE;
+
+    },
+    'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP% securityrule )',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
+
+RQuery::$defaultFilters['securityprofile']['exception']['operators']['is.set'] = array(
+    'Function' => function (SecurityProfileRQueryContext $context) {
+        $object = $context->object;
+
+        if( $object->secprof_type == 'virus' || $object->secprof_type == 'spyware' || $object->secprof_type == 'vulnerability' )
+        {
+            if( !empty( $object->threatException ) )
+                return TRUE;
+        }
+
+        return FALSE;
+
+    },
+    'ci' => array(
+        'fString' => '(%PROP% securityrule )',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 // </editor-fold>
