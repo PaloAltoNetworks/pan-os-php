@@ -142,6 +142,7 @@ class customURLProfile
      */
     public function load_from_domxml(DOMElement $xml)
     {
+        $this->secprof_type = "customURL";
         $this->xmlroot = $xml;
 
         $this->name = DH::findAttribute('name', $xml);
