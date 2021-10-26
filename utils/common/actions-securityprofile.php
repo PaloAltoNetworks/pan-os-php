@@ -481,15 +481,27 @@ SecurityProfileCallContext::$supportedActions[] = array(
                 else
                     $lines .= "<tr bgcolor=\"#DDDDDD\">";
 
-                if( $object->owner->owner->isPanorama() || $object->owner->owner->isFirewall() )
-                    $lines .= $encloseFunction('shared');
+                if( $object->owner->owner === null )
+                {
+                    $lines .= $encloseFunction('predefined');
+                }
                 else
-                    $lines .= $encloseFunction($object->owner->owner->name());
+                {
+                    if( $object->owner->owner !== null && ( $object->owner->owner->isPanorama() || $object->owner->owner->isFirewall() ) )
+                        $lines .= $encloseFunction('shared');
+                    else
+                        $lines .= $encloseFunction($object->owner->owner->name());
+                }
+
 
                 $lines .= $encloseFunction($object->name());
 
 
-                $lines .= $encloseFunction($object->secprof_type);
+                if( isset($object->secprof_type) )
+                    $lines .= $encloseFunction($object->secprof_type);
+                else
+                    $lines .= $encloseFunction('' );
+
                 #$lines .= $encloseFunction($object->value());
                 if( !empty( $object->threatException ) )
                 {
