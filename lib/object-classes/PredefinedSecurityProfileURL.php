@@ -96,6 +96,7 @@ class PredefinedSecurityProfileURL
      */
     public function load_from_domxml(DOMElement $xml)
     {
+        $this->secprof_type = "predefined";
         $this->xmlroot = $xml;
 
         $this->name = DH::findAttribute('name', $xml);

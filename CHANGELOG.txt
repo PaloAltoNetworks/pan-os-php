@@ -2,6 +2,9 @@ CHANGELOG
 
 2.0.21
 UTILS:
+* pa_securityprofile-edit | extend class with threatException - display it with actions=display
+* pa_securityProfil-edit | introduce 'filter=( exception is.set) / (exception has XYZ)'
+* pa_securityprofil-edit | introduce actions=exporttoexcel:FILE.html
 
 BUGFIX:
 

@@ -23,8 +23,8 @@ class PH
 {
     function __construct($argv, $argc)
     {
-        #print "FIRST\n";
-        #print_r( $argv );
+        //print "FIRST\n";
+        //print_r( $argv );
 
         PH::$argv = $argv;
 
@@ -293,8 +293,8 @@ class PH
 
     public static function processCliArgs()
     {
-        #print "SECOND\n";
-        #print_r( PH::$argv );
+        //print "SECOND\n";
+        //print_r( PH::$argv );
 
         $first = TRUE;
 
@@ -320,8 +320,8 @@ class PH
             PH::$args[$nameExplode[0]] = $value;
         }
 
-        #print "THIRD\n";
-        #print_r(PH::$args);
+        //print "THIRD\n";
+        //print_r(PH::$args);
     }
 
     public static function resetCliArgs( $arguments )
@@ -332,7 +332,7 @@ class PH
 
         PH::$argv = $argv;
 
-        #print_r( $argv );
+        //print_r( $argv );
     }
 
     public static function generate_arguments($in = "", $out = "", $location = "", $actions = "", $filter = "", $subquery = "", $additional = "")

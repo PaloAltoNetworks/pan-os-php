@@ -28,6 +28,8 @@ class AntiVirusProfile
     public $smb = array();
     public $smtp = array();
 
+    public $threatException = array();
+
 
     public $tmp_virus_prof_array = array('http', 'smtp', 'imap', 'pop3', 'ftp', 'smb');
 
@@ -94,6 +96,7 @@ class AntiVirusProfile
      */
     public function load_from_domxml(DOMElement $xml)
     {
+        $this->secprof_type = "virus";
         $this->xmlroot = $xml;
 
         $this->name = DH::findAttribute('name', $xml);
@@ -160,6 +163,33 @@ class AntiVirusProfile
             #print_r( $tmp_array );
         }
 
+        $tmp_threat_exception = DH::findFirstElement('threat-exception', $xml);
+        if( $tmp_threat_exception !== FALSE )
+        {
+            $tmp_array[$this->secprof_type][$this->name]['threat-exception'] = array();
+            foreach( $tmp_threat_exception->childNodes as $tmp_entry1 )
+            {
+                if( $tmp_entry1->nodeType != XML_ELEMENT_NODE )
+                    continue;
+
+                $tmp_name = DH::findAttribute('name', $tmp_entry1);
+                if( $tmp_name === FALSE )
+                    derr("VB severity name not found\n");
+
+                $this->threatException[$tmp_name]['name'] = $tmp_name;
+
+                $action = DH::findFirstElement('action', $tmp_entry1);
+                if( $action !== FALSE )
+                {
+                    if( $action->nodeType != XML_ELEMENT_NODE )
+                        continue;
+
+                    $tmp_action = DH::firstChildElement($action);
+                    $tmp_array[$this->secprof_type][$this->name]['threat-exception'][$tmp_name]['action'] = $tmp_action->nodeName;
+                    $this->threatException[$tmp_name]['action'] = $tmp_action->nodeName;
+                }
+            }
+        }
 
         return TRUE;
     }
@@ -186,6 +216,22 @@ class AntiVirusProfile
             {
                 PH::print_stdout(  "          - wildfire-action: '" . $this->$type['wildfire-action'] . "'" );
                 PH::$JSON_TMP['sub']['object'][$this->name()]['type'][$type]['wildfire-action'] = $this->$type['wildfire-action'];
+            }
+        }
+
+        PH::print_stdout("");
+
+        if( !empty( $this->threatException ) )
+        {
+            PH::print_stdout("        - threat-exception:" );
+
+            foreach( $this->threatException as $threatname => $threat )
+            {
+                $string = "             '" . $threat['name'] . "'";
+                if( isset( $threat['action'] ) )
+                    $string .= "  - action : ".$threat['action'];
+
+                PH::print_stdout(  $string );
             }
         }
     }

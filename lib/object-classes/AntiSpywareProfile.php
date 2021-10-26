@@ -21,6 +21,8 @@ class AntiSpywareProfile
 
     public $secprof_type;
 
+    public $threatException = array();
+
     /**
      * you should not need this one for normal use
      * @param string $name
@@ -203,6 +205,8 @@ class AntiSpywareProfile
                 if( $tmp_name === FALSE )
                     derr("VB severity name not found\n");
 
+                $this->threatException[$tmp_name]['name'] = $tmp_name;
+
                 $action = DH::findFirstElement('action', $tmp_entry1);
                 if( $action !== FALSE )
                 {
@@ -211,6 +215,7 @@ class AntiSpywareProfile
 
                     $tmp_action = DH::firstChildElement($action);
                     $tmp_array[$this->secprof_type][$this->name]['threat-exception'][$tmp_name]['action'] = $tmp_action->nodeName;
+                    $this->threatException[$tmp_name]['action'] = $tmp_action->nodeName;
                 }
             }
         }
@@ -228,6 +233,20 @@ class AntiSpywareProfile
 
         PH::print_stdout("");
         //Todo: continue for display out
+
+        if( !empty( $this->threatException ) )
+        {
+            PH::print_stdout("        - threat-exception:" );
+
+            foreach( $this->threatException as $threatname => $threat )
+            {
+                $string = "             '" . $threat['name'] . "'";
+                if( isset( $threat['action'] ) )
+                    $string .= "  - action : ".$threat['action'];
+
+                PH::print_stdout(  $string );
+            }
+        }
 
 
         #PH::print_stdout( "" );
