@@ -55,6 +55,7 @@ class PredefinedSecurityProfileURL
 
             $rootDoc = $owner->xmlroot->ownerDocument;
 
+            $this->secprof_type = "predefinedSecProfURL";
             $this->xmlroot = $rootDoc->importNode($node, TRUE);
             $this->load_from_domxml($this->xmlroot);
 

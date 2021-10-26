@@ -428,7 +428,7 @@ SecurityProfileCallContext::$supportedActions[] = array(
 
 
         #$headers = '<th>location</th><th>name</th><th>type</th><th>value</th><th>description</th><th>tags</th>';
-        $headers = '<th>location</th><th>name</th><th>type</th><th>exception</th>';
+        $headers = '<th>location</th><th>name</th><th>store</th><th>type</th><th>exception</th>';
 
         if( $addWhereUsed )
             $headers .= '<th>where used</th>';
@@ -496,11 +496,13 @@ SecurityProfileCallContext::$supportedActions[] = array(
 
                 $lines .= $encloseFunction($object->name());
 
+                $lines .= $encloseFunction( $object->owner->name() );
+
 
                 if( isset($object->secprof_type) )
                     $lines .= $encloseFunction($object->secprof_type);
                 else
-                    $lines .= $encloseFunction('' );
+                    $lines .= $encloseFunction(get_class($object) );
 
                 #$lines .= $encloseFunction($object->value());
                 if( !empty( $object->threatException ) )
