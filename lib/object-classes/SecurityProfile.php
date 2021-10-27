@@ -14,6 +14,8 @@ class SecurityProfile
     /** @var string|null */
     protected $value;
 
+    public $secprof_type;
+
     /** @var SecurityProfileStore|null */
     public $owner;
 
@@ -79,6 +81,8 @@ class SecurityProfile
      */
     public function load_from_domxml(DOMElement $xml)
     {
+        $this->secprof_type = "secprof";
+
         $this->xmlroot = $xml;
 
         $this->name = DH::findAttribute('name', $xml);

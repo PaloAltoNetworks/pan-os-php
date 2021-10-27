@@ -117,7 +117,11 @@ RQuery::$defaultFilters['securityprofile']['name']['operators']['regex'] = array
 );
 RQuery::$defaultFilters['securityprofile']['location']['operators']['is'] = array(
     'Function' => function (SecurityProfileRQueryContext $context) {
-        $owner = $context->object->owner->owner;
+        if( is_object($context->object->owner->owner) )
+            $owner = $context->object->owner->owner;
+        else
+            return FALSE;
+
         if( strtolower($context->value) == 'shared' )
         {
             if( $owner->isPanorama() )

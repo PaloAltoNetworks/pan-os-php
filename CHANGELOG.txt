@@ -8,6 +8,7 @@ UTILS:
 * pa_securityprofil-edit - improve JSON response stdout with argument shadow-json
 
 BUGFIX:
+* pa_securityprofile-edit | bugfix based on filter=(location is XYZ)
 
 GENERAL:
 
