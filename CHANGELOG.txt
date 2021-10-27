@@ -5,6 +5,7 @@ UTILS:
 * pa_securityprofile-edit | extend class with threatException - display it with actions=display
 * pa_securityProfil-edit | introduce 'filter=( exception is.set) / (exception has XYZ)'
 * pa_securityprofil-edit | introduce actions=exporttoexcel:FILE.html
+* pa_securityprofil-edit - improve JSON response stdout with argument shadow-json
 
 BUGFIX:
 

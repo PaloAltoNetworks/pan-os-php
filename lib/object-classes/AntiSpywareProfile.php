@@ -240,9 +240,14 @@ class AntiSpywareProfile
 
             foreach( $this->threatException as $threatname => $threat )
             {
+                PH::$JSON_TMP['sub']['object'][$this->name()]['threat-exception'][$threatname]['name'] = $threat['name'];
+
                 $string = "             '" . $threat['name'] . "'";
                 if( isset( $threat['action'] ) )
+                {
                     $string .= "  - action : ".$threat['action'];
+                    PH::$JSON_TMP['sub']['object'][$this->name()]['threat-exception'][$threatname]['action'] = $threat['action'];
+                }
 
                 PH::print_stdout(  $string );
             }
