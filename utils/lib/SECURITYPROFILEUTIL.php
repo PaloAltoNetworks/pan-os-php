@@ -376,12 +376,19 @@ class SECURITYPROFILEUTIL extends UTIL
 
         foreach( $this->objectsToProcess as &$rulesRecord )
         {
-            /** @var RuleStore $store */
+            $subObjectsProcessed = 0;
 
             $store = $rulesRecord['store'];
             $rules = &$rulesRecord['rules'];
-            $subObjectsProcessed = 0;
+
             $this->totalObjectsOfSelectedStores += $store->count();
+
+            PH::print_stdout( "" );
+            $string = "* processing SecurityProfileset '" . $store->toString() . " that holds " . count($rules) . "' SecurityProfiles";
+            PH::print_stdout( $string );
+
+            PH::$JSON_TMP = array();
+            PH::$JSON_TMP['header'] = $string;
 
             foreach( $this->doActions as $doAction )
             {
@@ -403,12 +410,7 @@ class SECURITYPROFILEUTIL extends UTIL
 
             PH::$JSON_TMP['sub']['store'] = get_class( $store );
 
-            PH::print_stdout( "" );
-            $string = "* processing SecurityProfileset '" . $store->toString() . " that holds " . count($rules) . "' SecurityProfiles";
-            PH::print_stdout( $string );
 
-            PH::$JSON_TMP = array();
-            PH::$JSON_TMP['header'] = $string;
 
 
             foreach( $rules as $rule )

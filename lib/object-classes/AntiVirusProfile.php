@@ -209,13 +209,13 @@ class AntiVirusProfile
             if( isset( $this->$type['action'] ) )
             {
                 PH::print_stdout(  "          - action:          '" . $this->$type['action'] . "'");
-                PH::$JSON_TMP['sub']['object'][$this->name()]['name'][$type]['action'] = $this->$type['action'];
+                PH::$JSON_TMP['sub']['object'][$this->name()]['decoder'][$type]['action'] = $this->$type['action'];
             }
 
             if( isset( $this->$type['wildfire-action'] ) )
             {
                 PH::print_stdout(  "          - wildfire-action: '" . $this->$type['wildfire-action'] . "'" );
-                PH::$JSON_TMP['sub']['object'][$this->name()]['type'][$type]['wildfire-action'] = $this->$type['wildfire-action'];
+                PH::$JSON_TMP['sub']['object'][$this->name()]['decoder'][$type]['wildfire-action'] = $this->$type['wildfire-action'];
             }
         }
 
@@ -227,9 +227,14 @@ class AntiVirusProfile
 
             foreach( $this->threatException as $threatname => $threat )
             {
+                PH::$JSON_TMP['sub']['object'][$this->name()]['threat-exception'][$threatname]['name'] = $threat['name'];
+
                 $string = "             '" . $threat['name'] . "'";
                 if( isset( $threat['action'] ) )
+                {
                     $string .= "  - action : ".$threat['action'];
+                    PH::$JSON_TMP['sub']['object'][$this->name()]['threat-exception'][$threatname]['action'] = $threat['action'];
+                }
 
                 PH::print_stdout(  $string );
             }
