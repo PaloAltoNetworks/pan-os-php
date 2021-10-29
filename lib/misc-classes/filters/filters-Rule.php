@@ -1168,6 +1168,43 @@ RQuery::$defaultFilters['rule']['app']['operators']['has.regex'] = array(
         'input' => 'input/panorama-8.0.xml'
     )
 );
+
+RQuery::$defaultFilters['rule']['app']['operators']['has.recursive'] = array(
+    'Function' => function (RuleRQueryContext $context) {
+        $rule = $context->object;
+        if( $rule->isNatRule() || $rule->isDecryptionRule() || $rule->isCaptivePortalRule() || $rule->isAuthenticationRule() || $rule->isDoSRule() )
+            return FALSE;
+
+        foreach( $rule->apps->getAll() as $app)
+        {
+
+            if( !$app->isApplicationGroup() &&  !$app->isContainer())
+                continue;
+
+            $member = $app->owner->find( $context->value );
+            if( $member !== null)
+            {
+                $references = $member->getReferences();
+                foreach( $references as $ref )
+                {
+                    /** @var ReferenceableObject $ref */
+                    if( get_class( $ref->owner ) == "AppStore" )
+                    {
+                        if( $ref === $app )
+                            return TRUE;
+                    }
+                }
+            }
+        }
+
+        return FALSE;
+    },
+    'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 RQuery::$defaultFilters['rule']['app']['operators']['includes.full.or.partial'] = array(
     'Function' => function (RuleRQueryContext $context) {
         $rule = $context->object;

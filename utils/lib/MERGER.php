@@ -2124,7 +2124,7 @@ class MERGER extends UTIL
                             }
                             elseif( $object->getOverride() != $pickedObject->getOverride() )
                             {
-                                $text .= "    - object '{$object->name()}' cannot be merged because of different Override information";
+                                $text = "    - object '{$object->name()}' cannot be merged because of different Override information";
                                 $text .= "  object value: " . $object->getOverride() . " | pickedObject value: " . $pickedObject->getOverride();
                                 PH::print_stdout( $text );
                                 continue;
