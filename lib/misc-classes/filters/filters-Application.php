@@ -449,5 +449,13 @@ RQuery::$defaultFilters['application']['object']['operators']['has.member'] = ar
         'input' => 'input/panorama-8.0.xml'
     )
 );
+RQuery::$defaultFilters['application']['risk']['operators']['>,<,=,!'] = array(
+    'eval' => '$object->risk !operator! !value!',
+    'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP% 1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 
 // </editor-fold>
