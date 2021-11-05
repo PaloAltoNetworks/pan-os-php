@@ -1,7 +1,5 @@
-#FROM ubuntu:20.04
 FROM centos:7
 
-ARG php_var="5.6"
 
 #SHELL ["/bin/bash", "-c"]
 
@@ -10,18 +8,17 @@ RUN yum -y update
 RUN yum -y update tzdata
 RUN yum -y install bash-completion bash-completion-extras
 
+
+
 #for BASH 5.0
 RUN yum -y install curl
 RUN yum -y groupinstall "Development Tools"
-
 RUN curl -O https://ftp.gnu.org/gnu/bash/bash-5.0.tar.gz
-
 RUN tar xvf bash-5.0.tar.gz
-
 RUN cd bash-5.0 && ./configure && make && make install
 
 
-
+########## needed for PHP
 RUN yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 RUN yum -y install http://rpms.remirepo.net/enterprise/remi-release-7.rpm
 
@@ -44,6 +41,8 @@ RUN yum -y install \
         php-bcmath \
     && yum clean all
 
+
+### PAN-OS-PHP
 RUN mkdir /tools; mkdir /tools/pan-os-php;
 
 COPY appid-toolbox /tools/pan-os-php/appid-toolbox
@@ -54,7 +53,6 @@ COPY tests /tools/pan-os-php/tests
 
 
 # PHP library of pan-os-php
-#RUN echo 'include_path = "/usr/share/php:/tools/pan-os-php"' >> /etc/php/$php_var/cli/php.ini
 RUN echo 'include_path = "/usr/share/php:/tools/pan-os-php"' >> /etc/php.ini
 RUN chmod -R 777 /tools/pan-os-php
 
