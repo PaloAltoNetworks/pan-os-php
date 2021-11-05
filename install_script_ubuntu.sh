@@ -2,6 +2,7 @@
 
 FOLDER_PATH="/tools/pan-os-php"
 USER_VAR=$USER
+USER_VAR="root"
 PHP_VAR="7.4"
 
 echo "START \"install PAN-OS-PHP on UBUNTU\"" \
