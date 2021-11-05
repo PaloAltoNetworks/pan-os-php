@@ -4,7 +4,7 @@ FOLDER_PATH="/tools/pan-os-php"
 USER_VAR=$USER
 PHP_VAR="7.4"
 
-echo "START \"update UBUNTU\"" \
+echo "START \"install PAN-OS-PHP on UBUNTU\"" \
 && apt update -y \
 && echo "" \
 && echo "\"install tzdata\"" \

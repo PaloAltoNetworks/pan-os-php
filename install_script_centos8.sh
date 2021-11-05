@@ -2,19 +2,21 @@
 
 FOLDER_PATH="/tools/pan-os-php"
 USER_VAR="root"
-PHP_VAR="7.4"
 
-echo "START \"update CENTOS\"" \
+
+echo "START \"install PAN-OS-PHP on CENTOS\"" \
 && yum -y update \
 && echo "" \
 && echo "\"install tzdata\"" \
 && yum -y update tzdata \
-&& yum -y install bash-completion bash-completion-extras \
+&& yum -y install bash-completion \
 && echo "" \
-&& yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm \
-&& yum -y install http://rpms.remirepo.net/enterprise/remi-release-7.rpm \
-&& yum -y install yum-utils \
-&& yum-config-manager --enable remi-php56 \
+&& echo "" \
+&& dnf -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm \
+&& dnf -y install https://rpms.remirepo.net/enterprise/remi-release-8.rpm \
+&& dnf -y install yum-utils \
+&& dnf -y module reset php \
+&& dnf -y module install php:remi-8.0 \
 && echo "" \
 && echo "" \
 && yum -y install php php-cli php-fpm php-json php-intl php-curl php-dom php-mbstring php-bcmath && yum clean all \
@@ -42,14 +44,17 @@ echo "START \"update CENTOS\"" \
 && echo "" \
 && cp ${FOLDER_PATH}/utils/bash_autocompletion/pan-os-php.sh /usr/share/bash-completion/completions/pan-os-php \
 && echo "" \
+&& echo "" \
 && yum -y install curl \
 && yum -y groupinstall "Development Tools" \
 && curl -O https://ftp.gnu.org/gnu/bash/bash-5.0.tar.gz \
 && tar xvf bash-5.0.tar.gz \
 && cd bash-5.0 && ./configure && make && make install \
 && echo "" \
-&& ech "cp /usr/local/bin/bash /bin/bash" \
+&& echo "THIS IS NOT WORKING for CENTOS install script" \
+&& echo "yes | cp /usr/local/bin/bash /bin/bash" \
 && echo "" \
+&& dnf -y install util-linux-user \
 && echo '/usr/local/bin/bash' >> /etc/shells \
 && chsh -s /usr/local/bin/bash \
 && echo "" \
