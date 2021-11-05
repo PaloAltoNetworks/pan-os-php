@@ -63,6 +63,9 @@ RUN curl -O https://ftp.gnu.org/gnu/bash/bash-5.0.tar.gz
 RUN tar xvf bash-5.0.tar.gz
 RUN cd bash-5.0 && ./configure && make && make install
 
+#echo '/usr/local/bin/bash' >> /etc/shells
+#chsh -s /usr/local/bin/bash
+
 RUN cp /usr/local/bin/bash /bin/bash
 
 
