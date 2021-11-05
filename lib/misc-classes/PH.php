@@ -114,6 +114,7 @@ class PH
     public static $ignoreDestructors = FALSE;
 
     public static $useExceptions = FALSE;
+    public static $doNotDisableExceptions = FALSE;
 
     public static $outputFormattingEnabled = TRUE;
 
@@ -272,12 +273,17 @@ class PH
      */
     static public function enableExceptionSupport()
     {
+        PH::$doNotDisableExceptions = FALSE;
+        if( PH::$useExceptions )
+            PH::$doNotDisableExceptions = TRUE;
+
         PH::$useExceptions = TRUE;
     }
 
     static public function disableExceptionSupport()
     {
-        PH::$useExceptions = FALSE;
+        if( !PH::$doNotDisableExceptions )
+            PH::$useExceptions = FALSE;
     }
 
 
