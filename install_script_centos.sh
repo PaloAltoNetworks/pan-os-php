@@ -48,7 +48,11 @@ echo "START \"update CENTOS\"" \
 && tar xvf bash-5.0.tar.gz \
 && cd bash-5.0 && ./configure && make && make install \
 && echo "" \
-&& cp /usr/local/bin/bash /bin/bash \
+&& ech "cp /usr/local/bin/bash /bin/bash" \
+&& echo "" \
+&& echo '/usr/local/bin/bash' >> /etc/shells \
+&& chsh -s /usr/local/bin/bash \
+&& echo "" \
 && echo "" \
 && echo "check if everything is successfully installed" \
 && php -r "require('lib/pan_php_framework.php');print \"PAN-OS-PHP LIBRARY - OK INSTALL SUCCESSFUL\n\";" \
