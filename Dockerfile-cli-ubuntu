@@ -1,6 +1,7 @@
 FROM ubuntu:20.04
 
 ARG php_var="7.4"
+ARG user_var="root"
 
 SHELL ["/bin/bash", "-c"]
 ENV DEBIAN_FRONTEND=noninteractive
@@ -26,8 +27,8 @@ RUN echo 'include_path = "/usr/share/php:/tools/pan-os-php"' >> /etc/php/$php_va
 RUN chmod -R 777 /tools/pan-os-php
 
 # UTIL alias for pan-os-php
-RUN cat /tools/pan-os-php/utils/alias.sh >> /root/.bashrc
-RUN cat /tools/pan-os-php/utils/bash_autocompletion/enable_bash.txt >> /root/.bashrc
+RUN cat /tools/pan-os-php/utils/alias.sh >> /$user_var/.bashrc
+RUN cat /tools/pan-os-php/utils/bash_autocompletion/enable_bash.txt >> /$user_var/.bashrc
 
 COPY utils/bash_autocompletion/pan-os-php.sh /usr/share/bash-completion/completions/pan-os-php
 

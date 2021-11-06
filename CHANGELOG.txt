@@ -12,6 +12,7 @@ UTILS:
 BUGFIX:
 * pa_securityprofile-edit | bugfix based on filter=(location is XYZ)
 * pa_service-merger | class Merger - bugfix for service-merger | variable not correctly declared
+* pa_address-edit | actions=replaceByMembersAndDelete add arguments [:keepGroupName] choices: tag, description
 
 GENERAL:
 
