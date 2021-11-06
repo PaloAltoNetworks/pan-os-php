@@ -396,6 +396,7 @@ RuleCallContext::$commonActionFunctions['calculate-zones'] = array(
 
                 foreach( $minus as $zone )
                     $zoneContainer->addZone($zoneContainer->parentCentralStore->findOrCreate($zone));
+
                 if( $context->isAPI )
                     $zoneContainer->API_sync();
             }
@@ -913,7 +914,7 @@ RuleCallContext::$supportedActions[] = array(
 
         #$f = RuleCallContext::$commonActionFunctions['calculate-zones']['function'];
         #$f($context, 'from');
-        $rule->zoneCalculation('from', $context->arguments['mode'], $context->arguments['virtualRouter'], $context->arguments['template'], $context->arguments['vsys']);
+        $rule->zoneCalculation('from', $context->arguments['mode'], $context->arguments['virtualRouter'], $context->arguments['template'], $context->arguments['vsys'], $context->isAPI);
 
     },
     'args' => & RuleCallContext::$commonActionFunctions['calculate-zones']['args'],
@@ -939,7 +940,7 @@ RuleCallContext::$supportedActions[] = array(
 
         #$f = RuleCallContext::$commonActionFunctions['calculate-zones']['function'];
         #$f($context, 'to');
-        $rule->zoneCalculation('to', $context->arguments['mode'], $context->arguments['virtualRouter'], $context->arguments['template'], $context->arguments['vsys']);
+        $rule->zoneCalculation('to', $context->arguments['mode'], $context->arguments['virtualRouter'], $context->arguments['template'], $context->arguments['vsys'], $context->isAPI);
     },
     'args' => & RuleCallContext::$commonActionFunctions['calculate-zones']['args'],
     'help' => & RuleCallContext::$commonActionFunctions['calculate-zones']['help']
