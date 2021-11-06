@@ -1023,12 +1023,21 @@ class AddressGroup
             return;
         }
 
+        if( $this->isDynamic() )
+        {
+            $string = "group is dynamic";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+
         if( $this->owner === null )
         {
             $string = "object was previously removed";
             PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
+
+        $keepgroupname = $context->arguments['keepgroupname'];
 
         $objectRefs = $this->getReferences();
         $clearForAction = TRUE;
@@ -1101,6 +1110,62 @@ class AddressGroup
                 }
 
             }
+
+            if( $keepgroupname !== "*nodefault*" )
+            {
+                foreach( $this->members() as $objectMember )
+                {
+                    if( $keepgroupname === "tag" )
+                    {
+                        //search for tag name like $this->name()
+                        //if not available create it
+
+                        if( $context->isAPI )
+                        {
+                            $objectFind = $objectMember->tags->parentCentralStore->find($this->name());
+                            if( $objectFind === null )
+                                $objectFind = $objectMember->tags->parentCentralStore->API_createTag($this->name());
+                        }
+                        else
+                            $objectFind = $objectMember->tags->parentCentralStore->findOrCreate($this->name());
+
+                        if( $context->isAPI )
+                            $objectMember->tags->API_addTag($objectFind);
+                        else
+                            $objectMember->tags->addTag($objectFind);
+                    }
+                    elseif( $keepgroupname === "description" )
+                    {
+                        $description = $objectMember->description();
+                        $textToAppend = " |".$this->name();
+                        if( $context->object->owner->owner->version < 71 )
+                            $max_length = 253;
+                        else
+                            $max_length = 1020;
+
+                        if( strlen($description) + strlen($textToAppend) > $max_length )
+                        {
+                            $string = "resulting description is too long";
+                            PH::ACTIONstatus( $context, "SKIPPED", $string );
+                            return;
+                        }
+
+                        $text = $context->padding . " - new description will be: '{$description}{$textToAppend}' ... ";
+
+                        if( $context->isAPI )
+                            $objectMember->API_setDescription($description . $textToAppend);
+                        else
+                            $objectMember->setDescription($description . $textToAppend);
+                        $text .= "OK";
+                        PH::ACTIONlog( $context, $text );
+                    }
+
+
+                    $string = "     -> {$objectMember->toString()}";
+                    PH::ACTIONlog( $context, $string );
+                }
+            }
+
 
             if( $isAPI )
                 $this->owner->API_remove($this, TRUE);

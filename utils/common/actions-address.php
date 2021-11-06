@@ -924,6 +924,16 @@ AddressCallContext::$supportedActions[] = array(
 
         $object->replaceByMembersAndDelete($context, $context->isAPI);
     },
+    'args' => array(
+        'keepgroupname' => array(
+            'type' => 'string',
+            'default' => '*nodefault*',
+            'choices' => array('tag', 'description'),
+            'help' =>
+                "- replaceByMembersAndDelete:tag -> create Tag with name from AddressGroup name and add to the object\n" .
+                "- replaceByMembersAndDelete:description -> create Tag with name from AddressGroup name and add to the object\n"
+        )
+    )
 );
 
 AddressCallContext::$supportedActions[] = array(
