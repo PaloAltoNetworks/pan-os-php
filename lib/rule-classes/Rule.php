@@ -697,7 +697,7 @@ class Rule
     }
 
 
-    function zoneCalculation($fromOrTo, $mode = "append", $virtualRouter = "*autodetermine*", $template_name = "*notPanorama*", $vsys_name = "*notPanorama*")
+    function zoneCalculation($fromOrTo, $mode = "append", $virtualRouter = "*autodetermine*", $template_name = "*notPanorama*", $vsys_name = "*notPanorama*", $isAPI = FALSE )
     {
         //DEFAULT settings:
         $mode_default = "append";
@@ -708,9 +708,6 @@ class Rule
 
         $padding = '     ';
         $cachedIPmapping = array();
-
-        //check how the get information if e.g. connector is available
-        $isAPI = FALSE;
 
 
         ////////////////////////
