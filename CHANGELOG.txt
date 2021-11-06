@@ -1,6 +1,14 @@
 CHANGELOG
 
-2.0.21
+2.0.22
+UTILS:
+
+BUGFIX:
+
+GENERAL:
+
+
+2.0.21 (20211106)
 UTILS:
 * pa_securityprofile-edit | extend class with threatException - display it with actions=display
 * pa_securityProfil-edit | introduce 'filter=( exception is.set) / (exception has XYZ)'
