@@ -4,6 +4,7 @@ CHANGELOG
 UTILS:
 
 BUGFIX:
+* pa_upload-config in=api://MGMT-IP/merged-config - bringing this feature back to specify tto download running-/merged-/candidate-config
 
 GENERAL:
 

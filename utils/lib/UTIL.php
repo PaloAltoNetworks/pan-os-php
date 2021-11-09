@@ -753,16 +753,16 @@ class UTIL
             PH::print_stdout( " - Downloading config from API... " );
 
 
-            if( !isset($configInput['filename']) || $configInput['filename'] == '' || $configInput['filename'] == 'candidate-config' )
+            if( !isset($this->configInput['filename']) || $this->configInput['filename'] == '' || $this->configInput['filename'] == 'candidate-config' )
                 $this->xmlDoc = $this->configInput['connector']->getCandidateConfig( $this->apiTimeoutValue );
-            elseif( $configInput['filename'] == 'running-config' )
+            elseif( $this->configInput['filename'] == 'running-config' )
                 $this->xmlDoc = $this->configInput['connector']->getRunningConfig();
-            elseif( $configInput['filename'] == 'merged-config' || $configInput['filename'] == 'merged' )
+            elseif( $this->configInput['filename'] == 'merged-config' || $this->configInput['filename'] == 'merged' )
                 $this->xmlDoc = $this->configInput['connector']->getMergedConfig();
-            elseif( $configInput['filename'] == 'panorama-pushed-config' || $configInput['filename'] == 'panorama-pushed' )
+            elseif( $this->configInput['filename'] == 'panorama-pushed-config' || $this->configInput['filename'] == 'panorama-pushed' )
                 $this->xmlDoc = $this->configInput['connector']->getPanoramaPushedConfig();
             else
-                $this->xmlDoc = $this->configInput['connector']->getSavedConfig($configInput['filename']);
+                $this->xmlDoc = $this->configInput['connector']->getSavedConfig($this->configInput['filename']);
 
         }
         else
