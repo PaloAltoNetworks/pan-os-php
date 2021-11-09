@@ -4,6 +4,8 @@ CHANGELOG
 UTILS:
 
 BUGFIX:
+* pa_upload-config in=api://MGMT-IP/merged-config - bringing this feature back to specify to download running-/merged-/candidate-config
+* framework class ObjStore - bugfix - extend validation about existing variable setting
 
 GENERAL:
 

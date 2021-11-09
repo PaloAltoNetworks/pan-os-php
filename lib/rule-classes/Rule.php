@@ -895,7 +895,7 @@ class Rule
 
                 PH::print_stdout( $padding . " - VSYS/DG '{$system->name()}' has interfaces attached to " . count($foundRouters) . " virtual routers" );
                 if( count($foundRouters) > 1 )
-                    derr("more than 1 suitable virtual routers found, please specify one fo the following: " . PH::list_to_string($foundRouters));
+                    derr("more than 1 suitable virtual routers found, please specify one of the following: " . PH::list_to_string($foundRouters));
                 if( count($foundRouters) == 0 )
                     derr("no suitable VirtualRouter found, please force one or check your configuration");
 
