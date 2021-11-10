@@ -586,6 +586,40 @@ var data = {
                 ]
             },
             {
+                "name": "name-addPrefix",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "text"
+                    },
+                    {
+                        "type": "bool",
+                        "default": "false",
+                        "help": "This bool is used to allow longer rule name for PAN-OS starting with version 8.1.",
+                        "name": "accept63characters"
+                    }
+                ]
+            },
+            {
+                "name": "name-addSuffix",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "text"
+                    },
+                    {
+                        "type": "bool",
+                        "default": "false",
+                        "help": "This bool is used to allow longer rule name for PAN-OS starting with version 8.1.",
+                        "name": "accept63characters"
+                    }
+                ]
+            },
+            {
                 "name": "name-Append",
                 "help": null,
                 "args": [
@@ -1456,7 +1490,18 @@ var data = {
             {
                 "name": "replaceByMembersAndDelete",
                 "help": null,
-                "args": false
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "choices": [
+                            "tag",
+                            "description"
+                        ],
+                        "help": "- replaceByMembersAndDelete:tag -> create Tag with name from AddressGroup name and add to the object\n- replaceByMembersAndDelete:description -> create Tag with name from AddressGroup name and add to the object\n",
+                        "name": "keepgroupname"
+                    }
+                ]
             },
             {
                 "name": "replaceWithObject",
@@ -1564,6 +1609,17 @@ var data = {
                         "type": "string",
                         "default": "*nodefault*",
                         "name": "objectName"
+                    }
+                ]
+            },
+            {
+                "name": "decommission",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "false",
+                        "name": "file"
                     }
                 ]
             },
@@ -1757,6 +1813,22 @@ var data = {
                         "type": "string",
                         "default": "*nodefault*",
                         "name": "objectName"
+                    }
+                ]
+            },
+            {
+                "name": "sourceport-delete",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "sourceport-set",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "sourceportValue"
                     }
                 ]
             },
@@ -2192,6 +2264,28 @@ var data = {
                 "args": false
             },
             {
+                "name": "exportToExcel",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "filename"
+                    },
+                    {
+                        "type": "pipeSeparatedList",
+                        "subtype": "string",
+                        "default": "*NONE*",
+                        "choices": [
+                            "WhereUsed",
+                            "UsedInLocation"
+                        ],
+                        "help": "pipe(|) separated list of additional fields (ie: Arg1|Arg2|Arg3...) to include in the report. The following is available:\n  - UsedInLocation : list locations (vsys,dg,shared) where object is used\n  - WhereUsed : list places where object is used (rules, groups ...)\n",
+                        "name": "additionalFields"
+                    }
+                ]
+            },
+            {
                 "name": "name-addPrefix",
                 "help": null,
                 "args": [
@@ -2580,6 +2674,11 @@ var data = {
                     },
                     {
                         "name": "has.nocase",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "has.recursive",
                         "help": null,
                         "argument": "*required*"
                     },
@@ -3624,7 +3723,7 @@ var data = {
                     },
                     {
                         "name": "regex",
-                        "help": null,
+                        "help": "possible variables to bring in as argument: $$value$$ \/ $$ipv4$$ \/ $$ipv6$$ \/ $$value.no-netmask$$ \/ $$netmask$$ \/ $$netmask.blank32$$",
                         "argument": "*required*"
                     }
                 ]
@@ -4044,6 +4143,42 @@ var data = {
                 "operators": [
                     {
                         "name": "is",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "sourceport.value",
+                "help": null,
+                "operators": [
+                    {
+                        "name": ">,<,=,!",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.comma.separated",
+                        "help": null,
+                        "argument": null
+                    },
+                    {
+                        "name": "is.port.range",
+                        "help": null,
+                        "argument": null
+                    },
+                    {
+                        "name": "is.single.port",
+                        "help": null,
+                        "argument": null
+                    },
+                    {
+                        "name": "regex",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "string.eq",
                         "help": null,
                         "argument": "*required*"
                     }
@@ -4473,6 +4608,22 @@ var data = {
                         "name": "has",
                         "help": null,
                         "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "exception",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "has",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.set",
+                        "help": null,
+                        "argument": null
                     }
                 ]
             },

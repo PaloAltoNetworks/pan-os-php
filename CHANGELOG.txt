@@ -2,6 +2,7 @@ CHANGELOG
 
 2.0.22
 UTILS:
+* pa_rule-edit - get back actions=user-add:USER / user-remove:USER / user-set-any for PAN-OS API mode
 
 BUGFIX:
 * pa_upload-config in=api://MGMT-IP/merged-config - bringing this feature back to specify to download running-/merged-/candidate-config

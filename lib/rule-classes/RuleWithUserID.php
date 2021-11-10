@@ -138,6 +138,8 @@ class RuleWithUserID extends Rule
         $this->_users[] = $newUser;
 
         DH::Hosts_to_xmlDom($tmpRoot, $this->_users, 'member', FALSE, 'any', FALSE);
+
+        return true;
     }
 
     function userID_removeUser($newUser)
@@ -152,6 +154,8 @@ class RuleWithUserID extends Rule
             return FALSE;
 
         DH::Hosts_to_xmlDom($tmpRoot, $this->_users, 'member', FALSE, 'any', FALSE);
+
+        return true;
     }
 
     function userID_setany()
@@ -161,6 +165,63 @@ class RuleWithUserID extends Rule
         $this->_users = array();
 
         DH::Hosts_to_xmlDom($tmpRoot, $this->_users, 'member', FALSE, 'any', FALSE);
+
+        return true;
     }
 
+    //Todo:
+    function API_userID_addUser($newUser)
+    {
+        $ret = $this->userID_addUser($newUser);
+
+        if( $ret )
+        {
+            $xpath = $this->getXPath() . '/source-user';
+            $con = findConnectorOrDie($this);
+
+            //$con->sendEditRequest($xpath, '<source-user><member>' . $newUser . '</member></source-user>');
+            $con->sendSetRequest($xpath, "<member>$newUser</member>");
+        }
+
+        return $ret;
+    }
+
+    function API_userID_removeUser($newUser)
+    {
+        $ret = $this->userID_removeUser($newUser);
+
+        if( $ret )
+        {
+            //Todo: continue here how do rewrite this source-user part?
+            $xpath = $this->getXPath() . '/source-user';
+            $con = findConnectorOrDie($this);
+
+
+            if( $this->userID_count() < 1 )
+            {
+                #$con->sendEditRequest($xpath, $this->getXmlText_inline());
+                $con->sendEditRequest($xpath, '<source-user><member>any</member></source-user>');
+                return TRUE;
+            }
+
+
+            $xpath = $xpath . "/member[text()='" . $newUser . "']";
+            $con->sendDeleteRequest($xpath);
+        }
+    }
+
+    function API_userID_setany()
+    {
+        $ret = $this->userID_setany();
+
+        if( $ret )
+        {
+            $xpath = $this->getXPath() . '/source-user';
+            $con = findConnectorOrDie($this);
+
+            $con->sendEditRequest($xpath, '<source-user><member>any</member></source-user>');
+        }
+
+        return $ret;
+    }
 }

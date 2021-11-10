@@ -1185,6 +1185,8 @@ class UTIL
                         $this->objectsToProcess[] = array('store' => $this->pan->threatStore, 'objects' => $this->pan->threatStore->getAll());
 
                     $locationFound = TRUE;
+                    //Todo: check if needed
+                    //self::GlobalInitAction($this->pan);
                 }
                 foreach( $this->pan->getVirtualSystems() as $sub )
                 {
@@ -1204,6 +1206,7 @@ class UTIL
                             $this->objectsToProcess[] = array('store' => $sub->appStore, 'objects' => $sub->appStore->resultingObjectSet());
 
                         $locationFound = TRUE;
+                        self::GlobalInitAction($sub);
                     }
                     elseif( ($location == 'any' || $location == $sub->name() && !isset($ruleStoresToProcess[$sub->name()])) )
                     {
@@ -1222,11 +1225,12 @@ class UTIL
 
 
                         $locationFound = TRUE;
+                        self::GlobalInitAction($sub);
                     }
                     #}
 
 
-                    self::GlobalInitAction($sub);
+
                 }
             }
             else
@@ -1297,9 +1301,8 @@ class UTIL
                             $this->objectsToProcess[] = array('store' => $sub->appStore, 'objects' => $sub->appStore->apps());
                         
                         $locationFound = TRUE;
+                        $this->GlobalInitAction($sub);
                     }
-
-                    $this->GlobalInitAction($sub);
                 }
             }
 

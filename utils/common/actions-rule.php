@@ -2680,7 +2680,8 @@ RuleCallContext::$supportedActions[] = array(
             'help' =>
                 "This bool is used to allow longer rule name for PAN-OS starting with version 8.1."
         )
-    )
+    ),
+    'deprecated' => 'this action "name-Prepend" is deprecated, you should use "name-addPrefix" instead!'
 );
 RuleCallContext::$supportedActions[] = array(
     'name' => 'name-Append',
@@ -2700,6 +2701,123 @@ RuleCallContext::$supportedActions[] = array(
                 $string = "because new name '{$newName}' is too long" ;
             PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
+            }
+        }
+
+        if( !$rule->owner->isRuleNameAvailable($newName) )
+        {
+            $string = "because name '{$newName}' is not available" ;
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+
+        $string = "new name will be '{$newName}'";
+        PH::ACTIONlog( $context, $string );
+
+        if( $context->isAPI )
+        {
+            $rule->API_setName($newName);
+        }
+        else
+        {
+            $rule->setName($newName);
+        }
+    },
+    'GlobalFinishFunction' => function (RuleCallContext $context) {
+        if( $context->object->owner->owner->version > 80 && !$context->object->owner->owner->isFirewall() && $context->arguments['accept63characters'] )
+        {
+            $string = PH::boldText("\nPanorama PAN-OS version 8.1 allow rule name >31 and <63 characters.\n" .
+                "Please be aware that there is no validation available if DeviceGroup is connected to a firewall running PAN-OS <8.1.\n" .
+                "If DG connected Firewall is PAN-OS version <8.1, Panorama push to device will fail with an error message.");
+            PH::ACTIONlog( $context, $string );
+        }
+    },
+    'args' => array('text' => array('type' => 'string', 'default' => '*nodefault*'),
+        'accept63characters' => array(
+            'type' => 'bool',
+            'default' => 'false',
+            'help' =>
+                "This bool is used to allow longer rule name for PAN-OS starting with version 8.1."
+        )
+    ),
+    'deprecated' => 'this action "name-Append" is deprecated, you should use "name-addSuffix" instead!'
+);
+RuleCallContext::$supportedActions[] = array(
+    'name' => 'name-addPrefix',
+    'MainFunction' => function (RuleCallContext $context) {
+        $rule = $context->object;
+
+        $newName = $context->rawArguments['text'] . $rule->name();
+
+        if( strlen($newName) > 31 )
+        {
+            if( $context->object->owner->owner->version > 80 && strlen($newName) <= 63 && $context->arguments['accept63characters'] )
+            {
+                //do nothing
+            }
+            else
+            {
+                $string = "because new name '{$newName}' is too long" ;
+                PH::ACTIONstatus( $context, "SKIPPED", $string );
+                return;
+            }
+        }
+
+        if( !$rule->owner->isRuleNameAvailable($newName) )
+        {
+            $string = "because name '{$newName}' is not available" ;
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+
+        $string = "new name will be '{$newName}'" ;
+        PH::ACTIONlog( $context, $string );
+
+        if( $context->isAPI )
+        {
+            $rule->API_setName($newName);
+        }
+        else
+        {
+            $rule->setName($newName);
+        }
+    },
+    'GlobalFinishFunction' => function (RuleCallContext $context) {
+        if( $context->object->owner->owner->version > 80 && !$context->object->owner->owner->isFirewall() && $context->arguments['accept63characters'] )
+        {
+            $string = PH::boldText("Panorama PAN-OS version 8.1 allow rule name >31 and <63 characters.\n" .
+                "Please be aware that there is no validation available if DeviceGroup is connected to a firewall running PAN-OS <8.1.\n" .
+                "If DG connected Firewall is PAN-OS version <8.1, Panorama push to device will fail with an error message.");
+            PH::ACTIONlog( $context, $string );
+        }
+    },
+    'args' => array('text' => array('type' => 'string', 'default' => '*nodefault*'),
+        'accept63characters' => array(
+            'type' => 'bool',
+            'default' => 'false',
+            'help' =>
+                "This bool is used to allow longer rule name for PAN-OS starting with version 8.1."
+        )
+    )
+);
+RuleCallContext::$supportedActions[] = array(
+    'name' => 'name-addSuffix',
+    'MainFunction' => function (RuleCallContext $context) {
+        $rule = $context->object;
+
+        $newName = $rule->name() . $context->rawArguments['text'];
+
+        if( strlen($newName) > 31 )
+        {
+            if( $context->object->owner->owner->version > 80 && strlen($newName) <= 63 && $context->arguments['accept63characters'] )
+            {
+                //do nothing
+            }
+            else
+            {
+                $string = "because new name '{$newName}' is too long" ;
+                PH::ACTIONstatus( $context, "SKIPPED", $string );
+                return;
             }
         }
 
@@ -3728,10 +3846,7 @@ RuleCallContext::$supportedActions[] = Array(
         }
 
         if( $context->isAPI )
-        {
-            #$rule->API_setUser($context->arguments['userName']);
-            derr("user-add via API not available yet");
-        }
+            $rule->API_userID_addUser($context->arguments['userName']);
         else
             $rule->userID_addUser($context->arguments['userName']);
     },
@@ -3751,10 +3866,7 @@ RuleCallContext::$supportedActions[] = Array(
         }
 
         if( $context->isAPI )
-        {
-            #$rule->API_setUser($context->arguments['userName']);
-            derr("user-add via API not available yet");
-        }
+            $rule->API_userID_removeUser($context->arguments['userName']);
         else
             $rule->userID_removeUser($context->arguments['userName']);
 
@@ -3785,10 +3897,7 @@ RuleCallContext::$supportedActions[] = Array(
         }
 
         if( $context->isAPI )
-        {
-            #$rule->API_setUser($context->arguments['userName']);
-            derr("user-add via API not available yet");
-        }
+            $rule->API_userID_setany();
         else
             $rule->userID_setany();
 

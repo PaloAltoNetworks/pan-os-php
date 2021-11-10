@@ -11,7 +11,7 @@ It will work seamlessly on local config file or API.
 Windows package with PHP binaries here: [Git PAN-OS-PHP Windows Package](https://github.com/PaloAltoNetworks/pan-os-php-windows-package)
 
 **Requirements** :
- - PHP 7.4 with curl module [ already tested with PHP 8.0.11 ]
+ - PHP 7.4 with curl module [ tested with PHP 5.5 / 5.6 / 7.3 / 7.4 / 8.0 ]
  - php-curl php-dom php-mbstring php-bcmath
 
 **Usage**: include the file lib/pan_php_framework.php in your own script to load the necessary classes.
