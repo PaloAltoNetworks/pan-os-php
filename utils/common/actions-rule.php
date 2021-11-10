@@ -3846,10 +3846,7 @@ RuleCallContext::$supportedActions[] = Array(
         }
 
         if( $context->isAPI )
-        {
-            #$rule->API_setUser($context->arguments['userName']);
-            derr("user-add via API not available yet");
-        }
+            $rule->API_userID_addUser($context->arguments['userName']);
         else
             $rule->userID_addUser($context->arguments['userName']);
     },
@@ -3869,10 +3866,7 @@ RuleCallContext::$supportedActions[] = Array(
         }
 
         if( $context->isAPI )
-        {
-            #$rule->API_setUser($context->arguments['userName']);
-            derr("user-add via API not available yet");
-        }
+            $rule->API_userID_removeUser($context->arguments['userName']);
         else
             $rule->userID_removeUser($context->arguments['userName']);
 
@@ -3903,10 +3897,7 @@ RuleCallContext::$supportedActions[] = Array(
         }
 
         if( $context->isAPI )
-        {
-            #$rule->API_setUser($context->arguments['userName']);
-            derr("user-add via API not available yet");
-        }
+            $rule->API_userID_setany();
         else
             $rule->userID_setany();
 

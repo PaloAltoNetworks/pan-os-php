@@ -1085,7 +1085,7 @@ class SecurityRule extends RuleWithUserID
         else
         {
             $users = $this->userID_getUsers();
-            $text .= $padding . "  User:  " . PH::list_to_string($users) . "";
+            $text .= $padding . "  User:  '" . PH::list_to_string($users, " | ") . "'";
             foreach( $users as $user )
                 PH::$JSON_TMP['sub']['object'][$this->name()]['user'][] = $user;
         }
