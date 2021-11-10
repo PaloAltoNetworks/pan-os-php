@@ -391,7 +391,7 @@ class PanAPIConnector
                 {
                     PH::$useExceptions = $exceptionUse;
 
-                    if( $host != "bpa-apikey" && $host != "license-apikey" )
+                    if( $host != "bpa-apikey" && $host != "license-apikey" && $host != "ldap-password" )
                     {
                         $wrongLogin = TRUE;
                         if( strpos($e->getMessage(), "Invalid credentials.") === FALSE )
@@ -424,7 +424,7 @@ class PanAPIConnector
 
             if( $cliUSER === null )
             {
-                PH::print_stdout( " ** Please enter API key or username below and hit enter:  " );
+                PH::print_stdout( " ** Please enter API key or username [or ldap password] below and hit enter:  " );
                 $handle = fopen("php://stdin", "r");
                 $line = fgets($handle);
                 $apiKey = trim($line);
@@ -436,7 +436,7 @@ class PanAPIConnector
             }
 
 
-            if( strlen($apiKey) < 19 )
+            if( strlen($apiKey) < 19 && !( $host == "bpa-apikey" || $host == "license-apikey" || $host == "ldap-password" ) )
             {
                 $user = $apiKey;
 
@@ -484,7 +484,7 @@ class PanAPIConnector
                 $connector = new PanAPIConnector($host, $apiKey, 'panos', null, $port);
         }
 
-        if( $host == "bpa-apikey" || $host == "license-apikey" )
+        if( $host == "bpa-apikey" || $host == "license-apikey" || $host == "ldap-password" )
         {
             $checkConnectivity = false;
             self::$savedConnectors[] = $connector;

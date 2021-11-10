@@ -13,7 +13,8 @@ class KEYMANGER extends UTIL
     Examples:
             
     - php " . basename(__FILE__) . " add=license-apikey apikey=[ your personal company license API key account can be found via https://support.paloaltonetworks.com -> Assets -> API key management - only super user can see this ]
-    - php " . basename(__FILE__) . " add=bpa-apikey apikey=[ PAN-OS BPA can be request via: bpa@paloaltonetworks.com ]";
+    - php " . basename(__FILE__) . " add=bpa-apikey apikey=[ PAN-OS BPA can be request via: bpa@paloaltonetworks.com ] 
+    - php " . basename(__FILE__) . " add=ldap-password apikey=[ LDAP password to interact with organisational ldap server ]";
 
         $this->prepareSupportedArgumentsArray();
         PH::processCliArgs();
@@ -113,7 +114,7 @@ class KEYMANGER extends UTIL
             PH::$JSON_TMP['header'] = $string;
             PH::$JSON_TMP[$addHost]['name'] = $addHost;
 
-            if( $addHost == "bpa-apikey" || $addHost == "license-apikey" )
+            if( $addHost == "bpa-apikey" || $addHost == "license-apikey" || $addHost == "ldap-password" )
             {
                 if( !isset(PH::$args['apikey']) )
                     derr( "argument apikey - must be set to add BPA-/License-APIkey" );
@@ -121,9 +122,9 @@ class KEYMANGER extends UTIL
                 PanAPIConnector::$savedConnectors[] = new PanAPIConnector($addHost, PH::$args['apikey']);
                 PanAPIConnector::saveConnectorsToUserHome();
 
-                PH::print_stdout( "" );
-                PH::print_stdout( "adding 'BPA-/License-APIkey' to .panconfkeystore not implemented yet" );
-                PH::print_stdout( "" );
+                #PH::print_stdout( "" );
+                #PH::print_stdout( "adding 'BPA-/License-APIkey' to .panconfkeystore not implemented yet" );
+                #PH::print_stdout( "" );
             }
             else
             {

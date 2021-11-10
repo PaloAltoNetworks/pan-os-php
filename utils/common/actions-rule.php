@@ -3903,6 +3903,185 @@ RuleCallContext::$supportedActions[] = Array(
 
     }
 );
+RuleCallContext::$supportedActions[] = Array(
+    'name' => 'user-check-ldap',
+    'GlobalInitFunction' => function(RuleCallContext $context)
+    {
+        $context->first = true;
+        $context->end = true;
+    },
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $filtercriteria = $context->arguments['filtercriteria'];
+
+        if( $context->first )
+        {
+            $context->justthese = array("ou", "sn", "cn", "givenname", "mail", $filtercriteria);
+            #$context->dn = "OU=PAN,DC=paloaltonetworks,DC=local";
+            $context->dn = str_replace( ";", ",", $context->arguments['dn'] );
+
+
+            $ldapUser = $context->arguments['ldapUser'];
+
+            //check if available via .panconfigkeystore
+            $connector = PanAPIConnector::findOrCreateConnectorFromHost( 'ldap-password' );
+            $ldapPassword = $connector->apikey;
+
+            $ldapServer = $context->arguments['ldapServer'];
+
+
+            $context->ldapconn = ldap_connect( $ldapServer )
+            or die("Could not connect to LDAP server.");
+
+            if ($context->ldapconn)
+            {
+                $context->ldapbind = ldap_bind($context->ldapconn, $ldapUser, $ldapPassword);
+                if( !$context->ldapbind )
+                    derr( "LDAP connection not working" );
+            }
+            $context->first = false;
+        }
+
+        /*
+         * @var securityRule $rule
+         */
+        $rule = $context->object;
+
+        if( !$rule->isSecurityRule() )
+            return false;
+
+        $users = $rule->userID_getUsers();
+
+        foreach( $users as $user )
+        {
+            $needle = "//PERSON//";
+
+            $filter = "(|(".$filtercriteria."=".$needle."))";
+            if( strpos( $user, "\\" ) !== FALSE )
+            {
+                $dn = $context->dn;
+                $users = array( $user);
+            }
+            else
+            {
+                $dn = $user;
+                $users = array( );
+            }
+
+            if( count($users) > 0 )
+            {
+                foreach($users as $person)
+                {
+                    $domain_counter = explode( "\\", $person );
+                    if( count( $domain_counter ) > 1 )
+                        $person = $domain_counter[1];
+
+                    if( strpos( $filter, $needle ) )
+                        $filter = str_replace( $needle, $person, $filter );
+
+                    $sr=ldap_search( $context->ldapconn, $dn, $filter, $context->justthese);
+                    $info = ldap_get_entries($context->ldapconn, $sr);
+                }
+            }
+            else
+            {
+                if( strpos( $filter, $needle ) )
+                    $filter = str_replace( $needle, "*", $filter );
+
+                try
+                {
+                    PH::enableExceptionSupport();
+                    $sr=ldap_search( $context->ldapconn, $dn, $filter, $context->justthese);
+                    $info = ldap_get_entries($context->ldapconn, $sr);
+                }
+                catch (Exception $e)
+                {
+                    $info['count'] = 0;
+                    PH::disableExceptionSupport();
+                }
+            }
+
+            if( $info['count'] === 0 )
+                $response = false;
+            else
+                $response = true;
+
+            if( $response === null )
+                PH::print_stdout( "something went wrong with LDAP connection" );
+
+            if( !$response )
+            {
+                $string = "     - user not available: ";
+                if( count($users) > 0 )
+                    $remove_user = $users[0];
+                else
+                    $remove_user = $dn;
+
+                $string .= "'".$remove_user."'";
+                PH::print_stdout( $string );
+
+
+                if( $context->arguments['actionType'] === "remove" )
+                {
+                    PH::print_stdout( "        - removed" );
+
+                    if( !$rule->isSecurityRule() )
+                    {
+                        $string = "this is not a Security rule";
+                        PH::ACTIONstatus( $context, "SKIPPED", $string );
+                        return;
+                    }
+
+                    if( $context->isAPI )
+                    {
+                        $rule->API_userID_removeUser($remove_user);
+                    }
+                    else
+                        $rule->userID_removeUser( $remove_user );
+
+                    if( $rule->userID_count() < 1 )
+                    {
+                        $string = "no USER objects remaining so the Rule will be disabled...";
+                        PH::ACTIONlog( $context, $string );
+
+                        if( $context->isAPI )
+                            $rule->API_setDisabled(TRUE);
+                        else
+                            $rule->setDisabled(TRUE);
+                    }
+                }
+            }
+            else
+            {
+                //User available - response needed
+                /*
+                print "available: ".$dn;
+                if( count($users) > 0 )
+                    print " - USER: ".implode(",", $users);
+
+                print "\n";
+                */
+            }
+        }
+    },
+    'GlobalFinishFunction' => function(RuleCallContext $context)
+    {
+        if( $context->end )
+        {
+            ldap_close($context->ldapconn);
+            $context->end = false;
+        }
+
+    },
+
+    'args' => Array(
+        'actionType' => Array( 'type' => 'string', 'default' => 'show' ),
+        'ldapUser' => Array( 'type' => 'string', 'default' => '*nodefault*' ),
+        'ldapServer' => Array( 'type' => 'string', 'default' => '*nodefault*' ),
+        'dn' => Array( 'type' => 'string', 'default' => 'OU=TEST;DC=domain;DC=local' ),
+        'filtercriteria' => Array( 'type' => 'string', 'default' => 'mailNickname' ),
+    ),
+);
 
 //                                                   //
 //                HIP Based Actions     //
