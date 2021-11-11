@@ -3913,6 +3913,7 @@ RuleCallContext::$supportedActions[] = Array(
     'MainFunction' => function(RuleCallContext $context)
     {
         $filtercriteria = $context->arguments['filtercriteria'];
+        $existentUser = $context->arguments['existentUser'];
 
         if( $context->first )
         {
@@ -4009,9 +4010,20 @@ RuleCallContext::$supportedActions[] = Array(
             if( $response === null )
                 PH::print_stdout( "something went wrong with LDAP connection" );
 
-            if( !$response )
+            $display = false;
+            if( !$response && !$existentUser)
             {
-                $string = "     - user not available: ";
+                $display = true;
+                $display_string = "     - user not available: ";
+            }
+            elseif( $response && $existentUser )
+            {
+                $display = true;
+                $display_string = "     - user available: ";
+            }
+            if( $display )
+            {
+                $string = $display_string;
                 if( count($users) > 0 )
                     $remove_user = $users[0];
                 else
@@ -4051,17 +4063,6 @@ RuleCallContext::$supportedActions[] = Array(
                     }
                 }
             }
-            else
-            {
-                //User available - response needed
-                /*
-                print "available: ".$dn;
-                if( count($users) > 0 )
-                    print " - USER: ".implode(",", $users);
-
-                print "\n";
-                */
-            }
         }
     },
     'GlobalFinishFunction' => function(RuleCallContext $context)
@@ -4080,6 +4081,7 @@ RuleCallContext::$supportedActions[] = Array(
         'ldapServer' => Array( 'type' => 'string', 'default' => '*nodefault*' ),
         'dn' => Array( 'type' => 'string', 'default' => 'OU=TEST;DC=domain;DC=local' ),
         'filtercriteria' => Array( 'type' => 'string', 'default' => 'mailNickname' ),
+        'existentUser' => Array( 'type' => 'bool', 'default' => 'false' ),
     ),
 );
 
