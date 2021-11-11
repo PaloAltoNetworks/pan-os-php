@@ -424,6 +424,8 @@ class PanAPIConnector
 
             if( $cliUSER === null )
             {
+                if( PH::$shadow_json )
+                    derr( "API key not available: please first use 'pa_key-manager add=".$host."'" );
                 PH::print_stdout( " ** Please enter API key or username [or ldap password] below and hit enter:  " );
                 $handle = fopen("php://stdin", "r");
                 $line = fgets($handle);
