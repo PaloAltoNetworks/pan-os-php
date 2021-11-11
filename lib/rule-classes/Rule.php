@@ -777,9 +777,55 @@ class Rule
                     {
                         $panoramaConnector = findConnector($system);
                         $connector = new PanAPIConnector($panoramaConnector->apihost, $panoramaConnector->apikey, 'panos-via-panorama', $_tmp_explTemplateName[1]);
+                        $connector->setShowApiCalls( $panoramaConnector->showApiCalls );
+
                         $firewall->connector = $connector;
                         $doc = $connector->getMergedConfig();
                         $firewall->load_from_domxml($doc);
+
+
+
+                        //Todo: for dynamic routing information:
+                        $cmd = "<show><routing><route><virtual-router>".$virtualRouter."</virtual-router></route></routing></show>";
+                        $res = $connector->sendOpRequest($cmd, TRUE);
+
+                        $res = DH::findFirstElement( "result", $res);
+                        $entries = $res->getElementsByTagName('entry');
+
+                        /** @var VirtualRouter $vr */
+                        $tmp_vr = $firewall->network->virtualRouterStore->findVirtualRouter( $virtualRouter );
+
+                        foreach( $entries as $key => $child )
+                        {
+                            $destination = DH::findFirstElement( "destination", $child)->textContent;
+                            $nexthop = DH::findFirstElement( "nexthop", $child)->textContent;
+                            $metric = DH::findFirstElement( "metric", $child)->textContent;
+                            $interface = DH::findFirstElement( "interface", $child)->textContent;
+                            $routeTable = DH::findFirstElement( "route-table", $child)->textContent;
+
+                            if( $routeTable != "unicast" )
+                                continue;
+
+                            if( $interface !== "" )
+                                $xml_interface = "<interface>" . $interface . "</interface>";
+
+                            $routename = "RouteAPI_" . $key;
+                            $checkIP = explode( "/", $destination);
+
+                            if(filter_var($checkIP[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4))
+                                $xmlString = "<entry name=\"" . $routename . "\"><nexthop><ip-address>" . $nexthop . "</ip-address></nexthop><metric>" . $metric . "</metric>" . $xml_interface . "<destination>" . $destination . "</destination></entry>";
+                            elseif(filter_var($checkIP[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6))
+                                $xmlString = "<entry name=\"" . $routename . "\"><nexthop><ipv6-address>" . $nexthop . "</ipv6-address></nexthop><metric>" . $metric . "</metric>" . $xml_interface . "<destination>" . $destination . "</destination></entry>";
+
+                            $newRoute = new StaticRoute('***tmp**', $tmp_vr);
+                            $tmpRoute = $newRoute->create_staticroute_from_xml($xmlString);
+
+                            if(filter_var($checkIP[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4))
+                                $tmp_vr->addstaticRoute($tmpRoute);
+                            elseif(filter_var($checkIP[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6))
+                                $tmp_vr->addstaticRoute($tmpRoute, 'ipv6');
+                        }
+
                         unset($connector);
                     }
                     elseif( strtolower($_tmp_explTemplateName[0]) == 'file' )
