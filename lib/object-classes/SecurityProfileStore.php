@@ -80,11 +80,12 @@ class SecurityProfileStore extends ObjStore
         $this->name = self::$storeNameByType[$this->type]['name'];
 
 
-        if( isset($owner->parentDeviceGroup) && $owner->parentDeviceGroup !== null )
+        if( isset($owner->parentDeviceGroup) && $owner->parentDeviceGroup !== null && isset( $owner->parentDeviceGroup->$profileType ))
         {
+            print "NAME: ".$owner->parentDeviceGroup->name()."\n";
             $this->parentCentralStore = $owner->parentDeviceGroup->$profileType;
         }
-        elseif( isset($owner->parentContainer) && $owner->parentContainer !== null )
+        elseif( isset($owner->parentContainer) && $owner->parentContainer !== null && isset( $owner->parentContainer->$profileType ))
         {
             $this->parentCentralStore = $owner->parentContainer->$profileType;
         }
