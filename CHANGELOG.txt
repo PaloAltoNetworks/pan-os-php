@@ -5,6 +5,7 @@ UTILS:
 * pa_rule-edit - get back actions=user-add:USER / user-remove:USER / user-set-any for PAN-OS API mode
 * pa_rule-edit | introduce actions=user-check-ldap:show,LDAPuser,LDAPserver,OU=XYZ;DC=domain;DC=local,OUfilter
 * pa_rule-edit | actions=user-check-ldap - extend to check if user is existent in a specific LDAP group e.g. disabled
+* pa_rule-edit | actions=user-check-ldap - extend help
 
 BUGFIX:
 * pa_upload-config in=api://MGMT-IP/merged-config - bringing this feature back to specify to download running-/merged-/candidate-config

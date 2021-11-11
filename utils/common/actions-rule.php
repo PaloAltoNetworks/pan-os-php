@@ -4076,12 +4076,19 @@ RuleCallContext::$supportedActions[] = Array(
     },
 
     'args' => Array(
-        'actionType' => Array( 'type' => 'string', 'default' => 'show' ),
-        'ldapUser' => Array( 'type' => 'string', 'default' => '*nodefault*' ),
-        'ldapServer' => Array( 'type' => 'string', 'default' => '*nodefault*' ),
-        'dn' => Array( 'type' => 'string', 'default' => 'OU=TEST;DC=domain;DC=local' ),
-        'filtercriteria' => Array( 'type' => 'string', 'default' => 'mailNickname' ),
-        'existentUser' => Array( 'type' => 'bool', 'default' => 'false' ),
+        'actionType' => Array( 'type' => 'string', 'default' => 'show',
+            'help' => "'show' and 'remove' are supported."
+            ),
+        'ldapUser' => Array( 'type' => 'string', 'default' => '*nodefault*',
+            'help' => "define LDAP user for authentication to server" ),
+        'ldapServer' => Array( 'type' => 'string', 'default' => '*nodefault*',
+            'help' => "LDAP server fqdn / IP" ),
+        'dn' => Array( 'type' => 'string', 'default' => 'OU=TEST;DC=domain;DC=local',
+            'help' => "full OU to an LDAP part, sparated with ';' - this is a specific setting" ),
+        'filtercriteria' => Array( 'type' => 'string', 'default' => 'mailNickname',
+            'help' => "Domain\username - specify the search filter criteria where your Security Rule defined user name can be found in LDAP" ),
+        'existentUser' => Array( 'type' => 'bool', 'default' => 'false',
+            'help' => "users no longer available in LDAP => false | users available in LDAP => true, e.g. if users are disabled and available in a specific LDAP group" ),
     ),
 );
 
