@@ -727,6 +727,8 @@ class PANConf
         $gTagCount = $this->tagStore->count();
         $gTagUnusedCount = $this->tagStore->countUnused();
 
+
+
         foreach( $this->virtualSystems as $vsys )
         {
 
@@ -754,6 +756,34 @@ class PANConf
 
             $gTagCount += $vsys->tagStore->count();
             $gTagUnusedCount += $vsys->tagStore->countUnused();
+
+            if( isset(PH::$args['loadpanoramapushedconfig']) )
+            {
+                $numSecRules += $vsys->parentDeviceGroup->securityRules->count();
+                $numNatRules += $vsys->parentDeviceGroup->natRules->count();
+                $numQosRules += $vsys->parentDeviceGroup->qosRules->count();
+                $numPbfRules += $vsys->parentDeviceGroup->pbfRules->count();
+                $numDecryptRules += $vsys->parentDeviceGroup->decryptionRules->count();
+                $numAppOverrideRules += $vsys->parentDeviceGroup->appOverrideRules->count();
+                $numCaptivePortalRules += $vsys->parentDeviceGroup->captivePortalRules->count();
+                $numAuthenticationRules += $vsys->parentDeviceGroup->authenticationRules->count();
+                $numDosRules += $vsys->parentDeviceGroup->dosRules->count();
+
+                $gnservices += $vsys->parentDeviceGroup->serviceStore->countServices();
+                $gnservicesUnused += $vsys->parentDeviceGroup->serviceStore->countUnusedServices();
+                $gnserviceGs += $vsys->parentDeviceGroup->serviceStore->countServiceGroups();
+                $gnserviceGsUnused += $vsys->parentDeviceGroup->serviceStore->countUnusedServiceGroups();
+                $gnTmpServices += $vsys->parentDeviceGroup->serviceStore->countTmpServices();
+
+                $gnaddresss += $vsys->parentDeviceGroup->addressStore->countAddresses();
+                $gnaddresssUnused += $vsys->parentDeviceGroup->addressStore->countUnusedAddresses();
+                $gnaddressGs += $vsys->parentDeviceGroup->addressStore->countAddressGroups();
+                $gnaddressGsUnused += $vsys->parentDeviceGroup->addressStore->countUnusedAddressGroups();
+                $gnTmpAddresses += $vsys->parentDeviceGroup->addressStore->countTmpAddresses();
+
+                $gTagCount += $vsys->parentDeviceGroup->tagStore->count();
+                $gTagUnusedCount += $vsys->parentDeviceGroup->tagStore->countUnused();
+            }
 
         }
 

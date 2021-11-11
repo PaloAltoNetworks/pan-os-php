@@ -1485,7 +1485,8 @@ class UTIL
             $processedLocations = array();
             foreach( $this->objectsToProcess as &$record )
             {
-                if( get_class($record['store']->owner) != 'PanoramaConf' && get_class($record['store']->owner) != 'PANConf' )
+
+                if( (get_class($record['store']->owner) != 'PanoramaConf' && get_class($record['store']->owner) != 'PANConf') )
                 {
                     /** @var DeviceGroup|VirtualSystem|Container|DeviceCloud $sub */
                     $sub = $record['store']->owner;
@@ -1495,6 +1496,9 @@ class UTIL
                     $processedLocations[$sub->name()] = TRUE;
 
                     $sub->display_statistics();
+
+                    if( isset(PH::$args['loadpanoramapushedconfig']) )
+                        $sub->parentDeviceGroup->display_statistics();
                 }
             }
         }

@@ -12,6 +12,7 @@ BUGFIX:
 * framework class ObjStore - bugfix - extend validation about existing variable setting
 * framework class RuleStore | bugfix for Fawkes Container / DeviceCloud
 * framework class PanAPIConnector - bugfix if PAN-OS API mode and API key is not available in combination with argument shadow-json
+* pa_rule-stats | bugfix to display all object if argument loadpanoramapushedconfig is used
 
 GENERAL:
 
