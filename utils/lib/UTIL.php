@@ -1495,10 +1495,12 @@ class UTIL
 
                     $processedLocations[$sub->name()] = TRUE;
 
-                    $sub->display_statistics();
-
                     if( isset(PH::$args['loadpanoramapushedconfig']) )
                         $sub->parentDeviceGroup->display_statistics();
+                    
+                    $sub->display_statistics();
+
+
                 }
             }
         }
