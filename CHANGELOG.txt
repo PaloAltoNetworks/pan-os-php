@@ -7,6 +7,7 @@ UTILS:
 * pa_rule-edit | actions=user-check-ldap - extend to check if user is existent in a specific LDAP group e.g. disabled
 * pa_rule-edit | actions=user-check-ldap - extend help
 * pa_rule-edit - enhancement for actions=from-/to-calculate-zones - if template is set to api@SERIAL - now full routing table incl. dynamic routing is used for zone calculation
+* class UTIL - extend method locationNotFound for JSON response
 
 BUGFIX:
 * pa_upload-config in=api://MGMT-IP/merged-config - bringing this feature back to specify to download running-/merged-/candidate-config
@@ -16,6 +17,7 @@ BUGFIX:
 * pa_rule-stats | bugfix to display all object if argument loadpanoramapushedconfig is used
 
 GENERAL:
+* class Rule/VirtualRouter/StaticRoute - optimise method zoneCalculation to use optimised create-/add-static-Route
 
 
 2.0.21 (20211106)

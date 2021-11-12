@@ -1321,7 +1321,11 @@ class UTIL
             $this->pan = $pan;
 
         PH::print_stdout( "" );
-        PH::print_stdout( "ERROR: location '$location' was not found. Here is a list of available ones:" );
+        $errorString = "ERROR: location '$location' was not found. Here is a list of available ones:";
+        PH::print_stdout( $errorString );
+        if( PH::$shadow_json )
+            PH::$JSON_OUT['error'] = $errorString;
+
         if( $this->configType != 'fawkes' )
             PH::print_stdout( " - shared" );
         if( $this->configType == 'panos' )
@@ -1350,6 +1354,12 @@ class UTIL
         }
         PH::print_stdout( "" );
         PH::print_stdout( "" );
+
+        if( PH::$shadow_json )
+        {
+            PH::$JSON_OUT['log'] = PH::$JSON_OUTlog;
+            print json_encode( PH::$JSON_OUT, JSON_PRETTY_PRINT );
+        }
         exit(1);
     }
 
