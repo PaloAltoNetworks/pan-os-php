@@ -542,6 +542,20 @@ class SecurityRule extends RuleWithUserID
         return $this->secprofProfiles;
     }
 
+    public function securityProfilHash()
+    {
+        $string = "";
+        if( $this->secproftype === 'group' )
+            $string = $this->secprofgroup;
+        elseif( $this->secproftype === 'profile' )
+        {
+            $stringArray = array_keys($this->secprofProfiles_obj);
+            $string = implode( ", ", $stringArray );
+        }
+
+        return md5( $string );
+    }
+
     public function securityProfiles_obj()
     {
         if( $this->secproftype != 'profile' )

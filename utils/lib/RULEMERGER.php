@@ -12,7 +12,7 @@ class RULEMERGER extends UTIL
 
 
     public $UTIL_method = null;
-    public $UTIL_additionalMatch = null;
+    public $UTIL_additionalMatch = array();
 
     public $UTIL_stopMergingIfDenySeen = TRUE;
     public $UTIL_mergeAdjacentOnly = FALSE;
@@ -46,9 +46,17 @@ class RULEMERGER extends UTIL
 
         if( isset(PH::$args['additionalmatch']) )
         {
-            $this->UTIL_additionalMatch = strtolower( PH::$args['additionalmatch'] );
-            if( $this->UTIL_additionalMatch != "tag" )
-                derr( "additionalMatch argument support until now ONLY 'tag'" );
+            $tmp_additionalmatch = strtolower( PH::$args['additionalmatch'] );
+            $this->UTIL_additionalMatch = explode( ",", $tmp_additionalmatch );
+
+            $supportedAdditionalmatch = array( 'tag', 'secprof' );
+            foreach( $this->UTIL_additionalMatch as $value )
+            {
+                if( !in_array( $value, $supportedAdditionalmatch ) )
+                    derr( "additionalMatch argument support until now ONLY: ".implode(", ", $supportedAdditionalmatch) );
+            }
+            #if( $this->UTIL_additionalMatch != "tag" )
+            #    derr( "additionalMatch argument support until now ONLY 'tag'" );
         }
 
         $errorMessage = '';
@@ -195,10 +203,12 @@ class RULEMERGER extends UTIL
         'identical' => 9 ,
         */
 
-        if( $this->UTIL_additionalMatch == 'tag' )
-            $additional_match = $rule->tags->getFastHashComp();
-        else
-            $additional_match = "";
+        #if( $this->UTIL_additionalMatch == 'tag' )
+        $additional_match = "";
+        if( in_array( 'tag', $this->UTIL_additionalMatch ) )
+            $additional_match .= $rule->tags->getFastHashComp();
+        if( in_array( 'secprof', $this->UTIL_additionalMatch ) )
+            $additional_match .= $rule->securityProfilHash();
 
         if( $this->UTIL_method == 1 )
             $rule->mergeHash = md5('action:' . $rule->action() . '.*/' . $rule->from->getFastHashComp() . $rule->to->getFastHashComp() .
@@ -588,18 +598,18 @@ class RULEMERGER extends UTIL
 
     function add_supported_arguments()
     {
-        $this->supportedArguments[] = array('niceName' => 'in', 'shortHelp' => 'input file or api. ie: in=config.xml  or in=api://192.168.1.1 or in=api://0018CAEC3@panorama.company.com', 'argDesc' => '=[filename]|[api://IP]|[api://serial@IP]');
-        $this->supportedArguments[] = array('niceName' => 'out', 'shortHelp' => 'output file to save config after changes, API is not supported because it could be a heavy duty on management. ie: out=save-config.xml', 'argDesc' => '=[filename]');
-        $this->supportedArguments[] = array('niceName' => 'Location', 'shortHelp' => 'specify if you want to limit your query to a VSYS/DG. By default location=shared for Panorama, =vsys1 for PANOS. ie: location=any or location=vsys2,vsys1', 'argDesc' => '=sub1');
-        $this->supportedArguments[] = array('niceName' => 'Method', 'shortHelp' => 'rules will be merged if they match given a specific method, available methods are: ', 'argDesc' => '=method1');
+        $this->supportedArguments[] = array('niceName' => 'in', 'shortHelp' => 'input file or api. ie: in=config.xml  or in=api://192.168.1.1 or in=api://0018CAEC3@panorama.company.com', 'argDesc' => '[filename]|[api://IP]|[api://serial@IP]');
+        $this->supportedArguments[] = array('niceName' => 'out', 'shortHelp' => 'output file to save config after changes, API is not supported because it could be a heavy duty on management. ie: out=save-config.xml', 'argDesc' => '[filename]');
+        $this->supportedArguments[] = array('niceName' => 'Location', 'shortHelp' => 'specify if you want to limit your query to a VSYS/DG. By default location=shared for Panorama, =vsys1 for PANOS. ie: location=any or location=vsys2,vsys1', 'argDesc' => 'sub1');
+        $this->supportedArguments[] = array('niceName' => 'Method', 'shortHelp' => 'rules will be merged if they match given a specific method, available methods are: ', 'argDesc' => 'method1');
         $this->supportedArguments[] = array('niceName' => 'help', 'shortHelp' => 'this message');
         $this->supportedArguments[] = array('niceName' => 'panoramaPreRules', 'shortHelp' => 'when using panorama, select pre-rulebase for merging');
         $this->supportedArguments[] = array('niceName' => 'panoramaPostRules', 'shortHelp' => 'when using panorama, select post-rulebase for merging');
-        $this->supportedArguments[] = array('niceName' => 'mergeDenyRules', 'shortHelp' => 'deny rules wont be merged', 'argDesc' => '=[yes|no|true|false]');
-        $this->supportedArguments[] = array('niceName' => 'stopMergingIfDenySeen', 'shortHelp' => 'deny rules wont be merged', 'argDesc' => '=[yes|no|true|false]');
-        $this->supportedArguments[] = array('niceName' => 'mergeAdjacentOnly', 'shortHelp' => 'merge only rules that are adjacent to each other', 'argDesc' => '=[yes|no|true|false]');
+        $this->supportedArguments[] = array('niceName' => 'mergeDenyRules', 'shortHelp' => 'deny rules wont be merged', 'argDesc' => '[yes|no|true|false]');
+        $this->supportedArguments[] = array('niceName' => 'stopMergingIfDenySeen', 'shortHelp' => 'deny rules wont be merged', 'argDesc' => '[yes|no|true|false]');
+        $this->supportedArguments[] = array('niceName' => 'mergeAdjacentOnly', 'shortHelp' => 'merge only rules that are adjacent to each other', 'argDesc' => '[yes|no|true|false]');
         $this->supportedArguments[] = array('niceName' => 'filter', 'shortHelp' => 'filter rules that can be converted');
-        $this->supportedArguments[] = array('niceName' => 'additionalMatch', 'shortHelp' => 'add additional matching criterial; only =tag is supported yet', 'argDesc' => '=tag');
+        $this->supportedArguments[] = array('niceName' => 'additionalMatch', 'shortHelp' => 'add additional matching criterial', 'argDesc' => '[tag|secprof]');
         $this->supportedArguments[] = array('niceName' => 'DebugAPI', 'shortHelp' => 'prints API calls when they happen');
     }
 
