@@ -17,6 +17,7 @@ BUGFIX:
 * pa_rule-stats | bugfix to display all object if argument loadpanoramapushedconfig is used
 
 GENERAL:
+* class Rule/VirtualRouter/StaticRoute - optimise method zoneCalculation to use optimised create-/add-static-Route
 
 
 2.0.21 (20211106)

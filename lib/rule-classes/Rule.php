@@ -783,9 +783,7 @@ class Rule
                         $doc = $connector->getMergedConfig();
                         $firewall->load_from_domxml($doc);
 
-
-
-                        //Todo: for dynamic routing information:
+                        //This is to get full routing table incl. dynamic routing for zone-calculation
                         $cmd = "<show><routing><route><virtual-router>".$virtualRouter."</virtual-router></route></routing></show>";
                         $res = $connector->sendOpRequest($cmd, TRUE);
 
@@ -802,28 +800,22 @@ class Rule
                             $metric = DH::findFirstElement( "metric", $child)->textContent;
                             $interface = DH::findFirstElement( "interface", $child)->textContent;
                             $routeTable = DH::findFirstElement( "route-table", $child)->textContent;
+                            $flags = DH::findFirstElement( "flags", $child)->textContent;
 
+                            //skip e.g. multicast
                             if( $routeTable != "unicast" )
                                 continue;
 
-                            if( $interface !== "" )
-                                $xml_interface = "<interface>" . $interface . "</interface>";
+                            //skip Host route - nexthop == 0.0.0.0 / no interface
+                            if( strpos( $flags, "H" ) !== FALSE )
+                                continue;
 
                             $routename = "RouteAPI_" . $key;
-                            $checkIP = explode( "/", $destination);
-
-                            if(filter_var($checkIP[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4))
-                                $xmlString = "<entry name=\"" . $routename . "\"><nexthop><ip-address>" . $nexthop . "</ip-address></nexthop><metric>" . $metric . "</metric>" . $xml_interface . "<destination>" . $destination . "</destination></entry>";
-                            elseif(filter_var($checkIP[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6))
-                                $xmlString = "<entry name=\"" . $routename . "\"><nexthop><ipv6-address>" . $nexthop . "</ipv6-address></nexthop><metric>" . $metric . "</metric>" . $xml_interface . "<destination>" . $destination . "</destination></entry>";
 
                             $newRoute = new StaticRoute('***tmp**', $tmp_vr);
-                            $tmpRoute = $newRoute->create_staticroute_from_xml($xmlString);
+                            $tmpRoute = $newRoute->create_staticroute_from_variables( $routename, $destination, $nexthop, $metric, $interface );
 
-                            if(filter_var($checkIP[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4))
-                                $tmp_vr->addstaticRoute($tmpRoute);
-                            elseif(filter_var($checkIP[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6))
-                                $tmp_vr->addstaticRoute($tmpRoute, 'ipv6');
+                            $tmp_vr->addstaticRoute($tmpRoute);
                         }
 
                         unset($connector);
