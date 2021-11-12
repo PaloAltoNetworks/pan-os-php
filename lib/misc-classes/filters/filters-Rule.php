@@ -1201,7 +1201,7 @@ RQuery::$defaultFilters['rule']['app']['operators']['has.recursive'] = array(
     },
     'arg' => TRUE,
     'ci' => array(
-        'fString' => '(%PROP%)',
+        'fString' => '(%PROP% ssl)',
         'input' => 'input/panorama-8.0.xml'
     )
 );
