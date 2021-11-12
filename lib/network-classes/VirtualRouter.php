@@ -144,10 +144,18 @@ class VirtualRouter
 
     public function addstaticRoute($staticRoute, $version = 'ip')
     {
-
-
         if( !is_object($staticRoute) )
             derr('this function only accepts staticRoute class objects');
+
+        /** @var StaticRoute $staticRoute*/
+        $destination = $staticRoute->destination();
+        //Todo: nexthop would be also good, but it could be that nexthop is "" than $interface ip-address must be used for IP check
+        $checkIP = explode( "/", $destination);
+        if(filter_var($checkIP[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4))
+            $version = 'ip';
+        elseif(filter_var($checkIP[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6))
+            $version = 'ipv6';
+
 
         #if( $staticRoute->owner !== null )
         #    derr('Trying to add a virtualRouter that has a owner already !');
