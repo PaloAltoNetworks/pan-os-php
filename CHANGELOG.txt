@@ -5,6 +5,7 @@ UTILS:
 * pa_rule-merger - extend argument additionalmatch with 'secprof'
 
 BUGFIX:
+*  all utils script - bugfix if Panorama config is used with loadpanoramapushedconfig
 
 GENERAL:
 

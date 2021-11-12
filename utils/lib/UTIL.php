@@ -1505,7 +1505,7 @@ class UTIL
 
                     $processedLocations[$sub->name()] = TRUE;
 
-                    if( isset(PH::$args['loadpanoramapushedconfig']) )
+                    if( isset(PH::$args['loadpanoramapushedconfig']) && get_class( $this->pan ) != 'PanoramaConf' )
                         $sub->parentDeviceGroup->display_statistics();
                     
                     $sub->display_statistics();
