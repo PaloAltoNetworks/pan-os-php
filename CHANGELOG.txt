@@ -1,6 +1,14 @@
 CHANGELOG
 
-2.0.22
+2.0.23
+UTILS:
+
+BUGFIX:
+
+GENERAL:
+
+
+2.0.22 (20211112)
 UTILS:
 * pa_rule-edit - get back actions=user-add:USER / user-remove:USER / user-set-any for PAN-OS API mode
 * pa_rule-edit | introduce actions=user-check-ldap:show,LDAPuser,LDAPserver,OU=XYZ;DC=domain;DC=local,OUfilter
