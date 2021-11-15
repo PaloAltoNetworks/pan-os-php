@@ -1800,6 +1800,24 @@ class PanAPIConnector
             if( $modelNode !== FALSE )
                 $fw['model'] = $modelNode->textContent;
 
+            $ipaddressNode = DH::findFirstElement('ip-address', $entryNode);
+            if( $ipaddressNode !== FALSE )
+                $fw['ip-address'] = $ipaddressNode->textContent;
+
+            $swversionNode = DH::findFirstElement('sw-version', $entryNode);
+            if( $swversionNode !== FALSE )
+                $fw['sw-version'] = $swversionNode->textContent;
+
+            /*
+            foreach( $entryNode->childNodes as $node )
+            {
+                if( $node->nodeType != XML_ELEMENT_NODE )
+                    continue;
+
+                $fw[$node->nodeName] = $node->textContent;
+            }
+            */
+
             $firewalls[$fw['serial']] = $fw;
         }
 

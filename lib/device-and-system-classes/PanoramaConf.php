@@ -271,7 +271,8 @@ class PanoramaConf
         $this->dosRules->_networkStore = $this->_fakeNetworkProperties;
         $this->pbfRules->_networkStore = $this->_fakeNetworkProperties;
 
-        $this->managedFirewallsStore = new ManagedDeviceStore($this, 'managedFirewall', TRUE);
+        #$this->managedFirewallsStore = new ManagedDeviceStore($this, 'managedFirewall', TRUE);
+        $this->managedFirewallsStore = new ManagedDeviceStore( $this );
     }
 
 
@@ -323,7 +324,19 @@ class PanoramaConf
 
 
         if( is_object($this->connector) )
+        {
             $this->managedFirewallsSerialsModel = $this->connector->panorama_getConnectedFirewallsSerials();
+            foreach( $this->managedFirewallsSerialsModel as $serial => $fw )
+            {
+                $managedFirewall = $this->managedFirewallsStore->find($serial);
+                $managedFirewall->isConnected = true;
+
+                $managedFirewall->mgmtIP = $fw[ 'ip-address' ];
+                $managedFirewall->version = $fw[ 'sw-version' ];
+                $managedFirewall->model = $fw[ 'model' ];
+            }
+        }
+
 
         $this->sharedroot = DH::findFirstElementOrCreate('shared', $this->xmlroot);
 

@@ -4,6 +4,7 @@ CHANGELOG
 UTILS:
 * pa_rule-merger - extend argument additionalmatch with 'secprof'
 * pa_address-edit | introduce new reference filters
+* pa_device-edit - extend manageddevice information if PAN-OS API is used
 
 BUGFIX:
 *  all utils script - bugfix if Panorama config is used with loadpanoramapushedconfig
