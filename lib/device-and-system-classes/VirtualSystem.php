@@ -634,6 +634,8 @@ class VirtualSystem
     {
         $stdoutarray = array();
 
+        $stdoutarray['type'] = get_class( $this );
+
         $header = "Statistics for VSYS '" . PH::boldText($this->name) . "' | '" . $this->toString() . "'";
         $stdoutarray['header'] = $header;
 

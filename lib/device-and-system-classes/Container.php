@@ -812,6 +812,8 @@ class Container
     {
         $stdoutarray = array();
 
+        $stdoutarray['type'] = get_class( $this );
+
         $header = "Statistics for Container '" . PH::boldText($this->name) . "'";
         $stdoutarray['header'] = $header;
 

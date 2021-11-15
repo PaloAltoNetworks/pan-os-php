@@ -334,6 +334,7 @@ class PanoramaConf
                 $managedFirewall->mgmtIP = $fw[ 'ip-address' ];
                 $managedFirewall->version = $fw[ 'sw-version' ];
                 $managedFirewall->model = $fw[ 'model' ];
+                $managedFirewall->hostname = $fw[ 'hostname' ];
             }
         }
 
@@ -1158,6 +1159,8 @@ class PanoramaConf
 
         $stdoutarray = array();
 
+        $stdoutarray['type'] = get_class( $this );
+
         $header = "Statistics for PanoramaConf '" . $this->name . "'";
         $stdoutarray['header'] = $header;
 
@@ -1294,12 +1297,14 @@ class PanoramaConf
         $return = array();
         $return['PanoramaConf-stat'] = $stdoutarray;
 
-        PH::$JSON_TMP[] = $stdoutarray;
+        $connector = findConnector( $this );
+        if( $connector == null )
+            PH::$JSON_TMP[] = $stdoutarray;
+        else
+            PH::$JSON_TMP[ $connector->info_serial ] = $stdoutarray;
 
         #PH::print_stdout( $return );
         PH::print_stdout( $stdoutarray, true );
-
-
     }
 
     public function API_load_from_running(PanAPIConnector $conn)

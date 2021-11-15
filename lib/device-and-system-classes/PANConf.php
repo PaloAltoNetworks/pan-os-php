@@ -695,7 +695,7 @@ class PANConf
     }
 
 
-    public function display_statistics()
+    public function display_statistics( )
     {
 
         $numSecRules = 0;
@@ -789,6 +789,8 @@ class PANConf
 
         $stdoutarray = array();
 
+        $stdoutarray['type'] = get_class( $this );
+
         $header = "Statistics for PANConf '" . $this->name . "'";
         $stdoutarray['header'] = $header;
 
@@ -860,7 +862,11 @@ class PANConf
         $return = array();
         $return['PANConf-stat'] = $stdoutarray;
 
-        PH::$JSON_TMP[] = $stdoutarray;
+        $connector = findConnector( $this );
+        if( $connector == null )
+            PH::$JSON_TMP[] = $stdoutarray;
+        else
+            PH::$JSON_TMP[ $connector->info_serial ] = $stdoutarray;
 
         #PH::print_stdout( $return );
         PH::print_stdout( $stdoutarray, true );

@@ -782,6 +782,8 @@ class DeviceGroup
     {
         $stdoutarray = array();
 
+        $stdoutarray['type'] = get_class( $this );
+
         $header = "Statistics for DG '" . PH::boldText($this->name) . "'";
         $stdoutarray['header'] = $header;
 
