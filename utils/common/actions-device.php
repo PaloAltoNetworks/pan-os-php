@@ -79,7 +79,7 @@ DeviceCallContext::$supportedActions['display'] = array(
             $device = $managedDevice->owner->owner;
 
             $padding = "       ";
-            /** @var ManagedDevice */
+            /** @var ManagedDevice $managedDevice */
 
             if( $managedDevice->getDeviceGroup() != null )
             {
@@ -113,7 +113,17 @@ DeviceCallContext::$supportedActions['display'] = array(
                 }
             }
 
-            $managedDevice->getReferences();
+            if( $managedDevice->isConnected )
+            {
+                PH::print_stdout( $padding."connected" );
+                PH::print_stdout( $padding."IP-Address: ".$managedDevice->mgmtIP );
+                PH::print_stdout( $padding."PAN-OS: ".$managedDevice->version );
+                PH::print_stdout( $padding."Model: ".$managedDevice->model );
+                PH::$JSON_TMP['sub']['object'][$object->name()]['connected'] = "true";
+                PH::$JSON_TMP['sub']['object'][$object->name()]['ip-address'] = $managedDevice->mgmtIP;
+                PH::$JSON_TMP['sub']['object'][$object->name()]['sw-version'] = $managedDevice->version;
+                PH::$JSON_TMP['sub']['object'][$object->name()]['model'] = $managedDevice->model;
+            }
 
         }
         elseif( get_class($object) == "Template" )
@@ -129,7 +139,32 @@ DeviceCallContext::$supportedActions['displayreferences'] = array(
     'MainFunction' => function (DeviceCallContext $context) {
         $object = $context->object;
 
-        $object->display_references(7);
+        if( get_class($object) == "TemplateStack" )
+        {
+
+        }
+        elseif( get_class($object) == "Template" )
+        {
+            //Todo: Templates are not displaying templatestack until now
+            $object->display_references(7);
+        }
+        elseif( get_class($object) == "VirtualSystem" )
+        {
+            /** @var VirtualSystem $object */
+        }
+        elseif( get_class($object) == "DeviceGroup" )
+        {
+
+        }
+        elseif( get_class($object) == "ManagedDevice" )
+        {
+            //serial is references in DG / template-stack, but also in Securityrules as target
+            //Todo: secrule target is missing until now
+            $object->display_references(7);
+        }
+
+        return null;
+
     },
 );
 DeviceCallContext::$supportedActions['DeviceGroup-create'] = array(

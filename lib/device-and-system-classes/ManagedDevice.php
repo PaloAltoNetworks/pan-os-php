@@ -31,6 +31,10 @@ class ManagedDevice
     public $template;
     public $template_stack;
 
+    public $isConnected = false;
+    public $mgmtIP;
+    public $version;
+    public $model;
 
     function __construct($name, $owner)
     {

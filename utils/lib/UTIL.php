@@ -180,7 +180,7 @@ class UTIL
         $this->supportedArguments['loadpanoramapushedconfig'] = array('niceName' => 'loadPanoramaPushedConfig', 'shortHelp' => 'load Panorama pushed config from the firewall to take in account panorama objects and rules');
         $this->supportedArguments['apitimeout'] = array('niceName' => 'apiTimeout', 'shortHelp' => 'in case API takes too long time to anwer, increase this value (default=60)', 'argDesc' => '60');
 
-
+        $this->supportedArguments['cycleconnectedfirewalls'] = array('niceName' => 'cycleConnectedFirewalls', 'shortHelp' => 'a listing of all devices connected to Panorama will be collected through API then each firewall will be queried for bpa generator');
 
         $this->supportedArguments['shadow-disableoutputformatting'] = array('niceName' => 'shadow-disableoutputformatting', 'shortHelp' => 'XML output in offline config is not in cleaned PHP DOMDocument structure');
         $this->supportedArguments['shadow-enablexmlduplicatesdeletion']= array('niceName' => 'shadow-enablexmlduplicatesdeletion', 'shortHelp' => 'if duplicate objects are available, keep only one object of the same name');
@@ -822,25 +822,7 @@ class UTIL
                 $inputConnector = $this->configInput['connector'];
 
                 PH::print_stdout( " - 'loadPanoramaPushedConfig' was requested, downloading it through API..." );
-                $panoramaDoc = $inputConnector->getPanoramaPushedConfig( $this->apiTimeoutValue );
-
-                $xpathResult = DH::findXPath('/panorama/vsys', $panoramaDoc);
-
-                if( $xpathResult === FALSE )
-                    derr("could not find any VSYS");
-
-                if( $xpathResult->length != 1 )
-                    derr("found more than 1 <VSYS>");
-
-                $fakePanorama = new PanoramaConf();
-                $fakePanorama->_fakeMode = TRUE;
-                $inputConnector->refreshSystemInfos();
-                $newDGRoot = $xpathResult->item(0);
-                $panoramaString = "<config version=\"{$inputConnector->info_PANOS_version}\"><shared></shared><devices><entry name=\"localhost.localdomain\"><device-group>" . DH::domlist_to_xml($newDGRoot->childNodes) . "</device-group></entry></devices></config>";
-
-                $fakePanorama->load_from_xmlstring($panoramaString);
-
-                $this->pan = new PANConf($fakePanorama);
+                $this->pan = $inputConnector->loadPanoramaPushdedConfig( $this->apiTimeoutValue );
             }
             else
                 $this->pan = new PANConf();
@@ -1505,13 +1487,33 @@ class UTIL
 
                     $processedLocations[$sub->name()] = TRUE;
 
-                    if( isset(PH::$args['loadpanoramapushedconfig']) )
+                    if( isset(PH::$args['loadpanoramapushedconfig']) && get_class( $this->pan ) != 'PanoramaConf' )
                         $sub->parentDeviceGroup->display_statistics();
                     
                     $sub->display_statistics();
 
 
                 }
+            }
+
+            if( isset(PH::$args['cycleconnectedfirewalls']) && $this->configType == 'panorama' && $this->configInput['type'] == 'api' )
+            {
+                $mainConnector = findConnector($pan);
+                $managedSerials = $pan->managedFirewallsSerialsModel;
+                foreach( $managedSerials as $serial => $fw )
+                {
+                    $fwconnector = new PanAPIConnector($mainConnector->apihost, $mainConnector->apikey, 'panos-via-panorama', $serial);
+                    $fwconnector->setShowApiCalls( $mainConnector->showApiCalls );
+
+                    $firewall = $fwconnector->loadPanoramaPushdedConfig( $this->apiTimeoutValue );
+                    $firewall->connector = $fwconnector;
+
+                    $doc = $fwconnector->getMergedConfig();
+                    $firewall->load_from_domxml( $doc );
+
+                    $firewall->display_statistics();
+                }
+
             }
         }
     }
