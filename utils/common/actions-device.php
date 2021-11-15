@@ -129,7 +129,32 @@ DeviceCallContext::$supportedActions['displayreferences'] = array(
     'MainFunction' => function (DeviceCallContext $context) {
         $object = $context->object;
 
-        $object->display_references(7);
+        if( get_class($object) == "TemplateStack" )
+        {
+
+        }
+        elseif( get_class($object) == "Template" )
+        {
+            //Todo: Templates are not displaying templatestack until now
+            $object->display_references(7);
+        }
+        elseif( get_class($object) == "VirtualSystem" )
+        {
+            /** @var VirtualSystem $object */
+        }
+        elseif( get_class($object) == "DeviceGroup" )
+        {
+
+        }
+        elseif( get_class($object) == "ManagedDevice" )
+        {
+            //serial is references in DG / template-stack, but also in Securityrules as target
+            //Todo: secrule target is missing until now
+            $object->display_references(7);
+        }
+
+        return null;
+
     },
 );
 DeviceCallContext::$supportedActions['DeviceGroup-create'] = array(

@@ -1450,7 +1450,7 @@ class PanAPIConnector
 
     public function getPanoramaPushedConfig( $apiTimeOut = 30 )
     {
-        $url = 'action=get&type=config&xpath=/config/panorama';
+        $url = '&action=get&type=config&xpath=/config/panorama';
         $moreOptions = array('timeout' => $apiTimeOut, 'lowSpeedTime' => 0);
         $filecontent = null;
         $r = $this->sendRequest($url, TRUE, $filecontent, '', $moreOptions);
@@ -1802,6 +1802,84 @@ class PanAPIConnector
 
             $firewalls[$fw['serial']] = $fw;
         }
+
+        return $firewalls;
+    }
+
+    public function loadPanoramaPushdedConfig( $apiTimeoutValue )
+    {
+        $panoramaDoc = $this->getPanoramaPushedConfig( $apiTimeoutValue );
+
+        $xpathResult = DH::findXPath('/panorama/vsys', $panoramaDoc);
+
+        if( $xpathResult === FALSE )
+            derr("could not find any VSYS");
+
+        if( $xpathResult->length != 1 )
+            derr("found more than 1 <VSYS>");
+
+        $fakePanorama = new PanoramaConf();
+        $fakePanorama->_fakeMode = TRUE;
+        $this->refreshSystemInfos();
+        $newDGRoot = $xpathResult->item(0);
+        $panoramaString = "<config version=\"{$this->info_PANOS_version}\"><shared></shared><devices><entry name=\"localhost.localdomain\"><device-group>" . DH::domlist_to_xml($newDGRoot->childNodes) . "</device-group></entry></devices></config>";
+
+        $fakePanorama->load_from_xmlstring($panoramaString);
+
+
+        return new PANConf($fakePanorama);
+    }
+
+    /**
+     * @return string[][]  ie: Array( Array('serial' => '000C12234', 'hostname' => 'FW-MUNICH4' ) )
+     */
+    public function & panorama_getAllFirewallsSerials()
+    {
+        $result = $this->sendCmdRequest('<show><devices><all></all></devices></show>');
+        $devicesRoot = DH::findXPathSingleEntryOrDie('/result/devices', $result);
+
+        $firewalls = array();
+
+        foreach( $devicesRoot->childNodes as $entryNode )
+        {
+            $fw = array();
+
+            if( $entryNode->nodeType != XML_ELEMENT_NODE )
+                continue;
+            /** @var DOMElement $entryNode */
+
+            $fw['serial'] = $entryNode->getAttribute('name');
+
+            foreach( $entryNode->childNodes as $node )
+            {
+                if( $node->nodeType != XML_ELEMENT_NODE )
+                    continue;
+                /** @var DOMElement $node */
+
+                $fw[$node->nodeName] = $node->textContent;
+            }
+
+            $firewalls[$fw['serial']] = $fw;
+        }
+
+        /*
+        $fields = array();
+        foreach( $firewalls as $index => &$array )
+        {
+            foreach( $array as $key => $value )
+                $fields[$key] = $key;
+        }
+
+
+        foreach( $firewalls as $index => &$array )
+        {
+            foreach( $fields as $key => $value )
+            {
+                if( !isset( $array[$key] ) )
+                    $array[$key] = "- - -";
+            }
+        }
+        */
 
         return $firewalls;
     }

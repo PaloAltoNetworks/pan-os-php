@@ -783,6 +783,78 @@ RQuery::$defaultFilters['address']['reftype']['operators']['is'] = array(
         'input' => 'input/panorama-8.0.xml'
     )
 );
+RQuery::$defaultFilters['address']['refobjectname']['operators']['is'] = array(
+    'Function' => function (AddressRQueryContext $context) {
+        $object = $context->object;
+
+        $reference_array = $object->getReferences();
+
+        foreach( $reference_array as $refobject )
+        {
+            if( get_class( $refobject ) == "AddressGroup" && $refobject->name() == $context->value )
+                return TRUE;
+        }
+
+
+        return FALSE;
+    },
+    'arg' => TRUE,
+    'help' => 'returns TRUE if object name matches refobjectname',
+    'ci' => array(
+        'fString' => '(%PROP% shared )',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['address']['refobjectname']['operators']['is.only'] = array(
+    'Function' => function (AddressRQueryContext $context) {
+        $object = $context->object;
+        $owner = $context->object->owner->owner;
+
+        $reference_array = $object->getReferences();
+
+
+        foreach( $reference_array as $refobject )
+        {
+            if( get_class( $refobject ) != "AddressGroup" )
+                $return = FALSE;
+
+            if( get_class( $refobject ) == "AddressGroup" && $refobject->name() == $context->value )
+                $return = TRUE;
+
+        }
+
+        return $return;
+
+    },
+    'arg' => TRUE,
+    'help' => 'returns TRUE if RUE if object name matches only refobjectname',
+    'ci' => array(
+        'fString' => '(%PROP% shared )',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['address']['refobjectname']['operators']['is.recursive'] = array(
+    'Function' => function (AddressRQueryContext $context) {
+        $object = $context->object;
+
+        $reference_array = $object->getReferencesRecursive();
+
+        foreach( $reference_array as $refobject )
+        {
+            if( get_class( $refobject ) == "AddressGroup" && $refobject->name() == $context->value )
+                return TRUE;
+        }
+
+
+        return FALSE;
+    },
+    'arg' => TRUE,
+    'help' => 'returns TRUE if object name matches refobjectname',
+    'ci' => array(
+        'fString' => '(%PROP% shared )',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 RQuery::$defaultFilters['address']['value']['operators']['string.eq'] = array(
     'Function' => function (AddressRQueryContext $context) {
         $object = $context->object;

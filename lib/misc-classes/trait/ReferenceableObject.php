@@ -208,6 +208,26 @@ trait ReferenceableObject
         return $this->refrules;
     }
 
+    public function getReferencesRecursive( $references = array() )
+    {
+        //Todo: problem if same objects groups are available multiple times with different members;
+        //check location or something, no clue yet 20211115
+        if( get_class( $this ) == "Address" || get_class( $this ) == "AddressGroup" )
+        {
+            foreach( $this->refrules as $reference )
+            {
+                if( get_class( $reference ) == "Address" || get_class( $reference ) == "AddressGroup" )
+                {
+                    $recursiveReferences = $reference->getReferencesRecursive();
+                    $references = array_merge( $references, $recursiveReferences );
+                }
+            }
+            $references = array_merge( $references, $this->refrules );
+        }
+
+        return $references;
+    }
+
     public function getReferencesLocation()
     {
         $location_array = array();
