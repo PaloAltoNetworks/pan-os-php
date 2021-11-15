@@ -453,3 +453,237 @@ DeviceCallContext::$supportedActions['AddressStore-rewrite'] = array(
     }
   //rewriteAddressStoreXML()
 );
+DeviceCallContext::$supportedActions['exportInventoryToExcel'] = array(
+    'name' => 'exportInventoryToExcel',
+    'GlobalInitFunction' => function (DeviceCallContext $context) {
+        $context->first = true;
+        $context->fields = array();
+        $context->device_array = array();
+    },
+    'MainFunction' => function (DeviceCallContext $context)
+    {
+
+        if( $context->first && get_class($context->object) == "ManagedDevice" )
+        {
+            $connector = findConnectorOrDie($context->object);
+            $context->device_array = $connector->panorama_getAllFirewallsSerials();
+
+
+            foreach( $context->device_array as $index => &$array )
+            {
+                foreach( $array as $key => $value )
+                    $context->fields[$key] = $key;
+            }
+
+
+            foreach( $context->device_array as $index => &$array )
+            {
+                foreach( $context->fields as $key => $value )
+                {
+                    if( !isset( $array[$key] ) )
+                        $array[$key] = "not set";
+                }
+            }
+        }
+
+    },
+    'GlobalFinishFunction' => function (DeviceCallContext $context)
+    {
+        $content = "";
+        if( get_class($context->object) == "ManagedDevice" )
+        {
+            $lines = '';
+
+            $count = 0;
+            if( !empty($context->device_array) )
+            {
+                foreach ($context->device_array as $device)
+                {
+                    $count++;
+
+                    /** @var SecurityRule|NatRule $rule */
+                    if ($count % 2 == 1)
+                        $lines .= "<tr>\n";
+                    else
+                        $lines .= "<tr bgcolor=\"#DDDDDD\">";
+
+                    foreach($context->fields as $fieldName => $fieldID )
+                    {
+                        $lines .= "<td>".$device[$fieldID]."</td>";
+                    }
+                    $lines .= "</tr>\n";
+                }
+            }
+
+            $tableHeaders = '';
+            foreach($context->fields as $fName => $value )
+                $tableHeaders .= "<th>{$fName}</th>\n";
+
+            $content = file_get_contents(dirname(__FILE__).'/html-export-template.html');
+
+
+            $content = str_replace('%TableHeaders%', $tableHeaders, $content);
+
+            $content = str_replace('%lines%', $lines, $content);
+
+            $jscontent =  file_get_contents(dirname(__FILE__).'/jquery-1.11.js');
+            $jscontent .= "\n";
+            $jscontent .= file_get_contents(dirname(__FILE__).'/jquery.stickytableheaders.min.js');
+            $jscontent .= "\n\$('table').stickyTableHeaders();\n";
+
+            $content = str_replace('%JSCONTENT%', $jscontent, $content);
+        }
+        file_put_contents($context->arguments['filename'], $content);
+    },
+    'args' => array(
+        'filename' => array('type' => 'string', 'default' => '*nodefault*',
+            'help' => "only usable with 'devicetype=manageddevice'"
+        )
+    )
+);
+DeviceCallContext::$supportedActions['exportLicenseToExcel'] = array(
+    'name' => 'exportLicenseToExcel',
+    'GlobalInitFunction' => function (DeviceCallContext $context) {
+        $context->first = true;
+        $context->fields = array();
+        $context->device_array = array();
+    },
+    'MainFunction' => function (DeviceCallContext $context)
+    {
+
+        if( $context->first && get_class($context->object) == "ManagedDevice" )
+        {
+            $connector = findConnectorOrDie($context->object);
+            $configRoot = $connector->sendOpRequest( '<request><batch><license><info></info></license></batch></request>' );
+
+
+
+            $configRoot = DH::findFirstElement('result', $configRoot);
+            if( $configRoot === FALSE )
+                derr("<result> was not found", $configRoot);
+
+            $configRoot = DH::findFirstElement('devices', $configRoot);
+            if( $configRoot === FALSE )
+                derr("<config> was not found", $configRoot);
+
+
+#var_dump( $configRoot );
+
+            foreach( $configRoot->childNodes as $entry )
+            {
+                if( $entry->nodeType != XML_ELEMENT_NODE )
+                    continue;
+
+                foreach( $entry->childNodes as $node )
+                {
+                    if( $node->nodeType != XML_ELEMENT_NODE )
+                        continue;
+
+
+                    if( $node->nodeName == "serial" ||  $node->nodeName == "serial-no" )
+                    {
+                        #print $node->nodeName." : ".$node->textContent."\n";
+                        $serial_no = $node->textContent;
+                        $context->device_array[ $serial_no ][ $node->nodeName ] = $serial_no;
+                    }
+                    else
+                    {
+                        #print $node->nodeName." : ".$node->textContent."\n";
+                        $tmp_node = $node->textContent;
+                        $context->device_array[ $serial_no ][ $node->nodeName ] = $tmp_node;
+
+                        if( $node->childNodes->length > 1 )
+                        {
+                            foreach( $node->childNodes as $child )
+                            {
+                                if( $node->nodeType != XML_ELEMENT_NODE )
+                                    continue;
+
+
+                                if( $child->nodeName == "entry" )
+                                {
+                                    $tmp_node = $child->textContent;
+                                    $context->device_array[ $serial_no ][ $child->getAttribute('name') ] = $tmp_node;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            foreach( $context->device_array as $index => &$array )
+            {
+                foreach( $array as $key => $value )
+                    $context->fields[$key] = $key;
+            }
+
+
+            foreach( $context->device_array as $index => &$array )
+            {
+                foreach( $context->fields as $key => $value )
+                {
+                    if( !isset( $array[$key] ) )
+                        $array[$key] = "- - - - -";
+                }
+            }
+        }
+    },
+    'GlobalFinishFunction' => function (DeviceCallContext $context)
+    {
+        $content = "";
+        if( get_class($context->object) == "ManagedDevice" )
+        {
+            $lines = '';
+
+            $count = 0;
+            if( !empty($context->device_array) )
+            {
+                foreach ($context->device_array as $device)
+                {
+                    $count++;
+
+                    /** @var SecurityRule|NatRule $rule */
+                    if ($count % 2 == 1)
+                        $lines .= "<tr>\n";
+                    else
+                        $lines .= "<tr bgcolor=\"#DDDDDD\">";
+
+                    foreach($context->fields as $fieldName => $fieldID )
+                    {
+                        $lines .= "<td>".$device[$fieldID]."</td>";
+                    }
+
+                    $lines .= "</tr>\n";
+                }
+            }
+
+
+            $tableHeaders = '';
+            foreach($context->fields as $fName => $value )
+                $tableHeaders .= "<th>{$fName}</th>\n";
+
+            $content = file_get_contents(dirname(__FILE__).'/html-export-template.html');
+
+
+            $content = str_replace('%TableHeaders%', $tableHeaders, $content);
+
+            $content = str_replace('%lines%', $lines, $content);
+
+            $jscontent =  file_get_contents(dirname(__FILE__).'/jquery-1.11.js');
+            $jscontent .= "\n";
+            $jscontent .= file_get_contents(dirname(__FILE__).'/jquery.stickytableheaders.min.js');
+            $jscontent .= "\n\$('table').stickyTableHeaders();\n";
+
+            $content = str_replace('%JSCONTENT%', $jscontent, $content);
+
+
+        }
+
+        file_put_contents($context->arguments['filename'], $content);
+    },
+    'args' => array(
+        'filename' => array('type' => 'string', 'default' => '*nodefault*',
+        'help' => "only usable with 'devicetype=manageddevice'"
+        )
+    )
+);

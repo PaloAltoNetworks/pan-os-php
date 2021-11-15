@@ -859,8 +859,6 @@ class PANConf
         $stdoutarray['sub-interfaces']['total'] = $numSubInterfaces;
         $stdoutarray['sub-interfaces']['ethernet'] = $this->network->ethernetIfStore->countSubInterfaces();
 
-        $return = array();
-        $return['PANConf-stat'] = $stdoutarray;
 
         $connector = findConnector( $this );
         if( $connector == null )
@@ -868,8 +866,9 @@ class PANConf
         else
             PH::$JSON_TMP[ $connector->info_serial ] = $stdoutarray;
 
-        #PH::print_stdout( $return );
-        PH::print_stdout( $stdoutarray, true );
+
+        if( !PH::$shadow_json )
+            PH::print_stdout( $stdoutarray, true );
 
 
     }

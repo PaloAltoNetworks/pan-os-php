@@ -1294,8 +1294,6 @@ class PanoramaConf
         $stdoutarray['sub-interfaces']['ethernet'] = $this->network->ethernetIfStore->countSubInterfaces();
         */
 
-        $return = array();
-        $return['PanoramaConf-stat'] = $stdoutarray;
 
         $connector = findConnector( $this );
         if( $connector == null )
@@ -1303,8 +1301,8 @@ class PanoramaConf
         else
             PH::$JSON_TMP[ $connector->info_serial ] = $stdoutarray;
 
-        #PH::print_stdout( $return );
-        PH::print_stdout( $stdoutarray, true );
+        if( !PH::$shadow_json )
+            PH::print_stdout( $stdoutarray, true );
     }
 
     public function API_load_from_running(PanAPIConnector $conn)
