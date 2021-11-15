@@ -607,9 +607,9 @@ class RuleCallContext extends CallContext
                 $mapping_text_array[] = $mapping_texts;
 
 
+            $protocol = "tmp";
             foreach( $mapping_text_array as $mapping_text )
             {
-                $protocol = "tmp";
                 if( strpos($mapping_text, "tcp/") !== FALSE )
                     $protocol = "tcp/";
                 elseif( strpos($mapping_text, "udp/") !== FALSE )
