@@ -117,9 +117,11 @@ DeviceCallContext::$supportedActions['display'] = array(
             {
                 PH::print_stdout( $padding."connected" );
                 PH::print_stdout( $padding."IP-Address: ".$managedDevice->mgmtIP );
+                PH::print_stdout( $padding."Hostname: ".$managedDevice->hostname );
                 PH::print_stdout( $padding."PAN-OS: ".$managedDevice->version );
                 PH::print_stdout( $padding."Model: ".$managedDevice->model );
                 PH::$JSON_TMP['sub']['object'][$object->name()]['connected'] = "true";
+                PH::$JSON_TMP['sub']['object'][$object->name()]['hostname'] = $managedDevice->hostname;
                 PH::$JSON_TMP['sub']['object'][$object->name()]['ip-address'] = $managedDevice->mgmtIP;
                 PH::$JSON_TMP['sub']['object'][$object->name()]['sw-version'] = $managedDevice->version;
                 PH::$JSON_TMP['sub']['object'][$object->name()]['model'] = $managedDevice->model;

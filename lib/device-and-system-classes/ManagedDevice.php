@@ -35,6 +35,7 @@ class ManagedDevice
     public $mgmtIP;
     public $version;
     public $model;
+    public $hostname;
 
     function __construct($name, $owner)
     {
