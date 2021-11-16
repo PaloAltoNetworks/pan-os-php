@@ -269,6 +269,13 @@ class AppStore extends ObjStore
             if( $obsolete !== FALSE )
             {
                 $app->obsolete = $obsolete->textContent;
+
+                if( $app->obsolete == "yes" )
+                {
+                    //Todo: 20211116 - not all obsolete apps are disabled on applipedia, WHY?
+                    #$this->remove( $app );
+                    #continue;
+                }
             }
 
 
