@@ -10,6 +10,7 @@ UTILS:
 
 BUGFIX:
 *  all utils script - bugfix if Panorama config is used with loadpanoramapushedconfig
+* pa_rule-edit - bugfix for actions=display:resolveservicesummary - if service is.application-default and app has application.filter
 
 GENERAL:
 * class PanAPIConnecotor - extend with methods loadPanoramaPushedConfig() / panorama_getAllFirewallsSerials()
