@@ -142,6 +142,80 @@ class App
         return $this->groupapps;
     }
 
+    public function filteredApps()
+    {
+        if( !$this->isApplicationFilter() )
+            derr('cannot be be called on a non ApplicationFilter app');
+
+        $app_array = array();
+        //which filter options do we have?
+
+        if( isset( $this->app_filter_details['category']) )
+            $categories = $this->app_filter_details['category'];
+        else
+            $categories = array();
+
+        if( isset( $this->app_filter_details['subcategory']) )
+            $subcategories = $this->app_filter_details['subcategory'];
+        else
+            $subcategories = array();
+
+        if( isset( $this->app_filter_details['risk']) )
+            $risks = $this->app_filter_details['risk'];
+        else
+            $risks = array();
+
+        if( isset( $this->app_filter_details['technology']) )
+            $technologies = $this->app_filter_details['technology'];
+        else
+            $technologies = array();
+
+        foreach( $this->owner->getAll() as $app )
+        {
+            $hasCategory = TRUE;
+            if( count( $categories ) > 0 )
+            {
+                $hasCategory = FALSE;
+                foreach( $categories as $category )
+                {
+                    if( $category === $app->category )
+                        $hasCategory = TRUE;
+                }
+            }
+
+            $hasSubCategory = TRUE;
+            if( count( $categories ) > 0 )
+            {
+                $hasSubCategory = FALSE;
+                foreach( $subcategories as $subcategory )
+                {
+                    if( $subcategory === $app->subCategory )
+                        $hasSubCategory = TRUE;
+                }
+            }
+
+            $hasRisk = TRUE;
+            if( count( $risks ) > 0 )
+            {
+                $hasRisk = FALSE;
+                foreach( $risks as $risk )
+                {
+                    if( $risk === $app->risk )
+                        $hasRisk = TRUE;
+                }
+            }
+
+            if( $hasCategory && $hasSubCategory && $hasRisk )
+            {
+                $app_array[] = $app;
+            }
+
+        }
+
+        return $app_array;
+    }
+
+
     /**
      * returns true if application is using dynamic ports
      * @return bool
@@ -540,6 +614,34 @@ class App
 
             }
         }
+    }
+
+    function getAppsRecursive( $app_array = array() )
+    {
+        if( $this->isApplicationGroup() )
+        {
+            foreach( $this->groupApps() as $app )
+                $app_array = array_merge( $app_array, $app->getAppsRecursive( $app_array ) );
+        }
+        elseif( $this->isApplicationFilter() )
+        {
+
+            //1) get all filtered apps
+            //2) go through apps and check
+            #foreach( $this->filteredApps() as $app )
+            #    $app_array = array_merge( $app_array, $app->getAppsRecursive( $app_array ) );
+        }
+        elseif( $this->isContainer() )
+        {
+            foreach( $this->containerApps() as $app )
+                $app_array = array_merge( $app_array, $app->getAppsRecursive( $app_array ) );
+        }
+        else
+        {
+            $app_array[] = $this;
+        }
+
+        return $app_array;
     }
 }
 

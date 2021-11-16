@@ -584,7 +584,70 @@ class RuleCallContext extends CallContext
         if( $rule->services->isAny() )
             return array( 'any' );
         if( $rule->services->isApplicationDefault() )
-            return array( 'application-default' );
+        {
+            //if application is any
+            if( $rule->apps->isAny() )
+                return array( 'application-default' );
+            else
+            {
+                $applications = $rule->apps->getAll();
+
+                //get all apps
+                $app_array = array();
+                foreach( $applications as $app )
+                {
+                    /** @var App $app */
+                    $app_array = array_merge( $app_array, $app->getAppsRecursive() );
+                }
+
+
+                foreach( $app_array as $app )
+                {
+                    if( isset($app->tcp) )
+                    {
+                        $protocol = "tcp/";
+                        foreach( $app->tcp as $tcp )
+                        {
+                            if( $tcp[0] == "single" )
+                                $port_mapping_text[$protocol . $tcp[1]] = $protocol . $tcp[1];
+                            elseif( $tcp[0] == "dynamic" )
+                            {
+                                #$port_mapping_text[$protocol . "dynamic"] = $protocol . "dynamic";
+                                $port_mapping_text[$protocol . "1024-65535"] = $protocol . "1024-65535";
+                            }
+                            elseif( $tcp[0] == "range" )
+                                $port_mapping_text[$protocol . $tcp[1] . "-" . $tcp[2]] = $protocol . $tcp[1] . "-" . $tcp[2];
+                            else
+                                foreach( $tcp as $port )
+                                    $port_mapping_text[$protocol . $port] = $protocol . $port;
+                        }
+                    }
+
+                    if( isset($app->udp) )
+                    {
+                        $protocol = "udp/";
+                        foreach( $app->udp as $udp )
+                        {
+                            if( $udp[0] == "single" )
+                                $port_mapping_text[$protocol . $udp[1]] = $protocol . $udp[1];
+                            elseif( $udp[0] == "dynamic" )
+                            {
+                                #$port_mapping_text[$protocol . "dynamic"] = $protocol . "dynamic";
+                                $port_mapping_text[$protocol . "1024-65535"] = $protocol . "1024-65535";
+                            }
+                            elseif( $udp[0] == "range" )
+                                $port_mapping_text[$protocol . $udp[1] . "-" . $udp[2]] = $protocol . $udp[1] . "-" . $udp[2];
+                            else
+                                foreach( $udp as $port )
+                                    $port_mapping_text[$protocol . $port] = $protocol . $port;
+                        }
+                    }
+                }
+
+                return $port_mapping_text;
+            }
+        }
+
 
         $objects = $rule->services->getAll();
 
