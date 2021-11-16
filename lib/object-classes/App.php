@@ -170,7 +170,16 @@ class App
         else
             $technologies = array();
 
-        foreach( $this->owner->getAll() as $app )
+        $appstore = $this->owner;
+        $all = $appstore->getAll();
+
+        while( get_class( $appstore->owner ) !== "PanoramaConf" && get_class( $appstore->owner ) !== "PANConf" )
+        {
+            $all = array_merge( $all, $appstore->owner->owner->appStore->getAll() );
+            $appstore = $appstore->owner->owner->appStore;
+        }
+
+        foreach( $all as $app )
         {
             $hasCategory = TRUE;
             if( count( $categories ) > 0 )
@@ -184,7 +193,7 @@ class App
             }
 
             $hasSubCategory = TRUE;
-            if( count( $categories ) > 0 )
+            if( count( $subcategories ) > 0 )
             {
                 $hasSubCategory = FALSE;
                 foreach( $subcategories as $subcategory )
@@ -205,11 +214,19 @@ class App
                 }
             }
 
-            if( $hasCategory && $hasSubCategory && $hasRisk )
+            $hasTechnology = TRUE;
+            if( count( $technologies ) > 0 )
             {
-                $app_array[] = $app;
+                $hasTechnology = FALSE;
+                foreach( $technologies as $technology )
+                {
+                    if( $technology === $app->technology )
+                        $hasTechnology = TRUE;
+                }
             }
 
+            if( $hasCategory && $hasSubCategory && $hasRisk && $hasTechnology )
+                $app_array[] = $app;
         }
 
         return $app_array;
@@ -618,6 +635,7 @@ class App
 
     function getAppsRecursive( $app_array = array() )
     {
+        #print $this->name()."\n";
         if( $this->isApplicationGroup() )
         {
             foreach( $this->groupApps() as $app )
@@ -625,11 +643,7 @@ class App
         }
         elseif( $this->isApplicationFilter() )
         {
-
-            //1) get all filtered apps
-            //2) go through apps and check
-            #foreach( $this->filteredApps() as $app )
-            #    $app_array = array_merge( $app_array, $app->getAppsRecursive( $app_array ) );
+            $app_array = array_merge( $app_array, $this->filteredApps() );
         }
         elseif( $this->isContainer() )
         {
@@ -637,9 +651,7 @@ class App
                 $app_array = array_merge( $app_array, $app->getAppsRecursive( $app_array ) );
         }
         else
-        {
             $app_array[] = $this;
-        }
 
         return $app_array;
     }

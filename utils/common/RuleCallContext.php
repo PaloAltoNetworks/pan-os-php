@@ -603,23 +603,26 @@ class RuleCallContext extends CallContext
 
                 foreach( $app_array as $app )
                 {
+                    #$name = " ".$app->name();
+                    $name = "";
+
                     if( isset($app->tcp) )
                     {
                         $protocol = "tcp/";
                         foreach( $app->tcp as $tcp )
                         {
                             if( $tcp[0] == "single" )
-                                $port_mapping_text[$protocol . $tcp[1]] = $protocol . $tcp[1];
+                                $port_mapping_text[$protocol . $tcp[1]] = $protocol . $tcp[1].$name;
                             elseif( $tcp[0] == "dynamic" )
                             {
                                 #$port_mapping_text[$protocol . "dynamic"] = $protocol . "dynamic";
-                                $port_mapping_text[$protocol . "1024-65535"] = $protocol . "1024-65535";
+                                $port_mapping_text[$protocol . "1024-65535"] = $protocol . "1024-65535". $name;
                             }
                             elseif( $tcp[0] == "range" )
-                                $port_mapping_text[$protocol . $tcp[1] . "-" . $tcp[2]] = $protocol . $tcp[1] . "-" . $tcp[2];
+                                $port_mapping_text[$protocol . $tcp[1] . "-" . $tcp[2]] = $protocol . $tcp[1] . "-" . $tcp[2]. $name;
                             else
                                 foreach( $tcp as $port )
-                                    $port_mapping_text[$protocol . $port] = $protocol . $port;
+                                    $port_mapping_text[$protocol . $port] = $protocol . $port. $name;
                         }
                     }
 
@@ -629,17 +632,17 @@ class RuleCallContext extends CallContext
                         foreach( $app->udp as $udp )
                         {
                             if( $udp[0] == "single" )
-                                $port_mapping_text[$protocol . $udp[1]] = $protocol . $udp[1];
+                                $port_mapping_text[$protocol . $udp[1]] = $protocol . $udp[1]. $name;
                             elseif( $udp[0] == "dynamic" )
                             {
                                 #$port_mapping_text[$protocol . "dynamic"] = $protocol . "dynamic";
-                                $port_mapping_text[$protocol . "1024-65535"] = $protocol . "1024-65535";
+                                $port_mapping_text[$protocol . "1024-65535"] = $protocol . "1024-65535". $name;
                             }
                             elseif( $udp[0] == "range" )
-                                $port_mapping_text[$protocol . $udp[1] . "-" . $udp[2]] = $protocol . $udp[1] . "-" . $udp[2];
+                                $port_mapping_text[$protocol . $udp[1] . "-" . $udp[2]] = $protocol . $udp[1] . "-" . $udp[2]. $name;
                             else
                                 foreach( $udp as $port )
-                                    $port_mapping_text[$protocol . $port] = $protocol . $port;
+                                    $port_mapping_text[$protocol . $port] = $protocol . $port.$name;
                         }
                     }
                 }
