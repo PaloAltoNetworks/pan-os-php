@@ -33,6 +33,11 @@
     <script>
 
         var server_url = window.location.protocol + "//" + window.location.host;
+        var fullpathname = window.location.pathname;
+        var pathToReplace = "/utils/develop/ui/";
+
+        var path = fullpathname.replace(pathToReplace, "");
+        server_url = server_url + path;
 
         $(document).ready(function () {
 
