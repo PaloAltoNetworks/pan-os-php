@@ -478,6 +478,7 @@
             }
 
             var message = "pa_" +SCRIPT+ "-edit";
+            var message = "pan-os-php type=" +SCRIPT;
             message += Actiontext;
             message += Filtertext;
 
