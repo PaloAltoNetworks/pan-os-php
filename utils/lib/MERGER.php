@@ -877,7 +877,7 @@ class MERGER extends UTIL
                 {
                     if( !$tmp_address->isGroup() )
                     {
-                        PH::print_stdout( "    - SKIP: object name '{$pickedObject->_PANC_shortName()}' of type AddressGroup can not be merged with object name DG: '".$tmp_DG_name."' '{$tmp_address->name()}' of type Address" );
+                        PH::print_stdout( "    - SKIP: object name '{$pickedObject->_PANC_shortName()}' of type AddressGroup can not be merged with object name: '{$tmp_address->_PANC_shortName()}' of type Address" );
                         continue;
                     }
 
@@ -890,7 +890,7 @@ class MERGER extends UTIL
                     }
                     else
                     {
-                        PH::print_stdout( "    - SKIP: object name '{$pickedObject->_PANC_shortName()}' [with value '{$pickedObject_value}'] is not IDENTICAL to object name DG: '".$tmp_DG_name."' '{$tmp_address->name()}' [with value '{$tmp_address_value}']" );
+                        PH::print_stdout( "    - SKIP: object name '{$pickedObject->_PANC_shortName()}' [with value '{$pickedObject_value}'] is not IDENTICAL to object name: '{$tmp_address->_PANC_shortName()}' [with value '{$tmp_address_value}']" );
                         continue;
                     }
                 }
@@ -963,6 +963,7 @@ class MERGER extends UTIL
 
             $hashMap = array();
             $child_hashMap = array();
+            $child_NamehashMap = array();
             $upperHashMap = array();
             if( $this->dupAlg == 'sameaddress' || $this->dupAlg == 'identical' )
             {
@@ -984,6 +985,7 @@ class MERGER extends UTIL
 
                         #PH::print_stdout( "add objNAME: " . $object->name() . " DG: " . $object->owner->owner->name() . "" );
                         $child_hashMap[$value][] = $object;
+                        $child_NamehashMap[$object->name()][] = $object;
                     }
                 }
 
@@ -1234,7 +1236,7 @@ class MERGER extends UTIL
                                 if( $this->dupAlg == 'identical' )
                                     if( $pickedObject->name() != $ancestor->name() )
                                     {
-                                        PH::print_stdout( "    - SKIP: object name '{$pickedObject->_PANC_shortName()}' [with value '{$pickedObject->value()}'] is not IDENTICAL to object name from upperlevel '{$ancestor->name()}' [with value '{$ancestor->value()}'] " );
+                                        PH::print_stdout( "    - SKIP: object name '{$pickedObject->_PANC_shortName()}' [with value '{$pickedObject->value()}'] is not IDENTICAL to object name from upperlevel '{$ancestor->_PANC_shortName()}' [with value '{$ancestor->value()}'] " );
                                         continue;
                                     }
 
@@ -1331,7 +1333,7 @@ class MERGER extends UTIL
                         }
                     }
                     else
-                        PH::print_stdout( "    - SKIP: object name '{$object->name()}' is not IDENTICAL" );
+                        PH::print_stdout( "    - SKIP: object name '{$object->_PANC_shortName()}' is not IDENTICAL" );
                 }
             }
 
@@ -1374,6 +1376,25 @@ class MERGER extends UTIL
                 $tmp_address = $store->find( $pickedObject->name() );
                 if( $tmp_address == null )
                 {
+                    if( isset( $child_NamehashMap[ $pickedObject->name() ] ) )
+                    {
+                        $exit = false;
+                        $exitObject = null;
+                        foreach( $child_NamehashMap[ $pickedObject->name() ] as $obj )
+                        {
+                            if( $obj->value() !== $pickedObject->value() )
+                            {
+                                $exit = true;
+                                $exitObject = $obj;
+                            }
+                        }
+
+                        if( $exit )
+                        {
+                            PH::print_stdout( "   * SKIP: no creation of object in DG: '".$tmp_DG_name."' as object with same name '{$exitObject->name()}' and different value '{$exitObject->value()}' exist at childDG level" );
+                            continue;
+                        }
+                    }
                     PH::print_stdout( "   * create object in DG: '".$tmp_DG_name."' : '".$pickedObject->name()."'" );
 
                     /** @var AddressStore $store */
@@ -1392,14 +1413,14 @@ class MERGER extends UTIL
                     }
                     else
                     {
-                        $string = "    - SKIP: object name '{$pickedObject->name()}'";
+                        $string = "    - SKIP: object name '{$pickedObject->_PANC_shortName()}'";
 
                         if( $pickedObject->isAddress() )
                             $string .= " [with value '{$pickedObject->value()}']";
                         else
                             $string .= " [AdressGroup]";
 
-                        $string .= " is not IDENTICAL to object name DG: '".$tmp_DG_name."' '{$tmp_address->name()}'";
+                        $string .= " is not IDENTICAL to object name: '{$tmp_address->_PANC_shortName()}'";
 
                         if( $tmp_address->isAddress() )
                             $string .= " [with value '{$tmp_address->value()}']";
@@ -1840,6 +1861,7 @@ class MERGER extends UTIL
 
             $hashMap = array();
             $child_hashMap = array();
+            $child_NamehashMap = array();
             $upperHashMap = array();
             if( $this->dupAlg == 'sameports' || $this->dupAlg == 'samedstsrcports' )
             {
@@ -1861,6 +1883,7 @@ class MERGER extends UTIL
 
                         #PH::print_stdout( "add objNAME: " . $object->name() . " DG: " . $object->owner->owner->name() . "" );
                         $child_hashMap[$value][] = $object;
+                        $child_NamehashMap[$object->name()][] = $object;
                     }
                 }
 
@@ -2199,6 +2222,25 @@ class MERGER extends UTIL
                     $tmp_service = $store->find( $pickedObject->name() );
                     if( $tmp_service == null )
                     {
+                        if( isset( $child_NamehashMap[ $pickedObject->name() ] ) )
+                        {
+                            $exit = false;
+                            $exitObject = null;
+                            foreach( $child_NamehashMap[ $pickedObject->name() ] as $obj )
+                            {
+                                if( !$obj->dstPortMapping()->equals($pickedObject->dstPortMapping()) || !$obj->srcPortMapping()->equals($pickedObject->srcPortMapping()) )
+                                {
+                                    $exit = true;
+                                    $exitObject = $obj;
+                                }
+                            }
+
+                            if( $exit )
+                            {
+                                PH::print_stdout( "   * SKIP: no creation of object in DG: '".$tmp_DG_name."' as object with same name '{$exitObject->name()}' and different value '{$exitObject->dstPortMapping()}' exist at childDG level" );
+                                continue;
+                            }
+                        }
                         PH::print_stdout( "   * create object in DG: '".$tmp_DG_name."' : '".$pickedObject->name()."'" );
 
                         /** @var ServiceStore $store */
@@ -2217,13 +2259,13 @@ class MERGER extends UTIL
                         }
                         else
                         {
-                            $string = "    - SKIP: object name '{$pickedObject->name()}'";
+                            $string = "    - SKIP: object name '{$pickedObject->_PANC_shortName()}'";
                             if( $pickedObject->isService() )
                                 $string .= " [with value '{$pickedObject->getDestPort()}']";
                             else
                                 $string .= " [ServiceGroup] ";
 
-                            $string .= " is not IDENTICAL to object name DG: '".$tmp_DG_name."' '{$tmp_service->name()}'";
+                            $string .= " is not IDENTICAL to object name: '{$tmp_service->_PANC_shortName()}'";
 
                             if( $tmp_service->isService() )
                                 $string .= " [with value '{$tmp_service->getDestPort()}']";
@@ -2395,6 +2437,7 @@ class MERGER extends UTIL
 
             $hashMap = array();
             $child_hashMap = array();
+            $child_NamehashMap = array();
             $upperHashMap = array();
             if( $this->dupAlg == 'samecolor' || $this->dupAlg == 'identical' )
             {
@@ -2417,6 +2460,7 @@ class MERGER extends UTIL
 
                         #PH::print_stdout( "add objNAME: " . $object->name() . " DG: " . $object->owner->owner->name() . "" );
                         $child_hashMap[$value][] = $object;
+                        $child_NamehashMap[$object->name()][] = $object;
                     }
                 }
 
@@ -2720,7 +2764,7 @@ class MERGER extends UTIL
                         }
                     }
                     else
-                        PH::print_stdout( "    - SKIP: object name '{$object->name()}' is not IDENTICAL" );
+                        PH::print_stdout( "    - SKIP: object name '{$object->_PANC_shortName()}' is not IDENTICAL" );
                 }
             }
 
@@ -2763,6 +2807,25 @@ class MERGER extends UTIL
                 $tmp_tag = $store->find( $pickedObject->name() );
                 if( $tmp_tag == null )
                 {
+                    if( isset( $child_NamehashMap[ $pickedObject->name() ] ) )
+                    {
+                        $exit = false;
+                        $exitObject = null;
+                        foreach( $child_NamehashMap[ $pickedObject->name() ] as $obj )
+                        {
+                            if( $obj->sameValue($pickedObject) ) //same color
+                            {
+                                $exit = true;
+                                $exitObject = $obj;
+                            }
+                        }
+
+                        if( $exit )
+                        {
+                            PH::print_stdout( "   * SKIP: no creation of object in DG: '".$tmp_DG_name."' as object with same name '{$exitObject->name()}' and different value exist at childDG level" );
+                            continue;
+                        }
+                    }
                     PH::print_stdout( "   * create object in DG: '".$tmp_DG_name."' : '".$pickedObject->name()."'" );
 
                     $tmp_tag = $store->createTag($pickedObject->name() );
@@ -2785,7 +2848,7 @@ class MERGER extends UTIL
                     }
                     else
                     {
-                        PH::print_stdout( "    - SKIP: object name '{$pickedObject->_PANC_shortName()}' [with value '{$pickedObject->getColor()}'] is not IDENTICAL to object name DG: '".$tmp_DG_name."' '{$tmp_tag->name()}' [with value '{$tmp_tag->getColor()}'] " );
+                        PH::print_stdout( "    - SKIP: object name '{$pickedObject->_PANC_shortName()}' [with value '{$pickedObject->getColor()}'] is not IDENTICAL to object name: '{$tmp_tag->_PANC_shortName()}' [with value '{$tmp_tag->getColor()}'] " );
                         continue;
                     }
                 }
