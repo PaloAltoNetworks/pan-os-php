@@ -637,7 +637,7 @@ class MERGER extends UTIL
                         if( $pickedObject === null )
                             $pickedObject = reset($upperHashMap[$index]);
 
-                        PH::print_stdout( "   * using object from upper level : '{$pickedObject->name()}'" );
+                        PH::print_stdout( "   * using object from upper level : '{$pickedObject->_PANC_shortName()}'" );
                     }
                     else
                     {
@@ -652,7 +652,7 @@ class MERGER extends UTIL
                         if( $pickedObject === null )
                             $pickedObject = reset($hash);
 
-                        PH::print_stdout( "   * keeping object '{$pickedObject->name()}'" );
+                        PH::print_stdout( "   * keeping object '{$pickedObject->_PANC_shortName()}'" );
                     }
                 }
                 else
@@ -660,12 +660,12 @@ class MERGER extends UTIL
                     if( isset($upperHashMap[$index]) )
                     {
                         $pickedObject = reset($upperHashMap[$index]);
-                        PH::print_stdout( "   * using object from upper level : '{$pickedObject->name()}'" );
+                        PH::print_stdout( "   * using object from upper level : '{$pickedObject->_PANC_shortName()}'" );
                     }
                     else
                     {
                         $pickedObject = reset($hash);
-                        PH::print_stdout( "   * keeping object '{$pickedObject->name()}'" );
+                        PH::print_stdout( "   * keeping object '{$pickedObject->_PANC_shortName()}'" );
                     }
                 }
 
@@ -877,7 +877,7 @@ class MERGER extends UTIL
                 {
                     if( !$tmp_address->isGroup() )
                     {
-                        PH::print_stdout( "    - SKIP: object name '{$pickedObject->name()}' of type AddressGroup can not be merged with object name DG: '".$tmp_DG_name."' '{$tmp_address->name()}' of type Address" );
+                        PH::print_stdout( "    - SKIP: object name '{$pickedObject->_PANC_shortName()}' of type AddressGroup can not be merged with object name DG: '".$tmp_DG_name."' '{$tmp_address->name()}' of type Address" );
                         continue;
                     }
 
@@ -886,11 +886,11 @@ class MERGER extends UTIL
 
                     if( $pickedObject_value == $tmp_address_value )
                     {
-                        PH::print_stdout( "   * keeping object '{$tmp_address->name()}'" );
+                        PH::print_stdout( "   * keeping object '{$tmp_address->_PANC_shortName()}'" );
                     }
                     else
                     {
-                        PH::print_stdout( "    - SKIP: object name '{$pickedObject->name()}' [with value '{$pickedObject_value}'] is not IDENTICAL to object name DG: '".$tmp_DG_name."' '{$tmp_address->name()}' [with value '{$tmp_address_value}']" );
+                        PH::print_stdout( "    - SKIP: object name '{$pickedObject->_PANC_shortName()}' [with value '{$pickedObject_value}'] is not IDENTICAL to object name DG: '".$tmp_DG_name."' '{$tmp_address->name()}' [with value '{$tmp_address_value}']" );
                         continue;
                     }
                 }
@@ -1101,6 +1101,8 @@ class MERGER extends UTIL
                         continue;
 
                     $value = $object->getRefHashComp() . $object->getNetworkValue();
+                    $value = $object->value();
+                    $value = $object->type() . '-' . $value;
                     if( $object->owner === $store )
                     {
                         $hashMap[$value][] = $object;
@@ -1176,7 +1178,7 @@ class MERGER extends UTIL
                         if( $pickedObject === null )
                             $pickedObject = reset($upperHashMap[$index]);
 
-                        PH::print_stdout( "   * using object from upper level : '{$pickedObject->name()}'" );
+                        PH::print_stdout( "   * using object from upper level : '{$pickedObject->_PANC_shortName()}'" );
                     }
                     else
                     {
@@ -1191,7 +1193,7 @@ class MERGER extends UTIL
                         if( $pickedObject === null )
                             $pickedObject = reset($hash);
 
-                        PH::print_stdout( "   * keeping object '{$pickedObject->name()}'" );
+                        PH::print_stdout( "   * keeping object '{$pickedObject->_PANC_shortName()}'" );
                     }
                 }
                 else
@@ -1199,12 +1201,12 @@ class MERGER extends UTIL
                     if( isset($upperHashMap[$index]) )
                     {
                         $pickedObject = reset($upperHashMap[$index]);
-                        PH::print_stdout( "   * using object from upper level : '{$pickedObject->name()}'" );
+                        PH::print_stdout( "   * using object from upper level : '{$pickedObject->_PANC_shortName()}'" );
                     }
                     else
                     {
                         $pickedObject = reset($hash);
-                        PH::print_stdout( "   * keeping object '{$pickedObject->name()}'" );
+                        PH::print_stdout( "   * keeping object '{$pickedObject->_PANC_shortName()}'" );
                     }
                 }
 
@@ -1220,7 +1222,7 @@ class MERGER extends UTIL
 
                         if( !$ancestor->isAddress() )
                         {
-                            PH::print_stdout( "    - SKIP: object name '{$object->name()}' as one ancestor is of type addressgroup" );
+                            PH::print_stdout( "    - SKIP: object name '{$object->_PANC_shortName()}' as one ancestor is of type addressgroup" );
                             continue;
                         }
 
@@ -1232,7 +1234,7 @@ class MERGER extends UTIL
                                 if( $this->dupAlg == 'identical' )
                                     if( $pickedObject->name() != $ancestor->name() )
                                     {
-                                        PH::print_stdout( "    - SKIP: object name '{$pickedObject->name()}' [with value '{$pickedObject->value()}'] is not IDENTICAL to object name from upperlevel '{$ancestor->name()}' [with value '{$ancestor->value()}'] " );
+                                        PH::print_stdout( "    - SKIP: object name '{$pickedObject->_PANC_shortName()}' [with value '{$pickedObject->value()}'] is not IDENTICAL to object name from upperlevel '{$ancestor->name()}' [with value '{$ancestor->value()}'] " );
                                         continue;
                                     }
 
@@ -1386,7 +1388,7 @@ class MERGER extends UTIL
                 {
                     if( $tmp_address->type() === $pickedObject->type() && $tmp_address->value() === $pickedObject->value() )
                     {
-                        PH::print_stdout( "   * keeping object '{$tmp_address->name()}'" );
+                        PH::print_stdout( "   * keeping object '{$tmp_address->_PANC_shortName()}'" );
                     }
                     else
                     {
@@ -1634,7 +1636,7 @@ class MERGER extends UTIL
                         if( $pickedObject === null )
                             $pickedObject = reset($upperHashMap[$index]);
 
-                        PH::print_stdout( "   * using object from upper level : '{$pickedObject->name()}'" );
+                        PH::print_stdout( "   * using object from upper level : '{$pickedObject->_PANC_shortName()}'" );
                     }
                     else
                     {
@@ -1649,7 +1651,7 @@ class MERGER extends UTIL
                         if( $pickedObject === null )
                             $pickedObject = reset($hash);
 
-                        PH::print_stdout( "   * keeping object '{$pickedObject->name()}'" );
+                        PH::print_stdout( "   * keeping object '{$pickedObject->_PANC_shortName()}'" );
                     }
                 }
                 else
@@ -1657,12 +1659,12 @@ class MERGER extends UTIL
                     if( isset($upperHashMap[$index]) )
                     {
                         $pickedObject = reset($upperHashMap[$index]);
-                        PH::print_stdout( "   * using object from upper level : '{$pickedObject->name()}'" );
+                        PH::print_stdout( "   * using object from upper level : '{$pickedObject->_PANC_shortName()}'" );
                     }
                     else
                     {
                         $pickedObject = reset($hash);
-                        PH::print_stdout( "   * keeping object '{$pickedObject->name()}'" );
+                        PH::print_stdout( "   * keeping object '{$pickedObject->_PANC_shortName()}'" );
                     }
                 }
 
@@ -2015,7 +2017,7 @@ class MERGER extends UTIL
                             if( $pickedObject === null )
                                 $pickedObject = reset($upperHashMap[$index]);
 
-                            PH::print_stdout( "   * using object from upper level : '{$pickedObject->name()}'" );
+                            PH::print_stdout( "   * using object from upper level : '{$pickedObject->_PANC_shortName()}'" );
                         }
                         else
                         {
@@ -2030,7 +2032,7 @@ class MERGER extends UTIL
                             if( $pickedObject === null )
                                 $pickedObject = reset($hash);
 
-                            PH::print_stdout( "   * keeping object '{$pickedObject->name()}'" );
+                            PH::print_stdout( "   * keeping object '{$pickedObject->_PANC_shortName()}'" );
                         }
                     }
                     else
@@ -2038,12 +2040,12 @@ class MERGER extends UTIL
                         if( isset($upperHashMap[$index]) )
                         {
                             $pickedObject = reset($upperHashMap[$index]);
-                            PH::print_stdout( "   * using object from upper level : '{$pickedObject->name()}'" );
+                            PH::print_stdout( "   * using object from upper level : '{$pickedObject->_PANC_shortName()}'" );
                         }
                         else
                         {
                             $pickedObject = reset($hash);
-                            PH::print_stdout( "   * keeping object '{$pickedObject->name()}'" );
+                            PH::print_stdout( "   * keeping object '{$pickedObject->_PANC_shortName()}'" );
                         }
                     }
 
@@ -2057,7 +2059,7 @@ class MERGER extends UTIL
 
                             if( !$ancestor->isService() )
                             {
-                                PH::print_stdout( "    - SKIP: object name '{$object->name()}' as one ancestor is of type servicegroup" );
+                                PH::print_stdout( "    - SKIP: object name '{$object->_PANC_shortName()}' as one ancestor is of type servicegroup" );
                                 continue;
                             }
 
@@ -2211,7 +2213,7 @@ class MERGER extends UTIL
                     {
                         if( $tmp_service->equals( $pickedObject ) )
                         {
-                            PH::print_stdout( "   * keeping object '{$tmp_service->name()}'" );
+                            PH::print_stdout( "   * keeping object '{$tmp_service->_PANC_shortName()}'" );
                         }
                         else
                         {
@@ -2288,7 +2290,7 @@ class MERGER extends UTIL
                     if( $pickedObject === null )
                         $pickedObject = reset($hash);
 
-                    PH::print_stdout( "   * keeping object '{$pickedObject->name()}'" );
+                    PH::print_stdout( "   * keeping object '{$pickedObject->_PANC_shortName()}'" );
 
                     foreach( $hash as $object )
                     {
@@ -2571,7 +2573,7 @@ class MERGER extends UTIL
                         if( $pickedObject === null )
                             $pickedObject = reset($upperHashMap[$index]);
 
-                        PH::print_stdout( "   * using object from upper level : '{$pickedObject->name()}'" );
+                        PH::print_stdout( "   * using object from upper level : '{$pickedObject->_PANC_shortName()}'" );
                     }
                     else
                     {
@@ -2586,7 +2588,7 @@ class MERGER extends UTIL
                         if( $pickedObject === null )
                             $pickedObject = reset($hash);
 
-                        PH::print_stdout( "   * keeping object '{$pickedObject->name()}'" );
+                        PH::print_stdout( "   * keeping object '{$pickedObject->_PANC_shortName()}'" );
                     }
                 }
                 else
@@ -2594,12 +2596,12 @@ class MERGER extends UTIL
                     if( isset($upperHashMap[$index]) )
                     {
                         $pickedObject = reset($upperHashMap[$index]);
-                        PH::print_stdout( "   * using object from upper level : '{$pickedObject->name()}'" );
+                        PH::print_stdout( "   * using object from upper level : '{$pickedObject->_PANC_shortName()}'" );
                     }
                     else
                     {
                         $pickedObject = reset($hash);
-                        PH::print_stdout( "   * keeping object '{$pickedObject->name()}'" );
+                        PH::print_stdout( "   * keeping object '{$pickedObject->_PANC_shortName()}'" );
                     }
                 }
 
@@ -2615,7 +2617,7 @@ class MERGER extends UTIL
 
                         if( !$ancestor->isTag() )
                         {
-                            PH::print_stdout( "    - SKIP: object name '{$object->name()}' has one ancestor which is not TAG object" );
+                            PH::print_stdout( "    - SKIP: object name '{$object->_PANC_shortName()}' has one ancestor which is not TAG object" );
                             continue;
                         }
 
@@ -2628,7 +2630,7 @@ class MERGER extends UTIL
                                 if( $this->dupAlg == 'identical' )
                                     if( $pickedObject->name() != $ancestor->name() )
                                     {
-                                        PH::print_stdout( "    - SKIP: object name '{$object->name()}' is not IDENTICAL to object name from upperlevel '{$pickedObject->name()}' " );
+                                        PH::print_stdout( "    - SKIP: object name '{$object->_PANC_shortName()}' is not IDENTICAL to object name from upperlevel '{$pickedObject->_PANC_shortName()}' " );
                                         continue;
                                     }
 
@@ -2779,11 +2781,11 @@ class MERGER extends UTIL
                 {
                     if( $tmp_tag->equals( $pickedObject ) )
                     {
-                        PH::print_stdout( "   * keeping object '{$tmp_tag->name()}'" );
+                        PH::print_stdout( "   * keeping object '{$tmp_tag->_PANC_shortName()}'" );
                     }
                     else
                     {
-                        PH::print_stdout( "    - SKIP: object name '{$pickedObject->name()}' [with value '{$pickedObject->getColor()}'] is not IDENTICAL to object name DG: '".$tmp_DG_name."' '{$tmp_tag->name()}' [with value '{$tmp_tag->getColor()}'] " );
+                        PH::print_stdout( "    - SKIP: object name '{$pickedObject->_PANC_shortName()}' [with value '{$pickedObject->getColor()}'] is not IDENTICAL to object name DG: '".$tmp_DG_name."' '{$tmp_tag->name()}' [with value '{$tmp_tag->getColor()}'] " );
                         continue;
                     }
                 }
