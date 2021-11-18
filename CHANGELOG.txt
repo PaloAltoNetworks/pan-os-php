@@ -7,6 +7,7 @@ UTILS:
 * pa_device-edit - extend manageddevice information if PAN-OS API is used
 * pa_device-edit | introduce actions=exportInventoryToExcel / exportLicenseToExcport devicetype=manageddevice
 * pa_rule-edit | actions=display:resolveServiceSummary shadow-json - if service is.application-default and app is.any => do service resolve to default app protocol port
+* pa_rule-stats | optimised if arguments "cycleconnectedfirewalls" to display FW model
 
 BUGFIX:
 *  all utils script - bugfix if Panorama config is used with loadpanoramapushedconfig
