@@ -1471,7 +1471,11 @@ class UTIL
             /** @var PANConf|PanoramaConf|FawkesConf $pan */
             $pan = $this->pan;
 
-            $pan->display_statistics();
+            $mainConnector = null;
+            if( $this->configInput['type'] == 'api' )
+                $mainConnector = findConnector($pan);
+
+            $pan->display_statistics( $mainConnector );
 
 
             $processedLocations = array();
@@ -1498,7 +1502,6 @@ class UTIL
 
             if( isset(PH::$args['cycleconnectedfirewalls']) && $this->configType == 'panorama' && $this->configInput['type'] == 'api' )
             {
-                $mainConnector = findConnector($pan);
                 $managedSerials = $pan->managedFirewallsSerialsModel;
                 foreach( $managedSerials as $serial => $fw )
                 {
@@ -1511,7 +1514,7 @@ class UTIL
                     $doc = $fwconnector->getMergedConfig();
                     $firewall->load_from_domxml( $doc );
 
-                    $firewall->display_statistics();
+                    $firewall->display_statistics( $fwconnector );
                 }
 
             }

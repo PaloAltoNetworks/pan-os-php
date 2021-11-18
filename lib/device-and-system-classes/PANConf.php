@@ -695,7 +695,7 @@ class PANConf
     }
 
 
-    public function display_statistics( )
+    public function display_statistics( $connector = null )
     {
 
         $numSecRules = 0;
@@ -793,6 +793,16 @@ class PANConf
 
         $header = "Statistics for PANConf '" . $this->name . "'";
         $stdoutarray['header'] = $header;
+
+        if( $connector !== null )
+        {
+            /** @var PanAPIConnector$connector */
+            if( $connector->info_model == "PA-VM" )
+                $stdoutarray['model'] = $connector->info_vmlicense;
+            else
+                $stdoutarray['model'] = $connector->info_model;
+        }
+
 
         $stdoutarray['security rules'] = $numSecRules;
 

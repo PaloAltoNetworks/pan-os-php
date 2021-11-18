@@ -1081,7 +1081,7 @@ class PanoramaConf
     }
 
 
-    public function display_statistics()
+    public function display_statistics( $connector = null )
     {
 
         $gpreSecRules = $this->securityRules->countPreRules();
