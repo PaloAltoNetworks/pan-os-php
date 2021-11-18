@@ -980,6 +980,7 @@ class MERGER extends UTIL
                             continue;
 
                         $value = $object->value();
+                        $value = $object->type() . '-' . $value;
 
                         #PH::print_stdout( "add objNAME: " . $object->name() . " DG: " . $object->owner->owner->name() . "" );
                         $child_hashMap[$value][] = $object;
@@ -1123,7 +1124,7 @@ class MERGER extends UTIL
             $countConcernedObjects = 0;
             foreach( $hashMap as $index => &$hash )
             {
-                if( count($hash) == 1 && !isset($upperHashMap[$index]) && !isset(reset($hash)->ancestor) )
+                if( count($hash) == 1 && !isset($upperHashMap[$index]) && !isset($child_hashMap[$index]) && !isset(reset($hash)->ancestor) )
                     unset($hashMap[$index]);
                 else
                     $countConcernedObjects += count($hash);
@@ -1133,13 +1134,12 @@ class MERGER extends UTIL
             $countConcernedChildObjects = 0;
             foreach( $child_hashMap as $index => &$hash )
             {
-                if( count($hash) == 1 && !isset($upperHashMap[$index]) && !isset(reset($hash)->ancestor) )
+                if( count($hash) == 1 && !isset($upperHashMap[$index]) && !isset($hashMap[$index]) && !isset(reset($hash)->ancestor) )
                     unset($child_hashMap[$index]);
                 else
                     $countConcernedChildObjects += count($hash);
             }
             unset($hash);
-
 
 
 
