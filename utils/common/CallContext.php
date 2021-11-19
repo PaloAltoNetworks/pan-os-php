@@ -70,10 +70,12 @@ class CallContext
     {
         $this->object = $object;
 
-        $tmp_txt = "   - object '" . PH::boldText($object->name()) . "' passing through Action='{$this->actionRef['name']}'";
+        $name = $object->name();
 
-        PH::$JSON_TMP['sub']['object'][$object->name()]['name'] = $object->name();
-        PH::$JSON_TMP['sub']['object'][$object->name()]['actions'][$this->actionRef['name']]['name'] = $this->actionRef['name'];
+        $tmp_txt = "   - object '" . PH::boldText($name) . "' passing through Action='{$this->actionRef['name']}'";
+
+        PH::$JSON_TMP['sub']['object'][$name]['name'] = $name;
+        PH::$JSON_TMP['sub']['object'][$name]['actions'][$this->actionRef['name']]['name'] = $this->actionRef['name'];
 
         if( count($this->arguments) != 0 )
         {
