@@ -690,6 +690,12 @@ DeviceCallContext::$supportedActions['exportLicenseToExcel'] = array(
 
 DeviceCallContext::$supportedActions['display-shadowrule'] = array(
     'name' => 'display-shadowrule',
+    'GlobalInitFunction' => function (DeviceCallContext $context) {
+        $context->first = true;
+
+        if( !$context->isAPI )
+            derr( "API mode needed for actions=display-shadowrule" );
+    },
     'MainFunction' => function (DeviceCallContext $context)
     {
         $object = $context->object;
@@ -743,21 +749,457 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
             {
                 //uid: $key -> search rule name for uid
                 /** @var DeviceGroup $DG */
+                $DGname = $object->devicegroup;
 
-                /*
-                $DG = $object->devicegroup;
-                //not possible due to $DG is string not object
-                PH::print_stdout( $DG->name() );
 
-                $rule = $DG->securityRules->find( $key );
-                PH::print_stdout( "        * RULE: " . $rule->name() );
-                */
+                /** @var PanoramaConf $pan */
+                $pan = $object->owner->owner;
+                $dg = $pan->findDeviceGroup( $DGname );
+
+                #$rule = $dg->securityRules->findByUUID( $key );
+                #PH::print_stdout( "        * RULE: " . $rule->name() );
+
                 PH::print_stdout( "        * RULE: " . $key );
 
                 foreach( $item as $shadow )
                     PH::print_stdout( "          - " . $shadow );
             }
 
+        }
+    }
+);
+
+DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = array(
+    'name' => 'securityprofile-create-alert-only',
+    'GlobalInitFunction' => function (DeviceCallContext $context) {
+        $context->first = true;
+
+        if( $context->isAPI )
+            derr( "API mode not implemented yet" );
+    },
+    'MainFunction' => function (DeviceCallContext $context)
+    {
+        $object = $context->object;
+        $classtype = get_class($object);
+
+        if( $context->first )
+        {
+            $av_xmlString = "<entry name=\"Alert-Only-AV\">
+        <decoder>
+          <entry name=\"ftp\">
+            <action>alert</action>
+            <wildfire-action>alert</wildfire-action>
+            <mlav-action>alert</mlav-action>
+          </entry>
+          <entry name=\"http\">
+            <action>alert</action>
+            <wildfire-action>alert</wildfire-action>
+            <mlav-action>alert</mlav-action>
+          </entry>
+          <entry name=\"http2\">
+            <action>alert</action>
+            <wildfire-action>alert</wildfire-action>
+            <mlav-action>alert</mlav-action>
+          </entry>
+          <entry name=\"imap\">
+            <action>alert</action>
+            <wildfire-action>alert</wildfire-action>
+            <mlav-action>alert</mlav-action>
+          </entry>
+          <entry name=\"pop3\">
+            <action>alert</action>
+            <wildfire-action>alert</wildfire-action>
+            <mlav-action>alert</mlav-action>
+          </entry>
+          <entry name=\"smb\">
+            <action>alert</action>
+            <wildfire-action>alert</wildfire-action>
+            <mlav-action>alert</mlav-action>
+          </entry>
+          <entry name=\"smtp\">
+            <action>alert</action>
+            <wildfire-action>alert</wildfire-action>
+            <mlav-action>alert</mlav-action>
+          </entry>
+        </decoder>
+        <mlav-engine-filebased-enabled>
+          <entry name=\"Windows Executables\">
+            <mlav-policy-action>enable(alert-only)</mlav-policy-action>
+          </entry>
+          <entry name=\"PowerShell Script 1\">
+            <mlav-policy-action>enable(alert-only)</mlav-policy-action>
+          </entry>
+          <entry name=\"PowerShell Script 2\">
+            <mlav-policy-action>enable(alert-only)</mlav-policy-action>
+          </entry>
+          <entry name=\"Executable Linked Format\">
+            <mlav-policy-action>enable(alert-only)</mlav-policy-action>
+          </entry>
+        </mlav-engine-filebased-enabled>
+      </entry>";
+
+            $as_xmlString = "<entry name=\"Alert-Only-AS\">
+        <botnet-domains>
+          <lists>
+            <entry name=\"default-paloalto-dns\">
+              <action>
+                <alert/>
+              </action>
+              <packet-capture>single-packet</packet-capture>
+            </entry>
+          </lists>
+          <dns-security-categories>
+            <entry name=\"pan-dns-sec-benign\">
+              <log-level>default</log-level>
+              <action>allow</action>
+              <packet-capture>disable</packet-capture>
+            </entry>
+            <entry name=\"pan-dns-sec-cc\">
+              <log-level>default</log-level>
+              <action>allow</action>
+              <packet-capture>single-packet</packet-capture>
+            </entry>
+            <entry name=\"pan-dns-sec-ddns\">
+              <log-level>default</log-level>
+              <action>allow</action>
+              <packet-capture>single-packet</packet-capture>
+            </entry>
+            <entry name=\"pan-dns-sec-malware\">
+              <log-level>default</log-level>
+              <action>allow</action>
+              <packet-capture>single-packet</packet-capture>
+            </entry>
+            <entry name=\"pan-dns-sec-recent\">
+              <log-level>default</log-level>
+              <action>allow</action>
+              <packet-capture>single-packet</packet-capture>
+            </entry>
+          </dns-security-categories>
+          <sinkhole>
+            <ipv4-address>sinkhole.paloaltonetworks.com</ipv4-address>
+            <ipv6-address>2600:5200::1</ipv6-address>
+          </sinkhole>
+        </botnet-domains>
+        <rules>
+          <entry name=\"Alert-All\">
+            <action>
+              <alert/>
+            </action>
+            <severity>
+              <member>any</member>
+            </severity>
+            <threat-name>any</threat-name>
+            <category>any</category>
+            <packet-capture>disable</packet-capture>
+          </entry>
+        </rules>
+      </entry>";
+
+            $vp_xmlString = "<entry name=\"Alert-Only-VP\">
+        <rules>
+          <entry name=\"Alert-All\">
+            <action>
+              <alert/>
+            </action>
+            <vendor-id>
+              <member>any</member>
+            </vendor-id>
+            <severity>
+              <member>any</member>
+            </severity>
+            <cve>
+              <member>any</member>
+            </cve>
+            <threat-name>any</threat-name>
+            <host>any</host>
+            <category>any</category>
+            <packet-capture>disable</packet-capture>
+          </entry>
+        </rules>
+      </entry>";
+
+            $url_xmlString = "<entry name=\"Alert-Only-URL\">
+        <credential-enforcement>
+          <mode>
+            <ip-user/>
+          </mode>
+          <log-severity>medium</log-severity>
+          <alert>
+            <member>Block</member>
+            <member>Allow</member>
+            <member>abortion</member>
+            <member>abused-drugs</member>
+            <member>adult</member>
+            <member>alcohol-and-tobacco</member>
+            <member>auctions</member>
+            <member>business-and-economy</member>
+            <member>command-and-control</member>
+            <member>computer-and-internet-info</member>
+            <member>content-delivery-networks</member>
+            <member>copyright-infringement</member>
+            <member>cryptocurrency</member>
+            <member>dating</member>
+            <member>dynamic-dns</member>
+            <member>educational-institutions</member>
+            <member>entertainment-and-arts</member>
+            <member>extremism</member>
+            <member>financial-services</member>
+            <member>gambling</member>
+            <member>games</member>
+            <member>government</member>
+            <member>grayware</member>
+            <member>hacking</member>
+            <member>health-and-medicine</member>
+            <member>high-risk</member>
+            <member>home-and-garden</member>
+            <member>hunting-and-fishing</member>
+            <member>insufficient-content</member>
+            <member>internet-communications-and-telephony</member>
+            <member>internet-portals</member>
+            <member>job-search</member>
+            <member>legal</member>
+            <member>low-risk</member>
+            <member>malware</member>
+            <member>medium-risk</member>
+            <member>military</member>
+            <member>motor-vehicles</member>
+            <member>music</member>
+            <member>newly-registered-domain</member>
+            <member>news</member>
+            <member>not-resolved</member>
+            <member>nudity</member>
+            <member>online-storage-and-backup</member>
+            <member>parked</member>
+            <member>peer-to-peer</member>
+            <member>personal-sites-and-blogs</member>
+            <member>philosophy-and-political-advocacy</member>
+            <member>phishing</member>
+            <member>private-ip-addresses</member>
+            <member>proxy-avoidance-and-anonymizers</member>
+            <member>questionable</member>
+            <member>real-estate</member>
+            <member>real-time-detection</member>
+            <member>recreation-and-hobbies</member>
+            <member>reference-and-research</member>
+            <member>religion</member>
+            <member>search-engines</member>
+            <member>sex-education</member>
+            <member>shareware-and-freeware</member>
+            <member>shopping</member>
+            <member>social-networking</member>
+            <member>society</member>
+            <member>sports</member>
+            <member>stock-advice-and-tools</member>
+            <member>streaming-media</member>
+            <member>swimsuits-and-intimate-apparel</member>
+            <member>training-and-tools</member>
+            <member>translation</member>
+            <member>travel</member>
+            <member>unknown</member>
+            <member>weapons</member>
+            <member>web-advertisements</member>
+            <member>web-based-email</member>
+            <member>web-hosting</member>
+          </alert>
+        </credential-enforcement>
+        <alert>
+          <member>Block</member>
+          <member>Allow</member>
+          <member>abortion</member>
+          <member>abused-drugs</member>
+          <member>adult</member>
+          <member>alcohol-and-tobacco</member>
+          <member>auctions</member>
+          <member>business-and-economy</member>
+          <member>command-and-control</member>
+          <member>computer-and-internet-info</member>
+          <member>content-delivery-networks</member>
+          <member>copyright-infringement</member>
+          <member>cryptocurrency</member>
+          <member>dating</member>
+          <member>dynamic-dns</member>
+          <member>educational-institutions</member>
+          <member>entertainment-and-arts</member>
+          <member>extremism</member>
+          <member>financial-services</member>
+          <member>gambling</member>
+          <member>games</member>
+          <member>government</member>
+          <member>grayware</member>
+          <member>hacking</member>
+          <member>health-and-medicine</member>
+          <member>high-risk</member>
+          <member>home-and-garden</member>
+          <member>hunting-and-fishing</member>
+          <member>insufficient-content</member>
+          <member>internet-communications-and-telephony</member>
+          <member>internet-portals</member>
+          <member>job-search</member>
+          <member>legal</member>
+          <member>low-risk</member>
+          <member>malware</member>
+          <member>medium-risk</member>
+          <member>military</member>
+          <member>motor-vehicles</member>
+          <member>music</member>
+          <member>newly-registered-domain</member>
+          <member>news</member>
+          <member>not-resolved</member>
+          <member>nudity</member>
+          <member>online-storage-and-backup</member>
+          <member>parked</member>
+          <member>peer-to-peer</member>
+          <member>personal-sites-and-blogs</member>
+          <member>philosophy-and-political-advocacy</member>
+          <member>phishing</member>
+          <member>private-ip-addresses</member>
+          <member>proxy-avoidance-and-anonymizers</member>
+          <member>questionable</member>
+          <member>real-estate</member>
+          <member>real-time-detection</member>
+          <member>recreation-and-hobbies</member>
+          <member>reference-and-research</member>
+          <member>religion</member>
+          <member>search-engines</member>
+          <member>sex-education</member>
+          <member>shareware-and-freeware</member>
+          <member>shopping</member>
+          <member>social-networking</member>
+          <member>society</member>
+          <member>sports</member>
+          <member>stock-advice-and-tools</member>
+          <member>streaming-media</member>
+          <member>swimsuits-and-intimate-apparel</member>
+          <member>training-and-tools</member>
+          <member>translation</member>
+          <member>travel</member>
+          <member>unknown</member>
+          <member>weapons</member>
+          <member>web-advertisements</member>
+          <member>web-based-email</member>
+          <member>web-hosting</member>
+        </alert>
+        <mlav-engine-urlbased-enabled>
+          <entry name=\"Phishing Detection\">
+            <mlav-policy-action>alert</mlav-policy-action>
+          </entry>
+          <entry name=\"Javascript Exploit Detection\">
+            <mlav-policy-action>alert</mlav-policy-action>
+          </entry>
+        </mlav-engine-urlbased-enabled>
+      </entry>";
+
+            $fb_xmlString = "<entry name=\"Alert-Only-FB\">
+        <rules>
+          <entry name=\"Alert-Only\">
+            <application>
+              <member>any</member>
+            </application>
+            <file-type>
+              <member>any</member>
+            </file-type>
+            <direction>both</direction>
+            <action>alert</action>
+          </entry>
+        </rules>
+      </entry>";
+
+            $wf_xmlString = "<entry name=\"Alert-Only-WF\">
+        <rules>
+          <entry name=\"Forward-All\">
+            <application>
+              <member>any</member>
+            </application>
+            <file-type>
+              <member>any</member>
+            </file-type>
+            <direction>both</direction>
+            <analysis>public-cloud</analysis>
+          </entry>
+        </rules>
+      </entry>";
+
+            if( $classtype == "VirtualSystem" || $classtype == "DeviceGroup" )
+            {
+                $sub = $object;
+
+                $name = "Alert-Only-";
+                $ownerDocument = $sub->xmlroot->ownerDocument;
+
+                $store = $sub->AntiVirusProfileStore;
+                $av = new AntiVirusProfile($name . "AV", $store);
+                $newdoc = new DOMDocument;
+                $newdoc->loadXML($av_xmlString);
+                $node = $newdoc->importNode($newdoc->firstChild, TRUE);
+                $node = $ownerDocument->importNode($node, TRUE);
+                $av->load_from_domxml($node);
+                $av->owner = null;
+                $store->addSecurityProfile($av);
+
+                $store = $sub->AntiSpywareProfileStore;
+                $as = new AntiSpywareProfile($name . "AS", $store);
+                $newdoc = new DOMDocument;
+                $newdoc->loadXML($as_xmlString);
+                $node = $newdoc->importNode($newdoc->firstChild, TRUE);
+                $node = $ownerDocument->importNode($node, TRUE);
+                $as->load_from_domxml($node);
+                $as->owner = null;
+                $store->addSecurityProfile($as);
+
+                $store = $sub->VulnerabilityProfileStore;
+                $vp = new VulnerabilityProfile($name . "VP", $store);
+                $newdoc = new DOMDocument;
+                $newdoc->loadXML($vp_xmlString);
+                $node = $newdoc->importNode($newdoc->firstChild, TRUE);
+                $node = $ownerDocument->importNode($node, TRUE);
+                $vp->load_from_domxml($node);
+                $vp->owner = null;
+                $store->addSecurityProfile($vp);
+
+                $store = $sub->URLProfileStore;
+                $url = new URLProfile($name . "URL", $store);
+                $newdoc = new DOMDocument;
+                $newdoc->loadXML($url_xmlString);
+                $node = $newdoc->importNode($newdoc->firstChild, TRUE);
+                $node = $ownerDocument->importNode($node, TRUE);
+                $url->load_from_domxml($node);
+                $url->owner = null;
+                $store->addSecurityProfile($url);
+
+                $store = $sub->FileBlockingProfileStore;
+                $fb = new FileBlockingProfile($name . "FB", $store);
+                $newdoc = new DOMDocument;
+                $newdoc->loadXML($fb_xmlString);
+                $node = $newdoc->importNode($newdoc->firstChild, TRUE);
+                $node = $ownerDocument->importNode($node, TRUE);
+                $fb->load_from_domxml($node);
+                $fb->owner = null;
+                $store->addSecurityProfile($fb);
+
+                $store = $sub->WildfireProfileStore;
+                $wf = new WildfireProfile($name . "WF", $store);
+                $newdoc = new DOMDocument;
+                $newdoc->loadXML($wf_xmlString);
+                $node = $newdoc->importNode($newdoc->firstChild, TRUE);
+                $node = $ownerDocument->importNode($node, TRUE);
+                $wf->load_from_domxml($node);
+                $wf->owner = null;
+                $store->addSecurityProfile($wf);
+
+                $secprofgrp = new SecurityProfileGroup("Alert-Only", $sub->securityProfileGroupStore, TRUE);
+
+                $secprofgrp->setSecProf_AV($av->name());
+                $secprofgrp->setSecProf_Spyware($as->name());
+                $secprofgrp->setSecProf_Vuln($vp->name());
+                $secprofgrp->setSecProf_URL($url->name());
+                $secprofgrp->setSecProf_FileBlock($fb->name());
+                $secprofgrp->setSecProf_Wildfire($wf->name());
+
+
+                $sub->securityProfileGroupStore->addSecurityProfileGroup($secprofgrp);
+
+                $context->first = false;
+            }
         }
     }
 );

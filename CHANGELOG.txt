@@ -9,6 +9,7 @@ UTILS:
 * pa_rule-edit | actions=display:resolveServiceSummary shadow-json - if service is.application-default and app is.any => do service resolve to default app protocol port
 * pa_rule-stats | optimised if arguments "cycleconnectedfirewalls" to display FW model
 * pa_device-edit | introduce actions=display-shadowrule
+* pa_device-edit - introduce actions=securityprofile-create-alert-only | until now working only against VSYS or DG - use filter=(name eq XYZ) to define where to create / no PAN-OS API mode supported yet
 
 BUGFIX:
 *  all utils script - bugfix if Panorama config is used with loadpanoramapushedconfig
