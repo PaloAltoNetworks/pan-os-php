@@ -10,6 +10,7 @@ UTILS:
 * pa_rule-stats | optimised if arguments "cycleconnectedfirewalls" to display FW model
 * pa_device-edit | introduce actions=display-shadowrule
 * pa_device-edit - introduce actions=securityprofile-create-alert-only | until now working only against VSYS or DG - use filter=(name eq XYZ) to define where to create / no PAN-OS API mode supported yet
+* pa_device-edit - optimise actions=securityprofile-create-alert-only[:true] - introduce bool argument [shared], if set to true profiles are create at SHARED level
 
 BUGFIX:
 *  all utils script - bugfix if Panorama config is used with loadpanoramapushedconfig
@@ -17,7 +18,7 @@ BUGFIX:
 * pa_address-merger | bugfix if for DG duplicate value is available on childDG and parentDG [thanks to Necip Cebeci ]
 
 GENERAL:
-* class PanAPIConnecotor - extend with methods loadPanoramaPushedConfig() / panorama_getAllFirewallsSerials()
+* class PanAPIConnector - extend with methods loadPanoramaPushedConfig() / panorama_getAllFirewallsSerials()
 
 
 2.0.22 (20211112)

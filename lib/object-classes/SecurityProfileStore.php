@@ -625,8 +625,13 @@ class SecurityProfileStore extends ObjStore
     {
         if( $this->xmlroot === null )
         {
+            if( $this->owner->isPanorama() || $this->owner->isFirewall() )
+                $xml = $this->owner->sharedroot;
+            else
+                $xml = $this->owner->xmlroot;
+
             $SecurityProfileTypeForXml = self::$storeNameByType[$this->type]['xpathRoot'];
-            $xml = DH::findFirstElementOrCreate('profiles', $this->owner->xmlroot);
+            $xml = DH::findFirstElementOrCreate('profiles', $xml);
 
             $this->xmlroot = DH::findFirstElementOrCreate($SecurityProfileTypeForXml, $xml);
         }
