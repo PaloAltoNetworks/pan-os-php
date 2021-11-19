@@ -1956,6 +1956,58 @@ class PanAPIConnector
 
         return $password;
     }
+
+    public function getShadowInfo( $countInfo, $panorama = false )
+    {
+        $cmd = "<show><shadow-warning><count>".$countInfo."</count></shadow-warning></show>";
+        $response = $this->sendOpRequest( $cmd );
+
+        $tmp = DH::findFirstElement( "result", $response);
+        $tmp = DH::findFirstElement( "shadow-warnings-count", $tmp);
+        $tmp = DH::findFirstElement( "entry", $tmp);
+
+        $shadowedRule = array();
+
+        //todo: if panorama - get
+        $devicegroup = "";
+        if( $panorama )
+        {
+            $name = $tmp->getAttribute( "dg" );
+            $devicegroup = "<device-group>".$name."</device-group>";
+        }
+        else
+        {
+            $name = $tmp->getAttribute( "vsys" );
+        }
+
+        foreach( $tmp->childNodes as $entry )
+        {
+            if( $entry->nodeType != XML_ELEMENT_NODE )
+                continue;
+
+            $tmp_uid = $entry->getAttribute( "uuid" );
+            $cmd = "<show><shadow-warning><warning-message>".$countInfo.$devicegroup."<uuid>".$tmp_uid."</uuid></warning-message></shadow-warning></show>";
+            $response = $this->sendOpRequest( $cmd );
+
+            #print $response->saveXML();
+
+            $tmp = DH::findFirstElement( "result", $response);
+            $tmp = DH::findFirstElement( "warning-msg", $tmp);
+
+            foreach( $tmp->childNodes as $key => $entry )
+            {
+                if( $entry->nodeType != XML_ELEMENT_NODE )
+                    continue;
+
+                if( $panorama )
+                    $shadowedRule[$name][$tmp_uid][] = $entry->textContent;
+                else
+                    $shadowedRule[$name][$tmp_uid][] = $entry->textContent;
+            }
+        }
+
+        return $shadowedRule;
+    }
 }
 
 

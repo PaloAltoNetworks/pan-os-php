@@ -687,3 +687,77 @@ DeviceCallContext::$supportedActions['exportLicenseToExcel'] = array(
         )
     )
 );
+
+DeviceCallContext::$supportedActions['display-shadowrule'] = array(
+    'name' => 'display-shadowrule',
+    'MainFunction' => function (DeviceCallContext $context)
+    {
+        $object = $context->object;
+        $classtype = get_class($object);
+
+        $shadowArray = array();
+        if( $classtype == "VirtualSystem" )
+        {
+            $type = "vsys";
+            $type_name = $object->name();
+            $countInfo = "<" . $type . ">" . $type_name . "</" . $type . ">";
+
+            $shadowArray = $context->connector->getShadowInfo($countInfo, false);
+        }
+        elseif( $classtype == "ManagedDevice" )
+        {
+            if( $object->isConnected )
+            {
+                $type = "device-serial";
+                $type_name = $object->name();
+                $countInfo = "<" . $type . ">" . $type_name . "</" . $type . ">";
+
+                $shadowArray = $context->connector->getShadowInfo($countInfo, true);
+            }
+        }
+
+        elseif( $classtype == "DeviceGroup" )
+        {
+            /*
+            derr("Panorama not supported yet");
+
+
+            $type = "device-serial";
+            $type_name = $object->serial;
+            $countInfo = "<" . $type . ">" . $type_name . "</" . $type . ">";
+
+            $shadowArray = $context->connector->getShadowInfo($countInfo, true);
+            */
+        }
+
+
+        foreach( $shadowArray as $name => $entries )
+        {
+            if( $classtype == "ManagedDevice" )
+            {
+                PH::print_stdout( "     ** DG: " . $name );
+            }
+
+
+            foreach( $entries as $key => $item  )
+            {
+                //uid: $key -> search rule name for uid
+                /** @var DeviceGroup $DG */
+
+                /*
+                $DG = $object->devicegroup;
+                //not possible due to $DG is string not object
+                PH::print_stdout( $DG->name() );
+
+                $rule = $DG->securityRules->find( $key );
+                PH::print_stdout( "        * RULE: " . $rule->name() );
+                */
+                PH::print_stdout( "        * RULE: " . $key );
+
+                foreach( $item as $shadow )
+                    PH::print_stdout( "          - " . $shadow );
+            }
+
+        }
+    }
+);
