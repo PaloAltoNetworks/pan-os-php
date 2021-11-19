@@ -434,7 +434,12 @@ class SecurityProfileGroupStore extends ObjStore
     {
         if( $this->xmlroot === null )
         {
-            $xml = DH::findFirstElementOrCreate('profile-group', $this->owner->xmlroot);
+            if( $this->owner->isPanorama() || $this->owner->isFirewall() )
+                $xml = $this->owner->sharedroot;
+            else
+                $xml = $this->owner->xmlroot;
+
+            $xml = DH::findFirstElementOrCreate('profile-group', $xml);
             $this->xmlroot = $xml;
         }
     }
