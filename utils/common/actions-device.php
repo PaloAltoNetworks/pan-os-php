@@ -777,7 +777,15 @@ DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = arra
         if( $context->isAPI )
             derr( "API mode not implemented yet" );
 
-        //if Panorama and DeviceGroup count == 0; stop
+        if( $context->subSystem->isPanorama() )
+        {
+            $countDG = count( $context->subSystem->getDeviceGroups() );
+            if( $countDG == 0 )
+            {
+                #$dg = $context->subSystem->createDeviceGroup( "alert-only" );
+                derr( "NO DG available; please run 'pa_device-edit in=InputConfig.xml out=OutputConfig.xml actions=devicegroup-create:DG-NAME' first", null, false );
+            }
+        }
     },
     'MainFunction' => function (DeviceCallContext $context)
     {
@@ -1130,11 +1138,11 @@ DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = arra
                 else
                     $sharedStore = $sub;
 
-                $name = "Alert-Only-";
+                $name = "Alert-Only";
                 $ownerDocument = $sub->xmlroot->ownerDocument;
 
                 $store = $sharedStore->AntiVirusProfileStore;
-                $av = new AntiVirusProfile($name . "AV", $store);
+                $av = new AntiVirusProfile($name . "-AV", $store);
                 $newdoc = new DOMDocument;
                 $newdoc->loadXML($av_xmlString);
                 $node = $newdoc->importNode($newdoc->firstChild, TRUE);
@@ -1144,7 +1152,7 @@ DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = arra
                 $store->addSecurityProfile($av);
 
                 $store = $sharedStore->AntiSpywareProfileStore;
-                $as = new AntiSpywareProfile($name . "AS", $store);
+                $as = new AntiSpywareProfile($name . "-AS", $store);
                 $newdoc = new DOMDocument;
                 $newdoc->loadXML($as_xmlString);
                 $node = $newdoc->importNode($newdoc->firstChild, TRUE);
@@ -1154,7 +1162,7 @@ DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = arra
                 $store->addSecurityProfile($as);
 
                 $store = $sharedStore->VulnerabilityProfileStore;
-                $vp = new VulnerabilityProfile($name . "VP", $store);
+                $vp = new VulnerabilityProfile($name . "-VP", $store);
                 $newdoc = new DOMDocument;
                 $newdoc->loadXML($vp_xmlString);
                 $node = $newdoc->importNode($newdoc->firstChild, TRUE);
@@ -1164,7 +1172,7 @@ DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = arra
                 $store->addSecurityProfile($vp);
 
                 $store = $sharedStore->URLProfileStore;
-                $url = new URLProfile($name . "URL", $store);
+                $url = new URLProfile($name . "-URL", $store);
                 $newdoc = new DOMDocument;
                 $newdoc->loadXML($url_xmlString);
                 $node = $newdoc->importNode($newdoc->firstChild, TRUE);
@@ -1174,7 +1182,7 @@ DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = arra
                 $store->addSecurityProfile($url);
 
                 $store = $sharedStore->FileBlockingProfileStore;
-                $fb = new FileBlockingProfile($name . "FB", $store);
+                $fb = new FileBlockingProfile($name . "-FB", $store);
                 $newdoc = new DOMDocument;
                 $newdoc->loadXML($fb_xmlString);
                 $node = $newdoc->importNode($newdoc->firstChild, TRUE);
@@ -1184,7 +1192,7 @@ DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = arra
                 $store->addSecurityProfile($fb);
 
                 $store = $sharedStore->WildfireProfileStore;
-                $wf = new WildfireProfile($name . "WF", $store);
+                $wf = new WildfireProfile($name . "-WF", $store);
                 $newdoc = new DOMDocument;
                 $newdoc->loadXML($wf_xmlString);
                 $node = $newdoc->importNode($newdoc->firstChild, TRUE);
@@ -1193,7 +1201,7 @@ DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = arra
                 $wf->owner = null;
                 $store->addSecurityProfile($wf);
 
-                $secprofgrp = new SecurityProfileGroup("Alert-Only", $sharedStore->securityProfileGroupStore, TRUE);
+                $secprofgrp = new SecurityProfileGroup($name, $sharedStore->securityProfileGroupStore, TRUE);
 
                 $secprofgrp->setSecProf_AV($av->name());
                 $secprofgrp->setSecProf_Spyware($as->name());
