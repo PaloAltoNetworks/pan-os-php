@@ -2237,7 +2237,7 @@ class MERGER extends UTIL
 
                             if( $exit )
                             {
-                                PH::print_stdout( "   * SKIP: no creation of object in DG: '".$tmp_DG_name."' as object with same name '{$exitObject->name()}' and different value '{$exitObject->dstPortMapping()}' exist at childDG level" );
+                                PH::print_stdout( "   * SKIP: no creation of object in DG: '".$tmp_DG_name."' as object with same name '{$exitObject->name()}' and different value '{$exitObject->dstPortMapping()->mappingToText()}' exist at childDG level" );
                                 continue;
                             }
                         }
