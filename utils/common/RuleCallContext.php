@@ -746,7 +746,8 @@ class RuleCallContext extends CallContext
         }
         elseif( $app->isApplicationFilter() )
         {
-            $this->appReturn( $app, $returnString, $app_mapping );
+            foreach( $app->filteredApps() as $app1 )
+                $this->appReturn( $app1, $returnString, $app_mapping );
         }
         elseif( $app->isApplicationCustom() )
         {
