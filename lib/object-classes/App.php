@@ -635,20 +635,24 @@ class App
 
     function getAppsRecursive( $app_array = array() )
     {
-        #print $this->name()."\n";
         if( $this->isApplicationGroup() )
         {
-            foreach( $this->groupApps() as $app )
-                $app_array = array_merge( $app_array, $app->getAppsRecursive( $app_array ) );
+            $app_array = array_merge( $app_array, $this->groupApps() );
+            #foreach( $this->groupApps() as $app )
+                #$app_array = array_merge( $app_array, $app->getAppsRecursive( $app_array ) );
         }
         elseif( $this->isApplicationFilter() )
         {
             $app_array = array_merge( $app_array, $this->filteredApps() );
+            #foreach( $this->filteredApps() as $app )
+                #$app_array = array_merge( $app_array, $app->getAppsRecursive( $app_array ) );
         }
         elseif( $this->isContainer() )
         {
-            foreach( $this->containerApps() as $app )
-                $app_array = array_merge( $app_array, $app->getAppsRecursive( $app_array ) );
+            $app_array = array_merge( $app_array, $this->containerApps() );
+            #foreach( $this->containerApps() as $app )
+                #$app_array = array_merge( $app_array, $app->getAppsRecursive( $app_array ) );
+
         }
         else
             $app_array[] = $this;

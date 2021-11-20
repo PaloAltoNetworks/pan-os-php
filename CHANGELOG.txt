@@ -17,6 +17,7 @@ BUGFIX:
 *  all utils script - bugfix if Panorama config is used with loadpanoramapushedconfig
 * pa_rule-edit - bugfix for actions=display:resolveservicesummary - if service is.application-default and app has application.filter
 * pa_address-merger | bugfix if for DG duplicate value is available on childDG and parentDG [thanks to Necip Cebeci ]
+* pa_rule-edit | bugfix for actions=display:ResolveServiceSummar|ResolveApplicationSummary - fix memory leak
 
 GENERAL:
 * class PanAPIConnector - extend with methods loadPanoramaPushedConfig() / panorama_getAllFirewallsSerials()
