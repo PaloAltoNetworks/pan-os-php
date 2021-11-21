@@ -147,6 +147,9 @@ class App
 
     public function filteredApps()
     {
+        //Todo: actual only one filter value per category/ aso. is working
+        //check how to validate correctly if two or more values are picked per e.g. category
+
         if( !$this->isApplicationFilter() )
             derr('cannot be be called on a non ApplicationFilter app');
 
@@ -177,6 +180,13 @@ class App
             $apptags = $this->app_filter_details['tagging'];
         else
             $apptags = array();
+
+
+        if( isset( $this->_characteristics) )
+            $characteristics = $this->_characteristics;
+        else
+            $characteristics = array();
+
 
         $appstore = $this->owner;
         $all = $appstore->getAll();
@@ -247,7 +257,20 @@ class App
                 }
             }
 
-            if( $hasCategory && $hasSubCategory && $hasRisk && $hasTechnology && $hasAppTag )
+            $hasCharacteristics = TRUE;
+            if( count( $characteristics ) > 0 )
+            {
+                $hasCharacteristics = FALSE;
+                foreach( $characteristics as $characteristic => $bool )
+                {
+                    if( $bool && $app->_characteristics[$characteristic] )
+                    {
+                        $hasCharacteristics = TRUE;
+                    }
+                }
+            }
+
+            if( $hasCategory && $hasSubCategory && $hasRisk && $hasTechnology && $hasAppTag && $hasCharacteristics )
                 $app_array[] = $app;
         }
 

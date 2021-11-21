@@ -2,6 +2,7 @@ CHANGELOG
 
 2.0.24
 UTILS:
+* pa_application-edit | class App method filteredApps() - introduce filter based on characeristics
 
 BUGFIX:
 
