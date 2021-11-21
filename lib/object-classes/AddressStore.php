@@ -43,12 +43,17 @@ class AddressStore
     /** @var AddressGroup[] */
     protected $_addressGroups = array();
 
+    /** @var Region[] */
+    protected $_regionObjects = array();
+
     /** @var DOMElement */
     public $addressRoot;
 
     /** @var DOMElement */
     public $addressGroupRoot;
 
+    /** @var DOMElement */
+    public $regionRoot;
 
     /**
      * @param VirtualSystem|DeviceCloud|DeviceGroup|Container|PanoramaConf|PANConf|FawkesConf|null $owner
@@ -145,6 +150,49 @@ class AddressStore
     }
 
 
+    /**
+     * For developer use only
+     * @param DOMElement $xml
+     *
+     */
+    public function load_regions_from_domxml($xml)
+    {
+        $this->regionRoot = $xml;
+
+        $duplicatesRemoval = array();
+
+        foreach( $this->regionRoot->childNodes as $node )
+        {
+            /** @var DOMElement $node */
+            if( $node->nodeType != XML_ELEMENT_NODE ) continue;
+
+            $ns = new Region('', $this);
+            $loadedOK = $ns->load_from_domxml($node);
+
+            if( !$loadedOK )
+                continue;
+
+            $objectName = $ns->name();
+
+            if( isset($this->_all[$objectName]) )
+            {
+                if( PH::$enableXmlDuplicatesDeletion )
+                    $duplicatesRemoval[] = $node;
+                mwarning("an object with name '{$objectName}' already exists in this store, please investigate your xml file as this will be ignored and could eventually be lost.", $node);
+                continue;
+            }
+
+            $this->_regionObjects[$objectName] = $ns;
+            $this->_all[$objectName] = $ns;
+        }
+
+        foreach( $duplicatesRemoval as $node )
+        {
+            $node->parentNode->removeChild($node);
+        }
+    }
+
+
     /*private function remergeAll()
     {
         $this->all = array_merge($this->_addressObjects, $this->_addressGroups, $this->_tmpAddresses);
@@ -191,6 +239,9 @@ class AddressStore
             $result[] = $object;
 
         foreach( $this->addressGroups(TRUE) as $object )
+            $result[] = $object;
+
+        foreach( $this->_regionObjects as $object )
             $result[] = $object;
 
         return $result;

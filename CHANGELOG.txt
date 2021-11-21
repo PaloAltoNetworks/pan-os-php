@@ -3,10 +3,11 @@ CHANGELOG
 2.0.24
 UTILS:
 * pa_application-edit | class App method filteredApps() - introduce filter based on characeristics
-
+* pa_address-edit | introduce 'filter=(object is.region)'
 BUGFIX:
 
 GENERAL:
+* framework introduce class Region | make use of it in all PAN-OS xml config parts
 
 
 2.0.23 (20211121)

@@ -43,6 +43,16 @@ RQuery::$defaultFilters['address']['object']['operators']['is.group'] = array(
         'input' => 'input/panorama-8.0.xml'
     )
 );
+RQuery::$defaultFilters['address']['object']['operators']['is.region'] = array(
+    'Function' => function (AddressRQueryContext $context) {
+        return $context->object->isRegion() == TRUE;
+    },
+    'arg' => FALSE,
+    'ci' => array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 RQuery::$defaultFilters['address']['object']['operators']['is.dynamic'] = array(
     'Function' => function (AddressRQueryContext $context) {
         if( $context->object->isGroup() )

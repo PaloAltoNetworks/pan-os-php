@@ -1666,7 +1666,7 @@ AddressCallContext::$supportedActions[] = array(
                     PH::print_stdout( "          - {$member->name()}" );
             }
         }
-        else
+        elseif( $object->isAddress() )
         {
             $tag_string = "";
             if( count($object->tags->tags()) > 0 )
@@ -1677,6 +1677,13 @@ AddressCallContext::$supportedActions[] = array(
             PH::$JSON_TMP['sub']['object'][$object->name()]['value'] = $object->value();
             PH::$JSON_TMP['sub']['object'][$object->name()]['tag'] = $tag_string;
             PH::$JSON_TMP['sub']['object'][$object->name()]['description'] = $object->description();
+        }
+        elseif( $object->isRegion() )
+        {
+            PH::print_stdout( $context->padding . "* " . get_class($object) . " '{$object->name()}'  " );
+            PH::$JSON_TMP['sub']['object'][$object->name()]['type'] = get_class($object);
+            #PH::$JSON_TMP['sub']['object'][$object->name()]['value'] = $object->value();
+
         }
 
 
