@@ -299,6 +299,25 @@ class AppStore extends ObjStore
             }
 
 
+            $tmp = DH::findFirstElement('tag', $appx);
+            if( $tmp !== FALSE )
+            {
+                $tag_array = array();
+                foreach( $tmp->childNodes as $tag )
+                {
+                    if( $tag->nodeType != XML_ELEMENT_NODE )
+                        continue;
+
+                    /** @var  $tag DOMElement */
+                    $tag_text = str_replace( "[", "", $tag->textContent);
+                    $tag_text = str_replace( "]", "", $tag_text);
+
+                    $tag_array[$tag_text] = $tag_text;
+                }
+                $app->apptag = $tag_array;
+            }
+
+
             $tmp = DH::findFirstElement('evasive-behavior', $appx);
             if( $tmp !== FALSE )
             {
@@ -689,7 +708,7 @@ class AppStore extends ObjStore
         }
     }
 
-    public function loadcontainers_from_domxml(&$xmlDom)
+    public function load_containers_from_domxml(&$xmlDom)
     {
         foreach( $xmlDom->childNodes as $appx )
         {
@@ -810,7 +829,7 @@ class AppStore extends ObjStore
 
         $cursor = DH::findXPathSingleEntryOrDie('/predefined/application-container', $xmlDoc);
 
-        $this->loadcontainers_from_domxml($cursor);
+        $this->load_containers_from_domxml($cursor);
 
 
         $appid_version = DH::findXPathSingleEntryOrDie('/predefined/application-version', $xmlDoc);

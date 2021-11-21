@@ -65,30 +65,17 @@ ApplicationCallContext::$supportedActions[] = array(
             if( $context->print_container )
             {
                 $tmparray = array();
-                #$app->print_appdetails( $context->padding, true, $tmparray );
                 PH::$JSON_TMP['sub']['object'][$app->name()]['container'] = $tmparray;
 
                 PH::print_stdout( $context->padding." - is container: " );
                 foreach( $app->containerApps() as $app1 )
                 {
-                    if( $app1->isContainer() )
-                    {
-                        PH::print_stdout( "is container: " );
-                        foreach( $app1->containerApps() as $app2 )
-                        {
-                            $tmparray = array();
-                            PH::print_stdout( "     ->" . $app2->type . " | " );
-                            $app2->print_appdetails( $context->padding, true, $tmparray );
-                            PH::$JSON_TMP['sub']['object'][$app->name()]['container']['containerapp'][] = $tmparray;
-                        }
-                    }
-                    else
-                    {
-                        $tmparray = array();
-                        PH::print_stdout( "     ->" . $app1->type . " | " );
-                        $app1->print_appdetails( $context->padding, true, $tmparray );
-                        PH::$JSON_TMP['sub']['object'][$app->name()]['container']['app'][] = $tmparray;
-                    }
+                    $tmparray = array();
+                    #PH::print_stdout( "     ->" . $app1->type . " | " );
+                    $app1->print_appdetails( $context->padding, true, $tmparray );
+                    PH::$JSON_TMP['sub']['object'][$app->name()]['container']['app'][] = $tmparray;
+
+                    PH::print_stdout("" );
                 }
             }
         }
@@ -97,9 +84,21 @@ ApplicationCallContext::$supportedActions[] = array(
             foreach( $app->groupApps() as $app1 )
             {
                 $tmparray = array();
-                PH::print_stdout( "     ->" . $app1->type . " | " );
+                #PH::print_stdout( "     ->" . $app1->type . " | " );
                 $app1->print_appdetails( $context->padding, true, $tmparray );
                 PH::$JSON_TMP['sub']['object'][$app->name()]['group']['app'][] = $tmparray;
+                PH::print_stdout("" );
+            }
+        }
+        elseif( $app->isApplicationFilter() )
+        {
+            foreach( $app->filteredApps() as $app1 )
+            {
+                $tmparray = array();
+                #PH::print_stdout( "     ->" . $app1->type . " | " );
+                $app1->print_appdetails( $context->padding, true, $tmparray );
+                PH::$JSON_TMP['sub']['object'][$app->name()]['filter']['app'][] = $tmparray;
+                PH::print_stdout("" );
             }
         }
         else
