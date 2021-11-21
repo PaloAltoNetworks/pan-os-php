@@ -12,6 +12,7 @@ UTILS:
 * pa_device-edit - introduce actions=securityprofile-create-alert-only | until now working only against VSYS or DG - use filter=(name eq XYZ) to define where to create / no PAN-OS API mode supported yet
 * pa_device-edit - optimise actions=securityprofile-create-alert-only[:true] - introduce bool argument [shared], if set to true profiles are create at SHARED level
 * UTIL introduce Palo Alto Networks max FW object counters in JSON format
+* pa_application-edit / pa_rule-edit actions=display:ResolveApplicationSummary|ResolveServiceSummary code reduction / optiisation
 
 BUGFIX:
 *  all utils script - bugfix if Panorama config is used with loadpanoramapushedconfig

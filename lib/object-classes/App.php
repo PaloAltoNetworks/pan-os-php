@@ -415,110 +415,27 @@ class App
             $subarray[$this->name()]['obsolete'] = "true";
         }
 
-
-        if( isset($this->category) )
-        {
-            $text .= $padding_above . "  - category|" . str_pad($this->category, $padding) . " - ";
-            $subarray[$this->name()]['category'] = $this->category;
-        }
-
-
-        if( isset($this->subCategory) )
-        {
-            $text .= "subcategory|" . str_pad($this->subCategory, $padding) . " - ";
-            $subarray[$this->name()]['subcategory'] = $this->subCategory;
-        }
+        $app_mapping = array();
+        $this->getAppDetails( false, $app_mapping );
+        $subarray[$this->name()] = $app_mapping[0];
+        $flattened = $app_mapping[0];
+        array_walk($flattened, function(&$value, $key) {
+            $value = "{$key}=>{$value}";
+        });
+        if( !empty($flattened) )
+            PH::print_stdout( $padding_10 . implode( ", ", $flattened ) );
 
 
-        if( isset($this->technology) )
-        {
-            $text .= "technology|" . str_pad($this->technology, $padding) . " - ";
-            $subarray[$this->name()]['technology'] = $this->technology;
-        }
+        $port_mapping_text = array();
+        $this->getAppServiceDefault( false, $port_mapping_text, $subarray );
+        if( !empty($port_mapping_text) )
+            PH::print_stdout( $padding_10 . implode( ", ", $port_mapping_text ) );
 
-        if( isset($this->risk) )
-        {
-            $text .= "risk|" . $this->risk . " - ";
-            $subarray[$this->name()]['risk'] = $this->risk;
-        }
+        $port_mapping_text = array();
+        $this->getAppServiceDefault( true, $port_mapping_text, $subarray );
+        if( !empty($port_mapping_text) )
+            PH::print_stdout( $padding_10 . implode( ", ", $port_mapping_text ) );
 
-
-        PH::print_stdout($text);
-
-        $text_tcp = "";
-        if( isset($this->tcp) )
-        {
-            $text_tcp = "tcp/";
-            foreach( $this->tcp as $tcp )
-            {
-                if( $tcp[0] == "single" )
-                    $text_tcp .= $tcp[1] . ",";
-                elseif( $tcp[0] == "dynamic" )
-                    $text_tcp .= "dynamic";
-                elseif( $tcp[0] == "range" )
-                    $text_tcp .= $tcp[1] . "-" . $tcp[2] . ",";
-                else
-                    $text_tcp .= "implode:" . implode("','", $tcp) . "";
-            }
-            $subarray[$this->name()]['tcp'] = $text_tcp;
-            $text_tcp = $padding_10 . $text_tcp;
-        }
-        $text_udp = "";
-        if( isset($this->udp) )
-        {
-            $text_udp = "udp/";
-            foreach( $this->udp as $udp )
-            {
-                if( $udp[0] == "single" )
-                    $text_udp .= $udp[1] . ",";
-                elseif( $udp[0] == "dynamic" )
-                    $text_udp .= "dynamic";
-                elseif( $udp[0] == "range" )
-                    $text_udp .= $udp[1] . "-" . $udp[2] . ",";
-                else
-                    $text_udp .= "implode:" . implode("','", $udp) . "";
-            }
-            $subarray[$this->name()]['udp'] = $text_udp;
-            $text_udp = $padding_10 . $text_udp;
-        }
-        PH::print_stdout($text_tcp . $text_udp);
-
-        //secure ports:
-        $text_tcp = "";
-        if( isset($this->tcp_secure) )
-        {
-            $text_tcp .= $padding_10 . "secure - tcp/";
-            foreach( $this->tcp_secure as $tcp )
-            {
-                if( $tcp[0] == "single" )
-                    $text_tcp .= $tcp[1] . ",";
-                elseif( $tcp[0] == "dynamic" )
-                    $text_tcp .= "dynamic";
-                elseif( $tcp[0] == "range" )
-                    $text_tcp .= $tcp[1] . "-" . $tcp[2] . ",";
-                else
-                    $text_tcp .= "implode:" . implode("','", $tcp) . "";
-            }
-            $subarray[$this->name()]['tcpsecure'] = $text_tcp;
-        }
-        $text_udp = "";
-        if( isset($this->udp_secure) )
-        {
-            $text_udp .= $padding_10 . "secure - udp/";
-            foreach( $this->udp_secure as $udp )
-            {
-                if( $udp[0] == "single" )
-                    $text_udp .= $udp[1] . ",";
-                elseif( $udp[0] == "dynamic" )
-                    $text_udp .= "dynamic";
-                elseif( $udp[0] == "range" )
-                    $text_udp .= $udp[1] . "-" . $udp[2] . ",";
-                else
-                    $text_udp .= "implode:" . implode("','", $udp) . "";
-            }
-            $subarray[$this->name()]['udpsecure'] = $text_udp;
-        }
-        PH::print_stdout($text_tcp . $text_udp);
 
         if( $this->proto != "" )
         {
@@ -554,8 +471,9 @@ class App
             $text .= $padding_10."udp-timeout|".$this->udp_timeout . " - ";
             $subarray[$this->name()]['udp-timeout'] = $this->udp_timeout;
         }
-            
-        PH::print_stdout($text);
+
+        if( !empty($text))
+            PH::print_stdout($text);
 
         if( isset( $this->explicitUse ) && $print_explicit )
         {
@@ -617,7 +535,6 @@ class App
         }
 
 
-
         if( $this->type == 'application-group' )
         {
             if( isset( $this->groupapps ) )
@@ -628,7 +545,6 @@ class App
                     $tmpapp->print_appdetails( $padding_above, true, $tmparray );
                     $subarray['application-group'][] = $tmparray;
                 }
-
             }
         }
     }
@@ -658,6 +574,101 @@ class App
             $app_array[] = $this;
 
         return $app_array;
+    }
+
+    function getAppDetails( $returnString = false, &$app_mapping = array() )
+    {
+        if( isset( $this->app_filter_details['category']) )
+            $string_category = implode( "|", $this->app_filter_details['category'] );
+        else
+            $string_category = $this->category;
+
+        if( isset($this->app_filter_details['subcategory']) )
+            $string_subcategory = implode( "|", $this->app_filter_details['subcategory'] );
+        else
+            $string_subcategory = $this->subCategory;
+
+        if( isset($this->app_filter_details['technology']) )
+            $string_technology = implode( "|", $this->app_filter_details['technology'] );
+        else
+            $string_technology = $this->technology;
+
+        //App Tag missing
+
+        if( isset($this->risk) )
+            $risk = $this->risk;
+        else
+            $risk = "";
+
+        if( $returnString )
+            $app_mapping[] = $this->name().",".$string_category.",".$string_subcategory.",".$risk;
+        else
+            $app_mapping[] = array( "name" => $this->name(), "category" => $string_category, "subcatecory" => $string_subcategory, "risk" => $risk );
+    }
+
+    function getAppServiceDefault( $secure = false, &$port_mapping_text = array(), &$subarray = array() )
+    {
+        $name = " ".$this->name();
+        $name = "";
+
+        if( $secure )
+            $protocols = array( "tcp_secure", "udp_secure" );
+        else
+            $protocols = array( "tcp", "udp" );
+
+        foreach( $protocols as $protocol )
+        {
+            if( isset($this->$protocol) )
+            {
+                if( $secure )
+                {
+                    $prot_tmp = explode( "_", $protocol);
+                    $protocolTxt = $prot_tmp[1]." - ".$prot_tmp[0]."/";
+                }
+                else
+                    $protocolTxt = $protocol."/";
+
+                $text = $protocolTxt;
+                $text = "";
+                foreach( $this->$protocol as $port )
+                {
+                    $any = "1-65535";
+                    $dynamic = "1024-65535";
+                    if( $port[0] == "single" )
+                    {
+                        if( $port[1] == 'any' )
+                            $port[1] = $any;
+                        $tmp = $protocolTxt . $port[1]. $name;
+                        $text .= $tmp. ",";
+                        $port_mapping_text[ $tmp ] = $tmp;
+                    }
+                    elseif( $port[0] == "dynamic" )
+                    {
+                        $tmp = $protocolTxt . $dynamic . $name;
+                        $text .= $tmp. ",";
+                        $port_mapping_text[ $tmp ] = $tmp;
+                    }
+                    elseif( $port[0] == "range" )
+                    {
+                        $tmp = $protocolTxt . $port[1] . "-" . $port[2].$name;
+                        $text .= $tmp. ",";
+                        $port_mapping_text[ $tmp ] = $tmp;
+                    }
+                    else
+                    {
+                        foreach( $port as $portValue )
+                        {
+                            if( $portValue == 'any' )
+                                $portValue = $any;
+                            $tmp = $protocolTxt . $portValue.$name;
+                            $text .= $tmp. ",";
+                            $port_mapping_text[ $tmp ] = $tmp;
+                        }
+                    }
+                }
+                $subarray[$this->name()][$protocol] = $text;
+            }
+        }
     }
 }
 
