@@ -201,6 +201,7 @@ require_once $basedir . '/object-classes/trait/centralAddressStore.php';
 require_once $basedir . '/object-classes/trait/centralAddressStoreUser.php';
 require_once $basedir . '/object-classes/Address.php';
 require_once $basedir . '/object-classes/AddressGroup.php';
+require_once $basedir . '/object-classes/Region.php';
 require_once $basedir . '/object-classes/trait/ServiceCommon.php';
 require_once $basedir . '/object-classes/trait/centralServiceStore.php';
 require_once $basedir . '/object-classes/trait/centralServiceStoreUser.php';

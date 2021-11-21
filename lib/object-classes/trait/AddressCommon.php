@@ -39,6 +39,11 @@ trait AddressCommon
         return FALSE;
     }
 
+    public function isRegion()
+    {
+        return FALSE;
+    }
+
     public function isTmpAddr()
     {
         return FALSE;
