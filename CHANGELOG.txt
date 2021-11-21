@@ -1,6 +1,14 @@
 CHANGELOG
 
-2.0.23
+2.0.24
+UTILS:
+
+BUGFIX:
+
+GENERAL:
+
+
+2.0.23 (20211121)
 UTILS:
 * pa_rule-merger - extend argument additionalmatch with 'secprof'
 * pa_address-edit | introduce new reference filters
