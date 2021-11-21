@@ -585,67 +585,22 @@ class RuleCallContext extends CallContext
             return array( 'any' );
         if( $rule->services->isApplicationDefault() )
         {
-            //if application is any
             if( $rule->apps->isAny() )
                 return array( 'application-default' );
             else
             {
-                $applications = $rule->apps->getAll();
-
-                //get all apps
                 $app_array = array();
+                $port_mapping_text = array();
+
+                $applications = $rule->apps->getAll();
                 foreach( $applications as $app )
                 {
                     /** @var App $app */
                     $app_array = array_merge( $app_array, $app->getAppsRecursive() );
                 }
 
-
                 foreach( $app_array as $app )
-                {
-                    #$name = " ".$app->name();
-                    $name = "";
-
-                    if( isset($app->tcp) )
-                    {
-                        $protocol = "tcp/";
-                        foreach( $app->tcp as $tcp )
-                        {
-                            if( $tcp[0] == "single" )
-                                $port_mapping_text[$protocol . $tcp[1]] = $protocol . $tcp[1].$name;
-                            elseif( $tcp[0] == "dynamic" )
-                            {
-                                #$port_mapping_text[$protocol . "dynamic"] = $protocol . "dynamic";
-                                $port_mapping_text[$protocol . "1024-65535"] = $protocol . "1024-65535". $name;
-                            }
-                            elseif( $tcp[0] == "range" )
-                                $port_mapping_text[$protocol . $tcp[1] . "-" . $tcp[2]] = $protocol . $tcp[1] . "-" . $tcp[2]. $name;
-                            else
-                                foreach( $tcp as $port )
-                                    $port_mapping_text[$protocol . $port] = $protocol . $port. $name;
-                        }
-                    }
-
-                    if( isset($app->udp) )
-                    {
-                        $protocol = "udp/";
-                        foreach( $app->udp as $udp )
-                        {
-                            if( $udp[0] == "single" )
-                                $port_mapping_text[$protocol . $udp[1]] = $protocol . $udp[1]. $name;
-                            elseif( $udp[0] == "dynamic" )
-                            {
-                                #$port_mapping_text[$protocol . "dynamic"] = $protocol . "dynamic";
-                                $port_mapping_text[$protocol . "1024-65535"] = $protocol . "1024-65535". $name;
-                            }
-                            elseif( $udp[0] == "range" )
-                                $port_mapping_text[$protocol . $udp[1] . "-" . $udp[2]] = $protocol . $udp[1] . "-" . $udp[2]. $name;
-                            else
-                                foreach( $udp as $port )
-                                    $port_mapping_text[$protocol . $port] = $protocol . $port.$name;
-                        }
-                    }
-                }
+                    $app->getAppServiceDefault( false, $port_mapping_text );
 
                 return $port_mapping_text;
             }
@@ -723,18 +678,22 @@ class RuleCallContext extends CallContext
             return array( 'any' );
         }
 
+        $app_array = array();
 
         $applications = $rule->apps->getAll();
         foreach( $applications as $app )
         {
             /** @var App $app */
-            $this->appGetRecursive( $app, $returnString, $app_mapping );
+            #$this->appGetRecursive( $app, $returnString, $app_mapping );
+
+            $app_array = array_merge( $app_array, $app->getAppsRecursive() );
         }
 
-        if( $returnString )
-            return $app_mapping;
-        else
-            return $app_mapping;
+        foreach( $app_array as $app )
+            $app->getAppDetails( $returnString, $app_mapping );
+
+
+        return $app_mapping;
     }
 
     public function appGetRecursive( $app, $returnString = false, &$app_mapping = array() )
@@ -777,28 +736,7 @@ class RuleCallContext extends CallContext
                 $this->appReturn( $app1, $returnString, $app_mapping );
         }
         else
-        {
-            if( isset($app->app_filter_details['category']) )
-                $string_category = implode( "|", $app->app_filter_details['category'] );
-            else
-                $string_category = $app->category;
-
-            if( isset($app->app_filter_details['subcategory']) )
-                $string_subcategory = implode( "|", $app->app_filter_details['subcategory'] );
-            else
-                $string_subcategory = $app->subCategory;
-
-            if( isset($app->risk) )
-                $risk = $app->risk;
-            else
-                $risk = "";
-
-            if( $returnString )
-                $app_mapping[] = $app->name().",".$string_category.",".$string_subcategory.",".$risk;
-            else
-                $app_mapping[] = array( "name" => $app->name(), "category" => $string_category, "subcatecory" => $string_subcategory, "risk" => $risk );
-        }
-
+            $app->getAppDetails( $returnString, $app_mapping );
     }
 
     public function ScheduleResolveSummary( $rule, $returnString = false )
