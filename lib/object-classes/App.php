@@ -62,6 +62,9 @@ class App
     /** @var null|string */
     public $risk = null;
 
+    /** @var null|string */
+    public $apptag = array();
+
     /** @var bool */
     public $virusident = FALSE;
     /** @var bool */
@@ -170,6 +173,11 @@ class App
         else
             $technologies = array();
 
+        if( isset( $this->app_filter_details['tagging']) )
+            $apptags = $this->app_filter_details['tagging'];
+        else
+            $apptags = array();
+
         $appstore = $this->owner;
         $all = $appstore->getAll();
 
@@ -181,6 +189,9 @@ class App
 
         foreach( $all as $app )
         {
+            if( $app->isApplicationFilter() )
+                continue;
+
             $hasCategory = TRUE;
             if( count( $categories ) > 0 )
             {
@@ -225,7 +236,18 @@ class App
                 }
             }
 
-            if( $hasCategory && $hasSubCategory && $hasRisk && $hasTechnology )
+            $hasAppTag = TRUE;
+            if( count( $apptags ) > 0 )
+            {
+                $hasAppTag = FALSE;
+                foreach( $apptags as $apptag )
+                {
+                    if( in_array( $apptag, $app->apptag ) )
+                            $hasAppTag = TRUE;
+                }
+            }
+
+            if( $hasCategory && $hasSubCategory && $hasRisk && $hasTechnology && $hasAppTag )
                 $app_array[] = $app;
         }
 
@@ -403,7 +425,7 @@ class App
         $text = "";
         if( $printName )
         {
-            PH::print_stdout("");
+            #PH::print_stdout("");
             $text .= $padding_above . " - " . str_pad(PH::boldText($this->name()), $padding) . " - ";
         }
         $subarray[$this->name()]['name'] = $this->name();
@@ -553,25 +575,21 @@ class App
     {
         if( $this->isApplicationGroup() )
         {
-            $app_array = array_merge( $app_array, $this->groupApps() );
-            #foreach( $this->groupApps() as $app )
-                #$app_array = array_merge( $app_array, $app->getAppsRecursive( $app_array ) );
+            foreach( $this->groupApps() as $app )
+                $app_array = $app->getAppsRecursive( $app_array ) ;
         }
         elseif( $this->isApplicationFilter() )
         {
-            $app_array = array_merge( $app_array, $this->filteredApps() );
-            #foreach( $this->filteredApps() as $app )
-                #$app_array = array_merge( $app_array, $app->getAppsRecursive( $app_array ) );
+            foreach( $this->filteredApps() as $app )
+                $app_array = $app->getAppsRecursive( $app_array ) ;
         }
         elseif( $this->isContainer() )
         {
-            $app_array = array_merge( $app_array, $this->containerApps() );
-            #foreach( $this->containerApps() as $app )
-                #$app_array = array_merge( $app_array, $app->getAppsRecursive( $app_array ) );
-
+            foreach( $this->containerApps() as $app )
+                $app_array = $app->getAppsRecursive( $app_array ) ;
         }
         else
-            $app_array[] = $this;
+            $app_array[ $this->name() ] = $this;
 
         return $app_array;
     }
@@ -593,7 +611,10 @@ class App
         else
             $string_technology = $this->technology;
 
-        //App Tag missing
+        if( isset($this->app_filter_details['tag']) )
+            $string_apptag = implode( "|", $this->app_filter_details['tag'] );
+        else
+            $string_apptag = implode( "|", $this->apptag);
 
         if( isset($this->risk) )
             $risk = $this->risk;
@@ -601,9 +622,9 @@ class App
             $risk = "";
 
         if( $returnString )
-            $app_mapping[] = $this->name().",".$string_category.",".$string_subcategory.",".$risk;
+            $app_mapping[] = $this->name().",".$string_category.",".$string_subcategory.",".$string_technology.",".$string_apptag.",".$risk;
         else
-            $app_mapping[] = array( "name" => $this->name(), "category" => $string_category, "subcatecory" => $string_subcategory, "risk" => $risk );
+            $app_mapping[] = array( "name" => $this->name(), "category" => $string_category, "subcatecory" => $string_subcategory, "technology" => $string_technology, "tag" => $string_apptag, "risk" => $risk );
     }
 
     function getAppServiceDefault( $secure = false, &$port_mapping_text = array(), &$subarray = array() )

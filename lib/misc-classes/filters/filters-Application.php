@@ -224,6 +224,33 @@ RQuery::$defaultFilters['application']['subcategory']['operators']['eq'] = array
         'input' => 'input/panorama-8.0.xml'
     )
 );
+RQuery::$defaultFilters['application']['apptag']['operators']['has'] = array(
+    'Function' => function (ApplicationRQueryContext $context) {
+
+        if( $context->object->name() == "appneta" )
+        {
+            print "appneta\n";
+            print_r($context->object->apptag );
+        }
+
+        if( isset( $context->object->apptag) )
+        {
+            foreach( $context->object->apptag as $apptag )
+            {
+
+                if( $apptag == $context->value )
+                    return TRUE;
+            }
+        }
+
+        return FALSE;
+    },
+    'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 RQuery::$defaultFilters['application']['type']['operators']['eq'] = array(
     'Function' => function (ApplicationRQueryContext $context) {
         if( $context->object->type == $context->value )

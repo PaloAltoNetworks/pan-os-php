@@ -44,6 +44,39 @@ class AppFilter extends App
         //- if use array how to get the information via the app filter
         $this->app_filter_details = array();
 
+        $array = array( 'category', 'subcategory', 'technology', 'tagging', 'risk' );
+
+        foreach( $array as $entry )
+        {
+            $tmp = DH::findFirstElement($entry, $appx);
+            if( $entry == "tagging" && $tmp !== FALSE )
+                $tmp = DH::findFirstElement("tag", $tmp);
+
+            if( $tmp !== FALSE )
+            {
+                $this->app_filter_details[$entry] = array();
+                foreach( $tmp->childNodes as $tmp1 )
+                {
+                    if( $tmp1->nodeType != XML_ELEMENT_NODE ) continue;
+
+                    if( $entry == "tagging" )
+                    {
+                        $text = str_replace( "[", "", $tmp1->textContent);
+                        $text = str_replace( "]", "", $text);
+                        $this->apptag[$text] = $text;
+                    }
+                    else
+                    {
+                        $text = $tmp1->textContent;
+                        $this->$entry = $tmp1->textContent;
+                    }
+
+
+                    $this->app_filter_details[$entry][$text] = $text;
+                }
+            }
+        }
+        /*
         $tmp = DH::findFirstElement('category', $appx);
         if( $tmp !== FALSE )
         {
@@ -92,6 +125,22 @@ class AppFilter extends App
                 $this->app_filter_details['risk'][$tmp1->textContent] = $tmp1->textContent;
             }
         }
+
+        $tmp = DH::findFirstElement('tag', $appx);
+        if( $tmp !== FALSE )
+        {
+            $this->app_filter_details['tag'] = array();
+            foreach( $tmp->childNodes as $tmp1 )
+            {
+                if( $tmp1->nodeType != XML_ELEMENT_NODE ) continue;
+                $this->technology = $tmp1->textContent;
+                $this->app_filter_details['tag'][$tmp1->textContent] = $tmp1->textContent;
+            }
+        }
+        */
+
+
+        #$arry = array( 'evasive', 'excessive-bandwidth-use', 'used-by-malware', 'transfers-files', 'has-known-vulnerabilities', 'tunnels-other-apps', 'prone-to-misuse', 'pervasive'  );
 
         $tmp = DH::findFirstElement('evasive', $appx);
         if( $tmp !== FALSE )

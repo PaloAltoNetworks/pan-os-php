@@ -13,6 +13,7 @@ UTILS:
 * pa_device-edit - optimise actions=securityprofile-create-alert-only[:true] - introduce bool argument [shared], if set to true profiles are create at SHARED level
 * UTIL introduce Palo Alto Networks max FW object counters in JSON format
 * pa_application-edit / pa_rule-edit actions=display:ResolveApplicationSummary|ResolveServiceSummary code reduction / optiisation
+* pa_application-edit | introduce App Tag from PAN-OS - introduce 'filter=(apptag has XYZ)'
 
 BUGFIX:
 *  all utils script - bugfix if Panorama config is used with loadpanoramapushedconfig
