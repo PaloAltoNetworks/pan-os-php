@@ -117,5 +117,23 @@ class Region
         $this->setName($newName);
     }
 
+    /**
+     * Return an array['start']= startip and ['end']= endip
+     * @return IP4Map
+     */
+    public function getIP4Mapping()
+    {
+        if( isset($this->_ip4Map) )
+        {
+            return $this->_ip4Map;
+        }
+
+        $this->_ip4Map = new IP4Map();
+
+
+        return $this->_ip4Map;
+    }
+
+
     static protected $templatexml = '<entry name="**temporarynamechangeme**"><address><member>tempvaluechangeme</member></entry>';
 }

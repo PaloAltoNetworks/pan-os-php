@@ -4,6 +4,7 @@ CHANGELOG
 UTILS:
 * pa_application-edit | class App method filteredApps() - introduce filter based on characeristics
 * pa_address-edit | introduce 'filter=(object is.region)'
+
 BUGFIX:
 
 GENERAL:

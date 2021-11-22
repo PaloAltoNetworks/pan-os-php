@@ -166,6 +166,13 @@ class AddressStore
             /** @var DOMElement $node */
             if( $node->nodeType != XML_ELEMENT_NODE ) continue;
 
+            $tmp = DH::findFirstElement( "address", $node);
+            if ( $tmp === false )
+            {
+                //object is TMP - predefined
+                continue;
+            }
+
             $ns = new Region('', $this);
             $loadedOK = $ns->load_from_domxml($node);
 
