@@ -625,6 +625,10 @@ class AddressRuleContainer extends ObjRuleContainer
                     $mapObject->addMap($localMap, TRUE);
                 }
             }
+            elseif( $member->isRegion() )
+            {
+                //Todo: 20211122 extend to get IPmapping
+            }
             else
                 derr('unsupported type of objects ' . $member->toString());
         }
