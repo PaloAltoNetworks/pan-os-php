@@ -6,6 +6,7 @@ UTILS:
 * pa_address-edit | introduce 'filter=(object is.region)'
 
 BUGFIX:
+* UTIL all object merger script | bugfix for pickfilter and excludefilter
 
 GENERAL:
 * framework introduce class Region | make use of it in all PAN-OS xml config parts

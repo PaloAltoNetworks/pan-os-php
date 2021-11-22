@@ -234,9 +234,16 @@ class MERGER extends UTIL
 
     function filterArgument( )
     {
+        if( $this->utilType == "address-merger" || $this->utilType == "addressgroup-merger" )
+            $type = 'address';
+        elseif( $this->utilType == "service-merger" || $this->utilType == "servicegroup-merger" )
+            $type = 'service';
+        elseif( $this->utilType == "tag-merger" )
+            $type = 'tag';
+
         if( isset(PH::$args['pickfilter']) )
         {
-            $this->pickFilter = new RQuery('service');
+            $this->pickFilter = new RQuery($type);
             $errMsg = '';
             if( $this->pickFilter->parseFromString(PH::$args['pickfilter'], $errMsg) === FALSE )
                 derr("invalid pickFilter was input: " . $errMsg);
@@ -248,7 +255,7 @@ class MERGER extends UTIL
 
         if( isset(PH::$args['excludefilter']) )
         {
-            $this->excludeFilter = new RQuery('service');
+            $this->excludeFilter = new RQuery($type);
             $errMsg = '';
             if( $this->excludeFilter->parseFromString(PH::$args['excludefilter'], $errMsg) === FALSE )
                 derr("invalid pickFilter was input: " . $errMsg);
@@ -617,6 +624,8 @@ class MERGER extends UTIL
             $countRemoved = 0;
             foreach( $hashMap as $index => &$hash )
             {
+                #$skip = false;
+
                 PH::print_stdout( "" );
                 PH::print_stdout( " - value '{$index}'" );
 
@@ -776,6 +785,13 @@ class MERGER extends UTIL
                     }
                     else
                     {
+                        /*
+                        if( $pickedObject->has( $object ) )
+                        {
+                            PH::print_stdout(  "   * SKIPPED : the pickedgroup {$pickedObject->_PANC_shortName()} has an object member named '{$object->_PANC_shortName()} that is planned to be replaced by this group" );
+                            $skip = true;
+                            continue;
+                        }*/
                         PH::print_stdout( "    - replacing '{$object->_PANC_shortName()}' ..." );
                         $success = $object->__replaceWhereIamUsed($this->apiMode, $pickedObject, TRUE, 5);
 
@@ -793,6 +809,9 @@ class MERGER extends UTIL
                             }
                         }
                     }
+
+                    #if( $skip )
+                    #    continue;
 
                     $countRemoved++;
 
