@@ -270,7 +270,8 @@ class App
                 }
             }
 
-            if( $hasCategory && $hasSubCategory && $hasRisk && $hasTechnology && $hasAppTag && $hasCharacteristics )
+            //if( $hasCategory && $hasSubCategory && $hasRisk && $hasTechnology && $hasAppTag && $hasCharacteristics )
+            if( $hasCategory && $hasSubCategory && $hasRisk && $hasTechnology && $hasAppTag )
                 $app_array[] = $app;
         }
 
