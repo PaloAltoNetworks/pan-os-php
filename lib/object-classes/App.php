@@ -675,9 +675,9 @@ class App
         $string_characteristic = implode( "|", $characterisiticArray );
 
         if( $returnString )
-            $app_mapping[] = $this->name().",".$string_category.",".$string_subcategory.",".$string_technology.",".$string_apptag.",".$string_risk.",".$string_characteristic;
+            $app_mapping[] = $this->name().",".$string_category.",".$string_subcategory.",".$string_technology.",".$string_risk.",".$string_apptag.",".$string_characteristic;
         else
-            $app_mapping[] = array( "name" => $this->name(), "category" => $string_category, "subcatecory" => $string_subcategory, "technology" => $string_technology, "tag" => $string_apptag, "risk" => $string_risk, "characteristic" => $string_characteristic );
+            $app_mapping[] = array( "name" => $this->name(), "category" => $string_category, "subcatecory" => $string_subcategory, "technology" => $string_technology, "risk" => $string_risk, "tag" => $string_apptag, "characteristic" => $string_characteristic );
     }
 
     function getAppServiceDefault( $secure = false, &$port_mapping_text = array(), &$subarray = array() )
