@@ -7,6 +7,7 @@ UTILS:
 
 BUGFIX:
 * UTIL all object merger script | bugfix for pickfilter and excludefilter
+* framework class App - optimise method filteredApps() to get correct apps if multiple apptag / characteristics are used in application-filter app
 
 GENERAL:
 * framework introduce class Region | make use of it in all PAN-OS xml config parts

@@ -78,6 +78,7 @@ class App
     /** @var string[] */
     public $_characteristics = array();
 
+    //Todo: new dynamic content contains SAAS appid-saas-risk-fields
     static public $_supportedCharacteristics = array(
         'evasive' => 'evasive',
         'excessive-bandwidth' => 'excessive-bandwidth',
@@ -98,13 +99,12 @@ class App
         $this->name = $name;
         $this->xmlroot = null;
 
-        foreach( self::$_supportedCharacteristics as $characteristicName )
-            $this->_characteristics[$characteristicName] = FALSE;
+        #foreach( self::$_supportedCharacteristics as $characteristicName )
+        #    $this->_characteristics[$characteristicName] = "0";
     }
 
     public function isUsingSpecialProto()
     {
-
         if( $this->isContainer() )
         {
             foreach( $this->subapps as $app )
@@ -181,7 +181,6 @@ class App
         else
             $apptags = array();
 
-
         if( isset( $this->_characteristics) )
             $characteristics = $this->_characteristics;
         else
@@ -246,32 +245,49 @@ class App
                 }
             }
 
+            //cat,subcat,tech,risk are or creterium, app has x or y
+
+            //apptag and characteristics are AND creterium app has apptag x and y; characeristic has x and y and....
             $hasAppTag = TRUE;
             if( count( $apptags ) > 0 )
             {
                 $hasAppTag = FALSE;
-                foreach( $apptags as $apptag )
+                $hasAppTagArray = array();
+                foreach( $apptags as $key => $apptag )
                 {
-                    if( in_array( $apptag, $app->apptag ) )
-                            $hasAppTag = TRUE;
+                    if( in_array( $apptag, $app->apptag )  )
+                        $hasAppTagArray[$key] = true;
+                    else
+                        $hasAppTagArray[$key] = false;
                 }
+
+                if(in_array(false, $hasAppTagArray, true) === false)
+                    $hasAppTag = TRUE;
+                else if(in_array(true, $hasAppTagArray, true) === false)
+                    $hasAppTag = FALSE;
             }
+
 
             $hasCharacteristics = TRUE;
             if( count( $characteristics ) > 0 )
             {
                 $hasCharacteristics = FALSE;
+                $hasCharacteristicsArray = array();
                 foreach( $characteristics as $characteristic => $bool )
                 {
-                    if( $bool && $app->_characteristics[$characteristic] )
-                    {
-                        $hasCharacteristics = TRUE;
-                    }
+                    if( isset( $app->_characteristics[$characteristic] ) && $app->_characteristics[$characteristic] == $bool )
+                        $hasCharacteristicsArray[$characteristic] = TRUE;
+                    else
+                        $hasCharacteristicsArray[$characteristic] = FALSE;
                 }
+                if(in_array(false, $hasCharacteristicsArray, true) === false)
+                    $hasCharacteristics = TRUE;
+                else if(in_array(true, $hasCharacteristicsArray, true) === false)
+                    $hasCharacteristics = FALSE;
             }
 
-            //if( $hasCategory && $hasSubCategory && $hasRisk && $hasTechnology && $hasAppTag && $hasCharacteristics )
-            if( $hasCategory && $hasSubCategory && $hasRisk && $hasTechnology && $hasAppTag )
+            if( $hasCategory && $hasSubCategory && $hasRisk && $hasTechnology && $hasAppTag && $hasCharacteristics )
+            #if( $hasCategory && $hasSubCategory && $hasRisk && $hasTechnology && $hasAppTag )
                 $app_array[] = $app;
         }
 
@@ -640,15 +656,28 @@ class App
         else
             $string_apptag = implode( "|", $this->apptag);
 
-        if( isset($this->risk) )
-            $risk = $this->risk;
+        if( isset($this->app_filter_details['risk']) )
+            $string_risk = implode( "|", $this->app_filter_details['risk'] );
         else
-            $risk = "";
+            $string_risk = $this->risk;
+
+        if( isset( $this->_characteristics) )
+            $characteristics = $this->_characteristics;
+        else
+            $characteristics = array();
+
+        $characterisiticArray = array();
+        foreach( $characteristics as $key => $characteristic )
+        {
+            if( $characteristic )
+                $characterisiticArray[$key] = $key;
+        }
+        $string_characteristic = implode( "|", $characterisiticArray );
 
         if( $returnString )
-            $app_mapping[] = $this->name().",".$string_category.",".$string_subcategory.",".$string_technology.",".$string_apptag.",".$risk;
+            $app_mapping[] = $this->name().",".$string_category.",".$string_subcategory.",".$string_technology.",".$string_risk.",".$string_apptag.",".$string_characteristic;
         else
-            $app_mapping[] = array( "name" => $this->name(), "category" => $string_category, "subcatecory" => $string_subcategory, "technology" => $string_technology, "tag" => $string_apptag, "risk" => $risk );
+            $app_mapping[] = array( "name" => $this->name(), "category" => $string_category, "subcatecory" => $string_subcategory, "technology" => $string_technology, "risk" => $string_risk, "tag" => $string_apptag, "characteristic" => $string_characteristic );
     }
 
     function getAppServiceDefault( $secure = false, &$port_mapping_text = array(), &$subarray = array() )
