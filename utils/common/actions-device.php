@@ -701,8 +701,8 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
         $object = $context->object;
         $classtype = get_class($object);
 
-        if( $context->object->version < 90 )
-            derr( "PAN-OS >= 9.0 is needed", null, false );
+        if( $context->object->version < 91 )
+            derr( "PAN-OS >= 9.1 is needed for display-shadowrule", null, false );
 
         $shadowArray = array();
         if( $classtype == "VirtualSystem" )
