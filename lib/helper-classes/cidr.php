@@ -325,8 +325,8 @@ class cidr
             }
             elseif( $version == "ipv6" )
             {
-                $result['start'] = ip2long($ex[0]);
-                $result['end'] = ip2long($ex[1]);
+                $result['start'] = cidr::inet_ptoi($ex[0]);
+                $result['end'] = cidr::inet_ptoi($ex[1]);
             }
 
             return $result;
