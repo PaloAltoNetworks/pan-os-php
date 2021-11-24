@@ -8,6 +8,7 @@ UTILS:
 BUGFIX:
 * UTIL all object merger script | bugfix for pickfilter and excludefilter
 * framework class App - optimise method filteredApps() to get correct apps if multiple apptag / characteristics are used in application-filter app
+* pa_device-edit | bugfix for actions=display-shadowrule if running against PAN-OS FW device
 
 GENERAL:
 * framework introduce class Region | make use of it in all PAN-OS xml config parts
