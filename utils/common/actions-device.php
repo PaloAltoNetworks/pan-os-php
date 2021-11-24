@@ -749,12 +749,12 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
             {
                 //uid: $key -> search rule name for uid
                 /** @var DeviceGroup $DG */
-                $DGname = $object->devicegroup;
+                #$DGname = $object->devicegroup;
 
 
                 /** @var PanoramaConf $pan */
                 $pan = $object->owner->owner;
-                $dg = $pan->findDeviceGroup( $DGname );
+                #$dg = $pan->findDeviceGroup( $DGname );
 
                 #$rule = $dg->securityRules->findByUUID( $key );
                 #PH::print_stdout( "        * RULE: " . $rule->name() );

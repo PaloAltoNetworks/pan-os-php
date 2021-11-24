@@ -682,7 +682,7 @@ class App
 
     function getAppServiceDefault( $secure = false, &$port_mapping_text = array(), &$subarray = array() )
     {
-        $name = " ".$this->name();
+        #$name = ",".$this->name();
         $name = "";
 
         if( $secure )
