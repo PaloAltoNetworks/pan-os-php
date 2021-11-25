@@ -325,8 +325,8 @@ class cidr
             }
             elseif( $version == "ipv6" )
             {
-                $result['start'] = ip2long($ex[0]);
-                $result['end'] = ip2long($ex[1]);
+                $result['start'] = cidr::inet_ptoi($ex[0]);
+                $result['end'] = cidr::inet_ptoi($ex[1]);
             }
 
             return $result;
@@ -335,30 +335,28 @@ class cidr
 
         $ex = explode('/', $value);
         if( filter_var($ex[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== FALSE )
-            $version = "ipv4";
-        elseif( filter_var($ex[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== FALSE )
-            $version = "ipv6";
-
-        if( count($ex) > 1 && $ex[1] != '32' )
         {
-            //$netmask = cidr::cidr2netmask($ex[0]);
-            if( $version == "ipv4" )
-            {
-                if( $ex[1] < 0 || $ex[1] > 32 )
-                    derr("invalid netmask in value {$value}");
-            }
-            elseif( $version == "ipv6" )
-            {
-                if( $ex[1] < 0 || $ex[1] > 128 )
-                    derr("invalid netmask in value {$value}");
-            }
+            $version = "ipv4";
+            $maskvalue = 32;
+        }
+
+        elseif( filter_var($ex[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== FALSE )
+        {
+            $version = "ipv6";
+            $maskvalue = 128;
+        }
+
+        if( count($ex) > 1 && (($version == "ipv4" && $ex[1] != $maskvalue) || ($version == "ipv6" && $ex[1] != $maskvalue) ))
+        {
+            if( $ex[1] < 0 || $ex[1] > $maskvalue )
+                derr("invalid netmask in value {$value}");
 
 
             if( filter_var($ex[0], FILTER_VALIDATE_IP) === FALSE )
                 derr("'{$ex[0]}' is not a valid IP");
 
             $bmask = 0;
-            for( $i = 1; $i <= (32 - $ex[1]); $i++ )
+            for( $i = 1; $i <= ($maskvalue - $ex[1]); $i++ )
                 $bmask += pow(2, $i - 1);
 
 
@@ -374,7 +372,7 @@ class cidr
                 $subBroadcast = cidr::inet_ptoi( $return['end']);
             }
         }
-        elseif( count($ex) > 1 && $ex[1] == '32' )
+        elseif( count($ex) > 1 && (($version == "ipv4" && $ex[1] == $maskvalue) || ($version == "ipv6" && $ex[1] == $maskvalue) ) )
         {
             if( filter_var($ex[0], FILTER_VALIDATE_IP) === FALSE )
                 derr("'{$ex[0]}' is not a valid IP");

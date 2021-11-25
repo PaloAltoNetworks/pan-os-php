@@ -4,11 +4,14 @@ CHANGELOG
 UTILS:
 * pa_application-edit | class App method filteredApps() - introduce filter based on characeristics
 * pa_address-edit | introduce 'filter=(object is.region)'
+* pa_device-edit | actions=display-shadowrule - introduce PAN-OS version validation
 
 BUGFIX:
 * UTIL all object merger script | bugfix for pickfilter and excludefilter
 * framework class App - optimise method filteredApps() to get correct apps if multiple apptag / characteristics are used in application-filter app
 * pa_device-edit | bugfix for actions=display-shadowrule if running against PAN-OS FW device
+* framework class cidr | bugfix for method cidr::stringToStartEnd() to correctly get IPv6 start / end
+* class cidr - bugfix for method stringToStartEnd() - in relationship to IPv6
 
 GENERAL:
 * framework introduce class Region | make use of it in all PAN-OS xml config parts

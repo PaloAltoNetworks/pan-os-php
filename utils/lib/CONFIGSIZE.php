@@ -175,7 +175,10 @@ class CONFIGSIZE extends UTIL
 
 
                 $length2_overhead = $length2-$length_reduced;
-                $length2_overhead_percent = round( ( $length2_overhead / $length2 ) * 100, 0);
+                if( $length2 !== 0 )
+                    $length2_overhead_percent = round( ( $length2_overhead / $length2 ) * 100, 0);
+                else
+                    $length2_overhead_percent = 0;
                 PH::print_stdout( $string." | " .$padding.str_pad( $length_reduced. "kB [xml overhead:".($length2_overhead)."kB (".$length2_overhead_percent."%)]" , 10, " ", STR_PAD_LEFT));
 
                 if( $depth == 3 )
