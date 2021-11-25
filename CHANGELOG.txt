@@ -12,6 +12,7 @@ BUGFIX:
 * pa_device-edit | bugfix for actions=display-shadowrule if running against PAN-OS FW device
 * framework class cidr | bugfix for method cidr::stringToStartEnd() to correctly get IPv6 start / end
 * class cidr - bugfix for method stringToStartEnd() - in relationship to IPv6
+* pa_config-size | bugfix if length == 0 to avoid devicision with 0
 
 GENERAL:
 * framework introduce class Region | make use of it in all PAN-OS xml config parts
@@ -29,7 +30,7 @@ UTILS:
 * pa_device-edit - introduce actions=securityprofile-create-alert-only | until now working only against VSYS or DG - use filter=(name eq XYZ) to define where to create / no PAN-OS API mode supported yet
 * pa_device-edit - optimise actions=securityprofile-create-alert-only[:true] - introduce bool argument [shared], if set to true profiles are create at SHARED level
 * UTIL introduce Palo Alto Networks max FW object counters in JSON format
-* pa_application-edit / pa_rule-edit actions=display:ResolveApplicationSummary|ResolveServiceSummary code reduction / optiisation
+* pa_application-edit / pa_rule-edit actions=display:ResolveApplicationSummary|ResolveServiceSummary code reduction / optimisation
 * pa_application-edit | introduce App Tag from PAN-OS - introduce 'filter=(apptag has XYZ)'
 
 BUGFIX:
