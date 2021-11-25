@@ -1262,7 +1262,7 @@ DeviceCallContext::$supportedActions['geoIP-check'] = array(
         $file = $filepath."RegionCC" . $filename . ".json";
         if ( !file_exists($file) )
         {
-            derr( "Maxmind geo2ip lite database not downloaded correctly for PAN-OS-PHP" );
+            derr( "Maxmind geo2ip lite database not downloaded correctly for PAN-OS-PHP", null, false );
         }
         $fileLine = file_get_contents( $file );
         $array = json_decode($fileLine, TRUE);

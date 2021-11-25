@@ -391,7 +391,7 @@ class PanAPIConnector
                 {
                     PH::$useExceptions = $exceptionUse;
 
-                    if( $host != "bpa-apikey" && $host != "license-apikey" && $host != "ldap-password" )
+                    if( $host != "bpa-apikey" && $host != "license-apikey" && $host != "ldap-password" && $host != "maxmind-licensekey" )
                     {
                         $wrongLogin = TRUE;
                         if( strpos($e->getMessage(), "Invalid credentials.") === FALSE )
@@ -438,7 +438,7 @@ class PanAPIConnector
             }
 
 
-            if( strlen($apiKey) < 19 && !( $host == "bpa-apikey" || $host == "license-apikey" || $host == "ldap-password" ) )
+            if( strlen($apiKey) < 19 && !( $host == "bpa-apikey" || $host == "license-apikey" || $host == "ldap-password" || $host == "maxmind-licensekey" ) )
             {
                 $user = $apiKey;
 
@@ -486,7 +486,7 @@ class PanAPIConnector
                 $connector = new PanAPIConnector($host, $apiKey, 'panos', null, $port);
         }
 
-        if( $host == "bpa-apikey" || $host == "license-apikey" || $host == "ldap-password" )
+        if( $host == "bpa-apikey" || $host == "license-apikey" || $host == "ldap-password" || $host == "maxmind-licensekey" )
         {
             $checkConnectivity = false;
             self::$savedConnectors[] = $connector;

@@ -14,7 +14,8 @@ class KEYMANGER extends UTIL
             
     - php " . basename(__FILE__) . " add=license-apikey apikey=[ your personal company license API key account can be found via https://support.paloaltonetworks.com -> Assets -> API key management - only super user can see this ]
     - php " . basename(__FILE__) . " add=bpa-apikey apikey=[ PAN-OS BPA can be request via: bpa@paloaltonetworks.com ] 
-    - php " . basename(__FILE__) . " add=ldap-password apikey=[ LDAP password to interact with organisational ldap server ]";
+    - php " . basename(__FILE__) . " add=ldap-password apikey=[ LDAP password to interact with organisational ldap server ]
+    - php " . basename(__FILE__) . " add=maxmind-licensekey apikey=[ Maxmind license to download Maxmind geo2ip lite database. create free account: https://www.maxmind.com ]";
 
         $this->prepareSupportedArgumentsArray();
         PH::processCliArgs();
