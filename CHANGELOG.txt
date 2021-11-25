@@ -17,6 +17,7 @@ BUGFIX:
 
 GENERAL:
 * framework introduce class Region | make use of it in all PAN-OS xml config parts
+* framework | introduce Maxmind geo2ip lite download and usage
 
 
 2.0.23 (20211121)
