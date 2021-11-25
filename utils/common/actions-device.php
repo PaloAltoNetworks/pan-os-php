@@ -1258,10 +1258,15 @@ DeviceCallContext::$supportedActions['geoIP-check'] = array(
             derr("not a valid IP: " . $prefix);
 
 
-        $filepath = dirname(__FILE__)."/../../lib/resources/geoip/";
-        $fileLine = file_get_contents($filepath."RegionCC" . $filename . ".json");
+        $filepath = dirname(__FILE__)."/../../lib/resources/geoip/data/";
+        $file = $filepath."RegionCC" . $filename . ".json";
+        if ( !file_exists($file) )
+        {
+            derr( "Maxmind geo2ip lite database not downloaded correctly for PAN-OS-PHP" );
+        }
+        $fileLine = file_get_contents( $file );
         $array = json_decode($fileLine, TRUE);
-
+        unset( $fileLine);
 
         foreach( $array as $countryKey => $country )
         {
@@ -1271,7 +1276,7 @@ DeviceCallContext::$supportedActions['geoIP-check'] = array(
                     $responseArray[$value] = $countryKey;
             }
         }
-
+        unset( $array );
 
 
         foreach( $responseArray as $ipKey => $countryKey )
@@ -1285,13 +1290,13 @@ DeviceCallContext::$supportedActions['geoIP-check'] = array(
 
         if( $context->isAPI && $filename !== "ipv6" )
         {
-
             $request = "<show><location><ip>" . $prefix . "</ip></location></show>";
 
             try
             {
                 $candidateDoc = $context->connector->sendOpRequest($request);
-            } catch(Exception $e)
+            }
+            catch(Exception $e)
             {
                 PH::disableExceptionSupport();
                 print " ***** an error occured : " . $e->getMessage() . "\n\n";
