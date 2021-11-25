@@ -1226,3 +1226,111 @@ DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = arra
         )
     )
 );
+
+DeviceCallContext::$supportedActions['geoIP-check'] = array(
+    'name' => 'geoIP-check',
+    'GlobalInitFunction' => function (DeviceCallContext $context) {
+
+
+        if( $context->subSystem->isPanorama() )
+        {
+            derr( "this action can be only run against PAN-OS FW", null, false );
+        }
+
+        $geoip = str_pad("geoIP JSON: ", 15) ."----------";
+        $panos_geoip = str_pad("PAN-OS: ", 15) ."----------";
+
+        $prefix = $context->arguments['checkIP'];
+
+        if( filter_var($prefix, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) )
+        {
+            $filename = "ipv6";
+            $prefixArray = explode(':', $prefix);
+            $pattern = '/^' . $prefixArray[0] . ':' . $prefixArray[1] . ':/';
+        }
+        elseif( filter_var($prefix, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) )
+        {
+            $filename = "ipv4";
+            $prefixArray = explode('.', $prefix);
+            $pattern = '/^' . $prefixArray[0] . './';
+        }
+        else
+            derr("not a valid IP: " . $prefix);
+
+
+        $filepath = dirname(__FILE__)."/../../lib/resources/geoip/";
+        $fileLine = file_get_contents($filepath."RegionCC" . $filename . ".json");
+        $array = json_decode($fileLine, TRUE);
+
+
+        foreach( $array as $countryKey => $country )
+        {
+            foreach( $country as $value )
+            {
+                if( preg_match($pattern, $value) )
+                    $responseArray[$value] = $countryKey;
+            }
+        }
+
+
+
+        foreach( $responseArray as $ipKey => $countryKey )
+        {
+            if( cidr::netMatch($ipKey, $prefix) > 0 )
+                $geoip = str_pad("geoIP JSON: ", 15) . $countryKey . " - " . $ipKey;
+        }
+
+
+        //###################################################
+
+        if( $context->isAPI && $filename !== "ipv6" )
+        {
+
+            $request = "<show><location><ip>" . $prefix . "</ip></location></show>";
+
+            try
+            {
+                $candidateDoc = $context->connector->sendOpRequest($request);
+            } catch(Exception $e)
+            {
+                PH::disableExceptionSupport();
+                print " ***** an error occured : " . $e->getMessage() . "\n\n";
+            }
+
+
+            #print $geoip . "\n";
+            #$candidateDoc->preserveWhiteSpace = FALSE;
+            #$candidateDoc->formatOutput = TRUE;
+            #print $candidateDoc->saveXML();
+
+
+            $result = DH::findFirstElement('result', $candidateDoc);
+            $entry = DH::findFirstElement('entry', $result);
+
+            $country = $entry->getAttribute("cc");
+            $ip = DH::findFirstElement('ip', $entry)->textContent;
+            $countryName = DH::findFirstElement('country', $entry)->textContent;
+
+            $panos_geoip = str_pad("PAN-OS: ", 15) . $country . " - " . $ip . " - " . $countryName;
+        }
+        elseif($filename === "ipv6")
+        {
+            PH::print_stdout("not working for PAN-OS - ipv6 syntax for 'show location ip' not yet clear");
+        }
+
+        PH::print_stdout("");
+        PH::print_stdout("");
+        PH::print_stdout($geoip);
+        PH::print_stdout($panos_geoip);
+        PH::print_stdout("");
+
+    },
+    'MainFunction' => function (DeviceCallContext $context)
+    {
+    },
+    'args' => array(
+        'checkIP' => array('type' => 'string', 'default' => '8.8.8.8',
+            'help' => "checkIP is IPv4 or IPv6 host address",
+        )
+    )
+);
