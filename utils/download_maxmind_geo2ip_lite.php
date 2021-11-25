@@ -25,8 +25,9 @@ else
     //add it to panconfkeystore
 }
 
+$filepath = dirname(__FILE__)."/../lib/resources/geoip";
 
-$folderExpression = "GeoLite2-Country-CSV";
+$folderExpression = $filepath."/"."GeoLite2-Country-CSV";
 
 $url = "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-Country-CSV&license_key=".$licensekey."&suffix=zip";
 $file_name = $folderExpression.".zip";
@@ -43,7 +44,7 @@ else
 
 //zip always contains a folder
 #$data = system('unzip -d '.$folder.' '.$file_name);
-$data = system('unzip -o '.$file_name);
+$data = system('unzip -o -d '.$filepath.' '.$file_name);
 
 
 //delete downloaded file
@@ -65,8 +66,7 @@ else {
 
 
 
-$folder = "notExist/";
-$dirs = array_filter(glob( '*'), 'is_dir');
+$dirs = array_filter(glob( $filepath.'/*'), 'is_dir');
 foreach( $dirs as $foldername )
 {
     if( strpos( $foldername, $folderExpression ) !== false )
@@ -168,7 +168,7 @@ foreach( $ipTypearray as $type )
     print "create file: ".$filename."\n";
 
     $JSONstring = json_encode( $csv, JSON_PRETTY_PRINT );
-    file_put_contents( "data/".$filename, $JSONstring);
+    file_put_contents( $filepath."/data/".$filename, $JSONstring);
 }
 
 
