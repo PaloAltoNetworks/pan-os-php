@@ -48,9 +48,11 @@ class RuleStore
 
     protected $fastMemToIndex = null;
     protected $fastNameToIndex = null;
+    protected $fastUUIDToIndex = null;
 
     protected $fastMemToIndex_forPost = null;
     protected $fastNameToIndex_forPost = null;
+    protected $fastUUIDToIndex_forPost = null;
 
     /** @var NetworkPropertiesContainer|null */
     public $_networkStore = null;
@@ -238,6 +240,8 @@ class RuleStore
                 $this->fastMemToIndex[$ser] = $index;
                 $this->fastNameToIndex[$rule->name()] = $index;
 
+                $this->fastUUIDToIndex[$rule->uuid()] = $index;
+
                 if( $this->xmlroot === null )
                     $this->createXmlRoot();
 
@@ -258,6 +262,7 @@ class RuleStore
                 $index = lastIndex($this->_postRules);
                 $this->fastMemToIndex_forPost[$ser] = $index;
                 $this->fastNameToIndex_forPost[$rule->name()] = $index;
+                $this->fastUUIDToIndex_forPost[$rule->uuid()] = $index;
 
                 if( $this->postRulesRoot === null )
                     $this->createPostXmlRoot();
@@ -782,6 +787,8 @@ class RuleStore
         $this->fastMemToIndex_forPost = array();
         $this->fastNameToIndex = array();
         $this->fastNameToIndex_forPost = array();
+        $this->fastUUIDToIndex = array();
+        $this->fastUUIDToIndex_forPost = array();
 
         $this->_postRules = array();
     }
@@ -1137,6 +1144,27 @@ class RuleStore
     }
 
     /**
+     * Look for a rule named $name. Return NULL if not found
+     * @param string $name
+     * @return Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|CaptivePortalRule[]|PbfRule|QoSRule|DoSRule
+     */
+    public function findByUUID($uuid)
+    {
+        if( !is_string($uuid) )
+            derr("String was expected for rule uuid");
+
+        if( isset($this->fastUUIDToIndex[$uuid]) )
+            #return $this->fastUUIDToIndex[$uuid];
+            return $this->_rules[$this->fastUUIDToIndex[$uuid]];
+
+        if( isset($this->fastUUIDToIndex_forPost[$uuid]) )
+            #return $this->fastUUIDToIndex_forPost[$uuid];
+            return $this->_postRules[$this->fastUUIDToIndex_forPost[$uuid]];
+
+        return null;
+    }
+
+    /**
      * Creates a new SecurityRule in this store. It will be placed at the end of the list.
      * @param string $name name of the new Rule
      * @param bool $inPost create it in post or pre (if applicable)
@@ -1424,11 +1452,13 @@ class RuleStore
     {
         $this->fastMemToIndex = array();
         $this->fastNameToIndex = array();
+        $this->fastUUIDToIndex = array();
 
         foreach( $this->_rules as $i => $rule )
         {
             $this->fastMemToIndex[spl_object_hash($rule)] = $i;
             $this->fastNameToIndex[$rule->name()] = $i;
+            $this->fastUUIDToIndex[$rule->uuid()] = $i;
         }
 
         if( !$this->isPreOrPost )
@@ -1436,11 +1466,13 @@ class RuleStore
 
         $this->fastMemToIndex_forPost = array();
         $this->fastNameToIndex_forPost = array();
+        $this->fastUUIDToIndex_forPost = array();
 
         foreach( $this->_postRules as $i => $rule )
         {
             $this->fastMemToIndex_forPost[spl_object_hash($rule)] = $i;
             $this->fastNameToIndex_forPost[$rule->name()] = $i;
+            $this->fastUUIDToIndex_forPost[$rule->uuid()] = $i;
         }
     }
 
