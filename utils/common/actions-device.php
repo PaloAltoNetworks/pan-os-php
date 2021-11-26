@@ -701,8 +701,8 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
         $object = $context->object;
         $classtype = get_class($object);
 
-        if( $context->object->version < 91 )
-            derr( "PAN-OS >= 9.1 is needed for display-shadowrule", null, false );
+        #if( $context->object->version < 91 )
+        #    derr( "PAN-OS >= 9.1 is needed for display-shadowrule", null, false );
 
         $shadowArray = array();
         if( $classtype == "VirtualSystem" )
@@ -746,23 +746,41 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
             {
                 PH::print_stdout( "     ** DG: " . $name );
             }
+            if( $classtype == "VirtualSystem" )
+            {
+                PH::print_stdout( "     ** VSYS: " . $name );
+            }
 
 
             foreach( $entries as $key => $item  )
             {
                 //uid: $key -> search rule name for uid
-                /** @var DeviceGroup $DG */
-                #$DGname = $object->devicegroup;
 
 
-                /** @var PanoramaConf $pan */
-                $pan = $object->owner->owner;
-                #$dg = $pan->findDeviceGroup( $DGname );
+                if( $classtype == "ManagedDevice" )
+                {
+                    /** @var PanoramaConf $pan */
+                    $pan = $object->owner->owner;
 
-                #$rule = $dg->securityRules->findByUUID( $key );
-                #PH::print_stdout( "        * RULE: " . $rule->name() );
+                    /** @var DeviceGroup $sub */
+                    $sub = $pan->findDeviceGroup($name);
+                    $rule = $sub->securityRules->findByUUID( $key );
+                }
 
-                PH::print_stdout( "        * RULE: " . $key );
+                if( $classtype == "VirtualSystem" )
+                {
+                    /** @var PANConf $pan */
+                    $pan = $object->owner;
+
+                    /** @var VirtualSystem $sub */
+                    $sub = $pan->findVirtualSystem( $name );
+                    $rule = $sub->securityRules->findByUUID( $key );
+                }
+
+                if( $rule !== null )
+                    PH::print_stdout( "        * RULE: " . $rule->name() );
+                else
+                    PH::print_stdout( "        * RULE: " . $key );
 
                 foreach( $item as $shadow )
                     PH::print_stdout( "          - " . $shadow );
