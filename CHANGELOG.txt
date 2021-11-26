@@ -6,6 +6,7 @@ UTILS:
 * pa_address-edit | introduce 'filter=(object is.region)'
 * pa_device-edit | actions=display-shadowrule - introduce PAN-OS version validation
 * pa_device-edit | introduce actions=geoip-check:[IP-ADDRESS]
+* pa_rule-merger | extend argument 'additionalmatch=user|urlcategory|target'
 
 BUGFIX:
 * UTIL all object merger script | bugfix for pickfilter and excludefilter

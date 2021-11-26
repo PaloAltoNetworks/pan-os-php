@@ -522,6 +522,13 @@ class Rule
         return $str;
     }
 
+    function target_Hash()
+    {
+        $string = $this->targets_toString().boolYesNo($this->target_isNegated());
+
+        return md5( $string );
+    }
+
     public function target_isAny()
     {
         return $this->_targets === null;

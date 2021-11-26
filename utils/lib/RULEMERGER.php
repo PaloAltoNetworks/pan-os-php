@@ -49,7 +49,7 @@ class RULEMERGER extends UTIL
             $tmp_additionalmatch = strtolower( PH::$args['additionalmatch'] );
             $this->UTIL_additionalMatch = explode( ",", $tmp_additionalmatch );
 
-            $supportedAdditionalmatch = array( 'tag', 'secprof' );
+            $supportedAdditionalmatch = array( 'tag', 'secprof', 'user', 'urlcategory', 'target' );
             foreach( $this->UTIL_additionalMatch as $value )
             {
                 if( !in_array( $value, $supportedAdditionalmatch ) )
@@ -203,12 +203,19 @@ class RULEMERGER extends UTIL
         'identical' => 9 ,
         */
 
-        #if( $this->UTIL_additionalMatch == 'tag' )
+
         $additional_match = "";
         if( in_array( 'tag', $this->UTIL_additionalMatch ) )
             $additional_match .= $rule->tags->getFastHashComp();
         if( in_array( 'secprof', $this->UTIL_additionalMatch ) )
             $additional_match .= $rule->securityProfilHash();
+        if( in_array( 'user', $this->UTIL_additionalMatch ) )
+            $additional_match .= $rule->userID_Hash();
+        if( in_array( 'urlcategory', $this->UTIL_additionalMatch ) )
+            $additional_match .= $rule->urlCategories->getFastHashComp();
+        if( in_array( 'target', $this->UTIL_additionalMatch ) )
+            $additional_match .= $rule->target_Hash();
+
 
         if( $this->UTIL_method == 1 )
             $rule->mergeHash = md5('action:' . $rule->action() . '.*/' . $rule->from->getFastHashComp() . $rule->to->getFastHashComp() .
@@ -609,7 +616,7 @@ class RULEMERGER extends UTIL
         $this->supportedArguments[] = array('niceName' => 'stopMergingIfDenySeen', 'shortHelp' => 'deny rules wont be merged', 'argDesc' => '[yes|no|true|false]');
         $this->supportedArguments[] = array('niceName' => 'mergeAdjacentOnly', 'shortHelp' => 'merge only rules that are adjacent to each other', 'argDesc' => '[yes|no|true|false]');
         $this->supportedArguments[] = array('niceName' => 'filter', 'shortHelp' => 'filter rules that can be converted');
-        $this->supportedArguments[] = array('niceName' => 'additionalMatch', 'shortHelp' => 'add additional matching criterial', 'argDesc' => '[tag|secprof]');
+        $this->supportedArguments[] = array('niceName' => 'additionalMatch', 'shortHelp' => 'add additional matching criterial', 'argDesc' => '[tag|secprof|user|urlcatgory|target]');
         $this->supportedArguments[] = array('niceName' => 'DebugAPI', 'shortHelp' => 'prints API calls when they happen');
     }
 
