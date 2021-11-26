@@ -78,6 +78,13 @@ class RuleWithUserID extends Rule
         return $this->_users;
     }
 
+    function userID_Hash()
+    {
+        $string = implode( ", ", $this->_users );
+
+        return md5( $string );
+    }
+
     function userID_count()
     {
         return count( $this->_users );
