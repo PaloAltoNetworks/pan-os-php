@@ -1962,6 +1962,8 @@ class PanAPIConnector
         $cmd = "<show><shadow-warning><count>".$countInfo."</count></shadow-warning></show>";
         $response = $this->sendOpRequest( $cmd );
 
+        #print $response->saveXML();
+
         $tmp = DH::findFirstElement( "result", $response);
         $tmp = DH::findFirstElement( "shadow-warnings-count", $tmp);
         $tmp = DH::findFirstElement( "entry", $tmp);
@@ -1986,6 +1988,7 @@ class PanAPIConnector
                 continue;
 
             $tmp_uid = $entry->getAttribute( "uuid" );
+            $tmp_ruletype = $entry->getAttribute( "ruletype" );
             $cmd = "<show><shadow-warning><warning-message>".$countInfo.$devicegroup."<uuid>".$tmp_uid."</uuid></warning-message></shadow-warning></show>";
             $response = $this->sendOpRequest( $cmd );
 
@@ -1999,10 +2002,7 @@ class PanAPIConnector
                 if( $entry->nodeType != XML_ELEMENT_NODE )
                     continue;
 
-                if( $panorama )
-                    $shadowedRule[$name][$tmp_uid][] = $entry->textContent;
-                else
-                    $shadowedRule[$name][$tmp_uid][] = $entry->textContent;
+                $shadowedRule[$name][$tmp_ruletype][$tmp_uid][] = $entry->textContent;
             }
         }
 
