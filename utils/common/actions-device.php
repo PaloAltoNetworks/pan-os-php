@@ -744,9 +744,9 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
         {
             foreach( $array as $ruletype => $entries )
             {
-                if( $ruletype == 'security' )
+                if( $ruletype == 'security'  || $ruletype == "security-rule" )
                     $ruletype = "securityRules";
-                elseif( $ruletype == 'decryption' )
+                elseif( $ruletype == 'decryption' || $ruletype == "ssl-rule" )
                     $ruletype = "decryptionRules";
                 else
                     $ruletype = "securityRules";
@@ -761,6 +761,8 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
 
                 foreach( $entries as $key => $item  )
                 {
+                    $rule = null;
+
                     //uid: $key -> search rule name for uid
                     if( $classtype == "ManagedDevice" )
                     {
@@ -798,6 +800,20 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
                         $sub = $pan->findVirtualSystem( $name );
                         $rule = $sub->$ruletype->findByUUID( $key );
                         $ownerDG = $name;
+
+                        if( $rule === null )
+                        {
+                            $ruleArray = $sub->$ruletype->resultingRuleSet();
+                            foreach( $ruleArray as $ruleSingle )
+                            {
+                                /** @var SecurityRule $ruleSingle */
+                                if( $ruleSingle->uuid() === $key )
+                                {
+                                    $rule = $ruleSingle;
+                                    $ownerDG = "panoramaPushedConfig";
+                                }
+                            }
+                        }
                     }
 
                     if( $rule !== null )
