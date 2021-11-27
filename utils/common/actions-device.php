@@ -740,52 +740,91 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
         }
 
 
-        foreach( $shadowArray as $name => $entries )
+        foreach( $shadowArray as $name => $array )
         {
-            if( $classtype == "ManagedDevice" )
+            foreach( $array as $ruletype => $entries )
             {
-                PH::print_stdout( "     ** DG: " . $name );
-            }
-            if( $classtype == "VirtualSystem" )
-            {
-                PH::print_stdout( "     ** VSYS: " . $name );
-            }
-
-
-            foreach( $entries as $key => $item  )
-            {
-                //uid: $key -> search rule name for uid
-
-
-                if( $classtype == "ManagedDevice" )
-                {
-                    /** @var PanoramaConf $pan */
-                    $pan = $object->owner->owner;
-
-                    /** @var DeviceGroup $sub */
-                    $sub = $pan->findDeviceGroup($name);
-                    $rule = $sub->securityRules->findByUUID( $key );
-                }
-
-                if( $classtype == "VirtualSystem" )
-                {
-                    /** @var PANConf $pan */
-                    $pan = $object->owner;
-
-                    /** @var VirtualSystem $sub */
-                    $sub = $pan->findVirtualSystem( $name );
-                    $rule = $sub->securityRules->findByUUID( $key );
-                }
-
-                if( $rule !== null )
-                    PH::print_stdout( "        * RULE: " . $rule->name() );
+                if( $ruletype == 'security'  || $ruletype == "security-rule" )
+                    $ruletype = "securityRules";
+                elseif( $ruletype == 'decryption' || $ruletype == "ssl-rule" )
+                    $ruletype = "decryptionRules";
                 else
-                    PH::print_stdout( "        * RULE: " . $key );
+                    $ruletype = "securityRules";
 
-                foreach( $item as $shadow )
-                    PH::print_stdout( "          - " . $shadow );
+                $subName = "";
+                if( $classtype == "ManagedDevice" )
+                    $subName = "DG";
+                elseif( $classtype == "VirtualSystem" )
+                    $subName = "VSYS";
+                PH::print_stdout( "     ** ".$subName.": " . $name );
+
+
+                foreach( $entries as $key => $item  )
+                {
+                    $rule = null;
+
+                    //uid: $key -> search rule name for uid
+                    if( $classtype == "ManagedDevice" )
+                    {
+                        /** @var PanoramaConf $pan */
+                        $pan = $object->owner->owner;
+
+                        /** @var DeviceGroup $sub */
+                        $sub = $pan->findDeviceGroup($name);
+
+                        $rule = $sub->$ruletype->findByUUID( $key );
+                        while( $rule === null )
+                        {
+                            $sub = $sub->parentDeviceGroup;
+                            if( $sub !== null )
+                            {
+                                $rule = $sub->$ruletype->findByUUID( $key );
+                                $ownerDG = $sub->name();
+                            }
+                            else
+                            {
+                                $rule = $pan->$ruletype->findByUUID( $key );
+                                $ownerDG = "shared";
+                                if( $rule === null )
+                                    break;
+                            }
+                        }
+                    }
+
+                    if( $classtype == "VirtualSystem" )
+                    {
+                        /** @var PANConf $pan */
+                        $pan = $object->owner;
+
+                        /** @var VirtualSystem $sub */
+                        $sub = $pan->findVirtualSystem( $name );
+                        $rule = $sub->$ruletype->findByUUID( $key );
+                        $ownerDG = $name;
+
+                        if( $rule === null )
+                        {
+                            $ruleArray = $sub->$ruletype->resultingRuleSet();
+                            foreach( $ruleArray as $ruleSingle )
+                            {
+                                /** @var SecurityRule $ruleSingle */
+                                if( $ruleSingle->uuid() === $key )
+                                {
+                                    $rule = $ruleSingle;
+                                    $ownerDG = "panoramaPushedConfig";
+                                }
+                            }
+                        }
+                    }
+
+                    if( $rule !== null )
+                        PH::print_stdout( "        * RULE: " . $rule->name(). " owner: ".$ownerDG );
+                    else
+                        PH::print_stdout( "        * RULE: " . $key );
+
+                    foreach( $item as $shadow )
+                        PH::print_stdout( "          - " . $shadow );
+                }
             }
-
         }
     }
 );
