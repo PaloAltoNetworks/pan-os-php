@@ -8,6 +8,7 @@ UTILS:
 * pa_device-edit | introduce actions=geoip-check:[IP-ADDRESS]
 * pa_rule-merger | extend argument 'additionalmatch=user|urlcategory|target'
 * pa_device-edit | actions=display-shadowrule - display rule name and owner (DGname / vsys) instead of displaying rule uuid
+* pa_device-edit | actions=display-shadowrule - now possible for VSYS / Panorama DG / Panorama managedDevice
 
 BUGFIX:
 * UTIL all object merger script | bugfix for pickfilter and excludefilter

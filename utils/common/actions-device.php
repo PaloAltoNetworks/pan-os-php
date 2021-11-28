@@ -724,19 +724,26 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
                 $shadowArray = $context->connector->getShadowInfo($countInfo, true);
             }
         }
-
         elseif( $classtype == "DeviceGroup" )
         {
-            /*
-            derr("Panorama not supported yet");
+            /** @var DeviceGroup $object */
+            $devices = $object->getDevicesInGroup();
 
+            $shadowArray = array();
+            foreach( $devices as $serial => $device )
+            {
+                $managedDevice = $object->owner->managedFirewallsStore->find( $serial );
+                if( $managedDevice->isConnected )
+                {
+                    $type = "device-serial";
+                    $type_name = $managedDevice->name();
+                    $countInfo = "<" . $type . ">" . $type_name . "</" . $type . ">";
 
-            $type = "device-serial";
-            $type_name = $object->serial;
-            $countInfo = "<" . $type . ">" . $type_name . "</" . $type . ">";
-
-            $shadowArray = $context->connector->getShadowInfo($countInfo, true);
-            */
+                    $shadowArray2 = $context->connector->getShadowInfo($countInfo, true);
+                    $shadowArray = array_merge( $shadowArray, $shadowArray2 );
+                }
+            }
+            //try to only use active device / skip passive FW
         }
 
 
@@ -790,8 +797,7 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
                             }
                         }
                     }
-
-                    if( $classtype == "VirtualSystem" )
+                    elseif( $classtype == "VirtualSystem" )
                     {
                         /** @var PANConf $pan */
                         $pan = $object->owner;
@@ -814,6 +820,32 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
                                 }
                             }
                         }
+                    }
+                    elseif( $classtype == "DeviceGroup" )
+                    {
+                        /** @var PanoramaConf $pan */
+                        $pan = $object->owner;
+
+                        $rule = $object->$ruletype->findByUUID( $key );
+                        $sub = $object;
+
+                        while( $rule === null )
+                        {
+                            $sub = $sub->parentDeviceGroup;
+                            if( $sub !== null )
+                            {
+                                $rule = $sub->$ruletype->findByUUID( $key );
+                                $ownerDG = $sub->name();
+                            }
+                            else
+                            {
+                                $rule = $pan->$ruletype->findByUUID( $key );
+                                $ownerDG = "shared";
+                                if( $rule === null )
+                                    break;
+                            }
+                        }
+
                     }
 
                     if( $rule !== null )
