@@ -757,18 +757,17 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
                     $ruletype = "decryptionRules";
                 else
                     $ruletype = "securityRules";
-
-                $subName = "";
+                
                 if( $classtype == "ManagedDevice" )
+                {
                     $subName = "DG";
-                elseif( $classtype == "VirtualSystem" )
-                    $subName = "VSYS";
-                PH::print_stdout( "     ** ".$subName.": " . $name );
-
+                    PH::print_stdout( "     ** ".$subName.": " . $name );
+                }
 
                 foreach( $entries as $key => $item  )
                 {
                     $rule = null;
+                    $replace =  null;
 
                     //uid: $key -> search rule name for uid
                     if( $classtype == "ManagedDevice" )
@@ -820,6 +819,7 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
                                 }
                             }
                         }
+                        $replace = "Rule '".$rule->name()."'";
                     }
                     elseif( $classtype == "DeviceGroup" )
                     {
@@ -845,16 +845,24 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
                                     break;
                             }
                         }
-
                     }
 
                     if( $rule !== null )
-                        PH::print_stdout( "        * RULE: " . $rule->name(). " owner: ".$ownerDG );
+                        PH::print_stdout( "        * RULE: '" . $rule->name(). "' owner: '".$ownerDG."' shadows rule: " );
                     else
-                        PH::print_stdout( "        * RULE: " . $key );
+                        PH::print_stdout( "        * RULE: '" . $key."'" );
 
                     foreach( $item as $shadow )
-                        PH::print_stdout( "          - " . $shadow );
+                    {
+                        if( $replace !== null )
+                            $shadow = str_replace( $replace, "", $shadow );
+
+                        $shadow = str_replace( " shadows rule ", "", $shadow );
+                        $shadow = str_replace( "shadows ", "", $shadow );
+                        $shadow = str_replace( ".", "", $shadow );
+                        $shadow = str_replace( "'", "", $shadow );
+                        PH::print_stdout( "          - '" . $shadow."'" );
+                    }
                 }
             }
         }
