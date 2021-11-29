@@ -1164,6 +1164,236 @@ class Rule
         }
     }
 
+    public function ruleUsageFast( $context, $hitType )
+    {
+        /** @var @var RuleRQueryContext $context */
+
+
+        $supported_hitType = array( 'hit-count', 'last-hit-timestamp' );
+        if( !in_array( $hitType, $supported_hitType ) )
+            derr( "supported hitType: ".implode( ", ", $supported_hitType ) );
+
+
+        $unused_flag = 'unused' . $this->ruleNature();
+        $rule_base = $this->ruleNature();
+
+        $sub = $this->owner->owner;
+        if( !$sub->isVirtualSystem() && !$sub->isDeviceGroup() )
+        {
+            PH::print_stdout( PH::boldText("   **WARNING**:") . "this filter is only supported on non Shared rules " . $this->toString() . "" );
+            return null;
+        }
+
+
+        $connector = findConnector($sub);
+
+        if( $connector === null )
+            derr("this filter is available only from API enabled PANConf objects");
+
+        if( !isset($sub->apiCache) )
+            $sub->apiCache = array();
+
+        // caching results for speed improvements
+        if( !isset($sub->apiCache[$unused_flag]) )
+        {
+            $sub->apiCache[$unused_flag] = array();
+
+            if( $this->owner->owner->version < 81 )
+                $apiCmd = '<show><running><rule-use><rule-base>' . $rule_base . '</rule-base><type>unused</type><vsys>' . $sub->name() . '</vsys></rule-use></running></show>';
+            else
+            {
+                $apiCmd = '<show><running><rule-use><highlight><rule-base>' . $rule_base . '</rule-base><type>unused</type><vsys>' . $sub->name() . '</vsys></highlight></rule-use></running></show>';
+            }
+
+
+            if( $sub->isVirtualSystem() )
+            {
+                PH::print_stdout( "Firewall: " . $connector->info_hostname . " (serial: '" . $connector->info_serial . "', PAN-OS: '" . $connector->info_PANOS_version . "') was rebooted '" . $connector->info_uptime . "' ago." );
+                $apiResult = $connector->sendCmdRequest($apiCmd);
+
+                $rulesXml = DH::findXPath('/result/rules/entry', $apiResult);
+                for( $i = 0; $i < $rulesXml->length; $i++ )
+                {
+                    $ruleName = $rulesXml->item($i)->textContent;
+                    $sub->apiCache[$unused_flag][$ruleName] = $ruleName;
+                }
+
+                if( $this->owner->owner->version >= 81 )
+                {
+                    $apiCmd2 = '<show><rule-hit-count><vsys><vsys-name><entry%20name="' . $sub->name() . '"><rule-base><entry%20name="' . $rule_base . '"><rules>';
+                    $apiCmd2 .= '<all></all>';
+                    $apiCmd2 .= '</rules></entry></rule-base></entry></vsys-name></vsys></rule-hit-count></show>';
+
+                    PH::print_stdout( "additional check needed as PAN-OS >= 8.1.X" );
+
+                    $apiResult = $connector->sendCmdRequest($apiCmd2);
+
+                    $rulesXml = DH::findXPath('/result/rule-hit-count/vsys/entry/rule-base/entry/rules/entry', $apiResult);
+                    for( $i = 0; $i < $rulesXml->length; $i++ )
+                    {
+                        $ruleName = $rulesXml->item($i)->getAttribute('name');
+
+                        foreach( $rulesXml->item($i)->childNodes as $node )
+                        {
+                            if( $node->nodeName == $hitType )
+                            {
+                                if( $hitType == "hit-count" )
+                                {
+                                    $hitcount_value = $node->textContent;
+                                    if( $hitcount_value == 0 )
+                                    {
+                                        //match, no unset
+                                    }
+                                    else
+                                    {
+                                        if( isset($sub->apiCache[$unused_flag][$ruleName]) )
+                                            unset($sub->apiCache[$unused_flag][$ruleName]);
+                                    }
+                                }
+                                elseif( $hitType == "last-hit-timestamp" )
+                                {
+                                    $timestamp_value = $node->textContent;
+                                    $filter_timestamp = strtotime($context->value);
+                                    $operator = $context->operator;
+
+                                    $operator_string = $timestamp_value." ".$operator." ".$filter_timestamp;
+                                    if( eval("return $operator_string;" ) )
+                                    {
+                                        //match, no unset
+                                    }
+                                    else
+                                    {
+                                        if( isset($sub->apiCache[$unused_flag][$ruleName]) )
+                                            unset($sub->apiCache[$unused_flag][$ruleName]);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                $devices = $sub->getDevicesInGroup(TRUE);
+
+                $connectedDevices = $connector->panorama_getConnectedFirewallsSerials();
+                foreach( $devices as $id => $device )
+                {
+                    if( !isset($connectedDevices[$device['serial']]) )
+                    {
+                        unset($devices[$id]);
+                        PH::print_stdout( "\n  - firewall device with serial: " . $device['serial'] . " is not connected." );
+                    }
+                }
+
+                $firstLoop = TRUE;
+
+                foreach( $devices as $device )
+                {
+                    $newConnector = new PanAPIConnector($connector->apihost, $connector->apikey, 'panos-via-panorama', $device['serial']);
+                    $newConnector->setShowApiCalls($connector->showApiCalls);
+                    $newConnector->refreshSystemInfos();
+                    PH::print_stdout( "Firewall: " . $newConnector->info_hostname . " (serial: '" . $newConnector->info_serial . "', PAN-OS: '" . $newConnector->info_PANOS_version . "') was rebooted '" . $newConnector->info_uptime . "' ago." );
+                    $tmpCache = array();
+
+                    foreach( $device['vsyslist'] as $vsys )
+                    {
+                        if( $newConnector->info_PANOS_version_int < 81 )
+                            $apiCmd = '<show><running><rule-use><rule-base>' . $rule_base . '</rule-base><type>unused</type><vsys>' . $vsys . '</vsys></rule-use></running></show>';
+                        else
+                            $apiCmd = '<show><running><rule-use><highlight><rule-base>' . $rule_base . '</rule-base><type>unused</type><vsys>' . $vsys . '</vsys></highlight></rule-use></running></show>';
+
+                        $apiResult = $newConnector->sendCmdRequest($apiCmd);
+
+                        $rulesXml = DH::findXPath('/result/rules/entry', $apiResult);
+
+                        for( $i = 0; $i < $rulesXml->length; $i++ )
+                        {
+                            $ruleName = $rulesXml->item($i)->textContent;
+                            if( $firstLoop )
+                                $sub->apiCache[$unused_flag][$ruleName] = $ruleName;
+                            else
+                            {
+                                $tmpCache[$ruleName] = $ruleName;
+                            }
+                        }
+
+                        if( $newConnector->info_PANOS_version_int >= 81 )
+                        {
+                            $apiCmd2 = '<show><rule-hit-count><vsys><vsys-name><entry%20name="' . $vsys . '"><rule-base><entry%20name="' . $rule_base . '"><rules>';
+                            $apiCmd2 .= '<all></all>';
+                            $apiCmd2 .= '</rules></entry></rule-base></entry></vsys-name></vsys></rule-hit-count></show>';
+
+                            PH::print_stdout( "additional check needed as PAN-OS >= 8.1.X" );
+
+                            $apiResult = $newConnector->sendCmdRequest($apiCmd2);
+
+                            $rulesXml = DH::findXPath('/result/rule-hit-count/vsys/entry/rule-base/entry/rules/entry', $apiResult);
+                            for( $i = 0; $i < $rulesXml->length; $i++ )
+                            {
+                                $ruleName = $rulesXml->item($i)->getAttribute('name');
+
+                                foreach( $rulesXml->item($i)->childNodes as $node )
+                                {
+                                    if( $node->nodeName == $hitType )
+                                    {
+                                        if( $hitType == "hit-count" )
+                                        {
+                                            $hitcount_value = $node->textContent;
+                                            if( $hitcount_value == 0 )
+                                            {
+                                                //match, no unset
+                                            }
+                                            else
+                                            {
+                                                if( isset($sub->apiCache[$unused_flag][$ruleName]) )
+                                                    unset($sub->apiCache[$unused_flag][$ruleName]);
+                                            }
+                                        }
+                                        elseif( $hitType == "last-hit-timestamp" )
+                                        {
+                                            $timestamp_value = $node->textContent;
+                                            $filter_timestamp = strtotime($context->value);
+                                            $operator = $context->operator;
+
+                                            $operator_string = $timestamp_value." ".$operator." ".$filter_timestamp;
+                                            if( eval("return $operator_string;" ) )
+                                            {
+                                                //match, no unset
+                                            }
+                                            else
+                                            {
+                                                if( isset($sub->apiCache[$unused_flag][$ruleName]) )
+                                                    unset($sub->apiCache[$unused_flag][$ruleName]);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        if( !$firstLoop )
+                        {
+                            foreach( $sub->apiCache[$unused_flag] as $unusedEntry )
+                            {
+                                if( !isset($tmpCache[$unusedEntry]) )
+                                    unset($sub->apiCache[$unused_flag][$unusedEntry]);
+                            }
+                        }
+
+                        $firstLoop = FALSE;
+                    }
+                }
+            }
+        }
+
+        if( isset($sub->apiCache[$unused_flag][$this->name()]) )
+            return TRUE;
+
+        return FALSE;
+    }
+
+
     public function isPreRule()
     {
         return $this->owner->ruleIsPreRule($this);

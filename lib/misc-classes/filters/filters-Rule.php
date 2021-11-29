@@ -2439,6 +2439,11 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.unused.fast'] = array(
         if( !$object->isSecurityRule() && !$object->isNatRule() )
             derr("unsupported filter : rule type " . $object->ruleNature() . " is not supported yet. " . $object->toString());
 
+
+
+        return $object->ruleUsageFast( $context, 'hit-count' );
+
+        /*
         $unused_flag = 'unused' . $object->ruleNature();
         $rule_base = $object->ruleNature();
 
@@ -2505,10 +2510,18 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.unused.fast'] = array(
                             if( $node->nodeName == "hit-count" )
                             {
                                 $hitcount_value = $node->textContent;
-                                if( $hitcount_value != 0 )
-                                    unset($sub->apiCache[$unused_flag][$ruleName]);
+                                if( $hitcount_value == 0 )
+                                {
 
+                                }
+                                else
+                                {
+                                    if( isset($sub->apiCache[$unused_flag][$ruleName]) )
+                                        unset($sub->apiCache[$unused_flag][$ruleName]);
+                                }
                             }
+
+                            //last-hit-timestamp
                         }
                     }
                 }
@@ -2579,7 +2592,11 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.unused.fast'] = array(
                                     if( $node->nodeName == "hit-count" )
                                     {
                                         $hitcount_value = $node->textContent;
-                                        if( $hitcount_value != 0 )
+                                        if( $hitcount_value == 0 )
+                                        {
+
+                                        }
+                                        else
                                         {
                                             if( isset($sub->apiCache[$unused_flag][$ruleName]) )
                                                 unset($sub->apiCache[$unused_flag][$ruleName]);
@@ -2588,6 +2605,8 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.unused.fast'] = array(
                                                 unset($tmpCache[$ruleName]);
                                         }
                                     }
+
+                                    //last-hit-timestamp
                                 }
                             }
                         }
@@ -2611,10 +2630,34 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.unused.fast'] = array(
             return TRUE;
 
         return FALSE;
+        */
     },
-    'arg' => FALSE
+    'arg' => false
 );
 
+RQuery::$defaultFilters['rule']['timestamp-last-hit.fast']['operators']['>,<,=,!'] = array(
+#RQuery::$defaultFilters['rule']['rule']['operators']['last-hit-timestamp'] = array(
+    'Function' => function (RuleRQueryContext $context) {
+        $object = $context->object;
+
+        if( !$object->isSecurityRule() && !$object->isNatRule() )
+            derr("unsupported filter : rule type " . $object->ruleNature() . " is not supported yet. " . $object->toString());
+
+        $str = $context->value;
+        if (($timestamp = strtotime($str)) === false)
+        {
+            #echo "The string ($str) is bogus"."\n";
+        }
+        else
+        {
+            #echo "$str == " . date('l dS \o\f F Y h:i:s A', $timestamp)."\n";
+        }
+
+        return $object->ruleUsageFast( $context, 'last-hit-timestamp' );
+    },
+    'arg' => TRUE,
+    'help' => 'returns TRUE if rule name matches the specified timestamp MM/DD/YYYY [american] / DD-MM-YYYY [european] / 21 September 2021 / - 90 days',
+);
 
 RQuery::$defaultFilters['rule']['name']['operators']['eq'] = array(
     'Function' => function (RuleRQueryContext $context) {

@@ -9,6 +9,7 @@ class RQueryContext
     public $object;
 
     public $value;
+    public $operator;
 
     public $rQueryObject;
 
@@ -40,6 +41,8 @@ class RQueryContext
             $this->value = &$this->rQueryObject->argumentList;
         else
             $this->value = &$this->rQueryObject->argument;
+
+        $this->operator = &$this->rQueryObject->operator;
 
         return $this->rQueryObject->refOperator['Function']($this);
     }
