@@ -757,7 +757,7 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
                     $ruletype = "decryptionRules";
                 else
                     $ruletype = "securityRules";
-                
+
                 if( $classtype == "ManagedDevice" )
                 {
                     $subName = "DG";

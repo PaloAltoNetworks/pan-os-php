@@ -9,6 +9,7 @@ UTILS:
 * pa_rule-merger | extend argument 'additionalmatch=user|urlcategory|target'
 * pa_device-edit | actions=display-shadowrule - display rule name and owner (DGname / vsys) instead of displaying rule uuid
 * pa_device-edit | actions=display-shadowrule - now possible for VSYS / Panorama DG / Panorama managedDevice
+* pa_rule-edit | introduce 'filter=(timestamp-last-hit.fast <>!= VALUE)'
 
 BUGFIX:
 * UTIL all object merger script | bugfix for pickfilter and excludefilter
