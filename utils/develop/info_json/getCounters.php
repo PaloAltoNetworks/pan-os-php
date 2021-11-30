@@ -1,5 +1,9 @@
 <?php
 
+//bug available; last entry has sometimes an additional ',' available, which produce non-valide JSON
+
+
+
 //PAN-OS at least available with version 7.1
 ///config/devices/entry[@name='localhost.localdomain']/platform/limits
 
@@ -184,21 +188,24 @@ foreach( $data['response']['docs'] as $mainkey => $fw )
     $jsonString .= '  "'.$fw['product_name'].'":{'."\n";
 
     $key1 = 0;
+    $countFW = count( $fw );
     foreach( $fw as $key => $entries )
     {
         if( strpos( $entries, "and higher" ) !== false || strpos( $entries, " to " ) !== false || strpos( $entries, " - " ) !== false)
+        {
+            $countFW--;
             continue;
+        }
 
         if( isset($headerarray[$key1]) )
         {
             $jsonString .=  '    "'.$headerarray[$key1].'":"'.$entries.'"';
 
-            if( isset($headerarray[$key1+1]) )
+            if( isset($headerarray[$key1+1]) && $key1+1 < $countFW )
                 $jsonString .=  ",";
 
             $jsonString .= "\n";
         }
-
 
         $key1++;
     }
@@ -217,5 +224,5 @@ $file = "pan_max_values.json";
 
 file_put_contents($file, $jsonString);
 
-
+//compare files to check if something is new
 
