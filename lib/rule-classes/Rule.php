@@ -1201,9 +1201,7 @@ class Rule
             if( $this->owner->owner->version < 81 )
                 $apiCmd = '<show><running><rule-use><rule-base>' . $rule_base . '</rule-base><type>unused</type><vsys>' . $sub->name() . '</vsys></rule-use></running></show>';
             else
-            {
                 $apiCmd = '<show><running><rule-use><highlight><rule-base>' . $rule_base . '</rule-base><type>unused</type><vsys>' . $sub->name() . '</vsys></highlight></rule-use></running></show>';
-            }
 
 
             if( $sub->isVirtualSystem() )
@@ -1220,56 +1218,7 @@ class Rule
 
                 if( $this->owner->owner->version >= 81 )
                 {
-                    $apiCmd2 = '<show><rule-hit-count><vsys><vsys-name><entry%20name="' . $sub->name() . '"><rule-base><entry%20name="' . $rule_base . '"><rules>';
-                    $apiCmd2 .= '<all></all>';
-                    $apiCmd2 .= '</rules></entry></rule-base></entry></vsys-name></vsys></rule-hit-count></show>';
-
-                    PH::print_stdout( "additional check needed as PAN-OS >= 8.1.X" );
-
-                    $apiResult = $connector->sendCmdRequest($apiCmd2);
-
-                    $rulesXml = DH::findXPath('/result/rule-hit-count/vsys/entry/rule-base/entry/rules/entry', $apiResult);
-                    for( $i = 0; $i < $rulesXml->length; $i++ )
-                    {
-                        $ruleName = $rulesXml->item($i)->getAttribute('name');
-
-                        foreach( $rulesXml->item($i)->childNodes as $node )
-                        {
-                            if( $node->nodeName == $hitType )
-                            {
-                                if( $hitType == "hit-count" )
-                                {
-                                    $hitcount_value = $node->textContent;
-                                    if( $hitcount_value == 0 )
-                                    {
-                                        //match, no unset
-                                    }
-                                    else
-                                    {
-                                        if( isset($sub->apiCache[$unused_flag][$ruleName]) )
-                                            unset($sub->apiCache[$unused_flag][$ruleName]);
-                                    }
-                                }
-                                elseif( $hitType == "last-hit-timestamp" )
-                                {
-                                    $timestamp_value = $node->textContent;
-                                    $filter_timestamp = strtotime($context->value);
-                                    $operator = $context->operator;
-
-                                    $operator_string = $timestamp_value." ".$operator." ".$filter_timestamp;
-                                    if( eval("return $operator_string;" ) )
-                                    {
-                                        //match, no unset
-                                    }
-                                    else
-                                    {
-                                        if( isset($sub->apiCache[$unused_flag][$ruleName]) )
-                                            unset($sub->apiCache[$unused_flag][$ruleName]);
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    self::ruleUsage81( $sub, null, $rule_base, $connector, $hitType, $unused_flag, $context );
                 }
             }
             else
@@ -1320,56 +1269,7 @@ class Rule
 
                         if( $newConnector->info_PANOS_version_int >= 81 )
                         {
-                            $apiCmd2 = '<show><rule-hit-count><vsys><vsys-name><entry%20name="' . $vsys . '"><rule-base><entry%20name="' . $rule_base . '"><rules>';
-                            $apiCmd2 .= '<all></all>';
-                            $apiCmd2 .= '</rules></entry></rule-base></entry></vsys-name></vsys></rule-hit-count></show>';
-
-                            PH::print_stdout( "additional check needed as PAN-OS >= 8.1.X" );
-
-                            $apiResult = $newConnector->sendCmdRequest($apiCmd2);
-
-                            $rulesXml = DH::findXPath('/result/rule-hit-count/vsys/entry/rule-base/entry/rules/entry', $apiResult);
-                            for( $i = 0; $i < $rulesXml->length; $i++ )
-                            {
-                                $ruleName = $rulesXml->item($i)->getAttribute('name');
-
-                                foreach( $rulesXml->item($i)->childNodes as $node )
-                                {
-                                    if( $node->nodeName == $hitType )
-                                    {
-                                        if( $hitType == "hit-count" )
-                                        {
-                                            $hitcount_value = $node->textContent;
-                                            if( $hitcount_value == 0 )
-                                            {
-                                                //match, no unset
-                                            }
-                                            else
-                                            {
-                                                if( isset($sub->apiCache[$unused_flag][$ruleName]) )
-                                                    unset($sub->apiCache[$unused_flag][$ruleName]);
-                                            }
-                                        }
-                                        elseif( $hitType == "last-hit-timestamp" )
-                                        {
-                                            $timestamp_value = $node->textContent;
-                                            $filter_timestamp = strtotime($context->value);
-                                            $operator = $context->operator;
-
-                                            $operator_string = $timestamp_value." ".$operator." ".$filter_timestamp;
-                                            if( eval("return $operator_string;" ) )
-                                            {
-                                                //match, no unset
-                                            }
-                                            else
-                                            {
-                                                if( isset($sub->apiCache[$unused_flag][$ruleName]) )
-                                                    unset($sub->apiCache[$unused_flag][$ruleName]);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
+                            self::ruleUsage81( $sub, $vsys, $rule_base, $connector, $hitType, $unused_flag, $context );
                         }
 
                         if( !$firstLoop )
@@ -1393,6 +1293,64 @@ class Rule
         return FALSE;
     }
 
+    function ruleUsage81( &$sub, $vsys, $rule_base, $connector, $hitType, $unused_flag, $context )
+    {
+            if( $vsys !== null)
+                $name = $vsys;
+            else
+                $name = $sub->name();
+
+            $apiCmd2 = '<show><rule-hit-count><vsys><vsys-name><entry%20name="' . $name . '"><rule-base><entry%20name="' . $rule_base . '"><rules>';
+            $apiCmd2 .= '<all></all>';
+            $apiCmd2 .= '</rules></entry></rule-base></entry></vsys-name></vsys></rule-hit-count></show>';
+
+            PH::print_stdout( "additional check needed as PAN-OS >= 8.1.X" );
+
+            $apiResult = $connector->sendCmdRequest($apiCmd2);
+
+            $rulesXml = DH::findXPath('/result/rule-hit-count/vsys/entry/rule-base/entry/rules/entry', $apiResult);
+            for( $i = 0; $i < $rulesXml->length; $i++ )
+            {
+                $ruleName = $rulesXml->item($i)->getAttribute('name');
+
+                foreach( $rulesXml->item($i)->childNodes as $node )
+                {
+                    if( $node->nodeName == $hitType )
+                    {
+                        if( $hitType == "hit-count" )
+                        {
+                            $hitcount_value = $node->textContent;
+                            if( $hitcount_value == 0 )
+                            {
+                                //match, no unset
+                            }
+                            else
+                            {
+                                if( isset($sub->apiCache[$unused_flag][$ruleName]) )
+                                    unset($sub->apiCache[$unused_flag][$ruleName]);
+                            }
+                        }
+                        elseif( $hitType == "last-hit-timestamp" )
+                        {
+                            $timestamp_value = $node->textContent;
+                            $filter_timestamp = strtotime($context->value);
+                            $operator = $context->operator;
+
+                            $operator_string = $timestamp_value." ".$operator." ".$filter_timestamp;
+                            if( eval("return $operator_string;" ) )
+                            {
+                                //match, no unset
+                            }
+                            else
+                            {
+                                if( isset($sub->apiCache[$unused_flag][$ruleName]) )
+                                    unset($sub->apiCache[$unused_flag][$ruleName]);
+                            }
+                        }
+                    }
+                }
+            }
+    }
 
     public function isPreRule()
     {
