@@ -1303,7 +1303,10 @@ class PanAPIConnector
         return $httpReplyContent;
     }
 
-
+    /**
+     * @param $req
+     * @return array
+     */
     public function &getReport($req)
     {
         $ret = $this->sendRequest($req);
@@ -1400,6 +1403,109 @@ class PanAPIConnector
         return $ret;
     }
 
+    /**
+     * @param $req
+     * @return array
+     */
+    public function &getLog($req)
+    {
+        $ret = $this->sendRequest($req);
+        #PH::print_stdout( DH::dom_to_xml($ret, 0, true, 4) );
+
+
+        $cursor = DH::findXPathSingleEntryOrDie('/response', $ret);
+        $cursor = DH::findFirstElement('result', $cursor);
+
+        if( $cursor === FALSE )
+        {
+            $cursor = DH::findFirstElement('log', DH::findXPathSingleEntryOrDie('/response', $ret));
+            if( $cursor === FALSE )
+                derr("unsupported API answer1");
+
+            $report = DH::findFirstElement('result', $cursor);
+            if( $report === FALSE )
+                derr("unsupported API answer2");
+        }
+
+        if( !isset($report) )
+        {
+
+            $cursor = DH::findFirstElement('job', $cursor);
+
+            if( $cursor === FALSE )
+                derr("unsupported API answer, no JOB ID found");
+
+            $jobid = $cursor->textContent;
+
+            while( TRUE )
+            {
+                sleep(1);
+                $query = '&type=log&action=get&job-id=' . $jobid;
+                $ret = $this->sendRequest($query);
+                //PH::print_stdout( DH::dom_to_xml($ret, 0, true, 5) );
+
+
+                $cursor = DH::findFirstElement('result', DH::findXPathSingleEntryOrDie('/response', $ret));
+
+                if( $cursor === FALSE )
+                    derr("unsupported API answer3", $ret);
+
+                $jobcur = DH::findFirstElement('job', $cursor);
+
+                if( $jobcur === FALSE )
+                    derr("unsupported API answer4", $ret);
+
+
+                $status = DH::findFirstElement('status', $jobcur);
+                if( $status == FALSE )
+                    derr("unsupported API answer5", $cursor);
+
+                if( $status->textContent != 'FIN' )
+                {
+                    sleep(9);
+                    continue;
+                }
+
+
+                $cursor = DH::findFirstElement('log', $cursor);
+                if( $cursor === FALSE )
+                    derr("unsupported API answer", $ret);
+
+
+                $cursor = DH::findFirstElement('logs', $cursor);
+                if( $cursor === FALSE )
+                    derr("unsupported API answer", $ret);
+
+                $report = $cursor;
+
+                break;
+            }
+        }
+        $ret = array();
+
+        foreach( $report->childNodes as $line )
+        {
+            if( $line->nodeType != XML_ELEMENT_NODE )
+                continue;
+
+            $newline = array();
+
+            foreach( $line->childNodes as $item )
+            {
+                if( $item->nodeType != XML_ELEMENT_NODE )
+                    continue;
+                /** @var DOMElement $item */
+
+                $newline[$item->nodeName] = $item->textContent;
+            }
+
+            $ret[] = $newline;
+        }
+
+        #print_r($ret);
+
+        return $ret;
+    }
 
     public function getRunningConfig()
     {
@@ -1561,10 +1667,10 @@ class PanAPIConnector
     }
 
 
-    public function sendSimpleRequest(&$request, $options = array())
+    public function sendSimpleRequest(&$request, $options = array(), $checkResultTag = FALSE )
     {
         $file = null;
-        return $this->sendRequest($request, FALSE, $file, '', $options);
+        return $this->sendRequest($request, $checkResultTag, $file, '', $options);
     }
 
     /**
@@ -1694,9 +1800,15 @@ class PanAPIConnector
         return $ret;
     }
 
-    public function getJobResult($jobID, $apiTimeOut = 7)
+    public function getJobResult($jobID, $apiTimeOut = 7, $type = "op")
     {
-        $req = "type=op&cmd=<show><jobs><id>$jobID</id></jobs></show>";
+        if( $type == "op" )
+            $req = "type=op&cmd=<show><jobs><id>$jobID</id></jobs></show>";
+        else
+        {
+            $req = "type=".$type."&action=get&job-id=".$jobID;
+        }
+
         $moreOptions['timeout'] = $apiTimeOut;
         $filecontent = null;
         $ret = $this->sendRequest($req, false, $filecontent, '', $moreOptions);

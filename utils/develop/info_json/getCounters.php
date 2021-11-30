@@ -1,5 +1,10 @@
 <?php
 
+//PAN-OS at least available with version 7.1
+///config/devices/entry[@name='localhost.localdomain']/platform/limits
+
+
+
 //Todo: CN firewall (last enrtie) is wrong
 
 function find_string_between($line, $needle1, $needle2 = "--END--")
