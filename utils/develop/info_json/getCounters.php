@@ -110,7 +110,7 @@ Max virtual systems
 IPv4 forwarding table size
 IPv6 forwarding table size
 System total forwarding table size
-32,00050
+32,000
 Max routing peers (protocol dependent)
 Static entries - DNS proxy
 Bidirectional Forwarding Detection (BFD) Sessions
@@ -147,6 +147,131 @@ End-of-sale
 A
 B";
 
+$valueArray = array(
+    'product_name' => 'product_name',
+    'title' => 'title',
+    'product_id' => 'product_id',
+    'id' => 'id',
+    'teaser' => 'teaser',
+    'language' => 'language',
+    'url' => 'url',
+    'large-image-url' => 'large-image-url',
+    'small-image-url' => 'small-image-url',
+    'category' => 'category',
+    '2-0-3-1_dfi' => 'App-ID firewall throughput',
+    '2-0-4-1_dfi' => 'Threat prevention throughput',
+    '2-0-5-1_dfi' => 'Threat prevention throughput',
+    '2-0-6-1_dfi' => 'IPSec VPN throughput',
+    '2-0-7-1_dfi' => 'IPSec VPN throughput',
+    '2-0-8-1_dfi' => 'Connections per second',
+    '2-0-9-1_dfi' => 'Max sessions (IPv4 or IPv6)',
+    '11-0-12-1_dfi' => 'Max sessions (IPv4 or IPv6)',
+    '11-0-13-1_dfi' => 'Security rules',
+    '15-0-16-1_dfi' => 'Security rules',
+    '15-0-17-1_dfi' => 'Security rule schedules',
+    '15-0-18-1_dfi' => 'NAT rules',
+    '15-0-19-1_dfi' => 'Decryption rules',
+    '15-0-20-1_dfi' => 'App override rules',
+    '15-0-21-1_dfi' => 'Tunnel content inspection rules',
+    '15-0-22-1_dfi' => 'SD-WAN rules',
+    '15-0-23-1_dfi' => 'Policy based forwarding rules',
+    '15-0-24-1_dfi' => 'Captive portal rules',
+    '15-0-25-1_dfi' => 'DoS protection rules',
+    '27-0-28-1_dfi' => 'Max security zones',
+    '30-0-31-1_dfi' => 'Address objects',
+    '30-0-32-1_dfi' => 'Address groups',
+    '30-0-33-1_dfi' => 'Members per address group',
+    '30-0-34-1_dfi' => 'Service objects',
+    '30-0-35-1_dfi' => 'Service groups',
+    '30-0-36-1_dfi' => 'Members per service group',
+    '30-0-37-1_dfi' => 'FQDN address objects',
+    '30-0-38-1_dfi' => 'Max DAG IP addresses',
+    '30-0-39-1_dfi' => 'Tags per IP address',
+    '41-0-42-1_dfi' => 'Security profiles',
+    '44-0-45-1_dfi' => 'Custom App-ID signatures',
+    '44-0-46-1_dfi' => 'Shared custom App-IDs',
+    '44-0-47-1_dfi' => 'Custom App-IDs (virtual system specific)',
+    '49-0-50-1_dfi' => 'IP-User mappings (management plane)',
+    '49-0-51-1_dfi' => 'IP-User mappings (data plane)',
+    '49-0-52-1_dfi' => 'Active and unique groups used in policy',
+    '49-0-53-1_dfi' => 'Number of User-ID agents',
+    '49-0-54-1_dfi' => 'Monitored servers for User-ID',
+    '49-0-55-1_dfi' => 'Terminal server agents',
+    '49-0-56-1_dfi' => 'Tags per User',
+    '58-0-59-1_dfi' => 'Max SSL inbound certificates',
+    '58-0-60-1_dfi' => 'SSL certificate cache (forward proxy)',
+    '58-0-61-1_dfi' => 'Max concurrent decryption sessions',
+    '58-0-62-1_dfi' => 'SSL Port Mirror',
+    '58-0-63-1_dfi' => 'SSL Decryption Broker',
+    '58-0-64-1_dfi' => 'HSM Supported',
+    '66-0-67-1_dfi' => 'Total entries for allow list, block list and custom categories',
+    '66-0-68-1_dfi' => 'Max custom categories',
+    '66-0-69-1_dfi' => 'Max custom categories (virtual system specific)',
+    '66-0-70-1_dfi' => 'Dataplane cache size for URL filtering',
+    '66-0-71-1_dfi' => 'Management plane dynamic cache size',
+    '73-0-74-1_dfi' => 'Max number of custom lists',
+    '73-0-75-1_dfi' => 'Max number of IPs per system',
+    '73-0-76-1_dfi' => 'Max number of DNS Domains per system',
+    '73-0-77-1_dfi' => 'Max number of URL per system',
+    '73-0-78-1_dfi' => 'Shortest check interval (min)',
+    '80-0-81-1_dfi' => 'Mgmt - out-of-band',
+    '80-0-82-1_dfi' => 'Mgmt - 10/100/1000 high availability',
+    '80-0-83-1_dfi' => 'Mgmt - 40Gbps high availability',
+    '80-0-84-1_dfi' => 'Mgmt - 10Gbps high availability',
+    '80-0-85-1_dfi' => 'Traffic - 10/100/1000',
+    '80-0-86-1_dfi' => 'Traffic - 100/1000/10000',
+    '80-0-87-1_dfi' => 'Traffic - 1Gbps SFP',
+    '80-0-88-1_dfi' => 'Traffic - 10Gbps SFP+',
+    '80-0-89-1_dfi' => 'Traffic - 40/100Gbps QSFP+/QSFP28',
+    '80-0-90-1_dfi' => '802.1q tags per device',
+    '80-0-91-1_dfi' => '802.1q tags per physical interface',
+    '80-0-92-1_dfi' => 'Max interfaces (logical and physical)',
+    '80-0-93-1_dfi' => 'Maximum aggregate interfaces',
+    '80-0-94-1_dfi' => 'Maximum SD-WAN virtual interfaces',
+    '96-0-97-1_dfi' => 'Virtual routers',
+    '99-0-100-1_dfi' => 'Virtual wires',
+    '102-0-103-1_dfi' => 'Base virtual systems',
+    '102-0-104-1_dfi' => 'Max virtual systems',
+    '106-0-107-1_dfi' => 'IPv4 forwarding table size',
+    '106-0-108-1_dfi' => 'IPv6 forwarding table size',
+    '106-0-109-1_dfi' => 'System total forwarding table size',
+    '106-0-110-1_dfi' => '32,000',
+    '106-0-111-1_dfi' => 'Max routing peers (protocol dependent)',
+    '106-0-112-1_dfi' => 'Static entries - DNS proxy',
+    '106-0-113-1_dfi' => 'Bidirectional Forwarding Detection (BFD) Sessions',
+    '115-0-116-1_dfi' => 'ARP table size per device',
+    '115-0-117-1_dfi' => 'IPv6 neighbor table size',
+    '115-0-118-1_dfi' => 'MAC table size per device',
+    '115-0-119-1_dfi' => 'Max ARP entries per broadcast domain',
+    '115-0-120-1_dfi' => 'Max MAC entries per broadcast domain',
+    '123-0-124-1_dfi' => 'Total NAT rule capacity',
+    '123-0-125-1_dfi' => 'Max NAT rules (static)',
+    '123-0-126-1_dfi' => 'Max NAT rules (DIP)',
+    '123-0-127-1_dfi' => 'Max NAT rules (DIPP)',
+    '123-0-128-1_dfi' => 'Max translated IPs (DIP)',
+    '123-0-129-1_dfi' => 'Max translated IPs (DIPP)',
+    '123-0-130-1_dfi' => 'Default DIPP pool oversubscription',
+    '132-0-133-1_dfi' => 'DHCP servers',
+    '132-0-134-1_dfi' => 'DHCP relays',
+    '132-0-135-1_dfi' => 'Max number of assigned addresses',
+    '137-0-138-1_dfi' => 'Devices supported',
+    '137-0-139-1_dfi' => 'Max virtual addresses',
+    '141-0-142-1_dfi' => 'Number of QoS policies',
+    '141-0-143-1_dfi' => 'Physical interfaces supporting QoS',
+    '141-0-144-1_dfi' => 'Clear text nodes per physical interface',
+    '141-0-145-1_dfi' => 'DSCP marking by policy',
+    '141-0-146-1_dfi' => 'Subinterfaces supported',
+    '148-0-149-1_dfi' => 'Max IKE Peers',
+    '148-0-150-1_dfi' => 'Site to site (with proxy id)',
+    '148-0-151-1_dfi' => 'SD-WAN IPSec tunnels',
+    '153-0-154-1_dfi' => 'Max tunnels (SSL, IPSec, and IKE with XAUTH)',
+    '156-0-157-1_dfi' => 'Max SSL tunnels',
+    '159-0-160-1_dfi' => 'Replication (egress interfaces)',
+    '159-0-161-1_dfi' => 'Routes',
+    '163-0-164-1_dfi' => 'End-of-sale',
+    'position' => 'A',
+    '_version_' => 'B'
+);
 
 $headerarray = preg_split("/\r\n|\n|\r/", $string);
 #print_r( $headerarray );
@@ -172,6 +297,7 @@ $url_var .= "&json.wrf=jQuery112208076986402974597_1636959058347&_=1636959058348
 $url = $protocol.$server.$site;
 $urlSite = $url."?".$url_var;
 
+print $urlSite."\n";
 
 $string =  file_get_contents($urlSite );
 
@@ -184,13 +310,13 @@ $data = json_decode($your_json_string, TRUE);
 $jsonString = "{\n";
 foreach( $data['response']['docs'] as $mainkey => $fw )
 {
-
     $jsonString .= '  "'.$fw['product_name'].'":{'."\n";
 
     $key1 = 0;
     $countFW = count( $fw );
     foreach( $fw as $key => $entries )
     {
+        #$testArray[$key] = $headerarray[ $key1];
         if( strpos( $entries, "and higher" ) !== false || strpos( $entries, " to " ) !== false || strpos( $entries, " - " ) !== false)
         {
             $countFW--;
@@ -199,7 +325,8 @@ foreach( $data['response']['docs'] as $mainkey => $fw )
 
         if( isset($headerarray[$key1]) )
         {
-            $jsonString .=  '    "'.$headerarray[$key1].'":"'.$entries.'"';
+            #$jsonString .=  '    "'.$headerarray[$key1].'":"'.$entries.'"';
+            $jsonString .=  '    "'.$valueArray[$key].'":"'.$entries.'"';
 
             if( isset($headerarray[$key1+1]) && $key1+1 < $countFW )
                 $jsonString .=  ",";
