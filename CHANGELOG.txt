@@ -10,6 +10,7 @@ UTILS:
 * pa_device-edit | actions=display-shadowrule - display rule name and owner (DGname / vsys) instead of displaying rule uuid
 * pa_device-edit | actions=display-shadowrule - now possible for VSYS / Panorama DG / Panorama managedDevice
 * pa_rule-edit | introduce 'filter=(timestamp-last-hit.fast <>!= VALUE)'
+* development | introduce system-log.php and traffic-log.php 
 
 BUGFIX:
 * UTIL all object merger script | bugfix for pickfilter and excludefilter
@@ -23,6 +24,7 @@ GENERAL:
 * framework introduce class Region | make use of it in all PAN-OS xml config parts
 * framework | introduce Maxmind geo2ip lite download and usage
 * framework class RuleStore | introduce method findByUUID() - use in pa_device-edit actions=display-shadowrule
+* framework class PanAPIConnector | introduce method getLog()
 
 
 2.0.23 (20211121)
