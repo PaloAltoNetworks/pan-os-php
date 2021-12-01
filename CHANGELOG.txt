@@ -1,6 +1,14 @@
 CHANGELOG
 
-2.0.24
+2.0.25
+UTILS:
+
+BUGFIX:
+
+GENERAL:
+
+
+2.0.24 (20211201)
 UTILS:
 * pa_application-edit | class App method filteredApps() - introduce filter based on characeristics
 * pa_address-edit | introduce 'filter=(object is.region)'
