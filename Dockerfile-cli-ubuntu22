@@ -1,7 +1,5 @@
 FROM ubuntu:22.04
 #not working with Docker "runc 1.0.0-rc92", but with "runc 1.0.0-rc93"
-
-
 ARG php_var="8.1"
 ARG user_var="root"
 

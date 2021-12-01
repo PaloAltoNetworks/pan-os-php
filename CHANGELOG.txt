@@ -2,6 +2,7 @@ CHANGELOG
 
 2.0.25
 UTILS:
+* PAN-OS-PHP API - bugfix for PHP8.1
 
 BUGFIX:
 
