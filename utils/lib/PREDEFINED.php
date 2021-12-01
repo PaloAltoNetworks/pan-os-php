@@ -41,19 +41,36 @@ class PREDEFINED extends UTIL
             PH::print_stdout( " ***** an error occured : " . $e->getMessage() );
         }
 
-
         //make XMLroot for <predefined>
-        $predefinedRoot = DH::findFirstElement('response', $candidateDoc);
-        if( $predefinedRoot === FALSE )
+        $response = DH::findFirstElement('response', $candidateDoc);
+        if( $response === FALSE )
             derr("<response> was not found", $candidateDoc);
 
-        $predefinedRoot = DH::findFirstElement('result', $predefinedRoot);
-        if( $predefinedRoot === FALSE )
-            derr("<result> was not found", $predefinedRoot);
+        $result = DH::findFirstElement('result', $response);
+        if( $result === FALSE )
+            derr("<result> was not found", $response);
 
-        $predefinedRoot = DH::findFirstElement('predefined', $predefinedRoot);
+
+        $predefinedRoot = DH::findFirstElement('predefined', $result);
         if( $predefinedRoot === FALSE )
-            derr("<predefined> was not found", $predefinedRoot);
+        {
+            //Todo: this is for a problem in PAN-OS until it is fixed in 8.1.16, 9.0.10 and 9.1.4, 10.0.1
+            $response = DH::findFirstElement('response', $result);
+            if( $response === FALSE )
+                derr("<response> was not found", $candidateDoc);
+
+            $result = DH::findFirstElement('result', $response);
+            if( $result === FALSE )
+                derr("<result> was not found", $response);
+
+            $predefinedRoot = DH::findFirstElement('predefined', $result);
+            if( $predefinedRoot === FALSE )
+                derr("<predefined> was not found", $result);
+
+            //origin
+            //derr("<predefined> was not found", $result);
+        }
+
 
 
         $xmlDoc = new DomDocument;
@@ -85,7 +102,8 @@ class PREDEFINED extends UTIL
         {
             PH::print_stdout( " - PAN-OS-PHP has an old app-id version '" . $panc_version . "' available. Device App-ID version: " . $exernal_version );
 
-            $predefined_path = __DIR__ . '/../lib/object-classes/predefined.xml';
+            #$predefined_path = __DIR__ . '/../lib/object-classes/predefined.xml';
+            $predefined_path = __DIR__ . '/../../lib/object-classes/predefined.xml';
 
             PH::print_stdout( " *** predefined.xml is saved to '" . $predefined_path . "''" );
             file_put_contents( $predefined_path, $xmlDoc->saveXML());

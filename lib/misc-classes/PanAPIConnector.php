@@ -1612,7 +1612,7 @@ class PanAPIConnector
 
     public function APIresponseValidation(DOMDocument $r)
     {
-        //Todo: this is for a problem in PAN-OS until it is fixed in 8.1.16, 9.0.10 and 9.1.4
+        //Todo: this is for a problem in PAN-OS until it is fixed in 8.1.16, 9.0.10 and 9.1.4, 10.0.1
         $configRoot = DH::findFirstElement('result', $r);
         if( $configRoot === FALSE )
             derr("<result> was not found", $r);

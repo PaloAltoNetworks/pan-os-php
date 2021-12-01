@@ -5,8 +5,10 @@ UTILS:
 * PAN-OS-PHP API - bugfix for PHP8.1
 
 BUGFIX:
+* UTIL script download predefined PAN-OS content data - bugfix/workaround if PAN-OS API bring in double <response><return
 
 GENERAL:
+* framework - content id update to version 8494-7079
 
 
 2.0.24 (20211201)
