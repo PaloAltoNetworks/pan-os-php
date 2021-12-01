@@ -1663,6 +1663,17 @@ class PanAPIConnector
         $params['xpath'] = &$xpath;
         $params['element'] = &$element;
 
+        //Todo: search for device version
+        if( $this->info_PANOS_version_int >= 90 )
+        {
+            date_default_timezone_set("Europe/Berlin");
+            $time = date('Y/m/d H:i', time());
+
+            //if audit-comment == TRUE or always?
+            $params['audit-comment'] = "PAN-OS-PHP ".$time;
+        }
+
+
         return $this->sendSimpleRequest($params, $moreOptions);
     }
 
