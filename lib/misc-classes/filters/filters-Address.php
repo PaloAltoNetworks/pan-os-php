@@ -822,7 +822,7 @@ RQuery::$defaultFilters['address']['refobjectname']['operators']['is.only'] = ar
 
         $reference_array = $object->getReferences();
 
-
+        $return = FALSE;
         foreach( $reference_array as $refobject )
         {
             if( get_class( $refobject ) != "AddressGroup" )
