@@ -273,6 +273,55 @@ $valueArray = array(
     '_version_' => 'B'
 );
 
+$panosArray = array(
+    'base-vsys' => '102-0-103-1_dfi',
+    'licensed-vsys' => '',
+    'max-address' => '30-0-31-1_dfi',
+    'max-address-group' => '30-0-32-1_dfi',
+    'max-address-per-group' => '30-0-33-1_dfi',
+    'max-aeqosnet' => '',
+    'max-auth-policy-rule' => '',
+    'max-dos-policy-rule' => '',
+    'max-edl-domain' => '',
+    'max-edl-domain-filesize' => '',
+    'max-edl-ip' => '',
+    'max-edl-ip-filesize' => '',
+    'max-edl-objs' => '',
+    'max-edl-url' => '',
+    'max-edl-url-filesize' => '',
+    'max-ha-cluster-members' => '',
+    'max-ifnet' => '',
+    'max-ifnet-sdwan' => '',
+    'max-ike-peers' => '',
+    'max-nat-policy-rule' => '',
+    'max-oride-policy-rule' => '',
+    'max-pbf-policy-rule' => '',
+    'max-policy-rule' => '',
+    'max-profile' => '',
+    'max-qos-policy-rule' => '',
+    'max-qosbw' => '',
+    'max-qosif' => '',
+    'max-qosnet' => '',
+    'max-sdwan-policy-rule' => '',
+    'max-service' => '30-0-34-1_dfi',
+    'max-service-per-group' => '30-0-36-1_dfi',
+    'max-session' => '11-0-12-1_dfi',
+    'max-shared-gateway' => '',
+    'max-signature' => '',
+    'max-ssl-policy-rule' => '',
+    'max-ssl-portal' => '',
+    'max-ssl-tunnel' => '',
+    'max-sslvpn-ck-cache-size-mp' => '',
+    'max-threat-signature' => '',
+    'max-tsagents' => '',
+    'max-tunnel' => '',
+    'max-vlan' => '',
+    'max-vrouter' => '96-0-97-1_dfi',
+    'max-vsys' => '',
+    'max-vwire' => '99-0-100-1_dfi',
+    'max-zone' => ''
+);
+
 $headerarray = preg_split("/\r\n|\n|\r/", $string);
 #print_r( $headerarray );
 
