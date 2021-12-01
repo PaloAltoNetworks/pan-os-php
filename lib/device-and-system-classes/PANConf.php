@@ -135,6 +135,8 @@ class PANConf
 
     public $_public_cloud_server = null;
 
+    public $_auditComment = false;
+
     public function name()
     {
         return $this->name;
@@ -294,6 +296,7 @@ class PANConf
 
 
         $this->deviceconfigroot = DH::findFirstElementOrCreate('deviceconfig', $this->localhostroot);
+
 
         // Now listing and extracting all DeviceConfig configurations
         foreach( $this->vsyssroot->childNodes as $node )
@@ -568,10 +571,10 @@ class PANConf
         //
         // Extract setting related configs
         //
-        $tmp = DH::findFirstElementOrCreate('setting', $this->deviceconfigroot);
+        $settingroot = DH::findFirstElementOrCreate('setting', $this->deviceconfigroot);
 
-        $tmp1 = DH::findFirstElement('wildfire', $tmp);
-        if( $tmp1 )
+        $tmp1 = DH::findFirstElement('wildfire', $settingroot);
+        if( $tmp1 !== FALSE )
         {
             $tmp2 = DH::findFirstElement('public-cloud-server', $tmp1);
             if( $tmp2 )
@@ -580,8 +583,15 @@ class PANConf
             }
         }
 
+        $managementroot = DH::findFirstElement('management', $settingroot);
+        if( $managementroot !== FALSE )
+        {
+            $auditComment = DH::findFirstElement('rule-require-audit-comment', $managementroot);
+            if( $auditComment != FALSE )
+                if( $auditComment->textContent === "yes" )
+                    $this->_auditComment = TRUE;
+        }
         //
-
     }
 
 

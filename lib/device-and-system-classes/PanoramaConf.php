@@ -188,6 +188,11 @@ class PanoramaConf
 
     public $name = '';
 
+
+    public $_public_cloud_server = null;
+    public $_auditComment = false;
+
+
     public function name()
     {
         return $this->name;
@@ -353,6 +358,7 @@ class PanoramaConf
         }
         */
 
+        $this->deviceconfigroot = DH::findFirstElementOrCreate('deviceconfig', $this->localhostroot);
 
         $this->devicegrouproot = DH::findFirstElementOrCreate('device-group', $this->localhostroot);
         $this->templateroot = DH::findFirstElementOrCreate('template', $this->localhostroot);
@@ -1003,6 +1009,31 @@ class PanoramaConf
         // end of LogCollectorGroup
         //
 
+
+        //
+        // Extract setting related configs
+        //
+        $settingroot = DH::findFirstElementOrCreate('setting', $this->deviceconfigroot);
+
+        $tmp1 = DH::findFirstElement('wildfire', $settingroot);
+        if( $tmp1 !== FALSE )
+        {
+            $tmp2 = DH::findFirstElement('public-cloud-server', $tmp1);
+            if( $tmp2 )
+            {
+                $this->_public_cloud_server = $tmp1->textContent;
+            }
+        }
+
+        $managementroot = DH::findFirstElement('management', $settingroot);
+        if( $managementroot !== FALSE )
+        {
+            $auditComment = DH::findFirstElement('rule-require-audit-comment', $managementroot);
+            if( $auditComment != FALSE )
+                if( $auditComment->textContent === "yes" )
+                    $this->_auditComment = TRUE;
+        }
+        //
     }
 
 
