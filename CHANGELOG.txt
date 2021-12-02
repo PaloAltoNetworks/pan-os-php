@@ -4,6 +4,7 @@ CHANGELOG
 UTILS:
 * PAN-OS-PHP API - bugfix for PHP8.1
 * all edit script with method PAN-OS API - introduce sending audit-comment information - default setting "PAN-OS-PHP $timedate"
+* pa_rule-edit | 'actions=exportToExcel:FILE.html,ResolveAddressSummary|ResolveserviceSummary|ResolveApplicationsummary' - improve resolveservicesummary, if application-default is used in service and app-id has specified apps
 
 BUGFIX:
 * UTIL script download predefined PAN-OS content data - bugfix/workaround if PAN-OS API bring in double <response><return
