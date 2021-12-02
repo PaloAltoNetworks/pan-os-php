@@ -721,13 +721,23 @@ TagCallContext::$supportedActions['create'] = array(
 
         $newName = $context->arguments['name'];
 
-        $string = "create Tag object : '" . $newName . "'";
-        PH::ACTIONlog( $context, $string );
 
-        if( $context->isAPI )
-            $tagStore->API_createTag($newName);
+        if( $tagStore->find( $newName ) === null )
+        {
+            $string = "create Tag object : '" . $newName . "'";
+            PH::ACTIONlog( $context, $string );
+
+            if( $context->isAPI )
+                $tagStore->API_createTag($newName);
+            else
+                $tagStore->createTag($newName);
+        }
         else
-            $tagStore->createTag($newName);
+        {
+            $string = "Tag named '" . $newName . "' lready exists, cannot create";
+            PH::ACTIONlog( $context, $string );
+        }
+
     },
     'args' => array('name' => array('type' => 'string', 'default' => '*nodefault*')
     )

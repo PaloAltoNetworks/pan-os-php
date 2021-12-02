@@ -7,6 +7,7 @@ UTILS:
 
 BUGFIX:
 * UTIL script download predefined PAN-OS content data - bugfix/workaround if PAN-OS API bring in double <response><return
+* pa_tag-edit | actions=created:NewTag - bugfix to not error out on PAN-OS API - first check if NewTag is already availalble
 
 GENERAL:
 * framework - content id update to version 8494-7079
