@@ -17,6 +17,7 @@ BUGFIX:
 GENERAL:
 * framework - content id update to version 8494-7079
 * class PanAPIConnector - extend AuditComment usage to all kind of manipulation API request set/rename/delete/edit
+* class PanAPIConnector | improve behaviour to request username / password if wrong APIKEY is stored in .panconfkeystore
 
 
 2.0.24 (20211201)

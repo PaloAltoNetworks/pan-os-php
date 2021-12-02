@@ -401,8 +401,13 @@ class PanAPIConnector
                     if( $host != "bpa-apikey" && $host != "license-apikey" && $host != "ldap-password" && $host != "maxmind-licensekey" )
                     {
                         $wrongLogin = TRUE;
-                        if( strpos($e->getMessage(), "Invalid credentials.") === FALSE )
-                            derr($e->getMessage());
+                        
+                        if( isset( $_SERVER['REQUEST_METHOD'] ) )
+                        {
+                            if( strpos($e->getMessage(), "Invalid credentials.") === FALSE )
+                                derr($e->getMessage());
+                        }
+
                     }
                 }
                 PH::$useExceptions = $exceptionUse;
