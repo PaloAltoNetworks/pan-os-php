@@ -6,6 +6,7 @@ UTILS:
 * all edit script with method PAN-OS API - introduce sending audit-comment information - default setting "PAN-OS-PHP $timedate"
 * pa_rule-edit | 'actions=exportToExcel:FILE.html,ResolveAddressSummary|ResolveserviceSummary|ResolveApplicationsummary' - improve resolveservicesummary, if application-default is used in service and app-id has specified apps
 * pa_zone-edit | introduce actions=name-rename:NewZoneNAME
+* UTIL all script | introduce new argument "auditComment=XYZ" to bring in your custom auditComment
 
 BUGFIX:
 * UTIL script download predefined PAN-OS content data - bugfix/workaround if PAN-OS API bring in double <response><return

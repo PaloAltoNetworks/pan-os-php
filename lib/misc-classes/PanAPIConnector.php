@@ -96,6 +96,13 @@ class PanAPIConnector
     public $show_clock_raw = null;
     public $request_license_info_raw = null;
 
+    private $utilType = null;
+    private $utilAction = null;
+
+    private $setAuditComment = false;
+    private $auditComment = null;
+
+
     /**
      * @param bool $force Force refresh instead of using cache
      * @throws Exception
@@ -557,6 +564,27 @@ class PanAPIConnector
         else
             derr('unsupported type: ' . $type);
     }
+
+    public function setUTILtype( $utilType)
+    {
+        $this->utilType = $utilType;
+    }
+
+    public function setUTILaction( $utilAction)
+    {
+        $this->utilAction = $utilAction;
+    }
+
+    public function setAuditCommentBool( $bool)
+    {
+        $this->setAuditComment = $bool;
+    }
+
+    public function setAuditComment( $auditComment)
+    {
+        $this->auditComment = $auditComment;
+    }
+    //
 
     /**
      * @param string $host
@@ -1664,13 +1692,15 @@ class PanAPIConnector
         $params['element'] = &$element;
 
         //Todo: search for device version
-        if( $this->info_PANOS_version_int >= 90 )
+        if( $this->info_PANOS_version_int >= 90 and $this->setAuditComment )
         {
             date_default_timezone_set("Europe/Berlin");
             $time = date('Y/m/d H:i', time());
 
-            //if audit-comment == TRUE or always?
-            $params['audit-comment'] = "PAN-OS-PHP ".$time;
+            if( $this->auditComment !== null )
+                $params['audit-comment'] = $this->auditComment;
+            else
+                $params['audit-comment'] = "PAN-OS-PHP ".$this->utilAction." ".$time;
         }
 
 
