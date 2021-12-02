@@ -87,6 +87,8 @@ class UTIL
     public $sub = null;
     public $template = null;
 
+    public $auditComment = null;
+
     function __construct($utilType, $argv, $argc, $PHP_FILE, $_supportedArguments = array(), $_usageMsg = "")
     {
         $this->runStartTime = microtime(TRUE);
@@ -181,6 +183,8 @@ class UTIL
         $this->supportedArguments['apitimeout'] = array('niceName' => 'apiTimeout', 'shortHelp' => 'in case API takes too long time to anwer, increase this value (default=60)', 'argDesc' => '60');
 
         $this->supportedArguments['cycleconnectedfirewalls'] = array('niceName' => 'cycleConnectedFirewalls', 'shortHelp' => 'a listing of all devices connected to Panorama will be collected through API then each firewall will be queried for bpa generator');
+
+        $this->supportedArguments['auditcomment'] = array('niceName' => 'AuditComment', 'shortHelp' => 'set custom AuditComment instead of predefined: "PAN-OS-PHP $actions $time"');
 
         $this->supportedArguments['shadow-disableoutputformatting'] = array('niceName' => 'shadow-disableoutputformatting', 'shortHelp' => 'XML output in offline config is not in cleaned PHP DOMDocument structure');
         $this->supportedArguments['shadow-enablexmlduplicatesdeletion']= array('niceName' => 'shadow-enablexmlduplicatesdeletion', 'shortHelp' => 'if duplicate objects are available, keep only one object of the same name');
@@ -675,6 +679,10 @@ class UTIL
             unset($tmp_expedition);
         }
 
+        if( isset(PH::$args['auditcomment']) )
+        {
+            $this->auditComment = PH::$args['auditcomment'];
+        }
 
         $this->inputValidation();
 
@@ -748,6 +756,9 @@ class UTIL
             if( $this->debugAPI )
                 $this->configInput['connector']->setShowApiCalls(TRUE);
             $this->apiMode = TRUE;
+
+            $this->configInput['connector']->setUTILtype( $this->utilType );
+            $this->configInput['connector']->setUTILaction( PH::$args['actions'] );
 
 
             PH::print_stdout( " - Downloading config from API... " );
@@ -1014,6 +1025,18 @@ class UTIL
         $this->pan->load_from_domxml($this->xmlDoc, XML_PARSE_BIG_LINES);
 
         $this->loadEnd();
+
+        if( isset($this->configInput['type']) && $this->configInput['type'] == 'api' )
+        {
+            //Todo: if AuditComment are only needed if setting _auditComment is forced, please think about additional check
+            #if( isset($this->pan->_auditComment) ){
+                #$this->configInput['connector']->setAuditCommentBool( $this->pan->_auditComment );
+                $this->configInput['connector']->setAuditCommentBool( TRUE );
+                if( $this->auditComment !== null )
+                    $this->configInput['connector']->setAuditComment( $this->auditComment);
+            #}
+        }
+
 
         PH::print_stdout( "   ($this->loadElapsedTime seconds, $this->loadUsedMem memory)" );
         PH::print_stdout( array( "value" => $this->loadElapsedTime, "type" => " seconds") , false, "loadtime");
