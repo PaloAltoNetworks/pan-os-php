@@ -569,7 +569,7 @@ class ServiceGroup
 
         foreach( $this->members as $member )
         {
-            if( $member->isTmpSrv() )
+            if( $member->isTmpSrv() && $this->name() != 'service-http' && $this->name() != 'service-https' )
                 $mapping->unresolved[$member->name()] = $member;
             $localMapping = $member->dstPortMapping();
             $mapping->mergeWithMapping($localMapping);

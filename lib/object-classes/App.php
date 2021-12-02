@@ -712,6 +712,7 @@ class App
                     {
                         if( $port[1] == 'any' )
                             $port[1] = $any;
+                        $port[1] = trim( $port[1] );
                         $tmp = $protocolTxt . $port[1]. $name;
                         $text .= $tmp. ",";
                         if( isset( $port_mapping_text[ $tmp ] ) )
@@ -743,6 +744,7 @@ class App
                         {
                             if( $portValue == 'any' )
                                 $portValue = $any;
+                            $portValue = trim( $portValue );
                             $tmp = $protocolTxt . $portValue.$name;
                             $text .= $tmp. ",";
                             if( isset( $port_mapping_text[ $tmp ] ) )

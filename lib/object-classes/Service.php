@@ -326,6 +326,14 @@ class Service
      */
     public function getDestPort()
     {
+        if( $this->isTmpSrv() )
+        {
+            if( $this->name() == 'service-http' )
+                return '80';
+            if( $this->name() == 'service-https' )
+                return '443';
+        }
+
         return $this->_dport;
     }
 
@@ -461,7 +469,15 @@ class Service
     public function dstPortMapping()
     {
         if( $this->isTmpSrv() )
+        {
+            if( $this->name() == 'service-http' )
+                return ServiceDstPortMapping::mappingFromText('80', TRUE);
+            if( $this->name() == 'service-https' )
+                return ServiceDstPortMapping::mappingFromText('443', TRUE);
+
             return new ServiceDstPortMapping();
+        }
+
 
         if( $this->_protocol == 'tcp' )
             $tcp = TRUE;
