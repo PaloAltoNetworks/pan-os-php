@@ -3,7 +3,7 @@ CHANGELOG
 2.0.25
 UTILS:
 * PAN-OS-PHP API - bugfix for PHP8.1
-* all edit script with method PAN-OS API - introduce sending audit-comment information - default setting "PAN-OS-PHP $timedate"
+* all edit script with method PAN-OS API - introduce sending audit-comment information - default setting "PAN-OS-PHP $UTILtype $timedate"
 * pa_rule-edit | 'actions=exportToExcel:FILE.html,ResolveAddressSummary|ResolveserviceSummary|ResolveApplicationsummary' - improve resolveservicesummary, if application-default is used in service and app-id has specified apps
 * pa_zone-edit | introduce actions=name-rename:NewZoneNAME
 * UTIL all script | introduce new argument "auditComment=XYZ" to bring in your custom auditComment
@@ -16,6 +16,7 @@ BUGFIX:
 
 GENERAL:
 * framework - content id update to version 8494-7079
+* class PanAPIConnector - extend AuditComment usage to all kind of manipulation API request set/rename/delete/edit
 
 
 2.0.24 (20211201)
