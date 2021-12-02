@@ -1691,22 +1691,10 @@ class PanAPIConnector
         $params['xpath'] = &$xpath;
         $params['element'] = &$element;
 
-        //Todo: search for device version
-        if( $this->info_PANOS_version_int >= 90 and $this->setAuditComment )
-        {
-            date_default_timezone_set("Europe/Berlin");
-            $time = date('Y/m/d H:i', time());
-
-            if( $this->auditComment !== null )
-                $params['audit-comment'] = $this->auditComment;
-            else
-                $params['audit-comment'] = "PAN-OS-PHP ".$this->utilAction." ".$time;
-        }
-
+        $this->prepareAuditComment( $params );
 
         return $this->sendSimpleRequest($params, $moreOptions);
     }
-
 
     public function sendSimpleRequest(&$request, $options = array(), $checkResultTag = FALSE )
     {
@@ -1758,6 +1746,8 @@ class PanAPIConnector
         $params['xpath'] = &$xpath;
         $params['element'] = &$element;
 
+        $this->prepareAuditComment( $params );
+
         return $this->sendSimpleRequest($params, $moreOptions);
     }
 
@@ -1768,6 +1758,8 @@ class PanAPIConnector
         $params['type'] = 'config';
         $params['action'] = 'delete';
         $params['xpath'] = &$xpath;
+
+        $this->prepareAuditComment( $params );
 
         return $this->sendRequest($params);
     }
@@ -1785,6 +1777,8 @@ class PanAPIConnector
         $params['action'] = 'rename';
         $params['xpath'] = &$xpath;
         $params['newname'] = &$newname;
+
+        $this->prepareAuditComment( $params );
 
         return $this->sendRequest($params);
     }
@@ -2160,6 +2154,19 @@ class PanAPIConnector
         }
 
         return $shadowedRule;
+    }
+
+    public function prepareAuditComment( &$params )
+    {
+        if( $this->info_PANOS_version_int >= 90 and $this->setAuditComment )
+        {
+            $time = date('Y/m/d H:i', time());
+
+            if( $this->auditComment !== null )
+                $params['audit-comment'] = $this->auditComment;
+            else
+                $params['audit-comment'] = "PAN-OS-PHP ".$this->utilAction." ".$time;
+        }
     }
 }
 
