@@ -190,7 +190,7 @@ class App
         $appstore = $this->owner;
         $all = $appstore->getAll();
 
-        while( get_class( $appstore->owner ) !== "PanoramaConf" && get_class( $appstore->owner ) !== "PANConf" )
+        while( get_class( $appstore->owner ) !== "PanoramaConf" && get_class( $appstore->owner ) !== "PANConf" && get_class( $appstore->owner ) !== "FawkesConf" )
         {
             $all = array_merge( $all, $appstore->owner->owner->appStore->getAll() );
             $appstore = $appstore->owner->owner->appStore;
