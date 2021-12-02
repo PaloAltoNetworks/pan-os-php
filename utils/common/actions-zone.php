@@ -346,6 +346,58 @@ ZoneCallContext::$supportedActions['name-toucwords'] = array(
             $object->setName($newName);
     }
 );
+ZoneCallContext::$supportedActions[] = array(
+    'name' => 'name-Rename',
+    'MainFunction' => function (ZoneCallContext $context) {
+        $object = $context->object;
+
+
+        $newName = $context->arguments['stringFormula'];
+
+        if( strpos($newName, '$$current.name$$') !== FALSE )
+        {
+            $newName = str_replace('$$current.name$$', $object->name(), $newName);
+        }
+
+        if( $object->name() == $newName )
+        {
+            $string = "new name and old name are the same";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+
+        $string = "new name will be '{$newName}'";
+        PH::ACTIONlog( $context, $string );
+
+        $findObject = $object->owner->find($newName, null, false);
+        if( $findObject !== null )
+        {
+            $string = "an object with same name already exists";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+        else
+        {
+            $text = $context->padding . " - renaming object... ";
+            if( $context->isAPI )
+                $object->API_setName($newName);
+            else
+                $object->setName($newName);
+
+            PH::ACTIONlog( $context, $text );
+        }
+
+    },
+    'args' => array('stringFormula' => array(
+        'type' => 'string',
+        'default' => '*nodefault*',
+        'help' =>
+            "This string is used to compose a name. You can use the following aliases :\n" .
+            "  - \$\$current.name\$\$ : current name of the object\n"
+        )
+    ),
+    'help' => ''
+);
 
 ZoneCallContext::$supportedActions['displayreferences'] = array(
     'name' => 'displayReferences',

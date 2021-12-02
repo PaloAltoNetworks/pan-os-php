@@ -682,8 +682,8 @@ class App
 
     function getAppServiceDefault( $secure = false, &$port_mapping_text = array(), &$subarray = array() )
     {
-        $name = ",".$this->name();
-        #$name = "";
+        #$name = ",".$this->name();
+        $name = "";
 
         if( $secure )
             $protocols = array( "tcp_secure", "udp_secure" );
@@ -712,21 +712,31 @@ class App
                     {
                         if( $port[1] == 'any' )
                             $port[1] = $any;
+                        $port[1] = trim( $port[1] );
                         $tmp = $protocolTxt . $port[1]. $name;
                         $text .= $tmp. ",";
-                        $port_mapping_text[ $tmp ] = $tmp;
+                        if( isset( $port_mapping_text[ $tmp ] ) )
+                            $port_mapping_text[ $tmp ] .= ",".$this->name();
+                        else
+                            $port_mapping_text[ $tmp ] = $tmp.",".$this->name();
                     }
                     elseif( $port[0] == "dynamic" )
                     {
                         $tmp = $protocolTxt . $dynamic . $name;
                         $text .= $tmp. ",";
-                        $port_mapping_text[ $tmp ] = $tmp;
+                        if( isset( $port_mapping_text[ $tmp ] ) )
+                            $port_mapping_text[ $tmp ] .= ",".$this->name();
+                        else
+                            $port_mapping_text[ $tmp ] = $tmp.",".$this->name();
                     }
                     elseif( $port[0] == "range" )
                     {
                         $tmp = $protocolTxt . $port[1] . "-" . $port[2].$name;
                         $text .= $tmp. ",";
-                        $port_mapping_text[ $tmp ] = $tmp;
+                        if( isset( $port_mapping_text[ $tmp ] ) )
+                            $port_mapping_text[ $tmp ] .= ",".$this->name();
+                        else
+                            $port_mapping_text[ $tmp ] = $tmp.",".$this->name();
                     }
                     else
                     {
@@ -734,9 +744,13 @@ class App
                         {
                             if( $portValue == 'any' )
                                 $portValue = $any;
+                            $portValue = trim( $portValue );
                             $tmp = $protocolTxt . $portValue.$name;
                             $text .= $tmp. ",";
-                            $port_mapping_text[ $tmp ] = $tmp;
+                            if( isset( $port_mapping_text[ $tmp ] ) )
+                                $port_mapping_text[ $tmp ] .= ",".$this->name();
+                            else
+                                $port_mapping_text[ $tmp ] = $tmp.",".$this->name();
                         }
                     }
                 }

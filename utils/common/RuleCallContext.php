@@ -578,11 +578,11 @@ class RuleCallContext extends CallContext
         {
             if( $rule->service !== null )
                 return array($rule->service);
-            return array( 'any' );
+            return array( 'tcp/1-65535', 'udp/1-65535' );
         }
 
         if( $rule->services->isAny() )
-            return array( 'any' );
+            return array( 'tcp/1-65535', 'udp/1-65535' );
         if( $rule->services->isApplicationDefault() )
         {
             if( $rule->apps->isAny() )
@@ -644,7 +644,7 @@ class RuleCallContext extends CallContext
 
                     if( !in_array( $protocol . $mapping, $port_mapping_text ) )
                     {
-                        $port_mapping_text[] = $protocol . $mapping;
+                        $port_mapping_text[$protocol . $mapping] = $protocol . $mapping;
 
                         if( strpos($mapping, "-") !== FALSE )
                         {

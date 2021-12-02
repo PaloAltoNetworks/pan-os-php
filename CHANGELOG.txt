@@ -5,11 +5,13 @@ UTILS:
 * PAN-OS-PHP API - bugfix for PHP8.1
 * all edit script with method PAN-OS API - introduce sending audit-comment information - default setting "PAN-OS-PHP $timedate"
 * pa_rule-edit | 'actions=exportToExcel:FILE.html,ResolveAddressSummary|ResolveserviceSummary|ResolveApplicationsummary' - improve resolveservicesummary, if application-default is used in service and app-id has specified apps
+* pa_zone-edit | introduce actions=name-rename:NewZoneNAME
 
 BUGFIX:
 * UTIL script download predefined PAN-OS content data - bugfix/workaround if PAN-OS API bring in double <response><return
 * pa_tag-edit | actions=created:NewTag - bugfix to not error out on PAN-OS API - first check if NewTag is already availalble
 * framework class App | bugfix as FawkesConf has no appstore at shared level / has no SHARED level
+* UTIL pa_rule-edit | actions=display,ResolveServiceSummary bringing back consistent output for port and application-default app-id port
 
 GENERAL:
 * framework - content id update to version 8494-7079
