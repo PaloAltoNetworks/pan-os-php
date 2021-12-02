@@ -184,7 +184,7 @@ class UTIL
 
         $this->supportedArguments['cycleconnectedfirewalls'] = array('niceName' => 'cycleConnectedFirewalls', 'shortHelp' => 'a listing of all devices connected to Panorama will be collected through API then each firewall will be queried for bpa generator');
 
-        $this->supportedArguments['auditcomment'] = array('niceName' => 'AuditComment', 'shortHelp' => 'set custom AuditComment instead of predefined: "PAN-OS-PHP $actions $time"');
+        $this->supportedArguments['auditcomment'] = array('niceName' => 'AuditComment', 'shortHelp' => 'set custom AuditComment instead of predefined: "PAN-OS-PHP $actions $time"', 'argDesc' => 'CustomAuditComment');
 
         $this->supportedArguments['shadow-disableoutputformatting'] = array('niceName' => 'shadow-disableoutputformatting', 'shortHelp' => 'XML output in offline config is not in cleaned PHP DOMDocument structure');
         $this->supportedArguments['shadow-enablexmlduplicatesdeletion']= array('niceName' => 'shadow-enablexmlduplicatesdeletion', 'shortHelp' => 'if duplicate objects are available, keep only one object of the same name');
