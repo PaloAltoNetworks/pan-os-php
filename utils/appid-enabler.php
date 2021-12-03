@@ -1,5 +1,4 @@
 <?php
-
 /**
  * ISC License
  *
@@ -19,17 +18,10 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+
 set_include_path(dirname(__FILE__) . '/../' . PATH_SEPARATOR . get_include_path());
 require_once dirname(__FILE__)."/../lib/pan_php_framework.php";
 require_once dirname(__FILE__)."/../utils/lib/UTIL.php";
 
-PH::print_stdout("");
-PH::print_stdout("***********************************************");
-PH::print_stdout("*********** " . basename(__FILE__) . " UTILITY **************");
-PH::print_stdout("");
-
-$util = new APPIDENABLER("appid-enabler", $argv, $argc, __FILE__);
-
-PH::print_stdout("");
-PH::print_stdout("************* END OF SCRIPT " . basename(__FILE__) . " ************" );
-PH::print_stdout("");
+PH::UTILdeprecated( "appid-enabler", $argv, $argc, __FILE__ );
+#$util = new APPIDENABLER("appid-enabler", $argv, $argc, __FILE__);

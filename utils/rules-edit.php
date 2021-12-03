@@ -1,5 +1,4 @@
 <?php
-
 /**
  * ISC License
  *
@@ -20,38 +19,9 @@
  */
 
 
-
 set_include_path(dirname(__FILE__) . '/../' . PATH_SEPARATOR . get_include_path());
 require_once dirname(__FILE__)."/../lib/pan_php_framework.php";
-
-/*
-$type = "rule";
-
-unset( $argv[0] );
-$cli = "php ".dirname(__FILE__)."/pan-os-php.php type=".$type." ".implode( " ", $argv );
-
-mwarning( 'this script '.basename(__FILE__).' is deprecated, please use: '.PH::boldText($cli) );
-
-exec($cli, $output, $retValue);
-
-foreach( $output as $line )
-{
-    PH::print_stdout( $line );
-}
-*/
-
-
 require_once dirname(__FILE__)."/../utils/lib/UTIL.php";
 
-PH::print_stdout("");
-PH::print_stdout("***********************************************");
-PH::print_stdout("*********** " . basename(__FILE__) . " UTILITY **************");
-PH::print_stdout("");
-
-
-$util = new RULEUTIL("rule", $argv, $argc, __FILE__);
-
-
-PH::print_stdout("");
-PH::print_stdout("************* END OF SCRIPT " . basename(__FILE__) . " ************" );
-PH::print_stdout("");
+PH::UTILdeprecated( "rule", $argv, $argc, __FILE__ );
+#$util = new RULEUTIL("rule", $argv, $argc, __FILE__);

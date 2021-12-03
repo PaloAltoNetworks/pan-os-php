@@ -7,12 +7,15 @@ UTILS:
 * pa_rule-edit | 'actions=exportToExcel:FILE.html,ResolveAddressSummary|ResolveserviceSummary|ResolveApplicationsummary' - improve resolveservicesummary, if application-default is used in service and app-id has specified apps
 * pa_zone-edit | introduce actions=name-rename:NewZoneNAME
 * UTIL all script | introduce new argument "auditComment=XYZ" to bring in your custom auditComment
+* UTIL all script - remove duplicate header / footer
+* UTIL all script - optimise to always use single method entry from PAN-OS-PHP
 
 BUGFIX:
 * UTIL script download predefined PAN-OS content data - bugfix/workaround if PAN-OS API bring in double <response><return
 * pa_tag-edit | actions=created:NewTag - bugfix to not error out on PAN-OS API - first check if NewTag is already availalble
 * framework class App | bugfix as FawkesConf has no appstore at shared level / has no SHARED level
 * UTIL pa_rule-edit | actions=display,ResolveServiceSummary bringing back consistent output for port and application-default app-id port
+* class PanAPIConnector - bugfix if connection timeout
 
 GENERAL:
 * framework - content id update to version 8494-7079
