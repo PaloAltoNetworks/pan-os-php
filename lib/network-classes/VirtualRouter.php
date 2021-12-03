@@ -2,7 +2,8 @@
 /**
  * ISC License
  *
- * Copyright (c) 2014-2018 Christophe Painchaud <shellescape _AT_ gmail.com>
+  * Copyright (c) 2014-2016, Palo Alto Networks Inc.
+ * Copyright (c) 2017-2018 Christophe Painchaud <shellescape _AT_ gmail.com>
  * Copyright (c) 2019, Palo Alto Networks Inc.
  *
  * Permission to use, copy, modify, and/or distribute this software for any
