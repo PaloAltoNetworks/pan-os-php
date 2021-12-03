@@ -968,7 +968,14 @@ class PH
         elseif( $type == "bpa-generator" )
             $util = new BPAGENERATOR($type, $argv, $argc,$PHP_FILE." type=".$type);
 
-        else
+        elseif( $type == 'address'
+            || $type == 'service'
+            || $type == 'tag'
+            || $type == 'schedule'
+            || $type == 'securityprofilegroup'
+            || $type == 'application'
+            || $type == 'threat'
+        )
             $util = new UTIL($type, $argv, $argc,$PHP_FILE." type=".$type);
 
         return $util;

@@ -25,6 +25,7 @@ $projects_folder = "/project/";
 
 $file_tmp_name = "";
 $upload_dir = "";
+$PHP_FILE = __FILE__;
 if( !isset( $_GET['in'] ) && isset($_FILES['configInput']) )
 {
     #header('Content-Type: application/json; charset=utf-8');
@@ -109,7 +110,7 @@ elseif( isset($_GET['help']) || isset($_GET['listfilters']) || isset($_GET['list
 {
 }
 else{
-    #$argv[] = "in=".dirname(__FILE__)."/../../../../tests/input/panorama-10.0-merger.xml";
+    #$argv[] = "in=".dirname($PHP_FILE)."/../../../../tests/input/panorama-10.0-merger.xml";
     $message = 'No File available with argument in=';
     throw new Exception($message, 404);
 }
@@ -121,7 +122,7 @@ else{
 
 switch($verb) {
     case 'GET':
-        UTILcaller( $url_pieces, $argv, $argc );
+        UTILcaller( $url_pieces, $argv, $argc, $PHP_FILE );
 
         break;
     // two cases so similar we'll just share code
@@ -158,7 +159,7 @@ switch($verb) {
         #throw new Exception("PUT");
 
 
-        UTILcaller( $url_pieces, $argv, $argc );
+        UTILcaller( $url_pieces, $argv, $argc, $PHP_FILE );
 
 
         break;
@@ -186,7 +187,7 @@ switch($verb) {
 #header("Content-Type: application/json");
 #print json_encode($data);
 
-function UTILcaller( $url_pieces, $argv, $argc )
+function UTILcaller( $url_pieces, $argv, $argc, $PHP_FILE )
 {
     global $projects_folder;
 
@@ -233,7 +234,7 @@ function UTILcaller( $url_pieces, $argv, $argc )
                 {
                     unset( $argv[1] );
                     if( strpos( $get, "api" ) === false )
-                        $get = dirname(__FILE__).$projects_folder.$get;
+                        $get = dirname($PHP_FILE).$projects_folder.$get;
                     else
                     {
                         #throw new Exception( "PAN-OS XML API mode is NOT yet supported.", 404);
@@ -242,7 +243,7 @@ function UTILcaller( $url_pieces, $argv, $argc )
                 }
                 elseif( $key == "out" )
                 {
-                    $get = dirname(__FILE__).$projects_folder.$get;
+                    $get = dirname($PHP_FILE).$projects_folder.$get;
                 }
 
                 if( !empty($get) )
@@ -255,6 +256,10 @@ function UTILcaller( $url_pieces, $argv, $argc )
 
         header("Content-Type: application/json");
         $type = $url_pieces[1];
+
+
+        $util = PH::callPANOSPHP( $type, $argv, $argc, $PHP_FILE );
+        /*
         if( $type == 'rule' )
             $util = new RULEUTIL( $type, $argv, $argc, __FILE__);
 
@@ -326,6 +331,6 @@ function UTILcaller( $url_pieces, $argv, $argc )
             || $type == 'threat'
         )
             $util = new UTIL( $type, $argv, $argc, __FILE__);
-
+        */
     }
 }
