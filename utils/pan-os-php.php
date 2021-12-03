@@ -133,11 +133,6 @@ elseif( isset(PH::$args['type']) )
     PH::$args = array();
     PH::$argv = array();
 
-    PH::print_stdout("");
-    PH::print_stdout("***********************************************");
-    PH::print_stdout("*********** " . strtoupper( $type ) . " UTILITY **************");
-    PH::print_stdout("***********************************************");
-    PH::print_stdout("");
 
     if( $type == "rule" )
         $util = new RULEUTIL($type, $argv, $argc,__FILE__." type=".$type);
@@ -203,11 +198,5 @@ elseif( isset(PH::$args['type']) )
 
     else
         $util = new UTIL($type, $argv, $argc,__FILE__." type=".$type." type=".$type);
-
-    PH::print_stdout("");
-    PH::print_stdout("***********************************************");
-    PH::print_stdout("************* END OF SCRIPT " . strtoupper( $type ) . " ************" );
-    PH::print_stdout("***********************************************");
-    PH::print_stdout("");
 
 }

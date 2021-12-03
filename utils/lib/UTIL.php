@@ -80,7 +80,7 @@ class UTIL
     protected $taskId = 0;
     public $log = null;
 
-    public $utilType = null;
+    public $utilType = "";
     public $PHP_FILE = null;
 
     public $location = null;
@@ -91,13 +91,20 @@ class UTIL
 
     function __construct($utilType, $argv, $argc, $PHP_FILE, $_supportedArguments = array(), $_usageMsg = "")
     {
+        $this->PHP_FILE = $PHP_FILE;
+        $this->utilType = $utilType;
+        if( $this->utilType != "custom" )
+        {
+            PH::print_stdout("");
+            PH::print_stdout("***********************************************");
+            PH::print_stdout("*********** " . basename($this->PHP_FILE) . " UTILITY **************");
+            PH::print_stdout("");
+        }
+
+
         $this->runStartTime = microtime(TRUE);
 
         $tmp_ph = new PH($argv, $argc);
-
-        $this->utilType = $utilType;
-        $this->PHP_FILE = $PHP_FILE;
-
 
 
         if( empty($_supportedArguments) )
@@ -113,7 +120,7 @@ class UTIL
 
 
 
-        if( $utilType != "custom" )
+        if( $this->utilType != "custom" )
         {
             PH::print_stdout( " - PAN-OS-PHP version: ".PH::frameworkVersion() . " [".PH::frameworkInstalledOS()."]" . " [" . phpversion() ."]" );
             PH::print_stdout( array( "version" => PH::frameworkVersion(), "os" => PH::frameworkInstalledOS(), "php-version" => phpversion() ), false, 'PAN-OS-PHP');
@@ -1635,6 +1642,13 @@ class UTIL
         {
             PH::$JSON_OUT['log'] = PH::$JSON_OUTlog;
             print json_encode( PH::$JSON_OUT, JSON_PRETTY_PRINT );
+        }
+
+        if( $this->utilType != "custom" )
+        {
+            PH::print_stdout("");
+            PH::print_stdout("************* END OF SCRIPT " . basename($this->PHP_FILE) . " ************");
+            PH::print_stdout("");
         }
     }
 }
