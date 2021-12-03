@@ -1225,6 +1225,48 @@ var data = {
                 ]
             },
             {
+                "name": "user-check-ldap",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "show",
+                        "help": "'show' and 'remove' are supported.",
+                        "name": "actionType"
+                    },
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "help": "define LDAP user for authentication to server",
+                        "name": "ldapUser"
+                    },
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "help": "LDAP server fqdn \/ IP",
+                        "name": "ldapServer"
+                    },
+                    {
+                        "type": "string",
+                        "default": "OU=TEST;DC=domain;DC=local",
+                        "help": "full OU to an LDAP part, sparated with ';' - this is a specific setting",
+                        "name": "dn"
+                    },
+                    {
+                        "type": "string",
+                        "default": "mailNickname",
+                        "help": "Domain\\username - specify the search filter criteria where your Security Rule defined user name can be found in LDAP",
+                        "name": "filtercriteria"
+                    },
+                    {
+                        "type": "bool",
+                        "default": "false",
+                        "help": "users no longer available in LDAP => false | users available in LDAP => true, e.g. if users are disabled and available in a specific LDAP group",
+                        "name": "existentUser"
+                    }
+                ]
+            },
+            {
                 "name": "user-remove",
                 "help": null,
                 "args": [
@@ -2176,6 +2218,18 @@ var data = {
                 ]
             },
             {
+                "name": "name-Rename",
+                "help": "",
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "help": "This string is used to compose a name. You can use the following aliases :\n  - $$current.name$$ : current name of the object\n",
+                        "name": "stringFormula"
+                    }
+                ]
+            },
+            {
                 "name": "name-toLowerCase",
                 "help": null,
                 "args": false
@@ -2458,9 +2512,38 @@ var data = {
                 "args": false
             },
             {
+                "name": "display-shadowrule",
+                "help": null,
+                "args": false
+            },
+            {
                 "name": "displayReferences",
                 "help": null,
                 "args": false
+            },
+            {
+                "name": "exportInventoryToExcel",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "help": "only usable with 'devicetype=manageddevice'",
+                        "name": "filename"
+                    }
+                ]
+            },
+            {
+                "name": "exportLicenseToExcel",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "help": "only usable with 'devicetype=manageddevice'",
+                        "name": "filename"
+                    }
+                ]
             },
             {
                 "name": "exportToExcel",
@@ -2481,6 +2564,30 @@ var data = {
                         ],
                         "help": "pipe(|) separated list of additional field to include in the report. The following is available:\n  - WhereUsed : list places where object is used (rules, groups ...)\n  - UsedInLocation : list locations (vsys,dg,shared) where object is used\n",
                         "name": "additionalFields"
+                    }
+                ]
+            },
+            {
+                "name": "geoIP-check",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "8.8.8.8",
+                        "help": "checkIP is IPv4 or IPv6 host address",
+                        "name": "checkIP"
+                    }
+                ]
+            },
+            {
+                "name": "securityprofile-create-alert-only",
+                "help": null,
+                "args": [
+                    {
+                        "type": "bool",
+                        "default": "false",
+                        "help": "if set to true; securityProfiles are create at SHARED level; at least one DG must be available",
+                        "name": "shared"
                     }
                 ]
             },
@@ -3528,6 +3635,17 @@ var data = {
                 ]
             },
             {
+                "name": "timestamp-last-hit.fast",
+                "help": null,
+                "operators": [
+                    {
+                        "name": ">,<,=,!",
+                        "help": "returns TRUE if rule name matches the specified timestamp MM\/DD\/YYYY [american] \/ DD-MM-YYYY [european] \/ 21 September 2021 \/ - 90 days",
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
                 "name": "to",
                 "help": null,
                 "operators": [
@@ -3794,6 +3912,11 @@ var data = {
                         "argument": "*required*"
                     },
                     {
+                        "name": "is.region",
+                        "help": null,
+                        "argument": null
+                    },
+                    {
                         "name": "is.tmp",
                         "help": null,
                         "argument": null
@@ -3843,6 +3966,27 @@ var data = {
                     {
                         "name": "is.only",
                         "help": "returns TRUE if object location (shared\/device-group\/vsys name) matches",
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "refobjectname",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is",
+                        "help": "returns TRUE if object name matches refobjectname",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.only",
+                        "help": "returns TRUE if RUE if object name matches only refobjectname",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.recursive",
+                        "help": "returns TRUE if object name matches refobjectname",
                         "argument": "*required*"
                     }
                 ]
