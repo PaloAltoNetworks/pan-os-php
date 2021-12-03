@@ -8,6 +8,7 @@ UTILS:
 * pa_zone-edit | introduce actions=name-rename:NewZoneNAME
 * UTIL all script | introduce new argument "auditComment=XYZ" to bring in your custom auditComment
 * UTIL all script - remove duplicate header / footer
+* UTIL all script - optimise to always use single method entry from PAN-OS-PHP
 
 BUGFIX:
 * UTIL script download predefined PAN-OS content data - bugfix/workaround if PAN-OS API bring in double <response><return

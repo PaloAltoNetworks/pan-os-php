@@ -1644,7 +1644,7 @@ class UTIL
             print json_encode( PH::$JSON_OUT, JSON_PRETTY_PRINT );
         }
 
-        if( $this->utilType != "custom" )
+        if( $this->utilType !== "custom" )
         {
             PH::print_stdout("");
             PH::print_stdout("************* END OF SCRIPT " . basename($this->PHP_FILE) . " ************");

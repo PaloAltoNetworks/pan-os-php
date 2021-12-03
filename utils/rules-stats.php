@@ -23,4 +23,5 @@ set_include_path(dirname(__FILE__) . '/../' . PATH_SEPARATOR . get_include_path(
 require_once dirname(__FILE__)."/../lib/pan_php_framework.php";
 require_once ( "utils/lib/UTIL.php");
 
-$util = new STATSUTIL( "stats", $argv, $argc, __FILE__);
+PH::UTILdeprecated( "stats", $argv, $argc, __FILE__ );
+#$util = new STATSUTIL( "stats", $argv, $argc, __FILE__);

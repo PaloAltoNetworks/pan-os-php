@@ -23,5 +23,5 @@ set_include_path(dirname(__FILE__) . '/../' . PATH_SEPARATOR . get_include_path(
 require_once dirname(__FILE__)."/../lib/pan_php_framework.php";
 require_once dirname(__FILE__)."/../utils/lib/UTIL.php";
 
-
-$merger = new MERGER("servicegroup-merger", $argv, $argc, __FILE__, array() );
+PH::UTILdeprecated( "servicegroup-merger", $argv, $argc, __FILE__ );
+#$merger = new MERGER("servicegroup-merger", $argv, $argc, __FILE__, array() );

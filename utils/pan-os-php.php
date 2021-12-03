@@ -19,36 +19,12 @@
  */
 
 
-
 set_include_path(dirname(__FILE__) . '/../' . PATH_SEPARATOR . get_include_path());
 require_once dirname(__FILE__)."/../lib/pan_php_framework.php";
 require_once dirname(__FILE__)."/../utils/lib/UTIL.php";
 
 PH::processCliArgs();
 
-$supportedUTILTypes = array(
-    "stats",
-    "address", "service", "tag", "schedule", "application", "threat",
-    "rule",
-    "device", "securityprofile", "securityprofilegroup",
-    "zone",  "interface", "virtualwire", "routing",
-    "key-manager",
-    "address-merger", "addressgroup-merger",
-    "service-merger", "servicegroup-merger",
-    "tag-merger",
-    "rule-merger",
-    "override-finder",
-    "diff",
-    "upload",
-    "xml-issue",
-    "appid-enabler",
-    "config-size",
-    "download-predefined",
-    "register-ip-mgr",
-    "userid-mgr",
-    "xml-op-json",
-    "bpa-generator"
-    );
 //Todo: API not supported scripts:
 //custom
 /*
@@ -77,24 +53,26 @@ $supportedUTILTypes = array(
  * register-ip-mgr
  * userid-mgr
  */
-$supportedArguments = array();
-$usageMsg = PH::boldText('USAGE: ') . "php " . __FILE__ . " in=[filename]|[api://IP]|[api://serial@IP] type=address";
+$PHP_FILE = __FILE__;
 
-asort($supportedUTILTypes);
-$typeUTIL = new UTIL("custom", $argv, $argc, __FILE__, $supportedArguments, $usageMsg);
-$typeUTIL->supportedArguments['type'] = array('niceName' => 'type', 'shortHelp' => 'specify which type of PAN-OS-PHP UTIL script you like to use', 'argDesc' => implode("|", $supportedUTILTypes ));
+$supportedArguments = array();
+$usageMsg = PH::boldText('USAGE: ') . "php " . $PHP_FILE . " in=[filename]|[api://IP]|[api://serial@IP] type=address";
+
+asort(PH::$supportedUTILTypes);
+$typeUTIL = new UTIL("custom", $argv, $argc, $PHP_FILE, $supportedArguments, $usageMsg);
+$typeUTIL->supportedArguments['type'] = array('niceName' => 'type', 'shortHelp' => 'specify which type of PAN-OS-PHP UTIL script you like to use', 'argDesc' => implode("|", PH::$supportedUTILTypes ));
 $typeUTIL->supportedArguments['version'] = array('niceName' => 'version', 'shortHelp' => 'display actual installed PAN-OS-PHP framework version');
 
 
 if( isset(PH::$args['version']) )
 {
     PH::print_stdout( " - PAN-OS-PHP version: ".PH::frameworkVersion() . " [".PH::frameworkInstalledOS()."]" );
-    PH::print_stdout( " - ".dirname(__FILE__) );
+    PH::print_stdout( " - ".dirname($PHP_FILE) );
     PH::print_stdout( " - PHP version: " . phpversion() );
 
     PH::$JSON_TMP['version'] = PH::frameworkVersion();
     PH::$JSON_TMP['os'] = PH::frameworkInstalledOS();
-    PH::$JSON_TMP['folder'] = dirname(__FILE__);
+    PH::$JSON_TMP['folder'] = dirname($PHP_FILE);
     PH::$JSON_TMP['php-version'] = phpversion();
 
     PH::print_stdout( PH::$JSON_TMP, false, 'pan-os-php' );
@@ -109,7 +87,7 @@ if( isset(PH::$args['version']) )
 }
 elseif( !isset(PH::$args['type']) )
 {
-    foreach( $supportedUTILTypes as $type )
+    foreach( PH::$supportedUTILTypes as $type )
         PH::$JSON_TMP[] = $type;
     PH::print_stdout( PH::$JSON_TMP, false, 'type' );
 
@@ -121,7 +99,7 @@ elseif( isset(PH::$args['type']) )
     $type = PH::$args['type'];
 
     //check if type argument is supported
-    if( !in_array( $type, $supportedUTILTypes ) )
+    if( !in_array( $type, PH::$supportedUTILTypes ) )
         $typeUTIL->display_usage_and_exit();
 
 
@@ -133,28 +111,30 @@ elseif( isset(PH::$args['type']) )
     PH::$args = array();
     PH::$argv = array();
 
+    $util = PH::callPANOSPHP( $type, $argv, $argc, $PHP_FILE );
 
+    /*
     if( $type == "rule" )
-        $util = new RULEUTIL($type, $argv, $argc,__FILE__." type=".$type);
+        $util = new RULEUTIL($type, $argv, $argc,$PHP_FILE." type=".$type);
 
     elseif( $type == "stats" )
-        $util = new STATSUTIL( $type, $argv, $argc,__FILE__." type=".$type);
+        $util = new STATSUTIL( $type, $argv, $argc,$PHP_FILE." type=".$type);
 
     elseif( $type == "securityprofile" )
-        $util = new SECURITYPROFILEUTIL($type, $argv, $argc,__FILE__." type=".$type);
+        $util = new SECURITYPROFILEUTIL($type, $argv, $argc,$PHP_FILE." type=".$type);
 
     elseif( $type == "zone"
         || $type == "interface"
         || $type == "routing"
         || $type == "virtualwire"
     )
-        $util = new NETWORKUTIL($type, $argv, $argc,__FILE__." type=".$type);
+        $util = new NETWORKUTIL($type, $argv, $argc,$PHP_FILE." type=".$type);
 
     elseif( $type == "device" )
-        $util = new DEVICEUTIL($type, $argv, $argc,__FILE__." type=".$type);
+        $util = new DEVICEUTIL($type, $argv, $argc,$PHP_FILE." type=".$type);
 
     elseif( $type == "key-manager" )
-        $util = new KEYMANGER($type, $argv, $argc,__FILE__." type=".$type);
+        $util = new KEYMANGER($type, $argv, $argc,$PHP_FILE." type=".$type);
 
     elseif( $type == "address-merger"
         || $type == "addressgroup-merger"
@@ -162,41 +142,43 @@ elseif( isset(PH::$args['type']) )
         || $type == "servicegroup-merger"
         || $type == "tag-merger"
     )
-        $util = new MERGER($type, $argv, $argc,__FILE__." type=".$type);
+        $util = new MERGER($type, $argv, $argc,$PHP_FILE." type=".$type);
 
     elseif( $type == "rule-merger" )
-        $util = new RULEMERGER($type, $argv, $argc,__FILE__." type=".$type );
+        $util = new RULEMERGER($type, $argv, $argc,$PHP_FILE." type=".$type );
 
     elseif( $type == "override-finder" )
-        $util = new OVERRIDEFINDER($type, $argv, $argc,__FILE__." type=".$type);
+        $util = new OVERRIDEFINDER($type, $argv, $argc,$PHP_FILE." type=".$type);
     elseif( $type == "diff" )
-        $util = new DIFF($type, $argv, $argc,__FILE__." type=".$type);
+        $util = new DIFF($type, $argv, $argc,$PHP_FILE." type=".$type);
     elseif( $type == "upload" )
-        $util = new UPLOAD($type, $argv, $argc,__FILE__." type=".$type);
+        $util = new UPLOAD($type, $argv, $argc,$PHP_FILE." type=".$type);
     elseif( $type == "xml-issue" )
-        $util = new XMLISSUE($type, $argv, $argc,__FILE__." type=".$type);
+        $util = new XMLISSUE($type, $argv, $argc,$PHP_FILE." type=".$type);
 
     elseif( $type == "appid-enabler" )
-        $util = new APPIDENABLER($type, $argv, $argc,__FILE__." type=".$type);
+        $util = new APPIDENABLER($type, $argv, $argc,$PHP_FILE." type=".$type);
     elseif( $type == "config-size" )
-        $util = new CONFIGSIZE($type, $argv, $argc,__FILE__." type=".$type);
+        $util = new CONFIGSIZE($type, $argv, $argc,$PHP_FILE." type=".$type);
 
     elseif( $type == "download-predefined" )
-        $util = new PREDEFINED($type, $argv, $argc,__FILE__." type=".$type);
+        $util = new PREDEFINED($type, $argv, $argc,$PHP_FILE." type=".$type);
 
     elseif( $type == "register-ip-mgr" )
-        $util = new REGISTERIP($type, $argv, $argc,__FILE__." type=".$type );
+        $util = new REGISTERIP($type, $argv, $argc,$PHP_FILE." type=".$type );
 
     elseif( $type == "userid-mgr" )
-        $util = new USERIDMGR($type, $argv, $argc,__FILE__." type=".$type);
+        $util = new USERIDMGR($type, $argv, $argc,$PHP_FILE." type=".$type);
 
     elseif( $type == "xml-op-json" )
-        $util = new XMLOPJSON($type, $argv, $argc,__FILE__." type=".$type );
+        $util = new XMLOPJSON($type, $argv, $argc,$PHP_FILE." type=".$type );
 
     elseif( $type == "bpa-generator" )
-        $util = new BPAGENERATOR($type, $argv, $argc,__FILE__." type=".$type);
+        $util = new BPAGENERATOR($type, $argv, $argc,$PHP_FILE." type=".$type);
 
     else
-        $util = new UTIL($type, $argv, $argc,__FILE__." type=".$type." type=".$type);
+        $util = new UTIL($type, $argv, $argc,$PHP_FILE." type=".$type);
+    */
 
+    $util->endOfScript();
 }

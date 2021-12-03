@@ -80,36 +80,13 @@ else
     $url_pieces = array();
 
 
-$supportedRoute = array(
-    "stats",
-    "address", "service", "tag", "schedule", "application", "threat",
-    "rule",
-    "device", "securityprofile", "securityprofilegroup",
-    "zone",  "interface", "virtualwire", "routing",
-    "key-manager",
-    "address-merger", "addressgroup-merger",
-    "service-merger", "servicegroup-merger",
-    "tag-merger",
-    "rule-merger",
-    "override-finder",
-    "diff",
-    "upload",
-    "xml-issue",
-    "appid-enabler",
-    "config-size",
-    "download-predefined",
-    "register-ip-mgr",
-    "userid-mgr",
-    "xml-op-json",
-    "bpa-generator"
-    );
-sort($supportedRoute );
+sort(PH::$supportedUTILTypes );
 
 // catch this here, we don't support many routes yet
-if( empty( $url_pieces) || ( isset($url_pieces[1]) && !in_array( $url_pieces[1], $supportedRoute ) ) )
+if( empty( $url_pieces) || ( isset($url_pieces[1]) && !in_array( $url_pieces[1], PH::$supportedUTILTypes ) ) )
 {
     $example = "http://localhost:8082/utils/develop/api/v1/tool.php/address?shadow-json";
-    $message = 'Unknown endpoint. supported: '.implode( ", ", $supportedRoute ).' Example: '.$example;
+    $message = 'Unknown endpoint. supported: '.implode( ", ", PH::$supportedUTILTypes ).' Example: '.$example;
 
     throw new Exception($message, 404);
 }
