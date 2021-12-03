@@ -343,7 +343,7 @@ foreach($rules as $rule)
     PH::print_stdout( "" );
 }
 
-//Todo was disabled
+//Todo - export not working for HTML but tool is using XML file - HTML is only for user
 #PH::print_stdout( "\n\nExporting stats to html file '{$ruleStatHtmlFile}'... " );
 #$ruleStats->exportToCSV($ruleStatHtmlFile);
 
