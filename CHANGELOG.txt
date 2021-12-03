@@ -1,6 +1,14 @@
 CHANGELOG
 
-2.0.25
+2.0.26
+UTILS:
+
+BUGFIX:
+
+GENERAL:
+
+
+2.0.25 (20211203)
 UTILS:
 * PAN-OS-PHP API - bugfix for PHP8.1
 * all edit script with method PAN-OS API - introduce sending audit-comment information - default setting "PAN-OS-PHP $UTILtype $timedate"
