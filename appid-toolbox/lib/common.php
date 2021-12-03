@@ -200,9 +200,10 @@ class DeviceGroupRuleAppUsage
         }
     }
 
+
     public function exportToCSV($filename)
     {
-        $content = file_get_contents(dirname(__FILE__).'/html/export-template.html');
+        $content = file_get_contents(dirname(__FILE__).'/../../utils/common/html/export-template.html');
 
         $content = str_replace('%TableHeaders%',
             '<th>app-name</th><th>count</th>',
@@ -210,9 +211,9 @@ class DeviceGroupRuleAppUsage
 
         //$content = str_replace('%lines%', $lines, $content);
 
-        $jscontent =  file_get_contents(dirname(__FILE__).'/html/jquery-1.11.js');
+        $jscontent =  file_get_contents(dirname(__FILE__).'/../../utils/common/html/jquery.min.js');
         $jscontent .= "\n";
-        $jscontent .= file_get_contents(dirname(__FILE__).'/html/jquery.stickytableheaders.min.js');
+        $jscontent .= file_get_contents(dirname(__FILE__).'/../../utils/common/html/jquery.stickytableheaders.min.js');
         $jscontent .= "\n\$('table').stickyTableHeaders();\n";
 
         $content = str_replace('%JSCONTENT%', $jscontent, $content);
@@ -236,6 +237,7 @@ class DeviceGroupRuleAppUsage
         file_put_contents($filename, $content);
 
     }
+
 
 }
 
