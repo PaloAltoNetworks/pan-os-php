@@ -401,13 +401,14 @@ class PanAPIConnector
                     if( $host != "bpa-apikey" && $host != "license-apikey" && $host != "ldap-password" && $host != "maxmind-licensekey" )
                     {
                         $wrongLogin = TRUE;
-                        
-                        if( isset( $_SERVER['REQUEST_METHOD'] ) )
-                        {
-                            if( strpos($e->getMessage(), "Invalid credentials.") === FALSE )
-                                derr($e->getMessage());
-                        }
 
+                        if( isset( $_SERVER['REQUEST_METHOD'] ) )
+                            derr($e->getMessage());
+                        elseif( strpos($e->getMessage(), "Invalid credentials.") === FALSE )
+                        {
+                            derr($e->getMessage(), null , FALSE );
+                        }
+                        #elseif( strpos($e->getMessage(), "Connection timeout") !== FALSE )
                     }
                 }
                 PH::$useExceptions = $exceptionUse;

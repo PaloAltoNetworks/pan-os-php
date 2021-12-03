@@ -15,6 +15,7 @@ BUGFIX:
 * pa_tag-edit | actions=created:NewTag - bugfix to not error out on PAN-OS API - first check if NewTag is already availalble
 * framework class App | bugfix as FawkesConf has no appstore at shared level / has no SHARED level
 * UTIL pa_rule-edit | actions=display,ResolveServiceSummary bringing back consistent output for port and application-default app-id port
+* class PanAPIConnector - bugfix if connection timeout
 
 GENERAL:
 * framework - content id update to version 8494-7079
