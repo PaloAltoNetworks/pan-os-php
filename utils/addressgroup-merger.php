@@ -24,4 +24,3 @@ require_once dirname(__FILE__)."/../lib/pan_php_framework.php";
 require_once dirname(__FILE__)."/../utils/lib/UTIL.php";
 
 PH::UTILdeprecated( "addressgroup-merger", $argv, $argc, __FILE__ );
-#$merger = new MERGER("addressgroup-merger", $argv, $argc, __FILE__ );

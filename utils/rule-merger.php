@@ -24,4 +24,3 @@ require_once dirname(__FILE__)."/../lib/pan_php_framework.php";
 require_once dirname(__FILE__)."/../utils/lib/UTIL.php";
 
 PH::UTILdeprecated( "rule-merger", $argv, $argc, __FILE__ );
-#$rulemerger = new RULEMERGER("rule-merger", $argv, $argc,__FILE__ );

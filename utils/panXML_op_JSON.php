@@ -24,4 +24,3 @@ require_once dirname(__FILE__)."/../lib/pan_php_framework.php";
 require_once dirname(__FILE__)."/../utils/lib/UTIL.php";
 
 PH::UTILdeprecated( "xml-op-json", $argv, $argc, __FILE__ );
-#$util = new XMLOPJSON("xml-op-json", $argv, $argc,__FILE__ );

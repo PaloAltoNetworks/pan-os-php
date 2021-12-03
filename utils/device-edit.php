@@ -24,4 +24,3 @@ require_once dirname(__FILE__) . "/../lib/pan_php_framework.php";
 require_once dirname(__FILE__) . "/../utils/lib/UTIL.php";
 
 PH::UTILdeprecated( "device", $argv, $argc, __FILE__ );
-#$util = new DEVICEUTIL("device", $argv, $argc, __FILE__);
