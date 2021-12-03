@@ -343,8 +343,9 @@ foreach($rules as $rule)
     PH::print_stdout( "" );
 }
 
-//PH::print_stdout( "\n\nExporting stats to html file '{$ruleStatHtmlFile}'... " );
-//$ruleStats->exportToCSV($ruleStatHtmlFile);
+//Todo was disabled
+#PH::print_stdout( "\n\nExporting stats to html file '{$ruleStatHtmlFile}'... " );
+#$ruleStats->exportToCSV($ruleStatHtmlFile);
 
 
 
