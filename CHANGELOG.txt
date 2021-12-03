@@ -5,6 +5,7 @@ UTILS:
 * UTIL pan-os-php type=$utiltype is the only supported UTIL script for the future, all other UTIL script are set to deprecated
 
 BUGFIX:
+* UTIL pan-os-php API - bugfix in relation to shadow-json and previous code reduction
 
 GENERAL:
 

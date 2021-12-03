@@ -93,6 +93,9 @@ class UTIL
     {
         $this->PHP_FILE = $PHP_FILE;
         $this->utilType = $utilType;
+        $this->runStartTime = microtime(TRUE);
+        $tmp_ph = new PH($argv, $argc);
+
         if( $this->utilType != "custom" )
         {
             PH::print_stdout("");
@@ -100,12 +103,6 @@ class UTIL
             PH::print_stdout("*********** " . basename($this->PHP_FILE) . " UTILITY **************");
             PH::print_stdout("");
         }
-
-
-        $this->runStartTime = microtime(TRUE);
-
-        $tmp_ph = new PH($argv, $argc);
-
 
         if( empty($_supportedArguments) )
             $this->supportedArguments();
