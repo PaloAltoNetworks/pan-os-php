@@ -408,7 +408,6 @@ class PanAPIConnector
                         {
                             derr($e->getMessage(), null , FALSE );
                         }
-                        #elseif( strpos($e->getMessage(), "Connection timeout") !== FALSE )
                     }
                 }
                 PH::$useExceptions = $exceptionUse;
