@@ -3,30 +3,25 @@
 
 <head>
     <title>PAN-OS-PHP UI</title>
-    <link rel="stylesheet" href=
-            "https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-          integrity=
-                  "sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
-          crossorigin="anonymous">
-
-
-    <!--<script src=
-                    "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js">
-    </script>
-    <script type="text/javascript" src="jquery-3.5.1.min.js"></script>
-    -->
-
-    <script src=
-                    "https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
+    <link rel="stylesheet"
+          href="../../common/html/bootstrap.min.css"
+          crossorigin="anonymous"
+    >
+    <script
+            src="../../common/html/jquery.min.js"
+    >
     </script>
 
     <script type="text/javascript" src="json_array.js"></script>
 
-    <script src=
-                    "https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js">
+    <script
+            src="../../common/html/popper.min.js"
+    >
     </script>
-    <script src=
-                    "https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js">
+    <script
+            src="../../common/html/bootstrap.min.js"
+    >
+
     </script>
 
 
