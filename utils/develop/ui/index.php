@@ -7,22 +7,17 @@
           href="../../common/html/bootstrap.min.css"
           crossorigin="anonymous"
     >
-    <script
+    <script type="text/javascript"
             src="../../common/html/jquery.min.js"
-    >
-    </script>
+    ></script>
 
-    <script type="text/javascript" src="json_array.js"></script>
+    <script type="text/javascript"
+            src="json_array.js"
+    ></script>
 
-    <script
-            src="../../common/html/popper.min.js"
-    >
-    </script>
-    <script
+    <script type="text/javascript"
             src="../../common/html/bootstrap.min.js"
-    >
-
-    </script>
+    ></script>
 
 
     <script>
