@@ -198,6 +198,7 @@ class UTIL
         $this->supportedArguments['shadow-displaycurlrequest']= array('niceName' => 'shadow-displaycurlrequest', 'shortHelp' => 'display curl information if running in API mode');
         $this->supportedArguments['shadow-reducexml']= array('niceName' => 'shadow-reducexml', 'shortHelp' => 'store reduced XML, without newline and remove blank characters in offline mode');
         $this->supportedArguments['shadow-json']= array('niceName' => 'shadow-json', 'shortHelp' => 'BETA command to display output on stdout not in text but in JSON format');
+        $this->supportedArguments['shadow-nojson']= array('niceName' => 'shadow-nojson', 'shortHelp' => 'BETA command to display output on stdout in text format');
     }
 
     public function utilInit()

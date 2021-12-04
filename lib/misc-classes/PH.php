@@ -98,6 +98,16 @@ class PH
                     $argc--;
                 continue;
             }
+            elseif( $arg == 'shadow-nojson' )
+            {
+                PH::disableOutputFormatting();
+                PH::$shadow_json = FALSE;
+                PH::$PANC_WARN = FALSE;
+                unset(PH::$argv[$argIndex]);
+                if( !isset( $_SERVER['REQUEST_METHOD'] ) )
+                    $argc--;
+                continue;
+            }
         }
         unset($argIndex);
         unset($arg);

@@ -482,6 +482,8 @@
             var checkedValue = $( "#shadowjson" + Idx ).is(':checked');
             if( checkedValue )
                 message += " shadow-json";
+            else
+                message += " shadow-nojson";
 
             //var locationValue = document.getElementById('location').value;
             var locationValue = $( "#location" + Idx ).val();
@@ -511,6 +513,8 @@
 
             if( checkedValue )
                 message2 += "&shadow-json";
+            else
+                message2 += "&shadow-nojson";
 
             if( locationValue !== "---" )
             {
