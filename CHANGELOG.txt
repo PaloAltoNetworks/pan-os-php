@@ -5,6 +5,7 @@ UTILS:
 * UTIL pan-os-php type=$utiltype is the only supported UTIL script for the future, all other UTIL script are set to deprecated
 * UTIL pan-os-php UI - move to local file usage
 * UTIL all script - introduce new argument "shadow-nojson"
+* UTIL UI - improvement to get filter correctly working for operators like ">,<,=,!"
 
 BUGFIX:
 * UTIL pan-os-php API - bugfix in relation to shadow-json and previous code reduction
