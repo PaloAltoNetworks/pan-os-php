@@ -288,6 +288,10 @@
                     {}
                     else
                     {
+                        check = ">,<,=,!"
+                        if (check.indexOf(selectedFilterOperator) !== -1 )
+                            selectedFilterOperator = check
+
                         var operator = subjectObject[selectedScript]['filter'][selectedFilter]['operators'][selectedFilterOperator];
                         var arg = operator['arg'];
                         console.log( "ARG: "+arg );
@@ -420,13 +424,14 @@
             $.each(programming_languages, function (key, value){
                 var object = key;
 
-                if (key.indexOf(",") !== false )
+
+                if (key.indexOf(",") !== -1 )
                 {
-                    //not working well; Todo: combination could be possible needed, how to do
                     var result=key.split(',');
-                    $.each(result, function (key, value) {
-                        var object = key;
-                        populated_options += "<option value='" + result + "'>" + value + "</option>";
+                    $.each(result, function (key2, value)
+                    {
+                        var object = key2;
+                        populated_options += "<option value='" + value + "'>" + value + "</option>";
                     });
                 }
                 else
@@ -498,7 +503,7 @@
                 message += dropdownselection;
             }
 
-            console.log( message );
+            //console.log( message ); //this is full CLI command
             $("#command" + Idx).val( message );
 
 
@@ -523,8 +528,7 @@
                 message2 += dropdownselection;
             }
 
-            console.log( message2 );
-
+            //console.log( message2 ); //this is full API command
             $("#commandapi" + Idx).val( message2 );
 
             //document.getElementById("user_form").action = message2;
