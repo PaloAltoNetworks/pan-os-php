@@ -3,7 +3,7 @@
 /**
  * ISC License
  *
-  * Copyright (c) 2014-2016, Palo Alto Networks Inc.
+ * Copyright (c) 2014-2016, Palo Alto Networks Inc.
  * Copyright (c) 2017-2018 Christophe Painchaud <shellescape _AT_ gmail.com>
  * Copyright (c) 2019, Palo Alto Networks Inc.
  *
@@ -92,6 +92,16 @@ class PH
             {
                 PH::disableOutputFormatting();
                 PH::$shadow_json = TRUE;
+                PH::$PANC_WARN = FALSE;
+                unset(PH::$argv[$argIndex]);
+                if( !isset( $_SERVER['REQUEST_METHOD'] ) )
+                    $argc--;
+                continue;
+            }
+            elseif( $arg == 'shadow-nojson' )
+            {
+                PH::disableOutputFormatting();
+                PH::$shadow_json = FALSE;
                 PH::$PANC_WARN = FALSE;
                 unset(PH::$argv[$argIndex]);
                 if( !isset( $_SERVER['REQUEST_METHOD'] ) )

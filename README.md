@@ -224,7 +224,7 @@ There are Dockerfiles available with OS: Ubuntu20/22 and CentOS 7/8
 * **MacOS** : [run on MacOS terminal]
 	```bash
 	cd [pan-os-php Root folder]
-	docker build -t pan-os-php .
+	docker build -t pan-os-php -f docker/Dockerfile .
 	cd [go to the Folder you like to share with the Container]
 	docker run -v ${PWD}:/share -it pan-os-php
 	```
@@ -232,7 +232,7 @@ There are Dockerfiles available with OS: Ubuntu20/22 and CentOS 7/8
 * **WINDOWS** : [run on Windows terminal]
 	```bash
 	cd [pan-os-php Root folder]
-	docker build -t pan-os-php .
+	docker build -t pan-os-php -f docker/Dockerfile .
 	cd [go to the Folder you like to share with the Container]
 	docker run -v %CD%:/share -it pan-os-php
 	```
@@ -242,7 +242,7 @@ Docker PAN-OS-PHP API and UI
 final production Container:
    ```bash
     cd [pan-os-php Root folder]
-    docker build -t pan-os-php:latest -f Dockerfile-API .
+    docker build -t pan-os-php:latest -f docker/Dockerfile-API .
     docker run -d -p 8082:80 pan-os-php:latest
    ```
 local Development Container:

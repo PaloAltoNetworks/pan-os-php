@@ -115,7 +115,10 @@ else{
     throw new Exception($message, 404);
 }
 
-
+if( !isset( $_GET['shadow-json'] ) && !isset( $_GET['shadow-nojson'] ) )
+{
+    $argv[] = "shadow-json";
+}
 
 
 

@@ -7,22 +7,17 @@
           href="../../common/html/bootstrap.min.css"
           crossorigin="anonymous"
     >
-    <script
+    <script type="text/javascript"
             src="../../common/html/jquery.min.js"
-    >
-    </script>
+    ></script>
 
-    <script type="text/javascript" src="json_array.js"></script>
+    <script type="text/javascript"
+            src="json_array.js"
+    ></script>
 
-    <script
-            src="../../common/html/popper.min.js"
-    >
-    </script>
-    <script
+    <script type="text/javascript"
             src="../../common/html/bootstrap.min.js"
-    >
-
-    </script>
+    ></script>
 
 
     <script>
@@ -482,6 +477,8 @@
             var checkedValue = $( "#shadowjson" + Idx ).is(':checked');
             if( checkedValue )
                 message += " shadow-json";
+            else
+                message += " shadow-nojson";
 
             //var locationValue = document.getElementById('location').value;
             var locationValue = $( "#location" + Idx ).val();
@@ -511,6 +508,8 @@
 
             if( checkedValue )
                 message2 += "&shadow-json";
+            else
+                message2 += "&shadow-nojson";
 
             if( locationValue !== "---" )
             {
