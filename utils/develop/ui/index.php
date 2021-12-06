@@ -374,6 +374,8 @@
                 //rowIdx--;
             });
 
+            $("#addBtn").trigger('click');
+
         });
 
         function produceOptions(programming_languages) {
