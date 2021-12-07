@@ -660,7 +660,7 @@
         </table>
         <button class="btn btn-md btn-primary"
                 id="addBtn" type="button">
-            Add new Row
+            new Row
         </button>
     </div>
     </form>
