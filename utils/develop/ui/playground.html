@@ -3,6 +3,7 @@
 
 <head>
     <title>PAN-OS-PHP UI</title>
+
     <link rel="stylesheet"
           href="../../common/html/bootstrap.min.css"
           crossorigin="anonymous"
@@ -19,6 +20,23 @@
             src="../../common/html/bootstrap.min.js"
     ></script>
 
+    <!--
+        <link rel="stylesheet"
+              href="html/bootstrap.min.css"
+              crossorigin="anonymous"
+        >
+        <script type="text/javascript"
+                src="html/jquery.min.js"
+        ></script>
+
+        <script type="text/javascript"
+                src="json_array.js"
+        ></script>
+
+        <script type="text/javascript"
+                src="html/bootstrap.min.js"
+        ></script>
+        -->
 
     <script>
 
@@ -29,12 +47,16 @@
         var path = fullpathname.replace(pathToReplace, "");
         server_url = server_url + path;
 
+        var subjectObject2 = subjectObject;
+
+        var rowIdx = 0;
+        var columnActionIdx = 2;
+        var columnFilterIdx = 3;
+
         $(document).ready(function () {
 
             // Denotes total number of rows
-            var rowIdx = 0;
-            var columnActionIdx = 2;
-            var columnFilterIdx = 3;
+
 
             // jQuery button click event to add a row
             $('#storeBtn').on('click', function () {
@@ -232,112 +254,12 @@
                     }
 
                     updateScriptsyntax( Idx );
+
+                    updateActionFiltersyntax( selectedScript, Idx, ActionIdx, FilterIdx);
                 });
 
-                $( "#action" + Idx+"-"+ActionIdx ).change(function(){
-                    selectedAction = $(this).children("option:selected").val();
-                    console.log( 'ACTION:|'+selectedAction+'|'); // this will show the info it in firebug console
-
-                    $("#action-desc" + Idx+"-"+ActionIdx).text( "no description");
-                    $("#action-input" + Idx+"-"+ActionIdx).prop( "disabled", true);
-
-                    if( selectedAction == '---' )
-                    {}
-                    else
-                    {
-                        var action = subjectObject[selectedScript]['action'][selectedAction];
-
-                        if( "args" in action )
-                        {
-                            var args = action['args'];
-                            console.log( "ARGS: "+JSON.stringify( args ) );
-                            $("#action-desc" + Idx+"-"+ActionIdx).text( JSON.stringify( args ) );
 
 
-                            $("#action-input" + Idx+"-"+ActionIdx).prop( "disabled", false);
-
-                        }
-
-                    }
-
-                    updateScriptsyntax( Idx );
-                });
-
-                $( "#action-input" + Idx+"-"+ActionIdx ).change(function(){
-                    updateScriptsyntax( Idx );
-                });
-                $("#filter" + Idx+"-"+FilterIdx).change(function(){
-                    selectedFilter = $(this).children("option:selected").val();
-                    console.log( 'FILTER:|'+selectedFilter+'|'); // this will show the info it in firebug console
-
-                    $("#filter-operator" + Idx+"-"+FilterIdx)
-                        .find('option')
-                        .remove()
-                        .end()
-                        .append( '<option value="---" selected="selected">Select operator</option>' );
-
-                    $("#filter-input" + Idx+"-"+FilterIdx).prop( "disabled", true)
-                        .val( "");
-
-                    $("#filter-desc" + Idx+"-"+FilterIdx).text( "no description");
-
-                    if( selectedFilter == '---' )
-                    {}
-                    else
-                    {
-                        $("#filter-operator" + Idx+"-"+FilterIdx)
-                            .append(produceOptionsFilterOperator( selectedScript, selectedFilter))
-                            .val('---');
-                    }
-
-                    updateScriptsyntax( Idx );
-                });
-
-                $("#filter-operator" + Idx+"-"+FilterIdx).change(function(){
-                    var selectedFilterOperator = $(this).children("option:selected").val();
-                    console.log( 'FILTER-operator:|'+selectedFilterOperator+'|'); // this will show the info it in firebug console
-
-
-                    $("#filter-desc" + Idx+"-"+FilterIdx).text( "no description");
-
-                    if( selectedFilter == '---' )
-                    {}
-                    else
-                    {
-                        check = ">,<,=,!"
-                        if (check.indexOf(selectedFilterOperator) !== -1 )
-                            selectedFilterOperator = check
-
-                        var operator = subjectObject[selectedScript]['filter'][selectedFilter]['operators'][selectedFilterOperator];
-                        var arg = operator['arg'];
-                        console.log( "ARG: "+arg );
-
-                        if( arg )
-                        {
-                            console.log( "ARG2: "+arg );
-                            $("#filter-input" + Idx+"-"+FilterIdx).prop( "disabled", false);
-
-                        }
-                        else
-                        {
-                            $("#filter-input" + Idx+"-"+FilterIdx).prop( "disabled", true)
-                                .val( "");
-                        }
-
-                        if( "help" in operator )
-                        {
-                            var help = operator['help'];
-                            console.log( "HELP: "+help );
-                            $("#filter-desc" + Idx+"-"+FilterIdx).text( help);
-                        }
-                    }
-
-                    updateScriptsyntax( Idx );
-                });
-
-                $( "#filter-input" + Idx+"-"+FilterIdx ).change(function(){
-                    updateScriptsyntax( Idx );
-                });
 
 
                 $("#shadowjson" + Idx ).change( function()
@@ -396,7 +318,7 @@
             $('#addActionBtn').on('click', function() {
 
                 var ActionIdx = ++columnActionIdx;
-                var FilterIdx = ++columnFilterIdx;
+                var FilterIdx = columnFilterIdx;
 
                 var rows = $("#myTable").children('tbody').children('tr');
 
@@ -438,6 +360,8 @@
                                 .append(produceOptionsActionFilter(selectedScript, 'action'))
                                 .val('---');
                         }
+
+                        updateActionFiltersyntax( selectedScript, rowIdx, ActionIdx, FilterIdx);
                     }
                     else
                         $(this).append( $("<td></td>"));
@@ -454,6 +378,7 @@
             });
 
             $('#addFilterBtn').on('click', function() {
+                var ActionIdx = columnActionIdx;
                 var FilterIdx = ++columnFilterIdx;
 
                 var rows = $("#myTable").children('tbody').children('tr');
@@ -490,6 +415,10 @@
                                 id="filter-desc${rowIdx}-${FilterIdx}" name="filter-desc${rowIdx}-${FilterIdx}"
                                     >no description
                                 </p>
+                                <select name="filter-andor${rowIdx}-${FilterIdx}" id="filter-andor${rowIdx}-${FilterIdx}" style="width:100%">
+                                    <option value="and" selected="selected">and</option>
+                                    <option value="or">or</option>
+                                </select>
                             </td>`
                         ));
 
@@ -500,6 +429,8 @@
                                 .append(produceOptionsActionFilter(selectedScript, 'filter'))
                                 .val('---');
                         }
+
+                        updateActionFiltersyntax( selectedScript, rowIdx, ActionIdx, FilterIdx);
                     }
                     else
                         $(this).append( $("<td></td>"));
@@ -583,40 +514,69 @@
             return populated_options;
         }
 
-        function updateScriptsyntax( Idx, ActionIdx, FilterIdx ) {
+        function updateScriptsyntax( Idx ) {
+
+            console.log( "actionID: "+columnActionIdx + "filterID: "+columnFilterIdx );
 
             var SCRIPT = $( "#script" + Idx ).children("option:selected").val();
 
+            var tmpActiontext = "";
+            var tmpActiontextapi = "";
             for( var i = 2; i <= columnActionIdx; i++ ) {
-                var ACTION = $( "#action" + Idx+"-"+ActionIdx ).children("option:selected").val();
-                var ACTIONinput = $( "#action-input" + Idx+"-"+ActionIdx ).val();
+                var ACTION = $( "#action" + Idx+"-"+i ).children("option:selected").val();
+                var ACTIONinput = $( "#action-input" + Idx+"-"+i ).val();
 
-                var tmpActiontext = "";
-                var tmpActiontextapi = "";
+
                 if( ACTION !== "---" )
                 {
                     if( ACTIONinput !== "" )
                         ACTIONinput = ":"+ACTIONinput;
 
-                    tmpActiontext .= ACTION +ACTIONinput;
-                    tmpActiontextapi .= ACTION +ACTIONinput;
+                    if( i > 2 )
+                    {
+                        tmpActiontext += "/" ;
+                        tmpActiontextapi += "/" ;
+                    }
+
+                    tmpActiontext += ACTION +ACTIONinput ;
+                    tmpActiontextapi += ACTION +ACTIONinput ;
                 }
             }
-            var Actiontext = " 'actions=" +tmpActiontext+ "'";
-            var Actiontextapi = "&actions=" +tmpActiontextapi;
+            var Actiontext = "";
+            if( tmpActiontext !== "" )
+                Actiontext = " 'actions=" +tmpActiontext+ "'" ;
+            var Actiontextapi = "";
+            if( tmpActiontextapi !== "" )
+                Actiontextapi = "&actions=" +tmpActiontextapi;
 
+            var tmpFiltertext = "";
+            var tmpFiltertextapi = "";
             for( var i = 3; i <= columnFilterIdx; i++ ) {
-                var FILTER = $("#filter" + Idx + "-" + FilterIdx).children("option:selected").val();
-                var FILTERoperator = $("#filter-operator" + Idx + "-" + FilterIdx).children("option:selected").val();
-                var FILTERinput = $("#filter-input" + Idx + "-" + FilterIdx).val();
+                var FILTER = $("#filter" + Idx + "-" + i).children("option:selected").val();
+                var FILTERoperator = $("#filter-operator" + Idx + "-" + i).children("option:selected").val();
+                var FILTERinput = $("#filter-input" + Idx + "-" + i).val();
 
-                var Filtertext = "";
-                var Filtertextapi = "";
+                var FILTERandor = $("#filter-andor" + Idx + "-" + i).children("option:selected").val();
+
                 if (FILTER !== "---" && FILTERoperator !== "---") {
-                    Filtertext = " 'filter=(  (" + FILTER + " " + FILTERoperator + " " + FILTERinput + ")  )'";
-                    Filtertextapi = "&filter=((" + FILTER + "%20" + FILTERoperator + "%20" + FILTERinput + "))";
+
+                    if( i > 3 )
+                    {
+                        tmpFiltertext += " "+FILTERandor+" " ;
+                        tmpFiltertextapi += " "+FILTERandor+" " ;
+                    }
+
+                    tmpFiltertext += "(" + FILTER + " " + FILTERoperator + " " + FILTERinput + ")";
+                    tmpFiltertextapi += "(" + FILTER + "%20" + FILTERoperator + "%20" + FILTERinput + ")";
                 }
             }
+            var Filtertext = "";
+            if( tmpFiltertext !== "" )
+                Filtertext = " 'filter=(  " + tmpFiltertext + "  )'";
+            var Filtertextapi = "";
+            if( tmpFiltertextapi !== "" )
+                Filtertextapi = "&filter=( " + tmpFiltertextapi + " )";
+
 
             var message = "pa_" +SCRIPT+ "-edit";
             var message = "pan-os-php type=" +SCRIPT;
@@ -679,6 +639,123 @@
 
             //document.getElementById("user_form").action = message2;
             document.user_form.action = message2;
+        }
+
+        function updateActionFiltersyntax( selectedScript, Idx, ActionIdx, FilterIdx)
+        {
+            var selectedAction;
+            var selectedFilter;
+
+            $( "#action" + Idx+"-"+ActionIdx ).change(function(){
+                selectedAction = $(this).children("option:selected").val();
+                console.log( 'script:|'+selectedScript+'|');
+                console.log( 'ACTION:|'+selectedAction+'|'); // this will show the info it in firebug console
+
+                $("#action-desc" + Idx+"-"+ActionIdx).text( "no description");
+                $("#action-input" + Idx+"-"+ActionIdx).prop( "disabled", true);
+
+                if( selectedAction == '---' )
+                {}
+                else
+                {
+                    var action = subjectObject[selectedScript]['action'][selectedAction];
+
+                    if( "args" in action )
+                    {
+                        var args = action['args'];
+                        console.log( "ARGS: "+JSON.stringify( args ) );
+                        $("#action-desc" + Idx+"-"+ActionIdx).text( JSON.stringify( args ) );
+
+
+                        $("#action-input" + Idx+"-"+ActionIdx).prop( "disabled", false);
+
+                    }
+
+                }
+
+                updateScriptsyntax( Idx );
+            });
+
+            $( "#action-input" + Idx+"-"+ActionIdx ).change(function(){
+                updateScriptsyntax( Idx );
+            });
+
+            $("#filter" + Idx+"-"+FilterIdx).change(function(){
+                selectedFilter = $(this).children("option:selected").val();
+                console.log( 'FILTER:|'+selectedFilter+'|'); // this will show the info it in firebug console
+
+                $("#filter-operator" + Idx+"-"+FilterIdx)
+                    .find('option')
+                    .remove()
+                    .end()
+                    .append( '<option value="---" selected="selected">Select operator</option>' );
+
+                $("#filter-input" + Idx+"-"+FilterIdx).prop( "disabled", true)
+                    .val( "");
+
+                $("#filter-desc" + Idx+"-"+FilterIdx).text( "no description");
+
+                if( selectedFilter == '---' )
+                {}
+                else
+                {
+                    $("#filter-operator" + Idx+"-"+FilterIdx)
+                        .append(produceOptionsFilterOperator( selectedScript, selectedFilter))
+                        .val('---');
+                }
+
+                updateScriptsyntax( Idx );
+            });
+
+            $("#filter-operator" + Idx+"-"+FilterIdx).change(function(){
+                selectedFilterOperator = $(this).children("option:selected").val();
+                console.log( 'FILTER-operator:|'+selectedFilterOperator+'|'); // this will show the info it in firebug console
+
+
+                $("#filter-desc" + Idx+"-"+FilterIdx).text( "no description");
+
+                if( selectedFilter == '---' )
+                {}
+                else
+                {
+                    check = ">,<,=,!"
+                    if (check.indexOf(selectedFilterOperator) !== -1 )
+                        selectedFilterOperator = check
+
+                    var operator = subjectObject[selectedScript]['filter'][selectedFilter]['operators'][selectedFilterOperator];
+                    var arg = operator['arg'];
+                    console.log( "ARG: "+arg );
+
+                    if( arg )
+                    {
+                        console.log( "ARG2: "+arg );
+                        $("#filter-input" + Idx+"-"+FilterIdx).prop( "disabled", false);
+
+                    }
+                    else
+                    {
+                        $("#filter-input" + Idx+"-"+FilterIdx).prop( "disabled", true)
+                            .val( "");
+                    }
+
+                    if( "help" in operator )
+                    {
+                        var help = operator['help'];
+                        console.log( "HELP: "+help );
+                        $("#filter-desc" + Idx+"-"+FilterIdx).text( help);
+                    }
+                }
+
+                updateScriptsyntax( Idx );
+            });
+
+            $( "#filter-input" + Idx+"-"+FilterIdx ).change(function(){
+                updateScriptsyntax( Idx );
+            });
+
+            $( "#filter-andor" + Idx+"-"+FilterIdx ).change(function(){
+                updateScriptsyntax( Idx );
+            });
         }
 
         function sortKeys(obj_1) {
@@ -827,19 +904,12 @@
 </div>
 
 missing stuff:</br>
-1) add additional action</br>
-2) add additional filter, with and / or</br>
-3) rule filter operator has.from.query subquery1 -> add this automatically and define based on filter src/dst/srv what subquery can be done and prefill the part there</br>
-4) additional arguments like location=vsys1 and shadow-xyz</br>
-5) migration part with vendor select</br>
+1) rule filter 'dst' operator 'has.from.query subquery1' -> add this automatically and define based on filter src/dst/srv what subquery can be done and prefill the part there</br>
+2) migration part with vendor select</br>
 </br>
-6) user login [create first default project]</br>
-7) project creation</br>
-8) upload config</br>
-9) display uploaded config -</br>
-10) after running - possible to download: 1) log 2) XML file 3) JSON 4) full bundle</br>
-</br>
-11)PAN-OS XML API mode - how to create .panconfkeystore in Container user folder? how to add PAN-OS XML API key for specific IP and user?
+3) user login [create first default project]</br>
+4) project creation</br>
+5) after running - possible to download: 1) log 2) XML file 3) JSON 4) full bundle</br>
 
 </body>
 
