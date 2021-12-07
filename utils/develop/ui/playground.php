@@ -33,6 +33,8 @@
 
             // Denotes total number of rows
             var rowIdx = 0;
+            var columnActionIdx = 2;
+            var columnFilterIdx = 3;
 
             // jQuery button click event to add a row
             $('#storeBtn').on('click', function () {
@@ -75,6 +77,9 @@
             $('#addBtn').on('click', function () {
 
                 var Idx = ++rowIdx;
+                var ActionIdx = columnActionIdx;
+                var FilterIdx = columnFilterIdx;
+
                 // Adding a row inside the tbody.
                 $('#tbody').append(`<tr id="R${Idx}">
 
@@ -88,46 +93,48 @@
                         </select>
                     </td>
                     <td class="row-index text-center">
-                        <select name="action${Idx}" id="action${Idx}" style="width:100%">
+                        <select name="action${Idx}-${ActionIdx}" id="action${Idx}-${ActionIdx}" style="width:100%">
                             <option value="---" selected="selected">Select action</option>
                         </select>
                         <input type="text" disabled style="width:100%"
-                                id="action-input${Idx}" name="action-input${Idx}"
+                                id="action-input${Idx}-${ActionIdx}" name="action-input${Idx}-${ActionIdx}"
                         >
                         </br>
                         <p type="text" disabled style="width:100%"
-                            id="action-desc${Idx}" name="action-desc${Idx}"
+                            id="action-desc${Idx}-${ActionIdx}" name="action-desc${Idx}-${ActionIdx}"
                         >no description
                         </p>
                     </td>
                     <td class="row-index text-center">
-                        <select name="filter${Idx}" id="filter${Idx}" style="width:100%">
+                        <select name="filter${Idx}-${FilterIdx}" id="filter${Idx}-${FilterIdx}" style="width:100%">
                             <option value="---" selected="selected">Select filter</option>
                         </select>
-                        <select name="filter-operator${Idx}" id="filter-operator${Idx}" style="width:100%">
+                        <select name="filter-operator${Idx}-${FilterIdx}" id="filter-operator${Idx}-${FilterIdx}" style="width:100%">
                             <option value="---" selected="selected">Select operator</option>
                         </select>
                         <input type="text" disabled style="width:100%"
-                            id="filter-input${Idx}" name="filter-input${Idx}"
+                            id="filter-input${Idx}-${FilterIdx}" name="filter-input${Idx}-${FilterIdx}"
                         >
                         </br>
                         <p type="text" disabled style="width:100%"
-                            id="filter-desc${Idx}" name="filter-desc${Idx}"
+                            id="filter-desc${Idx}-${FilterIdx}" name="filter-desc${Idx}-${FilterIdx}"
                         >no description
                         </p>
                     </td>
                 </tr>
                 <tr id="R${Idx}">
                     <td>
-                    shadow-json
-                    <input type="checkbox" id="shadowjson${Idx}" name="shadowjson${Idx}"
-                    checked
-                    >
-                </td>
-                <td>
-                    location
-                    <input type="text" id="location${Idx}" name="location${Idx}" value="any" />
-                </td>
+                        shadow-json
+                        <input type="checkbox" id="shadowjson${Idx}" name="shadowjson${Idx}"
+                        checked
+                        >
+                    </td>
+                    <td>
+                        location
+                        <input type="text" id="location${Idx}" name="location${Idx}" value="any" />
+                    </td>
+                    <td></td>
+                    <td></td>
                 </tr>
                 <tr id="R${Idx}">
                     <td colspan="1"><button onclick="copyTextButton( ${Idx} )">Copy command</button></td>
@@ -156,16 +163,16 @@
 
                 var selectedScript = "";
                 var selectedFilter = "";
-                ScriptID = $( "#script" + Idx );
+                var ScriptID = $( "#script" + Idx );
 
-                ActionID = $( "#action" + Idx );
-                ActionInputID = $("#action-input" + Idx);
-                ActionDescriptionID = $("#action-desc" + Idx);
+                var ActionID = $( "#action" + Idx+"-"+ActionIdx );
+                var ActionInputID = $("#action-input" + Idx+"-"+ActionIdx);
+                var ActionDescriptionID = $("#action-desc" + Idx+"-"+ActionIdx);
 
-                FilterID = $( "#filter" + Idx );
-                FilterOperatorID = $("#filter-operator" + Idx);
-                FilterInputID = $("#filter-input" + Idx);
-                FilterDescriptionID = $("#filter-desc" + Idx);
+                var FilterID = $( "#filter" + Idx+"-"+FilterIdx );
+                var FilterOperatorID = $("#filter-operator" + Idx+"-"+FilterIdx);
+                var FilterInputID = $("#filter-input" + Idx+"-"+FilterIdx);
+                var FilterDescriptionID = $("#filter-desc" + Idx+"-"+FilterIdx);
 
                 $( "#script" + Idx ).append(produceOptionsScript(subjectObject))
                     .change(function(){
@@ -173,57 +180,66 @@
                     <!--alert("You have selected the script - " + selectedScript);-->
                     console.log( 'SCRIPT:|'+selectedScript+'|'); // this will show the info it in firebug console
 
-                    $( "#action" + Idx )
-                        .find('option')
-                        .remove()
-                        .end()
-                        .append( '<option value="---" selected="selected">Select action</option>' );
 
-                    $("#action-desc" + Idx).text( "no description");
-                    $("#action-input" + Idx).prop( "disabled", true)
-                        .val( "");
+                    for( var i = 2; i <= columnActionIdx; i++ )
+                    {
+                        $( "#action" + Idx+"-"+i )
+                            .find('option')
+                            .remove()
+                            .end()
+                            .append( '<option value="---" selected="selected">Select action</option>' );
 
-                    $( "#filter" + Idx )
-                        .find('option')
-                        .remove()
-                        .end()
-                        .append( '<option value="---" selected="selected">Select filter</option>' );
+                        $("#action-desc" + Idx+"-"+i).text( "no description");
+                        $("#action-input" + Idx+"-"+i).prop( "disabled", true)
+                            .val( "");
+                    }
 
-                    $("#filter-operator" + Idx)
-                        .find('option')
-                        .remove()
-                        .end()
-                        .append( '<option value="---" selected="selected">Select operator</option>' );
+                    for( var i = 3; i <= columnFilterIdx; i++ )
+                    {
+                        $( "#filter" + Idx+"-"+i )
+                            .find('option')
+                            .remove()
+                            .end()
+                            .append( '<option value="---" selected="selected">Select filter</option>' );
 
-                    $("#filter-input" + Idx).prop( "disabled", true)
-                        .val( "");
+                        $("#filter-operator" + Idx+"-"+i)
+                            .find('option')
+                            .remove()
+                            .end()
+                            .append( '<option value="---" selected="selected">Select operator</option>' );
 
-                    $("#filter-desc" + Idx).text( "no description");
+                        $("#filter-input" + Idx+"-"+i).prop( "disabled", true)
+                            .val( "");
+
+                        $("#filter-desc" + Idx+"-"+i).text( "no description");
+                    }
+
 
 
                     if( selectedScript == '---' )
                     {}
                     else
                     {
-                        $( "#action" + Idx )
-                            .append(produceOptionsActionFilter( selectedScript, 'action' ))
-                            .val('---');
+                        for( var  i = 2; i <= columnActionIdx; i++ )
+                            $( "#action" + Idx+"-"+i )
+                                .append(produceOptionsActionFilter( selectedScript, 'action' ))
+                                .val('---');
 
-
-                        $( "#filter" + Idx )
-                            .append(produceOptionsActionFilter( selectedScript, 'filter' ))
-                            .val('---');
+                        for( var i = 3; i <= columnFilterIdx; i++ )
+                            $( "#filter" + Idx+"-"+i )
+                                .append(produceOptionsActionFilter( selectedScript, 'filter' ))
+                                .val('---');
                     }
 
                     updateScriptsyntax( Idx );
                 });
 
-                $( "#action" + Idx ).change(function(){
+                $( "#action" + Idx+"-"+ActionIdx ).change(function(){
                     selectedAction = $(this).children("option:selected").val();
                     console.log( 'ACTION:|'+selectedAction+'|'); // this will show the info it in firebug console
 
-                    $("#action-desc" + Idx).text( "no description");
-                    $("#action-input" + Idx).prop( "disabled", true);
+                    $("#action-desc" + Idx+"-"+ActionIdx).text( "no description");
+                    $("#action-input" + Idx+"-"+ActionIdx).prop( "disabled", true);
 
                     if( selectedAction == '---' )
                     {}
@@ -235,10 +251,10 @@
                         {
                             var args = action['args'];
                             console.log( "ARGS: "+JSON.stringify( args ) );
-                            $("#action-desc" + Idx).text( JSON.stringify( args ) );
+                            $("#action-desc" + Idx+"-"+ActionIdx).text( JSON.stringify( args ) );
 
 
-                            $("#action-input" + Idx).prop( "disabled", false);
+                            $("#action-input" + Idx+"-"+ActionIdx).prop( "disabled", false);
 
                         }
 
@@ -247,29 +263,29 @@
                     updateScriptsyntax( Idx );
                 });
 
-                $( "#action-input" + Idx ).change(function(){
+                $( "#action-input" + Idx+"-"+ActionIdx ).change(function(){
                     updateScriptsyntax( Idx );
                 });
-                $("#filter" + Idx).change(function(){
+                $("#filter" + Idx+"-"+FilterIdx).change(function(){
                     selectedFilter = $(this).children("option:selected").val();
                     console.log( 'FILTER:|'+selectedFilter+'|'); // this will show the info it in firebug console
 
-                    $("#filter-operator" + Idx)
+                    $("#filter-operator" + Idx+"-"+FilterIdx)
                         .find('option')
                         .remove()
                         .end()
                         .append( '<option value="---" selected="selected">Select operator</option>' );
 
-                    $("#filter-input" + Idx).prop( "disabled", true)
+                    $("#filter-input" + Idx+"-"+FilterIdx).prop( "disabled", true)
                         .val( "");
 
-                    $("#filter-desc" + Idx).text( "no description");
+                    $("#filter-desc" + Idx+"-"+FilterIdx).text( "no description");
 
                     if( selectedFilter == '---' )
                     {}
                     else
                     {
-                        $("#filter-operator" + Idx)
+                        $("#filter-operator" + Idx+"-"+FilterIdx)
                             .append(produceOptionsFilterOperator( selectedScript, selectedFilter))
                             .val('---');
                     }
@@ -277,12 +293,12 @@
                     updateScriptsyntax( Idx );
                 });
 
-                $("#filter-operator" + Idx).change(function(){
+                $("#filter-operator" + Idx+"-"+FilterIdx).change(function(){
                     var selectedFilterOperator = $(this).children("option:selected").val();
                     console.log( 'FILTER-operator:|'+selectedFilterOperator+'|'); // this will show the info it in firebug console
 
 
-                    $("#filter-desc" + Idx).text( "no description");
+                    $("#filter-desc" + Idx+"-"+FilterIdx).text( "no description");
 
                     if( selectedFilter == '---' )
                     {}
@@ -299,12 +315,12 @@
                         if( arg )
                         {
                             console.log( "ARG2: "+arg );
-                            $("#filter-input" + Idx).prop( "disabled", false);
+                            $("#filter-input" + Idx+"-"+FilterIdx).prop( "disabled", false);
 
                         }
                         else
                         {
-                            $("#filter-input" + Idx).prop( "disabled", true)
+                            $("#filter-input" + Idx+"-"+FilterIdx).prop( "disabled", true)
                                 .val( "");
                         }
 
@@ -312,14 +328,14 @@
                         {
                             var help = operator['help'];
                             console.log( "HELP: "+help );
-                            $("#filter-desc" + Idx).text( help);
+                            $("#filter-desc" + Idx+"-"+FilterIdx).text( help);
                         }
                     }
 
                     updateScriptsyntax( Idx );
                 });
 
-                $( "#filter-input" + Idx ).change(function(){
+                $( "#filter-input" + Idx+"-"+FilterIdx ).change(function(){
                     updateScriptsyntax( Idx );
                 });
 
@@ -333,6 +349,7 @@
                     updateScriptsyntax( Idx );
                 });
             });
+
 
             // jQuery button click event to remove a row.
             $('#tbody').on('click', '.remove', function () {
@@ -375,6 +392,128 @@
             });
 
             $("#addBtn").trigger('click');
+
+            $('#addActionBtn').on('click', function() {
+
+                var ActionIdx = ++columnActionIdx;
+                var FilterIdx = ++columnFilterIdx;
+
+                var rows = $("#myTable").children('tbody').children('tr');
+
+                var selectedScript = $("#script"+rowIdx).children("option:selected").val();
+
+                var testID = 1;
+                rows.each(function () {
+
+                    // Getting <tr> id.
+                    var id = $(this).attr('id');
+                    // Getting the <p> inside the .row-index class.
+                    var Idx = $(this).children('.row-index').children('p');
+                    // Gets the row number from <tr> id.
+                    var dig = parseInt(id.substring(1));
+
+
+                    if( testID == 1 )
+                    {
+                        $(this).append( $(
+                            `<td class="row-index text-center">
+                                <select name="action${rowIdx}-${ActionIdx}" id="action${rowIdx}-${ActionIdx}" style="width:100%">
+                                    <option value="---" selected="selected">Select action</option>
+                                </select>
+                                <input type="text" disabled style="width:100%"
+                                    id="action-input${rowIdx}-${ActionIdx}" name="action-input${rowIdx}-${ActionIdx}"
+                                    >
+                                </br>
+                                <p type="text" disabled style="width:100%"
+                                    id="action-desc${rowIdx}-${ActionIdx}" name="action-desc${rowIdx}-${ActionIdx}"
+                                    >no description
+                                </p>
+                            </td>`
+                            ));
+
+                        if( selectedScript == '---' )
+                        {}
+                        else {
+                            $("#action" + rowIdx + "-" + ActionIdx)
+                                .append(produceOptionsActionFilter(selectedScript, 'action'))
+                                .val('---');
+                        }
+                    }
+                    else
+                        $(this).append( $("<td></td>"));
+
+                    testID++;
+                });
+
+                //not working
+                var rows = $("#myTable").children('thead').children('tr');
+
+                rows.each(function () {
+                    $(this).append($(`<th class="text-center">Action</th>`));
+                });
+            });
+
+            $('#addFilterBtn').on('click', function() {
+                var FilterIdx = ++columnFilterIdx;
+
+                var rows = $("#myTable").children('tbody').children('tr');
+                //$("#myTable tr").append($("<td contenteditable='true'>FILTER</td>"));
+
+                var selectedScript = $("#script"+rowIdx).children("option:selected").val();
+
+                var testID = 1;
+                rows.each(function () {
+
+                    // Getting <tr> id.
+                    var id = $(this).attr('id');
+                    // Getting the <p> inside the .row-index class.
+                    var Idx = $(this).children('.row-index').children('p');
+                    // Gets the row number from <tr> id.
+                    var dig = parseInt(id.substring(1));
+
+
+                    if( testID == 1 )
+                    {
+                        $(this).append( $(
+                            `<td class="row-index text-center">
+                                    <select name="filter${rowIdx}-${FilterIdx}" id="filter${rowIdx}-${FilterIdx}" style="width:100%">
+                                    <option value="---" selected="selected">Select filter</option>
+                                </select>
+                                <select name="filter-operator${rowIdx}-${FilterIdx}" id="filter-operator${rowIdx}-${FilterIdx}" style="width:100%">
+                                    <option value="---" selected="selected">Select operator</option>
+                                </select>
+                                <input type="text" disabled style="width:100%"
+                                id="filter-input${rowIdx}-${FilterIdx}" name="filter-input${rowIdx}-${FilterIdx}"
+                                    >
+                                    </br>
+                                    <p type="text" disabled style="width:100%"
+                                id="filter-desc${rowIdx}-${FilterIdx}" name="filter-desc${rowIdx}-${FilterIdx}"
+                                    >no description
+                                </p>
+                            </td>`
+                        ));
+
+                        if( selectedScript == '---' )
+                        {}
+                        else {
+                            $("#filter" + rowIdx + "-" + FilterIdx)
+                                .append(produceOptionsActionFilter(selectedScript, 'filter'))
+                                .val('---');
+                        }
+                    }
+                    else
+                        $(this).append( $("<td></td>"));
+
+                    testID++;
+                });
+
+
+                //not working
+                var rows = $("#myTable").children('thead').children('tr');
+                rows.each(function () {
+                    $(this).append($(`<th class="text-center">Filter</th>`));
+                });
+            });
 
         });
 
@@ -444,34 +583,39 @@
             return populated_options;
         }
 
-        function updateScriptsyntax( Idx ) {
+        function updateScriptsyntax( Idx, ActionIdx, FilterIdx ) {
 
             var SCRIPT = $( "#script" + Idx ).children("option:selected").val();
 
-            var ACTION = $( "#action" + Idx ).children("option:selected").val();
-            var ACTIONinput = $( "#action-input" + Idx ).val();
+            for( var i = 2; i <= columnActionIdx; i++ ) {
+                var ACTION = $( "#action" + Idx+"-"+ActionIdx ).children("option:selected").val();
+                var ACTIONinput = $( "#action-input" + Idx+"-"+ActionIdx ).val();
 
-            var Actiontext = "";
-            var Actiontextapi = "";
-            if( ACTION !== "---" )
-            {
-                if( ACTIONinput !== "" )
-                    ACTIONinput = ":"+ACTIONinput;
+                var tmpActiontext = "";
+                var tmpActiontextapi = "";
+                if( ACTION !== "---" )
+                {
+                    if( ACTIONinput !== "" )
+                        ACTIONinput = ":"+ACTIONinput;
 
-                Actiontext = " 'actions=" +ACTION +ACTIONinput+ "'";
-                Actiontextapi = "&actions=" +ACTION +ACTIONinput;
+                    tmpActiontext .= ACTION +ACTIONinput;
+                    tmpActiontextapi .= ACTION +ACTIONinput;
+                }
             }
+            var Actiontext = " 'actions=" +tmpActiontext+ "'";
+            var Actiontextapi = "&actions=" +tmpActiontextapi;
 
-            var FILTER = $( "#filter" + Idx ).children("option:selected").val();
-            var FILTERoperator = $( "#filter-operator" + Idx ).children("option:selected").val();
-            var FILTERinput = $( "#filter-input" + Idx ).val();
+            for( var i = 3; i <= columnFilterIdx; i++ ) {
+                var FILTER = $("#filter" + Idx + "-" + FilterIdx).children("option:selected").val();
+                var FILTERoperator = $("#filter-operator" + Idx + "-" + FilterIdx).children("option:selected").val();
+                var FILTERinput = $("#filter-input" + Idx + "-" + FilterIdx).val();
 
-            var Filtertext = "";
-            var Filtertextapi = "";
-            if( FILTER !== "---" && FILTERoperator !== "---" )
-            {
-                Filtertext = " 'filter=(  (" +FILTER+ " " + FILTERoperator + " " + FILTERinput + ")  )'";
-                Filtertextapi = "&filter=((" +FILTER+ "%20" + FILTERoperator + "%20" + FILTERinput + "))";
+                var Filtertext = "";
+                var Filtertextapi = "";
+                if (FILTER !== "---" && FILTERoperator !== "---") {
+                    Filtertext = " 'filter=(  (" + FILTER + " " + FILTERoperator + " " + FILTERinput + ")  )'";
+                    Filtertextapi = "&filter=((" + FILTER + "%20" + FILTERoperator + "%20" + FILTERinput + "))";
+                }
             }
 
             var message = "pa_" +SCRIPT+ "-edit";
@@ -643,13 +787,27 @@
     </div>
 
     <div class="table-responsive" style="border:1px solid black; padding: 10px; width:100%">
-        <table class="table table-bordered" style="width:100%">
+        <table id="myTable" class="table table-bordered" style="width:100%">
             <thead>
             <tr>
                 <th class="text-center">Remove Row</th>
                 <th class="text-center">SCRIPT</th>
-                <th class="text-center">ACTION</th>
-                <th class="text-center">FILTER</th>
+                <th class="text-center">
+                    ACTION
+
+                    <button class="btn btn-md btn-primary"
+                            id="addActionBtn" type="button">
+                        new Action
+                    </button>
+                </th>
+                <th class="text-center">
+                    FILTER
+
+                    <button class="btn btn-md btn-primary"
+                            id="addFilterBtn" type="button">
+                        new Filter
+                    </button>
+                </th>
             </tr>
             </thead>
             <form id="json-store">
@@ -660,7 +818,7 @@
         </table>
         <button class="btn btn-md btn-primary"
                 id="addBtn" type="button">
-            Add new Row
+            new Row
         </button>
     </div>
     </form>
