@@ -7,6 +7,7 @@ UTILS:
 * UTIL all script - introduce new argument "shadow-nojson"
 * UTIL UI - improvement to get filter correctly working for operators like ">,<,=,!"
 * UTIL UI - starting on extended version
+* UTIL UI - extend to delete additional actions/filter column
 
 BUGFIX:
 * UTIL pan-os-php API - bugfix in relation to shadow-json and previous code reduction
