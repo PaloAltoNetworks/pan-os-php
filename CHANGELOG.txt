@@ -16,6 +16,7 @@ BUGFIX:
 GENERAL:
 * Dockerfiles - extend to different PHP versions
 * App-ID version: 8497-7093 update
+* framework examples | update 'example-panapiconnector.php'
 
 2.0.25 (20211203)
 UTILS:
