@@ -8,21 +8,50 @@
 
 // load 'PAN Configurator' library
 require_once("../lib/pan_php_framework.php");
+require_once "utils/lib/UTIL.php";
 
-$apikey = 'LUFRPT14MW5xOEo1R09KVlBZNnpnemh0VHRBOWl6TGM9bXcwM3JHUGVhRlNiY0dCR0srNERUQT09';
-$apihost = '192.168.50.10';
+$argv = array();
+$argv[] = basename(__FILE__);
+$argv[] = "in=api://192.168.50.10";
+$argv[] = "debugapi";
+
+##################################################
+# Template usage
+##################################################
+$supportedArguments = array();
+
+$usageMsg = PH::boldText('USAGE: ') . "php " . basename(__FILE__) . " in=api:://[MGMT-IP] argument1 [optional_argument2]";
 
 
-$con = new PanAPIConnector( $apihost, $apikey, 'panos');
+$util = new UTIL("custom", $argv, $argc,__FILE__, $supportedArguments, $usageMsg );
 
-// enable connector to show us API calls on the go
-$con->setShowApiCalls(true);
+$util->utilInit();
 
-$panc = new PANConf();
-$panc->API_load_from_candidate($con);
+$util->load_config();
+$util->location_filter();
+
+
+/** @var PANConf|PanoramaConf $pan */
+$pan = $util->pan;
+
+
+/** @var VirtualSystem|DeviceGroup $sub */
+$sub = $util->sub;
+
+/** @var string $location */
+$location = $util->location;
+
+/** @var boolean $apiMode */
+$apiMode = $util->apiMode;
+
+/** @var array $args */
+$args = PH::$args;
+
+##################################################################
+##################################################################
 
 // Did we find VSYS1 ?
-$vsys1 = $panc->findVirtualSystem('vsys1');
+$vsys1 = $pan->findVirtualSystem('vsys1');
 if( $vsys1 === null )
 {
 	derr("vsys1 was not found ? Exit\n");

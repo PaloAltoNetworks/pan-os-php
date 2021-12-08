@@ -25,15 +25,4 @@ require_once dirname(__FILE__)."/../lib/pan_php_framework.php";
 
 require_once dirname(__FILE__)."/../utils/lib/UTIL.php";
 
-
-PH::print_stdout("");
-PH::print_stdout("***********************************************");
-PH::print_stdout("*********** " . basename(__FILE__) . " UTILITY **************");
-PH::print_stdout("");
-
 $util = new PREDEFINED("download-predefined", $argv, $argc,__FILE__ );
-
-PH::print_stdout("");
-PH::print_stdout("************* END OF SCRIPT " . basename(__FILE__) . " ************" );
-PH::print_stdout("");
-
