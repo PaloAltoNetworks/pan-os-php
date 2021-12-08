@@ -1,58 +1,36 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: swaschkut
- * Date: 4/19/16
- * Time: 9:12 AM
+ * ISC License
+ *
+ * Copyright (c) 2014-2016, Palo Alto Networks Inc.
+ * Copyright (c) 2017-2018 Christophe Painchaud <shellescape _AT_ gmail.com>
+ * Copyright (c) 2019, Palo Alto Networks Inc.
+ *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-
-
-print "\n***********************************************\n";
-print "************ CREATE-services in SecurityPolicy UTILITY ****************\n\n";
 
 
 set_include_path(dirname(__FILE__) . '/../' . PATH_SEPARATOR . get_include_path());
 require_once dirname(__FILE__)."/../../../lib/pan_php_framework.php";
 require_once dirname(__FILE__)."/../../../utils/lib/UTIL.php";
 
-
-function display_usage_and_exit($shortMessage = false)
-{
-    global $argv;
-    print PH::boldText("USAGE: ")."php ".basename(__FILE__)." in=inputfile.xml location=vsys1 ".
-        "actions=action1:arg1 ['filter=(type is.group) or (name contains datacenter-)']\n";
-    print "php ".basename(__FILE__)." help          : more help messages\n";
+PH::print_stdout("");
+PH::print_stdout("***********************************************");
+PH::print_stdout("*********** " . basename(__FILE__) . " UTILITY **************");
+PH::print_stdout("");
 
 
-    if( !$shortMessage )
-    {
-        print PH::boldText("\nListing available arguments\n\n");
-
-        global $supportedArguments;
-
-        ksort($supportedArguments);
-        foreach( $supportedArguments as &$arg )
-        {
-            print " - ".PH::boldText($arg['niceName']);
-            if( isset( $arg['argDesc']))
-                print '='.$arg['argDesc'];
-            //."=";
-            if( isset($arg['shortHelp']))
-                print "\n     ".$arg['shortHelp'];
-            print "\n\n";
-        }
-
-        print "\n\n";
-    }
-
-    exit(1);
-}
-
-function display_error_usage_exit($msg)
-{
-    fwrite(STDERR, PH::boldText("\n**ERROR** ").$msg."\n\n");
-    display_usage_and_exit(true);
-}
+PH::print_stdout( "PAN-OS-PHP version: ".PH::frameworkVersion() );
 
 
 $supportedArguments = Array();

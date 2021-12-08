@@ -1,73 +1,36 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: swaschkut
- * Date: 4/19/16
- * Time: 9:12 AM
+ * ISC License
+ *
+ * Copyright (c) 2014-2016, Palo Alto Networks Inc.
+ * Copyright (c) 2017-2018 Christophe Painchaud <shellescape _AT_ gmail.com>
+ * Copyright (c) 2019, Palo Alto Networks Inc.
+ *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-
-print "\n***********************************************\n";
-print "************ CREATE-INTERFACE UTILITY ****************\n\n";
 
 set_include_path(dirname(__FILE__) . '/../' . PATH_SEPARATOR . get_include_path());
 require_once dirname(__FILE__)."/../../../lib/pan_php_framework.php";
 require_once dirname(__FILE__)."/../../../utils/lib/UTIL.php";
 
+PH::print_stdout("");
+PH::print_stdout("***********************************************");
+PH::print_stdout("*********** " . basename(__FILE__) . " UTILITY **************");
+PH::print_stdout("");
 
 
-function display_usage_and_exit($shortMessage = false)
-{
-    global $argv;
-    print PH::boldText("USAGE: ")."php ".basename(__FILE__)." in=inputfile.xml location=vsys1 ".
-        "actions=action1:arg1 ['filter=(type is.group) or (name contains datacenter-)']\n";
-    print "php ".basename(__FILE__)." help          : more help messages\n";
-
-
-    if( !$shortMessage )
-    {
-        print PH::boldText("\nListing available arguments\n\n");
-
-        global $supportedArguments;
-
-        ksort($supportedArguments);
-        foreach( $supportedArguments as &$arg )
-        {
-            print " - ".PH::boldText($arg['niceName']);
-            if( isset( $arg['argDesc']))
-                print '='.$arg['argDesc'];
-            //."=";
-            if( isset($arg['shortHelp']))
-                print "\n     ".$arg['shortHelp'];
-            print "\n\n";
-        }
-
-        print "\n\n";
-    }
-
-    exit(1);
-}
-
-function display_error_usage_exit($msg)
-{
-    fwrite(STDERR, PH::boldText("\n**ERROR** ").$msg."\n\n");
-    display_usage_and_exit(true);
-}
-
-
-
-print "\n";
-
-$configType = null;
-$configInput = null;
-$configOutput = null;
-$doActions = null;
-$dryRun = false;
-$objectslocation = 'shared';
-$objectsFilter = null;
-$errorMessage = '';
-$debugAPI = false;
-
+PH::print_stdout( "PAN-OS-PHP version: ".PH::frameworkVersion() );
 
 
 $supportedArguments = Array();
@@ -79,7 +42,20 @@ $supportedArguments['help'] = Array('niceName' => 'help', 'shortHelp' => 'this m
 $supportedArguments['loadpanoramapushedconfig'] = Array('niceName' => 'loadPanoramaPushedConfig', 'shortHelp' => 'load Panorama pushed config from the firewall to take in account panorama objects and rules' );
 $supportedArguments['folder'] = Array('niceName' => 'folder', 'shortHelp' => 'specify the folder where the offline files should be saved');
 
+$usageMsg = PH::boldText('USAGE: ')."php ".basename(__FILE__)." in=api:://[MGMT-IP] or in=INPUTFILE.xml out=OUTFILE.xml";
 
+$util = new UTIL( "custom", $argv, $argc, __FILE__, $supportedArguments, $usageMsg );
+$util->utilInit();
+
+##########################################
+##########################################
+
+$util->load_config();
+$util->location_filter();
+
+$pan = $util->pan;
+
+/*
 PH::processCliArgs();
 
 foreach ( PH::$args as $index => &$arg )
@@ -249,10 +225,10 @@ else
 
 $pan->load_from_domxml($xmlDoc1);
 
-
+*/
 ##############
 
-$sub = $pan->findVirtualSystem($objectslocation);
+$sub = $pan->findVirtualSystem($util->objectsLocation[0]);
 
 $zone_array = array();
 
@@ -268,7 +244,7 @@ for( $i = 15; $i<18; $i++ )
 
 
 
-    if( $configInput['type'] == 'api' )
+    if( $util->configInput['type'] == 'api' )
     {
         $pan->network->loopbackIfStore->API_addLoopbackIf( $tmp_loopbackIf );
         $sub->importedInterfaces->API_addInterface( $tmp_loopbackIf );
@@ -293,23 +269,24 @@ for( $i = 5; $i<7; $i++ )
     print "create VirtualWire ".$name."\n";
 
 
-    $tmp_int_type = "virtual-wire";
+    #$tmp_int_type = "virtual-wire";
     $tmp_int_type = "layer3";
-    $tmp_int_type = "layer2";
-    $tmp_int_type = "aggregate-group";
+    #$tmp_int_type = "layer2";
+    #$tmp_int_type = "aggregate-group";
 
+    $tmp_VirtualWireIf2 = null;
     if( $tmp_int_type == "aggregate-group" )
     {
         $name2 = "ae".$i;
         $tmp_int_type2 = "layer3";
         print "you need to creat Ethernet aggregate first\n";
-        if( $configInput['type'] == 'api' )
+        if( $util->configInput['type'] == 'api' )
             $tmp_VirtualWireIf2 = $pan->network->aggregateEthernetIfStore->API_newEthernetIf($name2, $tmp_int_type2);
         else
             $tmp_VirtualWireIf2 = $pan->network->aggregateEthernetIfStore->newEthernetIf($name2, $tmp_int_type2);
 
 
-        if( $configInput['type'] == 'api' )
+        if( $util->configInput['type'] == 'api' )
         {
             $tmp_VirtualWireIf = $pan->network->ethernetIfStore->API_newEthernetIf($name, $tmp_int_type, $name2);
         }
@@ -320,7 +297,7 @@ for( $i = 5; $i<7; $i++ )
     }
     else
     {
-        if( $configInput['type'] == 'api' )
+        if( $util->configInput['type'] == 'api' )
         {
             $tmp_VirtualWireIf = $pan->network->ethernetIfStore->API_newEthernetIf($name, $tmp_int_type);
         }
@@ -337,7 +314,7 @@ for( $i = 5; $i<7; $i++ )
 
 
 
-    if( $configInput['type'] == 'api' )
+    if( $util->configInput['type'] == 'api' )
     {
         #$pan->network->ethernetIfStore->API_addEthernetIf( $tmp_VirtualWireIf );
         if( !$sub->importedInterfaces->hasInterfaceNamed( $tmp_VirtualWireIf->name() ) )
@@ -354,7 +331,7 @@ for( $i = 5; $i<7; $i++ )
     {
         print "Subinterface Ethernet interface: ".$name." - added to vsys: ".$sub->name()."\n";
 
-        if( $configInput['type'] == 'api' )
+        if( $util->configInput['type'] == 'api' )
         {
             $tmp_VirtualWireIf->API_addSubInterface( "100");
         }
@@ -365,11 +342,11 @@ for( $i = 5; $i<7; $i++ )
         }
     }
 
-    if( $tmp_VirtualWireIf2->type() !== "aggregate-ethernet" )
+    if( $tmp_VirtualWireIf2 !== null && $tmp_VirtualWireIf2->type() !== "aggregate-ethernet" )
     {
         print "Subinterface Ethernet interface: ".$name." - added to vsys: ".$sub->name()."\n";
 
-        if( $configInput['type'] == 'api' )
+        if( $util->configInput['type'] == 'api' )
         {
             $tmp_VirtualWireIf2->API_addSubInterface( "100");
         }
@@ -389,7 +366,7 @@ print "create VirtualWire ".$name."\n";
 
 
 
-if( $configInput['type'] == 'api' )
+if( $util->configInput['type'] == 'api' )
 {
     $tmp_VirtualWireIf = $pan->network->virtualWireStore->API_newVirtualWire( $name );
 }
@@ -407,7 +384,7 @@ print "create VirtualWire Ethernet ".$eth1_name."\n";
 print "create VirtualWire Ethernet ".$eth2_name."\n";
 //Todo: newEthernetIf run also addEthernetif
 
-if( $configInput['type'] == 'api' )
+if( $util->configInput['type'] == 'api' )
 {
     $tmp_vw_int1 = $pan->network->ethernetIfStore->API_newEthernetIf( $eth1_name, 'virtual-wire' );
     $tmp_vw_int2 = $pan->network->ethernetIfStore->API_newEthernetIf( $eth2_name, 'virtual-wire' );
@@ -422,7 +399,7 @@ else
 
 print "VirtualWire Ethernet interface: ".$eth1_name." - added to vsys: ".$sub->name()."\n";
 print "VirtualWire Ethernet interface: ".$eth2_name." - added to vsys: ".$sub->name()."\n";
-if( $configInput['type'] == 'api' )
+if( $util->configInput['type'] == 'api' )
 {
     if( !$sub->importedInterfaces->hasInterfaceNamed( $tmp_vw_int1->name() ) )
         $sub->importedInterfaces->API_addInterface( $tmp_vw_int1 );
@@ -442,7 +419,7 @@ else
 
 print "VirtualWire Ethernet interface: ".$eth1_name." - added to VirtualWire: ".$tmp_VirtualWireIf->name()."\n";
 print "VirtualWire Ethernet interface: ".$eth2_name." - added to VirtualWire: ".$tmp_VirtualWireIf->name()."\n";
-if( $configInput['type'] == 'api' )
+if( $util->configInput['type'] == 'api' )
 {
     $tmp_VirtualWireIf->API_setInterface( 'interface1', $tmp_vw_int1 );
     $tmp_VirtualWireIf->API_setInterface( 'interface2', $tmp_vw_int2 );
@@ -454,7 +431,7 @@ else
 }
 
 
-if( $configInput['type'] == 'api' )
+if( $util->configInput['type'] == 'api' )
 {
     $tmp_vw_int1->API_addSubInterface( "100");
     $tmp_vw_int2->API_addSubInterface( "100");
@@ -473,11 +450,11 @@ else
 print "\n\n\n";
 
 // save our work !!!
-if( $configOutput !== null )
+if( $util->configOutput !== null )
 {
-    if( $configOutput != '/dev/null' )
+    if( $util->configOutput != '/dev/null' )
     {
-        $pan->save_to_file($configOutput);
+        $pan->save_to_file($util->configOutput);
     }
 }
 

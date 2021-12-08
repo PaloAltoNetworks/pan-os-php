@@ -10,6 +10,7 @@ UTILS:
 * UTIL UI - extend to delete additional actions/filter column
 * UTIL develop - add multiple script in specific for downloading PAN-OS software
 * UTIL develop | introduce API creation testing script for different objects
+* UTIL develop | introduce reset-config and software-remove script
 
 BUGFIX:
 * UTIL pan-os-php API - bugfix in relation to shadow-json and previous code reduction
@@ -18,6 +19,7 @@ GENERAL:
 * Dockerfiles - extend to different PHP versions
 * App-ID version: 8497-7093 update
 * framework examples | update 'example-panapiconnector.php'
+
 
 2.0.25 (20211203)
 UTILS:
