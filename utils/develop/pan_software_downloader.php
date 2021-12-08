@@ -116,57 +116,6 @@ $filtered_out = "      [FILTERED OUT]\n\n";
 #####################################################
 #####################################################
 
-/*
-//Panorama upgrade
-
-POST /Updates/UpdateService2.asmx/GetSWLibrary HTTP/1.1
-User-Agent: Wget/1.16.2 (linux-gnu)
-Accept-Encoding: identity
-Authorization: Basic cGFuZmlyZXdhbGw6cEB1dGlyM3dhbDE=
-    Host: updates.paloaltonetworks.com
-Connection: close
-Content-Type: application/x-www-form-urlencoded
-Content-Length: 61
-&serialnumber=0007SE03903&currentOSVersion=7.1.5&uuid=&cpuid
-
-
-POST /Updates/UpdateService2.asmx/GetSILibrary HTTP/1.1
-User-Agent: Wget/1.16.2 (linux-gnu)
-Accept-Encoding: identity
-Authorization: Basic cGFuZmlyZXdhbGw6cEB1dGlyM3dhbDE=
-    Host: updates.paloaltonetworks.com
-Connection: close
-Content-Type: application/x-www-form-urlencoded
-Content-Length: 61
-&serialnumber=0007SE03903&currentOSVersion=7.1.5&uuid=&cpuid=
-
-
-
-POST /Updates/UpdateService2.asmx/GetSVLibrary HTTP/1.1
-User-Agent: Wget/1.16.2 (linux-gnu)
-Accept-Encoding: identity
-Authorization: Basic cGFuZmlyZXdhbGw6cEB1dGlyM3dhbDE=
-    Host: updates.paloaltonetworks.com
-Connection: close
-Content-Type: application/x-www-form-urlencoded
-Content-Length: 61
-&serialnumber=0007SE03903&currentOSVersion=7.1.5&uuid=&cpuid=
-
-
-
-POST /Updates/UpdateService2.asmx/GetWFDeploy2 HTTP/1.1
-User-Agent: Wget/1.16.2 (linux-gnu)
-Accept-Encoding: identity
-Authorization: Basic cGFuZmlyZXdhbGw6cEB1dGlyM3dhbDE=
-    Host: updates.paloaltonetworks.com
-Connection: close
-Content-Type: application/x-www-form-urlencoded
-Content-Length: 61
-&serialnumber=0007SE03903&currentOSVersion=7.1.5&uuid=&cpuid=
-
-
- */
-
 function display_usage_and_exit($shortMessage = false)
 {
     global $argv;
