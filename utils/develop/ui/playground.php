@@ -52,6 +52,7 @@
         var rowIdx = 0;
         var columnActionIdx = 2;
         var columnFilterIdx = 3;
+        var columnIdx = 3;
 
         $(document).ready(function () {
 
@@ -319,6 +320,7 @@
 
                 var ActionIdx = ++columnActionIdx;
                 var FilterIdx = columnFilterIdx;
+                var deleteColumnID = ++columnIdx;
 
                 var rows = $("#myTable").children('tbody').children('tr');
 
@@ -338,7 +340,7 @@
                     if( testID == 1 )
                     {
                         $(this).append( $(
-                            `<td class="row-index text-center">
+                            `<td id=${deleteColumnID} class="row-index text-center">
                                 <select name="action${rowIdx}-${ActionIdx}" id="action${rowIdx}-${ActionIdx}" style="width:100%">
                                     <option value="---" selected="selected">Select action</option>
                                 </select>
@@ -373,13 +375,22 @@
                 var rows = $("#myTable").children('thead').children('tr');
 
                 rows.each(function () {
-                    $(this).append($(`<th class="text-center">Action</th>`));
+                    $(this).append($(`<th class="text-center">
+                        <button id="remove-action${ActionIdx}" class="btn btn-danger remove" type="button">Remove</button>
+                        Action${ActionIdx}</th>`
+                    ));
+                });
+
+                $('#remove-action'+ActionIdx).on('click', function() {
+                    deleteColumn( deleteColumnID );
                 });
             });
 
             $('#addFilterBtn').on('click', function() {
+
                 var ActionIdx = columnActionIdx;
                 var FilterIdx = ++columnFilterIdx;
+                var deleteColumnID = ++columnIdx;
 
                 var rows = $("#myTable").children('tbody').children('tr');
                 //$("#myTable tr").append($("<td contenteditable='true'>FILTER</td>"));
@@ -400,7 +411,7 @@
                     if( testID == 1 )
                     {
                         $(this).append( $(
-                            `<td class="row-index text-center">
+                            `<td id=${deleteColumnID} class="row-index text-center">
                                     <select name="filter${rowIdx}-${FilterIdx}" id="filter${rowIdx}-${FilterIdx}" style="width:100%">
                                     <option value="---" selected="selected">Select filter</option>
                                 </select>
@@ -442,7 +453,15 @@
                 //not working
                 var rows = $("#myTable").children('thead').children('tr');
                 rows.each(function () {
-                    $(this).append($(`<th class="text-center">Filter</th>`));
+                    $(this).append($(`<th class="text-center">
+                        <button id="remove-filter${FilterIdx}" class="btn btn-danger remove" type="button">Remove</button>
+                        Filter${FilterIdx}</th>`
+                    ));
+                });
+
+
+                $('#remove-filter'+FilterIdx).on('click', function() {
+                    deleteColumn( deleteColumnID );
                 });
             });
 
@@ -641,8 +660,7 @@
             document.user_form.action = message2;
         }
 
-        function updateActionFiltersyntax( selectedScript, Idx, ActionIdx, FilterIdx)
-        {
+        function updateActionFiltersyntax( selectedScript, Idx, ActionIdx, FilterIdx) {
             var selectedAction;
             var selectedFilter;
 
@@ -783,8 +801,7 @@
             return obj_1;
         }
 
-        function copyTextButton( Idx)
-        {
+        function copyTextButton( Idx) {
 
             string = $( "#command" + Idx ).val();
 
@@ -795,6 +812,7 @@
             document.execCommand('copy');
             document.body.removeChild(el);
         }
+
         function runButton( Idx)
         {
             //document.getElementById("user_form").submit();
@@ -805,6 +823,16 @@
             var message = server_url + "/utils/develop/api/v1/file_upload.php"
             document.getElementById("user_form").action = message;
             document.getElementById("user_form").submit();
+        }
+
+        function deleteColumn( column )
+        {
+            console.log( "delete column: "+column );
+            if( column > 3 )
+            {
+                $("#myTable tr").find( "td:eq("+column+"),th:eq("+column+")" ).remove();
+                columnIdx--;
+            }
         }
 
     </script>
