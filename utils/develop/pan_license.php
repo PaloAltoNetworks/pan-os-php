@@ -397,9 +397,12 @@ foreach($serial_array as $serial_key => $serial)
 
 
         $fields = 'serial=' . $serial_key . '&authCode=' . $authcode . '&uuid=' . $uuid . '&cpuid=' . $cpuid . '&currentOSVersion=' . $osversion . '&vmtype=' . $vmtype . '&apikey=' . $apikey;
+        if( $debug )
+            print "curlRequest: |".$fields."|\n";
         $curl_response = curl_request($protocol . $url . $site, $fields, $data, $authtype);
 
-        print $curl_response . "\n";
+        if( $debug )
+            print "curlResponse: |".$curl_response . "|\n";
 
         if( $curl_response == '' )
             derr("empty string | no server response\n");
