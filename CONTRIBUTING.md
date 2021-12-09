@@ -1,8 +1,8 @@
 Main Contributers
 ============
 
-PAN-OS-PHP was originally started as pan-configurator:
-https://github.com/cpainchaud/pan-configurator
+PAN-OS-PHP was originally started as [pan-configurator](https://github.com/cpainchaud/pan-configurator)
+
 
 and there goes a big thank you to:
 
