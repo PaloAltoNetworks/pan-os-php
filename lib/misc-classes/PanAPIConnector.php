@@ -97,7 +97,7 @@ class PanAPIConnector
     public $request_license_info_raw = null;
 
     private $utilType = null;
-    private $utilAction = null;
+    private $utilAction = "";
 
     private $setAuditComment = false;
     private $auditComment = null;
