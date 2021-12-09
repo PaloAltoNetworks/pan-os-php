@@ -2,8 +2,6 @@
 /**
  * ISC License
  *
- * Copyright (c) 2014-2016, Palo Alto Networks Inc.
- * Copyright (c) 2017-2018 Christophe Painchaud <shellescape _AT_ gmail.com>
  * Copyright (c) 2019, Palo Alto Networks Inc.
  *
  * Permission to use, copy, modify, and/or distribute this software for any
@@ -391,9 +389,11 @@ foreach($serial_array as $serial_key => $serial)
 
 
     #create folder if not exist
-    if (!file_exists( 'license/'.$folder.$serial_key))
+    #if (!file_exists( 'license/'.$folder.$serial_key))
+    if (!file_exists( 'license/'.$folder.$serial_key) || file_exists( 'license/'.$folder.$serial_key) )
     {
-        mkdir('license/' . $folder . $serial_key, 0777, TRUE);
+        if (!file_exists( 'license/'.$folder.$serial_key) )
+            mkdir('license/' . $folder . $serial_key, 0777, TRUE);
 
 
         $fields = 'serial=' . $serial_key . '&authCode=' . $authcode . '&uuid=' . $uuid . '&cpuid=' . $cpuid . '&currentOSVersion=' . $osversion . '&vmtype=' . $vmtype . '&apikey=' . $apikey;
@@ -409,6 +409,9 @@ foreach($serial_array as $serial_key => $serial)
 
         if( strpos($curl_response, "Unauthorized: Access is denied due to invalid credentials.") !== FALSE )
             derr("SERVER response: 'Unauthorized: Access is denied due to invalid credentials.'\n");
+
+        if( strpos($curl_response, "Invalid API Key") !== FALSE )
+            derr("SERVER response: 'Invalid API Key'\n");
 
         if( strpos($curl_response, "Serial Number doesn't belong to this support account.") !== FALSE )
             derr("SERVER response: 'Serial Number doesn't belong to this support account. Use different License API key'");
