@@ -214,6 +214,7 @@ function curl_request_upload($url, $fields = array(), $data = '' )
 function download_file( $extern_url, $local_file)
 {
     //another test
+    PH::enableExceptionSupport();
     try {
         $file = fopen ($extern_url, 'rb');
 
@@ -239,6 +240,7 @@ function download_file( $extern_url, $local_file)
 
     } catch (Exception $e) {
         // Handle exception
+        PH::disableExceptionSupport();
         print "Error: ".$e->getMessage()."\n";
     }
 }
