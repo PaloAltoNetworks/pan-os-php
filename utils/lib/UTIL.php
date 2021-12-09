@@ -780,7 +780,8 @@ class UTIL
             $this->apiMode = TRUE;
 
             $this->configInput['connector']->setUTILtype( $this->utilType );
-            $this->configInput['connector']->setUTILaction( PH::$args['actions'] );
+            if( !empty(PH::$args['actions']) )
+                $this->configInput['connector']->setUTILaction( PH::$args['actions'] );
 
 
             PH::print_stdout( " - Downloading config from API... " );
