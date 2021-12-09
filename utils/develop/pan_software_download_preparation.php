@@ -203,7 +203,7 @@ $stringEnd = "    </devices>
 
 
 
-$input_file_name = "software/software_downloader_devices.txt";
+$input_file_name = dirname(__FILE__)."/software/software_downloader_devices.txt";
 if( !file_exists($input_file_name) )
 {
     file_put_contents($input_file_name, $stringStart.$string.$stringEnd);

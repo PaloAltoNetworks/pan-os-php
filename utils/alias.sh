@@ -11,6 +11,8 @@ alias pa_docker-migration-parser='docker run -v ${PWD}:/expedition-converter -it
 
 alias pan-os-php='php -r "require_once '"'"'utils/pan-os-php.php'"'"';" $@'
 ##########################################################################################
+##########################################################################################
+##########################################################################################
 # the following scripts are deprecated and supported by pan-os-php
 alias pa_rule-edit='php -r "require_once '"'"'utils/rules-edit.php'"'"';" $@'
 alias pa_rule-stats='php -r "require_once '"'"'utils/rules-stats.php'"'"';" $@'
@@ -24,8 +26,6 @@ alias pa_application-edit='php -r "require_once '"'"'utils/application-edit.php'
 
 alias pa_securityprofile-edit='php -r "require_once '"'"'utils/securityprofile-edit.php'"'"';" $@'
 alias pa_securityprofilegroup-edit='php -r "require_once '"'"'utils/securityprofilegroup-edit.php'"'"';" $@'
-
-alias pa_vsys='php -r "require_once '"'"'utils/vsys-edit.php'"'"';" $@'
 
 alias pa_device-edit='php -r "require_once '"'"'utils/device-edit.php'"'"';" $@'
 alias pa_zone-edit='php -r "require_once '"'"'utils/zone-edit.php'"'"';" $@'
@@ -56,7 +56,7 @@ alias pa_register-ip-mgr='php -r "require_once '"'"'utils/register-ip-mgr.php'"'
 
 alias pa_key-manager='php -r "require_once '"'"'utils/key-manager.php'"'"';" $@'
 
-alias pa_ckp-exclude='php -r "require_once '"'"'utils/develop/checkpoint-exclude.php'"'"';" $@'
+
 
 alias pa_download-predefined='php -r "require_once '"'"'utils/download_predefined.php'"'"';" $@'
 alias pa_diff='php -r "require_once '"'"'utils/pan-diff.php'"'"';" $@'
@@ -66,6 +66,14 @@ alias pa_appid-enabler='php -r "require_once '"'"'utils/appid-enabler.php'"'"';"
 
 alias pa_xml-op-json='php -r "require_once '"'"'utils/panXML_op_JSON.php'"'"';" $@'
 
+alias pa_bpa-generator='php -r "require_once '"'"'utils/bpa-generator.php'"'"';" $@'
+
+##########################################################################################
+# until here all scripts above are deprecated and supported by pan-os-php type=
+##########################################################################################
+##########################################################################################
+
+#APPID TOOLBOX
 alias pa_appidtoolbox-report-generator='php -r "require_once '"'"'appid-toolbox/report-generator.php'"'"';" $@'
 alias pa_appidtoolbox-rule-activation='php -r "require_once '"'"'appid-toolbox/rule-activation.php'"'"';" $@'
 alias pa_appidtoolbox-rule-cleaner='php -r "require_once '"'"'appid-toolbox/rule-cleaner.php'"'"';" $@'
@@ -73,11 +81,21 @@ alias pa_appidtoolbox-rule-cloner='php -r "require_once '"'"'appid-toolbox/rule-
 alias pa_appidtoolbox-rule-marker='php -r "require_once '"'"'appid-toolbox/rule-marker.php'"'"';" $@'
 
 
+#DEVELOP
+alias pa_ckp-exclude='php -r "require_once '"'"'utils/develop/checkpoint-exclude.php'"'"';" $@'
 
 alias pa_ike='php -r "require_once '"'"'utils/develop/ike.php'"'"';" $@'
 
-
-
 alias pa_ssh-connector='php -r "require_once '"'"'utils/develop/ssh_connector.php'"'"';" $@'
 
-alias pa_bpa-generator='php -r "require_once '"'"'utils/bpa-generator.php'"'"';" $@'
+#license / software / commit-config / reset-config / get_user_info / sendGARP / software-remove / systemlog / traffic-log
+alias pa_license='php -r "require_once '"'"'utils/develop/pan_license.php'"'"';" $@'
+alias pa_software-preparation='php -r "require_once '"'"'utils/develop/pan_software_download_preparation.php'"'"';" $@'
+alias pa_software-downloader='php -r "require_once '"'"'utils/develop/pan_software_downloader.php'"'"';" $@'
+alias pa_config-commit='php -r "require_once '"'"'utils/develop/commit-config.php'"'"';" $@'
+alias pa_config-reset='php -r "require_once '"'"'utils/develop/reset-config.php'"'"';" $@'
+alias pa_get-system-user-info='php -r "require_once '"'"'utils/develop/pan_get_user_info.php'"'"';" $@'
+alias pa_gratuitous-arp='php -r "require_once '"'"'utils/develop/sendGARP.php'"'"';" $@'
+alias pa_software-remove='php -r "require_once '"'"'utils/develop/software-remove.php'"'"';" $@'
+alias pa_system-log='php -r "require_once '"'"'utils/develop/system-log.php'"'"';" $@'
+alias pa_traffic-log='php -r "require_once '"'"'utils/develop/traffic-log.php'"'"';" $@'

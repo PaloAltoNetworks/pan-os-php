@@ -88,38 +88,38 @@ UTIL
 
 **You hate scripting ?** 
 
- - pa_rule-edit / pa_address-edit / pa_service-edit / pa_tag-edit
+ - pan-os-php type=rule / type=address / type=service / type=tag
  [utils/doc](/utils/doc/help.html)
 
-Utility script 'rules-edit.php' is a swiss knife to edit rules and takes advantage of PAN-OS-PHP
+Utility script 'pan-os-php type=rule' is a swiss knife to edit rules and takes advantage of PAN-OS-PHP
  library from a single CLI query, ie :
 
 Do you want to enable log at start for rule going to DMZ zone and that has only object group 'Webfarms' as a destination ?
 
-    pa_rule-edit in=api://fw1.mycompany.com actions=logStart-Enable 'filter=(to has dmz) and (dst has.only Webfarms)'
+    pan-os-php type=rule in=api://fw1.mycompany.com actions=logStart-Enable 'filter=(to has dmz) and (dst has.only Webfarms)'
 
 You are not sure about your filter and want to see rules before making changes ? Use action 'display' :
 
-    pa_rule-edit  in=api://fw1.mycompany.com actions=display 'filter=(to has dmz) and (dst has.only Webfarms)'
+    pan-os-php type=rule  in=api://fw1.mycompany.com actions=display 'filter=(to has dmz) and (dst has.only Webfarms)'
 
 Change all rules using Application + Any service to application default ?
 
-    pa_rule-edit in=api://fw1.mycompany.com actions=service-Set-AppDefault 'filter=!(app is.any) and (service is.any)'
+    pan-os-php type=rule in=api://fw1.mycompany.com actions=service-Set-AppDefault 'filter=!(app is.any) and (service is.any)'
 
 Move post-SecurityRules with source zone 'dmz' or source object 'Admin-networks' to pre-Security rule ?
 
-    pa_rule-edit  in=api://panorama.mycompany.com actions=invertPreAndPost 'filter=((from has dmz) or (source has Admin-networks) and (rule is.postrule))'
+    pan-os-php type=rule  in=api://panorama.mycompany.com actions=invertPreAndPost 'filter=((from has dmz) or (source has Admin-networks) and (rule is.postrule))'
 
 Want to know what actions are supported ?
 
-    pa_rule-edit  listActions
-    pa_rule-edit listFilters
+    pan-os-php type=rule  listActions
+    pan-os-php type=rule listFilters
 
 **UTIL plugin** 
 
 The UTIL scripts rules-edit/address-edit/service-edit/tag-edit can be easily and flexible extend by writing your own plugin:
 
-- pa_rule-edit actions plugin example:
+- pan-os-php type=rule actions plugin example:
 ```php
     RuleCallContext::$supportedActions[] = Array(
         'name' => 'schedule_remove_update_desc',
@@ -146,7 +146,7 @@ The UTIL scripts rules-edit/address-edit/service-edit/tag-edit can be easily and
     );
 ```
 
-- pa_rule-edit filter plugin example:
+- pan-os-php type=rule filter plugin example:
 ```php
 RQuery::$defaultFilters['rule']['description']['operators']['is.geq'] = Array(
     'Function' => function(RuleRQueryContext $context )
@@ -166,54 +166,57 @@ RQuery::$defaultFilters['rule']['description']['operators']['is.geq'] = Array(
 
 **UTIL usage via PAN-OS XML API** 
 - PAN-OS API-KEYs are stored automatically at file: '.panconfkeystore' in your Systems User folder at the first time using a script with connection type API
-- or you can manage your API-KEY store with UTIL script pa_key-manager:
+- or you can manage your API-KEY store with UTIL script pan-os-php type=key-manager:
 ```php
-    pa_key-manager add=MGMT-IP
-    pa_key-manager delete=MGMT-IP
+    pan-os-php type=key-manager add=MGMT-IP
+    pan-os-php type=key-manager delete=MGMT-IP
 ```
 
 
 **Available UTIL scripts, provided by Alias:**
+- **pan-os-php type=**
+  - address
+  - address-merger
+  - addressgroup-merger
+  - appid-enabler
+  - application
+  - bpa-generator
+  - config-size
+  - device
+  - diff
+  - download-predefined
+  - interface
+  - key-manager
+  - override-finder
+  - register-ip-mgr
+  - routing
+  - rule
+  - rule-merger
+  - schedule
+  - securityprofile
+  - securityprofilegroup
+  - service
+  - service-merger
+  - servicegroup-merger
+  - stats
+  - tag
+  - tag-merger
+  - threat
+  - upload
+  - userid-mgr
+  - virtualwire
+  - xml-issue
+  - xml-op-json
+  - zone
 
-- pa_address-edit
-- pa_address-merger
-- pa_addressgroup-merger
-- pa_appid-enabler
 - pa_appidtoolbox-report-generator
 - pa_appidtoolbox-rule-activation
 - pa_appidtoolbox-rule-cleaner
 - pa_appidtoolbox-rule-cloner
 - pa_appidtoolbox-rule-marker
-- pa_bpa-generator
 - pa_ckp-exclude
-- pa_device-edit
-- pa_diff
-- pa_download-predefined
-- pa_key-manager
 - pa_ike
-- pa_interface-edit
-- pa_override-finder
-- pa_config-size
-- pa_panos-xml-issue-detector
-- pa_register-ip-mgr
-- pa_routing-edit
-- pa_rule-edit
-- pa_rule-merger
-- pa_rule-stats
-- pa_schedule-edit
-- pa_securityprofile-edit
-- pa_securityprofilegroup-edit
-- pa_service-edit
-- pa_service-merger
-- pa_servicegroup-merger
 - pa_ssh-connector
-- pa_tag-edit
-- pa_tag-merger
-- pa_upload-config
-- pa_userid-mgr
-- pa_vwire-edit
-- pa_xml-op-json
-- pa_zone-edit
 
 
 Docker build
@@ -312,10 +315,10 @@ The following "RESTAPI" routes are available:
 
 PAN-OS-PHP API is NOT working yet with PAN-OS XML API but it is possible to run it against PAN-OS FW and Panorama offline configuration files, and manipulate in the same way as on PAN-OS-PHP ClI:
    ```bash
-   ClI: pa_address-edit help
+   ClI: pan-os-php type=address help
    API: http://localhost:8082/utils/develop/api/v1/tool.php/address?help
    ```
    ```bash
-   CLI: pa_address-edit listactions
+   CLI: pan-os-php type=address listactions
    API: http://localhost:8082/utils/develop/api/v1/tool.php/address?listactions
    ```
