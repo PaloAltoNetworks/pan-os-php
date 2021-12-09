@@ -17,6 +17,7 @@ BUGFIX:
 * UTIL pan-os-php API - bugfix in relation to shadow-json and previous code reduction
 * UTIL pa_key-manager | bugfix to add host like license-apikey/bpa-apikey/ldap-password/maxmind-licensekey only once and delete previous available key
 * UTIL class UTIL.php | bugfix for adding Audit-Comment
+* UTIL pa_key-manager | bugfix to correctly add password/licensekey if used with add=ldap-password/maxmind-licensekey
 
 GENERAL:
 * Dockerfiles - extend to different PHP versions
