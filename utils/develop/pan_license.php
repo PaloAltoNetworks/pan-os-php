@@ -82,7 +82,7 @@ PH::processCliArgs();
 $debugAPI = false;
 $debug = false;
 
-$input_file_name = "software/software_downloader_devices.txt";
+$input_file_name = dirname(__FILE__)."/software/software_downloader_devices.txt";
 
 #####################################################
 #####################################################
@@ -390,10 +390,10 @@ foreach($serial_array as $serial_key => $serial)
 
     #create folder if not exist
     #if (!file_exists( 'license/'.$folder.$serial_key))
-    if (!file_exists( 'license/'.$folder.$serial_key) || file_exists( 'license/'.$folder.$serial_key) )
+    if (!file_exists( dirname(__FILE__).'/license/'.$folder.$serial_key) || file_exists( dirname(__FILE__).'/license/'.$folder.$serial_key) )
     {
-        if (!file_exists( 'license/'.$folder.$serial_key) )
-            mkdir('license/' . $folder . $serial_key, 0777, TRUE);
+        if (!file_exists( dirname(__FILE__).'/license/'.$folder.$serial_key) )
+            mkdir(dirname(__FILE__).'/license/' . $folder . $serial_key, 0777, TRUE);
 
 
         $fields = 'serial=' . $serial_key . '&authCode=' . $authcode . '&uuid=' . $uuid . '&cpuid=' . $cpuid . '&currentOSVersion=' . $osversion . '&vmtype=' . $vmtype . '&apikey=' . $apikey;
@@ -492,7 +492,7 @@ foreach($serial_array as $serial_key => $serial)
                     $feature_name = str_replace(' ', '_', $feature);
                     $file_name = $serial_key . "-" . $feature_name . ".key.txt";
 
-                    $license_folder = 'license/' . $folder . $serial_key . '/';
+                    $license_folder = dirname(__FILE__).'/license/' . $folder . $serial_key . '/';
 
 
                     print "    - license files will be saved in: " . $license_folder . $file_name . "\n";
@@ -512,7 +512,7 @@ foreach($serial_array as $serial_key => $serial)
     }
     else
     {
-        $dir = 'license/'.$folder.$serial_key;
+        $dir = dirname(__FILE__).'/license/'.$folder.$serial_key;
         //read filenames from dir
 
         $files = scandir($dir);

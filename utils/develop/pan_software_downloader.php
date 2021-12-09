@@ -48,10 +48,10 @@ $filter['install'] = true;
 
 #####################################################
 
-$folder = "software";
+$folder = dirname(__FILE__)."/software";
 $folder_latest = "latest";
 
-$input_file_name = "software/software_downloader_devices.txt";
+$input_file_name = dirname(__FILE__)."/software/software_downloader_devices.txt";
 
 #####################################################
 #####################################################

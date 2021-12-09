@@ -12,6 +12,7 @@ UTILS:
 * UTIL develop | introduce API creation testing script for different objects
 * UTIL develop | introduce reset-config and software-remove script
 * UTIL develop | software-downloader.php improve exception support
+* UTIL introduce new ALIAS: pa_license / pa_software-preparation / pa_software-downloader / pa_config-commit / pa_config-reset / pa_get_system-user-info / pa_software-remove / pa_system-log / pa_traffic-log
 
 BUGFIX:
 * UTIL pan-os-php API - bugfix in relation to shadow-json and previous code reduction
