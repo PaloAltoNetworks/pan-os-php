@@ -136,12 +136,14 @@ class KEYMANGER extends UTIL
                 if( !isset(PH::$args['apikey']) )
                     derr( "argument apikey - must be set to add BPA-/License-APIkey" );
 
+                foreach( PanAPIConnector::$savedConnectors as $cIndex => $connector )
+                {
+                    if( $connector->apihost == $addHost )
+                        unset(PanAPIConnector::$savedConnectors[$cIndex]);
+                }
+
                 PanAPIConnector::$savedConnectors[] = new PanAPIConnector($addHost, PH::$args['apikey']);
                 PanAPIConnector::saveConnectorsToUserHome();
-
-                #PH::print_stdout( "" );
-                #PH::print_stdout( "adding 'BPA-/License-APIkey' to .panconfkeystore not implemented yet" );
-                #PH::print_stdout( "" );
             }
             else
             {
