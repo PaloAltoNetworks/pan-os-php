@@ -11,6 +11,7 @@ UTILS:
 * UTIL develop - add multiple script in specific for downloading PAN-OS software
 * UTIL develop | introduce API creation testing script for different objects
 * UTIL develop | introduce reset-config and software-remove script
+* UTIL develop | software-downloader.php improve exception support
 
 BUGFIX:
 * UTIL pan-os-php API - bugfix in relation to shadow-json and previous code reduction
