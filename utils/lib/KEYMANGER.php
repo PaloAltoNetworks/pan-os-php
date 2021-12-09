@@ -131,7 +131,7 @@ class KEYMANGER extends UTIL
             PH::$JSON_TMP['header'] = $string;
             PH::$JSON_TMP[$addHost]['name'] = $addHost;
 
-            if( $addHost == "bpa-apikey" || $addHost == "license-apikey" || $addHost == "ldap-password" )
+            if( $addHost == "bpa-apikey" || $addHost == "license-apikey" || $addHost == "ldap-password" || $addHost == "maxmind-licensekey" )
             {
                 if( !isset(PH::$args['apikey']) )
                     derr( "argument apikey - must be set to add BPA-/License-APIkey" );
@@ -174,7 +174,7 @@ class KEYMANGER extends UTIL
                     PH::print_stdout( " - requested to test Host/IP '{$checkHost}'");
                     PH::$JSON_TMP[$checkHost]['name'] = $checkHost;
 
-                    if( $checkHost == "bpa-apikey" || $checkHost == "license-apikey" )
+                    if( $checkHost == "bpa-apikey" || $checkHost == "license-apikey" || $addHost == "ldap-password" || $addHost == "maxmind-licensekey" )
                     {
                         PH::$JSON_TMP[$checkHost]['status'] = "skipped can not be tested";
                         continue;
@@ -209,7 +209,7 @@ class KEYMANGER extends UTIL
                 PH::print_stdout( " - requested to test Host/IP '{$checkHost}'");
                 PH::$JSON_TMP[$checkHost]['name'] = $checkHost;
 
-                if( $checkHost == "bpa-apikey" || $checkHost == "license-apikey" )
+                if( $checkHost == "bpa-apikey" || $checkHost == "license-apikey" || $addHost == "ldap-password" || $addHost == "maxmind-licensekey" )
                 {
                     PH::$JSON_TMP[$checkHost]['status'] = "skipped can not be tested";
                 }

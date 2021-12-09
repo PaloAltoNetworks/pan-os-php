@@ -44,63 +44,65 @@ $supportedArguments['in'] = Array('niceName' => 'in', 'shortHelp' => 'input file
 $supportedArguments['debugapi'] = Array('niceName' => 'DebugAPI', 'shortHelp' => 'prints API calls when they happen');
 $supportedArguments['help'] = Array('niceName' => 'help', 'shortHelp' => 'this message');
 $supportedArguments['test'] = Array('niceName' => 'test', 'shortHelp' => 'command to test against offline config file');
-$supportedArguments['user'] = array('niceName' => 'user', 'shortHelp' => 'can be used in combination with "add" argument to use specific Username provided as an argument.', 'argDesc' => '[USERNAME]');
-$supportedArguments['pw'] = array('niceName' => 'pw', 'shortHelp' => 'can be used in combination with "add" argument to use specific Password provided as an argument.', 'argDesc' => '[PASSWORD]');
+$supportedArguments['user'] = array('niceName' => 'user', 'shortHelp' => 'must be set to trigger sendGARP via SSH', 'argDesc' => '[USERNAME]');
+$supportedArguments['pw'] = array('niceName' => 'pw', 'shortHelp' => 'must be set to trigger sendGARP via SSH', 'argDesc' => '[PASSWORD]');
 
-$usageMsg = PH::boldText('USAGE: ')."php ".basename(__FILE__)." in=api:://[MGMT-IP] file=[csv_text file] [out=]";
+$usageMsg = PH::boldText('USAGE: ')."php ".basename(__FILE__)." in=api:://[MGMT-IP] [test] [user=SSHuser] [pw=SSHpw]";
 
 PH::processCliArgs();
 
-if( isset(PH::$args['test']) )
-    $offline_config_test = true;
-
-if( isset(PH::$args['in']) )
+if( !isset(PH::$args['help']) )
 {
-    $configInput = PH::$args['in'];
+    if( isset(PH::$args['test']) )
+        $offline_config_test = TRUE;
 
-    if( strpos( $configInput, "api://" ) === false && !$offline_config_test )
-        derr( "only PAN-OS API connection is supported" );
+    if( isset(PH::$args['in']) )
+    {
+        $configInput = PH::$args['in'];
 
-    $configInput = str_replace( "api://", "", $configInput);
-}
-else
-    derr( "argument 'in' is needed" );
+        if( strpos($configInput, "api://") === FALSE && !$offline_config_test )
+            derr("only PAN-OS API connection is supported");
 
-if( isset(PH::$args['user']) )
-    $user = PH::$args['user'];
-else
-{
+        $configInput = str_replace("api://", "", $configInput);
+    }
+    else
+        derr("argument 'in' is needed");
+
+
+    if( isset(PH::$args['user']) )
+        $user = PH::$args['user'];
+    else
+    {
+        if( !$offline_config_test )
+            derr("argument 'user' is needed");
+    }
+
+    if( isset(PH::$args['pw']) )
+        $password = PH::$args['pw'];
+    else
+    {
+        if( !$offline_config_test )
+            derr("argument 'pw' is needed");
+    }
+
+
+    $argv2 = array();
+    PH::$args = array();
+    PH::$argv = array();
+    $argv2[] = "key-manager";
+    $argv2[] = "add=" . $configInput;
+    $argv2[] = "user=" . $user;
+    $argv2[] = "pw=" . $password;
+    $argc2 = count($argv2);
+
     if( !$offline_config_test )
-        derr( "argument 'user' is needed" );
+        $util = new KEYMANGER("key-manager", $argv2, $argc2, __FILE__);
 }
 
-if( isset(PH::$args['pw']) )
-    $password = PH::$args['pw'];
-else
-{
-    if( !$offline_config_test )
-        derr( "argument 'pw' is needed" );
-}
-
-
-$argv2 = array();
 PH::$args = array();
 PH::$argv = array();
-$argv2[] = "key-manager";
-$argv2[] = "add=".$configInput;
-$argv2[] = "user=".$user;
-$argv2[] = "pw=".$password;
-$argc2 = count($argv2);
 
-if( !$offline_config_test )
-    $util = new KEYMANGER( "key-manager", $argv2, $argc2, __FILE__ );
-
-PH::$args = array();
-PH::$argv = array();
-
-
-
-$util = new UTIL( "custom", $argv, $argc, __FILE__, $supportedArguments );
+$util = new UTIL( "custom", $argv, $argc, __FILE__, $supportedArguments, $usageMsg );
 $util->utilInit();
 $util->load_config();
 
@@ -144,6 +146,9 @@ foreach($interfaces as $int)
         $intIP = explode("/",$ip );
         $intIP = $intIP[0];
 
+        if( filter_var($intIP, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) )
+            continue;
+
         if( $key == 0)
         {
             $interfaceIP[ $name ] = $intIP;
@@ -177,25 +182,24 @@ foreach( $vsyss as $vsys )
 
             $dstIP = $DST[0]->value();
 
+            if( filter_var($dstIP, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) )
+                continue;
+
             #print_r( $ipRangeInt );
             foreach( $ipRangeInt as $key => $intName )
             {
-
                 $IP_network = explode( "/", $key);
-
                 $network = cidr::cidr2network($IP_network[0], $IP_network[1]);
 
-
-                if( cidr::cidr_match( $DST[0]->value(), $network, $IP_network[1] ) )
+                if( cidr::cidr_match( $dstIP, $network, $IP_network[1] ) )
                     $commands[] = "test arp gratuitous ip ".$dstIP." interface ".$intName;
             }
         }
-
     }
 }
 
 
-if( !$offline_config_test )
+if( !$offline_config_test || $util->apiMode )
 {
     $cmd = "<show><arp><entry name = 'all'/></arp></show>";
     $response = $inputConnector->sendOpRequest( $cmd );
