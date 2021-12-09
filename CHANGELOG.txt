@@ -1,6 +1,14 @@
 CHANGELOG
 
-2.0.26
+2.0.27
+UTILS:
+
+BUGFIX:
+
+GENERAL:
+
+
+2.0.26 (20211209)
 UTILS:
 * UTIL pan-os-php type=$utiltype is the only supported UTIL script for the future, all other UTIL script are set to deprecated
 * UTIL pan-os-php UI - move to local file usage
