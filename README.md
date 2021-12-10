@@ -239,6 +239,7 @@ Please remind yourself about the additional argument 'shadow-json', to display t
 - pa_system-log
 - pa_traffic-log
 
+[Documentation](utils/develop/doc/software-download.md) for air gap usage of pa_license / pa_software-downloader script
 
 
 
