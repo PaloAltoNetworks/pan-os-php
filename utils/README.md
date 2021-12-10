@@ -4,80 +4,101 @@ All available UTIL scripts can be run against an PAN-OS XML configuration offlin
 
 Index of scripts:
 ====
-All these production UTIL script can now be triggered by using: (bash-autocomplition is available and must be installed)
+All these production UTIL script can be triggered by using: (bash-autocomplition is available and must be installed)
 **pan-os-php type=XYZ**
 -----
 
-- **address-edit.php** : to make changes to address/group, you can use filters to make changes only to objects of
+different available arguments for type=
+- **address** : to make changes to address/group, you can use filters to make changes only to objects of
  interest. Makes it easy to delete unused objects for example or replace. Use argument 'help' for details and usage.
 
-- **address-merger.php** : merge address objects together. Useful when you want to do cleaning or reduce number of objects
+- **address-merger** : merge address objects together. Useful when you want to do cleaning or reduce number of objects
 because of firewall capacity problems for example. A collection of filters and algorithms will make this tool very flexible
  to bring you a tailored process for your customer.
  
-- **addressgroup-merger.php** : merge address groups together. Useful when you want to do cleaning or reduce number of objects
+- **addressgroup-merger** : merge address groups together. Useful when you want to do cleaning or reduce number of objects
  because of firewall capacity problems for example. A collection of filters and algorithms will make this tool very flexible
  to bring you a tailored process for your customer.
 
-- **appid-enabler.php** : display and if needed enable all previous disabled PAN-OS app-id on a FW or via Panorama on all connected FWs
+- **appid-enabler** : display and if needed enable all previous disabled PAN-OS app-id on a FW or via Panorama on all connected FWs
 
-- **bpa-generator.php** : script to easily use Palo Alto Networks BPA API
+- **application** : display predefined and custom application defined in configuration file
 
-- **csv-import.php** : import address / service / SecurityRules defined in CSV format
+- **bpa-generator** : script to easily use Palo Alto Networks BPA API
 
-- **device-edit.php** : display, create e.g. VSYS, DeviceGroup, Templates, TemplateStack, Container, DeviceCloud
+- **device** : display, create e.g. VSYS, DeviceGroup, Templates, TemplateStack, Container, DeviceCloud
 
-- **download_predefined.php** : possible to run against PAN-OS Firewall API to download and update the predefined.xml (e.g. appid) used offline in this framework
+- **download_predefined** : possible to run against PAN-OS Firewall API to download and update the predefined.xml (e.g. appid) used offline in this framework
 
-- **key-manager.php** : display, add, delete PAN-OS API keys stored in .panconfkeystore which are used for PAN-OS API authentication
+- **interface** : display configured interface settings
 
-- **override-finder.php** : find and display which parts of a firewall configuration are currently overriding
+- **key-manager** : display, add, delete PAN-OS API keys stored in .panconfkeystore which are used for PAN-OS API authentication
+
+- **override-finder** : find and display which parts of a firewall configuration are currently overriding
  the Template pushed by Panorama.
 
-- **pan-diff.php** : display the XML difference of two PAN-OS XML config files
+- **diff** : display the XML difference of two PAN-OS XML config files
 
-- **panos-xml-issue-detector** : display and if possible fix XML issues. example fix address-group with same member object names
+- **config-size** : display, which part of the Panorama / Firewall config file is bringin in most of the file size
 
-- **panXML_op_JSON.php** : send PAN-OS operational commands via XML API - XML response is transformed into JSON
+- **xml-issue** : display and if possible fix XML issues. example fix address-group with same member object names
 
-- **register-ip-mgr.php** :
+- **xml-op-json** : send PAN-OS operational commands via XML API - XML response is transformed into JSON
 
-- **rules-edit.php** : mass rule editor for PANOS and Panorama, it can work on backup files on your hard drive or with
+- **register-ip-mgr** :
+
+- **routing** : display virtual-router and configured static route
+
+- **rule** : mass rule editor for PANOS and Panorama, it can work on backup files on your hard drive or with
  API. You can filter rules to modify with a query and then apply changes to all selected rules. Use 'php rules-edit.php
   help' for usage details.
 
-- **rule-merger.php** : script to merge similar rules together. Various options to define common criteria, adjacency
+- **rule-merger** : script to merge similar rules together. Various options to define common criteria, adjacency
  limits, stop after action deny aso. are also included.
 
-- **rules-stats.php** : display object counters of a PAN-OS configuration 
+- **stats** : display object counters of a PAN-OS configuration 
 
-- **schedule-edit.php** : to make changes to schedule objects. , you can use filters to make changes only to objects of interest. Makes it easy to delete unused objects for example.
+- **schedule** : to make changes to schedule objects. , you can use filters to make changes only to objects of interest. Makes it easy to delete unused objects for example.
 
-- **securityprofile-edit.php** : to make changes to security-profile objects.
+- **securityprofile** : to make changes to security-profile objects.
 
-- **service-edit.php** : to make changes to service/group, you can use filters to make changes only to objects of
+- **securityprofilegroup** : to make changes to security-profile objects.
+
+- **service** : to make changes to service/group, you can use filters to make changes only to objects of
  interest. Makes it easy to delete unused objects for example.
  
-- **service-merger.php** : merge service objects together. Useful when you want to clean or reduce number of objects
+- **service-merger** : merge service objects together. Useful when you want to clean or reduce number of objects
 because of firewall capacity problems for example. A collection of filters and algorithms will make this tool very flexible
 to bring you a tailored process for your customer.
 
-- **servicegroup-merger.php** : merge service groups together. Useful when you want to clean or reduce number of objects
+- **servicegroup-merger** : merge service groups together. Useful when you want to clean or reduce number of objects
  because of firewall capacity problems for example. A collection of filters and algorithms will make this tool very flexible
  to bring you a tailored process for your customer.
 
-- **tag-edit.php** : to make changes to tags, you can use filters to make changes only to objects of
- interest.
+- **tag** : to make changes to tags, you can use filters to make changes only to objects of interest.
 
-- **tag-merger.php** : merge tag objects together. Useful when you want to clean or reduce number of objects
+- **tag-merger** : merge tag objects together. Useful when you want to clean or reduce number of objects
                        because of firewall capacity problems for example.
 
-- **upload-config.php** : tool for easy upload/download of configuration on a PANOS device. ie: if you want to
+- **threat** :
+
+- **upload** : tool for easy upload/download of configuration on a PANOS device. ie: if you want to
  replicate a config from a device to another but just keep management IP address. Use 'help' argument for more details.
 
-- **userid-mgr.php** : allows you to register/unregister/dump UserID record through PANOS API
+- **userid-mgr** : allows you to register/unregister/dump UserID record through PANOS API
 
-- **zone-edit.php** :
+- **vwire** : deprecated - use 'pan-os-php type=virtualwire'
+
+- **zone** : deprecated - use 'pan-os-php type=zone'
+
+
+
+misc UTIL scripts
+---
+- **download_maxmind_geo2ip_lite.php** : prepare PAN-OS-PHP with additional geo2ip informationf rom Maxmind lite
+
+- **util_get-action-filter.php** : framework script to prepare JSON file of actions / filters
+
 
 
 UTIL scripts under development
@@ -88,6 +109,8 @@ UTIL scripts under development
   'exclude' group and make numeric calculations to replace all members by a set of IP-ranges.
 
 - **commit-config.php** : working against a Firewall, for full commit
+
+- **csv-import.php** : import address / service / SecurityRules defined in CSV format
 
 - **download_config_all.php** : run against Panorama API, and download config from all Panorama connected Firewalls plus the Panorama config
 

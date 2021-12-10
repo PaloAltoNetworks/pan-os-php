@@ -18,9 +18,12 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+//Todo:
+//until now only working for importing Security Rule
+//define CSV info to correctly import
 set_include_path(dirname(__FILE__) . '/../' . PATH_SEPARATOR . get_include_path());
-require_once dirname(__FILE__)."/../lib/pan_php_framework.php";
-require_once dirname(__FILE__)."/../utils/lib/UTIL.php";
+require_once dirname(__FILE__)."/../../lib/pan_php_framework.php";
+require_once dirname(__FILE__)."/../../utils/lib/UTIL.php";
 
 $createObjects = FALSE;
 
@@ -31,11 +34,11 @@ $supportedArguments['in'] = array('niceName' => 'in', 'shortHelp' => 'input file
 $supportedArguments['out'] = array('niceName' => 'out', 'shortHelp' => 'output file to save config after changes. Only required when input is a file. ie: out=save-config.xml', 'argDesc' => '[filename]');
 $supportedArguments['debugapi'] = array('niceName' => 'DebugAPI', 'shortHelp' => 'prints API calls when they happen');
 $supportedArguments['help'] = array('niceName' => 'help', 'shortHelp' => 'this message');
-$supportedArguments['actions'] = array('niceName' => 'Actions', 'shortHelp' => 'action to apply on each disabled app-id. ie: actions=display / actions=enable', 'argDesc' => 'action:arg1[,arg2]');
+$supportedArguments['actions'] = array('niceName' => 'Actions', 'shortHelp' => 'displaying or importing CSV info. ie: actions=display / actions=import', 'argDesc' => 'action:arg1[,arg2]');
 $supportedArguments['csv'] = array('niceName' => 'CSV', 'shortHelp' => 'CSV file with HEADER');
 $supportedArguments['location'] = array('niceName' => 'Location', 'shortHelp' => 'specify if you want to limit your query to a VSYS/DG. By default location=shared for Panorama, =vsys1 for PANOS. ie: location=any or location=vsys2,vsys1', 'argDesc' => '=sub1[,sub2]');
 
-$usageMsg = PH::boldText('USAGE: ') . "php " . basename(__FILE__) . " in=api:://[MGMT-IP] [cycleconnectedFirewalls] [actions=enable]";
+$usageMsg = PH::boldText('USAGE: ') . "php " . basename(__FILE__) . " in=api:://[MGMT-IP] [cycleconnectedFirewalls] [actions=display]";
 
 PH::print_stdout("");
 PH::print_stdout("***********************************************");

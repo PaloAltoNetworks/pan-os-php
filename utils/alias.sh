@@ -73,6 +73,8 @@ alias pa_bpa-generator='php -r "require_once '"'"'utils/bpa-generator.php'"'"';"
 ##########################################################################################
 ##########################################################################################
 
+alias pa_csv-import='php -r "require_once '"'"'utils/csv-import.php'"'"';" $@'
+
 #APPID TOOLBOX
 alias pa_appidtoolbox-report-generator='php -r "require_once '"'"'appid-toolbox/report-generator.php'"'"';" $@'
 alias pa_appidtoolbox-rule-activation='php -r "require_once '"'"'appid-toolbox/rule-activation.php'"'"';" $@'
