@@ -47,7 +47,9 @@ $supportedArguments['test'] = Array('niceName' => 'test', 'shortHelp' => 'comman
 $supportedArguments['user'] = array('niceName' => 'user', 'shortHelp' => 'must be set to trigger sendGARP via SSH', 'argDesc' => '[USERNAME]');
 $supportedArguments['pw'] = array('niceName' => 'pw', 'shortHelp' => 'must be set to trigger sendGARP via SSH', 'argDesc' => '[PASSWORD]');
 
-$usageMsg = PH::boldText('USAGE: ')."php ".basename(__FILE__)." in=api:://[MGMT-IP] [test] [user=SSHuser] [pw=SSHpw]";
+$usageMsg = PH::boldText('USAGE: ')."php ".basename(__FILE__)." in=api:://[MGMT-IP] [test] [user=SSHuser] [pw=SSHpw]" .
+    "
+     - for Firewalls where Interfaces or other config is from Panorama Device-Group / Template please use in=api://FW-MGMT-ip/merged-config";
 
 PH::processCliArgs();
 
@@ -85,7 +87,7 @@ if( !isset(PH::$args['help']) )
             derr("argument 'pw' is needed");
     }
 
-
+    //this is storing the username / pw in .panconfigkeystore
     $argv2 = array();
     PH::$args = array();
     PH::$argv = array();
@@ -116,12 +118,6 @@ $inputConnector = $util->pan->connector;
 
 
 
-#$cmd = "<show><interface>all</interface></show>";
-#$response = $inputConnector->sendOpRequest( $cmd );
-##$xmlDoc = new DOMDocument();
-##$xmlDoc->loadXML($response);
-##echo $response->saveXML();
-
 $interfaces = $util->pan->network->getAllInterfaces();
 $commands = array();
 $interfaceIP = array();
@@ -144,7 +140,19 @@ foreach($interfaces as $int)
     foreach( $ips as $key => $ip )
     {
         $intIP = explode("/",$ip );
+
         $intIP = $intIP[0];
+        if( !isset($intIP[1]) )
+        {
+            //more validation if object is used
+            /** @var VirtualSystem $vsys */
+            $object = $vsys->addressStore->find( $key );
+
+            if( $object->isType_FQDN() || $object->isType_ipWildcard() )
+                continue;
+
+            $intIP = $object->getNetworkValue();
+        }
 
         if( filter_var($intIP, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) )
             continue;
@@ -155,7 +163,7 @@ foreach($interfaces as $int)
         }
         $ipRangeInt[$ip] = $name;
 
-        $commands[] = "test arp gratuitous ip ".$intIP." interface ".$name;
+        $commands[$intIP.$name] = "test arp gratuitous ip ".$intIP." interface ".$name;
     }
 }
 
@@ -165,37 +173,30 @@ $vsyss = $util->pan->getVirtualSystems();
 
 foreach( $vsyss as $vsys )
 {
-    //Todo: get DNAT DST ip from NAT rule
     $natDNATrules = $vsys->natRules->rules( '(dnat is.set)' );
     foreach( $natDNATrules as $rule )
     {
         #print "NAME: ".$rule->name()."\n";
-
-        $TO = $rule->to->getAll();
-        #print "Zone to: ".$TO[0]->name()."\n";
-
-        $DST = $rule->destination->getAll();
-        if( count( $DST ) == 1)
-        {
-            #print "DST: ".$DST[0]->name()."\n";
-            #print "IP: ".$DST[0]->value()."\n";
-
-            $dstIP = $DST[0]->value();
-
-            if( filter_var($dstIP, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) )
-                continue;
-
-            #print_r( $ipRangeInt );
-            foreach( $ipRangeInt as $key => $intName )
-            {
-                $IP_network = explode( "/", $key);
-                $network = cidr::cidr2network($IP_network[0], $IP_network[1]);
-
-                if( cidr::cidr_match( $dstIP, $network, $IP_network[1] ) )
-                    $commands[] = "test arp gratuitous ip ".$dstIP." interface ".$intName;
-            }
-        }
+        $dstObjects = $rule->destination->getAll();
+        foreach( $dstObjects as $object )
+            getTestCommands( $vsys, $object,$commands );
     }
+
+    $natSNATrules = $vsys->natRules->rules( '(snat is.set)' );
+    foreach( $natSNATrules as $rule )
+    {
+        /** @var NatRule $rule */
+        if( $rule->snatinterface !== null)
+            continue;
+
+        #print "NAME: ".$rule->name()."\n";
+        $snatObjects = $rule->snathosts->getAll();
+
+        foreach( $snatObjects as $object )
+            getTestCommands( $vsys, $object,$commands );
+    }
+
+    //bidirNAT are already involved in the SNAT calculation above
 }
 
 
@@ -246,9 +247,75 @@ foreach( $commands as $command )
 PH::print_stdout( "" );
 $output_string = "";
 if( !$offline_config_test )
+{
+    $configInputExplode = explode('/', $configInput);
+    if( count($configInputExplode) > 1 )
+        $configInput = $configInputExplode[0];
     $ssh = new RUNSSH( $configInput, $user, $password, $commands, $output_string );
+}
+
 
 print $output_string;
 ##############################################
 ##############################################
 
+
+function getTestCommands( $vsys, $object, &$commands )
+{
+    global $ipRangeInt;
+
+    /** @var Address $object */
+    #print "DST: ".$object->name()."\n";
+    #print "IP: ".$object->value()."\n";
+
+    if( $object->isType_FQDN() || $object->isType_ipWildcard() )
+        return;
+
+    $dstIP = $object->value();
+    $dstIP = str_replace( "/32", "", $dstIP );
+
+    $IParray = array();
+    if( strpos( $dstIP, "/" ) === FALSE and strpos( $dstIP, "-" ) === FALSE )
+    {
+        $IParray[ $dstIP ] = $dstIP;
+    }
+    else
+    {
+        $startEndarray = CIDR::stringToStartEnd( $dstIP );
+        $IParray = CIDR::StartEndToIParray( $startEndarray );
+    }
+
+
+    foreach( $IParray as $dstIP )
+    {
+        if( filter_var($dstIP, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) )
+            continue;
+
+        //this is from above to get all interfaces
+        foreach( $ipRangeInt as $key => $intName )
+        {
+            $IP_network = explode( "/", $key);
+            $value = $IP_network[0];
+            if( !isset($IP_network[1]) )
+            {
+                //more validation if object is used
+                /** @var VirtualSystem $vsys */
+                $object = $vsys->addressStore->find( $key );
+
+                if( $object->isType_FQDN() || $object->isType_ipWildcard() )
+                    continue;
+
+                $value = $object->getNetworkValue();
+                $netmask = $object->getNetworkMask();
+            }
+            else
+            {
+                $netmask = $IP_network[1];
+            }
+            $network = cidr::cidr2network( $value, $netmask);
+
+            if( cidr::cidr_match( $dstIP, $network, $netmask ) )
+                $commands[$dstIP.$intName] = "test arp gratuitous ip ".$dstIP." interface ".$intName;
+        }
+    }
+}

@@ -112,7 +112,7 @@ Move post-SecurityRules with source zone 'dmz' or source object 'Admin-networks'
 
 Want to know what actions are supported ?
 
-    pan-os-php type=rule  listActions
+    pan-os-php type=rule listActions
     pan-os-php type=rule listFilters
 
 **UTIL plugin** 
@@ -174,6 +174,8 @@ RQuery::$defaultFilters['rule']['description']['operators']['is.geq'] = Array(
 
 
 **Available UTIL scripts, provided by Alias:**
+---
+These UTIL scripts can help to manipulate/improve PAN-OS config files or help automating the daily work. 
 - **pan-os-php type=**
   - address
   - address-merger
@@ -209,14 +211,35 @@ RQuery::$defaultFilters['rule']['description']['operators']['is.geq'] = Array(
   - xml-op-json
   - zone
 
+APP-ID ToolBox
+---
+These script are available since 2016 and were the first automatic Palo Alto Networks APP-id migration tools.
 - pa_appidtoolbox-report-generator
 - pa_appidtoolbox-rule-activation
 - pa_appidtoolbox-rule-cleaner
 - pa_appidtoolbox-rule-cloner
 - pa_appidtoolbox-rule-marker
+
+UTIL scripts under Development
+---
+The scripts under Development contain complete variable usage. From downloading software and license to remove old software on firewall devices.
+But also parts for future automation like system-log or traffic-log are available.
+Please remind yourself about the additional argument 'shadow-json', to display the output in JSON format instead of human text readable format.
+
 - pa_ckp-exclude
 - pa_ike
 - pa_ssh-connector
+- pa_license
+- pa_software-preparation
+- pa_software-downloader
+- pa_config-commit
+- pa_config-reset
+- pa_get_system-user-info
+- pa_software-remove
+- pa_system-log
+- pa_traffic-log
+
+
 
 
 Docker build

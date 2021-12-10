@@ -299,6 +299,27 @@ class cidr
         return 0;
     }
 
+    static public function &StartEndToIParray( $startEndarray )
+    {
+        $network = $startEndarray['network'];
+        $start = $startEndarray['start'];
+        $end = $startEndarray['end'];
+
+        $ex = explode('/', $network);
+        if( filter_var($ex[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== FALSE )
+            $version = "ipv4";
+        elseif( filter_var($ex[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== FALSE )
+            $version = "ipv6";
+
+        for( $i = $start; $i <= $end; $i++)
+        {
+            $IP = long2ip($i);
+            $ipArray[ $IP ] = $IP;
+        }
+
+        return $ipArray;
+    }
+
     static public function &stringToStartEnd($value)
     {
         $result = array();

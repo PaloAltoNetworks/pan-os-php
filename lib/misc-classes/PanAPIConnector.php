@@ -382,6 +382,12 @@ class PanAPIConnector
             $host = $hostExplode[0];
         }
 
+        $hostExplode = explode('/', $host);
+        if( count($hostExplode) > 1 )
+        {
+            $host = $hostExplode[0];
+        }
+
         $wrongLogin = FALSE;
 
         foreach( self::$savedConnectors as $connector )
