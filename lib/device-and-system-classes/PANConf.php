@@ -295,7 +295,7 @@ class PANConf
         $this->vsyssroot = DH::findFirstElementOrCreate('vsys', $this->localhostroot);
 
 
-        $this->deviceconfigroot = DH::findFirstElementOrCreate('deviceconfig', $this->localhostroot);
+        $this->deviceconfigroot = DH::findFirstElement('deviceconfig', $this->localhostroot);
 
 
         // Now listing and extracting all DeviceConfig configurations
@@ -323,15 +323,17 @@ class PANConf
             //
             // Shared address objects extraction
             //
-            $tmp = DH::findFirstElementOrCreate('address', $this->sharedroot);
-            $this->addressStore->load_addresses_from_domxml($tmp);
+            $tmp = DH::findFirstElement('address', $this->sharedroot);
+            if( $tmp !== FALSE )
+                $this->addressStore->load_addresses_from_domxml($tmp);
             // end of address extraction
 
             //
             // Extract address groups
             //
-            $tmp = DH::findFirstElementOrCreate('address-group', $this->sharedroot);
-            $this->addressStore->load_addressgroups_from_domxml($tmp);
+            $tmp = DH::findFirstElement('address-group', $this->sharedroot);
+            if( $tmp !== FALSE )
+                $this->addressStore->load_addressgroups_from_domxml($tmp);
             // End of address groups extraction
 
             //
@@ -346,36 +348,41 @@ class PANConf
             //
             // Extract services
             //
-            $tmp = DH::findFirstElementOrCreate('service', $this->sharedroot);
-            $this->serviceStore->load_services_from_domxml($tmp);
+            $tmp = DH::findFirstElement('service', $this->sharedroot);
+            if( $tmp !== FALSE )
+                $this->serviceStore->load_services_from_domxml($tmp);
             // End of address groups extraction
 
             //
             // Extract service groups
             //
-            $tmp = DH::findFirstElementOrCreate('service-group', $this->sharedroot);
-            $this->serviceStore->load_servicegroups_from_domxml($tmp);
+            $tmp = DH::findFirstElement('service-group', $this->sharedroot);
+            if( $tmp !== FALSE )
+                $this->serviceStore->load_servicegroups_from_domxml($tmp);
             // End of address groups extraction
 
             //
             // Extract application
             //
-            $tmp = DH::findFirstElementOrCreate('application', $this->sharedroot);
-            $this->appStore->load_application_custom_from_domxml($tmp);
+            $tmp = DH::findFirstElement('application', $this->sharedroot);
+            if( $tmp !== FALSE )
+                $this->appStore->load_application_custom_from_domxml($tmp);
             // End of address extraction
 
             //
             // Extract application filter
             //
-            $tmp = DH::findFirstElementOrCreate('application-filter', $this->sharedroot);
-            $this->appStore->load_application_filter_from_domxml($tmp);
+            $tmp = DH::findFirstElement('application-filter', $this->sharedroot);
+            if( $tmp !== FALSE )
+                $this->appStore->load_application_filter_from_domxml($tmp);
             // End of application filter groups extraction
 
             //
             // Extract application groups
             //
-            $tmp = DH::findFirstElementOrCreate('application-group', $this->sharedroot);
-            $this->appStore->load_application_group_from_domxml($tmp);
+            $tmp = DH::findFirstElement('application-group', $this->sharedroot);
+            if( $tmp !== FALSE )
+                $this->appStore->load_application_group_from_domxml($tmp);
             // End of address groups extraction
 
 
@@ -524,8 +531,9 @@ class PANConf
         //
         // Extract network related configs
         //
-        $tmp = DH::findFirstElementOrCreate('network', $this->localhostroot);
-        $this->network->load_from_domxml($tmp);
+        $tmp = DH::findFirstElement('network', $this->localhostroot);
+        if( $tmp !== FALSE )
+            $this->network->load_from_domxml($tmp);
         //
 
 
@@ -571,25 +579,30 @@ class PANConf
         //
         // Extract setting related configs
         //
-        $settingroot = DH::findFirstElementOrCreate('setting', $this->deviceconfigroot);
-
-        $tmp1 = DH::findFirstElement('wildfire', $settingroot);
-        if( $tmp1 !== FALSE )
+        if( $this->deviceconfigroot !== FALSE )
         {
-            $tmp2 = DH::findFirstElement('public-cloud-server', $tmp1);
-            if( $tmp2 )
+            $settingroot = DH::findFirstElement('setting', $this->deviceconfigroot);
+            if( $settingroot !== FALSE )
             {
-                $this->_public_cloud_server = $tmp1->textContent;
-            }
-        }
+                $tmp1 = DH::findFirstElement('wildfire', $settingroot);
+                if( $tmp1 !== FALSE )
+                {
+                    $tmp2 = DH::findFirstElement('public-cloud-server', $tmp1);
+                    if( $tmp2 )
+                    {
+                        $this->_public_cloud_server = $tmp1->textContent;
+                    }
+                }
 
-        $managementroot = DH::findFirstElement('management', $settingroot);
-        if( $managementroot !== FALSE )
-        {
-            $auditComment = DH::findFirstElement('rule-require-audit-comment', $managementroot);
-            if( $auditComment != FALSE )
-                if( $auditComment->textContent === "yes" )
-                    $this->_auditComment = TRUE;
+                $managementroot = DH::findFirstElement('management', $settingroot);
+                if( $managementroot !== FALSE )
+                {
+                    $auditComment = DH::findFirstElement('rule-require-audit-comment', $managementroot);
+                    if( $auditComment != FALSE )
+                        if( $auditComment->textContent === "yes" )
+                            $this->_auditComment = TRUE;
+                }
+            }
         }
         //
     }
@@ -650,7 +663,7 @@ class PANConf
         if( $printMessage )
             PH::print_stdout( "Now saving PANConf to file '$fileName'...");
 
-        $xml = &DH::dom_to_xml($this->xmlroot, $indentingXml, $lineReturn, -1, $indentingXmlIncreament);
+        $xml = &DH::dom_to_xml($this->xmlroot, $indentingXml, $lineReturn, -1, $indentingXmlIncreament + 1);
 
         $path_parts = pathinfo($fileName);
         if (!is_dir($path_parts['dirname']))

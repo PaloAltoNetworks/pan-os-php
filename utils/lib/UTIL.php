@@ -31,6 +31,9 @@ require_once(dirname(__FILE__)."/MERGER.php");
 require_once(dirname(__FILE__)."/RULEMERGER.php");
 
 
+use CzProject\GitPhp\Git as Git;
+
+
 require_once(dirname(__FILE__)."/KEYMANGER.php");
 require_once(dirname(__FILE__)."/PREDEFINED.php");
 require_once(dirname(__FILE__)."/UPLOAD.php");
@@ -47,9 +50,9 @@ require_once(dirname(__FILE__)."/USERIDMGR.php");
 require_once(dirname(__FILE__)."/RUNSSH.php");
 
 
+
 class UTIL
 {
-
     public $configType = null;
     public $configInput = null;
     public $configOutput = null;
@@ -99,6 +102,7 @@ class UTIL
 
     public $utilType = "";
     public $PHP_FILE = null;
+
 
     public $location = null;
     public $sub = null;
@@ -201,6 +205,9 @@ class UTIL
         $this->supportedArguments['template'] = array('niceName' => 'template', 'shortHelp' => 'specify if you want to limit your query to a TEMPLATE. By default template=any for Panorama', 'argDesc' => 'template');
 
         $this->supportedArguments['loadpanoramapushedconfig'] = array('niceName' => 'loadPanoramaPushedConfig', 'shortHelp' => 'load Panorama pushed config from the firewall to take in account panorama objects and rules');
+
+        $this->supportedArguments['git'] = array('niceName' => 'Git', 'shortHelp' => 'if argument git is used, git repository is created to track changes for input file');
+
         $this->supportedArguments['apitimeout'] = array('niceName' => 'apiTimeout', 'shortHelp' => 'in case API takes too long time to anwer, increase this value (default=60)', 'argDesc' => '60');
 
         $this->supportedArguments['cycleconnectedfirewalls'] = array('niceName' => 'cycleConnectedFirewalls', 'shortHelp' => 'a listing of all devices connected to Panorama will be collected through API then each firewall will be queried for bpa generator');
@@ -216,6 +223,7 @@ class UTIL
         $this->supportedArguments['shadow-reducexml']= array('niceName' => 'shadow-reducexml', 'shortHelp' => 'store reduced XML, without newline and remove blank characters in offline mode');
         $this->supportedArguments['shadow-json']= array('niceName' => 'shadow-json', 'shortHelp' => 'BETA command to display output on stdout not in text but in JSON format');
         $this->supportedArguments['shadow-nojson']= array('niceName' => 'shadow-nojson', 'shortHelp' => 'BETA command to display output on stdout in text format');
+
     }
 
     public function utilInit()
@@ -1575,6 +1583,25 @@ class UTIL
             $indentingXml = -1;
             $indentingXmlIncreament = 0;
         }
+
+
+        if( isset(PH::$args['git']) && PH::$args['git'] )
+        {
+            /** @var Git $git */
+            $git = new Git();
+
+            $directory = dirname( $this->configInput['filename'] );
+            $filename = basename( $this->configInput['filename'] );
+
+            $repo = $git->init($directory);
+            $repo->addFile($filename);
+            #$repo->addAllChanges();
+
+            $repo->commit($filename.' before save of: '.$this->PHP_FILE );
+
+            $this->configOutput = $this->configInput['filename'];
+        }
+
         // save our work !!!
         if( $this->configOutput !== null )
         {
@@ -1593,7 +1620,24 @@ class UTIL
                     if( file_exists($this->configOutput) && is_file($this->configOutput) )
                         unlink($this->configOutput);
 
+
                     $this->pan->save_to_file($this->configOutput, $printMessage, $lineReturn, $indentingXml, $indentingXmlIncreament);
+
+                    if( isset(PH::$args['git']) && PH::$args['git'] )
+                    {
+                        $repo = $git->init($directory);
+
+                        if( PH::$args['git'] != "" && !boolYesNo(PH::$args['git']) )
+                            $repo = $repo->createBranch(PH::$args['git'], TRUE);
+
+                        $repo->addFile($filename);
+                        $repo->commit($this->PHP_FILE . " | " . implode(", ", PH::$args));
+
+                        if( PH::$args['git'] != "" && !boolYesNo(PH::$args['git']) )
+                            $repo->merge(PH::$args['git']);
+                        //todo: merge branch to master
+
+                    }
                 }
             }
         }

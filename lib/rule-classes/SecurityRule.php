@@ -163,7 +163,6 @@ class SecurityRule extends RuleWithUserID
         //														//
         // Begin <application> application extraction			//
         //														//
-        #$tmp = DH::findFirstElementOrCreate('application', $xml);
         $tmp = DH::findFirstElement('application', $xml);
         if( $tmp === false )
         {
@@ -178,7 +177,6 @@ class SecurityRule extends RuleWithUserID
         //										//
         // Begin <service> extraction			//
         //										//
-        #$tmp = DH::findFirstElementOrCreate('service', $xml);
         $tmp = DH::findFirstElement('service', $xml);
         if( $tmp === false )
         {

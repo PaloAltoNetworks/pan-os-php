@@ -93,16 +93,15 @@ class DecryptionRule extends RuleWithUserID
         //										//
         if( $this->owner->owner->version >= 61 )
         {
-            $tmp = DH::findFirstElementOrCreate('service', $xml);
-            $this->services->load_from_domxml($tmp);
+            $tmp = DH::findFirstElement('service', $xml);
+            if( $tmp !== FALSE )
+                $this->services->load_from_domxml($tmp);
         }
         // end of <service> zone extraction
 
         $profileXML = DH::findFirstElement('profile', $xml);
         if( $profileXML !== FALSE )
-        {
             $this->_profile = $profileXML->nodeValue;
-        }
     }
 
     public function display($padding = 0)

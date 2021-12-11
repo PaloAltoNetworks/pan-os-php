@@ -267,13 +267,18 @@ class VirtualSystem
         //
         // loading the imported objects list
         //
-        $importroot = DH::findFirstElementOrCreate('import', $xml);
-        $networkRoot = DH::findFirstElementOrCreate('network', $importroot);
-        $tmp = DH::findFirstElementOrCreate('interface', $networkRoot);
-        $this->importedInterfaces->load_from_domxml($tmp);
+        $importroot = DH::findFirstElement('import', $xml);
+        if( $importroot !== FALSE )
+        {
+            $networkRoot = DH::findFirstElementOrCreate('network', $importroot);
+            $tmp = DH::findFirstElementOrCreate('interface', $networkRoot);
+            $this->importedInterfaces->load_from_domxml($tmp);
 
-        $tmp = DH::findFirstElementOrCreate('virtual-router', $networkRoot);
-        $this->importedVirtualRouter->load_from_domxml($tmp);
+            $tmp = DH::findFirstElement('virtual-router', $networkRoot);
+            if( $tmp !== FALSE )
+                $this->importedVirtualRouter->load_from_domxml($tmp);
+        }
+
         //
 
         if( $this->owner->owner === null )
@@ -294,8 +299,9 @@ class VirtualSystem
             //
             // Extract address objects
             //
-            $tmp = DH::findFirstElementOrCreate('address', $xml);
-            $this->addressStore->load_addresses_from_domxml($tmp);
+            $tmp = DH::findFirstElement('address', $xml);
+            if( $tmp !== FALSE )
+                $this->addressStore->load_addresses_from_domxml($tmp);
             //print "VSYS '".$this->name."' address objectsloaded\n" ;
             // End of address objects extraction
 
@@ -303,8 +309,9 @@ class VirtualSystem
             //
             // Extract address groups in this DV
             //
-            $tmp = DH::findFirstElementOrCreate('address-group', $xml);
-            $this->addressStore->load_addressgroups_from_domxml($tmp);
+            $tmp = DH::findFirstElement('address-group', $xml);
+            if( $tmp !== FALSE )
+                $this->addressStore->load_addressgroups_from_domxml($tmp);
             //print "VSYS '".$this->name."' address groups loaded\n" ;
             // End of address groups extraction
 
@@ -322,8 +329,9 @@ class VirtualSystem
             //												//
             // Extract service objects in this VSYS			//
             //												//
-            $tmp = DH::findFirstElementOrCreate('service', $xml);
-            $this->serviceStore->load_services_from_domxml($tmp);
+            $tmp = DH::findFirstElement('service', $xml);
+            if( $tmp !== FALSE )
+                $this->serviceStore->load_services_from_domxml($tmp);
             //print "VSYS '".$this->name."' service objects\n" ;
             // End of <service> extraction
 
@@ -331,30 +339,34 @@ class VirtualSystem
             //												//
             // Extract service groups in this VSYS			//
             //												//
-            $tmp = DH::findFirstElementOrCreate('service-group', $xml);
-            $this->serviceStore->load_servicegroups_from_domxml($tmp);
+            $tmp = DH::findFirstElement('service-group', $xml);
+            if( $tmp !== FALSE )
+                $this->serviceStore->load_servicegroups_from_domxml($tmp);
             //print "VSYS '".$this->name."' service groups loaded\n" ;
             // End of <service-group> extraction
 
             //
             // Extract application
             //
-            $tmp = DH::findFirstElementOrCreate('application', $xml);
-            $this->appStore->load_application_custom_from_domxml($tmp);
+            $tmp = DH::findFirstElement('application', $xml);
+            if( $tmp !== FALSE )
+                $this->appStore->load_application_custom_from_domxml($tmp);
             // End of address extraction
 
             //
             // Extract application filter
             //
-            $tmp = DH::findFirstElementOrCreate('application-filter', $xml);
-            $this->appStore->load_application_filter_from_domxml($tmp);
+            $tmp = DH::findFirstElement('application-filter', $xml);
+            if( $tmp !== FALSE )
+                $this->appStore->load_application_filter_from_domxml($tmp);
             // End of application filter groups extraction
 
             //
             // Extract application groups
             //
-            $tmp = DH::findFirstElementOrCreate('application-group', $xml);
-            $this->appStore->load_application_group_from_domxml($tmp);
+            $tmp = DH::findFirstElement('application-group', $xml);
+            if( $tmp !== FALSE )
+                $this->appStore->load_application_group_from_domxml($tmp);
             // End of application groups groups extraction
 
 
@@ -520,8 +532,9 @@ class VirtualSystem
         //
         // Extract Zone objects
         //
-        $tmp = DH::findFirstElementOrCreate('zone', $xml);
-        $this->zoneStore->load_from_domxml($tmp);
+        $tmp = DH::findFirstElement('zone', $xml);
+        if( $tmp !== FALSE )
+            $this->zoneStore->load_from_domxml($tmp);
         // End of Zone objects extraction
 
 
