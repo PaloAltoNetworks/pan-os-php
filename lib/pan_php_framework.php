@@ -1,14 +1,25 @@
 <?php
-
 /**
- * © 2019 Palo Alto Networks, Inc.  All rights reserved.
+ * ISC License
  *
- * Licensed under SCRIPT SOFTWARE AGREEMENT, Palo Alto Networks, Inc., at https://www.paloaltonetworks.com/legal/script-software-license-1-0.pdf
+ * Copyright (c) 2014-2018, Palo Alto Networks Inc.
+ * Copyright (c) 2019, Palo Alto Networks Inc.
  *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
 if( PHP_MAJOR_VERSION <= 5 && PHP_MINOR_VERSION <= 4 )
-    die("\n*** ERROR **** PAN-PHP-FRAMEWORK requires PHP version >= 5.5\n");
+    die("\n*** ERROR **** PAN-OS-PHP requires PHP version >= 5.5\n");
 
 set_time_limit(0);
 ini_set("memory_limit", "14512M");
@@ -79,7 +90,7 @@ if( !extension_loaded('dom') )
  */
 function show_backtrace($str)
 {
-    echo "\nBacktrace\n: $str";
+    PH::print_stdout("\nBacktrace\n: $str" );
     var_dump(debug_backtrace());
 }
 
@@ -94,7 +105,7 @@ function memory_and_gc($str)
     $gcs = gc_collect_cycles();
     $after = memory_get_usage(TRUE);
 
-    print "Memory usage at the $str : " . convert($before) . ". After GC: " . convert($after) . " and freed $gcs variables\n";
+    PH::print_stdout( "Memory usage at the $str : " . convert($before) . ". After GC: " . convert($after) . " and freed $gcs variables" );
 }
 
 function myErrorHandler($errno, $errstr, $errfile, $errline)
@@ -120,6 +131,7 @@ function my_shutdown()
 
 $basedir = dirname(__FILE__);
 
+require_once $basedir . '/../phpseclib/Math/BigInteger.php';
 
 require_once $basedir . '/ErrorReporter.php';
 require_once $basedir . '/classes/taskManagement/TaskReporter.php';
@@ -156,12 +168,16 @@ require_once $basedir . '/misc-classes/TagRQueryContext.php';
 require_once $basedir . '/misc-classes/ZoneRQueryContext.php';
 require_once $basedir . '/misc-classes/ScheduleRQueryContext.php';
 
+require_once $basedir . '/misc-classes/ThreatRQueryContext.php';
+
 require_once $basedir . '/misc-classes/InterfaceRQueryContext.php';
 require_once $basedir . '/misc-classes/RoutingRQueryContext.php';
 require_once $basedir . '/misc-classes/VirtualWireRQueryContext.php';
 
 require_once $basedir . '/misc-classes/SecurityProfileRQueryContext.php';
+require_once $basedir . '/misc-classes/SecurityProfileGroupRQueryContext.php';
 
+require_once $basedir . '/misc-classes/DeviceRQueryContext.php';
 
 require_once $basedir . '/misc-classes/CsvParser.php';
 require_once $basedir . '/misc-classes/trait/PanSubHelperTrait.php';
@@ -188,17 +204,26 @@ require_once $basedir . '/object-classes/AddressStore.php';
 require_once $basedir . '/object-classes/ServiceStore.php';
 require_once $basedir . '/object-classes/Tag.php';
 require_once $basedir . '/object-classes/App.php';
+require_once $basedir . '/object-classes/AppCustom.php';
+require_once $basedir . '/object-classes/AppFilter.php';
+require_once $basedir . '/object-classes/AppGroup.php';
 require_once $basedir . '/object-classes/trait/AddressCommon.php';
 require_once $basedir . '/object-classes/trait/centralAddressStore.php';
 require_once $basedir . '/object-classes/trait/centralAddressStoreUser.php';
 require_once $basedir . '/object-classes/Address.php';
 require_once $basedir . '/object-classes/AddressGroup.php';
+require_once $basedir . '/object-classes/Region.php';
 require_once $basedir . '/object-classes/trait/ServiceCommon.php';
 require_once $basedir . '/object-classes/trait/centralServiceStore.php';
 require_once $basedir . '/object-classes/trait/centralServiceStoreUser.php';
 require_once $basedir . '/object-classes/trait/ServiceCommon.php';
 require_once $basedir . '/object-classes/Service.php';
 require_once $basedir . '/object-classes/ServiceGroup.php';
+
+require_once $basedir . '/object-classes/ThreatStore.php';
+require_once $basedir . '/object-classes/Threat.php';
+require_once $basedir . '/object-classes/ThreatVulnerability.php';
+require_once $basedir . '/object-classes/ThreatSpyware.php';
 
 require_once $basedir . '/object-classes/ScheduleStore.php';
 require_once $basedir . '/object-classes/Schedule.php';
@@ -207,21 +232,23 @@ require_once $basedir . '/object-classes/SecurityProfileStore.php';
 require_once $basedir . '/object-classes/SecurityProfileGroupStore.php';
 require_once $basedir . '/object-classes/SecurityProfileGroup.php';
 require_once $basedir . '/object-classes/SecurityProfile.php';
-require_once $basedir . '/object-classes/URLProfileStore.php';
-require_once $basedir . '/object-classes/AntiVirusProfileStore.php';
-require_once $basedir . '/object-classes/VulnerabilityProfileStore.php';
-require_once $basedir . '/object-classes/AntiSpywareProfileStore.php';
-require_once $basedir . '/object-classes/FileBlockingProfileStore.php';
-require_once $basedir . '/object-classes/WildfireProfileStore.php';
-require_once $basedir . '/object-classes/customURLProfileStore.php';
+require_once $basedir . '/object-classes/URLProfile.php';
+require_once $basedir . '/object-classes/AntiVirusProfile.php';
+require_once $basedir . '/object-classes/VulnerabilityProfile.php';
+require_once $basedir . '/object-classes/AntiSpywareProfile.php';
+require_once $basedir . '/object-classes/FileBlockingProfile.php';
+require_once $basedir . '/object-classes/DataFilteringProfile.php';
+require_once $basedir . '/object-classes/WildfireProfile.php';
+require_once $basedir . '/object-classes/customURLProfile.php';
 require_once $basedir . '/object-classes/PredefinedSecurityProfileURL.php';
 
-require_once $basedir . '/object-classes/VirusAndWildfireProfileStore.php';
-require_once $basedir . '/object-classes/DNSSecurityProfileStore.php';
+require_once $basedir . '/object-classes/VirusAndWildfireProfile.php';
+require_once $basedir . '/object-classes/DNSSecurityProfile.php';
+require_once $basedir . '/object-classes/SaasSecurityProfile.php';
 
-require_once $basedir . '/object-classes/DecryptionProfileStore.php';
-require_once $basedir . '/object-classes/HipObjectsProfileStore.php';
-require_once $basedir . '/object-classes/HipProfilesProfileStore.php';
+require_once $basedir . '/object-classes/DecryptionProfile.php';
+require_once $basedir . '/object-classes/HipObjectsProfile.php';
+require_once $basedir . '/object-classes/HipProfilesProfile.php';
 
 require_once $basedir . '/device-and-system-classes/VirtualSystem.php';
 require_once $basedir . '/device-and-system-classes/PANConf.php';
@@ -231,6 +258,7 @@ require_once $basedir . '/device-and-system-classes/Template.php';
 require_once $basedir . '/device-and-system-classes/TemplateStack.php';
 require_once $basedir . '/device-and-system-classes/ManagedDevice.php';
 require_once $basedir . '/device-and-system-classes/ManagedDeviceStore.php';
+require_once $basedir . '/device-and-system-classes/LogCollectorGroup.php';
 
 require_once $basedir . '/device-and-system-classes/FawkesConf.php';
 require_once $basedir . '/device-and-system-classes/Container.php';
@@ -284,7 +312,11 @@ require_once $basedir . '/rule-classes/PbfRule.php';
 require_once $basedir . '/rule-classes/QoSRule.php';
 require_once $basedir . '/rule-classes/DoSRule.php';
 
-
+if( isset( $_SERVER['REQUEST_METHOD'] ) )
+{
+    $argv = array();
+    $argc = 0;
+}
 $tmp_ph = new PH($argv, $argc);
 PH::$basedir = $basedir;
 
@@ -422,14 +454,22 @@ function reLinkObjs(&$arr, &$ref)
 }
 
 
-function convert($size)
+function convert($size, &$array = array())
 {
     if( $size == 0 )
         return '0';
     elseif( $size < 0 )
-        return '[how is this possible?] <0';
+    {
+        $returnValue = '0 b';
+        $array = explode( " ", $returnValue );
+        return $returnValue;
+    }
+
     $unit = array('b', 'kb', 'mb', 'gb', 'tb', 'pb');
-    return @round($size / pow(1024, ($i = floor(log($size, 1024)))), 2) . ' ' . $unit[$i];
+
+    $returnValue = @round($size / pow(1024, ($i = floor(log($size, 1024)))), 2) . ' ' . $unit[$i];
+    $array = explode( " ", $returnValue );
+    return $returnValue;
 }
 
 
@@ -482,8 +522,7 @@ function __CmpObjMemID($objA, $objB)
 
 function printn($msg)
 {
-    print $msg;
-    print "\n";
+    PH::print_stdout( $msg );
 }
 
 
@@ -518,51 +557,81 @@ function derr($msg, $object = null, $print_backtrace = TRUE)
         throw $ex;
     }
 
-    fwrite(STDERR, PH::boldText("\n* ** ERROR ** * ") . $msg . "\n\n");
+    if( PH::$shadow_json )
+        PH::$JSON_OUT['error'] = $msg;
+    else
+        fwrite(STDERR, PH::boldText("\n* ** ERROR ** * ") . $msg . "\n\n");
+
+
 
     if( $print_backtrace )
     {
-        //debug_print_backtrace();
+        backtrace_print();
+    }
 
-        $d = debug_backtrace();
-
-        $skip = 0;
-
-        fwrite(STDERR, " *** Backtrace ***\n");
-
-        $count = 0;
-
-        foreach( $d as $l )
-        {
-            if( $skip >= 0 )
-            {
-                fwrite(STDERR, "$count ****\n");
-                if( isset($l['object']) && method_exists($l['object'], 'toString') )
-                {
-                    fwrite(STDERR, '   ' . $l['object']->toString() . "\n");
-                }
-                $file = '';
-                if( isset($l['file']) )
-                    $file = $l['file'];
-                $line = '';
-                if( isset($l['line']) )
-                    $line = $l['line'];
-
-                if( isset($l['object']) )
-                    fwrite(STDERR, '       ' . PH::boldText($l['class'] . '::' . $l['function'] . "()") . " @\n           {$file} line {$line}\n");
-                else
-                    fwrite(STDERR, "       " . PH::boldText($l['function']) . "()\n       ::{$file} line {$line}\n");
-            }
-            $skip++;
-            $count++;
-        }
-
-        echo "\n";
+    if( PH::$shadow_json )
+    {
+        PH::$JSON_OUT['log'] = PH::$JSON_OUTlog;
+        print json_encode( PH::$JSON_OUT, JSON_PRETTY_PRINT );
     }
 
 
-
     exit(1);
+}
+
+
+function derr_print( $string )
+{
+    PH::$JSON_OUTlog .= $string;
+    if( !PH::$shadow_json )
+        fwrite(STDERR, $string);
+}
+
+function backtrace_print()
+{
+    $d = debug_backtrace();
+
+    $skip = 0;
+
+    $string = " *** Backtrace ***\n";
+    derr_print( $string );
+
+    $count = 0;
+
+    foreach( $d as $l )
+    {
+        if( $skip >= 0 )
+        {
+            $string = "$count ****\n";
+            derr_print( $string );
+
+            if( isset($l['object']) && method_exists($l['object'], 'toString') )
+            {
+                $string = '   ' . $l['object']->toString() . "\n";
+                derr_print( $string );
+            }
+
+            $file = '';
+            if( isset($l['file']) )
+                $file = $l['file'];
+            $line = '';
+            if( isset($l['line']) )
+                $line = $l['line'];
+
+            if( isset($l['object']) )
+            {
+                $string = '       ' . PH::boldText($l['class'] . '::' . $l['function'] . "()") . " @\n           {$file} line {$line}\n";
+                derr_print( $string );
+            }
+            else
+            {
+                $string = "       " . PH::boldText($l['function']) . "()\n       ::{$file} line {$line}\n";
+                derr_print( $string );
+            }
+        }
+        $skip++;
+        $count++;
+    }
 }
 
 /**
@@ -620,9 +689,7 @@ function mdeb($msg)
  */
 function mwarning($msg, $object = null, $print_backtrace = TRUE)
 {
-    global $PANC_WARN;
-
-    if( isset($PANC_WARN) && $PANC_WARN == 0 )
+    if( !PH::$PANC_WARN )
         return;
 
     if( $object !== null )
@@ -640,47 +707,26 @@ function mwarning($msg, $object = null, $print_backtrace = TRUE)
         throw $ex;
     }
 
-    fwrite(STDERR, PH::boldText("\n* ** WARNING ** * ") . $msg . "\n\n");
+    if( PH::$shadow_json )
+    {
+        if( isset(PH::$JSON_OUT['warning']) )
+        {
+            PH::$JSON_OUT['warning'][] = $msg;
+        }
+        else
+            PH::$JSON_OUT['warning'][0] = $msg;
+    }
 
-    //debug_print_backtrace();
+    else
+        fwrite(STDERR, PH::boldText("\n* ** WARNING ** * ") . $msg . "\n\n");
+
 
     if( $print_backtrace )
     {
-        $d = debug_backtrace();
+        backtrace_print();
 
-        $skip = 0;
-
-        fwrite(STDERR, " *** Backtrace ***\n");
-
-        $count = 0;
-
-        foreach( $d as $l )
-        {
-            if( $skip >= 0 )
-            {
-                fwrite(STDERR, "$count ****\n");
-                if( isset($l['object']) && method_exists($l['object'], 'toString') )
-                {
-                    fwrite(STDERR, '   ' . $l['object']->toString() . "\n");
-                }
-
-                $file = '';
-                if( isset($l['file']) )
-                    $file = $l['file'];
-                $line = '';
-                if( isset($l['line']) )
-                    $line = $l['line'];
-
-                if( isset($l['object']) )
-                    fwrite(STDERR, '       ' . PH::boldText($l['class'] . '::' . $l['function'] . "()") . " @\n           {$file} line {$line}\n");
-                else
-                    fwrite(STDERR, "       " . PH::boldText($l['function']) . "()\n       ::{$file} line {$line}\n");
-            }
-            $skip++;
-            $count++;
-        }
-
-        fwrite(STDERR, "\n\n");
+        $string = "\n\n";
+        derr_print( $string );
     }
 
 }
@@ -785,7 +831,7 @@ function &sortArrayByStartValue(&$arrayToSort)
     //
     // Sort incl objects IP mappings by Start IP
     //
-    //print "\n   * Sorting incl obj by StartIP\n";
+    //PH::print_stdout(  "\n   * Sorting incl obj by StartIP" );
     $returnMap = array();
     $tmp = array();
     foreach( $arrayToSort as &$incl )

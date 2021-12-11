@@ -117,7 +117,11 @@ RQuery::$defaultFilters['securityprofile']['name']['operators']['regex'] = array
 );
 RQuery::$defaultFilters['securityprofile']['location']['operators']['is'] = array(
     'Function' => function (SecurityProfileRQueryContext $context) {
-        $owner = $context->object->owner->owner;
+        if( is_object($context->object->owner->owner) )
+            $owner = $context->object->owner->owner;
+        else
+            return FALSE;
+
         if( strtolower($context->value) == 'shared' )
         {
             if( $owner->isPanorama() )
@@ -170,13 +174,13 @@ RQuery::$defaultFilters['securityprofile']['location']['operators']['is.child.of
         $DG = $sub->findDeviceGroup($context->value);
         if( $DG == null )
         {
-            print "ERROR: location '$context->value' was not found. Here is a list of available ones:\n";
-            print " - shared\n";
+            PH::print_stdout( "ERROR: location '$context->value' was not found. Here is a list of available ones:" );
+            PH::print_stdout( " - shared" );
             foreach( $sub->getDeviceGroups() as $sub1 )
             {
-                print " - " . $sub1->name() . "\n";
+                PH::print_stdout( " - " . $sub1->name() . "" );
             }
-            print "\n\n";
+            PH::print_stdout( "" );
             exit(1);
         }
 
@@ -209,7 +213,10 @@ RQuery::$defaultFilters['securityprofile']['location']['operators']['is.parent.o
             $sub = $sub->owner;
 
         if( get_class($sub) == "PANConf" )
-            derr("filter location is.parent.of is not working against a firewall configuration");
+        {
+            PH::print_stdout( "ERROR: filter location is.child.of is not working against a firewall configuration");
+            return FALSE;
+        }
 
         if( strtolower($context->value) == 'shared' )
             return TRUE;
@@ -217,13 +224,13 @@ RQuery::$defaultFilters['securityprofile']['location']['operators']['is.parent.o
         $DG = $sub->findDeviceGroup($context->value);
         if( $DG == null )
         {
-            print "ERROR: location '$context->value' was not found. Here is a list of available ones:\n";
-            print " - shared\n";
+            PH::print_stdout( "ERROR: location '$context->value' was not found. Here is a list of available ones:" );
+            PH::print_stdout( " - shared" );
             foreach( $sub->getDeviceGroups() as $sub1 )
             {
-                print " - " . $sub1->name() . "\n";
+                PH::print_stdout( " - " . $sub1->name() . "" );
             }
-            print "\n\n";
+            PH::print_stdout( "" );
             exit(1);
         }
 
@@ -271,7 +278,7 @@ RQuery::$defaultFilters['securityprofile']['reflocation']['operators']['is'] = a
             $DG = $owner->findDeviceGroup($context->value);
             if( $DG == null )
             {
-                $test = new UTIL("custom", array(), "");
+                $test = new UTIL("custom", array(), 0,"");
                 $test->configType = "panorama";
                 $test->locationNotFound($context->value, null, $owner);
             }
@@ -448,4 +455,50 @@ RQuery::$defaultFilters['securityprofile']['override']['operators']['has'] = arr
     )
 );
 
+RQuery::$defaultFilters['securityprofile']['exception']['operators']['has'] = array(
+    'Function' => function (SecurityProfileRQueryContext $context) {
+        $object = $context->object;
+        $value = $context->value;
+
+        if( $object->secprof_type == 'virus' || $object->secprof_type == 'spyware' || $object->secprof_type == 'vulnerability' )
+        {
+            if( !empty( $object->threatException ) )
+            {
+                foreach( $object->threatException as $threatname => $threat )
+                {
+                    if( $threatname == $value )
+                        return TRUE;
+                }
+            }
+        }
+
+        return FALSE;
+
+    },
+    'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP% securityrule )',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
+
+RQuery::$defaultFilters['securityprofile']['exception']['operators']['is.set'] = array(
+    'Function' => function (SecurityProfileRQueryContext $context) {
+        $object = $context->object;
+
+        if( $object->secprof_type == 'virus' || $object->secprof_type == 'spyware' || $object->secprof_type == 'vulnerability' )
+        {
+            if( !empty( $object->threatException ) )
+                return TRUE;
+        }
+
+        return FALSE;
+
+    },
+    'ci' => array(
+        'fString' => '(%PROP% securityrule )',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 // </editor-fold>

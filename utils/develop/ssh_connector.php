@@ -1,14 +1,27 @@
 <?php
 
 /**
- * © 2019 Palo Alto Networks, Inc.  All rights reserved.
+ * ISC License
  *
- * Licensed under SCRIPT SOFTWARE AGREEMENT, Palo Alto Networks, Inc., at https://www.paloaltonetworks.com/legal/script-software-license-1-0.pdf
+ * Copyright (c) 2019, Palo Alto Networks Inc.
  *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
 set_include_path(dirname(__FILE__) . '/../' . PATH_SEPARATOR . get_include_path());
 require_once dirname(__FILE__)."/../../lib/pan_php_framework.php";
+require_once dirname(__FILE__)."/../../utils/lib/UTIL.php";
+
 require_once dirname(__FILE__)."/../../phpseclib/Net/SSH2.php";
 require_once dirname(__FILE__)."/../../phpseclib/Crypt/RSA.php";
 
@@ -149,7 +162,7 @@ elseif( $vendor != "" )
 $handle = fopen("php://stdin", "r");
 if( $user == "" )
 {
-    print "** Please enter username below and hit enter:  ";
+    PH::print_stdout( "** Please enter username below and hit enter:  ");
 
     #$handle = fopen("php://stdin", "r");
     $line = fgets($handle);
@@ -164,7 +177,7 @@ if( $RSAkey == null )
 else
 {
     $pw_prompt = " --- using USER: '" . $user . "' , and private key.";
-    print $pw_prompt . "\n";
+    PH::print_stdout( $pw_prompt );
 
     $password = new Crypt_RSA();
     $private_key = file_get_contents($RSAkey);
@@ -176,63 +189,7 @@ else
 //START SSH connection
 ############################################
 
-print "\n\n\n";
-
-$ssh = new Net_SSH2($ip);
-
-PH::enableExceptionSupport();
-print " - connect to " . $ip . "...\n";
-try
-{
-    if( !$ssh->login($user, $password) )
-    {
-        print "\n\nLogin Failed\n\n";
-        #echo $ssh->getLog();
-        exit('END');
-    }
-} catch(Exception $e)
-{
-    PH::disableExceptionSupport();
-    print " ***** an error occured : " . $e->getMessage() . "\n\n";
-    return;
-}
-PH::disableExceptionSupport();
-
-$ssh->read();
-
-############################################
-
-end($commands);
-//fetch key of the last element of the array.
-$lastElementKey = key($commands);
-
-foreach( $commands as $k => $command )
-{
-    print "\n\n" . strtoupper($command) . ":\n";
-    $ssh->write($command . "\n");
-
-    $tmp_string = $ssh->read();
-    print $tmp_string;
-
-    if( isset(PH::$args['command']) )
-        $output_string .= $tmp_string;
-    else
-    {
-        if( $k == $lastElementKey )
-            $output_string .= $tmp_string;
-    }
-
-}
-
-
-if( $debug )
-{
-    print "\n\n\nLOG: \n";
-    echo $ssh->getLog();
-}
-
-
-print "\n\n";
+$ssh = new RUNSSH( $ip, $user, $password, $commands, $output_string );
 
 ############################################
 //START output string manipulation
@@ -291,12 +248,12 @@ if( $manipulate )
 
 if( isset(PH::$args['command']) )
 {
-    print "write output into file: " . $outfile . "\n";
+    PH::print_stdout( "write output into file: " . $outfile );
     file_put_contents($outfile, $output_string);
 }
 else
 {
-    print "write output into file: " . $vendor . "-config.txt\n";
+    PH::print_stdout( "write output into file: " . $vendor . "-config.txt");
     file_put_contents($vendor . "-config.txt", $output_string);
 }
 

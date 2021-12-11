@@ -1,10 +1,22 @@
 <?php
 
 /**
- * © 2019 Palo Alto Networks, Inc.  All rights reserved.
+ * ISC License
  *
- * Licensed under SCRIPT SOFTWARE AGREEMENT, Palo Alto Networks, Inc., at https://www.paloaltonetworks.com/legal/script-software-license-1-0.pdf
+ * Copyright (c) 2014-2018, Palo Alto Networks Inc.
+ * Copyright (c) 2019, Palo Alto Networks Inc.
  *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
 class NatRule extends Rule
@@ -100,7 +112,7 @@ class NatRule extends Rule
             derr("name not found\n");
 
         $this->load_common_from_domxml();
-        //print "found rule name '".$this->name."'\n";
+        //PH::print_stdout( "found rule name '".$this->name."'" );
 
         $this->load_from();
         $this->load_to();
@@ -141,7 +153,7 @@ class NatRule extends Rule
 
         if( $this->dnatroot !== FALSE )
         {
-            //print "rule '".$this->name."' has destination-translation\n";
+            //PH::print_stdout( "rule '".$this->name."' has destination-translation" );
             if( $this->dnatroot->hasChildNodes() )
             {
                 $this->subdnatTAroot = DH::findFirstElement('translated-address', $this->dnatroot);
@@ -170,7 +182,7 @@ class NatRule extends Rule
         $this->snatroot = DH::findFirstElement('source-translation', $xml);
         if( $this->snatroot !== FALSE )
         {
-            //print "we have found a source NAT\n";
+            //PH::print_stdout( "we have found a source NAT" );
             // next <tag> will determine NAT type
             $firstE = DH::firstChildElement($this->snatroot);
             $this->snattype = $firstE->nodeName;
@@ -179,7 +191,7 @@ class NatRule extends Rule
             if( $this->snattype != "static-ip" && $this->snattype != "dynamic-ip-and-port" && $this->snattype != "dynamic-ip" )
                 derr("SNAT type '" . $this->snattype . "' for rule '" . $this->name . "' is not supported, EXIT\n");
 
-            //print "Determined NAT type ".$tcur['name']."\n";
+            //PH::print_stdout( "Determined NAT type ".$tcur['name'] );
 
 
             if( $this->snattype == "static-ip" )
@@ -315,7 +327,7 @@ class NatRule extends Rule
             $lname = $this->serviceroot->textContent;
             if( strtolower($lname) != 'any' )
             {
-                //print "found service named $lname in  NAT rule '".$this->name."'\n";
+                //PH::print_stdout( "found service named $lname in  NAT rule '".$this->name."'" );
                 $f = $this->parentServiceStore->findOrCreate($lname, $this, TRUE);
                 if( !$f )
                 {
@@ -866,60 +878,110 @@ class NatRule extends Rule
     {
         $padding = str_pad('', $padding);
 
+        PH::$JSON_TMP['sub']['object'][$this->name()]['name'] = $this->name();
+        PH::$JSON_TMP['sub']['object'][$this->name()]['type'] = get_class($this);
+
         $dis = '';
         if( $this->disabled )
+        {
             $dis = '<disabled>';
+            PH::$JSON_TMP['sub']['object'][$this->name()]['disabled'] = "true";
+        }
+        else
+            PH::$JSON_TMP['sub']['object'][$this->name()]['disabled'] = "false";
 
-        $s = '*ANY*';
+        $s = '**ANY**';
         if( $this->service )
             $s = $this->service->name();
 
-        print $padding . "*Rule named {$this->name}  $dis\n";
-        print $padding . "  From: " . $this->from->toString_inline() . "  |  To:  " . $this->to->toString_inline() . "\n";
-        print $padding . "  Source: " . $this->source->toString_inline() . "\n";
+        $text = $padding . "*Rule named '{$this->name}' $dis";
+        if( $this->owner->version >= 70 )
+        {
+            $text .= " UUID: '" . $this->uuid() . "'";
+            PH::$JSON_TMP['sub']['object'][$this->name()]['uuid'] = $this->uuid();
+        }
+        PH::print_stdout( $text );
+
+        PH::print_stdout( $padding . "  From: " . $this->from->toString_inline() . "  |  To:  " . $this->to->toString_inline() );
+        PH::$JSON_TMP['sub']['object'][$this->name()]['from'] = $this->from->toString_inline();
+        PH::$JSON_TMP['sub']['object'][$this->name()]['to'] = $this->to->toString_inline();
+
+        PH::print_stdout( $padding . "  Source: " . $this->source->toString_inline() );
+        PH::$JSON_TMP['sub']['object'][$this->name()]['source'] = $this->source->toString_inline();
 
         if( $this->_destinationInterface !== null )
-            print $padding . "  Destination Interface: " . $this->destinationInterface() . "\n";
+            PH::print_stdout( $padding . "  Destination Interface: " . $this->destinationInterface() );
 
-        print $padding . "  Destination: " . $this->destination->toString_inline() . "\n";
-        print $padding . "  Service:  " . $s . "\n";
+        PH::print_stdout( $padding . "  Destination: " . $this->destination->toString_inline() );
+        PH::$JSON_TMP['sub']['object'][$this->name()]['destination'] = $this->destination->toString_inline();
+
+        PH::print_stdout( $padding . "  Service:  " . $s );
+        PH::$JSON_TMP['sub']['object'][$this->name()]['service'] = $s;
 
         if( $this->snattype == 'static-ip' )
-            print $padding . "  SNAT Type: " . $this->snattype . "   BiDir: " . $this->_snatbidir . "\n";
+        {
+            PH::$JSON_TMP['sub']['object'][$this->name()]['snat'][$this->snattype]['bidir'] = $this->_snatbidir;
+            PH::print_stdout( $padding . "  SNAT Type: " . $this->snattype . "   BiDir: " . $this->_snatbidir );
+        }
         else
-            print $padding . "  SNAT Type: " . $this->snattype . "\n";
+        {
+            PH::print_stdout( $padding . "  SNAT Type: " . $this->snattype );
+            PH::$JSON_TMP['sub']['object'][$this->name()]['snat'][$this->snattype]['bidir'] = "false";
+        }
+
 
 
         if( $this->snattype != 'none' )
         {
             if( $this->snatinterface !== null )
-                print $padding . "   SNAT HOSTS: {$this->snatinterface}/{$this->snathosts->toString_inline()}\n";
+            {
+                PH::print_stdout( $padding . "   SNAT HOSTS: {$this->snatinterface}/{$this->snathosts->toString_inline()}" );
+                PH::$JSON_TMP['sub']['object'][$this->name()]['snat'][$this->snattype]['host'] = "{$this->snatinterface}/{$this->snathosts->toString_inline()}";
+            }
             else
-                print $padding . "   SNAT HOSTS: {$this->snathosts->toString_inline()}\n";
+            {
+                PH::print_stdout( $padding . "   SNAT HOSTS: {$this->snathosts->toString_inline()}" );
+                PH::$JSON_TMP['sub']['object'][$this->name()]['snat'][$this->snattype]['host'] = "{$this->snathosts->toString_inline()}";
+            }
         }
 
         if( $this->dnathost === null )
-            print $padding . "  DNAT: none\n";
+        {
+            PH::print_stdout( $padding . "  DNAT: none" );
+            PH::$JSON_TMP['sub']['object'][$this->name()]['dnat']['none'] = "none";
+        }
         else
         {
-            print $padding . "  DNAT: " . $this->dnathost->name();
+            $text = $padding . "  DNAT: " . $this->dnathost->name();
             if( $this->dnatports != "" )
-                print " dport: " . $this->dnatports;
-            print "\n";
+                $text .= " dport: " . $this->dnatports;
+            PH::print_stdout( $text );
+            PH::$JSON_TMP['sub']['object'][$this->name()]['dnat']['host'] = $this->dnathost->name();
+            PH::$JSON_TMP['sub']['object'][$this->name()]['dnat']['dport'] = $this->dnatports;
         }
 
 
-        print $padding . "    Tags:  " . $this->tags->toString_inline() . "\n";
+        PH::print_stdout( $padding . "  Tags:  " . $this->tags->toString_inline() );
+        PH::$JSON_TMP['sub']['object'][$this->name()]['tag'] = $this->tags->toString_inline();
 
         if( $this->_targets !== null )
-            print $padding . "  Targets:  " . $this->targets_toString() . "\n";
+        {
+            PH::print_stdout( $padding . "  Targets:  " . $this->targets_toString() );
+            PH::$JSON_TMP['sub']['object'][$this->name()]['target'] = $this->targets_toString();
+        }
 
         if( strlen($this->_description) > 0 )
-            print $padding . "  Desc:  " . $this->_description . "\n";
+        {
+            PH::print_stdout( $padding . "  Desc:  " . $this->_description );
+            PH::$JSON_TMP['sub']['object'][$this->name()]['description'] = $this->_description;
+        }
         else
-            print $padding . "  Desc:  \n";
+        {
+            PH::print_stdout( $padding . "  Desc:  ");
+            PH::$JSON_TMP['sub']['object'][$this->name()]['description'] = "";
+        }
 
-        print "\n";
+        PH::print_stdout( "" );
     }
 
     /**

@@ -273,7 +273,7 @@
     <entry name="localhost.localdomain">
       <deviceconfig>
         <system>
-          <ip-address>192.168.55.208</ip-address>
+          <ip-address>192.168.55.41</ip-address>
           <netmask>255.255.255.0</netmask>
           <update-server>updates.paloaltonetworks.com</update-server>
           <update-schedule>
@@ -307,7 +307,6 @@
               <primary>8.8.8.8</primary>
             </servers>
           </dns-setting>
-          <ssl-tls-service-profile>webgui</ssl-tls-service-profile>
           <ntp-servers>
             <primary-ntp-server>
               <ntp-server-address>1.pool.ntp.org</ntp-server-address>
@@ -1359,13 +1358,5 @@
         <algorithm>RSA</algorithm>
       </entry>
     </certificate>
-    <ssl-tls-service-profile>
-      <entry name="webgui">
-        <protocol-settings>
-          <min-version>tls1-0</min-version>
-          <max-version>max</max-version>
-        </protocol-settings>
-      </entry>
-    </ssl-tls-service-profile>
   </panorama>
 </config>

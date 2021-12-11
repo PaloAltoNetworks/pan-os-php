@@ -1,17 +1,32 @@
 <?php
 
 /**
- * © 2019 Palo Alto Networks, Inc.  All rights reserved.
+ * ISC License
  *
- * Licensed under SCRIPT SOFTWARE AGREEMENT, Palo Alto Networks, Inc., at https://www.paloaltonetworks.com/legal/script-software-license-1-0.pdf
+ * Copyright (c) 2014-2018, Palo Alto Networks Inc.
+ * Copyright (c) 2019, Palo Alto Networks Inc.
  *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-echo "\n***********************************************\n";
-echo "************ DOC GENERATOR  **************\n\n";
 
 require_once("../../../lib/pan_php_framework.php");
 require_once("../../common/actions.php");
+
+PH::print_stdout("");
+PH::print_stdout("***********************************************");
+PH::print_stdout("*********** " . basename(__FILE__) . " UTILITY **************");
+PH::print_stdout("");
 
 $dataFile = __DIR__ . '/data.js';
 
@@ -54,6 +69,15 @@ $actionsData['rule'] = generateActionJSON(RuleCallContext::$supportedActions);
 $actionsData['address'] = generateActionJSON(AddressCallContext::$supportedActions);
 $actionsData['service'] = generateActionJSON(ServiceCallContext::$supportedActions);
 $actionsData['tag'] = generateActionJSON(TagCallContext::$supportedActions);
+$actionsData['zone'] = generateActionJSON(ZoneCallContext::$supportedActions);
+$actionsData['securityprofile'] = generateActionJSON(SecurityProfileCallContext::$supportedActions);
+$actionsData['securityprofilegroup'] = generateActionJSON(SecurityProfileGroupCallContext::$supportedActions);
+$actionsData['device'] = generateActionJSON(DeviceCallContext::$supportedActions);
+$actionsData['interface'] = generateActionJSON(InterfaceCallContext::$supportedActions);
+$actionsData['routing'] = generateActionJSON(RoutingCallContext::$supportedActions);
+$actionsData['virtualwire'] = generateActionJSON(VirtualWireCallContext::$supportedActions);
+$actionsData['schedule'] = generateActionJSON(ScheduleCallContext::$supportedActions);
+
 
 function &generateFilterJSON($filters)
 {
@@ -90,6 +114,14 @@ $filtersData['rule'] = generateFilterJSON(RQuery::$defaultFilters['rule']);
 $filtersData['address'] = generateFilterJSON(RQuery::$defaultFilters['address']);
 $filtersData['service'] = generateFilterJSON(RQuery::$defaultFilters['service']);
 $filtersData['tag'] = generateFilterJSON(RQuery::$defaultFilters['tag']);
+$filtersData['zone'] = generateFilterJSON(RQuery::$defaultFilters['zone']);
+$filtersData['securityprofile'] = generateFilterJSON(RQuery::$defaultFilters['securityprofile']);
+$filtersData['securityprofilegroup'] = generateFilterJSON(RQuery::$defaultFilters['securityprofilegroup']);
+$filtersData['device'] = generateFilterJSON(RQuery::$defaultFilters['device']);
+$filtersData['interface'] = generateFilterJSON(RQuery::$defaultFilters['interface']);
+$filtersData['routing'] = generateFilterJSON(RQuery::$defaultFilters['routing']);
+$filtersData['virtualwire'] = generateFilterJSON(RQuery::$defaultFilters['virtualwire']);
+$filtersData['schedule'] = generateFilterJSON(RQuery::$defaultFilters['schedule']);
 
 
 $data = array('actions' => &$actionsData, 'filters' => &$filtersData);
@@ -98,4 +130,4 @@ $data = 'var data = ' . json_encode($data, JSON_PRETTY_PRINT) . ';';
 
 file_put_contents($dataFile, $data);
 
-echo "\nDOC GENERATED !!!\n\n";
+PH::print_stdout( "DOC GENERATED !!!" );

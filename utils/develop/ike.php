@@ -1,47 +1,61 @@
 <?php
 
 /**
- * © 2019 Palo Alto Networks, Inc.  All rights reserved.
+ * ISC License
  *
- * Licensed under SCRIPT SOFTWARE AGREEMENT, Palo Alto Networks, Inc., at https://www.paloaltonetworks.com/legal/script-software-license-1-0.pdf
+ * Copyright (c) 2019, Palo Alto Networks Inc.
  *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
 
-print "\n***********************************************\n";
-print "************ IKE UTILITY ****************\n\n";
 
 set_include_path(dirname(__FILE__) . '/../' . PATH_SEPARATOR . get_include_path());
 require_once dirname(__FILE__)."/../../lib/pan_php_framework.php";
 
+PH::print_stdout("");
+PH::print_stdout("***********************************************");
+PH::print_stdout("*********** " . basename(__FILE__) . " UTILITY **************");
+PH::print_stdout("");
 
 function display_usage_and_exit($shortMessage = FALSE)
 {
     global $argv;
-    print PH::boldText("USAGE: ") . "php " . basename(__FILE__) . " in=inputfile.xml location=vsys1 " .
-        "actions=action1:arg1 ['filter=(type is.group) or (name contains datacenter-)']\n";
-    print "php " . basename(__FILE__) . " help          : more help messages\n";
+    PH::print_stdout( PH::boldText("USAGE: ") . "php " . basename(__FILE__) . " in=inputfile.xml location=vsys1 " .
+        "actions=action1:arg1 ['filter=(type is.group) or (name contains datacenter-)']");
+    PH::print_stdout( "php " . basename(__FILE__) . " help          : more help messages");
 
 
     if( !$shortMessage )
     {
-        print PH::boldText("\nListing available arguments\n\n");
+        PH::print_stdout( PH::boldText("\nListing available arguments") );
 
         global $supportedArguments;
 
         ksort($supportedArguments);
+        $text = "";
         foreach( $supportedArguments as &$arg )
         {
-            print " - " . PH::boldText($arg['niceName']);
+            $text .= " - " . PH::boldText($arg['niceName']);
             if( isset($arg['argDesc']) )
-                print '=' . $arg['argDesc'];
+                $text .= '=' . $arg['argDesc'];
             //."=";
             if( isset($arg['shortHelp']) )
-                print "\n     " . $arg['shortHelp'];
-            print "\n\n";
+                $text .= "\n     " . $arg['shortHelp'];
+            PH::print_stdout( $text);
         }
 
-        print "\n\n";
+        PH::print_stdout("");
     }
 
     exit(1);
@@ -49,12 +63,15 @@ function display_usage_and_exit($shortMessage = FALSE)
 
 function display_error_usage_exit($msg)
 {
-    fwrite(STDERR, PH::boldText("\n**ERROR** ") . $msg . "\n\n");
+    if( PH::$shadow_json )
+        PH::$JSON_OUT['error'] = $msg;
+    else
+        fwrite(STDERR, PH::boldText("\n**ERROR** ") . $msg . "\n\n");
     display_usage_and_exit(TRUE);
 }
 
 
-print "\n";
+PH::print_stdout("");
 
 $configType = null;
 $configInput = null;
@@ -153,11 +170,11 @@ elseif( $configInput['type'] == 'api' )
 
     if( $debugAPI )
         $configInput['connector']->setShowApiCalls(TRUE);
-    print " - Downloading config from API... ";
+    PH::print_stdout( " - Downloading config from API... ");
 
     if( isset(PH::$args['loadpanoramapushedconfig']) )
     {
-        print " - 'loadPanoramaPushedConfig' was requested, downloading it through API...";
+        PH::print_stdout( " - 'loadPanoramaPushedConfig' was requested, downloading it through API...");
         $xmlDoc1 = $configInput['connector']->getPanoramaPushedConfig();
     }
     else
@@ -169,7 +186,7 @@ elseif( $configInput['type'] == 'api' )
 
     #$xmlDoc1->save( $offline_folder."/orig/".$hostname."_prod_new.xml" );
 
-    print "OK!\n";
+
 
 }
 else
@@ -193,7 +210,7 @@ else
     $configType = 'panos';
 unset($xpathResult1);
 
-print " - Detected platform type is '{$configType}'\n";
+PH::print_stdout( " - Detected platform type is '{$configType}'");
 
 ############## actual not used
 
@@ -225,17 +242,17 @@ else
 {
     if( $configType == 'panos' )
     {
-        print " - No 'location' provided so using default ='vsys1'\n";
+        PH::print_stdout( " - No 'location' provided so using default ='vsys1'");
         $objectslocation = 'vsys1';
     }
     elseif( $configType == 'panorama' )
     {
-        print " - No 'location' provided so using default ='shared'\n";
+        PH::print_stdout( " - No 'location' provided so using default ='shared'");
         $objectslocation = 'shared';
     }
     elseif( $configType == 'pushed_panorama' )
     {
-        print " - No 'location' provided so using default ='vsys1'\n";
+        PH::print_stdout( " - No 'location' provided so using default ='vsys1'");
         $objectslocation = 'vsys1';
     }
 }
@@ -309,11 +326,11 @@ foreach( $template_array as $template )
 
 
 ##############
-//print "\n#######################################################################################################################\n";
+//PH::print_stdout( "#######################################################################################################################");
     //DISPLAY
-    print "\n\n----------------------\n";
+    PH::print_stdout( "----------------------");
     if( is_object($template) )
-        print "TEMPLATE: " . PH::boldText($template->name()) . "\n";
+        PH::print_stdout( "TEMPLATE: " . PH::boldText($template->name()) );
 
     foreach( $tmp_location_array as $objectslocation )
     {
@@ -336,123 +353,126 @@ foreach( $template_array as $template )
         {
             //todo: improvments needed so that output contains only IKE/IPsec information to specific VSYS
 
-            print "\n\n";
-            print "VSYS: " . $sub->name() . "\n\n";
+            PH::print_stdout("");
+            PH::print_stdout( "VSYS: " . $sub->name() );
 
             $IKE = $sub->owner->network->ikeCryptoProfileStore->ikeCryptoProfil();
             if( count($IKE) > 0 )
-                print PH::boldText("IKE - Phase 1\n");
+                PH::print_stdout( PH::boldText("IKE - Phase 1") );
 
             foreach( $IKE as $ikeCryptoProfil )
             {
-                print $ikeCryptoProfil->name() . "\n";
-                print "hash: " . $ikeCryptoProfil->hash . " - dhgroup: " . $ikeCryptoProfil->dhgroup . " - encryption: " . $ikeCryptoProfil->encryption . " - ";
+                PH::print_stdout( $ikeCryptoProfil->name() );
+                $text = "hash: " . $ikeCryptoProfil->hash . " - dhgroup: " . $ikeCryptoProfil->dhgroup . " - encryption: " . $ikeCryptoProfil->encryption . " - ";
                 if( $ikeCryptoProfil->lifetime_seconds != "" )
-                    print $ikeCryptoProfil->lifetime_seconds . " seconds";
+                    $text .= $ikeCryptoProfil->lifetime_seconds . " seconds";
                 elseif( $ikeCryptoProfil->lifetime_minutes != "" )
-                    print $ikeCryptoProfil->lifetime_minutes . " minutes";
+                    $text .= $ikeCryptoProfil->lifetime_minutes . " minutes";
                 elseif( $ikeCryptoProfil->lifetime_hours != "" )
-                    print $ikeCryptoProfil->lifetime_hours . " hours";
+                    $text .= $ikeCryptoProfil->lifetime_hours . " hours";
                 elseif( $ikeCryptoProfil->lifetime_days != "" )
-                    print $ikeCryptoProfil->lifetime_days . " days";
+                    $text .= $ikeCryptoProfil->lifetime_days . " days";
 
-                print "\n\n";
+                PH::print_stdout($text);
             }
 
 
             $ipsec = $sub->owner->network->ipsecCryptoProfileStore->ipsecCryptoProfil();
             if( count($ipsec) > 0 )
             {
-                print "\n\n";
-                print PH::boldText("IPSEC - Phase 2\n");
+                PH::print_stdout("");
+                PH::print_stdout( PH::boldText("IPSEC - Phase 2"));
             }
 
             foreach( $ipsec as $ipsecCryptoProfil )
             {
-                print $ipsecCryptoProfil->name() . " - protocol: " . $ipsecCryptoProfil->ipsecProtocol . "\n";
-                print "encryption: " . $ipsecCryptoProfil->encryption . " - authentication: " . $ipsecCryptoProfil->authentication . " - dhgroup: " . $ipsecCryptoProfil->dhgroup;
+                PH::print_stdout( $ipsecCryptoProfil->name() . " - protocol: " . $ipsecCryptoProfil->ipsecProtocol );
+                $text = "encryption: " . $ipsecCryptoProfil->encryption . " - authentication: " . $ipsecCryptoProfil->authentication . " - dhgroup: " . $ipsecCryptoProfil->dhgroup;
 
                 if( $ipsecCryptoProfil->lifetime_seconds != "" )
-                    print " - lifetime: " . $ipsecCryptoProfil->lifetime_seconds . " seconds";
+                    $text .= " - lifetime: " . $ipsecCryptoProfil->lifetime_seconds . " seconds";
                 elseif( $ipsecCryptoProfil->lifetime_minutes != "" )
-                    print " - lifetime: " . $ipsecCryptoProfil->lifetime_minutes . " minutes";
+                    $text .= " - lifetime: " . $ipsecCryptoProfil->lifetime_minutes . " minutes";
                 elseif( $ipsecCryptoProfil->lifetime_hours != "" )
-                    print " - lifetime: " . $ipsecCryptoProfil->lifetime_hours . " hours";
+                    $text .= " - lifetime: " . $ipsecCryptoProfil->lifetime_hours . " hours";
                 elseif( $ipsecCryptoProfil->lifetime_days != "" )
-                    print " - lifetime: " . $ipsecCryptoProfil->lifetime_days . " days";
+                    $text .= " - lifetime: " . $ipsecCryptoProfil->lifetime_days . " days";
 
 
                 if( $ipsecCryptoProfil->lifesize_kb != "" )
-                    print " - lifesize: " . $ipsecCryptoProfil->lifesize_kb . " kb";
+                    $text .= " - lifesize: " . $ipsecCryptoProfil->lifesize_kb . " kb";
                 elseif( $ipsecCryptoProfil->lifesize_mb != "" )
-                    print " - lifesize: " . $ipsecCryptoProfil->lifesize_mb . " mb";
+                    $text .= " - lifesize: " . $ipsecCryptoProfil->lifesize_mb . " mb";
                 elseif( $ipsecCryptoProfil->lifesize_gb != "" )
-                    print " - lifesize: " . $ipsecCryptoProfil->lifesize_gb . " gb";
+                    $text .= " - lifesize: " . $ipsecCryptoProfil->lifesize_gb . " gb";
                 elseif( $ipsecCryptoProfil->lifesize_tb != "" )
-                    print " - lifesize: " . $ipsecCryptoProfil->lifesize_tb . " tb";
+                    $text .= " - lifesize: " . $ipsecCryptoProfil->lifesize_tb . " tb";
 
-                print "\n\n";
+                PH::print_stdout($text);
             }
 
 
             $ikeGateways = $sub->owner->network->ikeGatewayStore->gateways();
             if( count($ikeGateways) > 0 )
             {
-                print "\n\n";
-                print PH::boldText("IKE GATEWAY\n");
+                PH::print_stdout("");
+                PH::print_stdout( PH::boldText("IKE GATEWAY") );
             }
 
 
             foreach( $ikeGateways as $gateway )
             {
-                print "\nGateway: " . str_pad($gateway->name(), 25) . " ";
+                $text = "\nGateway: " . str_pad($gateway->name(), 25) . " ";
 
-                print "-preSharedKey: " . $gateway->preSharedKey . " ";
+                $text .= "-preSharedKey: " . $gateway->preSharedKey . " ";
 
-                print "-version: " . $gateway->version . " ";
+                $text .= "-version: " . $gateway->version . " ";
 
-                print "-proposal: " . str_pad($gateway->proposal, 25) . " ";
+                $text .= "-proposal: " . str_pad($gateway->proposal, 25) . " ";
 
-                print "-exchange-mode: " . str_pad($gateway->exchangemode, 25) . "\n";
+                $text .= "-exchange-mode: " . str_pad($gateway->exchangemode, 25);
+                PH::print_stdout($text);
 
-                print "                                   ";
-                print "-localAddress: " . $gateway->localAddress . " ";
-                print "-localInterface: " . $gateway->localInterface . " ";
-                print "-peerAddress: " . $gateway->peerAddress . " ";
-                print "-localID: " . $gateway->localID . " ";
-                print "-peerID: " . $gateway->peerID . " ";
+                $text = "                                   ";
+                $text .= "-localAddress: " . $gateway->localAddress . " ";
+                $text .= "-localInterface: " . $gateway->localInterface . " ";
+                $text .= "-peerAddress: " . $gateway->peerAddress . " ";
+                $text .= "-localID: " . $gateway->localID . " ";
+                $text .= "-peerID: " . $gateway->peerID . " ";
 
-                print "-NatTraversal: " . $gateway->natTraversal . " ";
-                print "-fragmentation: " . $gateway->fragmentation . " ";
+                $text .= "-NatTraversal: " . $gateway->natTraversal . " ";
+                $text .= "-fragmentation: " . $gateway->fragmentation . " ";
 
-                print "-disabled: " . $gateway->disabled . " \n";
+                $text .= "-disabled: " . $gateway->disabled;
+                PH::print_stdout($text);
             }
 
 
             $ipsecTunnel = $sub->owner->network->ipsecTunnelStore->tunnels();
             if( count($ipsecTunnel) > 0 )
             {
-                print "\n\n";
-                print PH::boldText("IPSEC tunnel\n");
+                PH::print_stdout("");
+                PH::print_stdout( PH::boldText("IPSEC tunnel") );
             }
 
 
             foreach( $ipsecTunnel as $tunnel )
             {
-                print "\nTunnel: " . str_pad($tunnel->name(), 25) . " - IKE Gateway: " . $tunnel->gateway;
-                print " - interface: " . $tunnel->interface . " - proposal: " . $tunnel->proposal;
-                print " -disabled: " . $tunnel->disabled;
-                print "\n";
+                $text = "\nTunnel: " . str_pad($tunnel->name(), 25) . " - IKE Gateway: " . $tunnel->gateway;
+                $text .= " - interface: " . $tunnel->interface . " - proposal: " . $tunnel->proposal;
+                $text .= " -disabled: " . $tunnel->disabled;
+                PH::print_stdout($text);
 
                 foreach( $tunnel->proxyIdList() as $proxyId )
                 {
-                    print "  - Name: " . $proxyId['name'] . " - ";
-                    print "local: " . $proxyId['local'] . " - ";
-                    print "remote: " . $proxyId['remote'] . " - ";
-                    print "protocol: " . $proxyId['protocol']['type'] . " - ";
-                    print "local-port: " . $proxyId['protocol']['localport'] . " - ";
-                    print "remote-port: " . $proxyId['protocol']['remoteport'] . " - ";
-                    print "type: " . $proxyId['type'] . "\n";
+                    $text = "  - Name: " . $proxyId['name'] . " - ";
+                    $text .= "local: " . $proxyId['local'] . " - ";
+                    $text .= "remote: " . $proxyId['remote'] . " - ";
+                    $text .= "protocol: " . $proxyId['protocol']['type'] . " - ";
+                    $text .= "local-port: " . $proxyId['protocol']['localport'] . " - ";
+                    $text .= "remote-port: " . $proxyId['protocol']['remoteport'] . " - ";
+                    $text .= "type: " . $proxyId['type'];
+                    PH::print_stdout($text);
                 }
             }
 
@@ -462,7 +482,7 @@ foreach( $template_array as $template )
 
 ##############################################
 
-print "\n\n\n";
+PH::print_stdout("");
 
 // save our work !!!
 if( $configOutput !== null )
@@ -474,6 +494,6 @@ if( $configOutput !== null )
 }
 
 
-print "\n\n************ END OF IKE UTILITY ************\n";
-print     "**************************************************\n";
-print "\n\n";
+PH::print_stdout("");
+PH::print_stdout("************* END OF SCRIPT " . basename(__FILE__) . " ************" );
+PH::print_stdout("");

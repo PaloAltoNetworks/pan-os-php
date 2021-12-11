@@ -1,9 +1,21 @@
 <?php
 /**
- * © 2019 Palo Alto Networks, Inc.  All rights reserved.
+ * ISC License
  *
- * Licensed under SCRIPT SOFTWARE AGREEMENT, Palo Alto Networks, Inc., at https://www.paloaltonetworks.com/legal/script-software-license-1-0.pdf
+ * Copyright (c) 2014-2018, Palo Alto Networks Inc.
+ * Copyright (c) 2019, Palo Alto Networks Inc.
  *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
 /**
@@ -81,6 +93,9 @@ class FawkesConf
     /** @var AppStore */
     public $appStore;
 
+    /** @var ThreatStore */
+    public $threatStore;
+
     /** @var SecurityProfileStore */
     public $urlStore;
 
@@ -107,7 +122,9 @@ class FawkesConf
         $this->zoneStore->setName('zoneStore');
 
 
-        $this->appStore = AppStore::getPredefinedStore();
+        $this->appStore = AppStore::getPredefinedStore( $this );
+
+        $this->threatStore = ThreatStore::getPredefinedStore( $this );
 
         $this->urlStore = SecurityProfileStore::getPredefinedStore();
 
@@ -153,11 +170,15 @@ class FawkesConf
         else
         {
             if( isset($this->connector) && $this->connector !== null )
+            {
                 $version = $this->connector->getSoftwareVersion();
-            else
-                derr('cannot find PANOS version used for make this config');
+                $this->version = $version['version'];
+            }
 
-            $this->version = $version['version'];
+            else
+                $this->version = "not defined";
+
+
         }
 
 
@@ -201,25 +222,26 @@ class FawkesConf
         $containerToParent = array();
         $parentToDG = array();
 
-        foreach( $containerMetaDataNode->childNodes as $node )
-        {
-            if( $node->nodeType != XML_ELEMENT_NODE )
-                continue;
+        if( $containerMetaDataNode !== false )
+            foreach( $containerMetaDataNode->childNodes as $node )
+            {
+                if( $node->nodeType != XML_ELEMENT_NODE )
+                    continue;
 
-            $containerName = DH::findAttribute('name', $node);
-            if( $containerName === FALSE )
-                derr("Container name attribute not found in container-meta-data", $node);
+                $containerName = DH::findAttribute('name', $node);
+                if( $containerName === FALSE )
+                    derr("Container name attribute not found in container-meta-data", $node);
 
-            $containerLoadOrder[] = $containerName;
-            //parent information not available in fawkes read-only; direct
-        }
+                $containerLoadOrder[] = $containerName;
+                //parent information not available in fawkes read-only; direct
+            }
 
 
 
 /*
-        print "1Container loading order:\n";
+        PH::print_stdout( "1Container loading order:" );
         foreach( $containerLoadOrder as &$dgName )
-            print " - {$dgName}\n";
+            PH::print_stdout(  " - {$dgName}" );
 */
 
         $containerNodes = array();
@@ -274,9 +296,9 @@ class FawkesConf
 
             if( count($containerLoadOrder) <= $containerLoadOrderCount )
             {
-                print "Problems could be available with the following Container(s)\n";
-                print "COUNT LoadOrder: ".count($containerLoadOrder)."\n";
-                print "COUNT LoadOrderCount: ".$containerLoadOrderCount."\n";
+                PH::print_stdout(  "Problems could be available with the following Container(s)" );
+                PH::print_stdout(  "COUNT LoadOrder: ".count($containerLoadOrder) );
+                PH::print_stdout(  "COUNT LoadOrderCount: ".$containerLoadOrderCount );
                 print_r($containerLoadOrder);
                 #derr('container-meta-data seems to be corrupted, parent.child template cannot be calculated ', $containerMetaDataNode);
             }
@@ -319,6 +341,8 @@ class FawkesConf
                     $ldv->serviceStore->parentCentralStore = $parentContainer->serviceStore;
                     $ldv->tagStore->parentCentralStore = $parentContainer->tagStore;
                     $ldv->scheduleStore->parentCentralStore = $parentContainer->scheduleStore;
+                    $ldv->appStore->parentCentralStore = $parentContainer->appStore;
+                    $ldv->securityProfileGroupStore->parentCentralStore = $parentContainer->securityProfileGroupStore;
                     //Todo: swaschkut 20210505 - check if other Stores must be added
                     //- appStore;scheduleStore/securityProfileGroupStore/all kind of SecurityProfile
                 }
@@ -391,15 +415,20 @@ class FawkesConf
     public function save_to_file($fileName, $printMessage = TRUE, $lineReturn = TRUE, $indentingXml = 0, $indentingXmlIncreament = 1)
     {
         if( $printMessage )
-            print "Now saving FawkesConf to file '$fileName'...";
+            PH::print_stdout( "Now saving FawkesConf to file '$fileName'..." );
 
         //Todo: swaschkut check
         //$indentingXmlIncreament was 2 per default for Panroama
         $xml = &DH::dom_to_xml($this->xmlroot, $indentingXml, $lineReturn, -1, $indentingXmlIncreament + 1);
+
+        $path_parts = pathinfo($fileName);
+        if (!is_dir($path_parts['dirname']))
+            mkdir($path_parts['dirname'], 0777, true);
+
         file_put_contents($fileName, $xml);
 
         if( $printMessage )
-            print "     done!\n\n";
+            PH::print_stdout( "     done!" );
     }
 
     /**
@@ -460,6 +489,7 @@ class FawkesConf
         $gnsecprofVB = $container_all->VulnerabilityProfileStore->count();
         $gnsecprofAVWF = $container_all->VirusAndWildfireProfileStore->count();
         $gnsecprofDNS = $container_all->DNSSecurityProfileStore->count();
+        $gnsecprofSaas = $container_all->SaasSecurityProfileStore->count();
         $gnsecprofURL = $container_all->URLProfileStore->count();
         $gnsecprofFB = $container_all->FileBlockingProfileStore->count();
 
@@ -513,6 +543,7 @@ class FawkesConf
             $gnsecprofVB += $cur->VulnerabilityProfileStore->count();
             $gnsecprofAVWF += $cur->VirusAndWildfireProfileStore->count();
             $gnsecprofDNS += $cur->DNSSecurityProfileStore->count();
+            $gnsecprofSaas += $cur->SaasSecurityProfileStore->count();
             $gnsecprofURL += $cur->URLProfileStore->count();
             $gnsecprofFB += $cur->FileBlockingProfileStore->count();
 
@@ -579,6 +610,7 @@ class FawkesConf
             $gnsecprofVB += $cur->VulnerabilityProfileStore->count();
             $gnsecprofAVWF += $cur->VirusAndWildfireProfileStore->count();
             $gnsecprofDNS += $cur->DNSSecurityProfileStore->count();
+            $gnsecprofSaas += $cur->SaasSecurityProfileStore->count();
             $gnsecprofURL += $cur->URLProfileStore->count();
             $gnsecprofFB += $cur->FileBlockingProfileStore->count();
 
@@ -730,6 +762,10 @@ class FawkesConf
         $stdoutarray['securityProfile DNS objects']['total_DGs'] = $gnsecprofDNS;
 
         $stdoutarray['securityProfile objects'] = array();
+        $stdoutarray['securityProfile Saas objects']['All'] = $container_all->SaasSecurityProfileStore->count();
+        $stdoutarray['securityProfile Saas objects']['total_DGs'] = $gnsecprofSaas;
+
+        $stdoutarray['securityProfile objects'] = array();
         $stdoutarray['securityProfile URL objects']['All'] = $container_all->URLProfileStore->count();
         $stdoutarray['securityProfile URL objects']['total_DGs'] = $gnsecprofURL;
 
@@ -767,7 +803,7 @@ class FawkesConf
         else
             {
             #PH::print_stdout( $return );
-            PH::print_stdout( $stdoutarray );
+            PH::print_stdout( $stdoutarray, true  );
         }
     }
 
@@ -823,6 +859,8 @@ class FawkesConf
             $newDG->serviceStore->parentCentralStore = $parentContainer->serviceStore;
             $newDG->tagStore->parentCentralStore = $parentContainer->tagStore;
             $newDG->scheduleStore->parentCentralStore = $parentContainer->scheduleStore;
+            $newDG->appStore->parentCentralStore = $parentContainer->appStore;
+            $newDG->securityProfileGroupStore->parentCentralStore = $parentContainer->securityProfileGroupStore;
             //Todo: swaschkut 20210505 - check if other Stores must be added
             //- appStore;scheduleStore/securityProfileGroupStore/all kind of SecurityProfile
         }
@@ -896,6 +934,8 @@ class FawkesConf
             $newDG->serviceStore->parentCentralStore = $parentContainer->serviceStore;
             $newDG->tagStore->parentCentralStore = $parentContainer->tagStore;
             $newDG->scheduleStore->parentCentralStore = $parentContainer->scheduleStore;
+            $newDG->appStore->parentCentralStore = $parentContainer->appStore;
+            $newDG->securityProfileGroupStore->parentCentralStore = $parentContainer->securityProfileGroupStore;
             //Todo: swaschkut 20210505 - check if other Stores must be added
             //- appStore;scheduleStore/securityProfileGroupStore/all kind of SecurityProfile
         }

@@ -1,5 +1,21 @@
 <?php
-
+/**
+ * ISC License
+ *
+ * Copyright (c) 2019, Palo Alto Networks Inc.
+ *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 
 class SECURITYPROFILEUTIL extends UTIL
 {
@@ -31,25 +47,21 @@ class SECURITYPROFILEUTIL extends UTIL
         $this->stats();
 
         $this->save_our_work(TRUE);
+
+        $runtime = number_format((microtime(TRUE) - $this->runStartTime), 2, '.', '');
+        PH::print_stdout( array( 'value' => $runtime, 'type' => "seconds" ), false,'runtime' );
+
+        if( PH::$shadow_json )
+        {
+            PH::$JSON_OUT['log'] = PH::$JSON_OUTlog;
+            print json_encode( PH::$JSON_OUT, JSON_PRETTY_PRINT );
+        }
     }
 
     public function supportedArguments()
     {
-        $this->supportedArguments['securityprofiletype'] = array('niceName' => 'securityProfileType', 'shortHelp' => 'specify which type(s) of you rule want to edit, (default is "security". ie: securityprofiletype=any  securityprofiletype=url, customurl', 'argDesc' => 'all|any|url-filtering|virus|vulnerability|spyware|file-blocking|wildfire-analysis|custom-url-category|predefined-url');
-        $this->supportedArguments['in'] = array('niceName' => 'in', 'shortHelp' => 'input file or api. ie: in=config.xml  or in=api://192.168.1.1 or in=api://0018CAEC3@panorama.company.com', 'argDesc' => '[filename]|[api://IP]|[api://serial@IP]');
-        $this->supportedArguments['out'] = array('niceName' => 'out', 'shortHelp' => 'output file to save config after changes. Only required when input is a file. ie: out=save-config.xml', 'argDesc' => '[filename]');
-        $this->supportedArguments['location'] = array('niceName' => 'Location', 'shortHelp' => 'specify if you want to limit your query to a VSYS/DG. By default location=shared for Panorama, =vsys1 for PANOS. ie: location=any or location=vsys2,vsys1', 'argDesc' => '=sub1[,sub2]');
-        $this->supportedArguments['listactions'] = array('niceName' => 'ListActions', 'shortHelp' => 'lists available Actions');
-        $this->supportedArguments['listfilters'] = array('niceName' => 'ListFilters', 'shortHelp' => 'lists available Filters');
-        $this->supportedArguments['actions'] = array('niceName' => 'Actions', 'shortHelp' => 'action to apply on each rule matched by Filter. ie: actions=from-Add:net-Inside,netDMZ', 'argDesc' => 'action:arg1[,arg2]');
-        $this->supportedArguments['debugapi'] = array('niceName' => 'DebugAPI', 'shortHelp' => 'prints API calls when they happen');
-        $this->supportedArguments['filter'] = array('niceName' => 'Filter', 'shortHelp' => "filters rules based on a query. ie: 'filter=((from has external) or (source has privateNet1) and (to has external))'", 'argDesc' => '(field operator value)');
-        $this->supportedArguments['help'] = array('niceName' => 'help', 'shortHelp' => 'this message');
-        $this->supportedArguments['stats'] = array('niceName' => 'Stats', 'shortHelp' => 'display stats after changes');
-        $this->supportedArguments['apitimeout'] = array('niceName' => 'apiTimeout', 'shortHelp' => 'in case API takes too long time to anwer, increase this value (default=60)');
-        $this->supportedArguments['loadplugin'] = array('niceName' => 'loadPlugin', 'shortHelp' => 'a PHP file which contains a plugin to expand capabilities of this script');
-        $this->supportedArguments['loadpanoramapushedconfig'] = array('niceName' => 'loadPanoramaPushedConfig', 'shortHelp' => 'load Panorama pushed config from the firewall to take in account panorama objects and rules');
-        $this->supportedArguments['expedition'] = array('niceName' => 'expedition', 'shortHelp' => 'only used if called from Expedition Tool');
+        parent::supportedArguments();
+        $this->supportedArguments['securityprofiletype'] = array('niceName' => 'securityProfileType', 'shortHelp' => 'specify which type(s) of you rule want to edit, (default is "security". ie: securityprofiletype=any  securityprofiletype=url, customurl', 'argDesc' => 'all|any|url-filtering|virus|vulnerability|spyware|file-blocking|data-filtering|wildfire-analysis|custom-url-category|predefined-url|dns-security|saas-security');
     }
 
     public function location_filter_object()
@@ -91,9 +103,13 @@ class SECURITYPROFILEUTIL extends UTIL
                     {
                         $this->objectsToProcess[] = array('store' => $this->pan->AntiSpywareProfileStore, 'rules' => $this->pan->AntiSpywareProfileStore->securityProfiles());
                     }
-                    if( array_search('any', $this->securityProfileTypes) !== FALSE || array_search('wildfire-analysing', $this->securityProfileTypes) !== FALSE )
+                    if( array_search('any', $this->securityProfileTypes) !== FALSE || array_search('wildfire-analysis', $this->securityProfileTypes) !== FALSE )
                     {
                         $this->objectsToProcess[] = array('store' => $this->pan->WildfireProfileStore, 'rules' => $this->pan->WildfireProfileStore->securityProfiles());
+                    }
+                    if( array_search('any', $this->securityProfileTypes) !== FALSE || array_search('data-filtering', $this->securityProfileTypes) !== FALSE )
+                    {
+                        $this->objectsToProcess[] = array('store' => $this->pan->DataFilteringProfileStore, 'rules' => $this->pan->DataFilteringProfileStore->securityProfiles());
                     }
 
 
@@ -134,9 +150,13 @@ class SECURITYPROFILEUTIL extends UTIL
                             {
                                 $this->objectsToProcess[] = array('store' => $sub->AntiSpywareProfileStore, 'rules' => $sub->AntiSpywareProfileStore->securityProfiles());
                             }
-                            if( array_search('any', $this->securityProfileTypes) !== FALSE || array_search('wildfire-analysing', $this->securityProfileTypes) !== FALSE )
+                            if( array_search('any', $this->securityProfileTypes) !== FALSE || array_search('wildfire-analysis', $this->securityProfileTypes) !== FALSE )
                             {
                                 $this->objectsToProcess[] = array('store' => $sub->WildfireProfileStore, 'rules' => $sub->WildfireProfileStore->securityProfiles());
+                            }
+                            if( array_search('any', $this->securityProfileTypes) !== FALSE || array_search('data-filtering', $this->securityProfileTypes) !== FALSE )
+                            {
+                                $this->objectsToProcess[] = array('store' => $sub->DataFilteringProfileStore, 'rules' => $sub->DataFilteringProfileStore->securityProfiles());
                             }
 
 
@@ -174,9 +194,13 @@ class SECURITYPROFILEUTIL extends UTIL
                             {
                                 $this->objectsToProcess[] = array('store' => $sub->AntiSpywareProfileStore, 'rules' => $sub->AntiSpywareProfileStore->securityProfiles());
                             }
-                            if( array_search('any', $this->securityProfileTypes) !== FALSE || array_search('wildfire-analysing', $this->securityProfileTypes) !== FALSE )
+                            if( array_search('any', $this->securityProfileTypes) !== FALSE || array_search('wildfire-analysis', $this->securityProfileTypes) !== FALSE )
                             {
                                 $this->objectsToProcess[] = array('store' => $sub->WildfireProfileStore, 'rules' => $sub->WildfireProfileStore->securityProfiles());
+                            }
+                            if( array_search('any', $this->securityProfileTypes) !== FALSE || array_search('data-filtering', $this->securityProfileTypes) !== FALSE )
+                            {
+                                $this->objectsToProcess[] = array('store' => $sub->DataFilteringProfileStore, 'rules' => $sub->DataFilteringProfileStore->securityProfiles());
                             }
 
 
@@ -222,9 +246,13 @@ class SECURITYPROFILEUTIL extends UTIL
                     {
                         $this->objectsToProcess[] = array('store' => $this->pan->AntiSpywareProfileStore, 'rules' => $this->pan->AntiSpywareProfileStore->securityProfiles());
                     }
-                    if( array_search('any', $this->securityProfileTypes) !== FALSE || array_search('wildfire-analysing', $this->securityProfileTypes) !== FALSE )
+                    if( array_search('any', $this->securityProfileTypes) !== FALSE || array_search('wildfire-analysis', $this->securityProfileTypes) !== FALSE )
                     {
                         $this->objectsToProcess[] = array('store' => $this->pan->WildfireProfileStore, 'rules' => $this->pan->WildfireProfileStore->securityProfiles());
+                    }
+                    if( array_search('any', $this->securityProfileTypes) !== FALSE || array_search('data-filtering', $this->securityProfileTypes) !== FALSE )
+                    {
+                        $this->objectsToProcess[] = array('store' => $this->pan->DataFilteringProfileStore, 'rules' => $this->pan->DataFilteringProfileStore->securityProfiles());
                     }
 
 
@@ -263,9 +291,13 @@ class SECURITYPROFILEUTIL extends UTIL
                             {
                                 $this->objectsToProcess[] = array('store' => $sub->VirusAndWildfireProfileStore, 'rules' => $sub->VirusAndWildfireProfileStore->securityProfiles());
                             }
-                            if( array_search('any', $this->securityProfileTypes) !== FALSE || array_search('dnssecurity', $this->securityProfileTypes) !== FALSE )
+                            if( array_search('any', $this->securityProfileTypes) !== FALSE || array_search('dns-security', $this->securityProfileTypes) !== FALSE )
                             {
                                 $this->objectsToProcess[] = array('store' => $sub->DNSSecurityProfileStore, 'rules' => $sub->DNSSecurityProfileStore->securityProfiles());
+                            }
+                            if( array_search('any', $this->securityProfileTypes) !== FALSE || array_search('saas-security', $this->securityProfileTypes) !== FALSE )
+                            {
+                                $this->objectsToProcess[] = array('store' => $sub->SaasSecurityProfileStore, 'rules' => $sub->SaasSecurityProfileStore->securityProfiles());
                             }
                         }
                         else
@@ -274,9 +306,13 @@ class SECURITYPROFILEUTIL extends UTIL
                             {
                                 $this->objectsToProcess[] = array('store' => $sub->AntiVirusProfileStore, 'rules' => $sub->AntiVirusProfileStore->securityProfiles());
                             }
-                            if( array_search('any', $this->securityProfileTypes) !== FALSE || array_search('wildfire-analysing', $this->securityProfileTypes) !== FALSE )
+                            if( array_search('any', $this->securityProfileTypes) !== FALSE || array_search('wildfire-analysis', $this->securityProfileTypes) !== FALSE )
                             {
                                 $this->objectsToProcess[] = array('store' => $sub->WildfireProfileStore, 'rules' => $sub->WildfireProfileStore->securityProfiles());
+                            }
+                            if( array_search('any', $this->securityProfileTypes) !== FALSE || array_search('data-filtering', $this->securityProfileTypes) !== FALSE )
+                            {
+                                $this->objectsToProcess[] = array('store' => $sub->DataFilteringProfileStore, 'rules' => $sub->DataFilteringProfileStore->securityProfiles());
                             }
                         }
 
@@ -322,7 +358,7 @@ class SECURITYPROFILEUTIL extends UTIL
         // Determine rule types
         //
         #$supportedSecurityProfileTypes = array('all', 'any', 'url-filtering', 'virus', 'vulnerability', 'spyware', 'file-blocking', 'wildfire-analysis', 'custom-url-category', 'predefined-url');
-        $supportedSecurityProfileTypes = array('any', 'url-filtering', 'virus', 'vulnerability', 'spyware', 'file-blocking', 'wildfire-analysis', 'custom-url-category', 'predefined-url');
+        $supportedSecurityProfileTypes = array('any', 'url-filtering', 'virus', 'vulnerability', 'spyware', 'file-blocking', 'wildfire-analysis', 'custom-url-category', 'predefined-url', 'data-filtering');
         if( !isset(PH::$args['securityprofiletype']) )
         {
             PH::print_stdout( " - No 'securityProfileType' specified, using 'any' by default" );
@@ -356,20 +392,42 @@ class SECURITYPROFILEUTIL extends UTIL
 
         foreach( $this->objectsToProcess as &$rulesRecord )
         {
-            /** @var RuleStore $store */
+            $subObjectsProcessed = 0;
 
             $store = $rulesRecord['store'];
             $rules = &$rulesRecord['rules'];
-            $subObjectsProcessed = 0;
+
             $this->totalObjectsOfSelectedStores += $store->count();
+
+            PH::print_stdout( "" );
+            $string = "* processing SecurityProfileset '" . $store->toString() . " that holds " . count($rules) . "' SecurityProfiles";
+            PH::print_stdout( $string );
+
+            PH::$JSON_TMP = array();
+            PH::$JSON_TMP['header'] = $string;
 
             foreach( $this->doActions as $doAction )
             {
-                $doAction->subSystem = $store->owner;
+                if( is_object($store->owner) )
+                {
+                    $doAction->subSystem = $store->owner;
+                    PH::$JSON_TMP['sub']['name'] = $store->owner->name();
+                    PH::$JSON_TMP['sub']['type'] = get_class( $store->owner );
+                }
+
+                else
+                {
+                    $doAction->subSystem = $store;
+                    PH::$JSON_TMP['sub']['name'] = $store->name();
+                    PH::$JSON_TMP['sub']['type'] = "shared";
+                }
+
             }
 
-            PH::print_stdout( "" );
-            PH::print_stdout( "* processing SecurityProfileset '" . $store->toString() . " that holds " . count($rules) . "' SecurityProfiles" );
+            PH::$JSON_TMP['sub']['store'] = get_class( $store );
+
+
+
 
             foreach( $rules as $rule )
             {
@@ -404,10 +462,21 @@ class SECURITYPROFILEUTIL extends UTIL
 
             }
 
+            if( isset($store->owner->owner) && is_object($store->owner->owner) )
+                $tmp_platform = get_class( $store->owner->owner );
+            elseif( isset($store->owner) && is_object($store->owner) )
+                $tmp_platform = get_class( $store->owner );
+            else
+                $tmp_platform = get_class( $store );
+
             PH::print_stdout( "" );
             PH::print_stdout( "* objects processed in DG/Vsys '{$tmp_name}' : $subObjectsProcessed" );
             PH::print_stdout( "" );
 
+            PH::$JSON_TMP['sub']['summary']['processed'] = $subObjectsProcessed;
+            PH::$JSON_TMP['sub']['summary']['available'] = $store->count();
+            PH::print_stdout( PH::$JSON_TMP, false, $tmp_platform );
+            PH::$JSON_TMP = array();
             #PH::print_stdout( "* objects processed in DG/Vsys '{$store->owner->name()}' : $subObjectsProcessed filtered over {$store->count()} available\n\n" );
         }
         PH::print_stdout( "" );

@@ -1,10 +1,22 @@
 <?php
 
 /**
- * © 2019 Palo Alto Networks, Inc.  All rights reserved.
+ * ISC License
  *
- * Licensed under SCRIPT SOFTWARE AGREEMENT, Palo Alto Networks, Inc., at https://www.paloaltonetworks.com/legal/script-software-license-1-0.pdf
+ * Copyright (c) 2014-2018, Palo Alto Networks Inc.
+ * Copyright (c) 2019, Palo Alto Networks Inc.
  *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
 /**
@@ -176,7 +188,7 @@ class IPSecCryptoProfil
         if( preg_match('/[^0-9a-zA-Z_\-\s]/', $name) )
         {
             $name = preg_replace('/[^0-9a-zA-Z_\-\s]/', "", $name);
-            print "new name: " . $name . " \n";
+            PH::print_stdout(  "new name: " . $name );
             #mwarning( 'Name will be replaced with: '.$name."\n" );
         }
 
@@ -236,7 +248,7 @@ class IPSecCryptoProfil
         if( !isset(self::$authentications[$authentication]) )
         {
             $authentication = str_replace("-", "", $authentication);
-            print " *** authentication: " . $authentication . " wrong\n";
+            PH::print_stdout(  " *** authentication: " . $authentication . " wrong" );
             #mwarning( 'authentication wrong' );
         }
 
@@ -258,7 +270,7 @@ class IPSecCryptoProfil
         if( !isset(self::$encryptions[$encryption]) )
         {
             $encryption = str_replace("-", "", $encryption);
-            print " *** encryption: " . $encryption . " wrong\n";
+            PH::print_stdout(  " *** encryption: " . $encryption . " wrong" );
             #mwarning( 'authentication wrong' );
         }
 
@@ -322,8 +334,8 @@ class IPSecCryptoProfil
         #if( $this->encryption == $encryption )
         #return true;
 
-        print "TYPE: ".$sizetype."\n";
-        print "SIZE: ".$size."\n";
+        PH::print_stdout(  "TYPE: ".$sizetype );
+        PH::print_stdout(  "SIZE: ".$size );
 
         do
         {
@@ -340,8 +352,8 @@ class IPSecCryptoProfil
 
         } while( $size > 65535 );
 
-        print "TYPE: ".$sizetype."\n";
-        print "SIZE: ".$size."\n";
+        PH::print_stdout( "TYPE: ".$sizetype );
+        PH::print_stdout(  "SIZE: ".$size );
 
         if( $sizetype == 'kb' )
             $this->lifesize_kb = $size;

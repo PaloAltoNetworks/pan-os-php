@@ -22,7 +22,7 @@
  *
  *    $plaintext = str_repeat('a', 1024);
  *
- *    echo $twofish->decrypt($twofish->encrypt($plaintext));
+ *    print $twofish->decrypt($twofish->encrypt($plaintext));
  * ?>
  * </code>
  *

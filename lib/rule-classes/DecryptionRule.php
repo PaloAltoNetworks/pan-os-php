@@ -1,10 +1,22 @@
 <?php
 
 /**
- * © 2019 Palo Alto Networks, Inc.  All rights reserved.
+ * ISC License
  *
- * Licensed under SCRIPT SOFTWARE AGREEMENT, Palo Alto Networks, Inc., at https://www.paloaltonetworks.com/legal/script-software-license-1-0.pdf
+ * Copyright (c) 2014-2018, Palo Alto Networks Inc.
+ * Copyright (c) 2019, Palo Alto Networks Inc.
  *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
 class DecryptionRule extends RuleWithUserID
@@ -97,42 +109,96 @@ class DecryptionRule extends RuleWithUserID
     {
         $padding = str_pad('', $padding);
 
+        PH::$JSON_TMP['sub']['object'][$this->name()]['name'] = $this->name();
+        PH::$JSON_TMP['sub']['object'][$this->name()]['type'] = get_class($this);
+
         $dis = '';
         if( $this->disabled )
+        {
             $dis = '<disabled>';
+            PH::$JSON_TMP['sub']['object'][$this->name()]['disabled'] = "true";
+        }
+        else
+            PH::$JSON_TMP['sub']['object'][$this->name()]['disabled'] = "false";
+
 
         $sourceNegated = '';
         if( $this->sourceIsNegated() )
+        {
             $sourceNegated = '*negated*';
+            PH::$JSON_TMP['sub']['object'][$this->name()]['sourcenegated'] = "true";
+        }
+        else
+            PH::$JSON_TMP['sub']['object'][$this->name()]['sourcenegated'] = "false";
+
 
         $destinationNegated = '';
         if( $this->destinationIsNegated() )
+        {
             $destinationNegated = '*negated*';
+            PH::$JSON_TMP['sub']['object'][$this->name()]['destinationnegated'] = "true";
+        }
+        else
+            PH::$JSON_TMP['sub']['object'][$this->name()]['destinationnegated'] = "false";
 
-        print $padding . "*Rule named '{$this->name}' $dis\n";
-        print $padding . "  From: " . $this->from->toString_inline() . "  |  To:  " . $this->to->toString_inline() . "\n";
-        print $padding . "  Source: $sourceNegated " . $this->source->toString_inline() . "\n";
-        print $padding . "  Destination: $destinationNegated " . $this->destination->toString_inline() . "\n";
-        print $padding . "  Service:  " . $this->services->toString_inline() . "\n";
+        $text = $padding . "*Rule named '{$this->name}' $dis";
+        if( $this->owner->version >= 70 )
+        {
+            $text .= " UUID: '" . $this->uuid() . "'";
+            PH::$JSON_TMP['sub']['object'][$this->name()]['uuid'] = $this->uuid();
+        }
+        PH::print_stdout( $text );
+
+
+        PH::print_stdout( $padding . "  From: " . $this->from->toString_inline() . "  |  To:  " . $this->to->toString_inline() );
+        PH::$JSON_TMP['sub']['object'][$this->name()]['from'] = $this->from->toString_inline();
+        PH::$JSON_TMP['sub']['object'][$this->name()]['to'] = $this->to->toString_inline();
+
+        PH::print_stdout( $padding . "  Source: $sourceNegated " . $this->source->toString_inline() );
+        PH::$JSON_TMP['sub']['object'][$this->name()]['source'] = $this->source->toString_inline();
+
+        PH::print_stdout( $padding . "  Destination: $destinationNegated " . $this->destination->toString_inline() );
+        PH::$JSON_TMP['sub']['object'][$this->name()]['destination'] = $this->destination->toString_inline();
+
+        PH::print_stdout( $padding . "  Service:  " . $this->services->toString_inline() );
+        PH::$JSON_TMP['sub']['object'][$this->name()]['service'] = $this->services->toString_inline();
+
+
         if( !$this->userID_IsCustom() )
-            print $padding . "  User: *" . $this->userID_type() . "*\n";
+        {
+            PH::print_stdout( $padding . "  User: *" . $this->userID_type() . "*");
+            PH::$JSON_TMP['sub']['object'][$this->name()]['user'] = $this->userID_type();
+        }
         else
         {
             $users = $this->userID_getUsers();
-            print $padding . " User:  " . PH::list_to_string($users) . "\n";
+            PH::print_stdout( $padding . " User:  " . PH::list_to_string($users) );
+            PH::$JSON_TMP['sub']['object'][$this->name()]['user'] = PH::list_to_string($users);
         }
-        print $padding . "  Tags:  " . $this->tags->toString_inline() . "\n";
+
+        PH::print_stdout( $padding . "  Tags:  " . $this->tags->toString_inline() );
+        PH::$JSON_TMP['sub']['object'][$this->name()]['tag'] = $this->tags->toString_inline();
 
         if( $this->_targets !== null )
-            print $padding . "  Targets:  " . $this->targets_toString() . "\n";
+        {
+            PH::print_stdout( $padding . "  Targets:  " . $this->targets_toString() );
+            PH::$JSON_TMP['sub']['object'][$this->name()]['target'] = $this->targets_toString();
+        }
 
         if( strlen($this->_description) > 0 )
-            print $padding . "  Desc:  " . $this->_description . "\n";
+        {
+            PH::print_stdout( $padding . "  Desc:  " . $this->_description );
+            PH::$JSON_TMP['sub']['object'][$this->name()]['description'] = $this->_description;
+        }
 
         if( $this->_profile !== null )
-            print $padding . "  Profil:  " . $this->getDecryptionProfile() . "\n";
+        {
+            PH::print_stdout( $padding . "  Profil:  " . $this->getDecryptionProfile() );
+            PH::$JSON_TMP['sub']['object'][$this->name()]['profile'] = $this->getDecryptionProfile();
+        }
 
-        print "\n";
+
+        PH::print_stdout("");
     }
 
     public function getDecryptionProfile()

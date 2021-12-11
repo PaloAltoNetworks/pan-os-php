@@ -1,10 +1,22 @@
 <?php
 
 /**
- * © 2019 Palo Alto Networks, Inc.  All rights reserved.
+ * ISC License
  *
- * Licensed under SCRIPT SOFTWARE AGREEMENT, Palo Alto Networks, Inc., at https://www.paloaltonetworks.com/legal/script-software-license-1-0.pdf
+ * Copyright (c) 2014-2018, Palo Alto Networks Inc.
+ * Copyright (c) 2019, Palo Alto Networks Inc.
  *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
 
@@ -13,9 +25,9 @@ require_once("lib/pan_php_framework.php");
 $minimumVersion = "1.5.13";
 $maximumVersion = "2.1.0";
 
-// Check version of PAN-PHP-framework for compatibility
+// Check version of PAN-OS-PHP for compatibility
 if( ! PH::frameworkVersion_isGreaterThan($minimumVersion) || PH::frameworkVersion_isGreaterThan($maximumVersion) )
-    derr("AppID Toolbox requires PAN-PHP-framework version  > {$minimumVersion} and  < $maximumVersion while current version is ".PH::frameworkVersion()."\n");
+    derr("AppID Toolbox requires PAN-OS-PHP version  > {$minimumVersion} and  < $maximumVersion while current version is ".PH::frameworkVersion() . " [".PH::frameworkInstalledOS()."]"."\n");
 
 if( strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' )
 {
@@ -40,7 +52,7 @@ date_default_timezone_set( $timezone_name );
 
 
 #date_default_timezone_set("GMT");
-print " - TIMEZONE is set to: ".date_default_timezone_get()."\n";
+PH::print_stdout(  " - TIMEZONE is set to: ".date_default_timezone_get() );
 
 class DeviceGroupRuleAppUsage
 {
@@ -188,9 +200,10 @@ class DeviceGroupRuleAppUsage
         }
     }
 
+
     public function exportToCSV($filename)
     {
-        $content = file_get_contents(dirname(__FILE__).'/html/export-template.html');
+        $content = file_get_contents(dirname(__FILE__).'/../../utils/common/html/export-template.html');
 
         $content = str_replace('%TableHeaders%',
             '<th>app-name</th><th>count</th>',
@@ -198,9 +211,9 @@ class DeviceGroupRuleAppUsage
 
         //$content = str_replace('%lines%', $lines, $content);
 
-        $jscontent =  file_get_contents(dirname(__FILE__).'/html/jquery-1.11.js');
+        $jscontent =  file_get_contents(dirname(__FILE__).'/../../utils/common/html/jquery.min.js');
         $jscontent .= "\n";
-        $jscontent .= file_get_contents(dirname(__FILE__).'/html/jquery.stickytableheaders.min.js');
+        $jscontent .= file_get_contents(dirname(__FILE__).'/../../utils/common/html/jquery.stickytableheaders.min.js');
         $jscontent .= "\n\$('table').stickyTableHeaders();\n";
 
         $content = str_replace('%JSCONTENT%', $jscontent, $content);
@@ -224,6 +237,7 @@ class DeviceGroupRuleAppUsage
         file_put_contents($filename, $content);
 
     }
+
 
 }
 

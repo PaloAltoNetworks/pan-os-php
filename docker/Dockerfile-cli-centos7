@@ -1,0 +1,73 @@
+FROM centos:7
+
+ARG user_var="root"
+
+#SHELL ["/bin/bash", "-c"]
+
+
+RUN yum -y update
+RUN yum -y update tzdata
+RUN yum -y install bash-completion bash-completion-extras
+
+
+
+########## needed for PHP
+RUN yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+RUN yum -y install http://rpms.remirepo.net/enterprise/remi-release-7.rpm
+
+RUN yum -y install yum-utils
+
+RUN yum-config-manager --enable remi-php56
+
+
+
+# Install php (cli/fpm)
+RUN yum -y install \
+        php \
+        php-cli \
+        php-fpm \
+        php-json \
+        php-intl \
+        php-curl \
+        php-dom \
+        php-mbstring \
+        php-bcmath \
+    && yum clean all
+
+
+### PAN-OS-PHP
+RUN mkdir /tools; mkdir /tools/pan-os-php;
+
+COPY appid-toolbox /tools/pan-os-php/appid-toolbox
+COPY lib /tools/pan-os-php/lib
+COPY phpseclib /tools/pan-os-php/phpseclib
+COPY utils /tools/pan-os-php/utils
+COPY tests /tools/pan-os-php/tests
+
+
+# PHP library of pan-os-php
+RUN echo 'include_path = "/usr/share/php:/tools/pan-os-php"' >> /etc/php.ini
+RUN chmod -R 777 /tools/pan-os-php
+
+
+# UTIL alias for pan-os-php
+RUN cat /tools/pan-os-php/utils/alias.sh >> /$user_var/.bashrc
+RUN cat /tools/pan-os-php/utils/bash_autocompletion/enable_bash.txt >> /$user_var/.bashrc
+
+COPY utils/bash_autocompletion/pan-os-php.sh /usr/share/bash-completion/completions/pan-os-php
+
+
+#for BASH 5.0
+RUN yum -y install curl
+RUN yum -y groupinstall "Development Tools"
+RUN curl -O https://ftp.gnu.org/gnu/bash/bash-5.0.tar.gz
+RUN tar xvf bash-5.0.tar.gz
+RUN cd bash-5.0 && ./configure && make && make install
+
+#echo '/usr/local/bin/bash' >> /etc/shells
+#chsh -s /usr/local/bin/bash
+
+RUN yes | cp /usr/local/bin/bash /bin/bash
+
+
+

@@ -162,7 +162,11 @@ RQuery::$defaultFilters['zone']['location']['operators']['is.child.of'] = array(
             $sub = $sub->owner;
 
         if( get_class($sub) == "PANConf" )
-            derr("filter location is.child.of is not working against a firewall configuration");
+        {
+            PH::print_stdout( "ERROR: filter location is.child.of is not working against a firewall configuration");
+            return FALSE;
+        }
+
 
         if( strtolower($context->value) == 'shared' )
             return TRUE;
@@ -170,13 +174,13 @@ RQuery::$defaultFilters['zone']['location']['operators']['is.child.of'] = array(
         $DG = $sub->findDeviceGroup($context->value);
         if( $DG == null )
         {
-            print "ERROR: location '$context->value' was not found. Here is a list of available ones:\n";
-            print " - shared\n";
+            PH::print_stdout( "ERROR: location '$context->value' was not found. Here is a list of available ones:" );
+            PH::print_stdout( " - shared" );
             foreach( $sub->getDeviceGroups() as $sub1 )
             {
-                print " - " . $sub1->name() . "\n";
+                PH::print_stdout( " - " . $sub1->name() . "" );
             }
-            print "\n\n";
+            PH::print_stdout( "\n" );
             exit(1);
         }
 
@@ -209,7 +213,10 @@ RQuery::$defaultFilters['zone']['location']['operators']['is.parent.of'] = array
             $sub = $sub->owner;
 
         if( get_class($sub) == "PANConf" )
-            derr("filter location is.parent.of is not working against a firewall configuration");
+        {
+            PH::print_stdout( "ERROR: filter location is.child.of is not working against a firewall configuration");
+            return FALSE;
+        }
 
         if( strtolower($context->value) == 'shared' )
             return TRUE;
@@ -217,13 +224,13 @@ RQuery::$defaultFilters['zone']['location']['operators']['is.parent.of'] = array
         $DG = $sub->findDeviceGroup($context->value);
         if( $DG == null )
         {
-            print "ERROR: location '$context->value' was not found. Here is a list of available ones:\n";
-            print " - shared\n";
+            PH::print_stdout( "ERROR: location '$context->value' was not found. Here is a list of available ones:" );
+            PH::print_stdout( " - shared" );
             foreach( $sub->getDeviceGroups() as $sub1 )
             {
-                print " - " . $sub1->name() . "\n";
+                PH::print_stdout( " - " . $sub1->name() . "" );
             }
-            print "\n\n";
+            PH::print_stdout( "\n" );
             exit(1);
         }
 
@@ -271,7 +278,7 @@ RQuery::$defaultFilters['zone']['reflocation']['operators']['is'] = array(
             $DG = $owner->findDeviceGroup($context->value);
             if( $DG == null )
             {
-                $test = new UTIL("custom", array(), "");
+                $test = new UTIL("custom", array(), 0,"");
                 $test->configType = "panorama";
                 $test->locationNotFound($context->value, null, $owner);
             }
@@ -368,6 +375,47 @@ RQuery::$defaultFilters['zone']['reftype']['operators']['is'] = array(
     'arg' => TRUE,
     'ci' => array(
         'fString' => '(%PROP% securityrule )',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['zone']['logprof']['operators']['is.set'] = array(
+    'Function' => function (ZoneRQueryContext $context) {
+        /** @var Zone $zone */
+        $zone = $context->object;
+        if( $zone->isTmp() )
+            return FALSE;
+
+        if( $zone->logsetting === null || $zone->logsetting == '' )
+            return FALSE;
+
+        return TRUE;
+    },
+    'arg' => FALSE,
+    'ci' => array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['zone']['logprof']['operators']['is'] = array(
+    'Function' => function (ZoneRQueryContext $context) {
+
+        /** @var Zone $zone */
+        $zone = $context->object;
+        if( $zone->isTmp() )
+            return FALSE;
+
+        if( $zone->logsetting === null )
+            return FALSE;
+
+        if( $zone->logsetting == $context->value )
+            return TRUE;
+
+        return FALSE;
+    },
+    'arg' => TRUE,
+    'help' => 'return true if Log Forwarding Profile is the one specified in argument',
+    'ci' => array(
+        'fString' => '(%PROP%  log_to_panorama)',
         'input' => 'input/panorama-8.0.xml'
     )
 );

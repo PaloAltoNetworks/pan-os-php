@@ -1,10 +1,22 @@
 <?php
 
 /**
- * © 2019 Palo Alto Networks, Inc.  All rights reserved.
+ * ISC License
  *
- * Licensed under SCRIPT SOFTWARE AGREEMENT, Palo Alto Networks, Inc., at https://www.paloaltonetworks.com/legal/script-software-license-1-0.pdf
+ * Copyright (c) 2014-2018, Palo Alto Networks Inc.
+ * Copyright (c) 2019, Palo Alto Networks Inc.
  *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
 class RuleStore
@@ -36,9 +48,11 @@ class RuleStore
 
     protected $fastMemToIndex = null;
     protected $fastNameToIndex = null;
+    protected $fastUUIDToIndex = null;
 
     protected $fastMemToIndex_forPost = null;
     protected $fastNameToIndex_forPost = null;
+    protected $fastUUIDToIndex_forPost = null;
 
     /** @var NetworkPropertiesContainer|null */
     public $_networkStore = null;
@@ -141,7 +155,7 @@ class RuleStore
                 {
                     if( isset($nameIndex[$nr->name()]) )
                     {
-                        mwarning("rule named '{$nr->name()}' is present twice on the config and was cleaned by PAN-PHP-FRAMEWORK");
+                        mwarning("rule named '{$nr->name()}' is present twice on the config and was cleaned by PAN-OS-PHP");
                         $duplicatesRemoval[] = $node;
                         continue;
                     }
@@ -172,7 +186,7 @@ class RuleStore
                 {
                     if( isset($nameIndex[$nr->name()]) )
                     {
-                        mwarning("rule named '{$nr->name()}' is present twice on the config and was cleaned by PAN-PHP-FRAMEWORK");
+                        mwarning("rule named '{$nr->name()}' is present twice on the config and was cleaned by PAN-OS-PHP");
                         $duplicatesRemoval[] = $node;
                         continue;
                     }
@@ -226,6 +240,8 @@ class RuleStore
                 $this->fastMemToIndex[$ser] = $index;
                 $this->fastNameToIndex[$rule->name()] = $index;
 
+                $this->fastUUIDToIndex[$rule->uuid()] = $index;
+
                 if( $this->xmlroot === null )
                     $this->createXmlRoot();
 
@@ -246,6 +262,7 @@ class RuleStore
                 $index = lastIndex($this->_postRules);
                 $this->fastMemToIndex_forPost[$ser] = $index;
                 $this->fastNameToIndex_forPost[$rule->name()] = $index;
+                $this->fastUUIDToIndex_forPost[$rule->uuid()] = $index;
 
                 if( $this->postRulesRoot === null )
                     $this->createPostXmlRoot();
@@ -732,7 +749,8 @@ class RuleStore
     {
         if( $ruleToBeMoved === $ruleRef )
         {
-            print "\n   - skip object '" . PH::boldText($ruleToBeMoved->name()) . "' can't move after self!\n";
+            PH::print_stdout("");
+            PH::print_stdout( "   - skip object '" . PH::boldText($ruleToBeMoved->name()) . "' can't move after self!" );
             return;
         }
 
@@ -769,6 +787,8 @@ class RuleStore
         $this->fastMemToIndex_forPost = array();
         $this->fastNameToIndex = array();
         $this->fastNameToIndex_forPost = array();
+        $this->fastUUIDToIndex = array();
+        $this->fastUUIDToIndex_forPost = array();
 
         $this->_postRules = array();
     }
@@ -783,7 +803,8 @@ class RuleStore
     {
         if( $ruleToBeMoved === $ruleRef )
         {
-            print "\n   - skipp object '" . PH::boldText($ruleToBeMoved->name()) . "' can't move before self!\n";
+            PH::print_stdout("");
+            PH::print_stdout( "   - skipp object '" . PH::boldText($ruleToBeMoved->name()) . "' can't move before self!" );
             return;
         }
 
@@ -906,7 +927,8 @@ class RuleStore
     {
         if( $ruleToBeMoved === $ruleRef )
         {
-            print "\n   - skipp object '" . PH::boldText($ruleToBeMoved->name()) . "' can't move befor self!\n";
+            PH::print_stdout("");
+            PH::print_stdout( "   - skipp object '" . PH::boldText($ruleToBeMoved->name()) . "' can't move befor self!" );
             return;
         }
         $this->moveRuleBefore($ruleToBeMoved, $ruleRef, $rewritexml);
@@ -1052,8 +1074,10 @@ class RuleStore
      */
     public function &resultingPostRuleSet()
     {
-
-        $res = $this->_postRules;
+        if( $this->owner->isPanorama() )
+            $res = array();
+        else
+            $res = $this->_postRules;
 
         if( isset($this->owner->parentDeviceGroup) )
         {
@@ -1120,6 +1144,27 @@ class RuleStore
     }
 
     /**
+     * Look for a rule named $name. Return NULL if not found
+     * @param string $name
+     * @return Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|CaptivePortalRule[]|PbfRule|QoSRule|DoSRule
+     */
+    public function findByUUID($uuid)
+    {
+        if( !is_string($uuid) )
+            derr("String was expected for rule uuid");
+
+        if( isset($this->fastUUIDToIndex[$uuid]) )
+            #return $this->fastUUIDToIndex[$uuid];
+            return $this->_rules[$this->fastUUIDToIndex[$uuid]];
+
+        if( isset($this->fastUUIDToIndex_forPost[$uuid]) )
+            #return $this->fastUUIDToIndex_forPost[$uuid];
+            return $this->_postRules[$this->fastUUIDToIndex_forPost[$uuid]];
+
+        return null;
+    }
+
+    /**
      * Creates a new SecurityRule in this store. It will be placed at the end of the list.
      * @param string $name name of the new Rule
      * @param bool $inPost create it in post or pre (if applicable)
@@ -1129,7 +1174,11 @@ class RuleStore
     {
         $rule = new SecurityRule($this);
 
-        $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, SecurityRule::$templatexml);
+        if( $this->owner->version < 100 )
+            $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, SecurityRule::$templatexml);
+        else
+            $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, SecurityRule::$templatexml100);
+
         $rule->load_from_domxml($xmlElement);
 
         $rule->owner = null;
@@ -1403,11 +1452,13 @@ class RuleStore
     {
         $this->fastMemToIndex = array();
         $this->fastNameToIndex = array();
+        $this->fastUUIDToIndex = array();
 
         foreach( $this->_rules as $i => $rule )
         {
             $this->fastMemToIndex[spl_object_hash($rule)] = $i;
             $this->fastNameToIndex[$rule->name()] = $i;
+            $this->fastUUIDToIndex[$rule->uuid()] = $i;
         }
 
         if( !$this->isPreOrPost )
@@ -1415,11 +1466,13 @@ class RuleStore
 
         $this->fastMemToIndex_forPost = array();
         $this->fastNameToIndex_forPost = array();
+        $this->fastUUIDToIndex_forPost = array();
 
         foreach( $this->_postRules as $i => $rule )
         {
             $this->fastMemToIndex_forPost[spl_object_hash($rule)] = $i;
             $this->fastNameToIndex_forPost[$rule->name()] = $i;
+            $this->fastUUIDToIndex_forPost[$rule->uuid()] = $i;
         }
     }
 
@@ -1672,8 +1725,12 @@ class RuleStore
             $ruleTypeForXml = self::$storeNameByType[$this->type]['xpathRoot'];
             if( $this->owner->isVirtualSystem() || $this->owner->isDeviceCloud() )
                 $xml = DH::findFirstElementOrCreate('rulebase', $this->owner->xmlroot);
-            else
+            elseif( $this->owner->isDeviceGroup() )
                 $xml = DH::findFirstElementOrCreate('pre-rulebase', $this->owner->xmlroot);
+            elseif( $this->owner->isContainer() || $this->owner->isDeviceCloud() )
+                $xml = DH::findFirstElementOrCreate('pre-rulebase', $this->owner->xmlroot);
+            elseif( $this->owner->isPanorama() )
+                $xml = DH::findFirstElementOrCreate('pre-rulebase', $this->owner->sharedroot);
 
             $xml = DH::findFirstElementOrCreate($ruleTypeForXml, $xml);
             $this->xmlroot = DH::findFirstElementOrCreate('rules', $xml);

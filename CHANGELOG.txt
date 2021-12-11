@@ -1,10 +1,483 @@
 CHANGELOG
 
+2.0.27
+UTILS:
+* pa_gratuitous-arp - extend for SNAT / improve if addressObject value has netmask, to send gARP to all IP Addresses
+
+BUGFIX:
+
+GENERAL:
+
+
+2.0.26 (20211209)
+UTILS:
+* UTIL pan-os-php type=$utiltype is the only supported UTIL script for the future, all other UTIL script are set to deprecated
+* UTIL pan-os-php UI - move to local file usage
+* UTIL all script - introduce new argument "shadow-nojson"
+* UTIL UI - improvement to get filter correctly working for operators like ">,<,=,!"
+* UTIL UI - starting on extended version
+* UTIL UI - extend to delete additional actions/filter column
+* UTIL develop - add multiple script in specific for downloading PAN-OS software
+* UTIL develop | introduce API creation testing script for different objects
+* UTIL develop | introduce reset-config and software-remove script
+* UTIL develop | software-downloader.php improve exception support
+* UTIL introduce new ALIAS: pa_license / pa_software-preparation / pa_software-downloader / pa_config-commit / pa_config-reset / pa_get_system-user-info / pa_software-remove / pa_system-log / pa_traffic-log
+
+BUGFIX:
+* UTIL pan-os-php API - bugfix in relation to shadow-json and previous code reduction
+* UTIL pa_key-manager | bugfix to add host like license-apikey/bpa-apikey/ldap-password/maxmind-licensekey only once and delete previous available key
+* UTIL class UTIL.php | bugfix for adding Audit-Comment
+* UTIL pa_key-manager | bugfix to correctly add password/licensekey if used with add=ldap-password/maxmind-licensekey
+
+GENERAL:
+* Dockerfiles - extend to different PHP versions
+* App-ID version: 8497-7093 update
+* framework examples | update 'example-panapiconnector.php'
+
+
+2.0.25 (20211203)
+UTILS:
+* PAN-OS-PHP API - bugfix for PHP8.1
+* all edit script with method PAN-OS API - introduce sending audit-comment information - default setting "PAN-OS-PHP $UTILtype $timedate"
+* pa_rule-edit | 'actions=exportToExcel:FILE.html,ResolveAddressSummary|ResolveserviceSummary|ResolveApplicationsummary' - improve resolveservicesummary, if application-default is used in service and app-id has specified apps
+* pa_zone-edit | introduce actions=name-rename:NewZoneNAME
+* UTIL all script | introduce new argument "auditComment=XYZ" to bring in your custom auditComment
+* UTIL all script - remove duplicate header / footer
+* UTIL all script - optimise to always use single method entry from PAN-OS-PHP
+
+BUGFIX:
+* UTIL script download predefined PAN-OS content data - bugfix/workaround if PAN-OS API bring in double <response><return
+* pa_tag-edit | actions=created:NewTag - bugfix to not error out on PAN-OS API - first check if NewTag is already availalble
+* framework class App | bugfix as FawkesConf has no appstore at shared level / has no SHARED level
+* UTIL pa_rule-edit | actions=display,ResolveServiceSummary bringing back consistent output for port and application-default app-id port
+* class PanAPIConnector - bugfix if connection timeout
+
+GENERAL:
+* framework - content id update to version 8494-7079
+* class PanAPIConnector - extend AuditComment usage to all kind of manipulation API request set/rename/delete/edit
+* class PanAPIConnector | improve behaviour to request username / password if wrong APIKEY is stored in .panconfkeystore
+
+
+2.0.24 (20211201)
+UTILS:
+* pa_application-edit | class App method filteredApps() - introduce filter based on characeristics
+* pa_address-edit | introduce 'filter=(object is.region)'
+* pa_device-edit | actions=display-shadowrule - introduce PAN-OS version validation
+* pa_device-edit | introduce actions=geoip-check:[IP-ADDRESS]
+* pa_rule-merger | extend argument 'additionalmatch=user|urlcategory|target'
+* pa_device-edit | actions=display-shadowrule - display rule name and owner (DGname / vsys) instead of displaying rule uuid
+* pa_device-edit | actions=display-shadowrule - now possible for VSYS / Panorama DG / Panorama managedDevice
+* pa_rule-edit | introduce 'filter=(timestamp-last-hit.fast <>!= VALUE)'
+* development | introduce system-log.php and traffic-log.php 
+
+BUGFIX:
+* UTIL all object merger script | bugfix for pickfilter and excludefilter
+* framework class App - optimise method filteredApps() to get correct apps if multiple apptag / characteristics are used in application-filter app
+* pa_device-edit | bugfix for actions=display-shadowrule if running against PAN-OS FW device
+* framework class cidr | bugfix for method cidr::stringToStartEnd() to correctly get IPv6 start / end
+* class cidr - bugfix for method stringToStartEnd() - in relationship to IPv6
+* pa_config-size | bugfix if length == 0 to avoid devicision with 0
+
+GENERAL:
+* framework introduce class Region | make use of it in all PAN-OS xml config parts
+* framework | introduce Maxmind geo2ip lite download and usage
+* framework class RuleStore | introduce method findByUUID() - use in pa_device-edit actions=display-shadowrule
+* framework class PanAPIConnector | introduce method getLog()
+
+
+2.0.23 (20211121)
+UTILS:
+* pa_rule-merger - extend argument additionalmatch with 'secprof'
+* pa_address-edit | introduce new reference filters
+* pa_device-edit - extend manageddevice information if PAN-OS API is used
+* pa_device-edit | introduce actions=exportInventoryToExcel / exportLicenseToExcport devicetype=manageddevice
+* pa_rule-edit | actions=display:resolveServiceSummary shadow-json - if service is.application-default and app is.any => do service resolve to default app protocol port
+* pa_rule-stats | optimised if arguments "cycleconnectedfirewalls" to display FW model
+* pa_device-edit | introduce actions=display-shadowrule
+* pa_device-edit - introduce actions=securityprofile-create-alert-only | until now working only against VSYS or DG - use filter=(name eq XYZ) to define where to create / no PAN-OS API mode supported yet
+* pa_device-edit - optimise actions=securityprofile-create-alert-only[:true] - introduce bool argument [shared], if set to true profiles are create at SHARED level
+* UTIL introduce Palo Alto Networks max FW object counters in JSON format
+* pa_application-edit / pa_rule-edit actions=display:ResolveApplicationSummary|ResolveServiceSummary code reduction / optimisation
+* pa_application-edit | introduce App Tag from PAN-OS - introduce 'filter=(apptag has XYZ)'
+
+BUGFIX:
+*  all utils script - bugfix if Panorama config is used with loadpanoramapushedconfig
+* pa_rule-edit - bugfix for actions=display:resolveservicesummary - if service is.application-default and app has application.filter
+* pa_address-merger | bugfix if for DG duplicate value is available on childDG and parentDG [thanks to Necip Cebeci ]
+* pa_rule-edit | bugfix for actions=display:ResolveServiceSummar|ResolveApplicationSummary - fix memory leak
+
+GENERAL:
+* class PanAPIConnector - extend with methods loadPanoramaPushedConfig() / panorama_getAllFirewallsSerials()
+
+
+2.0.22 (20211112)
+UTILS:
+* pa_rule-edit - get back actions=user-add:USER / user-remove:USER / user-set-any for PAN-OS API mode
+* pa_rule-edit | introduce actions=user-check-ldap:show,LDAPuser,LDAPserver,OU=XYZ;DC=domain;DC=local,OUfilter
+* pa_rule-edit | actions=user-check-ldap - extend to check if user is existent in a specific LDAP group e.g. disabled
+* pa_rule-edit | actions=user-check-ldap - extend help
+* pa_rule-edit - enhancement for actions=from-/to-calculate-zones - if template is set to api@SERIAL - now full routing table incl. dynamic routing is used for zone calculation
+* class UTIL - extend method locationNotFound for JSON response
+
+BUGFIX:
+* pa_upload-config in=api://MGMT-IP/merged-config - bringing this feature back to specify to download running-/merged-/candidate-config
+* framework class ObjStore - bugfix - extend validation about existing variable setting
+* framework class RuleStore | bugfix for Fawkes Container / DeviceCloud
+* framework class PanAPIConnector - bugfix if PAN-OS API mode and API key is not available in combination with argument shadow-json
+* pa_rule-stats | bugfix to display all object if argument loadpanoramapushedconfig is used
+
+GENERAL:
+* class Rule/VirtualRouter/StaticRoute - optimise method zoneCalculation to use optimised create-/add-static-Route
+
+
+2.0.21 (20211106)
+UTILS:
+* pa_securityprofile-edit | extend class with threatException - display it with actions=display
+* pa_securityProfil-edit | introduce 'filter=( exception is.set) / (exception has XYZ)'
+* pa_securityprofil-edit | introduce actions=exporttoexcel:FILE.html
+* pa_securityprofil-edit - improve JSON response stdout with argument shadow-json
+* pa_application-edit | introduce 'filter=(name regex /XYZ/)'
+* pa_rule-edit | introduce 'filter=(app has.recursive XYZ)'
+
+BUGFIX:
+* pa_securityprofile-edit | bugfix based on filter=(location is XYZ)
+* pa_service-merger | class Merger - bugfix for service-merger | variable not correctly declared
+* pa_address-edit | actions=replaceByMembersAndDelete add arguments [:keepGroupName] choices: tag, description
+* pa_rule-edit actions=from-/to-calulcate-zone BUGFIX - PAN-OS API mode is now working again
+
+GENERAL:
+
+
+2.0.20 (20211025)
+UTILS:
+* pa_address-edit | actions=decommission - improvement for better object decommission handling
+* pa_service-edit | introduce actions=decommission
+* pa_address-edit | improve actions=display for dynamic Addressgroup
+* pa_address-edit | improve 'filter=((name regex /$$ipv4$$/) and (value is.included-in.name) )' - to match only full IP-Address
+* pa_panos-xml-issue-detector | extend check for /config/readonly/devices/entry[@name='localhost.localdomain']/template
+
+BUGFIX:
+* pa_appid-enabler | bugfix related to methods move to class UTIL
+* class ObjRulecontainer / AddressGroup - to add object with same name but different owner of DG hierarchy only once
+* class AddressGroup add members to dynamic Addressgroups
+* pa_address-edit - fix all actions where method find() is used to NOT search nested
+* pa_service-edit - improve all actions if method find() is used
+
+GENERAL:
+* class ServiceGroup | introduce method has() - for better usage in pa_servicegroup-merger
+
+
+2.0.19  (20211022)
+UTILS:
+* extend tests scripts for more QA
+* sendGARP - introduce class RUNSSH - make use of in sendGARP
+* sendGARP | extend command preparation with DNAT DST ip-address for test arp gratuitous
+* pa_servicegroup-merger help | fix typo for argument dupalgorithm [thanks to Necip Cebeci ]
+* pa_service-edit | introduce filter for sourceport.value and action sourceport-set / sourceport-delete
+
+BUGFIX:
+* pa_device-edit | bugfix for actions=devicegroupe-create:NAME if 'shared' is used as parentDG
+* class RuleStore | bugfix to create shared pre-rulebase at correct place if not existent
+* class IPsecTunnel | bugfix for not reading XML correctly for protocol part of a IPsec tunnel
+* pa_address-merger / pa_service-merger | bugfix if picked object type differ from the parentDG choosen object [thanks to Olivier Straehler ]
+* class IKEGateway | bugfix to not set XML nodes, which were not available at start
+* pa_address-merger | bugfix do not delete picked address object if replacement was skipped once
+
+GENERAL:
+
+
+2.0.18 (20211019)
+UTILS:
+* pan-os-php / API / bash_autocompletion | extend with script xml-op-json and bpa-generator
+* pa_key-manager | introduce support for license-apikey/bpa-api-key | extend class PanAPIConnector to store both apikey in .panconfkeystore
+* pan-os-php | version include now php version
+
+BUGFIX:
+* UTIL all object merger script | bugfix to support argument DupAlgorithm [thanks to Necip Cebeci for finding and reporting this bug]
+* framework | bugfix to support PHP version 8.0.X [thanks to Christopher Fettig ]
+
+GENERAL:
+* dockerfile - introduce bash_autocompletion for Dockerfile-cli - usage of ubuntu CLI with PAN-OS-PHP installed
+* framework - update ubuntu_set_path_variable.sh - full installation is now possible, if Ubuntu is pre-installed
+* framework - all UTIL scripts | include phpversion() - update Dockerfiles using variables for PHP version
+
+
+2.0.17 (20211015)
+UTILS:
+* pan-os-php and API | introduce support for rule-merger
+* XML_op_JSON | move to class XMLOPJSON extend UTIL
+* register-ip-mgr | move to class UTIL( 'custom' )
+* userid-mgr | move to class UTIL( 'custom' )
+* pa_userid-mgr | introduce actions=display and unregister-all
+* pa_register-ip-mgr and pa_userid-mgr | introduce class REGISTERIP and USERIDMGR
+* pan-os-php and API | extend to support register-ip-mgr and userid-mgr
+* pan-os-php bash-autocompletion - extend with all available UTIL script - to finalise the single entry by using PAN-OS-PHP framework
+
+BUGFIX:
+
+GENERAL:
+
+
+2.0.16 (20211014)
+UTILS:
+* pa_panos-xml-issue-detector | improvement to use parent methods from class UTIL
+* pa_appid-enabler / pa_config-size / pa_upload-config - improve to use parent available methods from class UTIL
+* UTIL - pa_config-size / pa_diff / pa_override-finder / pa_upload - optimisation to use more of class UTIL
+* pa_application-edit | introduce 'filter=(object has.member XYZ)'
+* pa_application-edit - improve actions=display for applicationGroup
+* pa_rule-merger | move everything into class RULEMERGER
+* pa_upload-config | skip adding user admin2 if already available
+* pa_rule-merger | introduce functionality for location=any to run rule-merger with a single run against all DG
+
+BUGFIX:
+* pa_appid-enabler | bugfix regarding how variables are used, after moving over to class APPIDENABLER()
+* pa_address-merger | bugfix for call class MERGER()
+* pa_panos-xml-issue-detector | bugfix how variables are used after moving to class XMLISSUE
+* pa_upload-config | bugfix for out= type file
+
+GENERAL:
+
+
+2.0.15 (20211012)
+UTILS:
+* optimise all object merger scripts to use class MERGER
+* pa_key-manager - introduce class KEYMANAGER - make use of main class UTIL
+* pa_rule-edit | actions=display:resolveservicesummary - improve output for JSON response
+* pa_download-predefined | make use of CLASS PREDEFINED
+* pan-os-php | introduce key-manager and all other object merger script
+* pa_panos-xml-issue-detector | introduce class XMLISSUE extend UTIL - make use of XMLISSUE within script pa_panos-xml-issue-detecotor
+* pa_key-manager - optimisation to support better JSON response
+* pa_diff | introduce class DIFF extends UTIL - make use of XMLISSUE within script pa_diff
+* pa_override-finder | introduce class OVERRIDE extend UTIL - make use of this in pa_override-finder
+* pa_appid-enabler | introduce class APPIDENABLER extend UTIL - make use of it in pa_appid-enabler - to support PAN-OS-PHP API in the future
+* pa_config-size | introduce class CONFIGSIZE extend UTIL - make us in pa_config-size and prepare for future API usage
+* pa_bpa-generator - introduce class BPAGENERATOR - make use of it in pa_bpa-generator
+* UTIL api - introduce support for override-finder/diff/upload/xml-issue/appid-enabler/config-size
+
+BUGFIX:
+* pa_securityprofile-edit | bugfix to handle JSON output for shared and other DG/VSYS correctly
+* pa_xml-issue-detector | bugfix to handle ip-wildcard not as as missing IP configuration
+
+GENERAL:
+* framework | finalise renaming to PAN-OS-PHP
+
+
+2.0.14 (20211010)
+UTILS:
+* merger script extend for JSON output
+* API | introduce POST to send XML file directly to PAN-OS-PHP API
+* API and API-UI | improvments
+* pa_application-edit | introduce 'filter=(tcp has XYZ)' / 'filter=(udp has XYZ)'
+* all script actions=exportToExcel - for PAN-OS-API usage, specify project/html folder as file destination storage
+* API extend JSON file with application and threat action/filter
+
+BUGFIX:
+* class SecurityProfileGroup | bugfix for SaasSecurityProfileStore
+* pa_rule-edit | bugfix for 'filter=(user.count XYZ)'
+* pa_rule-edit | bugfix for resolveapplicationsummary shadow-json
+* pa_rule-edit | bugfix for shadow-json to display from/to zone
+* pa_rule-edit actions=display shadow-json | bugfix for SRC/DST if any for resolveAddressSummary
+* pa_rule-edit actions=display:resolveservicesummary shadow-json | bugfix to display service resolve correctly
+* pa_rule-edit actions=exporttoexcel:FILE.html,ResolveApplicationsummary | bugfix to display app-id resolvesummary correctly
+
+GENERAL:
+
+
+2.0.13 (20211004)
+UTILS:
+* pa_rule-edit actions=display:ResolveAddressSummary|ResolveServiceSummary introduce summary output if argument shadow-json is used
+* pa_rule-edit introduce additionalargument 'ResolveApplicationSummary' for actions=display:ResolveApplicationSummary and actions=exporttoexcel:file,ResolveApplicationSummary
+* pa_rule-edit - add array keys for actions=display:ResolveApplicationSummary
+* apigui - add example in error output
+* pa_device-edit - add serial# in output
+* pa_rule-edit actions=display:ResolveAddressSummary - for shadow-json - split static and dynamic output - dynamic are tmp objects without value
+* pa_rule-edit introduce 'filter=(user.count '<,>,+,!)' - )' / 'filter=(user is.in.file FILENAME)'
+* pa_rule-edt | introduce actions=xml-extract - to extract rule xml information of matching rules - only working with additional argument shadow-json
+* all | with "shadow-json out=true" full PAN-OS XML config is available in stdout JSONarray ['out']['xmldoc']
+* pa_rule-edit | introduce actions=user-add:USER / actions=user-remove:USER
+* pa_rule-edit | introduce actions=user-set-any
+* pa_rule-edit/pa_schedule-edit | introduce 'filter(schedule expire.in.days XYZ)' / 'filter=(object expire.in.days XYZ)' to display information about shortly expired rules/schedule
+* pa_rule-edit | actions=exporttoexcel / actions=display introduce additionField: ResolveScheduleSummary - to display expire date for schedule objects
+
+BUGFIX:
+* pa_device-edit - bugfix to print DG hierarchy in JSON
+* pa_application-edit - bugfix to print APP information optimised in JSON
+* pa_address-edit | bugfix for is.included-in.name if object is tmp and value is available
+* pa_rule-edit bugfix for 'filter=(user has.regex /USER-group/)'
+* pa_rule-edit | bugfix for ANY actions=display shadow-json
+
+GENERAL:
+* framework class PH - introduce function ACTIONstatus - make use in pa_tag-edit
+* predefined.xml update to version 8465-6967
+* framwork - class PH | introduce method ACTIONlog() - make use of this in pa_tag-edit actions
+
+
+2.0.12 (20210930)
+UTILS:
+* pa_rule-edit - introduce new 'filter=(from has.same.to.zone)'/'filter=(to has.same.from.zone)'
+* pa_device-edit - introduce new actions=DeviceGroup-remove / actions=AddressStore-rewrite
+* pa_key-manager - introduce argument 'user' and 'pw' to create PAN-OS API-key without CLI interaction
+* pa_key-manager - display .panconfkeystore filepath if using argument 'debugapi'
+* introduce JSON response for most of the UTIL scripts with argument shadow-json - not available for pa_rule-edit and pa_application-edit yet
+* pa_rule-edit introduce JSON response with argument shadow-json
+* pa_application-edit introduce JSON response with argument shadow-json
+
+BUGFIX:
+
+GENERAL:
+* move from print to PH::print_stdout - in preparation for JSON response, some missing parts fixed
+
+
+2.0.11 (20210915)
+UTILS:
+* pa_key-manager - improve debugapi, to display also testAPI command - extend help with argument shadow-apikeynohidden for PAN-OS <9.0
+
+BUGFIX:
+* class PanAPIConnector - create PAN-OS XML API key
+* class SecurityRule - [thanks to Brian Trost for finding this] if XMLNode service is not available also add <member>any</member> and not only an empty XML node <service\>
+* framework | class PanAPIConnector - fix for hidden PW prompt on Windows systems
+
+GENERAL:
+* test | remove ssl-tls-service-profile on all test config files
+
+
+2.0.10 (20210907)
+UTILS:
+* move to the general PH::print_stdout
+* introducing script pan-os-php.php with alias pan-os-php - used as a single entry script
+
+BUGFIX:
+* pa_rule-edit | bugfix 'filter=(service is.udp/is.udp.only/is.tcp/is.tcp.only)
+
+GENERAL:
+
+
+2.0.9 (20210903)
+UTILS:
+* pa_application-edit | introduce actions=move
+* pa_rule-edit actions=exporttoexcel - extend with rule target information
+* introduce pa_threat - actions=display and filters
+* pa_service-edit | actions=exportToExcel - add timeout value
+* pa_diff - extend to display rule order changes
+
+BUGFIX:
+* pa_application-edit | class UTIL fix for deviceType FAWKES to display predefined app
+* class AddressGroup | method includedInIP4Network return 0 instead of 1 if Addressgroup has no members
+* class RuleStore | method resultingPostRuleSet() - for Panorama shared now postRule is only return once instead of duplicate
+* pa_service-edit | bug fix for actions=timeout-set:SECONDS - <override><no/></override> was not removed | skip if servicegroup
+* pa_XYZ-merger | bug fix to merg with childDG ONLY if argument allowmergingwithupperlevel is set
+* pa_rule-edit | bugfix - actions=exporttoexcel:FILE ruleType=pbf - PBF has no TO zone
+* pa_rule-edit - bugfix 'filter=(service is.udp)'
+
+GENERAL:
+* introduce class AppCustom/AppFilter/AppGroup - to split object relevant information from class App
+* introduce class SaasSecurityProfile - extending all Fawkes config class and UTIL to support this new SecurityProfile
+* introduce class Threat / ThreatStore / ThreatVulnerability / ThreatSpyware
+* predefined.xml update to version 8448-6902
+
+
+2.0.8 (20210719)
+UTILS:
+
+BUGFIX:
+* framework related to appStore - introduce appStore on all lower level/DG hierarchy
+
+GENERAL:
+* SecurityProfile classes rename from XYZStore to XYZ
+* class App - introduce methods isApplicationCustom() / isApplicationFilter() / isApplicationGroup()
+
+
+2.0.7 (20210717)
+UTILS:
+* pa_securityprofilegroup-edit | new actions=securityProfile-Set and securityProfile-Remove - new filters: * secprof: as-profile.is, as-profile.is.set, av-profile.is, av-profile.is.set, data-profile.is, data-profile.is.set, file-profile.is, file-profile.is.set, url-profile.is, url-profile.is.set, vuln-profile.is, vuln-profile.is.set, wf-profile.is, wf-profile.is.set
+* introduce new script pa_application-edit; with different filters
+* pa_device-edit | extend with devicetype=manageddevice
+* pa_securityprofilegroup-edit | introduce actions=exporttoexcel:FILE.HTML
+* pa_schedule-edit - class Schedule | introduce method setNonRecurring
+* pa_schedule-edit - class Schedule | introduce methode setRecurringDaily and setRecurringWeekly
+* pa_device-edit | introduce actions=displayreferences
+* pa_securityprofile-edit - added support for data-filtering
+
+BUGFIX:
+* class Schedule/ScheduleStore - bugfix to create new schedule objects
+
+GENERAL:
+* introduce class LogCollectorGroup - benefit for pa_device-edit devicetype=manageddevice actions=displayreferences
+* introduce SecurityProfile data-filtering class DataFilteringProfileStore - support on FW and Panorama and there for vsys/DG and also on shared level
+
+
+2.0.6 (202107212)
+UTILS:
+* pa_zone-edit | introduce filter=(logprof is.set) and (logprof is XYZ) | actions=exportToExcel
+* pa_device-edit | introduce actions=template-add:TEMPLATENAME for devicetype=templatestack | introduce filter=(name eq DEVICENAME)
+* pan_config-size - introduce new script  - to display the specific parts of the config which used the most config size
+* pa_securityprofilegroup-edit - introduce new script
+
+BUGFIX:
+* pa_diff | bugfix to find also changes within existing config like adding rule to/from/source/destination member
+* pa_panos-xml-issue-detector | extend to remove duplicate members from security-Rule source/destionation/application - remove duplicate application-group members
+* class AddressGroup | bugfix to read filter of dynamic addressgroup correct
+* class RuleStore/SecurityRule | improve config reading for PAN-OS >= 10.0 - hip-profiles is now source-hip and additional destination-hip
+
+GENERAL:
+* predefined.xml update to version 8422-6787
+
+
+2.0.5 (20210627)
+UTILS:
+* pa_rule-edit introduce 'filter=(description.length <>=! NUMBER)'
+* pa_rule-edit actions=exportToExcel - introduce column 'log_profile_name' to display the log forwarding profile name
+* pa_address-edit introduce new 'filter=(value has.wrong.network)' - display objects where IP-value does not fit to calculated IP-network
+* class UTIL | introduce $location, $sub for single location cli argument, to be used in example template
+* pa_rule-edit introduce 'filter=(rule is.enabled)'
+* device-edit.php | introduction BETA script
+* class DH | extend method findXPath to accept array with multiple xPath strings
+* panos-xml-issue-detector | extend to support FAWKES config syntax
+* pa_device-edit - new util script to display VSYS/DeviceGroup/Template/TemplateStack/Container/DeviceCloud informaiton
+* class PH | improvments to be prepared for next feature pan-os-php API
+* routing-/interface-/vwire-edit - move from develop to util folder
+* zone-edit script - start using NETWORKUTIL - to better support Panorama configuration
+* introduce PAN-OS-PHP API in addition to PAN-OS-PHP CLI
+
+EXAMPLES:
+* update template script to show how UTIL() class usage make your scripting life easier
+* update template script to add $util->save_our_work() method at the end
+
+BUGFIX:
+* class AddressStore - introduce AddressGroup validation for method  nestedPointOfView()
+* UTIL | bugfix related to display_error_usage_exit usage from class UTIL
+* UTIL | class CallContext - introduce $util variable to use single ava
+* class SecurityProfileStor | bugfix for calling URLProfileStore and cu…  …
+* class customURLProfileStore | bugfix if XMLnode 'list' is not available
+* class IPsecTunnel | bugfix NOT create XML node 'proxy-id-v6' if not avai…
+* UTIL | bugfix to get argument 'apitimeout=XYZ' into working mode
+* UTIL | reinitiate class PH() at calling of UTIL()
+* UTIL | pa_rule-edit actions=exportToExcel - related to class Schedule() introduce in the past
+* UTIL | pa_address-edit actions=replaceByMembersAndDelete - missing validation if object is group
+* UTIL | pa_service-edit actions=replaceByMembersAndDelete - missing validation if object is group
+* class SecurityRule | bugfix for reading Schedule Object if defined on parentDG / shared level
+* class SecurityRule | bugfix for method rewriteSecProfXML() to remove XML childelement only once
+* class IPsecTunnel | bugfix in load_from_domxml() if XML Node 'protocol' not found 
+
+
+2.0.4 (20210519)
+UTILS:
+* pa-address/service/tag/schedule-edit introduce argument loadpanoramapushedconfig to display local and panorama pushed objects
+
+
+2.0.3 (20210517)
+BUGFIX:
+* bugfix for pa_addressgroup-merger and pa_service-merger
+
+
 2.0.2
+UTILS:
+* pa-address/service/tag/schedule-edit introduce argument loadpanoramapushedconfig to display local and panorama pushed objects
 
 BUGFIX:
 class SecurityProfileStore/SecurityProfileGroup - related to classes Container/DeviceCloud/PanoramaConf/PanConf/VirtualSystem/DeviceGroup - correction of SecurityProfileStore type - fix related if argument 'loadpanoramapushedconfig' was used
 pa_tag-edit/pa_schedule-edit/pa_rule-edit - fix XML out file; if all objects are deleted, so that XML Node do not contain any Newline
+
 
 
 2.0.1 (20210514)

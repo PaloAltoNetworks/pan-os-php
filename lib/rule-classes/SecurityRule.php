@@ -1,9 +1,21 @@
 <?php
 /**
- * © 2019 Palo Alto Networks, Inc.  All rights reserved.
+ * ISC License
  *
- * Licensed under SCRIPT SOFTWARE AGREEMENT, Palo Alto Networks, Inc., at https://www.paloaltonetworks.com/legal/script-software-license-1-0.pdf
+ * Copyright (c) 2014-2018, Palo Alto Networks Inc.
+ * Copyright (c) 2019, Palo Alto Networks Inc.
  *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
 
@@ -151,7 +163,14 @@ class SecurityRule extends RuleWithUserID
         //														//
         // Begin <application> application extraction			//
         //														//
-        $tmp = DH::findFirstElementOrCreate('application', $xml);
+        #$tmp = DH::findFirstElementOrCreate('application', $xml);
+        $tmp = DH::findFirstElement('application', $xml);
+        if( $tmp === false )
+        {
+            $tmp = DH::findFirstElementOrCreate('application', $xml);
+            $tmp_member = DH::findFirstElementOrCreate('member', $tmp);
+            $tmp_member->textContent= 'any';
+        }
         $this->apps->load_from_domxml($tmp);
         // end of <application> application extraction
 
@@ -159,7 +178,14 @@ class SecurityRule extends RuleWithUserID
         //										//
         // Begin <service> extraction			//
         //										//
-        $tmp = DH::findFirstElementOrCreate('service', $xml);
+        #$tmp = DH::findFirstElementOrCreate('service', $xml);
+        $tmp = DH::findFirstElement('service', $xml);
+        if( $tmp === false )
+        {
+            $tmp = DH::findFirstElementOrCreate('service', $xml);
+            $tmp_member = DH::findFirstElementOrCreate('member', $tmp);
+            $tmp_member->textContent= 'any';
+        }
         $this->services->load_from_domxml($tmp);
         // end of <service> zone extraction
 
@@ -225,13 +251,14 @@ class SecurityRule extends RuleWithUserID
             {
                 #$this->schedule = $node->textContent;
 
-                $f = $this->owner->owner->scheduleStore->findOrCreate($node->textContent, $this);
+                $f = $this->owner->owner->scheduleStore->find($node->textContent, $this);
+                if( $f == null && is_object($this->owner->owner->scheduleStore->parentCentralStore))
+                    $f = $this->owner->owner->scheduleStore->parentCentralStore->find($node->textContent, $this);
                 if( $f != null )
                 {
                     $f->addReference( $this );
+                    $this->schedule = $f;
                 }
-
-                $this->schedule = $f;
             }
             elseif( $node->nodeName == 'qos' )
             {
@@ -254,13 +281,21 @@ class SecurityRule extends RuleWithUserID
 
 
         //
-        // Begin <hip-profiles> extraction
+        // Begin <hip-profiles> extraction // valid for PAN-OS version < 10.0
+        // Todo: PAN-OS version >= 10.0 -> source-hip and destination-hip
         //
-        $this->hipprofroot = DH::findFirstElement('hip-profiles', $xml);
+        if( $this->owner->version < 100 )
+            $hipprofilevariable = 'hip-profiles';
+        else
+            $hipprofilevariable = 'source-hip';
+
+        $this->hipprofroot = DH::findFirstElement($hipprofilevariable, $xml);
         if( $this->hipprofroot === FALSE )
             $this->hipprofroot = null;
         else
-            $this->extract_hip_profile_from_domxml();
+            $this->extract_hip_profile_from_domxml( );
+
+
         // End of <hip-profiles>
 
         $this->_readNegationFromXml();
@@ -411,13 +446,15 @@ class SecurityRule extends RuleWithUserID
             {
                 $this->secproftype = 'group';
 
-                $tmp_group =  $this->owner->owner->securityProfileGroupStore->findorCreate( $firstE->textContent );
-                if( $tmp_group !== false )
+                //Todo findOrCreate can NOT be used because of default object not created
+                #$tmp_group =  $this->owner->owner->securityProfileGroupStore->findorCreate( $firstE->textContent );
+                $tmp_group =  $this->owner->owner->securityProfileGroupStore->find( $firstE->textContent );
+                if( is_object( $tmp_group ) )
                 {
                     $this->secprofgroup = $firstE->textContent;
                     //Todo: swaschkut 20210422
                     //- not working due to parentcentralStore implementation wrong
-                    #$tmp_group->addReference( $this );
+                    $tmp_group->addReference( $this );
                 }
                 else
                 {
@@ -503,6 +540,20 @@ class SecurityRule extends RuleWithUserID
             return array();
 
         return $this->secprofProfiles;
+    }
+
+    public function securityProfilHash()
+    {
+        $string = "";
+        if( $this->secproftype === 'group' )
+            $string = $this->secprofgroup;
+        elseif( $this->secproftype === 'profile' )
+        {
+            $stringArray = array_keys($this->secprofProfiles_obj);
+            $string = implode( ", ", $stringArray );
+        }
+
+        return md5( $string );
     }
 
     public function securityProfiles_obj()
@@ -703,9 +754,6 @@ class SecurityRule extends RuleWithUserID
                 $ntmp->appendChild($this->secprofroot->ownerDocument->createTextNode($value));
             }
         }
-        elseif( $this->secprofroot !== null )
-            DH::removeChild($this->xmlroot, $this->secprofroot);
-
     }
 
     /**
@@ -730,7 +778,7 @@ class SecurityRule extends RuleWithUserID
         {
             if( $prof->nodeType != XML_ELEMENT_NODE ) continue;
 
-            $this->hipprofProfiles[$prof->nodeName] = $prof->textContent;
+            $this->hipprofProfiles[$prof->textContent] = $prof->textContent;
             #print PH::boldText("name: |".$prof->nodeName."| - |".$prof->textContent."|\n" );
         }
     }
@@ -766,6 +814,26 @@ class SecurityRule extends RuleWithUserID
         return isset($this->_urlCategories[$category]);
     }
 
+    /**
+     * enable or disabled logging at end
+     * @param bool $yes
+     * @return bool
+     */
+    public function setUrlCategories($category)
+    {
+        if( !isset( $this->_urlCategories[ $category ] ) )
+        {
+            $tmp = DH::findFirstElementOrCreate('category', $this->xmlroot);
+
+            $tmp_member = DH::findFirstElementOrCreate('member', $tmp);
+            $tmp_member->textContent = $category;
+
+            $this->_urlCategories[ $category ] = $category;
+
+            return TRUE;
+        }
+        return FALSE;
+    }
 
     public function action()
     {
@@ -943,95 +1011,213 @@ class SecurityRule extends RuleWithUserID
     {
         $padding = str_pad('', $padding);
 
+        PH::$JSON_TMP['sub']['object'][$this->name()]['name'] = $this->name();
+        PH::$JSON_TMP['sub']['object'][$this->name()]['type'] = get_class($this);
+
         $dis = '';
         if( $this->disabled )
+        {
             $dis = '<disabled>';
+            PH::$JSON_TMP['sub']['object'][$this->name()]['disabled'] = "true";
+        }
+        else
+            PH::$JSON_TMP['sub']['object'][$this->name()]['disabled'] = "false";
+
 
         $sourceNegated = '';
         if( $this->sourceIsNegated() )
+        {
             $sourceNegated = '*negated*';
+            PH::$JSON_TMP['sub']['object'][$this->name()]['sourcenegated'] = "true";
+        }
+        else
+            PH::$JSON_TMP['sub']['object'][$this->name()]['sourcenegated'] = "false";
+
 
         $destinationNegated = '';
         if( $this->destinationIsNegated() )
+        {
             $destinationNegated = '*negated*';
+            PH::$JSON_TMP['sub']['object'][$this->name()]['destinationnegated'] = "true";
+        }
+        else
+            PH::$JSON_TMP['sub']['object'][$this->name()]['destinationnegated'] = "false";
+        //until here same for appoverride
 
 
-        print $padding . "*Rule named '{$this->name}' $dis";
+        $text = $padding . "*Rule named '{$this->name}' $dis";
         if( $this->owner->version >= 70 )
-            print " UUID: '" . $this->uuid() . "'";
-        print "\n";
-        print $padding . "  Action: {$this->action()}    Type:{$this->type()}\n";
-        print $padding . "  From: " . $this->from->toString_inline() . "  |  To:  " . $this->to->toString_inline() . "\n";
-        print $padding . "  Source: $sourceNegated " . $this->source->toString_inline() . "\n";
-        print $padding . "  Destination: $destinationNegated " . $this->destination->toString_inline() . "\n";
-        print $padding . "  Service:  " . $this->services->toString_inline() . "    Apps:  " . $this->apps->toString_inline() . "\n";
+        {
+            $text .= " UUID: '" . $this->uuid() . "'";
+            PH::$JSON_TMP['sub']['object'][$this->name()]['uuid'] = $this->uuid();
+        }
+        PH::print_stdout( $text );
+
+        PH::print_stdout( $padding . "  Action: {$this->action()}    Type:{$this->type()}");
+        PH::$JSON_TMP['sub']['object'][$this->name()]['action'] = $this->action();
+        PH::$JSON_TMP['sub']['object'][$this->name()]['ruletype'] = $this->type();
+
+
+        PH::print_stdout( $padding . "  From: " . $this->from->toString_inline() . "  |  To:  " . $this->to->toString_inline() );
+        foreach( $this->from->zones() as $from )
+            PH::$JSON_TMP['sub']['object'][$this->name()]['from'][] = $from->name();
+        if( count( $this->from->zones() ) == 0 )
+            PH::$JSON_TMP['sub']['object'][$this->name()]['from'][] = "any";
+
+        foreach( $this->to->zones() as $to )
+            PH::$JSON_TMP['sub']['object'][$this->name()]['to'][] = $to->name();
+        if( count( $this->to->zones() ) == 0 )
+            PH::$JSON_TMP['sub']['object'][$this->name()]['to'][] = "any";
+
+        PH::print_stdout( $padding . "  Source: $sourceNegated " . $this->source->toString_inline() );
+        foreach( $this->source->getAll() as $src )
+            PH::$JSON_TMP['sub']['object'][$this->name()]['source'][] = $src->name();
+
+        PH::print_stdout( $padding . "  Destination: $destinationNegated " . $this->destination->toString_inline() );
+        foreach( $this->destination->getAll() as $dst )
+            PH::$JSON_TMP['sub']['object'][$this->name()]['destination'][] = $dst->name();
+
+        PH::print_stdout( $padding . "  Service:  " . $this->services->toString_inline() . "    Apps:  " . $this->apps->toString_inline() );
+        foreach( $this->services->getAll() as $srv )
+            PH::$JSON_TMP['sub']['object'][$this->name()]['service'][] = $srv->name();
+        if( $this->services->isApplicationDefault() )
+            PH::$JSON_TMP['sub']['object'][$this->name()]['service'][] = "application-default";
+        if( $this->services->isAny() )
+            PH::$JSON_TMP['sub']['object'][$this->name()]['service'][] = "any";
+
+        foreach( $this->apps->getAll() as $app )
+            PH::$JSON_TMP['sub']['object'][$this->name()]['application'][] = $app->name();
+        if( $this->apps->isAny() )
+            PH::$JSON_TMP['sub']['object'][$this->name()]['application'][] = "any";
+
+        $text = "";
         if( !$this->userID_IsCustom() )
-            print $padding . "  User: *" . $this->userID_type() . "*";
+        {
+            $text .= $padding . "  User: *" . $this->userID_type() . "*";
+            PH::$JSON_TMP['sub']['object'][$this->name()]['user'] = $this->userID_type();
+        }
         else
         {
             $users = $this->userID_getUsers();
-            print $padding . "  User:  " . PH::list_to_string($users) . "";
+            $text .= $padding . "  User:  '" . PH::list_to_string($users, " | ") . "'";
+            foreach( $users as $user )
+                PH::$JSON_TMP['sub']['object'][$this->name()]['user'][] = $user;
         }
         if( !$this->hipProfileIsBlank() )
         {
-            print $padding . "  HIP:   " . PH::list_to_string($this->hipprofProfiles) . "\n";
+            $text .= $padding . "  HIP:   " . PH::list_to_string($this->hipprofProfiles);
+            foreach( $this->hipprofProfiles as $hipProf )
+                PH::$JSON_TMP['sub']['object'][$this->name()]['hip'][] = $hipProf;
+        }
+        PH::print_stdout( $text );
+        PH::print_stdout( $padding . "  Tags:  " . $this->tags->toString_inline() );
+        foreach( $this->tags->getAll() as $tag )
+            PH::$JSON_TMP['sub']['object'][$this->name()]['tag'][] = $tag->name();
+
+        if( $this->_targets !== null )
+        {
+            PH::print_stdout( $padding . "  Targets:  " . $this->targets_toString() );
+            foreach( $this->targets() as $target )
+                PH::$JSON_TMP['sub']['object'][$this->name()]['target'][] = $target;
+        }
+
+
+        if( strlen($this->_description) > 0 )
+        {
+            PH::print_stdout( $padding . "  Desc:  " . $this->_description );
+            PH::$JSON_TMP['sub']['object'][$this->name()]['description'] = $this->_description;
         }
         else
         {
-            print "\n";
+            PH::print_stdout( $padding . "  Desc:  ");
+            PH::$JSON_TMP['sub']['object'][$this->name()]['description'] = "";
         }
-        print $padding . "  Tags:  " . $this->tags->toString_inline() . "\n";
 
-        if( $this->_targets !== null )
-            print $padding . "  Targets:  " . $this->targets_toString() . "\n";
-
-        if( strlen($this->_description) > 0 )
-            print $padding . "  Desc:  " . $this->_description . "\n";
-        else
-            print $padding . "  Desc:  \n";
 
         if( !$this->securityProfileIsBlank() )
         {
             if( $this->securityProfileType() == "group" )
-                print $padding . "  SecurityProfil: [SECGROUP] => '" . $this->securityProfileGroup() . "'\n";
+            {
+                PH::print_stdout( $padding . "  SecurityProfil: [SECGROUP] => '" . $this->securityProfileGroup() . "'");
+                PH::$JSON_TMP['sub']['object'][$this->name()]['securityprofilegroup'] = $this->securityProfileGroup();
+            }
+
             else
             {
-                print $padding . "  SecurityProfil: ";
+                $text = $padding . "  SecurityProfil: ";
                 foreach( $this->securityProfiles() as $id => $profile )
-                    print "[" . $id . "] => '" . $profile . "'  ";
-                print "\n";
+                {
+                    $text .= "[" . $id . "] => '" . $profile . "'  ";
+                    PH::$JSON_TMP['sub']['object'][$this->name()]['securityprofile'][$id] = $profile;
+                }
+
+                PH::print_stdout( $text );
             }
         }
         else
-            print $padding . "  SecurityProfil:\n";
+        {
+            PH::print_stdout( $padding . "  SecurityProfil:");
+            PH::$JSON_TMP['sub']['object'][$this->name()]['securityprofilegroup'] = "null";
+            PH::$JSON_TMP['sub']['object'][$this->name()]['securityprofile'] = "null";
+        }
 
 
-        print $padding . "  LogSetting: ";
+
+        $text = $padding . "  LogSetting: ";
         if( !empty($this->logSetting()) )
-            print "[LogProfile] => '" . $this->logSetting() . "'";
-        print " ( ";
+        {
+            $text .= "[LogProfile] => '" . $this->logSetting() . "'";
+            PH::$JSON_TMP['sub']['object'][$this->name()]['logsetting']['logprofile'] = $this->logSetting();
+        }
+
+        $text .= " ( ";
         if( $this->logStart() )
-            print "log at start";
+        {
+            $text .= "log at start";
+            PH::$JSON_TMP['sub']['object'][$this->name()]['logsetting']['start'] = "true";
+        }
+
         if( $this->logStart() && $this->logEnd() )
-            print " - ";
+            $text .= " - ";
         if( $this->logEnd() )
-            print "log at end";
-        print " ) \n";
+        {
+            $text .= "log at end";
+            PH::$JSON_TMP['sub']['object'][$this->name()]['logsetting']['end'] = "true";
+        }
 
+        $text .= " )";
+        PH::print_stdout( $text );
 
-        print $padding . "  URL Category: ";
+        $text = $padding . "  URL Category: ";
         if( !empty($this->_urlCategories) )
-            print PH::list_to_string($this->_urlCategories) . "\n";
+        {
+            $text .= PH::list_to_string($this->_urlCategories) . "\n";
+            foreach( $this->_urlCategories as $tmp )
+                PH::$JSON_TMP['sub']['object'][$this->name()]['urlcategory'][] = $tmp;
+        }
         else
-            echo "*ANY*\n";
+        {
+            $text .= "**ANY**";
+            PH::$JSON_TMP['sub']['object'][$this->name()]['urlcategory'][] = "**ANY**";
+        }
+
+        PH::print_stdout( $text );
 
         if( $this->dsri )
-            print $padding . "  DSRI: disabled\n";
+        {
+            PH::print_stdout( $padding . "  DSRI: disabled");
+            PH::$JSON_TMP['sub']['object'][$this->name()]['dsri'][] = "disabled";
+        }
+
 
         if( $this->schedule !== null )
-            print $padding . "  Schedule:  " . $this->schedule->name() . "\n";
+        {
+            PH::print_stdout( $padding . "  Schedule:  " . $this->schedule->name() );
+            PH::$JSON_TMP['sub']['object'][$this->name()]['schedule'][] = $this->schedule->name();
+        }
 
-        print "\n";
+
+        PH::print_stdout( "" );
     }
 
 
@@ -1532,14 +1718,18 @@ class SecurityRule extends RuleWithUserID
         return $ret;
     }
 
-    public function rewriteHipProfXML()
+    public function rewriteHipProfXML( )
     {
+        if( $this->owner->version < 100 )
+            $hipprofilevariable = 'hip-profiles';
+        else
+            $hipprofilevariable = 'source-hip';
 
         if( $this->hipprofroot !== null )
             DH::clearDomNodeChilds($this->hipprofroot);
 
         if( $this->hipprofroot === null || $this->hipprofroot === FALSE )
-            $this->hipprofroot = DH::createElement($this->xmlroot, 'hip-profiles');
+            $this->hipprofroot = DH::createElement($this->xmlroot, $hipprofilevariable);
         else
             $this->xmlroot->appendChild($this->hipprofroot);
 
@@ -1563,12 +1753,17 @@ class SecurityRule extends RuleWithUserID
     {
         $ret = $this->setHipProfile($hipProfile);
 
+        if( $this->owner->version < 100 )
+            $hipprofilevariable = 'hip-profiles';
+        else
+            $hipprofilevariable = 'source-hip';
+
         if( $ret )
         {
-            $xpath = $this->getXPath() . '/hip-profiles';
+            $xpath = $this->getXPath() . '/'.$hipprofilevariable;
             $con = findConnectorOrDie($this);
 
-            $con->sendEditRequest($xpath, '<hip-profiles><member>' . $hipProfile . '</member></hip-profiles>');
+            $con->sendEditRequest($xpath, '<'.$hipprofilevariable.'><member>' . $hipProfile . '</member></'.$hipprofilevariable.'>');
         }
 
         return $ret;
@@ -1589,6 +1784,9 @@ class SecurityRule extends RuleWithUserID
      */
     function setSchedule($newSchedule = null)
     {
+        if( is_object( $newSchedule ) )
+            $newSchedule = $newSchedule->name();
+
         if( $newSchedule === null || strlen($newSchedule) < 1 )
         {
             if( $this->schedule === null )
@@ -1838,20 +2036,20 @@ class SecurityRule extends RuleWithUserID
         if( $SRC_A->getIP4Mapping()->includesOtherMap( $SRC_B->getIP4Mapping()) == 0 )
         {
             if( $print )
-                print "Source not matching\n";
+                PH::print_stdout( "Source not matching");
             return false;
         }
         elseif( $SRC_A->getIP4Mapping()->includesOtherMap( $SRC_B->getIP4Mapping()) == 2 )
         {
             if( $print )
-                print "Source partial matching\n";
+                PH::print_stdout( "Source partial matching");
             if( $action == "remove" )
             {
                 $result = $SRC_A->getMembersDiff( $SRC_B);
                 foreach( $result['minus'] as $plus )
                 {
                     if( $print )
-                        print "remove SRC: ".$plus->name()."\n";
+                        PH::print_stdout( "remove SRC: ".$plus->name() );
                     if( $isAPI )
                         $this->source->API_remove( $plus );
                     else
@@ -1867,20 +2065,20 @@ class SecurityRule extends RuleWithUserID
         if( $DST_A->getIP4Mapping()->includesOtherMap( $DST_B->getIP4Mapping()) == 0 )
         {
             if( $print )
-                print "Destination not matching\n";
+                PH::print_stdout( "Destination not matching");
             return false;
         }
         elseif( $DST_A->getIP4Mapping()->includesOtherMap( $DST_B->getIP4Mapping()) == 2 )
         {
             if( $print )
-                print "Destination partial matching\n";
+                PH::print_stdout( "Destination partial matching");
             if( $action == "remove" )
             {
                 $result = $DST_A->getMembersDiff( $DST_B);
                 foreach( $result['minus'] as $plus )
                 {
                     if( $print )
-                        print "remove DST: " . $plus->name() . "\n";
+                        PH::print_stdout( "remove DST: " . $plus->name() );
                     if( $isAPI )
                         $this->destination->API_remove($plus);
                     else
@@ -1903,13 +2101,13 @@ class SecurityRule extends RuleWithUserID
             foreach( $result['minus'] as $plus )
             {
                 if( $print )
-                    print "remove service: " . $plus->name() . "\n";
+                    PH::print_stdout( "remove service: " . $plus->name() );
                 $this->services->remove($plus, TRUE, TRUE);
 
                 if( $this->services->isAny() )
                 {
                     if( $print )
-                        print "Service not\n";
+                        PH::print_stdout( "Service not");
                     return FALSE;
                 }
             }
@@ -1922,7 +2120,7 @@ class SecurityRule extends RuleWithUserID
         if( !$SVC_A->includesContainer( $SVC_B) )
         {
             if( $print )
-                print "Service not\n";
+                PH::print_stdout( "Service not");
             return false;
         }
 
@@ -1933,6 +2131,9 @@ class SecurityRule extends RuleWithUserID
 <source><member>any</member></source><destination><member>any</member></destination><source-user><member>any</member></source-user><category><member>any</member></category><application><member>any</member></application><service><member>any</member>
 </service><hip-profiles><member>any</member></hip-profiles><action>allow</action><log-start>no</log-start><log-end>yes</log-end><negate-source>no</negate-source><negate-destination>no</negate-destination><tag/><description/><disabled>no</disabled></entry>';
 
+    static public $templatexml100 = '<entry name="**temporarynamechangeme**"><option><disable-server-response-inspection>no</disable-server-response-inspection></option><from><member>any</member></from><to><member>any</member></to>
+<source><member>any</member></source><destination><member>any</member></destination><source-user><member>any</member></source-user><category><member>any</member></category><application><member>any</member></application><service><member>any</member>
+</service><source-hip><member>any</member></source-hip><destination-hip><member>any</member></destination-hip><action>allow</action><log-start>no</log-start><log-end>yes</log-end><negate-source>no</negate-source><negate-destination>no</negate-destination><tag/><description/><disabled>no</disabled></entry>';
 }
 
 

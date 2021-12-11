@@ -1,10 +1,22 @@
 <?php
 
 /**
- * © 2019 Palo Alto Networks, Inc.  All rights reserved.
+ * ISC License
  *
- * Licensed under SCRIPT SOFTWARE AGREEMENT, Palo Alto Networks, Inc., at https://www.paloaltonetworks.com/legal/script-software-license-1-0.pdf
+ * Copyright (c) 2014-2018, Palo Alto Networks Inc.
+ * Copyright (c) 2019, Palo Alto Networks Inc.
  *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
 
@@ -31,12 +43,17 @@ class AddressStore
     /** @var AddressGroup[] */
     protected $_addressGroups = array();
 
+    /** @var Region[] */
+    protected $_regionObjects = array();
+
     /** @var DOMElement */
     public $addressRoot;
 
     /** @var DOMElement */
     public $addressGroupRoot;
 
+    /** @var DOMElement */
+    public $regionRoot;
 
     /**
      * @param VirtualSystem|DeviceCloud|DeviceGroup|Container|PanoramaConf|PANConf|FawkesConf|null $owner
@@ -133,6 +150,56 @@ class AddressStore
     }
 
 
+    /**
+     * For developer use only
+     * @param DOMElement $xml
+     *
+     */
+    public function load_regions_from_domxml($xml)
+    {
+        $this->regionRoot = $xml;
+
+        $duplicatesRemoval = array();
+
+        foreach( $this->regionRoot->childNodes as $node )
+        {
+            /** @var DOMElement $node */
+            if( $node->nodeType != XML_ELEMENT_NODE ) continue;
+
+            $tmp = DH::findFirstElement( "address", $node);
+            if ( $tmp === false )
+            {
+                //object is TMP - predefined
+                continue;
+            }
+
+            $ns = new Region('', $this);
+            $loadedOK = $ns->load_from_domxml($node);
+
+            if( !$loadedOK )
+                continue;
+
+            $objectName = $ns->name();
+
+            if( isset($this->_all[$objectName]) )
+            {
+                if( PH::$enableXmlDuplicatesDeletion )
+                    $duplicatesRemoval[] = $node;
+                mwarning("an object with name '{$objectName}' already exists in this store, please investigate your xml file as this will be ignored and could eventually be lost.", $node);
+                continue;
+            }
+
+            $this->_regionObjects[$objectName] = $ns;
+            $this->_all[$objectName] = $ns;
+        }
+
+        foreach( $duplicatesRemoval as $node )
+        {
+            $node->parentNode->removeChild($node);
+        }
+    }
+
+
     /*private function remergeAll()
     {
         $this->all = array_merge($this->_addressObjects, $this->_addressGroups, $this->_tmpAddresses);
@@ -156,7 +223,7 @@ class AddressStore
             $errMesg = '';
             $query = new RQuery('address');
             if( $query->parseFromString($withFilter, $errMsg) === FALSE )
-                derr("error while parsing query: {$errMesg}");
+                derr("error while parsing query: {$errMesg} - filter: {$withFilter}");
 
             $res = array();
             foreach( $this->_all as $obj )
@@ -179,6 +246,9 @@ class AddressStore
             $result[] = $object;
 
         foreach( $this->addressGroups(TRUE) as $object )
+            $result[] = $object;
+
+        foreach( $this->_regionObjects as $object )
             $result[] = $object;
 
         return $result;
@@ -219,7 +289,6 @@ class AddressStore
 
             $this->_addressGroups[$name] = $ns;
             $this->_all[$name] = $ns;
-
         }
 
         foreach( $duplicatesRemoval as $node )
@@ -233,8 +302,16 @@ class AddressStore
             if( $node->nodeType != 1 ) continue;
 
             $name = $node->getAttribute('name');
-            $ns = $this->_addressGroups[$name];
-            $ns->load_from_domxml($node);
+            if( isset( $this->_addressGroups[$name] ) )
+            {
+                $ns = $this->_addressGroups[$name];
+                $ns->load_from_domxml($node);
+            }
+            else
+            {
+                mwarning( "earlier warning available that: an object with name '{$name}' already exists in this store, please investigate your xml file as this will be ignored and could eventually be lost.");
+            }
+
         }
     }
 
@@ -311,7 +388,7 @@ class AddressStore
                     $curo->owner->addressStore !== null )
                 {
                     $this->parentCentralStore = $curo->owner->addressStore;
-                    //print $this->toString()." : found a parent central store: ".$parentCentralStore->toString()."\n";
+                    #PH::print_stdout( $this->toString()." : found a parent central store: ".$this->parentCentralStore->toString() );
                     return;
                 }
                 $curo = $curo->owner;
@@ -326,6 +403,8 @@ class AddressStore
      * @param bool $nested
      * @return Address|AddressGroup|null
      */
+    //Todo: check if $nested = false; must be set
+    #NEW - public function find($objectName, $ref = null, $nested = FALSE)
     public function find($objectName, $ref = null, $nested = TRUE)
     {
         $f = null;
@@ -353,7 +432,7 @@ class AddressStore
                 return $f;
         }
 
-        if( $nested && $this->parentCentralStore )
+        if( $nested && $this->parentCentralStore !== null )
         {
             $f = $this->parentCentralStore->find($objectName, $ref, $nested);
         }
@@ -395,13 +474,13 @@ class AddressStore
 
     public function displayTmpAddresss()
     {
-        print "Tmp addresses for " . $this->toString() . "\n";
+        PH::print_stdout( "Tmp addresses for " . $this->toString() );
         foreach( $this->_tmpAddresses as $object )
         {
-            print " - " . $object->name() . "\n";
+            PH::print_stdout(  " - " . $object->name() );
         }
 
-        print "\n";
+        PH::print_stdout(  "" );
     }
 
 
@@ -413,7 +492,7 @@ class AddressStore
 
         if( $c == 0 )
         {
-            $ret = '*ANY*';
+            $ret = '**ANY**';
             return $ret;
         }
 
@@ -850,7 +929,7 @@ class AddressStore
                     $objects_overwritten[$o->name()][$tmp_o->owner->owner->name()] = $tmp_o;
                     $objects_overwritten[$o->name()][$location] = $o;
 
-                    if( $tmp_ref_count == 0 )
+                    if( $tmp_ref_count == 0 && $tmp_o->isAddress() )
                     {
                         // if object is /32, let's remove it to match equivalent non /32 syntax
                         $tmp_value = $tmp_o->value();
@@ -883,7 +962,7 @@ class AddressStore
                     $objects_overwritten[$o->name()][$tmp_o->owner->owner->name()] = $tmp_o;
                     $objects_overwritten[$o->name()][$location] = $o;
 
-                    if( $tmp_ref_count == 0 )
+                    if( $tmp_ref_count == 0 && $tmp_o->isGroup() )
                     {
                         $tmp_mapping = $tmp_o->getFullMapping();
                         $tmp_value = $tmp_mapping['ip4']->dumpToString();
@@ -915,24 +994,24 @@ class AddressStore
 /*
         foreach( $objects_overwritten as $key => $DGs )
         {
-            print "NAME: ".$key."\n";
+            PH::print_stdout(  "NAME: ".$key."\n";
             foreach( $DGs as $key2 => $object )
             {
                 if( $object->isAddress() )
                 {
-                    print "   - DG: ".$key2." value: ".$object->value();
-                    print "\n";
+                    PH::print_stdout(  "   - DG: ".$key2." value: ".$object->value() );
+                    PH::print_stdout(  "");
                     $object->display_references(7);
                 }
                 else
                 {
-                    print "   - DG: ".$key2;
-                    print "\n";
+                    PH::print_stdout(  "   - DG: ".$key2 );
+
                     $object->display_references(7);
                 }
             }
 
-            print "\n";
+            PH::print_stdout(  "");
         }*/
 
         return $objects;
@@ -1040,6 +1119,42 @@ class AddressStore
         return $count;
     }
 
+    public function storeName()
+    {
+        return "addressStore";
+    }
+
+    /**
+     * Returns an Array with all Address|AddressGroup inside this store
+     * @return Address[]|AddressGroup[]
+     */
+    public function &resultingObjectSet()
+    {
+
+        $res = array();
+
+        if( isset($this->owner->parentDeviceGroup) )
+        {
+            $varName = $this->storeName();
+            /** @var AddressStore $var */
+            $var = $this->owner->parentDeviceGroup->$varName;
+            #$var = $this->owner->parentDeviceGroup->addressStore;
+            $res = $var->resultingObjectSet();
+        }
+        elseif( $this->owner->isPanorama() )
+        {
+            $varName = $this->storeName();
+            /** @var AddressStore $var */
+            $var = $this->owner->$varName;
+            #$var = $this->owner->addressStore;
+            $res = $var->all();
+        }
+
+        if( !$this->owner->isPanorama() )
+            $res = array_merge($res, $this->all());
+
+        return $res;
+    }
 
 }
 

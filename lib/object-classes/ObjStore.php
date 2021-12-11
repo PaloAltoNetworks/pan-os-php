@@ -1,10 +1,22 @@
 <?php
 
 /**
- * © 2019 Palo Alto Networks, Inc.  All rights reserved.
+ * ISC License
  *
- * Licensed under SCRIPT SOFTWARE AGREEMENT, Palo Alto Networks, Inc., at https://www.paloaltonetworks.com/legal/script-software-license-1-0.pdf
+ * Copyright (c) 2014-2018, Palo Alto Networks Inc.
+ * Copyright (c) 2019, Palo Alto Networks Inc.
  *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
 class ObjStore
@@ -49,7 +61,14 @@ class ObjStore
         $this->name = $newname;
     }
 
-    protected function findByName($name, $ref = null)
+    public function name()
+    {
+        return $this->name;
+    }
+
+    //Todo: check if $nested = false; must be set
+    #NEW - protected function findByName($name, $ref = null, $nested = FALSE)
+    protected function findByName($name, $ref = null, $nested = TRUE)
     {
         if( isset($this->nameIndex[$name]) )
         {
@@ -57,6 +76,16 @@ class ObjStore
             if( $ref !== null )
                 $o->addReference($ref);
             return $o;
+        }
+
+        if( get_class( $this ) == "EthernetIfStore" || get_class( $this ) == "AggregateEthernetIfStore" || get_class( $this ) == "VirtuelWireStore" )
+            return null;
+
+        if( $nested && isset($this->parentCentralStore) && $this->parentCentralStore !== null )
+        {
+            $f = $this->parentCentralStore->findbyName($name, $ref, $nested);
+            if( $f !== null )
+                return $f;
         }
 
         return null;
@@ -134,12 +163,12 @@ class ObjStore
         $c = count($this->o);
         $k = array_keys($this->o);
 
-        echo "$indent";
-        print "Displaying the $c " . $this->classn . "(s) in " . $this->toString() . "\n";
+        PH::print_stdout( "$indent" );
+        PH::print_stdout( "Displaying the $c " . $this->classn . "(s) in " . $this->toString() );
 
         for( $i = 0; $i < $c; $i++ )
         {
-            print $indent . $this->o[$k[$i]]->name . "\n";
+            PH::print_stdout( $indent . $this->o[$k[$i]]->name );
         }
     }
 
@@ -267,16 +296,54 @@ class ObjStore
                 continue;
             }
 
-            //print $this->toString()."\n";
+
             $newObj = new $this->classn('**tmp**', $this);
             $newObj->load_from_domxml($node);
-            //print $this->toString()." : new Tag '".$newTag->name()."' found\n";
+
 
             $this->o[] = $newObj;
             $this->nameIndex[$newObj->name()] = $newObj;
         }
     }
 
+    /**
+     * Returns an Array with all Address|AddressGroup inside this store
+     * @return Tag[]|Schedule[]
+     */
+    public function &resultingObjectSet()
+    {
+
+        $res = array();
+
+        if( isset($this->owner->parentDeviceGroup) )
+        {
+            $varName = $this->storeName();
+            /** @var ServiceStore $var */
+            $var = $this->owner->parentDeviceGroup->$varName;
+            #$var = $this->owner->parentDeviceGroup->serviceStore;
+            $res = $var->resultingObjectSet();
+        }
+        elseif( $this->owner->isPanorama() )
+        {
+            $varName = $this->storeName();
+            /** @var ServiceStore $var */
+            $var = $this->owner->$varName;
+            #$var = $this->owner->serviceStore;
+            $res = $var->all();
+        }
+
+        if( !$this->owner->isPanorama() )
+        {
+            $varName = $this->storeName();
+            if( $varName == "tagStore" )
+                $res = array_merge($res, $this->getAll());
+            elseif( $varName == "scheduleStore" )
+                $res = array_merge($res, $this->getAll());
+        }
+
+
+        return $res;
+    }
 
 }
 

@@ -1,17 +1,31 @@
 <?php
 
 /**
- * © 2019 Palo Alto Networks, Inc.  All rights reserved.
+ * ISC License
  *
- * Licensed under SCRIPT SOFTWARE AGREEMENT, Palo Alto Networks, Inc., at https://www.paloaltonetworks.com/legal/script-software-license-1-0.pdf
+ * Copyright (c) 2014-2018, Palo Alto Networks Inc.
+ * Copyright (c) 2019, Palo Alto Networks Inc.
  *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-echo "\n*************************************************\n";
-echo "**************** FILTER TESTERS *****************\n\n";
+
 
 set_include_path(dirname(__FILE__) . '/../' . PATH_SEPARATOR . get_include_path());
 require_once dirname(__FILE__)."/../lib/pan_php_framework.php";
+
+PH::print_stdout(  "\n*************************************************");
+PH::print_stdout(  "**************** FILTER TESTERS *****************");
 
 PH::processCliArgs();
 
@@ -36,7 +50,7 @@ else
 if( isset(PH::$args['upload']) )
 {
     $cli = "php ../utils/upload-config.php in=input/panorama-8.0.xml out=api://{$api_ip_address} loadAfterUpload injectUserAdmin2  2>&1";
-    echo " * Executing CLI: {$cli}\n";
+    PH::print_stdout( " * Executing CLI: {$cli}" );
 
     $output = array();
     $retValue = 0;
@@ -45,21 +59,24 @@ if( isset(PH::$args['upload']) )
 
     foreach( $output as $line )
     {
-        echo '   ##  ';
-        echo $line;
-        echo "\n";
+        $string = '   ##  ';
+        $string .= $line;
+        PH::print_stdout( $string );
     }
 
     if( $retValue != 0 )
         derr("CLI exit with error code '{$retValue}'");
-    echo "\n";
+    PH::print_stdout( "" );
 }
 
 //$api_ip_address = "192.168.55.208";
 
 function display_error_usage_exit($msg)
 {
-    fwrite(STDERR, PH::boldText("\n**ERROR** ") . $msg . "\n\n");
+    if( PH::$shadow_json )
+        PH::$JSON_OUT['error'] = $msg;
+    else
+        fwrite(STDERR, PH::boldText("\n**ERROR** ") . $msg . "\n\n");
     #display_usage_and_exit(true);
 }
 
@@ -121,7 +138,7 @@ foreach( RQuery::$defaultFilters as $type => &$filtersByField )
             if( $operator == '>,<,=,!' )
                 $operator = '<';
 
-            echo "\n\n\n *** Processing filter: {$type} / ({$fieldName} {$operator})\n";
+            PH::print_stdout( "\n\n\n *** Processing filter: {$type} / ({$fieldName} {$operator})" );
 
             $ci = &$filter['ci'];
 
@@ -140,22 +157,32 @@ foreach( RQuery::$defaultFilters as $type => &$filtersByField )
                 $util = '../utils/zone-edit.php';
             elseif( $type == 'securityprofile' )
             {
-                echo "******* SKIPPED for now *******\n";
+                PH::print_stdout( "******* SKIPPED for now *******" );
                 continue;
             }
             elseif( $type == 'app' )
             {
-                echo "******* SKIPPED for now *******\n";
+                PH::print_stdout( "******* SKIPPED for now *******" );
                 continue;
             }
             elseif( $type == 'interface' )
             {
-                echo "******* SKIPPED for now *******\n";
+                PH::print_stdout( "******* SKIPPED for now *******" );
                 continue;
             }
             elseif( $type == 'virtual-wire' )
             {
-                echo "******* SKIPPED for now *******\n";
+                PH::print_stdout( "******* SKIPPED for now *******" );
+                continue;
+            }
+            elseif( $type == 'routing' )
+            {
+                PH::print_stdout( "******* SKIPPED for now *******" );
+                continue;
+            }
+            elseif( $type == 'device' )
+            {
+                PH::print_stdout( "******* SKIPPED for now *******" );
                 continue;
             }
             else
@@ -177,7 +204,7 @@ foreach( RQuery::$defaultFilters as $type => &$filtersByField )
 
             $cli .= ' 2>&1';
 
-            echo " * Executing CLI: {$cli}\n";
+            PH::print_stdout( " * Executing CLI: {$cli}" );
 
             $output = array();
             $retValue = 0;
@@ -186,27 +213,27 @@ foreach( RQuery::$defaultFilters as $type => &$filtersByField )
 
             foreach( $output as $line )
             {
-                echo '   ##  ';
-                echo $line;
-                echo "\n";
+                $string = '   ##  ';
+                $string .= $line;
+                PH::print_stdout( $string );
             }
 
             if( $retValue != 0 )
                 derr("CLI exit with error code '{$retValue}'");
 
-            echo "\n";
+            PH::print_stdout( "" );
 
         }
     }
 }
 
-echo "\n*****  *****\n";
-echo " - Processed {$totalFilterCount} filters\n";
-echo " - Found {$totalFilterWithCiCount} that are CI enabled\n";
+PH::print_stdout( "\n*****  *****" );
+PH::print_stdout( " - Processed {$totalFilterCount} filters" );
+PH::print_stdout( " - Found {$totalFilterWithCiCount} that are CI enabled" );
 
-echo "\n";
-echo "\n*********** FINISHED TESTING FILTERS ************\n";
-echo "*************************************************\n\n";
+PH::print_stdout( "" );
+PH::print_stdout( "\n*********** FINISHED TESTING FILTERS ************" );
+PH::print_stdout( "*************************************************\n" );
 
 
 

@@ -2,7 +2,7 @@
 
 // <editor-fold desc=" ***** VirtualWire filters *****" defaultstate="collapsed" >
 
-RQuery::$defaultFilters['virtual-wire']['name']['operators']['eq'] = Array(
+RQuery::$defaultFilters['virtualwire']['name']['operators']['eq'] = Array(
     'Function' => function(VirtualWireRQueryContext $context )
     {
         return $context->object->name() == $context->value;

@@ -1,9 +1,21 @@
 <?php
 /**
- * © 2019 Palo Alto Networks, Inc.  All rights reserved.
+ * ISC License
  *
- * Licensed under SCRIPT SOFTWARE AGREEMENT, Palo Alto Networks, Inc., at https://www.paloaltonetworks.com/legal/script-software-license-1-0.pdf
+ * Copyright (c) 2014-2018, Palo Alto Networks Inc.
+ * Copyright (c) 2019, Palo Alto Networks Inc.
  *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
 class cidr
@@ -287,9 +299,31 @@ class cidr
         return 0;
     }
 
+    static public function &StartEndToIParray( $startEndarray )
+    {
+        $network = $startEndarray['network'];
+        $start = $startEndarray['start'];
+        $end = $startEndarray['end'];
+
+        $ex = explode('/', $network);
+        if( filter_var($ex[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== FALSE )
+            $version = "ipv4";
+        elseif( filter_var($ex[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== FALSE )
+            $version = "ipv6";
+
+        for( $i = $start; $i <= $end; $i++)
+        {
+            $IP = long2ip($i);
+            $ipArray[ $IP ] = $IP;
+        }
+
+        return $ipArray;
+    }
+
     static public function &stringToStartEnd($value)
     {
         $result = array();
+        $result['network'] = $value;
 
         $ex = explode('-', $value);
         if( filter_var($ex[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== FALSE )
@@ -312,8 +346,8 @@ class cidr
             }
             elseif( $version == "ipv6" )
             {
-                $result['start'] = ip2long($ex[0]);
-                $result['end'] = ip2long($ex[1]);
+                $result['start'] = cidr::inet_ptoi($ex[0]);
+                $result['end'] = cidr::inet_ptoi($ex[1]);
             }
 
             return $result;
@@ -322,30 +356,28 @@ class cidr
 
         $ex = explode('/', $value);
         if( filter_var($ex[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== FALSE )
-            $version = "ipv4";
-        elseif( filter_var($ex[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== FALSE )
-            $version = "ipv6";
-
-        if( count($ex) > 1 && $ex[1] != '32' )
         {
-            //$netmask = cidr::cidr2netmask($ex[0]);
-            if( $version == "ipv4" )
-            {
-                if( $ex[1] < 0 || $ex[1] > 32 )
-                    derr("invalid netmask in value {$value}");
-            }
-            elseif( $version == "ipv6" )
-            {
-                if( $ex[1] < 0 || $ex[1] > 128 )
-                    derr("invalid netmask in value {$value}");
-            }
+            $version = "ipv4";
+            $maskvalue = 32;
+        }
+
+        elseif( filter_var($ex[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== FALSE )
+        {
+            $version = "ipv6";
+            $maskvalue = 128;
+        }
+
+        if( count($ex) > 1 && (($version == "ipv4" && $ex[1] != $maskvalue) || ($version == "ipv6" && $ex[1] != $maskvalue) ))
+        {
+            if( $ex[1] < 0 || $ex[1] > $maskvalue )
+                derr("invalid netmask in value {$value}");
 
 
             if( filter_var($ex[0], FILTER_VALIDATE_IP) === FALSE )
                 derr("'{$ex[0]}' is not a valid IP");
 
             $bmask = 0;
-            for( $i = 1; $i <= (32 - $ex[1]); $i++ )
+            for( $i = 1; $i <= ($maskvalue - $ex[1]); $i++ )
                 $bmask += pow(2, $i - 1);
 
 
@@ -361,7 +393,7 @@ class cidr
                 $subBroadcast = cidr::inet_ptoi( $return['end']);
             }
         }
-        elseif( count($ex) > 1 && $ex[1] == '32' )
+        elseif( count($ex) > 1 && (($version == "ipv4" && $ex[1] == $maskvalue) || ($version == "ipv6" && $ex[1] == $maskvalue) ) )
         {
             if( filter_var($ex[0], FILTER_VALIDATE_IP) === FALSE )
                 derr("'{$ex[0]}' is not a valid IP");
@@ -394,7 +426,7 @@ class cidr
             }
         }
 
-        $result['network'] = $value;
+
         $result['start'] = $subNetwork;
         $result['end'] = $subBroadcast;
 
@@ -597,8 +629,6 @@ class cidr
 
         $ip = inet_ntop(pack('N4', $parts[1], $parts[2], $parts[3], $parts[4]));
 
-
-        print "1".$ip."\n";
 
         // fix IPv4 by removing :: from the beginning
         if (strpos($ip, '.') !== false)

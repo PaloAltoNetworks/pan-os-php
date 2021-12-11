@@ -1,3 +1,27 @@
 phpseclib 1.0.19 - 2020
 
 small changes to SSH2 - include of "phpseclib/" change for "Crypt/xyz and "Math/xyz" in SSH2.php
+
+phpseclib/Net/SSH2.php
+line 982
+
+    function __construct($host, $port = 22, $timeout = 10)
+    {
+        // Include Math_BigInteger
+        // Used to do Diffie-Hellman key exchange and DSA/RSA signature verification.
+        if (!class_exists('Math_BigInteger')) {
+            include_once 'phpseclib/Math/BigInteger.php';
+        }
+
+        if (!function_exists('crypt_random_string')) {
+            include_once 'phpseclib/Crypt/Random.php';
+        }
+
+        if (!class_exists('Crypt_Hash')) {
+            include_once 'phpseclib/Crypt/Hash.php';
+        }
+
+        // include Crypt_Base so constants can be defined for setCryptoEngine()
+        if (!class_exists('Crypt_Base')) {
+            include_once 'phpseclib/Crypt/Base.php';
+        }

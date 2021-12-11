@@ -222,6 +222,50 @@ RQuery::$defaultFilters['rule']['to']['operators']['is.in.file'] = array(
     'arg' => TRUE,
     'help' => 'returns TRUE if rule name matches one of the names found in text file provided in argument'
 );
+RQuery::$defaultFilters['rule']['from']['operators']['has.same.to.zone'] = array(
+    'Function' => function (RuleRQueryContext $context) {
+        if( $context->object->isPbfRule() )
+            return null;
+
+        $fromZones = $context->object->from;
+        $toZones = $context->object->to;
+
+        if( count($fromZones->zones()) === count($toZones->zones()))
+        {
+            if( $fromZones->includesContainer( $toZones ) && $toZones->includesContainer( $fromZones ) )
+                return TRUE;
+        }
+
+        return FALSE;
+    },
+    'arg' => FALSE,
+    'ci' => array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['rule']['to']['operators']['has.same.from.zone'] = array(
+    'Function' => function (RuleRQueryContext $context) {
+        if( $context->object->isPbfRule() )
+            return null;
+
+        $fromZones = $context->object->from;
+        $toZones = $context->object->to;
+
+        if( count($fromZones->zones()) === count($toZones->zones()))
+        {
+            if( $fromZones->includesContainer( $toZones ) && $toZones->includesContainer( $fromZones ) )
+            return TRUE;
+        }
+
+        return FALSE;
+    },
+    'arg' => FALSE,
+    'ci' => array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 //                                              //
 //                NAT Dst/Src Based Actions     //
 //                                              //
@@ -1124,6 +1168,43 @@ RQuery::$defaultFilters['rule']['app']['operators']['has.regex'] = array(
         'input' => 'input/panorama-8.0.xml'
     )
 );
+
+RQuery::$defaultFilters['rule']['app']['operators']['has.recursive'] = array(
+    'Function' => function (RuleRQueryContext $context) {
+        $rule = $context->object;
+        if( $rule->isNatRule() || $rule->isDecryptionRule() || $rule->isCaptivePortalRule() || $rule->isAuthenticationRule() || $rule->isDoSRule() )
+            return FALSE;
+
+        foreach( $rule->apps->getAll() as $app)
+        {
+
+            if( !$app->isApplicationGroup() &&  !$app->isContainer())
+                continue;
+
+            $member = $app->owner->find( $context->value );
+            if( $member !== null)
+            {
+                $references = $member->getReferences();
+                foreach( $references as $ref )
+                {
+                    /** @var ReferenceableObject $ref */
+                    if( get_class( $ref->owner ) == "AppStore" )
+                    {
+                        if( $ref === $app )
+                            return TRUE;
+                    }
+                }
+            }
+        }
+
+        return FALSE;
+    },
+    'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP% ssl)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 RQuery::$defaultFilters['rule']['app']['operators']['includes.full.or.partial'] = array(
     'Function' => function (RuleRQueryContext $context) {
         $rule = $context->object;
@@ -1340,11 +1421,8 @@ RQuery::$defaultFilters['rule']['service']['operators']['is.tcp.only'] = array(
 
                 if( strpos($port_mapping_text, "udp") !== FALSE )
                     return FALSE;
-
-                return TRUE;
             }
-
-            if( $object->isUdp() )
+            elseif( $object->isUdp() )
                 return FALSE;
         }
 
@@ -1381,11 +1459,8 @@ RQuery::$defaultFilters['rule']['service']['operators']['is.udp.only'] = array(
 
                 if( strpos($port_mapping_text, "tcp") !== FALSE )
                     return FALSE;
-
-                return TRUE;
             }
-
-            if( $object->isTcp() )
+            elseif( $object->isTcp() )
                 return FALSE;
         }
 
@@ -1424,8 +1499,6 @@ RQuery::$defaultFilters['rule']['service']['operators']['is.tcp'] = array(
 
                 if( strpos($port_mapping_text, "tcp") !== FALSE )
                     $isTCP = TRUE;
-                else
-                    return FALSE;
             }
             elseif( $object->isTcp() )
                 $isTCP = TRUE;
@@ -1464,9 +1537,7 @@ RQuery::$defaultFilters['rule']['service']['operators']['is.udp'] = array(
                 $port_mapping_text = $port_mapping->mappingToText();
 
                 if( strpos($port_mapping_text, "udp") !== FALSE )
-                    return TRUE;
-                else
-                    return FALSE;
+                    $isUDP = TRUE;
             }
             elseif( $object->isUdp() )
                 $isUDP = TRUE;
@@ -2099,6 +2170,16 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.disabled'] = array(
         'input' => 'input/panorama-8.0.xml'
     )
 );
+RQuery::$defaultFilters['rule']['rule']['operators']['is.enabled'] = array(
+    'Function' => function (RuleRQueryContext $context) {
+        return $context->object->isEnabled();
+    },
+    'arg' => FALSE,
+    'ci' => array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 RQuery::$defaultFilters['rule']['rule']['operators']['is.dsri'] = array(
     'Function' => function (RuleRQueryContext $context) {
         if( !$context->object->isSecurityRule() )
@@ -2268,13 +2349,13 @@ RQuery::$defaultFilters['rule']['location']['operators']['is.child.of'] = array(
         $DG = $sub->findDeviceGroup($context->value);
         if( $DG == null )
         {
-            print "ERROR: location '$context->value' was not found. Here is a list of available ones:\n";
-            print " - shared\n";
+            PH::print_stdout( "ERROR: location '$context->value' was not found. Here is a list of available ones:" );
+            PH::print_stdout( " - shared" );
             foreach( $sub->getDeviceGroups() as $sub1 )
             {
-                print " - " . $sub1->name() . "\n";
+                PH::print_stdout( " - " . $sub1->name()  );
             }
-            print "\n\n";
+            PH::print_stdout( "" );
             exit(1);
         }
 
@@ -2307,7 +2388,10 @@ RQuery::$defaultFilters['rule']['location']['operators']['is.parent.of'] = array
             $sub = $sub->owner;
 
         if( get_class($sub) == "PANConf" )
-            derr("filter location is.parent.of is not working against a firewall configuration");
+        {
+            PH::print_stdout( "ERROR: filter location is.child.of is not working against a firewall configuration" );
+            return FALSE;
+        }
 
         if( strtolower($context->value) == 'shared' )
             return TRUE;
@@ -2315,13 +2399,13 @@ RQuery::$defaultFilters['rule']['location']['operators']['is.parent.of'] = array
         $DG = $sub->findDeviceGroup($context->value);
         if( $DG == null )
         {
-            print "ERROR: location '$context->value' was not found. Here is a list of available ones:\n";
-            print " - shared\n";
+            PH::print_stdout( "ERROR: location '$context->value' was not found. Here is a list of available ones:" );
+            PH::print_stdout( " - shared" );
             foreach( $sub->getDeviceGroups() as $sub1 )
             {
-                print " - " . $sub1->name() . "\n";
+                PH::print_stdout( " - " . $sub1->name() . "" );
             }
-            print "\n\n";
+            PH::print_stdout( "\n" );
             exit(1);
         }
 
@@ -2355,13 +2439,18 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.unused.fast'] = array(
         if( !$object->isSecurityRule() && !$object->isNatRule() )
             derr("unsupported filter : rule type " . $object->ruleNature() . " is not supported yet. " . $object->toString());
 
+
+
+        return $object->ruleUsageFast( $context, 'hit-count' );
+
+        /*
         $unused_flag = 'unused' . $object->ruleNature();
         $rule_base = $object->ruleNature();
 
         $sub = $object->owner->owner;
         if( !$sub->isVirtualSystem() && !$sub->isDeviceGroup() )
         {
-            print PH::boldText("   **WARNING**:") . "this filter is only supported on non Shared rules " . $object->toString() . "\n";
+            PH::print_stdout( PH::boldText("   **WARNING**:") . "this filter is only supported on non Shared rules " . $object->toString() . "" );
             return null;
         }
 
@@ -2391,7 +2480,7 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.unused.fast'] = array(
 
             if( $sub->isVirtualSystem() )
             {
-                print "Firewall: " . $connector->info_hostname . " (serial: '" . $connector->info_serial . "', PAN-OS: '" . $connector->info_PANOS_version . "') was rebooted '" . $connector->info_uptime . "' ago.\n";
+                PH::print_stdout( "Firewall: " . $connector->info_hostname . " (serial: '" . $connector->info_serial . "', PAN-OS: '" . $connector->info_PANOS_version . "') was rebooted '" . $connector->info_uptime . "' ago." );
                 $apiResult = $connector->sendCmdRequest($apiCmd);
 
                 $rulesXml = DH::findXPath('/result/rules/entry', $apiResult);
@@ -2407,7 +2496,7 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.unused.fast'] = array(
                     $apiCmd2 .= '<all></all>';
                     $apiCmd2 .= '</rules></entry></rule-base></entry></vsys-name></vsys></rule-hit-count></show>';
 
-                    print "additional check needed as PAN-OS >= 8.1.X\n";
+                    PH::print_stdout( "additional check needed as PAN-OS >= 8.1.X" );
 
                     $apiResult = $connector->sendCmdRequest($apiCmd2);
 
@@ -2421,10 +2510,18 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.unused.fast'] = array(
                             if( $node->nodeName == "hit-count" )
                             {
                                 $hitcount_value = $node->textContent;
-                                if( $hitcount_value != 0 )
-                                    unset($sub->apiCache[$unused_flag][$ruleName]);
+                                if( $hitcount_value == 0 )
+                                {
 
+                                }
+                                else
+                                {
+                                    if( isset($sub->apiCache[$unused_flag][$ruleName]) )
+                                        unset($sub->apiCache[$unused_flag][$ruleName]);
+                                }
                             }
+
+                            //last-hit-timestamp
                         }
                     }
                 }
@@ -2439,7 +2536,7 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.unused.fast'] = array(
                     if( !isset($connectedDevices[$device['serial']]) )
                     {
                         unset($devices[$id]);
-                        print "\n  - firewall device with serial: " . $device['serial'] . " is not connected.\n";
+                        PH::print_stdout( "\n  - firewall device with serial: " . $device['serial'] . " is not connected." );
                     }
                 }
 
@@ -2450,7 +2547,7 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.unused.fast'] = array(
                     $newConnector = new PanAPIConnector($connector->apihost, $connector->apikey, 'panos-via-panorama', $device['serial']);
                     $newConnector->setShowApiCalls($connector->showApiCalls);
                     $newConnector->refreshSystemInfos();
-                    print "Firewall: " . $newConnector->info_hostname . " (serial: '" . $newConnector->info_serial . "', PAN-OS: '" . $newConnector->info_PANOS_version . "') was rebooted '" . $newConnector->info_uptime . "' ago.\n";
+                    PH::print_stdout( "Firewall: " . $newConnector->info_hostname . " (serial: '" . $newConnector->info_serial . "', PAN-OS: '" . $newConnector->info_PANOS_version . "') was rebooted '" . $newConnector->info_uptime . "' ago." );
                     $tmpCache = array();
 
                     foreach( $device['vsyslist'] as $vsys )
@@ -2481,7 +2578,7 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.unused.fast'] = array(
                             $apiCmd2 .= '<all></all>';
                             $apiCmd2 .= '</rules></entry></rule-base></entry></vsys-name></vsys></rule-hit-count></show>';
 
-                            print "additional check needed as PAN-OS >= 8.1.X\n";
+                            PH::print_stdout( "additional check needed as PAN-OS >= 8.1.X" );
 
                             $apiResult = $newConnector->sendCmdRequest($apiCmd2);
 
@@ -2495,7 +2592,11 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.unused.fast'] = array(
                                     if( $node->nodeName == "hit-count" )
                                     {
                                         $hitcount_value = $node->textContent;
-                                        if( $hitcount_value != 0 )
+                                        if( $hitcount_value == 0 )
+                                        {
+
+                                        }
+                                        else
                                         {
                                             if( isset($sub->apiCache[$unused_flag][$ruleName]) )
                                                 unset($sub->apiCache[$unused_flag][$ruleName]);
@@ -2504,6 +2605,8 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.unused.fast'] = array(
                                                 unset($tmpCache[$ruleName]);
                                         }
                                     }
+
+                                    //last-hit-timestamp
                                 }
                             }
                         }
@@ -2527,10 +2630,34 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.unused.fast'] = array(
             return TRUE;
 
         return FALSE;
+        */
     },
-    'arg' => FALSE
+    'arg' => false
 );
 
+RQuery::$defaultFilters['rule']['timestamp-last-hit.fast']['operators']['>,<,=,!'] = array(
+#RQuery::$defaultFilters['rule']['rule']['operators']['last-hit-timestamp'] = array(
+    'Function' => function (RuleRQueryContext $context) {
+        $object = $context->object;
+
+        if( !$object->isSecurityRule() && !$object->isNatRule() )
+            derr("unsupported filter : rule type " . $object->ruleNature() . " is not supported yet. " . $object->toString());
+
+        $str = $context->value;
+        if (($timestamp = strtotime($str)) === false)
+        {
+            #echo "The string ($str) is bogus"."\n";
+        }
+        else
+        {
+            #echo "$str == " . date('l dS \o\f F Y h:i:s A', $timestamp)."\n";
+        }
+
+        return $object->ruleUsageFast( $context, 'last-hit-timestamp' );
+    },
+    'arg' => TRUE,
+    'help' => 'returns TRUE if rule name matches the specified timestamp MM/DD/YYYY [american] / DD-MM-YYYY [european] / 21 September 2021 / - 90 days',
+);
 
 RQuery::$defaultFilters['rule']['name']['operators']['eq'] = array(
     'Function' => function (RuleRQueryContext $context) {
@@ -2726,9 +2853,11 @@ RQuery::$defaultFilters['rule']['user']['operators']['has.regex'] = array(
 
         foreach( $users as $user )
         {
-            $matching = preg_match($context->value, $user);
+            $searchString = str_replace( "\\", "\\\\", $context->value);
+
+            $matching = preg_match($searchString, $user);
             if( $matching === FALSE )
-                derr("regular expression error on '{$context->value}'");
+                derr("regular expression error on '{$searchString}'");
             if( $matching === 1 )
                 return TRUE;
         }
@@ -2741,7 +2870,64 @@ RQuery::$defaultFilters['rule']['user']['operators']['has.regex'] = array(
         'input' => 'input/panorama-8.0.xml'
     )
 );
+RQuery::$defaultFilters['rule']['user']['operators']['is.in.file'] = array(
+    'Function' => function (RuleRQueryContext $context) {
+        $object = $context->object;
 
+        if( !isset($context->cachedList) )
+        {
+            $text = file_get_contents($context->value);
+
+            if( $text === FALSE )
+                derr("cannot open file '{$context->value}");
+
+            $lines = explode("\n", $text);
+            foreach( $lines as $line )
+            {
+                $line = trim($line);
+                if( strlen($line) == 0 )
+                    continue;
+                $list[$line] = TRUE;
+            }
+
+            $context->cachedList = &$list;
+        }
+        else
+            $list = &$context->cachedList;
+
+        $return = FALSE;
+        foreach( $list as $listuser => $truefalse )
+        {
+            $searchString = str_replace( "\\", "\\\\", $listuser);
+            $searchString = "/".$searchString."/";
+
+            $users = $object->userID_getUsers();
+
+            foreach( $users as $user )
+            {
+                $matching = preg_match($searchString, $user);
+                if( $matching === 1 )
+                    return TRUE;
+            }
+        }
+
+        return $return;
+    },
+    'arg' => TRUE,
+    'help' => 'returns TRUE if rule name matches one of the names found in text file provided in argument'
+);
+RQuery::$defaultFilters['rule']['user.count']['operators']['>,<,=,!'] = array(
+    'eval' => "\$object->isSecurityRule() && \$object->userID_count() !operator! !value!",
+    'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP% 1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
+//                                              //
+//                Url.category properties             //
+//                                              //
 RQuery::$defaultFilters['rule']['url.category']['operators']['is.any'] = array(
     'Function' => function (RuleRQueryContext $context) {
         $rule = $context->object;
@@ -2842,6 +3028,15 @@ RQuery::$defaultFilters['rule']['description']['operators']['regex'] = array(
         'input' => 'input/panorama-8.0.xml'
     )
 );
+RQuery::$defaultFilters['rule']['description.length']['operators']['>,<,=,!'] = array(
+    'eval' => "strlen(\$object->description() ) !operator! !value!",
+    'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP% 1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
 
 RQuery::$defaultFilters['rule']['app']['operators']['category.is'] = array(
     'Function' => function (RuleRQueryContext $context) {
@@ -3025,16 +3220,18 @@ RQuery::$defaultFilters['rule']['app']['operators']['has.missing.dependencies'] 
                 if( $first )
                 {
                     $first = FALSE;
-                    print "   - app-id: ";
+                    $string = "   - app-id: ";
                 }
-                print $app . ", ";
+                $string .= $app . ", ";
                 $missing_dependencies = TRUE;
             }
         }
 
+        PH::print_stdout( $string );
+
         if( $missing_dependencies )
         {
-            print " |  is missing in rule:\n";
+            PH::print_stdout( " |  is missing in rule:" );
             return TRUE;
         }
 
@@ -3112,12 +3309,29 @@ RQuery::$defaultFilters['rule']['schedule']['operators']['is.expired'] = array(
 
         if( is_object( $schedule ) )
         {
-            return $schedule->isExpired();
+            return $schedule->isExpired( );
         }
 
         return FALSE;
     },
     'arg' => false,
+);
+RQuery::$defaultFilters['rule']['schedule']['operators']['expire.in.days'] = array(
+    'Function' => function (RuleRQueryContext $context) {
+        $rule = $context->object;
+        if( !$rule->isSecurityRule() )
+            return FALSE;
+
+        $schedule = $rule->schedule();
+
+        if( is_object( $schedule ) )
+        {
+            return $schedule->isExpired( $context->value );
+        }
+
+        return FALSE;
+    },
+    'arg' => true,
 );
 
 // </editor-fold>

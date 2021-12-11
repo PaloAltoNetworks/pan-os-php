@@ -2,14 +2,14 @@
 
 /*****************************************************************************
 *
-*	 This script is doing basic use PAN-PHP-FRAMEWORK API.
+*	 This script is doing basic use PAN-OS-PHP API.
 *		
 *	It will load a sample PANOS config and make some rules and object 
 *	editing.
 *
 *****************************************************************************/
 
-// load PAN-PHP-FRAMEWORK library
+// load PAN-OS-PHP library
 require_once("../lib/pan_php_framework.php");
 
 // input and output files
@@ -30,34 +30,34 @@ if( $vsys1 === null )
 	derr("vsys1 was not found ? Exit\n");
 }
 
-print "\n***********************************************\n\n";
+PH::print_stdout( "***********************************************" );
 
 // look for an object named server-4-address
 $addressObject = $vsys1->addressStore->find('server-4-address');
 // display the list of objects that are using this
 $addressObject->display_references();
 
-print "\n";
+PH::print_stdout( "" );
 
 // look for an object called client-2-address
 $anotherObject = $vsys1->addressStore->find('client-2-address');
 // display the list of objects that are using this
 $anotherObject->display_references();
 
-print "\nAfter replacement\n\n";
+PH::print_stdout( "After replacement" );
 
 // Let's replace this object by another one everywhere
 $addressObject->replaceMeGlobally($anotherObject);
 
 $addressObject->display_references();
-print "\n";
+PH::print_stdout( "" );
 $anotherObject->display_references();
 
 
 
 
 
-print "\n***********************************************\n";
+PH::print_stdout( "\n***********************************************" );
 
 
 //display some statistics

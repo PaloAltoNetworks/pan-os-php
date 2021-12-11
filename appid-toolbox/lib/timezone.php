@@ -1,5 +1,21 @@
 <?php
-
+/**
+ * ISC License
+ *
+ * Copyright (c) 2019, Palo Alto Networks Inc.
+ *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 
 if( strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' )
 {
@@ -12,20 +28,29 @@ if( strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' )
 
     $system_timezone = strtoupper($result);
 
-    print "WINDOWS\n";
+    PH::print_stdout( "WINDOWS" );
 }
 else
 {
     $system_timezone = exec('date +%Z');
-    print "UNIX\n";
+    PH::print_stdout( "UNIX" );
 }
 
-print "\n\n-------------------------------------------------\n\n";
-print "|".$system_timezone."|";
-print "\n\n-------------------------------------------------\n\n";
-
+PH::print_stdout( "" );
+PH::print_stdout( "" );
+PH::print_stdout("-------------------------------------------------" );
+PH::print_stdout( "" );
+PH::print_stdout("|".$system_timezone."|" );
+PH::print_stdout( "" );
+PH::print_stdout("-------------------------------------------------" );
+PH::print_stdout( "" );
 $timezone_name = timezone_name_from_abbr( $system_timezone );
 
-print "\n\n-------------------------------------------------\n\n";
-print "|".$timezone_name."|";
-print "\n\n-------------------------------------------------\n\n";
+PH::print_stdout( "" );
+PH::print_stdout( "" );
+PH::print_stdout("-------------------------------------------------" );
+PH::print_stdout( "" );
+PH::print_stdout("|".$timezone_name."|" );
+PH::print_stdout( "" );
+PH::print_stdout("-------------------------------------------------" );
+PH::print_stdout( "" );

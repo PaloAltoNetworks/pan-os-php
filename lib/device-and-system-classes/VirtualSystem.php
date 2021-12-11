@@ -1,9 +1,21 @@
 <?php
 /**
- * © 2019 Palo Alto Networks, Inc.  All rights reserved.
+ * ISC License
  *
- * Licensed under SCRIPT SOFTWARE AGREEMENT, Palo Alto Networks, Inc., at https://www.paloaltonetworks.com/legal/script-software-license-1-0.pdf
+ * Copyright (c) 2014-2018, Palo Alto Networks Inc.
+ * Copyright (c) 2019, Palo Alto Networks Inc.
  *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
 class VirtualSystem
@@ -23,6 +35,8 @@ class VirtualSystem
     /** @var AppStore|null */
     public $appStore = null;
 
+    /** @var ThreatStore|null */
+    public $threatStore = null;
 
     protected $securityProfilebaseroot;
 
@@ -43,6 +57,9 @@ class VirtualSystem
 
     /** @var SecurityProfileStore */
     public $FileBlockingProfileStore = null;
+
+    /** @var SecurityProfileStore */
+    public $DataFilteringProfileStore = null;
 
     /** @var SecurityProfileStore */
     public $WildfireProfileStore = null;
@@ -111,7 +128,7 @@ class VirtualSystem
     /** @var InterfaceContainer */
     public $importedInterfaces;
 
-    /** @var InterfaceContainer */
+    /** @var VirtualRouterContainer */
     public $importedVirtualRouter;
 
     /** @var DeviceGroup $parentDeviceGroup in case it load as part of Panorama */
@@ -134,7 +151,12 @@ class VirtualSystem
         $this->importedInterfaces = new InterfaceContainer($this, $owner->network);
         $this->importedVirtualRouter = new VirtualRouterContainer($this, $owner->network);
 
-        $this->appStore = $owner->appStore;
+
+        #$this->appStore = $owner->appStore;
+        $this->appStore = new AppStore($this);
+        $this->appStore->name = 'customApplication';
+
+        $this->threatStore = $owner->threatStore;
 
         $this->zoneStore = new ZoneStore($this);
         $this->zoneStore->setName('zoneStore');
@@ -147,26 +169,29 @@ class VirtualSystem
         $this->addressStore->name = 'addresses';
 
 
-        $this->customURLProfileStore = new SecurityProfileStore($this, "customURLProfileStore");
+        $this->customURLProfileStore = new SecurityProfileStore($this, "customURLProfile");
         $this->customURLProfileStore->name = 'CustomURL';
 
-        $this->URLProfileStore = new SecurityProfileStore($this, "URLProfileStore");
+        $this->URLProfileStore = new SecurityProfileStore($this, "URLProfile");
         $this->URLProfileStore->name = 'URL';
 
-        $this->AntiVirusProfileStore = new SecurityProfileStore($this, "AntiVirusProfileStore");
+        $this->AntiVirusProfileStore = new SecurityProfileStore($this, "AntiVirusProfile");
         $this->AntiVirusProfileStore->name = 'AntiVirus';
 
 
-        $this->VulnerabilityProfileStore = new SecurityProfileStore($this, "VulnerabilityProfileStore");
+        $this->VulnerabilityProfileStore = new SecurityProfileStore($this, "VulnerabilityProfile");
         $this->VulnerabilityProfileStore->name = 'Vulnerability';
 
-        $this->AntiSpywareProfileStore = new SecurityProfileStore($this, "AntiSpywareProfileStore");
+        $this->AntiSpywareProfileStore = new SecurityProfileStore($this, "AntiSpywareProfile");
         $this->AntiSpywareProfileStore->name = 'AntiSpyware';
 
-        $this->FileBlockingProfileStore = new SecurityProfileStore($this, "FileBlockingProfileStore");
+        $this->FileBlockingProfileStore = new SecurityProfileStore($this, "FileBlockingProfile");
         $this->FileBlockingProfileStore->name = 'FileBlocking';
 
-        $this->WildfireProfileStore = new SecurityProfileStore($this, "WildfireProfileStore");
+        $this->DataFilteringProfileStore = new SecurityProfileStore($this, "DataFilteringProfile");
+        $this->DataFilteringProfileStore->name = 'DataFiltering';
+
+        $this->WildfireProfileStore = new SecurityProfileStore($this, "WildfireProfile");
         $this->WildfireProfileStore->name = 'WildFire';
 
 
@@ -174,13 +199,13 @@ class VirtualSystem
         $this->securityProfileGroupStore->name = 'SecurityProfileGroups';
 
 
-        $this->DecryptionProfileStore = new SecurityProfileStore($this, "DecryptionProfileStore");
+        $this->DecryptionProfileStore = new SecurityProfileStore($this, "DecryptionProfile");
         $this->DecryptionProfileStore->name = 'Decryption';
 
-        $this->HipObjectsProfileStore = new SecurityProfileStore($this, "HipObjectsProfileStore");
+        $this->HipObjectsProfileStore = new SecurityProfileStore($this, "HipObjectsProfile");
         $this->HipObjectsProfileStore->name = 'HipObjects';
 
-        $this->HipProfilesProfileStore = new SecurityProfileStore($this, "HipProfilesProfileStore");
+        $this->HipProfilesProfileStore = new SecurityProfileStore($this, "HipProfilesProfile");
         $this->HipProfilesProfileStore->name = 'HipProfiles';
 
         $this->scheduleStore = new ScheduleStore($this);
@@ -284,6 +309,16 @@ class VirtualSystem
             // End of address groups extraction
 
 
+            //
+            // Extract region objects
+            //
+            $tmp = DH::findFirstElement('region', $xml);
+            if( $tmp !== false )
+                $this->addressStore->load_regions_from_domxml($tmp);
+            //print "VSYS '".$this->name."' address objectsloaded\n" ;
+            // End of address objects extraction
+
+
             //												//
             // Extract service objects in this VSYS			//
             //												//
@@ -365,6 +400,15 @@ class VirtualSystem
                 if( $tmproot !== FALSE )
                 {
                     $this->FileBlockingProfileStore->load_from_domxml($tmproot);
+                }
+
+                //
+                // DataFiltering Profile extraction
+                //
+                $tmproot = DH::findFirstElement('data-filtering', $this->securityProfilebaseroot);
+                if( $tmproot !== FALSE )
+                {
+                    $this->DataFilteringProfileStore->load_from_domxml($tmproot);
                 }
 
                 //
@@ -600,6 +644,8 @@ class VirtualSystem
     {
         $stdoutarray = array();
 
+        $stdoutarray['type'] = get_class( $this );
+
         $header = "Statistics for VSYS '" . PH::boldText($this->name) . "' | '" . $this->toString() . "'";
         $stdoutarray['header'] = $header;
 
@@ -642,11 +688,12 @@ class VirtualSystem
         $stdoutarray['zones'] = $this->zoneStore->count();
         $stdoutarray['apps'] = $this->appStore->count();
 
-        $return = array();
-        $return['VSYS-stat'] = $stdoutarray;
 
-        #PH::print_stdout( $return );
-        PH::print_stdout( $stdoutarray );
+        PH::$JSON_TMP[] = $stdoutarray;
+
+
+        if( !PH::$shadow_json )
+            PH::print_stdout( $stdoutarray, true );
 
     }
 

@@ -383,13 +383,13 @@ RQuery::$defaultFilters['service']['location']['operators']['is.child.of'] = arr
         $DG = $sub->findDeviceGroup($context->value);
         if( $DG == null )
         {
-            print "ERROR: location '$context->value' was not found. Here is a list of available ones:\n";
-            print " - shared\n";
+            PH::print_stdout( "ERROR: location '$context->value' was not found. Here is a list of available ones:" );
+            PH::print_stdout( " - shared" );
             foreach( $sub->getDeviceGroups() as $sub1 )
             {
-                print " - " . $sub1->name() . "\n";
+                PH::print_stdout( " - " . $sub1->name() );
             }
-            print "\n\n";
+            PH::print_stdout( "" );
             exit(1);
         }
 
@@ -422,7 +422,10 @@ RQuery::$defaultFilters['service']['location']['operators']['is.parent.of'] = ar
             $sub = $sub->owner;
 
         if( get_class($sub) == "PANConf" )
-            derr("filter location is.parent.of is not working against a firewall configuration");
+        {
+            PH::print_stdout( "ERROR: filter location is.child.of is not working against a firewall configuration");
+            return FALSE;
+        }
 
         if( strtolower($context->value) == 'shared' )
             return TRUE;
@@ -430,13 +433,13 @@ RQuery::$defaultFilters['service']['location']['operators']['is.parent.of'] = ar
         $DG = $sub->findDeviceGroup($context->value);
         if( $DG == null )
         {
-            print "ERROR: location '$context->value' was not found. Here is a list of available ones:\n";
-            print " - shared\n";
+            PH::print_stdout( "ERROR: location '$context->value' was not found. Here is a list of available ones:" );
+            PH::print_stdout( " - shared" );
             foreach( $sub->getDeviceGroups() as $sub1 )
             {
-                print " - " . $sub1->name() . "\n";
+                PH::print_stdout( " - " . $sub1->name() );
             }
-            print "\n\n";
+            PH::print_stdout( "\n" );
             exit(1);
         }
 
@@ -484,7 +487,7 @@ RQuery::$defaultFilters['service']['reflocation']['operators']['is'] = array(
             $DG = $owner->findDeviceGroup($context->value);
             if( $DG == null )
             {
-                $test = new UTIL("custom", array(), "");
+                $test = new UTIL("custom", array(), 0,"");
                 $test->configType = "panorama";
                 $test->locationNotFound($context->value, null, $owner);
             }
@@ -697,6 +700,124 @@ RQuery::$defaultFilters['service']['value']['operators']['regex'] = array(
     )
 );
 
+###########
+RQuery::$defaultFilters['service']['sourceport.value']['operators']['string.eq'] = array(
+    'Function' => function (ServiceRQueryContext $context) {
+        $object = $context->object;
+
+        if( $object->isGroup() )
+            return null;
+
+        if( $object->isService() )
+        {
+            if( $object->getSourcePort() == $context->value )
+                return TRUE;
+        }
+        return FALSE;
+    },
+    'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP% 80)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['service']['sourceport.value']['operators']['>,<,=,!'] = array(
+    'eval' => '!$object->isGroup() && $object->getSourcePort() !operator! !value!',
+    'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP% 1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['service']['sourceport.value']['operators']['is.single.port'] = array(
+    'Function' => function (ServiceRQueryContext $context) {
+        $object = $context->object;
+        if( $object->isTmpSrv() )
+            return FALSE;
+
+        if( $object->isGroup() )
+            return FALSE;
+
+        if( strpos($object->getSourcePort(), ",") !== FALSE )
+            return FALSE;
+
+        if( strpos($object->getSourcePort(), "-") !== FALSE )
+            return FALSE;
+
+        return TRUE;
+    },
+    'arg' => FALSE,
+    'ci' => array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['service']['sourceport.value']['operators']['is.port.range'] = array(
+    'Function' => function (ServiceRQueryContext $context) {
+        $object = $context->object;
+        if( $object->isTmpSrv() )
+            return FALSE;
+
+        if( $object->isGroup() )
+            return FALSE;
+
+        if( strpos($object->getSourcePort(), "-") !== FALSE )
+            return TRUE;
+
+        return FALSE;
+    },
+    'arg' => FALSE,
+    'ci' => array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['service']['sourceport.value']['operators']['is.comma.separated'] = array(
+    'Function' => function (ServiceRQueryContext $context) {
+        $object = $context->object;
+        if( $object->isTmpSrv() )
+            return FALSE;
+
+        if( $object->isGroup() )
+            return FALSE;
+
+        if( strpos($object->getSourcePort(), ",") !== FALSE )
+            return TRUE;
+
+        return FALSE;
+    },
+    'arg' => FALSE,
+    'ci' => array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['service']['sourceport.value']['operators']['regex'] = array(
+    'Function' => function (ServiceRQueryContext $context) {
+        $object = $context->object;
+        $value = $context->value;
+
+        if( $object->isTmpSrv() )
+            return FALSE;
+
+        if( $object->isGroup() )
+            return FALSE;
+
+
+        $matching = preg_match($value, $object->getSourcePort());
+        if( $matching === FALSE )
+            derr("regular expression error on '{$value}'");
+        if( $matching === 1 )
+            return TRUE;
+        return FALSE;
+    },
+    'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP% /tcp/)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+#################
 RQuery::$defaultFilters['service']['value.length']['operators']['>,<,=,!'] = array(
     'eval' => '!$object->isGroup() && strlen($object->getDestPort()) !operator! !value!',
     'arg' => TRUE,

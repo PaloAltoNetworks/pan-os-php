@@ -183,6 +183,11 @@ class NetworkPropertiesContainer
         return $ifs;
     }
 
+    public function count()
+    {
+        $tmpcount = $this->getAllInterfaces();
+        return count($tmpcount);
+    }
     /**
      * @param string $interfaceName
      * @return EthernetInterface|IPsecTunnel|TmpInterface|VlanInterface|TunnelInterface|LoopbackInterface|null

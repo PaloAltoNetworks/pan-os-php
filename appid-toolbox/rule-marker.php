@@ -1,15 +1,29 @@
 <?php
 
 /**
- * © 2019 Palo Alto Networks, Inc.  All rights reserved.
+ * ISC License
  *
- * Licensed under SCRIPT SOFTWARE AGREEMENT, Palo Alto Networks, Inc., at https://www.paloaltonetworks.com/legal/script-software-license-1-0.pdf
+ * Copyright (c) 2014-2018, Palo Alto Networks Inc.
+ * Copyright (c) 2019, Palo Alto Networks Inc.
  *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-print "\n************* START OF SCRIPT ".basename(__FILE__)." ************\n\n";
 
 require_once dirname(__FILE__) . "/lib/common.php";
+
+PH::print_stdout( "************* START OF SCRIPT ".basename(__FILE__)." ************" );
+PH::print_stdout( " - PAN-OS-PHP version: ".PH::frameworkVersion() . " [".PH::frameworkInstalledOS()."]" );
 
 $debugAPI = false;
 
@@ -18,12 +32,11 @@ PH::processCliArgs();
 
 function display_usage_and_exit()
 {
-    print PH::boldText("USAGE: ")."php ".basename(__FILE__)." in=api://xxxx location=deviceGroup2 [OPTIONAL ARGS]".
-        "\n\n";
+    PH::print_stdout(PH::boldText("USAGE: ")."php ".basename(__FILE__)." in=api://xxxx location=deviceGroup2 [OPTIONAL ARGS]" );
 
-    print "Listing optional arguments:\n\n";
+    PH::print_stdout("Listing optional arguments:");
 
-    print "\n\n";
+    PH::print_stdout("");
 
 
     exit(1);
@@ -31,7 +44,10 @@ function display_usage_and_exit()
 
 function display_error_usage_exit($msg)
 {
-    fwrite(STDERR, PH::boldText("\n**ERROR** ").$msg."\n\n");
+    if( PH::$shadow_json )
+        PH::$JSON_OUT['error'] = $msg;
+    else
+        fwrite(STDERR, PH::boldText("\n**ERROR** ").$msg."\n\n");
     display_usage_and_exit();
 }
 
@@ -58,11 +74,11 @@ if( $configInput['status'] != 'ok' )
 }
 if( $configInput['type'] == 'file' )
 {
-    #derr("file type input is not supported, only API");
+    //derr("file type input is not supported, only API");
 }
 elseif( $configInput['type'] == 'api' )
 {
-    #continue;
+    //continue;
 }
 elseif ( $configInput['type'] != 'api'  )
     derr('unsupported yet');
@@ -94,9 +110,9 @@ elseif ( $configInput['type'] == 'api'  )
     $inputConnector = $configInput['connector'];
     if($debugAPI)
         $inputConnector->setShowApiCalls(true);
-    print " - Downloading config from API... ";
+    PH::print_stdout(" - Downloading config from API... ");
     $xmlDoc = $inputConnector->getCandidateConfig();
-    print "OK!\n";
+
 }
 else
     derr('not supported yet');
@@ -120,7 +136,7 @@ if( $configType == 'panos' )
 else
     $pan = new PanoramaConf();
 
-print " - Detected platform type is '{$configType}'\n";
+PH::print_stdout(" - Detected platform type is '{$configType}'");
 
 if( $configInput['type'] == 'api' )
     $pan->connector = $inputConnector;
@@ -128,7 +144,7 @@ if( $configInput['type'] == 'api' )
 //
 // load the config
 //
-print " - Loading configuration through PAN-PHP-framework library... ";
+PH::print_stdout(" - Loading configuration through PAN-OS-PHP library... ");
 $loadStartMem = memory_get_usage(true);
 $loadStartTime = microtime(true);
 $pan->load_from_domxml($xmlDoc);
@@ -136,7 +152,7 @@ $loadEndTime = microtime(true);
 $loadEndMem = memory_get_usage(true);
 $loadElapsedTime = number_format( ($loadEndTime - $loadStartTime), 2, '.', '');
 $loadUsedMem = convert($loadEndMem - $loadStartMem);
-print "OK! ($loadElapsedTime seconds, $loadUsedMem memory)\n";
+PH::print_stdout("($loadElapsedTime seconds, $loadUsedMem memory)" );
 // --------------------
 
 $subSystem  = $pan->findSubSystemByName($location);
@@ -144,19 +160,19 @@ $subSystem  = $pan->findSubSystemByName($location);
 if( $subSystem === null )
     derr("cannot find vsys/dg named '$location', available locations list is : ");
 
-print " - Found DG/Vsys '$location'\n";
-print " - Looking/creating for necessary Tags to mark rules\n";
+PH::print_stdout(" - Found DG/Vsys '$location'" );
+PH::print_stdout(" - Looking/creating for necessary Tags to mark rules" );
 TH::createTags($pan, $configInput['type']);
 
 
 $rules = $subSystem->securityRules->rules('!(action is.negative) and (app is.any) and !(rule is.disabled) and !(tag has appid#ignore)');
-print " - Total number of rules: {$subSystem->securityRules->count()} vs ".count($rules)." potentially taggable\n";
+PH::print_stdout(" - Total number of rules: {$subSystem->securityRules->count()} vs ".count($rules)." potentially taggable" );
 
 $ridTagLibrary = new RuleIDTagLibrary();
 $ridTagLibrary->readFromRuleArray($subSystem->securityRules->rules());
 
 
-print "\n\n*** BEGIN TAGGING RULES ***\n";
+PH::print_stdout("\n\n*** BEGIN TAGGING RULES ***" );
 
 $xmlPreRules = '';
 $xmlPostRules = '';
@@ -166,11 +182,11 @@ $alreadyMarked = 0;
 
 foreach($rules as $rule)
 {
-    print " - rule '{$rule->name()}'";
+    PH::print_stdout(" - rule '{$rule->name()}'");
 
     if( $ridTagLibrary->ruleIsTagged($rule) )
     {
-        print " SKIPPED : already tagged\n";
+        PH::print_stdout(" SKIPPED : already tagged" );
         $alreadyMarked++;
         continue;
     }
@@ -179,10 +195,10 @@ foreach($rules as $rule)
 
 
     $newTagName = $ridTagLibrary->findAvailableTagName('appRID#');
-    print "\n";
-    print "    * creating Virtual TAG '$newTagName' ... ";
-    print "OK!\n";
-    print "    * applying tag to rule description... ";
+    PH::print_stdout("" );
+    PH::print_stdout("    * creating Virtual TAG '$newTagName' ... ");
+
+    PH::print_stdout("    * applying tag to rule description... ");
 
     $newDescription = $rule->description().' '.$newTagName;
     if( strlen($newDescription) > 253 )
@@ -195,17 +211,17 @@ foreach($rules as $rule)
     else
         $xmlPreRules .= "<entry name=\"{$rule->name()}\"><description>".htmlspecialchars($rule->description())."</description></entry>";
 
-    print "OK!\n";
+
 }
 
-print "\n\nNumber of rules marked: {$markedRules}    (vs already marked: {$alreadyMarked}\n";
+PH::print_stdout("\n\nNumber of rules marked: {$markedRules}    (vs already marked: {$alreadyMarked}" );
 
 if( $markedRules < 1 )
-    print "\n\n No change to push as not rule is set to be marked\n";
+    PH::print_stdout("\n\n No change to push as not rule is set to be marked" );
 else
 {
     if( $configInput['type'] == 'api' )
-        print "\n\n**** Pushing all changes at once through API... ";
+        PH::print_stdout("\n\n**** Pushing all changes at once through API... ");
 
 
     if ($pan->isPanorama())
@@ -225,10 +241,10 @@ else
             }
         }
 
-    print "OK!\n";
+
 }
 
-print "\n\n";
+PH::print_stdout("\n" );
 
-print "\n************* END OF SCRIPT ".basename(__FILE__)." ************\n\n";
+PH::print_stdout("\n************* END OF SCRIPT ".basename(__FILE__)." ************\n" );
 

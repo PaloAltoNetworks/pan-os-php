@@ -1,9 +1,21 @@
 <?php
 /**
- * © 2019 Palo Alto Networks, Inc.  All rights reserved.
+ * ISC License
  *
- * Licensed under SCRIPT SOFTWARE AGREEMENT, Palo Alto Networks, Inc., at https://www.paloaltonetworks.com/legal/script-software-license-1-0.pdf
+ * Copyright (c) 2014-2018, Palo Alto Networks Inc.
+ * Copyright (c) 2019, Palo Alto Networks Inc.
  *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
 /**
@@ -69,6 +81,9 @@ class PANConf
     /** @var AppStore */
     public $appStore;
 
+    /** @var ThreatStore */
+    public $threatStore;
+
     /** @var TagStore */
     public $tagStore;
 
@@ -97,6 +112,9 @@ class PANConf
     public $FileBlockingProfileStore = null;
 
     /** @var SecurityProfileStore */
+    public $DataFilteringProfileStore = null;
+
+    /** @var SecurityProfileStore */
     public $WildfireProfileStore = null;
 
 
@@ -116,6 +134,8 @@ class PANConf
     public $scheduleStore = null;
 
     public $_public_cloud_server = null;
+
+    public $_auditComment = false;
 
     public function name()
     {
@@ -139,7 +159,9 @@ class PANConf
         $this->tagStore = new TagStore($this);
         $this->tagStore->setName('tagStore');
 
-        $this->appStore = AppStore::getPredefinedStore();
+        $this->appStore = AppStore::getPredefinedStore( $this );
+
+        $this->threatStore = ThreatStore::getPredefinedStore( $this );
 
         $this->urlStore = SecurityProfileStore::getPredefinedStore();
 
@@ -150,26 +172,29 @@ class PANConf
         $this->addressStore->name = 'addresses';
 
 
-        $this->customURLProfileStore = new SecurityProfileStore($this, "customURLProfileStore");
+        $this->customURLProfileStore = new SecurityProfileStore($this, "customURLProfile");
         $this->customURLProfileStore->name = 'CustomURL';
 
-        $this->URLProfileStore = new SecurityProfileStore($this, "URLProfileStore");
+        $this->URLProfileStore = new SecurityProfileStore($this, "URLProfile");
         $this->URLProfileStore->name = 'URL';
 
-        $this->AntiVirusProfileStore = new SecurityProfileStore($this, "AntiVirusProfileStore");
+        $this->AntiVirusProfileStore = new SecurityProfileStore($this, "AntiVirusProfile");
         $this->AntiVirusProfileStore->name = 'AntiVirus';
 
 
-        $this->VulnerabilityProfileStore = new SecurityProfileStore($this, "VulnerabilityProfileStore");
+        $this->VulnerabilityProfileStore = new SecurityProfileStore($this, "VulnerabilityProfile");
         $this->VulnerabilityProfileStore->name = 'Vulnerability';
 
-        $this->AntiSpywareProfileStore = new SecurityProfileStore($this, "AntiSpywareProfileStore");
+        $this->AntiSpywareProfileStore = new SecurityProfileStore($this, "AntiSpywareProfile");
         $this->AntiSpywareProfileStore->name = 'AntiSpyware';
 
-        $this->FileBlockingProfileStore = new SecurityProfileStore($this, "FileBlockingProfileStore");
+        $this->FileBlockingProfileStore = new SecurityProfileStore($this, "FileBlockingProfile");
         $this->FileBlockingProfileStore->name = 'FileBlocking';
 
-        $this->WildfireProfileStore = new SecurityProfileStore($this, "WildfireProfileStore");
+        $this->DataFilteringProfileStore = new SecurityProfileStore($this, "DataFilteringProfile");
+        $this->DataFilteringProfileStore->name = 'DataFiltering';
+
+        $this->WildfireProfileStore = new SecurityProfileStore($this, "WildfireProfile");
         $this->WildfireProfileStore->name = 'WildFire';
 
 
@@ -177,13 +202,13 @@ class PANConf
         $this->securityProfileGroupStore->name = 'SecurityProfileGroups';
 
 
-        $this->DecryptionProfileStore = new SecurityProfileStore($this, "DecryptionProfileStore");
+        $this->DecryptionProfileStore = new SecurityProfileStore($this, "DecryptionProfile");
         $this->DecryptionProfileStore->name = 'Decryption';
 
-        $this->HipObjectsProfileStore = new SecurityProfileStore($this, "HipObjectsProfileStore");
+        $this->HipObjectsProfileStore = new SecurityProfileStore($this, "HipObjectsProfile");
         $this->HipObjectsProfileStore->name = 'HipObjects';
 
-        $this->HipProfilesProfileStore = new SecurityProfileStore($this, "HipProfilesProfileStore");
+        $this->HipProfilesProfileStore = new SecurityProfileStore($this, "HipProfilesProfile");
         $this->HipProfilesProfileStore->name = 'HipProfiles';
 
         $this->scheduleStore = new ScheduleStore($this);
@@ -272,6 +297,7 @@ class PANConf
 
         $this->deviceconfigroot = DH::findFirstElementOrCreate('deviceconfig', $this->localhostroot);
 
+
         // Now listing and extracting all DeviceConfig configurations
         foreach( $this->vsyssroot->childNodes as $node )
         {
@@ -307,6 +333,15 @@ class PANConf
             $tmp = DH::findFirstElementOrCreate('address-group', $this->sharedroot);
             $this->addressStore->load_addressgroups_from_domxml($tmp);
             // End of address groups extraction
+
+            //
+            // Extract region objects
+            //
+            $tmp = DH::findFirstElement('region', $xml);
+            if( $tmp !== false )
+                $this->addressStore->load_regions_from_domxml($tmp);
+            //print "VSYS '".$this->name."' address objectsloaded\n" ;
+            // End of address objects extraction
 
             //
             // Extract services
@@ -393,6 +428,17 @@ class PANConf
                     #$tmprulesroot = DH::findFirstElement('rules', $tmproot);
                     #if( $tmprulesroot !== FALSE )
                     $this->FileBlockingProfileStore->load_from_domxml($tmproot);
+                }
+
+                //
+                // DataFiltering Profile extraction
+                //
+                $tmproot = DH::findFirstElement('data-filtering', $this->securityProfilebaseroot);
+                if( $tmproot !== FALSE )
+                {
+                    #$tmprulesroot = DH::findFirstElement('rules', $tmproot);
+                    #if( $tmprulesroot !== FALSE )
+                    $this->DataFilteringProfileStore->load_from_domxml($tmproot);
                 }
 
                 //
@@ -487,7 +533,7 @@ class PANConf
         foreach( $this->vsyssroot->childNodes as $node )
         {
             if( $node->nodeType != 1 ) continue;
-            //print "DOM type: ".$node->nodeType."\n";
+            //PH::print_stdout(  "DOM type: ".$node->nodeType );
 
             $localVirtualSystemName = DH::findAttribute('name', $node);
 
@@ -525,10 +571,10 @@ class PANConf
         //
         // Extract setting related configs
         //
-        $tmp = DH::findFirstElementOrCreate('setting', $this->deviceconfigroot);
+        $settingroot = DH::findFirstElementOrCreate('setting', $this->deviceconfigroot);
 
-        $tmp1 = DH::findFirstElement('wildfire', $tmp);
-        if( $tmp1 )
+        $tmp1 = DH::findFirstElement('wildfire', $settingroot);
+        if( $tmp1 !== FALSE )
         {
             $tmp2 = DH::findFirstElement('public-cloud-server', $tmp1);
             if( $tmp2 )
@@ -537,8 +583,15 @@ class PANConf
             }
         }
 
+        $managementroot = DH::findFirstElement('management', $settingroot);
+        if( $managementroot !== FALSE )
+        {
+            $auditComment = DH::findFirstElement('rule-require-audit-comment', $managementroot);
+            if( $auditComment != FALSE )
+                if( $auditComment->textContent === "yes" )
+                    $this->_auditComment = TRUE;
+        }
         //
-
     }
 
 
@@ -595,13 +648,18 @@ class PANConf
     public function save_to_file($fileName, $printMessage = TRUE, $lineReturn = TRUE, $indentingXml = 0, $indentingXmlIncreament = 1)
     {
         if( $printMessage )
-            print "Now saving PANConf to file '$fileName'...";
+            PH::print_stdout( "Now saving PANConf to file '$fileName'...");
 
         $xml = &DH::dom_to_xml($this->xmlroot, $indentingXml, $lineReturn, -1, $indentingXmlIncreament);
+
+        $path_parts = pathinfo($fileName);
+        if (!is_dir($path_parts['dirname']))
+            mkdir($path_parts['dirname'], 0777, true);
+
         file_put_contents($fileName, $xml);
 
         if( $printMessage )
-            print "     done!\n\n";
+            PH::print_stdout( "     done!" );
     }
 
     /**
@@ -637,13 +695,13 @@ class PANConf
     public function API_uploadConfig($config_name = 'panconfigurator-default.xml')
     {
 
-        print "Uploadig config to device....";
+        PH::print_stdout(  "Uploadig config to device...." );
 
         $url = "&type=import&category=configuration";
 
         $this->connector->sendRequest($url, FALSE, DH::dom_to_xml($this->xmlroot), $config_name);
 
-        print "OK!\n";
+
 
     }
 
@@ -656,7 +714,7 @@ class PANConf
     }
 
 
-    public function display_statistics()
+    public function display_statistics( $connector = null )
     {
 
         $numSecRules = 0;
@@ -688,6 +746,8 @@ class PANConf
         $gTagCount = $this->tagStore->count();
         $gTagUnusedCount = $this->tagStore->countUnused();
 
+
+
         foreach( $this->virtualSystems as $vsys )
         {
 
@@ -716,12 +776,52 @@ class PANConf
             $gTagCount += $vsys->tagStore->count();
             $gTagUnusedCount += $vsys->tagStore->countUnused();
 
+            if( isset(PH::$args['loadpanoramapushedconfig']) )
+            {
+                $numSecRules += $vsys->parentDeviceGroup->securityRules->count();
+                $numNatRules += $vsys->parentDeviceGroup->natRules->count();
+                $numQosRules += $vsys->parentDeviceGroup->qosRules->count();
+                $numPbfRules += $vsys->parentDeviceGroup->pbfRules->count();
+                $numDecryptRules += $vsys->parentDeviceGroup->decryptionRules->count();
+                $numAppOverrideRules += $vsys->parentDeviceGroup->appOverrideRules->count();
+                $numCaptivePortalRules += $vsys->parentDeviceGroup->captivePortalRules->count();
+                $numAuthenticationRules += $vsys->parentDeviceGroup->authenticationRules->count();
+                $numDosRules += $vsys->parentDeviceGroup->dosRules->count();
+
+                $gnservices += $vsys->parentDeviceGroup->serviceStore->countServices();
+                $gnservicesUnused += $vsys->parentDeviceGroup->serviceStore->countUnusedServices();
+                $gnserviceGs += $vsys->parentDeviceGroup->serviceStore->countServiceGroups();
+                $gnserviceGsUnused += $vsys->parentDeviceGroup->serviceStore->countUnusedServiceGroups();
+                $gnTmpServices += $vsys->parentDeviceGroup->serviceStore->countTmpServices();
+
+                $gnaddresss += $vsys->parentDeviceGroup->addressStore->countAddresses();
+                $gnaddresssUnused += $vsys->parentDeviceGroup->addressStore->countUnusedAddresses();
+                $gnaddressGs += $vsys->parentDeviceGroup->addressStore->countAddressGroups();
+                $gnaddressGsUnused += $vsys->parentDeviceGroup->addressStore->countUnusedAddressGroups();
+                $gnTmpAddresses += $vsys->parentDeviceGroup->addressStore->countTmpAddresses();
+
+                $gTagCount += $vsys->parentDeviceGroup->tagStore->count();
+                $gTagUnusedCount += $vsys->parentDeviceGroup->tagStore->countUnused();
+            }
+
         }
 
         $stdoutarray = array();
 
+        $stdoutarray['type'] = get_class( $this );
+
         $header = "Statistics for PANConf '" . $this->name . "'";
         $stdoutarray['header'] = $header;
+
+        if( $connector !== null )
+        {
+            /** @var PanAPIConnector$connector */
+            if( $connector->info_model == "PA-VM" )
+                $stdoutarray['model'] = $connector->info_vmlicense;
+            else
+                $stdoutarray['model'] = $connector->info_model;
+        }
+
 
         $stdoutarray['security rules'] = $numSecRules;
 
@@ -788,11 +888,16 @@ class PANConf
         $stdoutarray['sub-interfaces']['total'] = $numSubInterfaces;
         $stdoutarray['sub-interfaces']['ethernet'] = $this->network->ethernetIfStore->countSubInterfaces();
 
-        $return = array();
-        $return['PANConf-stat'] = $stdoutarray;
 
-        #PH::print_stdout( $return );
-        PH::print_stdout( $stdoutarray );
+        $connector = findConnector( $this );
+        if( $connector == null )
+            PH::$JSON_TMP[] = $stdoutarray;
+        else
+            PH::$JSON_TMP[ $connector->info_serial ] = $stdoutarray;
+
+
+        if( !PH::$shadow_json )
+            PH::print_stdout( $stdoutarray, true );
 
 
     }

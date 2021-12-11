@@ -1530,11 +1530,11 @@ class Crypt_Base
      * will yield different outputs:
      *
      * <code>
-     *    echo $rijndael->encrypt(substr($plaintext,  0, 16));
-     *    echo $rijndael->encrypt(substr($plaintext, 16, 16));
+     *    print $rijndael->encrypt(substr($plaintext,  0, 16));
+     *    print $rijndael->encrypt(substr($plaintext, 16, 16));
      * </code>
      * <code>
-     *    echo $rijndael->encrypt($plaintext);
+     *    print $rijndael->encrypt($plaintext);
      * </code>
      *
      * The solution is to enable the continuous buffer.  Although this will resolve the above discrepancy, it creates
@@ -1542,10 +1542,10 @@ class Crypt_Base
      *
      * <code>
      *    $rijndael->encrypt(substr($plaintext, 0, 16));
-     *    echo $rijndael->decrypt($rijndael->encrypt(substr($plaintext, 16, 16)));
+     *    print $rijndael->decrypt($rijndael->encrypt(substr($plaintext, 16, 16)));
      * </code>
      * <code>
-     *    echo $rijndael->decrypt($rijndael->encrypt(substr($plaintext, 16, 16)));
+     *    print $rijndael->decrypt($rijndael->encrypt(substr($plaintext, 16, 16)));
      * </code>
      *
      * With the continuous buffer disabled, these would yield the same output.  With it enabled, they yield different

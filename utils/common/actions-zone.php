@@ -1,5 +1,22 @@
 <?php
-
+/**
+ * ISC License
+ *
+ * Copyright (c) 2014-2018, Palo Alto Networks Inc.
+ * Copyright (c) 2019, Palo Alto Networks Inc.
+ *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 
 ZoneCallContext::$supportedActions['delete'] = array(
     'name' => 'delete',
@@ -8,7 +25,8 @@ ZoneCallContext::$supportedActions['delete'] = array(
 
         if( $object->countReferences() != 0 )
         {
-            print $context->padding . "  * SKIPPED: this object is used by other objects and cannot be deleted (use deleteForce to try anyway)\n";
+            $string = "this object is used by other objects and cannot be deleted (use deleteForce to try anyway)";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         if( $context->isAPI )
@@ -24,7 +42,10 @@ ZoneCallContext::$supportedActions['deleteforce'] = array(
         $object = $context->object;
 
         if( $object->countReferences() != 0 )
-            print $context->padding . "  * WARNING : this object seems to be used so deletion may fail.\n";
+        {
+            $string = "this object seems to be used so deletion may fail.";
+            PH::ACTIONstatus( $context, "WARNING", $string);
+        }
         if( $context->isAPI )
             $object->owner->API_removeZone($object);
         else
@@ -41,14 +62,18 @@ ZoneCallContext::$supportedActions['name-addprefix'] = array(
 
         if( $object->isTmp() )
         {
-            echo $context->padding . " *** SKIPPED : not applicable to TMP objects\n";
+            $string = "not applicable to TMP objects";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
-        print $context->padding . " - new name will be '{$newName}'\n";
+        $string = "new name will be '{$newName}'";
+        PH::ACTIONlog( $context, $string );
+
         if( strlen($newName) > 127 )
         {
-            print " *** SKIPPED : resulting name is too long\n";
+            $string = "resulting name is too long";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
@@ -56,7 +81,8 @@ ZoneCallContext::$supportedActions['name-addprefix'] = array(
         if( $rootObject->isPanorama() && $object->owner->find($newName, null, FALSE) !== null ||
             $rootObject->isFirewall() && $object->owner->find($newName, null, TRUE) !== null )
         {
-            print " *** SKIPPED : an object with same name already exists\n";
+            $string = "an object with same name already exists";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         if( $context->isAPI )
@@ -76,14 +102,18 @@ ZoneCallContext::$supportedActions['name-addsuffix'] = array(
 
         if( $object->isTmp() )
         {
-            echo $context->padding . " *** SKIPPED : not applicable to TMP objects\n";
+            $string = $context->padding . "not applicable to TMP objects";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
-        print $context->padding . " - new name will be '{$newName}'\n";
+        $string = "new name will be '{$newName}'";
+        PH::ACTIONlog( $context, $string );
+
         if( strlen($newName) > 127 )
         {
-            print " *** SKIPPED : resulting name is too long\n";
+            $string = "resulting name is too long";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
@@ -91,7 +121,8 @@ ZoneCallContext::$supportedActions['name-addsuffix'] = array(
         if( $rootObject->isPanorama() && $object->owner->find($newName, null, FALSE) !== null ||
             $rootObject->isFirewall() && $object->owner->find($newName, null, TRUE) !== null )
         {
-            print " *** SKIPPED : an object with same name already exists\n";
+            $string = "an object with same name already exists";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         if( $context->isAPI )
@@ -110,31 +141,36 @@ ZoneCallContext::$supportedActions['name-removeprefix'] = array(
 
         if( $object->isTmp() )
         {
-            echo $context->padding . " *** SKIPPED : not applicable to TMP objects\n";
+            $string = "not applicable to TMP objects";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
         if( strpos($object->name(), $prefix) !== 0 )
         {
-            echo $context->padding . " *** SKIPPED : prefix not found\n";
+            $string = "prefix not found";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         $newName = substr($object->name(), strlen($prefix));
 
         if( !preg_match("/^[a-zA-Z0-9]/", $newName[0]) )
         {
-            echo $context->padding . " *** SKIPPED : object name contains not allowed character at the beginning\n";
+            $string = "object name contains not allowed character at the beginning";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
-        echo $context->padding . " - new name will be '{$newName}'\n";
+        $string = "new name will be '{$newName}'";
+        PH::ACTIONlog( $context, $string );
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
 
         if( $rootObject->isPanorama() && $object->owner->find($newName, null, FALSE) !== null ||
             $rootObject->isFirewall() && $object->owner->find($newName, null, TRUE) !== null )
         {
-            echo $context->padding . " *** SKIPPED : an object with same name already exists\n";
+            $string = "an object with same name already exists";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         if( $context->isAPI )
@@ -154,25 +190,29 @@ ZoneCallContext::$supportedActions['name-removesuffix'] = array(
 
         if( $object->isTmp() )
         {
-            echo $context->padding . " *** SKIPPED : not applicable to TMP objects\n";
+            $string = "not applicable to TMP objects";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
         if( substr($object->name(), $suffixStartIndex, strlen($object->name())) != $suffix )
         {
-            echo $context->padding . " *** SKIPPED : suffix not found\n";
+            $string = "suffix not found";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         $newName = substr($object->name(), 0, $suffixStartIndex);
 
-        echo $context->padding . " - new name will be '{$newName}'\n";
+        $string = "new name will be '{$newName}'";
+        PH::ACTIONlog( $context, $string );
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
 
         if( $rootObject->isPanorama() && $object->owner->find($newName, null, FALSE) !== null ||
             $rootObject->isFirewall() && $object->owner->find($newName, null, TRUE) !== null )
         {
-            echo $context->padding . " *** SKIPPED : an object with same name already exists\n";
+            $string = "an object with same name already exists";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         if( $context->isAPI )
@@ -193,23 +233,28 @@ ZoneCallContext::$supportedActions['name-touppercase'] = array(
 
         if( $object->isTmp() )
         {
-            echo $context->padding . " *** SKIPPED : not applicable to TMP objects\n";
+            $string = "not applicable to TMP objects";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
-        print $context->padding . " - new name will be '{$newName}'\n";
+        $string = "new name will be '{$newName}'";
+        PH::ACTIONlog( $context, $string );
+
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
 
         if( $newName === $object->name() )
         {
-            print " *** SKIPPED : object is already uppercase\n";
+            $string = "object is already uppercase";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
         if( $rootObject->isPanorama() && $object->owner->find($newName, null, FALSE) !== null ||
             $rootObject->isFirewall() && $object->owner->find($newName, null, TRUE) !== null )
         {
-            print " *** SKIPPED : an object with same name already exists\n";
+            $string = "an object with same name already exists";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             #use existing uppercase TAG and replace old lowercase where used with this existing uppercase TAG
             return;
         }
@@ -229,25 +274,28 @@ ZoneCallContext::$supportedActions['name-tolowercase'] = array(
 
         if( $object->isTmp() )
         {
-            echo $context->padding . " *** SKIPPED : not applicable to TMP objects\n";
+            $string = "not applicable to TMP objects";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
-        print $context->padding . " - new name will be '{$newName}'\n";
+        $string = "new name will be '{$newName}'";
+        PH::ACTIONlog( $context, $string );
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
 
         if( $newName === $object->name() )
         {
-            print " *** SKIPPED : object is already lowercase\n";
+            $string = "object is already lowercase";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
         if( $rootObject->isPanorama() && $object->owner->find($newName, null, FALSE) !== null ||
             $rootObject->isFirewall() && $object->owner->find($newName, null, TRUE) !== null )
         {
-            print " *** SKIPPED : an object with same name already exists\n";
-            #use existing lowercase TAG and replace old uppercase where used with this
+            $string = "an object with same name already exists";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         if( $context->isAPI )
@@ -267,25 +315,28 @@ ZoneCallContext::$supportedActions['name-toucwords'] = array(
 
         if( $object->isTmp() )
         {
-            echo $context->padding . " *** SKIPPED : not applicable to TMP objects\n";
+            $string = "not applicable to TMP objects";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
-        print $context->padding . " - new name will be '{$newName}'\n";
+        $string = "new name will be '{$newName}'";
+        PH::ACTIONlog( $context, $string );
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
 
         if( $newName === $object->name() )
         {
-            print " *** SKIPPED : object is already UCword\n";
+            $string = "object is already UCword";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
         if( $rootObject->isPanorama() && $object->owner->find($newName, null, FALSE) !== null ||
             $rootObject->isFirewall() && $object->owner->find($newName, null, TRUE) !== null )
         {
-            print " *** SKIPPED : an object with same name already exists\n";
-            #use existing lowercase TAG and replace old uppercase where used with this
+            $string = "an object with same name already exists";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         if( $context->isAPI )
@@ -294,6 +345,58 @@ ZoneCallContext::$supportedActions['name-toucwords'] = array(
 
             $object->setName($newName);
     }
+);
+ZoneCallContext::$supportedActions[] = array(
+    'name' => 'name-Rename',
+    'MainFunction' => function (ZoneCallContext $context) {
+        $object = $context->object;
+
+
+        $newName = $context->arguments['stringFormula'];
+
+        if( strpos($newName, '$$current.name$$') !== FALSE )
+        {
+            $newName = str_replace('$$current.name$$', $object->name(), $newName);
+        }
+
+        if( $object->name() == $newName )
+        {
+            $string = "new name and old name are the same";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+
+        $string = "new name will be '{$newName}'";
+        PH::ACTIONlog( $context, $string );
+
+        $findObject = $object->owner->find($newName, null, false);
+        if( $findObject !== null )
+        {
+            $string = "an object with same name already exists";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+        else
+        {
+            $text = $context->padding . " - renaming object... ";
+            if( $context->isAPI )
+                $object->API_setName($newName);
+            else
+                $object->setName($newName);
+
+            PH::ACTIONlog( $context, $text );
+        }
+
+    },
+    'args' => array('stringFormula' => array(
+        'type' => 'string',
+        'default' => '*nodefault*',
+        'help' =>
+            "This string is used to compose a name. You can use the following aliases :\n" .
+            "  - \$\$current.name\$\$ : current name of the object\n"
+        )
+    ),
+    'help' => ''
 );
 
 ZoneCallContext::$supportedActions['displayreferences'] = array(
@@ -308,12 +411,19 @@ ZoneCallContext::$supportedActions['displayreferences'] = array(
 ZoneCallContext::$supportedActions['display'] = array(
     'name' => 'display',
     'MainFunction' => function (ZoneCallContext $context) {
+        /** @var Zone $object */
         $object = $context->object;
         $tmp_txt = "     * " . get_class($object) . " '{$object->name()}'   ( type: " . $object->_type . " )   ";
         if( $object->zoneProtectionProfile !== null )
             $tmp_txt .= "ZPP: " . $object->zoneProtectionProfile;
-
+        if( $object->logsetting !== null )
+            $tmp_txt .= "Log Setting: " . $object->logsetting;
         PH::print_stdout( $tmp_txt );
+
+        PH::$JSON_TMP['sub']['object'][$object->name()]['name'] = $object->name();
+        PH::$JSON_TMP['sub']['object'][$object->name()]['type'] = get_class($object);
+        PH::$JSON_TMP['sub']['object'][$object->name()]['zpp'] = $object->zoneProtectionProfile;
+        PH::$JSON_TMP['sub']['object'][$object->name()]['log'] = $object->logsetting;
 
         //DISPLAY interfaces attached to zones
         $interfaces = $object->attachedInterfaces;
@@ -324,17 +434,25 @@ ZoneCallContext::$supportedActions['display'] = array(
             /*if( $interface->type == "layer3" )
             {
                 if( count( $interface->getLayer3IPv4Addresses() ) > 0 )
-                    print ", ip-addresse(s): ";
+                    PH::print_stdout( ", ip-addresse(s): ";
                 foreach( $interface->getLayer3IPv4Addresses() as $ip_address )
-                    print $ip_address.",";
+                    PH::print_stdout( $ip_address.",";
             }*/
+            $tmp_ips = "";
             if( $interface->type == "layer3" )
             {
                 $tmp_txt .= ", ip-addresse(s): ";
                 foreach( $interface->getLayer3IPv4Addresses() as $ip_address )
+                {
                     $tmp_txt .= $ip_address . ",";
+                    PH::$JSON_TMP['sub']['object'][$object->name()]['interfaces'][$interface->type][$interface->name()]['ip-address'][] = $ip_address;
+                }
                 foreach( $interface->getLayer3IPv6Addresses() as $ip_address )
+                {
                     $tmp_txt .= $ip_address . ",";
+                    PH::$JSON_TMP['sub']['object'][$object->name()]['interfaces'][$interface->type][$interface->name()]['ip-address'][] = $ip_address;
+                }
+
             }
             elseif( $interface->type == "tunnel" || $interface->type == "loopback" || $interface->type == "vlan" )
             {
@@ -342,12 +460,17 @@ ZoneCallContext::$supportedActions['display'] = array(
                 foreach( $interface->getIPv4Addresses() as $ip_address )
                 {
                     if( strpos($ip_address, ".") !== FALSE )
+                    {
                         $tmp_txt .= $ip_address . ",";
+                        PH::$JSON_TMP['sub']['object'][$object->name()]['interfaces'][$interface->type][$interface->name()]['ip-address'][] = $ip_address;
+                    }
+
                     else
                     {
                         #$object = $sub->addressStore->find( $ip_address );
-                        #print $ip_address." ({$object->value()}) ,";
+                        #PH::print_stdout( $ip_address." ({$object->value()}) ,";
                         $tmp_txt .= 'XXX,';
+                        PH::$JSON_TMP['sub']['object'][$object->name()]['interfaces'][$interface->type][$interface->name()]['ip-address'][] = "XXX";
                     }
                 }
             }
@@ -356,11 +479,13 @@ ZoneCallContext::$supportedActions['display'] = array(
                 $tmp_txt .= " - IPsec config";
                 $tmp_txt .= " - IKE gateway: " . $interface->gateway;
                 $tmp_txt .= " - interface: " . $interface->interface;
+                PH::$JSON_TMP['sub']['object'][$object->name()]['interfaces'][$interface->type][$interface->name()]['ike']['gw'] = $interface->gateway;
+                PH::$JSON_TMP['sub']['object'][$object->name()]['interfaces'][$interface->type][$interface->name()]['ike']['interface'] = $interface->interface;
             }
             PH::print_stdout( $tmp_txt );
+            PH::$JSON_TMP['sub']['object'][$object->name()]['interfaces'][$interface->type][$interface->name()]['name'] = $interface->name();
 
         }
-        #print "\n\n";
     },
 );
 
@@ -372,11 +497,13 @@ ZoneCallContext::$supportedActions['zpp-set'] = array(
 
         if( $object->isTmp() )
         {
-            echo $context->padding . " *** SKIPPED : not applicable to TMP objects\n";
+            $string = "not applicable to TMP objects";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
-        print $context->padding . " - new ZPP will be '{$newzpp}'\n";
+        $string = "new ZPP will be '{$newzpp}'";
+        PH::ACTIONlog( $context, $string );
 
 
         if( $context->isAPI )
@@ -397,7 +524,8 @@ ZoneCallContext::$supportedActions['packetbufferprotection-set'] = array(
 
         if( $object->isTmp() )
         {
-            echo $context->padding . " *** SKIPPED : not applicable to TMP objects\n";
+            $string = "not applicable to TMP objects";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -406,7 +534,8 @@ ZoneCallContext::$supportedActions['packetbufferprotection-set'] = array(
         else
             $value = "disabled";
 
-        print $context->padding . " - PacketBufferProtection will be '{$value}'\n";
+        $string = "PacketBufferProtection will be '{$value}'";
+        PH::ACTIONlog( $context, $string );
 
 
         if( $context->isAPI )
@@ -430,15 +559,15 @@ ZoneCallContext::$supportedActions[] = array(
         if( $foundObject === null )
             derr("cannot find an object named '{$context->arguments['objectName']}'");
 
-        /** @var Zone $objectRef */
-
+        /** @var ZoneRuleContainer $objectRef */
         foreach( $objectRefs as $objectRef )
         {
             $tmp_class = get_class($objectRef);
 
             if( $tmp_class == "ZoneRuleContainer" )
             {
-                echo $context->padding . " * replacing in {$objectRef->toString()}\n";
+                $string = "replacing in {$objectRef->toString()}";
+                PH::ACTIONlog( $context, $string );
                 if( $context->isAPI )
                     $objectRef->API_replaceReferencedObject($object, $foundObject);
                 else
@@ -446,7 +575,8 @@ ZoneCallContext::$supportedActions[] = array(
             }
             else
             {
-                print $context->padding . "  * SKIPPED: CLASS: " . $tmp_class . " is not supported\n";
+                $string = "CLASS: " . $tmp_class . " is not supported";
+                PH::ACTIONstatus( $context, "SKIPPED", $string );
             }
 
 
@@ -462,7 +592,8 @@ ZoneCallContext::$supportedActions['logsetting-set'] = array(
         $object = $context->object;
         $newLogSetting = $context->arguments['logforwardingprofile-name'];
 
-        print $context->padding . " - new Log Setting will be '{$newLogSetting}'\n";
+        $string = "new Log Setting will be '{$newLogSetting}'";
+        PH::ACTIONlog( $context, $string );
 
 
         if( $context->isAPI )
@@ -478,3 +609,206 @@ ZoneCallContext::$supportedActions['logsetting-set'] = array(
     ),
 );
 
+ZoneCallContext::$supportedActions[] = array(
+    'name' => 'exportToExcel',
+    'MainFunction' => function (ZoneCallContext $context) {
+        $object = $context->object;
+        $context->objectList[] = $object;
+    },
+    'GlobalInitFunction' => function (ZoneCallContext $context) {
+        $context->objectList = array();
+    },
+    'GlobalFinishFunction' => function (ZoneCallContext $context) {
+        $args = &$context->arguments;
+        $filename = $args['filename'];
+
+        if( isset( $_SERVER['REQUEST_METHOD'] ) )
+            $filename = "project/html/".$filename;
+
+        $addWhereUsed = FALSE;
+        $addUsedInLocation = FALSE;
+        $addResolveGroupIPCoverage = FALSE;
+        $addNestedMembers = FALSE;
+
+        $optionalFields = &$context->arguments['additionalFields'];
+
+        if( isset($optionalFields['WhereUsed']) )
+            $addWhereUsed = TRUE;
+
+        if( isset($optionalFields['UsedInLocation']) )
+            $addUsedInLocation = TRUE;
+
+        if( isset($optionalFields['ResolveIP']) )
+            $addResolveGroupIPCoverage = TRUE;
+
+        if( isset($optionalFields['NestedMembers']) )
+            $addNestedMembers = TRUE;
+
+        $headers = '<th>template</th><th>location</th><th>name</th><th>type</th><th>interfaces</th><th>log-setting</th>';
+
+        if( $addWhereUsed )
+            $headers .= '<th>where used</th>';
+        if( $addUsedInLocation )
+            $headers .= '<th>location used</th>';
+        if( $addResolveGroupIPCoverage )
+            $headers .= '<th>ip resolution</th>';
+        if( $addNestedMembers )
+            $headers .= '<th>nested members</th>';
+
+        $lines = '';
+        $encloseFunction = function ($value, $nowrap = TRUE) {
+            if( is_string($value) )
+                $output = htmlspecialchars($value);
+            elseif( is_array($value) )
+            {
+                $output = '';
+                $first = TRUE;
+                foreach( $value as $subValue )
+                {
+                    if( !$first )
+                    {
+                        $output .= '<br />';
+                    }
+                    else
+                        $first = FALSE;
+
+                    if( is_string($subValue) )
+                        $output .= htmlspecialchars($subValue);
+                    else
+                        $output .= htmlspecialchars($subValue->name());
+                }
+            }
+            else
+                derr('unsupported');
+
+            if( $nowrap )
+                return '<td style="white-space: nowrap">' . $output . '</td>';
+
+            return '<td>' . $output . '</td>';
+        };
+
+        $count = 0;
+        if( isset($context->objectList) )
+        {
+            foreach( $context->objectList as $object )
+            {
+                $count++;
+
+                /** @var Zone $object */
+                if( $count % 2 == 1 )
+                    $lines .= "<tr>\n";
+                else
+                    $lines .= "<tr bgcolor=\"#DDDDDD\">";
+
+                if( $object->owner->owner->owner->owner  !== null && get_class( $object->owner->owner->owner->owner ) == "Template" )
+                {
+                    $lines .= $encloseFunction($object->owner->owner->owner->owner->name());
+                    $lines .= $encloseFunction($object->owner->owner->name());
+                }
+                else
+                {
+                    $lines .= $encloseFunction( "" );
+                    $lines .= $encloseFunction($object->owner->owner->name());
+                }
+
+
+                $lines .= $encloseFunction($object->name());
+
+                    if( $object->isTmp() )
+                    {
+                        $lines .= $encloseFunction('unknown');
+                        $lines .= $encloseFunction('');
+                        $lines .= $encloseFunction('');
+                        $lines .= $encloseFunction('');
+                    }
+                    else
+                    {
+                        $lines .= $encloseFunction($object->type());
+                        $lines .= $encloseFunction( $object->attachedInterfaces->getAll() );
+
+                        if( $object->logsetting == null )
+                            $tmpLogprof = "";
+                        else
+                            $tmpLogprof = $object->logsetting;
+                        $lines .= $encloseFunction( $tmpLogprof );
+
+                    }
+
+                if( $addWhereUsed )
+                {
+                    $refTextArray = array();
+                    foreach( $object->getReferences() as $ref )
+                        $refTextArray[] = $ref->_PANC_shortName();
+
+                    $lines .= $encloseFunction($refTextArray);
+                }
+                if( $addUsedInLocation )
+                {
+                    $refTextArray = array();
+                    foreach( $object->getReferences() as $ref )
+                    {
+                        $location = PH::getLocationString($object->owner);
+                        $refTextArray[$location] = $location;
+                    }
+
+                    $lines .= $encloseFunction($refTextArray);
+                }
+                if( $addResolveGroupIPCoverage )
+                {
+                    $mapping = $object->getIP4Mapping();
+                    $strMapping = explode(',', $mapping->dumpToString());
+
+                    foreach( array_keys($mapping->unresolved) as $unresolved )
+                        $strMapping[] = $unresolved;
+
+                    $lines .= $encloseFunction($strMapping);
+                }
+                if( $addNestedMembers )
+                {
+                    if( $object->isGroup() )
+                    {
+                        $members = $object->expand(TRUE);
+                        $lines .= $encloseFunction($members);
+                    }
+                    else
+                        $lines .= $encloseFunction('');
+                }
+
+                $lines .= "</tr>\n";
+
+            }
+        }
+
+        $content = file_get_contents(dirname(__FILE__) . '/html/export-template.html');
+        $content = str_replace('%TableHeaders%', $headers, $content);
+
+        $content = str_replace('%lines%', $lines, $content);
+
+        $jscontent = file_get_contents(dirname(__FILE__) . '/html/jquery.min.js');
+        $jscontent .= "\n";
+        $jscontent .= file_get_contents(dirname(__FILE__) . '/html/jquery.stickytableheaders.min.js');
+        $jscontent .= "\n\$('table').stickyTableHeaders();\n";
+
+        $content = str_replace('%JSCONTENT%', $jscontent, $content);
+
+        file_put_contents($filename, $content);
+
+
+        file_put_contents($filename, $content);
+    },
+    'args' => array('filename' => array('type' => 'string', 'default' => '*nodefault*'),
+        'additionalFields' =>
+            array('type' => 'pipeSeparatedList',
+                'subtype' => 'string',
+                'default' => '*NONE*',
+                'choices' => array('WhereUsed', 'UsedInLocation', 'ResolveIP', 'NestedMembers'),
+                'help' =>
+                    "pipe(|) separated list of additional fields (ie: Arg1|Arg2|Arg3...) to include in the report. The following is available:\n" .
+                    "  - NestedMembers: lists all members, even the ones that may be included in nested groups\n" .
+                    "  - ResolveIP\n" .
+                    "  - UsedInLocation : list locations (vsys,dg,shared) where object is used\n" .
+                    "  - WhereUsed : list places where object is used (rules, groups ...)\n"
+            )
+    )
+
+);

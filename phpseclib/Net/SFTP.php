@@ -21,7 +21,7 @@
  *        exit('Login Failed');
  *    }
  *
- *    echo $sftp->pwd() . "\r\n";
+ *    print $sftp->pwd() . "\r\n";
  *    $sftp->put('filename.ext', 'hello, world!');
  *    print_r($sftp->nlist());
  * ?>
@@ -3033,7 +3033,7 @@ class Net_SFTP extends Net_SSH2
             $packet_type = '-> ' . $this->packet_types[$type] .
                            ' (' . round($stop - $start, 4) . 's)';
             if (NET_SFTP_LOGGING == NET_SFTP_LOG_REALTIME) {
-                echo "<pre>\r\n" . $this->_format_log(array($data), array($packet_type)) . "\r\n</pre>\r\n";
+                print "<pre>\r\n" . $this->_format_log(array($data), array($packet_type)) . "\r\n</pre>\r\n";
                 flush();
                 ob_flush();
             } else {
@@ -3142,7 +3142,7 @@ class Net_SFTP extends Net_SSH2
             $packet_type = '<- ' . $this->packet_types[$this->packet_type] .
                            ' (' . round($stop - $start, 4) . 's)';
             if (NET_SFTP_LOGGING == NET_SFTP_LOG_REALTIME) {
-                echo "<pre>\r\n" . $this->_format_log(array($packet), array($packet_type)) . "\r\n</pre>\r\n";
+                print "<pre>\r\n" . $this->_format_log(array($packet), array($packet_type)) . "\r\n</pre>\r\n";
                 flush();
                 ob_flush();
             } else {

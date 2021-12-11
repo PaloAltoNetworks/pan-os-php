@@ -1,9 +1,21 @@
 <?php
 /**
- * © 2019 Palo Alto Networks, Inc.  All rights reserved.
+ * ISC License
  *
- * Licensed under SCRIPT SOFTWARE AGREEMENT, Palo Alto Networks, Inc., at https://www.paloaltonetworks.com/legal/script-software-license-1-0.pdf
+ * Copyright (c) 2014-2018, Palo Alto Networks Inc.
+ * Copyright (c) 2019, Palo Alto Networks Inc.
  *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
 class DeviceCloud
@@ -23,6 +35,8 @@ class DeviceCloud
     /** @var AppStore|null */
     public $appStore = null;
 
+    /** @var ThreatStore|null */
+    public $threatStore = null;
 
     protected $securityProfilebaseroot;
 
@@ -37,6 +51,9 @@ class DeviceCloud
 
     /** @var SecurityProfileStore */
     public $DNSSecurityProfileStore = null;
+
+    /** @var SecurityProfileStore */
+    public $SaasSecurityProfileStore = null;
 
     /** @var SecurityProfileStore */
     public $VulnerabilityProfileStore = null;
@@ -134,7 +151,7 @@ class DeviceCloud
     /** @var InterfaceContainer */
     public $importedInterfaces;
 
-    /** @var InterfaceContainer */
+    /** @var VirtualRouterContainer */
     public $importedVirtualRouter;
 
     /** @var Container parentContainer in case it load as part of Panorama */
@@ -157,7 +174,11 @@ class DeviceCloud
         #$this->importedInterfaces = new InterfaceContainer($this, $owner->network);
         #$this->importedVirtualRouter = new VirtualRouterContainer($this, $owner->network);
 
-        $this->appStore = $owner->appStore;
+        #$this->appStore = $owner->appStore;
+        $this->appStore = new AppStore($this);
+        $this->appStore->name = 'customApplication';
+
+        $this->threatStore = $owner->threatStore;
 
         $this->zoneStore = new ZoneStore($this);
         $this->zoneStore->setName('zoneStore');
@@ -170,28 +191,31 @@ class DeviceCloud
         $this->addressStore->name = 'addresses';
 
 
-        $this->customURLProfileStore = new SecurityProfileStore($this, "customURLProfileStore");
+        $this->customURLProfileStore = new SecurityProfileStore($this, "customURLProfile");
         $this->customURLProfileStore->name = 'CustomURL';
 
-        $this->URLProfileStore = new SecurityProfileStore($this, "URLProfileStore");
+        $this->URLProfileStore = new SecurityProfileStore($this, "URLProfile");
         $this->URLProfileStore->name = 'URL';
 
-        #$this->AntiVirusProfileStore = new SecurityProfileStore($this, "AntiVirusProfileStore");
+        #$this->AntiVirusProfileStore = new SecurityProfileStore($this, "AntiVirusProfile");
         #$this->AntiVirusProfileStore->name = 'AntiVirus';
 
-        $this->VirusAndWildfireProfileStore = new SecurityProfileStore($this, "VirusAndWildfireProfileStore");
+        $this->VirusAndWildfireProfileStore = new SecurityProfileStore($this, "VirusAndWildfireProfile");
         $this->VirusAndWildfireProfileStore->name = 'VirusAndWildfire';
 
-        $this->DNSSecurityProfileStore = new SecurityProfileStore($this, "DNSSecurityProfileStore");
+        $this->DNSSecurityProfileStore = new SecurityProfileStore($this, "DNSSecurityProfile");
         $this->DNSSecurityProfileStore->name = 'DNSSecurity';
 
-        $this->VulnerabilityProfileStore = new SecurityProfileStore($this, "VulnerabilityProfileStore");
+        $this->SaasSecurityProfileStore = new SecurityProfileStore($this, "SaasSecurityProfile");
+        $this->SaasSecurityProfileStore->name = 'SaasSecurity';
+
+        $this->VulnerabilityProfileStore = new SecurityProfileStore($this, "VulnerabilityProfile");
         $this->VulnerabilityProfileStore->name = 'Vulnerability';
 
-        $this->AntiSpywareProfileStore = new SecurityProfileStore($this, "AntiSpywareProfileStore");
+        $this->AntiSpywareProfileStore = new SecurityProfileStore($this, "AntiSpywareProfile");
         $this->AntiSpywareProfileStore->name = 'AntiSpyware';
 
-        $this->FileBlockingProfileStore = new SecurityProfileStore($this, "FileBlockingProfileStore");
+        $this->FileBlockingProfileStore = new SecurityProfileStore($this, "FileBlockingProfile");
         $this->FileBlockingProfileStore->name = 'FileBlocking';
 
         #$this->WildfireProfileStore = new SecurityProfileStore($this, "SecurityProfileWildFire");
@@ -202,13 +226,13 @@ class DeviceCloud
         $this->securityProfileGroupStore->name = 'SecurityProfileGroups';
 
 
-        $this->DecryptionProfileStore = new SecurityProfileStore($this, "DecryptionProfileStore");
+        $this->DecryptionProfileStore = new SecurityProfileStore($this, "DecryptionProfile");
         $this->DecryptionProfileStore->name = 'Decryption';
 
-        $this->HipObjectsProfileStore = new SecurityProfileStore($this, "HipObjectsProfileStore");
+        $this->HipObjectsProfileStore = new SecurityProfileStore($this, "HipObjectsProfile");
         $this->HipObjectsProfileStore->name = 'HipObjects';
 
-        $this->HipProfilesProfileStore = new SecurityProfileStore($this, "HipProfilesProfileStore");
+        $this->HipProfilesProfileStore = new SecurityProfileStore($this, "HipProfilesProfile");
         $this->HipProfilesProfileStore->name = 'HipProfiles';
 
 
@@ -291,12 +315,14 @@ class DeviceCloud
                 $this->addressStore->parentCentralStore = $parentContainer->addressStore;
                 $this->serviceStore->parentCentralStore = $parentContainer->serviceStore;
                 $this->tagStore->parentCentralStore = $parentContainer->tagStore;
+                $this->scheduleStore->parentCentralStore = $parentContainer->scheduleStore;
+                $this->appStore->parentCentralStore = $parentContainer->appStore;
+                $this->securityProfileGroupStore->parentCentralStore = $parentContainer->securityProfileGroupStore;
                 //Todo: swaschkut 20210505 - check if other Stores must be added
                 //- appStore;scheduleStore/securityProfileGroupStore/all kind of SecurityProfile
             }
         }
 
-        //print "VSYS '".$this->name."' found\n";
 
         // this VSYS has a display-name ?
         $displayNameNode = DH::findFirstElement('display-name', $xml);
@@ -338,7 +364,6 @@ class DeviceCloud
             //
             $tmp = DH::findFirstElementOrCreate('address', $xml);
             $this->addressStore->load_addresses_from_domxml($tmp);
-            //print "VSYS '".$this->name."' address objectsloaded\n" ;
             // End of address objects extraction
 
 
@@ -347,7 +372,6 @@ class DeviceCloud
             //
             $tmp = DH::findFirstElementOrCreate('address-group', $xml);
             $this->addressStore->load_addressgroups_from_domxml($tmp);
-            //print "VSYS '".$this->name."' address groups loaded\n" ;
             // End of address groups extraction
 
 
@@ -356,7 +380,6 @@ class DeviceCloud
             //												//
             $tmp = DH::findFirstElementOrCreate('service', $xml);
             $this->serviceStore->load_services_from_domxml($tmp);
-            //print "VSYS '".$this->name."' service objects\n" ;
             // End of <service> extraction
 
 
@@ -365,7 +388,6 @@ class DeviceCloud
             //												//
             $tmp = DH::findFirstElementOrCreate('service-group', $xml);
             $this->serviceStore->load_servicegroups_from_domxml($tmp);
-            //print "VSYS '".$this->name."' service groups loaded\n" ;
             // End of <service-group> extraction
 
             //
@@ -456,12 +478,21 @@ class DeviceCloud
                 }
 
                 //
-                // wildfire Profile extraction
+                // DNSSecurity Profile extraction
                 //
                 $tmproot = DH::findFirstElement('dns-security', $this->securityProfilebaseroot);
                 if( $tmproot !== FALSE )
                 {
                     $this->DNSSecurityProfileStore->load_from_domxml($tmproot);
+                }
+
+                //
+                // SaasSecurity Profile extraction
+                //
+                $tmproot = DH::findFirstElement('saas-security', $this->securityProfilebaseroot);
+                if( $tmproot !== FALSE )
+                {
+                    $this->SaasSecurityProfileStore->load_from_domxml($tmproot);
                 }
 
                 //
@@ -680,6 +711,8 @@ class DeviceCloud
     {
         $stdoutarray = array();
 
+        $stdoutarray['type'] = get_class( $this );
+
         $header = "Statistics for VSYS '" . PH::boldText($this->name) . "' | '" . $this->toString() . "'";
         $stdoutarray['header'] = $header;
 
@@ -727,7 +760,8 @@ class DeviceCloud
         $stdoutarray['securityProfile objects']['Anti-Spyware'] = $this->AntiSpywareProfileStore->count();
         $stdoutarray['securityProfile objects']['Vulnerability'] = $this->VulnerabilityProfileStore->count();
         $stdoutarray['securityProfile objects']['WildfireAndAntivirus'] = $this->VirusAndWildfireProfileStore->count();
-        $stdoutarray['securityProfile objects']['DNS'] = $this->DNSSecurityProfileStore->count();
+        $stdoutarray['securityProfile objects']['DNS-Security'] = $this->DNSSecurityProfileStore->count();
+        $stdoutarray['securityProfile objects']['Saas-Security'] = $this->SaasSecurityProfileStore->count();
         $stdoutarray['securityProfile objects']['URL'] = $this->URLProfileStore->count();
         $stdoutarray['securityProfile objects']['File-Blocking'] = $this->FileBlockingProfileStore->count();
         $stdoutarray['securityProfile objects']['Decryption'] = $this->DecryptionProfileStore->count();
@@ -736,11 +770,8 @@ class DeviceCloud
         $stdoutarray['zones'] = $this->zoneStore->count();
         $stdoutarray['apps'] = $this->appStore->count();
 
-        $return = array();
-        $return['VSYS-stat'] = $stdoutarray;
 
-        #PH::print_stdout( $return );
-        PH::print_stdout( $stdoutarray );
+        PH::print_stdout( $stdoutarray, true );
 
     }
 

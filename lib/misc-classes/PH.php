@@ -1,18 +1,30 @@
 <?php
 
 /**
- * © 2019 Palo Alto Networks, Inc.  All rights reserved.
+ * ISC License
  *
- * Licensed under SCRIPT SOFTWARE AGREEMENT, Palo Alto Networks, Inc., at https://www.paloaltonetworks.com/legal/script-software-license-1-0.pdf
+ * Copyright (c) 2014-2018, Palo Alto Networks Inc.
+ * Copyright (c) 2019, Palo Alto Networks Inc.
  *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
 class PH
 {
     function __construct($argv, $argc)
     {
-        #print "FIRST\n";
-        #print_r( $argv );
+        //print "FIRST\n";
+        //print_r( $argv );
 
         PH::$argv = $argv;
 
@@ -23,56 +35,76 @@ class PH
             {
                 PH::disableOutputFormatting();
                 unset(PH::$argv[$argIndex]);
-                $argc--;
+                if( !isset( $_SERVER['REQUEST_METHOD'] ) )
+                    $argc--;
                 continue;
             }
             elseif( $arg == 'shadow-enablexmlduplicatesdeletion' )
             {
                 PH::$enableXmlDuplicatesDeletion = TRUE;
                 unset(PH::$argv[$argIndex]);
-                $argc--;
+                if( !isset( $_SERVER['REQUEST_METHOD'] ) )
+                    $argc--;
                 continue;
             }
             elseif( $arg == 'shadow-ignoreinvalidaddressobjects' )
             {
                 PH::$ignoreInvalidAddressObjects = TRUE;
                 unset(PH::$argv[$argIndex]);
-                $argc--;
+                if( !isset( $_SERVER['REQUEST_METHOD'] ) )
+                    $argc--;
                 continue;
             }
             elseif( $arg == 'shadow-apikeynohidden' )
             {
                 PH::$sendAPIkeyviaHeader = FALSE;
                 unset(PH::$argv[$argIndex]);
-                $argc--;
+                if( !isset( $_SERVER['REQUEST_METHOD'] ) )
+                    $argc--;
                 continue;
             }
             elseif( $arg == 'shadow-apikeynosave' )
             {
                 PH::$saveAPIkey = FALSE;
                 unset(PH::$argv[$argIndex]);
-                $argc--;
+                if( !isset( $_SERVER['REQUEST_METHOD'] ) )
+                    $argc--;
                 continue;
             }
             elseif( $arg == 'shadow-displaycurlrequest' )
             {
                 PH::$displayCurlRequest = TRUE;
                 unset(PH::$argv[$argIndex]);
-                $argc--;
+                if( !isset( $_SERVER['REQUEST_METHOD'] ) )
+                    $argc--;
                 continue;
             }
             elseif( $arg == 'shadow-reducexml' )
             {
                 PH::$shadow_reducexml = TRUE;
                 unset(PH::$argv[$argIndex]);
-                $argc--;
+                if( !isset( $_SERVER['REQUEST_METHOD'] ) )
+                    $argc--;
                 continue;
             }
             elseif( $arg == 'shadow-json' )
             {
+                PH::disableOutputFormatting();
                 PH::$shadow_json = TRUE;
+                PH::$PANC_WARN = FALSE;
                 unset(PH::$argv[$argIndex]);
-                $argc--;
+                if( !isset( $_SERVER['REQUEST_METHOD'] ) )
+                    $argc--;
+                continue;
+            }
+            elseif( $arg == 'shadow-nojson' )
+            {
+                PH::disableOutputFormatting();
+                PH::$shadow_json = FALSE;
+                PH::$PANC_WARN = FALSE;
+                unset(PH::$argv[$argIndex]);
+                if( !isset( $_SERVER['REQUEST_METHOD'] ) )
+                    $argc--;
                 continue;
             }
         }
@@ -92,6 +124,7 @@ class PH
     public static $ignoreDestructors = FALSE;
 
     public static $useExceptions = FALSE;
+    public static $doNotDisableExceptions = FALSE;
 
     public static $outputFormattingEnabled = TRUE;
 
@@ -111,12 +144,16 @@ class PH
 
     public static $shadow_json = FALSE;
     public static $JSON_OUT = array();
+    public static $JSON_TMP = array();
+    public static $JSON_OUTlog = "";
+
+    public static $PANC_WARN = TRUE;
 
     public static $basedir;
 
     private static $library_version_major = 2;
     private static $library_version_sub = 0;
-    private static $library_version_bugfix = 1;
+    private static $library_version_bugfix = 27;
 
     //BASIC AUTH PAN-OS 7.1
     public static $softwareupdate_key = "658d787f293e631196dac9fb29490f1cc1bb3827";
@@ -149,6 +186,14 @@ class PH
     static public function frameworkVersion()
     {
         return self::$library_version_major . '.' . self::$library_version_sub . '.' . self::$library_version_bugfix;
+    }
+
+    static public function frameworkInstalledOS()
+    {
+        $system = 'UNIX';
+        if( strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' )
+            $system = 'WIN';
+        return $system;
     }
 
     /**
@@ -238,12 +283,17 @@ class PH
      */
     static public function enableExceptionSupport()
     {
+        PH::$doNotDisableExceptions = FALSE;
+        if( PH::$useExceptions )
+            PH::$doNotDisableExceptions = TRUE;
+
         PH::$useExceptions = TRUE;
     }
 
     static public function disableExceptionSupport()
     {
-        PH::$useExceptions = FALSE;
+        if( !PH::$doNotDisableExceptions )
+            PH::$useExceptions = FALSE;
     }
 
 
@@ -259,8 +309,8 @@ class PH
 
     public static function processCliArgs()
     {
-        #print "SECOND\n";
-        #print_r( PH::$argv );
+        //print "SECOND\n";
+        //print_r( PH::$argv );
 
         $first = TRUE;
 
@@ -286,8 +336,19 @@ class PH
             PH::$args[$nameExplode[0]] = $value;
         }
 
-        #print "THIRD\n";
-        #print_r(PH::$args);
+        //print "THIRD\n";
+        //print_r(PH::$args);
+    }
+
+    public static function resetCliArgs( $arguments )
+    {
+        $argv = $arguments;
+        PH::$args = array();
+        PH::$argv = array();
+
+        PH::$argv = $argv;
+
+        //print_r( $argv );
     }
 
     public static function generate_arguments($in = "", $out = "", $location = "", $actions = "", $filter = "", $subquery = "", $additional = "")
@@ -459,21 +520,51 @@ class PH
 
     }
 
-    static public function print_stdout( $text  )
+    static public function print_stdout( $text, $printArray = false, $arrayKey = null  )
     {
-
         if( is_array( $text ) )
         {
             if( PH::$shadow_json )
             {
-                PH::$JSON_OUT[] = $text;
+                /*
+                reset($text);
+                $first_key = key($text);
+
+                PH::$JSON_OUT[ $first_key ] = $text[ $first_key ];
+                */
+
+                if( $arrayKey != null )
+                {
+                    PH::$JSON_OUT[$arrayKey][] = $text;
+                }
+                else
+                {
+                    //FAWKES???
+                    //at least rule-stats
+                    PH::$JSON_OUT[] = $text;
+                }
             }
-            else
+
+            if( $printArray )
             {
+                // until now only for pa_rule-stats
                 #$stdoutarray = reset($text);
                 $stdoutarray = $text;
 
-                print $stdoutarray['header']."\n";
+                if( isset( $stdoutarray['header'] ) )
+                    $string =  $stdoutarray['header']."\n";
+                else
+                    $string = "";
+
+                if( !PH::$shadow_json )
+                {
+                    print $string;
+                }
+                else
+                {
+                    #PH::$JSON_OUTlog .= $string;
+                }
+
                 unset( $stdoutarray['header'] );
                 foreach( $stdoutarray as $key => $entry )
                 {
@@ -486,36 +577,80 @@ class PH
                         {
                             if( $i == 0 )
                             {
-                                $tmp_entry2 = $entry2;
-                                $tmp_key2 = $key2;
+                                if( !is_array($entry2) )
+                                {
+                                    $tmp_entry2 = $entry2;
+                                    $tmp_key2 = $key2;
+                                }
                             }
                             else
                             {
-                                $tmp_entry2 .= "/".$entry2;
-                                $tmp_key2 .= "/".$key2;
+                                if( !is_array($entry2) )
+                                {
+                                    $tmp_entry2 .= "/".$entry2;
+                                    $tmp_key2 .= "/".$key2;
+                                }
+
                             }
                             $i++;
                         }
-                        print "- ".$tmp_entry2." ".$tmp_key2." - ".$key."\n";
+                        $string =  " - ".$tmp_entry2." ".$tmp_key2." - ".$key."\n";
+                        if( !PH::$shadow_json )
+                        {
+                            print $string;
+                        }
+                        else
+                        {
+                            #PH::$JSON_OUTlog .= $string;
+                        }
                     }
                     else
                     {
-                        print "- " . $entry . " ". $key . "\n";
+                        $string =  " - " . $entry . " ". $key . "\n";
+                        if( !PH::$shadow_json )
+                        {
+                            print $string;
+                        }
+                        else
+                        {
+                            #PH::$JSON_OUTlog .= $string;
+                        }
                     }
                 }
-                print "\n";
+                $string =  "\n";
+                if( !PH::$shadow_json )
+                {
+                    print $string;
+                }
+                else
+                {
+                    #PH::$JSON_OUTlog .= $string;
+                }
             }
         }
         else
         {
+            $string = $text."\n";
             if( !PH::$shadow_json )
-            {
-                #print "X";
-                print $text."\n";
-            }
+                print $string;
+            else
+                PH::$JSON_OUTlog .= $string;
 
         }
 
+    }
+
+    static public function ACTIONstatus( $context, $status, $string )
+    {
+        PH::print_stdout( $context->padding . " *** ".$status." : ".$string );
+        PH::$JSON_TMP['sub']['object'][$context->object->name()]['status']['type'] = $status;
+        PH::$JSON_TMP['sub']['object'][$context->object->name()]['status']['message'] = $string;
+    }
+
+    static public function ACTIONlog( $context, $string )
+    {
+        PH::print_stdout( $context->padding . " * ". $string );
+        PH::$JSON_TMP['sub']['object'][$context->object->name()]['log'][] = $string;
     }
 
     static public function &boldText($msg)
@@ -724,4 +859,134 @@ class PH
         return $panObject;
     }
 
+    public static function getFilesInFolder( $folder )
+    {
+        $files = scandir($folder);
+        foreach( $files as $key => $file )
+        {
+            $path = realpath($folder . DIRECTORY_SEPARATOR . $file);
+            if( is_dir($path) || strpos($file, ".") === 0 )
+            {
+                unset( $files[$key] );
+            }
+        }
+        PH::print_stdout( "'".$folder."' with files: ".(count($files)) );
+
+        return $files;
+    }
+
+    public static function UTILdeprecated( $type, $argv, $argc, $PHP_FILE)
+    {
+        $TESTargv = $argv;
+        unset( $TESTargv[0] );
+        $argString = " type=".$type." '".implode( "' '", $TESTargv)."'";
+
+        mwarning( 'this script '.basename($PHP_FILE).' is deprecated, please use: pan-os-php.php', null, FALSE );
+        PH::print_stdout( PH::boldText("pan-os-php".$argString) );
+
+
+        PH::callPANOSPHP( $type, $argv, $argc, $PHP_FILE );
+
+    }
+
+    public static $supportedUTILTypes = array(
+        "stats",
+        "address", "service", "tag", "schedule", "application", "threat",
+        "rule",
+        "device", "securityprofile", "securityprofilegroup",
+        "zone",  "interface", "virtualwire", "routing",
+        "key-manager",
+        "address-merger", "addressgroup-merger",
+        "service-merger", "servicegroup-merger",
+        "tag-merger",
+        "rule-merger",
+        "override-finder",
+        "diff",
+        "upload",
+        "xml-issue",
+        "appid-enabler",
+        "config-size",
+        "download-predefined",
+        "register-ip-mgr",
+        "userid-mgr",
+        "xml-op-json",
+        "bpa-generator"
+        );
+
+    public static function callPANOSPHP( $type, $argv, $argc, $PHP_FILE )
+    {
+        if( $type == "rule" )
+            $util = new RULEUTIL($type, $argv, $argc,$PHP_FILE." type=".$type);
+
+        elseif( $type == "stats" )
+            $util = new STATSUTIL( $type, $argv, $argc,$PHP_FILE." type=".$type);
+
+        elseif( $type == "securityprofile" )
+            $util = new SECURITYPROFILEUTIL($type, $argv, $argc,$PHP_FILE." type=".$type);
+
+        elseif( $type == "zone"
+            || $type == "interface"
+            || $type == "routing"
+            || $type == "virtualwire"
+        )
+            $util = new NETWORKUTIL($type, $argv, $argc,$PHP_FILE." type=".$type);
+
+        elseif( $type == "device" )
+            $util = new DEVICEUTIL($type, $argv, $argc,$PHP_FILE." type=".$type);
+
+        elseif( $type == "key-manager" )
+            $util = new KEYMANGER($type, $argv, $argc,$PHP_FILE." type=".$type);
+
+        elseif( $type == "address-merger"
+            || $type == "addressgroup-merger"
+            || $type == "service-merger"
+            || $type == "servicegroup-merger"
+            || $type == "tag-merger"
+        )
+            $util = new MERGER($type, $argv, $argc,$PHP_FILE." type=".$type);
+
+        elseif( $type == "rule-merger" )
+            $util = new RULEMERGER($type, $argv, $argc,$PHP_FILE." type=".$type );
+
+        elseif( $type == "override-finder" )
+            $util = new OVERRIDEFINDER($type, $argv, $argc,$PHP_FILE." type=".$type);
+        elseif( $type == "diff" )
+            $util = new DIFF($type, $argv, $argc,$PHP_FILE." type=".$type);
+        elseif( $type == "upload" )
+            $util = new UPLOAD($type, $argv, $argc,$PHP_FILE." type=".$type);
+        elseif( $type == "xml-issue" )
+            $util = new XMLISSUE($type, $argv, $argc,$PHP_FILE." type=".$type);
+
+        elseif( $type == "appid-enabler" )
+            $util = new APPIDENABLER($type, $argv, $argc,$PHP_FILE." type=".$type);
+        elseif( $type == "config-size" )
+            $util = new CONFIGSIZE($type, $argv, $argc,$PHP_FILE." type=".$type);
+
+        elseif( $type == "download-predefined" )
+            $util = new PREDEFINED($type, $argv, $argc,$PHP_FILE." type=".$type);
+
+        elseif( $type == "register-ip-mgr" )
+            $util = new REGISTERIP($type, $argv, $argc,$PHP_FILE." type=".$type );
+
+        elseif( $type == "userid-mgr" )
+            $util = new USERIDMGR($type, $argv, $argc,$PHP_FILE." type=".$type);
+
+        elseif( $type == "xml-op-json" )
+            $util = new XMLOPJSON($type, $argv, $argc,$PHP_FILE." type=".$type );
+
+        elseif( $type == "bpa-generator" )
+            $util = new BPAGENERATOR($type, $argv, $argc,$PHP_FILE." type=".$type);
+
+        elseif( $type == 'address'
+            || $type == 'service'
+            || $type == 'tag'
+            || $type == 'schedule'
+            || $type == 'securityprofilegroup'
+            || $type == 'application'
+            || $type == 'threat'
+        )
+            $util = new UTIL($type, $argv, $argc,$PHP_FILE." type=".$type);
+
+        return $util;
+    }
 }

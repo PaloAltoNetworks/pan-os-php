@@ -1,9 +1,21 @@
 <?php
 /**
- * © 2019 Palo Alto Networks, Inc.  All rights reserved.
+ * ISC License
  *
- * Licensed under SCRIPT SOFTWARE AGREEMENT, Palo Alto Networks, Inc., at https://www.paloaltonetworks.com/legal/script-software-license-1-0.pdf
+ * Copyright (c) 2014-2018, Palo Alto Networks Inc.
+ * Copyright (c) 2019, Palo Alto Networks Inc.
  *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
 class EthernetInterface
@@ -45,6 +57,8 @@ class EthernetInterface
     protected $l3ipv4Addresses;
     protected $l3ipv6Addresses;
 
+    protected $linkstate = "auto";
+
     static public $supportedTypes = array('layer3', 'layer2', 'virtual-wire', 'tap', 'ha', 'aggregate-group', 'log-card', 'decrypt-mirror', 'empty');
 
     /**
@@ -85,6 +99,11 @@ class EthernetInterface
             {
                 $this->_description = $node->textContent;
                 //print "Desc found: {$this->description}\n";
+            }
+            elseif( $nodeName == 'link-state' )
+            {
+                $this->linkstate = $node->textContent;
+                //print "linkstate found: {$this->description}\n";
             }
         }
 
@@ -506,7 +525,7 @@ class EthernetInterface
 
         if( !array_key_exists($ip, $tmp_IPv4) )
         {
-            print "\n ** skipped ** IP Address: " . $ip . " is not set on interface: " . $this->name() . "\n";
+            PH::print_stdout( " ** skipped ** IP Address: " . $ip . " is not set on interface: " . $this->name() );
             return FALSE;
         }
 
@@ -721,6 +740,31 @@ class EthernetInterface
         return $ret;
     }
 
+    /**
+     * return true if change was successful false if not (duplicate rulename?)
+     * @param string $name new name for the rule
+     * @return bool
+     */
+    public function setLinkState($linkstate)
+    {
+        if( $this->isSubInterface() )
+            return false;
+        
+        $linkstate_array = array( "auto","up", "down" );
+        if( !in_array( $linkstate, $linkstate_array) )
+            return false;
+
+        if( $this->linkstate == $linkstate )
+            return TRUE;
+
+        $this->linkstate = $linkstate;
+
+        $linkNode = DH::findFirstElementOrCreate( 'link-state', $this->xmlroot);
+        $linkNode->textContent = $linkstate;
+
+        return TRUE;
+
+    }
 
     //Todo: (20180722)
     //---(also needed for vlan / loopback / tunnel interface)
@@ -738,7 +782,30 @@ class EthernetInterface
     {
         $str = $this->owner->getEthernetIfStoreXPath() . "/entry[@name='" . $this->name . "']";
 
+        if( $this->owner->owner->owner !== null && get_class( $this->owner->owner->owner ) == "Template" )
+        {
+            $templateXpath = $this->owner->owner->owner->getXPath();
+            $str = $templateXpath.$str;
+        }
+
         return $str;
+    }
+
+    public function referencedObjectRenamed($h, $old)
+    {
+        if( is_object($h) )
+        {
+            if( get_class( $h ) == "Address" )
+            {
+                #$this->addIPv4Address( $h );
+
+                #$this->removeIPv4Address( $old );
+            }
+
+            return;
+        }
+
+        mwarning("object is not part of this static route : {$h->toString()}");
     }
 
     static public $templatexml = '<entry name="**temporarynamechangeme**">

@@ -1,10 +1,22 @@
 <?php
 
 /**
- * © 2019 Palo Alto Networks, Inc.  All rights reserved.
+ * ISC License
  *
- * Licensed under SCRIPT SOFTWARE AGREEMENT, Palo Alto Networks, Inc., at https://www.paloaltonetworks.com/legal/script-software-license-1-0.pdf
+ * Copyright (c) 2014-2018, Palo Alto Networks Inc.
+ * Copyright (c) 2019, Palo Alto Networks Inc.
  *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
 class AddressGroup
@@ -140,47 +152,22 @@ class AddressGroup
                     $tmp_filter = DH::findFirstElement('filter', $tmp);
                     $this->filter = $tmp_filter->nodeValue;
 
-                    //add DAG as reference to all tagged address objects
-                    $tmp_filter = array();
-                    $filterArray = array(" and ", " or ");
-                    if( (strpos($this->filter, $filterArray[0]) === FALSE) and (strpos($this->filter, $filterArray[1]) === FALSE) )
+
+                    $patterns = array( "@'(.*?)'@", "@\"(.*?)\"@");
+                    $tagFilter = $this->filter;
+                    foreach( $patterns as $pattern)
                     {
-                        $entry = trim($this->filter);
-                        $entry = str_replace("'", "", $entry);
-                        $entry = str_replace('"', "", $entry);
-                        $tmp_filter['none'][] = $entry;
-                    }
-                    else
-                    {
-                        foreach( $filterArray as $key => $keyFilter )
+                        $names = array();
+
+                        $is_match = preg_match_all($pattern, $tagFilter, $names);
+                        foreach( $names[1] as $key => $replaceTXT )
                         {
-                            $tmp_explode = explode($keyFilter, $this->filter);
+                            $pattern = $names[0][$key];
+                            $replacements = "(tag has ".$replaceTXT.")";
 
-                            if( count($tmp_explode) > 1 )
-                            {
-                                $tmp_filter[$keyFilter] = $tmp_explode;
+                            $tagFilter = str_replace( $pattern, $replacements, $tagFilter );
 
-                                foreach( $tmp_filter[$keyFilter] as $key2 => $entry )
-                                {
-                                    $entry = trim($entry);
-                                    $entry = str_replace("'", "", $entry);
-                                    $tmp_filter[$keyFilter][$key2] = $entry;
-                                }
-                            }
-                        }
-                    }
-
-                    #print_r( $tmp_filter );
-                    foreach( $tmp_filter as $key => $filter )
-                    {
-                        $tagFilter = "";
-                        foreach( $filter as $key2 => $test )
-                        {
-                            if( $key2 == 0 )
-                                $tagFilter .= "(tag has " . $test . ")";
-                            else
-                                $tagFilter .= " " . $key . " (tag has " . $test . ")";
-                            $tag = $this->owner->owner->tagStore->find($test);
+                            $tag = $this->owner->owner->tagStore->find($replaceTXT);
                             if( $tag !== null )
                                 $tag->addReference($this);
                             else
@@ -189,19 +176,20 @@ class AddressGroup
                                 #stop throwing WARNING - as it could be that DAG filter is not based on TAG, e.g. VMware info
                                 #mwarning( "TAG not found: ".$test." - for DAG: '".$this->name()."' in location: ".$this->owner->owner->name(), null, false );
                             }
-
                         }
-                        //Todo: remark
-                        #print "\nADRgroup: ".$this->name()."\n";
-                        #print "TAGfilter: ".$tagFilter."\n";
+                    }
+                    if( strpos( $tagFilter, '(tag has' ) === false )
+                    {
+                        $tagFilter = "(tag has ".$tagFilter.")";
+                    }
 
+                    $this->filter = $tagFilter;
 
-                        $tmp_found_addresses = $this->owner->all($tagFilter);
-                        foreach( $tmp_found_addresses as $address )
-                        {
-                            #print "object: ".$address->name()." add ref to ".$this->name()."\n";
-                            $address->addReference($this);
-                        }
+                    $tmp_found_addresses = $this->owner->all($tagFilter);
+                    foreach( $tmp_found_addresses as $address )
+                    {
+                        $this->members[] = $address;
+                        $address->addReference($this);
                     }
                 }
             }
@@ -525,7 +513,7 @@ class AddressGroup
                 $pos = array_search($old, $this->members, TRUE);
             }
 
-            if( $new !== null && !$this->has($new) )
+            if( $new !== null && !$this->has( $new->name() ) )
             {
                 $this->members[] = $new;
                 $new->addReference($this);
@@ -561,9 +549,39 @@ class AddressGroup
      * @param $obj Address|AddressGroup
      * @return bool
      */
-    public function has($obj)
+    public function has($obj, $caseSensitive = TRUE)
     {
-        return array_search($obj, $this->members, TRUE) !== FALSE;
+        #return array_search($obj, $this->members, TRUE) !== FALSE;
+        if( is_string($obj) )
+        {
+            if( !$caseSensitive )
+                $obj = strtolower($obj);
+
+            foreach( $this->members as $o )
+            {
+                if( !$caseSensitive )
+                {
+                    if( $obj == strtolower($o->name()) )
+                    {
+                        return TRUE;
+                    }
+                }
+                else
+                {
+                    if( $obj == $o->name() )
+                        return TRUE;
+                }
+            }
+            return FALSE;
+        }
+
+        foreach( $this->members as $o )
+        {
+            if( $o === $obj )
+                return TRUE;
+        }
+
+        return FALSE;
     }
 
     /**
@@ -589,8 +607,6 @@ class AddressGroup
      */
     public function count()
     {
-        if( $this->isDynamic )
-            mwarning('unsupported with Dynamic Address Groups');
         return count($this->members);
     }
 
@@ -731,7 +747,7 @@ class AddressGroup
         if( $toString )
             return $retString;
 
-        print $retString;
+        PH::print_stdout( $retString );
     }
 
     /**
@@ -810,7 +826,7 @@ class AddressGroup
             $netStartEnd = IP4Map::mapFromText($network);
 
         if( count($this->members) == 0 )
-            return 1;
+            return 0;
 
         $result = -1;
 
@@ -998,19 +1014,30 @@ class AddressGroup
     }
 
 
-    public function replaceByMembersAndDelete($padding = "", $isAPI = FALSE, $rewriteXml = TRUE, $forceAny = FALSE)
+    public function replaceByMembersAndDelete($context, $isAPI = FALSE, $rewriteXml = TRUE, $forceAny = FALSE)
     {
         if( !$this->isGroup() )
         {
-            echo $padding . " - SKIPPED : it's not a group\n";
+            $string = "it's not a group";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+
+        if( $this->isDynamic() )
+        {
+            $string = "group is dynamic";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
         if( $this->owner === null )
         {
-            echo $padding . " -  SKIPPED : object was previously removed\n";
+            $string = "object was previously removed";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
+
+        $keepgroupname = $context->arguments['keepgroupname'];
 
         $objectRefs = $this->getReferences();
         $clearForAction = TRUE;
@@ -1020,7 +1047,8 @@ class AddressGroup
             if( $class != 'AddressRuleContainer' && $class != 'AddressGroup' )
             {
                 $clearForAction = FALSE;
-                echo "- SKIPPED : it's used in unsupported class $class\n";
+                $string = "it's used in unsupported class $class";
+                PH::ACTIONstatus( $context, "SKIPPED", $string );
                 return;
             }
         }
@@ -1033,11 +1061,13 @@ class AddressGroup
 
                 if( $objectRef->owner === null )
                 {
-                    echo $padding . "  - SKIPPED because object already removed ({$objectRef->toString()})\n";
+                    $string = "because object already removed ({$objectRef->toString()})";
+                    PH::ACTIONstatus( $context, "SKIPPED", $string );
                     continue;
                 }
 
-                echo $padding . "  - adding members in {$objectRef->toString()}\n";
+                $string = "  - adding members in {$objectRef->toString()}";
+                PH::ACTIONlog( $context, $string );
 
                 if( $class == 'AddressRuleContainer' )
                 {
@@ -1049,7 +1079,8 @@ class AddressGroup
                         else
                             $objectRef->addObject($objectMember);
 
-                        echo $padding . "     -> {$objectMember->toString()}\n";
+                        $string = "     -> {$objectMember->toString()}";
+                        PH::ACTIONlog( $context, $string );
                     }
                     if( $isAPI )
                         $objectRef->API_remove($this, $forceAny);
@@ -1065,7 +1096,8 @@ class AddressGroup
                             $objectRef->API_addMember($objectMember);
                         else
                             $objectRef->addMember($objectMember);
-                        echo $padding . "     -> {$objectMember->toString()}\n";
+                        $string = "     -> {$objectMember->toString()}";
+                        PH::ACTIONlog( $context, $string );
                     }
                     if( $isAPI )
                         $objectRef->API_removeMember($this);
@@ -1078,6 +1110,62 @@ class AddressGroup
                 }
 
             }
+
+            if( $keepgroupname !== "*nodefault*" )
+            {
+                foreach( $this->members() as $objectMember )
+                {
+                    if( $keepgroupname === "tag" )
+                    {
+                        //search for tag name like $this->name()
+                        //if not available create it
+
+                        if( $context->isAPI )
+                        {
+                            $objectFind = $objectMember->tags->parentCentralStore->find($this->name());
+                            if( $objectFind === null )
+                                $objectFind = $objectMember->tags->parentCentralStore->API_createTag($this->name());
+                        }
+                        else
+                            $objectFind = $objectMember->tags->parentCentralStore->findOrCreate($this->name());
+
+                        if( $context->isAPI )
+                            $objectMember->tags->API_addTag($objectFind);
+                        else
+                            $objectMember->tags->addTag($objectFind);
+                    }
+                    elseif( $keepgroupname === "description" )
+                    {
+                        $description = $objectMember->description();
+                        $textToAppend = " |".$this->name();
+                        if( $context->object->owner->owner->version < 71 )
+                            $max_length = 253;
+                        else
+                            $max_length = 1020;
+
+                        if( strlen($description) + strlen($textToAppend) > $max_length )
+                        {
+                            $string = "resulting description is too long";
+                            PH::ACTIONstatus( $context, "SKIPPED", $string );
+                            return;
+                        }
+
+                        $text = $context->padding . " - new description will be: '{$description}{$textToAppend}' ... ";
+
+                        if( $context->isAPI )
+                            $objectMember->API_setDescription($description . $textToAppend);
+                        else
+                            $objectMember->setDescription($description . $textToAppend);
+                        $text .= "OK";
+                        PH::ACTIONlog( $context, $text );
+                    }
+
+
+                    $string = "     -> {$objectMember->toString()}";
+                    PH::ACTIONlog( $context, $string );
+                }
+            }
+
 
             if( $isAPI )
                 $this->owner->API_remove($this, TRUE);

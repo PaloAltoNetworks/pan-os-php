@@ -1,10 +1,22 @@
 <?php
 
 /**
- * © 2019 Palo Alto Networks, Inc.  All rights reserved.
+ * ISC License
  *
- * Licensed under SCRIPT SOFTWARE AGREEMENT, Palo Alto Networks, Inc., at https://www.paloaltonetworks.com/legal/script-software-license-1-0.pdf
+ * Copyright (c) 2014-2018, Palo Alto Networks Inc.
+ * Copyright (c) 2019, Palo Alto Networks Inc.
  *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
 class RQuery
@@ -77,8 +89,16 @@ class RQuery
             $this->contextObject = new ZoneRQueryContext($this);
         elseif( $this->objectType == 'securityprofile' )
             $this->contextObject = new SecurityProfileRQueryContext($this);
+        elseif( $this->objectType == 'securityprofilegroup' )
+            $this->contextObject = new SecurityProfileGroupRQueryContext($this);
         elseif( $this->objectType == 'schedule' )
             $this->contextObject = new ScheduleRQueryContext($this);
+        elseif( $this->objectType == 'application' )
+            $this->contextObject = new ApplicationRQueryContext($this);
+        elseif( $this->objectType == 'device' )
+            $this->contextObject = new DeviceRQueryContext($this);
+        elseif( $this->objectType == 'threat' )
+            $this->contextObject = new ThreatRQueryContext($this);
         else
             derr("unsupported object type '$objectType'");
     }
@@ -110,7 +130,7 @@ class RQuery
 
         if( count($this->subQueries) == 0 )
         {
-            // print $this->padded."about to eval\n";
+            // PH::print_stdout( $this->padded."about to eval" );
             if( isset($this->refOperator['Function']) )
             {
                 $boolReturn = $this->contextObject->execute($object, $nestedQueries);
@@ -363,7 +383,7 @@ class RQuery
         $findOpen = strpos($text, '(', $start);
         $findClose = strpos($text, ')', $start);
 
-        //print $this->padded."Parsing \"$text\"\n";
+        //PH::print_stdout( $this->padded."Parsing \"$text\"" );
 
         while( $findOpen !== FALSE && ($findClose > $findOpen) )
         {
@@ -392,12 +412,12 @@ class RQuery
 
                 $this->subQueriesOperators[] = $operator;
 
-                ////print $this->padded."raw operator found: '$operator'\n";
+                ////PH::print_stdout( $this->padded."raw operator found: '$operator'" );
             }
 
 
             $previousClose = $findOpen + $res;
-            //print $this->padded.'remains to be parsed after subQ extracted: '.substr($text,$previousClose+1)."\n";
+            //PH::print_stdout( $this->padded.'remains to be parsed after subQ extracted: '.substr($text,$previousClose+1) );
 
             $start = $findOpen + $res + 1;
             $findOpen = strpos($text, '(', $start);
@@ -410,7 +430,7 @@ class RQuery
             if( $findClose === FALSE )
             {
                 $errorMessage = 'cannot find closing )';
-                //print $this->padded."test\n";
+                //PH::print_stdout( $this->padded."test" );
                 return FALSE;
             }
             elseif( count($this->subQueries) == 0 )
@@ -435,7 +455,7 @@ class RQuery
         // here we are at top level
         if( count($this->subQueries) == 0 )
         {
-            //print $this->padded."No subquery found, this is an expression: $text\n";
+            //PH::print_stdout( $this->padded."No subquery found, this is an expression: $text" );
             $this->text = $text;
             if( !$this->extractWordsFromText($this->text, $supportedFilters, $errorMessage) )
             {
@@ -444,7 +464,7 @@ class RQuery
         }
         else
         {
-            //print $this->padded . "Sub-queries found\n";
+            //PH::print_stdout( $this->padded . "Sub-queries found" );
             $this->text = $text;
         }
 
@@ -596,9 +616,9 @@ class RQuery
     public function display($indentLevel = 0)
     {
         if( $indentLevel == 0 )
-            print $this->sanitizedString();
+            PH::print_stdout( $this->sanitizedString() );
         else
-            print str_pad($this->sanitizedString(), $indentLevel);
+            PH::print_stdout( str_pad($this->sanitizedString(), $indentLevel) );
     }
 
     public function sanitizedString()
@@ -652,10 +672,13 @@ require_once 'filters/filters-Service.php';
 require_once 'filters/filters-Tag.php';
 require_once 'filters/filters-Zone.php';
 require_once 'filters/filters-Application.php';
+require_once 'filters/filters-Threat.php';
 require_once 'filters/filters-Interface.php';
 require_once 'filters/filters-Routing.php';
 require_once 'filters/filters-VirtualWire.php';
 require_once 'filters/filters-SecurityProfile.php';
+require_once 'filters/filters-SecurityProfileGroup.php';
 require_once 'filters/filters-Schedule.php';
+require_once 'filters/filters-Device.php';
 
 

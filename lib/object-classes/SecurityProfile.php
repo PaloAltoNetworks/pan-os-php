@@ -14,6 +14,8 @@ class SecurityProfile
     /** @var string|null */
     protected $value;
 
+    public $secprof_type;
+
     /** @var SecurityProfileStore|null */
     public $owner;
 
@@ -24,7 +26,9 @@ class SecurityProfile
     const TypeFile_blocking = 4;
     const TypeWildfire_analysis = 5;
     const TypeUrl_filtering = 6;
-
+    const TypeData_filtering = 7;
+    const TypeDNS_security = 8;
+    const TypeSaas_security = 9;
 
     static private $SecurityProfileTypes = array(self::TypeTmp => 'tmp',
         self::TypeVirus => 'virus',
@@ -32,7 +36,10 @@ class SecurityProfile
         self::TypeVulnerability => 'vulnerability',
         self::TypeFile_blocking => 'file-blocking',
         self::TypeWildfire_analysis => 'wildfire-analysis',
-        self::TypeUrl_filtering => 'url-filtering'
+        self::TypeUrl_filtering => 'url-filtering',
+        self::TypeData_filtering => 'data-filtering',
+        self::TypeDNS_security => 'dns-security',
+        self::TypeSaas_security => 'saas-security'
     );
 
     public $type = self::TypeTmp;
@@ -74,6 +81,8 @@ class SecurityProfile
      */
     public function load_from_domxml(DOMElement $xml)
     {
+        $this->secprof_type = "secprof";
+
         $this->xmlroot = $xml;
 
         $this->name = DH::findAttribute('name', $xml);
@@ -82,7 +91,7 @@ class SecurityProfile
 
         $this->_load_description_from_domxml();
 
-        #print "object named '".$this->name."' found\n";
+        #PH::print_stdout(  "object named '".$this->name."' found" );
 
 
         $typeFound = FALSE;
@@ -137,6 +146,12 @@ class SecurityProfile
         return $this->value;
     }
 
+    public function display()
+    {
+        PH::print_stdout(  "     * " . get_class($this) . " '" . $this->name() . "'" );
+        PH::$JSON_TMP['sub']['object'][$this->name()]['name'] = $this->name();
+        PH::$JSON_TMP['sub']['object'][$this->name()]['type'] = get_class($this);
+    }
 
     /**
      * @param string $newValue

@@ -1,0 +1,11 @@
+FROM centos:8
+
+
+### PAN-OS-PHP
+RUN mkdir /tools2
+
+COPY install_script_centos8.sh /tools2/install_script_centos8.sh
+
+RUN sh /tools2/install_script_centos8.sh
+
+

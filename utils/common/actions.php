@@ -1,9 +1,21 @@
 <?php
 /**
- * © 2019 Palo Alto Networks, Inc.  All rights reserved.
+ * ISC License
  *
- * Licensed under SCRIPT SOFTWARE AGREEMENT, Palo Alto Networks, Inc., at https://www.paloaltonetworks.com/legal/script-software-license-1-0.pdf
+ * Copyright (c) 2014-2018, Palo Alto Networks Inc.
+ * Copyright (c) 2019, Palo Alto Networks Inc.
  *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
 
@@ -49,7 +61,7 @@ require_once  "actions-routing.php";
 RoutingCallContext::prepareSupportedActions();
 
 require_once ( "VirtualWireCallContext.php");
-require_once  "actions-interface.php";
+require_once  "actions-virtualwire.php";
 VirtualWireCallContext::prepareSupportedActions();
 
 
@@ -57,7 +69,22 @@ require_once("SecurityProfileCallContext.php");
 require_once "actions-securityprofile.php";
 SecurityProfileCallContext::prepareSupportedActions();
 
+require_once("SecurityProfileGroupCallContext.php");
+require_once "actions-securityprofilegroup.php";
+SecurityProfileGroupCallContext::prepareSupportedActions();
 
 require_once("ScheduleCallContext.php");
 require_once "actions-schedule.php";
 ScheduleCallContext::prepareSupportedActions();
+
+require_once("ApplicationCallContext.php");
+require_once "actions-application.php";
+ApplicationCallContext::prepareSupportedActions();
+
+require_once("ThreatCallContext.php");
+require_once "actions-threat.php";
+ThreatCallContext::prepareSupportedActions();
+
+require_once("DeviceCallContext.php");
+require_once "actions-device.php";
+DeviceCallContext::prepareSupportedActions();

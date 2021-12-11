@@ -43,6 +43,16 @@ RQuery::$defaultFilters['address']['object']['operators']['is.group'] = array(
         'input' => 'input/panorama-8.0.xml'
     )
 );
+RQuery::$defaultFilters['address']['object']['operators']['is.region'] = array(
+    'Function' => function (AddressRQueryContext $context) {
+        return $context->object->isRegion() == TRUE;
+    },
+    'arg' => FALSE,
+    'ci' => array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 RQuery::$defaultFilters['address']['object']['operators']['is.dynamic'] = array(
     'Function' => function (AddressRQueryContext $context) {
         if( $context->object->isGroup() )
@@ -105,6 +115,19 @@ RQuery::$defaultFilters['address']['object']['operators']['is.fqdn'] = array(
         'input' => 'input/panorama-8.0.xml'
     )
 );
+RQuery::$defaultFilters['address']['object']['operators']['is.ip-wildcard'] = array(
+    'Function' => function (AddressRQueryContext $context) {
+        if( !$context->object->isGroup() )
+            return $context->object->isType_ipWildcard() == TRUE;
+        else
+            return FALSE;
+    },
+    'arg' => FALSE,
+    'ci' => array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 RQuery::$defaultFilters['address']['object']['operators']['is.ipv4'] = Array(
     'Function' => function(AddressRQueryContext $context )
     {
@@ -114,7 +137,7 @@ RQuery::$defaultFilters['address']['object']['operators']['is.ipv4'] = Array(
         {
             if( $object->isType_FQDN() )
             {
-                #print "SKIPPED: object is FQDN\n";
+                #PH::print_stdout( "SKIPPED: object is FQDN");
                 return false;
             }
 
@@ -148,7 +171,7 @@ RQuery::$defaultFilters['address']['object']['operators']['is.ipv4'] = Array(
         }
         else #howto check if group is IPv4 only
         {
-            #print "object: ".$object->name()." is group. not supported yet\n";
+            #PH::print_stdout( "object: ".$object->name()." is group. not supported yet" );
             return false;
         }
 
@@ -166,7 +189,7 @@ RQuery::$defaultFilters['address']['object']['operators']['is.ipv6'] = Array(
         {
             if( $object->isType_FQDN() )
             {
-                #print "SKIPPED: object is FQDN\n";
+                #PH::print_stdout( "SKIPPED: object is FQDN");
                 return false;
             }
 
@@ -191,7 +214,7 @@ RQuery::$defaultFilters['address']['object']['operators']['is.ipv6'] = Array(
         }
         else #howto check if group is IPv6 only
         {
-            #print "object: ".$object->name()." is group. not supported yet\n";
+            #PH::print_stdout( "object: ".$object->name()." is group. not supported yet" );
             return false;
         }
 
@@ -402,6 +425,7 @@ RQuery::$defaultFilters['address']['name']['operators']['regex'] = array(
         return FALSE;
     },
     'arg' => TRUE,
+    'help' => 'possible variables to bring in as argument: $$value$$ / $$ipv4$$ / $$ipv6$$ / $$value.no-netmask$$ / $$netmask$$ / $$netmask.blank32$$',
     'ci' => array(
         'fString' => '(%PROP% /n-/)',
         'input' => 'input/panorama-8.0.xml'
@@ -555,13 +579,13 @@ RQuery::$defaultFilters['address']['location']['operators']['is.child.of'] = arr
         $DG = $sub->findDeviceGroup($context->value);
         if( $DG == null )
         {
-            print "ERROR: location '$context->value' was not found. Here is a list of available ones:\n";
-            print " - shared\n";
+            PH::print_stdout( "ERROR: location '$context->value' was not found. Here is a list of available ones:");
+            PH::print_stdout( " - shared");
             foreach( $sub->getDeviceGroups() as $sub1 )
             {
-                print " - " . $sub1->name() . "\n";
+                PH::print_stdout( " - " . $sub1->name() );
             }
-            print "\n\n";
+            PH::print_stdout("");
             exit(1);
         }
 
@@ -594,7 +618,10 @@ RQuery::$defaultFilters['address']['location']['operators']['is.parent.of'] = ar
             $sub = $sub->owner;
 
         if( get_class($sub) == "PANConf" )
-            derr("filter location is.parent.of is not working against a firewall configuration");
+        {
+            PH::print_stdout( "ERROR: filter location is.child.of is not working against a firewall configuration");
+            return FALSE;
+        }
 
         if( strtolower($context->value) == 'shared' )
             return TRUE;
@@ -602,13 +629,13 @@ RQuery::$defaultFilters['address']['location']['operators']['is.parent.of'] = ar
         $DG = $sub->findDeviceGroup($context->value);
         if( $DG == null )
         {
-            print "ERROR: location '$context->value' was not found. Here is a list of available ones:\n";
-            print " - shared\n";
+            PH::print_stdout( "ERROR: location '$context->value' was not found. Here is a list of available ones:");
+            PH::print_stdout( " - shared");
             foreach( $sub->getDeviceGroups() as $sub1 )
             {
-                print " - " . $sub1->name() . "\n";
+                PH::print_stdout( " - " . $sub1->name() );
             }
-            print "\n\n";
+            PH::print_stdout("");
             exit(1);
         }
 
@@ -658,7 +685,7 @@ RQuery::$defaultFilters['address']['reflocation']['operators']['is'] = array(
             $DG = $owner->findDeviceGroup($context->value);
             if( $DG == null )
             {
-                $test = new UTIL("custom", array(), "");
+                $test = new UTIL("custom", array(), 0, "");
                 $test->configType = "panorama";
                 $test->locationNotFound($context->value, null, $owner);
             }
@@ -690,7 +717,7 @@ RQuery::$defaultFilters['address']['reflocation']['operators']['is.only'] = arra
                 $DG = $owner->findDeviceGroup( $context->value );
                 if( $DG == null )
                 {
-                    $test = new UTIL( "custom", array(), "" );
+                    $test = new UTIL( "custom", array(), 0, "" );
                     $test->locationNotFound( $context->value, null, $owner );
                 }
         */
@@ -763,6 +790,78 @@ RQuery::$defaultFilters['address']['reftype']['operators']['is'] = array(
     'arg' => TRUE,
     'ci' => array(
         'fString' => '(%PROP% securityrule )',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['address']['refobjectname']['operators']['is'] = array(
+    'Function' => function (AddressRQueryContext $context) {
+        $object = $context->object;
+
+        $reference_array = $object->getReferences();
+
+        foreach( $reference_array as $refobject )
+        {
+            if( get_class( $refobject ) == "AddressGroup" && $refobject->name() == $context->value )
+                return TRUE;
+        }
+
+
+        return FALSE;
+    },
+    'arg' => TRUE,
+    'help' => 'returns TRUE if object name matches refobjectname',
+    'ci' => array(
+        'fString' => '(%PROP% shared )',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['address']['refobjectname']['operators']['is.only'] = array(
+    'Function' => function (AddressRQueryContext $context) {
+        $object = $context->object;
+        $owner = $context->object->owner->owner;
+
+        $reference_array = $object->getReferences();
+
+        $return = FALSE;
+        foreach( $reference_array as $refobject )
+        {
+            if( get_class( $refobject ) != "AddressGroup" )
+                $return = FALSE;
+
+            if( get_class( $refobject ) == "AddressGroup" && $refobject->name() == $context->value )
+                $return = TRUE;
+
+        }
+
+        return $return;
+
+    },
+    'arg' => TRUE,
+    'help' => 'returns TRUE if RUE if object name matches only refobjectname',
+    'ci' => array(
+        'fString' => '(%PROP% shared )',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['address']['refobjectname']['operators']['is.recursive'] = array(
+    'Function' => function (AddressRQueryContext $context) {
+        $object = $context->object;
+
+        $reference_array = $object->getReferencesRecursive();
+
+        foreach( $reference_array as $refobject )
+        {
+            if( get_class( $refobject ) == "AddressGroup" && $refobject->name() == $context->value )
+                return TRUE;
+        }
+
+
+        return FALSE;
+    },
+    'arg' => TRUE,
+    'help' => 'returns TRUE if object name matches refobjectname',
+    'ci' => array(
+        'fString' => '(%PROP% shared )',
         'input' => 'input/panorama-8.0.xml'
     )
 );
@@ -965,13 +1064,13 @@ RQuery::$defaultFilters['address']['value']['operators']['is.included-in.name'] 
     {
         $object = $context->object;
 
-        if( $object->isTmpAddr() || $object->isGroup()  )
+        if( $object->isGroup()  )
         {
             return null;
         }
 
 
-        if( $object->isType_ipNetmask() || $object->isType_ipRange() || $object->isType_FQDN() )
+        if( $object->isType_ipNetmask() || $object->isType_ipRange() || $object->isType_FQDN() || $object->isType_TMP() )
         {
             $name = $object->name();
             if(  $object->isType_ipRange())
@@ -980,13 +1079,21 @@ RQuery::$defaultFilters['address']['value']['operators']['is.included-in.name'] 
                 $addr_value = explode( '-', $addr_value);
                 $addr_value = $addr_value[0];
             }
-            elseif( $object->isType_FQDN() )
+            elseif( $object->isType_FQDN() || $object->isType_TMP() )
                 $addr_value = $object->value();
             else
                 $addr_value = $object->getNetworkValue();
 
-            if( strpos(strtolower($name), strtolower($addr_value) ) !== FALSE )
+            if( !empty( $addr_value ) && strpos(strtolower($name), strtolower($addr_value) ) !== FALSE )
+            {
+                $tmpPos = strpos( $name, $addr_value );
+                $tmpPos += strlen( $addr_value);
+                $substr = substr($name, $tmpPos, 1); //returns b
+                if( is_numeric( $substr ) )
+                    return FALSE;
+
                 return true;
+            }
         }
 
         return false;
@@ -1035,6 +1142,32 @@ RQuery::$defaultFilters['address']['value']['operators']['is.in.file'] = Array(
 
     },
     'arg' => true
+);
+RQuery::$defaultFilters['address']['value']['operators']['has.wrong.network'] = Array(
+    'Function' => function(AddressRQueryContext $context )
+    {
+        $object = $context->object;
+
+        if( $object->isGroup() )
+            return null;
+
+        if( !$object->isType_ipNetmask() )
+            return null;
+
+        $value = $object->getNetworkValue();
+        $netmask = $object->getNetworkMask();
+
+        if( $netmask == '32' )
+            return null;
+
+        $calc_network = CIDR::cidr2network( $value, $netmask );
+
+        if( $value != $calc_network )
+            return true;
+
+        return null;
+    },
+    'arg' => false
 );
 
 RQuery::$defaultFilters['address']['description']['operators']['regex'] = array(

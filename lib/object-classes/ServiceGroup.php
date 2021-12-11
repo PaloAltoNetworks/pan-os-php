@@ -1,10 +1,22 @@
 <?php
 
 /**
- * © 2019 Palo Alto Networks, Inc.  All rights reserved.
+ * ISC License
  *
- * Licensed under SCRIPT SOFTWARE AGREEMENT, Palo Alto Networks, Inc., at https://www.paloaltonetworks.com/legal/script-software-license-1-0.pdf
+ * Copyright (c) 2014-2018, Palo Alto Networks Inc.
+ * Copyright (c) 2019, Palo Alto Networks Inc.
  *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
 
@@ -293,9 +305,11 @@ class ServiceGroup
         if( $old === null )
             derr("\$old cannot be null");
 
-        if( in_array($old, $this->members, TRUE) )
+        $pos = array_search($old, $this->members, TRUE);
+
+        if( $pos !== FALSE )
         {
-            if( $new !== null )
+            if( $new !== null && !$this->has( $new->name() ) )
             {
                 $this->addMember($new, FALSE);
                 if( $old->name() == $new->name() )
@@ -324,9 +338,50 @@ class ServiceGroup
         return $ret;
     }
 
+    /**
+     * @param $obj Address|AddressGroup
+     * @return bool
+     */
+    public function has($obj, $caseSensitive = TRUE)
+    {
+        #return array_search($obj, $this->members, TRUE) !== FALSE;
+        if( is_string($obj) )
+        {
+            if( !$caseSensitive )
+                $obj = strtolower($obj);
+
+            foreach( $this->members as $o )
+            {
+                if( !$caseSensitive )
+                {
+                    if( $obj == strtolower($o->name()) )
+                    {
+                        return TRUE;
+                    }
+                }
+                else
+                {
+                    if( $obj == $o->name() )
+                        return TRUE;
+                }
+            }
+            return FALSE;
+        }
+
+        foreach( $this->members as $o )
+        {
+            if( $o === $obj )
+                return TRUE;
+        }
+
+        return FALSE;
+    }
 
     public function rewriteXML()
     {
+        if( !isset($this->owner->owner) )
+            return;
+
         if( $this->owner->owner->version >= 60 )
         {
             $membersRoot = DH::findFirstElement('members', $this->xmlroot);
@@ -458,9 +513,9 @@ class ServiceGroup
         $indent = str_pad(' ', $indent);
 
         if( !$toString )
-            print $indent . "Diff between " . $this->_PANC_shortName() . " vs " . $otherObject->_PANC_shortName() . "\n";
+            PH::print_stdout(  $indent . "Diff between " . $this->_PANC_shortName() . " vs " . $otherObject->_PANC_shortName() );
         else
-            $retString .= $indent . "Diff for between " . $this->_PANC_shortName() . " vs " . $otherObject->_PANC_shortName() . "\n";
+            $retString .= $indent . "Diff for between " . $this->_PANC_shortName() . " vs " . $otherObject->_PANC_shortName() ."\n" ;
 
         $lO = array();
         $oO = array();
@@ -484,7 +539,7 @@ class ServiceGroup
             foreach( $diff as $d )
             {
                 if( !$toString )
-                    print $indent . " - $d\n";
+                    PH::print_stdout(  $indent . " - $d" );
                 else
                     $retString .= $indent . " - $d\n";
             }
@@ -495,7 +550,7 @@ class ServiceGroup
             foreach( $diff as $d )
             {
                 if( !$toString )
-                    print $indent . " + $d\n";
+                    PH::print_stdout(  $indent . " + $d");
                 else
                     $retString .= $indent . " + $d\n";
             }
@@ -514,7 +569,7 @@ class ServiceGroup
 
         foreach( $this->members as $member )
         {
-            if( $member->isTmpSrv() )
+            if( $member->isTmpSrv() && $this->name() != 'service-http' && $this->name() != 'service-https' )
                 $mapping->unresolved[$member->name()] = $member;
             $localMapping = $member->dstPortMapping();
             $mapping->mergeWithMapping($localMapping);
@@ -645,7 +700,7 @@ class ServiceGroup
     }
 
 
-    public function replaceGroupbyService($padding = "")
+    public function replaceGroupbyService( $context )
     {
         #if( $context->isAPI )
         #    derr("action 'replaceGroupByService' is not support in API/online mode yet");
@@ -653,24 +708,28 @@ class ServiceGroup
 
         if( $this->isService() )
         {
-            print $padding . " *** SKIPPED : this is not a group\n";
+            $string = "this is not a group";
+            PH::ACTIONstatus($context, "SKIPPED", $string);
             return;
         }
         if( !$this->isGroup() )
         {
-            print $padding . " *** SKIPPED : unsupported object type\n";
+            $string = "unsupported object type";
+            PH::ACTIONstatus($context, "SKIPPED", $string);
             return;
         }
         if( $this->count() < 1 )
         {
-            print $padding . " *** SKIPPED : group has no member\n";
+            $string = "group has no member";
+            PH::ACTIONstatus($context, "SKIPPED", $string);
             return;
         }
 
         $mapping = $this->dstPortMapping();
         if( $mapping->hasTcpMappings() && $mapping->hasUdpMappings() )
         {
-            print $padding . " *** SKIPPED : group has a mix of UDP and TCP based mappings, they cannot be merged in a single object\n";
+            $string = "group has a mix of UDP and TCP based mappings, they cannot be merged in a single object";
+            PH::ACTIONstatus($context, "SKIPPED", $string);
             return;
         }
 
@@ -678,7 +737,8 @@ class ServiceGroup
         {
             if( $member->isTmpSrv() )
             {
-                print $padding . " *** SKIPPED : temporary services detected\n";
+                $string = "temporary services detected";
+                PH::ACTIONstatus($context, "SKIPPED", $string);
                 return;
             }
         }
@@ -696,19 +756,26 @@ class ServiceGroup
         $this->replaceMeGlobally($newService);
 
         if( $mapping->hasUdpMappings() )
-            print $padding . " * replaced by service with same name and value: udp/{$newService->dstPortMapping()->udpMappingToText()}\n";
+        {
+            $string = " * replaced by service with same name and value: udp/{$newService->dstPortMapping()->udpMappingToText()}";
+            PH::ACTIONlog($context, $string);
+        }
         else
-            print $padding . " * replaced by service with same name and value: tcp/{$newService->dstPortMapping()->tcpMappingToText()}\n";
+        {
+            $string = " * replaced by service with same name and value: tcp/{$newService->dstPortMapping()->tcpMappingToText()}";
+            PH::ACTIONlog($context, $string);
+        }
 
         return TRUE;
     }
 
 
-    public function replaceByMembersAndDelete($padding = "", $isAPI = FALSE, $rewriteXml = TRUE, $forceAny = FALSE)
+    public function replaceByMembersAndDelete($context, $isAPI = FALSE, $rewriteXml = TRUE, $forceAny = FALSE)
     {
         if( !$this->isGroup() )
         {
-            print $padding . "     *  skipped it's not a group\n";
+            $string = "it's not a group";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -722,7 +789,8 @@ class ServiceGroup
             if( $class != 'ServiceRuleContainer' && $class != 'ServiceGroup' )
             {
                 $clearForAction = FALSE;
-                print "     *  skipped because its used in unsupported class $class\n";
+                $string = "because its used in unsupported class $class";
+                PH::ACTIONstatus( $context, "SKIPPED", $string );
                 return;
             }
         }
@@ -735,10 +803,14 @@ class ServiceGroup
                 {
                     /** @var ServiceRuleContainer $thisRef */
 
-                    print $padding . "    - in Reference: {$thisRef->toString()}\n";
+                    $string = "    - in Reference: {$thisRef->toString()}";
+                    PH::ACTIONlog( $context, $string );
+
                     foreach( $this->members() as $thisMember )
                     {
-                        print $padding . "      - adding {$thisMember->name()}\n";
+                        $string = "      - adding {$thisMember->name()}";
+                        PH::ACTIONlog( $context, $string );
+
                         if( $isAPI )
                             $thisRef->API_add($thisMember, $rewriteXml);
                         else
@@ -753,10 +825,14 @@ class ServiceGroup
                 {
                     /** @var ServiceGroup $thisRef */
 
-                    print $padding . "    - in Reference: {$thisRef->toString()}\n";
+                    $string = "    - in Reference: {$thisRef->toString()}";
+                    PH::ACTIONlog( $context, $string );
+
                     foreach( $this->members() as $thisMember )
                     {
-                        print $padding . "      - adding {$thisMember->name()}\n";
+                        $string = "      - adding {$thisMember->name()}";
+                        PH::ACTIONlog( $context, $string );
+
                         if( $isAPI )
                             $thisRef->API_addMember($thisMember);
                         else

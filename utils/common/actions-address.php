@@ -1,9 +1,21 @@
 <?php
 /**
- * © 2019 Palo Alto Networks, Inc.  All rights reserved.
+ * ISC License
  *
- * Licensed under SCRIPT SOFTWARE AGREEMENT, Palo Alto Networks, Inc., at https://www.paloaltonetworks.com/legal/script-software-license-1-0.pdf
+ * Copyright (c) 2014-2018, Palo Alto Networks Inc.
+ * Copyright (c) 2019, Palo Alto Networks Inc.
  *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
 
@@ -14,7 +26,8 @@ AddressCallContext::$supportedActions[] = array(
 
         if( $object->countReferences() != 0 )
         {
-            print $context->padding . "  * SKIPPED: this object is used by other objects and cannot be deleted (use delete-Force to try anyway)\n";
+            $string = "this object is used by other objects and cannot be deleted (use delete-Force to try anyway)";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -32,7 +45,8 @@ AddressCallContext::$supportedActions[] = array(
 
         if( $object->countReferences() != 0 )
         {
-            print $context->padding . "  * WARNING : this object seems to be used so deletion may fail.\n";
+            $string = "this object seems to be used so deletion may fail.";
+            PH::ACTIONstatus( $context, "WARNING", $string );
         }
 
         if( $context->isAPI )
@@ -44,9 +58,6 @@ AddressCallContext::$supportedActions[] = array(
 
 AddressCallContext::$supportedActions[] = array(
     'name' => 'decommission',
-    'GlobalInitFunction' => function (AddressCallContext $context) {
-        $context->objecttodelete = array();
-    },
     'MainFunction' => function (AddressCallContext $context) {
         $object = $context->object;
 
@@ -78,26 +89,18 @@ AddressCallContext::$supportedActions[] = array(
 
         foreach( $list as $key => $item )
         {
-            if( $object->name() == $key )
+            if( $object->countReferences() != 0 )
             {
-                if( $object->countReferences() != 0 )
-                {
-                    print "delete all references: \n";
-                    print $object->display_references();
+                $string = "delete all references: " ;
+                PH::ACTIONlog( $context, $string );
+                $object->display_references();
 
-                    if( $context->isAPI )
-                        $object->API_removeWhereIamUsed(TRUE);
-                    else
-                        $object->removeWhereIamUsed(TRUE);
-                }
-                $context->objecttodelete[] = $object;
+                if( $context->isAPI )
+                    $object->API_removeWhereIamUsed(TRUE);
+                else
+                    $object->removeWhereIamUsed(TRUE);
             }
-        }
-    },
-    'GlobalFinishFunction' => function (AddressCallContext $context) {
-        print "\n\n" . PH::boldText("DELETE ADDRESS OBJECTS:") . "\n";
-        foreach( $context->objecttodelete as $object )
-        {
+
             //error handling enabled because of address object reference settings in :
             //- interfaces: ethernet/vlan/loopback/tunnel
             //- IKE gateway
@@ -105,19 +108,27 @@ AddressCallContext::$supportedActions[] = array(
             PH::enableExceptionSupport();
             try
             {
+                if( $object->owner != null )
+                {
+                    if( $context->isAPI )
+                        $object->owner->API_remove($object);
+                    else
+                        $object->owner->remove($object);
+                    $string = "finally delete address object: " . $object->name();
+                    PH::ACTIONlog( $context, $string );
+                }
 
-                if( $context->isAPI )
-                    $object->owner->API_remove($object);
-                else
-                    $object->owner->remove($object);
-                print "finally delete address object: " . $object->name() . "\n";
 
             } catch(Exception $e)
             {
                 PH::disableExceptionSupport();
-                print "\n\n " . PH::boldText("  ***** an error occured : ") . $e->getMessage() . "\n\n";
+                PH::print_stdout("" );
+                PH::print_stdout("" );
+                $string = PH::boldText("  ***** an error occured : ") . $e->getMessage();
+                PH::ACTIONlog( $context, $string );
 
-                print PH::boldText("address object: " . $object->name() . " can not be removed. Check error message above.\n");
+                $string = PH::boldText("address object: " . $object->name() . " can not be removed. Check error message above.");
+                PH::ACTIONlog( $context, $string );
 
                 return;
             }
@@ -135,7 +146,8 @@ AddressCallContext::$supportedActions[] = array(
 
         if( !$object->isTmpAddr() )
         {
-            echo $context->padding . "     *  SKIPPED because object is not temporary or not an IP address/netmask\n";
+            $string = "because object is not temporary or not an IP address/netmask";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -143,7 +155,8 @@ AddressCallContext::$supportedActions[] = array(
 
         if( !$object->nameIsValidRuleIPEntry() )
         {
-            echo $context->padding . "     *  SKIPPED because object is not an IP address/netmask or range\n";
+            $string = "because object is not an IP address/netmask or range";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -155,7 +168,8 @@ AddressCallContext::$supportedActions[] = array(
             if( $class != 'AddressRuleContainer' && $class != 'NatRule' )
             {
                 $clearForAction = FALSE;
-                echo $context->padding . "     *  SKIPPED because its used in unsupported class $class\n";
+                $string = "because its used in unsupported class $class";
+                PH::ACTIONstatus( $context, "SKIPPED", $string );
                 return;
             }
         }
@@ -179,13 +193,15 @@ AddressCallContext::$supportedActions[] = array(
 
             if( $mask > 32 || $mask < 0 )
             {
-                echo $context->padding . "    * SKIPPED because of invalid mask detected : '$mask'\n";
+                $string = "because of invalid mask detected : '$mask'";
+                PH::ACTIONstatus( $context, "SKIPPED", $string );
                 return;
             }
 
             if( filter_var($name, FILTER_VALIDATE_IP) === FALSE )
             {
-                echo $context->padding . "    * SKIPPED because of invalid IP detected : '$name'\n";
+                $string = "because of invalid IP detected : '$name'";
+                PH::ACTIONstatus( $context, "SKIPPED", $string );
                 return;
             }
 
@@ -205,7 +221,8 @@ AddressCallContext::$supportedActions[] = array(
             $newName = "R-" . $explode[0] . '-' . $explode[1];
         }
 
-        echo $context->padding . "    * new object name will be $newName\n";
+        $string = "new object name will be $newName";
+        PH::ACTIONlog( $context, $string );
 
         $objToReplace = $object->owner->find($newName);
         if( $objToReplace === null )
@@ -230,7 +247,8 @@ AddressCallContext::$supportedActions[] = array(
             $objMap = IP4Map::mapFromText($name . '/' . $mask);
             if( !$objMap->equals($objToReplace->getIP4Mapping()) )
             {
-                echo "    * SKIPPED because an object with same name exists but has different value\n";
+                $string = "because an object with same name exists but has different value";
+                PH::ACTIONstatus( $context, "SKIPPED", $string );
                 return;
             }
         }
@@ -245,14 +263,16 @@ AddressCallContext::$supportedActions[] = array(
                 if( $class == 'AddressRuleContainer' )
                 {
                     /** @var AddressRuleContainer $objectRef */
-                    echo $context->padding . "     - replacing in {$objectRef->toString()}\n";
+                    $string = "replacing in {$objectRef->toString()}";
+                    PH::ACTIONlog( $context, $string );
 
                     if( $objectRef->owner->isNatRule()
                         && $objectRef->name == 'snathosts'
                         && $objectRef->owner->sourceNatTypeIs_DIPP()
                         && $objectRef->owner->snatinterface !== null )
                     {
-                        echo $context->padding . "        -  SKIPPED because it's a SNAT with Interface IP address\n";
+                        $string = "because it's a SNAT with Interface IP address";
+                        PH::ACTIONstatus( $context, "SKIPPED", $string );
                         continue;
                     }
 
@@ -270,7 +290,8 @@ AddressCallContext::$supportedActions[] = array(
                 elseif( $class == 'NatRule' )
                 {
                     /** @var NatRule $objectRef */
-                    echo $context->padding . "     - replacing in {$objectRef->toString()}\n";
+                    $string = "replacing in {$objectRef->toString()}";
+                    PH::ACTIONlog( $context, $string );
 
                     if( $context->isAPI )
                         $objectRef->API_setDNAT($objToReplace, $objectRef->dnatports);
@@ -330,26 +351,30 @@ AddressCallContext::$supportedActions[] = array(
 
         if( !$object->isGroup() )
         {
-            echo $context->padding . "     *  SKIPPED because object is not an address group\n";
+            $string = "because object is not an address group";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
         $address0bjectToAdd = $object->owner->find($addressObjectName);
         if( $address0bjectToAdd === null )
         {
-            echo $context->padding . "     *  SKIPPED because address object name: " . $addressObjectName . " not found\n";
+            $string = "because address object name: " . $addressObjectName . " not found";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
         if( $object->has($address0bjectToAdd) )
         {
-            echo $context->padding . "     *  SKIPPED because address object is already a member of this address group\n";
+            $string = "because address object is already a member of this address group";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
         if( $address0bjectToAdd->isType_ipWildcard() )
         {
-            echo $context->padding . "     *  SKIPPED because wildcard address object can not be added as a member to a address group\n";
+            $string = "because wildcard address object can not be added as a member to a address group";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -377,7 +402,8 @@ AddressCallContext::$supportedActions[] = array(
 
         if( $object->name() == $addressGroupName )
         {
-            echo $context->padding . "     *  SKIPPED because address group can not added to itself\n";
+            $string = "because address group can not added to itself";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -389,12 +415,14 @@ AddressCallContext::$supportedActions[] = array(
             {
                 if( isset($object->owner->owner->childDeviceGroups(TRUE)[$objectlocation]) )
                 {
-                    echo $context->padding . "     *  SKIPPED because address object is configured in Child DeviceGroup\n";
+                    $string = "because address object is configured in Child DeviceGroup";
+                    PH::ACTIONstatus( $context, "SKIPPED", $string );
                     return;
                 }
                 if( !isset($object->owner->owner->parentDeviceGroups()[$deviceGroupName]) )
                 {
-                    echo $context->padding . "     *  SKIPPED because address object is configured at another child DeviceGroup at same level\n";
+                    $string = "because address object is configured at another child DeviceGroup at same level";
+                    PH::ACTIONstatus( $context, "SKIPPED", $string );
                     return;
                 }
 
@@ -412,19 +440,22 @@ AddressCallContext::$supportedActions[] = array(
 
         if( $addressGroupToAdd === null )
         {
-            echo $context->padding . "     *  SKIPPED because address group name: " . $addressGroupName . " not found\n";
+            $string = "because address group name: " . $addressGroupName . " not found";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
         if( $addressGroupToAdd->isDynamic() )
         {
-            echo $context->padding . "     *  SKIPPED because address group name: " . $addressGroupName . " is not static.\n";
+            $string = "because address group name: " . $addressGroupName . " is not static.";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
         if( $addressGroupToAdd->has($object) )
         {
-            echo $context->padding . "     *  SKIPPED because address object is already a member of this address group\n";
+            $string = "because address object is already a member of this address group";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -462,7 +493,8 @@ AddressCallContext::$supportedActions[] = array(
 
         foreach( $objectRefs as $objectRef )
         {
-            echo $context->padding . " * replacing in {$objectRef->toString()}\n";
+            $string = "replacing in {$objectRef->toString()}";
+            PH::ACTIONlog( $context, $string );
             if( $context->isAPI )
                 $objectRef->API_replaceReferencedObject($object, $foundObject);
             else
@@ -479,7 +511,8 @@ AddressCallContext::$supportedActions[] = array(
         $object = $context->object;
         if( $object->isTmpAddr() )
         {
-            echo $context->padding . "     *  SKIPPED because object is temporary\n";
+            $string = "because object is temporary";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         $objectFind = $object->tags->parentCentralStore->find($context->arguments['tagName']);
@@ -501,7 +534,8 @@ AddressCallContext::$supportedActions[] = array(
 
         if( $object->isTmpAddr() )
         {
-            echo $context->padding . "     *  SKIPPED because object is temporary\n";
+            $string = "because object is temporary";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -528,7 +562,8 @@ AddressCallContext::$supportedActions[] = array(
         $object = $context->object;
         if( $object->isTmpAddr() )
         {
-            echo $context->padding . "     *  SKIPPED because object is temporary\n";
+            $string = "because object is temporary";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -550,18 +585,20 @@ AddressCallContext::$supportedActions[] = array(
         $object = $context->object;
         if( $object->isTmpAddr() )
         {
-            echo $context->padding . "     *  SKIPPED because object is temporary\n";
+            $string = "because object is temporary";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
         foreach( $object->tags->tags() as $tag )
         {
-            echo $context->padding . "  - removing tag {$tag->name()}... ";
+            $text = $context->padding . "  - removing tag {$tag->name()}... ";
             if( $context->isAPI )
                 $object->tags->API_removeTag($tag);
             else
                 $object->tags->removeTag($tag);
-            echo "OK!\n";
+
+            PH::ACTIONlog( $context, $text );
         }
     },
     //'args' => Array( 'tagName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
@@ -573,7 +610,8 @@ AddressCallContext::$supportedActions[] = array(
         $object = $context->object;
         if( $object->isTmpAddr() )
         {
-            echo $context->padding . "     *  SKIPPED because object is temporary\n";
+            $string = "because object is temporary";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         $pattern = '/' . $context->arguments['regex'] . '/';
@@ -584,12 +622,13 @@ AddressCallContext::$supportedActions[] = array(
                 derr("'$pattern' is not a valid regex");
             if( $result == 1 )
             {
-                echo $context->padding . "  - removing tag {$tag->name()}... ";
+                $text = $context->padding . "  - removing tag {$tag->name()}... ";
                 if( $context->isAPI )
                     $object->tags->API_removeTag($tag);
                 else
                     $object->tags->removeTag($tag);
-                echo "OK!\n";
+
+                PH::ACTIONlog( $context, $text );
             }
         }
     },
@@ -602,12 +641,14 @@ AddressCallContext::$supportedActions[] = array(
 
         if( !$object->isGroup() )
         {
-            echo $context->padding . "    - SKIPPED because object is not a group\n";
+            $string = "because object is not a group";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         if( $object->isDynamic() )
         {
-            echo $context->padding . "    - SKIPPED because group is dynamic\n";
+            $string = "because group is dynamic";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -638,13 +679,14 @@ AddressCallContext::$supportedActions[] = array(
         {
             //Todo: swaschkut 20210421 - long2ip not working with IPv6 use cidr::inet_itop
             $objectName = 'R-' . long2ip($entry['start']) . '-' . long2ip($entry['start']);
-            $newObject = $object->owner->find($objectName);
+            $newObject = $object->owner->find($objectName, null, false);
             if( $newObject === null )
                 $newObject = $object->owner->newAddress($objectName, 'ip-range', long2ip($entry['start']) . '-' . long2ip($entry['start']));
             $object->addMember($newObject);
         }
 
-        echo $context->padding . "  - group had " . count($members) . " expanded members vs {$mapping->count()} IP4 entries and " . count($listOfNotConvertibleObjects) . " unsupported objects\n";
+        $string = "group had " . count($members) . " expanded members vs {$mapping->count()} IP4 entries and " . count($listOfNotConvertibleObjects) . " unsupported objects";
+        PH::ACTIONlog( $context, $string );
 
     },
 );
@@ -662,6 +704,9 @@ AddressCallContext::$supportedActions[] = array(
     'GlobalFinishFunction' => function (AddressCallContext $context) {
         $args = &$context->arguments;
         $filename = $args['filename'];
+
+        if( isset( $_SERVER['REQUEST_METHOD'] ) )
+            $filename = "project/html/".$filename;
 
         $addWhereUsed = FALSE;
         $addUsedInLocation = FALSE;
@@ -823,14 +868,14 @@ AddressCallContext::$supportedActions[] = array(
             }
         }
 
-        $content = file_get_contents(dirname(__FILE__) . '/html-export-template.html');
+        $content = file_get_contents(dirname(__FILE__) . '/html/export-template.html');
         $content = str_replace('%TableHeaders%', $headers, $content);
 
         $content = str_replace('%lines%', $lines, $content);
 
-        $jscontent = file_get_contents(dirname(__FILE__) . '/jquery-1.11.js');
+        $jscontent = file_get_contents(dirname(__FILE__) . '/html/jquery.min.js');
         $jscontent .= "\n";
-        $jscontent .= file_get_contents(dirname(__FILE__) . '/jquery.stickytableheaders.min.js');
+        $jscontent .= file_get_contents(dirname(__FILE__) . '/html/jquery.stickytableheaders.min.js');
         $jscontent .= "\n\$('table').stickyTableHeaders();\n";
 
         $content = str_replace('%JSCONTENT%', $jscontent, $content);
@@ -863,96 +908,32 @@ AddressCallContext::$supportedActions[] = array(
     'MainFunction' => function (AddressCallContext $context) {
         $object = $context->object;
 
-        $object->replaceByMembersAndDelete($context->padding, $context->isAPI);
-        /*
         if( !$object->isGroup() )
         {
-            echo $context->padding." - SKIPPED : it's not a group\n";
+            $string = "it's not a group";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
         if( $object->owner === null )
         {
-            echo $context->padding." -  SKIPPED : object was previously removed\n";
+            $string = "object was previously removed";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
-        $objectRefs = $object->getReferences();
-        $clearForAction = true;
-        foreach( $objectRefs as $objectRef )
-        {
-            $class = get_class($objectRef);
-            if( $class != 'AddressRuleContainer' && $class != 'AddressGroup' )
-            {
-                $clearForAction = false;
-                echo "- SKIPPED : it's used in unsupported class $class\n";
-                return;
-            }
-        }
-        if( $clearForAction )
-        {
-            foreach( $objectRefs as $objectRef )
-            {
-                $class = get_class($objectRef);
-                /** @var AddressRuleContainer|AddressGroup $objectRef */
-        /*
-                        if( $objectRef->owner === null )
-                        {
-                            echo $context->padding."  - SKIPPED because object already removed ({$objectRef->toString()})\n";
-                            continue;
-                        }
-
-                        echo $context->padding."  - adding members in {$objectRef->toString()}\n";
-
-                        if( $class == 'AddressRuleContainer' )
-                        {
-                            /** @var AddressRuleContainer $objectRef */
-        /*
-                            foreach( $object->members() as $objectMember )
-                            {
-                                if( $context->isAPI )
-                                    $objectRef->API_add($objectMember);
-                                else
-                                    $objectRef->addObject($objectMember);
-
-                                echo $context->padding."     -> {$objectMember->toString()}\n";
-                            }
-                            if( $context->isAPI )
-                                $objectRef->API_remove($object);
-                            else
-                                $objectRef->remove($object);
-                        }
-                        elseif( $class == 'AddressGroup')
-                        {
-                            /** @var AddressGroup $objectRef */
-        /*
-                            foreach( $object->members() as $objectMember )
-                            {
-                                if( $context->isAPI )
-                                    $objectRef->API_addMember($objectMember);
-                                else
-                                    $objectRef->addMember($objectMember);
-                                echo $context->padding."     -> {$objectMember->toString()}\n";
-                            }
-                            if( $context->isAPI )
-                                $objectRef->API_removeMember($object);
-                            else
-                                $objectRef->removeMember($object);
-                        }
-                        else
-                        {
-                            derr('unsupported class');
-                        }
-
-                    }
-
-                    if( $context->isAPI )
-                        $object->owner->API_remove($object, true);
-                    else
-                        $object->owner->remove($object, true);
-                }
-                */
+        $object->replaceByMembersAndDelete($context, $context->isAPI);
     },
+    'args' => array(
+        'keepgroupname' => array(
+            'type' => 'string',
+            'default' => '*nodefault*',
+            'choices' => array('tag', 'description'),
+            'help' =>
+                "- replaceByMembersAndDelete:tag -> create Tag with name from AddressGroup name and add to the object\n" .
+                "- replaceByMembersAndDelete:description -> create Tag with name from AddressGroup name and add to the object\n"
+        )
+    )
 );
 
 AddressCallContext::$supportedActions[] = array(
@@ -962,12 +943,14 @@ AddressCallContext::$supportedActions[] = array(
 
         if( $object->isTmpAddr() )
         {
-            echo $context->padding . " *** SKIPPED : not applicable to TMP objects\n";
+            $string = "not applicable to TMP objects";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         if( $object->isGroup() )
         {
-            echo $context->padding . " *** SKIPPED : not applicable to Group objects\n";
+            $string = "not applicable to Group objects";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -994,7 +977,8 @@ AddressCallContext::$supportedActions[] = array(
         {
             if( !$object->isType_ipNetmask() )
             {
-                echo $context->padding . " *** SKIPPED : 'netmask' alias is not compatible with this type of objects\n";
+                $string = "'netmask' alias is not compatible with this type of objects";
+                PH::ACTIONstatus( $context, "SKIPPED", $string );
                 return;
             }
             $replace = $object->getNetworkMask();
@@ -1005,7 +989,8 @@ AddressCallContext::$supportedActions[] = array(
         {
             if( !$object->isType_ipNetmask() )
             {
-                echo $context->padding . " *** SKIPPED : 'netmask' alias is not compatible with this type of objects\n";
+                $string = "'netmask' alias is not compatible with this type of objects";
+                PH::ACTIONstatus( $context, "SKIPPED", $string );
                 return;
             }
 
@@ -1020,12 +1005,14 @@ AddressCallContext::$supportedActions[] = array(
         {
             if( !$object->isType_ipNetmask() )
             {
-                echo $context->padding . " *** SKIPPED : 'reverse-dns' alias is compatible with ip-netmask type objects\n";
+                $string = "'reverse-dns' alias is compatible with ip-netmask type objects";
+                PH::ACTIONstatus( $context, "SKIPPED", $string );
                 return;
             }
             if( $object->getNetworkMask() != 32 )
             {
-                echo $context->padding . " *** SKIPPED : 'reverse-dns' actions only works on /32 addresses\n";
+                $string = "'reverse-dns' actions only works on /32 addresses";
+                PH::ACTIONstatus( $context, "SKIPPED", $string );
                 return;
             }
 
@@ -1034,7 +1021,8 @@ AddressCallContext::$supportedActions[] = array(
 
             if( $ip == $reverseDns )
             {
-                echo $context->padding . " *** SKIPPED : 'reverse-dns' could not be resolved\n";
+                $string = "'reverse-dns' could not be resolved";
+                PH::ACTIONstatus( $context, "SKIPPED", $string );
                 return;
             }
 
@@ -1044,26 +1032,30 @@ AddressCallContext::$supportedActions[] = array(
 
         if( $object->name() == $newName )
         {
-            echo $context->padding . " *** SKIPPED : new name and old name are the same\n";
+            $string = "new name and old name are the same";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
-        echo $context->padding . " - new name will be '{$newName}'\n";
+        $string = "new name will be '{$newName}'";
+        PH::ACTIONlog( $context, $string );
 
-        $findObject = $object->owner->find($newName);
+        $findObject = $object->owner->find($newName, null, false);
         if( $findObject !== null )
         {
-            echo $context->padding . " *** SKIPPED : an object with same name already exists\n";
+            $string = "an object with same name already exists";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         else
         {
-            echo $context->padding . " - renaming object... ";
+            $text = $context->padding . " - renaming object... ";
             if( $context->isAPI )
                 $object->API_setName($newName);
             else
                 $object->setName($newName);
-            echo "OK!\n";
+
+            PH::ACTIONlog( $context, $text );
         }
 
     },
@@ -1089,7 +1081,8 @@ AddressCallContext::$supportedActions[] = array(
 
         if( $object->isTmpAddr() )
         {
-            echo $context->padding . " *** SKIPPED : not applicable to TMP objects\n";
+            $string = "not applicable to TMP objects";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -1102,26 +1095,30 @@ AddressCallContext::$supportedActions[] = array(
 
         if( $object->name() == $newName )
         {
-            echo $context->padding . " *** SKIPPED : new name and old name are the same\n";
+            $string = "new name and old name are the same";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
-        echo $context->padding . " - new name will be '{$newName}'\n";
+        $string = "new name will be '{$newName}'";
+        PH::ACTIONlog( $context, $string );
 
-        $findObject = $object->owner->find($newName);
+        $findObject = $object->owner->find($newName, null, false);
         if( $findObject !== null )
         {
-            echo $context->padding . " *** SKIPPED : an object with same name already exists\n";
+            $string = "an object with same name already exists";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         else
         {
-            echo $context->padding . " - renaming object... ";
+            $text = $context->padding . " - renaming object... ";
             if( $context->isAPI )
                 $object->API_setName($newName);
             else
                 $object->setName($newName);
-            echo "OK!\n";
+
+            PH::ACTIONlog( $context, $text );
         }
 
     },
@@ -1139,22 +1136,27 @@ AddressCallContext::$supportedActions[] = array(
 
         if( $object->isTmpAddr() )
         {
-            echo $context->padding . " *** SKIPPED : not applicable to TMP objects\n";
+            $string = "not applicable to TMP objects";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
         $newName = $context->arguments['prefix'] . $object->name();
-        echo $context->padding . " - new name will be '{$newName}'\n";
+        $string = "new name will be '{$newName}'";
+        PH::ACTIONlog( $context, $string );
+
         if( strlen($newName) > 63 )
         {
-            echo $context->padding . " *** SKIPPED : resulting name is too long\n";
+            $string = "resulting name is too long";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
 
-        if( $object->owner->find($newName) !== null )
+        if( $object->owner->find($newName, null, false ) !== null )
         {
-            echo $context->padding . " *** SKIPPED : an object with same name already exists\n";
+            $string = "an object with same name already exists";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         if( $context->isAPI )
@@ -1172,22 +1174,27 @@ AddressCallContext::$supportedActions[] = array(
 
         if( $object->isTmpAddr() )
         {
-            echo $context->padding . " *** SKIPPED : not applicable to TMP objects\n";
+            $string = "not applicable to TMP objects";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
         $newName = $object->name() . $context->arguments['suffix'];
-        echo $context->padding . " - new name will be '{$newName}'\n";
+        $string = "new name will be '{$newName}'";
+        PH::ACTIONlog( $context, $string );
+
         if( strlen($newName) > 63 )
         {
-            echo $context->padding . " *** SKIPPED : resulting name is too long\n";
+            $string = "resulting name is too long";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
 
-        if( $object->owner->find($newName) !== null )
+        if( $object->owner->find($newName, null, false ) !== null )
         {
-            echo $context->padding . " *** SKIPPED : an object with same name already exists\n";
+            $string = "an object with same name already exists";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         if( $context->isAPI )
@@ -1205,7 +1212,8 @@ AddressCallContext::$supportedActions[] = array(
 
         if( $object->isTmpAddr() )
         {
-            echo $context->padding . " *** SKIPPED : not applicable to TMP objects\n";
+            $string = "not applicable to TMP objects";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -1213,24 +1221,28 @@ AddressCallContext::$supportedActions[] = array(
 
         if( strpos($object->name(), $prefix) !== 0 )
         {
-            echo $context->padding . " *** SKIPPED : prefix not found\n";
+            $string = "prefix not found";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         $newName = substr($object->name(), strlen($prefix));
 
         if( !preg_match("/^[a-zA-Z0-9]/", $newName[0]) )
         {
-            echo $context->padding . " *** SKIPPED : object name contains not allowed character at the beginning\n";
+            $string = "object name contains not allowed character at the beginning";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
-        echo $context->padding . " - new name will be '{$newName}'\n";
+        $string = "new name will be '{$newName}'";
+        PH::ACTIONlog( $context, $string );
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
 
-        if( $object->owner->find($newName) !== null )
+        if( $object->owner->find($newName , null, false ) !== null )
         {
-            echo $context->padding . " *** SKIPPED : an object with same name already exists\n";
+            $string = "an object with same name already exists";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         if( $context->isAPI )
@@ -1248,7 +1260,8 @@ AddressCallContext::$supportedActions[] = array(
 
         if( $object->isTmpAddr() )
         {
-            echo $context->padding . " *** SKIPPED : not applicable to TMP objects\n";
+            $string = "not applicable to TMP objects";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -1257,18 +1270,21 @@ AddressCallContext::$supportedActions[] = array(
 
         if( substr($object->name(), $suffixStartIndex, strlen($object->name())) != $suffix )
         {
-            echo $context->padding . " *** SKIPPED : suffix not found\n";
+            $string = "suffix not found";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         $newName = substr($object->name(), 0, $suffixStartIndex);
 
-        echo $context->padding . " - new name will be '{$newName}'\n";
+        $string = "new name will be '{$newName}'";
+        PH::ACTIONlog( $context, $string );
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
 
-        if( $object->owner->find($newName) !== null )
+        if( $object->owner->find($newName, null, false ) !== null )
         {
-            echo $context->padding . " *** SKIPPED : an object with same name already exists\n";
+            $string = "an object with same name already exists";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         if( $context->isAPI )
@@ -1287,7 +1303,8 @@ AddressCallContext::$supportedActions[] = array(
 
         if( $object->isTmpAddr() )
         {
-            echo $context->padding . " * SKIPPED this is a temporary object\n";
+            $string = "this is a temporary object";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -1301,7 +1318,8 @@ AddressCallContext::$supportedActions[] = array(
 
         if( $localLocation == $targetLocation )
         {
-            echo $context->padding . " * SKIPPED because original and target destinations are the same: $targetLocation\n";
+            $string = "because original and target destinations are the same: $targetLocation";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -1339,7 +1357,8 @@ AddressCallContext::$supportedActions[] = array(
 
                     if( $skipped )
                     {
-                        echo $context->padding . "   * SKIPPED : moving from SHARED to sub-level is NOT possible because of references on higher DG level\n";
+                        $string = "moving from SHARED to sub-level is NOT possible because of references on higher DG level";
+                        PH::ACTIONstatus( $context, "SKIPPED", $string );
                         return;
                     }
                 }
@@ -1350,12 +1369,11 @@ AddressCallContext::$supportedActions[] = array(
         {
             if( $context->baseObject->isFirewall() )
             {
-                echo $context->padding . "   * SKIPPED : moving between VSYS is not supported\n";
+                $string = "moving between VSYS is not supported";
+                PH::ACTIONstatus( $context, "SKIPPED", $string );
                 return;
             }
 
-            #echo $context->padding."   * SKIPPED : moving between 2 VSYS/DG is not supported yet\n";
-            #return;
 
             foreach( $object->getReferences() as $ref )
             {
@@ -1372,7 +1390,8 @@ AddressCallContext::$supportedActions[] = array(
 
                     if( $skipped )
                     {
-                        echo $context->padding . "   * SKIPPED : moving between 2 VSYS/DG is not possible because of references on higher DG level\n";
+                        $string = "moving between 2 VSYS/DG is not possible because of references on higher DG level";
+                        PH::ACTIONstatus( $context, "SKIPPED", $string );
                         return;
                     }
                 }
@@ -1385,14 +1404,17 @@ AddressCallContext::$supportedActions[] = array(
             if( $object->isGroup() && !$object->isDynamic() )
             {
                 foreach( $object->members() as $memberObject )
-                    if( $targetStore->find($memberObject->name()) === null )
+                    if( $targetStore->find($memberObject->name(), null, false ) === null )
                     {
-                        echo $context->padding . "   * SKIPPED : this group has an object named '{$memberObject->name()} that does not exist in target location '{$targetLocation}'\n";
+                        $string = "this group has an object named '{$memberObject->name()} that does not exist in target location '{$targetLocation}'";
+                        PH::ACTIONstatus( $context, "SKIPPED", $string );
                         return;
                     }
             }
 
-            echo $context->padding . "   * moved, no conflict\n";
+            $string = "moved, no conflict";
+            PH::ACTIONlog( $context, $string );
+
             if( $context->isAPI )
             {
                 $oldXpath = $object->getXPath();
@@ -1411,25 +1433,29 @@ AddressCallContext::$supportedActions[] = array(
 
         if( $context->arguments['mode'] == 'skipifconflict' )
         {
-            echo $context->padding . "   * SKIPPED : there is an object with same name. Choose another mode to resolve this conflict\n";
+            $string = "there is an object with same name. Choose another mode to resolve this conflict";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
-        echo $context->padding . "   - there is a conflict with an object of same name and type. Please use address-merger.php script with argument 'allowmergingwithupperlevel'";
+        $text = "there is a conflict with an object of same name and type. Please use address-merger.php script with argument 'allowmergingwithupperlevel'";
         if( $conflictObject->isGroup() )
-            echo " - Group\n";
+            $text .= " - Group";
         else
-            echo " - ".$conflictObject->type() . "\n";
+            $text .= " - ".$conflictObject->type();
+        PH::ACTIONlog( $context, $text );
 
         if( $conflictObject->isGroup() && !$object->isGroup() || !$conflictObject->isGroup() && $object->isGroup() )
         {
-            echo $context->padding . "   * SKIPPED because conflict has mismatching types\n";
+            $string = "because conflict has mismatching types";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
         if( $conflictObject->isTmpAddr() )
         {
-            echo $context->padding . "   * SKIPPED because the conflicting object is TMP| value: ".$conflictObject->value()."\n";
+            $string = "because the conflicting object is TMP| value: ".$conflictObject->value();
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             //normally the $object must be moved and the conflicting TMP object must be replaced by this $object
             return;
         }
@@ -1438,7 +1464,8 @@ AddressCallContext::$supportedActions[] = array(
         {
             if( $object->equals($conflictObject) )
             {
-                echo "    * Removed because target has same content\n";
+                $string = "Removed because target has same content";
+                PH::ACTIONlog( $context, $string );
 
                 $object->replaceMeGlobally($conflictObject);
                 if( $context->isAPI )
@@ -1453,7 +1480,8 @@ AddressCallContext::$supportedActions[] = array(
                 $object->displayValueDiff($conflictObject, 9);
                 if( $context->arguments['mode'] == 'removeifmatch' )
                 {
-                    echo $context->padding . "    * SKIPPED because of mismatching group content\n";
+                    $string = "because of mismatching group content";
+                    PH::ACTIONstatus( $context, "SKIPPED", $string );
                     return;
                 }
 
@@ -1462,11 +1490,13 @@ AddressCallContext::$supportedActions[] = array(
 
                 if( !$localMap->equals($targetMap) )
                 {
-                    echo $context->padding . "    * SKIPPED because of mismatching group content and numerical values\n";
+                    $string = "because of mismatching group content and numerical values";
+                    PH::ACTIONstatus( $context, "SKIPPED", $string );
                     return;
                 }
 
-                echo $context->padding . "    * Removed because it has same numerical value\n";
+                $string = "Removed because it has same numerical value";
+                PH::ACTIONlog( $context, $string );
 
                 $object->replaceMeGlobally($conflictObject);
                 if( $context->isAPI )
@@ -1481,7 +1511,9 @@ AddressCallContext::$supportedActions[] = array(
 
         if( $object->equals($conflictObject) )
         {
-            echo "    * Removed because target has same content\n";
+            $string = "Removed because target has same content";
+            PH::ACTIONlog( $context, $string );
+
             $object->replaceMeGlobally($conflictObject);
 
             if( $context->isAPI )
@@ -1494,7 +1526,9 @@ AddressCallContext::$supportedActions[] = array(
         {
             if( str_replace('/32', '', $conflictObject->value()) == str_replace('/32', '', $object->value()) )
             {
-                echo "    * Removed because target has same content\n";
+                $string = "Removed because target has same content";
+                PH::ACTIONlog( $context, $string );
+
                 $object->replaceMeGlobally($conflictObject);
 
                 if( $context->isAPI )
@@ -1513,11 +1547,13 @@ AddressCallContext::$supportedActions[] = array(
 
         if( !$localMap->equals($targetMap) )
         {
-            echo $context->padding . "    * SKIPPED because of mismatching content and numerical values\n";
+            $string = "because of mismatching content and numerical values";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
-        echo "    * Removed because target has same numerical value\n";
+        $string = "Removed because target has same numerical value";
+        PH::ACTIONlog( $context, $string );
 
         $object->replaceMeGlobally($conflictObject);
         if( $context->isAPI )
@@ -1541,15 +1577,18 @@ AddressCallContext::$supportedActions[] = array(
         if( $object->isGroup() )
         {
             $resolvMap = $object->getIP4Mapping();
-            echo $context->padding . "* {$resolvMap->count()} entries\n";
+            $string = "* {$resolvMap->count()} entries";
+            PH::ACTIONlog( $context, $string );
+
             foreach( $resolvMap->getMapArray() as &$resolvRecord )
             {
                 //Todo: swaschkut 20210421 - long2ip not working with IPv6 use cidr::inet_itop
-                echo $context->padding . " - " . str_pad(long2ip($resolvRecord['start']), 14) . " - " . long2ip($resolvRecord['end']) . "\n";
+                $string = str_pad(long2ip($resolvRecord['start']), 14) . " - " . long2ip($resolvRecord['end']);
+                PH::ACTIONlog( $context, $string );
             }
             /*foreach($resolvMap['unresolved'] as &$resolvRecord)
             {
-                echo "     * UNRESOLVED: {$resolvRecord->name()}\n";
+                PH::print_stdout( "     * UNRESOLVED: {$resolvRecord->name()}" );
             }*/
 
         }
@@ -1562,9 +1601,14 @@ AddressCallContext::$supportedActions[] = array(
                 $resolvMap = $object->getIP4Mapping()->getMapArray();
                 $resolvMap = reset($resolvMap);
                 //Todo: swaschkut 20210421 - long2ip not working with IPv6 use cidr::inet_itop
-                echo $context->padding . " - " . str_pad(long2ip($resolvMap['start']), 14) . " - " . long2ip($resolvMap['end']) . "\n";
+                $string = str_pad(long2ip($resolvMap['start']), 14) . " - " . long2ip($resolvMap['end']);
+                PH::ACTIONlog($context, $string);
             }
-            else echo $context->padding . " - UNSUPPORTED \n";
+            else
+            {
+                $string = "UNSUPPORTED";
+                PH::ACTIONlog( $context, $string );
+            }
         }
     }
 );
@@ -1584,6 +1628,8 @@ AddressCallContext::$supportedActions[] = array(
     'MainFunction' => function (AddressCallContext $context) {
         $object = $context->object;
 
+        PH::$JSON_TMP['sub']['object'][$object->name()]['name'] = $object->name();
+
         if( $object->isGroup() )
         {
             if( $object->isDynamic() )
@@ -1591,28 +1637,53 @@ AddressCallContext::$supportedActions[] = array(
                 $tag_string = "";
                 if( count($object->tags->tags()) > 0 )
                     $tag_string = "tag: '".$object->tags->toString_inline()."'";
-                PH::print_stdout( $context->padding . "* " . get_class($object) . " '{$object->name()}' (DYNAMIC)    desc: '{$object->description()}' $tag_string" );
+                PH::print_stdout( $context->padding . "* " . get_class($object) . " '{$object->name()}' (DYNAMIC)  ({$object->count()} members)  desc: '{$object->description()}' $tag_string filter: '{$object->filter}" );
+                PH::$JSON_TMP['sub']['object'][$object->name()]['type'] = get_class($object)." (DYNAMIC)";
+
+                PH::$JSON_TMP['sub']['object'][$object->name()]['tag'] = $tag_string;
+                PH::$JSON_TMP['sub']['object'][$object->name()]['filter'] = $object->filter;
             }
             else
             {
                 PH::print_stdout( $context->padding . "* " . get_class($object) . " '{$object->name()}' ({$object->count()} members)   desc: '{$object->description()}'" );
+                PH::$JSON_TMP['sub']['object'][$object->name()]['type'] = get_class($object);
+            }
 
-                foreach( $object->members() as $member )
+            PH::$JSON_TMP['sub']['object'][$object->name()]['memberscount'] = $object->count();
+            PH::$JSON_TMP['sub']['object'][$object->name()]['description'] = $object->description();
+
+            foreach( $object->members() as $member )
+            {
+                PH::$JSON_TMP['sub']['object'][$object->name()]['members'][$member->name()]['name'] = $member->name();
+                PH::$JSON_TMP['sub']['object'][$object->name()]['members'][$member->name()]['type'] = get_class( $member );
+
+                if( $member->isAddress() )
                 {
-                    if( $member->isAddress() )
-                        PH::print_stdout( "          - {$member->name()}  value: '{$member->value()}'" );
-                    else
-                        PH::print_stdout( "          - {$member->name()}" );
+                    PH::print_stdout( "          - {$member->name()}  value: '{$member->value()}'" );
+                    PH::$JSON_TMP['sub']['object'][$object->name()]['members'][$member->name()]['value'] = $member->value();
                 }
-
+                else
+                    PH::print_stdout( "          - {$member->name()}" );
             }
         }
-        else
+        elseif( $object->isAddress() )
         {
             $tag_string = "";
             if( count($object->tags->tags()) > 0 )
                 $tag_string = "tag: '".$object->tags->toString_inline()."'";
+
             PH::print_stdout( $context->padding . "* " . get_class($object) . " '{$object->name()}'  value: '{$object->value()}'  desc: '{$object->description()}' $tag_string" );
+            PH::$JSON_TMP['sub']['object'][$object->name()]['type'] = get_class($object);
+            PH::$JSON_TMP['sub']['object'][$object->name()]['value'] = $object->value();
+            PH::$JSON_TMP['sub']['object'][$object->name()]['tag'] = $tag_string;
+            PH::$JSON_TMP['sub']['object'][$object->name()]['description'] = $object->description();
+        }
+        elseif( $object->isRegion() )
+        {
+            PH::print_stdout( $context->padding . "* " . get_class($object) . " '{$object->name()}'  " );
+            PH::$JSON_TMP['sub']['object'][$object->name()]['type'] = get_class($object);
+            #PH::$JSON_TMP['sub']['object'][$object->name()]['value'] = $object->value();
+
         }
 
 
@@ -1628,7 +1699,8 @@ AddressCallContext::$supportedActions[] = array(
 
         if( $address->isTmpAddr() )
         {
-            echo $context->padding . " *** SKIPPED : object is tmp\n";
+            $string = "object is tmp";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -1656,18 +1728,19 @@ AddressCallContext::$supportedActions[] = array(
 
         if( strlen($description) + strlen($textToAppend) > $max_length )
         {
-            echo $context->padding . " *** SKIPPED : resulting description is too long\n";
+            $string = "resulting description is too long";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
-        echo $context->padding . " - new description will be: '{$description}{$textToAppend}' ... ";
+        $text = $context->padding . " - new description will be: '{$description}{$textToAppend}' ... ";
 
         if( $context->isAPI )
             $address->API_setDescription($description . $textToAppend);
         else
             $address->setDescription($description . $textToAppend);
-
-        echo "OK";
+        $text .= "OK";
+        PH::ACTIONlog( $context, $text );
     },
     'args' => array(
         'stringFormula' => array(
@@ -1688,23 +1761,24 @@ AddressCallContext::$supportedActions[] = array(
 
         if( $address->isTmpAddr() )
         {
-            echo $context->padding . " *** SKIPPED : object is tmp\n";
+            $string = "object is tmp";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         if( $description == "" )
         {
-            echo $context->padding . " *** SKIPPED : no description available\n";
+            $string = "no description available";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
-        echo $context->padding . " - new description will be: '' ... ";
-
+        $text = $context->padding . " - new description will be: '' ... ";
         if( $context->isAPI )
             $address->API_setDescription("");
         else
             $address->setDescription("");
-
-        echo "OK";
+        $text .= "OK";
+        PH::ACTIONlog( $context, $text );
     },
 );
 
@@ -1715,13 +1789,15 @@ AddressCallContext::$supportedActions[] = array(
 
         if( $address->isGroup() )
         {
-            echo $context->padding . " *** SKIPPED : object is of type GROUP\n";
+            $string = "object is of type GROUP";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
         if( !$address->isType_ipNetmask() )
         {
-            echo $context->padding . " *** SKIPPED : object is not IP netmask\n";
+            $string = "object is not IP netmask";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -1729,7 +1805,8 @@ AddressCallContext::$supportedActions[] = array(
 
         if( strpos($value, "/") !== FALSE )
         {
-            echo $context->padding . " *** SKIPPED : object: " . $address->name() . " with value: " . $value . " is not a host object.\n";
+            $string = "object: " . $address->name() . " with value: " . $value . " is not a host object.";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -1737,14 +1814,13 @@ AddressCallContext::$supportedActions[] = array(
         //
         $new_value = $value . "/32";
 
-        echo $context->padding . " - new value will be: '" . $new_value . "'\n";
-
+        $text = $context->padding . " - new value will be: '" . $new_value . "'";
         if( $context->isAPI )
             $address->API_editValue($new_value);
         else
             $address->setValue($new_value);
-
-        echo "OK";
+        $text .= "OK";
+        PH::ACTIONlog( $context, $text );
     }
 );
 
@@ -1756,17 +1832,20 @@ AddressCallContext::$supportedActions[] = array(
 
         if( $object->isGroup() )
         {
-            echo $context->padding . " *** SKIPPED : object is of type GROUP\n";
+            $string = "object is of type GROUP";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         if( !$object->isType_ipNetmask() )
         {
-            echo $context->padding . " *** SKIPPED : 'value-set-reverse-dns' alias is compatible with ip-netmask type objects\n";
+            $string = "'value-set-reverse-dns' alias is compatible with ip-netmask type objects";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         if( $object->getNetworkMask() != 32 )
         {
-            echo $context->padding . " *** SKIPPED : 'value-set-reverse-dns' actions only works on /32 addresses\n";
+            $string = "'value-set-reverse-dns' actions only works on /32 addresses";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -1775,18 +1854,20 @@ AddressCallContext::$supportedActions[] = array(
 
         if( $ip == $reverseDns )
         {
-            echo $context->padding . " *** SKIPPED : 'value-set-reverse-dns' could not be resolved\n";
+            $string = "'value-set-reverse-dns' could not be resolved";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
-        echo $context->padding . " - new value will be: '" . $reverseDns . " with type: fqdn'\n";
 
+        $text = $context->padding . " - new value will be: '" . $reverseDns . " with type: fqdn'";
         $object->setType( 'fqdn' );
         $object->setValue($reverseDns);
 
         if( $context->isAPI )
             $object->API_sync();
 
-        echo "OK";
+        $text .= "OK";
+        PH::ACTIONlog( $context, $text );
     }
 );
 
@@ -1797,12 +1878,14 @@ AddressCallContext::$supportedActions[] = array(
 
         if( $object->isGroup() )
         {
-            echo $context->padding . " *** SKIPPED : object is of type GROUP\n";
+            $string = "object is of type GROUP";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
         if( !$object->isType_FQDN() )
         {
-            echo $context->padding . " *** SKIPPED : object is NOT of type FQDN\n";
+            $string = "object is NOT of type FQDN";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -1812,16 +1895,17 @@ AddressCallContext::$supportedActions[] = array(
         $reverseDns = gethostbynamel($fqdn);
         if( count( $reverseDns ) == 0 )
         {
-            echo $context->padding . " *** SKIPPED : 'value-set-ip-for-fqdn' could not be resolved\n";
+            $string = "'value-set-ip-for-fqdn' could not be resolved";
             return;
         }
         elseif( count( $reverseDns ) > 1 )
         {
-            echo $context->padding . " *** SKIPPED : 'value-set-ip-for-fqdn' resolved more than one IP-Address [".implode(",",$reverseDns)."]\n";
+            $string = "'value-set-ip-for-fqdn' resolved more than one IP-Address [".implode(",",$reverseDns)."]";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
-        echo $context->padding . " - new value will be: '" . $reverseDns[0] . " with type: ip-netmask'\n";
+        $text = $context->padding . " - new value will be: '" . $reverseDns[0] . " with type: ip-netmask'";
 
         $object->setType( 'ip-netmask' );
         $object->setValue($reverseDns[0]);
@@ -1829,7 +1913,8 @@ AddressCallContext::$supportedActions[] = array(
         if( $context->isAPI )
             $object->API_sync();
 
-        echo "OK";
+        $text .= "OK";
+        PH::ACTIONlog( $context, $text );
     }
 );
 
@@ -1850,7 +1935,8 @@ AddressCallContext::$supportedActions[] = array(
             // if this group has more members than $largeGroupsCount then we must split it
             if( $membersCount > $largeGroupsCount )
             {
-                print "     AddressGroup named '" . $group->name() . "' with $membersCount members \n";
+                $string = "AddressGroup named '" . $group->name() . "' with $membersCount members";
+                PH::ACTIONlog( $context, $string );
 
                 // get member list in $members
                 $members = $group->members();
@@ -1876,7 +1962,8 @@ AddressCallContext::$supportedActions[] = array(
                             $newGroup = $group->owner->API_newAddressGroup($group->name() . '--' . ($i / $splitCount));
                         else
                             $newGroup = $group->owner->newAddressGroup($group->name() . '--' . ($i / $splitCount));
-                        print "      New AddressGroup object created with name: " . $newGroup->name() . "\n";
+                        $string = "New AddressGroup object created with name: " . $newGroup->name();
+                        PH::ACTIONlog( $context, $string );
 
                         // add this new sub-group to the original one. Don't rewrite XML for performance reasons.
                         if( $context->isAPI )
@@ -1907,15 +1994,23 @@ AddressCallContext::$supportedActions[] = array(
                 // Now we can rewrite XML
                 $group->rewriteXML();
 
-                print "     AddressGroup count after split: " . $group->count() . " \n";
-
-                print "\n";
+                $string = "AddressGroup count after split: " . $group->count();
+                PH::ACTIONlog( $context, $string );
+                PH::print_stdout("");
             }
             else
-                print "     * SKIP: ADDRESS GROUP members count is smaller as largeGroupsCount argument is set: " . $largeGroupsCount . " \n";
+            {
+
+                $string = "ADDRESS GROUP members count is smaller as largeGroupsCount argument is set: " . $largeGroupsCount;
+                PH::ACTIONstatus( $context, "SKIPPED", $string );
+            }
         }
         else
-            print "     * SKIP: address object is not a ADDRESS GROUP. \n";
+        {
+            $string = "address object is not a ADDRESS GROUP.";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+        }
+
 
     },
     'args' => array('largeGroupsCount' => array('type' => 'string', 'default' => '2490')
@@ -1929,19 +2024,22 @@ AddressCallContext::$supportedActions[] = array(
 
         if( $object->isTmpAddr() )
         {
-            echo $context->padding . "     *  SKIPPED because object is already tmp address\n";
+            $string = "because object is already tmp address";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
         if( $object->isGroup() )
         {
-            echo $context->padding . "     *  SKIPPED because object is address group\n";
+            $string = "because object is address group";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
         if( !$object->isType_ipRange() && !$object->isType_ipNetmask() && !$object->isAddress() )
         {
-            echo $context->padding . "     *  SKIPPED because object is not an IP address/netmask\n";
+            $string = "because object is not an IP address/netmask";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -1950,7 +2048,7 @@ AddressCallContext::$supportedActions[] = array(
         /*
         if( !$object->nameIsValidRuleIPEntry() )
         {
-            echo $context->padding . "     *  SKIPPED because object is not an IP address/netmask or range\n";
+            PH::print_stdout( $context->padding . "     *  SKIPPED because object is not an IP address/netmask or range" );
             return;
         }
         */
@@ -1963,7 +2061,8 @@ AddressCallContext::$supportedActions[] = array(
             if( $class != 'AddressRuleContainer' && $class != 'NatRule' )
             {
                 $clearForAction = FALSE;
-                echo $context->padding . "     *  SKIPPED because its used in unsupported class $class\n";
+                $string = "because its used in unsupported class $class";
+                PH::ACTIONstatus( $context, "SKIPPED", $string );
                 return;
             }
         }
@@ -1988,13 +2087,15 @@ AddressCallContext::$supportedActions[] = array(
 
             if( $mask > 32 || $mask < 0 )
             {
-                echo $context->padding . "    * SKIPPED because of invalid mask detected : '$mask'\n";
+                $string = "because of invalid mask detected : '$mask'";
+                PH::ACTIONstatus( $context, "SKIPPED", $string );
                 return;
             }
 
             if( filter_var($name, FILTER_VALIDATE_IP) === FALSE )
             {
-                echo $context->padding . "    * SKIPPED because of invalid IP detected : '$name'\n";
+                $string = "because of invalid IP detected : '$name'";
+                PH::ACTIONstatus( $context, "SKIPPED", $string );
                 return;
             }
 
@@ -2014,10 +2115,11 @@ AddressCallContext::$supportedActions[] = array(
             $newName = $explode[0] . '-' . $explode[1];
         }
 
-        echo $context->padding . "    * new object name will be $newName\n";
+        $string = "new object name will be $newName";
+        PH::ACTIONlog( $context, $string );
 
 
-        $objToReplace = $object->owner->find($newName);
+        $objToReplace = $object->owner->find($newName, null, false );
         if( $objToReplace === null )
         {
             if( $context->isAPI )
@@ -2043,7 +2145,8 @@ AddressCallContext::$supportedActions[] = array(
                 $objMap = IP4Map::mapFromText($name . '/' . $mask);
                 if( !$objMap->equals($objToReplace->getIP4Mapping()) )
                 {
-                    echo "    * SKIPPED because an object with same name exists but has different value\n";
+                    $string = "because an object with same name exists but has different value";
+                    PH::ACTIONstatus( $context, "SKIPPED", $string );
                     return;
                 }
             }
@@ -2060,14 +2163,16 @@ AddressCallContext::$supportedActions[] = array(
                 if( $class == 'AddressRuleContainer' )
                 {
                     /** @var AddressRuleContainer $objectRef */
-                    echo $context->padding . "     - replacing in {$objectRef->toString()}\n";
+                    $string = "replacing in {$objectRef->toString()}";
+                    PH::ACTIONlog( $context, $string );
 
                     if( $objectRef->owner->isNatRule()
                         && $objectRef->name == 'snathosts'
                         && $objectRef->owner->sourceNatTypeIs_DIPP()
                         && $objectRef->owner->snatinterface !== null )
                     {
-                        echo $context->padding . "        -  SKIPPED because it's a SNAT with Interface IP address\n";
+                        $string = "because it's a SNAT with Interface IP address";
+                        PH::ACTIONstatus( $context, "SKIPPED", $string );
                         continue;
                     }
 
@@ -2085,7 +2190,8 @@ AddressCallContext::$supportedActions[] = array(
                 elseif( $class == 'NatRule' )
                 {
                     /** @var NatRule $objectRef */
-                    echo $context->padding . "     - replacing in {$objectRef->toString()}\n";
+                    $string = "replacing in {$objectRef->toString()}";
+                    PH::ACTIONlog( $context, $string );
 
                     if( $context->isAPI )
                         $objectRef->API_setDNAT($objToReplace, $objectRef->dnatports);
@@ -2115,7 +2221,8 @@ AddressCallContext::$supportedActions[] = array(
 
         if( $object->isTmpAddr() )
         {
-            echo $context->padding . "     *  SKIPPED because object is temporary \n";
+            $string = "because object is temporary";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
 
@@ -2131,11 +2238,12 @@ AddressCallContext::$supportedActions[] = array(
             #if( $class != 'NatRule' )
             {
                 $clearForAction = FALSE;
-                echo $context->padding . "     *  SKIPPED it is not used in NAT rule\n";
+                $string = "it is not used in NAT rule";
+                PH::ACTIONstatus( $context, "SKIPPED", $string );
                 return;
             }
 
-            #print "name: ".$objectRef->name()."\n";
+            #PH::print_stdout( "name: ".$objectRef->name() );
 
 
             if( isset($objectRef->owner) && $objectRef->owner !== null )
@@ -2143,73 +2251,71 @@ AddressCallContext::$supportedActions[] = array(
                 $objRef_owner = $objectRef->owner;
                 $class = get_class($objRef_owner);
                 $class = strtolower($class);
-                #print "CLASS: ".$class."\n";
+                #PH::print_stdout( "CLASS: ".$class );
                 if( $class != "natrule" )
                 {
-                    echo $context->padding . "     *  SKIPPED it is not used in NAT rule\n";
+                    $string = "it is not used in NAT rule";
+                    PH::ACTIONstatus( $context, "SKIPPED", $string );
                     return;
                 }
 
-                print "\n";
+                PH::print_stdout( "" );
 
                 if( $objRef_owner->sourceNatIsEnabled() )
                 {
                     //SNAT
 
-                    print $context->padding . $objRef_owner->source->toString_inline()."";
-                    print " => ".$objRef_owner->snathosts->toString_inline()."";
-                    print "\n";
+                    $text = $context->padding . $objRef_owner->source->toString_inline()."";
+                    $text .= " => ".$objRef_owner->snathosts->toString_inline()."";
+                    PH::ACTIONlog( $context, $text );
 
+                    $text = "";
                     foreach( $objRef_owner->source->members() as $key =>$member )
                     {
                         if( $object === $member )
-                            print $context->padding . PH::boldText( $member->value() );
+                            $text .= $context->padding . PH::boldText( $member->value() );
                         else
-                            print $context->padding . $member->value();
+                            $text .= $context->padding . $member->value();
                     }
                     foreach( $objRef_owner->snathosts->members() as $key => $member )
                     {
-                        print " => ";
+                        $text .= " => ";
                         if( $object === $member )
-                            print PH::boldText( $member->value() );
+                            $text .= PH::boldText( $member->value() );
                         else
-                            print $member->value();
+                            $text .= $member->value();
                     }
 
 
                     if( $objRef_owner->isBiDirectional() )
                     {
                         //Bidir
-                        print $context->padding . "rule is bidir-NAT\n";
-                        print $context->padding . "name: ".$objRef_owner->name()."\n";
+                        $text .= $context->padding . "rule is bidir-NAT";
+                        $text .= $context->padding . "name: ".$objRef_owner->name();
                     }
+                    PH::ACTIONlog( $context, $text );
                 }
                 elseif( $objRef_owner->destinationNatIsEnabled() )
                 {
                     //DNAT
 
-                    print $context->padding . $objRef_owner->destination->toString_inline()."";
-                    print " => ".$objRef_owner->dnathost->name()."";
-                    print "\n";
+                    $text = $context->padding . $objRef_owner->destination->toString_inline()."";
+                    $text .= " => ".$objRef_owner->dnathost->name()."";
+                    PH::ACTIONlog( $context, $text );
 
+                    $text = "";
                     foreach( $objRef_owner->destination->members() as $key => $member )
                     {
                         if( $object === $member )
-                            print $context->padding . PH::boldText( $member->value() );
+                            $text .= $context->padding . PH::boldText( $member->value() );
                         else
-                            print $context->padding .  $member->value();
+                            $text .= $context->padding .  $member->value();
                     }
-                    print " => ";
-                    print $objRef_owner->dnathost->value()."\n";
+                    $text .= " => ";
+                    $text .= $objRef_owner->dnathost->value();
+                    PH::ACTIONlog( $context, $text );
                 }
-
             }
-
-
-
-
         }
-
-
     },
 );

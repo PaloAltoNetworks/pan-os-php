@@ -1,15 +1,27 @@
 <?php
 
 /**
- * © 2019 Palo Alto Networks, Inc.  All rights reserved.
+ * ISC License
  *
- * Licensed under SCRIPT SOFTWARE AGREEMENT, Palo Alto Networks, Inc., at https://www.paloaltonetworks.com/legal/script-software-license-1-0.pdf
+ * Copyright (c) 2014-2018, Palo Alto Networks Inc.
+ * Copyright (c) 2019, Palo Alto Networks Inc.
  *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
 /**
  * Class UrlCategoryRuleContainer
- * @property customURLProfileStore[]|URLProfileStore[] $o
+ * @property customURLProfile[]|URLProfile[] $o
  * @property Rule|SecurityRule $owner
  *
  */
@@ -31,7 +43,7 @@ class UrlCategoryRuleContainer extends ObjRuleContainer
 
 
     /**
-     * @param customURLProfileStore|URLProfileStore $Obj
+     * @param customURLProfile|URLProfile $Obj
      * @param bool $rewriteXml
      * @return bool
      */
@@ -49,7 +61,7 @@ class UrlCategoryRuleContainer extends ObjRuleContainer
     }
 
     /**
-     * @param customURLProfileStore|URLProfileStore $Obj
+     * @param customURLProfile|URLProfile $Obj
      * @param bool $rewritexml
      * @return bool
      */
@@ -72,7 +84,7 @@ class UrlCategoryRuleContainer extends ObjRuleContainer
 
 
     /**
-     * @param customURLProfileStore|URLProfileStore $Obj
+     * @param customURLProfile|URLProfile $Obj
      * @param bool $rewriteXml
      * @param bool $forceAny
      *
@@ -98,7 +110,7 @@ class UrlCategoryRuleContainer extends ObjRuleContainer
     }
 
     /**
-     * @param customURLProfileStore|URLProfileStore $Obj
+     * @param customURLProfile|URLProfile $Obj
      * @param bool $rewriteXml
      * @param bool $forceAny
      * @return bool
@@ -130,7 +142,7 @@ class UrlCategoryRuleContainer extends ObjRuleContainer
 
 
     /**
-     * @param customURLProfileStore|URLProfileStore|string $object can be customURLProfileStore|URLProfileStore object or object name (string)
+     * @param customURLProfile|URLProfile|string $object can be customURLProfileStore|URLProfileStore object or object name (string)
      * @return bool
      */
     public function has($object, $caseSensitive = TRUE)
@@ -141,7 +153,7 @@ class UrlCategoryRuleContainer extends ObjRuleContainer
 
     /**
      * return an array with all objects
-     * @return customURLProfileStore[]|URLProfileStore[]
+     * @return customURLProfile[]|URLProfile[]
      */
     public function members()
     {
@@ -150,7 +162,7 @@ class UrlCategoryRuleContainer extends ObjRuleContainer
 
     /**
      * return an array with all objects
-     * @return customURLProfileStore[]|URLProfileStore[]
+     * @return customURLProfile[]|URLProfile[]
      */
     public function all()
     {
@@ -163,7 +175,7 @@ class UrlCategoryRuleContainer extends ObjRuleContainer
      */
     public function load_from_domxml($xml)
     {
-        //print "started to extract '".$this->toString()."' from xml\n";
+        #PH::print_stdout( "started to extract '".$this->toString()."' from xml");
         $this->xmlroot = $xml;
         $i = 0;
         foreach( $xml->childNodes as $node )
@@ -219,7 +231,7 @@ class UrlCategoryRuleContainer extends ObjRuleContainer
                     $currentObject->owner->customURLProfileStore !== null )
                 {
                     $this->parentCentralStore = $currentObject->owner->customURLProfileStore;
-                    //print $this->toString()." : found a parent central store: ".$parentCentralStore->toString()."\n";
+                    //PH::print_stdout(  $this->toString()." : found a parent central store: ".$parentCentralStore->toString() );
                     return;
                 }
                 $currentObject = $currentObject->owner;
@@ -352,7 +364,7 @@ class UrlCategoryRuleContainer extends ObjRuleContainer
 
 
     /**
-     * @param customURLProfileStore|URLProfileStore
+     * @param customURLProfile|URLProfile
      * @param bool $anyIsAcceptable
      * @return bool
      */
@@ -456,7 +468,7 @@ class UrlCategoryRuleContainer extends ObjRuleContainer
     }
 
     /**
-     * @return customURLProfileStore[]|URLProfileStore[]
+     * @return customURLProfile[]|URLProfile[]
      */
     public function &membersExpanded($keepGroupsInList = FALSE)
     {
@@ -492,7 +504,7 @@ class UrlCategoryRuleContainer extends ObjRuleContainer
 
         if( $c == 0 )
         {
-            $ret = '*ANY*';
+            $ret = '**ANY**';
             return $ret;
         }
 

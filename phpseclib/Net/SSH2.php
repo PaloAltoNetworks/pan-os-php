@@ -15,8 +15,8 @@
  *        exit('Login Failed');
  *    }
  *
- *    echo $ssh->exec('pwd');
- *    echo $ssh->exec('ls -la');
+ *    print $ssh->exec('pwd');
+ *    print $ssh->exec('ls -la');
  * ?>
  * </code>
  *
@@ -34,9 +34,9 @@
  *        exit('Login Failed');
  *    }
  *
- *    echo $ssh->read('username@username:~$');
+ *    print $ssh->read('username@username:~$');
  *    $ssh->write("ls -la\n");
- *    echo $ssh->read('username@username:~$');
+ *    print $ssh->read('username@username:~$');
  * ?>
  * </code>
  *
@@ -2478,7 +2478,7 @@ class Net_SSH2
                         extract(unpack('Nlength', $this->_string_shift($response, 4)));
                         // prompt - ie. "Password: "; must not be empty
                         $prompt = $this->_string_shift($response, $length);
-                        //$echo = $this->_string_shift($response) != chr(0);
+                        //$print = $this->_string_shift($response) != chr(0);
                         foreach ($this->keyboard_requests_responses as $key => $value) {
                             if (substr($prompt, 0, strlen($key)) == $key) {
                                 $responses[] = $value;
@@ -4038,7 +4038,7 @@ class Net_SSH2
                         $start = '<pre>';
                         $stop = '</pre>';
                 }
-                echo $start . $this->_format_log(array($message), array($message_number)) . $stop;
+                print $start . $this->_format_log(array($message), array($message_number)) . $stop;
                 @flush();
                 @ob_flush();
                 break;

@@ -14,12 +14,12 @@ class SecurityProfileGroupStore extends ObjStore
     public $name = 'temporaryname';
 
     /** @var null|SecurityProfileGroupStore */
-    protected $parentCentralStore = null;
+    public $parentCentralStore = null;
 
     public static $childn = 'SecurityProfileGroup';
 
-    public $secprof_array = array('virus', 'spyware', 'vulnerability', 'file-blocking', 'wildfire-analysis', 'url-filtering');
-    public $secprof_store = array( 'AntiVirusProfileStore', 'AntiSpywareProfileStore', 'VulnerabilityProfileStore', 'FileBlockingProfileStore', 'WildfireProfileStore', 'URLProfileStore' );
+    public $secprof_array = array('virus', 'spyware', 'vulnerability', 'file-blocking', 'wildfire-analysis', 'url-filtering', 'data-filtering');
+    public $secprof_store = array( 'AntiVirusProfileStore', 'AntiSpywareProfileStore', 'VulnerabilityProfileStore', 'FileBlockingProfileStore', 'WildfireProfileStore', 'URLProfileStore', 'DataFilteringProfileStore' );
 
     private $secprof_fawkes_array = array('virusandwildfire-analysis', 'spyware', 'vulnerability', 'file-blocking', 'dns-security', 'url-filtering');
     private $secprof_fawkes_store = array( 'VirusAndWildfireProfileStore', 'AntiSpywareProfileStore', 'VulnerabilityProfileStore', 'FileBlockingProfileStore', 'DNSSecurityProfileStore', 'URLProfileStore' );
@@ -103,7 +103,7 @@ class SecurityProfileGroupStore extends ObjStore
      */
     public function find($name, $ref = null, $nested = TRUE)
     {
-        $f = $this->findByName($name, $ref);
+        $f = $this->findByName($name, $ref, $nested);
 
         if( $f !== null )
             return $f;
@@ -147,7 +147,7 @@ class SecurityProfileGroupStore extends ObjStore
         return md5( $str );
     }
 
-    public function createSecurityProfileGroup_based_Profile( $secProf_array )
+    public function createSecurityProfileGroup_based_Profile( $secProf_array, $secProfOBJ_array = array() )
     {
         $name = $this->findAvailableSecurityProfileGroupName( "secProfGroup"  );
 
@@ -163,6 +163,9 @@ class SecurityProfileGroupStore extends ObjStore
             $string .= "<".$key.">\n";
             $string .= "<member>".$secProf."</member>\n";
             $string .= "</".$key.">\n";
+
+            if( isset( $secProfOBJ_array[$secProf] ) )
+                $secProfOBJ_array[$secProf]->addReference( $tmp_secProfGroup );
         }
 
         $string .= "</entry>\n";
@@ -397,7 +400,7 @@ class SecurityProfileGroupStore extends ObjStore
         DH::clearDomNodeChilds($this->xmlroot);
         foreach( $this->o as $o )
         {
-            print "OBJ: ".$o->name()."\n";
+            #PH::print_stdout(  "OBJ: ".$o->name() );
             $this->xmlroot->appendChild($o->xmlroot);
         }
     }
@@ -419,7 +422,7 @@ class SecurityProfileGroupStore extends ObjStore
                 $ref->SecurityProfileGroupStore !== null )
             {
                 $this->parentCentralStore = $ref->SecurityProfileGroupStore;
-                //print $this->toString()." : found a parent central store: ".$parentCentralStore->toString()."\n";
+                //PH::print_stdout(  $this->toString()." : found a parent central store: ".$parentCentralStore->toString() );
                 return;
             }
             $cur = $ref;
@@ -431,7 +434,12 @@ class SecurityProfileGroupStore extends ObjStore
     {
         if( $this->xmlroot === null )
         {
-            $xml = DH::findFirstElementOrCreate('profile-group', $this->owner->xmlroot);
+            if( $this->owner->isPanorama() || $this->owner->isFirewall() )
+                $xml = $this->owner->sharedroot;
+            else
+                $xml = $this->owner->xmlroot;
+
+            $xml = DH::findFirstElementOrCreate('profile-group', $xml);
             $this->xmlroot = $xml;
         }
     }

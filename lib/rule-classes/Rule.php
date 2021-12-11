@@ -1,10 +1,22 @@
 <?php
 
 /**
- * © 2019 Palo Alto Networks, Inc.  All rights reserved.
+ * ISC License
  *
- * Licensed under SCRIPT SOFTWARE AGREEMENT, Palo Alto Networks, Inc., at https://www.paloaltonetworks.com/legal/script-software-license-1-0.pdf
+ * Copyright (c) 2014-2018, Palo Alto Networks Inc.
+ * Copyright (c) 2019, Palo Alto Networks Inc.
  *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
 class Rule
@@ -195,6 +207,15 @@ class Rule
                             mwarning('a target with empty serial number was found', $targetDevicesNodes);
                             continue;
                         }
+
+                        if( $this->owner->owner !== null && get_class( $this->owner->owner ) == "PanoramaConf" )
+                            $managedFirewall = $this->owner->owner->managedFirewallsStore->find($targetSerial);
+                        elseif( $this->owner->owner->owner !== null && get_class( $this->owner->owner->owner ) == "PanoramaConf" )
+                            $managedFirewall = $this->owner->owner->owner->managedFirewallsStore->find($targetSerial);
+
+                        if( $managedFirewall !== null )
+                            $managedFirewall->addReference( $this );
+
 
                         if( $this->_targets === null )
                             $this->_targets = array();
@@ -501,6 +522,13 @@ class Rule
         return $str;
     }
 
+    function target_Hash()
+    {
+        $string = $this->targets_toString().boolYesNo($this->target_isNegated());
+
+        return md5( $string );
+    }
+
     public function target_isAny()
     {
         return $this->_targets === null;
@@ -669,14 +697,14 @@ class Rule
         }
         else
         {
-            print "  PAN-OS version must be 9.0 or higher";
+            PH::print_stdout( "  PAN-OS version must be 9.0 or higher" );
         }
 
         return null;
     }
 
 
-    function zoneCalculation($fromOrTo, $mode = "append", $virtualRouter = "*autodetermine*", $template_name = "*notPanorama*", $vsys_name = "*notPanorama*")
+    function zoneCalculation($fromOrTo, $mode = "append", $virtualRouter = "*autodetermine*", $template_name = "*notPanorama*", $vsys_name = "*notPanorama*", $isAPI = FALSE )
     {
         //DEFAULT settings:
         $mode_default = "append";
@@ -687,9 +715,6 @@ class Rule
 
         $padding = '     ';
         $cachedIPmapping = array();
-
-        //check how the get information if e.g. connector is available
-        $isAPI = FALSE;
 
 
         ////////////////////////
@@ -759,9 +784,47 @@ class Rule
                     {
                         $panoramaConnector = findConnector($system);
                         $connector = new PanAPIConnector($panoramaConnector->apihost, $panoramaConnector->apikey, 'panos-via-panorama', $_tmp_explTemplateName[1]);
+                        $connector->setShowApiCalls( $panoramaConnector->showApiCalls );
+
                         $firewall->connector = $connector;
                         $doc = $connector->getMergedConfig();
                         $firewall->load_from_domxml($doc);
+
+                        //This is to get full routing table incl. dynamic routing for zone-calculation
+                        $cmd = "<show><routing><route><virtual-router>".$virtualRouter."</virtual-router></route></routing></show>";
+                        $res = $connector->sendOpRequest($cmd, TRUE);
+
+                        $res = DH::findFirstElement( "result", $res);
+                        $entries = $res->getElementsByTagName('entry');
+
+                        /** @var VirtualRouter $vr */
+                        $tmp_vr = $firewall->network->virtualRouterStore->findVirtualRouter( $virtualRouter );
+
+                        foreach( $entries as $key => $child )
+                        {
+                            $destination = DH::findFirstElement( "destination", $child)->textContent;
+                            $nexthop = DH::findFirstElement( "nexthop", $child)->textContent;
+                            $metric = DH::findFirstElement( "metric", $child)->textContent;
+                            $interface = DH::findFirstElement( "interface", $child)->textContent;
+                            $routeTable = DH::findFirstElement( "route-table", $child)->textContent;
+                            $flags = DH::findFirstElement( "flags", $child)->textContent;
+
+                            //skip e.g. multicast
+                            if( $routeTable != "unicast" )
+                                continue;
+
+                            //skip Host route - nexthop == 0.0.0.0 / no interface
+                            if( strpos( $flags, "H" ) !== FALSE )
+                                continue;
+
+                            $routename = "RouteAPI_" . $key;
+
+                            $newRoute = new StaticRoute('***tmp**', $tmp_vr);
+                            $tmpRoute = $newRoute->create_staticroute_from_variables( $routename, $destination, $nexthop, $metric, $interface );
+
+                            $tmp_vr->addstaticRoute($tmpRoute);
+                        }
+
                         unset($connector);
                     }
                     elseif( strtolower($_tmp_explTemplateName[0]) == 'file' )
@@ -786,7 +849,7 @@ class Rule
                     if( $deletedNodesCount === FALSE )
                         derr("xpath issue");
 
-                    //print "\n\n deleted $deletedNodesCount nodes \n\n";
+                    //PH::print_stdout( "\n\n deleted $deletedNodesCount nodes " );
 
                     $firewall->load_from_domxml($doc);
 
@@ -875,9 +938,9 @@ class Rule
                     }
                 }
 
-                print $padding . " - VSYS/DG '{$system->name()}' has interfaces attached to " . count($foundRouters) . " virtual routers\n";
+                PH::print_stdout( $padding . " - VSYS/DG '{$system->name()}' has interfaces attached to " . count($foundRouters) . " virtual routers" );
                 if( count($foundRouters) > 1 )
-                    derr("more than 1 suitable virtual routers found, please specify one fo the following: " . PH::list_to_string($foundRouters));
+                    derr("more than 1 suitable virtual routers found, please specify one of the following: " . PH::list_to_string($foundRouters));
                 if( count($foundRouters) == 0 )
                     derr("no suitable VirtualRouter found, please force one or check your configuration");
 
@@ -891,7 +954,7 @@ class Rule
 
         if( $addressContainer->isAny() && $this->isSecurityRule() )
         {
-            print $padding . " - SKIPPED : address container is ANY()\n";
+            PH::print_stdout( $padding . " - SKIPPED : address container is ANY()" );
             return;
         }
 
@@ -902,7 +965,7 @@ class Rule
 
         if( count($resolvedZones) == 0 )
         {
-            print $padding . " - WARNING : no zone resolved (FQDN? IPv6?)\n";
+            PH::print_stdout( $padding . " - WARNING : no zone resolved (FQDN? IPv6?)" );
             return;
         }
 
@@ -926,26 +989,26 @@ class Rule
         }
 
         if( count($common) > 0 )
-            print $padding . " - untouched zones: " . PH::list_to_string($common) . "\n";
+            PH::print_stdout( $padding . " - untouched zones: " . PH::list_to_string($common) . "" );
         if( count($minus) > 0 )
-            print $padding . " - missing zones: " . PH::list_to_string($minus) . "\n";
+            PH::print_stdout( $padding . " - missing zones: " . PH::list_to_string($minus) . "" );
         if( count($plus) > 0 )
-            print $padding . " - unneeded zones: " . PH::list_to_string($plus) . "\n";
+            PH::print_stdout( $padding . " - unneeded zones: " . PH::list_to_string($plus) . "" );
 
         if( $mode == 'replace' )
         {
-            print $padding . " - REPLACE MODE, syncing with (" . count($resolvedZones) . ") resolved zones.";
+            PH::print_stdout( $padding . " - REPLACE MODE, syncing with (" . count($resolvedZones) . ") resolved zones.");
             if( $addressContainer->isAny() )
-                echo $padding . " *** IGNORED because value is 'ANY' ***\n";
+                PH::print_stdout( $padding . " *** IGNORED because value is 'ANY' ***" );
             elseif( count($resolvedZones) == 0 )
-                echo $padding . " *** IGNORED because no zone was resolved ***\n";
+                PH::print_stdout( $padding . " *** IGNORED because no zone was resolved ***" );
             elseif( count($minus) == 0 && count($plus) == 0 )
             {
-                echo $padding . " *** IGNORED because there is no diff ***\n";
+                PH::print_stdout( $padding . " *** IGNORED because there is no diff ***" );
             }
             else
             {
-                print "\n";
+                PH::print_stdout( "" );
 
                 if( $this->isNatRule() && $fromOrTo == 'to' )
                 {
@@ -957,7 +1020,7 @@ class Rule
                             $newRule = $this->owner->cloneRule($this, $newRuleName);
                             $newRule->to->setAny();
                             $newRule->to->addZone($zoneStore->findOrCreate($zoneToAdd));
-                            echo $padding . " - cloned NAT rule with name '{$newRuleName}' and TO zone='{$zoneToAdd}'\n";
+                            PH::print_stdout( $padding . " - cloned NAT rule with name '{$newRuleName}' and TO zone='{$zoneToAdd}'" );
                             if( $isAPI )
                             {
                                 $newRule->API_sync();
@@ -976,7 +1039,7 @@ class Rule
                         {
                             $this->to->setAny();
                             $this->to->addZone($zoneStore->findOrCreate($zoneToAdd));
-                            echo $padding . " - changed original NAT 'TO' zone='{$zoneToAdd}'\n";
+                            PH::print_stdout( $padding . " - changed original NAT 'TO' zone='{$zoneToAdd}'" );
                             if( $isAPI )
                                 $this->to->API_sync();
                             $first = FALSE;
@@ -986,7 +1049,7 @@ class Rule
                         $newRule = $this->owner->cloneRule($this, $newRuleName);
                         $newRule->to->setAny();
                         $newRule->to->addZone($zoneStore->findOrCreate($zoneToAdd));
-                        echo $padding . " - cloned NAT rule with name '{$newRuleName}' and TO zone='{$zoneToAdd}'\n";
+                        PH::print_stdout( $padding . " - cloned NAT rule with name '{$newRuleName}' and TO zone='{$zoneToAdd}'" );
                         if( $isAPI )
                         {
                             $newRule->API_sync();
@@ -1008,7 +1071,7 @@ class Rule
         }
         elseif( $mode == 'append' )
         {
-            print $padding . " - APPEND MODE: adding missing (" . count($minus) . ") zones only.";
+            PH::print_stdout( $padding . " - APPEND MODE: adding missing (" . count($minus) . ") zones only.");
 
             if( $addressContainer->isAny() )
             {
@@ -1020,13 +1083,13 @@ class Rule
                     self::zoneCalculationNatClone( $allZones, $zoneStore, $padding, $isAPI );
                 }
                 else
-                    print " *** IGNORED because value is 'ANY' ***\n";
+                    PH::print_stdout( " *** IGNORED because value is 'ANY' ***" );
             }
             elseif( count($minus) == 0 )
-                print " *** IGNORED because no missing zones were found ***\n";
+                PH::print_stdout( " *** IGNORED because no missing zones were found ***" );
             else
             {
-                print "\n";
+                PH::print_stdout( "" );
 
                 if( $this->isNatRule() && $fromOrTo == 'to' )
                 {
@@ -1046,15 +1109,15 @@ class Rule
         }
         elseif( $mode == 'unneeded-tag-add' )
         {
-            print $padding . " - UNNEEDED-TAG-ADD MODE: adding rule tag for unneeded zones.";
+            PH::print_stdout( $padding . " - UNNEEDED-TAG-ADD MODE: adding rule tag for unneeded zones.");
 
             if( $addressContainer->isAny() )
-                print " *** IGNORED because value is 'ANY' ***\n";
+                PH::print_stdout( " *** IGNORED because value is 'ANY' ***" );
             elseif( count($plus) == 0 )
-                print " *** IGNORED because no unneeded zones were found ***\n";
+                PH::print_stdout( " *** IGNORED because no unneeded zones were found ***" );
             else
             {
-                print "\n";
+                PH::print_stdout( "" );
 
                 if( $this->isNatRule() && $fromOrTo == 'to' )
                 {
@@ -1084,7 +1147,7 @@ class Rule
             $newRule->to->setAny();
 
             $newRule->to->addZone($zoneStore->findOrCreate($zoneToAdd));
-            echo $padding . " - cloned NAT rule with name '{$newRuleName}' and TO zone='{$zoneToAdd}'\n";
+            PH::print_stdout( $padding . " - cloned NAT rule with name '{$newRuleName}' and TO zone='{$zoneToAdd}'" );
             if( $isAPI )
             {
                 $newRule->API_sync();
@@ -1096,9 +1159,197 @@ class Rule
 
         if( $this->to->isAny() )
         {
-            print " remove origin NAT rule as TO zone ANY is not allowed\n";
+            PH::print_stdout( " remove origin NAT rule as TO zone ANY is not allowed" );
             $this->owner->remove( $this );
         }
+    }
+
+    public function ruleUsageFast( $context, $hitType )
+    {
+        /** @var @var RuleRQueryContext $context */
+
+
+        $supported_hitType = array( 'hit-count', 'last-hit-timestamp' );
+        if( !in_array( $hitType, $supported_hitType ) )
+            derr( "supported hitType: ".implode( ", ", $supported_hitType ) );
+
+
+        $unused_flag = 'unused' . $this->ruleNature();
+        $rule_base = $this->ruleNature();
+
+        $sub = $this->owner->owner;
+        if( !$sub->isVirtualSystem() && !$sub->isDeviceGroup() )
+        {
+            PH::print_stdout( PH::boldText("   **WARNING**:") . "this filter is only supported on non Shared rules " . $this->toString() . "" );
+            return null;
+        }
+
+
+        $connector = findConnector($sub);
+
+        if( $connector === null )
+            derr("this filter is available only from API enabled PANConf objects");
+
+        if( !isset($sub->apiCache) )
+            $sub->apiCache = array();
+
+        // caching results for speed improvements
+        if( !isset($sub->apiCache[$unused_flag]) )
+        {
+            $sub->apiCache[$unused_flag] = array();
+
+            if( $this->owner->owner->version < 81 )
+                $apiCmd = '<show><running><rule-use><rule-base>' . $rule_base . '</rule-base><type>unused</type><vsys>' . $sub->name() . '</vsys></rule-use></running></show>';
+            else
+                $apiCmd = '<show><running><rule-use><highlight><rule-base>' . $rule_base . '</rule-base><type>unused</type><vsys>' . $sub->name() . '</vsys></highlight></rule-use></running></show>';
+
+
+            if( $sub->isVirtualSystem() )
+            {
+                PH::print_stdout( "Firewall: " . $connector->info_hostname . " (serial: '" . $connector->info_serial . "', PAN-OS: '" . $connector->info_PANOS_version . "') was rebooted '" . $connector->info_uptime . "' ago." );
+                $apiResult = $connector->sendCmdRequest($apiCmd);
+
+                $rulesXml = DH::findXPath('/result/rules/entry', $apiResult);
+                for( $i = 0; $i < $rulesXml->length; $i++ )
+                {
+                    $ruleName = $rulesXml->item($i)->textContent;
+                    $sub->apiCache[$unused_flag][$ruleName] = $ruleName;
+                }
+
+                if( $this->owner->owner->version >= 81 )
+                {
+                    self::ruleUsage81( $sub, null, $rule_base, $connector, $hitType, $unused_flag, $context );
+                }
+            }
+            else
+            {
+                $devices = $sub->getDevicesInGroup(TRUE);
+
+                $connectedDevices = $connector->panorama_getConnectedFirewallsSerials();
+                foreach( $devices as $id => $device )
+                {
+                    if( !isset($connectedDevices[$device['serial']]) )
+                    {
+                        unset($devices[$id]);
+                        PH::print_stdout( "\n  - firewall device with serial: " . $device['serial'] . " is not connected." );
+                    }
+                }
+
+                $firstLoop = TRUE;
+
+                foreach( $devices as $device )
+                {
+                    $newConnector = new PanAPIConnector($connector->apihost, $connector->apikey, 'panos-via-panorama', $device['serial']);
+                    $newConnector->setShowApiCalls($connector->showApiCalls);
+                    $newConnector->refreshSystemInfos();
+                    PH::print_stdout( "Firewall: " . $newConnector->info_hostname . " (serial: '" . $newConnector->info_serial . "', PAN-OS: '" . $newConnector->info_PANOS_version . "') was rebooted '" . $newConnector->info_uptime . "' ago." );
+                    $tmpCache = array();
+
+                    foreach( $device['vsyslist'] as $vsys )
+                    {
+                        if( $newConnector->info_PANOS_version_int < 81 )
+                            $apiCmd = '<show><running><rule-use><rule-base>' . $rule_base . '</rule-base><type>unused</type><vsys>' . $vsys . '</vsys></rule-use></running></show>';
+                        else
+                            $apiCmd = '<show><running><rule-use><highlight><rule-base>' . $rule_base . '</rule-base><type>unused</type><vsys>' . $vsys . '</vsys></highlight></rule-use></running></show>';
+
+                        $apiResult = $newConnector->sendCmdRequest($apiCmd);
+
+                        $rulesXml = DH::findXPath('/result/rules/entry', $apiResult);
+
+                        for( $i = 0; $i < $rulesXml->length; $i++ )
+                        {
+                            $ruleName = $rulesXml->item($i)->textContent;
+                            if( $firstLoop )
+                                $sub->apiCache[$unused_flag][$ruleName] = $ruleName;
+                            else
+                            {
+                                $tmpCache[$ruleName] = $ruleName;
+                            }
+                        }
+
+                        if( $newConnector->info_PANOS_version_int >= 81 )
+                        {
+                            self::ruleUsage81( $sub, $vsys, $rule_base, $connector, $hitType, $unused_flag, $context );
+                        }
+
+                        if( !$firstLoop )
+                        {
+                            foreach( $sub->apiCache[$unused_flag] as $unusedEntry )
+                            {
+                                if( !isset($tmpCache[$unusedEntry]) )
+                                    unset($sub->apiCache[$unused_flag][$unusedEntry]);
+                            }
+                        }
+
+                        $firstLoop = FALSE;
+                    }
+                }
+            }
+        }
+
+        if( isset($sub->apiCache[$unused_flag][$this->name()]) )
+            return TRUE;
+
+        return FALSE;
+    }
+
+    function ruleUsage81( &$sub, $vsys, $rule_base, $connector, $hitType, $unused_flag, $context )
+    {
+            if( $vsys !== null)
+                $name = $vsys;
+            else
+                $name = $sub->name();
+
+            $apiCmd2 = '<show><rule-hit-count><vsys><vsys-name><entry%20name="' . $name . '"><rule-base><entry%20name="' . $rule_base . '"><rules>';
+            $apiCmd2 .= '<all></all>';
+            $apiCmd2 .= '</rules></entry></rule-base></entry></vsys-name></vsys></rule-hit-count></show>';
+
+            PH::print_stdout( "additional check needed as PAN-OS >= 8.1.X" );
+
+            $apiResult = $connector->sendCmdRequest($apiCmd2);
+
+            $rulesXml = DH::findXPath('/result/rule-hit-count/vsys/entry/rule-base/entry/rules/entry', $apiResult);
+            for( $i = 0; $i < $rulesXml->length; $i++ )
+            {
+                $ruleName = $rulesXml->item($i)->getAttribute('name');
+
+                foreach( $rulesXml->item($i)->childNodes as $node )
+                {
+                    if( $node->nodeName == $hitType )
+                    {
+                        if( $hitType == "hit-count" )
+                        {
+                            $hitcount_value = $node->textContent;
+                            if( $hitcount_value == 0 )
+                            {
+                                //match, no unset
+                            }
+                            else
+                            {
+                                if( isset($sub->apiCache[$unused_flag][$ruleName]) )
+                                    unset($sub->apiCache[$unused_flag][$ruleName]);
+                            }
+                        }
+                        elseif( $hitType == "last-hit-timestamp" )
+                        {
+                            $timestamp_value = $node->textContent;
+                            $filter_timestamp = strtotime($context->value);
+                            $operator = $context->operator;
+
+                            $operator_string = $timestamp_value." ".$operator." ".$filter_timestamp;
+                            if( eval("return $operator_string;" ) )
+                            {
+                                //match, no unset
+                            }
+                            else
+                            {
+                                if( isset($sub->apiCache[$unused_flag][$ruleName]) )
+                                    unset($sub->apiCache[$unused_flag][$ruleName]);
+                            }
+                        }
+                    }
+                }
+            }
     }
 
     public function isPreRule()

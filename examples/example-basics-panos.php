@@ -2,14 +2,14 @@
 
 /*****************************************************************************
 *
-*	 This script is doing basic use PAN-PHP-FRAMEWORK API.
+*	 This script is doing basic use PAN-OS-PHP API.
 *		
 *	It will load a sample PANOS config and make some rules and object 
 *	editing.
 *
 *****************************************************************************/
 
-// load PAN-PHP-FRAMEWORK library
+// load PAN-OS-PHP library
 require_once("../lib/pan_php_framework.php");
 
 // input and output files
@@ -30,12 +30,16 @@ if( $vsys1 === null )
 	derr("vsys1 was not found ? Exit\n");
 }
 
-print "\n***********************************************\n\n";
+PH::print_stdout("" );
+PH::print_stdout("***********************************************" );
+PH::print_stdout("");
 
+PH::print_stdout("");
+PH::print_stdout("");
+PH::print_stdout( "************ Security Rules before changes  *********" );
+PH::print_stdout("");
 
-print "\n\n************ Security Rules before changes  *********\n\n";
-
-// $vsys1->securityRules is an object containing all VSYS1 rules. Here we call display() to print them in console.
+// $vsys1->securityRules is an object containing all VSYS1 rules. Here we call display() to display them in console.
 $vsys1->securityRules->display();
 
 // Here we look for a rule named 'Mail Server incoming mails'
@@ -93,13 +97,14 @@ $vsys1->natRules->find('rule3 - dynamic IP address')->snathosts->addObject($vsys
 
 
 
-
-print "\n\n************ Security Rules after changes  *********\n\n";
+PH::print_stdout("");
+PH::print_stdout("************ Security Rules after changes  *********" );
+PH::print_stdout("");
 
 $vsys1->securityRules->display();
 
-
-print "\n***********************************************\n";
+PH::print_stdout("");
+PH::print_stdout("***********************************************" );
 
 
 $pan->save_to_file($outputfile);

@@ -1,10 +1,22 @@
 <?php
 
 /**
- * © 2019 Palo Alto Networks, Inc.  All rights reserved.
+ * ISC License
  *
- * Licensed under SCRIPT SOFTWARE AGREEMENT, Palo Alto Networks, Inc., at https://www.paloaltonetworks.com/legal/script-software-license-1-0.pdf
+ * Copyright (c) 2014-2018, Palo Alto Networks Inc.
+ * Copyright (c) 2019, Palo Alto Networks Inc.
  *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
 /**
@@ -79,7 +91,7 @@ class IKEGateway
             {
                 $tmp_psk = DH::findFirstElement('pre-shared-key', $node);
                 if( $tmp_psk != null )
-                    $this->preSharedKey = DH::findFirstElementOrCreate('key', $tmp_psk)->textContent;
+                    $this->preSharedKey = DH::findFirstElement('key', $tmp_psk)->textContent;
             }
 
             if( $node->nodeName == 'local-address' )
@@ -167,25 +179,25 @@ class IKEGateway
 
             if( $node->nodeName == 'protocol-common' )
             {
-                $tmp_natT = DH::findFirstElementOrCreate('nat-traversal', $node);
+                $tmp_natT = DH::findFirstElement('nat-traversal', $node);
                 if( $tmp_natT != null )
-                    $this->natTraversal = DH::findFirstElementOrCreate('enable', $tmp_natT)->textContent;
+                    $this->natTraversal = DH::findFirstElement('enable', $tmp_natT)->textContent;
 
-                $tmp_frag = DH::findFirstElementOrCreate('fragmentation', $node);
+                $tmp_frag = DH::findFirstElement('fragmentation', $node);
                 if( $tmp_frag != null )
-                    $this->fragmentation = DH::findFirstElementOrCreate('enable', $tmp_frag)->textContent;
+                    $this->fragmentation = DH::findFirstElement('enable', $tmp_frag)->textContent;
             }
 
             if( $node->nodeName == 'local-id' )
             {
-                $this->localID = DH::findFirstElementOrCreate('id', $node)->textContent;
-                $this->localIDtype = DH::findFirstElementOrCreate('type', $node)->textContent;
+                $this->localID = DH::findFirstElement('id', $node)->textContent;
+                $this->localIDtype = DH::findFirstElement('type', $node)->textContent;
             }
 
             if( $node->nodeName == 'peer-id' )
             {
-                $this->peerID = DH::findFirstElementOrCreate('id', $node)->textContent;
-                $this->peerIDtype = DH::findFirstElementOrCreate('type', $node)->textContent;
+                $this->peerID = DH::findFirstElement('id', $node)->textContent;
+                $this->peerIDtype = DH::findFirstElement('type', $node)->textContent;
             }
 
 
@@ -309,7 +321,7 @@ class IKEGateway
                     $tmp_int_main = $this->owner->owner->network->findInterface($int_name);
                     if( !is_object($tmp_int_main) )
                     {
-                        print " - create interface: " . $int_name . "\n";
+                        PH::print_stdout(  " - create interface: " . $int_name );
                         $tmp_int_main = $this->owner->owner->network->ethernetIfStore->newEthernetIf($int_name, 'layer3');
                         #$v->importedInterfaces->addInterface( $tmp_int_main );
                     }

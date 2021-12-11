@@ -1,10 +1,22 @@
 <?php
 
 /**
- * © 2019 Palo Alto Networks, Inc.  All rights reserved.
+ * ISC License
  *
- * Licensed under SCRIPT SOFTWARE AGREEMENT, Palo Alto Networks, Inc., at https://www.paloaltonetworks.com/legal/script-software-license-1-0.pdf
+ * Copyright (c) 2014-2018, Palo Alto Networks Inc.
+ * Copyright (c) 2019, Palo Alto Networks Inc.
  *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
 /**
@@ -15,7 +27,7 @@
  *
  *  $con = PanAPIConnector::findOrCreateConnectorFromHost( 'fw1.company.com' );
  *  $infos = $con->getSoftwareVersion();
- *  print "Platform: ".$infos['type']." Version: ".$infos['version'];
+ *  PH::print_stdout( "Platform: ".$infos['type']." Version: ".$infos['version'] );
  *  $pan = new PANConf()
  *
  *  $pan->API_load_from_candidate();
@@ -83,6 +95,13 @@ class PanAPIConnector
     public $show_system_info_raw = null;
     public $show_clock_raw = null;
     public $request_license_info_raw = null;
+
+    private $utilType = null;
+    private $utilAction = "";
+
+    private $setAuditComment = false;
+    private $auditComment = null;
+
 
     /**
      * @param bool $force Force refresh instead of using cache
@@ -265,24 +284,17 @@ class PanAPIConnector
         return array('type' => $this->info_deviceType, 'version' => $this->info_PANOS_version_int);
     }
 
-    static public function loadConnectorsFromUserHome()
+    static public function loadConnectorsFromUserHome( $debug = false)
     {
         if( self::$keyStoreInitialized )
             return;
 
         self::$keyStoreInitialized = TRUE;
 
-        if( strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' )
-        {
-            if( strlen(getenv('USERPROFILE')) > 0 )
-                $file = getenv('USERPROFILE') . "\\" . self::$keyStoreFileName;
-            elseif( strlen(getenv('HOMEDRIVE')) > 0 )
-                $file = getenv('HOMEDRIVE') . "\\\\" . getenv('HOMEPATH') . "\\" . self::$keyStoreFileName;
-            else
-                $file = getenv('HOMEPATH') . "\\" . self::$keyStoreFileName;
-        }
-        else
-            $file = getenv('HOME') . '/' . self::$keyStoreFileName;
+        $file = self::findFileConnectorsUserHome();
+
+        if( $debug )
+            PH::print_stdout( " - FILE: ".$file );
 
         if( file_exists($file) )
         {
@@ -319,6 +331,13 @@ class PanAPIConnector
                 $content = $content . $conn->apihost . ':' . $conn->apikey . "\n";
         }
 
+        $file = self::findFileConnectorsUserHome();
+
+        file_put_contents($file, $content);
+    }
+
+    static public function findFileConnectorsUserHome()
+    {
         if( strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' )
         {
             if( strlen(getenv('USERPROFILE')) > 0 )
@@ -328,10 +347,15 @@ class PanAPIConnector
             else
                 $file = getenv('HOMEPATH') . "\\" . self::$keyStoreFileName;
         }
-        else
+        elseif( !empty( getenv('HOME') ) )
             $file = getenv('HOME') . '/' . self::$keyStoreFileName;
+        else
+        {
+            //optimise this for API usage
+            $file = "project/" . self::$keyStoreFileName;
+        }
 
-        file_put_contents($file, $content);
+        return $file;
     }
 
     /**
@@ -342,7 +366,7 @@ class PanAPIConnector
      * @param bool $hiddenPW
      * @return PanAPIConnector
      */
-    static public function findOrCreateConnectorFromHost($host, $apiKey = null, $promptForKey = TRUE, $checkConnectivity = TRUE, $hiddenPW = TRUE)
+    static public function findOrCreateConnectorFromHost($host, $apiKey = null, $promptForKey = TRUE, $checkConnectivity = TRUE, $hiddenPW = TRUE, $debugAPI = false, $cliUSER = null, $cliPW = null)
     {
         self::loadConnectorsFromUserHome();
 
@@ -355,6 +379,12 @@ class PanAPIConnector
         if( count($hostExplode) > 1 )
         {
             $port = $hostExplode[1];
+            $host = $hostExplode[0];
+        }
+
+        $hostExplode = explode('/', $host);
+        if( count($hostExplode) > 1 )
+        {
             $host = $hostExplode[0];
         }
 
@@ -373,11 +403,18 @@ class PanAPIConnector
                 } catch(Exception $e)
                 {
                     PH::$useExceptions = $exceptionUse;
-                    $wrongLogin = TRUE;
 
-                    if( strpos($e->getMessage(), "Invalid credentials.") === FALSE )
-                        derr($e->getMessage());
+                    if( $host != "bpa-apikey" && $host != "license-apikey" && $host != "ldap-password" && $host != "maxmind-licensekey" )
+                    {
+                        $wrongLogin = TRUE;
 
+                        if( isset( $_SERVER['REQUEST_METHOD'] ) )
+                            derr($e->getMessage());
+                        elseif( strpos($e->getMessage(), "Invalid credentials.") === FALSE )
+                        {
+                            derr($e->getMessage(), null , FALSE );
+                        }
+                    }
                 }
                 PH::$useExceptions = $exceptionUse;
 
@@ -399,30 +436,43 @@ class PanAPIConnector
         elseif( $promptForKey )
         {
             if( $wrongLogin )
-                print "** Request API access to host '$host' but invalid credentials were detected'\n";
+                PH::print_stdout( " ** Request API access to host '$host' but invalid credentials were detected'" );
             else
-                print "** Request API access to host '$host' but API was not found in cache.\n";
+                PH::print_stdout( " ** Request API access to host '$host' but API was not found in cache." );
 
-            print "** Please enter API key or username below and hit enter:  ";
+            if( $cliUSER === null )
+            {
+                if( PH::$shadow_json )
+                    derr( "API key not available: please first use 'pa_key-manager add=".$host."'" );
+                PH::print_stdout( " ** Please enter API key or username [or ldap password] below and hit enter:  " );
+                $handle = fopen("php://stdin", "r");
+                $line = fgets($handle);
+                $apiKey = trim($line);
+            }
+            else
+            {
+                $apiKey = $cliUSER;
+                $handle = fopen("php://stdin", "r");
+            }
 
 
-            $handle = fopen("php://stdin", "r");
-            $line = fgets($handle);
-            $apiKey = trim($line);
-
-            if( strlen($apiKey) < 19 )
+            if( strlen($apiKey) < 19 && !( $host == "bpa-apikey" || $host == "license-apikey" || $host == "ldap-password" || $host == "maxmind-licensekey" ) )
             {
                 $user = $apiKey;
 
+                if( $cliPW === null )
+                    $password = self::hiddenPWvalidation($user, $hiddenPW, $handle);
+                else
+                    $password = $cliPW;
 
-                $password = self::hiddenPWvalidation($user, $hiddenPW, $handle);
+                PH::print_stdout( "" );
 
-                print "\n";
-
-                print "* Now generating an API key from '$host'...";
+                PH::print_stdout( " * Now generating an API key from '$host'..." );
                 $con = new PanAPIConnector($host, '', 'panos', null, $port);
 
                 $url = "type=keygen&user=" . urlencode($user) . "&password=" . urlencode($password);
+                if( $debugAPI )
+                    $con->setShowApiCalls( $debugAPI );
                 $res = $con->sendRequest($url);
 
                 $res = DH::findFirstElement('response', $res);
@@ -439,7 +489,10 @@ class PanAPIConnector
 
                 $apiKey = $res->textContent;
 
-                print "OK, key is $apiKey\n\n";
+                PH::print_stdout( " OK, key is $apiKey");
+                PH::$JSON_TMP[$host]['status'] = "OK";
+                PH::$JSON_TMP[$host]['key'] = $apiKey;
+                PH::print_stdout("");
 
             }
 
@@ -451,27 +504,37 @@ class PanAPIConnector
                 $connector = new PanAPIConnector($host, $apiKey, 'panos', null, $port);
         }
 
+        if( $host == "bpa-apikey" || $host == "license-apikey" || $host == "ldap-password" || $host == "maxmind-licensekey" )
+        {
+            $checkConnectivity = false;
+            self::$savedConnectors[] = $connector;
+            self::saveConnectorsToUserHome();
+        }
 
         if( $checkConnectivity )
         {
-            $connector->testConnectivity();
+            $connector->testConnectivity( $host );
+            PH::print_stdout("");
             if( !$wrongLogin )
                 self::$savedConnectors[] = $connector;
             if( PH::$saveAPIkey )
+            {
                 self::saveConnectorsToUserHome();
+            }
         }
 
         return $connector;
     }
 
-    public function testConnectivity()
+    public function testConnectivity( $checkHost = "" )
     {
-        print " Testing API connectivity... ";
+        PH::print_stdout( " - Testing API connectivity... ");
 
-        $this->refreshSystemInfos();
+        $this->refreshSystemInfos( true );
 
-        print "OK!\n";
-
+        PH::print_stdout( " - PAN-OS version: ".$this->info_PANOS_version );
+        PH::$JSON_TMP[$checkHost]['panos']['version'] = $this->info_PANOS_version;
+        PH::$JSON_TMP[$checkHost]['panos']['type'] = $this->info_deviceType;
     }
 
 
@@ -512,6 +575,27 @@ class PanAPIConnector
         else
             derr('unsupported type: ' . $type);
     }
+
+    public function setUTILtype( $utilType)
+    {
+        $this->utilType = $utilType;
+    }
+
+    public function setUTILaction( $utilAction)
+    {
+        $this->utilAction = $utilAction;
+    }
+
+    public function setAuditCommentBool( $bool)
+    {
+        $this->setAuditComment = $bool;
+    }
+
+    public function setAuditComment( $auditComment)
+    {
+        $this->auditComment = $auditComment;
+    }
+    //
 
     /**
      * @param string $host
@@ -635,6 +719,54 @@ class PanAPIConnector
 
     }
 
+    /**
+     * @param string $vsys
+     * @return string[][] $registered ie: Array( '1.1.1.1' => Array('tag1', 'tag3'), '2.3.4.5' => Array('tag7') )
+     */
+    public function userid_getIp($vsys = 'vsys1')
+    {
+        $cmd = "<show><user><ip-user-mapping><all></all></ip-user-mapping></user></show>";
+
+        $ip_array = array();
+
+        $params = array();
+        $params['type'] = 'op';
+        $params['vsys'] = $vsys;
+        $params['cmd'] = &$cmd;
+
+        $r = $this->sendRequest($params, TRUE);
+
+        $configRoot = DH::findFirstElement('result', $r);
+        if( $configRoot === FALSE )
+            derr("<result> was not found", $r);
+
+        $count = DH::findFirstElement('count', $configRoot);
+        if( $count !== false )
+            $count = $count->nodeValue;
+
+        $entries = $configRoot->getElementsByTagName('entry');
+        foreach( $entries as $entry )
+        {
+
+            /** @var DOMElement $entry */
+            $ip = DH::findFirstElement( "ip", $entry);
+            $vsys = DH::findFirstElement( "vsys", $entry);
+            $type = DH::findFirstElement( "type", $entry);
+            $user = DH::findFirstElement( "user", $entry);
+            $idleTimeout = DH::findFirstElement( "idle_timeout", $entry);
+            $timeout = DH::findFirstElement( "timeout", $entry);
+
+            $ip = $ip->nodeValue;
+            $ip_array[$ip] = array();
+            $ip_array[$ip]['vsys'] = $vsys->nodeValue;
+            $ip_array[$ip]['type'] = $type->nodeValue;
+            $ip_array[$ip]['user'] = $user->nodeValue;
+            $ip_array[$ip]['idle'] = $idleTimeout->nodeValue;
+            $ip_array[$ip]['timeout'] = $timeout->nodeValue;
+        }
+
+        return $ip_array;
+    }
 
     /**
      * @param string[] $ips
@@ -752,7 +884,7 @@ class PanAPIConnector
                 continue;
 
             $counter = $node->nodeValue;
-            print " - registered-ip: " . $counter . "\n";
+            PH::print_stdout( " - registered-ip: " . $counter );
         }
 
         $start = 1;
@@ -1034,8 +1166,8 @@ class PanAPIConnector
                 . $filecontent . "\r\n"
                 . "----ABC1234--\r\n";
 
-            #print "content length = ".strlen($encodedContent)."\n";
-            #print "content  = ".$encodedContent."\n";
+            #PH::print_stdout( "content length = ".strlen($encodedContent) );
+            #PH::print_stdout( "content  = ".$encodedContent );
             if( !PH::$sendAPIkeyviaHeader )
                 curl_setopt($this->_curl_handle, CURLOPT_HTTPHEADER, array('Content-Type: multipart/form-data; boundary=--ABC1234'));
             else
@@ -1065,11 +1197,11 @@ class PanAPIConnector
                     $paramURl .= '&' . $paramIndex . '=' . str_replace('#', '%23', $param);
                 }
 
-                print("API call through POST: \"" . $finalUrl . $paramURl . "\"\r\n");
-                print "RAW HTTP POST Content: {$properParams}\n\n";
+                PH::print_stdout("API call through POST: \"" . $finalUrl . $paramURl . "\"");
+                PH::print_stdout( "RAW HTTP POST Content: {$properParams}" );
             }
             else
-                print("API call: \"" . $finalUrl . "\"\r\n");
+                PH::print_stdout("API call: \"" . $finalUrl . "\"" );
         }
 
         $httpReplyContent = curl_exec($this->_curl_handle);
@@ -1081,9 +1213,9 @@ class PanAPIConnector
 
         if( $curlHttpStatusCode != 200 )
         {
-            print PH::boldText( "\n####################################\n\n");
-            print "For " . PH::boldText("PAN-OS version < 9.0") . " please use additional argument " . PH::boldText("'shadow-apikeynohidden'" ) . " in your script command\n" ;
-            print PH::boldText( "\n####################################\n\n\n");
+            PH::print_stdout( PH::boldText( "\n####################################") );
+            PH::print_stdout( "For " . PH::boldText("PAN-OS version < 9.0") . " please use additional argument " . PH::boldText("'shadow-apikeynohidden'" ) . " in your script command" );
+            PH::print_stdout( PH::boldText( "\n####################################") );
             derr("HTTP API returned (code : {$curlHttpStatusCode}); " . $httpReplyContent, null, false);
         }
 
@@ -1098,9 +1230,10 @@ class PanAPIConnector
         } catch(Exception $e)
         {
             PH::disableExceptionSupport();
-            print " ***** an error occured : " . $e->getMessage() . "\n\n";
-
-            print "\n" . $httpReplyContent . "\n";
+            PH::print_stdout( " ***** an error occured : " . $e->getMessage() );
+            PH::print_stdout("");
+            PH::print_stdout(  $httpReplyContent );
+            PH::print_stdout("");
 
             return;
         }
@@ -1209,12 +1342,15 @@ class PanAPIConnector
         return $httpReplyContent;
     }
 
-
+    /**
+     * @param $req
+     * @return array
+     */
     public function &getReport($req)
     {
         $ret = $this->sendRequest($req);
 
-        //print DH::dom_to_xml($ret, 0, true, 4);
+        //PH::print_stdout( DH::dom_to_xml($ret, 0, true, 4) );
 
         $cursor = DH::findXPathSingleEntryOrDie('/response', $ret);
         $cursor = DH::findFirstElement('result', $cursor);
@@ -1246,7 +1382,7 @@ class PanAPIConnector
                 sleep(1);
                 $query = '&type=report&action=get&job-id=' . $jobid;
                 $ret = $this->sendRequest($query);
-                //print DH::dom_to_xml($ret, 0, true, 5);
+                //PH::print_stdout( DH::dom_to_xml($ret, 0, true, 5) );
 
                 $cursor = DH::findFirstElement('result', DH::findXPathSingleEntryOrDie('/response', $ret));
 
@@ -1306,6 +1442,109 @@ class PanAPIConnector
         return $ret;
     }
 
+    /**
+     * @param $req
+     * @return array
+     */
+    public function &getLog($req)
+    {
+        $ret = $this->sendRequest($req);
+        #PH::print_stdout( DH::dom_to_xml($ret, 0, true, 4) );
+
+
+        $cursor = DH::findXPathSingleEntryOrDie('/response', $ret);
+        $cursor = DH::findFirstElement('result', $cursor);
+
+        if( $cursor === FALSE )
+        {
+            $cursor = DH::findFirstElement('log', DH::findXPathSingleEntryOrDie('/response', $ret));
+            if( $cursor === FALSE )
+                derr("unsupported API answer1");
+
+            $report = DH::findFirstElement('result', $cursor);
+            if( $report === FALSE )
+                derr("unsupported API answer2");
+        }
+
+        if( !isset($report) )
+        {
+
+            $cursor = DH::findFirstElement('job', $cursor);
+
+            if( $cursor === FALSE )
+                derr("unsupported API answer, no JOB ID found");
+
+            $jobid = $cursor->textContent;
+
+            while( TRUE )
+            {
+                sleep(1);
+                $query = '&type=log&action=get&job-id=' . $jobid;
+                $ret = $this->sendRequest($query);
+                //PH::print_stdout( DH::dom_to_xml($ret, 0, true, 5) );
+
+
+                $cursor = DH::findFirstElement('result', DH::findXPathSingleEntryOrDie('/response', $ret));
+
+                if( $cursor === FALSE )
+                    derr("unsupported API answer3", $ret);
+
+                $jobcur = DH::findFirstElement('job', $cursor);
+
+                if( $jobcur === FALSE )
+                    derr("unsupported API answer4", $ret);
+
+
+                $status = DH::findFirstElement('status', $jobcur);
+                if( $status == FALSE )
+                    derr("unsupported API answer5", $cursor);
+
+                if( $status->textContent != 'FIN' )
+                {
+                    sleep(9);
+                    continue;
+                }
+
+
+                $cursor = DH::findFirstElement('log', $cursor);
+                if( $cursor === FALSE )
+                    derr("unsupported API answer", $ret);
+
+
+                $cursor = DH::findFirstElement('logs', $cursor);
+                if( $cursor === FALSE )
+                    derr("unsupported API answer", $ret);
+
+                $report = $cursor;
+
+                break;
+            }
+        }
+        $ret = array();
+
+        foreach( $report->childNodes as $line )
+        {
+            if( $line->nodeType != XML_ELEMENT_NODE )
+                continue;
+
+            $newline = array();
+
+            foreach( $line->childNodes as $item )
+            {
+                if( $item->nodeType != XML_ELEMENT_NODE )
+                    continue;
+                /** @var DOMElement $item */
+
+                $newline[$item->nodeName] = $item->textContent;
+            }
+
+            $ret[] = $newline;
+        }
+
+        #print_r($ret);
+
+        return $ret;
+    }
 
     public function getRunningConfig()
     {
@@ -1354,11 +1593,12 @@ class PanAPIConnector
         return $r;
     }
 
-    public function getPanoramaPushedConfig()
+    public function getPanoramaPushedConfig( $apiTimeOut = 30 )
     {
-        $url = 'action=get&type=config&xpath=/config/panorama';
-
-        $r = $this->sendRequest($url, TRUE);
+        $url = '&action=get&type=config&xpath=/config/panorama';
+        $moreOptions = array('timeout' => $apiTimeOut, 'lowSpeedTime' => 0);
+        $filecontent = null;
+        $r = $this->sendRequest($url, TRUE, $filecontent, '', $moreOptions);
 
         $configRoot = DH::findFirstElement('result', $r);
         if( $configRoot === FALSE )
@@ -1411,7 +1651,7 @@ class PanAPIConnector
 
     public function APIresponseValidation(DOMDocument $r)
     {
-        //Todo: this is for a problem in PAN-OS until it is fixed in 8.1.16, 9.0.10 and 9.1.4
+        //Todo: this is for a problem in PAN-OS until it is fixed in 8.1.16, 9.0.10 and 9.1.4, 10.0.1
         $configRoot = DH::findFirstElement('result', $r);
         if( $configRoot === FALSE )
             derr("<result> was not found", $r);
@@ -1462,14 +1702,15 @@ class PanAPIConnector
         $params['xpath'] = &$xpath;
         $params['element'] = &$element;
 
+        $this->prepareAuditComment( $params );
+
         return $this->sendSimpleRequest($params, $moreOptions);
     }
 
-
-    public function sendSimpleRequest(&$request, $options = array())
+    public function sendSimpleRequest(&$request, $options = array(), $checkResultTag = FALSE )
     {
         $file = null;
-        return $this->sendRequest($request, FALSE, $file, '', $options);
+        return $this->sendRequest($request, $checkResultTag, $file, '', $options);
     }
 
     /**
@@ -1516,6 +1757,8 @@ class PanAPIConnector
         $params['xpath'] = &$xpath;
         $params['element'] = &$element;
 
+        $this->prepareAuditComment( $params );
+
         return $this->sendSimpleRequest($params, $moreOptions);
     }
 
@@ -1526,6 +1769,8 @@ class PanAPIConnector
         $params['type'] = 'config';
         $params['action'] = 'delete';
         $params['xpath'] = &$xpath;
+
+        $this->prepareAuditComment( $params );
 
         return $this->sendRequest($params);
     }
@@ -1543,6 +1788,8 @@ class PanAPIConnector
         $params['action'] = 'rename';
         $params['xpath'] = &$xpath;
         $params['newname'] = &$newname;
+
+        $this->prepareAuditComment( $params );
 
         return $this->sendRequest($params);
     }
@@ -1583,13 +1830,14 @@ class PanAPIConnector
      * @param $maxWaitTime integer
      * @return DomDocument|string[]
      */
-    public function sendCmdRequest($cmd, $checkResultTag = TRUE, $maxWaitTime = -1)
+    public function sendCmdRequest($cmd, $checkResultTag = TRUE, $maxWaitTime = -1, $apiTimeOut = 7)
     {
         $req = "type=op&cmd=$cmd";
         if( $maxWaitTime == -1 )
             $moreOptions['lowSpeedTime'] = null;
         else
             $moreOptions['lowSpeedTime'] = $maxWaitTime;
+        $moreOptions['timeout'] = $apiTimeOut;
 
         $nullVar = null;
 
@@ -1598,10 +1846,18 @@ class PanAPIConnector
         return $ret;
     }
 
-    public function getJobResult($jobID)
+    public function getJobResult($jobID, $apiTimeOut = 7, $type = "op")
     {
-        $req = "type=op&cmd=<show><jobs><id>$jobID</id></jobs></show>";
-        $ret = $this->sendRequest($req);
+        if( $type == "op" )
+            $req = "type=op&cmd=<show><jobs><id>$jobID</id></jobs></show>";
+        else
+        {
+            $req = "type=".$type."&action=get&job-id=".$jobID;
+        }
+
+        $moreOptions['timeout'] = $apiTimeOut;
+        $filecontent = null;
+        $ret = $this->sendRequest($req, false, $filecontent, '', $moreOptions);
 
         //TODO: 20180305 not working
         $found = &searchForName('name', 'result', $ret);
@@ -1660,17 +1916,14 @@ class PanAPIConnector
      * @param bool $verbose
      * @return DOMNode
      */
-    public function uploadConfiguration($configDomXml, $configName = 'stage0.xml', $verbose = TRUE)
+    public function uploadConfiguration($configDomXml, $configName = 'stage0.xml', $verbose = TRUE, $apiTimeOut = 7)
     {
         if( $verbose )
-            print "Uploadig config to device {$this->apihost}/{$configName}....";
+            PH::print_stdout( "Uploadig config to device {$this->apihost}/{$configName}...." );
 
         $url = "type=import&category=configuration&category=configuration";
 
-        $answer = $this->sendRequest($url, FALSE, DH::dom_to_xml($configDomXml), $configName, array('timeout' => 7));
-
-        if( $verbose )
-            print "OK!\n";
+        $answer = $this->sendRequest($url, FALSE, DH::dom_to_xml($configDomXml), $configName, array('timeout' => $apiTimeOut));
 
         return $answer;
     }
@@ -1705,15 +1958,111 @@ class PanAPIConnector
             if( $modelNode !== FALSE )
                 $fw['model'] = $modelNode->textContent;
 
+            $ipaddressNode = DH::findFirstElement('ip-address', $entryNode);
+            if( $ipaddressNode !== FALSE )
+                $fw['ip-address'] = $ipaddressNode->textContent;
+
+            $swversionNode = DH::findFirstElement('sw-version', $entryNode);
+            if( $swversionNode !== FALSE )
+                $fw['sw-version'] = $swversionNode->textContent;
+
+            /*
+            foreach( $entryNode->childNodes as $node )
+            {
+                if( $node->nodeType != XML_ELEMENT_NODE )
+                    continue;
+
+                $fw[$node->nodeName] = $node->textContent;
+            }
+            */
+
             $firewalls[$fw['serial']] = $fw;
         }
 
         return $firewalls;
     }
 
+    public function loadPanoramaPushdedConfig( $apiTimeoutValue )
+    {
+        $panoramaDoc = $this->getPanoramaPushedConfig( $apiTimeoutValue );
+
+        $xpathResult = DH::findXPath('/panorama/vsys', $panoramaDoc);
+
+        if( $xpathResult === FALSE )
+            derr("could not find any VSYS");
+
+        if( $xpathResult->length != 1 )
+            derr("found more than 1 <VSYS>");
+
+        $fakePanorama = new PanoramaConf();
+        $fakePanorama->_fakeMode = TRUE;
+        $this->refreshSystemInfos();
+        $newDGRoot = $xpathResult->item(0);
+        $panoramaString = "<config version=\"{$this->info_PANOS_version}\"><shared></shared><devices><entry name=\"localhost.localdomain\"><device-group>" . DH::domlist_to_xml($newDGRoot->childNodes) . "</device-group></entry></devices></config>";
+
+        $fakePanorama->load_from_xmlstring($panoramaString);
+
+
+        return new PANConf($fakePanorama);
+    }
+
+    /**
+     * @return string[][]  ie: Array( Array('serial' => '000C12234', 'hostname' => 'FW-MUNICH4' ) )
+     */
+    public function & panorama_getAllFirewallsSerials()
+    {
+        $result = $this->sendCmdRequest('<show><devices><all></all></devices></show>');
+        $devicesRoot = DH::findXPathSingleEntryOrDie('/result/devices', $result);
+
+        $firewalls = array();
+
+        foreach( $devicesRoot->childNodes as $entryNode )
+        {
+            $fw = array();
+
+            if( $entryNode->nodeType != XML_ELEMENT_NODE )
+                continue;
+            /** @var DOMElement $entryNode */
+
+            $fw['serial'] = $entryNode->getAttribute('name');
+
+            foreach( $entryNode->childNodes as $node )
+            {
+                if( $node->nodeType != XML_ELEMENT_NODE )
+                    continue;
+                /** @var DOMElement $node */
+
+                $fw[$node->nodeName] = $node->textContent;
+            }
+
+            $firewalls[$fw['serial']] = $fw;
+        }
+
+        /*
+        $fields = array();
+        foreach( $firewalls as $index => &$array )
+        {
+            foreach( $array as $key => $value )
+                $fields[$key] = $key;
+        }
+
+
+        foreach( $firewalls as $index => &$array )
+        {
+            foreach( $fields as $key => $value )
+            {
+                if( !isset( $array[$key] ) )
+                    $array[$key] = "- - -";
+            }
+        }
+        */
+
+        return $firewalls;
+    }
+
     static public function hiddenPWvalidation($user, $hiddenPW, $handle)
     {
-        $pw_prompt = "* you input user '" . $user . "' , please enter password now, password is ";
+        $pw_prompt = "** you input user '" . $user . "' , please enter password now, password is ";
         if( $hiddenPW )
             $pw_prompt .= "hidden : ";
         else
@@ -1722,13 +2071,13 @@ class PanAPIConnector
         {
             if( strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' )
             {
-                $pwd = shell_exec('powershell.exe -Command "$Password=Read-Host -assecurestring ' . $pw_prompt . ' ; $PlainPassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($Password)) ; echo $PlainPassword;"');
+                $pwd = shell_exec('powershell.exe -Command "$Password=Read-Host -assecurestring ' . $pw_prompt . '; $PlainPassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($Password)); echo $PlainPassword;"');
                 $pwd = explode("\n", $pwd);
                 $password = $pwd[0];
             }
             else
             {
-                print $pw_prompt;
+                PH::print_stdout( $pw_prompt );
                 $oldStyle = shell_exec('stty -g');
                 shell_exec('stty -icanon -echo min 1 time 0');
 
@@ -1758,12 +2107,77 @@ class PanAPIConnector
         }
         else
         {
-            print $pw_prompt;
+            PH::print_stdout( $pw_prompt );
             $line = fgets($handle);
             $password = trim($line);
         }
 
         return $password;
+    }
+
+    public function getShadowInfo( $countInfo, $panorama = false )
+    {
+        $cmd = "<show><shadow-warning><count>".$countInfo."</count></shadow-warning></show>";
+        $response = $this->sendOpRequest( $cmd );
+
+        #print $response->saveXML();
+
+        $tmp = DH::findFirstElement( "result", $response);
+        $tmp = DH::findFirstElement( "shadow-warnings-count", $tmp);
+        $tmp = DH::findFirstElement( "entry", $tmp);
+
+        $shadowedRule = array();
+
+        //todo: if panorama - get
+        $devicegroup = "";
+        if( $panorama )
+        {
+            $name = $tmp->getAttribute( "dg" );
+            $devicegroup = "<device-group>".$name."</device-group>";
+        }
+        else
+        {
+            $name = $tmp->getAttribute( "vsys" );
+        }
+
+        foreach( $tmp->childNodes as $entry )
+        {
+            if( $entry->nodeType != XML_ELEMENT_NODE )
+                continue;
+
+            $tmp_uid = $entry->getAttribute( "uuid" );
+            $tmp_ruletype = $entry->getAttribute( "ruletype" );
+            $cmd = "<show><shadow-warning><warning-message>".$countInfo.$devicegroup."<uuid>".$tmp_uid."</uuid></warning-message></shadow-warning></show>";
+            $response = $this->sendOpRequest( $cmd );
+
+            #print $response->saveXML();
+
+            $tmp = DH::findFirstElement( "result", $response);
+            $tmp = DH::findFirstElement( "warning-msg", $tmp);
+
+            foreach( $tmp->childNodes as $key => $entry )
+            {
+                if( $entry->nodeType != XML_ELEMENT_NODE )
+                    continue;
+
+                $shadowedRule[$name][$tmp_ruletype][$tmp_uid][] = $entry->textContent;
+            }
+        }
+
+        return $shadowedRule;
+    }
+
+    public function prepareAuditComment( &$params )
+    {
+        if( $this->info_PANOS_version_int >= 90 and $this->setAuditComment )
+        {
+            $time = date('Y/m/d H:i', time());
+
+            if( $this->auditComment !== null )
+                $params['audit-comment'] = $this->auditComment;
+            else
+                $params['audit-comment'] = "PAN-OS-PHP ".$this->utilAction." ".$time;
+        }
     }
 }
 

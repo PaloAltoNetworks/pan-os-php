@@ -1,0 +1,11 @@
+FROM ubuntu:20.04
+
+
+### PAN-OS-PHP
+RUN mkdir /tools2
+
+COPY install_script_ubuntu20.sh /tools2/install_script_ubuntu20.sh
+
+RUN sh /tools2/install_script_ubuntu20.sh
+
+

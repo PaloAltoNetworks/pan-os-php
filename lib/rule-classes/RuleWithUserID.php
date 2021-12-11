@@ -1,9 +1,21 @@
 <?php
 /**
- * © 2019 Palo Alto Networks, Inc.  All rights reserved.
+ * ISC License
  *
- * Licensed under SCRIPT SOFTWARE AGREEMENT, Palo Alto Networks, Inc., at https://www.paloaltonetworks.com/legal/script-software-license-1-0.pdf
+ * Copyright (c) 2014-2018, Palo Alto Networks Inc.
+ * Copyright (c) 2019, Palo Alto Networks Inc.
  *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
 
@@ -66,6 +78,18 @@ class RuleWithUserID extends Rule
         return $this->_users;
     }
 
+    function userID_Hash()
+    {
+        $string = implode( ", ", $this->_users );
+
+        return md5( $string );
+    }
+
+    function userID_count()
+    {
+        return count( $this->_users );
+    }
+
     /**
      * For developers only
      */
@@ -110,7 +134,7 @@ class RuleWithUserID extends Rule
     }
 
 
-    function userID_setUsers($newUser)
+    function userID_addUser($newUser)
     {
         $tmpRoot = DH::findFirstElementOrCreate('source-user', $this->xmlroot);
 
@@ -121,6 +145,90 @@ class RuleWithUserID extends Rule
         $this->_users[] = $newUser;
 
         DH::Hosts_to_xmlDom($tmpRoot, $this->_users, 'member', FALSE, 'any', FALSE);
+
+        return true;
     }
 
+    function userID_removeUser($newUser)
+    {
+        $tmpRoot = DH::findFirstElementOrCreate('source-user', $this->xmlroot);
+
+        $newUser = utf8_encode($newUser);
+        if (($key = array_search($newUser, $this->_users)) !== FALSE) {
+            unset($this->_users[$key]);
+        }
+        else
+            return FALSE;
+
+        DH::Hosts_to_xmlDom($tmpRoot, $this->_users, 'member', FALSE, 'any', FALSE);
+
+        return true;
+    }
+
+    function userID_setany()
+    {
+        $tmpRoot = DH::findFirstElementOrCreate('source-user', $this->xmlroot);
+
+        $this->_users = array();
+
+        DH::Hosts_to_xmlDom($tmpRoot, $this->_users, 'member', FALSE, 'any', FALSE);
+
+        return true;
+    }
+
+    //Todo:
+    function API_userID_addUser($newUser)
+    {
+        $ret = $this->userID_addUser($newUser);
+
+        if( $ret )
+        {
+            $xpath = $this->getXPath() . '/source-user';
+            $con = findConnectorOrDie($this);
+
+            //$con->sendEditRequest($xpath, '<source-user><member>' . $newUser . '</member></source-user>');
+            $con->sendSetRequest($xpath, "<member>$newUser</member>");
+        }
+
+        return $ret;
+    }
+
+    function API_userID_removeUser($newUser)
+    {
+        $ret = $this->userID_removeUser($newUser);
+
+        if( $ret )
+        {
+            //Todo: continue here how do rewrite this source-user part?
+            $xpath = $this->getXPath() . '/source-user';
+            $con = findConnectorOrDie($this);
+
+
+            if( $this->userID_count() < 1 )
+            {
+                #$con->sendEditRequest($xpath, $this->getXmlText_inline());
+                $con->sendEditRequest($xpath, '<source-user><member>any</member></source-user>');
+                return TRUE;
+            }
+
+
+            $xpath = $xpath . "/member[text()='" . $newUser . "']";
+            $con->sendDeleteRequest($xpath);
+        }
+    }
+
+    function API_userID_setany()
+    {
+        $ret = $this->userID_setany();
+
+        if( $ret )
+        {
+            $xpath = $this->getXPath() . '/source-user';
+            $con = findConnectorOrDie($this);
+
+            $con->sendEditRequest($xpath, '<source-user><member>any</member></source-user>');
+        }
+
+        return $ret;
+    }
 }

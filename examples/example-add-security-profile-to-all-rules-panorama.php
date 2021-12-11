@@ -8,7 +8,7 @@
  *
 *****************************************************************************/
 
-// load PAN-PHP-FRAMEWORK library
+// load PAN-OS-PHP library
 require_once("../lib/pan_php_framework.php");
 
 // input and output files
@@ -31,18 +31,22 @@ if( $dg === null )
 	derr("DeviceGroup {$targetDG} was not found ? Exit\n");
 }
 
-print "\n***********************************************\n\n";
+PH::print_stdout("" );
+PH::print_stdout("***********************************************" );
+PH::print_stdout("" );
 
 
 // Going after each pre-Security rules to add a profile
 foreach( $dg->securityRules->rules() as $rule )
 {
-    print "Rule '".$rule->name()."' modified\n";
+    PH::print_stdout( "Rule '".$rule->name()."' modified" );
     $rule->setSecurityProfileGroup($targetProfile);
 }
 
 
-print "\n***********************************************\n";
+PH::print_stdout("" );
+PH::print_stdout("***********************************************" );
+
 
 
 $panc->save_to_file($outputfile);

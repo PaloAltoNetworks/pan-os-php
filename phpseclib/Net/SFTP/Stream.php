@@ -149,7 +149,7 @@ class Net_SFTP_Stream
     function __construct()
     {
         if (defined('NET_SFTP_STREAM_LOGGING')) {
-            echo "__construct()\r\n";
+            print "__construct()\r\n";
         }
 
         if (!class_exists('Net_SFTP')) {
@@ -794,15 +794,15 @@ class Net_SFTP_Stream
     function __call($name, $arguments)
     {
         if (defined('NET_SFTP_STREAM_LOGGING')) {
-            echo $name . '(';
+            print $name . '(';
             $last = count($arguments) - 1;
             foreach ($arguments as $i => $argument) {
                 var_export($argument);
                 if ($i != $last) {
-                    echo ',';
+                    print ',';
                 }
             }
-            echo ")\r\n";
+            print ")\r\n";
         }
         $name = '_' . $name;
         if (!method_exists($this, $name)) {

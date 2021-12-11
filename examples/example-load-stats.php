@@ -20,13 +20,15 @@ $p = new PanoramaConf();
 // and load it from a XML file
 $p->load_from_file($inputfile);
 
-print "\n***********************************************\n\n";
+PH::print_stdout("***********************************************");
+PH::print_stdout("" );
 
 
 
 
 // display some statiscs for debug and exit program!
-print "\n\n***********************************************\n";
+PH::print_stdout("***********************************************");
+PH::print_stdout("" );
 $p->display_statistics();
 
 

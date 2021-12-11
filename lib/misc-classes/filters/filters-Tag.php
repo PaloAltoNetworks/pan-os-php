@@ -170,13 +170,13 @@ RQuery::$defaultFilters['tag']['location']['operators']['is.child.of'] = array(
         $DG = $sub->findDeviceGroup($context->value);
         if( $DG == null )
         {
-            print "ERROR: location '$context->value' was not found. Here is a list of available ones:\n";
-            print " - shared\n";
+            PH::print_stdout( "ERROR: location '$context->value' was not found. Here is a list of available ones:" );
+            PH::print_stdout( " - shared" );
             foreach( $sub->getDeviceGroups() as $sub1 )
             {
-                print " - " . $sub1->name() . "\n";
+                PH::print_stdout( " - " . $sub1->name() );
             }
-            print "\n\n";
+            PH::print_stdout("" );
             exit(1);
         }
 
@@ -209,7 +209,10 @@ RQuery::$defaultFilters['tag']['location']['operators']['is.parent.of'] = array(
             $sub = $sub->owner;
 
         if( get_class($sub) == "PANConf" )
-            derr("filter location is.parent.of is not working against a firewall configuration");
+        {
+            PH::print_stdout( "ERROR: filter location is.child.of is not working against a firewall configuration" );
+            return FALSE;
+        }
 
         if( strtolower($context->value) == 'shared' )
             return TRUE;
@@ -217,13 +220,13 @@ RQuery::$defaultFilters['tag']['location']['operators']['is.parent.of'] = array(
         $DG = $sub->findDeviceGroup($context->value);
         if( $DG == null )
         {
-            print "ERROR: location '$context->value' was not found. Here is a list of available ones:\n";
-            print " - shared\n";
+            PH::print_stdout( "ERROR: location '$context->value' was not found. Here is a list of available ones:" );
+            PH::print_stdout( " - shared" );
             foreach( $sub->getDeviceGroups() as $sub1 )
             {
-                print " - " . $sub1->name() . "\n";
+                PH::print_stdout( " - " . $sub1->name() );
             }
-            print "\n\n";
+            PH::print_stdout("" );
             exit(1);
         }
 
@@ -271,7 +274,7 @@ RQuery::$defaultFilters['tag']['reflocation']['operators']['is'] = array(
             $DG = $owner->findDeviceGroup($context->value);
             if( $DG == null )
             {
-                $test = new UTIL("custom", array(), "");
+                $test = new UTIL("custom", array(), 0,"");
                 $test->configType = "panorama";
                 $test->locationNotFound($context->value, null, $owner);
             }

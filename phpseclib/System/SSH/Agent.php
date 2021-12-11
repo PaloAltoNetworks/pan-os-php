@@ -18,8 +18,8 @@
  *        exit('Login Failed');
  *    }
  *
- *    echo $ssh->exec('pwd');
- *    echo $ssh->exec('ls -la');
+ *    print $ssh->exec('pwd');
+ *    print $ssh->exec('ls -la');
  * ?>
  * </code>
  *

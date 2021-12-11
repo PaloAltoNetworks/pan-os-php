@@ -1,10 +1,22 @@
 <?php
 
 /**
- * © 2019 Palo Alto Networks, Inc.  All rights reserved.
+ * ISC License
  *
- * Licensed under SCRIPT SOFTWARE AGREEMENT, Palo Alto Networks, Inc., at https://www.paloaltonetworks.com/legal/script-software-license-1-0.pdf
+ * Copyright (c) 2014-2018, Palo Alto Networks Inc.
+ * Copyright (c) 2019, Palo Alto Networks Inc.
  *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
 /**
@@ -41,10 +53,10 @@ class ObjRuleContainer
     {
         if( count($ostore->o) != count($this->o) )
         {
-            //print "Not same count '".count($ostore->o)."':'".count($this->o)."'\n";
+            //PH::print_stdout( "Not same count '".count($ostore->o)."':'".count($this->o)."'" );
             return FALSE;
         }
-        //print "passed\n";
+        //PH::print_stdout( "passed" );
         foreach( $this->o as $o )
         {
             if( !in_array($o, $ostore->o, TRUE) )
@@ -131,7 +143,6 @@ class ObjRuleContainer
         }
 
         return FALSE;
-
     }
 
     /**
@@ -167,12 +178,13 @@ class ObjRuleContainer
 
         $c = count($this->o);
 
-        echo "$indent";
-        print "Displaying the $c object(s) in " . $this->toString() . "\n";
+        $text = "$indent";
+        $text .= "Displaying the $c object(s) in " . $this->toString();
+        PH::print_stdout( $text );
 
         foreach( $this->o as $o )
         {
-            print $indent . $o->name() . "\n";
+            PH::print_stdout($indent . $o->name() );
         }
     }
 
@@ -198,25 +210,32 @@ class ObjRuleContainer
 
         $pos = array_search($old, $this->o, TRUE);
 
-        // this object was not found so we exit and return false
-        if( $pos === FALSE )
-            return FALSE;
-
-        // remove $old from the list and unreference it
-        unset($this->o[$pos]);
-        $old->removeReference($this);
-
-        // is $new already in the list ? if not then we insert it
-        if( $new !== null && array_search($new, $this->o, TRUE) === FALSE )
+        if( $pos !== FALSE )
         {
-            $this->o[] = $new;
-            $new->addReference($this);
+            while( $pos !== FALSE )
+            {
+                unset($this->o[$pos]);
+                $pos = array_search($old, $this->o, TRUE);
+            }
+
+            if( $new !== null && !$this->has($new->name()) )
+            {
+                $this->o[] = $new;
+                $new->addReference($this);
+            }
+            $old->removeReference($this);
+
+            if( $new === null || $new->name() != $old->name() )
+                $this->rewriteXML();
+
+            return TRUE;
         }
+        #elseif( !$this->isDynamic() )
+        #    mwarning("object is not part of this group: " . $old->toString());
 
-        // let's update XML code
-        $this->rewriteXML();
 
-        return TRUE;
+
+        return FALSE;
     }
 
     public function API_replaceReferencedObject($old, $new)
@@ -392,7 +411,7 @@ class ObjRuleContainer
         if( $toString )
             return $retString;
 
-        print $retString;
+        PH::print_stdout( $retString );
     }
 
     public function name()

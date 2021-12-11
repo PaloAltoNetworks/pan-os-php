@@ -19,7 +19,7 @@
  *    $ciphertext = $rsa->encrypt($plaintext);
  *
  *    $rsa->loadKey($publickey);
- *    echo $rsa->decrypt($ciphertext);
+ *    print $rsa->decrypt($ciphertext);
  * ?>
  * </code>
  *
@@ -37,7 +37,7 @@
  *    $signature = $rsa->sign($plaintext);
  *
  *    $rsa->loadKey($publickey);
- *    echo $rsa->verify($plaintext, $signature) ? 'verified' : 'unverified';
+ *    print $rsa->verify($plaintext, $signature) ? 'verified' : 'unverified';
  * ?>
  * </code>
  *
