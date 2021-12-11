@@ -101,8 +101,9 @@ class AuthenticationRule extends RuleWithUserID
         //										//
         // Begin <service> extraction			//
         //										//
-        $tmp = DH::findFirstElementOrCreate('service', $xml);
-        $this->services->load_from_domxml($tmp);
+        $tmp = DH::findFirstElement('service', $xml);
+        if( $tmp !== FALSE )
+            $this->services->load_from_domxml($tmp);
         // end of <service> zone extraction
 
         $this->_readNegationFromXml();

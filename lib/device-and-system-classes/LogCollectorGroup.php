@@ -81,38 +81,40 @@ class LogCollectorGroup
 
         // Devices extraction
         $this->logfwdRoot = DH::findFirstElementOrCreate('logfwd-setting', $xml);
-        $this->devicesRoot = DH::findFirstElementOrCreate('devices', $this->logfwdRoot);
-
-        foreach( $this->devicesRoot->childNodes as $device )
+        $this->devicesRoot = DH::findFirstElement('devices', $this->logfwdRoot);
+        if( $this->devicesRoot !== FALSE )
         {
-            if( $device->nodeType != 1 ) continue;
-            $devname = DH::findAttribute('name', $device);
-
-            $collectorlist = array();
-
-            $collectorChild = DH::firstChildElement($device);
-
-            if( $collectorChild !== FALSE )
+            foreach( $this->devicesRoot->childNodes as $device )
             {
-                foreach( $collectorChild->childNodes as $collectorentry )
+                if( $device->nodeType != 1 ) continue;
+                $devname = DH::findAttribute('name', $device);
+
+                $collectorlist = array();
+
+                $collectorChild = DH::firstChildElement($device);
+
+                if( $collectorChild !== FALSE )
                 {
-                    if( $collectorentry->nodeType != 1 ) continue;
-                    $vname = DH::findAttribute('name', $collectorentry);
-                    $collectorlist[$vname] = $vname;
+                    foreach( $collectorChild->childNodes as $collectorentry )
+                    {
+                        if( $collectorentry->nodeType != 1 ) continue;
+                        $vname = DH::findAttribute('name', $collectorentry);
+                        $collectorlist[$vname] = $vname;
+                    }
                 }
-            }
-            else
-            {
-                //print "No collector for device '$devname'\n";
-                #$collectorlist[$vname] = $vname;
-            }
+                else
+                {
+                    //print "No collector for device '$devname'\n";
+                    #$collectorlist[$vname] = $vname;
+                }
 
-            $this->devices[$devname] = array('serial' => $devname, 'collectorlist' => $collectorlist);
-            foreach( $this->devices as $serial => $array )
-            {
-                $managedFirewall = $this->owner->managedFirewallsStore->find($serial);
-                if( $managedFirewall !== null )
-                    $managedFirewall->addReference( $this );
+                $this->devices[$devname] = array('serial' => $devname, 'collectorlist' => $collectorlist);
+                foreach( $this->devices as $serial => $array )
+                {
+                    $managedFirewall = $this->owner->managedFirewallsStore->find($serial);
+                    if( $managedFirewall !== null )
+                        $managedFirewall->addReference($this);
+                }
             }
         }
     }

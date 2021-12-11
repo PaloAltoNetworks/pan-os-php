@@ -79,7 +79,6 @@ class StaticRoute
 
         #print "NAME: ".$this->name."\n";
 
-        #$dstNode = DH::findFirstElementOrDie('destination', $xml);
         $dstNode = DH::findFirstElement('destination', $xml);
 
         if( $dstNode !== FALSE )

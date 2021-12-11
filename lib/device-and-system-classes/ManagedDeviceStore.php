@@ -55,24 +55,26 @@ class ManagedDeviceStore extends ObjStore
     {
         $tmp_managedFirewallsSerials = array();
 
-        $tmp = DH::findFirstElementOrCreate('devices', $xml);
-
-        foreach( $tmp->childNodes as $serial )
+        $tmp = DH::findFirstElement('devices', $xml);
+        if( $tmp !== FALSE )
         {
-            if( $serial->nodeType != 1 )
-                continue;
-            $s = DH::findAttribute('name', $serial);
-            if( $s === FALSE )
-                derr('no serial found');
-
-            if( $add_firewall )
+            foreach( $tmp->childNodes as $serial )
             {
-                $tmp_obj = new ManagedDevice($s, $this);
-                $this->add($tmp_obj);
+                if( $serial->nodeType != 1 )
+                    continue;
+                $s = DH::findAttribute('name', $serial);
+                if( $s === FALSE )
+                    derr('no serial found');
+
+                if( $add_firewall )
+                {
+                    $tmp_obj = new ManagedDevice($s, $this);
+                    $this->add($tmp_obj);
+                }
+
+
+                $tmp_managedFirewallsSerials[$s] = $s;
             }
-
-
-            $tmp_managedFirewallsSerials[$s] = $s;
         }
         return $tmp_managedFirewallsSerials;
     }

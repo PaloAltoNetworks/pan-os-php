@@ -36,9 +36,7 @@ class AggregateEthernetIfStore extends EthernetIfStore
             $xml = DH::findFirstElementOrCreate('entry', $xml);
             $xml = DH::findFirstElementOrCreate('network', $xml);
             $xml = DH::findFirstElementOrCreate('interface', $xml);
-            #$xml = DH::findFirstElementOrCreate('aggregate-ethernet', $xml);
 
-            #$this->xmlroot = DH::findFirstElementOrCreate('units', $xml);
             $this->xmlroot = DH::findFirstElementOrCreate('aggregate-ethernet', $xml);
         }
     }

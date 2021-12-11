@@ -75,7 +75,6 @@ class Address
             $node = DH::findFirstElementOrDie('entry', $doc);
 
             $rootDoc = $this->owner->addressRoot->ownerDocument;
-            #$rootDoc = $owner->addressRoot->ownerDocument;
             $this->xmlroot = $rootDoc->importNode($node, TRUE);
             $this->load_from_domxml($this->xmlroot);
 

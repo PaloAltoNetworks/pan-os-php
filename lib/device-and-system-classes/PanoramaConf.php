@@ -358,12 +358,12 @@ class PanoramaConf
         }
         */
 
-        $this->deviceconfigroot = DH::findFirstElementOrCreate('deviceconfig', $this->localhostroot);
+        $this->deviceconfigroot = DH::findFirstElement('deviceconfig', $this->localhostroot);
 
         $this->devicegrouproot = DH::findFirstElementOrCreate('device-group', $this->localhostroot);
         $this->templateroot = DH::findFirstElementOrCreate('template', $this->localhostroot);
         $this->templatestackroot = DH::findFirstElementOrCreate('template-stack', $this->localhostroot);
-        $this->logcollectorgrouproot = DH::findFirstElementOrCreate('log-collector-group', $this->localhostroot);
+        $this->logcollectorgrouproot = DH::findFirstElement('log-collector-group', $this->localhostroot);
 
         //
         // Extract Tag objects
@@ -380,15 +380,17 @@ class PanoramaConf
         //
         // Shared address objects extraction
         //
-        $tmp = DH::findFirstElementOrCreate('address', $this->sharedroot);
-        $this->addressStore->load_addresses_from_domxml($tmp);
+        $tmp = DH::findFirstElement('address', $this->sharedroot);
+        if( $tmp !== FALSE )
+            $this->addressStore->load_addresses_from_domxml($tmp);
         // end of address extraction
 
         //
         // Extract address groups
         //
-        $tmp = DH::findFirstElementOrCreate('address-group', $this->sharedroot);
-        $this->addressStore->load_addressgroups_from_domxml($tmp);
+        $tmp = DH::findFirstElement('address-group', $this->sharedroot);
+        if( $tmp !== FALSE )
+            $this->addressStore->load_addressgroups_from_domxml($tmp);
         // End of address groups extraction
 
         //
@@ -403,36 +405,41 @@ class PanoramaConf
         //
         // Extract services
         //
-        $tmp = DH::findFirstElementOrCreate('service', $this->sharedroot);
-        $this->serviceStore->load_services_from_domxml($tmp);
+        $tmp = DH::findFirstElement('service', $this->sharedroot);
+        if( $tmp !== FALSE )
+            $this->serviceStore->load_services_from_domxml($tmp);
         // End of address groups extraction
 
         //
         // Extract service groups
         //
-        $tmp = DH::findFirstElementOrCreate('service-group', $this->sharedroot);
-        $this->serviceStore->load_servicegroups_from_domxml($tmp);
+        $tmp = DH::findFirstElement('service-group', $this->sharedroot);
+        if( $tmp !== FALSE )
+            $this->serviceStore->load_servicegroups_from_domxml($tmp);
         // End of address groups extraction
 
         //
         // Extract application
         //
-        $tmp = DH::findFirstElementOrCreate('application', $this->sharedroot);
-        $this->appStore->load_application_custom_from_domxml($tmp);
+        $tmp = DH::findFirstElement('application', $this->sharedroot);
+        if( $tmp !== FALSE )
+            $this->appStore->load_application_custom_from_domxml($tmp);
         // End of application extraction
 
         //
         // Extract application filter
         //
-        $tmp = DH::findFirstElementOrCreate('application-filter', $this->sharedroot);
-        $this->appStore->load_application_filter_from_domxml($tmp);
+        $tmp = DH::findFirstElement('application-filter', $this->sharedroot);
+        if( $tmp !== FALSE )
+            $this->appStore->load_application_filter_from_domxml($tmp);
         // End of application filter groups extraction
 
         //
         // Extract application groups
         //
-        $tmp = DH::findFirstElementOrCreate('application-group', $this->sharedroot);
-        $this->appStore->load_application_group_from_domxml($tmp);
+        $tmp = DH::findFirstElement('application-group', $this->sharedroot);
+        if( $tmp !== FALSE )
+            $this->appStore->load_application_group_from_domxml($tmp);
         // End of application groups extraction
 
 
@@ -993,17 +1000,20 @@ class PanoramaConf
         //
         // loading LogCollectorGroup
         //
-        foreach( $this->logcollectorgrouproot->childNodes as $node )
+        if( $this->logcollectorgrouproot !== FALSE )
         {
-            if( $node->nodeType != XML_ELEMENT_NODE ) continue;
+            foreach( $this->logcollectorgrouproot->childNodes as $node )
+            {
+                if( $node->nodeType != XML_ELEMENT_NODE ) continue;
 
-            #$ldv = new LogCollectorGroup('*tmp*', $this);
-            $ldv = new LogCollectorGroup( $this);
-            $ldv->load_from_domxml($node);
-            $this->logCollectorGroups[] = $ldv;
-            //PH::print_stdout(  "TemplateStack '{$ldv->name()}' found" );
+                #$ldv = new LogCollectorGroup('*tmp*', $this);
+                $ldv = new LogCollectorGroup( $this);
+                $ldv->load_from_domxml($node);
+                $this->logCollectorGroups[] = $ldv;
+                //PH::print_stdout(  "TemplateStack '{$ldv->name()}' found" );
 
-            //Todo: add templates to templatestack
+                //Todo: add templates to templatestack
+            }
         }
         //
         // end of LogCollectorGroup
@@ -1013,25 +1023,30 @@ class PanoramaConf
         //
         // Extract setting related configs
         //
-        $settingroot = DH::findFirstElementOrCreate('setting', $this->deviceconfigroot);
-
-        $tmp1 = DH::findFirstElement('wildfire', $settingroot);
-        if( $tmp1 !== FALSE )
+        if( $this->deviceconfigroot !== FALSE )
         {
-            $tmp2 = DH::findFirstElement('public-cloud-server', $tmp1);
-            if( $tmp2 )
+            $settingroot = DH::findFirstElementOrCreate('setting', $this->deviceconfigroot);
+            if( $settingroot !== FALSE )
             {
-                $this->_public_cloud_server = $tmp1->textContent;
-            }
-        }
+                $tmp1 = DH::findFirstElement('wildfire', $settingroot);
+                if( $tmp1 !== FALSE )
+                {
+                    $tmp2 = DH::findFirstElement('public-cloud-server', $tmp1);
+                    if( $tmp2 )
+                    {
+                        $this->_public_cloud_server = $tmp1->textContent;
+                    }
+                }
 
-        $managementroot = DH::findFirstElement('management', $settingroot);
-        if( $managementroot !== FALSE )
-        {
-            $auditComment = DH::findFirstElement('rule-require-audit-comment', $managementroot);
-            if( $auditComment != FALSE )
-                if( $auditComment->textContent === "yes" )
-                    $this->_auditComment = TRUE;
+                $managementroot = DH::findFirstElement('management', $settingroot);
+                if( $managementroot !== FALSE )
+                {
+                    $auditComment = DH::findFirstElement('rule-require-audit-comment', $managementroot);
+                    if( $auditComment != FALSE )
+                        if( $auditComment->textContent === "yes" )
+                            $this->_auditComment = TRUE;
+                }
+            }
         }
         //
     }

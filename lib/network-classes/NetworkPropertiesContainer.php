@@ -112,13 +112,15 @@ class NetworkPropertiesContainer
         }
 
 
-        $tmp = DH::findFirstElementOrCreate('virtual-router', $this->xmlroot);
-        $this->virtualRouterStore->load_from_domxml($tmp);
+        $tmp = DH::findFirstElement('virtual-router', $this->xmlroot);
+        if( $tmp !== FALSE )
+            $this->virtualRouterStore->load_from_domxml($tmp);
 
-        $tmp = DH::findFirstElementOrCreate('virtual-wire', $this->xmlroot);
-        $this->virtualWireStore->load_from_domxml($tmp);
+        $tmp = DH::findFirstElement('virtual-wire', $this->xmlroot);
+        if( $tmp !== FALSE )
+            $this->virtualWireStore->load_from_domxml($tmp);
 
-        $tmp = DH::findFirstElementOrCreate('ike', $this->xmlroot);
+        $tmp = DH::findFirstElement('ike', $this->xmlroot);
         if( $tmp !== FALSE )
         {
             $tmp_crypto = DH::findFirstElementOrCreate('crypto-profiles', $tmp);
@@ -143,7 +145,7 @@ class NetworkPropertiesContainer
                 $this->ikeGatewayStore->load_from_domxml($tmp2);
             }
         }
-        $tmp = DH::findFirstElementOrCreate('tunnel', $this->xmlroot);
+        $tmp = DH::findFirstElement('tunnel', $this->xmlroot);
         if( $tmp !== FALSE )
         {
             $tmp = DH::findFirstElement('ipsec', $tmp);

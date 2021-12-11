@@ -362,32 +362,36 @@ class DeviceCloud
             //
             // Extract address objects
             //
-            $tmp = DH::findFirstElementOrCreate('address', $xml);
-            $this->addressStore->load_addresses_from_domxml($tmp);
+            $tmp = DH::findFirstElement('address', $xml);
+            if( $tmp !== FALSE )
+                $this->addressStore->load_addresses_from_domxml($tmp);
             // End of address objects extraction
 
 
             //
             // Extract address groups in this DV
             //
-            $tmp = DH::findFirstElementOrCreate('address-group', $xml);
-            $this->addressStore->load_addressgroups_from_domxml($tmp);
+            $tmp = DH::findFirstElement('address-group', $xml);
+            if( $tmp !== FALSE )
+                $this->addressStore->load_addressgroups_from_domxml($tmp);
             // End of address groups extraction
 
 
             //												//
             // Extract service objects in this VSYS			//
             //												//
-            $tmp = DH::findFirstElementOrCreate('service', $xml);
-            $this->serviceStore->load_services_from_domxml($tmp);
+            $tmp = DH::findFirstElement('service', $xml);
+            if( $tmp !== FALSE )
+                $this->serviceStore->load_services_from_domxml($tmp);
             // End of <service> extraction
 
 
             //												//
             // Extract service groups in this VSYS			//
             //												//
-            $tmp = DH::findFirstElementOrCreate('service-group', $xml);
-            $this->serviceStore->load_servicegroups_from_domxml($tmp);
+            $tmp = DH::findFirstElement('service-group', $xml);
+            if( $tmp !== FALSE )
+                $this->serviceStore->load_servicegroups_from_domxml($tmp);
             // End of <service-group> extraction
 
             //
