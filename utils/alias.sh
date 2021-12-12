@@ -73,7 +73,7 @@ alias pa_bpa-generator='php -r "require_once '"'"'utils/bpa-generator.php'"'"';"
 ##########################################################################################
 ##########################################################################################
 
-alias pa_csv-import='php -r "require_once '"'"'utils/csv-import.php'"'"';" $@'
+
 
 #APPID TOOLBOX
 alias pa_appidtoolbox-report-generator='php -r "require_once '"'"'appid-toolbox/report-generator.php'"'"';" $@'
@@ -85,6 +85,9 @@ alias pa_appidtoolbox-rule-marker='php -r "require_once '"'"'appid-toolbox/rule-
 
 #DEVELOP
 alias pa_ckp-exclude='php -r "require_once '"'"'utils/develop/checkpoint-exclude.php'"'"';" $@'
+
+alias pa_csv-import='php -r "require_once '"'"'utils/develop/csv-import.php'"'"';" $@'
+alias pa_config-download-all='php -r "require_once '"'"'utils/develop/download_config_all.php'"'"';" $@'
 
 alias pa_ike='php -r "require_once '"'"'utils/develop/ike.php'"'"';" $@'
 
