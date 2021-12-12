@@ -3,6 +3,8 @@ CHANGELOG
 2.0.27
 UTILS:
 * pa_gratuitous-arp - extend for SNAT / improve if addressObject value has netmask, to send gARP to all IP Addresses
+* all scripts - introduce new argument 'git=[BRANCHname]';
+* ALIAS extension and correction
 
 BUGFIX:
 
