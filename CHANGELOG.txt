@@ -9,6 +9,7 @@ UTILS:
 BUGFIX:
 
 GENERAL:
+* update Readme and Install file / bring in information for PAN-OS-PHP on Windows WSLv2 installation
 
 
 2.0.26 (20211209)
