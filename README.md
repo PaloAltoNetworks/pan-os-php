@@ -5,7 +5,7 @@ pan-os-php
 PAN-OS-PHP is a PHP library aimed at making PANOS config changes easy (and XML free ;), 
 maintainable and allowing complex scenarios like rule merging, unused object tracking,
 conversion of checkpoint exclusion groups, massive rule editing, AppID conversion … . 
-It will work seamlessly on local config file or API.
+It will work seamlessly on PAN-OS local xml config file or PAN-OS API.
 
 **Homepage** : download latest sources on [GitHub](https://github.com/PaloAltoNetworks/pan-os-php).
 Windows package with PHP binaries here: [Git PAN-OS-PHP Windows Package](https://github.com/PaloAltoNetworks/pan-os-php-windows-package)
