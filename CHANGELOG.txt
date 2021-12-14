@@ -8,6 +8,7 @@ UTILS:
 * pa_tag-edit | introduce new "actions=replace-with-object:TAGname" in combination with 'filter=(name eq OLDtagName)'
 
 BUGFIX:
+* update installer scripts / issues with git-php not availalbe
 
 GENERAL:
 * update Readme and Install file / bring in information for PAN-OS-PHP on Windows WSLv2 installation
