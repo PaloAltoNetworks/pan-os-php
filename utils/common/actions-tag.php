@@ -742,3 +742,30 @@ TagCallContext::$supportedActions['create'] = array(
     'args' => array('name' => array('type' => 'string', 'default' => '*nodefault*')
     )
 );
+
+TagCallContext::$supportedActions[] = array(
+    'name' => 'replace-With-Object',
+    'MainFunction' => function (TagCallContext $context) {
+        $object = $context->object;
+        $objectRefs = $object->getReferences();
+
+        $foundObject = $object->owner->find($context->arguments['objectName']);
+
+        if( $foundObject === null )
+            derr("cannot find an object named '{$context->arguments['objectName']}'");
+
+        /** @var AddressGroup|AddressRuleContainer $objectRef */
+
+        foreach( $objectRefs as $objectRef )
+        {
+            $string = "replacing in {$objectRef->toString()}";
+            PH::ACTIONlog( $context, $string );
+            if( $context->isAPI )
+                $objectRef->API_replaceReferencedObject($object, $foundObject);
+            else
+                $objectRef->replaceReferencedObject($object, $foundObject);
+        }
+
+    },
+    'args' => array('objectName' => array('type' => 'string', 'default' => '*nodefault*')),
+);
