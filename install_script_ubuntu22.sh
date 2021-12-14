@@ -39,6 +39,8 @@ echo "START \"install PAN-OS-PHP on UBUNTU\"" \
 && php -r "require('lib/pan_php_framework.php');print \"PAN-OS-PHP LIBRARY - OK INSTALL SUCCESSFUL\n\";" \
 && echo "" \
 && echo "" \
+&& GIT_SSL_NO_VERIFY=true git submodule init \
+&& GIT_SSL_NO_VERIFY=true git submodule update --remote \
 && echo "" \
 && echo "" \
 && echo "END script"
