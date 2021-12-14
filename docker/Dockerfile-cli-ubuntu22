@@ -18,6 +18,7 @@ RUN mkdir /tools; mkdir /tools/pan-os-php;
 COPY appid-toolbox /tools/pan-os-php/appid-toolbox
 COPY lib /tools/pan-os-php/lib
 COPY phpseclib /tools/pan-os-php/phpseclib
+COPY git-php /tools/pan-os-php/git-php
 COPY utils /tools/pan-os-php/utils
 COPY tests /tools/pan-os-php/tests
 
