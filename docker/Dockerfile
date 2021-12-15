@@ -7,7 +7,7 @@ SHELL ["/bin/bash", "-c"]
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt update -y --fix-missing
-RUN apt-get install -y tzdata bash-completion
+RUN apt-get install -y tzdata git bash-completion
 
 
 RUN apt-get install -y php$php_var php$php_var-curl php$php_var-dom php$php_var-mbstring php$php_var-bcmath
@@ -33,3 +33,4 @@ RUN cat /tools/pan-os-php/utils/bash_autocompletion/enable_bash.txt >> /$user_va
 
 COPY utils/bash_autocompletion/pan-os-php.sh /usr/share/bash-completion/completions/pan-os-php
 
+RUN git config --global user.email=test@test.com user.name=test

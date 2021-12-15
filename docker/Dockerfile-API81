@@ -7,7 +7,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV PHP_MEMORY_LIMIT=128M
 
 RUN apt-get update -y --fix-missing
-RUN apt-get install -y tzdata
+RUN apt-get install -y tzdata git
 
 # libraries for PHP
 RUN apt-get install -y libcurl3-openssl-dev libxml2-dev libonig-dev
@@ -28,6 +28,8 @@ RUN chmod -R 777 /var/www/html/log
 
 # PHP library of pan-os-php
 RUN echo 'include_path = "/usr/local/lib/php:/var/www/html"' >> /usr/local/etc/php/php.ini
+
+RUN git config --global user.email=test@test.com user.name=test
 
 #upload
 RUN touch /usr/local/etc/php/conf.d/uploads.ini \
