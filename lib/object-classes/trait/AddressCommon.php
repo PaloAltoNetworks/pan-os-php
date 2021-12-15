@@ -222,6 +222,13 @@ trait AddressCommon
             if( $refClass == 'AddressGroup' )
             {
                 /** @var AddressGroup $ref */
+                if( $ref->isDynamic() )
+                {
+                    PH::print_stdout( $outputPadding . "- skip: not possible on dynamic AddressGroup {$ref->_PANC_shortName()}" );
+                    continue;
+                }
+
+
                 if( $displayOutput )
                     PH::print_stdout( $outputPadding . "- removing from {$ref->_PANC_shortName()}" );
                 if( $apiMode )
