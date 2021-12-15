@@ -13,6 +13,7 @@ BUGFIX:
 * update installer scripts / issues with git-php not availalbe
 * update dockerfiles to support git-php
 * Dockerfiles - extend with git and set git global
+* UTIL pa_address-edit actions=decommission | bugfix not possible to remove object from dynamic address-group
 
 GENERAL:
 * update Readme and Install file / bring in information for PAN-OS-PHP on Windows WSLv2 installation
