@@ -6,6 +6,7 @@ UTILS:
 * all scripts - introduce new argument 'git=[BRANCHname]';
 * ALIAS extension and correction
 * pa_tag-edit | introduce new "actions=replace-with-object:TAGname" in combination with 'filter=(name eq OLDtagName)'
+* UTIL develop - introduce interface_getIP
 
 BUGFIX:
 * update installer scripts / issues with git-php not availalbe
