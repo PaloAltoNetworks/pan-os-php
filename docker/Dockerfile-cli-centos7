@@ -57,6 +57,7 @@ RUN cat /tools/pan-os-php/utils/bash_autocompletion/enable_bash.txt >> /$user_va
 
 COPY utils/bash_autocompletion/pan-os-php.sh /usr/share/bash-completion/completions/pan-os-php
 
+RUN git config --global user.email=test@test.com user.name=test
 
 #for BASH 5.0
 RUN yum -y install curl
