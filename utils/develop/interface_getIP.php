@@ -74,12 +74,15 @@ elseif( $util->pan->isFirewall() )
     getIntIP( $util->pan, $zoneName, $array );
 }
 
+PH::print_stdout( "--------------------------------------------------------------------------------" );
+PH::print_stdout( "--------------------------------------------------------------------------------" );
+PH::print_stdout( "--------------------------------------------------------------------------------" );
 #print json_encode( $array, JSON_PRETTY_PRINT );
 #print_r( $array );
 foreach( $array as $device => $interface )
 {
     foreach( $interface as $int )
-        print $device.",".$int['name'].",".$int['ip']."\n";
+        PH::print_stdout( $device.",".$int['name'].",".$int['ip'] );
 }
 
 
@@ -94,7 +97,7 @@ function getIntIP( $pan, $zoneName, &$array )
     $zoneInternet = $vsys->zoneStore->find($zoneName);
 
     if( $zoneInternet === null )
-        derr( "Zone: ".$zoneName." not found\n" );
+        derr( "Zone: ".$zoneName." not found\n", null, false );
     else
     {
         #print "Zone found: ".$zoneInternet->name()."\n";
@@ -106,9 +109,17 @@ function getIntIP( $pan, $zoneName, &$array )
     foreach( $zoneInterfaces as $zoneInterface )
     {
         /** @var EthernetInterface $zoneInterface */
-        $IP = $zoneInterface->getLayer3IPAddresses();
+        if( $zoneInterface->isEthernetType() )
+        {
+            $IP = $zoneInterface->getLayer3IPAddresses();
 
-        $array[ $inputConnector->info_hostname ][ $zoneInterface->name() ]['name'] = $zoneInterface->name();
-        $array[ $inputConnector->info_hostname ][ $zoneInterface->name() ]['ip'] = $IP[0];
+            $array[ $inputConnector->info_hostname ][ $zoneInterface->name() ]['name'] = $zoneInterface->name();
+            $array[ $inputConnector->info_hostname ][ $zoneInterface->name() ]['ip'] = $IP[0];
+
+            PH::print_stdout( "" );
+            PH::print_stdout( $inputConnector->info_hostname.",".$zoneInterface->name().",".$IP[0] );
+            PH::print_stdout( "--------------------------------------------------------------------------------" );
+        }
+
     }
 }
