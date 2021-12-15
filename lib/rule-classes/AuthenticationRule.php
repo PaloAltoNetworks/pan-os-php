@@ -238,7 +238,7 @@ class AuthenticationRule extends RuleWithUserID
         PH::print_stdout( $padding . "    Tags:  " . $this->tags->toString_inline() );
         PH::$JSON_TMP['sub']['object'][$this->name()]['tag'] = $this->tags->toString_inline();
 
-        if( strlen($this->_description) > 0 )
+        if( $this->_description !== null && strlen($this->_description) > 0 )
         {
             PH::print_stdout( $padding . "  Desc:  " . $this->_description );
             PH::$JSON_TMP['sub']['object'][$this->name()]['description'] = $this->_description;

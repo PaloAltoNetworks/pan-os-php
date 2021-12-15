@@ -1120,7 +1120,7 @@ class SecurityRule extends RuleWithUserID
         }
 
 
-        if( strlen($this->_description) > 0 )
+        if( $this->_description !==null && strlen($this->_description) > 0 )
         {
             PH::print_stdout( $padding . "  Desc:  " . $this->_description );
             PH::$JSON_TMP['sub']['object'][$this->name()]['description'] = $this->_description;
