@@ -36,7 +36,7 @@ class ServiceSrcPortMapping
         $newMapping = new ServiceSrcPortMapping();
 
         if( $text == "" )
-            $text = "1-65535";
+            $text = "0-65535";
 
         $commaExplode = explode(',', $text);
 

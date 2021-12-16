@@ -98,11 +98,6 @@ function getIntIP( $pan, $zoneName, &$array )
 
     if( $zoneInternet === null )
         derr( "Zone: ".$zoneName." not found\n", null, false );
-    else
-    {
-        #print "Zone found: ".$zoneInternet->name()."\n";
-    }
-
 
     $zoneInterfaces = $zoneInternet->attachedInterfaces->getAll();
     #print "count: ".count($zoneInterfaces)."\n";
@@ -120,6 +115,5 @@ function getIntIP( $pan, $zoneName, &$array )
             PH::print_stdout( $inputConnector->info_hostname.",".$zoneInterface->name().",".$IP[0] );
             PH::print_stdout( "--------------------------------------------------------------------------------" );
         }
-
     }
 }
