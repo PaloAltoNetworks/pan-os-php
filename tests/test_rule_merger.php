@@ -85,7 +85,8 @@ foreach( $test_merger as $merger )
     $method_array = array();
     if( $merger == 'rule' )
     {
-        $util = '../utils/rule-merger.php';
+        //$util = '../utils/rule-merger.php';
+        $util = '../utils/pan-os-php.php type=rule-merger';
 
         $method_array[] = 'matchFromToSrcDstApp';
         $method_array[] = 'matchFromToSrcDstSvc';

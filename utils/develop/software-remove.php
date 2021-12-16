@@ -60,7 +60,7 @@ if( isset(PH::$args['actions']) )
     $actions = PH::$args['actions'];
     if( $actions !== "display" && $actions !== "delete" )
     {
-        display_error_usage_exit('"actions" argument only support "display" or "delete" ');
+        $util->display_error_usage_exit('"actions" argument only support "display" or "delete" ');
     }
 }
 else
@@ -113,6 +113,10 @@ if( $util->configType == 'panos' )
 elseif( $util->configType == 'panorama' )
 {
     $device_serials = $connector->panorama_getConnectedFirewallsSerials();
+
+    //Todo: missing stuff, delete old content from Panorama
+    //1) direct for Panorama
+    //2) on Panorama for FWs
 
     $i=0;
     foreach( $device_serials as $child )

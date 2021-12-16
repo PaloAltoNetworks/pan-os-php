@@ -706,8 +706,8 @@ class App
                 $text = "";
                 foreach( $this->$protocol as $port )
                 {
-                    $any = "1-65535";
-                    $dynamic = "1024-65535";
+                    $any = "0-65535";
+                    $dynamic = "1025-65535";
                     if( $port[0] == "single" )
                     {
                         if( $port[1] == 'any' )

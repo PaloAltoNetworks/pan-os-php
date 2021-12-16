@@ -3702,7 +3702,7 @@ RuleCallContext::$supportedActions[] = array(
 
         if( ($rule->services->isAny() || $rule->services->isApplicationDefault()) && $context->arguments['restrictToListOfServices'] != '*sameAsInRule*' )
         {
-            $ports = '1-65535';
+            $ports = '0-65535';
             $portMapping = ServiceDstPortMapping::mappingFromText($ports, TRUE);
             $udpPortMapping = ServiceDstPortMapping::mappingFromText($ports, FALSE);
 
