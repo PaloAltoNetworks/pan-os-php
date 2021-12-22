@@ -8,6 +8,7 @@ UTILS:
 * pa_tag-edit | introduce new "actions=replace-with-object:TAGname" in combination with 'filter=(name eq OLDtagName)'
 * UTIL develop - introduce interface_getIP
 * UTIL all rule classes - improvements for PHP8.1
+* UTIL | disable logging
 
 BUGFIX:
 * update installer scripts / issues with git-php not availalbe
