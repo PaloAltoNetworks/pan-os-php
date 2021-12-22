@@ -1754,4 +1754,9 @@ class UTIL
             PH::print_stdout("");
         }
     }
+
+    public function useException()
+    {
+        PH::$useExceptions = TRUE;
+    }
 }

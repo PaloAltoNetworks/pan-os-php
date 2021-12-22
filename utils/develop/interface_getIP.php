@@ -22,9 +22,20 @@ $usageMsg = PH::boldText('USAGE: ')."php ".basename(__FILE__)." in=api:://[Panor
     "
      - for Firewalls where Interfaces or other config is from Panorama Device-Group / Template please use in=api://FW-MGMT-ip/merged-config";
 
-$util = new UTIL( "custom", $argv, $argc, __FILE__, $supportedArguments, $usageMsg );
-$util->utilInit();
-$util->load_config();
+try
+{
+    $util = new UTIL("custom", $argv, $argc, __FILE__, $supportedArguments, $usageMsg);
+    $util->useException();
+    $util->utilInit();
+    $util->load_config();
+}
+catch(Exception $e)
+{
+    PH::print_stdout("          ***** API Error occured : ".$e->getMessage() );
+    exit();
+}
+
+
 
 #if( $util->pan->isFirewall() )
 #    derr( "only PAN-OS Panorama is supported" );
@@ -59,12 +70,20 @@ if( $cycleConnectedFirewalls && $util->pan->isPanorama() )
         $argv[0] = "test";
         $argv[] = "in=api://".$fw['serial']."@".$inputConnector->info_mgmtip."/merged-config";
 
-        #PH::resetCliArgs( $argv );
-        $util2 = new UTIL("custom", $argv, $argc, __FILE__);
-        $util2->utilInit();
-        $util2->load_config();
+        try
+        {
+            #PH::resetCliArgs( $argv );
+            $util2 = new UTIL("custom", $argv, $argc, __FILE__);
+            $util2->useException();
+            $util2->utilInit();
+            $util2->load_config();
 
-        getIntIP( $util2->pan, $zoneName, $array );
+            getIntIP( $util2->pan, $zoneName, $array );
+        }
+        catch(Exception $e)
+        {
+            PH::print_stdout("          ***** API Error occured : ".$e->getMessage() );
+        }
     }
 }
 elseif( $util->pan->isFirewall() )
