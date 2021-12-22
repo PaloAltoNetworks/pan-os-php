@@ -133,8 +133,9 @@ class UTIL
         if( !empty($_usageMsg) )
             $this->usageMsg = $_usageMsg;
 
-        $this->utilLogger();
-        $this->log->info("start UTIL: " . $this->PHP_FILE . " | " . implode(", ", $argv));
+        //vulnarability??
+        //$this->utilLogger();
+        //$this->log->info("start UTIL: " . $this->PHP_FILE . " | " . implode(", ", $argv));
 
 
 
@@ -174,7 +175,8 @@ class UTIL
 
         $this->save_our_work(TRUE);
 
-        $this->log->info("END UTIL: " . $this->PHP_FILE);
+        //vulnarability?
+        //$this->log->info("END UTIL: " . $this->PHP_FILE);
 
         $this->endOfScript();
     }
@@ -805,7 +807,6 @@ class UTIL
                 $this->xmlDoc = $this->configInput['connector']->getPanoramaPushedConfig();
             else
                 $this->xmlDoc = $this->configInput['connector']->getSavedConfig($this->configInput['filename']);
-
         }
         else
             derr('not supported yet');
@@ -1078,6 +1079,40 @@ class UTIL
         $panc_version = $this->pan->appStore->predefinedStore_appid_version;
         PH::print_stdout( " - PAN-OS APP-ID version: ".$panc_version );
         PH::print_stdout( array( $panc_version ), false, "PAN-OS APP-ID version" );
+
+        /*
+        //if API and Git store it
+        if( isset(PH::$args['git']) && PH::$args['git'] )
+        {
+            $directory = dirname(__FILE__).'/../../projects';
+            $filename = 'test.xml';
+
+            $printMessage = TRUE;
+            $lineReturn = TRUE;
+            $indentingXml = 0;
+            $indentingXmlIncreament = 1;
+
+            $this->pan->save_to_file($directory."/".$filename, $printMessage, $lineReturn, $indentingXml, $indentingXmlIncreament);
+
+
+            /** @var Git $git */
+        /*
+            $git = new Git();
+
+
+            //$directory = dirname( "../../projects/".$this->configInput );
+            //$filename = basename( $this->configInput['filename'] );
+
+            $repo = $git->init($directory);
+            $repo->addFile($directory."/".$filename);
+            #$repo->addAllChanges();
+
+            $repo->commit($directory."/".$filename.' before save of: '.$this->PHP_FILE );
+
+            //this is only for API
+            //$this->configOutput = $this->configInput['filename'];
+        }
+        */
     }
 
     public function loadStart()
@@ -1587,19 +1622,26 @@ class UTIL
 
         if( isset(PH::$args['git']) && PH::$args['git'] )
         {
-            /** @var Git $git */
-            $git = new Git();
+            if( $this->configInput['type'] == 'api' )
+            {
+                //
+            }
+            else
+            {
+                /** @var Git $git */
+                $git = new Git();
 
-            $directory = dirname( $this->configInput['filename'] );
-            $filename = basename( $this->configInput['filename'] );
+                $directory = dirname( $this->configInput['filename'] );
+                $filename = basename( $this->configInput['filename'] );
 
-            $repo = $git->init($directory);
-            $repo->addFile($filename);
-            #$repo->addAllChanges();
+                $repo = $git->init($directory);
+                $repo->addFile($filename);
+                #$repo->addAllChanges();
 
-            $repo->commit($filename.' before save of: '.$this->PHP_FILE );
+                $repo->commit($filename.' before save of: '.$this->PHP_FILE );
 
-            $this->configOutput = $this->configInput['filename'];
+                $this->configOutput = $this->configInput['filename'];
+            }
         }
 
         // save our work !!!
@@ -1660,7 +1702,8 @@ class UTIL
             PH::print_stdout( $arg_array, false, 'argument' );
         }
 
-        $this->log->info("END UTIL: " . $this->PHP_FILE);
+        //vulnerability??
+        //$this->log->info("END UTIL: " . $this->PHP_FILE);
     }
 
     static public function setTimezone()
