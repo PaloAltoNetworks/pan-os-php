@@ -93,6 +93,8 @@ function getIntIP( $pan, $zoneName, &$array )
     /** @var PANConf $pan */
     $inputConnector = $pan->connector;
 
+    $inputConnector->refreshSystemInfos( true );
+
     $vsys = $pan->findVirtualSystem("vsys1");
     $zoneInternet = $vsys->zoneStore->find($zoneName);
 
@@ -103,17 +105,21 @@ function getIntIP( $pan, $zoneName, &$array )
     #print "count: ".count($zoneInterfaces)."\n";
     foreach( $zoneInterfaces as $zoneInterface )
     {
+        $ip_info = "---";
+
         /** @var EthernetInterface $zoneInterface */
         if( $zoneInterface->isEthernetType() )
         {
             $IP = $zoneInterface->getLayer3IPAddresses();
-
-            $array[ $inputConnector->info_hostname ][ $zoneInterface->name() ]['name'] = $zoneInterface->name();
-            $array[ $inputConnector->info_hostname ][ $zoneInterface->name() ]['ip'] = $IP[0];
-
-            PH::print_stdout( "" );
-            PH::print_stdout( $inputConnector->info_hostname.",".$zoneInterface->name().",".$IP[0] );
-            PH::print_stdout( "--------------------------------------------------------------------------------" );
+            if( isset( $IP[0] ) )
+                $ip_info = $IP[0];
         }
+
+        $array[ $inputConnector->info_hostname ][ $zoneInterface->name() ]['name'] = $zoneInterface->name();
+        $array[ $inputConnector->info_hostname ][ $zoneInterface->name() ]['ip'] = $ip_info;
+
+        PH::print_stdout( "" );
+        PH::print_stdout( $inputConnector->info_hostname.",".$zoneInterface->name().",".$ip_info );
+        PH::print_stdout( "--------------------------------------------------------------------------------" );
     }
 }
