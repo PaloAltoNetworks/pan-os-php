@@ -9,6 +9,7 @@ UTILS:
 * UTIL develop - introduce interface_getIP
 * UTIL all rule classes - improvements for PHP8.1
 * UTIL | disable logging
+* UTIL - PanAPIConnector | improve Exception handling
 
 BUGFIX:
 * update installer scripts / issues with git-php not availalbe

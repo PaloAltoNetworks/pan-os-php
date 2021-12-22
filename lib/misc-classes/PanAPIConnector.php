@@ -1207,7 +1207,17 @@ class PanAPIConnector
         $httpReplyContent = curl_exec($this->_curl_handle);
 
         if( $httpReplyContent === FALSE )
-            derr('Could not retrieve URL: ' . $finalUrl . ' because of the following error: ' . curl_error($this->_curl_handle));
+        {
+            $msg = 'Could not retrieve URL: ' . $finalUrl . ' because of the following error: ' . curl_error($this->_curl_handle);
+            if( PH::$useExceptions )
+            {
+                $ex = new Exception($msg);
+                throw $ex;
+            }
+            else
+                derr( $msg );
+        }
+
 
         $curlHttpStatusCode = curl_getinfo($this->_curl_handle, CURLINFO_HTTP_CODE);
 
@@ -1250,7 +1260,17 @@ class PanAPIConnector
             derr('XML response has no "status" field: ' . DH::dom_to_xml($firstElement));
 
         if( $statusAttr != 'success' )
-            derr('API reported a failure: "' . $statusAttr . "\" with the following addition infos: " . $firstElement->nodeValue);
+        {
+            $msg = 'API reported a failure: "' . $statusAttr . "\" with the following addition infos: " . $firstElement->nodeValue;
+            if( PH::$useExceptions )
+            {
+                $ex = new Exception($msg);
+                throw $ex;
+            }
+            else
+                derr( $msg );
+        }
+
 
         if( $filecontent !== null )
             return $xmlDoc;
