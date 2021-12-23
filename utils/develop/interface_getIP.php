@@ -83,6 +83,13 @@ if( $cycleConnectedFirewalls && $util->pan->isPanorama() )
         catch(Exception $e)
         {
             PH::print_stdout("          ***** API Error occured : ".$e->getMessage() );
+
+            $array[ $fw['serial'] ][ "error" ]['name'] = "error";
+            $array[ $fw['serial'] ][ "error" ]['ip'] = "connection";
+
+            PH::print_stdout( "" );
+            PH::print_stdout( $fw['serial'].",error,connection" );
+            PH::print_stdout( "--------------------------------------------------------------------------------" );
         }
     }
 }
