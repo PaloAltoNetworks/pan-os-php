@@ -17,6 +17,7 @@ BUGFIX:
 * Dockerfiles - extend with git and set git global
 * UTIL pa_address-edit actions=decommission | bugfix not possible to remove object from dynamic address-group
 * UTIL | improve service any usage to 0-65535 from any / dynamic improvements from 1024-65535 to 1025-65535
+* UTIL pan-os-php type=device | bugfix for actions=securityprofile-create-alert-only
 
 GENERAL:
 * update Readme and Install file / bring in information for PAN-OS-PHP on Windows WSLv2 installation
