@@ -1035,8 +1035,6 @@ DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = arra
           </mode>
           <log-severity>medium</log-severity>
           <alert>
-            <member>Block</member>
-            <member>Allow</member>
             <member>abortion</member>
             <member>abused-drugs</member>
             <member>adult</member>
@@ -1113,8 +1111,6 @@ DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = arra
           </alert>
         </credential-enforcement>
         <alert>
-          <member>Block</member>
-          <member>Allow</member>
           <member>abortion</member>
           <member>abused-drugs</member>
           <member>adult</member>
