@@ -243,6 +243,38 @@ DeviceCallContext::$supportedActions['DeviceGroup-delete'] = array(
         }
     }
 );
+DeviceCallContext::$supportedActions['Template-create'] = array(
+    'name' => 'template-create',
+    'MainFunction' => function (DeviceCallContext $context) {
+    },
+    'GlobalFinishFunction' => function (DeviceCallContext $context) {
+        $templateName = $context->arguments['name'];
+
+        $pan = $context->subSystem;
+
+        if( !$pan->isPanorama() )
+            derr("only supported on Panorama config");
+
+
+        $tmp_template = $pan->findTemplate($templateName);
+        if( $tmp_template === null )
+        {
+            $string = "create Template: " . $templateName;
+            #PH::ACTIONlog($context, $string);
+
+            $dg = $pan->createTemplate($templateName);
+        }
+        else
+        {
+            $string = "DeviceGroup with name: " . $templateName . " already available!";
+            PH::ACTIONlog( $context, $string );
+        }
+    },
+    'args' => array(
+        'name' => array('type' => 'string', 'default' => 'false'),
+        'parentdg' => array('type' => 'string', 'default' => 'null'),
+    ),
+);
 DeviceCallContext::$supportedActions[] = array(
     'name' => 'exportToExcel',
     'MainFunction' => function (DeviceCallContext $context) {
@@ -1566,12 +1598,14 @@ DeviceCallContext::$supportedActions['ZoneProtectionProfile-create-BP'] = array(
 
         if( $context->subSystem->isPanorama() )
         {
+            /*
             $countDG = count( $context->subSystem->getDeviceGroups() );
             if( $countDG == 0 )
             {
                 #$dg = $context->subSystem->createDeviceGroup( "alert-only" );
                 derr( "NO DG available; please run 'pa_device-edit in=InputConfig.xml out=OutputConfig.xml actions=devicegroup-create:DG-NAME' first", null, false );
             }
+            */
         }
     },
     'MainFunction' => function (DeviceCallContext $context)
@@ -1660,9 +1694,18 @@ DeviceCallContext::$supportedActions['ZoneProtectionProfile-create-BP'] = array(
 
                 $sharedStore = $sub;
                 if( $classtype == "Template" )
+                {
                     $xmlRoot = $sharedStore->deviceConfiguration->network->xmlroot;
+                    if( $xmlRoot === null )
+                        $xmlRoot = DH::findFirstElementOrCreate('network', $sharedStore->deviceConfiguration->xmlroot);
+                }
                 elseif( $classtype == "VirtualSystem" )
+                {
                     $xmlRoot = $sharedStore->owner->network->xmlroot;
+                    if( $xmlRoot === null )
+                        $xmlRoot = DH::findFirstElementOrCreate('network', $sharedStore->owner->xmlroot);
+                }
+
 
                 $ownerDocument = $sub->xmlroot->ownerDocument;
 
