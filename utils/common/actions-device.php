@@ -1432,3 +1432,250 @@ DeviceCallContext::$supportedActions['geoIP-check'] = array(
         )
     )
 );
+
+
+
+DeviceCallContext::$supportedActions['LogForwardingProfile-create-BP'] = array(
+    'name' => 'logforwardingprofile-create-bp',
+    'GlobalInitFunction' => function (DeviceCallContext $context) {
+        $context->first = true;
+
+        if( $context->isAPI )
+            derr( "API mode not implemented yet" );
+
+        if( $context->subSystem->isPanorama() )
+        {
+            $countDG = count( $context->subSystem->getDeviceGroups() );
+            if( $countDG == 0 )
+            {
+                #$dg = $context->subSystem->createDeviceGroup( "alert-only" );
+                derr( "NO DG available; please run 'pa_device-edit in=InputConfig.xml out=OutputConfig.xml actions=devicegroup-create:DG-NAME' first", null, false );
+            }
+        }
+    },
+    'MainFunction' => function (DeviceCallContext $context)
+    {
+        $object = $context->object;
+        $classtype = get_class($object);
+
+        if( $context->first )
+        {
+            $lfp_bp_xmlstring = "<entry name=\"default\">
+  <match-list>
+    <entry name=\"Traffic_Log_Forwarding\">
+      <log-type>traffic</log-type>
+      <filter>All Logs</filter>
+      <send-to-panorama>yes</send-to-panorama>
+    </entry>
+    <entry name=\"Threat_Log_Forwarding\">
+      <log-type>threat</log-type>
+      <filter>All Logs</filter>
+      <send-to-panorama>yes</send-to-panorama>
+    </entry>
+    <entry name=\"Wildfire_Log_Forwarding\">
+      <log-type>wildfire</log-type>
+      <filter>All Logs</filter>
+      <send-to-panorama>yes</send-to-panorama>
+    </entry>
+    <entry name=\"URL_Log_Forwarding\">
+      <log-type>url</log-type>
+      <filter>All Logs</filter>
+      <send-to-panorama>yes</send-to-panorama>
+    </entry>
+    <entry name=\"Data_Log_Forwarding\">
+      <log-type>data</log-type>
+      <filter>All Logs</filter>
+      <send-to-panorama>yes</send-to-panorama>
+    </entry>
+    <entry name=\"Tunnel_Log_Forwarding\">
+      <log-type>tunnel</log-type>
+      <filter>All Logs</filter>
+      <send-to-panorama>yes</send-to-panorama>
+    </entry>
+    <entry name=\"Auth_Log_Forwarding\">
+      <log-type>auth</log-type>
+      <filter>All Logs</filter>
+      <send-to-panorama>yes</send-to-panorama>
+    </entry>
+  </match-list>
+</entry>";
+
+            if( $classtype == "VirtualSystem" || $classtype == "DeviceGroup" )
+            {
+                $sub = $object;
+
+                if( $context->arguments['shared'] )
+                {
+                    $sharedStore = $sub->owner;
+                    $xmlRoot = DH::findFirstElementOrCreate('shared', $sharedStore->xmlroot);
+                }
+                else
+                {
+                    $sharedStore = $sub;
+                    $xmlRoot = $sharedStore->xmlroot;
+                }
+
+                $ownerDocument = $sub->xmlroot->ownerDocument;
+
+                $newdoc = new DOMDocument;
+                $newdoc->loadXML( $lfp_bp_xmlstring );
+                $node = $newdoc->importNode($newdoc->firstChild, TRUE);
+                $node = $ownerDocument->importNode($node, TRUE);
+
+
+                $logSettings = DH::findFirstElementOrCreate('log-settings', $xmlRoot);
+                $logSettingProfiles = DH::findFirstElementOrCreate('profiles', $logSettings);
+
+                $entryDefault = DH::findFirstElementByNameAttr( 'entry', 'default', $logSettingProfiles );
+
+
+                if( $entryDefault === null )
+                    $logSettingProfiles->appendChild( $node );
+                else
+                    mwarning( "LogForwardingProfile 'default' already available. BestPractise LogForwardingProfile 'default' not created" );
+
+
+                $context->first = false;
+            }
+        }
+    },
+    'args' => array(
+        'shared' => array('type' => 'bool', 'default' => 'false',
+            'help' => "if set to true; LogForwardingProfile is create at SHARED level; at least one DG must be available"
+        )
+    )
+);
+
+DeviceCallContext::$supportedActions['ZoneProtectionProfile-create-BP'] = array(
+    'name' => 'zoneprotectionprofile-create-bp',
+    'GlobalInitFunction' => function (DeviceCallContext $context) {
+        $context->first = true;
+
+        if( $context->isAPI )
+            derr( "API mode not implemented yet" );
+
+        if( $context->subSystem->isPanorama() )
+        {
+            $countDG = count( $context->subSystem->getDeviceGroups() );
+            if( $countDG == 0 )
+            {
+                #$dg = $context->subSystem->createDeviceGroup( "alert-only" );
+                derr( "NO DG available; please run 'pa_device-edit in=InputConfig.xml out=OutputConfig.xml actions=devicegroup-create:DG-NAME' first", null, false );
+            }
+        }
+    },
+    'MainFunction' => function (DeviceCallContext $context)
+    {
+        $object = $context->object;
+        $classtype = get_class($object);
+
+        if( $context->first )
+        {
+            $zpp_bp_xmlstring = "<entry name=\"Recommended_Zone_Protection\">
+  <flood>
+    <tcp-syn>
+      <red>
+        <alarm-rate>10000</alarm-rate>
+        <activate-rate>10000</activate-rate>
+        <maximal-rate>40000</maximal-rate>
+      </red>
+      <enable>no</enable>
+    </tcp-syn>
+    <icmp>
+      <red>
+        <alarm-rate>10000</alarm-rate>
+        <activate-rate>10000</activate-rate>
+        <maximal-rate>40000</maximal-rate>
+      </red>
+      <enable>no</enable>
+    </icmp>
+    <icmpv6>
+      <red>
+        <alarm-rate>10000</alarm-rate>
+        <activate-rate>10000</activate-rate>
+        <maximal-rate>40000</maximal-rate>
+      </red>
+      <enable>no</enable>
+    </icmpv6>
+    <other-ip>
+      <red>
+        <alarm-rate>10000</alarm-rate>
+        <activate-rate>10000</activate-rate>
+        <maximal-rate>40000</maximal-rate>
+      </red>
+      <enable>no</enable>
+    </other-ip>
+    <udp>
+      <red>
+        <alarm-rate>10000</alarm-rate>
+        <activate-rate>10000</activate-rate>
+        <maximal-rate>40000</maximal-rate>
+      </red>
+      <enable>no</enable>
+    </udp>
+  </flood>
+  <scan>
+    <entry name=\"8001\">
+      <action>
+        <alert/>
+      </action>
+      <interval>2</interval>
+      <threshold>100</threshold>
+    </entry>
+    <entry name=\"8002\">
+      <action>
+        <alert/>
+      </action>
+      <interval>10</interval>
+      <threshold>100</threshold>
+    </entry>
+    <entry name=\"8003\">
+      <action>
+        <alert/>
+      </action>
+      <interval>2</interval>
+      <threshold>100</threshold>
+    </entry>
+  </scan>
+  <discard-ip-spoof>yes</discard-ip-spoof>
+  <discard-malformed-option>yes</discard-malformed-option>
+  <remove-tcp-timestamp>yes</remove-tcp-timestamp>
+  <strip-tcp-fast-open-and-data>no</strip-tcp-fast-open-and-data>
+  <strip-mptcp-option>global</strip-mptcp-option>
+</entry>";
+
+            if( $classtype == "VirtualSystem" || $classtype == "Template" )
+            {
+                $sub = $object;
+
+                $sharedStore = $sub;
+                if( $classtype == "Template" )
+                    $xmlRoot = $sharedStore->deviceConfiguration->network->xmlroot;
+                elseif( $classtype == "VirtualSystem" )
+                    $xmlRoot = $sharedStore->owner->network->xmlroot;
+
+                $ownerDocument = $sub->xmlroot->ownerDocument;
+
+                $newdoc = new DOMDocument;
+                $newdoc->loadXML( $zpp_bp_xmlstring );
+                $node = $newdoc->importNode($newdoc->firstChild, TRUE);
+                $node = $ownerDocument->importNode($node, TRUE);
+
+
+                $networkProfiles = DH::findFirstElementOrCreate('profiles', $xmlRoot);
+                $zppXMLroot = DH::findFirstElementOrCreate('zone-protection-profile', $networkProfiles);
+
+                $entryDefault = DH::findFirstElementByNameAttr( 'entry', 'Recommended_Zone_Protection', $zppXMLroot );
+
+
+                if( $entryDefault === null )
+                    $zppXMLroot->appendChild( $node );
+                else
+                    mwarning( "ZoneProtectionProfile 'Recommended_Zone_Protection' already available. BestPractise ZoneProtectionProfile 'Recommended_Zone_Protection' not created" );
+
+
+                $context->first = false;
+            }
+        }
+    }
+);

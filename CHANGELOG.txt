@@ -10,9 +10,10 @@ UTILS:
 * UTIL all rule classes - improvements for PHP8.1
 * UTIL | disable logging
 * UTIL - PanAPIConnector | improve Exception handling
+* UTIL pan-os-php type=device | introduce actions=logforwardingprofile-create-bp / zoneprotectionprofile-create-bp
 
 BUGFIX:
-* update installer scripts / issues with git-php not availalbe
+* update installer scripts / issues with git-php not available
 * update dockerfiles to support git-php
 * Dockerfiles - extend with git and set git global
 * UTIL pa_address-edit actions=decommission | bugfix not possible to remove object from dynamic address-group
