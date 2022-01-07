@@ -70,6 +70,8 @@ if( $cycleConnectedFirewalls && $util->pan->isPanorama() )
         $argv[0] = "test";
         $argv[] = "in=api://".$fw['serial']."@".$inputConnector->info_mgmtip."/merged-config";
 
+        PH::print_stdout( "--------------------------------------------------------------------------------" );
+
         try
         {
             #PH::resetCliArgs( $argv );
@@ -103,13 +105,19 @@ elseif( $util->pan->isFirewall() )
 PH::print_stdout( "--------------------------------------------------------------------------------" );
 PH::print_stdout( "--------------------------------------------------------------------------------" );
 PH::print_stdout( "--------------------------------------------------------------------------------" );
-#print json_encode( $array, JSON_PRETTY_PRINT );
-#print_r( $array );
-foreach( $array as $device => $interface )
+
+if( PH::$shadow_json )
+    print json_encode( $array, JSON_PRETTY_PRINT );
+else
 {
-    foreach( $interface as $int )
-        PH::print_stdout( $device.",".$int['name'].",".$int['ip'] );
+    #print_r( $array );
+    foreach( $array as $device => $interface )
+    {
+        foreach( $interface as $int )
+            PH::print_stdout( $device.",".$int['name'].",".$int['ip'] );
+    }
 }
+
 
 
 
