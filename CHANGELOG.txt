@@ -11,6 +11,7 @@ UTILS:
 * UTIL | disable logging
 * UTIL - PanAPIConnector | improve Exception handling
 * UTIL pan-os-php type=device | introduce actions=logforwardingprofile-create-bp / zoneprotectionprofile-create-bp
+* UTIL type=device | actions=securityprofile-create-alert-only extend with customerURLcategory
 
 BUGFIX:
 * update installer scripts / issues with git-php not available

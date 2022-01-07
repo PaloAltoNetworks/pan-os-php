@@ -1035,6 +1035,8 @@ DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = arra
           </mode>
           <log-severity>medium</log-severity>
           <alert>
+            <member>Allow</member>
+            <member>Block</member>
             <member>abortion</member>
             <member>abused-drugs</member>
             <member>adult</member>
@@ -1111,6 +1113,8 @@ DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = arra
           </alert>
         </credential-enforcement>
         <alert>
+          <member>Allow</member>
+          <member>Block</member>
           <member>abortion</member>
           <member>abused-drugs</member>
           <member>adult</member>
@@ -1236,6 +1240,12 @@ DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = arra
 
                 $name = "Alert-Only";
                 $ownerDocument = $sub->xmlroot->ownerDocument;
+
+
+                $sharedStore->customURLProfileStore->newCustomSecurityProfileURL( "Block" );
+                $sharedStore->customURLProfileStore->newCustomSecurityProfileURL( "Allow" );
+                $sharedStore->customURLProfileStore->newCustomSecurityProfileURL( "Custom-No-Decrypt" );
+
 
                 $store = $sharedStore->AntiVirusProfileStore;
                 $av = new AntiVirusProfile($name . "-AV", $store);
