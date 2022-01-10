@@ -47,7 +47,14 @@ class ServiceGroup
 
             $node = DH::findFirstElement('entry', $doc);
 
-            $rootDoc = $this->owner->serviceGroupRoot->ownerDocument;
+            if( $this->owner->serviceGroupRoot !== null )
+                $rootDoc = $this->owner->serviceGroupRoot->ownerDocument;
+            else
+            {
+                $tmpXML = DH::findFirstElementOrCreate( "service-group", $this->owner->owner->xmlroot );
+                $this->owner->load_servicegroups_from_domxml( $tmpXML );
+                $rootDoc = $this->owner->owner->xmlroot->ownerDocument;
+            }
 
             $this->xmlroot = $rootDoc->importNode($node, TRUE);
             $this->load_from_domxml($this->xmlroot);

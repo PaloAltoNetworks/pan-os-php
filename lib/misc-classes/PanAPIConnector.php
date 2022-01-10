@@ -224,9 +224,10 @@ class PanAPIConnector
             $this->info_threat_version = $threat_version->textContent;
         }
 
-        $vex = explode('.', $this->info_PANOS_version);
+        $vex = explode('-', $this->info_PANOS_version);
+        $vex = explode('.', $vex[0]);
         if( count($vex) != 3 )
-            derr("ERROR! Unsupported PANOS version :  " . $version . "\n\n");
+            derr("ERROR! Unsupported PANOS version :  " . $version->textContent . "\n\n");
 
         $this->info_PANOS_version_int = $vex[0] * 10 + $vex[1] * 1;
 
