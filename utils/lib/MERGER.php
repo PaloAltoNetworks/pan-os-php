@@ -1417,7 +1417,22 @@ class MERGER extends UTIL
                         $exitObject = null;
                         foreach( $child_NamehashMap[ $pickedObject->name() ] as $obj )
                         {
-                            if( $obj->value() !== $pickedObject->value() )
+                            if( $obj === $pickedObject )
+                                continue;
+
+                            /** @var Address $obj */
+                            /** @var Address $pickedObject */
+                            if( (!$obj->isType_FQDN() && !$pickedObject->isType_FQDN() ) &&  $obj->getNetworkMask() == '32' && $pickedObject->getNetworkMask() == '32'  )
+                            {
+                                if( ($obj->getNetworkMask() == $pickedObject->getNetworkMask() ) && $obj->getNetworkValue() == $pickedObject->getNetworkValue() )
+                                    $exit = false;
+                                else
+                                {
+                                    $exit = true;
+                                    $exitObject = $obj;
+                                }
+                            }
+                            elseif(  $obj->value() !== $pickedObject->value() )
                             {
                                 $exit = true;
                                 $exitObject = $obj;
@@ -1442,7 +1457,8 @@ class MERGER extends UTIL
                 }
                 else
                 {
-                    if( $tmp_address->type() === $pickedObject->type() && $tmp_address->value() === $pickedObject->value() )
+                    /** @var Address $tmp_address */
+                    if( $tmp_address->isAddress() && $pickedObject->isAddress() && $tmp_address->type() === $pickedObject->type() && $tmp_address->value() === $pickedObject->value() )
                     {
                         PH::print_stdout( "   * keeping object '{$tmp_address->_PANC_shortName()}'" );
                     }
