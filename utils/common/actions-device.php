@@ -1732,3 +1732,108 @@ DeviceCallContext::$supportedActions['ZoneProtectionProfile-create-BP'] = array(
         }
     }
 );
+
+DeviceCallContext::$supportedActions['CleanUpRule-create-BP'] = array(
+    'name' => 'cleanuprule-create-bp',
+    'GlobalInitFunction' => function (DeviceCallContext $context) {
+        $context->first = true;
+
+        if( $context->isAPI )
+            derr( "API mode not implemented yet" );
+
+        if( $context->subSystem->isPanorama() )
+        {
+        }
+    },
+    'MainFunction' => function (DeviceCallContext $context) {
+        $object = $context->object;
+        $classtype = get_class($object);
+
+        //virtualSystem -> for each
+        //Panorama; only once shared / post-rulebase
+        if( $context->first )
+        {
+            if( $context->arguments['logprof'] )
+            {
+                $logprof = $context->arguments['logprof'];
+            }
+            else
+            {
+                $logprof = "default";
+            }
+
+
+            if( $classtype == "VirtualSystem" || $classtype == "DeviceGroup" )
+            {
+                $sub = $object;
+
+                if( $classtype == "VirtualSystem" )
+                {
+                    $sharedStore = $sub;
+                    $xmlRoot = $sharedStore->xmlroot;
+
+                    //create security Rule at end
+                    $cleanupRule = $sub->securityRules->newSecurityRule("CleanupRule-BP");
+
+                    $rulebase = DH::findFirstElementOrCreate( "rulebase", $xmlRoot );
+                }
+                elseif( $classtype == "DeviceGroup" )
+                {
+                    $sharedStore = $sub->owner;
+                    $xmlRoot = DH::findFirstElementOrCreate('shared', $sharedStore->xmlroot);
+
+                    //create security Rule at end
+                    $cleanupRule = $sharedStore->securityRules->newSecurityRule("CleanupRule-BP", true);
+
+                    $rulebase = DH::findFirstElementOrCreate( "post-rulebase", $xmlRoot );
+                }
+
+
+                $cleanupRule->source->setAny();
+                $cleanupRule->destination->setAny();
+                $cleanupRule->setAction( 'deny');
+                $cleanupRule->setLogStart( false );
+                $cleanupRule->setLogEnd( true );
+                $cleanupRule->setLogSetting( $logprof );
+
+
+                $defaultSecurityRules = DH::findFirstElementOrCreate( "default-security-rules", $rulebase );
+
+                $rulebase->removeChild( $defaultSecurityRules );
+
+                $defaultSecurityRules_xml = "<default-security-rules>
+                    <rules>
+                      <entry name=\"intrazone-default\">
+                        <action>deny</action>
+                        <log-start>no</log-start>
+                        <log-end>yes</log-end>
+                        <log-setting>".$logprof."</log-setting>
+                      </entry>
+                      <entry name=\"interzone-default\">
+                        <action>deny</action>
+                        <log-start>no</log-start>
+                        <log-end>yes</log-end>
+                        <log-setting>".$logprof."</log-setting>
+                      </entry>
+                    </rules>
+                  </default-security-rules>";
+
+                $ownerDocument = $sub->xmlroot->ownerDocument;
+
+                $newdoc = new DOMDocument;
+                $newdoc->loadXML( $defaultSecurityRules_xml );
+                $node = $newdoc->importNode($newdoc->firstChild, TRUE);
+                $node = $ownerDocument->importNode($node, TRUE);
+
+                $rulebase->appendChild( $node );
+
+                $context->first = false;
+            }
+        }
+    },
+    'args' => array(
+    'logprof' => array('type' => 'string', 'default' => 'default',
+        'help' => "LogForwardingProfile name"
+    )
+)
+);

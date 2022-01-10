@@ -14,6 +14,7 @@ UTILS:
 * UTIL type=device | actions=securityprofile-create-alert-only extend with customerURLcategory
 * UTIL pan-os-php type=device | introduce actions=template-create
 * UTIL pan-os-php type=address-merger - improve merging value has /32 or only HOST IP address
+* UTIL type=device | introduce actions=cleanuprule-create-bp
 
 BUGFIX:
 * update installer scripts / issues with git-php not available
