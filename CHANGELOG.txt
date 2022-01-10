@@ -15,6 +15,7 @@ UTILS:
 * UTIL pan-os-php type=device | introduce actions=template-create
 * UTIL pan-os-php type=address-merger - improve merging value has /32 or only HOST IP address
 * UTIL type=device | introduce actions=cleanuprule-create-bp
+* UTIL type=device actions=cleanuprule-create-bp extend with PAN-OS API method
 
 BUGFIX:
 * update installer scripts / issues with git-php not available
