@@ -1827,7 +1827,8 @@ DeviceCallContext::$supportedActions['CleanUpRule-create-BP'] = array(
 
                 $rulebase->appendChild( $node );
 
-                $context->first = false;
+                if( $classtype == "DeviceGroup" )
+                    $context->first = false;
             }
         }
     },
