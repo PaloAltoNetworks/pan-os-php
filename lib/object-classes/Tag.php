@@ -154,9 +154,14 @@ class Tag
 
             $node = DH::findFirstElement('entry', $doc);
 
-            $rootDoc = $owner->xmlroot->ownerDocument;
-            if( $rootDoc === null )
-                $rootDoc = $this->owner->owner->xmldoc;
+            if( $this->owner->xmlroot !== null )
+                $rootDoc = $this->owner->xmlroot->ownerDocument;
+            else
+            {
+                $tmpXML = DH::findFirstElementOrCreate( "tag", $this->owner->owner->xmlroot );
+                $this->owner->load_from_domxml( $tmpXML );
+                $rootDoc = $this->owner->owner->xmlroot->ownerDocument;
+            }
 
             $this->xmlroot = $rootDoc->importNode($node, TRUE);
             $this->load_from_domxml($this->xmlroot);

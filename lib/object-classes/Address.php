@@ -74,9 +74,14 @@ class Address
 
             $node = DH::findFirstElementOrDie('entry', $doc);
 
-            $rootDoc = $this->owner->addressRoot->ownerDocument;
-            if( $rootDoc === null )
-                $rootDoc = $this->owner->owner->xmldoc;
+            if( $this->owner->addressRoot !== null )
+                $rootDoc = $this->owner->addressRoot->ownerDocument;
+            else
+            {
+                $tmpXML = DH::findFirstElementOrCreate( "address", $this->owner->owner->xmlroot );
+                $this->owner->load_addresses_from_domxml( $tmpXML );
+                $rootDoc = $this->owner->owner->xmlroot->ownerDocument;
+            }
 
             $this->xmlroot = $rootDoc->importNode($node, TRUE);
             $this->load_from_domxml($this->xmlroot);

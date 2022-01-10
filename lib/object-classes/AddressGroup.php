@@ -69,9 +69,14 @@ class AddressGroup
 
             $node = DH::findFirstElement('entry', $doc);
 
-            $rootDoc = $this->owner->addressGroupRoot->ownerDocument;
-            if( $rootDoc === null )
-                $rootDoc = $this->owner->owner->xmldoc;
+            if( $this->owner->addressGroupRoot !== null )
+                $rootDoc = $this->owner->addressGroupRoot->ownerDocument;
+            else
+            {
+                $tmpXML = DH::findFirstElementOrCreate( "address-group", $this->owner->owner->xmlroot );
+                $this->owner->load_addressgroups_from_domxml( $tmpXML );
+                $rootDoc = $this->owner->owner->xmlroot->ownerDocument;
+            }
 
             $this->xmlroot = $rootDoc->importNode($node, TRUE);
             $this->load_from_domxml($this->xmlroot);
