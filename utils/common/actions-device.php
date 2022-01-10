@@ -1738,8 +1738,8 @@ DeviceCallContext::$supportedActions['CleanUpRule-create-BP'] = array(
     'GlobalInitFunction' => function (DeviceCallContext $context) {
         $context->first = true;
 
-        if( $context->isAPI )
-            derr( "API mode not implemented yet" );
+        #if( $context->isAPI )
+        #    derr( "API mode not implemented yet" );
 
         if( $context->subSystem->isPanorama() )
         {
@@ -1795,7 +1795,8 @@ DeviceCallContext::$supportedActions['CleanUpRule-create-BP'] = array(
                 $cleanupRule->setLogStart( false );
                 $cleanupRule->setLogEnd( true );
                 $cleanupRule->setLogSetting( $logprof );
-
+                if( $context->isAPI )
+                    $cleanupRule->API_sync();
 
                 $defaultSecurityRules = DH::findFirstElementOrCreate( "default-security-rules", $rulebase );
 
@@ -1826,6 +1827,18 @@ DeviceCallContext::$supportedActions['CleanUpRule-create-BP'] = array(
                 $node = $ownerDocument->importNode($node, TRUE);
 
                 $rulebase->appendChild( $node );
+
+                if( $context->isAPI )
+                {
+                    $defaultSecurityRules_xmlroot = DH::findFirstElementOrCreate( "default-security-rules", $rulebase );
+
+                    $xpath = DH::elementToPanXPath($defaultSecurityRules_xmlroot);
+                    $con = findConnectorOrDie($object);
+
+                    $getXmlText_inline = DH::dom_to_xml($defaultSecurityRules_xmlroot, -1, FALSE);
+                    $con->sendEditRequest($xpath, $getXmlText_inline);
+                }
+
 
                 if( $classtype == "DeviceGroup" )
                     $context->first = false;
