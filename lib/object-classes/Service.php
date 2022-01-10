@@ -69,6 +69,9 @@ class Service
             $node = DH::findFirstElementOrDie('entry', $doc);
 
             $rootDoc = $this->owner->serviceRoot->ownerDocument;
+            if( $rootDoc === null )
+                $rootDoc = $this->owner->owner->xmldoc;
+
             $this->xmlroot = $rootDoc->importNode($node, TRUE);
             $this->load_from_domxml($this->xmlroot);
             $this->owner = null;
