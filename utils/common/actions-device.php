@@ -923,7 +923,40 @@ DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = arra
 
         if( $context->first )
         {
-            $av_xmlString = "<entry name=\"Alert-Only-AV\">
+            $av_xmlString_v9 = "<entry name=\"Alert-Only-AV\">
+        <decoder>
+          <entry name=\"ftp\">
+            <action>alert</action>
+            <wildfire-action>alert</wildfire-action>
+          </entry>
+          <entry name=\"http\">
+            <action>alert</action>
+            <wildfire-action>alert</wildfire-action>
+          </entry>
+          <entry name=\"http2\">
+            <action>alert</action>
+            <wildfire-action>alert</wildfire-action>
+          </entry>
+          <entry name=\"imap\">
+            <action>alert</action>
+            <wildfire-action>alert</wildfire-action>
+          </entry>
+          <entry name=\"pop3\">
+            <action>alert</action>
+            <wildfire-action>alert</wildfire-action>
+          </entry>
+          <entry name=\"smb\">
+            <action>alert</action>
+            <wildfire-action>alert</wildfire-action>
+          </entry>
+          <entry name=\"smtp\">
+            <action>alert</action>
+            <wildfire-action>alert</wildfire-action>
+          </entry>
+        </decoder>
+      </entry>";
+
+            $av_xmlString_v10 = "<entry name=\"Alert-Only-AV\">
         <decoder>
           <entry name=\"ftp\">
             <action>alert</action>
@@ -977,7 +1010,37 @@ DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = arra
         </mlav-engine-filebased-enabled>
       </entry>";
 
-            $as_xmlString = "<entry name=\"Alert-Only-AS\">
+            $as_xmlString_v9 = "<entry name=\"Alert-Only-AS\">
+        <botnet-domains>
+          <lists>
+            <entry name=\"default-paloalto-dns\">
+              <action>
+                <alert/>
+              </action>
+              <packet-capture>single-packet</packet-capture>
+            </entry>
+          </lists>
+          <sinkhole>
+            <ipv4-address>sinkhole.paloaltonetworks.com</ipv4-address>
+            <ipv6-address>2600:5200::1</ipv6-address>
+          </sinkhole>
+        </botnet-domains>
+        <rules>
+          <entry name=\"Alert-All\">
+            <action>
+              <alert/>
+            </action>
+            <severity>
+              <member>any</member>
+            </severity>
+            <threat-name>any</threat-name>
+            <category>any</category>
+            <packet-capture>disable</packet-capture>
+          </entry>
+        </rules>
+      </entry>";
+
+            $as_xmlString_v10 = "<entry name=\"Alert-Only-AS\">
         <botnet-domains>
           <lists>
             <entry name=\"default-paloalto-dns\">
@@ -1057,7 +1120,7 @@ DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = arra
         </rules>
       </entry>";
 
-            $url_xmlString = "<entry name=\"Alert-Only-URL\">
+            $url_xmlString_v9 = "<entry name=\"Alert-Only-URL\">
         <credential-enforcement>
           <mode>
             <ip-user/>
@@ -1220,8 +1283,168 @@ DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = arra
         </alert>
       </entry>";
 
-/*
-       <mlav-engine-urlbased-enabled>
+            $url_xmlString_v10 = "<entry name=\"Alert-Only-URL\">
+        <credential-enforcement>
+          <mode>
+            <ip-user/>
+          </mode>
+          <log-severity>medium</log-severity>
+          <alert>
+            <member>Allow</member>
+            <member>Block</member>
+            <member>abortion</member>
+            <member>abused-drugs</member>
+            <member>adult</member>
+            <member>alcohol-and-tobacco</member>
+            <member>auctions</member>
+            <member>business-and-economy</member>
+            <member>command-and-control</member>
+            <member>computer-and-internet-info</member>
+            <member>content-delivery-networks</member>
+            <member>copyright-infringement</member>
+            <member>cryptocurrency</member>
+            <member>dating</member>
+            <member>dynamic-dns</member>
+            <member>educational-institutions</member>
+            <member>entertainment-and-arts</member>
+            <member>extremism</member>
+            <member>financial-services</member>
+            <member>gambling</member>
+            <member>games</member>
+            <member>government</member>
+            <member>grayware</member>
+            <member>hacking</member>
+            <member>health-and-medicine</member>
+            <member>high-risk</member>
+            <member>home-and-garden</member>
+            <member>hunting-and-fishing</member>
+            <member>insufficient-content</member>
+            <member>internet-communications-and-telephony</member>
+            <member>internet-portals</member>
+            <member>job-search</member>
+            <member>legal</member>
+            <member>low-risk</member>
+            <member>malware</member>
+            <member>medium-risk</member>
+            <member>military</member>
+            <member>motor-vehicles</member>
+            <member>music</member>
+            <member>newly-registered-domain</member>
+            <member>news</member>
+            <member>not-resolved</member>
+            <member>nudity</member>
+            <member>online-storage-and-backup</member>
+            <member>parked</member>
+            <member>peer-to-peer</member>
+            <member>personal-sites-and-blogs</member>
+            <member>philosophy-and-political-advocacy</member>
+            <member>phishing</member>
+            <member>private-ip-addresses</member>
+            <member>proxy-avoidance-and-anonymizers</member>
+            <member>questionable</member>
+            <member>real-estate</member>
+            <member>real-time-detection</member>
+            <member>recreation-and-hobbies</member>
+            <member>reference-and-research</member>
+            <member>religion</member>
+            <member>search-engines</member>
+            <member>sex-education</member>
+            <member>shareware-and-freeware</member>
+            <member>shopping</member>
+            <member>social-networking</member>
+            <member>society</member>
+            <member>sports</member>
+            <member>stock-advice-and-tools</member>
+            <member>streaming-media</member>
+            <member>swimsuits-and-intimate-apparel</member>
+            <member>training-and-tools</member>
+            <member>translation</member>
+            <member>travel</member>
+            <member>unknown</member>
+            <member>weapons</member>
+            <member>web-advertisements</member>
+            <member>web-based-email</member>
+            <member>web-hosting</member>
+          </alert>
+        </credential-enforcement>
+        <alert>
+          <member>Allow</member>
+          <member>Block</member>
+          <member>abortion</member>
+          <member>abused-drugs</member>
+          <member>adult</member>
+          <member>alcohol-and-tobacco</member>
+          <member>auctions</member>
+          <member>business-and-economy</member>
+          <member>command-and-control</member>
+          <member>computer-and-internet-info</member>
+          <member>content-delivery-networks</member>
+          <member>copyright-infringement</member>
+          <member>cryptocurrency</member>
+          <member>dating</member>
+          <member>dynamic-dns</member>
+          <member>educational-institutions</member>
+          <member>entertainment-and-arts</member>
+          <member>extremism</member>
+          <member>financial-services</member>
+          <member>gambling</member>
+          <member>games</member>
+          <member>government</member>
+          <member>grayware</member>
+          <member>hacking</member>
+          <member>health-and-medicine</member>
+          <member>high-risk</member>
+          <member>home-and-garden</member>
+          <member>hunting-and-fishing</member>
+          <member>insufficient-content</member>
+          <member>internet-communications-and-telephony</member>
+          <member>internet-portals</member>
+          <member>job-search</member>
+          <member>legal</member>
+          <member>low-risk</member>
+          <member>malware</member>
+          <member>medium-risk</member>
+          <member>military</member>
+          <member>motor-vehicles</member>
+          <member>music</member>
+          <member>newly-registered-domain</member>
+          <member>news</member>
+          <member>not-resolved</member>
+          <member>nudity</member>
+          <member>online-storage-and-backup</member>
+          <member>parked</member>
+          <member>peer-to-peer</member>
+          <member>personal-sites-and-blogs</member>
+          <member>philosophy-and-political-advocacy</member>
+          <member>phishing</member>
+          <member>private-ip-addresses</member>
+          <member>proxy-avoidance-and-anonymizers</member>
+          <member>questionable</member>
+          <member>real-estate</member>
+          <member>real-time-detection</member>
+          <member>recreation-and-hobbies</member>
+          <member>reference-and-research</member>
+          <member>religion</member>
+          <member>search-engines</member>
+          <member>sex-education</member>
+          <member>shareware-and-freeware</member>
+          <member>shopping</member>
+          <member>social-networking</member>
+          <member>society</member>
+          <member>sports</member>
+          <member>stock-advice-and-tools</member>
+          <member>streaming-media</member>
+          <member>swimsuits-and-intimate-apparel</member>
+          <member>training-and-tools</member>
+          <member>translation</member>
+          <member>travel</member>
+          <member>unknown</member>
+          <member>weapons</member>
+          <member>web-advertisements</member>
+          <member>web-based-email</member>
+          <member>web-hosting</member>
+        </alert>
+        <mlav-engine-urlbased-enabled>
           <entry name=\"Phishing Detection\">
             <mlav-policy-action>alert</mlav-policy-action>
           </entry>
@@ -1229,7 +1452,7 @@ DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = arra
             <mlav-policy-action>alert</mlav-policy-action>
           </entry>
         </mlav-engine-urlbased-enabled>
-*/
+      </entry>";
 
             $fb_xmlString = "<entry name=\"Alert-Only-FB\">
         <rules>
@@ -1285,7 +1508,10 @@ DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = arra
                 $store = $sharedStore->AntiVirusProfileStore;
                 $av = new AntiVirusProfile($name . "-AV", $store);
                 $newdoc = new DOMDocument;
-                $newdoc->loadXML($av_xmlString);
+                if( $context->object->owner->version < 100 )
+                    $newdoc->loadXML($av_xmlString_v9);
+                else
+                    $newdoc->loadXML($av_xmlString_v10);
                 $node = $newdoc->importNode($newdoc->firstChild, TRUE);
                 $node = $ownerDocument->importNode($node, TRUE);
                 $av->load_from_domxml($node);
@@ -1296,7 +1522,10 @@ DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = arra
                 $store = $sharedStore->AntiSpywareProfileStore;
                 $as = new AntiSpywareProfile($name . "-AS", $store);
                 $newdoc = new DOMDocument;
-                $newdoc->loadXML($as_xmlString);
+                if( $context->object->owner->version < 100 )
+                    $newdoc->loadXML($as_xmlString_v9);
+                else
+                    $newdoc->loadXML($as_xmlString_v10);
                 $node = $newdoc->importNode($newdoc->firstChild, TRUE);
                 $node = $ownerDocument->importNode($node, TRUE);
                 $as->load_from_domxml($node);
@@ -1318,7 +1547,11 @@ DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = arra
                 $store = $sharedStore->URLProfileStore;
                 $url = new URLProfile($name . "-URL", $store);
                 $newdoc = new DOMDocument;
-                $newdoc->loadXML($url_xmlString);
+                if( $context->object->owner->version < 100 )
+                    $newdoc->loadXML($url_xmlString_v9);
+                else
+                    $newdoc->loadXML($url_xmlString_v10);
+
                 $node = $newdoc->importNode($newdoc->firstChild, TRUE);
                 $node = $ownerDocument->importNode($node, TRUE);
                 $url->load_from_domxml($node);
