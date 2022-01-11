@@ -906,6 +906,9 @@ DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = arra
     'GlobalInitFunction' => function (DeviceCallContext $context) {
         $context->first = true;
 
+        if( $context->isAPI && $context->subSystem->isPanorama() )
+            derr( "API mode not implemented yet for Panorama" );
+        //but also not for PAN-OS
         if( $context->isAPI )
             derr( "API mode not implemented yet" );
 
@@ -1482,8 +1485,8 @@ DeviceCallContext::$supportedActions['LogForwardingProfile-create-BP'] = array(
     'GlobalInitFunction' => function (DeviceCallContext $context) {
         $context->first = true;
 
-        if( $context->isAPI )
-            derr( "API mode not implemented yet" );
+        if( $context->isAPI && $context->subSystem->isPanorama() )
+            derr( "API mode not implemented yet for Panorama" );
 
         if( $context->subSystem->isPanorama() )
         {
@@ -1572,9 +1575,22 @@ DeviceCallContext::$supportedActions['LogForwardingProfile-create-BP'] = array(
 
 
                 if( $entryDefault === null )
+                {
                     $logSettingProfiles->appendChild( $node );
+
+                    if( $context->isAPI )
+                    {
+                        $entryDefault_xmlroot = DH::findFirstElementByNameAttr( 'entry', 'default', $logSettingProfiles );
+
+                        $xpath = DH::elementToPanXPath($logSettingProfiles);
+                        $con = findConnectorOrDie($object);
+
+                        $getXmlText_inline = DH::dom_to_xml($entryDefault_xmlroot, -1, FALSE);
+                        $con->sendSetRequest($xpath, $getXmlText_inline);
+                    }
+                }
                 else
-                    mwarning( "LogForwardingProfile 'default' already available. BestPractise LogForwardingProfile 'default' not created" );
+                    mwarning( "LogForwardingProfile 'default' already available. BestPractise LogForwardingProfile 'default' not created", null, false );
 
 
                 $context->first = false;
@@ -1593,8 +1609,8 @@ DeviceCallContext::$supportedActions['ZoneProtectionProfile-create-BP'] = array(
     'GlobalInitFunction' => function (DeviceCallContext $context) {
         $context->first = true;
 
-        if( $context->isAPI )
-            derr( "API mode not implemented yet" );
+        if( $context->isAPI && $context->subSystem->isPanorama() )
+            derr( "API mode not implemented yet for Panorama" );
 
         if( $context->subSystem->isPanorama() )
         {
@@ -1697,13 +1713,27 @@ DeviceCallContext::$supportedActions['ZoneProtectionProfile-create-BP'] = array(
                 {
                     $xmlRoot = $sharedStore->deviceConfiguration->network->xmlroot;
                     if( $xmlRoot === null )
-                        $xmlRoot = DH::findFirstElementOrCreate('network', $sharedStore->deviceConfiguration->xmlroot);
+                    {
+                        $xmlRoot = DH::findFirstElementOrCreate('device', $sharedStore->deviceConfiguration->xmlroot);
+
+                        #$xmlRoot = DH::findFirstElementByNameAttrOrCreate( 'entry', 'localhost.localdomain', $xmlRoot, $sharedStore->deviceConfiguration->xmlroot->ownerDocument);
+                        $xmlRoot = DH::findFirstElementOrCreate('entry', $xmlRoot);
+                        $xmlRoot->setAttribute( "name", 'localhost.localdomain' );
+                        $xmlRoot = DH::findFirstElementOrCreate('network', $xmlRoot);
+                    }
                 }
                 elseif( $classtype == "VirtualSystem" )
                 {
                     $xmlRoot = $sharedStore->owner->network->xmlroot;
                     if( $xmlRoot === null )
-                        $xmlRoot = DH::findFirstElementOrCreate('network', $sharedStore->owner->xmlroot);
+                    {
+                        $xmlRoot = DH::findFirstElementOrCreate('device', $sharedStore->owner->xmlroot);
+
+                        #$xmlRoot = DH::findFirstElementByNameAttrOrCreate( 'entry', 'localhost.localdomain', $xmlRoot, $sharedStore->owner->xmlroot->ownerDocument);
+                        $xmlRoot = DH::findFirstElementOrCreate('entry', $xmlRoot);
+                        $xmlRoot->setAttribute( "name", 'localhost.localdomain' );
+                        $xmlRoot = DH::findFirstElementOrCreate('network', $xmlRoot);
+                    }
                 }
 
 
@@ -1722,7 +1752,21 @@ DeviceCallContext::$supportedActions['ZoneProtectionProfile-create-BP'] = array(
 
 
                 if( $entryDefault === null )
+                {
                     $zppXMLroot->appendChild( $node );
+
+                    if( $context->isAPI )
+                    {
+                        $entryDefault_xmlroot = DH::findFirstElementByNameAttr( 'entry', 'Recommended_Zone_Protection', $zppXMLroot );
+
+                        $xpath = DH::elementToPanXPath($zppXMLroot);
+                        $con = findConnectorOrDie($object);
+
+                        $getXmlText_inline = DH::dom_to_xml($entryDefault_xmlroot, -1, FALSE);
+                        $con->sendSetRequest($xpath, $getXmlText_inline);
+                    }
+                }
+
                 else
                     mwarning( "ZoneProtectionProfile 'Recommended_Zone_Protection' already available. BestPractise ZoneProtectionProfile 'Recommended_Zone_Protection' not created" );
 
@@ -1738,29 +1782,20 @@ DeviceCallContext::$supportedActions['CleanUpRule-create-BP'] = array(
     'GlobalInitFunction' => function (DeviceCallContext $context) {
         $context->first = true;
 
-        #if( $context->isAPI )
-        #    derr( "API mode not implemented yet" );
+        if( $context->isAPI && $context->subSystem->isPanorama() )
+            derr( "API mode not implemented yet for Panorama" );
 
-        if( $context->subSystem->isPanorama() )
-        {
-        }
     },
     'MainFunction' => function (DeviceCallContext $context) {
         $object = $context->object;
         $classtype = get_class($object);
 
-        //virtualSystem -> for each
-        //Panorama; only once shared / post-rulebase
         if( $context->first )
         {
             if( $context->arguments['logprof'] )
-            {
                 $logprof = $context->arguments['logprof'];
-            }
             else
-            {
                 $logprof = "default";
-            }
 
 
             if( $classtype == "VirtualSystem" || $classtype == "DeviceGroup" )
@@ -1838,7 +1873,6 @@ DeviceCallContext::$supportedActions['CleanUpRule-create-BP'] = array(
                     $getXmlText_inline = DH::dom_to_xml($defaultSecurityRules_xmlroot, -1, FALSE);
                     $con->sendEditRequest($xpath, $getXmlText_inline);
                 }
-
 
                 if( $classtype == "DeviceGroup" )
                     $context->first = false;

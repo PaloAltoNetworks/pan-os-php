@@ -1076,6 +1076,9 @@ class UTIL
         PH::print_stdout( array( "value" => $this->loadArrayMem[0], "type" => $this->loadArrayMem[1]) , false, "loadmemory");
         // --------------------
 
+        PH::print_stdout( " - PAN-OS version: {$this->pan->version}" );
+        PH::print_stdout( array( $this->pan->version ), false, "PAN-OS version" );
+
         $panc_version = $this->pan->appStore->predefinedStore_appid_version;
         PH::print_stdout( " - PAN-OS APP-ID version: ".$panc_version );
         PH::print_stdout( array( $panc_version ), false, "PAN-OS APP-ID version" );
