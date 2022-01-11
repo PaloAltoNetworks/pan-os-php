@@ -4,6 +4,7 @@ CHANGELOG
 UTILS:
 
 BUGFIX:
+* UTIL pan-os-php type=device | bugfix actions=securityprofile-create-alert-only PAN-OS version <10 compare to >=10
 
 GENERAL:
 
