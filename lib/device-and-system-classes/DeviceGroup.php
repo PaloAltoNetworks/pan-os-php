@@ -24,6 +24,7 @@ class DeviceGroup
 
     use PathableName;
     use PanSubHelperTrait;
+    use XmlConvertible;
 
     /** String */
     protected $name;

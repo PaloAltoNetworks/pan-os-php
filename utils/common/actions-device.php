@@ -203,6 +203,8 @@ DeviceCallContext::$supportedActions['DeviceGroup-create'] = array(
 
             $dg = $pan->createDeviceGroup($dgName, $parentDG);
 
+            if( $context->isAPI )
+                $dg->API_sync();
         }
         else
         {
@@ -238,7 +240,19 @@ DeviceCallContext::$supportedActions['DeviceGroup-delete'] = array(
             {
                 $string ="     * delete DeviceGroup: " . $name;
                 PH::ACTIONlog( $context, $string );
-                $pan->removeDeviceGroup($object);
+
+
+                if( $context->isAPI )
+                {
+                    $con = findConnectorOrDie($object);
+                    $xpath = DH::elementToPanXPath($object->xmlroot);
+
+                    $pan->removeDeviceGroup($object);
+                    $con->sendDeleteRequest($xpath);
+                }
+                else
+                    $pan->removeDeviceGroup($object);
+
             }
         }
     }
@@ -263,18 +277,65 @@ DeviceCallContext::$supportedActions['Template-create'] = array(
             #PH::ACTIONlog($context, $string);
 
             $dg = $pan->createTemplate($templateName);
+
+            if( $context->isAPI )
+                $dg->API_sync();
         }
         else
         {
-            $string = "DeviceGroup with name: " . $templateName . " already available!";
+            $string = "Template with name: " . $templateName . " already available!";
             PH::ACTIONlog( $context, $string );
         }
     },
     'args' => array(
         'name' => array('type' => 'string', 'default' => 'false'),
-        'parentdg' => array('type' => 'string', 'default' => 'null'),
     ),
 );
+DeviceCallContext::$supportedActions['Template-delete'] = array(
+    'name' => 'template-delete',
+    'MainFunction' => function (DeviceCallContext $context) {
+
+        $object = $context->object;
+        $name = $object->name();
+
+        $pan = $context->subSystem;
+        if( !$pan->isPanorama() )
+            derr( "only supported on Panorama config" );
+
+        if( get_class($object) == "Template" )
+        {
+            /** @var Template $object */
+            //if template is used in Template-Stack -> skip
+            /*
+            $childDG = $object->_childDeviceGroups;
+            if( count($childDG) != 0 )
+            {
+                $string = "Template with name: '" . $name . "' is used in TemplateStack. Template can not removed";
+                PH::ACTIONstatus($context, "SKIPPED", $string);
+            }
+            else
+            {
+            */
+                $string ="     * delete Template: " . $name;
+                PH::ACTIONlog( $context, $string );
+
+
+                if( $context->isAPI )
+                {
+                    $con = findConnectorOrDie($object);
+                    $xpath = DH::elementToPanXPath($object->xmlroot);
+
+                    $pan->removeTemplate($object);
+                    $con->sendDeleteRequest($xpath);
+                }
+                else
+                    $pan->removeTemplate($object);
+
+            //}
+        }
+    }
+);
+
 DeviceCallContext::$supportedActions[] = array(
     'name' => 'exportToExcel',
     'MainFunction' => function (DeviceCallContext $context) {
