@@ -1612,21 +1612,6 @@ DeviceCallContext::$supportedActions['ZoneProtectionProfile-create-BP'] = array(
     'name' => 'zoneprotectionprofile-create-bp',
     'GlobalInitFunction' => function (DeviceCallContext $context) {
         $context->first = true;
-
-        if( $context->isAPI && $context->subSystem->isPanorama() )
-            derr( "API mode not implemented yet for Panorama" );
-
-        if( $context->subSystem->isPanorama() )
-        {
-            /*
-            $countDG = count( $context->subSystem->getDeviceGroups() );
-            if( $countDG == 0 )
-            {
-                #$dg = $context->subSystem->createDeviceGroup( "alert-only" );
-                derr( "NO DG available; please run 'pa_device-edit in=InputConfig.xml out=OutputConfig.xml actions=devicegroup-create:DG-NAME' first", null, false );
-            }
-            */
-        }
     },
     'MainFunction' => function (DeviceCallContext $context)
     {
@@ -1718,7 +1703,7 @@ DeviceCallContext::$supportedActions['ZoneProtectionProfile-create-BP'] = array(
                     $xmlRoot = $sharedStore->deviceConfiguration->network->xmlroot;
                     if( $xmlRoot === null )
                     {
-                        $xmlRoot = DH::findFirstElementOrCreate('device', $sharedStore->deviceConfiguration->xmlroot);
+                        $xmlRoot = DH::findFirstElementOrCreate('devices', $sharedStore->deviceConfiguration->xmlroot);
 
                         #$xmlRoot = DH::findFirstElementByNameAttrOrCreate( 'entry', 'localhost.localdomain', $xmlRoot, $sharedStore->deviceConfiguration->xmlroot->ownerDocument);
                         $xmlRoot = DH::findFirstElementOrCreate('entry', $xmlRoot);
@@ -1731,7 +1716,7 @@ DeviceCallContext::$supportedActions['ZoneProtectionProfile-create-BP'] = array(
                     $xmlRoot = $sharedStore->owner->network->xmlroot;
                     if( $xmlRoot === null )
                     {
-                        $xmlRoot = DH::findFirstElementOrCreate('device', $sharedStore->owner->xmlroot);
+                        $xmlRoot = DH::findFirstElementOrCreate('devices', $sharedStore->owner->xmlroot);
 
                         #$xmlRoot = DH::findFirstElementByNameAttrOrCreate( 'entry', 'localhost.localdomain', $xmlRoot, $sharedStore->owner->xmlroot->ownerDocument);
                         $xmlRoot = DH::findFirstElementOrCreate('entry', $xmlRoot);
@@ -1774,8 +1759,8 @@ DeviceCallContext::$supportedActions['ZoneProtectionProfile-create-BP'] = array(
                 else
                     mwarning( "ZoneProtectionProfile 'Recommended_Zone_Protection' already available. BestPractise ZoneProtectionProfile 'Recommended_Zone_Protection' not created", null, FALSE );
 
-
-                $context->first = false;
+                //create for all VSYS and all templates
+                #$context->first = false;
             }
         }
     }
