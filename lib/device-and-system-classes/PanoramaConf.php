@@ -1663,6 +1663,39 @@ class PanoramaConf
     }
 
     /**
+     * Remove a template.
+     * @param Template $template
+     **/
+    public function removeTemplate( $template )
+    {
+        $Templatename = $template->name();
+
+        $template->display_references();
+
+        /*
+         * //warning if template is used in TemplateStack
+         * //implementation missing also in actions-device line 294
+         * DeviceCallContext::$supportedActions['Template-delete'] = array(
+         *
+        $childDGs = $DG->_childDeviceGroups;
+        if( count( $childDGs ) !== 0 )
+        {
+            mwarning("DeviceGroup '$DGname' has ChildDGs. Delete of DG not possible.");
+            return;
+        }
+        else
+        {
+        */
+            //remove Template from XML
+            $xPath = "/config/devices/entry[@name='localhost.localdomain']/template";
+            $dgNode = DH::findXPathSingleEntryOrDie($xPath, $this->xmlroot);
+            $dgNode->removeChild( $template->xmlroot );
+
+            //Todo: cleanup memory
+        //}
+    }
+
+    /**
      * @return Template[]
      */
     public function getTemplates()
