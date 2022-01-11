@@ -23,6 +23,7 @@ class Template
     use ReferenceableObject;
     use PathableName;
     use PanSubHelperTrait;
+    use XmlConvertible;
 
     /** @var PanoramaConf */
     public $owner;

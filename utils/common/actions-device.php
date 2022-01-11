@@ -203,6 +203,8 @@ DeviceCallContext::$supportedActions['DeviceGroup-create'] = array(
 
             $dg = $pan->createDeviceGroup($dgName, $parentDG);
 
+            if( $context->isAPI )
+                $dg->API_sync();
         }
         else
         {
@@ -239,6 +241,9 @@ DeviceCallContext::$supportedActions['DeviceGroup-delete'] = array(
                 $string ="     * delete DeviceGroup: " . $name;
                 PH::ACTIONlog( $context, $string );
                 $pan->removeDeviceGroup($object);
+
+                #if( $context->isAPI )
+                #    $dg->API_sync();
             }
         }
     }
@@ -263,10 +268,13 @@ DeviceCallContext::$supportedActions['Template-create'] = array(
             #PH::ACTIONlog($context, $string);
 
             $dg = $pan->createTemplate($templateName);
+
+            if( $context->isAPI )
+                $dg->API_sync();
         }
         else
         {
-            $string = "DeviceGroup with name: " . $templateName . " already available!";
+            $string = "Template with name: " . $templateName . " already available!";
             PH::ACTIONlog( $context, $string );
         }
     },
