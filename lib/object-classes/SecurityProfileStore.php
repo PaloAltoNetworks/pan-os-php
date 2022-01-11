@@ -461,7 +461,11 @@ class SecurityProfileStore extends ObjStore
     {
         $rule = new customURLProfile($name, $this);
 
-        $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, customURLProfile::$templatexml);
+        if( $this->owner->version < 90 )
+            $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, customURLProfile::$templatexml);
+        else
+            $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, customURLProfile::$templatexml_v9);
+
         $rule->load_from_domxml($xmlElement);
 
         $rule->owner = null;

@@ -25,6 +25,7 @@ BUGFIX:
 * UTIL | improve service any usage to 0-65535 from any / dynamic improvements from 1024-65535 to 1025-65535
 * UTIL pan-os-php type=device | bugfix for actions=securityprofile-create-alert-only
 * class Address/AddressGroup/Service/ServiceGroup/Tag | bugfix if e.g. merger script like to create objects in previous empty ObjectStore
+* class customURLProfile | bugfix to create new customURLProfile for PAN-OS version >= 9.0
 
 GENERAL:
 * update Readme and Install file / bring in information for PAN-OS-PHP on Windows WSLv2 installation

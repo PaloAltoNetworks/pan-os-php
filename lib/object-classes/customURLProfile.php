@@ -49,7 +49,10 @@ class customURLProfile
         if( $fromXmlTemplate )
         {
             $doc = new DOMDocument();
-            $doc->loadXML(self::$templatexml, XML_PARSE_BIG_LINES);
+            if( $this->owner->owner->version < 90 )
+                $doc->loadXML(self::$templatexml, XML_PARSE_BIG_LINES);
+            else
+                $doc->loadXML(self::$templatexml_v9, XML_PARSE_BIG_LINES);
 
             $node = DH::findFirstElement('entry', $doc);
 
@@ -201,6 +204,7 @@ class customURLProfile
     }
 
     static public $templatexml = '<entry name="**temporarynamechangeme**"></entry>';
+    static public $templatexml_v9 = '<entry name="**temporarynamechangeme**"><type>URL List</type><list></list></entry>';
 
     public function isCustomURL()
     {
