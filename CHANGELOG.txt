@@ -18,6 +18,7 @@ UTILS:
 * UTIL type=device actions=cleanuprule-create-bp extend with PAN-OS API method
 * UTIL introduce PAN-OS version for each script output
 * UTIL pan-os-php type=device | introduce PAN-OS API. mode for actions=zoneprotectionprofile-create-bp /  logforwardingprofile-create-bp
+* UTIL pan-os-php type=device | actions=securityprofile-create-alert-only introduce PAN-OS API method for FWs
 
 BUGFIX:
 * update installer scripts / issues with git-php not available
