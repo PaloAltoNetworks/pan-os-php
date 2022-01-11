@@ -906,9 +906,6 @@ DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = arra
     'GlobalInitFunction' => function (DeviceCallContext $context) {
         $context->first = true;
 
-        if( $context->isAPI && $context->subSystem->isPanorama() )
-            derr( "API mode not implemented yet for Panorama" );
-
         if( $context->subSystem->isPanorama() )
         {
             $countDG = count( $context->subSystem->getDeviceGroups() );
@@ -1495,9 +1492,6 @@ DeviceCallContext::$supportedActions['LogForwardingProfile-create-BP'] = array(
     'GlobalInitFunction' => function (DeviceCallContext $context) {
         $context->first = true;
 
-        if( $context->isAPI && $context->subSystem->isPanorama() )
-            derr( "API mode not implemented yet for Panorama" );
-
         if( $context->subSystem->isPanorama() )
         {
             $countDG = count( $context->subSystem->getDeviceGroups() );
@@ -1791,10 +1785,6 @@ DeviceCallContext::$supportedActions['CleanUpRule-create-BP'] = array(
     'name' => 'cleanuprule-create-bp',
     'GlobalInitFunction' => function (DeviceCallContext $context) {
         $context->first = true;
-
-        if( $context->isAPI && $context->subSystem->isPanorama() )
-            derr( "API mode not implemented yet for Panorama" );
-
     },
     'MainFunction' => function (DeviceCallContext $context) {
         $object = $context->object;
