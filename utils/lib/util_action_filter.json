@@ -1630,6 +1630,16 @@
             "name-touppercase": {
                 "name": "name-toUpperCase",
                 "MainFunction": {}
+            },
+            "replace-with-object": {
+                "name": "replace-With-Object",
+                "MainFunction": {},
+                "args": {
+                    "objectName": {
+                        "type": "string",
+                        "default": "*nodefault*"
+                    }
+                }
             }
         },
         "filter": {
@@ -5398,6 +5408,18 @@
                 "GlobalInitFunction": {},
                 "MainFunction": {}
             },
+            "cleanuprule-create-bp": {
+                "name": "cleanuprule-create-bp",
+                "GlobalInitFunction": {},
+                "MainFunction": {},
+                "args": {
+                    "logprof": {
+                        "type": "string",
+                        "default": "default",
+                        "help": "LogForwardingProfile name"
+                    }
+                }
+            },
             "devicegroup-create": {
                 "name": "devicegroup-create",
                 "MainFunction": {},
@@ -5490,6 +5512,18 @@
                     }
                 }
             },
+            "logforwardingprofile-create-bp": {
+                "name": "logforwardingprofile-create-bp",
+                "GlobalInitFunction": {},
+                "MainFunction": {},
+                "args": {
+                    "shared": {
+                        "type": "bool",
+                        "default": "false",
+                        "help": "if set to true; LogForwardingProfile is create at SHARED level; at least one DG must be available"
+                    }
+                }
+            },
             "securityprofile-create-alert-only": {
                 "name": "securityprofile-create-alert-only",
                 "GlobalInitFunction": {},
@@ -5515,6 +5549,26 @@
                         "default": "bottom"
                     }
                 }
+            },
+            "template-create": {
+                "name": "template-create",
+                "MainFunction": {},
+                "GlobalFinishFunction": {},
+                "args": {
+                    "name": {
+                        "type": "string",
+                        "default": "false"
+                    }
+                }
+            },
+            "template-delete": {
+                "name": "template-delete",
+                "MainFunction": {}
+            },
+            "zoneprotectionprofile-create-bp": {
+                "name": "zoneprotectionprofile-create-bp",
+                "GlobalInitFunction": {},
+                "MainFunction": {}
             }
         },
         "filter": {
