@@ -683,7 +683,7 @@ DeviceCallContext::$supportedActions['exportLicenseToExcel'] = array(
                     {
                         #print $node->nodeName." : ".$node->textContent."\n";
                         $tmp_node = $node->textContent;
-                        $context->device_array[ $serial_no ][ $node->nodeName ] = $tmp_node;
+                        $context->device_array[ $tmp_node ][ $node->nodeName ] = $tmp_node;
 
                         if( $node->childNodes->length > 1 )
                         {
@@ -696,7 +696,7 @@ DeviceCallContext::$supportedActions['exportLicenseToExcel'] = array(
                                 if( $child->nodeName == "entry" )
                                 {
                                     $tmp_node = $child->textContent;
-                                    $context->device_array[ $serial_no ][ $child->getAttribute('name') ] = $tmp_node;
+                                    $context->device_array[ $tmp_node ][ $child->getAttribute('name') ] = $tmp_node;
                                 }
                             }
                         }
@@ -984,566 +984,20 @@ DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = arra
 
         if( $context->first )
         {
-            $av_xmlString_v9 = "<entry name=\"Alert-Only-AV\">
-        <decoder>
-          <entry name=\"ftp\">
-            <action>alert</action>
-            <wildfire-action>alert</wildfire-action>
-          </entry>
-          <entry name=\"http\">
-            <action>alert</action>
-            <wildfire-action>alert</wildfire-action>
-          </entry>
-          <entry name=\"http2\">
-            <action>alert</action>
-            <wildfire-action>alert</wildfire-action>
-          </entry>
-          <entry name=\"imap\">
-            <action>alert</action>
-            <wildfire-action>alert</wildfire-action>
-          </entry>
-          <entry name=\"pop3\">
-            <action>alert</action>
-            <wildfire-action>alert</wildfire-action>
-          </entry>
-          <entry name=\"smb\">
-            <action>alert</action>
-            <wildfire-action>alert</wildfire-action>
-          </entry>
-          <entry name=\"smtp\">
-            <action>alert</action>
-            <wildfire-action>alert</wildfire-action>
-          </entry>
-        </decoder>
-      </entry>";
+            $av_xmlString_v9 = file_get_contents( "../../iron-skillet/panos_v9.1/templates/panorama/snippets/profiles_virus.xml");
+            $av_xmlString_v10 = file_get_contents( "../../iron-skillet/panos_v10.0/templates/panorama/snippets/profiles_virus.xml");
 
-            $av_xmlString_v10 = "<entry name=\"Alert-Only-AV\">
-        <decoder>
-          <entry name=\"ftp\">
-            <action>alert</action>
-            <wildfire-action>alert</wildfire-action>
-            <mlav-action>alert</mlav-action>
-          </entry>
-          <entry name=\"http\">
-            <action>alert</action>
-            <wildfire-action>alert</wildfire-action>
-            <mlav-action>alert</mlav-action>
-          </entry>
-          <entry name=\"http2\">
-            <action>alert</action>
-            <wildfire-action>alert</wildfire-action>
-            <mlav-action>alert</mlav-action>
-          </entry>
-          <entry name=\"imap\">
-            <action>alert</action>
-            <wildfire-action>alert</wildfire-action>
-            <mlav-action>alert</mlav-action>
-          </entry>
-          <entry name=\"pop3\">
-            <action>alert</action>
-            <wildfire-action>alert</wildfire-action>
-            <mlav-action>alert</mlav-action>
-          </entry>
-          <entry name=\"smb\">
-            <action>alert</action>
-            <wildfire-action>alert</wildfire-action>
-            <mlav-action>alert</mlav-action>
-          </entry>
-          <entry name=\"smtp\">
-            <action>alert</action>
-            <wildfire-action>alert</wildfire-action>
-            <mlav-action>alert</mlav-action>
-          </entry>
-        </decoder>
-        <mlav-engine-filebased-enabled>
-          <entry name=\"Windows Executables\">
-            <mlav-policy-action>enable(alert-only)</mlav-policy-action>
-          </entry>
-          <entry name=\"PowerShell Script 1\">
-            <mlav-policy-action>enable(alert-only)</mlav-policy-action>
-          </entry>
-          <entry name=\"PowerShell Script 2\">
-            <mlav-policy-action>enable(alert-only)</mlav-policy-action>
-          </entry>
-          <entry name=\"Executable Linked Format\">
-            <mlav-policy-action>enable(alert-only)</mlav-policy-action>
-          </entry>
-        </mlav-engine-filebased-enabled>
-      </entry>";
+            $as_xmlString_v9 = file_get_contents( "../../iron-skillet/panos_v9.1/templates/panorama/snippets/profiles_spyware.xml");
+            $as_xmlString_v10 = file_get_contents( "../../iron-skillet/panos_v10.0/templates/panorama/snippets/profiles_spyware.xml");
 
-            $as_xmlString_v9 = "<entry name=\"Alert-Only-AS\">
-        <botnet-domains>
-          <lists>
-            <entry name=\"default-paloalto-dns\">
-              <action>
-                <alert/>
-              </action>
-              <packet-capture>single-packet</packet-capture>
-            </entry>
-          </lists>
-          <sinkhole>
-            <ipv4-address>sinkhole.paloaltonetworks.com</ipv4-address>
-            <ipv6-address>2600:5200::1</ipv6-address>
-          </sinkhole>
-        </botnet-domains>
-        <rules>
-          <entry name=\"Alert-All\">
-            <action>
-              <alert/>
-            </action>
-            <severity>
-              <member>any</member>
-            </severity>
-            <threat-name>any</threat-name>
-            <category>any</category>
-            <packet-capture>disable</packet-capture>
-          </entry>
-        </rules>
-      </entry>";
+            $vp_xmlString = file_get_contents( "../../iron-skillet/panos_v10.0/templates/panorama/snippets/profiles_vulnerability.xml");
 
-            $as_xmlString_v10 = "<entry name=\"Alert-Only-AS\">
-        <botnet-domains>
-          <lists>
-            <entry name=\"default-paloalto-dns\">
-              <action>
-                <alert/>
-              </action>
-              <packet-capture>single-packet</packet-capture>
-            </entry>
-          </lists>
-          <dns-security-categories>
-            <entry name=\"pan-dns-sec-benign\">
-              <log-level>default</log-level>
-              <action>allow</action>
-              <packet-capture>disable</packet-capture>
-            </entry>
-            <entry name=\"pan-dns-sec-cc\">
-              <log-level>default</log-level>
-              <action>allow</action>
-              <packet-capture>single-packet</packet-capture>
-            </entry>
-            <entry name=\"pan-dns-sec-ddns\">
-              <log-level>default</log-level>
-              <action>allow</action>
-              <packet-capture>single-packet</packet-capture>
-            </entry>
-            <entry name=\"pan-dns-sec-malware\">
-              <log-level>default</log-level>
-              <action>allow</action>
-              <packet-capture>single-packet</packet-capture>
-            </entry>
-            <entry name=\"pan-dns-sec-recent\">
-              <log-level>default</log-level>
-              <action>allow</action>
-              <packet-capture>single-packet</packet-capture>
-            </entry>
-          </dns-security-categories>
-          <sinkhole>
-            <ipv4-address>sinkhole.paloaltonetworks.com</ipv4-address>
-            <ipv6-address>2600:5200::1</ipv6-address>
-          </sinkhole>
-        </botnet-domains>
-        <rules>
-          <entry name=\"Alert-All\">
-            <action>
-              <alert/>
-            </action>
-            <severity>
-              <member>any</member>
-            </severity>
-            <threat-name>any</threat-name>
-            <category>any</category>
-            <packet-capture>disable</packet-capture>
-          </entry>
-        </rules>
-      </entry>";
+            $url_xmlString_v9 = file_get_contents( "../../iron-skillet/panos_v9.1/templates/panorama/snippets/profiles_url_filtering.xml");
+            $url_xmlString_v10 = file_get_contents( "../../iron-skillet/panos_v10.0/templates/panorama/snippets/profiles_url_filtering.xml");
 
-            $vp_xmlString = "<entry name=\"Alert-Only-VP\">
-        <rules>
-          <entry name=\"Alert-All\">
-            <action>
-              <alert/>
-            </action>
-            <vendor-id>
-              <member>any</member>
-            </vendor-id>
-            <severity>
-              <member>any</member>
-            </severity>
-            <cve>
-              <member>any</member>
-            </cve>
-            <threat-name>any</threat-name>
-            <host>any</host>
-            <category>any</category>
-            <packet-capture>disable</packet-capture>
-          </entry>
-        </rules>
-      </entry>";
+            $fb_xmlString = file_get_contents( "../../iron-skillet/panos_v10.0/templates/panorama/snippets/profiles_file_blocking.xml");
 
-            $url_xmlString_v9 = "<entry name=\"Alert-Only-URL\">
-        <credential-enforcement>
-          <mode>
-            <ip-user/>
-          </mode>
-          <log-severity>medium</log-severity>
-          <alert>
-            <member>Allow</member>
-            <member>Block</member>
-            <member>abortion</member>
-            <member>abused-drugs</member>
-            <member>adult</member>
-            <member>alcohol-and-tobacco</member>
-            <member>auctions</member>
-            <member>business-and-economy</member>
-            <member>command-and-control</member>
-            <member>computer-and-internet-info</member>
-            <member>content-delivery-networks</member>
-            <member>copyright-infringement</member>
-            <member>cryptocurrency</member>
-            <member>dating</member>
-            <member>dynamic-dns</member>
-            <member>educational-institutions</member>
-            <member>entertainment-and-arts</member>
-            <member>extremism</member>
-            <member>financial-services</member>
-            <member>gambling</member>
-            <member>games</member>
-            <member>government</member>
-            <member>grayware</member>
-            <member>hacking</member>
-            <member>health-and-medicine</member>
-            <member>high-risk</member>
-            <member>home-and-garden</member>
-            <member>hunting-and-fishing</member>
-            <member>insufficient-content</member>
-            <member>internet-communications-and-telephony</member>
-            <member>internet-portals</member>
-            <member>job-search</member>
-            <member>legal</member>
-            <member>low-risk</member>
-            <member>malware</member>
-            <member>medium-risk</member>
-            <member>military</member>
-            <member>motor-vehicles</member>
-            <member>music</member>
-            <member>newly-registered-domain</member>
-            <member>news</member>
-            <member>not-resolved</member>
-            <member>nudity</member>
-            <member>online-storage-and-backup</member>
-            <member>parked</member>
-            <member>peer-to-peer</member>
-            <member>personal-sites-and-blogs</member>
-            <member>philosophy-and-political-advocacy</member>
-            <member>phishing</member>
-            <member>private-ip-addresses</member>
-            <member>proxy-avoidance-and-anonymizers</member>
-            <member>questionable</member>
-            <member>real-estate</member>
-            <member>real-time-detection</member>
-            <member>recreation-and-hobbies</member>
-            <member>reference-and-research</member>
-            <member>religion</member>
-            <member>search-engines</member>
-            <member>sex-education</member>
-            <member>shareware-and-freeware</member>
-            <member>shopping</member>
-            <member>social-networking</member>
-            <member>society</member>
-            <member>sports</member>
-            <member>stock-advice-and-tools</member>
-            <member>streaming-media</member>
-            <member>swimsuits-and-intimate-apparel</member>
-            <member>training-and-tools</member>
-            <member>translation</member>
-            <member>travel</member>
-            <member>unknown</member>
-            <member>weapons</member>
-            <member>web-advertisements</member>
-            <member>web-based-email</member>
-            <member>web-hosting</member>
-          </alert>
-        </credential-enforcement>
-        <alert>
-          <member>Allow</member>
-          <member>Block</member>
-          <member>abortion</member>
-          <member>abused-drugs</member>
-          <member>adult</member>
-          <member>alcohol-and-tobacco</member>
-          <member>auctions</member>
-          <member>business-and-economy</member>
-          <member>command-and-control</member>
-          <member>computer-and-internet-info</member>
-          <member>content-delivery-networks</member>
-          <member>copyright-infringement</member>
-          <member>cryptocurrency</member>
-          <member>dating</member>
-          <member>dynamic-dns</member>
-          <member>educational-institutions</member>
-          <member>entertainment-and-arts</member>
-          <member>extremism</member>
-          <member>financial-services</member>
-          <member>gambling</member>
-          <member>games</member>
-          <member>government</member>
-          <member>grayware</member>
-          <member>hacking</member>
-          <member>health-and-medicine</member>
-          <member>high-risk</member>
-          <member>home-and-garden</member>
-          <member>hunting-and-fishing</member>
-          <member>insufficient-content</member>
-          <member>internet-communications-and-telephony</member>
-          <member>internet-portals</member>
-          <member>job-search</member>
-          <member>legal</member>
-          <member>low-risk</member>
-          <member>malware</member>
-          <member>medium-risk</member>
-          <member>military</member>
-          <member>motor-vehicles</member>
-          <member>music</member>
-          <member>newly-registered-domain</member>
-          <member>news</member>
-          <member>not-resolved</member>
-          <member>nudity</member>
-          <member>online-storage-and-backup</member>
-          <member>parked</member>
-          <member>peer-to-peer</member>
-          <member>personal-sites-and-blogs</member>
-          <member>philosophy-and-political-advocacy</member>
-          <member>phishing</member>
-          <member>private-ip-addresses</member>
-          <member>proxy-avoidance-and-anonymizers</member>
-          <member>questionable</member>
-          <member>real-estate</member>
-          <member>real-time-detection</member>
-          <member>recreation-and-hobbies</member>
-          <member>reference-and-research</member>
-          <member>religion</member>
-          <member>search-engines</member>
-          <member>sex-education</member>
-          <member>shareware-and-freeware</member>
-          <member>shopping</member>
-          <member>social-networking</member>
-          <member>society</member>
-          <member>sports</member>
-          <member>stock-advice-and-tools</member>
-          <member>streaming-media</member>
-          <member>swimsuits-and-intimate-apparel</member>
-          <member>training-and-tools</member>
-          <member>translation</member>
-          <member>travel</member>
-          <member>unknown</member>
-          <member>weapons</member>
-          <member>web-advertisements</member>
-          <member>web-based-email</member>
-          <member>web-hosting</member>
-        </alert>
-      </entry>";
-
-            $url_xmlString_v10 = "<entry name=\"Alert-Only-URL\">
-        <credential-enforcement>
-          <mode>
-            <ip-user/>
-          </mode>
-          <log-severity>medium</log-severity>
-          <alert>
-            <member>Allow</member>
-            <member>Block</member>
-            <member>abortion</member>
-            <member>abused-drugs</member>
-            <member>adult</member>
-            <member>alcohol-and-tobacco</member>
-            <member>auctions</member>
-            <member>business-and-economy</member>
-            <member>command-and-control</member>
-            <member>computer-and-internet-info</member>
-            <member>content-delivery-networks</member>
-            <member>copyright-infringement</member>
-            <member>cryptocurrency</member>
-            <member>dating</member>
-            <member>dynamic-dns</member>
-            <member>educational-institutions</member>
-            <member>entertainment-and-arts</member>
-            <member>extremism</member>
-            <member>financial-services</member>
-            <member>gambling</member>
-            <member>games</member>
-            <member>government</member>
-            <member>grayware</member>
-            <member>hacking</member>
-            <member>health-and-medicine</member>
-            <member>high-risk</member>
-            <member>home-and-garden</member>
-            <member>hunting-and-fishing</member>
-            <member>insufficient-content</member>
-            <member>internet-communications-and-telephony</member>
-            <member>internet-portals</member>
-            <member>job-search</member>
-            <member>legal</member>
-            <member>low-risk</member>
-            <member>malware</member>
-            <member>medium-risk</member>
-            <member>military</member>
-            <member>motor-vehicles</member>
-            <member>music</member>
-            <member>newly-registered-domain</member>
-            <member>news</member>
-            <member>not-resolved</member>
-            <member>nudity</member>
-            <member>online-storage-and-backup</member>
-            <member>parked</member>
-            <member>peer-to-peer</member>
-            <member>personal-sites-and-blogs</member>
-            <member>philosophy-and-political-advocacy</member>
-            <member>phishing</member>
-            <member>private-ip-addresses</member>
-            <member>proxy-avoidance-and-anonymizers</member>
-            <member>questionable</member>
-            <member>real-estate</member>
-            <member>real-time-detection</member>
-            <member>recreation-and-hobbies</member>
-            <member>reference-and-research</member>
-            <member>religion</member>
-            <member>search-engines</member>
-            <member>sex-education</member>
-            <member>shareware-and-freeware</member>
-            <member>shopping</member>
-            <member>social-networking</member>
-            <member>society</member>
-            <member>sports</member>
-            <member>stock-advice-and-tools</member>
-            <member>streaming-media</member>
-            <member>swimsuits-and-intimate-apparel</member>
-            <member>training-and-tools</member>
-            <member>translation</member>
-            <member>travel</member>
-            <member>unknown</member>
-            <member>weapons</member>
-            <member>web-advertisements</member>
-            <member>web-based-email</member>
-            <member>web-hosting</member>
-          </alert>
-        </credential-enforcement>
-        <alert>
-          <member>Allow</member>
-          <member>Block</member>
-          <member>abortion</member>
-          <member>abused-drugs</member>
-          <member>adult</member>
-          <member>alcohol-and-tobacco</member>
-          <member>auctions</member>
-          <member>business-and-economy</member>
-          <member>command-and-control</member>
-          <member>computer-and-internet-info</member>
-          <member>content-delivery-networks</member>
-          <member>copyright-infringement</member>
-          <member>cryptocurrency</member>
-          <member>dating</member>
-          <member>dynamic-dns</member>
-          <member>educational-institutions</member>
-          <member>entertainment-and-arts</member>
-          <member>extremism</member>
-          <member>financial-services</member>
-          <member>gambling</member>
-          <member>games</member>
-          <member>government</member>
-          <member>grayware</member>
-          <member>hacking</member>
-          <member>health-and-medicine</member>
-          <member>high-risk</member>
-          <member>home-and-garden</member>
-          <member>hunting-and-fishing</member>
-          <member>insufficient-content</member>
-          <member>internet-communications-and-telephony</member>
-          <member>internet-portals</member>
-          <member>job-search</member>
-          <member>legal</member>
-          <member>low-risk</member>
-          <member>malware</member>
-          <member>medium-risk</member>
-          <member>military</member>
-          <member>motor-vehicles</member>
-          <member>music</member>
-          <member>newly-registered-domain</member>
-          <member>news</member>
-          <member>not-resolved</member>
-          <member>nudity</member>
-          <member>online-storage-and-backup</member>
-          <member>parked</member>
-          <member>peer-to-peer</member>
-          <member>personal-sites-and-blogs</member>
-          <member>philosophy-and-political-advocacy</member>
-          <member>phishing</member>
-          <member>private-ip-addresses</member>
-          <member>proxy-avoidance-and-anonymizers</member>
-          <member>questionable</member>
-          <member>real-estate</member>
-          <member>real-time-detection</member>
-          <member>recreation-and-hobbies</member>
-          <member>reference-and-research</member>
-          <member>religion</member>
-          <member>search-engines</member>
-          <member>sex-education</member>
-          <member>shareware-and-freeware</member>
-          <member>shopping</member>
-          <member>social-networking</member>
-          <member>society</member>
-          <member>sports</member>
-          <member>stock-advice-and-tools</member>
-          <member>streaming-media</member>
-          <member>swimsuits-and-intimate-apparel</member>
-          <member>training-and-tools</member>
-          <member>translation</member>
-          <member>travel</member>
-          <member>unknown</member>
-          <member>weapons</member>
-          <member>web-advertisements</member>
-          <member>web-based-email</member>
-          <member>web-hosting</member>
-        </alert>
-        <mlav-engine-urlbased-enabled>
-          <entry name=\"Phishing Detection\">
-            <mlav-policy-action>alert</mlav-policy-action>
-          </entry>
-          <entry name=\"Javascript Exploit Detection\">
-            <mlav-policy-action>alert</mlav-policy-action>
-          </entry>
-        </mlav-engine-urlbased-enabled>
-      </entry>";
-
-            $fb_xmlString = "<entry name=\"Alert-Only-FB\">
-        <rules>
-          <entry name=\"Alert-Only\">
-            <application>
-              <member>any</member>
-            </application>
-            <file-type>
-              <member>any</member>
-            </file-type>
-            <direction>both</direction>
-            <action>alert</action>
-          </entry>
-        </rules>
-      </entry>";
-
-            $wf_xmlString = "<entry name=\"Alert-Only-WF\">
-        <rules>
-          <entry name=\"Forward-All\">
-            <application>
-              <member>any</member>
-            </application>
-            <file-type>
-              <member>any</member>
-            </file-type>
-            <direction>both</direction>
-            <analysis>public-cloud</analysis>
-          </entry>
-        </rules>
-      </entry>";
+            $wf_xmlString = file_get_contents( "../../iron-skillet/panos_v10.0/templates/panorama/snippets/profiles_wildfire_analysis.xml");
 
             if( $classtype == "VirtualSystem" || $classtype == "DeviceGroup" )
             {
@@ -1578,6 +1032,7 @@ DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = arra
                 else
                     $newdoc->loadXML($av_xmlString_v10);
                 $node = $newdoc->importNode($newdoc->firstChild, TRUE);
+                $node = DH::findFirstElementByNameAttr( "entry", $name."-AV", $node );
                 $node = $ownerDocument->importNode($node, TRUE);
                 $av->load_from_domxml($node);
                 $av->owner = null;
@@ -1591,6 +1046,8 @@ DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = arra
                 else
                     $newdoc->loadXML($as_xmlString_v10);
                 $node = $newdoc->importNode($newdoc->firstChild, TRUE);
+                $node = DH::findFirstElementByNameAttr( "entry", $name."-AS", $node );
+                $node = $newdoc->importNode($node, TRUE);
                 $node = $ownerDocument->importNode($node, TRUE);
                 $as->load_from_domxml($node);
                 $as->owner = null;
@@ -1601,6 +1058,8 @@ DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = arra
                 $newdoc = new DOMDocument;
                 $newdoc->loadXML($vp_xmlString);
                 $node = $newdoc->importNode($newdoc->firstChild, TRUE);
+                $node = DH::findFirstElementByNameAttr( "entry", $name."-VP", $node );
+                $node = $newdoc->importNode($node, TRUE);
                 $node = $ownerDocument->importNode($node, TRUE);
                 $vp->load_from_domxml($node);
                 $vp->owner = null;
@@ -1613,8 +1072,9 @@ DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = arra
                     $newdoc->loadXML($url_xmlString_v9);
                 else
                     $newdoc->loadXML($url_xmlString_v10);
-
                 $node = $newdoc->importNode($newdoc->firstChild, TRUE);
+                $node = DH::findFirstElementByNameAttr( "entry", $name."-URL", $node );
+                $node = $newdoc->importNode($node, TRUE);
                 $node = $ownerDocument->importNode($node, TRUE);
                 $url->load_from_domxml($node);
                 $url->owner = null;
@@ -1625,6 +1085,8 @@ DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = arra
                 $newdoc = new DOMDocument;
                 $newdoc->loadXML($fb_xmlString);
                 $node = $newdoc->importNode($newdoc->firstChild, TRUE);
+                $node = DH::findFirstElementByNameAttr( "entry", $name."-FB", $node );
+                $node = $newdoc->importNode($node, TRUE);
                 $node = $ownerDocument->importNode($node, TRUE);
                 $fb->load_from_domxml($node);
                 $fb->owner = null;
@@ -1635,6 +1097,8 @@ DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = arra
                 $newdoc = new DOMDocument;
                 $newdoc->loadXML($wf_xmlString);
                 $node = $newdoc->importNode($newdoc->firstChild, TRUE);
+                $node = DH::findFirstElementByNameAttr( "entry", $name."-WF", $node );
+                $node = $newdoc->importNode($node, TRUE);
                 $node = $ownerDocument->importNode($node, TRUE);
                 $wf->load_from_domxml($node);
                 $wf->owner = null;
@@ -1811,45 +1275,7 @@ DeviceCallContext::$supportedActions['LogForwardingProfile-create-BP'] = array(
 
         if( $context->first )
         {
-            $lfp_bp_xmlstring = "<entry name=\"default\">
-  <match-list>
-    <entry name=\"Traffic_Log_Forwarding\">
-      <log-type>traffic</log-type>
-      <filter>All Logs</filter>
-      <send-to-panorama>yes</send-to-panorama>
-    </entry>
-    <entry name=\"Threat_Log_Forwarding\">
-      <log-type>threat</log-type>
-      <filter>All Logs</filter>
-      <send-to-panorama>yes</send-to-panorama>
-    </entry>
-    <entry name=\"Wildfire_Log_Forwarding\">
-      <log-type>wildfire</log-type>
-      <filter>All Logs</filter>
-      <send-to-panorama>yes</send-to-panorama>
-    </entry>
-    <entry name=\"URL_Log_Forwarding\">
-      <log-type>url</log-type>
-      <filter>All Logs</filter>
-      <send-to-panorama>yes</send-to-panorama>
-    </entry>
-    <entry name=\"Data_Log_Forwarding\">
-      <log-type>data</log-type>
-      <filter>All Logs</filter>
-      <send-to-panorama>yes</send-to-panorama>
-    </entry>
-    <entry name=\"Tunnel_Log_Forwarding\">
-      <log-type>tunnel</log-type>
-      <filter>All Logs</filter>
-      <send-to-panorama>yes</send-to-panorama>
-    </entry>
-    <entry name=\"Auth_Log_Forwarding\">
-      <log-type>auth</log-type>
-      <filter>All Logs</filter>
-      <send-to-panorama>yes</send-to-panorama>
-    </entry>
-  </match-list>
-</entry>";
+            $lfp_bp_xmlstring = file_get_contents( "../../iron-skillet/panos_v10.0/templates/panorama/snippets/log_settings_profiles.xml");
 
             if( $classtype == "VirtualSystem" || $classtype == "DeviceGroup" )
             {
@@ -1870,6 +1296,7 @@ DeviceCallContext::$supportedActions['LogForwardingProfile-create-BP'] = array(
 
                 $newdoc = new DOMDocument;
                 $newdoc->loadXML( $lfp_bp_xmlstring );
+                //Todo: validate that only one profile is added
                 $node = $newdoc->importNode($newdoc->firstChild, TRUE);
                 $node = $ownerDocument->importNode($node, TRUE);
 
@@ -1922,78 +1349,7 @@ DeviceCallContext::$supportedActions['ZoneProtectionProfile-create-BP'] = array(
 
         if( $context->first )
         {
-            $zpp_bp_xmlstring = "<entry name=\"Recommended_Zone_Protection\">
-  <flood>
-    <tcp-syn>
-      <red>
-        <alarm-rate>10000</alarm-rate>
-        <activate-rate>10000</activate-rate>
-        <maximal-rate>40000</maximal-rate>
-      </red>
-      <enable>no</enable>
-    </tcp-syn>
-    <icmp>
-      <red>
-        <alarm-rate>10000</alarm-rate>
-        <activate-rate>10000</activate-rate>
-        <maximal-rate>40000</maximal-rate>
-      </red>
-      <enable>no</enable>
-    </icmp>
-    <icmpv6>
-      <red>
-        <alarm-rate>10000</alarm-rate>
-        <activate-rate>10000</activate-rate>
-        <maximal-rate>40000</maximal-rate>
-      </red>
-      <enable>no</enable>
-    </icmpv6>
-    <other-ip>
-      <red>
-        <alarm-rate>10000</alarm-rate>
-        <activate-rate>10000</activate-rate>
-        <maximal-rate>40000</maximal-rate>
-      </red>
-      <enable>no</enable>
-    </other-ip>
-    <udp>
-      <red>
-        <alarm-rate>10000</alarm-rate>
-        <activate-rate>10000</activate-rate>
-        <maximal-rate>40000</maximal-rate>
-      </red>
-      <enable>no</enable>
-    </udp>
-  </flood>
-  <scan>
-    <entry name=\"8001\">
-      <action>
-        <alert/>
-      </action>
-      <interval>2</interval>
-      <threshold>100</threshold>
-    </entry>
-    <entry name=\"8002\">
-      <action>
-        <alert/>
-      </action>
-      <interval>10</interval>
-      <threshold>100</threshold>
-    </entry>
-    <entry name=\"8003\">
-      <action>
-        <alert/>
-      </action>
-      <interval>2</interval>
-      <threshold>100</threshold>
-    </entry>
-  </scan>
-  <discard-ip-spoof>yes</discard-ip-spoof>
-  <discard-malformed-option>yes</discard-malformed-option>
-  <remove-tcp-timestamp>yes</remove-tcp-timestamp>
-  <strip-tcp-fast-open-and-data>no</strip-tcp-fast-open-and-data>
-  <strip-mptcp-option>global</strip-mptcp-option>
-</entry>";
+            $zpp_bp_xmlstring = file_get_contents( "../../iron-skillet/panos_v10.0/templates/panorama/snippets/zone_protection_profile.xml");
 
             if( $classtype == "VirtualSystem" || $classtype == "Template" )
             {
@@ -2032,6 +1388,7 @@ DeviceCallContext::$supportedActions['ZoneProtectionProfile-create-BP'] = array(
 
                 $newdoc = new DOMDocument;
                 $newdoc->loadXML( $zpp_bp_xmlstring );
+                //load XML node; search for explicit entry
                 $node = $newdoc->importNode($newdoc->firstChild, TRUE);
                 $node = $ownerDocument->importNode($node, TRUE);
 
