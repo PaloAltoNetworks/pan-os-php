@@ -19,8 +19,6 @@
 
 set_include_path(dirname(__FILE__) . '/../' . PATH_SEPARATOR . get_include_path());
 require_once dirname(__FILE__)."/../../lib/pan_php_framework.php";
-
-require_once("utils/common/actions.php");
 require_once dirname(__FILE__)."/../../utils/lib/UTIL.php";
 
 ###############################################################################
@@ -123,12 +121,25 @@ PH::processCliArgs();
 
 $PHP_FILE = __FILE__;
 
+if( isset(PH::$args['help']) )
+{
+    $help_string = PH::boldText("USAGE: ") . "php " . $PHP_FILE . " in=inputfile.xml out=outputfile.xml [json=JSONfile]\n";
+
+    PH::print_stdout( $help_string );
+
+    exit();
+}
+
+
 if( isset(PH::$args['in']) )
     $input = PH::$args['in'];
 
 //define out to save the final file into this file
 if( isset(PH::$args['out']) )
     $output = PH::$args['out'];
+
+if( isset(PH::$args['stagename']) )
+    $stage_name = PH::$args['stagename'];
 
 if( isset(PH::$args['json']) )
 {
@@ -142,8 +153,10 @@ if( isset(PH::$args['json']) )
     if( !isset(PH::$args['out']) )
         $output = $details['out'];
 
+    if( !isset(PH::$args['stagename']) )
+        $stage_name = $details['stagename'];
+
     $command_array = $details['command'];
-    $stage_name = $details['stagename'];
 }
 else
 {
@@ -154,9 +167,10 @@ else
 
     if( !isset(PH::$args['out']) )
         $output = $details['out'];
+    if( !isset(PH::$args['stagename']) )
+        $stage_name = $details['stagename'];
 
     $command_array = $details['command'];
-    $stage_name = $details['stagename'];
 }
 
 ###############################################################################
