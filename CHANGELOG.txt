@@ -6,6 +6,7 @@ UTILS:
 * UTIL pan-os-php type=device | introduce actions=template-delete
 * UTIL development | introduce visibility_playbook.php
 * UTIL pan-os-php type=device | move to iron-skilett usage for actions=securityprofile-create-alert-only / logforwardingprofile-create-bp / zoneprotectionprofile-create-bp
+* UTIL ironskillet_update | disable SSL check
 
 BUGFIX:
 * UTIL pan-os-php type=device | bugfix actions=securityprofile-create-alert-only PAN-OS version <10 compare to >=10

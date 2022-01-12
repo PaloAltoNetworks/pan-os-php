@@ -977,6 +977,9 @@ class PH
         elseif( $type == "bpa-generator" )
             $util = new BPAGENERATOR($type, $argv, $argc,$PHP_FILE." type=".$type);
 
+        elseif( $type == "ironskillet-update" )
+            $util = new IRONSKILLET_UPDATE__( );
+
         elseif( $type == 'address'
             || $type == 'service'
             || $type == 'tag'
