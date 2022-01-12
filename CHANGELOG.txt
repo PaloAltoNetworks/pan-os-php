@@ -4,6 +4,7 @@ CHANGELOG
 UTILS:
 * UTIL pan-os-php type=device | introduce PAN-OS API for actions=devicegroup-create / template-create
 * UTIL pan-os-php type=device | introduce actions=template-delete
+* UTIL development | introduce visibility_playbook.php
 
 BUGFIX:
 * UTIL pan-os-php type=device | bugfix actions=securityprofile-create-alert-only PAN-OS version <10 compare to >=10
