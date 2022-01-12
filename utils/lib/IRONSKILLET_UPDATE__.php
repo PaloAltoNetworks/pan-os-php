@@ -95,7 +95,15 @@ class IRONSKILLET_UPDATE__
                 $fullurl = $url.$version;
                 print "urL: ".$fullurl."\n\n\n";
 
-                $origFile = file_get_contents( $url.$version);
+                $arrContextOptions=array(
+                    "ssl"=>array(
+                        "verify_peer"=>false,
+                        "verify_peer_name"=>false,
+                    ),
+                );
+                //
+
+                $origFile = file_get_contents( $url.$version, false, stream_context_create($arrContextOptions));
                 $origFile = str_replace( "{{ SINKHOLE_IPV4 }}", "sinkhole.paloaltonetworks.com", $origFile);
                 $origFile = str_replace( "{{ SINKHOLE_IPV6 }}", "2600:5200::1", $origFile);
 
