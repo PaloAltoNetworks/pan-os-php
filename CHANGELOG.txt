@@ -2,11 +2,12 @@ CHANGELOG
 
 2.0.28
 UTILS:
+* UTIL pan-os-php type=device | introduce PAN-OS API for actions=devicegroup-create / template-create
+* UTIL pan-os-php type=device | introduce actions=template-delete
 
 BUGFIX:
 * UTIL pan-os-php type=device | bugfix actions=securityprofile-create-alert-only PAN-OS version <10 compare to >=10
-* UTIL pan-os-php type=device | introduce PAN-OS API for actions=devicegroup-create / template-create
-* UTIL pan-os-php type=device | introduce actions=template-delete
+* UTIL pan-os-php type=device | bugfix for actions=securityprofile-create-alert-only:true if no PAN-OS API method is used
 
 GENERAL:
 
