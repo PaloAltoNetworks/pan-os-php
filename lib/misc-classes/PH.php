@@ -910,7 +910,11 @@ class PH
         "register-ip-mgr",
         "userid-mgr",
         "xml-op-json",
-        "bpa-generator"
+        "bpa-generator",
+        "playbook",
+        "ironskillet-update",
+        "maxmind-update",
+        "util_get-action-filter"
         );
 
     public static function callPANOSPHP( $type, $argv, $argc, $PHP_FILE )
@@ -977,8 +981,17 @@ class PH
         elseif( $type == "bpa-generator" )
             $util = new BPAGENERATOR($type, $argv, $argc,$PHP_FILE." type=".$type);
 
+        elseif( $type == "playbook" )
+            $util = new PLAYBOOK__( $argc );
+
+        elseif( $type == "util_get-action-filter" )
+            $util = new UTIL_GET_ACTION_FILTER( $argv, $argc );
+
         elseif( $type == "ironskillet-update" )
             $util = new IRONSKILLET_UPDATE__( );
+
+        elseif( $type == "maxmind-update" )
+            $util = new MAXMIND__( );
 
         elseif( $type == 'address'
             || $type == 'service'

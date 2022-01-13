@@ -66,16 +66,17 @@ class IRONSKILLET_UPDATE__
 
         foreach( $download_array as $type )
         {
-            $ironskillet_pathString = "../iron-skillet";
+            $ironskillet_pathString = dirname(__FILE__)."/../../iron-skillet";
             foreach( $type as $version )
             {
                 if (!is_dir($ironskillet_pathString )) {
                     // dir doesn't exist, make it
+                    #print "FOLDER: ".$ironskillet_pathString."\n";
                     mkdir($ironskillet_pathString);
                 }
 
                 $filename = $ironskillet_pathString."/".$version;
-                print "storefile: ".$filename."\n";
+                #print "storefile: ".$filename."\n";
 
                 $explodeArray = explode( "/", $version );
 
@@ -101,7 +102,6 @@ class IRONSKILLET_UPDATE__
                         "verify_peer_name"=>false,
                     ),
                 );
-                //
 
                 $origFile = file_get_contents( $url.$version, false, stream_context_create($arrContextOptions));
                 $origFile = str_replace( "{{ SINKHOLE_IPV4 }}", "sinkhole.paloaltonetworks.com", $origFile);
@@ -112,5 +112,9 @@ class IRONSKILLET_UPDATE__
                 file_put_contents( $ironskillet_pathString."/".$version, $origFile);
             }
         }
+    }
+
+    function endOfScript()
+    {
     }
 }

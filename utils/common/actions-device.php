@@ -984,20 +984,21 @@ DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = arra
 
         if( $context->first )
         {
-            $av_xmlString_v9 = file_get_contents( "../../iron-skillet/panos_v9.1/templates/panorama/snippets/profiles_virus.xml");
-            $av_xmlString_v10 = file_get_contents( "../../iron-skillet/panos_v10.0/templates/panorama/snippets/profiles_virus.xml");
+            $pathString = dirname(__FILE__)."/../../iron-skillet";
+            $av_xmlString_v9 = file_get_contents( $pathString."/panos_v9.1/templates/panorama/snippets/profiles_virus.xml");
+            $av_xmlString_v10 = file_get_contents( $pathString."/panos_v10.0/templates/panorama/snippets/profiles_virus.xml");
 
-            $as_xmlString_v9 = file_get_contents( "../../iron-skillet/panos_v9.1/templates/panorama/snippets/profiles_spyware.xml");
-            $as_xmlString_v10 = file_get_contents( "../../iron-skillet/panos_v10.0/templates/panorama/snippets/profiles_spyware.xml");
+            $as_xmlString_v9 = file_get_contents( $pathString."/panos_v9.1/templates/panorama/snippets/profiles_spyware.xml");
+            $as_xmlString_v10 = file_get_contents( $pathString."/panos_v10.0/templates/panorama/snippets/profiles_spyware.xml");
 
-            $vp_xmlString = file_get_contents( "../../iron-skillet/panos_v10.0/templates/panorama/snippets/profiles_vulnerability.xml");
+            $vp_xmlString = file_get_contents( $pathString."/panos_v10.0/templates/panorama/snippets/profiles_vulnerability.xml");
 
-            $url_xmlString_v9 = file_get_contents( "../../iron-skillet/panos_v9.1/templates/panorama/snippets/profiles_url_filtering.xml");
-            $url_xmlString_v10 = file_get_contents( "../../iron-skillet/panos_v10.0/templates/panorama/snippets/profiles_url_filtering.xml");
+            $url_xmlString_v9 = file_get_contents( $pathString."/panos_v9.1/templates/panorama/snippets/profiles_url_filtering.xml");
+            $url_xmlString_v10 = file_get_contents( $pathString."/panos_v10.0/templates/panorama/snippets/profiles_url_filtering.xml");
 
-            $fb_xmlString = file_get_contents( "../../iron-skillet/panos_v10.0/templates/panorama/snippets/profiles_file_blocking.xml");
+            $fb_xmlString = file_get_contents( $pathString."/panos_v10.0/templates/panorama/snippets/profiles_file_blocking.xml");
 
-            $wf_xmlString = file_get_contents( "../../iron-skillet/panos_v10.0/templates/panorama/snippets/profiles_wildfire_analysis.xml");
+            $wf_xmlString = file_get_contents( $pathString."/panos_v10.0/templates/panorama/snippets/profiles_wildfire_analysis.xml");
 
             if( $classtype == "VirtualSystem" || $classtype == "DeviceGroup" )
             {
@@ -1275,7 +1276,8 @@ DeviceCallContext::$supportedActions['LogForwardingProfile-create-BP'] = array(
 
         if( $context->first )
         {
-            $lfp_bp_xmlstring = file_get_contents( "../../iron-skillet/panos_v10.0/templates/panorama/snippets/log_settings_profiles.xml");
+            $pathString = dirname(__FILE__)."/../../iron-skillet";
+            $lfp_bp_xmlstring = file_get_contents( $pathString."/panos_v10.0/templates/panorama/snippets/log_settings_profiles.xml");
 
             if( $classtype == "VirtualSystem" || $classtype == "DeviceGroup" )
             {
@@ -1349,7 +1351,8 @@ DeviceCallContext::$supportedActions['ZoneProtectionProfile-create-BP'] = array(
 
         if( $context->first )
         {
-            $zpp_bp_xmlstring = file_get_contents( "../../iron-skillet/panos_v10.0/templates/panorama/snippets/zone_protection_profile.xml");
+            $pathString = dirname(__FILE__)."/../../iron-skillet";
+            $zpp_bp_xmlstring = file_get_contents( $pathString."/panos_v10.0/templates/panorama/snippets/zone_protection_profile.xml");
 
             if( $classtype == "VirtualSystem" || $classtype == "Template" )
             {

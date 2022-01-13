@@ -75,6 +75,10 @@ __pan-os-php_scripts()
       "userid-mgr"
       "xml-op-json"
       "bpa-generator"
+      "playbook"
+      "ironskillet-update"
+      "maxmind-update"
+      "util_get-action-filter"
     )
 
 		checkArray=('in' 'out' 'actions' 'filter' 'location')
