@@ -94,7 +94,7 @@ class IRONSKILLET_UPDATE__
 
 
                 $fullurl = $url.$version;
-                print "urL: ".$fullurl."\n\n\n";
+                print "urL: ".$fullurl."\n";
 
                 $arrContextOptions=array(
                     "ssl"=>array(

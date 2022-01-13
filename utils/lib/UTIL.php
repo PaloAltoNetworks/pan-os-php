@@ -50,9 +50,19 @@ require_once(dirname(__FILE__)."/USERIDMGR.php");
 require_once(dirname(__FILE__)."/RUNSSH.php");
 
 
+require_once(dirname(__FILE__)."/SOFTWAREREMOVE.php");
+require_once(dirname(__FILE__)."/TRAFFICLOG.php");
+require_once(dirname(__FILE__)."/SYSTEMLOG.php");
+require_once(dirname(__FILE__)."/GARPSEND.php");
+
+require_once dirname(__FILE__)."/../../phpseclib/Net/SSH2.php";
+require_once dirname(__FILE__)."/../../phpseclib/Crypt/RSA.php";
 
 class UTIL
 {
+    public $argv = null;
+    public $argc = null;
+
     public $configType = null;
     public $configInput = null;
     public $configOutput = null;
@@ -112,6 +122,9 @@ class UTIL
 
     function __construct($utilType, $argv, $argc, $PHP_FILE, $_supportedArguments = array(), $_usageMsg = "")
     {
+        $this->argv = $argv;
+        $this->argc = $argc;
+
         $this->PHP_FILE = $PHP_FILE;
         $this->utilType = $utilType;
         $this->runStartTime = microtime(TRUE);

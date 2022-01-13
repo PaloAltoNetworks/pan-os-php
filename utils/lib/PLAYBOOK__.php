@@ -5,6 +5,7 @@ class PLAYBOOK__
 {
 
     public $isAPI = false;
+    public $debugAPI = false;
 
     function __construct( $argv, $argc )
     {
@@ -48,6 +49,9 @@ class PLAYBOOK__
         //check if $input argument has "api://"
         if( strpos( PH::$args['in'], "api://" ) !== FALSE )
             $this->isAPI = TRUE;
+
+        if( isset(PH::$args['debugapi']) )
+            $this->debugAPI = TRUE;
 
         if( isset(PH::$args['json']) )
         {
@@ -130,6 +134,9 @@ class PLAYBOOK__
 
             foreach( $command as $arg )
                 $arguments[] = $arg;
+
+            if( $this->debugAPI )
+                $arguments[] = "debugapi";
 
             ###############################################################################
             //IN / OUT specification

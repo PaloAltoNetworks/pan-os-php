@@ -68,6 +68,12 @@ alias pa_xml-op-json='php -r "require_once '"'"'utils/panXML_op_JSON.php'"'"';" 
 
 alias pa_bpa-generator='php -r "require_once '"'"'utils/bpa-generator.php'"'"';" $@'
 
+
+
+alias pa_gratuitous-arp='php -r "require_once '"'"'utils/sendGARP.php'"'"';" $@'
+alias pa_software-remove='php -r "require_once '"'"'utils/software-remove.php'"'"';" $@'
+alias pa_traffic-log='php -r "require_once '"'"'utils/traffic-log.php'"'"';" $@'
+alias pa_system-log='php -r "require_once '"'"'utils/system-log.php'"'"';" $@'
 ##########################################################################################
 # until here all scripts above are deprecated and supported by pan-os-php type=
 ##########################################################################################
@@ -100,7 +106,10 @@ alias pa_software-downloader='php -r "require_once '"'"'utils/develop/pan_softwa
 alias pa_config-commit='php -r "require_once '"'"'utils/develop/commit-config.php'"'"';" $@'
 alias pa_config-reset='php -r "require_once '"'"'utils/develop/reset-config.php'"'"';" $@'
 alias pa_get-system-user-info='php -r "require_once '"'"'utils/develop/pan_get_user_info.php'"'"';" $@'
-alias pa_gratuitous-arp='php -r "require_once '"'"'utils/develop/sendGARP.php'"'"';" $@'
-alias pa_software-remove='php -r "require_once '"'"'utils/develop/software-remove.php'"'"';" $@'
-alias pa_system-log='php -r "require_once '"'"'utils/develop/system-log.php'"'"';" $@'
-alias pa_traffic-log='php -r "require_once '"'"'utils/develop/traffic-log.php'"'"';" $@'
+
+
+
+
+
+
+

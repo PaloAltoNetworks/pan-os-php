@@ -914,8 +914,31 @@ class PH
         "playbook",
         "ironskillet-update",
         "maxmind-update",
-        "util_get-action-filter"
+        "util_get-action-filter",
+        "software-remove",
+        "traffic-log",
+        "system-log",
+        "gratious-arp"
         );
+
+
+    public static $in_exclude = array(
+        'ironskillet-update',
+        "maxmind-update",
+        "util_get-action-filter"
+    );
+
+    public static $out_exclude = array(
+        'stats',
+        'download-predefined',
+        'config-size',
+        "xml-op-json",
+        "bpa-generator",
+        "ironskillet-update",
+        "maxmind-update",
+        "util_get-action-filter",
+        "software-remove"
+    );
 
     public static function callPANOSPHP( $type, $argv, $argc, $PHP_FILE )
     {
@@ -992,6 +1015,19 @@ class PH
 
         elseif( $type == "maxmind-update" )
             $util = new MAXMIND__( );
+
+        elseif( $type == "software-remove" )
+            $util = new SOFTWAREREMOVE($type, $argv, $argc,$PHP_FILE." type=".$type);
+
+        elseif( $type == "traffic-log" )
+            $util = new TRAFFICLOG($type, $argv, $argc,$PHP_FILE." type=".$type);
+
+        elseif( $type == "system-log" )
+            $util = new SYSTEMLOG($type, $argv, $argc,$PHP_FILE." type=".$type);
+
+        elseif( $type == "gratious-arp" )
+            $util = new GARPSEND($type, $argv, $argc,$PHP_FILE." type=".$type);
+
 
         elseif( $type == 'address'
             || $type == 'service'
