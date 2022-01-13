@@ -1,0 +1,98 @@
+{
+  "in": "/example/path/input-config.xml",
+  "out": "final-output-config.xml",
+  "stagename": "staging/visibility-",
+  "header-comment": "**********\n*        *\n* HEADER *\n*        *\n**********",
+  "footer-comment": "**********\n*        *\n* FOOTER *\n*        *\n**********",
+  "command": [
+    {
+      "type": "ironskillet-update",
+      "comment": ""
+    },
+    {
+      "type": "device",
+      "actions": "actions=logforwardingprofile-create-bp:true",
+      "comment": ""
+    },
+    {
+      "type": "device",
+      "actions": "actions=securityprofile-create-alert-only:true",
+      "comment": ""
+    },
+    {
+      "type": "device",
+      "actions": "actions=zoneprotectionprofile-create-bp",
+      "comment": ""
+    },
+    {
+      "type": "zone",
+      "actions": "actions=zpp-Set:Recommended_Zone_Protection",
+      "comment": ""
+    },
+    {
+      "type": "zone",
+      "actions": "actions=logSetting-Set:default",
+      "comment": ""
+    },
+    {
+      "type": "rule",
+      "actions": "actions=logSetting-disable"
+    },
+    {
+      "type": "rule",
+      "actions": "actions=logsetting-set:default"
+    },
+    {
+      "type": "rule",
+      "actions": "actions=securityProfile-Group-Set:Alert-Only",
+      "filter": "filter=!(secprof is.set) and (action is.allow)"
+    },
+    {
+      "type": "rule",
+      "actions": "actions=securityProfile-Profile-Set:vulnerability,Alert-Only-VP",
+      "filter": "filter=(secprof type.is.profile) and !(secprof vuln-profile.is.set) and (action is.allow) and !(rule is.disabled)"
+    },
+    {
+      "type": "rule",
+      "actions": "actions=securityProfile-Profile-Set:spyware,Alert-Only-AS",
+      "filter": "filter=(secprof type.is.profile) and !(secprof as-profile.is.set) and (action is.allow) and !(rule is.disabled)"
+    },
+    {
+      "type": "rule",
+      "actions": "actions=securityProfile-Profile-Set:virus,Alert-Only-AV",
+      "filter": "filter=(secprof type.is.profile) and !(secprof av-profile.is.set) and (action is.allow) and !(rule is.disabled)"
+    },
+    {
+      "type": "rule",
+      "actions": "actions=securityProfile-Profile-Set:url-filtering,Alert-Only-URL",
+      "filter": "filter=(secprof type.is.profile) and !(secprof url-profile.is.set) and (action is.allow) and !(rule is.disabled)"
+    },
+    {
+      "type": "rule",
+      "actions": "actions=securityProfile-Profile-Set:file-blocking,Alert-Only-FB",
+      "filter": "filter=(secprof type.is.profile) and !(secprof file-profile.is.set) and (action is.allow) and !(rule is.disabled)"
+    },
+    {
+      "type": "rule",
+      "actions": "actions=securityProfile-Profile-Set:wildfire,Alert-Only-WF",
+      "filter": "filter=(secprof type.is.profile) and !(secprof wf-profile.is.set) and (action is.allow) and !(rule is.disabled)"
+    },
+    {
+      "type": "rule",
+      "actions": "actions=securityProfile-Remove",
+      "filter": "filter=(secprof is.set) and !(action is.allow)"
+    },
+    {
+      "type": "rule",
+      "actions": "actions=logstart-Disable"
+    },
+    {
+      "type": "rule",
+      "actions": "actions=logend-Enable"
+    },
+    {
+      "type": "device",
+      "actions": "actions=cleanuprule-create-bp:default"
+    }
+  ]
+}

@@ -982,7 +982,7 @@ class PH
             $util = new BPAGENERATOR($type, $argv, $argc,$PHP_FILE." type=".$type);
 
         elseif( $type == "playbook" )
-            $util = new PLAYBOOK__( $argc );
+            $util = new PLAYBOOK__( $argv, $argc );
 
         elseif( $type == "util_get-action-filter" )
             $util = new UTIL_GET_ACTION_FILTER( $argv, $argc );

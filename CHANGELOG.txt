@@ -9,6 +9,7 @@ UTILS:
 * UTIL ironskillet_update | disable SSL check
 * UTIL pan-os-php | extend for type=playbook / ironskillet-update / maxmind-update / util_get-action-filter
 * UTIL main entry pan-os-php script | start removing old single scripts maxmind / ironskillet / util_get-action-filter
+* UTIL pan-os-php type=playbook | introduce PAN-OS API as argument in=api://
 
 BUGFIX:
 * UTIL pan-os-php type=device | bugfix actions=securityprofile-create-alert-only PAN-OS version <10 compare to >=10
