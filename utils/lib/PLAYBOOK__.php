@@ -201,6 +201,8 @@ class PLAYBOOK__
         foreach( $command_array as $key => $command )
         {
             $arguments = array();
+            $arguments[0] = "";
+
 
             $script = $command['type'];
             unset( $command['type'] );
@@ -266,6 +268,7 @@ class PLAYBOOK__
             PH::print_stdout("");
             PH::print_stdout( PH::boldText( "[ ".$tool. " ".implode( " ", PH::$argv )." ]" ) );
             PH::print_stdout("");
+
             $util = PH::callPANOSPHP( $script, PH::$argv, $argc, $PHP_FILE );
 
             PH::print_stdout("");

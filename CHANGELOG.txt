@@ -12,6 +12,7 @@ UTILS:
 BUGFIX:
 * UTIL pan-os-php type=device | bugfix actions=securityprofile-create-alert-only PAN-OS version <10 compare to >=10
 * UTIL pan-os-php type=device | bugfix for actions=securityprofile-create-alert-only:true if no PAN-OS API method is used
+* UTIL pan-os-php type=device | bugfix for all actions which are using IronSkillet snippets
 
 GENERAL:
 
