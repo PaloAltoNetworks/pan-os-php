@@ -119,5 +119,5 @@ elseif( isset(PH::$args['type']) )
 
     $util = PH::callPANOSPHP( $type, $argv, $argc, $PHP_FILE );
 
-    $util->endOfScript();
+    #$util->endOfScript();
 }
