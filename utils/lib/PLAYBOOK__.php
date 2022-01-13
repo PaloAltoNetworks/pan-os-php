@@ -167,6 +167,23 @@ class PLAYBOOK__
         $out = "";
         $in = "";
 
+        $in_exclude = array(
+            'ironskillet-update',
+            "maxmind-update",
+            "util_get-action-filter"
+        );
+
+        $out_exclude = array(
+            'stats',
+            'download-predefined',
+            'config-size',
+            "xml-op-json",
+            "bpa-generator",
+            "ironskillet-update",
+            "maxmind-update",
+            "util_get-action-filter"
+        );
+
         $out_counter = 0;
         foreach( $command_array as $key => $command )
         {
@@ -183,21 +200,39 @@ class PLAYBOOK__
             ###############################################################################
             //IN / OUT specification
             ###############################################################################
+            //what to do with playbook, stats, all script which do not need output
+
             if( $key == 0 )
             {
                 $out_counter = 0;
                 $in = $input;
+                if( !in_array( $script, $out_exclude ) )
+                {
+                    $out = $stage_name.$out_counter.".xml";
+                    $out_counter = $out_counter+10;
+                }
+                else
+                    $out = $in;
             }
             elseif( $key > 0 )
             {
-                $in = $out;
-                $out_counter = $out_counter+10;
+                if( !in_array( $script, $in_exclude ) )
+                    $in = $out;
+
+                if( !in_array( $script, $out_exclude ) )
+                {
+                    $out = $stage_name.$out_counter.".xml";
+                    $out_counter = $out_counter+10;
+                }
+                else
+                    $out = $in;
             }
-            $out = $stage_name.$out_counter.".xml";
 
+            if( !in_array( $script, $in_exclude ) )
+                $arguments[] = "in=".$in;
 
-            $arguments[] = "in=".$in;
-            $arguments[] = "out=".$out;
+            if( !in_array( $script, $out_exclude ) )
+                $arguments[] = "out=".$out;
 
 
             PH::resetCliArgs( $arguments);
@@ -221,5 +256,9 @@ class PLAYBOOK__
             PH::print_stdout( "############################################################################");
             copy( $out, $output );
         }
+    }
+
+    function endOfScript()
+    {
     }
 }

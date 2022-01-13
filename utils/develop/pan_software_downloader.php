@@ -36,7 +36,7 @@ $debug = false;
 $debugAPI = false;
 $filter = array();
 $filter['All'] = false;//[=false => download only latest]
-$filter['SWVersionInfo'] = true;
+$filter['SWVersionInfo'] = false;
 $filter['SignatureVersionInfo'] = true;
 $filter['only_releaseNotes'] = false;
 

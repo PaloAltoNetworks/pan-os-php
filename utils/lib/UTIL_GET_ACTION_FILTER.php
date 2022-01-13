@@ -29,4 +29,8 @@ class UTIL_GET_ACTION_FILTER
 
         file_put_contents(__DIR__ . "/util_action_filter.json", $JSON_pretty);
     }
+
+    function endOfScript()
+    {
+    }
 }

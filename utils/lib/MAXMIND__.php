@@ -40,10 +40,17 @@ class MAXMIND__
         $file_name = $folderExpression.".zip";
         $folder = $folderExpression;
 
+        $arrContextOptions=array(
+            "ssl"=>array(
+                "verify_peer"=>false,
+                "verify_peer_name"=>false,
+            ),
+        );
+
 
 //DOWNLOAD ZIP
 //cert check fail if SSL interception is done
-        if(file_put_contents( $file_name,file_get_contents($url)))
+        if( file_put_contents( $file_name,file_get_contents($url, false, stream_context_create($arrContextOptions))) )
             echo "File: ".$file_name." downloaded successfully\n";
         else
             echo "File: ".$file_name." downloading failed.\n";
@@ -186,5 +193,9 @@ class MAXMIND__
         }
         fclose($file_handle);
         return $countryArray;
+    }
+
+    function endOfScript()
+    {
     }
 }
