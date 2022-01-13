@@ -918,7 +918,7 @@ class PH
         "software-remove",
         "traffic-log",
         "system-log",
-        "gratious-arp"
+        "gratuitous-arp"
         );
 
 
