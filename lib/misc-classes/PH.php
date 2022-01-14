@@ -919,7 +919,9 @@ class PH
         "traffic-log",
         "system-log",
         "gratuitous-arp",
-        "software-download"
+        "software-download",
+        "software-preparation",
+        "license"
         );
 
 
@@ -939,7 +941,9 @@ class PH
         "maxmind-update",
         "util_get-action-filter",
         "software-remove",
-        "software-download"
+        "software-download",
+        "software-preparation",
+        "license"
     );
 
     public static function callPANOSPHP( $type, $argv, $argc, $PHP_FILE )
@@ -1033,6 +1037,13 @@ class PH
         elseif( $type == "software-download" )
             $util = new SOFTWARE_DOWNLOAD($type, $argv, $argc,$PHP_FILE." type=".$type);
 
+        elseif( $type == "software-preparation" )
+            #$util = new SOFTWARE_PREPARATION__($type, $argv, $argc,$PHP_FILE." type=".$type);
+            $util = new SOFTWARE_PREPARATION__( $argv, $argc );
+
+        elseif( $type == "license" )
+            #$util = new SOFTWARE_PREPARATION__($type, $argv, $argc,$PHP_FILE." type=".$type);
+            $util = new LICENSE__( $argv, $argc );
 
         elseif( $type == 'address'
             || $type == 'service'
