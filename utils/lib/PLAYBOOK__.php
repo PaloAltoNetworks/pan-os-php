@@ -47,7 +47,7 @@ class PLAYBOOK__
             $stage_name = PH::$args['stagename'];
 
         //check if $input argument has "api://"
-        if( strpos( PH::$args['in'], "api://" ) !== FALSE )
+        if( isset(PH::$args['in'] ) && strpos( PH::$args['in'], "api://" ) !== FALSE )
             $this->isAPI = TRUE;
 
         if( isset(PH::$args['debugapi']) )
