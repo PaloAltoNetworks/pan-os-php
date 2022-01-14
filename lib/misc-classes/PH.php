@@ -918,7 +918,8 @@ class PH
         "software-remove",
         "traffic-log",
         "system-log",
-        "gratuitous-arp"
+        "gratuitous-arp",
+        "software-download"
         );
 
 
@@ -937,7 +938,8 @@ class PH
         "ironskillet-update",
         "maxmind-update",
         "util_get-action-filter",
-        "software-remove"
+        "software-remove",
+        "software-download"
     );
 
     public static function callPANOSPHP( $type, $argv, $argc, $PHP_FILE )
@@ -1027,6 +1029,9 @@ class PH
 
         elseif( $type == "gratious-arp" )
             $util = new GARPSEND($type, $argv, $argc,$PHP_FILE." type=".$type);
+
+        elseif( $type == "software-download" )
+            $util = new SOFTWARE_DOWNLOAD($type, $argv, $argc,$PHP_FILE." type=".$type);
 
 
         elseif( $type == 'address'
