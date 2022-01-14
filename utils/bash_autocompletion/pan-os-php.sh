@@ -83,6 +83,7 @@ __pan-os-php_scripts()
       "traffic-log"
       "system-log"
       "gratuitous-arp"
+      "software-download"
     )
 
 		checkArray=('in' 'out' 'actions' 'filter' 'location')
