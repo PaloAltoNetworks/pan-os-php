@@ -59,6 +59,9 @@ class PLAYBOOK__
             $filedata = file_get_contents($jsonFile);
             $details = json_decode( $filedata, true );
 
+            if( $details == null )
+                derr( "invalid JSON file provided" );
+
             if( !isset(PH::$args['in']) )
                 $input = $details['in'];
 
@@ -73,6 +76,9 @@ class PLAYBOOK__
         else
         {
             $details = json_decode($JSONarray, true);
+
+            if( $details == null )
+                derr( "invalid JSON file provided" );
 
             if( !isset(PH::$args['in']) )
                 $input = $details['in'];
