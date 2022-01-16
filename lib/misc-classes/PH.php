@@ -921,7 +921,8 @@ class PH
         "gratuitous-arp",
         "software-download",
         "software-preparation",
-        "license"
+        "license",
+        "config-download-all"
         );
 
 
@@ -943,7 +944,8 @@ class PH
         "software-remove",
         "software-download",
         "software-preparation",
-        "license"
+        "license",
+        "config-download-all"
     );
 
     public static function callPANOSPHP( $type, $argv, $argc, $PHP_FILE )
@@ -1044,6 +1046,9 @@ class PH
         elseif( $type == "license" )
             #$util = new SOFTWARE_PREPARATION__($type, $argv, $argc,$PHP_FILE." type=".$type);
             $util = new LICENSE__( $argv, $argc );
+
+        elseif( $type == "config-download-all" )
+            $util = new CONFIG_DOWNLOAD_ALL__($type, $argv, $argc,$PHP_FILE." type=".$type);
 
         elseif( $type == 'address'
             || $type == 'service'

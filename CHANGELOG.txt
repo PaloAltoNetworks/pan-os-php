@@ -13,6 +13,7 @@ UTILS:
 * UTIL system-log / traffic-log / software-remove / sendGARP - move to PHP classes
 * UTIL pa_software-download / pa_software-preparation / pa_license move to PHP class - to make it useable for entry point pan-os-php type=
 * UTIL API - improve error output for supported endpoints
+* UTIL pan-os-php type=config-download-all | introduce type and move feature from development into php class
 
 BUGFIX:
 * UTIL pan-os-php type=device | bugfix actions=securityprofile-create-alert-only PAN-OS version <10 compare to >=10

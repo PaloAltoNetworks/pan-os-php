@@ -58,6 +58,7 @@ require_once(dirname(__FILE__)."/GARPSEND.php");
 require_once(dirname(__FILE__)."/SOFTWARE_DOWNLOAD.php");
 require_once(dirname(__FILE__)."/SOFTWARE_PREPARATION__.php");
 require_once(dirname(__FILE__)."/LICENSE__.php");
+require_once(dirname(__FILE__)."/CONFIG_DOWNLOAD_ALL__.php");
 
 
 require_once dirname(__FILE__)."/../../phpseclib/Net/SSH2.php";
