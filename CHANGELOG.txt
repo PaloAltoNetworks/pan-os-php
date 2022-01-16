@@ -12,6 +12,7 @@ UTILS:
 * UTIL pan-os-php type=playbook | introduce PAN-OS API as argument in=api://
 * UTIL system-log / traffic-log / software-remove / sendGARP - move to PHP classes
 * UTIL pa_software-download / pa_software-preparation / pa_license move to PHP class - to make it useable for entry point pan-os-php type=
+* UTIL API - improve error output for supported endpoints
 
 BUGFIX:
 * UTIL pan-os-php type=device | bugfix actions=securityprofile-create-alert-only PAN-OS version <10 compare to >=10

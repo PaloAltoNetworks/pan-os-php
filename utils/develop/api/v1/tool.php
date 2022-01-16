@@ -106,8 +106,16 @@ if( empty( $url_pieces) || ( isset($url_pieces[1]) && !in_array( $url_pieces[1],
 {
     $example = "http://localhost:8082/utils/develop/api/v1/tool.php/address?shadow-json";
     $message = 'Unknown endpoint. supported: '.implode( ", ", PH::$supportedUTILTypes ).' Example: '.$example;
+    $message = 'Unknown endpoint.';
 
-    throw new Exception($message, 404);
+    #throw new Exception($message, 404);
+    $e = new Exception($message, 404);
+
+    $code = $e->getCode() ?: 400;
+    header("Content-Type: application/json", true, $code);
+    print json_encode(["error" => $e->getMessage(), "endpoint" =>PH::$supportedUTILTypes, "example" => $example ]);
+    exit;
+
 }
 
 
@@ -130,7 +138,10 @@ elseif( isset($_GET['help']) || isset($_GET['listfilters']) || isset($_GET['list
 else{
     #$argv[] = "in=".dirname($PHP_FILE)."/../../../../tests/input/panorama-10.0-merger.xml";
     $message = 'No File available with argument in=';
+
     throw new Exception($message, 404);
+
+    #$argv[] = "help";
 }
 
 if( !isset( $_GET['shadow-json'] ) && !isset( $_GET['shadow-nojson'] ) )
