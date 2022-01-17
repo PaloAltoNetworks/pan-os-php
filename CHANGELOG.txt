@@ -15,6 +15,7 @@ UTILS:
 * UTIL API - improve error output for supported endpoints
 * UTIL pan-os-php type=config-download-all | introduce type and move feature from development into php class
 * UTIL UI update json_array.js to get actual info about script actions / filter
+* UTIL get_action_filter | improve
 
 BUGFIX:
 * UTIL pan-os-php type=device | bugfix actions=securityprofile-create-alert-only PAN-OS version <10 compare to >=10

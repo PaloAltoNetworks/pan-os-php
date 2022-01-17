@@ -79,29 +79,9 @@
             // Denotes total number of rows
 
 
-            // jQuery button click event to add a row
+            // jQuery button click event create playbook JSON
             $('#storeBtn').on('click', function () {
 
-/*
-                $("table > tbody > tr").each(function ()
-                {
-                    var currentRow = $(this); //Do not search the whole HTML tree twice, use a subtree instead
-                    var id = currentRow.attr('id');
-                    id = id.substr(1);
-
-                    var SCRIPT = currentRow.find("#script"+id).val();
-                    var ACTION = currentRow.find("#action"+id).val();
-                    var ACTION_input = currentRow.find("#action-input"+id).val();
-
-                    var FILTER = currentRow.find("#filter"+id).val();
-                    var FILTER_input = currentRow.find("#filter-input"+id).val();
-
-                    var ADDITION = currentRow.find("#additionalArg-input"+id).val();
-
-                    console.log( SCRIPT + " " + ACTION + " " + ACTION_input + " " + FILTER + " " + FILTER_input + " " + ADDITION );
-
-                });
-                */
                 var jsonSTRING = "";
                 var jsonStringStart = "{\n";
                 var jsonIN = "  \"in\": \"staging/ASA-Config-initial-10_0-fw.xml\",\n";
@@ -110,6 +90,7 @@
                 var jsonHEADER = "  \"header-comment\": \"\",\n";
                 var jsonFOOTER = "  \"footer-comment\": \"\",\n";
                 var jsonCOMMANDstart = "  \"command\": [\n";
+
                 var jsonCOMMAND1 = "    {\n" +
                     "      \"type\": \"ironskillet-update\",\n" +
                     "      \"comment\": \"\"\n" +
@@ -119,12 +100,13 @@
                     "      \"actions\": \"actions=logforwardingprofile-create-bp\",\n" +
                     "      \"comment\": \"\"\n" +
                     "    }";
+
                 var jsonCOMMANDend = "  ]\n";
                 var jsonStringEnd = "}";
 
                 jsonSTRING += jsonStringStart;
-                jsonSTRING += jsonIN;
-                jsonSTRING += jsonOUT;
+                //jsonSTRING += jsonIN;
+                //jsonSTRING += jsonOUT;
                 //jsonSTRING += jsonHEADER;
                 //jsonSTRING += jsonFOOTER;
                 jsonSTRING += jsonCOMMANDstart;
