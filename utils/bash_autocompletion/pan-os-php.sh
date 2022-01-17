@@ -87,6 +87,7 @@ __pan-os-php_scripts()
       "software-preparation"
       "license"
       "config-download-all"
+      "spiffy"
     )
 
 		checkArray=('in' 'out' 'actions' 'filter' 'location')

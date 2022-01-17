@@ -922,7 +922,8 @@ class PH
         "software-download",
         "software-preparation",
         "license",
-        "config-download-all"
+        "config-download-all",
+        "spiffy"
         );
 
 
@@ -945,7 +946,8 @@ class PH
         "software-download",
         "software-preparation",
         "license",
-        "config-download-all"
+        "config-download-all",
+        "spiffy"
     );
 
     public static function callPANOSPHP( $type, $argv, $argc, $PHP_FILE )
@@ -1049,6 +1051,9 @@ class PH
 
         elseif( $type == "config-download-all" )
             $util = new CONFIG_DOWNLOAD_ALL__($type, $argv, $argc,$PHP_FILE." type=".$type);
+
+        elseif( $type == "spiffy" )
+            $util = new SPIFFY__( $argv, $argc );
 
         elseif( $type == 'address'
             || $type == 'service'
