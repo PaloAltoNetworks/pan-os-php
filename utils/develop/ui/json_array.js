@@ -1,4 +1,3 @@
-var subjectObject
 
 var subjectObject =
     {
@@ -45,9 +44,7 @@ var subjectObject =
                 },
                 "decommission": {
                     "name": "decommission",
-                    "GlobalInitFunction": {},
                     "MainFunction": {},
-                    "GlobalFinishFunction": {},
                     "args": {
                         "file": {
                             "type": "string",
@@ -226,7 +223,18 @@ var subjectObject =
                 },
                 "replacebymembersanddelete": {
                     "name": "replaceByMembersAndDelete",
-                    "MainFunction": {}
+                    "MainFunction": {},
+                    "args": {
+                        "keepgroupname": {
+                            "type": "string",
+                            "default": "*nodefault*",
+                            "choices": [
+                                "tag",
+                                "description"
+                            ],
+                            "help": "- replaceByMembersAndDelete:tag -> create Tag with name from AddressGroup name and add to the object\n- replaceByMembersAndDelete:description -> create Tag with name from AddressGroup name and add to the object\n"
+                        }
+                    }
                 },
                 "replacewithobject": {
                     "name": "replaceWithObject",
@@ -418,6 +426,7 @@ var subjectObject =
                         "regex": {
                             "Function": {},
                             "arg": true,
+                            "help": "possible variables to bring in as argument: $$value$$ \/ $$ipv4$$ \/ $$ipv6$$ \/ $$value.no-netmask$$ \/ $$netmask$$ \/ $$netmask.blank32$$",
                             "ci": {
                                 "fString": "(%PROP% \/n-\/)",
                                 "input": "input\/panorama-8.0.xml"
@@ -460,6 +469,14 @@ var subjectObject =
                             }
                         },
                         "is.group": {
+                            "Function": {},
+                            "arg": false,
+                            "ci": {
+                                "fString": "(%PROP%)",
+                                "input": "input\/panorama-8.0.xml"
+                            }
+                        },
+                        "is.region": {
                             "Function": {},
                             "arg": false,
                             "ci": {
@@ -584,6 +601,37 @@ var subjectObject =
                             "Function": {},
                             "arg": true,
                             "help": "returns TRUE if object location (shared\/device-group\/vsys name) matches",
+                            "ci": {
+                                "fString": "(%PROP% shared )",
+                                "input": "input\/panorama-8.0.xml"
+                            }
+                        }
+                    }
+                },
+                "refobjectname": {
+                    "operators": {
+                        "is": {
+                            "Function": {},
+                            "arg": true,
+                            "help": "returns TRUE if object name matches refobjectname",
+                            "ci": {
+                                "fString": "(%PROP% shared )",
+                                "input": "input\/panorama-8.0.xml"
+                            }
+                        },
+                        "is.only": {
+                            "Function": {},
+                            "arg": true,
+                            "help": "returns TRUE if RUE if object name matches only refobjectname",
+                            "ci": {
+                                "fString": "(%PROP% shared )",
+                                "input": "input\/panorama-8.0.xml"
+                            }
+                        },
+                        "is.recursive": {
+                            "Function": {},
+                            "arg": true,
+                            "help": "returns TRUE if object name matches refobjectname",
                             "ci": {
                                 "fString": "(%PROP% shared )",
                                 "input": "input\/panorama-8.0.xml"
@@ -727,6 +775,16 @@ var subjectObject =
                         "objectName": {
                             "type": "string",
                             "default": "*nodefault*"
+                        }
+                    }
+                },
+                "decommission": {
+                    "name": "decommission",
+                    "MainFunction": {},
+                    "args": {
+                        "file": {
+                            "type": "string",
+                            "default": "false"
                         }
                     }
                 },
@@ -901,6 +959,20 @@ var subjectObject =
                     "MainFunction": {},
                     "args": {
                         "objectName": {
+                            "type": "string",
+                            "default": "*nodefault*"
+                        }
+                    }
+                },
+                "sourceport-delete": {
+                    "name": "sourceport-delete",
+                    "MainFunction": {}
+                },
+                "sourceport-set": {
+                    "name": "sourceport-set",
+                    "MainFunction": {},
+                    "args": {
+                        "sourceportValue": {
                             "type": "string",
                             "default": "*nodefault*"
                         }
@@ -1221,6 +1293,58 @@ var subjectObject =
                         }
                     }
                 },
+                "sourceport.value": {
+                    "operators": {
+                        "string.eq": {
+                            "Function": {},
+                            "arg": true,
+                            "ci": {
+                                "fString": "(%PROP% 80)",
+                                "input": "input\/panorama-8.0.xml"
+                            }
+                        },
+                        ">,<,=,!": {
+                            "eval": "!$object->isGroup() && $object->getSourcePort() !operator! !value!",
+                            "arg": true,
+                            "ci": {
+                                "fString": "(%PROP% 1)",
+                                "input": "input\/panorama-8.0.xml"
+                            }
+                        },
+                        "is.single.port": {
+                            "Function": {},
+                            "arg": false,
+                            "ci": {
+                                "fString": "(%PROP%)",
+                                "input": "input\/panorama-8.0.xml"
+                            }
+                        },
+                        "is.port.range": {
+                            "Function": {},
+                            "arg": false,
+                            "ci": {
+                                "fString": "(%PROP%)",
+                                "input": "input\/panorama-8.0.xml"
+                            }
+                        },
+                        "is.comma.separated": {
+                            "Function": {},
+                            "arg": false,
+                            "ci": {
+                                "fString": "(%PROP%)",
+                                "input": "input\/panorama-8.0.xml"
+                            }
+                        },
+                        "regex": {
+                            "Function": {},
+                            "arg": true,
+                            "ci": {
+                                "fString": "(%PROP% \/tcp\/)",
+                                "input": "input\/panorama-8.0.xml"
+                            }
+                        }
+                    }
+                },
                 "tag": {
                     "operators": {
                         "has": {
@@ -1508,6 +1632,16 @@ var subjectObject =
                 "name-touppercase": {
                     "name": "name-toUpperCase",
                     "MainFunction": {}
+                },
+                "replace-with-object": {
+                    "name": "replace-With-Object",
+                    "MainFunction": {},
+                    "args": {
+                        "objectName": {
+                            "type": "string",
+                            "default": "*nodefault*"
+                        }
+                    }
                 }
             },
             "filter": {
@@ -2277,6 +2411,38 @@ var subjectObject =
                         }
                     }
                 },
+                "name-addprefix": {
+                    "name": "name-addPrefix",
+                    "MainFunction": {},
+                    "GlobalFinishFunction": {},
+                    "args": {
+                        "text": {
+                            "type": "string",
+                            "default": "*nodefault*"
+                        },
+                        "accept63characters": {
+                            "type": "bool",
+                            "default": "false",
+                            "help": "This bool is used to allow longer rule name for PAN-OS starting with version 8.1."
+                        }
+                    }
+                },
+                "name-addsuffix": {
+                    "name": "name-addSuffix",
+                    "MainFunction": {},
+                    "GlobalFinishFunction": {},
+                    "args": {
+                        "text": {
+                            "type": "string",
+                            "default": "*nodefault*"
+                        },
+                        "accept63characters": {
+                            "type": "bool",
+                            "default": "false",
+                            "help": "This bool is used to allow longer rule name for PAN-OS starting with version 8.1."
+                        }
+                    }
+                },
                 "name-append": {
                     "name": "name-Append",
                     "MainFunction": {},
@@ -2291,7 +2457,8 @@ var subjectObject =
                             "default": "false",
                             "help": "This bool is used to allow longer rule name for PAN-OS starting with version 8.1."
                         }
-                    }
+                    },
+                    "deprecated": "this action \"name-Append\" is deprecated, you should use \"name-addSuffix\" instead!"
                 },
                 "name-prepend": {
                     "name": "name-Prepend",
@@ -2307,7 +2474,8 @@ var subjectObject =
                             "default": "false",
                             "help": "This bool is used to allow longer rule name for PAN-OS starting with version 8.1."
                         }
-                    }
+                    },
+                    "deprecated": "this action \"name-Prepend\" is deprecated, you should use \"name-addPrefix\" instead!"
                 },
                 "name-removeprefix": {
                     "name": "name-removePrefix",
@@ -2862,6 +3030,44 @@ var subjectObject =
                         }
                     }
                 },
+                "user-check-ldap": {
+                    "name": "user-check-ldap",
+                    "GlobalInitFunction": {},
+                    "MainFunction": {},
+                    "GlobalFinishFunction": {},
+                    "args": {
+                        "actionType": {
+                            "type": "string",
+                            "default": "show",
+                            "help": "'show' and 'remove' are supported."
+                        },
+                        "ldapUser": {
+                            "type": "string",
+                            "default": "*nodefault*",
+                            "help": "define LDAP user for authentication to server"
+                        },
+                        "ldapServer": {
+                            "type": "string",
+                            "default": "*nodefault*",
+                            "help": "LDAP server fqdn \/ IP"
+                        },
+                        "dn": {
+                            "type": "string",
+                            "default": "OU=TEST;DC=domain;DC=local",
+                            "help": "full OU to an LDAP part, sparated with ';' - this is a specific setting"
+                        },
+                        "filtercriteria": {
+                            "type": "string",
+                            "default": "mailNickname",
+                            "help": "Domain\\username - specify the search filter criteria where your Security Rule defined user name can be found in LDAP"
+                        },
+                        "existentUser": {
+                            "type": "bool",
+                            "default": "false",
+                            "help": "users no longer available in LDAP => false | users available in LDAP => true, e.g. if users are disabled and available in a specific LDAP group"
+                        }
+                    }
+                },
                 "user-remove": {
                     "name": "user-remove",
                     "MainFunction": {},
@@ -2940,6 +3146,14 @@ var subjectObject =
                             "arg": true,
                             "ci": {
                                 "fString": "(%PROP% \/test-\/)",
+                                "input": "input\/panorama-8.0.xml"
+                            }
+                        },
+                        "has.recursive": {
+                            "Function": {},
+                            "arg": true,
+                            "ci": {
+                                "fString": "(%PROP% ssl)",
                                 "input": "input\/panorama-8.0.xml"
                             }
                         },
@@ -4066,6 +4280,15 @@ var subjectObject =
                         }
                     }
                 },
+                "timestamp-last-hit.fast": {
+                    "operators": {
+                        ">,<,=,!": {
+                            "Function": {},
+                            "arg": true,
+                            "help": "returns TRUE if rule name matches the specified timestamp MM\/DD\/YYYY [american] \/ DD-MM-YYYY [european] \/ 21 September 2021 \/ - 90 days"
+                        }
+                    }
+                },
                 "to": {
                     "operators": {
                         "has": {
@@ -4301,6 +4524,18 @@ var subjectObject =
                             "default": "*nodefault*"
                         }
                     }
+                },
+                "name-rename": {
+                    "name": "name-Rename",
+                    "MainFunction": {},
+                    "args": {
+                        "stringFormula": {
+                            "type": "string",
+                            "default": "*nodefault*",
+                            "help": "This string is used to compose a name. You can use the following aliases :\n  - $$current.name$$ : current name of the object\n"
+                        }
+                    },
+                    "help": ""
                 },
                 "name-tolowercase": {
                     "name": "name-toLowerCase",
@@ -4557,6 +4792,28 @@ var subjectObject =
                     "name": "displayReferences",
                     "MainFunction": {}
                 },
+                "exporttoexcel": {
+                    "name": "exportToExcel",
+                    "MainFunction": {},
+                    "GlobalInitFunction": {},
+                    "GlobalFinishFunction": {},
+                    "args": {
+                        "filename": {
+                            "type": "string",
+                            "default": "*nodefault*"
+                        },
+                        "additionalFields": {
+                            "type": "pipeSeparatedList",
+                            "subtype": "string",
+                            "default": "*NONE*",
+                            "choices": [
+                                "WhereUsed",
+                                "UsedInLocation"
+                            ],
+                            "help": "pipe(|) separated list of additional fields (ie: Arg1|Arg2|Arg3...) to include in the report. The following is available:\n  - UsedInLocation : list locations (vsys,dg,shared) where object is used\n  - WhereUsed : list places where object is used (rules, groups ...)\n"
+                        }
+                    }
+                },
                 "name-addprefix": {
                     "name": "name-addPrefix",
                     "MainFunction": {},
@@ -4640,6 +4897,25 @@ var subjectObject =
                         "has": {
                             "Function": {},
                             "arg": true,
+                            "ci": {
+                                "fString": "(%PROP% securityrule )",
+                                "input": "input\/panorama-8.0.xml"
+                            }
+                        }
+                    }
+                },
+                "exception": {
+                    "operators": {
+                        "has": {
+                            "Function": {},
+                            "arg": true,
+                            "ci": {
+                                "fString": "(%PROP% securityrule )",
+                                "input": "input\/panorama-8.0.xml"
+                            }
+                        },
+                        "is.set": {
+                            "Function": {},
                             "ci": {
                                 "fString": "(%PROP% securityrule )",
                                 "input": "input\/panorama-8.0.xml"
@@ -5134,6 +5410,18 @@ var subjectObject =
                     "GlobalInitFunction": {},
                     "MainFunction": {}
                 },
+                "cleanuprule-create-bp": {
+                    "name": "cleanuprule-create-bp",
+                    "GlobalInitFunction": {},
+                    "MainFunction": {},
+                    "args": {
+                        "logprof": {
+                            "type": "string",
+                            "default": "default",
+                            "help": "LogForwardingProfile name"
+                        }
+                    }
+                },
                 "devicegroup-create": {
                     "name": "devicegroup-create",
                     "MainFunction": {},
@@ -5157,9 +5445,40 @@ var subjectObject =
                     "name": "display",
                     "MainFunction": {}
                 },
+                "display-shadowrule": {
+                    "name": "display-shadowrule",
+                    "GlobalInitFunction": {},
+                    "MainFunction": {}
+                },
                 "displayreferences": {
                     "name": "displayReferences",
                     "MainFunction": {}
+                },
+                "exportinventorytoexcel": {
+                    "name": "exportInventoryToExcel",
+                    "GlobalInitFunction": {},
+                    "MainFunction": {},
+                    "GlobalFinishFunction": {},
+                    "args": {
+                        "filename": {
+                            "type": "string",
+                            "default": "*nodefault*",
+                            "help": "only usable with 'devicetype=manageddevice'"
+                        }
+                    }
+                },
+                "exportlicensetoexcel": {
+                    "name": "exportLicenseToExcel",
+                    "GlobalInitFunction": {},
+                    "MainFunction": {},
+                    "GlobalFinishFunction": {},
+                    "args": {
+                        "filename": {
+                            "type": "string",
+                            "default": "*nodefault*",
+                            "help": "only usable with 'devicetype=manageddevice'"
+                        }
+                    }
                 },
                 "exporttoexcel": {
                     "name": "exportToExcel",
@@ -5183,6 +5502,42 @@ var subjectObject =
                         }
                     }
                 },
+                "geoip-check": {
+                    "name": "geoIP-check",
+                    "GlobalInitFunction": {},
+                    "MainFunction": {},
+                    "args": {
+                        "checkIP": {
+                            "type": "string",
+                            "default": "8.8.8.8",
+                            "help": "checkIP is IPv4 or IPv6 host address"
+                        }
+                    }
+                },
+                "logforwardingprofile-create-bp": {
+                    "name": "logforwardingprofile-create-bp",
+                    "GlobalInitFunction": {},
+                    "MainFunction": {},
+                    "args": {
+                        "shared": {
+                            "type": "bool",
+                            "default": "false",
+                            "help": "if set to true; LogForwardingProfile is create at SHARED level; at least one DG must be available"
+                        }
+                    }
+                },
+                "securityprofile-create-alert-only": {
+                    "name": "securityprofile-create-alert-only",
+                    "GlobalInitFunction": {},
+                    "MainFunction": {},
+                    "args": {
+                        "shared": {
+                            "type": "bool",
+                            "default": "false",
+                            "help": "if set to true; securityProfiles are create at SHARED level; at least one DG must be available"
+                        }
+                    }
+                },
                 "template-add": {
                     "name": "template-add",
                     "MainFunction": {},
@@ -5196,6 +5551,26 @@ var subjectObject =
                             "default": "bottom"
                         }
                     }
+                },
+                "template-create": {
+                    "name": "template-create",
+                    "MainFunction": {},
+                    "GlobalFinishFunction": {},
+                    "args": {
+                        "name": {
+                            "type": "string",
+                            "default": "false"
+                        }
+                    }
+                },
+                "template-delete": {
+                    "name": "template-delete",
+                    "MainFunction": {}
+                },
+                "zoneprotectionprofile-create-bp": {
+                    "name": "zoneprotectionprofile-create-bp",
+                    "GlobalInitFunction": {},
+                    "MainFunction": {}
                 }
             },
             "filter": {
@@ -5613,6 +5988,18 @@ var subjectObject =
                 }
             },
             "filter": {
+                "apptag": {
+                    "operators": {
+                        "has": {
+                            "Function": {},
+                            "arg": true,
+                            "ci": {
+                                "fString": "(%PROP%)",
+                                "input": "input\/panorama-8.0.xml"
+                            }
+                        }
+                    }
+                },
                 "characteristic": {
                     "operators": {
                         "has": {
@@ -5632,6 +6019,14 @@ var subjectObject =
                             "arg": true,
                             "ci": {
                                 "fString": "(%PROP% ftp)",
+                                "input": "input\/panorama-8.0.xml"
+                            }
+                        },
+                        "regex": {
+                            "Function": {},
+                            "arg": true,
+                            "ci": {
+                                "fString": "(%PROP% \/tcp\/)",
                                 "input": "input\/panorama-8.0.xml"
                             }
                         }
@@ -5684,6 +6079,26 @@ var subjectObject =
                             "arg": false,
                             "ci": {
                                 "fString": "(%PROP%)",
+                                "input": "input\/panorama-8.0.xml"
+                            }
+                        },
+                        "has.member": {
+                            "Function": {},
+                            "arg": true,
+                            "ci": {
+                                "fString": "(%PROP%)",
+                                "input": "input\/panorama-8.0.xml"
+                            }
+                        }
+                    }
+                },
+                "risk": {
+                    "operators": {
+                        ">,<,=,!": {
+                            "eval": "$object->risk !operator! !value!",
+                            "arg": true,
+                            "ci": {
+                                "fString": "(%PROP% 1)",
                                 "input": "input\/panorama-8.0.xml"
                             }
                         }

@@ -154,6 +154,12 @@ class PLAYBOOK__
             else
                 $comment = "";
 
+            if( isset( $command['location'] ) )
+            {
+                $arguments[] = "location=".$command['location'];
+                unset( $command['location'] );
+            }
+
             foreach( $command as $arg )
                 $arguments[] = $arg;
 

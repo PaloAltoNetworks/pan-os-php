@@ -14,13 +14,14 @@ UTILS:
 * UTIL pa_software-download / pa_software-preparation / pa_license move to PHP class - to make it useable for entry point pan-os-php type=
 * UTIL API - improve error output for supported endpoints
 * UTIL pan-os-php type=config-download-all | introduce type and move feature from development into php class
+* UTIL UI update json_array.js to get actual info about script actions / filter
 
 BUGFIX:
 * UTIL pan-os-php type=device | bugfix actions=securityprofile-create-alert-only PAN-OS version <10 compare to >=10
 * UTIL pan-os-php type=device | bugfix for actions=securityprofile-create-alert-only:true if no PAN-OS API method is used
 * UTIL pan-os-php type=device | bugfix for all actions which are using IronSkillet snippets
 * UTIL pan-os-php type=device | actions=zoneprotectionprofile-create-bp / logforwardingprofile-create-bp bugfix for PAN-OS API method
-*UTIL pan-os-php type=device actions=securityprofile-create-alert-only | bugfix on offline config file to create profiles only once
+* UTIL pan-os-php type=device actions=securityprofile-create-alert-only | bugfix on offline config file to create profiles only once
 
 GENERAL:
 

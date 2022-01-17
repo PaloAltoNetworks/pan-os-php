@@ -102,12 +102,81 @@
 
                 });
                 */
+                var jsonSTRING = "";
+                var jsonStringStart = "{\n";
+                var jsonIN = "  \"in\": \"staging/ASA-Config-initial-10_0-fw.xml\",\n";
+                var jsonOUT = "  \"out\": \"staging/final.xml\",\n";
+                var jsonSTAGENAME = "  \"stagename\": \"staging/visibility-\",\n";
+                var jsonHEADER = "  \"header-comment\": \"\",\n";
+                var jsonFOOTER = "  \"footer-comment\": \"\",\n";
+                var jsonCOMMANDstart = "  \"command\": [\n";
+                var jsonCOMMAND1 = "    {\n" +
+                    "      \"type\": \"ironskillet-update\",\n" +
+                    "      \"comment\": \"\"\n" +
+                    "    }";
+                var jsonCOMMAND2 = "    {\n" +
+                    "      \"type\": \"device\",\n" +
+                    "      \"actions\": \"actions=logforwardingprofile-create-bp\",\n" +
+                    "      \"comment\": \"\"\n" +
+                    "    }";
+                var jsonCOMMANDend = "  ]\n";
+                var jsonStringEnd = "}";
+
+                jsonSTRING += jsonStringStart;
+                jsonSTRING += jsonIN;
+                jsonSTRING += jsonOUT;
+                //jsonSTRING += jsonHEADER;
+                //jsonSTRING += jsonFOOTER;
+                jsonSTRING += jsonCOMMANDstart;
+
                 var i = 1;
                 for( i; i <= rowIdx; i++ )
                 {
-                    console.log( $( "#command" + i ).val() );
+                    var commandString = $( "#command" + i ).val();
+                    console.log( commandString );
                     console.log( $( "#commandapi" + i ).val() );
+
+                    commandString = commandString.replace("pan-os-php ", "");
+                    commandString = commandString.replace(/'/g, "");
+
+                    var text = "{ ";
+                    var res = commandString.split(" ");
+                    let length = res.length;
+                    res.forEach( myFunction );
+
+
+                    function myFunction(item, index) {
+                        //item include string
+                        var entry = item.split("=");
+                        if (entry.hasOwnProperty( "1" ))
+                            text += '"' + entry[0] + '":' + '"' + entry[1] + '"' ;
+                        else
+                            text += '"' + item + '":' + '"' + item + '"' ;
+
+                        text += ",";
+                    }
+                    //remove last , from string
+                    text = text.substring(0, text.length - 1);
+
+
+                    text += "},";
+                    jsonSTRING += text;
                 }
+                //remove last , from string
+                jsonSTRING = jsonSTRING.substring(0, jsonSTRING.length - 1);
+
+                jsonSTRING += jsonCOMMANDend;
+                jsonSTRING += jsonStringEnd;
+
+                var jsonPretty = JSON.stringify(JSON.parse(jsonSTRING),null,2);
+                $("#json-display").val( jsonPretty );
+
+                function setHeight(jq_in){
+                    jq_in.each(function(index, elem){
+                        elem.style.height = elem.scrollHeight+'px';
+                    });
+                }
+                setHeight($("#json-display"));
 
             });
 
@@ -959,6 +1028,11 @@ missing stuff:</br>
 4) project creation</br>
 5) after running - possible to download: 1) log 2) XML file 3) JSON 4) full bundle</br>
 
+<div class="json-display-class" style="border:1px solid black; padding: 10px;">
+    <textarea type="text" disabled id="json-display" name="json-display" style="width:600px" >
+        replace text
+    </textarea>
+</div>
 </body>
 
 </html>
