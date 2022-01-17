@@ -20,7 +20,7 @@ BUGFIX:
 * UTIL pan-os-php type=device | bugfix for actions=securityprofile-create-alert-only:true if no PAN-OS API method is used
 * UTIL pan-os-php type=device | bugfix for all actions which are using IronSkillet snippets
 * UTIL pan-os-php type=device | actions=zoneprotectionprofile-create-bp / logforwardingprofile-create-bp bugfix for PAN-OS API method
-*UTIL pan-os-php type=device actions=rofile-create-alert-only | bugfix on offline config file to create profiles only once
+*UTIL pan-os-php type=device actions=securityprofile-create-alert-only | bugfix on offline config file to create profiles only once
 
 GENERAL:
 
