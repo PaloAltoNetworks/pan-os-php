@@ -84,6 +84,10 @@ __pan-os-php_scripts()
       "system-log"
       "gratuitous-arp"
       "software-download"
+      "software-preparation"
+      "license"
+      "config-download-all"
+      "spiffy"
     )
 
 		checkArray=('in' 'out' 'actions' 'filter' 'location')

@@ -69,13 +69,16 @@ alias pa_xml-op-json='php -r "require_once '"'"'utils/panXML_op_JSON.php'"'"';" 
 alias pa_bpa-generator='php -r "require_once '"'"'utils/bpa-generator.php'"'"';" $@'
 
 
-
+#OPTIMISATION NEEDED -> move to UTIL
 alias pa_gratuitous-arp='php -r "require_once '"'"'utils/sendGARP.php'"'"';" $@'
 alias pa_software-remove='php -r "require_once '"'"'utils/software-remove.php'"'"';" $@'
 alias pa_traffic-log='php -r "require_once '"'"'utils/traffic-log.php'"'"';" $@'
 alias pa_system-log='php -r "require_once '"'"'utils/system-log.php'"'"';" $@'
 
 alias pa_software-downloader='php -r "require_once '"'"'utils/pan_software_downloader.php'"'"';" $@'
+alias pa_software-preparation='php -r "require_once '"'"'utils/pan_software_download_preparation.php'"'"';" $@'
+
+alias pa_license='php -r "require_once '"'"'utils/pan_license.php'"'"';" $@'
 ##########################################################################################
 # until here all scripts above are deprecated and supported by pan-os-php type=
 ##########################################################################################
@@ -102,8 +105,8 @@ alias pa_ike='php -r "require_once '"'"'utils/develop/ike.php'"'"';" $@'
 alias pa_ssh-connector='php -r "require_once '"'"'utils/develop/ssh_connector.php'"'"';" $@'
 
 #license / software / commit-config / reset-config / get_user_info / sendGARP / software-remove / systemlog / traffic-log
-alias pa_license='php -r "require_once '"'"'utils/develop/pan_license.php'"'"';" $@'
-alias pa_software-preparation='php -r "require_once '"'"'utils/develop/pan_software_download_preparation.php'"'"';" $@'
+
+
 
 alias pa_config-commit='php -r "require_once '"'"'utils/develop/commit-config.php'"'"';" $@'
 alias pa_config-reset='php -r "require_once '"'"'utils/develop/reset-config.php'"'"';" $@'

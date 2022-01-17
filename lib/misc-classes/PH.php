@@ -919,7 +919,11 @@ class PH
         "traffic-log",
         "system-log",
         "gratuitous-arp",
-        "software-download"
+        "software-download",
+        "software-preparation",
+        "license",
+        "config-download-all",
+        "spiffy"
         );
 
 
@@ -939,7 +943,11 @@ class PH
         "maxmind-update",
         "util_get-action-filter",
         "software-remove",
-        "software-download"
+        "software-download",
+        "software-preparation",
+        "license",
+        "config-download-all",
+        "spiffy"
     );
 
     public static function callPANOSPHP( $type, $argv, $argc, $PHP_FILE )
@@ -1033,6 +1041,19 @@ class PH
         elseif( $type == "software-download" )
             $util = new SOFTWARE_DOWNLOAD($type, $argv, $argc,$PHP_FILE." type=".$type);
 
+        elseif( $type == "software-preparation" )
+            #$util = new SOFTWARE_PREPARATION__($type, $argv, $argc,$PHP_FILE." type=".$type);
+            $util = new SOFTWARE_PREPARATION__( $argv, $argc );
+
+        elseif( $type == "license" )
+            #$util = new SOFTWARE_PREPARATION__($type, $argv, $argc,$PHP_FILE." type=".$type);
+            $util = new LICENSE__( $argv, $argc );
+
+        elseif( $type == "config-download-all" )
+            $util = new CONFIG_DOWNLOAD_ALL__($type, $argv, $argc,$PHP_FILE." type=".$type);
+
+        elseif( $type == "spiffy" )
+            $util = new SPIFFY__( $argv, $argc );
 
         elseif( $type == 'address'
             || $type == 'service'

@@ -11,13 +11,16 @@ UTILS:
 * UTIL main entry pan-os-php script | start removing old single scripts maxmind / ironskillet / util_get-action-filter
 * UTIL pan-os-php type=playbook | introduce PAN-OS API as argument in=api://
 * UTIL system-log / traffic-log / software-remove / sendGARP - move to PHP classes
-* UTIL pa_software-downloader | move into PHP class to make it useable for entry point pan-os-php type=software-download
+* UTIL pa_software-download / pa_software-preparation / pa_license move to PHP class - to make it useable for entry point pan-os-php type=
+* UTIL API - improve error output for supported endpoints
+* UTIL pan-os-php type=config-download-all | introduce type and move feature from development into php class
 
 BUGFIX:
 * UTIL pan-os-php type=device | bugfix actions=securityprofile-create-alert-only PAN-OS version <10 compare to >=10
 * UTIL pan-os-php type=device | bugfix for actions=securityprofile-create-alert-only:true if no PAN-OS API method is used
 * UTIL pan-os-php type=device | bugfix for all actions which are using IronSkillet snippets
 * UTIL pan-os-php type=device | actions=zoneprotectionprofile-create-bp / logforwardingprofile-create-bp bugfix for PAN-OS API method
+*UTIL pan-os-php type=device actions=securityprofile-create-alert-only | bugfix on offline config file to create profiles only once
 
 GENERAL:
 
