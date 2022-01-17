@@ -1126,109 +1126,148 @@ DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = arra
                 $ownerDocument = $sub->xmlroot->ownerDocument;
 
 
-                $block = $sharedStore->customURLProfileStore->newCustomSecurityProfileURL( "Block" );
-                $allow = $sharedStore->customURLProfileStore->newCustomSecurityProfileURL( "Allow" );
-                $nodecrypt = $sharedStore->customURLProfileStore->newCustomSecurityProfileURL( "Custom-No-Decrypt" );
-                if( $context->isAPI )
+                $block = $sharedStore->customURLProfileStore->find("Block");
+                if( $block === null )
                 {
-                    $block->API_sync();
-                    $allow->API_sync();
-                    $nodecrypt->API_sync();
+                    $block = $sharedStore->customURLProfileStore->newCustomSecurityProfileURL("Block");
+                    if( $context->isAPI )
+                        $block->API_sync();
+                }
+                $allow = $sharedStore->customURLProfileStore->find("Allow");
+                if( $allow === null )
+                {
+                    $allow = $sharedStore->customURLProfileStore->newCustomSecurityProfileURL("Allow");
+                    if( $context->isAPI )
+                        $allow->API_sync();
+                }
+                $nodecrypt = $sharedStore->customURLProfileStore->find("Custom-No-Decrypt");
+                if( $nodecrypt === null )
+                {
+                    $nodecrypt = $sharedStore->customURLProfileStore->newCustomSecurityProfileURL("Custom-No-Decrypt");
+                    if( $context->isAPI )
+                        $nodecrypt->API_sync();
                 }
 
 
+                $av = $sharedStore->AntiVirusProfileStore->find($name . "-AV");
+                if( $av === null )
+                {
+                    $store = $sharedStore->AntiVirusProfileStore;
+                    $av = new AntiVirusProfile($name . "-AV", $store);
+                    $newdoc = new DOMDocument;
+                    if( $context->object->owner->version < 100 )
+                        $newdoc->loadXML($av_xmlString_v9);
+                    else
+                        $newdoc->loadXML($av_xmlString_v10);
+                    $node = $newdoc->importNode($newdoc->firstChild, TRUE);
+                    $node = DH::findFirstElementByNameAttr("entry", $name . "-AV", $node);
+                    $node = $ownerDocument->importNode($node, TRUE);
+                    $av->load_from_domxml($node);
+                    $av->owner = null;
+                    $store->addSecurityProfile($av);
+                }
 
-                $store = $sharedStore->AntiVirusProfileStore;
-                $av = new AntiVirusProfile($name . "-AV", $store);
-                $newdoc = new DOMDocument;
-                if( $context->object->owner->version < 100 )
-                    $newdoc->loadXML($av_xmlString_v9);
-                else
-                    $newdoc->loadXML($av_xmlString_v10);
-                $node = $newdoc->importNode($newdoc->firstChild, TRUE);
-                $node = DH::findFirstElementByNameAttr( "entry", $name."-AV", $node );
-                $node = $ownerDocument->importNode($node, TRUE);
-                $av->load_from_domxml($node);
-                $av->owner = null;
-                $store->addSecurityProfile($av);
+                $as = $sharedStore->AntiSpywareProfileStore->find($name . "-AS");
+                if( $as === null )
+                {
+                    $store = $sharedStore->AntiSpywareProfileStore;
+                    $as = new AntiSpywareProfile($name . "-AS", $store);
+                    $newdoc = new DOMDocument;
+                    if( $context->object->owner->version < 100 )
+                        $newdoc->loadXML($as_xmlString_v9);
+                    else
+                        $newdoc->loadXML($as_xmlString_v10);
+                    $node = $newdoc->importNode($newdoc->firstChild, TRUE);
+                    $node = DH::findFirstElementByNameAttr("entry", $name . "-AS", $node);
+                    $node = $newdoc->importNode($node, TRUE);
+                    $node = $ownerDocument->importNode($node, TRUE);
+                    $as->load_from_domxml($node);
+                    $as->owner = null;
+                    $store->addSecurityProfile($as);
+                }
 
-                $store = $sharedStore->AntiSpywareProfileStore;
-                $as = new AntiSpywareProfile($name . "-AS", $store);
-                $newdoc = new DOMDocument;
-                if( $context->object->owner->version < 100 )
-                    $newdoc->loadXML($as_xmlString_v9);
-                else
-                    $newdoc->loadXML($as_xmlString_v10);
-                $node = $newdoc->importNode($newdoc->firstChild, TRUE);
-                $node = DH::findFirstElementByNameAttr( "entry", $name."-AS", $node );
-                $node = $newdoc->importNode($node, TRUE);
-                $node = $ownerDocument->importNode($node, TRUE);
-                $as->load_from_domxml($node);
-                $as->owner = null;
-                $store->addSecurityProfile($as);
+                $vp = $sharedStore->VulnerabilityProfileStore->find($name . "-VP");
+                if( $vp === null )
+                {
+                    $store = $sharedStore->VulnerabilityProfileStore;
+                    $vp = new VulnerabilityProfile($name . "-VP", $store);
+                    $newdoc = new DOMDocument;
+                    $newdoc->loadXML($vp_xmlString);
+                    $node = $newdoc->importNode($newdoc->firstChild, TRUE);
+                    $node = DH::findFirstElementByNameAttr("entry", $name . "-VP", $node);
+                    $node = $newdoc->importNode($node, TRUE);
+                    $node = $ownerDocument->importNode($node, TRUE);
+                    $vp->load_from_domxml($node);
+                    $vp->owner = null;
+                    $store->addSecurityProfile($vp);
+                }
 
-                $store = $sharedStore->VulnerabilityProfileStore;
-                $vp = new VulnerabilityProfile($name . "-VP", $store);
-                $newdoc = new DOMDocument;
-                $newdoc->loadXML($vp_xmlString);
-                $node = $newdoc->importNode($newdoc->firstChild, TRUE);
-                $node = DH::findFirstElementByNameAttr( "entry", $name."-VP", $node );
-                $node = $newdoc->importNode($node, TRUE);
-                $node = $ownerDocument->importNode($node, TRUE);
-                $vp->load_from_domxml($node);
-                $vp->owner = null;
-                $store->addSecurityProfile($vp);
+                $url = $sharedStore->URLProfileStore->find($name . "-URL");
+                if( $url === null )
+                {
+                    $store = $sharedStore->URLProfileStore;
+                    $url = new URLProfile($name . "-URL", $store);
+                    $newdoc = new DOMDocument;
+                    if( $context->object->owner->version < 100 )
+                        $newdoc->loadXML($url_xmlString_v9);
+                    else
+                        $newdoc->loadXML($url_xmlString_v10);
+                    $node = $newdoc->importNode($newdoc->firstChild, TRUE);
+                    $node = DH::findFirstElementByNameAttr("entry", $name . "-URL", $node);
+                    $node = $newdoc->importNode($node, TRUE);
+                    $node = $ownerDocument->importNode($node, TRUE);
+                    $url->load_from_domxml($node);
+                    $url->owner = null;
+                    $store->addSecurityProfile($url);
+                }
 
-                $store = $sharedStore->URLProfileStore;
-                $url = new URLProfile($name . "-URL", $store);
-                $newdoc = new DOMDocument;
-                if( $context->object->owner->version < 100 )
-                    $newdoc->loadXML($url_xmlString_v9);
-                else
-                    $newdoc->loadXML($url_xmlString_v10);
-                $node = $newdoc->importNode($newdoc->firstChild, TRUE);
-                $node = DH::findFirstElementByNameAttr( "entry", $name."-URL", $node );
-                $node = $newdoc->importNode($node, TRUE);
-                $node = $ownerDocument->importNode($node, TRUE);
-                $url->load_from_domxml($node);
-                $url->owner = null;
-                $store->addSecurityProfile($url);
+                $fb = $sharedStore->FileBlockingProfileStore->find($name . "-FB");
+                if( $fb === null )
+                {
+                    $store = $sharedStore->FileBlockingProfileStore;
+                    $fb = new FileBlockingProfile($name . "-FB", $store);
+                    $newdoc = new DOMDocument;
+                    $newdoc->loadXML($fb_xmlString);
+                    $node = $newdoc->importNode($newdoc->firstChild, TRUE);
+                    $node = DH::findFirstElementByNameAttr("entry", $name . "-FB", $node);
+                    $node = $newdoc->importNode($node, TRUE);
+                    $node = $ownerDocument->importNode($node, TRUE);
+                    $fb->load_from_domxml($node);
+                    $fb->owner = null;
+                    $store->addSecurityProfile($fb);
+                }
 
-                $store = $sharedStore->FileBlockingProfileStore;
-                $fb = new FileBlockingProfile($name . "-FB", $store);
-                $newdoc = new DOMDocument;
-                $newdoc->loadXML($fb_xmlString);
-                $node = $newdoc->importNode($newdoc->firstChild, TRUE);
-                $node = DH::findFirstElementByNameAttr( "entry", $name."-FB", $node );
-                $node = $newdoc->importNode($node, TRUE);
-                $node = $ownerDocument->importNode($node, TRUE);
-                $fb->load_from_domxml($node);
-                $fb->owner = null;
-                $store->addSecurityProfile($fb);
+                $wf = $sharedStore->WildfireProfileStore->find($name . "-WF");
+                if( $wf === null )
+                {
+                    $store = $sharedStore->WildfireProfileStore;
+                    $wf = new WildfireProfile($name . "-WF", $store);
+                    $newdoc = new DOMDocument;
+                    $newdoc->loadXML($wf_xmlString);
+                    $node = $newdoc->importNode($newdoc->firstChild, TRUE);
+                    $node = DH::findFirstElementByNameAttr("entry", $name . "-WF", $node);
+                    $node = $newdoc->importNode($node, TRUE);
+                    $node = $ownerDocument->importNode($node, TRUE);
+                    $wf->load_from_domxml($node);
+                    $wf->owner = null;
+                    $store->addSecurityProfile($wf);
+                }
 
-                $store = $sharedStore->WildfireProfileStore;
-                $wf = new WildfireProfile($name . "-WF", $store);
-                $newdoc = new DOMDocument;
-                $newdoc->loadXML($wf_xmlString);
-                $node = $newdoc->importNode($newdoc->firstChild, TRUE);
-                $node = DH::findFirstElementByNameAttr( "entry", $name."-WF", $node );
-                $node = $newdoc->importNode($node, TRUE);
-                $node = $ownerDocument->importNode($node, TRUE);
-                $wf->load_from_domxml($node);
-                $wf->owner = null;
-                $store->addSecurityProfile($wf);
+                $secprofgrp = $sharedStore->securityProfileGroupStore->find($name);
+                if( $secprofgrp === null )
+                {
+                    $secprofgrp = new SecurityProfileGroup($name, $sharedStore->securityProfileGroupStore, TRUE);
 
-                $secprofgrp = new SecurityProfileGroup($name, $sharedStore->securityProfileGroupStore, TRUE);
-
-                $secprofgrp->setSecProf_AV($av->name());
-                $secprofgrp->setSecProf_Spyware($as->name());
-                $secprofgrp->setSecProf_Vuln($vp->name());
-                $secprofgrp->setSecProf_URL($url->name());
-                $secprofgrp->setSecProf_FileBlock($fb->name());
-                $secprofgrp->setSecProf_Wildfire($wf->name());
+                    $secprofgrp->setSecProf_AV($av->name());
+                    $secprofgrp->setSecProf_Spyware($as->name());
+                    $secprofgrp->setSecProf_Vuln($vp->name());
+                    $secprofgrp->setSecProf_URL($url->name());
+                    $secprofgrp->setSecProf_FileBlock($fb->name());
+                    $secprofgrp->setSecProf_Wildfire($wf->name());
 
 
-                $sharedStore->securityProfileGroupStore->addSecurityProfileGroup($secprofgrp);
+                    $sharedStore->securityProfileGroupStore->addSecurityProfileGroup($secprofgrp);
+                }
 
 
                 if( $context->isAPI )
