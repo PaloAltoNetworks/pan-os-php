@@ -161,6 +161,10 @@ missing stuff:</br>
 4) project creation</br>
 5) after running - possible to download: 1) log 2) XML file 3) JSON 4) full bundle</br>
 
+ruletype=</br>
+devicetype=</br>
+securityprofiletype=</br>
+
 </body>
 
 </html>

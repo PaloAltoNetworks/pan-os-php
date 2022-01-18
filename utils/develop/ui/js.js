@@ -247,9 +247,11 @@ $(document).ready(function () {
 
     $('#addActionBtn').on('click', function() {
 
-        var ActionIdx = ++columnActionIdx;
+        columnActionIdx = ++columnActionIdx;
+        var ActionIdx = columnActionIdx;
         var FilterIdx = columnFilterIdx;
-        var deleteColumnID = ++columnIdx;
+        columnIdx = ++columnIdx;
+        var deleteColumnID = columnIdx;
 
         var rows = $("#myTable").children('tbody').children('tr');
 
@@ -318,8 +320,10 @@ $(document).ready(function () {
     $('#addFilterBtn').on('click', function() {
 
         var ActionIdx = columnActionIdx;
-        var FilterIdx = ++columnFilterIdx;
-        var deleteColumnID = ++columnIdx;
+        columnFilterIdx = ++columnFilterIdx;
+        var FilterIdx = columnFilterIdx;
+        columnIdx = ++columnIdx;
+        var deleteColumnID = columnIdx;
 
         var rows = $("#myTable").children('tbody').children('tr');
         //$("#myTable tr").append($("<td contenteditable='true'>FILTER</td>"));
@@ -461,7 +465,12 @@ $(document).ready(function () {
                 //item include string
                 var entry = item.split("=");
                 if (entry.hasOwnProperty( "1" ))
-                    text += '"' + entry[0] + '":' + '"' + entry[0] + "=" + entry[1] + '"' ;
+                {
+                    if( entry[0] === "type" )
+                        text += '"' + entry[0] + '":' + '"' + entry[1] + '"' ;
+                    else
+                        text += '"' + entry[0] + '":' + '"' + entry[0] + "=" + entry[1] + '"' ;
+                }
                 else
                     text += '"' + item + '":' + '"' + item + '"' ;
 

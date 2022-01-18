@@ -117,7 +117,7 @@ function updateScriptsyntax( Idx ) {
                     if (~FILTERandor.indexOf("!"))
                     {
                         tmpFiltertext += FILTERandor ;
-                        tmpFiltertextapi += FILTERandor ;
+                        tmpFiltertextapi += FILTERandor.replace( " ", "%20" ) ;
                     }
                 }
                 else
@@ -125,7 +125,7 @@ function updateScriptsyntax( Idx ) {
                     if (~FILTERandor.indexOf("!"))
                     {
                         tmpFiltertext += " " + FILTERandor ;
-                        tmpFiltertextapi += "%20" + FILTERandor ;
+                        tmpFiltertextapi += "%20" + FILTERandor.replace( " ", "%20" ) ;
                     }
                     else
                     {
@@ -153,14 +153,10 @@ function updateScriptsyntax( Idx ) {
     message += Filtertext;
 
 
-    //var checkedValue = document.getElementById('shadowjson').checked;
     var checkedValue = $( "#shadowjson" + Idx ).is(':checked');
     if( checkedValue )
         message += " shadow-json";
-    //else
-    //    message += " shadow-nojson";
 
-    //var locationValue = document.getElementById('location').value;
     var locationValue = $( "#location" + Idx ).val();
     if( locationValue !== "---" && locationValue !== "" )
     {
@@ -188,8 +184,6 @@ function updateScriptsyntax( Idx ) {
 
     if( checkedValue )
         message2 += "&shadow-json";
-    //else
-    //    message2 += "&shadow-nojson";
 
     if( locationValue !== "---" && locationValue !== "" )
     {
@@ -232,7 +226,17 @@ function updateActionFiltersyntax( selectedScript, Idx, ActionIdx, FilterIdx) {
             {
                 var args = action['args'];
                 console.log( "ARGS: "+JSON.stringify( args ) );
+
+                var string = "";
+                for( var i=0; i <= args.length; i++)
+                {
+                    console.log( "ARGS1: "+args[i] );
+                    string += JSON.stringify( args[i] ) + "<br/>";
+                }
+
+
                 $("#action-desc" + Idx+"-"+ActionIdx).text( JSON.stringify( args ) );
+                //$("#action-desc" + Idx+"-"+ActionIdx).text( string );
 
 
                 $("#action-input" + Idx+"-"+ActionIdx).prop( "disabled", false);
@@ -445,15 +449,18 @@ function FILTERSet( Idx, FilterIdx, FILTER, FILTERoperator, FILTERandor, FILTERi
     }
 }
 
-function ActionNewSet( Idx, ActionIdx, ACTION, ACTIONinput )
+function ActionNewSet( Idx, ACTION, ACTIONinput )
 {
     $("#addActionBtn").trigger('click');
+    ActionIdx = columnActionIdx;
     ActionSet( Idx, ActionIdx, ACTION, ACTIONinput);
 }
 
-function FILTERNewSet( Idx, FilterIdx, FILTER, FILTERoperator, FILTERandor, FILTERinput )
+function FILTERNewSet( Idx, FILTER, FILTERoperator, FILTERandor, FILTERinput )
 {
     $("#addFilterBtn").trigger('click');
+    FilterIdx = columnFilterIdx;
+
     FILTERSet( Idx, FilterIdx, FILTER, FILTERoperator, FILTERandor, FILTERinput);
 }
 
@@ -463,11 +470,12 @@ function taskAtStart( )
     $("#addBtn").trigger('click');
 
 
-    //addPreFillRow( rowIdx );
+    //addPreFillRow( );
 }
 
-function addPreFillRow( Idx )
+function addPreFillRow( )
 {
+    /*
     $("#addBtn").trigger('click');
     Idx = rowIdx;
 
@@ -476,19 +484,25 @@ function addPreFillRow( Idx )
 
     ScriptSet( Idx, "ironskillet-update");
 
+    */
     $("#addBtn").trigger('click');
     Idx = rowIdx;
 
     var ActionIdx = 2;
     var FilterIdx = 3;
+
     ScriptSet( Idx, "rule");
-    ActionSet( Idx, ActionIdx, "display", "");
-    FILTERSet( Idx, FilterIdx, "action", "is.allow", "", "");
+    ActionSet( Idx, ActionIdx,"display", "");
+    FILTERSet( Idx, FilterIdx,"secprof", "type.is.profile", "", "");
 
     //ActionNewSet( Idx, ActionIdx+1, "delete", "");
-    //FILTERNewSet( Idx, FilterIdx+1, "secprof", "type.is.profile", "and !", "");
+
+    FILTERNewSet( Idx,"secprof", "vuln-profile.is.set", "", "");
+    FILTERNewSet( Idx,"action", "is.allow", "", "");
+    FILTERNewSet( Idx,"rule", "is.disabled", "", "");
 
 
+    /*
     $("#addBtn").trigger('click');
     Idx = rowIdx;
     var ActionIdx = 2;
@@ -497,6 +511,7 @@ function addPreFillRow( Idx )
     ScriptSet( Idx, "rule");
     ActionSet( Idx, ActionIdx, "delete", "");
     FILTERSet( Idx, FilterIdx, "secprof", "type.is.profile", "!", "");
+     */
 }
 
 function createTableFromJSON( textValue )
@@ -507,8 +522,16 @@ function createTableFromJSON( textValue )
     $("#js-textarea").height( '400px' );
 
     tableRemoveAll();
+    //missing stuff, check that all additional columns actions / filters are also removed
+
+    for (var i = 4; i <= columnIdx; i++) {
+        deleteColumn( i );
+    }
 
     rowIdx = 0;
+    columnActionIdx = 2;
+    columnFilterIdx = 3;
+    columnIdx = 3;
 
     const obj = JSON.parse( textValue );
     var command = obj.command;
@@ -522,6 +545,7 @@ function createTableFromJSON( textValue )
         //----------------------------
 
         var type = command[i]['type'];
+
 
         $("#addBtn").trigger('click');
 
@@ -537,29 +561,20 @@ function createTableFromJSON( textValue )
         {
             var actions = command[i]['actions'];
             var result=actions.split('=');
-
-            var result=result[1].split('/');
-            //if result has now multiple settings, add newACION, missing
+            result=result[1].split('/');
 
             for (var ii = 0; ii < result.length; ii++)
             {
-                if( ii === 0 )
-                {
-                    result=result[ii].split(':');
-                    var ACTION = result[0].toLowerCase();
+                string=result[ii].split(':');
+                var ACTION = string[0].toLowerCase();
+                var ACTIONinput = "";
+                if( ( 1 in string) )
+                    ACTIONinput = string[1];
 
-                    if( ( 1 in result) )
-                    {
-                        var ACTIONinput = result[1];
-                        ActionSet( Idx, ActionIdx, ACTION, ACTIONinput);
-                    }
-                    else
-                        ActionSet( Idx, ActionIdx, ACTION, "");
-                }
+                if( ii === 0 )
+                    ActionSet( Idx, ActionIdx, ACTION, ACTIONinput);
                 else
-                {
-                    console.log( "ActionNewSet: " + result[ii] );
-                }
+                    ActionNewSet( Idx, ACTION, ACTIONinput);
             }
         }
 
@@ -569,37 +584,42 @@ function createTableFromJSON( textValue )
         {
             var filter = command[i]['filter'];
             result=filter.split('=');
-
-
-
-            var result=result[1].split(' and ');
-            //if result has now multiple settings, add newACION, missing
+            result=result[1].split(') ');
 
             for (var ii = 0; ii < result.length; ii++)
             {
+                var andor = "";
+                var string = result[ii];
+
+                var replace = [];
                 if( ii === 0 )
-                {
-                    var andor = "";
-                    if( result[ii].includes("!") )
-                    {
-                        andor = "!";
-                        result[ii] = result[ii].replace( "!", "") ;
-                    }
-
-                    result = result[ii].replace( "(", "") ;
-                    result = result.replace( ")", "") ;
-
-                    result=result.split(' ');
-
-                    if( 3 in result )
-                        FILTERSet( Idx, FilterIdx, result[0], result[1], andor, result[3]);
-                    else
-                        FILTERSet( Idx, FilterIdx, result[0], result[1], andor, "");
-                }
+                    replace = ["!"];
                 else
-                {
+                    replace = ["and !", "or !", "and ", "or "];
 
+                for( var k=0; k < replace.length; k++ )
+                {
+                    if( string.includes( replace[k] ) )
+                    {
+                        andor = replace[k];
+                        string = string.replace( replace[k], "") ;
+                    }
                 }
+
+                string = string.replace( "(", "") ;
+                string = string.replace( ")", "") ;
+                string = string.replace( "(", "") ;
+
+                string=string.split(' ');
+
+                var FilterInput = "";
+                if( 2 in string )
+                    FilterInput = string[2];
+
+                if( ii === 0 )
+                    FILTERSet( Idx, FilterIdx, string[0], string[1], andor, FilterInput);
+                else
+                    FILTERNewSet( Idx, string[0], string[1], andor, FilterInput);
             }
 
         }
