@@ -336,7 +336,7 @@ DeviceCallContext::$supportedActions['Template-delete'] = array(
     }
 );
 
-DeviceCallContext::$supportedActions[] = array(
+DeviceCallContext::$supportedActions['exportToExcel'] = array(
     'name' => 'exportToExcel',
     'MainFunction' => function (DeviceCallContext $context) {
         $object = $context->object;
