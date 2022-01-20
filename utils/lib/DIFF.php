@@ -41,9 +41,9 @@ class DIFF extends UTIL
     public function main()
     {
         if( isset(PH::$args['debugapi']) )
-            $debugAPI = TRUE;
+            $this->debugAPI = TRUE;
         else
-            $debugAPI = FALSE;
+            $this->debugAPI = FALSE;
 
         if( isset(PH::$args['in']) )
         {
@@ -56,17 +56,15 @@ class DIFF extends UTIL
                 $apiMode = TRUE;
                 /** @var PanAPIConnector $connector */
                 $connector = $configInput['connector'];
-                if( $debugAPI )
+                if( $this->debugAPI )
                     $connector->setShowApiCalls(TRUE);
                 PH::print_stdout( " - Downloading config from API... ");
 
                 PH::print_stdout( "Opening ORIGINAL 'RunningConfig' XML file... ");
-                $doc1 = new DOMDocument();
                 $doc1 = $connector->getRunningConfig();
 
 
                 PH::print_stdout( "Opening COMPARE 'Candidate' XML file... ");
-                $doc2 = new DOMDocument();
                 $doc2 = $connector->getCandidateConfig();
 
             }
@@ -78,12 +76,16 @@ class DIFF extends UTIL
             if( !isset(PH::$args['file1']) )
                 $this->display_error_usage_exit('"file1" is missing from arguments');
             $file1 = PH::$args['file1'];
+            if( !file_exists($file1) )
+                derr( "FILE: ". $file1. " not available", null, false);
             if( !is_string($file1) || strlen($file1) < 1 )
                 $this->display_error_usage_exit('"file1" argument is not a valid string');
 
             if( !isset(PH::$args['file2']) )
                 $this->display_error_usage_exit('"file2" is missing from arguments');
             $file2 = PH::$args['file2'];
+            if( !file_exists($file2) )
+                derr( "FILE: ". $file2. " not available", null, false);
             if( !is_string($file2) || strlen($file2) < 1 )
                 $this->display_error_usage_exit('"file1" argument is not a valid string');
 
@@ -110,14 +112,15 @@ class DIFF extends UTIL
             PH::print_stdout( "");
 
         }
-
         else
             $filter = FALSE;
 
-
         PH::print_stdout( "*** NOW DISPLAY DIFF ***");
+        $this->runDiff( $doc1, $doc2, $filter );
+    }
 
-
+    public function runDiff( $doc1, $doc2, $filter = FALSE)
+    {
         if( $filter == FALSE )
         {
             $doc1Root = DH::firstChildElement($doc1);
@@ -168,16 +171,6 @@ class DIFF extends UTIL
 
     }
 
-    function display_usage_and_exit( $shortmessage = false)
-    {
-        PH::print_stdout( PH::boldText("USAGE: ") . "php " . basename(__FILE__) . " [in=api://192.168.10.1] file1=original.xml file2=compare.xml" );
-        PH::print_stdout( "    argument example: \"filter=/config/devices/entry[@name='localhost.localdomain']/vsys/entry[@name='vsys1']/tag\"" );
-        PH::print_stdout( "                      \"filter=/config/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='DG-test']\"" );
-        PH::print_stdout("");
-
-        exit(1);
-    }
-
 
     function endsWith($haystack, $needle) {
         $length = strlen($needle);
@@ -220,11 +213,11 @@ class DIFF extends UTIL
      */
     function compareElements($el1, $el2, $xpath = null)
     {
-        #PH::print_stdout( "argument XPATH: ".$xpath );
+        //PH::print_stdout( "argument XPATH: ".$xpath );
         if( $xpath == null )
             $xpath = DH::elementToPanXPath($el1);
 
-        #PH::print_stdout( "*** COMPARING {$xpath}" );
+        //PH::print_stdout( "*** COMPARING {$xpath}" );
 
         /** @var DOMElement[][] $el1Elements */
         $el1Elements = array();
@@ -278,11 +271,8 @@ class DIFF extends UTIL
                 $tmp = DH::dom_to_xml($el2);
                 $text .= '-' . str_replace("\n", "\n", $tmp);
 
-                if( $text != '' )
-                {
-                    PH::print_stdout( "\nXPATH: $xpath" );
-                    PH::print_stdout( "$text" );
-                }
+
+                $this->displayDIFF( $xpath, $text, $el1 );
             }
             return;
         }
@@ -312,7 +302,6 @@ class DIFF extends UTIL
         // conflicting objects
         foreach( $el1Elements as $tagName => &$nodeArray1 )
         {
-            //PH::print_stdout( "checking $xpath/$tagName" );
             $nodeArray2 = &$el2Elements[$tagName];
 
             $el1BasicNode = null;
@@ -323,7 +312,6 @@ class DIFF extends UTIL
                     if( $el1BasicNode === null )
                     {
                         $el1BasicNode = $node;
-                        //PH::print_stdout( "found in EL1" );
                     }
                     else
                     {
@@ -352,7 +340,6 @@ class DIFF extends UTIL
                     if( $el2BasicNode === null )
                     {
                         $el2BasicNode = $node;
-                        //PH::print_stdout( "found in EL2" );
                     }
                     else
                     {
@@ -530,12 +517,34 @@ class DIFF extends UTIL
             $text .= '-' . str_replace("\n", "\n-", $tmp);
         }
 
+        $this->displayDIFF( $xpath, $text, $plus );
+    }
+
+    public function displayDIFF( $xpath, $text, $plus )
+    {
         if( $text != '' )
         {
-            PH::print_stdout( "\nXPATH: $xpath" );
-            PH::print_stdout( "$text" );
-        }
+            if( $this->outputFormatSet )
+            {
+                PH::print_stdout("\nXPATH: $xpath");
+                foreach( $plus as $element )
+                {
+                    $doc2 = new DOMDocument();
+                    $node = $doc2->importNode($element, true);
+                    $doc2->appendChild($node);
+                    print $doc2->saveXML();
 
+                    //print DH::elementToPanXPath($element);
+                }
+
+            }
+            else
+            {
+                PH::print_stdout("\nXPATH: $xpath");
+                PH::print_stdout("$text");
+            }
+        }
     }
 
 }
+
