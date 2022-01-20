@@ -185,75 +185,53 @@ class NatRule extends Rule
             //PH::print_stdout( "we have found a source NAT" );
             // next <tag> will determine NAT type
             $firstE = DH::firstChildElement($this->snatroot);
-            $this->snattype = $firstE->nodeName;
-
-            // Do we support this type of NAT ?
-            if( $this->snattype != "static-ip" && $this->snattype != "dynamic-ip-and-port" && $this->snattype != "dynamic-ip" )
-                derr("SNAT type '" . $this->snattype . "' for rule '" . $this->name . "' is not supported, EXIT\n");
-
-            //PH::print_stdout( "Determined NAT type ".$tcur['name'] );
-
-
-            if( $this->snattype == "static-ip" )
+            if( $firstE !== FALSE )
             {
-                $isbidrx = DH::findFirstElement('bi-directional', $firstE);
-                if( $isbidrx !== FALSE )
+                $this->snattype = $firstE->nodeName;
+
+                // Do we support this type of NAT ?
+                if( $this->snattype != "static-ip" && $this->snattype != "dynamic-ip-and-port" && $this->snattype != "dynamic-ip" )
+                    derr("SNAT type '" . $this->snattype . "' for rule '" . $this->name . "' is not supported, EXIT\n");
+
+                //PH::print_stdout( "Determined NAT type ".$tcur['name'] );
+
+
+                if( $this->snattype == "static-ip" )
                 {
-                    $this->_snatbidir = $isbidrx->textContent;
-                    if( $this->_snatbidir != 'yes' && $this->_snatbidir != 'no' )
+                    $isbidrx = DH::findFirstElement('bi-directional', $firstE);
+                    if( $isbidrx !== FALSE )
                     {
-                        mwarning("unsupported bi-directional value: {$this->_snatbidir}, assumed 'no' as a fix", $this->xmlroot);
-                        $this->_snatbidir = 'no';
+                        $this->_snatbidir = $isbidrx->textContent;
+                        if( $this->_snatbidir != 'yes' && $this->_snatbidir != 'no' )
+                        {
+                            mwarning("unsupported bi-directional value: {$this->_snatbidir}, assumed 'no' as a fix", $this->xmlroot);
+                            $this->_snatbidir = 'no';
+                        }
                     }
+                    $transladx = DH::findFirstElement('translated-address', $firstE);
+
+                    if( $transladx === FALSE )
+                        mwarning('invalid nat rule with missing "translated-address". Rule: ' . $this->name);
+
+                    $transladx = DH::findFirstElementOrCreate('translated-address', $firstE);
+
+                    $fad = $this->parentAddressStore->findOrCreate($transladx->textContent);
+
+                    $this->snathosts->addObject($fad);
+                    $this->snathosts->xmlroot = $transladx;
                 }
-                $transladx = DH::findFirstElement('translated-address', $firstE);
-
-                if( $transladx === FALSE )
-                    mwarning('invalid nat rule with missing "translated-address". Rule: ' . $this->name);
-
-                $transladx = DH::findFirstElementOrCreate('translated-address', $firstE);
-
-                $fad = $this->parentAddressStore->findOrCreate($transladx->textContent);
-
-                $this->snathosts->addObject($fad);
-                $this->snathosts->xmlroot = $transladx;
-            }
-            else if( $this->snattype == "dynamic-ip" )
-            {
-                $subtype = DH::findFirstElement('translated-address', $firstE);
-                if( $subtype === FALSE )
-                    mwarning('invalid nat rule with missing "translated-address". Rule: ' . $this->name);
-
-                $subtype = DH::findFirstElementOrCreate('translated-address', $firstE);
-
-                if( DH::firstChildElement($subtype) === FALSE )
+                else if( $this->snattype == "dynamic-ip" )
                 {
-                    // this rule has no address specified
-                    mwarning('invalid nat rule with missing "<member>"', $subtype);
-                }
-                else
-                {
-                    foreach( $subtype->childNodes as $node )
-                    {
-                        if( $node->nodeType != 1 ) continue;
-                        $translad = $this->parentAddressStore->findOrCreate($node->textContent);
-                        $this->snathosts->addObject($translad);
-                    }
+                    $subtype = DH::findFirstElement('translated-address', $firstE);
+                    if( $subtype === FALSE )
+                        mwarning('invalid nat rule with missing "translated-address". Rule: ' . $this->name);
 
-                    $this->snathosts->xmlroot = $subtype;
+                    $subtype = DH::findFirstElementOrCreate('translated-address', $firstE);
 
-                }
-            }
-            else if( $this->snattype == "dynamic-ip-and-port" )
-            {
-                // Is it <translated-address> type ?
-                $subtype = DH::findFirstElement('translated-address', $firstE);
-
-                if( $subtype !== FALSE )
-                {
                     if( DH::firstChildElement($subtype) === FALSE )
                     {
                         // this rule has no address specified
+                        mwarning('invalid nat rule with missing "<member>"', $subtype);
                     }
                     else
                     {
@@ -267,52 +245,76 @@ class NatRule extends Rule
                         $this->snathosts->xmlroot = $subtype;
 
                     }
-
                 }
-                else
+                else if( $this->snattype == "dynamic-ip-and-port" )
                 {
-                    $subtype = DH::findFirstElement('interface-address', $firstE);
+                    // Is it <translated-address> type ?
+                    $subtype = DH::findFirstElement('translated-address', $firstE);
+
                     if( $subtype !== FALSE )
                     {
                         if( DH::firstChildElement($subtype) === FALSE )
-                            derr("Cannot understand dynmaic NAT for rule '" . $this->name . "'\n");
-
-                        foreach( $subtype->childNodes as $node )
                         {
-                            if( $node->nodeType != 1 ) continue;
-
-                            if( $node->nodeName == 'interface' )
-                            {
-                                $this->snatinterface = $node->textContent;
-
-                                #$tmp_interface = $this->owner->owner->owner->network->findInterface($this->snatinterface);
-                                #$tmp_interface->addReference( $this );
-
-                            }
-                            else if( $node->nodeName == 'ip' )
-                            {
-                                $translad = $this->parentAddressStore->findOrCreate($node->textContent);
-                                $this->snathosts->addObject($translad);
-                            }
-                            else if( $node->nodeName == 'floating-ip' )
-                            {
-                                $translad = $this->parentAddressStore->findOrCreate($node->textContent);
-                                $this->snathosts->addObject($translad);
-                                $this->_snatUsesFloatingIP = TRUE;
-                            }
-                            else
-                                derr("Cannot understand dynamic NAT for rule '" . $this->name . "'\n");
+                            // this rule has no address specified
                         }
+                        else
+                        {
+                            foreach( $subtype->childNodes as $node )
+                            {
+                                if( $node->nodeType != 1 ) continue;
+                                $translad = $this->parentAddressStore->findOrCreate($node->textContent);
+                                $this->snathosts->addObject($translad);
+                            }
+
+                            $this->snathosts->xmlroot = $subtype;
+
+                        }
+
                     }
                     else
                     {
-                        mwarning("Unknown dynamic SNAT type on rule '" . $this->name . " don't mess too much with this rule or face unpredictable results");
+                        $subtype = DH::findFirstElement('interface-address', $firstE);
+                        if( $subtype !== FALSE )
+                        {
+                            if( DH::firstChildElement($subtype) === FALSE )
+                                derr("Cannot understand dynmaic NAT for rule '" . $this->name . "'\n");
+
+                            foreach( $subtype->childNodes as $node )
+                            {
+                                if( $node->nodeType != 1 ) continue;
+
+                                if( $node->nodeName == 'interface' )
+                                {
+                                    $this->snatinterface = $node->textContent;
+
+                                    #$tmp_interface = $this->owner->owner->owner->network->findInterface($this->snatinterface);
+                                    #$tmp_interface->addReference( $this );
+
+                                }
+                                else if( $node->nodeName == 'ip' )
+                                {
+                                    $translad = $this->parentAddressStore->findOrCreate($node->textContent);
+                                    $this->snathosts->addObject($translad);
+                                }
+                                else if( $node->nodeName == 'floating-ip' )
+                                {
+                                    $translad = $this->parentAddressStore->findOrCreate($node->textContent);
+                                    $this->snathosts->addObject($translad);
+                                    $this->_snatUsesFloatingIP = TRUE;
+                                }
+                                else
+                                    derr("Cannot understand dynamic NAT for rule '" . $this->name . "'\n");
+                            }
+                        }
+                        else
+                        {
+                            mwarning("Unknown dynamic SNAT type on rule '" . $this->name . " don't mess too much with this rule or face unpredictable results");
+                        }
                     }
+
+
                 }
-
-
             }
-
         }
         //
         // End of Source NAT properties extraction	//
