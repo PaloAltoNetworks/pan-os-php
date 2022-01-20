@@ -532,9 +532,9 @@ class DIFF extends UTIL
                     $doc2 = new DOMDocument();
                     $node = $doc2->importNode($element, true);
                     $doc2->appendChild($node);
-                    print $doc2->saveXML();
+                    PH::print_stdout( $doc2->saveXML() );
 
-                    //print DH::elementToPanXPath($element);
+                    PH::print_stdout( DH::elementToPanXPath($element) );
                 }
 
             }
