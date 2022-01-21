@@ -1510,9 +1510,14 @@ DeviceCallContext::$supportedActions['CleanUpRule-create-BP'] = array(
                     $rulebase = DH::findFirstElementOrCreate( "post-rulebase", $xmlRoot );
                 }
 
+                //$tmp1 = $sharedStore->addressStore->newAddress( "1.1.1.1", "ip-netmask", '1.1.1.1' );
+                //$cleanupRule->source->addObject( $tmp1  );
+                //$tmp1 = $sharedStore->addressStore->newAddress( "1.1.1.2", "ip-netmask", '1.1.1.2' );
+                //$cleanupRule->source->addObject( $tmp1  );
 
                 $cleanupRule->source->setAny();
                 $cleanupRule->destination->setAny();
+                $cleanupRule->services->setAny();
                 $cleanupRule->setAction( 'deny');
                 $cleanupRule->setLogStart( false );
                 $cleanupRule->setLogEnd( true );

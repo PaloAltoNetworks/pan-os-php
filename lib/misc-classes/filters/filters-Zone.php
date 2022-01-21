@@ -420,4 +420,45 @@ RQuery::$defaultFilters['zone']['logprof']['operators']['is'] = array(
     )
 );
 
+RQuery::$defaultFilters['zone']['zpp']['operators']['is.set'] = array(
+    'Function' => function (ZoneRQueryContext $context) {
+        /** @var Zone $zone */
+        $zone = $context->object;
+        if( $zone->isTmp() )
+            return FALSE;
+
+        if( $zone->zoneProtectionProfile === null || $zone->zoneProtectionProfile == '' )
+            return FALSE;
+
+        return TRUE;
+    },
+    'arg' => FALSE,
+    'ci' => array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['zone']['zpp']['operators']['is'] = array(
+    'Function' => function (ZoneRQueryContext $context) {
+
+        /** @var Zone $zone */
+        $zone = $context->object;
+        if( $zone->isTmp() )
+            return FALSE;
+
+        if( $zone->zoneProtectionProfile === null )
+            return FALSE;
+
+        if( $zone->zoneProtectionProfile == $context->value )
+            return TRUE;
+
+        return FALSE;
+    },
+    'arg' => TRUE,
+    'help' => 'return true if Zone Protection Profile is the one specified in argument',
+    'ci' => array(
+        'fString' => '(%PROP%  log_to_panorama)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 // </editor-fold>

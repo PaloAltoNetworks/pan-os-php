@@ -130,6 +130,9 @@ class UTIL
 
     public $auditComment = null;
 
+    public $outputformatset = FALSE;
+    public $origXmlDoc = null;
+
     function __construct($utilType, $argv, $argc, $PHP_FILE, $_supportedArguments = array(), $_usageMsg = "")
     {
         $this->argv = $argv;
@@ -238,6 +241,8 @@ class UTIL
         $this->supportedArguments['cycleconnectedfirewalls'] = array('niceName' => 'cycleConnectedFirewalls', 'shortHelp' => 'a listing of all devices connected to Panorama will be collected through API then each firewall will be queried for bpa generator');
 
         $this->supportedArguments['auditcomment'] = array('niceName' => 'AuditComment', 'shortHelp' => 'set custom AuditComment instead of predefined: "PAN-OS-PHP $actions $time"', 'argDesc' => 'CustomAuditComment');
+
+        $this->supportedArguments['outputformatset'] = array('niceName' => 'outputformatset', 'shortHelp' => 'get all PAN-OS set commands about the task the UTIL script is doing', 'argDesc' => 'outputformatset');
 
         $this->supportedArguments['shadow-disableoutputformatting'] = array('niceName' => 'shadow-disableoutputformatting', 'shortHelp' => 'XML output in offline config is not in cleaned PHP DOMDocument structure');
         $this->supportedArguments['shadow-enablexmlduplicatesdeletion']= array('niceName' => 'shadow-enablexmlduplicatesdeletion', 'shortHelp' => 'if duplicate objects are available, keep only one object of the same name');
@@ -739,6 +744,11 @@ class UTIL
             $this->auditComment = PH::$args['auditcomment'];
         }
 
+        if( isset(PH::$args['outputformatset']) )
+        {
+            $this->outputformatset = TRUE;
+        }
+
         $this->inputValidation();
 
 
@@ -1078,6 +1088,13 @@ class UTIL
         $this->loadStart();
 
         $this->pan->load_from_domxml($this->xmlDoc, XML_PARSE_BIG_LINES);
+
+        if( $this->outputformatset )
+        {
+            $this->origXmlDoc = new DOMDocument();
+            $node = $this->origXmlDoc->importNode($this->pan->xmlroot, true);
+            $this->origXmlDoc->appendChild($node);
+        }
 
         $this->loadEnd();
 
@@ -1778,6 +1795,20 @@ class UTIL
             PH::print_stdout("");
             PH::print_stdout("************* END OF SCRIPT " . basename($this->PHP_FILE) . " ************");
             PH::print_stdout("");
+        }
+
+        if( $this->outputformatset )
+        {
+            $utilDiff = new DIFF( "custom", array(), array(), "" );
+            $utilDiff->outputFormatSet = TRUE;
+
+
+            $doc2 = new DOMDocument();
+            $node = $doc2->importNode($this->pan->xmlroot, true);
+            $doc2->appendChild($node);
+            //print $doc2->saveXML();
+
+            $utilDiff->runDiff( $this->origXmlDoc, $doc2 );
         }
     }
 

@@ -83,13 +83,13 @@ class GARPSEND extends UTIL
                 $configInput = PH::$args['in'];
 
                 if( strpos($configInput, "api://") === FALSE && !$offline_config_test )
-                    derr("only PAN-OS API connection is supported");
+                    derr("only PAN-OS API connection is supported", null, false);
 
                 $configInput = str_replace("api://", "", $configInput);
             }
 
         else
-        derr("argument 'in' is needed");
+            derr("argument 'in' is needed", null, false);
 
 
         if( isset(PH::$args['user']) )
@@ -97,7 +97,7 @@ class GARPSEND extends UTIL
         else
         {
             if( !$offline_config_test )
-                derr("argument 'user' is needed");
+                derr("argument 'user' is needed", null, false);
         }
 
         if( isset(PH::$args['pw']) )
@@ -105,7 +105,7 @@ class GARPSEND extends UTIL
         else
         {
             if( !$offline_config_test )
-                derr("argument 'pw' is needed");
+                derr("argument 'pw' is needed", null, false);
         }
 
         //this is storing the username / pw in .panconfigkeystore

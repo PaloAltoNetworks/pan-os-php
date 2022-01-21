@@ -108,11 +108,11 @@ function updateScriptsyntax( Idx ) {
 
         var FILTERandor = $("#filter-andor" + Idx + "-" + i).children("option:selected").val();
 
-        if (FILTER !== "---" && FILTERoperator !== "---") {
+        if ( FILTER !== "---" && FILTERoperator !== "---") {
 
-            if( i >= 3 )
+            if ( typeof FILTERandor === 'string' || FILTERandor instanceof String)
             {
-                if( i ===3 )
+                if( i === 3 )
                 {
                     if (~FILTERandor.indexOf("!"))
                     {
@@ -120,7 +120,7 @@ function updateScriptsyntax( Idx ) {
                         tmpFiltertextapi += FILTERandor.replace( " ", "%20" ) ;
                     }
                 }
-                else
+                else if( i > 3 )
                 {
                     if (~FILTERandor.indexOf("!"))
                     {
@@ -133,10 +133,10 @@ function updateScriptsyntax( Idx ) {
                         tmpFiltertextapi += "%20"+FILTERandor+"%20" ;
                     }
                 }
-            }
 
-            tmpFiltertext += "(" + FILTER + " " + FILTERoperator + " " + FILTERinput + ")";
-            tmpFiltertextapi += "(" + FILTER + "%20" + FILTERoperator + "%20" + FILTERinput + ")";
+                tmpFiltertext += "(" + FILTER + " " + FILTERoperator + " " + FILTERinput + ")";
+                tmpFiltertextapi += "(" + FILTER + "%20" + FILTERoperator + "%20" + FILTERinput + ")";
+            }
         }
     }
     var Filtertext = "";
@@ -388,7 +388,17 @@ function uploadButton( )
 function deleteColumn( column )
 {
     console.log( "delete column: "+column );
-    if( column > 3 )
+    if( column > 2 )
+    {
+        $("#myTable tr").find( "td:eq("+column+"),th:eq("+column+")" ).remove();
+        columnIdx--;
+    }
+}
+
+function deleteColumnIdx( Idx, column )
+{
+    console.log( "delete column: "+column );
+    if( column > 2 )
     {
         $("#myTable tr").find( "td:eq("+column+"),th:eq("+column+")" ).remove();
         columnIdx--;
@@ -624,4 +634,228 @@ function createTableFromJSON( textValue )
 
         }
     }
+}
+
+function ActionAddRow( rIdx, ActionIdx, FilterIdx )
+{
+
+    var selectedScript = $("#script"+rIdx).children("option:selected").val();
+
+
+    for( var k=1; k <= 4; k++ )
+    {
+        if( k === 1 )
+        {
+            $(this).append( $(
+                `<td id=${deleteColumnID} class="row-index text-center">
+                                <select name="action${rIdx}-${ActionIdx}" id="action${rIdx}-${ActionIdx}" style="width:100%">
+                                    <option value="---" selected="selected">Select action</option>
+                                </select>
+                                <input type="text" disabled style="width:100%"
+                                    id="action-input${rIdx}-${ActionIdx}" name="action-input${rIdx}-${ActionIdx}"
+                                    >
+                                </br>
+                                <p type="text" disabled style="width:100%"
+                                    id="action-desc${rIdx}-${ActionIdx}" name="action-desc${rIdx}-${ActionIdx}"
+                                    >no description
+                                </p>
+                            </td>`
+            ));
+
+            if( selectedScript === '---' )
+            {}
+            else {
+                $("#action" + rIdx + "-" + ActionIdx)
+                    .append(produceOptionsActionFilter(selectedScript, 'action'))
+                    .val('---');
+            }
+
+            updateActionFiltersyntax( selectedScript, rIdx, ActionIdx, FilterIdx);
+        }
+        else if( k === 2 )
+        {
+            $(this).append( $("<td><button id=\"remove-action2BTN\" class=\"btn btn-danger remove-action2\" type=\"button\">RemoveA2</button></td>"));
+        }
+        else
+            $(this).append( $("<td></td>"));
+    }
+
+
+}
+
+function addActionBtn()
+{
+    columnActionIdx = ++columnActionIdx;
+    var ActionIdx = columnActionIdx;
+    var FilterIdx = columnFilterIdx;
+    columnIdx = ++columnIdx;
+    var deleteColumnID = columnIdx;
+
+    var rows = $("#myTable").children('tbody').children('tr');
+
+    var selectedScript = $("#script"+rowIdx).children("option:selected").val();
+
+    var testID = 1;
+    rows.each(function () {
+
+        // Getting <tr> id.
+        var id = $(this).attr('id');
+        // Getting the <p> inside the .row-index class.
+        var Idx = $(this).children('.row-index').children('p');
+        // Gets the row number from <tr> id.
+        var dig = parseInt(id.substring(1));
+
+        if( testID === 1 )
+        {
+            $(this).append( $("<td><button id=\"remove-action2BTN\" class=\"btn btn-danger remove-action2\" type=\"button\">RemoveA2</button></td>"));
+        }
+        else if( testID === 2 )
+        {
+            $(this).append( $(
+                `<td id=${deleteColumnID} class="row-index text-center">
+                                <select name="action${rowIdx}-${ActionIdx}" id="action${rowIdx}-${ActionIdx}" style="width:100%">
+                                    <option value="---" selected="selected">Select action</option>
+                                </select>
+                                <input type="text" disabled style="width:100%"
+                                    id="action-input${rowIdx}-${ActionIdx}" name="action-input${rowIdx}-${ActionIdx}"
+                                    >
+                                </br>
+                                <p type="text" disabled style="width:100%"
+                                    id="action-desc${rowIdx}-${ActionIdx}" name="action-desc${rowIdx}-${ActionIdx}"
+                                    >no description
+                                </p>
+                            </td>`
+            ));
+
+            if( selectedScript == '---' )
+            {}
+            else {
+                $("#action" + rowIdx + "-" + ActionIdx)
+                    .append(produceOptionsActionFilter(selectedScript, 'action'))
+                    .val('---');
+            }
+
+            updateActionFiltersyntax( selectedScript, rowIdx, ActionIdx, FilterIdx);
+        }
+        else
+            $(this).append( $("<td></td>"));
+
+        testID++;
+    });
+
+    //not working
+    var rows = $("#myTable").children('thead').children('tr');
+
+    rows.each(function () {
+        $(this).append($(`<th class="text-center">
+                        <button id="remove-action${ActionIdx}" class="btn btn-danger remove" type="button">Remove</button>
+                        Action${ActionIdx}</th>`
+        ));
+    });
+
+    $('#remove-action'+ActionIdx).on('click', function() {
+        deleteColumn( deleteColumnID );
+    });
+}
+
+function addFilterBtn()
+{
+    var ActionIdx = columnActionIdx;
+
+    if( columnFilterIdx > 3 )
+        columnFilterIdx = ++columnFilterIdx;
+    var FilterIdx = columnFilterIdx;
+    columnIdx = ++columnIdx;
+    var deleteColumnID = columnIdx;
+
+    var rows = $("#myTable").children('tbody').children('tr');
+    //$("#myTable tr").append($("<td contenteditable='true'>FILTER</td>"));
+
+    var selectedScript = $("#script"+rowIdx).children("option:selected").val();
+
+    var testID = 1;
+    rows.each(function () {
+
+        // Getting <tr> id.
+        var id = $(this).attr('id');
+        // Getting the <p> inside the .row-index class.
+        var Idx = $(this).children('.row-index').children('p');
+        // Gets the row number from <tr> id.
+        var dig = parseInt(id.substring(1));
+
+
+        if( testID === 1 )
+        {
+            string = "<td><button id=\"remove-filter2BTN\" class=\"btn btn-danger remove-filter2\" type=\"button\">RemoveF2</button>";
+
+            if( FilterIdx === 3 )
+                string += "<select name=\"filter-andor${Idx}-${FilterIdx}\" id=\"filter-andor${Idx}-${FilterIdx}\" style=\"width:100%\">\n" +
+                    "                                    <option value=\"\" selected=\"selected\">---</option>\n" +
+                    "                                    <option value=\"!\">!</option>\n" +
+                    "                                </select>";
+            else
+                string += "<select name=\"filter-andor${rowIdx}-${FilterIdx}\" id=\"filter-andor${rowIdx}-${FilterIdx}\" style=\"width:100%\">\n" +
+                    "                                    <option value=\"and\" selected=\"selected\">and</option>\n" +
+                    "                                    <option value=\"or\">or</option>\n" +
+                    "                                    <option value=\"and !\" >and !</option>\n" +
+                    "                                    <option value=\"or !\">or !</option>\n" +
+                    "                                </select>";
+
+            string += "</td>";
+
+            $(this).append( $( string ));
+        }
+        else if( testID === 2 ) {
+            $(this).append( $(
+                `<td id=${deleteColumnID} class="row-index text-center">
+                                    <select name="filter${rowIdx}-${FilterIdx}" id="filter${rowIdx}-${FilterIdx}" style="width:100%">
+                                    <option value="---" selected="selected">Select filter</option>
+                                </select>
+                                <select name="filter-operator${rowIdx}-${FilterIdx}" id="filter-operator${rowIdx}-${FilterIdx}" style="width:100%">
+                                    <option value="---" selected="selected">Select operator</option>
+                                </select>
+                                <input type="text" disabled style="width:100%"
+                                id="filter-input${rowIdx}-${FilterIdx}" name="filter-input${rowIdx}-${FilterIdx}"
+                                    >
+                                    </br>
+                                    <p type="text" disabled style="width:100%"
+                                id="filter-desc${rowIdx}-${FilterIdx}" name="filter-desc${rowIdx}-${FilterIdx}"
+                                    >no description
+                                </p>
+                            </td>`
+            ));
+
+            if( selectedScript == '---' )
+            {}
+            else {
+                $("#filter" + rowIdx + "-" + FilterIdx)
+                    .append(produceOptionsActionFilter(selectedScript, 'filter'))
+                    .val('---');
+            }
+
+            updateActionFiltersyntax( selectedScript, rowIdx, ActionIdx, FilterIdx);
+        }
+        else
+            $(this).append( $("<td></td>"));
+
+        testID++;
+    });
+
+
+    //not working
+    var rows = $("#myTable").children('thead').children('tr');
+    rows.each(function () {
+        $(this).append($(`<th class="text-center">
+                        <button id="remove-filter${FilterIdx}" class="btn btn-danger remove" type="button">Remove</button>
+                        Filter${FilterIdx}</th>`
+        ));
+    });
+
+
+    $('#remove-filter'+FilterIdx).on('click', function() {
+        deleteColumn( deleteColumnID );
+    });
+
+    if( columnFilterIdx === 3 )
+        columnFilterIdx = ++columnFilterIdx;
 }
