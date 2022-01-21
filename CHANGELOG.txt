@@ -17,6 +17,7 @@ UTILS:
 * UTIL UI update json_array.js to get actual info about script actions / filter
 * UTIL get_action_filter | improve
 * UTIL UI - extension for playbook JSON file reading and creation
+* UTIL type=zone | introduce new 'filter=(zpp is.set) / (zpp is PROFILNAME)'
 
 BUGFIX:
 * UTIL pan-os-php type=device | bugfix actions=securityprofile-create-alert-only PAN-OS version <10 compare to >=10
