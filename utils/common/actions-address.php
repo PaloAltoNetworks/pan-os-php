@@ -1781,7 +1781,44 @@ AddressCallContext::$supportedActions[] = array(
         PH::ACTIONlog( $context, $text );
     },
 );
+AddressCallContext::$supportedActions[] = array(
+    'name' => 'description-Replace-Character',
+    'MainFunction' => function (AddressCallContext $context) {
 
+        $object = $context->object;
+
+        $characterToreplace = $context->arguments['search'];
+        $characterForreplace = $context->arguments['replace'];
+
+        $description = $object->description();
+
+        $newDescription = str_replace($characterToreplace, $characterForreplace, $description);
+        //todo add regex replacement 20210305
+        //$desc = preg_replace('/appRID#[0-9]+/', '', $rule->description());
+
+        if( $description == $newDescription )
+        {
+            $string = "new and old description are the same" ;
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+
+        $string = "new description will be '{$newDescription}'";
+        PH::ACTIONlog( $context, $string );
+
+        if( $context->isAPI )
+            $object->API_setDescription($newDescription);
+        else
+            $object->setDescription($newDescription);
+
+
+    },
+    'args' => array(
+        'search' => array('type' => 'string', 'default' => '*nodefault*'),
+        'replace' => array('type' => 'string', 'default' => '*nodefault*')
+    ),
+    'help' => ''
+);
 AddressCallContext::$supportedActions[] = array(
     'name' => 'value-host-object-add-netmask-m32',
     'MainFunction' => function (AddressCallContext $context) {
