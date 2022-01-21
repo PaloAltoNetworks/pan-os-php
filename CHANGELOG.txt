@@ -18,6 +18,7 @@ UTILS:
 * UTIL get_action_filter | improve
 * UTIL UI - extension for playbook JSON file reading and creation
 * UTIL type=zone | introduce new 'filter=(zpp is.set) / (zpp is PROFILNAME)'
+* UTIL type=address new 'actions=(description-replace-character:OLDone,NEWone )'
 
 BUGFIX:
 * UTIL pan-os-php type=device | bugfix actions=securityprofile-create-alert-only PAN-OS version <10 compare to >=10
