@@ -1035,7 +1035,7 @@ class PH
         elseif( $type == "system-log" )
             $util = new SYSTEMLOG($type, $argv, $argc,$PHP_FILE." type=".$type);
 
-        elseif( $type == "gratious-arp" )
+        elseif( $type == "gratuitous-arp" )
             $util = new GARPSEND($type, $argv, $argc,$PHP_FILE." type=".$type);
 
         elseif( $type == "software-download" )
