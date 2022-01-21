@@ -21,6 +21,7 @@ class DIFF extends UTIL
 {
     public $el1rulebase = array();
     public $el2rulebase = array();
+    public $outputFormatSet = false;
 
     public function utilStart()
     {
@@ -534,9 +535,10 @@ class DIFF extends UTIL
                     $doc2->appendChild($node);
                     PH::print_stdout( $doc2->saveXML() );
 
-                    PH::print_stdout( DH::elementToPanXPath($element) );
+                    $array = DH::elementToPanSetCommand($element);
+                    foreach( $array as $entry )
+                        PH::print_stdout( $entry );
                 }
-
             }
             else
             {

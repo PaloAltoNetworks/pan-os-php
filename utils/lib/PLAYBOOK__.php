@@ -22,6 +22,7 @@ class PLAYBOOK__
 
     public $isAPI = false;
     public $debugAPI = false;
+    public $outputformatset = false;
 
     function __construct( $argv, $argc )
     {
@@ -68,6 +69,10 @@ class PLAYBOOK__
 
         if( isset(PH::$args['debugapi']) )
             $this->debugAPI = TRUE;
+
+        if( isset(PH::$args['outputformatset']) )
+            $this->outputformatset = TRUE;
+
 
         if( isset(PH::$args['json']) )
         {
@@ -166,6 +171,9 @@ class PLAYBOOK__
             if( $this->debugAPI )
                 $arguments[] = "debugapi";
 
+            if( $this->outputformatset )
+                $arguments[] = "outputformatset";
+
             ###############################################################################
             //IN / OUT specification
             ###############################################################################
@@ -217,6 +225,8 @@ class PLAYBOOK__
             PH::print_stdout("");
 
             $util = PH::callPANOSPHP( $script, PH::$argv, $argc, $PHP_FILE );
+
+            $util->endOfScript();
 
             PH::print_stdout("");
             PH::print_stdout( "############################################################################");
