@@ -1489,13 +1489,19 @@ DeviceCallContext::$supportedActions['CleanUpRule-create-BP'] = array(
             {
                 $sub = $object;
 
+                $skip = false;
                 if( $classtype == "VirtualSystem" )
                 {
                     $sharedStore = $sub;
                     $xmlRoot = $sharedStore->xmlroot;
 
                     //create security Rule at end
-                    $cleanupRule = $sub->securityRules->newSecurityRule("CleanupRule-BP");
+                    $name = "CleanupRule-BP";
+                    $cleanupRule = $sub->securityRules->find( $name );
+                    if( $cleanupRule === null )
+                        $cleanupRule = $sub->securityRules->newSecurityRule( $name );
+                    else
+                        $skip = true;
 
                     $rulebase = DH::findFirstElementOrCreate( "rulebase", $xmlRoot );
                 }
@@ -1505,7 +1511,12 @@ DeviceCallContext::$supportedActions['CleanUpRule-create-BP'] = array(
                     $xmlRoot = DH::findFirstElementOrCreate('shared', $sharedStore->xmlroot);
 
                     //create security Rule at end
-                    $cleanupRule = $sharedStore->securityRules->newSecurityRule("CleanupRule-BP", true);
+                    $name = "CleanupRule-BP";
+                    $cleanupRule = $sharedStore->securityRules->find( $name );
+                    if( $cleanupRule === null )
+                        $cleanupRule = $sharedStore->securityRules->newSecurityRule("CleanupRule-BP", true);
+                    else
+                        $skip = true;
 
                     $rulebase = DH::findFirstElementOrCreate( "post-rulebase", $xmlRoot );
                 }
@@ -1515,15 +1526,19 @@ DeviceCallContext::$supportedActions['CleanUpRule-create-BP'] = array(
                 //$tmp1 = $sharedStore->addressStore->newAddress( "1.1.1.2", "ip-netmask", '1.1.1.2' );
                 //$cleanupRule->source->addObject( $tmp1  );
 
-                $cleanupRule->source->setAny();
-                $cleanupRule->destination->setAny();
-                $cleanupRule->services->setAny();
-                $cleanupRule->setAction( 'deny');
-                $cleanupRule->setLogStart( false );
-                $cleanupRule->setLogEnd( true );
-                $cleanupRule->setLogSetting( $logprof );
-                if( $context->isAPI )
-                    $cleanupRule->API_sync();
+                if( !$skip )
+                {
+                    $cleanupRule->source->setAny();
+                    $cleanupRule->destination->setAny();
+                    $cleanupRule->services->setAny();
+                    $cleanupRule->setAction( 'deny');
+                    $cleanupRule->setLogStart( false );
+                    $cleanupRule->setLogEnd( true );
+                    $cleanupRule->setLogSetting( $logprof );
+                    if( $context->isAPI )
+                        $cleanupRule->API_sync();
+                }
+
 
                 $defaultSecurityRules = DH::findFirstElementOrCreate( "default-security-rules", $rulebase );
 

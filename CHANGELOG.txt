@@ -26,6 +26,7 @@ BUGFIX:
 * UTIL pan-os-php type=device | bugfix for all actions which are using IronSkillet snippets
 * UTIL pan-os-php type=device | actions=zoneprotectionprofile-create-bp / logforwardingprofile-create-bp bugfix for PAN-OS API method
 * UTIL pan-os-php type=device actions=securityprofile-create-alert-only | bugfix on offline config file to create profiles only once
+* UTIL pan-os-php type=device actions=cleanuprule-create-bp | bugfix if same rulename is already available
 
 GENERAL:
 
