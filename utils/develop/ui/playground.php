@@ -72,8 +72,8 @@
                 </td>
                 <td>
                     store Playbook to JSON-file:
-                    <input type="text" id="json-output" />
-                    <button class="btn btn-md btn-primary" id="storeBtn" type="button">Store JSON </button>
+                    <input type="text" id="json-output" value="playbook.json" />
+                    <button class="btn btn-md btn-primary" id="storeBtn" type="button">download PLAYBOOK JSON file</button>
                     <div>
                         <textarea type="text" disabled id="json-display-out" name="json-display-out" style="width:100%" ></textarea>
                     </div>

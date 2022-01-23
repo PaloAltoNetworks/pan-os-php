@@ -64,18 +64,214 @@ function produceOptionsFilterOperator(script, filter) {
     return populated_options;
 }
 
+function addNewRow()
+{
+    rowIdx = ++rowIdx
+    var Idx = rowIdx;
+    var ActionIdx = columnActionIdx;
+    var FilterIdx = columnFilterIdx;
+
+    // Adding a row inside the tbody.
+    $('#tbody').append(`<tr id="R${Idx}-1">
+
+                    <td class="text-center">
+                        <button class="btn btn-danger remove"
+                        type="button">Remove</button>
+                    </td>
+                    <td>
+                        <li>
+                        shadow-json
+                        <input type="checkbox" id="shadowjson${Idx}" name="shadowjson${Idx}"
+                        >
+                        </li><li>
+                        location
+                        <input type="text" id="location${Idx}" name="location${Idx}" value="" />
+                        </li>
+                    </td>
+                    <td>
+                        <button id="add-action${Idx}-${ActionIdx}" class="btn btn-md btn-primary add-action${Idx}-${ActionIdx}" type="button">new Action</button>
+                        <button id="add-filter${Idx}-${FilterIdx}" class="btn btn-md btn-primary add-filter${Idx}-${FilterIdx}" type="button">new Filter</button>
+                    </td>
+                </tr>
+                <tr id="R${Idx}-2">
+                    <td>
+                        <input type="hidden" id="columnID-${Idx}" name="columnID-${Idx}" value="3" />
+                        <br/>
+                        <input type="hidden" id="actionID-${Idx}" name="actionID-${Idx}" value="1" />
+                        <br/>
+                        <input type="hidden" id="filterID-${Idx}" name="filterID-${Idx}" value="0" />
+                    </td>
+                    <td class="row-index text-center">
+                        <select name="script${Idx}" id="script${Idx}" style="width:100%">
+                            <option value="---" selected="selected">Select script</option>
+                        </select>
+                    </td>
+                    <td class="row-index text-center">
+                        <select name="action${Idx}-${ActionIdx}" id="action${Idx}-${ActionIdx}" style="width:100%">
+                            <option value="---" selected="selected">Select action</option>
+                        </select>
+                        <input type="text" disabled style="width:100%"
+                                id="action-input${Idx}-${ActionIdx}" name="action-input${Idx}-${ActionIdx}"
+                        >
+                        <p type="text" disabled style="width:100%"
+                            id="action-desc${Idx}-${ActionIdx}" name="action-desc${Idx}-${ActionIdx}"
+                        >no description
+                        </p>
+                    </td>
+                </tr>
+                <tr id="R${Idx}-3">
+                    <td colspan="1"><button onclick="copyTextButton( ${Idx} )">Copy command</button></td>
+                    <td colspan="4">
+                        <input type="text" disabled style="width:100%"
+                            id="command${Idx}" name="command${Idx}"
+                        >
+                    </td>
+
+                </tr>
+                <tr id="R${Idx}-4">
+                    <td colspan="1">
+                        <button onclick="runButton( ${Idx} )">RUN single command</button>
+                    </td>
+                    <td colspan="4">
+                        <input type="text" disabled style="width:100%"
+                            id="commandapi${Idx}" name="commandapi${Idx}"
+                        >
+                    </td>
+
+                </tr>
+                `);
+
+
+    var selectedScript = "";
+    var selectedFilter = "";
+    var ScriptID = $( "#script" + Idx );
+
+    var ActionID = $( "#action" + Idx+"-"+ActionIdx );
+    var ActionInputID = $("#action-input" + Idx+"-"+ActionIdx);
+    var ActionDescriptionID = $("#action-desc" + Idx+"-"+ActionIdx);
+
+    var FilterID = $( "#filter" + Idx+"-"+FilterIdx );
+    var FilterOperatorID = $("#filter-operator" + Idx+"-"+FilterIdx);
+    var FilterInputID = $("#filter-input" + Idx+"-"+FilterIdx);
+    var FilterDescriptionID = $("#filter-desc" + Idx+"-"+FilterIdx);
+
+    $( "#script" + Idx ).append(produceOptionsScript(subjectObject))
+        .change(function(){
+            selectedScript = $(this).children("option:selected").val();
+            <!--alert("You have selected the script - " + selectedScript);-->
+            console.log( 'SCRIPT:|'+selectedScript+'|'); // this will show the info it in firebug console
+
+            var ActionIdx = $( "#actionID-" + Idx ).val();
+            var FilterIdx = $( "#filterID-" + Idx ).val();
+
+            for( var i = 1; i <= ActionIdx; i++ )
+            {
+                $( "#action" + Idx+"-"+i )
+                    .find('option')
+                    .remove()
+                    .end()
+                    .append( '<option value="---" selected="selected">Select action</option>' );
+
+                $("#action-desc" + Idx+"-"+i).text( "no description");
+                $("#action-input" + Idx+"-"+i).prop( "disabled", true)
+                    .val( "");
+            }
+
+            for( var i = 1; i <= FilterIdx; i++ )
+            {
+                $( "#filter" + Idx+"-"+i )
+                    .find('option')
+                    .remove()
+                    .end()
+                    .append( '<option value="---" selected="selected">Select filter</option>' );
+
+                $("#filter-operator" + Idx+"-"+i)
+                    .find('option')
+                    .remove()
+                    .end()
+                    .append( '<option value="---" selected="selected">Select operator</option>' );
+
+                $("#filter-input" + Idx+"-"+i).prop( "disabled", true)
+                    .val( "");
+
+                $("#filter-desc" + Idx+"-"+i).text( "no description");
+            }
+
+
+            updateScriptsyntax( Idx );
+
+            if( selectedScript == '---' )
+            {}
+            else
+            {
+                for( var  i = 1; i <= ActionIdx; i++ )
+                {
+                    $( "#action" + Idx+"-"+i )
+                        .append(produceOptionsActionFilter( selectedScript, 'action' ))
+                        .val('---');
+
+                    updateActionFiltersyntax( selectedScript, Idx, i, FilterIdx);
+                }
+
+
+                for( var i = 1; i <= FilterIdx; i++ )
+                {
+                    $( "#filter" + Idx+"-"+i )
+                        .append(produceOptionsActionFilter( selectedScript, 'filter' ))
+                        .val('---');
+
+                    updateActionFiltersyntax( selectedScript, Idx, ActionIdx, i);
+                }
+
+            }
+
+
+
+            updateActionFiltersyntax( selectedScript, Idx, ActionIdx, FilterIdx);
+        });
+
+
+
+
+
+    $("#shadowjson" + Idx ).change( function()
+    {
+        updateScriptsyntax( Idx );
+    });
+
+    $( "#location" + Idx ).change(function(){
+        updateScriptsyntax( Idx );
+    });
+
+
+    $('#add-action' + Idx + '-' + ActionIdx).on('click', function() {
+        console.log("TEST1");
+        addActionBtn( Idx );
+    });
+
+    $('#add-filter' + Idx + '-' + FilterIdx).on('click', function() {
+        console.log("TEST2");
+        addFilterBtn( Idx );
+    });
+}
+
 function updateScriptsyntax( Idx ) {
 
-    console.log( "actionID: "+columnActionIdx + "| filterID: "+columnFilterIdx );
+    var ActionIdx = $( "#actionID-" + Idx ).val();
+    var FilterIdx = $( "#filterID-" + Idx ).val();
+
+
+    console.log( "actionID: "+ActionIdx + "| filterID: "+FilterIdx );
 
     var SCRIPT = $( "#script" + Idx ).children("option:selected").val();
 
     var tmpActiontext = "";
     var tmpActiontextapi = "";
 
-    var ActionIdx = $( "#actionID-" + Idx ).val();
 
-    for( var i = 1; i <= ActionIdx; i++ ) {
+    for( var i = 1; i <= ActionIdx; i++ )
+    {
+        console.log( "actionID-update: "+Idx+"-"+i);
 
         if ( $( "#action" + Idx+"-"+i ).children("option:selected").val() === undefined)
             continue;
@@ -109,9 +305,11 @@ function updateScriptsyntax( Idx ) {
     var tmpFiltertext = "";
     var tmpFiltertextapi = "";
 
-    var FilterIdx = $( "#filterID-" + Idx ).val();
 
-    for( var i = 1; i <= FilterIdx; i++ ) {
+
+    for( var i = 1; i <= FilterIdx; i++ )
+    {
+        console.log( "filterID-update: "+Idx+"-"+i);
         if ( $("#filter" + Idx + "-" + i).children("option:selected").val() === undefined)
             continue;
 
@@ -379,6 +577,15 @@ function copyTextButton( Idx) {
     el.select();
     document.execCommand('copy');
     document.body.removeChild(el);
+
+
+
+
+    /* Copy the text inside the text field */
+    navigator.clipboard.writeText(string);
+
+    /* Alert the copied text */
+    alert("Copied the text: " + string);
 }
 
 function runButton( Idx)
@@ -397,14 +604,11 @@ function uploadButton( )
 
 function deleteColumn( column, Idx )
 {
-    column = column-1;
-
-    //TODO: update to get correct tr
     console.log( "delete column: "+column );
     if( column > 2 )
     {
-        $( "#R"+Idx+"-1" ).find( "td:eq("+column+"),th:eq("+column+")" ).remove();
-        $( "#R"+Idx+"-2" ).find( "td:eq("+column+"),th:eq("+column+")" ).remove();
+        $( "#R"+Idx+"column"+column+"-1").remove();
+        $( "#R"+Idx+"column"+column+"-2").remove();
     }
 
     updateScriptsyntax( Idx );
@@ -480,67 +684,6 @@ function FILTERNewSet( Idx, FILTER, FILTERoperator, FILTERandor, FILTERinput )
     FILTERSet( Idx, FilterIdx, FILTER, FILTERoperator, FILTERandor, FILTERinput);
 }
 
-function taskAtStart( )
-{
-    //add first row per default on loading the page
-    $("#addBtn").trigger('click');
-
-    //addPreFillRow( );
-}
-
-function addPreFillRow( )
-{
-    ////////////////////////////////////////////////////////////////////////
-    //FIRST ROW
-    //$("#addBtn").trigger('click');
-    //var Idx = rowIdx;
-    //var ActionIdx = $( "#actionID-" + Idx ).val();
-    //var FilterIdx = $( "#filterID-" + Idx ).val();
-
-    //ScriptSet( Idx, "ironskillet-update");
-
-
-
-    ////////////////////////////////////////////////////////////////////////
-    //SECOND ROW
-    $("#addBtn").trigger('click');
-    var Idx = rowIdx;
-    var ActionIdx = $( "#actionID-" + Idx ).val();
-    var FilterIdx = $( "#filterID-" + Idx ).val();
-
-    ScriptSet( Idx, "rule");
-    ActionSet( Idx, ActionIdx,"display", "");
-    ActionNewSet( Idx, "delete", "");
-
-    FILTERNewSet( Idx,"secprof", "type.is.profile", "", "");
-    FILTERNewSet( Idx,"secprof", "vuln-profile.is.set", "", "");
-    FILTERNewSet( Idx,"action", "is.allow", "", "");
-    FILTERNewSet( Idx,"rule", "is.disabled", "", "");
-
-
-    ////////////////////////////////////////////////////////////////////////
-    //THIRD ROW
-    $("#addBtn").trigger('click');
-    var Idx = rowIdx;
-    var ActionIdx = $( "#actionID-" + Idx ).val();
-    var FilterIdx = $( "#filterID-" + Idx ).val();
-
-    ScriptSet( Idx, "ironskillet-update");
-
-
-    ////////////////////////////////////////////////////////////////////////
-    /*
-    $("#addBtn").trigger('click');
-    Idx = ++Idx;
-    var ActionIdx = 1;
-    var FilterIdx = 0;
-
-    ScriptSet( Idx, "rule");
-    ActionSet( Idx, ActionIdx, "delete", "");
-    FILTERSet( Idx, FilterIdx, "secprof", "type.is.profile", "!", "");
-    */
-
-}
 
 function createTableFromJSON( textValue )
 {
@@ -566,13 +709,8 @@ function createTableFromJSON( textValue )
     const obj = JSON.parse( textValue );
     var command = obj.command;
 
-    for (var i = 0; i < command.length; i++) {
-
-        //"type": "rule",
-        //    "actions": "actions=securityProfile-Profile-Set:vulnerability,Alert-Only-VP",
-        //    "filter": "filter=(secprof type.is.profile) and !(secprof vuln-profile.is.set) and (action is.allow) and !(rule is.disabled)"
-
-        //----------------------------
+    for (var i = 0; i < command.length; i++)
+    {
 
         var type = command[i]['type'];
 
@@ -676,9 +814,9 @@ function addActionBtn( Idx )
     var selectedScript = $("#script"+rowIdx).children("option:selected").val();
 
 
-    $( "#R"+Idx+"-1" ).append( $(`<td><button id="remove-action${Idx}-${columnIdx}" class="btn btn-danger remove-action${Idx}-${columnIdx}" type="button">RemoveA2</button></td>`));
+    $( "#R"+Idx+"-1" ).append( $(`<td id="R${Idx}column${columnIdx}-1"><button id="remove-action${Idx}-${columnIdx}" class="btn btn-danger remove-action${Idx}-${columnIdx}" type="button">delete Action${ActionIdx}</button></td>`));
     $( "#R"+Idx+"-2" ).append( $(
-        `<td  class="row-index text-center">
+        `<td id="R${Idx}column${columnIdx}-2" class="row-index text-center">
                         <select name="action${Idx}-${ActionIdx}" id="action${Idx}-${ActionIdx}" style="width:100%">
                             <option value="---" selected="selected">Select action</option>
                         </select>
@@ -728,20 +866,25 @@ function addFilterBtn( Idx)
     var selectedScript = $("#script"+Idx).children("option:selected").val();
 
 
-    string = `<td><button id="remove-filter${Idx}-${columnIdx}" class="btn btn-danger remove-filter${Idx}-${columnIdx}" type="button">RemoveF2</button>`;
-
     if( FilterIdx === 1 )
+    {
+        string = `<td id="R${Idx}column${columnIdx}-1">`;
         string += `<select name="filter-andor${Idx}-${FilterIdx}" id="filter-andor${Idx}-${FilterIdx}" style="width:100%">\n` +
             `                                    <option value="" selected="selected">---</option>\n` +
             `                                    <option value="!">!</option>\n` +
             `                                </select>`;
+    }
     else
+    {
+        string = `<td id="R${Idx}column${columnIdx}-1"><button id="remove-filter${Idx}-${columnIdx}" class="btn btn-danger remove-filter${Idx}-${columnIdx}" type="button">delete Filter${FilterIdx}</button>`;
         string += `<select name="filter-andor${Idx}-${FilterIdx}" id="filter-andor${Idx}-${FilterIdx}" style="width:100%">\n` +
             `                                    <option value="and" selected="selected">and</option>\n` +
             `                                    <option value="or">or</option>\n` +
             `                                    <option value="and !" >and !</option>\n` +
             `                                    <option value="or !">or !</option>\n` +
             `                                </select>`;
+    }
+
 
     string += "</td>";
 
@@ -749,7 +892,7 @@ function addFilterBtn( Idx)
 
 
     $( "#R"+Idx+"-2" ).append( $(
-        `<td class="row-index text-center">
+        `<td id="R${Idx}column${columnIdx}-2" class="row-index text-center">
                             <select name="filter${Idx}-${FilterIdx}" id="filter${Idx}-${FilterIdx}" style="width:100%">
                             <option value="---" selected="selected">Select filter</option>
                         </select>
@@ -782,4 +925,162 @@ function addFilterBtn( Idx)
     $('#remove-filter' + Idx + '-' + columnIdx).on('click', function() {
         deleteColumn( columnIdx, Idx );
     });
+}
+
+function download(filename, text) {
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    element.setAttribute('download', filename);
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    element.click();
+
+    document.body.removeChild(element);
+}
+
+function createJSONstringAndDownload()
+{
+    console.log( rowIdx );
+
+    var jsonSTRING = "";
+    var jsonStringStart = "{\n";
+    var jsonIN = "  \"in\": \"staging/ASA-Config-initial-10_0-fw.xml\",\n";
+    var jsonOUT = "  \"out\": \"staging/final.xml\",\n";
+    var jsonSTAGENAME = "  \"stagename\": \"staging/visibility-\",\n";
+    var jsonHEADER = "  \"header-comment\": \"\",\n";
+    var jsonFOOTER = "  \"footer-comment\": \"\",\n";
+    var jsonCOMMANDstart = "  \"command\": [\n";
+
+
+    var jsonCOMMANDend = "  ]\n";
+    var jsonStringEnd = "}";
+
+    jsonSTRING += jsonStringStart;
+    //jsonSTRING += jsonIN;
+    //jsonSTRING += jsonOUT;
+    //jsonSTRING += jsonHEADER;
+    //jsonSTRING += jsonFOOTER;
+    jsonSTRING += jsonCOMMANDstart;
+
+    var i = 1;
+    for( i; i <= rowIdx; i++ )
+    {
+        var commandString = $( "#command" + i ).val();
+        console.log( "command: " + commandString );
+        console.log( "commandAPI: " + $( "#commandapi" + i ).val() );
+
+        commandString = commandString.replace("pan-os-php ", "");
+        commandString = commandString.replace(/ '/g, "|");
+        commandString = commandString.replace(/' '/g, "|");
+        commandString = commandString.replace(/' /g, "|");
+        commandString = commandString.replace(/'/g, "");
+
+        var text = "{ ";
+        var res = commandString.split("|");
+        let length = res.length;
+        res.forEach( myFunction );
+
+
+        function myFunction(item, index) {
+            //item include string
+            var entry = item.split("=");
+            if (entry.hasOwnProperty( "1" ))
+            {
+                if( entry[0] === "type" )
+                    text += '"' + entry[0] + '":' + '"' + entry[1] + '"' ;
+                else
+                    text += '"' + entry[0] + '":' + '"' + entry[0] + "=" + entry[1] + '"' ;
+            }
+            else
+                text += '"' + item + '":' + '"' + item + '"' ;
+
+            text += ",";
+        }
+        //remove last , from string
+        text = text.substring(0, text.length - 1);
+
+
+        text += "},";
+        jsonSTRING += text;
+    }
+    //remove last , from string
+    jsonSTRING = jsonSTRING.substring(0, jsonSTRING.length - 1);
+
+    jsonSTRING += jsonCOMMANDend;
+    jsonSTRING += jsonStringEnd;
+
+    var jsonPretty = JSON.stringify(JSON.parse(jsonSTRING),null,2);
+    $("#json-display-out").val( jsonPretty );
+
+    $("#json-display-out").height( "400px" );
+    //setHeight($("#json-display-out"));
+
+
+    var filename = $("#json-output").val();
+    // Start file download.
+    download(filename,jsonPretty);
+}
+
+function taskAtStart( )
+{
+    //add first row per default on loading the page
+    $("#addBtn").trigger('click');
+
+    //addPreFillRow( );
+}
+
+function addPreFillRow( )
+{
+    ////////////////////////////////////////////////////////////////////////
+    //FIRST ROW
+    //$("#addBtn").trigger('click');
+    //var Idx = rowIdx;
+    //var ActionIdx = $( "#actionID-" + Idx ).val();
+    //var FilterIdx = $( "#filterID-" + Idx ).val();
+
+    //ScriptSet( Idx, "ironskillet-update");
+
+
+
+    ////////////////////////////////////////////////////////////////////////
+    //SECOND ROW
+    $("#addBtn").trigger('click');
+    var Idx = rowIdx;
+    var ActionIdx = $( "#actionID-" + Idx ).val();
+    var FilterIdx = $( "#filterID-" + Idx ).val();
+
+    ScriptSet( Idx, "rule");
+    ActionSet( Idx, ActionIdx,"display", "");
+    ActionNewSet( Idx, "delete", "");
+
+    FILTERNewSet( Idx,"secprof", "type.is.profile", "", "");
+    FILTERNewSet( Idx,"secprof", "vuln-profile.is.set", "", "");
+    FILTERNewSet( Idx,"action", "is.allow", "", "");
+    FILTERNewSet( Idx,"rule", "is.disabled", "", "");
+
+
+    ////////////////////////////////////////////////////////////////////////
+    //THIRD ROW
+    $("#addBtn").trigger('click');
+    var Idx = rowIdx;
+    var ActionIdx = $( "#actionID-" + Idx ).val();
+    var FilterIdx = $( "#filterID-" + Idx ).val();
+
+    ScriptSet( Idx, "ironskillet-update");
+
+
+    ////////////////////////////////////////////////////////////////////////
+    /*
+    $("#addBtn").trigger('click');
+    Idx = ++Idx;
+    var ActionIdx = 1;
+    var FilterIdx = 0;
+
+    ScriptSet( Idx, "rule");
+    ActionSet( Idx, ActionIdx, "delete", "");
+    FILTERSet( Idx, FilterIdx, "secprof", "type.is.profile", "!", "");
+    */
+
 }

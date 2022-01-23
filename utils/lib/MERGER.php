@@ -426,7 +426,7 @@ class MERGER extends UTIL
         }
         elseif( $this->utilType == "tag-merger" )
         {
-            if( $this->dupAlg != 'samecolor' && $this->dupAlg != 'whereused' && $this->dupAlg != 'identical' )
+            if( $this->dupAlg != 'samecolor' && $this->dupAlg != 'whereused' && $this->dupAlg != 'identical' && $this->dupAlg != 'samename' )
                 $display_error = true;
 
             $defaultDupAlg = 'identical';
@@ -2490,7 +2490,7 @@ class MERGER extends UTIL
             $child_hashMap = array();
             $child_NamehashMap = array();
             $upperHashMap = array();
-            if( $this->dupAlg == 'samecolor' || $this->dupAlg == 'identical' )
+            if( $this->dupAlg == 'samecolor' || $this->dupAlg == 'identical' || $this->dupAlg == 'samename' )
             {
                 //todo: childDG/childDG to parentDG merge is always done; should it not combined to upperLevelSearch value?
                 foreach( $childDeviceGroups as $dg )
@@ -2720,7 +2720,7 @@ class MERGER extends UTIL
                         #if( $this->upperLevelSearch && !$ancestor->isGroup() && !$ancestor->isTmpAddr() && ($ancestor->isType_ipNetmask() || $ancestor->isType_ipRange() || $ancestor->isType_FQDN()) )
                         if( $this->upperLevelSearch && !$ancestor->isTmp() )
                         {
-                            if( $object->sameValue($ancestor) ) //same color
+                            if( $object->sameValue($ancestor) || $this->dupAlg == 'samename' ) //same color
                             {
                                 if( $this->dupAlg == 'identical' )
                                     if( $pickedObject->name() != $ancestor->name() )
