@@ -122,14 +122,7 @@
                 <th class="text-center">
                     ACTION
 
-                    <button class="btn btn-md btn-primary"
-                            id="addActionBtn" type="button">
-                        new Action
-                    </button>
-                    <button class="btn btn-md btn-primary"
-                            id="addFilterBtn" type="button">
-                        new Filter
-                    </button>
+
                 </th>
             </tr>
             </thead>

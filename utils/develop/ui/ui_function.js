@@ -66,13 +66,20 @@ function produceOptionsFilterOperator(script, filter) {
 
 function updateScriptsyntax( Idx ) {
 
-    console.log( "actionID: "+columnActionIdx + "filterID: "+columnFilterIdx );
+    console.log( "actionID: "+columnActionIdx + "| filterID: "+columnFilterIdx );
 
     var SCRIPT = $( "#script" + Idx ).children("option:selected").val();
 
     var tmpActiontext = "";
     var tmpActiontextapi = "";
-    for( var i = 2; i <= columnActionIdx; i++ ) {
+
+    var ActionIdx = $( "#actionID-" + Idx ).val();
+
+    for( var i = 1; i <= ActionIdx; i++ ) {
+
+        if ( $( "#action" + Idx+"-"+i ).children("option:selected").val() === undefined)
+            continue;
+
         var ACTION = $( "#action" + Idx+"-"+i ).children("option:selected").val();
         var ACTIONinput = $( "#action-input" + Idx+"-"+i ).val();
 
@@ -82,7 +89,7 @@ function updateScriptsyntax( Idx ) {
             if( ACTIONinput !== "" )
                 ACTIONinput = ":"+ACTIONinput;
 
-            if( i > 2 )
+            if( i > 1 )
             {
                 tmpActiontext += "/" ;
                 tmpActiontextapi += "/" ;
@@ -101,7 +108,13 @@ function updateScriptsyntax( Idx ) {
 
     var tmpFiltertext = "";
     var tmpFiltertextapi = "";
-    for( var i = 3; i <= columnFilterIdx; i++ ) {
+
+    var FilterIdx = $( "#filterID-" + Idx ).val();
+
+    for( var i = 1; i <= FilterIdx; i++ ) {
+        if ( $("#filter" + Idx + "-" + i).children("option:selected").val() === undefined)
+            continue;
+
         var FILTER = $("#filter" + Idx + "-" + i).children("option:selected").val();
         var FILTERoperator = $("#filter-operator" + Idx + "-" + i).children("option:selected").val();
         var FILTERinput = $("#filter-input" + Idx + "-" + i).val();
@@ -112,7 +125,7 @@ function updateScriptsyntax( Idx ) {
 
             if ( typeof FILTERandor === 'string' || FILTERandor instanceof String)
             {
-                if( i === 3 )
+                if( i === 1 )
                 {
                     if (~FILTERandor.indexOf("!"))
                     {
@@ -120,7 +133,7 @@ function updateScriptsyntax( Idx ) {
                         tmpFiltertextapi += FILTERandor.replace( " ", "%20" ) ;
                     }
                 }
-                else if( i > 3 )
+                else if( i > 1 )
                 {
                     if (~FILTERandor.indexOf("!"))
                     {
@@ -238,11 +251,8 @@ function updateActionFiltersyntax( selectedScript, Idx, ActionIdx, FilterIdx) {
                 $("#action-desc" + Idx+"-"+ActionIdx).text( JSON.stringify( args ) );
                 //$("#action-desc" + Idx+"-"+ActionIdx).text( string );
 
-
                 $("#action-input" + Idx+"-"+ActionIdx).prop( "disabled", false);
-
             }
-
         }
 
         updateScriptsyntax( Idx );
@@ -385,24 +395,19 @@ function uploadButton( )
 
 
 
-function deleteColumn( column )
+function deleteColumn( column, Idx )
 {
-    console.log( "delete column: "+column );
-    if( column > 2 )
-    {
-        $("#myTable tr").find( "td:eq("+column+"),th:eq("+column+")" ).remove();
-        columnIdx--;
-    }
-}
+    column = column-1;
 
-function deleteColumnIdx( Idx, column )
-{
+    //TODO: update to get correct tr
     console.log( "delete column: "+column );
     if( column > 2 )
     {
         $("#myTable tr").find( "td:eq("+column+"),th:eq("+column+")" ).remove();
         columnIdx--;
     }
+
+    updateScriptsyntax( Idx );
 }
 
 
@@ -461,16 +466,17 @@ function FILTERSet( Idx, FilterIdx, FILTER, FILTERoperator, FILTERandor, FILTERi
 
 function ActionNewSet( Idx, ACTION, ACTIONinput )
 {
-    $("#addActionBtn").trigger('click');
-    ActionIdx = columnActionIdx;
+    $("#add-action"+Idx+"-"+"1").trigger('click');
+
+    var ActionIdx = $( "#actionID-" + Idx ).val();
     ActionSet( Idx, ActionIdx, ACTION, ACTIONinput);
 }
 
 function FILTERNewSet( Idx, FILTER, FILTERoperator, FILTERandor, FILTERinput )
 {
-    $("#addFilterBtn").trigger('click');
-    FilterIdx = columnFilterIdx;
+    $("#add-filter"+Idx+"-"+"0").trigger('click');
 
+    var FilterIdx = $( "#filterID-" + Idx ).val();
     FILTERSet( Idx, FilterIdx, FILTER, FILTERoperator, FILTERandor, FILTERinput);
 }
 
@@ -479,49 +485,61 @@ function taskAtStart( )
     //add first row per default on loading the page
     $("#addBtn").trigger('click');
 
-
     //addPreFillRow( );
 }
 
 function addPreFillRow( )
 {
-    /*
+    ////////////////////////////////////////////////////////////////////////
+    //FIRST ROW
+    //$("#addBtn").trigger('click');
+    //var Idx = rowIdx;
+    //var ActionIdx = $( "#actionID-" + Idx ).val();
+    //var FilterIdx = $( "#filterID-" + Idx ).val();
+
+    //ScriptSet( Idx, "ironskillet-update");
+
+
+
+    ////////////////////////////////////////////////////////////////////////
+    //SECOND ROW
     $("#addBtn").trigger('click');
-    Idx = rowIdx;
-
-    var ActionIdx = 2;
-    var FilterIdx = 3;
-
-    ScriptSet( Idx, "ironskillet-update");
-
-    */
-    $("#addBtn").trigger('click');
-    Idx = rowIdx;
-
-    var ActionIdx = 2;
-    var FilterIdx = 3;
+    var Idx = rowIdx;
+    var ActionIdx = $( "#actionID-" + Idx ).val();
+    var FilterIdx = $( "#filterID-" + Idx ).val();
 
     ScriptSet( Idx, "rule");
     ActionSet( Idx, ActionIdx,"display", "");
-    FILTERSet( Idx, FilterIdx,"secprof", "type.is.profile", "", "");
+    ActionNewSet( Idx, "delete", "");
 
-    //ActionNewSet( Idx, ActionIdx+1, "delete", "");
-
+    FILTERNewSet( Idx,"secprof", "type.is.profile", "", "");
     FILTERNewSet( Idx,"secprof", "vuln-profile.is.set", "", "");
     FILTERNewSet( Idx,"action", "is.allow", "", "");
     FILTERNewSet( Idx,"rule", "is.disabled", "", "");
 
 
+    ////////////////////////////////////////////////////////////////////////
+    //THIRD ROW
+    $("#addBtn").trigger('click');
+    var Idx = rowIdx;
+    var ActionIdx = $( "#actionID-" + Idx ).val();
+    var FilterIdx = $( "#filterID-" + Idx ).val();
+
+    ScriptSet( Idx, "ironskillet-update");
+
+
+    ////////////////////////////////////////////////////////////////////////
     /*
     $("#addBtn").trigger('click');
-    Idx = rowIdx;
-    var ActionIdx = 2;
-    var FilterIdx = 3;
+    Idx = ++Idx;
+    var ActionIdx = 1;
+    var FilterIdx = 0;
 
     ScriptSet( Idx, "rule");
     ActionSet( Idx, ActionIdx, "delete", "");
     FILTERSet( Idx, FilterIdx, "secprof", "type.is.profile", "!", "");
-     */
+    */
+
 }
 
 function createTableFromJSON( textValue )
@@ -534,13 +552,15 @@ function createTableFromJSON( textValue )
     tableRemoveAll();
     //missing stuff, check that all additional columns actions / filters are also removed
 
-    for (var i = 4; i <= columnIdx; i++) {
-        deleteColumn( i );
+    for (var i = 1; i <= rowIdx; i++) {
+        for (var ii = 3; ii <= columnIdx; ii++) {
+            deleteColumn(ii, i);
+        }
     }
 
     rowIdx = 0;
-    columnActionIdx = 2;
-    columnFilterIdx = 3;
+    columnActionIdx = 1;
+    columnFilterIdx = 0;
     columnIdx = 3;
 
     const obj = JSON.parse( textValue );
@@ -560,8 +580,8 @@ function createTableFromJSON( textValue )
         $("#addBtn").trigger('click');
 
         var Idx = rowIdx;
-        var ActionIdx = 2;
-        var FilterIdx = 3;
+        var ActionIdx = 1;
+        var FilterIdx = 0;
 
         ScriptSet( Idx, type);
 
@@ -626,9 +646,9 @@ function createTableFromJSON( textValue )
                 if( 2 in string )
                     FilterInput = string[2];
 
-                if( ii === 0 )
-                    FILTERSet( Idx, FilterIdx, string[0], string[1], andor, FilterInput);
-                else
+                //if( ii === 0 )
+                //    FILTERSet( Idx, FilterIdx, string[0], string[1], andor, FilterInput);
+                //else
                     FILTERNewSet( Idx, string[0], string[1], andor, FilterInput);
             }
 
@@ -636,92 +656,49 @@ function createTableFromJSON( textValue )
     }
 }
 
-function ActionAddRow( rIdx, ActionIdx, FilterIdx )
+
+function addActionBtn( Idx )
 {
+    var ActionIdx = $( "#actionID-" + Idx ).val();
+    var FilterIdx = $( "#filterID-" + Idx ).val();
+    var columnIdx = $( "#columnID-" + Idx ).val();
 
-    var selectedScript = $("#script"+rIdx).children("option:selected").val();
-
-
-    for( var k=1; k <= 4; k++ )
-    {
-        if( k === 1 )
-        {
-            $(this).append( $(
-                `<td id=${deleteColumnID} class="row-index text-center">
-                                <select name="action${rIdx}-${ActionIdx}" id="action${rIdx}-${ActionIdx}" style="width:100%">
-                                    <option value="---" selected="selected">Select action</option>
-                                </select>
-                                <input type="text" disabled style="width:100%"
-                                    id="action-input${rIdx}-${ActionIdx}" name="action-input${rIdx}-${ActionIdx}"
-                                    >
-                                </br>
-                                <p type="text" disabled style="width:100%"
-                                    id="action-desc${rIdx}-${ActionIdx}" name="action-desc${rIdx}-${ActionIdx}"
-                                    >no description
-                                </p>
-                            </td>`
-            ));
-
-            if( selectedScript === '---' )
-            {}
-            else {
-                $("#action" + rIdx + "-" + ActionIdx)
-                    .append(produceOptionsActionFilter(selectedScript, 'action'))
-                    .val('---');
-            }
-
-            updateActionFiltersyntax( selectedScript, rIdx, ActionIdx, FilterIdx);
-        }
-        else if( k === 2 )
-        {
-            $(this).append( $("<td><button id=\"remove-action2BTN\" class=\"btn btn-danger remove-action2\" type=\"button\">RemoveA2</button></td>"));
-        }
-        else
-            $(this).append( $("<td></td>"));
-    }
-
-
-}
-
-function addActionBtn()
-{
-    columnActionIdx = ++columnActionIdx;
-    var ActionIdx = columnActionIdx;
-    var FilterIdx = columnFilterIdx;
+    ActionIdx = ++ActionIdx;
     columnIdx = ++columnIdx;
-    var deleteColumnID = columnIdx;
 
+    console.log( "addAction: ROW:"+Idx+ "-"+ActionIdx);
+
+    //update
+    $("#actionID-" + Idx).val( ActionIdx );
+    $("#columnID-" + Idx).val( columnIdx );
+
+
+    //TODO: update to get correct tr
     var rows = $("#myTable").children('tbody').children('tr');
+
 
     var selectedScript = $("#script"+rowIdx).children("option:selected").val();
 
     var testID = 1;
     rows.each(function () {
 
-        // Getting <tr> id.
-        var id = $(this).attr('id');
-        // Getting the <p> inside the .row-index class.
-        var Idx = $(this).children('.row-index').children('p');
-        // Gets the row number from <tr> id.
-        var dig = parseInt(id.substring(1));
-
         if( testID === 1 )
         {
-            $(this).append( $("<td><button id=\"remove-action2BTN\" class=\"btn btn-danger remove-action2\" type=\"button\">RemoveA2</button></td>"));
+            $(this).append( $(`<td><button id="remove-action${Idx}-${columnIdx}" class="btn btn-danger remove-action${Idx}-${columnIdx}" type="button">RemoveA2</button></td>`));
         }
         else if( testID === 2 )
         {
             $(this).append( $(
-                `<td id=${deleteColumnID} class="row-index text-center">
-                                <select name="action${rowIdx}-${ActionIdx}" id="action${rowIdx}-${ActionIdx}" style="width:100%">
+                `<td  class="row-index text-center">
+                                <select name="action${Idx}-${ActionIdx}" id="action${Idx}-${ActionIdx}" style="width:100%">
                                     <option value="---" selected="selected">Select action</option>
                                 </select>
                                 <input type="text" disabled style="width:100%"
-                                    id="action-input${rowIdx}-${ActionIdx}" name="action-input${rowIdx}-${ActionIdx}"
+                                    id="action-input${Idx}-${ActionIdx}" name="action-input${Idx}-${ActionIdx}"
                                     >
                                 </br>
                                 <p type="text" disabled style="width:100%"
-                                    id="action-desc${rowIdx}-${ActionIdx}" name="action-desc${rowIdx}-${ActionIdx}"
+                                    id="action-desc${Idx}-${ActionIdx}" name="action-desc${Idx}-${ActionIdx}"
                                     >no description
                                 </p>
                             </td>`
@@ -730,76 +707,63 @@ function addActionBtn()
             if( selectedScript == '---' )
             {}
             else {
-                $("#action" + rowIdx + "-" + ActionIdx)
+                $("#action" + Idx + "-" + ActionIdx)
                     .append(produceOptionsActionFilter(selectedScript, 'action'))
                     .val('---');
             }
 
-            updateActionFiltersyntax( selectedScript, rowIdx, ActionIdx, FilterIdx);
+            updateActionFiltersyntax( selectedScript, Idx, ActionIdx, FilterIdx);
         }
-        else
-            $(this).append( $("<td></td>"));
 
         testID++;
     });
 
-    //not working
-    var rows = $("#myTable").children('thead').children('tr');
-
-    rows.each(function () {
-        $(this).append($(`<th class="text-center">
-                        <button id="remove-action${ActionIdx}" class="btn btn-danger remove" type="button">Remove</button>
-                        Action${ActionIdx}</th>`
-        ));
-    });
-
-    $('#remove-action'+ActionIdx).on('click', function() {
-        deleteColumn( deleteColumnID );
+    $('#remove-action'+Idx+'-'+columnIdx).on('click', function() {
+        deleteColumn( columnIdx, Idx );
     });
 }
 
-function addFilterBtn()
+function addFilterBtn( Idx)
 {
-    var ActionIdx = columnActionIdx;
+    var ActionIdx = $( "#actionID-" + Idx ).val();
+    var FilterIdx = $( "#filterID-" + Idx ).val();
+    var columnIdx = $( "#columnID-" + Idx ).val();
 
-    if( columnFilterIdx > 3 )
-        columnFilterIdx = ++columnFilterIdx;
-    var FilterIdx = columnFilterIdx;
+    FilterIdx = ++FilterIdx;
     columnIdx = ++columnIdx;
-    var deleteColumnID = columnIdx;
 
+    console.log( "addFilter: ROW:"+Idx+ "-"+FilterIdx);
+
+    //update
+    $("#filterID-" + Idx).val( FilterIdx );
+    $("#columnID-" + Idx).val( columnIdx );
+
+
+
+    //TODO: update to get correct tr
     var rows = $("#myTable").children('tbody').children('tr');
-    //$("#myTable tr").append($("<td contenteditable='true'>FILTER</td>"));
 
-    var selectedScript = $("#script"+rowIdx).children("option:selected").val();
+    var selectedScript = $("#script"+Idx).children("option:selected").val();
 
     var testID = 1;
     rows.each(function () {
 
-        // Getting <tr> id.
-        var id = $(this).attr('id');
-        // Getting the <p> inside the .row-index class.
-        var Idx = $(this).children('.row-index').children('p');
-        // Gets the row number from <tr> id.
-        var dig = parseInt(id.substring(1));
-
-
         if( testID === 1 )
         {
-            string = "<td><button id=\"remove-filter2BTN\" class=\"btn btn-danger remove-filter2\" type=\"button\">RemoveF2</button>";
+            string = `<td><button id="remove-filter${Idx}-${columnIdx}" class="btn btn-danger remove-filter${Idx}-${columnIdx}" type="button">RemoveF2</button>`;
 
-            if( FilterIdx === 3 )
-                string += "<select name=\"filter-andor${Idx}-${FilterIdx}\" id=\"filter-andor${Idx}-${FilterIdx}\" style=\"width:100%\">\n" +
-                    "                                    <option value=\"\" selected=\"selected\">---</option>\n" +
-                    "                                    <option value=\"!\">!</option>\n" +
-                    "                                </select>";
+            if( FilterIdx === 1 )
+                string += `<select name="filter-andor${Idx}-${FilterIdx}" id="filter-andor${Idx}-${FilterIdx}" style="width:100%">\n` +
+                    `                                    <option value="" selected="selected">---</option>\n` +
+                    `                                    <option value="!">!</option>\n` +
+                    `                                </select>`;
             else
-                string += "<select name=\"filter-andor${rowIdx}-${FilterIdx}\" id=\"filter-andor${rowIdx}-${FilterIdx}\" style=\"width:100%\">\n" +
-                    "                                    <option value=\"and\" selected=\"selected\">and</option>\n" +
-                    "                                    <option value=\"or\">or</option>\n" +
-                    "                                    <option value=\"and !\" >and !</option>\n" +
-                    "                                    <option value=\"or !\">or !</option>\n" +
-                    "                                </select>";
+                string += `<select name="filter-andor${Idx}-${FilterIdx}" id="filter-andor${Idx}-${FilterIdx}" style="width:100%">\n` +
+                    `                                    <option value="and" selected="selected">and</option>\n` +
+                    `                                    <option value="or">or</option>\n` +
+                    `                                    <option value="and !" >and !</option>\n` +
+                    `                                    <option value="or !">or !</option>\n` +
+                    `                                </select>`;
 
             string += "</td>";
 
@@ -807,19 +771,19 @@ function addFilterBtn()
         }
         else if( testID === 2 ) {
             $(this).append( $(
-                `<td id=${deleteColumnID} class="row-index text-center">
-                                    <select name="filter${rowIdx}-${FilterIdx}" id="filter${rowIdx}-${FilterIdx}" style="width:100%">
+                `<td class="row-index text-center">
+                                    <select name="filter${Idx}-${FilterIdx}" id="filter${Idx}-${FilterIdx}" style="width:100%">
                                     <option value="---" selected="selected">Select filter</option>
                                 </select>
-                                <select name="filter-operator${rowIdx}-${FilterIdx}" id="filter-operator${rowIdx}-${FilterIdx}" style="width:100%">
+                                <select name="filter-operator${Idx}-${FilterIdx}" id="filter-operator${Idx}-${FilterIdx}" style="width:100%">
                                     <option value="---" selected="selected">Select operator</option>
                                 </select>
                                 <input type="text" disabled style="width:100%"
-                                id="filter-input${rowIdx}-${FilterIdx}" name="filter-input${rowIdx}-${FilterIdx}"
+                                id="filter-input${Idx}-${FilterIdx}" name="filter-input${Idx}-${FilterIdx}"
                                     >
                                     </br>
                                     <p type="text" disabled style="width:100%"
-                                id="filter-desc${rowIdx}-${FilterIdx}" name="filter-desc${rowIdx}-${FilterIdx}"
+                                id="filter-desc${Idx}-${FilterIdx}" name="filter-desc${Idx}-${FilterIdx}"
                                     >no description
                                 </p>
                             </td>`
@@ -828,34 +792,19 @@ function addFilterBtn()
             if( selectedScript == '---' )
             {}
             else {
-                $("#filter" + rowIdx + "-" + FilterIdx)
+                $("#filter" + Idx + "-" + FilterIdx)
                     .append(produceOptionsActionFilter(selectedScript, 'filter'))
                     .val('---');
             }
 
-            updateActionFiltersyntax( selectedScript, rowIdx, ActionIdx, FilterIdx);
+            updateActionFiltersyntax( selectedScript, Idx, ActionIdx, FilterIdx);
         }
-        else
-            $(this).append( $("<td></td>"));
 
         testID++;
     });
 
 
-    //not working
-    var rows = $("#myTable").children('thead').children('tr');
-    rows.each(function () {
-        $(this).append($(`<th class="text-center">
-                        <button id="remove-filter${FilterIdx}" class="btn btn-danger remove" type="button">Remove</button>
-                        Filter${FilterIdx}</th>`
-        ));
+    $('#remove-filter' + Idx + '-' + columnIdx).on('click', function() {
+        deleteColumn( columnIdx, Idx );
     });
-
-
-    $('#remove-filter'+FilterIdx).on('click', function() {
-        deleteColumn( deleteColumnID );
-    });
-
-    if( columnFilterIdx === 3 )
-        columnFilterIdx = ++columnFilterIdx;
 }
