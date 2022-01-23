@@ -1546,17 +1546,10 @@ DeviceCallContext::$supportedActions['CleanUpRule-create-BP'] = array(
 )
 );
 
-/*
-Command 2 is to add log-at-session-end to predfined default rules
-    - logend-enable
-Command 3 is to add LFP to predfined default rules
-    - actions=logsetting:default 'filter=!(logprof is.set)'
-Command 4 is to remove SPG or SP from any predefined rule that has action not equal to allow
-    - actions=securityProfile-Remove 'filter=(secprof is.set) and !(action is.allow)'
 
 
-DeviceCallContext::$supportedActions['DefaultSecurityRule-setlog-BP'] = array(
-    'name' => 'cleanuprule-create-bp',
+DeviceCallContext::$supportedActions['DefaultSecurityRule-logend-enable'] = array(
+    'name' => 'defaultsecurityrule-logend-enable',
     'GlobalInitFunction' => function (DeviceCallContext $context) {
         $context->first = true;
     },
@@ -1566,17 +1559,10 @@ DeviceCallContext::$supportedActions['DefaultSecurityRule-setlog-BP'] = array(
 
         if( $context->first )
         {
-            if( $context->arguments['logprof'] )
-                $logprof = $context->arguments['logprof'];
-            else
-                $logprof = "default";
-
-
             if( $classtype == "VirtualSystem" || $classtype == "DeviceGroup" )
             {
                 $sub = $object;
 
-                $skip = false;
                 if( $classtype == "VirtualSystem" )
                 {
                     $sharedStore = $sub;
@@ -1592,36 +1578,77 @@ DeviceCallContext::$supportedActions['DefaultSecurityRule-setlog-BP'] = array(
                     $rulebase = DH::findFirstElementOrCreate( "post-rulebase", $xmlRoot );
                 }
 
+                $defaultSecurityRules = DH::findFirstElementOrCreate( "default-security-rules", $rulebase );
+                $rules = DH::findFirstElementOrCreate( "rules", $defaultSecurityRules );
+
+                $array = array( "intrazone-default", "interzone-default" );
+                foreach( $array as $entry)
+                {
+                    $tmp_XYZzone_xml = DH::findFirstElementByNameAttr( "entry", $entry, $rules );
+                    $logstart = DH::findFirstElementOrCreate( "log-start", $tmp_XYZzone_xml );
+                    $logstart->textContent = "no";
+                    $logend = DH::findFirstElementOrCreate( "log-end", $tmp_XYZzone_xml );
+                    $logend->textContent = "yes";
+                }
+
+                if( $context->isAPI )
+                {
+                    $defaultSecurityRules_xmlroot = DH::findFirstElementOrCreate( "default-security-rules", $rulebase );
+
+                    $xpath = DH::elementToPanXPath($defaultSecurityRules_xmlroot);
+                    $con = findConnectorOrDie($object);
+
+                    $getXmlText_inline = DH::dom_to_xml($defaultSecurityRules_xmlroot, -1, FALSE);
+                    $con->sendEditRequest($xpath, $getXmlText_inline);
+                }
+
+                if( $classtype == "DeviceGroup" )
+                    $context->first = false;
+            }
+        }
+    }
+);
+
+DeviceCallContext::$supportedActions['DefaultSecurityRule-logstart-disable'] = array(
+    'name' => 'defaultsecurityrule-logstart-disable',
+    'GlobalInitFunction' => function (DeviceCallContext $context) {
+        $context->first = true;
+    },
+    'MainFunction' => function (DeviceCallContext $context) {
+        $object = $context->object;
+        $classtype = get_class($object);
+
+        if( $context->first )
+        {
+            if( $classtype == "VirtualSystem" || $classtype == "DeviceGroup" )
+            {
+                $sub = $object;
+
+                if( $classtype == "VirtualSystem" )
+                {
+                    $sharedStore = $sub;
+                    $xmlRoot = $sharedStore->xmlroot;
+
+                    $rulebase = DH::findFirstElementOrCreate( "rulebase", $xmlRoot );
+                }
+                elseif( $classtype == "DeviceGroup" )
+                {
+                    $sharedStore = $sub->owner;
+                    $xmlRoot = DH::findFirstElementOrCreate('shared', $sharedStore->xmlroot);
+
+                    $rulebase = DH::findFirstElementOrCreate( "post-rulebase", $xmlRoot );
+                }
 
                 $defaultSecurityRules = DH::findFirstElementOrCreate( "default-security-rules", $rulebase );
+                $rules = DH::findFirstElementOrCreate( "rules", $defaultSecurityRules );
 
-                $rulebase->removeChild( $defaultSecurityRules );
-
-                $defaultSecurityRules_xml = "<default-security-rules>
-                    <rules>
-                      <entry name=\"intrazone-default\">
-                        <action>deny</action>
-                        <log-start>no</log-start>
-                        <log-end>yes</log-end>
-                        <log-setting>".$logprof."</log-setting>
-                      </entry>
-                      <entry name=\"interzone-default\">
-                        <action>deny</action>
-                        <log-start>no</log-start>
-                        <log-end>yes</log-end>
-                        <log-setting>".$logprof."</log-setting>
-                      </entry>
-                    </rules>
-                  </default-security-rules>";
-
-                $ownerDocument = $sub->xmlroot->ownerDocument;
-
-                $newdoc = new DOMDocument;
-                $newdoc->loadXML( $defaultSecurityRules_xml );
-                $node = $newdoc->importNode($newdoc->firstChild, TRUE);
-                $node = $ownerDocument->importNode($node, TRUE);
-
-                $rulebase->appendChild( $node );
+                $array = array( "intrazone-default", "interzone-default" );
+                foreach( $array as $entry)
+                {
+                    $tmp_XYZzone_xml = DH::findFirstElementByNameAttr( "entry", $entry, $rules );
+                    $logstart = DH::findFirstElementOrCreate( "log-start", $tmp_XYZzone_xml );
+                    $logstart->textContent = "no";
+                }
 
                 if( $context->isAPI )
                 {
@@ -1645,4 +1672,144 @@ DeviceCallContext::$supportedActions['DefaultSecurityRule-setlog-BP'] = array(
         )
     )
 );
-*/
+
+DeviceCallContext::$supportedActions['DefaultSecurityRule-logsetting-set'] = array(
+    'name' => 'defaultsecurityrule-logsetting-set',
+    'GlobalInitFunction' => function (DeviceCallContext $context) {
+        $context->first = true;
+    },
+    'MainFunction' => function (DeviceCallContext $context) {
+        $object = $context->object;
+        $classtype = get_class($object);
+
+        if( $context->first )
+        {
+            if( $context->arguments['logprof'] )
+                $logprof = $context->arguments['logprof'];
+            else
+                $logprof = "default";
+
+            $force = $context->arguments['force'];
+
+            if( $classtype == "VirtualSystem" || $classtype == "DeviceGroup" )
+            {
+                $sub = $object;
+
+                if( $classtype == "VirtualSystem" )
+                {
+                    $sharedStore = $sub;
+                    $xmlRoot = $sharedStore->xmlroot;
+
+                    $rulebase = DH::findFirstElementOrCreate( "rulebase", $xmlRoot );
+                }
+                elseif( $classtype == "DeviceGroup" )
+                {
+                    $sharedStore = $sub->owner;
+                    $xmlRoot = DH::findFirstElementOrCreate('shared', $sharedStore->xmlroot);
+
+                    $rulebase = DH::findFirstElementOrCreate( "post-rulebase", $xmlRoot );
+                }
+
+                $defaultSecurityRules = DH::findFirstElementOrCreate( "default-security-rules", $rulebase );
+                $rules = DH::findFirstElementOrCreate( "rules", $defaultSecurityRules );
+
+                $array = array( "intrazone-default", "interzone-default" );
+                foreach( $array as $entry)
+                {
+                    $tmp_XYZzone_xml = DH::findFirstElementByNameAttr( "entry", $entry, $rules );
+                    $logsetting = DH::findFirstElement( "log-setting", $tmp_XYZzone_xml );
+                    if( $logsetting !== FALSE || $force )
+                        $logsetting->textContent = $logprof;
+                }
+
+                if( $context->isAPI )
+                {
+                    $defaultSecurityRules_xmlroot = DH::findFirstElementOrCreate( "default-security-rules", $rulebase );
+
+                    $xpath = DH::elementToPanXPath($defaultSecurityRules_xmlroot);
+                    $con = findConnectorOrDie($object);
+
+                    $getXmlText_inline = DH::dom_to_xml($defaultSecurityRules_xmlroot, -1, FALSE);
+                    $con->sendEditRequest($xpath, $getXmlText_inline);
+                }
+
+                if( $classtype == "DeviceGroup" )
+                    $context->first = false;
+            }
+        }
+    },
+    'args' => array(
+        'logprof' => array('type' => 'string', 'default' => 'default',
+            'help' => "LogForwardingProfile name"
+        ),
+        'force' => array('type' => 'bool', 'default' => 'false',
+            'help' => "LogForwardingProfile overwrite"
+        )
+    )
+);
+
+DeviceCallContext::$supportedActions['DefaultSecurityRule-securityProfile-Remove'] = array(
+    'name' => 'defaultsecurityrule-securityprofile-remove',
+    'GlobalInitFunction' => function (DeviceCallContext $context) {
+        $context->first = true;
+    },
+    'MainFunction' => function (DeviceCallContext $context) {
+        $object = $context->object;
+        $classtype = get_class($object);
+
+        if( $context->first )
+        {
+            if( $classtype == "VirtualSystem" || $classtype == "DeviceGroup" )
+            {
+                $sub = $object;
+
+                $skip = false;
+                if( $classtype == "VirtualSystem" )
+                {
+                    $sharedStore = $sub;
+                    $xmlRoot = $sharedStore->xmlroot;
+
+                    $rulebase = DH::findFirstElementOrCreate( "rulebase", $xmlRoot );
+                }
+                elseif( $classtype == "DeviceGroup" )
+                {
+                    $sharedStore = $sub->owner;
+                    $xmlRoot = DH::findFirstElementOrCreate('shared', $sharedStore->xmlroot);
+
+                    $rulebase = DH::findFirstElementOrCreate( "post-rulebase", $xmlRoot );
+                }
+
+                $defaultSecurityRules = DH::findFirstElementOrCreate( "default-security-rules", $rulebase );
+                $rules = DH::findFirstElementOrCreate( "rules", $defaultSecurityRules );
+
+                $array = array( "intrazone-default", "interzone-default" );
+                foreach( $array as $entry)
+                {
+                    $tmp_XYZzone_xml = DH::findFirstElementByNameAttr( "entry", $entry, $rules );
+
+                    $action = DH::findFirstElementOrCreate( "action", $tmp_XYZzone_xml );
+                    if( $action->textContent !== "allow" )
+                    {
+                        $profilesetting = DH::findFirstElement( "profile-setting", $tmp_XYZzone_xml );
+                        if( $profilesetting !== FALSE )
+                            $tmp_XYZzone_xml->removeChild( $profilesetting );
+                    }
+                }
+
+                if( $context->isAPI )
+                {
+                    $defaultSecurityRules_xmlroot = DH::findFirstElementOrCreate( "default-security-rules", $rulebase );
+
+                    $xpath = DH::elementToPanXPath($defaultSecurityRules_xmlroot);
+                    $con = findConnectorOrDie($object);
+
+                    $getXmlText_inline = DH::dom_to_xml($defaultSecurityRules_xmlroot, -1, FALSE);
+                    $con->sendEditRequest($xpath, $getXmlText_inline);
+                }
+
+                if( $classtype == "DeviceGroup" )
+                    $context->first = false;
+            }
+        }
+    }
+);
