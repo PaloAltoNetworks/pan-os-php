@@ -336,6 +336,11 @@ $(document).ready(function () {
         $("#json-display-out").height( "400px" );
         //setHeight($("#json-display-out"));
 
+
+        var filename = $("#json-output").val();
+        // Start file download.
+        download(filename,jsonPretty);
+
     });
 
 
