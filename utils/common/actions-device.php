@@ -1665,12 +1665,7 @@ DeviceCallContext::$supportedActions['DefaultSecurityRule-logstart-disable'] = a
                     $context->first = false;
             }
         }
-    },
-    'args' => array(
-        'logprof' => array('type' => 'string', 'default' => 'default',
-            'help' => "LogForwardingProfile name"
-        )
-    )
+    }
 );
 
 DeviceCallContext::$supportedActions['DefaultSecurityRule-logsetting-set'] = array(
