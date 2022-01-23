@@ -20,6 +20,7 @@ UTILS:
 * UTIL type=zone | introduce new 'filter=(zpp is.set) / (zpp is PROFILNAME)'
 * UTIL type=address new 'actions=(description-replace-character:OLDone,NEWone )'
 * UTIL UI update playground
+* UTIL pan-os-php type=tag-merger | introduce dupalgorithm=samename
 
 BUGFIX:
 * UTIL pan-os-php type=device | bugfix actions=securityprofile-create-alert-only PAN-OS version <10 compare to >=10
