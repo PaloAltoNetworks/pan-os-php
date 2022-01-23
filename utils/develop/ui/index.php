@@ -84,70 +84,59 @@
 
     <form id="user_form" target="_blank" name="user_form" method="post" enctype="multipart/form-data">
 
-    <div class="input-output" style="border:1px solid black; padding: 10px;">
-        <table class="table table-bordered" style="width:100%">
-            <tr>
-                <td style="width:50%" >
-                    INPUT-config:<br/>
-                    <input type="file" id="configInput" name="configInput" >
-                    <button onclick="uploadButton( )" id="uploadBtn" type="button">Upload</button>
-                </td>
-                <td style="width:50%" >
-                    select Project file:
-                    <select id="configSelect" name="configSelect" class="form-control input-sm">
-                        <option value="---" selected>---</option>
-                        <?php
-                        foreach( glob(dirname(__FILE__) . '/../api/v1/project/*') as $filename )
-                        {
-                            $filename = basename($filename);
+        <div class="input-output" style="border:1px solid black; padding: 10px;">
+            <table class="table table-bordered" style="width:100%">
+                <tr>
+                    <td style="width:50%" >
+                        INPUT-config:<br/>
+                        <input type="file" id="configInput" name="configInput" >
+                        <button onclick="uploadButton( )" id="uploadBtn" type="button">Upload</button>
+                    </td>
+                    <td style="width:50%" >
+                        select Project file:
+                        <select id="configSelect" name="configSelect" class="form-control input-sm">
+                            <option value="---" selected>---</option>
+                            <?php
+                            foreach( glob(dirname(__FILE__) . '/../api/v1/project/*') as $filename )
+                            {
+                                $filename = basename($filename);
 
-                            if( $filename == "html" )
-                                continue;
+                                if( $filename == "html" )
+                                    continue;
 
-                            echo "<option value='" . $filename . "'>".$filename. "</option>";
-                        }
-                        ?>
-                    </select>
-                </td>
-            </tr>
-        </table>
-    </div>
+                                echo "<option value='" . $filename . "'>".$filename. "</option>";
+                            }
+                            ?>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+        </div>
 
-    <div class="table-responsive" style="border:1px solid black; padding: 10px; width:100%">
-        <table id="myTable" class="table table-bordered" style="width:100%">
-            <thead>
-            <tr>
-                <th class="text-center">Remove Row</th>
-                <th class="text-center">SCRIPT</th>
-                <th class="text-center">
-                    ACTION
+        <div class="table-responsive" style="border:1px solid black; padding: 10px; width:100%">
+            <table id="myTable" class="table table-bordered" style="width:100%">
+                <thead>
+                <tr>
+                    <th class="text-center">Remove Row</th>
+                    <th class="text-center">SCRIPT</th>
+                    <th class="text-center">
+                        ACTION
 
-                    <button class="btn btn-md btn-primary"
-                            id="addActionBtn" type="button">
-                        new Action
-                    </button>
-                </th>
-                <th class="text-center">
-                    FILTER
 
-                    <button class="btn btn-md btn-primary"
-                            id="addFilterBtn" type="button">
-                        new Filter
-                    </button>
-                </th>
-            </tr>
-            </thead>
-            <form id="json-store">
-            <tbody id="tbody">
+                    </th>
+                </tr>
+                </thead>
+                <form id="json-store">
+                    <tbody id="tbody">
 
-            </tbody>
-            </form>
-        </table>
-        <button class="btn btn-md btn-primary"
-                id="addBtn" type="button">
-            new Row
-        </button>
-    </div>
+                    </tbody>
+                </form>
+            </table>
+            <button class="btn btn-md btn-primary"
+                    id="addBtn" type="button">
+                new Row
+            </button>
+        </div>
     </form>
 
 
