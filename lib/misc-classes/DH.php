@@ -603,10 +603,11 @@ class DH
 
                     if( !empty($test) )
                     {
-                        print $xpath." ".$test."\n";
-                        $array[] = $xpath." ".$test;
+                        $needle = $xpath." ".$test;
+                        //print $needle."\n";
+                        if( !in_array( $needle, $array ) )
+                            $array[] = $needle;
                     }
-
                 }
             }
             else

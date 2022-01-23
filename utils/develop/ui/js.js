@@ -8,8 +8,8 @@ server_url = server_url + path;
 var subjectObject2 = subjectObject;
 
 var rowIdx = 0;
-var columnActionIdx = 2;
-var columnFilterIdx = 3;
+var columnActionIdx = 1;
+var columnFilterIdx = 0;
 var columnIdx = 2;
 
 $(document).ready(function () {
@@ -26,7 +26,8 @@ $(document).ready(function () {
     // jQuery button click event to add a row
     $('#addBtn').on('click', function () {
 
-        var Idx = ++rowIdx;
+        rowIdx = ++rowIdx
+        var Idx = rowIdx;
         var ActionIdx = columnActionIdx;
         var FilterIdx = columnFilterIdx;
 
@@ -48,13 +49,17 @@ $(document).ready(function () {
                         </li>
                     </td>
                     <td>
-                        <button id="add-action2BTN" class="btn btn-md btn-primary addActionBtn2" type="button">new Action2</button>
-                        <button id="add-filter2BTN" class="btn btn-md btn-primary addFilterBtn2" type="button">new Filter2</button>
+                        <button id="add-action${Idx}-${ActionIdx}" class="btn btn-md btn-primary add-action${Idx}-${ActionIdx}" type="button">new Action2</button>
+                        <button id="add-filter${Idx}-${FilterIdx}" class="btn btn-md btn-primary add-filter${Idx}-${FilterIdx}" type="button">new Filter2</button>
                     </td>
                 </tr>
                 <tr id="R${Idx}">
                     <td>
-                        
+                        <input type="text" id="columnID-${Idx}" name="columnID-${Idx}" value="3" />
+                        <br/>
+                        <input type="text" id="actionID-${Idx}" name="actionID-${Idx}" value="1" />
+                        <br/>
+                        <input type="text" id="filterID-${Idx}" name="filterID-${Idx}" value="0" />
                     </td>
                     <td class="row-index text-center">
                         <select name="script${Idx}" id="script${Idx}" style="width:100%">
@@ -76,7 +81,7 @@ $(document).ready(function () {
                 </tr>
                 <tr id="R${Idx}">
                     <td colspan="1"><button onclick="copyTextButton( ${Idx} )">Copy command</button></td>
-                    <td colspan="3">
+                    <td colspan="4">
                         <input type="text" disabled style="width:100%"
                             id="command${Idx}" name="command${Idx}"
                         >
@@ -87,7 +92,7 @@ $(document).ready(function () {
                     <td colspan="1">
                         <button onclick="runButton( ${Idx} )">RUN single command</button>
                     </td>
-                    <td colspan="3">
+                    <td colspan="4">
                         <input type="text" disabled style="width:100%"
                             id="commandapi${Idx}" name="commandapi${Idx}"
                         >
@@ -119,7 +124,7 @@ $(document).ready(function () {
                 console.log( 'SCRIPT:|'+selectedScript+'|'); // this will show the info it in firebug console
 
 
-                for( var i = 2; i <= columnActionIdx; i++ )
+                for( var i = 1; i <= columnActionIdx; i++ )
                 {
                     $( "#action" + Idx+"-"+i )
                         .find('option')
@@ -132,7 +137,7 @@ $(document).ready(function () {
                         .val( "");
                 }
 
-                for( var i = 3; i <= columnFilterIdx; i++ )
+                for( var i = 1; i <= columnFilterIdx; i++ )
                 {
                     $( "#filter" + Idx+"-"+i )
                         .find('option')
@@ -158,12 +163,12 @@ $(document).ready(function () {
                 {}
                 else
                 {
-                    for( var  i = 2; i <= columnActionIdx; i++ )
+                    for( var  i = 1; i <= columnActionIdx; i++ )
                         $( "#action" + Idx+"-"+i )
                             .append(produceOptionsActionFilter( selectedScript, 'action' ))
                             .val('---');
 
-                    for( var i = 3; i <= columnFilterIdx; i++ )
+                    for( var i = 1; i <= columnFilterIdx; i++ )
                         $( "#filter" + Idx+"-"+i )
                             .append(produceOptionsActionFilter( selectedScript, 'filter' ))
                             .val('---');
@@ -185,6 +190,17 @@ $(document).ready(function () {
 
         $( "#location" + Idx ).change(function(){
             updateScriptsyntax( Idx );
+        });
+
+
+        $('#add-action' + Idx + '-' + ActionIdx).on('click', function() {
+            console.log("TEST1");
+            addActionBtn( Idx );
+        });
+
+        $('#add-filter' + Idx + '-' + FilterIdx).on('click', function() {
+            console.log("TEST2");
+            addFilterBtn( Idx );
         });
     });
 
@@ -226,72 +242,6 @@ $(document).ready(function () {
         // Decreasing total number of rows by 1.
         //rowIdx--;
     });
-
-    $('#tbody').on('click', '.addActionBtn2', function () {
-        console.log( "addActionBTN2" );
-
-        var TRid = $(this).closest('tr').attr('id');
-        var id = parseInt(TRid.substring(1));
-        console.log( id );
-
-        addActionBtn();
-    });
-
-    $('#tbody').on('click', '.addFilterBtn2', function () {
-        console.log( "addFilterBTN2" );
-
-        var TRid = $(this).closest('tr').attr('id');
-        var id = parseInt(TRid.substring(1));
-        console.log( id );
-
-        addFilterBtn();
-    });
-
-    $('#tbody').on('click', '.remove-action2', function () {
-        console.log( "removeActionBTN2" );
-
-        //var TRid = $(this).closest('tr').attr('id');
-        //var id = parseInt(TRid.substring(1));
-        //console.log( id );
-
-        //deleteColumn( deleteColumnID );
-
-        var TRid = $(this).closest('tr').attr('id');
-        TRid = parseInt(TRid.substring(1));
-        console.log( TRid );
-
-        var TDid = $(this).closest('td').attr('id');
-        TDid = parseInt(TDid.substring(1));
-        console.log( TDid );
-
-        //deleteColumnIdx( id, TDid );
-    });
-
-    $('#tbody').on('click', '.remove-filter2', function () {
-        console.log( "removeFilterBTN2" );
-
-        var TRid = $(this).closest('tr').attr('id');
-        TRid = parseInt(TRid.substring(1));
-        console.log( TRid );
-
-        var TDid = $(this).closest('td').attr('id');
-        TDid = parseInt(TDid.substring(1));
-        console.log( TDid );
-
-        //deleteColumnIdx( id, TDid );
-    });
-    //
-
-    $('#addActionBtn').on('click', function() {
-        addActionBtn();
-    });
-
-    $('#addFilterBtn').on('click', function() {
-        addFilterBtn();
-    });
-
-
-
 
 
 
