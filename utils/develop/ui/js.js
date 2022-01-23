@@ -32,7 +32,7 @@ $(document).ready(function () {
         var FilterIdx = columnFilterIdx;
 
         // Adding a row inside the tbody.
-        $('#tbody').append(`<tr id="R${Idx}">
+        $('#tbody').append(`<tr id="R${Idx}-1">
 
                     <td class="text-center">
                         <button class="btn btn-danger remove"
@@ -53,7 +53,7 @@ $(document).ready(function () {
                         <button id="add-filter${Idx}-${FilterIdx}" class="btn btn-md btn-primary add-filter${Idx}-${FilterIdx}" type="button">new Filter2</button>
                     </td>
                 </tr>
-                <tr id="R${Idx}">
+                <tr id="R${Idx}-2">
                     <td>
                         <input type="text" id="columnID-${Idx}" name="columnID-${Idx}" value="3" />
                         <br/>
@@ -79,7 +79,7 @@ $(document).ready(function () {
                         </p>
                     </td>
                 </tr>
-                <tr id="R${Idx}">
+                <tr id="R${Idx}-3">
                     <td colspan="1"><button onclick="copyTextButton( ${Idx} )">Copy command</button></td>
                     <td colspan="4">
                         <input type="text" disabled style="width:100%"
@@ -88,7 +88,7 @@ $(document).ready(function () {
                     </td>
 
                 </tr>
-                <tr id="R${Idx}">
+                <tr id="R${Idx}-4">
                     <td colspan="1">
                         <button onclick="runButton( ${Idx} )">RUN single command</button>
                     </td>

@@ -403,8 +403,8 @@ function deleteColumn( column, Idx )
     console.log( "delete column: "+column );
     if( column > 2 )
     {
-        $("#myTable tr").find( "td:eq("+column+"),th:eq("+column+")" ).remove();
-        columnIdx--;
+        $( "#R"+Idx+"-1" ).find( "td:eq("+column+"),th:eq("+column+")" ).remove();
+        $( "#R"+Idx+"-2" ).find( "td:eq("+column+"),th:eq("+column+")" ).remove();
     }
 
     updateScriptsyntax( Idx );
@@ -673,50 +673,36 @@ function addActionBtn( Idx )
     $("#columnID-" + Idx).val( columnIdx );
 
 
-    //TODO: update to get correct tr
-    var rows = $("#myTable").children('tbody').children('tr');
-
-
     var selectedScript = $("#script"+rowIdx).children("option:selected").val();
 
-    var testID = 1;
-    rows.each(function () {
 
-        if( testID === 1 )
-        {
-            $(this).append( $(`<td><button id="remove-action${Idx}-${columnIdx}" class="btn btn-danger remove-action${Idx}-${columnIdx}" type="button">RemoveA2</button></td>`));
-        }
-        else if( testID === 2 )
-        {
-            $(this).append( $(
-                `<td  class="row-index text-center">
-                                <select name="action${Idx}-${ActionIdx}" id="action${Idx}-${ActionIdx}" style="width:100%">
-                                    <option value="---" selected="selected">Select action</option>
-                                </select>
-                                <input type="text" disabled style="width:100%"
-                                    id="action-input${Idx}-${ActionIdx}" name="action-input${Idx}-${ActionIdx}"
-                                    >
-                                </br>
-                                <p type="text" disabled style="width:100%"
-                                    id="action-desc${Idx}-${ActionIdx}" name="action-desc${Idx}-${ActionIdx}"
-                                    >no description
-                                </p>
-                            </td>`
-            ));
+    $( "#R"+Idx+"-1" ).append( $(`<td><button id="remove-action${Idx}-${columnIdx}" class="btn btn-danger remove-action${Idx}-${columnIdx}" type="button">RemoveA2</button></td>`));
+    $( "#R"+Idx+"-2" ).append( $(
+        `<td  class="row-index text-center">
+                        <select name="action${Idx}-${ActionIdx}" id="action${Idx}-${ActionIdx}" style="width:100%">
+                            <option value="---" selected="selected">Select action</option>
+                        </select>
+                        <input type="text" disabled style="width:100%"
+                            id="action-input${Idx}-${ActionIdx}" name="action-input${Idx}-${ActionIdx}"
+                            >
+                        </br>
+                        <p type="text" disabled style="width:100%"
+                            id="action-desc${Idx}-${ActionIdx}" name="action-desc${Idx}-${ActionIdx}"
+                            >no description
+                        </p>
+                    </td>`
+    ));
 
-            if( selectedScript == '---' )
-            {}
-            else {
-                $("#action" + Idx + "-" + ActionIdx)
-                    .append(produceOptionsActionFilter(selectedScript, 'action'))
-                    .val('---');
-            }
+    if( selectedScript == '---' )
+    {}
+    else {
+        $("#action" + Idx + "-" + ActionIdx)
+            .append(produceOptionsActionFilter(selectedScript, 'action'))
+            .val('---');
+    }
 
-            updateActionFiltersyntax( selectedScript, Idx, ActionIdx, FilterIdx);
-        }
+    updateActionFiltersyntax( selectedScript, Idx, ActionIdx, FilterIdx);
 
-        testID++;
-    });
 
     $('#remove-action'+Idx+'-'+columnIdx).on('click', function() {
         deleteColumn( columnIdx, Idx );
@@ -739,69 +725,58 @@ function addFilterBtn( Idx)
     $("#columnID-" + Idx).val( columnIdx );
 
 
-
-    //TODO: update to get correct tr
-    var rows = $("#myTable").children('tbody').children('tr');
-
     var selectedScript = $("#script"+Idx).children("option:selected").val();
 
-    var testID = 1;
-    rows.each(function () {
 
-        if( testID === 1 )
-        {
-            string = `<td><button id="remove-filter${Idx}-${columnIdx}" class="btn btn-danger remove-filter${Idx}-${columnIdx}" type="button">RemoveF2</button>`;
+    string = `<td><button id="remove-filter${Idx}-${columnIdx}" class="btn btn-danger remove-filter${Idx}-${columnIdx}" type="button">RemoveF2</button>`;
 
-            if( FilterIdx === 1 )
-                string += `<select name="filter-andor${Idx}-${FilterIdx}" id="filter-andor${Idx}-${FilterIdx}" style="width:100%">\n` +
-                    `                                    <option value="" selected="selected">---</option>\n` +
-                    `                                    <option value="!">!</option>\n` +
-                    `                                </select>`;
-            else
-                string += `<select name="filter-andor${Idx}-${FilterIdx}" id="filter-andor${Idx}-${FilterIdx}" style="width:100%">\n` +
-                    `                                    <option value="and" selected="selected">and</option>\n` +
-                    `                                    <option value="or">or</option>\n` +
-                    `                                    <option value="and !" >and !</option>\n` +
-                    `                                    <option value="or !">or !</option>\n` +
-                    `                                </select>`;
+    if( FilterIdx === 1 )
+        string += `<select name="filter-andor${Idx}-${FilterIdx}" id="filter-andor${Idx}-${FilterIdx}" style="width:100%">\n` +
+            `                                    <option value="" selected="selected">---</option>\n` +
+            `                                    <option value="!">!</option>\n` +
+            `                                </select>`;
+    else
+        string += `<select name="filter-andor${Idx}-${FilterIdx}" id="filter-andor${Idx}-${FilterIdx}" style="width:100%">\n` +
+            `                                    <option value="and" selected="selected">and</option>\n` +
+            `                                    <option value="or">or</option>\n` +
+            `                                    <option value="and !" >and !</option>\n` +
+            `                                    <option value="or !">or !</option>\n` +
+            `                                </select>`;
 
-            string += "</td>";
+    string += "</td>";
 
-            $(this).append( $( string ));
-        }
-        else if( testID === 2 ) {
-            $(this).append( $(
-                `<td class="row-index text-center">
-                                    <select name="filter${Idx}-${FilterIdx}" id="filter${Idx}-${FilterIdx}" style="width:100%">
-                                    <option value="---" selected="selected">Select filter</option>
-                                </select>
-                                <select name="filter-operator${Idx}-${FilterIdx}" id="filter-operator${Idx}-${FilterIdx}" style="width:100%">
-                                    <option value="---" selected="selected">Select operator</option>
-                                </select>
-                                <input type="text" disabled style="width:100%"
-                                id="filter-input${Idx}-${FilterIdx}" name="filter-input${Idx}-${FilterIdx}"
-                                    >
-                                    </br>
-                                    <p type="text" disabled style="width:100%"
-                                id="filter-desc${Idx}-${FilterIdx}" name="filter-desc${Idx}-${FilterIdx}"
-                                    >no description
-                                </p>
-                            </td>`
-            ));
+    $( "#R"+Idx+"-1" ).append( $( string ));
 
-            if( selectedScript == '---' )
-            {}
-            else {
-                $("#filter" + Idx + "-" + FilterIdx)
-                    .append(produceOptionsActionFilter(selectedScript, 'filter'))
-                    .val('---');
-            }
 
-            updateActionFiltersyntax( selectedScript, Idx, ActionIdx, FilterIdx);
-        }
+    $( "#R"+Idx+"-2" ).append( $(
+        `<td class="row-index text-center">
+                            <select name="filter${Idx}-${FilterIdx}" id="filter${Idx}-${FilterIdx}" style="width:100%">
+                            <option value="---" selected="selected">Select filter</option>
+                        </select>
+                        <select name="filter-operator${Idx}-${FilterIdx}" id="filter-operator${Idx}-${FilterIdx}" style="width:100%">
+                            <option value="---" selected="selected">Select operator</option>
+                        </select>
+                        <input type="text" disabled style="width:100%"
+                        id="filter-input${Idx}-${FilterIdx}" name="filter-input${Idx}-${FilterIdx}"
+                            >
+                            </br>
+                            <p type="text" disabled style="width:100%"
+                        id="filter-desc${Idx}-${FilterIdx}" name="filter-desc${Idx}-${FilterIdx}"
+                            >no description
+                        </p>
+                    </td>`
+    ));
 
-        testID++;
-    });
+    if( selectedScript == '---' )
+    {}
+    else {
+        $("#filter" + Idx + "-" + FilterIdx)
+            .append(produceOptionsActionFilter(selectedScript, 'filter'))
+            .val('---');
+    }
+
+    updateActionFiltersyntax( selectedScript, Idx, ActionIdx, FilterIdx);
+
 
 
     $('#remove-filter' + Idx + '-' + columnIdx).on('click', function() {

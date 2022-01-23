@@ -76,6 +76,21 @@ var subjectObject =
                 "name": "description-Delete",
                 "MainFunction": {}
             },
+            "description-replace-character": {
+                "name": "description-Replace-Character",
+                "MainFunction": {},
+                "args": {
+                    "search": {
+                        "type": "string",
+                        "default": "*nodefault*"
+                    },
+                    "replace": {
+                        "type": "string",
+                        "default": "*nodefault*"
+                    }
+                },
+                "help": ""
+            },
             "display": {
                 "name": "display",
                 "MainFunction": {}
@@ -6526,6 +6541,27 @@ var subjectObject =
                         "arg": true,
                         "ci": {
                             "fString": "(%PROP% securityrule )",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    }
+                }
+            },
+            "zpp": {
+                "operators": {
+                    "is.set": {
+                        "Function": {},
+                        "arg": false,
+                        "ci": {
+                            "fString": "(%PROP%)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    },
+                    "is": {
+                        "Function": {},
+                        "arg": true,
+                        "help": "return true if Zone Protection Profile is the one specified in argument",
+                        "ci": {
+                            "fString": "(%PROP%  log_to_panorama)",
                             "input": "input\/panorama-8.0.xml"
                         }
                     }
