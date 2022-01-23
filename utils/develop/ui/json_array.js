@@ -1137,6 +1137,45 @@ var subjectObject =
                     }
                 }
             },
+            "defaultsecurityrule-logend-enable": {
+                "name": "defaultsecurityrule-logend-enable",
+                "GlobalInitFunction": {},
+                "MainFunction": {}
+            },
+            "defaultsecurityrule-logsetting-set": {
+                "name": "defaultsecurityrule-logsetting-set",
+                "GlobalInitFunction": {},
+                "MainFunction": {},
+                "args": {
+                    "logprof": {
+                        "type": "string",
+                        "default": "default",
+                        "help": "LogForwardingProfile name"
+                    },
+                    "force": {
+                        "type": "bool",
+                        "default": "false",
+                        "help": "LogForwardingProfile overwrite"
+                    }
+                }
+            },
+            "defaultsecurityrule-logstart-disable": {
+                "name": "defaultsecurityrule-logstart-disable",
+                "GlobalInitFunction": {},
+                "MainFunction": {},
+                "args": {
+                    "logprof": {
+                        "type": "string",
+                        "default": "default",
+                        "help": "LogForwardingProfile name"
+                    }
+                }
+            },
+            "defaultsecurityrule-securityprofile-remove": {
+                "name": "defaultsecurityrule-securityprofile-remove",
+                "GlobalInitFunction": {},
+                "MainFunction": {}
+            },
             "devicegroup-create": {
                 "name": "devicegroup-create",
                 "MainFunction": {},

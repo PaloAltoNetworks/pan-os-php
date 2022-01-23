@@ -23,6 +23,7 @@ UTILS:
 * UTIL pan-os-php type=tag-merger | introduce dupalgorithm=samename
 * UTIL pan-os-php type=device | actions=cleanuprule-create-bp:default - remove manipulation part on default SecurityRule
 * UTIL pan-os-php type=device | introduce actions=DefaultSecurityRule-securityProfile-Remove / DefaultSecurityRule-logsetting-set / DefaultSecurityRule-logstart-disable / DefaultSecurityRule-logend-enable
+* UTIL update actions / filter
 
 BUGFIX:
 * UTIL pan-os-php type=device | bugfix actions=securityprofile-create-alert-only PAN-OS version <10 compare to >=10
