@@ -379,6 +379,15 @@ function copyTextButton( Idx) {
     el.select();
     document.execCommand('copy');
     document.body.removeChild(el);
+
+
+
+
+    /* Copy the text inside the text field */
+    navigator.clipboard.writeText(string);
+
+    /* Alert the copied text */
+    alert("Copied the text: " + string);
 }
 
 function runButton( Idx)
@@ -397,14 +406,11 @@ function uploadButton( )
 
 function deleteColumn( column, Idx )
 {
-    column = column-1;
-
-    //TODO: update to get correct tr
     console.log( "delete column: "+column );
     if( column > 2 )
     {
-        $( "#R"+Idx+"-1" ).find( "td:eq("+column+"),th:eq("+column+")" ).remove();
-        $( "#R"+Idx+"-2" ).find( "td:eq("+column+"),th:eq("+column+")" ).remove();
+        $( "#R"+Idx+"column"+column+"-1").remove();
+        $( "#R"+Idx+"column"+column+"-2").remove();
     }
 
     updateScriptsyntax( Idx );
@@ -566,13 +572,8 @@ function createTableFromJSON( textValue )
     const obj = JSON.parse( textValue );
     var command = obj.command;
 
-    for (var i = 0; i < command.length; i++) {
-
-        //"type": "rule",
-        //    "actions": "actions=securityProfile-Profile-Set:vulnerability,Alert-Only-VP",
-        //    "filter": "filter=(secprof type.is.profile) and !(secprof vuln-profile.is.set) and (action is.allow) and !(rule is.disabled)"
-
-        //----------------------------
+    for (var i = 0; i < command.length; i++)
+    {
 
         var type = command[i]['type'];
 
@@ -676,9 +677,9 @@ function addActionBtn( Idx )
     var selectedScript = $("#script"+rowIdx).children("option:selected").val();
 
 
-    $( "#R"+Idx+"-1" ).append( $(`<td><button id="remove-action${Idx}-${columnIdx}" class="btn btn-danger remove-action${Idx}-${columnIdx}" type="button">RemoveA2</button></td>`));
+    $( "#R"+Idx+"-1" ).append( $(`<td id="R${Idx}column${columnIdx}-1"><button id="remove-action${Idx}-${columnIdx}" class="btn btn-danger remove-action${Idx}-${columnIdx}" type="button">delete</button></td>`));
     $( "#R"+Idx+"-2" ).append( $(
-        `<td  class="row-index text-center">
+        `<td id="R${Idx}column${columnIdx}-2" class="row-index text-center">
                         <select name="action${Idx}-${ActionIdx}" id="action${Idx}-${ActionIdx}" style="width:100%">
                             <option value="---" selected="selected">Select action</option>
                         </select>
@@ -728,20 +729,25 @@ function addFilterBtn( Idx)
     var selectedScript = $("#script"+Idx).children("option:selected").val();
 
 
-    string = `<td><button id="remove-filter${Idx}-${columnIdx}" class="btn btn-danger remove-filter${Idx}-${columnIdx}" type="button">RemoveF2</button>`;
-
     if( FilterIdx === 1 )
+    {
+        string = `<td id="R${Idx}column${columnIdx}-1">`;
         string += `<select name="filter-andor${Idx}-${FilterIdx}" id="filter-andor${Idx}-${FilterIdx}" style="width:100%">\n` +
             `                                    <option value="" selected="selected">---</option>\n` +
             `                                    <option value="!">!</option>\n` +
             `                                </select>`;
+    }
     else
+    {
+        string = `<td id="R${Idx}column${columnIdx}-1"><button id="remove-filter${Idx}-${columnIdx}" class="btn btn-danger remove-filter${Idx}-${columnIdx}" type="button">delete</button>`;
         string += `<select name="filter-andor${Idx}-${FilterIdx}" id="filter-andor${Idx}-${FilterIdx}" style="width:100%">\n` +
             `                                    <option value="and" selected="selected">and</option>\n` +
             `                                    <option value="or">or</option>\n` +
             `                                    <option value="and !" >and !</option>\n` +
             `                                    <option value="or !">or !</option>\n` +
             `                                </select>`;
+    }
+
 
     string += "</td>";
 
@@ -749,7 +755,7 @@ function addFilterBtn( Idx)
 
 
     $( "#R"+Idx+"-2" ).append( $(
-        `<td class="row-index text-center">
+        `<td id="R${Idx}column${columnIdx}-2" class="row-index text-center">
                             <select name="filter${Idx}-${FilterIdx}" id="filter${Idx}-${FilterIdx}" style="width:100%">
                             <option value="---" selected="selected">Select filter</option>
                         </select>

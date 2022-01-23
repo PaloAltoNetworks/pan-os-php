@@ -14,14 +14,11 @@ var columnIdx = 2;
 
 $(document).ready(function () {
 
-    // Denotes total number of rows
-
-
-
     $( "#json-store" ).submit(function( event ) {
         console.log( "done");
         console.log( $( "#json-store" ).serialize() );
     });
+
 
     // jQuery button click event to add a row
     $('#addBtn').on('click', function () {
@@ -49,17 +46,17 @@ $(document).ready(function () {
                         </li>
                     </td>
                     <td>
-                        <button id="add-action${Idx}-${ActionIdx}" class="btn btn-md btn-primary add-action${Idx}-${ActionIdx}" type="button">new Action2</button>
-                        <button id="add-filter${Idx}-${FilterIdx}" class="btn btn-md btn-primary add-filter${Idx}-${FilterIdx}" type="button">new Filter2</button>
+                        <button id="add-action${Idx}-${ActionIdx}" class="btn btn-md btn-primary add-action${Idx}-${ActionIdx}" type="button">new Action</button>
+                        <button id="add-filter${Idx}-${FilterIdx}" class="btn btn-md btn-primary add-filter${Idx}-${FilterIdx}" type="button">new Filter</button>
                     </td>
                 </tr>
                 <tr id="R${Idx}-2">
                     <td>
-                        <input type="text" id="columnID-${Idx}" name="columnID-${Idx}" value="3" />
+                        <input type="hidden" id="columnID-${Idx}" name="columnID-${Idx}" value="3" />
                         <br/>
-                        <input type="text" id="actionID-${Idx}" name="actionID-${Idx}" value="1" />
+                        <input type="hidden" id="actionID-${Idx}" name="actionID-${Idx}" value="1" />
                         <br/>
-                        <input type="text" id="filterID-${Idx}" name="filterID-${Idx}" value="0" />
+                        <input type="hidden" id="filterID-${Idx}" name="filterID-${Idx}" value="0" />
                     </td>
                     <td class="row-index text-center">
                         <select name="script${Idx}" id="script${Idx}" style="width:100%">
@@ -100,8 +97,6 @@ $(document).ready(function () {
 
                 </tr>
                 `);
-
-
 
 
         var selectedScript = "";
