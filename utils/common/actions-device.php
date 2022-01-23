@@ -1521,11 +1521,6 @@ DeviceCallContext::$supportedActions['CleanUpRule-create-BP'] = array(
                     $rulebase = DH::findFirstElementOrCreate( "post-rulebase", $xmlRoot );
                 }
 
-                //$tmp1 = $sharedStore->addressStore->newAddress( "1.1.1.1", "ip-netmask", '1.1.1.1' );
-                //$cleanupRule->source->addObject( $tmp1  );
-                //$tmp1 = $sharedStore->addressStore->newAddress( "1.1.1.2", "ip-netmask", '1.1.1.2' );
-                //$cleanupRule->source->addObject( $tmp1  );
-
                 if( !$skip )
                 {
                     $cleanupRule->source->setAny();
@@ -1537,6 +1532,64 @@ DeviceCallContext::$supportedActions['CleanUpRule-create-BP'] = array(
                     $cleanupRule->setLogSetting( $logprof );
                     if( $context->isAPI )
                         $cleanupRule->API_sync();
+                }
+
+                if( $classtype == "DeviceGroup" )
+                    $context->first = false;
+            }
+        }
+    },
+    'args' => array(
+    'logprof' => array('type' => 'string', 'default' => 'default',
+        'help' => "LogForwardingProfile name"
+    )
+)
+);
+
+/*
+Command 2 is to add log-at-session-end to predfined default rules
+    - logend-enable
+Command 3 is to add LFP to predfined default rules
+    - actions=logsetting:default 'filter=!(logprof is.set)'
+Command 4 is to remove SPG or SP from any predefined rule that has action not equal to allow
+    - actions=securityProfile-Remove 'filter=(secprof is.set) and !(action is.allow)'
+
+
+DeviceCallContext::$supportedActions['DefaultSecurityRule-setlog-BP'] = array(
+    'name' => 'cleanuprule-create-bp',
+    'GlobalInitFunction' => function (DeviceCallContext $context) {
+        $context->first = true;
+    },
+    'MainFunction' => function (DeviceCallContext $context) {
+        $object = $context->object;
+        $classtype = get_class($object);
+
+        if( $context->first )
+        {
+            if( $context->arguments['logprof'] )
+                $logprof = $context->arguments['logprof'];
+            else
+                $logprof = "default";
+
+
+            if( $classtype == "VirtualSystem" || $classtype == "DeviceGroup" )
+            {
+                $sub = $object;
+
+                $skip = false;
+                if( $classtype == "VirtualSystem" )
+                {
+                    $sharedStore = $sub;
+                    $xmlRoot = $sharedStore->xmlroot;
+
+                    $rulebase = DH::findFirstElementOrCreate( "rulebase", $xmlRoot );
+                }
+                elseif( $classtype == "DeviceGroup" )
+                {
+                    $sharedStore = $sub->owner;
+                    $xmlRoot = DH::findFirstElementOrCreate('shared', $sharedStore->xmlroot);
+
+                    $rulebase = DH::findFirstElementOrCreate( "post-rulebase", $xmlRoot );
                 }
 
 
@@ -1587,8 +1640,9 @@ DeviceCallContext::$supportedActions['CleanUpRule-create-BP'] = array(
         }
     },
     'args' => array(
-    'logprof' => array('type' => 'string', 'default' => 'default',
-        'help' => "LogForwardingProfile name"
+        'logprof' => array('type' => 'string', 'default' => 'default',
+            'help' => "LogForwardingProfile name"
+        )
     )
-)
 );
+*/
