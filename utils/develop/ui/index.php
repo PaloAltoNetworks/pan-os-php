@@ -144,11 +144,11 @@
 
 missing stuff:</br>
 1) rule filter 'dst' operator 'has.from.query subquery1' -> add this automatically and define based on filter src/dst/srv what subquery can be done and prefill the part there</br>
-2) migration part with vendor select</br>
+2) merger script - additional arguments like pickfilter / excludefilter</br>
 </br>
 3) user login [create first default project]</br>
 4) project creation</br>
-5) after running - possible to download: 1) log 2) XML file 3) JSON 4) full bundle</br>
+5) after running - possible to download: 1) log 2) XML file 3) JSON 4) full bundle 5) set commands</br>
 
 ruletype=</br>
 devicetype=</br>
