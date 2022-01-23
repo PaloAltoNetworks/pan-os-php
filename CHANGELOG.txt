@@ -21,6 +21,7 @@ UTILS:
 * UTIL type=address new 'actions=(description-replace-character:OLDone,NEWone )'
 * UTIL UI update playground
 * UTIL pan-os-php type=tag-merger | introduce dupalgorithm=samename
+* UTIL pan-os-php type=device | actions=cleanuprule-create-bp:default - remove manipulation part on default SecurityRule
 
 BUGFIX:
 * UTIL pan-os-php type=device | bugfix actions=securityprofile-create-alert-only PAN-OS version <10 compare to >=10
