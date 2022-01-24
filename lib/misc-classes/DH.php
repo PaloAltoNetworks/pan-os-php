@@ -308,7 +308,7 @@ class DH
 
         $entry = $xmlDoc1->createElement($tagName);
         $entry->setAttribute('name', $value);
-        $xmlDoc1->appendChild($entry);
+        $node->appendChild($entry);
 
         return $entry;
     }

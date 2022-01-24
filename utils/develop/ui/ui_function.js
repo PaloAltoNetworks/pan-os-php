@@ -73,6 +73,9 @@ function addNewRow()
 
     // Adding a row inside the tbody.
     $('#tbody').append(`<tr id="R${Idx}-1">
+                        <td colspan="5">----------------------------------------------------------------------------------------------------</td>
+                    </tr>
+                    <tr id="R${Idx}-2">
 
                     <td class="text-center">
                         <button class="btn btn-danger remove"
@@ -93,7 +96,7 @@ function addNewRow()
                         <button id="add-filter${Idx}-${FilterIdx}" class="btn btn-md btn-primary add-filter${Idx}-${FilterIdx}" type="button">new Filter</button>
                     </td>
                 </tr>
-                <tr id="R${Idx}-2">
+                <tr id="R${Idx}-3">
                     <td>
                         <input type="hidden" id="columnID-${Idx}" name="columnID-${Idx}" value="3" />
                         <br/>
@@ -119,7 +122,7 @@ function addNewRow()
                         </p>
                     </td>
                 </tr>
-                <tr id="R${Idx}-3">
+                <tr id="R${Idx}-4">
                     <td colspan="1"><button onclick="copyTextButton( ${Idx} )">Copy command</button></td>
                     <td colspan="4">
                         <input type="text" disabled style="width:100%"
@@ -128,7 +131,7 @@ function addNewRow()
                     </td>
 
                 </tr>
-                <tr id="R${Idx}-4">
+                <tr id="R${Idx}-5">
                     <td colspan="1">
                         <button onclick="runButton( ${Idx} )">RUN single command</button>
                     </td>
@@ -814,8 +817,8 @@ function addActionBtn( Idx )
     var selectedScript = $("#script"+rowIdx).children("option:selected").val();
 
 
-    $( "#R"+Idx+"-1" ).append( $(`<td id="R${Idx}column${columnIdx}-1"><button id="remove-action${Idx}-${columnIdx}" class="btn btn-danger remove-action${Idx}-${columnIdx}" type="button">delete Action${ActionIdx}</button></td>`));
-    $( "#R"+Idx+"-2" ).append( $(
+    $( "#R"+Idx+"-2" ).append( $(`<td id="R${Idx}column${columnIdx}-1"><button id="remove-action${Idx}-${columnIdx}" class="btn btn-danger remove-action${Idx}-${columnIdx}" type="button">delete Action${ActionIdx}</button></td>`));
+    $( "#R"+Idx+"-3" ).append( $(
         `<td id="R${Idx}column${columnIdx}-2" class="row-index text-center">
                         <select name="action${Idx}-${ActionIdx}" id="action${Idx}-${ActionIdx}" style="width:100%">
                             <option value="---" selected="selected">Select action</option>
@@ -868,7 +871,7 @@ function addFilterBtn( Idx)
 
     if( FilterIdx === 1 )
     {
-        string = `<td id="R${Idx}column${columnIdx}-1">`;
+        string = `<td id="R${Idx}column${columnIdx}-2">`;
         string += `<select name="filter-andor${Idx}-${FilterIdx}" id="filter-andor${Idx}-${FilterIdx}" style="width:100%">\n` +
             `                                    <option value="" selected="selected">---</option>\n` +
             `                                    <option value="!">!</option>\n` +
@@ -876,7 +879,7 @@ function addFilterBtn( Idx)
     }
     else
     {
-        string = `<td id="R${Idx}column${columnIdx}-1"><button id="remove-filter${Idx}-${columnIdx}" class="btn btn-danger remove-filter${Idx}-${columnIdx}" type="button">delete Filter${FilterIdx}</button>`;
+        string = `<td id="R${Idx}column${columnIdx}-2"><button id="remove-filter${Idx}-${columnIdx}" class="btn btn-danger remove-filter${Idx}-${columnIdx}" type="button">delete Filter${FilterIdx}</button>`;
         string += `<select name="filter-andor${Idx}-${FilterIdx}" id="filter-andor${Idx}-${FilterIdx}" style="width:100%">\n` +
             `                                    <option value="and" selected="selected">and</option>\n` +
             `                                    <option value="or">or</option>\n` +
@@ -888,10 +891,10 @@ function addFilterBtn( Idx)
 
     string += "</td>";
 
-    $( "#R"+Idx+"-1" ).append( $( string ));
+    $( "#R"+Idx+"-2" ).append( $( string ));
 
 
-    $( "#R"+Idx+"-2" ).append( $(
+    $( "#R"+Idx+"-3" ).append( $(
         `<td id="R${Idx}column${columnIdx}-2" class="row-index text-center">
                             <select name="filter${Idx}-${FilterIdx}" id="filter${Idx}-${FilterIdx}" style="width:100%">
                             <option value="---" selected="selected">Select filter</option>
@@ -967,6 +970,9 @@ function createJSONstringAndDownload()
     var i = 1;
     for( i; i <= rowIdx; i++ )
     {
+        if ( $( "#command" + i ).val() === undefined)
+            continue;
+
         var commandString = $( "#command" + i ).val();
         console.log( "command: " + commandString );
         console.log( "commandAPI: " + $( "#commandapi" + i ).val() );

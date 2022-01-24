@@ -28,40 +28,17 @@ $(document).ready(function () {
 
     // jQuery button click event to remove a row.
     $('#tbody').on('click', '.remove', function () {
+        var Idx = $(this).closest('tr').attr('id');
+        var IdxArray = Idx.split("-");
+        Idx = IdxArray[0];
+        Idx = Idx.replace("R", "");
+        console.log( "delete rowID: "+Idx );
 
-        // Getting all the rows next to the row
-        // containing the clicked button
-        var child = $(this).closest('tr').nextAll();
-
-        // Iterating across all the rows
-        // obtained to change the index
-        child.each(function () {
-
-            // Getting <tr> id.
-            var id = $(this).attr('id');
-
-            // Getting the <p> inside the .row-index class.
-            var idx = $(this).children('.row-index').children('p');
-
-            // Gets the row number from <tr> id.
-            var dig = parseInt(id.substring(1));
-
-            // Modifying row index.
-            idx.html(`Row ${dig - 1}`);
-
-            // Modifying row id.
-            $(this).attr('id', `R${dig - 1}`);
-        });
-
-        // Removing the current row.
-        $(this).closest('tr').next().remove();
-        $(this).closest('tr').next().remove();
-        $(this).closest('tr').next().remove();
-        $(this).closest('tr').remove();
-
-
-        // Decreasing total number of rows by 1.
-        //rowIdx--;
+        $("#R" + Idx + "-1").closest('tr').remove();
+        $("#R" + Idx + "-2").closest('tr').remove();
+        $("#R" + Idx + "-3").closest('tr').remove();
+        $("#R" + Idx + "-4").closest('tr').remove();
+        $("#R" + Idx + "-5").closest('tr').remove();
     });
 
 
