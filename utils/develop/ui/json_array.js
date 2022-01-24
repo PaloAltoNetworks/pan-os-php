@@ -1162,19 +1162,19 @@ var subjectObject =
             "defaultsecurityrule-logstart-disable": {
                 "name": "defaultsecurityrule-logstart-disable",
                 "GlobalInitFunction": {},
-                "MainFunction": {},
-                "args": {
-                    "logprof": {
-                        "type": "string",
-                        "default": "default",
-                        "help": "LogForwardingProfile name"
-                    }
-                }
+                "MainFunction": {}
             },
             "defaultsecurityrule-securityprofile-remove": {
                 "name": "defaultsecurityrule-securityprofile-remove",
                 "GlobalInitFunction": {},
-                "MainFunction": {}
+                "MainFunction": {},
+                "args": {
+                    "force": {
+                        "type": "bool",
+                        "default": "false",
+                        "help": "per default, remove SecurityProfiles only if Rule action is NOT allow. force=true => remove always"
+                    }
+                }
             },
             "devicegroup-create": {
                 "name": "devicegroup-create",
