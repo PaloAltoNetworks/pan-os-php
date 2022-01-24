@@ -1871,7 +1871,7 @@ DeviceCallContext::$supportedActions['DefaultSecurityRule-securityProfile-Remove
                     {
                         if( $entry === "intrazone-default" )
                             $action_txt = "allow";
-                        elseif( $entry === "intrazone-default" )
+                        elseif( $entry === "interzone-default" )
                             $action_txt = "deny";
                     }
                     else
