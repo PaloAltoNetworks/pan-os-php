@@ -117,6 +117,7 @@ foreach( $test_merger as $merger )
         $dupalgorithm_array[] = 'SameColor';
         $dupalgorithm_array[] = 'Identical';
         $dupalgorithm_array[] = 'WhereUsed';
+        $dupalgorithm_array[] = 'SameName';
     }
 
     else

@@ -367,7 +367,7 @@ class MERGER extends UTIL
                 'shortHelp' => "Specifies how to detect duplicates:\n" .
                     "  - SameColor: objects with same TAG-color will be replaced by the one picked (default)\n" .
                     "  - Identical: objects with same TAG-color and same name will be replaced by the one picked\n" .
-                    "  - WhereUsed: objects used exactly in the same location will be merged into 1 single object and all ports covered by these objects will be aggregated\n",
+                    "  - WhereUsed: objects used exactly in the same location will be merged into 1 single object and all ports covered by these objects will be aggregated\n" .
                     "  - SameName: objects with same Name\n",
                 'argDesc' => 'SameColor | Identical | WhereUsed | SameName');
         }
