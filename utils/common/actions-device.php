@@ -1484,7 +1484,6 @@ DeviceCallContext::$supportedActions['CleanUpRule-create-BP'] = array(
             else
                 $logprof = "default";
 
-
             if( $classtype == "VirtualSystem" || $classtype == "DeviceGroup" )
             {
                 $sub = $object;
@@ -1492,9 +1491,6 @@ DeviceCallContext::$supportedActions['CleanUpRule-create-BP'] = array(
                 $skip = false;
                 if( $classtype == "VirtualSystem" )
                 {
-                    $sharedStore = $sub;
-                    $xmlRoot = $sharedStore->xmlroot;
-
                     //create security Rule at end
                     $name = "CleanupRule-BP";
                     $cleanupRule = $sub->securityRules->find( $name );
@@ -1502,13 +1498,10 @@ DeviceCallContext::$supportedActions['CleanUpRule-create-BP'] = array(
                         $cleanupRule = $sub->securityRules->newSecurityRule( $name );
                     else
                         $skip = true;
-
-                    $rulebase = DH::findFirstElementOrCreate( "rulebase", $xmlRoot );
                 }
                 elseif( $classtype == "DeviceGroup" )
                 {
                     $sharedStore = $sub->owner;
-                    $xmlRoot = DH::findFirstElementOrCreate('shared', $sharedStore->xmlroot);
 
                     //create security Rule at end
                     $name = "CleanupRule-BP";
@@ -1517,8 +1510,6 @@ DeviceCallContext::$supportedActions['CleanUpRule-create-BP'] = array(
                         $cleanupRule = $sharedStore->securityRules->newSecurityRule("CleanupRule-BP", true);
                     else
                         $skip = true;
-
-                    $rulebase = DH::findFirstElementOrCreate( "post-rulebase", $xmlRoot );
                 }
 
                 if( !$skip )
@@ -1562,12 +1553,10 @@ DeviceCallContext::$supportedActions['DefaultSecurityRule-create-BP'] = array(
             else
                 $logprof = "default";
 
-
             if( $classtype == "VirtualSystem" || $classtype == "DeviceGroup" )
             {
                 $sub = $object;
 
-                $skip = false;
                 if( $classtype == "VirtualSystem" )
                 {
                     $sharedStore = $sub;
@@ -1582,7 +1571,6 @@ DeviceCallContext::$supportedActions['DefaultSecurityRule-create-BP'] = array(
 
                     $rulebase = DH::findFirstElementOrCreate( "post-rulebase", $xmlRoot );
                 }
-
 
                 $defaultSecurityRules = DH::findFirstElementOrCreate( "default-security-rules", $rulebase );
                 $rulebase->removeChild( $defaultSecurityRules );
@@ -1730,7 +1718,6 @@ DeviceCallContext::$supportedActions['DefaultSecurityRule-logstart-disable'] = a
                 $array = array( "intrazone-default", "interzone-default" );
                 foreach( $array as $entry)
                 {
-                    //$tmp_XYZzone_xml = DH::findFirstElementByNameAttr( "entry", $entry, $rules );
                     $tmp_XYZzone_xml = DH::findFirstElementByNameAttrOrCreate( "entry", $entry, $rules, $sharedStore->xmlroot->ownerDocument );
 
                     $logstart = DH::findFirstElementOrCreate( "log-start", $tmp_XYZzone_xml );
@@ -1798,7 +1785,6 @@ DeviceCallContext::$supportedActions['DefaultSecurityRule-logsetting-set'] = arr
                 $array = array( "intrazone-default", "interzone-default" );
                 foreach( $array as $entry)
                 {
-                    //$tmp_XYZzone_xml = DH::findFirstElementByNameAttr( "entry", $entry, $rules );
                     $tmp_XYZzone_xml = DH::findFirstElementByNameAttrOrCreate( "entry", $entry, $rules, $sharedStore->xmlroot->ownerDocument );
 
                     $logsetting = DH::findFirstElement( "log-setting", $tmp_XYZzone_xml );
@@ -1856,8 +1842,7 @@ DeviceCallContext::$supportedActions['DefaultSecurityRule-securityProfile-Remove
             if( $classtype == "VirtualSystem" || $classtype == "DeviceGroup" )
             {
                 $sub = $object;
-
-                $skip = false;
+                
                 if( $classtype == "VirtualSystem" )
                 {
                     $sharedStore = $sub;
@@ -1879,7 +1864,6 @@ DeviceCallContext::$supportedActions['DefaultSecurityRule-securityProfile-Remove
                 $array = array( "intrazone-default", "interzone-default" );
                 foreach( $array as $entry)
                 {
-                    //$tmp_XYZzone_xml = DH::findFirstElementByNameAttr( "entry", $entry, $rules );
                     $tmp_XYZzone_xml = DH::findFirstElementByNameAttrOrCreate( "entry", $entry, $rules, $sharedStore->xmlroot->ownerDocument );
 
                     $action = DH::findFirstElementOrCreate( "action", $tmp_XYZzone_xml );
