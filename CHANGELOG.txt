@@ -1,6 +1,14 @@
 CHANGELOG
 
-2.0.28
+2.0.29
+UTILS:
+
+BUGFIX:
+
+GENERAL:
+
+
+2.0.28 (20220124)
 UTILS:
 * UTIL pan-os-php type=device | introduce PAN-OS API for actions=devicegroup-create / template-create
 * UTIL pan-os-php type=device | introduce actions=template-delete
