@@ -1842,7 +1842,7 @@ DeviceCallContext::$supportedActions['DefaultSecurityRule-securityProfile-Remove
             if( $classtype == "VirtualSystem" || $classtype == "DeviceGroup" )
             {
                 $sub = $object;
-                
+
                 if( $classtype == "VirtualSystem" )
                 {
                     $sharedStore = $sub;
@@ -1866,8 +1866,18 @@ DeviceCallContext::$supportedActions['DefaultSecurityRule-securityProfile-Remove
                 {
                     $tmp_XYZzone_xml = DH::findFirstElementByNameAttrOrCreate( "entry", $entry, $rules, $sharedStore->xmlroot->ownerDocument );
 
-                    $action = DH::findFirstElementOrCreate( "action", $tmp_XYZzone_xml );
-                    if( $action->textContent !== "allow" || $force )
+                    $action = DH::findFirstElement( "action", $tmp_XYZzone_xml );
+                    if( $action === FALSE )
+                    {
+                        if( $entry === "intrazone-default" )
+                            $action_txt = "allow";
+                        elseif( $entry === "intrazone-default" )
+                            $action_txt = "deny";
+                    }
+                    else
+                        $action_txt = $action->textContent;
+
+                    if( $action_txt !== "allow" || $force )
                     {
                         $profilesetting = DH::findFirstElement( "profile-setting", $tmp_XYZzone_xml );
                         if( $profilesetting !== FALSE )
