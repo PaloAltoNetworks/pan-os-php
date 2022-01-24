@@ -368,7 +368,7 @@ class MERGER extends UTIL
                     "  - SameColor: objects with same TAG-color will be replaced by the one picked (default)\n" .
                     "  - Identical: objects with same TAG-color and same name will be replaced by the one picked\n" .
                     "  - WhereUsed: objects used exactly in the same location will be merged into 1 single object and all ports covered by these objects will be aggregated\n",
-                'argDesc' => 'SameColor | Identical | WhereUsed');
+                'argDesc' => 'SameColor | Identical | WhereUsed | SameName');
         }
 
         $this->supportedArguments[] = array('niceName' => 'excludeFilter', 'shortHelp' => 'specify a filter to exclude objects from merging process entirely', 'argDesc' => '(name regex /^g/)');
