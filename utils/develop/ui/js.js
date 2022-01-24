@@ -29,7 +29,9 @@ $(document).ready(function () {
     // jQuery button click event to remove a row.
     $('#tbody').on('click', '.remove', function () {
         var Idx = $(this).closest('tr').attr('id');
-        Idx = Idx.charAt(1);
+        var IdxArray = Idx.split("-");
+        Idx = IdxArray[0];
+        Idx = Idx.replace("R", "");
         console.log( "delete rowID: "+Idx );
 
         $("#R" + Idx + "-1").closest('tr').remove();
