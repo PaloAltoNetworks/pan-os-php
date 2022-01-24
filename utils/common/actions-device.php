@@ -1546,7 +1546,94 @@ DeviceCallContext::$supportedActions['CleanUpRule-create-BP'] = array(
 )
 );
 
+DeviceCallContext::$supportedActions['DefaultSecurityRule-create-BP'] = array(
+    'name' => 'defaultsecurityRule-create-bp',
+    'GlobalInitFunction' => function (DeviceCallContext $context) {
+        $context->first = true;
+    },
+    'MainFunction' => function (DeviceCallContext $context) {
+        $object = $context->object;
+        $classtype = get_class($object);
 
+        if( $context->first )
+        {
+            if( $context->arguments['logprof'] )
+                $logprof = $context->arguments['logprof'];
+            else
+                $logprof = "default";
+
+
+            if( $classtype == "VirtualSystem" || $classtype == "DeviceGroup" )
+            {
+                $sub = $object;
+
+                $skip = false;
+                if( $classtype == "VirtualSystem" )
+                {
+                    $sharedStore = $sub;
+                    $xmlRoot = $sharedStore->xmlroot;
+
+                    $rulebase = DH::findFirstElementOrCreate( "rulebase", $xmlRoot );
+                }
+                elseif( $classtype == "DeviceGroup" )
+                {
+                    $sharedStore = $sub->owner;
+                    $xmlRoot = DH::findFirstElementOrCreate('shared', $sharedStore->xmlroot);
+
+                    $rulebase = DH::findFirstElementOrCreate( "post-rulebase", $xmlRoot );
+                }
+
+
+                $defaultSecurityRules = DH::findFirstElementOrCreate( "default-security-rules", $rulebase );
+                $rulebase->removeChild( $defaultSecurityRules );
+
+                $defaultSecurityRules_xml = "<default-security-rules>
+                    <rules>
+                      <entry name=\"intrazone-default\">
+                        <action>deny</action>
+                        <log-start>no</log-start>
+                        <log-end>yes</log-end>
+                        <log-setting>".$logprof."</log-setting>
+                      </entry>
+                      <entry name=\"interzone-default\">
+                        <action>deny</action>
+                        <log-start>no</log-start>
+                        <log-end>yes</log-end>
+                        <log-setting>".$logprof."</log-setting>
+                      </entry>
+                    </rules>
+                  </default-security-rules>";
+
+                $ownerDocument = $sub->xmlroot->ownerDocument;
+
+                $newdoc = new DOMDocument;
+                $newdoc->loadXML( $defaultSecurityRules_xml );
+                $node = $newdoc->importNode($newdoc->firstChild, TRUE);
+                $node = $ownerDocument->importNode($node, TRUE);
+                $rulebase->appendChild( $node );
+
+                if( $context->isAPI )
+                {
+                    $defaultSecurityRules_xmlroot = DH::findFirstElementOrCreate( "default-security-rules", $rulebase );
+
+                    $xpath = DH::elementToPanXPath($defaultSecurityRules_xmlroot);
+                    $con = findConnectorOrDie($object);
+
+                    $getXmlText_inline = DH::dom_to_xml($defaultSecurityRules_xmlroot, -1, FALSE);
+                    $con->sendEditRequest($xpath, $getXmlText_inline);
+                }
+
+                if( $classtype == "DeviceGroup" )
+                    $context->first = false;
+            }
+        }
+    },
+    'args' => array(
+        'logprof' => array('type' => 'string', 'default' => 'default',
+            'help' => "LogForwardingProfile name"
+        )
+    )
+);
 
 DeviceCallContext::$supportedActions['DefaultSecurityRule-logend-enable'] = array(
     'name' => 'defaultsecurityrule-logend-enable',
@@ -1584,9 +1671,7 @@ DeviceCallContext::$supportedActions['DefaultSecurityRule-logend-enable'] = arra
                 $array = array( "intrazone-default", "interzone-default" );
                 foreach( $array as $entry)
                 {
-                    $tmp_XYZzone_xml = DH::findFirstElementByNameAttr( "entry", $entry, $rules );
-                    $logstart = DH::findFirstElementOrCreate( "log-start", $tmp_XYZzone_xml );
-                    $logstart->textContent = "no";
+                    $tmp_XYZzone_xml = DH::findFirstElementByNameAttrOrCreate( "entry", $entry, $rules, $sharedStore->xmlroot->ownerDocument );
                     $logend = DH::findFirstElementOrCreate( "log-end", $tmp_XYZzone_xml );
                     $logend->textContent = "yes";
                 }
@@ -1645,7 +1730,9 @@ DeviceCallContext::$supportedActions['DefaultSecurityRule-logstart-disable'] = a
                 $array = array( "intrazone-default", "interzone-default" );
                 foreach( $array as $entry)
                 {
-                    $tmp_XYZzone_xml = DH::findFirstElementByNameAttr( "entry", $entry, $rules );
+                    //$tmp_XYZzone_xml = DH::findFirstElementByNameAttr( "entry", $entry, $rules );
+                    $tmp_XYZzone_xml = DH::findFirstElementByNameAttrOrCreate( "entry", $entry, $rules, $sharedStore->xmlroot->ownerDocument );
+
                     $logstart = DH::findFirstElementOrCreate( "log-start", $tmp_XYZzone_xml );
                     $logstart->textContent = "no";
                 }
@@ -1711,10 +1798,20 @@ DeviceCallContext::$supportedActions['DefaultSecurityRule-logsetting-set'] = arr
                 $array = array( "intrazone-default", "interzone-default" );
                 foreach( $array as $entry)
                 {
-                    $tmp_XYZzone_xml = DH::findFirstElementByNameAttr( "entry", $entry, $rules );
+                    //$tmp_XYZzone_xml = DH::findFirstElementByNameAttr( "entry", $entry, $rules );
+                    $tmp_XYZzone_xml = DH::findFirstElementByNameAttrOrCreate( "entry", $entry, $rules, $sharedStore->xmlroot->ownerDocument );
+
                     $logsetting = DH::findFirstElement( "log-setting", $tmp_XYZzone_xml );
                     if( $logsetting !== FALSE || $force )
+                    {
+                        if( $force )
+                            $logsetting->textContent = $logprof;
+                    }
+                    else
+                    {
+                        $logsetting = DH::findFirstElementOrCreate( "log-setting", $tmp_XYZzone_xml );
                         $logsetting->textContent = $logprof;
+                    }
                 }
 
                 if( $context->isAPI )
@@ -1754,6 +1851,8 @@ DeviceCallContext::$supportedActions['DefaultSecurityRule-securityProfile-Remove
 
         if( $context->first )
         {
+            $force = $context->arguments['force'];
+
             if( $classtype == "VirtualSystem" || $classtype == "DeviceGroup" )
             {
                 $sub = $object;
@@ -1780,10 +1879,11 @@ DeviceCallContext::$supportedActions['DefaultSecurityRule-securityProfile-Remove
                 $array = array( "intrazone-default", "interzone-default" );
                 foreach( $array as $entry)
                 {
-                    $tmp_XYZzone_xml = DH::findFirstElementByNameAttr( "entry", $entry, $rules );
+                    //$tmp_XYZzone_xml = DH::findFirstElementByNameAttr( "entry", $entry, $rules );
+                    $tmp_XYZzone_xml = DH::findFirstElementByNameAttrOrCreate( "entry", $entry, $rules, $sharedStore->xmlroot->ownerDocument );
 
                     $action = DH::findFirstElementOrCreate( "action", $tmp_XYZzone_xml );
-                    if( $action->textContent !== "allow" )
+                    if( $action->textContent !== "allow" || $force )
                     {
                         $profilesetting = DH::findFirstElement( "profile-setting", $tmp_XYZzone_xml );
                         if( $profilesetting !== FALSE )
@@ -1806,5 +1906,10 @@ DeviceCallContext::$supportedActions['DefaultSecurityRule-securityProfile-Remove
                     $context->first = false;
             }
         }
-    }
+    },
+    'args' => array(
+        'force' => array('type' => 'bool', 'default' => 'false',
+            'help' => "per default, remove SecurityProfiles only if Rule action is NOT allow. force=true => remove always"
+        )
+    )
 );

@@ -1137,6 +1137,18 @@ var subjectObject =
                     }
                 }
             },
+            "defaultsecurityrule-create-bp": {
+                "name": "defaultsecurityRule-create-bp",
+                "GlobalInitFunction": {},
+                "MainFunction": {},
+                "args": {
+                    "logprof": {
+                        "type": "string",
+                        "default": "default",
+                        "help": "LogForwardingProfile name"
+                    }
+                }
+            },
             "defaultsecurityrule-logend-enable": {
                 "name": "defaultsecurityrule-logend-enable",
                 "GlobalInitFunction": {},

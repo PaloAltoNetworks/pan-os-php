@@ -970,6 +970,9 @@ function createJSONstringAndDownload()
     var i = 1;
     for( i; i <= rowIdx; i++ )
     {
+        if ( $( "#command" + i ).val() === undefined)
+            continue;
+
         var commandString = $( "#command" + i ).val();
         console.log( "command: " + commandString );
         console.log( "commandAPI: " + $( "#commandapi" + i ).val() );
