@@ -67,7 +67,7 @@
                     <input type="button" value="Clear TextArea" onclick="eraseText();">
                     <form method="post">
                         <textarea disabled id="js-textarea" style="width:100%" ></textarea>
-                        <input type="file" id="js-file" accept=".txt,.json">
+                        <input type="file" id="js-file" accept=".txt,.json" onclick="this.value=null">
                     </form>
                 </td>
                 <td>
