@@ -73,6 +73,9 @@ function addNewRow()
 
     // Adding a row inside the tbody.
     $('#tbody').append(`<tr id="R${Idx}-1">
+                        <td colspan="5">---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</td>
+                    </tr>
+                    <tr id="R${Idx}-2">
 
                     <td class="text-center">
                         <button class="btn btn-danger remove"
@@ -93,7 +96,7 @@ function addNewRow()
                         <button id="add-filter${Idx}-${FilterIdx}" class="btn btn-md btn-primary add-filter${Idx}-${FilterIdx}" type="button">new Filter</button>
                     </td>
                 </tr>
-                <tr id="R${Idx}-2">
+                <tr id="R${Idx}-3">
                     <td>
                         <input type="hidden" id="columnID-${Idx}" name="columnID-${Idx}" value="3" />
                         <br/>
@@ -119,7 +122,7 @@ function addNewRow()
                         </p>
                     </td>
                 </tr>
-                <tr id="R${Idx}-3">
+                <tr id="R${Idx}-4">
                     <td colspan="1"><button onclick="copyTextButton( ${Idx} )">Copy command</button></td>
                     <td colspan="4">
                         <input type="text" disabled style="width:100%"
@@ -128,7 +131,7 @@ function addNewRow()
                     </td>
 
                 </tr>
-                <tr id="R${Idx}-4">
+                <tr id="R${Idx}-5">
                     <td colspan="1">
                         <button onclick="runButton( ${Idx} )">RUN single command</button>
                     </td>
