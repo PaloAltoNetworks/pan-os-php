@@ -1661,7 +1661,20 @@ DeviceCallContext::$supportedActions['DefaultSecurityRule-logend-enable'] = arra
                 {
                     $tmp_XYZzone_xml = DH::findFirstElementByNameAttrOrCreate( "entry", $entry, $rules, $sharedStore->xmlroot->ownerDocument );
                     $logend = DH::findFirstElementOrCreate( "log-end", $tmp_XYZzone_xml );
+
                     $logend->textContent = "yes";
+
+                    $action = DH::findFirstElement( "action", $tmp_XYZzone_xml );
+                    if( $action === FALSE )
+                    {
+                        if( $entry === "intrazone-default" )
+                            $action_txt = "allow";
+                        elseif( $entry === "interzone-default" )
+                            $action_txt = "deny";
+
+                        $action = DH::findFirstElementOrCreate( "action", $tmp_XYZzone_xml );
+                        $action->textContent = $action_txt;
+                    }
                 }
 
                 if( $context->isAPI )
@@ -1722,6 +1735,18 @@ DeviceCallContext::$supportedActions['DefaultSecurityRule-logstart-disable'] = a
 
                     $logstart = DH::findFirstElementOrCreate( "log-start", $tmp_XYZzone_xml );
                     $logstart->textContent = "no";
+
+                    $action = DH::findFirstElement( "action", $tmp_XYZzone_xml );
+                    if( $action === FALSE )
+                    {
+                        if( $entry === "intrazone-default" )
+                            $action_txt = "allow";
+                        elseif( $entry === "interzone-default" )
+                            $action_txt = "deny";
+
+                        $action = DH::findFirstElementOrCreate( "action", $tmp_XYZzone_xml );
+                        $action->textContent = $action_txt;
+                    }
                 }
 
                 if( $context->isAPI )
@@ -1798,6 +1823,18 @@ DeviceCallContext::$supportedActions['DefaultSecurityRule-logsetting-set'] = arr
                         $logsetting = DH::findFirstElementOrCreate( "log-setting", $tmp_XYZzone_xml );
                         $logsetting->textContent = $logprof;
                     }
+
+                    $action = DH::findFirstElement( "action", $tmp_XYZzone_xml );
+                    if( $action === FALSE )
+                    {
+                        if( $entry === "intrazone-default" )
+                            $action_txt = "allow";
+                        elseif( $entry === "interzone-default" )
+                            $action_txt = "deny";
+
+                        $action = DH::findFirstElementOrCreate( "action", $tmp_XYZzone_xml );
+                        $action->textContent = $action_txt;
+                    }
                 }
 
                 if( $context->isAPI )
@@ -1824,6 +1861,57 @@ DeviceCallContext::$supportedActions['DefaultSecurityRule-logsetting-set'] = arr
             'help' => "LogForwardingProfile overwrite"
         )
     )
+);
+
+DeviceCallContext::$supportedActions['DefaultSecurityRule-remove-override'] = array(
+    'name' => 'defaultsecurityrule-remove-override',
+    'GlobalInitFunction' => function (DeviceCallContext $context) {
+        $context->first = true;
+    },
+    'MainFunction' => function (DeviceCallContext $context) {
+        $object = $context->object;
+        $classtype = get_class($object);
+
+        if( $context->first )
+        {
+            if( $classtype == "VirtualSystem" || $classtype == "DeviceGroup" )
+            {
+                $sub = $object;
+
+                if( $classtype == "VirtualSystem" )
+                {
+                    $sharedStore = $sub;
+                    $xmlRoot = $sharedStore->xmlroot;
+
+                    $rulebase = DH::findFirstElementOrCreate( "rulebase", $xmlRoot );
+                }
+                elseif( $classtype == "DeviceGroup" )
+                {
+                    $sharedStore = $sub->owner;
+                    $xmlRoot = DH::findFirstElementOrCreate('shared', $sharedStore->xmlroot);
+
+                    $rulebase = DH::findFirstElementOrCreate( "post-rulebase", $xmlRoot );
+                }
+
+                $defaultSecurityRules = DH::findFirstElementOrCreate( "default-security-rules", $rulebase );
+
+                $rulebase->removeChild( $defaultSecurityRules );
+
+                if( $context->isAPI )
+                {
+                    $defaultSecurityRules_xmlroot = DH::findFirstElementOrCreate( "default-security-rules", $rulebase );
+
+                    $xpath = DH::elementToPanXPath($defaultSecurityRules_xmlroot);
+                    $con = findConnectorOrDie($object);
+
+                    $con->sendDeleteRequest( $xpath );
+                }
+
+                if( $classtype == "DeviceGroup" )
+                    $context->first = false;
+            }
+        }
+    }
 );
 
 DeviceCallContext::$supportedActions['DefaultSecurityRule-securityProfile-Remove'] = array(
