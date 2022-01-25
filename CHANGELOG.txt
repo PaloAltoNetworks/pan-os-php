@@ -2,6 +2,7 @@ CHANGELOG
 
 2.0.29
 UTILS:
+* UTIL type=tag-merger | introduce help info for dupalgorithm=SameName
 
 BUGFIX:
 

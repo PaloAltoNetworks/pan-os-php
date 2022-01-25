@@ -871,7 +871,7 @@ function addFilterBtn( Idx)
 
     if( FilterIdx === 1 )
     {
-        string = `<td id="R${Idx}column${columnIdx}-2">`;
+        string = `<td id="R${Idx}column${columnIdx}-1">`;
         string += `<select name="filter-andor${Idx}-${FilterIdx}" id="filter-andor${Idx}-${FilterIdx}" style="width:100%">\n` +
             `                                    <option value="" selected="selected">---</option>\n` +
             `                                    <option value="!">!</option>\n` +
@@ -879,7 +879,7 @@ function addFilterBtn( Idx)
     }
     else
     {
-        string = `<td id="R${Idx}column${columnIdx}-2"><button id="remove-filter${Idx}-${columnIdx}" class="btn btn-danger remove-filter${Idx}-${columnIdx}" type="button">delete Filter${FilterIdx}</button>`;
+        string = `<td id="R${Idx}column${columnIdx}-1"><button id="remove-filter${Idx}-${columnIdx}" class="btn btn-danger remove-filter${Idx}-${columnIdx}" type="button">delete Filter${FilterIdx}</button>`;
         string += `<select name="filter-andor${Idx}-${FilterIdx}" id="filter-andor${Idx}-${FilterIdx}" style="width:100%">\n` +
             `                                    <option value="and" selected="selected">and</option>\n` +
             `                                    <option value="or">or</option>\n` +
