@@ -51,6 +51,11 @@ $(document).ready(function () {
         reader.readAsText($("#js-file")[0].files[0], "UTF-8");
     });
 
+    $("#configSelect").change(function(){
+        for (var i = 1; i <= rowIdx; i++) {
+            updateScriptsyntax( i );
+        }
+    });
 
     // jQuery button click event create playbook JSON
     $('#storeBtn').on('click', function () {
