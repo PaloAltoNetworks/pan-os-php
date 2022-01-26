@@ -910,7 +910,7 @@ class SOFTWARE_DOWNLOAD extends UTIL
         ######################################################################################################
 
         $ret= $inputConnector->sendRequest($query);
-        $tmp_ret = $ret->saveXML();
+        $tmp_ret = $ret->saveXML( $ret );
 
         if( strpos( $tmp_ret, $versioninfo['FileName'] ) !== FALSE )
         {
@@ -1014,7 +1014,7 @@ class SOFTWARE_DOWNLOAD extends UTIL
                     print "DEBUG INSTALL: ". $cmd."\n";
 
                     $response = $inputConnector->sendOpRequest( $cmd );
-                    print "INSTALL: ".$response->saveXML()."\n";
+                    print "INSTALL: ".$response->saveXML( $response )."\n";
 
 
                     $cursor = DH::findXPathSingleEntryOrDie('/result', $response);

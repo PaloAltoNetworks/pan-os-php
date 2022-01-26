@@ -9,6 +9,7 @@ BUGFIX:
 * UTIL type=device | actions=securityprofile-create-alert-only - bugfix for PAN-OS 8.1 - including fix for ironskillet download
 
 GENERAL:
+* framework - update predefined to version 8519-7206
 
 
 2.0.28 (20220124)
