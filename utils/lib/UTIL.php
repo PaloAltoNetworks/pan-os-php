@@ -133,6 +133,9 @@ class UTIL
     public $outputformatset = FALSE;
     public $origXmlDoc = null;
 
+    public $diff_set = array();
+    public $diff_delete = array();
+
     function __construct($utilType, $argv, $argc, $PHP_FILE, $_supportedArguments = array(), $_usageMsg = "")
     {
         $this->argv = $argv;
@@ -1809,6 +1812,14 @@ class UTIL
             //print $doc2->saveXML();
 
             $utilDiff->runDiff( $this->origXmlDoc, $doc2 );
+
+            PH::print_stdout( "" );
+            PH::print_stdout( "" );
+            foreach( $utilDiff->diff_set as $set )
+                PH::print_stdout( $set );
+
+            foreach( array_reverse( $utilDiff->diff_delete ) as $delete )
+                PH::print_stdout( $delete );
         }
     }
 
