@@ -1098,14 +1098,17 @@ DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = arra
         if( $context->first )
         {
             $pathString = dirname(__FILE__)."/../../iron-skillet";
+            $av_xmlString_v8 = file_get_contents( $pathString."/panos_v8.1/templates/panorama/snippets/profiles_virus.xml");
             $av_xmlString_v9 = file_get_contents( $pathString."/panos_v9.1/templates/panorama/snippets/profiles_virus.xml");
             $av_xmlString_v10 = file_get_contents( $pathString."/panos_v10.0/templates/panorama/snippets/profiles_virus.xml");
 
+            $as_xmlString_v8 = file_get_contents( $pathString."/panos_v8.1/templates/panorama/snippets/profiles_spyware.xml");
             $as_xmlString_v9 = file_get_contents( $pathString."/panos_v9.1/templates/panorama/snippets/profiles_spyware.xml");
             $as_xmlString_v10 = file_get_contents( $pathString."/panos_v10.0/templates/panorama/snippets/profiles_spyware.xml");
 
             $vp_xmlString = file_get_contents( $pathString."/panos_v10.0/templates/panorama/snippets/profiles_vulnerability.xml");
 
+            $url_xmlString_v8 = file_get_contents( $pathString."/panos_v8.1/templates/panorama/snippets/profiles_url_filtering.xml");
             $url_xmlString_v9 = file_get_contents( $pathString."/panos_v9.1/templates/panorama/snippets/profiles_url_filtering.xml");
             $url_xmlString_v10 = file_get_contents( $pathString."/panos_v10.0/templates/panorama/snippets/profiles_url_filtering.xml");
 
@@ -1125,7 +1128,21 @@ DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = arra
                 $name = "Alert-Only";
                 $ownerDocument = $sub->xmlroot->ownerDocument;
 
-
+                if( $context->object->owner->version < 90 )
+                    $customURLarray = array( "Black-List", "White-List", "Custom-No-Decrypt" );
+                else
+                    $customURLarray = array( "Block", "Allow", "Custom-No-Decrypt" );
+                foreach( $customURLarray as $entry )
+                {
+                    $block = $sharedStore->customURLProfileStore->find($entry);
+                    if( $block === null )
+                    {
+                        $block = $sharedStore->customURLProfileStore->newCustomSecurityProfileURL($entry);
+                        if( $context->isAPI )
+                            $block->API_sync();
+                    }
+                }
+                /*
                 $block = $sharedStore->customURLProfileStore->find("Block");
                 if( $block === null )
                 {
@@ -1146,7 +1163,7 @@ DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = arra
                     $nodecrypt = $sharedStore->customURLProfileStore->newCustomSecurityProfileURL("Custom-No-Decrypt");
                     if( $context->isAPI )
                         $nodecrypt->API_sync();
-                }
+                }*/
 
 
                 $av = $sharedStore->AntiVirusProfileStore->find($name . "-AV");
@@ -1155,7 +1172,9 @@ DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = arra
                     $store = $sharedStore->AntiVirusProfileStore;
                     $av = new AntiVirusProfile($name . "-AV", $store);
                     $newdoc = new DOMDocument;
-                    if( $context->object->owner->version < 100 )
+                    if( $context->object->owner->version < 90 )
+                        $newdoc->loadXML($av_xmlString_v8);
+                    elseif( $context->object->owner->version < 100 )
                         $newdoc->loadXML($av_xmlString_v9);
                     else
                         $newdoc->loadXML($av_xmlString_v10);
@@ -1173,7 +1192,9 @@ DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = arra
                     $store = $sharedStore->AntiSpywareProfileStore;
                     $as = new AntiSpywareProfile($name . "-AS", $store);
                     $newdoc = new DOMDocument;
-                    if( $context->object->owner->version < 100 )
+                    if( $context->object->owner->version < 90 )
+                        $newdoc->loadXML($as_xmlString_v8);
+                    elseif( $context->object->owner->version < 100 )
                         $newdoc->loadXML($as_xmlString_v9);
                     else
                         $newdoc->loadXML($as_xmlString_v10);
@@ -1208,7 +1229,9 @@ DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = arra
                     $store = $sharedStore->URLProfileStore;
                     $url = new URLProfile($name . "-URL", $store);
                     $newdoc = new DOMDocument;
-                    if( $context->object->owner->version < 100 )
+                    if( $context->object->owner->version < 90 )
+                        $newdoc->loadXML($url_xmlString_v8);
+                    elseif( $context->object->owner->version < 100 )
                         $newdoc->loadXML($url_xmlString_v9);
                     else
                         $newdoc->loadXML($url_xmlString_v10);

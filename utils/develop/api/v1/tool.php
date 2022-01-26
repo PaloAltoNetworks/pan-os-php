@@ -18,9 +18,6 @@
  */
 
 //Todo: swaschkut 20210624
-// - change UTIL script so it can be used here:
-//   - address-merger/addressgroup-merger/service-merger/servicegroup-merge/tag-merger/rule-merger
-//   - interface/routing/vwire/ike
 // -
 // - user authentication OAuth2 - access to only specific projects
 // - create project related to user => response project ID

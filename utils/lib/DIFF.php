@@ -273,7 +273,7 @@ class DIFF extends UTIL
                 $text .= '-' . str_replace("\n", "\n", $tmp);
 
 
-                $this->displayDIFF( $xpath, $text, $el1 );
+                $this->displayDIFF( $xpath, $text, $el1, $el2 );
             }
             return;
         }
@@ -518,26 +518,50 @@ class DIFF extends UTIL
             $text .= '-' . str_replace("\n", "\n-", $tmp);
         }
 
-        $this->displayDIFF( $xpath, $text, $plus );
+        $this->displayDIFF( $xpath, $text, $plus, $minus );
     }
 
-    public function displayDIFF( $xpath, $text, $plus )
+    public function displayDIFF( $xpath, $text, $plus, $minus )
     {
         if( $text != '' )
         {
             if( $this->outputFormatSet )
             {
+                //intermediate, remove it later on
                 PH::print_stdout("\nXPATH: $xpath");
+                /////////////
+
+
                 foreach( $plus as $element )
                 {
+                    PH::print_stdout( "ADD");
+                    //intermediate, remove it later on
                     $doc2 = new DOMDocument();
                     $node = $doc2->importNode($element, true);
                     $doc2->appendChild($node);
-                    PH::print_stdout( $doc2->saveXML() );
+                    PH::print_stdout( $doc2->saveXML( $doc2->documentElement) );
+                    /////////////
 
-                    $array = DH::elementToPanSetCommand($element);
+
+                    $array = DH::elementToPanSetCommand( 'set', $element );
                     foreach( $array as $entry )
-                        PH::print_stdout( $entry );
+                        $this->diff_set[] = $entry;
+                }
+
+                foreach( $minus as $element )
+                {
+                    PH::print_stdout( "REMOVE");
+                    //intermediate, remove it later on
+                    $doc2 = new DOMDocument();
+                    $node = $doc2->importNode($element, true);
+                    $doc2->appendChild($node);
+                    PH::print_stdout( $doc2->saveXML( $doc2->documentElement) );
+                    /////////////
+
+
+                    $array = DH::elementToPanSetCommand('delete', $element );
+                    foreach(  $array as $entry )
+                        $this->diff_delete[] = $entry;
                 }
             }
             else

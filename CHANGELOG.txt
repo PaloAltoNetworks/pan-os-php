@@ -3,8 +3,10 @@ CHANGELOG
 2.0.29
 UTILS:
 * UTIL type=tag-merger | introduce help info for dupalgorithm=SameName
+* UTIL all | argument outputformatset - additional extension / improvement
 
 BUGFIX:
+* UTIL type=device | actions=securityprofile-create-alert-only - bugfix for PAN-OS 8.1 - including fix for ironskillet download
 
 GENERAL:
 
