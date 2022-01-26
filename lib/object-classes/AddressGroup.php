@@ -598,7 +598,7 @@ class AddressGroup
     public function rewriteXML()
     {
         if( $this->isDynamic() )
-            derr('unsupported');
+            derr('unsupported rewriteXML for dynamic group');
 
         if( $this->owner->owner->version >= 60 )
             DH::Hosts_to_xmlDom($this->membersRoot, $this->members, 'member', FALSE);

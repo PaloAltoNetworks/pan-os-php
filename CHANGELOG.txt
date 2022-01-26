@@ -5,6 +5,7 @@ UTILS:
 * UTIL type=tag-merger | introduce help info for dupalgorithm=SameName
 
 BUGFIX:
+* UTIL type=device | actions=securityprofile-create-alert-only - bugfix for PAN-OS 8.1 - including fix for ironskillet download
 
 GENERAL:
 
