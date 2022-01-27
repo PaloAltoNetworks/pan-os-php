@@ -127,11 +127,7 @@ class IRONSKILLET_UPDATE__
 
                 $origFile = file_get_contents( $url.$version, false, stream_context_create($arrContextOptions));
                 if( $key < 90 )
-                {
                     $sinkholeIP = "72.5.65.111";
-                    //Todo: why is URL category grayware not availalble in PAN-OS 8.1
-                    $origFile = str_replace( "<member>grayware</member>", "", $origFile);
-                }
                 else
                     $sinkholeIP = "sinkhole.paloaltonetworks.com";
 
