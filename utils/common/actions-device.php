@@ -1083,7 +1083,7 @@ DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = arra
         if( $context->subSystem->isPanorama() )
         {
             $countDG = count( $context->subSystem->getDeviceGroups() );
-            if( $countDG == 0 )
+            if( $countDG == 0  )
             {
                 #$dg = $context->subSystem->createDeviceGroup( "alert-only" );
                 derr( "NO DG available; please run 'pa_device-edit in=InputConfig.xml out=OutputConfig.xml actions=devicegroup-create:DG-NAME' first", null, false );
@@ -1120,7 +1120,7 @@ DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = arra
             {
                 $sub = $object;
 
-                if( $context->arguments['shared'] )
+                if( $context->arguments['shared'] && !$context->subSystem->isFirewall() )
                     $sharedStore = $sub->owner;
                 else
                     $sharedStore = $sub;
@@ -1346,7 +1346,7 @@ DeviceCallContext::$supportedActions['LogForwardingProfile-create-BP'] = array(
             {
                 $sub = $object;
 
-                if( $context->arguments['shared'] )
+                if( $context->arguments['shared'] && !$context->subSystem->isFirewall() )
                 {
                     $sharedStore = $sub->owner;
                     $xmlRoot = DH::findFirstElementOrCreate('shared', $sharedStore->xmlroot);

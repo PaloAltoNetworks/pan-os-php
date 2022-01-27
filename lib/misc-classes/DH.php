@@ -518,13 +518,14 @@ class DH
 
     /**
      * @param DOMNode $element
-     * @return array
      */
-    static public function elementToPanSetCommand( $type, $element, $array = array() )
+    static public function elementToPanSetCommand( $type, $element, &$array )
     {
+        $debug = false;
+
         $xpath = '';
         if( $type !== "set" && $type !== "delete" )
-            return array();
+            return;
 
         if( $element->nodeType == XML_DOCUMENT_NODE )
             $element = DH::firstChildElement($element);
@@ -537,15 +538,21 @@ class DH
                 {
                     $orig_fullxpath = DH::elementToPanXPath($element);
 
-                    print "xpath: ".$orig_fullxpath."\n";
+                    if( $debug )
+                        print "xpath: ".$orig_fullxpath."\n";
 
                     $fullpath = $orig_fullxpath;
-                    $replace = "config";
+                    $replace = "config ";
                     $fullpath = str_replace( $replace, "", $fullpath);
                 }
                 else
                 {
                     $xpath = $element->getAttribute('name');
+
+                    if( strpos( $xpath, "vsys" ) !== FALSE )
+                        return;
+
+                    $xpath = trim( $xpath );
                     if( strpos($xpath, " ") !== FALSE )
                         $xpath = '"'.$xpath.'"';
 
@@ -561,6 +568,11 @@ class DH
                     $fullpath = str_replace( $replace, "", $fullpath);
                 }
                 $fullpath = str_replace( "/", " ", $fullpath);
+
+                $fullpath = str_replace( "entry[@name='", "", $fullpath);
+                $fullpath = str_replace( "']", "", $fullpath);
+                $fullpath = str_replace( "config ", "", $fullpath);
+
 
                 //type == "set" "delete";
                 $xpath = $type.$fullpath." ".$xpath;
@@ -580,26 +592,42 @@ class DH
                             {
                                 if( $childNode2->nodeType !== XML_ELEMENT_NODE )
                                     continue;
-                                $string .= $childNode2->textContent." ";
-                                if( strpos($string, " ") !== FALSE )
-                                    $string = '"'.$string.'"';
+                                $tmpstring = $childNode2->textContent;
+                                if( strpos($tmpstring, " ") !== FALSE )
+                                    $tmpstring = '"'.$tmpstring.'"';
+                                $string .= $tmpstring." ";
 
                             }
                             $test = $childNode->nodeName." ".$string;
                         }
+                        elseif( $tmp_element !== FALSE && $tmp_element->nodeName == "entry" )
+                        {
+                            if( $tmp_element->hasChildNodes() )
+                                self::elementToPanSetCommand( $type, $tmp_element, $array );
+                            else
+                                $test = $tmp_element->getAttribute( "name" );
+                        }
                         elseif( $tmp_element !== FALSE  )
                         {
                             $string = $tmp_element->nodeName;
+                            if( $string == "entry" && $tmp_element->hasAttribute( 'name') )
+                                $string = $tmp_element->getAttribute('name');
                             do
                             {
                                 $tmp_element2 = DH::firstChildElement($tmp_element);
                                 if( $tmp_element2 !== FALSE )
-                                    $string .= " ".$tmp_element2->nodeName;
+                                {
+                                    if( $tmp_element2->hasAttribute( 'name') )
+                                        $string .= " ".$tmp_element2->getAttribute('name');
+                                    else
+                                        $string .= " ".$tmp_element2->nodeName;
+                                }
                                 else
                                 {
-                                    $string .= " ".$tmp_element->textContent;
-                                    if( strpos($string, " ") !== FALSE )
-                                        $string = '"'.$string.'"';
+                                    $tmpstring = $tmp_element->textContent;
+                                    if( strpos($tmpstring, " ") !== FALSE )
+                                        $tmpstring = '"'.$tmpstring.'"';
+                                    $string .= " ".$tmpstring;
                                 }
 
                                 $tmp_element = $tmp_element2;
@@ -620,17 +648,34 @@ class DH
                     }
                     else
                     {
-                        $string = $childNode->textContent;
-                        if( strpos($string, " ") !== FALSE )
-                            $string = '"'.$string.'"';
-                        $test = $childNode->nodeName." ".$string;
+                        if( $childNode->nodeName == "entry" )
+                            $test = $childNode->getAttribute("name");
+                        else
+                        {
+                            $string = $childNode->textContent;
+                            if( strpos($string, " ") !== FALSE )
+                                $string = '"' . $string . '"';
+                            $test = $childNode->nodeName . " " . $string;
+                        }
                     }
 
 
                     if( !empty($test) )
                     {
-                        $needle = $xpath." ".$test;
-                        //print $needle."\n";
+                        $needle = $xpath."".$test;
+                        if( !in_array( $needle, $array ) )
+                            $array[] = $needle;
+                    }
+                }
+
+
+                if( !$element->hasChildNodes() && $element->nodeName == "entry" )
+                {
+                    $test = $element->getAttribute("name");
+
+                    if( !empty($test) )
+                    {
+                        $needle = $xpath;
                         if( !in_array( $needle, $array ) )
                             $array[] = $needle;
                     }
@@ -643,40 +688,57 @@ class DH
                     if( $child->nodeType !== XML_ELEMENT_NODE )
                         continue;
 
-                    $array = self::elementToPanSetCommand( $type, $child, $array );
+                    self::elementToPanSetCommand( $type, $child, $array );
                 }
 
 
-                $parent = $element->parentNode;
-                $i = 0;
-                do
+                $parent = $element;
+                //$parent = $element->parentNode;
+
+                $orig_fullxpath = DH::elementToPanXPath($parent);
+                if( $debug )
+                    print "xpath: ".$orig_fullxpath."\n";
+
+                if( $parent->nodeName != "shared" )
                 {
-                    //PH::print_stdout( "parent" );
-                    $doc2 = new DOMDocument();
-                    $node = $doc2->importNode($parent, true);
-                    $doc2->appendChild($node);
-                    //PH::print_stdout( $doc2->saveXML( $doc2->documentElement) );
+                    $i = 0;
+                    do
+                    {
+                        if( $parent->nodeName == "shared"  )
+                            break;
 
-                    $parent = $parent->parentNode;
+                        //PH::print_stdout( "parent" );
+                        $doc2 = new DOMDocument();
+                        $node = $doc2->importNode($parent, true);
+                        $doc2->appendChild($node);
+                        ///////////////////
+                        if( $debug )
+                            PH::print_stdout( $doc2->saveXML( $doc2->documentElement) );
 
-                    $doc2 = new DOMDocument();
-                    $node = $doc2->importNode($parent, true);
-                    $doc2->appendChild($node);
-                    //PH::print_stdout( $doc2->saveXML( $doc2->documentElement) );
-                    //PH::print_stdout( "grandparent" );
 
-                    $i++;
+                        $parent = $parent->parentNode;
+
+
+                        $doc2 = new DOMDocument();
+                        $node = $doc2->importNode($parent, true);
+                        $doc2->appendChild($node);
+                        ///////////////////
+                        if( $debug )
+                            PH::print_stdout( $doc2->saveXML( $doc2->documentElement) );
+                        //PH::print_stdout( "grandparent" );
+
+                        $i++;
+                    }
+                    while( $parent !== null && !$parent->hasAttribute('name') && $i < 5 );
+
+                    self::elementToPanSetCommand( $type, $parent, $array );
                 }
-                while( $parent !== null && !$parent->hasAttribute('name') && $i < 5 );
-
-                $array = self::elementToPanSetCommand( $type, $parent, $array );
-
             }
         }
         else
             derr('unsupported node type=' . $element->nodeType);
 
-        return $array;
+        //return $array;
     }
 
     /**
