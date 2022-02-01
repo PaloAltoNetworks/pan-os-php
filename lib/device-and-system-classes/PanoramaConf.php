@@ -866,34 +866,35 @@ class PanoramaConf
         else
         {
             if( $this->version < 80 )
-                $dgMetaDataNode = DH::findXPathSingleEntryOrDie('/config/readonly/dg-meta-data/dginfo', $this->xmlroot);
+                $dgMetaDataNode = DH::findXPathSingleEntry('/config/readonly/dg-meta-data/dginfo', $this->xmlroot);
             else
-                $dgMetaDataNode = DH::findXPathSingleEntryOrDie('/config/readonly/devices/entry/device-group', $this->xmlroot);
+                $dgMetaDataNode = DH::findXPathSingleEntry('/config/readonly/devices/entry/device-group', $this->xmlroot);
 
             $dgToParent = array();
             $parentToDG = array();
 
-            foreach( $dgMetaDataNode->childNodes as $node )
-            {
-                if( $node->nodeType != XML_ELEMENT_NODE )
-                    continue;
-
-                $dgName = DH::findAttribute('name', $node);
-                if( $dgName === FALSE )
-                    derr("DeviceGroup name attribute not found in dg-meta-data", $node);
-
-                $parentDG = DH::findFirstElement('parent-dg', $node);
-                if( $parentDG === FALSE )
+            if( $dgMetaDataNode !== false )
+                foreach( $dgMetaDataNode->childNodes as $node )
                 {
-                    $dgToParent[$dgName] = 'shared';
-                    $parentToDG['shared'][] = $dgName;
+                    if( $node->nodeType != XML_ELEMENT_NODE )
+                        continue;
+
+                    $dgName = DH::findAttribute('name', $node);
+                    if( $dgName === FALSE )
+                        derr("DeviceGroup name attribute not found in dg-meta-data", $node);
+
+                    $parentDG = DH::findFirstElement('parent-dg', $node);
+                    if( $parentDG === FALSE )
+                    {
+                        $dgToParent[$dgName] = 'shared';
+                        $parentToDG['shared'][] = $dgName;
+                    }
+                    else
+                    {
+                        $dgToParent[$dgName] = $parentDG->textContent;
+                        $parentToDG[$parentDG->textContent][] = $dgName;
+                    }
                 }
-                else
-                {
-                    $dgToParent[$dgName] = $parentDG->textContent;
-                    $parentToDG[$parentDG->textContent][] = $dgName;
-                }
-            }
 
             $dgLoadOrder = array('shared');
 

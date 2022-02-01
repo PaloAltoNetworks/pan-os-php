@@ -7,6 +7,7 @@ UTILS:
 
 BUGFIX:
 * UTIL type=device | actions=securityprofile-create-alert-only - bugfix for PAN-OS 8.1 - including fix for ironskillet download
+* class PanoramaConf | bugfix to handle initial PAN-OS panorama config files
 
 GENERAL:
 * framework - update predefined to version 8519-7206
