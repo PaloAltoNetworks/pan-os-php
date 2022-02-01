@@ -519,6 +519,120 @@ class DH
     /**
      * @param DOMNode $element
      */
+    static public function elementToPanSetCommandBETA( $type, $element, &$array )
+    {
+        $debug = true;
+
+        $xpath = '';
+        if( $type !== "set" && $type !== "delete" )
+            return;
+
+        if( $element->nodeType == XML_DOCUMENT_NODE )
+            $element = DH::firstChildElement($element);
+
+        //get xPATH
+        $orig_fullxpath = DH::elementToPanXPath($element);
+
+        $fullpath = $orig_fullxpath;
+        $replace = "/config";
+        $fullpath = str_replace($replace, "", $fullpath);
+        $replace = "/devices/entry[@name='localhost.localdomain']";
+        $fullpath = str_replace($replace, "", $fullpath);
+        $replace = "/vsys/entry[@name='vsys1']";
+        $fullpath = str_replace($replace, "", $fullpath);
+        $fullpath = str_replace("/", " ", $fullpath);
+        $fullpath = str_replace("entry[@name='", "", $fullpath);
+        $fullpath = str_replace("']", "", $fullpath);
+
+        $xpath = $type . $fullpath;
+
+        if( $element->nodeType == XML_ELEMENT_NODE ) //1
+        {
+            $string = "";
+            self::CHILDelementToPanSetCommand( $element, $array, $xpath, $string);
+
+            //$needle = $xpath . "" . $string;
+            //if( !in_array($needle, $array) )
+            //    $array[] = $needle;
+        }
+        else
+            derr('unsupported node type=' . $element->nodeType);
+    }
+
+    /**
+     * @param DOMNode $element
+     */
+    static public function CHILDelementToPanSetCommand( $element, &$array, $xpath, &$string )
+    {
+        if( $element->nodeType == XML_ELEMENT_NODE ) //1
+        {
+            $doc2 = new DOMDocument();
+            $node = $doc2->importNode($element, true);
+            $doc2->appendChild($node);
+            PH::print_stdout( "2".$doc2->saveXML( $doc2->documentElement) );
+            PH::print_stdout( "");
+
+            PH::print_stdout( "string: ".$string);
+
+            if( $element->hasAttribute('name') )
+            {
+                $string .= " ".$element->getAttribute('name');
+                foreach( $element->childNodes as $childNode )
+                {
+                    if( $childNode->nodeType == XML_ELEMENT_NODE ) //1
+                    {
+                        if( $childNode->hasChildNodes() )
+                            self::CHILDelementToPanSetCommand( $childNode, $array, $xpath, $string );
+                        else
+                            self::elementAddtoSet( $childNode, $array, $xpath, $string );
+                    }
+                }
+            }
+            else
+            {
+                if( $element->hasChildNodes() )
+                {
+                    $string .= " ".$element->nodeName;
+                }
+                else
+                    self::elementAddtoSet( $element, $array, $xpath, $string );
+
+
+                foreach( $element->childNodes as $childNode )
+                {
+                    if( $childNode->nodeType == XML_ELEMENT_NODE ) //1
+                    {
+                        if( $childNode->hasChildNodes() )
+                            self::CHILDelementToPanSetCommand( $childNode, $array, $xpath, $string );
+                        else
+                            self::elementAddtoSet( $childNode, $array, $xpath, $string );
+                    }
+                }
+            }
+        }
+    }
+
+    static public function elementAddtoSet( $element, &$array, $xpath, $string )
+    {
+        if( strpos( $element->textContent, " " ) !== FALSE  )
+            $tmpString = '"'.$element->textContent.'"';
+        else
+            $tmpString = $element->textContent;
+
+        $string .= " ".$element->nodeName. " ". $tmpString;
+        $needle = $xpath . "" . $string;
+        if( !in_array($needle, $array) )
+        {
+            PH::print_stdout( "add line: ".$needle );
+            $array[] = $needle;
+        }
+
+    }
+
+
+    /**
+     * @param DOMNode $element
+     */
     static public function elementToPanSetCommand( $type, $element, &$array )
     {
         $debug = false;
@@ -539,22 +653,22 @@ class DH
                     $orig_fullxpath = DH::elementToPanXPath($element);
 
                     if( $debug )
-                        print "xpath: ".$orig_fullxpath."\n";
+                        print "xpath: " . $orig_fullxpath . "\n";
 
                     $fullpath = $orig_fullxpath;
                     $replace = "config ";
-                    $fullpath = str_replace( $replace, "", $fullpath);
+                    $fullpath = str_replace($replace, "", $fullpath);
                 }
                 else
                 {
                     $xpath = $element->getAttribute('name');
 
-                    if( strpos( $xpath, "vsys" ) !== FALSE )
+                    if( strpos($xpath, "vsys") !== FALSE )
                         return;
 
-                    $xpath = trim( $xpath );
+                    $xpath = trim($xpath);
                     if( strpos($xpath, " ") !== FALSE )
-                        $xpath = '"'.$xpath.'"';
+                        $xpath = '"' . $xpath . '"';
 
                     $parent = $element->parentNode;
 
@@ -563,111 +677,120 @@ class DH
 
                     $fullpath = $orig_fullxpath;
                     $replace = "/config/devices/entry[@name='localhost.localdomain']";
-                    $fullpath = str_replace( $replace, "", $fullpath);
+                    $fullpath = str_replace($replace, "", $fullpath);
                     $replace = "/vsys/entry[@name='vsys1']";
-                    $fullpath = str_replace( $replace, "", $fullpath);
+                    $fullpath = str_replace($replace, "", $fullpath);
                 }
-                $fullpath = str_replace( "/", " ", $fullpath);
+                $fullpath = str_replace("/", " ", $fullpath);
 
-                $fullpath = str_replace( "entry[@name='", "", $fullpath);
-                $fullpath = str_replace( "']", "", $fullpath);
-                $fullpath = str_replace( "config ", "", $fullpath);
+                $fullpath = str_replace("entry[@name='", "", $fullpath);
+                $fullpath = str_replace("']", "", $fullpath);
+                $fullpath = str_replace("config ", "", $fullpath);
 
 
                 //type == "set" "delete";
-                $xpath = $type.$fullpath." ".$xpath;
+                //$xpath = $type . $fullpath . " X" . $xpath . " ";
+                $xpath = $type . $fullpath . " " . $xpath . " ";
 
-                foreach( $element->childNodes as $childNode )
-                {
-                    if( $childNode->nodeType !== XML_ELEMENT_NODE )
-                        continue;
-
-                    if( $childNode->hasChildNodes() )
+                //if( $type == "set" ){
+                    foreach( $element->childNodes as $childNode )
                     {
-                        $tmp_element = DH::firstChildElement($childNode);
-                        if( $tmp_element !== FALSE && $tmp_element->nodeName == "member" )
-                        {
-                            $string = "";
-                            foreach( $childNode->childNodes as $childNode2 )
-                            {
-                                if( $childNode2->nodeType !== XML_ELEMENT_NODE )
-                                    continue;
-                                $tmpstring = $childNode2->textContent;
-                                if( strpos($tmpstring, " ") !== FALSE )
-                                    $tmpstring = '"'.$tmpstring.'"';
-                                $string .= $tmpstring." ";
+                        if( $childNode->nodeType !== XML_ELEMENT_NODE )
+                            continue;
 
-                            }
-                            $test = $childNode->nodeName." ".$string;
-                        }
-                        elseif( $tmp_element !== FALSE && $tmp_element->nodeName == "entry" )
+                        if( $childNode->hasChildNodes() )
                         {
-                            if( $tmp_element->hasChildNodes() )
-                                self::elementToPanSetCommand( $type, $tmp_element, $array );
-                            else
-                                $test = $tmp_element->getAttribute( "name" );
-                        }
-                        elseif( $tmp_element !== FALSE  )
-                        {
-                            $string = $tmp_element->nodeName;
-                            if( $string == "entry" && $tmp_element->hasAttribute( 'name') )
-                                $string = $tmp_element->getAttribute('name');
-                            do
+                            $tmp_element = DH::firstChildElement($childNode);
+                            if( $tmp_element !== FALSE && $tmp_element->nodeName == "member" )
                             {
-                                $tmp_element2 = DH::firstChildElement($tmp_element);
-                                if( $tmp_element2 !== FALSE )
+                                $string = "";
+                                foreach( $childNode->childNodes as $childNode2 )
                                 {
-                                    if( $tmp_element2->hasAttribute( 'name') )
-                                        $string .= " ".$tmp_element2->getAttribute('name');
-                                    else
-                                        $string .= " ".$tmp_element2->nodeName;
-                                }
-                                else
-                                {
-                                    $tmpstring = $tmp_element->textContent;
+                                    if( $childNode2->nodeType !== XML_ELEMENT_NODE )
+                                        continue;
+                                    $tmpstring = $childNode2->textContent;
                                     if( strpos($tmpstring, " ") !== FALSE )
-                                        $tmpstring = '"'.$tmpstring.'"';
-                                    $string .= " ".$tmpstring;
+                                        $tmpstring = '"' . $tmpstring . '"';
+                                    $string .= $tmpstring . " ";
+
                                 }
-
-                                $tmp_element = $tmp_element2;
+                                $test = $childNode->nodeName . " " . $string;
                             }
-                            while( $tmp_element !== FALSE && $tmp_element->hasChildNodes()  );
+                            elseif( $tmp_element !== FALSE && $tmp_element->nodeName == "entry" )
+                            {
+                                if( $tmp_element->hasChildNodes() )
+                                    self::elementToPanSetCommand($type, $tmp_element, $array);
+                                else
+                                    $test = $tmp_element->getAttribute("name");
+                            }
+                            elseif( $tmp_element !== FALSE )
+                            {
+                                $string = $tmp_element->nodeName;
+                                if( $string == "entry" && $tmp_element->hasAttribute('name') )
+                                    $string = $tmp_element->getAttribute('name');
 
-                            $test = $childNode->nodeName." ".$string;
+                                do
+                                {
+                                    $tmp_element2 = DH::firstChildElement($tmp_element);
+                                    if( $tmp_element2 !== FALSE )
+                                    {
+                                        if( $tmp_element2->hasAttribute('name') )
+                                            $string .= " " . $tmp_element2->getAttribute('name');
+                                        else
+                                            $string .= " " . $tmp_element2->nodeName;
+                                    }
+                                    else
+                                    {
+                                        $tmpstring = $tmp_element->textContent;
+                                        if( strpos($tmpstring, " ") !== FALSE )
+                                            $tmpstring = '"' . $tmpstring . '"';
+                                        $string .= " " . $tmpstring;
+                                    }
+
+                                    $tmp_element = $tmp_element2;
+                                } while( $tmp_element !== FALSE && $tmp_element->hasChildNodes() );
+
+                                $test = $childNode->nodeName . " " . $string;
+                            }
+                            else
+                            {
+                                $string = $childNode->textContent;
+                                if( strpos($string, " ") !== FALSE )
+                                    $string = '"' . $string . '"';
+
+                                $test = $childNode->nodeName . " " . $string;
+                            }
+
                         }
                         else
                         {
-                            $string = $childNode->textContent;
-                            if( strpos($string, " ") !== FALSE )
-                                $string = '"'.$string.'"';
-
-                            $test = $childNode->nodeName." ".$string;
+                            if( $childNode->nodeName == "entry" )
+                                $test = $childNode->getAttribute("name");
+                            else
+                            {
+                                $string = $childNode->textContent;
+                                if( strpos($string, " ") !== FALSE )
+                                    $string = '"' . $string . '"';
+                                $test = $childNode->nodeName . " " . $string;
+                            }
                         }
 
-                    }
-                    else
-                    {
-                        if( $childNode->nodeName == "entry" )
-                            $test = $childNode->getAttribute("name");
-                        else
+
+                        if( !empty($test) )
                         {
-                            $string = $childNode->textContent;
-                            if( strpos($string, " ") !== FALSE )
-                                $string = '"' . $string . '"';
-                            $test = $childNode->nodeName . " " . $string;
+                            $needle = $xpath . "" . $test;
+                            if( !in_array($needle, $array) )
+                                $array[] = $needle;
                         }
                     }
-
-
-                    if( !empty($test) )
-                    {
-                        $needle = $xpath."".$test;
-                        if( !in_array( $needle, $array ) )
-                            $array[] = $needle;
-                    }
+                /*}
+                else
+                {
+                    $needle = $xpath;
+                    if( !in_array( $needle, $array ) )
+                        $array[] = $needle;
                 }
-
+                */
 
                 if( !$element->hasChildNodes() && $element->nodeName == "entry" )
                 {
