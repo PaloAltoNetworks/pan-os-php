@@ -527,24 +527,40 @@ class DIFF extends UTIL
         {
             if( $this->outputFormatSet )
             {
-                //intermediate, remove it later on
-                //PH::print_stdout("\nXPATH: $xpath");
-                /////////////
+                if( $this->debugAPI )
+                {
+                    //intermediate, remove it later on
+                    PH::print_stdout("\nXPATH: $xpath");
+                    /////////////
+                }
+
 
 
                 foreach( $plus as $element )
                 {
-                    //PH::print_stdout( "ADD");
-                    //intermediate, remove it later on
-                    $doc2 = new DOMDocument();
-                    $node = $doc2->importNode($element, true);
-                    $doc2->appendChild($node);
-                    //PH::print_stdout( $doc2->saveXML( $doc2->documentElement) );
-                    //PH::print_stdout( "");
-                    /////////////
+                    if( $element === null )
+                        continue;
 
                     $array = array();
-                    DH::elementToPanSetCommand( 'set', $element, $array );
+
+                    if( $this->debugAPI )
+                    {
+                        PH::print_stdout( "ADD");
+                        //intermediate, remove it later on
+                        $doc2 = new DOMDocument();
+                        $node = $doc2->importNode($element, true);
+                        $doc2->appendChild($node);
+                        PH::print_stdout( $doc2->saveXML( $doc2->documentElement) );
+                        PH::print_stdout( "");
+                        /////////////
+
+                        //finalise work there
+                        DH::elementToPanSetCommandBETA( 'set', $element, $array );
+                    }
+                    else
+                        DH::elementToPanSetCommand( 'set', $element, $array );
+
+
                     foreach( $array as $entry )
                     {
                         if( !in_array( $entry, $this->diff_set ) )
@@ -555,18 +571,26 @@ class DIFF extends UTIL
 
                 foreach( $minus as $element )
                 {
-                    //PH::print_stdout( "REMOVE");
-                    //intermediate, remove it later on
-                    $doc2 = new DOMDocument();
-                    $node = $doc2->importNode($element, true);
-                    $doc2->appendChild($node);
-                    //PH::print_stdout( $doc2->saveXML( $doc2->documentElement) );
-                    //PH::print_stdout( "");
-                    /////////////
-
+                    if( $element === null )
+                        continue;
 
                     $array = array();
-                    DH::elementToPanSetCommand('delete', $element, $array );
+
+                    if( $this->debugAPI )
+                    {
+                        //PH::print_stdout( "REMOVE");
+                        //intermediate, remove it later on
+                        //$doc2 = new DOMDocument();
+                        //$node = $doc2->importNode($element, true);
+                        //$doc2->appendChild($node);
+                        //PH::print_stdout( $doc2->saveXML( $doc2->documentElement) );
+                        //PH::print_stdout( "");
+                        /////////////
+                        DH::elementToPanSetCommandBETA('delete', $element, $array );
+                    }
+                    else
+                        DH::elementToPanSetCommand('delete', $element, $array );
+
                     foreach(  $array as $entry )
                     {
                         if( !in_array( $entry, $this->diff_delete ) )

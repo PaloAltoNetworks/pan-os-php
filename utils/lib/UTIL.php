@@ -1092,8 +1092,10 @@ class UTIL
 
         $this->pan->load_from_domxml($this->xmlDoc, XML_PARSE_BIG_LINES);
 
-        if( $this->outputformatset )
+        if( isset(PH::$args['outputformatset']) )
         {
+            $this->outputformatset = TRUE;
+
             $this->origXmlDoc = new DOMDocument();
             $node = $this->origXmlDoc->importNode($this->pan->xmlroot, true);
             $this->origXmlDoc->appendChild($node);
@@ -1804,6 +1806,9 @@ class UTIL
         {
             $utilDiff = new DIFF( "custom", array(), array(), "" );
             $utilDiff->outputFormatSet = TRUE;
+
+            if( $this->debugAPI )
+                $utilDiff->debugAPI = TRUE;
 
 
             $doc2 = new DOMDocument();

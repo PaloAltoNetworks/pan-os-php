@@ -398,6 +398,8 @@ function updateScriptsyntax( Idx ) {
 
     if( checkedValue )
         message2 += "&shadow-json";
+    else
+        message2 += "&shadow-nojson";
 
     if( locationValue !== "---" && locationValue !== "" )
     {
