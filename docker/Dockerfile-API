@@ -19,7 +19,6 @@ COPY appid-toolbox /var/www/html/appid-toolbox
 COPY lib /var/www/html/lib
 COPY phpseclib /var/www/html/phpseclib
 COPY git-php /var/www/html/git-php
-COPY git-php /tools/pan-os-php/git-php
 COPY utils /var/www/html/utils
 COPY tests /var/www/html/tests
 COPY log /var/www/html/log

@@ -86,11 +86,17 @@ class PLAYBOOK__
             if( !isset(PH::$args['in']) )
                 $input = $details['in'];
 
-            if( !isset(PH::$args['out']) )
+            if( !isset(PH::$args['out']) && !$this->isAPI )
                 $output = $details['out'];
 
-            if( !isset(PH::$args['stagename']) )
-                $stage_name = $details['stagename'];
+            if( !isset(PH::$args['stagename']) && !$this->isAPI )
+            {
+                if( !isset( $details['stagename'] ) )
+                    derr( "argument 'stagename' missing ", null, false );
+                else
+                    $stage_name = $details['stagename'];
+            }
+
 
             $command_array = $details['command'];
         }
