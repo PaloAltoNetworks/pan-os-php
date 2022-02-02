@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 FOLDER_PATH="/tools/pan-os-php"
-USER_VAR="root"
+USER_VAR="/root"
 
 
 echo "START \"install PAN-OS-PHP on CENTOS\"" \
@@ -31,16 +31,7 @@ echo "START \"install PAN-OS-PHP on CENTOS\"" \
 && echo "INSTALLATION via GIT" \
 && GIT_SSL_NO_VERIFY=true git clone https://github.com/PaloAltoNetworks/pan-os-php.git \
 && echo "" \
-&& echo "" \
-&& echo "" \
-&& echo "\"set path variables\"" \
-&& echo "include_path = '${FOLDER_PATH}'" | tee -a /etc/php.ini \
-&& echo "" \
-&& echo "set user bash profile"   \
-&& cat ${FOLDER_PATH}/utils/alias.sh >> /${USER_VAR}/.bashrc \
 && chmod -R 777 ${FOLDER_PATH} \
-&& echo "" \
-&& cat ${FOLDER_PATH}/utils/bash_autocompletion/enable_bash.txt >> /${USER_VAR}/.bashrc \
 && echo "" \
 && cp ${FOLDER_PATH}/utils/bash_autocompletion/pan-os-php.sh /usr/share/bash-completion/completions/pan-os-php \
 && echo "" \
@@ -59,12 +50,22 @@ echo "START \"install PAN-OS-PHP on CENTOS\"" \
 && chsh -s /usr/local/bin/bash \
 && echo "" \
 && echo "" \
-&& echo "check if everything is successfully installed" \
-&& php -r "require('lib/pan_php_framework.php');print \"PAN-OS-PHP LIBRARY - OK INSTALL SUCCESSFUL\n\";" \
-&& echo "" \
-&& echo "" \
 && GIT_SSL_NO_VERIFY=true git submodule init \
 && GIT_SSL_NO_VERIFY=true git submodule update --remote \
+&& echo "" \
+&& echo "" \
+&& echo "" \
+&& echo "" \
+&& echo "" \
+&& echo "" \
+&& echo "set user bash profile"   \
+&& cat ${FOLDER_PATH}/utils/alias.sh >> ${USER_VAR}/.bashrc \
+&& echo "" \
+&& cat ${FOLDER_PATH}/utils/bash_autocompletion/enable_bash.txt >> ${USER_VAR}/.bashrc \
+&& echo "" \
+&& echo "" \
+&& echo "check if everything is successfully installed" \
+&& php -r "require('lib/pan_php_framework.php');print \"PAN-OS-PHP LIBRARY - OK INSTALL SUCCESSFUL\n\";" \
 && echo "" \
 && echo "" \
 && echo "END script"
