@@ -2,6 +2,7 @@
 
 FOLDER_PATH="/tools/pan-os-php"
 USER_VAR=$USER
+USER_FOLDER_PATH="/Users/"$USER
 PHP_VAR="8.0"
 
 echo "START \"install script for MACOS\"" \
@@ -15,9 +16,7 @@ echo "START \"install script for MACOS\"" \
 && echo "" \
 && echo "\"install bash_autocompletion\"" \
 && brew install bash-completion \
-&& echo "additional settings needed:" \
-&& echo "Add info to ~/.bash-profile" \
-&& echo 'source "/Users/swaschkut/Documents/PAN_scripting/pan-c_misc_scripts/alias.sh"' \
+&& echo "" \
 && echo "" \
 && echo "if [ -f $(brew --prefix)/etc/bash_completion ]; then" \
 && echo ". $(brew --prefix)/etc/bash_completion" \
@@ -42,17 +41,7 @@ echo "START \"install script for MACOS\"" \
 && echo "INSTALLATION via GIT" \
 && GIT_SSL_NO_VERIFY=true git clone https://github.com/PaloAltoNetworks/pan-os-php.git \
 && echo "" \
-&& echo "" \
-&& echo "" \
-&& echo "\"set path variables\"" \
-&& echo "include_path = '${FOLDER_PATH}'" | tee -a /etc/php.ini \
-&& echo "" \
-&& echo "" \
-&& echo "set user bash profile"   \
-&& cat ${FOLDER_PATH}/utils/alias.sh >> /${USER_VAR}/.bashrc \
 && chmod -R 777 ${FOLDER_PATH} \
-&& echo "" \
-&& cat ${FOLDER_PATH}/utils/bash_autocompletion/enable_bash.txt >> /${USER_VAR}/.bashrc \
 && echo "" \
 && cp ${FOLDER_PATH}/utils/bash_autocompletion/pan-os-php.sh /usr/share/bash-completion/completions/pan-os-php \
 && echo "" \
@@ -67,10 +56,16 @@ echo "START \"install script for MACOS\"" \
 && echo "chpass -s /usr/local/bin/bash ${USER_VAR}" \
 && echo "" \
 && echo "" \
+&& echo "" \
+&& echo "" \
+&& echo "set user bash profile"   \
+&& cat ${FOLDER_PATH}/utils/alias.sh >> ${USER_FOLDER_PATH}/.bashrc \
+&& echo "" \
+&& cat ${FOLDER_PATH}/utils/bash_autocompletion/enable_bash.txt >> ${USER_FOLDER_PATH}/.bashrc \
+&& echo "" \
+&& echo "" \
 && echo "check if everything is successfully installed" \
 && php -r "require('lib/pan_php_framework.php');print \"PAN-OS-PHP LIBRARY - OK INSTALL SUCCESSFUL\n\";" \
-&& echo "" \
-&& echo "" \
 && echo "" \
 && echo "" \
 && echo "END script"
