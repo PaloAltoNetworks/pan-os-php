@@ -1704,15 +1704,17 @@ class UTIL
         {
             if( $this->configOutput != '/dev/null' )
             {
-                if( PH::$shadow_json )
+                if( $this->configOutput != 'true' )
                 {
-                    //store it JSON out
-                    PH::$JSON_TMP['xmldoc'] = &DH::dom_to_xml($this->pan->xmlroot, $indentingXml, $lineReturn, -1, $indentingXmlIncreament);
-                    PH::print_stdout(PH::$JSON_TMP, false, "out");
-                    PH::$JSON_TMP = array();
-                }
-                elseif( $this->configOutput != 'true' )
-                {
+                    if( PH::$shadow_json )
+                    {
+                        //store it JSON out
+                        PH::$JSON_TMP['xmldoc'] = &DH::dom_to_xml($this->pan->xmlroot, $indentingXml, $lineReturn, -1, $indentingXmlIncreament);
+                        PH::print_stdout(PH::$JSON_TMP, false, "out");
+                        PH::$JSON_TMP = array();
+                    }
+
+
                     // destroy destination file if it exists
                     if( file_exists($this->configOutput) && is_file($this->configOutput) )
                         unlink($this->configOutput);
