@@ -791,10 +791,8 @@ class UTIL
             else
             {
                 $message = "\n\n**ERROR** " . $this->configInput['msg'] . "\n\n";
-                if( !isset(PH::$args['shadow-json']) )
-                {
+                if( !PH::$shadow_json )
                     fwrite(STDERR, $message);
-                }
                 else
                 {
                     $e = new Exception($message, 404);
