@@ -13,6 +13,7 @@ BUGFIX:
 GENERAL:
 * framework - update predefined to version 8519-7206
 * update install scripts as for example ubuntu installation is only working correctly if root user is used
+* framework - introduce update_pan-os-php.sh script
 
 
 2.0.28 (20220124)
