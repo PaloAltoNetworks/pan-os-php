@@ -555,7 +555,12 @@ class ServiceStore
             {
                 $this->_serviceObjects[$objectName] = $s;
                 if( $rewriteXml )
+                {
+                    if( $this->serviceRoot == null )
+                        $this->serviceRoot = DH::findFirstElementOrCreate( 'service', $this->owner->xmlroot );
                     $this->serviceRoot->appendChild($s->xmlroot);
+                }
+
             }
 
             $this->_all[$objectName] = $s;
@@ -566,7 +571,12 @@ class ServiceStore
             $this->_all[$objectName] = $s;
 
             if( $rewriteXml )
+            {
+                if( $this->serviceGroupRoot == null )
+                    $this->serviceGroupRoot = DH::findFirstElementOrCreate( 'service-group', $this->owner->xmlroot );
                 $this->serviceGroupRoot->appendChild($s->xmlroot);
+            }
+
         }
         else
             derr('invalid class found');

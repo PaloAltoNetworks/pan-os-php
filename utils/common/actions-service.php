@@ -525,7 +525,7 @@ ServiceCallContext::$supportedActions[] = array(
             if( $object->isGroup() )
             {
                 foreach( $object->members() as $memberObject )
-                    if( $targetStore->find($memberObject->name()) === null )
+                    if( $targetStore->find($memberObject->name(), null, true) === null )
                     {
                         $string = "this group has an object named '{$memberObject->name()} that does not exist in target location '{$targetLocation}'";
                         PH::ACTIONstatus( $context, "SKIPPED", $string );

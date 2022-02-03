@@ -233,7 +233,7 @@ trait ReferenceableObject
         $location_array = array();
         foreach( $this->refrules as $cur )
         {
-            if( isset($cur->owner->owner->owner) && $cur->owner->owner->owner !== null )
+            if( isset($cur->owner->owner->owner) && $cur->owner->owner->owner !== null && $cur->owner->owner->owner->name() !== "")
                 $location_array[$cur->owner->owner->owner->name()] = $cur->owner->owner->owner->name();
 
             if( get_class( $cur ) == "AddressGroup" ||get_class( $cur ) == "ServiceGroup"  )
