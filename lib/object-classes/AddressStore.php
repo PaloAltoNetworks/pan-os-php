@@ -562,6 +562,9 @@ class AddressStore
             else
             {
                 $this->_addressObjects[$objectName] = $s;
+
+                if( $this->addressRoot == null )
+                    $this->addressRoot = DH::findFirstElementOrCreate( 'address', $this->owner->xmlroot );
                 $this->addressRoot->appendChild($s->xmlroot);
             }
 
@@ -572,8 +575,10 @@ class AddressStore
             $this->_addressGroups[$objectName] = $s;
             $this->_all[$objectName] = $s;
 
-            $this->addressGroupRoot->appendChild($s->xmlroot);
+            if( $this->addressGroupRoot == null )
+                $this->addressGroupRoot = DH::findFirstElementOrCreate( 'address-group', $this->owner->xmlroot );
 
+            $this->addressGroupRoot->appendChild($s->xmlroot);
         }
         else
             derr('invalid class found');

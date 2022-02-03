@@ -79,6 +79,7 @@ alias pa_software-downloader='php -r "require_once '"'"'utils/pan_software_downl
 alias pa_software-preparation='php -r "require_once '"'"'utils/pan_software_download_preparation.php'"'"';" $@'
 
 alias pa_license='php -r "require_once '"'"'utils/pan_license.php'"'"';" $@'
+alias pa_config-download-all='php -r "require_once '"'"'utils/develop/download_config_all.php'"'"';" $@'
 ##########################################################################################
 # until here all scripts above are deprecated and supported by pan-os-php type=
 ##########################################################################################
@@ -98,7 +99,7 @@ alias pa_appidtoolbox-rule-marker='php -r "require_once '"'"'appid-toolbox/rule-
 alias pa_ckp-exclude='php -r "require_once '"'"'utils/develop/checkpoint-exclude.php'"'"';" $@'
 
 alias pa_csv-import='php -r "require_once '"'"'utils/develop/csv-import.php'"'"';" $@'
-alias pa_config-download-all='php -r "require_once '"'"'utils/develop/download_config_all.php'"'"';" $@'
+
 
 alias pa_ike='php -r "require_once '"'"'utils/develop/ike.php'"'"';" $@'
 
