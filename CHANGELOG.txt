@@ -4,6 +4,7 @@ CHANGELOG
 UTILS:
 * UTIL type=tag-merger | introduce help info for dupalgorithm=SameName
 * UTIL all types | argument "outputformatset" status BETA - return all "set/delete commands" done by a PAN-OS-PHP UTIL script
+* class UTIL | improve error handling for file not found if shadow-json is used
 
 BUGFIX:
 * UTIL type=device | actions=securityprofile-create-alert-only - bugfix for PAN-OS 8.1 - including fix for ironskillet download

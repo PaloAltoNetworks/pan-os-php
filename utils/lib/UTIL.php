@@ -790,7 +790,16 @@ class UTIL
             }
             else
             {
-                fwrite(STDERR, "\n\n**ERROR** " . $this->configInput['msg'] . "\n\n");
+                $message = "\n\n**ERROR** " . $this->configInput['msg'] . "\n\n";
+                if( !isset(PH::$args['shadow-json']) )
+                {
+                    fwrite(STDERR, $message);
+                }
+                else
+                {
+                    $e = new Exception($message, 404);
+                    print json_encode(["error" => $e->getMessage() ]);
+                }
                 exit(1);
             }
         }
