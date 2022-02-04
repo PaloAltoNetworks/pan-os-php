@@ -62,6 +62,8 @@ class PLAYBOOK__
 
         if( isset(PH::$args['stagename']) )
             $stage_name = PH::$args['stagename'];
+        else
+            $stage_name = "";
 
         //check if $input argument has "api://"
         if( isset(PH::$args['in'] ) && strpos( PH::$args['in'], "api://" ) !== FALSE )
