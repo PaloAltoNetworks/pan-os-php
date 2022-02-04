@@ -70,20 +70,49 @@ SecurityProfileGroupCallContext::$supportedActions[] = array(
 
         $ret = TRUE;
 
+        //Todo: check if $profName is available
         if( $type == 'virus' )
-            $ret = $secprofgroup->setSecProf_AV($profName);
+        {
+            $found = $secprofgroup->owner->owner->AntiVirusProfileStore->find( $profName, null, true );
+            if( $found )
+                $ret = $secprofgroup->setSecProf_AV($profName);
+        }
         elseif( $type == 'vulnerability' )
-            $ret = $secprofgroup->setSecProf_Vuln($profName);
+        {
+            $found = $secprofgroup->owner->owner->VulnerabilityProfileStore->find( $profName, null, true );
+            if( $found )
+                $ret = $secprofgroup->setSecProf_Vuln($profName);
+        }
         elseif( $type == 'url-filtering' )
-            $ret = $secprofgroup->setSecProf_URL($profName);
+        {
+            $found = $secprofgroup->owner->owner->URLProfileStore->find( $profName, null, true );
+            if( $found )
+                $ret = $secprofgroup->setSecProf_URL($profName);
+        }
         elseif( $type == 'data-filtering' )
-            $ret = $secprofgroup->setSecProf_DataFilt($profName);
+        {
+            $found = $secprofgroup->owner->owner->DataFilteringProfileStore->find( $profName, null, true );
+            if( $found )
+                $ret = $secprofgroup->setSecProf_DataFilt($profName);
+        }
         elseif( $type == 'file-blocking' )
-            $ret = $secprofgroup->setSecProf_FileBlock($profName);
+        {
+            $found = $secprofgroup->owner->owner->FileBlockingProfileStore->find( $profName, null, true );
+            if( $found )
+                $ret = $secprofgroup->setSecProf_FileBlock($profName);
+        }
         elseif( $type == 'spyware' )
-            $ret = $secprofgroup->setSecProf_Spyware($profName);
+        {
+            $found = $secprofgroup->owner->owner->AntiSpywareProfileStore->find( $profName, null, true );
+            if( $found )
+                $ret = $secprofgroup->setSecProf_Spyware($profName);
+        }
         elseif( $type == 'wildfire' )
-            $ret = $secprofgroup->setSecProf_Wildfire($profName);
+        {
+            $found = $secprofgroup->owner->owner->WildfireProfileStore->find( $profName, null, true );
+            if( $found )
+                $ret = $secprofgroup->setSecProf_Wildfire($profName);
+        }
         else
             derr("unsupported profile type '{$type}'");
 
@@ -95,16 +124,22 @@ SecurityProfileGroupCallContext::$supportedActions[] = array(
         }
 
 
-        if( $context->isAPI )
+        if( $found !== null )
         {
-            $xpath = $secprofgroup->getXPath();
-            $con = findConnectorOrDie($secprofgroup);
-            $con->sendEditRequest($xpath, DH::dom_to_xml($secprofgroup->xmlroot, -1, FALSE));
+            if( $context->isAPI )
+            {
+                $xpath = $secprofgroup->getXPath();
+                $con = findConnectorOrDie($secprofgroup);
+                $con->sendEditRequest($xpath, DH::dom_to_xml($secprofgroup->xmlroot, -1, FALSE));
+            }
+            else
+                $secprofgroup->rewriteXML();
         }
         else
-            #$secprofgroup->rewriteSecProfXML();
-            $secprofgroup->rewriteXML();
-
+        {
+            $string = "Securityprofile: '".$profName."' NOT found - can not be added to this SecurityProfile Group: '".$secprofgroup->name()."'";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+        }
     },
     'args' => array('type' => array('type' => 'string', 'default' => '*nodefault*',
         'choices' => array('virus', 'vulnerability', 'url-filtering', 'data-filtering', 'file-blocking', 'spyware', 'wildfire')),
