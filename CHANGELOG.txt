@@ -1,6 +1,14 @@
 CHANGELOG
 
-2.0.29
+2.0.30
+UTILS:
+
+BUGFIX:
+
+GENERAL:
+
+
+2.0.29 (20220204)
 UTILS:
 * UTIL type=tag-merger | introduce help info for dupalgorithm=SameName
 * UTIL all types | argument "outputformatset" status BETA - return all "set/delete commands" done by a PAN-OS-PHP UTIL script
