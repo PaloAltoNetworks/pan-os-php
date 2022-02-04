@@ -1184,6 +1184,9 @@ DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = arra
                     $av->load_from_domxml($node);
                     $av->owner = null;
                     $store->addSecurityProfile($av);
+
+                    if( $context->isAPI )
+                        $av->API_sync();
                 }
 
                 $as = $sharedStore->AntiSpywareProfileStore->find($name . "-AS");
@@ -1205,6 +1208,9 @@ DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = arra
                     $as->load_from_domxml($node);
                     $as->owner = null;
                     $store->addSecurityProfile($as);
+
+                    if( $context->isAPI )
+                        $as->API_sync();
                 }
 
                 $vp = $sharedStore->VulnerabilityProfileStore->find($name . "-VP");
@@ -1221,6 +1227,9 @@ DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = arra
                     $vp->load_from_domxml($node);
                     $vp->owner = null;
                     $store->addSecurityProfile($vp);
+
+                    if( $context->isAPI )
+                        $vp->API_sync();
                 }
 
                 $url = $sharedStore->URLProfileStore->find($name . "-URL");
@@ -1242,6 +1251,9 @@ DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = arra
                     $url->load_from_domxml($node);
                     $url->owner = null;
                     $store->addSecurityProfile($url);
+
+                    if( $context->isAPI )
+                        $url->API_sync();
                 }
 
                 $fb = $sharedStore->FileBlockingProfileStore->find($name . "-FB");
@@ -1258,6 +1270,9 @@ DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = arra
                     $fb->load_from_domxml($node);
                     $fb->owner = null;
                     $store->addSecurityProfile($fb);
+
+                    if( $context->isAPI )
+                        $fb->API_sync();
                 }
 
                 $wf = $sharedStore->WildfireProfileStore->find($name . "-WF");
@@ -1274,6 +1289,9 @@ DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = arra
                     $wf->load_from_domxml($node);
                     $wf->owner = null;
                     $store->addSecurityProfile($wf);
+
+                    if( $context->isAPI )
+                        $wf->API_sync();
                 }
 
                 $secprofgrp = $sharedStore->securityProfileGroupStore->find($name);
@@ -1290,19 +1308,12 @@ DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = arra
 
 
                     $sharedStore->securityProfileGroupStore->addSecurityProfileGroup($secprofgrp);
+
+                    if( $context->isAPI )
+                        $secprofgrp->API_sync();
                 }
 
-
-                if( $context->isAPI )
-                {
-                    $av->API_sync();
-                    $as->API_sync();
-                    $vp->API_sync();
-                    $url->API_sync();
-                    $fb->API_sync();
-                    $wf->API_sync();
-                    $secprofgrp->API_sync();
-                }
+                
                 $context->first = false;
             }
         }
