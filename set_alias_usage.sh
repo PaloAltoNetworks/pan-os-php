@@ -2,7 +2,13 @@
 
 FOLDER_PATH="/tools/pan-os-php"
 USER_VAR=$USER
-USER_FOLDER_PATH="/home/"$USER
+
+if [ "$USER" = "root" ]; then
+    USER_FOLDER_PATH="/"$USER
+else
+    USER_FOLDER_PATH="/home/"$USER
+fi
+
 
 
 echo "START \"PAN-OS-PHP variables on UBUNTU\"" \
