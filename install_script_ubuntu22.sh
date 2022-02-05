@@ -4,6 +4,9 @@ FOLDER_PATH="/tools/pan-os-php"
 USER_VAR="/home/"$USER
 PHP_VAR="8.1"
 
+PHPINI="/etc/php/${PHP_VAR}/cli/php.ini"
+check="include_path = '${FOLDER_PATH}'"
+
 echo "START \"install PAN-OS-PHP on UBUNTU\"" \
 && apt update -y \
 && echo "" \
@@ -18,27 +21,32 @@ echo "START \"install PAN-OS-PHP on UBUNTU\"" \
 && mkdir -p /tools ; cd /tools \
 && echo "extract everything to /tools and rename it to pan-os-php" \
 && echo "" \
+&& rm -rf pan-os-php \
 && echo "INSTALLATION via GIT" \
 && GIT_SSL_NO_VERIFY=true git clone https://github.com/PaloAltoNetworks/pan-os-php.git \
 && echo "" \
-&& echo "set path variables" \
-&& echo "include_path = '${FOLDER_PATH}'" | tee -a /etc/php/${PHP_VAR}/cli/php.ini \
-&& echo "" \
+&& echo "set path variables"
+
+if grep -Fxq "$check" ${PHPINI}
+  then
+    echo "" \
+    && echo "already available in: ${PHPINI}"
+  else
+    echo "" \
+    && echo $check >> ${PHPINI} \
+    && echo "set in: ${PHPINI}"
+  fi
+
+echo "" \
 && cp ${FOLDER_PATH}/utils/bash_autocompletion/pan-os-php.sh /usr/share/bash-completion/completions/pan-os-php \
 && echo "" \
-&& chmod -R 777 ${FOLDER_PATH} \
-&& echo "" \
+&& cd ${FOLDER_PATH} \
 && GIT_SSL_NO_VERIFY=true git submodule init \
 && GIT_SSL_NO_VERIFY=true git submodule update --remote \
 && echo "" \
 && echo "" \
-&& echo "set user bash profile"   \
-&& cat ${FOLDER_PATH}/utils/alias.sh >> ${USER_VAR}/.bashrc \
 && echo "" \
-&& cat ${FOLDER_PATH}/utils/bash_autocompletion/enable_bash.txt >> ${USER_VAR}/.bashrc \
-&& echo "" \
-&& echo "" \
-&& echo "check if everything is successfully installed" \
-&& php -r "require('lib/pan_php_framework.php');print \"PAN-OS-PHP LIBRARY - OK INSTALL SUCCESSFUL\n\";" \
+&& echo "you need to run now with your none priviledge user the following command:" \
+&& echo "sh /tools/pan-os-php/set_alias_usage.sh" \
 && echo "" \
 && echo "END script"
