@@ -29,6 +29,9 @@ echo "START \"install PAN-OS-PHP on CENTOS\"" \
 && echo "INSTALLATION via GIT" \
 && GIT_SSL_NO_VERIFY=true git clone https://github.com/PaloAltoNetworks/pan-os-php.git \
 && echo "" \
+&& echo "\"set path variables\"" \
+&& echo "include_path = '${FOLDER_PATH}'" | tee -a /etc/php.ini \
+&& echo "" \
 && chmod -R 777 ${FOLDER_PATH} \
 && echo "" \
 && cp ${FOLDER_PATH}/utils/bash_autocompletion/pan-os-php.sh /usr/share/bash-completion/completions/pan-os-php \
