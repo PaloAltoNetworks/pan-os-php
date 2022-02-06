@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 FOLDER_PATH="/tools/pan-os-php"
-USER_VAR="/root"
+USER_VAR="/home/"$USER
 
 PHPINI="/etc/php.ini"
 check="include_path = '${FOLDER_PATH}'"
@@ -11,14 +11,14 @@ echo "START \"install PAN-OS-PHP on CENTOS\"" \
 && echo "" \
 && echo "\"install tzdata\"" \
 && yum -y update tzdata \
-&& yum -y install bash-completion \
+&& yum -y install bash-completion bash-completion-extras \
 && echo "" \
-&& echo "" \
-&& dnf -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm \
-&& dnf -y install https://rpms.remirepo.net/enterprise/remi-release-8.rpm \
-&& dnf -y install yum-utils \
-&& dnf -y module reset php \
-&& dnf -y module install php:remi-8.0 \
+&& yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm \
+&& echo "vi /etc/yum.repos.d/epel.repo" \
+&& echo "comment meta-link; uncomment base" \
+&& yum -y install http://rpms.remirepo.net/enterprise/remi-release-7.rpm \
+&& yum -y install yum-utils \
+&& yum-config-manager --enable remi-php56 \
 && echo "" \
 && echo "" \
 && yum -y install php php-cli php-fpm php-json php-intl php-curl php-dom php-mbstring php-bcmath && yum clean all \
@@ -60,10 +60,9 @@ echo "" \
 && echo "THIS IS NOT WORKING for CENTOS install script" \
 && echo "yes | cp /usr/local/bin/bash /bin/bash" \
 && echo "" \
-&& dnf -y install util-linux-user \
+&& yum -y install util-linux-user \
 && echo '/usr/local/bin/bash' >> /etc/shells \
 && chsh -s /usr/local/bin/bash \
-&& echo "" \
 && echo "" \
 && cd ${FOLDER_PATH} \
 && GIT_SSL_NO_VERIFY=true git submodule init \
@@ -73,5 +72,9 @@ echo "" \
 && echo "" \
 && echo "you need to run now with your none priviledge user the following command:" \
 && echo "sh /tools/pan-os-php/set_alias_usage.sh" \
+&& echo "" \
+&& echo "" \
+&& echo " and for CENTOS7" \
+&& echo "chsh -s /usr/local/bin/bash" \
 && echo "" \
 && echo "END script"
