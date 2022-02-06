@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 FOLDER_PATH="/tools/pan-os-php"
-USER_VAR="/root"
+USER_VAR="/home/"$USER
 
 PHPINI="/etc/php.ini"
 check="include_path = '${FOLDER_PATH}'"
@@ -11,12 +11,16 @@ echo "START \"install PAN-OS-PHP on CENTOS\"" \
 && echo "" \
 && echo "\"install tzdata\"" \
 && yum -y update tzdata \
-&& yum -y install bash-completion bash-completion-extras \
+&& yum -y install bash-completion \
 && echo "" \
-&& yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm \
+&& yum -y install epel-release \
+&& echo "" \
+&& echo "vi /etc/yum.repos.d/epel.repo" \
+&& echo "comment meta-link; uncomment base" \
+&& echo "" \
 && yum -y install http://rpms.remirepo.net/enterprise/remi-release-7.rpm \
 && yum -y install yum-utils \
-&& yum-config-manager --enable remi-php56 \
+&& yum-config-manager --enable remi-php74 \
 && echo "" \
 && echo "" \
 && yum -y install php php-cli php-fpm php-json php-intl php-curl php-dom php-mbstring php-bcmath && yum clean all \
@@ -51,14 +55,12 @@ echo "" \
 && echo "" \
 && yum -y install curl \
 && yum -y groupinstall "Development Tools" \
-&& curl -O https://ftp.gnu.org/gnu/bash/bash-5.0.tar.gz \
+&& curl -O --insecure https://ftp.gnu.org/gnu/bash/bash-5.0.tar.gz \
 && tar xvf bash-5.0.tar.gz \
 && cd bash-5.0 && ./configure && make && make install \
 && echo "" \
-&& echo "THIS IS NOT WORKING for CENTOS install script" \
-&& echo "yes | cp /usr/local/bin/bash /bin/bash" \
+&& echo "change bash" \
 && echo "" \
-&& yum -y install util-linux-user \
 && echo '/usr/local/bin/bash' >> /etc/shells \
 && chsh -s /usr/local/bin/bash \
 && echo "" \
@@ -70,5 +72,9 @@ echo "" \
 && echo "" \
 && echo "you need to run now with your none priviledge user the following command:" \
 && echo "sh /tools/pan-os-php/set_alias_usage.sh" \
+&& echo "" \
+&& echo "" \
+&& echo " and for CENTOS7" \
+&& echo "chsh -s /usr/local/bin/bash" \
 && echo "" \
 && echo "END script"
