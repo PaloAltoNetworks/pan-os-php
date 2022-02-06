@@ -18,7 +18,9 @@ echo "START \"install PAN-OS-PHP on CENTOS\"" \
 && echo "vi /etc/yum.repos.d/epel.repo" \
 && echo "comment meta-link; uncomment base" \
 && echo "" \
-&& yum -y install http://rpms.remirepo.net/enterprise/remi-release-7.rpm \
+&& yum -y install http://rpms.remirepo.net/enterprise/remi-release-7.rpm
+
+echo "" \
 && yum -y install yum-utils \
 && yum-config-manager --enable remi-php74 \
 && echo "" \
@@ -29,7 +31,8 @@ echo "START \"install PAN-OS-PHP on CENTOS\"" \
 && echo "" \
 && yum -y install git \
 && echo "" \
-&& mkdir -p /tools ; cd /tools \
+&& mkdir -p /tools \
+&& cd /tools \
 && echo "extract everything to /tools and rename it to pan-os-php" \
 && echo "" \
 && rm -rf pan-os-php \
