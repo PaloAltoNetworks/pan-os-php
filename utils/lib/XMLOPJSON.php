@@ -60,9 +60,10 @@ class XMLOPJSON extends UTIL
 
             if( $this->configInput['type'] == 'api' )
             {
+                $xml_string = "";
                 if( $cycleConnectedFirewalls && $this->configType == 'panorama' )
                 {
-                    $xml_string = "";
+                    $xml_string = "<root>";
 
                     $firewallSerials = $connector->panorama_getConnectedFirewallsSerials();
 
@@ -81,8 +82,13 @@ class XMLOPJSON extends UTIL
                         $response->preserveWhiteSpace = false;
                         $response->formatOutput = true;
 
-                        $xml_string .= $response->saveXML($response->documentElement);
+                        $serial = $fw['serial'];
+                        $hostname = $fw['hostname'];
+                        $responseString = $response->saveXML($response->documentElement);
+
+                        $xml_string .= "<entry serial='$serial' hostname='$hostname'>".$responseString."</entry>";
                     }
+                    $xml_string .= "</root>";
                 }
                 else
                 {
