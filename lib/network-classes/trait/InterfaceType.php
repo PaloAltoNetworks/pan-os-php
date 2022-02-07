@@ -172,4 +172,88 @@ trait InterfaceType
 
         return $ret;
     }
+
+    public function display()
+    {
+        $object = $this;
+
+        PH::print_stdout("     * ".get_class($object)." '{$object->name()}'" );
+        PH::$JSON_TMP['sub']['object'][$object->name()]['name'] = $object->name();
+        PH::$JSON_TMP['sub']['object'][$object->name()]['type'] = get_class($object);
+
+        //Todo: optimization needed, same process as for other utiles
+
+        $text = "       - " . $object->type . " - ";
+
+        if( $object->type == "layer3" || $object->type == "virtual-wire" || $object->type == "layer2" )
+        {
+            if( $object->isSubInterface() )
+            {
+                $text .= "subinterface - ";
+                PH::$JSON_TMP['sub']['object'][$object->name()][$object->type]['subinterface'] = "yes";
+                PH::$JSON_TMP['sub']['object'][$object->name()][$object->type]['subinterfacecount'] = "0";
+            }
+
+            else
+            {
+                $text .= "count subinterface: " . $object->countSubInterfaces() . " - ";
+                PH::$JSON_TMP['sub']['object'][$object->name()][$object->type]['subinterface'] = "false";
+                PH::$JSON_TMP['sub']['object'][$object->name()][$object->type]['subinterfacecount'] = $object->countSubInterfaces();
+            }
+
+        }
+        elseif( $object->type == "aggregate-group" )
+        {
+            $text .= "".$object->ae()." - ";
+            PH::$JSON_TMP['sub']['object'][$object->name()][$object->type]['ae'] = $object->ae();
+        }
+
+
+        if( $object->type == "layer3" )
+        {
+            $text .= "ip-addresse(s): ";
+            foreach( $object->getLayer3IPv4Addresses() as $ip_address )
+            {
+                if( strpos( $ip_address, "." ) !== false )
+                {
+                    $text .= $ip_address . ",";
+                    PH::$JSON_TMP['sub']['object'][$object->name()][$object->type]['ipaddress'][] = $ip_address;
+                }
+
+                else
+                {
+                    #$object = $sub->addressStore->find( $ip_address );
+                    #PH::print_stdout( $ip_address." ({$object->value()}) ,");
+                }
+            }
+        }
+        elseif( $object->type == "tunnel" || $object->type == "loopback" || $object->type == "vlan"  )
+        {
+            $text .= ", ip-addresse(s): ";
+            foreach( $object->getIPv4Addresses() as $ip_address )
+            {
+                if( strpos( $ip_address, "." ) !== false )
+                {
+                    $text .= $ip_address . ",";
+                    PH::$JSON_TMP['sub']['object'][$object->name()][$object->type]['ipaddress'][] = $ip_address;
+                }
+
+                else
+                {
+                    #$object = $sub->addressStore->find( $ip_address );
+                    #PH::print_stdout($text); $ip_address." ({$object->value()}) ,");
+                }
+            }
+        }
+        elseif( $object->type == "auto-key" )
+        {
+            $text .= " - IPsec config";
+            $text .= " - IKE gateway: " . $object->gateway;
+            $text .= " - interface: " . $object->interface;
+            PH::$JSON_TMP['sub']['object'][$object->name()][$object->type]['ike']['gw'] = $object->gateway;
+            PH::$JSON_TMP['sub']['object'][$object->name()][$object->type]['ike']['interface'] = $object->interface;
+        }
+
+        PH::print_stdout( $text );
+    }
 }

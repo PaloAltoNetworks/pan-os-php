@@ -61,4 +61,9 @@ trait PanSubHelperTrait
     {
         FALSE;
     }
+
+    public function isManagedDevice()
+    {
+        FALSE;
+    }
 }

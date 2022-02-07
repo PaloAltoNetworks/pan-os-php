@@ -2,6 +2,7 @@ CHANGELOG
 
 2.0.30
 UTILS:
+* UTIL pan-os-php type=device | introduce actions=find-zone-from-IP:IPADDRESS (working on devicetype=virtualsystem / mangageddevice)
 
 BUGFIX:
 

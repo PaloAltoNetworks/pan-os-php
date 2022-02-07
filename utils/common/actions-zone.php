@@ -609,7 +609,7 @@ ZoneCallContext::$supportedActions['logsetting-set'] = array(
     ),
 );
 
-ZoneCallContext::$supportedActions[] = array(
+ZoneCallContext::$supportedActions['exportToExcel'] = array(
     'name' => 'exportToExcel',
     'MainFunction' => function (ZoneCallContext $context) {
         $object = $context->object;
@@ -812,3 +812,4 @@ ZoneCallContext::$supportedActions[] = array(
     )
 
 );
+

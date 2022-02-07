@@ -351,6 +351,7 @@ class VirtualRouter
                     }
                     else
                     {
+
                         $record = array('network' => $route->destination(), 'start' => $ipv4Mapping['start'], 'end' => $ipv4Mapping['end'], 'zone' => $findZone->name(), 'origin' => 'static', 'priority' => 2);
                         $ipv4sort[$record['end'] - $record['start']][$record['start']][] = &$record;
                         unset($record);
@@ -479,18 +480,36 @@ class VirtualRouter
                         {
                             $ex = explode('/', $mapEntry['network']);
                             if( filter_var($ex[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== FALSE )
+                            {
                                 $network = long2ip($mapEntry['start']) . '-' . long2ip($mapEntry['end']);
+
+                                $record = array('network' => $network,
+                                    'start' => $mapEntry['start'],
+                                    'end' => $mapEntry['end'],
+                                    'zone' => $v4recordFromOtherVr['zone'],
+                                    'origin' => 'static',
+                                    'priority' => 2);
+                            }
+
                             else
-                                $network = cidr::inet_itop($mapEntry['start']) . '-' . cidr::inet_itop($mapEntry['end']);
+                            {
+                                #$network = cidr::inet_itop($mapEntry['start']) . '-' . cidr::inet_itop($mapEntry['end']);
 
+                                $network = cidr::inet_itop($mapEntry['start']);
+                                $record = array();
+                                $record = array('network' => $network,
+                                    'start' => $mapEntry['start'],
+                                    'end' => $mapEntry['end'],
+                                    'zone' => $v4recordFromOtherVr['zone'],
+                                    'origin' => 'static',
+                                    'priority' => 2);
+                            }
 
-                            $record = array('network' => $network,
-                                'start' => $mapEntry['start'],
-                                'end' => $mapEntry['end'],
-                                'zone' => $v4recordFromOtherVr['zone'],
-                                'origin' => 'static',
-                                'priority' => 2);
-                            $ipv4sort[$record['end'] - $record['start']][$record['start']][] = &$record;
+                            if( !empty( $record ) )
+                            {
+                                $ipv4sort[$record['end'] - $record['start']][$record['start']][] = &$record;
+                            }
+
                             unset($record);
                         }
                     }
