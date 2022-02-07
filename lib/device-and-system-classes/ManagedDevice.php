@@ -23,6 +23,7 @@ class ManagedDevice
     use ReferenceableObject;
     use PathableName;
     use XmlConvertible;
+    use PanSubHelperTrait;
 
     /** @var  ManagedDeviceStore */
     public $owner;
@@ -72,5 +73,10 @@ class ManagedDevice
     public function getTemplateStack()
     {
         return $this->template_stack;
+    }
+
+    public function isManagedDevice()
+    {
+        return TRUE;
     }
 }

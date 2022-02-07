@@ -38,8 +38,11 @@ RoutingCallContext::$supportedActions['display'] = Array(
             $text .= " - DEST: " . str_pad($staticRoute->destination(), 20);
             PH::$JSON_TMP['sub']['object'][$object->name()]['staticroute'][$staticRoute->name()]['destination'] = $staticRoute->destination();
 
-            $text .= " - NEXTHOP: " . str_pad($staticRoute->nexthopIP(), 20);
-            PH::$JSON_TMP['sub']['object'][$object->name()]['staticroute'][$staticRoute->name()]['nexthop'] = $staticRoute->nexthopIP();
+            if( $staticRoute->nexthopIP() !== null )
+            {
+                $text .= " - NEXTHOP: " . str_pad($staticRoute->nexthopIP(), 20);
+                PH::$JSON_TMP['sub']['object'][$object->name()]['staticroute'][$staticRoute->name()]['nexthop'] = $staticRoute->nexthopIP();
+            }
 
             if( $staticRoute->nexthopInterface() != null )
             {
