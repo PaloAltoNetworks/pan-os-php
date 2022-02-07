@@ -2358,3 +2358,80 @@ AddressCallContext::$supportedActions[] = array(
         }
     },
 );
+
+AddressCallContext::$supportedActions['create-Address'] = array(
+    'name' => 'create-address',
+    'MainFunction' => function (AddressCallContext $context) {
+    },
+    'GlobalFinishFunction' => function (AddressCallContext $context) {
+
+        $addressStore = $context->subSystem->addressStore;
+
+        $newName = $context->arguments['name'];
+
+        $value = $context->arguments['value'];
+        $type = $context->arguments['type'];
+
+        if( !in_array( $type, Address::$AddressTypes) )
+        {
+            $string = "Address named '" . $newName . "' cannot create as type: ".$type." is not allowed";
+            PH::ACTIONlog( $context, $string );
+            return;
+        }
+
+        if( $addressStore->find( $newName ) === null )
+        {
+            $string = "create Address object : '" . $newName . "'";
+            PH::ACTIONlog( $context, $string );
+
+            if( $context->isAPI )
+                $addressStore->API_newAddress($newName, $type, $value);
+            else
+                $addressStore->newAddress( $newName, $type, $value);
+        }
+        else
+        {
+            $string = "Address named '" . $newName . "' already exists, cannot create";
+            PH::ACTIONlog( $context, $string );
+        }
+
+    },
+    'args' => array(
+        'name' => array('type' => 'string', 'default' => '*nodefault*'),
+        'value' => array('type' => 'string', 'default' => '*nodefault*'),
+        'type' => array('type' => 'string', 'default' => '*nodefault*')
+    )
+);
+
+AddressCallContext::$supportedActions['create-AddressGroup'] = array(
+    'name' => 'create-addressgroup',
+    'MainFunction' => function (AddressCallContext $context) {
+    },
+    'GlobalFinishFunction' => function (AddressCallContext $context) {
+
+        $addressStore = $context->subSystem->addressStore;
+
+        $newName = $context->arguments['name'];
+
+
+        if( $addressStore->find( $newName ) === null )
+        {
+            $string = "create AddressGroup object : '" . $newName . "'";
+            PH::ACTIONlog( $context, $string );
+
+            if( $context->isAPI )
+                $addressStore->API_newAddressGroup($newName);
+            else
+                $addressStore->newAddressGroup( $newName);
+        }
+        else
+        {
+            $string = "AddressGroup named '" . $newName . "' already exists, cannot create";
+            PH::ACTIONlog( $context, $string );
+        }
+
+    },
+    'args' => array(
+        'name' => array('type' => 'string', 'default' => '*nodefault*')
+    )
+);
