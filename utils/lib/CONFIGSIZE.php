@@ -187,7 +187,22 @@ class CONFIGSIZE extends UTIL
                     */
                 }
 
-                $string = str_pad( $padding."<".$nodeName.">", $this->pad_length);
+                $entryArray = array( "device-group", "template", "container", "rules", "address", "address-group", "service", "service-group");
+                $countString = "";
+                if( in_array( $nodeName, $entryArray ) )
+                {
+                    $counter = 0;
+                    foreach( $node->childNodes as $childNode )
+                    {
+                        if( $childNode->nodeType != XML_ELEMENT_NODE )
+                            continue;
+
+                        $counter++;
+                    }
+                    $countString = " [count: ".$counter."]";
+                }
+
+                $string = str_pad( $padding."<".$nodeName.">".$countString, $this->pad_length);
 
 
                 $length2_overhead = $length2-$length_reduced;
