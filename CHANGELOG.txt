@@ -4,6 +4,7 @@ CHANGELOG
 UTILS:
 * UTIL pan-os-php type=device | introduce actions=find-zone-from-IP:IPADDRESS (working on devicetype=virtualsystem / mangageddevice)
 * UTIL pan-os-php type=xml-to-json | improve for cycleconnectedfirewalls
+* UTIL pan-os-php type=address/service | introduce actions=create-address/create-addressgroup - actions=create-service/create-servicegroup
 
 BUGFIX:
 

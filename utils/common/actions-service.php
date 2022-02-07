@@ -1369,3 +1369,90 @@ ServiceCallContext::$supportedActions[] = array(
             $object->setSourcePort("");
     }
 );
+
+ServiceCallContext::$supportedActions[] = array(
+    'name' => 'create-service',
+    'MainFunction' => function (ServiceCallContext $context) {
+    },
+    'GlobalFinishFunction' => function (ServiceCallContext $context) {
+        $serviceStore = $context->subSystem->serviceStore;
+
+        $newName = $context->arguments['name'];
+
+        $protocol = $context->arguments['protocol'];
+        $port = $context->arguments['port'];
+        $sport = $context->arguments['sport'];
+
+        if( $protocol !== "tcp" && $protocol !== "udp" )
+        {
+            $string = "Service named '" . $newName . "' cannot create as protool: ".$protocol." is not allowed";
+            PH::ACTIONlog( $context, $string );
+            return;
+        }
+
+        if( $serviceStore->find( $newName ) === null )
+        {
+            $string = "create Service object : '" . $newName . "'";
+            PH::ACTIONlog( $context, $string );
+
+            if( $context->isAPI )
+            {
+                if( $sport !== "*nodefault*" )
+                    $serviceStore->API_newService( $newName, $protocol, $port, $sport );
+                else
+                    $serviceStore->API_newService( $newName, $protocol, $port );
+            }
+            else
+            {
+                if( $sport !== "*nodefault*" )
+                    $serviceStore->newService( $newName, $protocol, $port, $sport );
+                else
+                    $serviceStore->newService( $newName, $protocol, $port);
+            }
+        }
+        else
+        {
+            $string = "Service named '" . $newName . "' already exists, cannot create";
+            PH::ACTIONlog( $context, $string );
+        }
+    },
+    'args' => array(
+        'name' => array('type' => 'string', 'default' => '*nodefault*'),
+        'protocol' => array('type' => 'string', 'default' => '*nodefault*'),
+        'port' => array('type' => 'string', 'default' => '*nodefault*'),
+        'sport' => array('type' => 'string', 'default' => '*nodefault*'),
+    )
+);
+
+ServiceCallContext::$supportedActions['create-ServiceGroup'] = array(
+    'name' => 'create-servicegroup',
+    'MainFunction' => function (ServiceCallContext $context) {
+    },
+    'GlobalFinishFunction' => function (ServiceCallContext $context) {
+
+        $serviceStore = $context->subSystem->serviceStore;
+
+        $newName = $context->arguments['name'];
+
+
+        if( $serviceStore->find( $newName ) === null )
+        {
+            $string = "create ServiceGroup object : '" . $newName . "'";
+            PH::ACTIONlog( $context, $string );
+
+            if( $context->isAPI )
+                $serviceStore->API_newServiceGroup($newName);
+            else
+                $serviceStore->newServiceGroup( $newName);
+        }
+        else
+        {
+            $string = "ServiceGroup named '" . $newName . "' already exists, cannot create";
+            PH::ACTIONlog( $context, $string );
+        }
+
+    },
+    'args' => array(
+        'name' => array('type' => 'string', 'default' => '*nodefault*')
+    )
+);
