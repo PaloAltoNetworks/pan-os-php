@@ -283,13 +283,13 @@ print DH::dom_to_xml($ret, 0, true, 5);
 
 $apiArgs = Array();
 $apiArgs['type'] = 'commit';
-#$apiArgs['cmd'] = '<commit></commit>';
+$apiArgs['cmd'] = '<commit></commit>';
 
 
 
 //Todo: support partial
 
-$apiArgs['cmd'] = '<commit><partial><admin><member>admin2</member></admin></partial></commit>';
+#$apiArgs['cmd'] = '<commit><partial><admin><member>admin2</member></admin></partial></commit>';
 
 
 #working for PA-200
