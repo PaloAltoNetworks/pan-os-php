@@ -374,8 +374,9 @@ function updateScriptsyntax( Idx ) {
     var locationValue = $( "#location" + Idx ).val();
     if( locationValue !== "---" && locationValue !== "" )
     {
-        message += " location=";
+        message += " 'location=";
         message += locationValue;
+        message += "'";
     }
 
     var e = document.getElementById("configSelect");
@@ -384,8 +385,9 @@ function updateScriptsyntax( Idx ) {
 
     if( dropdownselection !== "---" )
     {
-        message += " in=";
+        message += " 'in=";
         message += dropdownselection;
+        message += "'";
     }
 
     //console.log( message ); //this is full CLI command
