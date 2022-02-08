@@ -285,8 +285,8 @@ print DH::dom_to_xml($ret, 0, true, 5);
 
 if( $configInput['type'] == 'api' )
 {
-    #$ret= $pan->connector->commitAll();
-    $ret= $pan->connector->commitPartial( "admin" );
+    $ret= $pan->connector->commitAll();
+    #$ret= $pan->connector->commitPartial( "admin" );
 }
 
 

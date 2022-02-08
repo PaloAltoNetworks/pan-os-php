@@ -2196,11 +2196,20 @@ class PanAPIConnector
         $this->checkCommitResponse( $ret );
     }
 
-    public function commitPartial( $user )
+    public function commitPartial( $type = "user", $user = "admin" )
     {
         $apiArgs = Array();
         $apiArgs['type'] = 'commit';
-        $apiArgs['cmd'] = '<commit><partial><admin><member>'.$user.'</member></admin></partial></commit>';
+
+        if( $type == "user" )
+        {
+            $apiArgs['cmd'] = '<commit><partial><admin><member>'.$user.'</member></admin></partial></commit>';
+
+            $ret= $this->sendRequest($apiArgs );
+
+            $this->checkCommitResponse( $ret );
+        }
+
 
         #working for PA-200
         #$apiArgs['cmd'] = '<commit><partial><device-and-network>exclude</device-and-network><shared-object>excluded</shared-object></partial></commit>';
@@ -2208,10 +2217,7 @@ class PanAPIConnector
         #commit partial vsys vsys1 device-and-network excluded
         #$apiArgs['cmd'] = '<commit><partial><vsys><vsys1><device-and-network>excluded</device-and-network></vsys1></vsys></partial></commit>';
 
-        $ret= $this->sendRequest($apiArgs );
 
-
-        $this->checkCommitResponse( $ret );
     }
 
 
