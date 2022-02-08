@@ -88,6 +88,7 @@ __pan-os-php_scripts()
       "license"
       "config-download-all"
       "spiffy"
+      "config-commit"
     )
 
 		checkArray=('in' 'out' 'actions' 'filter' 'location')

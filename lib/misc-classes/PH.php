@@ -924,7 +924,8 @@ class PH
         "software-preparation",
         "license",
         "config-download-all",
-        "spiffy"
+        "spiffy",
+        "config-commit"
         );
 
 
@@ -948,7 +949,8 @@ class PH
         "software-preparation",
         "license",
         "config-download-all",
-        "spiffy"
+        "spiffy",
+        'config-commit'
     );
 
     public static function callPANOSPHP( $type, $argv, $argc, $PHP_FILE )
@@ -1055,6 +1057,9 @@ class PH
 
         elseif( $type == "spiffy" )
             $util = new SPIFFY__( $argv, $argc );
+
+        elseif( $type == "config-commit" )
+            $util = new CONFIG_COMMIT__( $type, $argv, $argc,$PHP_FILE." type=".$type);
 
         elseif( $type == 'address'
             || $type == 'service'
