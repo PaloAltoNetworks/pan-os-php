@@ -281,155 +281,15 @@ print DH::dom_to_xml($ret, 0, true, 5);
 */
 
 
-$apiArgs = Array();
-$apiArgs['type'] = 'commit';
-$apiArgs['cmd'] = '<commit></commit>';
-
-
-
-//Todo: support partial
-
-#$apiArgs['cmd'] = '<commit><partial><admin><member>admin2</member></admin></partial></commit>';
-
-
-#working for PA-200
-#$apiArgs['cmd'] = '<commit><partial><device-and-network>exclude</device-and-network><shared-object>excluded</shared-object></partial></commit>';
-
-
-#commit partial vsys vsys1 device-and-network excluded
-#$apiArgs['cmd'] = '<commit><partial><vsys><vsys1><device-and-network>excluded</device-and-network></vsys1></vsys></partial></commit>';
-
 
 
 if( $configInput['type'] == 'api' )
 {
-    $ret= $pan->connector->sendRequest($apiArgs);
+    #$ret= $pan->connector->commitAll();
+    $ret= $pan->connector->commitPartial( "admin" );
 }
 
 
-
-/*
-function &getCommit($req)
-{
-    $ret = $this->sendRequest($req);
-*/
-//print DH::dom_to_xml($ret, 0, true, 4);
-
-$cursor = DH::findXPathSingleEntryOrDie('/response', $ret);
-$cursor = DH::findFirstElement('result', $cursor);
-
-if( $cursor === FALSE )
-{
-    $cursor = DH::findFirstElement('report', DH::findXPathSingleEntryOrDie('/response', $ret));
-    #print DH::dom_to_xml($ret, 0, true, 5);
-    if( $cursor === FALSE )
-    {
-        $cursor = DH::findFirstElement('msg', DH::findXPathSingleEntryOrDie('/response', $ret));
-        if( $cursor === FALSE )
-            derr("unsupported API answer");
-    }
-
-
-    $report = DH::findFirstElement('result', $cursor);
-    if( $report === FALSE )
-    {
-        $report = $cursor;
-        if( $report === FALSE )
-            derr("unsupported API answer");
-    }
-
-
-}
-
-if( !isset($report) )
-{
-
-    $cursor = DH::findFirstElement('job', $cursor);
-
-    if( $cursor === FALSE )
-        derr("unsupported API answer, no JOB ID found");
-
-    $jobid = $cursor->textContent;
-
-    while( TRUE )
-    {
-        sleep(1);
-        $query = '&type=op&cmd=<show><jobs><id>' . $jobid . '</id></jobs></show>';
-        $ret= $pan->connector->sendRequest($query);
-        #print DH::dom_to_xml($ret, 0, true, 5);
-
-        $cursor = DH::findFirstElement('result', DH::findXPathSingleEntryOrDie('/response', $ret));
-
-        if( $cursor === FALSE )
-            derr("unsupported API answer", $ret);
-
-        $jobcur = DH::findFirstElement('job', $cursor);
-
-        if( $jobcur === FALSE )
-            derr("unsupported API answer", $ret);
-
-        $percent = DH::findFirstElement('progress', $jobcur);
-
-        if( $percent == FALSE )
-            derr("unsupported API answer", $cursor);
-
-        if( $percent->textContent != '100' )
-        {
-            print $percent->textContent."% - ";
-            sleep(9);
-            continue;
-        }
-
-        $cursor = DH::findFirstElement('result', $jobcur);
-
-        if( $cursor === FALSE )
-            derr("unsupported API answer", $ret);
-
-        $report = $cursor;
-
-        break;
-
-    }
-}
-//print_r($ret);
-
-#    return $report;
-#}
-
-#print $report->textContent;
-
-
-if( $report->textContent == "FAIL" )
-{
-    echo "\n*********************************************************\n";
-    echo "*                                                       *\n";
-    echo "*                FIREWALL " . $hostname . " COMMIT               *\n";
-    echo "*                                                       *\n";
-    echo "*                         FAILED                        *\n";
-    echo "*                                                       *\n";
-    echo "*********************************************************\n";
-    derr( "The configuration COMMIT to ".$hostname." firewall failed.\n" );
-}
-elseif( $report->textContent == 'There are no changes to commit.' )
-{
-    echo "\n*********************************************************\n";
-    echo "*                                                       *\n";
-    echo "*                FIREWALL " . $hostname . " COMMIT               *\n";
-    echo "*                                                       *\n";
-    echo "*             THERE ARE NO CHANGES TO COMMIT.           *\n";
-    echo "*                                                       *\n";
-    echo "*********************************************************\n";
-}
-else
-{
-    echo "\n*********************************************************\n";
-    echo "*                                                       *\n";
-    echo "*                FIREWALL " . $hostname . " COMMIT               *\n";
-    echo "*                                                       *\n";
-    echo "*                      SUCCESSFULL                      *\n";
-    echo "*                                                       *\n";
-    echo "*********************************************************\n";
-}
 
 ##############################################
 
