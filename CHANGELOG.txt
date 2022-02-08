@@ -11,6 +11,7 @@ BUGFIX:
 * UTIL UI - still in BETA - bugfix to create correct JSON playbook file if location argument is used
 
 GENERAL:
+* class PanAPIConnector | introduce method commitAll() and commitPartial( $user)
 
 
 2.0.29 (20220204)

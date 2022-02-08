@@ -2183,6 +2183,149 @@ class PanAPIConnector
                 $params['audit-comment'] = "PAN-OS-PHP ".$this->utilAction." ".$time;
         }
     }
+
+
+    public function commitAll()
+    {
+        $apiArgs = Array();
+        $apiArgs['type'] = 'commit';
+        $apiArgs['cmd'] = '<commit></commit>';
+
+        $ret= $this->sendRequest($apiArgs );
+
+        $this->checkCommitResponse( $ret );
+    }
+
+    public function commitPartial( $user )
+    {
+        $apiArgs = Array();
+        $apiArgs['type'] = 'commit';
+        $apiArgs['cmd'] = '<commit><partial><admin><member>'.$user.'</member></admin></partial></commit>';
+
+        #working for PA-200
+        #$apiArgs['cmd'] = '<commit><partial><device-and-network>exclude</device-and-network><shared-object>excluded</shared-object></partial></commit>';
+
+        #commit partial vsys vsys1 device-and-network excluded
+        #$apiArgs['cmd'] = '<commit><partial><vsys><vsys1><device-and-network>excluded</device-and-network></vsys1></vsys></partial></commit>';
+
+        $ret= $this->sendRequest($apiArgs );
+
+
+        $this->checkCommitResponse( $ret );
+    }
+
+
+    /**
+     * @param DOMDocument $ret
+     */
+    public function checkCommitResponse( $ret )
+    {
+        $cursor = DH::findXPathSingleEntryOrDie('/response', $ret);
+        $cursor = DH::findFirstElement('result', $cursor);
+
+        if( $cursor === FALSE )
+        {
+            $cursor = DH::findFirstElement('report', DH::findXPathSingleEntryOrDie('/response', $ret));
+
+            if( $cursor === FALSE )
+            {
+                $cursor = DH::findFirstElement('msg', DH::findXPathSingleEntryOrDie('/response', $ret));
+                if( $cursor === FALSE )
+                    derr("unsupported API answer");
+            }
+
+            $report = DH::findFirstElement('result', $cursor);
+            if( $report === FALSE )
+            {
+                $report = $cursor;
+                if( $report === FALSE )
+                    derr("unsupported API answer");
+            }
+        }
+
+        if( !isset($report) )
+        {
+            $cursor = DH::findFirstElement('job', $cursor);
+
+            if( $cursor === FALSE )
+                derr("unsupported API answer, no JOB ID found");
+
+            $jobid = $cursor->textContent;
+
+            while( TRUE )
+            {
+                sleep(1);
+                $query = '&type=op&cmd=<show><jobs><id>' . $jobid . '</id></jobs></show>';
+                $ret= $this->sendRequest($query);
+
+                $cursor = DH::findFirstElement('result', DH::findXPathSingleEntryOrDie('/response', $ret));
+
+                if( $cursor === FALSE )
+                    derr("unsupported API answer", $ret);
+
+                $jobcur = DH::findFirstElement('job', $cursor);
+
+                if( $jobcur === FALSE )
+                    derr("unsupported API answer", $ret);
+
+                $percent = DH::findFirstElement('progress', $jobcur);
+
+                if( $percent == FALSE )
+                    derr("unsupported API answer", $cursor);
+
+                if( $percent->textContent != '100' )
+                {
+                    PH::print_stdout( $percent->textContent."% - " );
+                    sleep(9);
+                    continue;
+                }
+
+                $cursor = DH::findFirstElement('result', $jobcur);
+
+                if( $cursor === FALSE )
+                    derr("unsupported API answer", $ret);
+
+                $report = $cursor;
+
+                break;
+            }
+        }
+
+
+        if( $report->textContent == "FAIL" )
+        {
+            PH::print_stdout( "\n*********************************************************" );
+            PH::print_stdout( "*                                                       *" );
+            PH::print_stdout( "*                FIREWALL " . $this->info_hostname . " COMMIT               *" );
+            PH::print_stdout( "*                                                       *" );
+            PH::print_stdout( "*                         FAILED                        *" );
+            PH::print_stdout( "*                                                       *" );
+            PH::print_stdout( "*********************************************************" );
+            derr( "The configuration COMMIT to ".$this->info_hostname." firewall failed." );
+        }
+        elseif( $report->textContent == 'There are no changes to commit.' )
+        {
+            PH::print_stdout( "" );
+            PH::print_stdout( "*********************************************************" );
+            PH::print_stdout( "*                                                       *" );
+            PH::print_stdout( "*                FIREWALL " . $this->info_hostname . " COMMIT               *" );
+            PH::print_stdout( "*                                                       *" );
+            PH::print_stdout( "*             THERE ARE NO CHANGES TO COMMIT.           *" );
+            PH::print_stdout( "*                                                       *" );
+            PH::print_stdout( "*********************************************************" );
+        }
+        else
+        {
+            PH::print_stdout( "" );
+            PH::print_stdout( "*********************************************************" );
+            PH::print_stdout( "*                                                       *" );
+            PH::print_stdout( "*                FIREWALL " . $this->info_hostname . " COMMIT               *" );
+            PH::print_stdout( "*                                                       *" );
+            PH::print_stdout( "*                      SUCCESSFULL                      *" );
+            PH::print_stdout( "*                                                       *" );
+            PH::print_stdout( "*********************************************************" );
+        }
+    }
 }
 
 
