@@ -41,6 +41,36 @@
                     }
                 }
             },
+            "create-address": {
+                "name": "create-address",
+                "MainFunction": {},
+                "GlobalFinishFunction": {},
+                "args": {
+                    "name": {
+                        "type": "string",
+                        "default": "*nodefault*"
+                    },
+                    "value": {
+                        "type": "string",
+                        "default": "*nodefault*"
+                    },
+                    "type": {
+                        "type": "string",
+                        "default": "*nodefault*"
+                    }
+                }
+            },
+            "create-addressgroup": {
+                "name": "create-addressgroup",
+                "MainFunction": {},
+                "GlobalFinishFunction": {},
+                "args": {
+                    "name": {
+                        "type": "string",
+                        "default": "*nodefault*"
+                    }
+                }
+            },
             "decommission": {
                 "name": "decommission",
                 "MainFunction": {},
@@ -1106,6 +1136,11 @@
         "action": [],
         "filter": []
     },
+    "config-commit": {
+        "name": "config-commit",
+        "action": [],
+        "filter": []
+    },
     "config-download-all": {
         "name": "config-download-all",
         "action": [],
@@ -1172,6 +1207,11 @@
             },
             "defaultsecurityrule-logstart-disable": {
                 "name": "defaultsecurityrule-logstart-disable",
+                "GlobalInitFunction": {},
+                "MainFunction": {}
+            },
+            "defaultsecurityrule-remove-override": {
+                "name": "defaultsecurityrule-remove-override",
                 "GlobalInitFunction": {},
                 "MainFunction": {}
             },
@@ -1266,6 +1306,34 @@
                         "help": "pipe(|) separated list of additional field to include in the report. The following is available:\n  - WhereUsed : list places where object is used (rules, groups ...)\n  - UsedInLocation : list locations (vsys,dg,shared) where object is used\n"
                     }
                 }
+            },
+            "find-zone-from-ip": {
+                "name": "find-zone-from-ip",
+                "GlobalInitFunction": {},
+                "MainFunction": {},
+                "args": {
+                    "ip": {
+                        "type": "string",
+                        "default": "*noDefault*",
+                        "help": "Please bring in an IP-Address, to find the corresponding Zone."
+                    },
+                    "virtualRouter": {
+                        "type": "string",
+                        "default": "*autodetermine*",
+                        "help": "Can optionally be provided if script cannot find which virtualRouter it should be using (ie: there are several VR in same VSYS)"
+                    },
+                    "template": {
+                        "type": "string",
+                        "default": "*notPanorama*",
+                        "help": "When you are using Panorama then 1 or more templates could apply to a DeviceGroup, in such a case you may want to specify which Template name to use.\nBeware that if the Template is overriden or if you are not using Templates then you will want load firewall config in lieu of specifying a template. \nFor this, give value 'api@XXXXX' where XXXXX is serial number of the Firewall device number you want to use to calculate zones.\nIf you don't want to use API but have firewall config file on your computer you can then specify file@\/folderXYZ\/config.xml."
+                    },
+                    "vsys": {
+                        "type": "string",
+                        "default": "*autodetermine*",
+                        "help": "specify vsys when script cannot autodetermine it or when you when to manually override"
+                    }
+                },
+                "help": "This Action will use routing tables to resolve zones. When the program cannot find all parameters by itself (like vsys or template name you will have to manually provide them.\n\nUsage examples:\n\n    - find-zone-from-ip:8.8.8.8\n    - find-zone-from-ip:8.8.8.8,vr1\n    - find-zone-from-ip:8.8.8.8,vr3,api@0011C890C,vsys1\n    - find-zone-from-ip:8.8.8.8,vr5,Datacenter_template\n    - find-zone-from-ip:8.8.8.8,vr3,file@firewall.xml,vsys1\n"
             },
             "geoip-check": {
                 "name": "geoIP-check",
@@ -5013,6 +5081,40 @@
                 "MainFunction": {},
                 "args": {
                     "objectName": {
+                        "type": "string",
+                        "default": "*nodefault*"
+                    }
+                }
+            },
+            "create-service": {
+                "name": "create-service",
+                "MainFunction": {},
+                "GlobalFinishFunction": {},
+                "args": {
+                    "name": {
+                        "type": "string",
+                        "default": "*nodefault*"
+                    },
+                    "protocol": {
+                        "type": "string",
+                        "default": "*nodefault*"
+                    },
+                    "port": {
+                        "type": "string",
+                        "default": "*nodefault*"
+                    },
+                    "sport": {
+                        "type": "string",
+                        "default": "*nodefault*"
+                    }
+                }
+            },
+            "create-servicegroup": {
+                "name": "create-servicegroup",
+                "MainFunction": {},
+                "GlobalFinishFunction": {},
+                "args": {
+                    "name": {
                         "type": "string",
                         "default": "*nodefault*"
                     }

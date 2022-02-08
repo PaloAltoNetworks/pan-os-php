@@ -61,6 +61,7 @@ require_once(dirname(__FILE__)."/LICENSE__.php");
 require_once(dirname(__FILE__)."/CONFIG_DOWNLOAD_ALL__.php");
 
 require_once(dirname(__FILE__)."/SPIFFY__.php");
+require_once(dirname(__FILE__)."/CONFIG_COMMIT__.php");
 
 
 require_once dirname(__FILE__)."/../../phpseclib/Net/SSH2.php";

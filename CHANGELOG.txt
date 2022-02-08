@@ -6,6 +6,7 @@ UTILS:
 * UTIL pan-os-php type=xml-to-json | improve for cycleconnectedfirewalls
 * UTIL pan-os-php type=address/service | introduce actions=create-address/create-addressgroup - actions=create-service/create-servicegroup
 * UTIL type=config-size | extend big XML nodes with information about how many objects are available
+* UTIL pan-os-php | introduce type=config-commit - class CONFIG_COMMIT__.php , extend bash-autocompletion
 
 BUGFIX:
 * UTIL UI - still in BETA - bugfix to create correct JSON playbook file if location argument is used
