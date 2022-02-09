@@ -3,7 +3,7 @@ Docker build
 
 There are Dockerfiles available with OS: Ubuntu20/22 and CentOS 7
 
-For a quick start please use [WIKI docker](/wiki/docker)
+For a quick start please use [WIKI docker](https://github.com/PaloAltoNetworks/pan-os-php/wiki/docker)
 
 
 * **MacOS** : [run on MacOS terminal]

@@ -58,4 +58,4 @@ There are Dockerfiles available with OS: Ubuntu20/22 and CentOS 7/8
 
 [README docker](/READMEdocker.md)
 
-[WIKI docker](/wiki/docker)
+[WIKI docker](https://github.com/PaloAltoNetworks/pan-os-php/wiki/docker)
