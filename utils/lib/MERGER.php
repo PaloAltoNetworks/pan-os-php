@@ -742,7 +742,7 @@ class MERGER extends UTIL
 
                             if( $hashGenerator($object) == $hashGenerator($ancestor) )
                             {
-                                $text = "    - group '{$object->name()}' merged with its ancestor, deleting this one... ";
+                                $text = "    - group '{$object->name()}' merged with its ancestor, deleting: ".$object->_PANC_shortName();
                                 $object->replaceMeGlobally($ancestor);
                                 if( $this->apiMode )
                                     $object->owner->API_remove($object, TRUE);
@@ -936,7 +936,7 @@ class MERGER extends UTIL
                 {
                     if( $object !==  $tmp_address)
                     {
-                        PH::print_stdout( "    - group '{$object->name()}' DG: '".$object->owner->owner->name()."' merged with its ancestor at DG: '".$store->owner->name()."', deleting this one... " );
+                        PH::print_stdout( "    - group '{$object->name()}' DG: '".$object->owner->owner->name()."' merged with its ancestor at DG: '".$store->owner->name()."', deleting: ".$object->_PANC_shortName() );
 
                         PH::print_stdout( "    - replacing '{$object->_PANC_shortName()}' ..." );
                         $success = $object->__replaceWhereIamUsed($this->apiMode, $tmp_address, TRUE, 5);
@@ -1278,7 +1278,7 @@ class MERGER extends UTIL
 
                                 $object->merge_tag_description_to( $ancestor, $this->apiMode );
 
-                                $text = "    - object '{$object->name()}' merged with its ancestor, deleting this one... ";
+                                $text = "    - object '{$object->name()}' merged with its ancestor, deleting: ".$object->_PANC_shortName();
                                 $this->deletedObjects[$index]['kept'] = $pickedObject->name();
                                 if( $this->deletedObjects[$index]['removed'] == "" )
                                     $this->deletedObjects[$index]['removed'] = $object->name();
@@ -1786,7 +1786,7 @@ class MERGER extends UTIL
 
                             if( $hashGenerator($object) == $hashGenerator($ancestor) )
                             {
-                                $text = "    - group '{$object->name()}' merged with its ancestor, deleting this one... ";
+                                $text = "    - group '{$object->name()}' merged with its ancestor, deleting: ".$object->_PANC_shortName();
                                 $object->replaceMeGlobally($ancestor);
                                 if( $this->apiMode )
                                     $object->owner->API_remove($object);
@@ -2158,7 +2158,7 @@ class MERGER extends UTIL
                                         continue;
                                     }
 
-                                    $text = "    - object '{$object->name()}' merged with its ancestor, deleting this one... ";
+                                    $text = "    - object '{$object->name()}' merged with its ancestor, deleting: ".$object->_PANC_shortName();
                                     $object->replaceMeGlobally($ancestor);
                                     if( $this->apiMode )
                                         $object->owner->API_remove($object, TRUE);
@@ -2730,7 +2730,7 @@ class MERGER extends UTIL
                                         continue;
                                     }
 
-                                $text = "    - object '{$object->name()}' merged with its ancestor, deleting this one... ";
+                                $text = "    - object '{$object->name()}' merged with its ancestor, deleting: ".$object->_PANC_shortName();
                                 $this->deletedObjects[$index]['kept'] = $pickedObject->name();
                                 if( $this->deletedObjects[$index]['removed'] == "" )
                                     $this->deletedObjects[$index]['removed'] = $object->name();
