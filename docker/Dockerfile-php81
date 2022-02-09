@@ -26,4 +26,7 @@ COPY tests /tools/pan-os-php/tests
 RUN echo 'include_path = "/usr/local/lib/php:/tools/pan-os-php"' >> /usr/local/etc/php/php.ini
 RUN chmod -R 777 /tools/pan-os-php
 
+RUN echo -e 'php -r "require_once '"'"'utils/pan-os-php.php'"'"';" $@' > /usr/bin/pan-os-php
+RUN chmod 777 /usr/bin/pan-os-php
+
 RUN git config --global user.email=test@test.com user.name=test

@@ -13,6 +13,7 @@ BUGFIX:
 
 GENERAL:
 * class PanAPIConnector | introduce method commitAll() and commitPartial( $user)
+* framework | split README into multiple files to get better introduction
 
 
 2.0.29 (20220204)
