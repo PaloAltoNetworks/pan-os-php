@@ -482,8 +482,9 @@ class VirtualSystem
             //
             // Extract SecurityProfile groups in this DV
             //
-            $tmp = DH::findFirstElementOrCreate('profile-group', $xml);
-            $this->securityProfileGroupStore->load_securityprofile_groups_from_domxml($tmp);
+            $tmp = DH::findFirstElement('profile-group', $xml);
+            if( $tmp !== FALSE )
+                $this->securityProfileGroupStore->load_securityprofile_groups_from_domxml($tmp);
             // End of address groups extraction
 
 

@@ -1833,8 +1833,21 @@ class UTIL
             foreach( $utilDiff->diff_set as $set )
                 PH::print_stdout( $set );
 
-            foreach( array_reverse( $utilDiff->diff_delete ) as $delete )
-                PH::print_stdout( $delete );
+            $deleteArray = array( "rulebase", "address-group", "address", "service-group", "service", "misc" );
+
+            foreach( $deleteArray as $item )
+            {
+                if( isset( $utilDiff->diff_delete[$item] ) )
+                {
+                    foreach( $utilDiff->diff_delete[$item] as $key => $delete )
+                    {
+                        PH::print_stdout( $delete );
+                    }
+                }
+            }
+
+
+
         }
     }
 

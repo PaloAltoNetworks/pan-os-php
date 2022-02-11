@@ -9,6 +9,7 @@ UTILS:
 * UTIL pan-os-php | introduce type=config-commit - class CONFIG_COMMIT__.php , extend bash-autocompletion
 * UTIL all object merger | improve output which object get delete if ancestor is found
 * UTIL pan-os-php type=securityprofile | introduce 'actions=custom-url-category-add-ending-token' for securityProfileType=custom-url-category
+* UTIL all script argument 'outputformatset' | improve display set commands
 
 BUGFIX:
 * UTIL UI - still in BETA - bugfix to create correct JSON playbook file if location argument is used
