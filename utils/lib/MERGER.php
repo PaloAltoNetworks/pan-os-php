@@ -1097,27 +1097,6 @@ class MERGER extends UTIL
                         if( $parentStore !== null )
                         {
                             $object->ancestor = self::findAncestor( $parentStore, $object );
-                            /*
-                            while( TRUE )
-                            {
-
-                                $findAncestor = $current->find($object->name(), null, TRUE);
-                                if( $findAncestor !== null )
-                                {
-                                    $object->ancestor = $findAncestor;
-                                    break;
-                                }
-
-                                if( isset($current->owner->parentDeviceGroup) && $current->owner->parentDeviceGroup !== null )
-                                    $current = $current->owner->parentDeviceGroup->addressStore;
-                                elseif( isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
-                                    $current = $current->owner->parentContainer->addressStore;
-                                elseif( isset($current->owner->owner) && $current->owner->owner !== null && !$current->owner->owner->isFawkes() )
-                                    $current = $current->owner->owner->addressStore;
-                                else
-                                    break;
-
-                            }*/
                         }
                     }
                     else
@@ -1147,10 +1126,6 @@ class MERGER extends UTIL
                         if( $parentStore !== null )
                         {
                             $object->ancestor = self::findAncestor( $parentStore, $object );
-                            /*$findAncestor = $parentStore->find($object->name(), null, TRUE);
-                            if( $findAncestor !== null )
-                                $object->ancestor = $findAncestor;
-                            */
                         }
                     }
                     else

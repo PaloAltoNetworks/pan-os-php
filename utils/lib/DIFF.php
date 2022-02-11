@@ -21,11 +21,10 @@ class DIFF extends UTIL
 {
     public $el1rulebase = array();
     public $el2rulebase = array();
-    public $outputFormatSet = false;
 
     public function utilStart()
     {
-        $this->usageMsg = PH::boldText('USAGE: ') . "php " . basename(__FILE__) . " [delete=hostOrIP] [add=hostOrIP] [test=hostOrIP] [hiddenPW]";
+        $this->usageMsg = PH::boldText('USAGE: ') . "php " . basename(__FILE__) . " file1=ORIGINAL.xml file2=NEWESTFILE.xml";
 
         #$this->prepareSupportedArgumentsArray();
         PH::processCliArgs();
@@ -35,6 +34,22 @@ class DIFF extends UTIL
 
         $this->main();
 
+        if( $this->outputFormatSet )
+        {
+            PH::print_stdout( "" );
+            PH::print_stdout( "" );
+            foreach( $this->diff_set as $set )
+                PH::print_stdout( $set );
+
+            $deleteArray = array( "rulebase", "address-group", "address", "service-group", "service", "misc" );
+
+            foreach( $deleteArray as $item )
+            {
+                if( isset( $this->diff_delete[$item] ) )
+                    foreach( $this->diff_delete[$item] as $key => $delete )
+                        PH::print_stdout( $delete );
+            }
+        }
 
         $this->endOfScript();
     }
@@ -45,6 +60,12 @@ class DIFF extends UTIL
             $this->debugAPI = TRUE;
         else
             $this->debugAPI = FALSE;
+
+        if( isset(PH::$args['outputFormatSet']) )
+            $this->outputFormatSet = TRUE;
+        else
+            $this->outputFormatSet = FALSE;
+        //$this->outputFormatSet = TRUE;
 
         if( isset(PH::$args['in']) )
         {
@@ -102,6 +123,7 @@ class DIFF extends UTIL
                 derr('Error while parsing xml:' . libxml_get_last_error()->message);
 
         }
+
 
         if( isset(PH::$args['filter']) )
         {
@@ -272,8 +294,9 @@ class DIFF extends UTIL
                 $tmp = DH::dom_to_xml($el2);
                 $text .= '-' . str_replace("\n", "\n", $tmp);
 
-
-                $this->displayDIFF( $xpath, $text, $el1, $el2 );
+                //same xpath different content
+                //$this->displayDIFF( $xpath, $text, array( $el1 ), array($el2) );
+                $this->displayDIFF( $xpath, $text, array( $el2 ), array( $el1 ) );
             }
             return;
         }
@@ -532,6 +555,7 @@ class DIFF extends UTIL
                     //intermediate, remove it later on
                     PH::print_stdout("\nXPATH: $xpath");
                     /////////////
+                    //PH::print_stdout("\nTEXT: $text");
                 }
 
 
@@ -547,18 +571,17 @@ class DIFF extends UTIL
                     {
                         PH::print_stdout( "ADD");
                         //intermediate, remove it later on
+
+
                         $doc2 = new DOMDocument();
                         $node = $doc2->importNode($element, true);
                         $doc2->appendChild($node);
                         PH::print_stdout( $doc2->saveXML( $doc2->documentElement) );
                         PH::print_stdout( "");
-                        /////////////
 
-                        //finalise work there
-                        DH::elementToPanSetCommandBETA( 'set', $element, $array );
                     }
-                    else
-                        DH::elementToPanSetCommand( 'set', $element, $array );
+
+                    DH::elementToPanSetCommand( 'set', $element, $array );
 
 
                     foreach( $array as $entry )
@@ -578,23 +601,38 @@ class DIFF extends UTIL
 
                     if( $this->debugAPI )
                     {
-                        //PH::print_stdout( "REMOVE");
+                        PH::print_stdout( "REMOVE");
                         //intermediate, remove it later on
-                        //$doc2 = new DOMDocument();
-                        //$node = $doc2->importNode($element, true);
-                        //$doc2->appendChild($node);
-                        //PH::print_stdout( $doc2->saveXML( $doc2->documentElement) );
-                        //PH::print_stdout( "");
-                        /////////////
-                        DH::elementToPanSetCommandBETA('delete', $element, $array );
+
+
+                        $doc2 = new DOMDocument();
+                        $node = $doc2->importNode($element, true);
+                        $doc2->appendChild($node);
+                        PH::print_stdout( $doc2->saveXML( $doc2->documentElement) );
+                        PH::print_stdout( "");
+
                     }
-                    else
-                        DH::elementToPanSetCommand('delete', $element, $array );
+
+                    DH::elementToPanSetCommand( 'delete', $element, $array );
 
                     foreach(  $array as $entry )
                     {
                         if( !in_array( $entry, $this->diff_delete ) )
-                            $this->diff_delete[] = $entry;
+                        {
+                            if( strpos( $entry, "rulebase " ) !== false )
+                                $this->diff_delete['rulebase'][] = $entry;
+                            elseif( strpos( $entry, " address-group " ) !== false )
+                                $this->diff_delete['address-group'][] = $entry;
+                            elseif( strpos( $entry, " address " ) !== false )
+                                $this->diff_delete['address'][] = $entry;
+                            elseif( strpos( $entry, " service-group " ) !== false )
+                                $this->diff_delete['service-group'][] = $entry;
+                            elseif( strpos( $entry, " service " ) !== false )
+                                $this->diff_delete['service'][] = $entry;
+                            else
+                                $this->diff_delete['misc'][] = $entry;
+                        }
+
                     }
                 }
             }
