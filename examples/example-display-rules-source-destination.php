@@ -9,7 +9,6 @@ PH::print_stdout("");
 PH::print_stdout("*********** START OF SCRIPT ".basename(__FILE__)." ************" );
 PH::print_stdout("");
 
-
 $supportedArguments = array();
 //PREDEFINED arguments:
 $supportedArguments['in'] = array('niceName' => 'in', 'shortHelp' => 'in=filename.xml | api. ie: in=api://192.168.1.1 or in=api://0018CAEC3@panorama.company.com', 'argDesc' => '[filename]|[api://IP]|[api://serial@IP]');
@@ -80,7 +79,46 @@ PH::print_stdout("");
  * *
  */
 
+if( !$pan->isFirewall() )
+{
+    derr( "this script can handle only Firewall configuration files. found: ".get_class( $pan ) );
+}
 
+// Did we find VSYS1 ?
+$vsys1 = $pan->findVirtualSystem('vsys1');
+if( $vsys1 === null )
+{
+    derr("vsys1 was not found ? Exit\n");
+}
+
+// first get the list of rules in an array
+$rules = $vsys1->securityRules->rules();
+
+$vsys1->addressStore->all();
+// for every rule we set the security profile
+foreach( $rules as $rule )
+{
+    PH::print_stdout( "");
+    PH::print_stdout( "-----------------");
+    PH::print_stdout(" - rule '".$rule->name()  );
+
+
+    // get the list of rule source objects in an array
+    $sources = $rule->source->getAll();
+    foreach( $sources as $source )
+    {
+        PH::print_stdout("   - source address object '".$source->name()  );
+    }
+
+    // get the list of rule destination objects in an array
+    $destinations = $rule->destination->getAll();
+    foreach( $destinations as $destination )
+    {
+        PH::print_stdout("   - destination address object '".$destination->name()  );
+    }
+
+    PH::print_stdout( "");
+}
 
 $util->save_our_work();
 PH::print_stdout("");
