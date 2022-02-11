@@ -7,12 +7,11 @@ RuleCallContext::$supportedActions[] = Array(
     'name' => 'example_plugin_source_destination',
     'MainFunction' => function(RuleCallContext $context)
     {
-        /*
-         * @var securityRule $rule
-         */
+        /** @var securityRule $rule */
         $rule = $context->object;
 
         // get the list of rule source objects in an array
+        /** @var AddressRuleContainer $sources */
         $sources = $rule->source->getAll();
         foreach( $sources as $source )
         {
@@ -20,6 +19,7 @@ RuleCallContext::$supportedActions[] = Array(
         }
 
         // get the list of rule destination objects in an array
+        /** @var AddressRuleContainer $destinations */
         $destinations = $rule->destination->getAll();
         foreach( $destinations as $destination )
         {
