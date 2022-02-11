@@ -61,7 +61,7 @@ class SECURITYPROFILEUTIL extends UTIL
     public function supportedArguments()
     {
         parent::supportedArguments();
-        $this->supportedArguments['securityprofiletype'] = array('niceName' => 'securityProfileType', 'shortHelp' => 'specify which type(s) of you rule want to edit, (default is "security". ie: securityprofiletype=any  securityprofiletype=url, customurl', 'argDesc' => 'all|any|url-filtering|virus|vulnerability|spyware|file-blocking|data-filtering|wildfire-analysis|custom-url-category|predefined-url|dns-security|saas-security');
+        $this->supportedArguments['securityprofiletype'] = array('niceName' => 'securityProfileType', 'shortHelp' => 'specify which type(s) of you rule want to edit, (default is "security". ie: securityprofiletype=any  securityprofiletype=url-filtering, custom-url-category', 'argDesc' => 'all|any|url-filtering|virus|vulnerability|spyware|file-blocking|data-filtering|wildfire-analysis|custom-url-category|predefined-url|dns-security|saas-security');
     }
 
     public function location_filter_object()

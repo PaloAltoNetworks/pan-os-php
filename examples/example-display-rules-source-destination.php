@@ -104,6 +104,7 @@ foreach( $rules as $rule )
 
 
     // get the list of rule source objects in an array
+    /** @var AddressRuleContainer $sources */
     $sources = $rule->source->getAll();
     foreach( $sources as $source )
     {
@@ -111,6 +112,7 @@ foreach( $rules as $rule )
     }
 
     // get the list of rule destination objects in an array
+    /** @var AddressRuleContainer destination */
     $destinations = $rule->destination->getAll();
     foreach( $destinations as $destination )
     {
