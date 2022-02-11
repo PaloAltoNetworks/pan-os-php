@@ -13,6 +13,7 @@ UTILS:
 
 BUGFIX:
 * UTIL UI - still in BETA - bugfix to create correct JSON playbook file if location argument is used
+* UTIL all MERGER | fix for location=any allowmergingwithupperlevel
 
 GENERAL:
 * class PanAPIConnector | introduce method commitAll() and commitPartial( $user)

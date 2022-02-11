@@ -109,17 +109,35 @@ class MERGER extends UTIL
                 if( $this->utilType == "address-merger" || $this->utilType == "addressgroup-merger" )
                 {
                     $store = $findLocation->addressStore;
-                    $parentStore = $findLocation->owner->addressStore;
+
+                    if( $pan->isPanorama() && isset($findLocation->parentDeviceGroup) && $findLocation->parentDeviceGroup !== null )
+                        $parentStore = $findLocation->parentDeviceGroup->addressStore;
+                    elseif( $pan->isFawkes() && isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
+                        $parentStore = $findLocation->parentContainer->addressStore;
+                    else
+                        $parentStore = $findLocation->owner->addressStore;
                 }
                 elseif( $this->utilType == "service-merger" || $this->utilType == "servicegroup-merger" )
                 {
                     $store = $findLocation->serviceStore;
-                    $parentStore = $findLocation->owner->serviceStore;
+
+                    if( $pan->isPanorama() && isset($findLocation->parentDeviceGroup) && $findLocation->parentDeviceGroup !== null )
+                        $parentStore = $findLocation->parentDeviceGroup->serviceStore;
+                    elseif( $pan->isFawkes() && isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
+                        $parentStore = $findLocation->parentContainer->serviceStore;
+                    else
+                        $parentStore = $findLocation->owner->serviceStore;
                 }
                 elseif( $this->utilType == "tag-merger" )
                 {
                     $store = $findLocation->tagStore;
-                    $parentStore = $findLocation->owner->tagStore;
+
+                    if( $pan->isPanorama() && isset($findLocation->parentDeviceGroup) && $findLocation->parentDeviceGroup !== null )
+                        $parentStore = $findLocation->parentDeviceGroup->tagStore;
+                    elseif( $pan->isFawkes() && isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
+                        $parentStore = $findLocation->parentContainer->tagStore;
+                    else
+                        $parentStore = $findLocation->owner->tagStore;
                 }
                 if( get_class( $findLocation->owner ) == "FawkesConf" )
                     $parentStore = null;
