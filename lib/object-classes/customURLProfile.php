@@ -121,6 +121,48 @@ class customURLProfile
     }
 
     /**
+     * Add a member to this group, it must be passed as an object
+     * @param string $newMember Object to be added
+     * @param bool $rewriteXml
+     * @return bool
+     */
+    public function deleteMember($newMember, $rewriteXml = TRUE)
+    {
+
+        if( in_array($newMember, $this->members, TRUE) )
+        {
+            $key = array_search($newMember, $this->members);
+            unset($this->members[$key]);
+
+            if( $rewriteXml && $this->owner !== null )
+            {
+                if( $this->membersRoot == null )
+                    $this->membersRoot = DH::findFirstElementOrCreate('list', $this->xmlroot);
+
+                foreach( $this->membersRoot->childNodes as $membernode )
+                {
+                    /** @var DOMElement $membernode */
+                    if( $membernode->nodeType != 1 ) continue;
+
+                    if( $membernode->textContent == $newMember )
+                        $this->membersRoot->removeChild( $membernode );
+                }
+            }
+
+            return TRUE;
+        }
+
+        return FALSE;
+    }
+    /**
+     * @return array
+     */
+    public function getmembers()
+    {
+        return $this->members;
+    }
+
+    /**
      * @return string
      */
     public function &getXPath()
