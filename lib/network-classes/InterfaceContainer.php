@@ -117,6 +117,14 @@ class InterfaceContainer extends ObjRuleContainer
         $this->o[] = $if;
         $if->addReference($this);
 
+        if( $this->xmlroot === null )
+        {
+            $importRoot = DH::findFirstElementOrCreate('import', $this->owner->xmlroot);
+            $networkRoot = DH::findFirstElementOrCreate('network', $importRoot);
+            $this->xmlroot = DH::findFirstElementOrCreate('interface', $networkRoot);
+        }
+
+
         DH::createElement($this->xmlroot, 'member', $if->name());
 
         return TRUE;

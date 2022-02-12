@@ -15,6 +15,7 @@ BUGFIX:
 * UTIL UI - still in BETA - bugfix to create correct JSON playbook file if location argument is used
 * UTIL all MERGER | fix for location=any allowmergingwithupperlevel
 * UTIL all MERGER | bugfix to calculate ancestor
+* class InterfaceContainer | bugfix if xmlRoot === NULL
 
 GENERAL:
 * class PanAPIConnector | introduce method commitAll() and commitPartial( $user)
