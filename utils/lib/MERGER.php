@@ -302,7 +302,7 @@ class MERGER extends UTIL
             $this->upperLevelSearch = TRUE;
     }
 
-    function findAncestor( $current, $object )
+    function findAncestor( $current, $object, $StoreType = "addressStore" )
     {
         while( TRUE )
         {
@@ -313,12 +313,13 @@ class MERGER extends UTIL
                 break;
             }
 
+
             if( isset($current->owner->parentDeviceGroup) && $current->owner->parentDeviceGroup !== null )
-                $current = $current->owner->parentDeviceGroup->addressStore;
+                $current = $current->owner->parentDeviceGroup->$StoreType;
             elseif( isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
-                $current = $current->owner->parentContainer->addressStore;
+                $current = $current->owner->parentContainer->$StoreType;
             elseif( isset($current->owner->owner) && $current->owner->owner !== null && !$current->owner->owner->isFawkes() )
-                $current = $current->owner->owner->addressStore;
+                $current = $current->owner->owner->$StoreType;
             else
             {
                 return null;
@@ -613,11 +614,7 @@ class MERGER extends UTIL
                 {
                     $hashMap[$value][] = $object;
                     if( $parentStore !== null )
-                    {
-                        $findAncestor = $parentStore->find($object->name(), null, TRUE);
-                        if( $findAncestor !== null )
-                            $object->ancestor = $findAncestor;
-                    }
+                        $object->ancestor = self::findAncestor( $parentStore, $object, "addressStore");
                 }
                 else
                     $upperHashMap[$value][] = $object;
@@ -1114,7 +1111,7 @@ class MERGER extends UTIL
                         $hashMap[$value][] = $object;
                         if( $parentStore !== null )
                         {
-                            $object->ancestor = self::findAncestor( $parentStore, $object );
+                            $object->ancestor = self::findAncestor( $parentStore, $object, "addressStore" );
                         }
                     }
                     else
@@ -1143,7 +1140,7 @@ class MERGER extends UTIL
                         $hashMap[$value][] = $object;
                         if( $parentStore !== null )
                         {
-                            $object->ancestor = self::findAncestor( $parentStore, $object );
+                            $object->ancestor = self::findAncestor( $parentStore, $object, "addressStore" );
                         }
                     }
                     else
@@ -1589,6 +1586,7 @@ class MERGER extends UTIL
 //
 // Building a hash table of all service objects with same value
 //
+            /** @var ServiceStore $store */
             if( $this->upperLevelSearch )
                 $objectsToSearchThrough = $store->nestedPointOfView();
             else
@@ -1633,14 +1631,7 @@ class MERGER extends UTIL
                 {
                     $hashMap[$value][] = $object;
                     if( $parentStore !== null )
-                    {
-                        $object->ancestor = self::findAncestor( $parentStore, $object );
-                        /*
-                        $findAncestor = $parentStore->find($object->name(), null, TRUE);
-                        if( $findAncestor !== null )
-                            $object->ancestor = $findAncestor;
-                        */
-                    }
+                        $object->ancestor = self::findAncestor( $parentStore, $object, "serviceStore");
                 }
                 else
                     $upperHashMap[$value][] = $object;
@@ -1771,7 +1762,7 @@ class MERGER extends UTIL
                                         foreach( $diff['plus'] as $d )
                                         {
                                             /** @var Service|ServiceGroup $d */
-                                            //TMP usage to clean DG level ADDRESSgroup up
+                                            //TMP usage to clean DG level SERVICEgroup up
                                             $object->addMember( $d );
                                         }
                                 }
@@ -1981,14 +1972,7 @@ class MERGER extends UTIL
                     {
                         $hashMap[$value][] = $object;
                         if( $parentStore !== null )
-                        {
-                            $object->ancestor = self::findAncestor($parentStore, $object);
-                            /*
-                            $findAncestor = $parentStore->find($object->name(), null, TRUE);
-                            if( $findAncestor !== null )
-                                $object->ancestor = $findAncestor;
-                            */
-                        }
+                            $object->ancestor = self::findAncestor($parentStore, $object, "serviceStore");
                     }
                     else
                         $upperHashMap[$value][] = $object;
@@ -2015,14 +1999,7 @@ class MERGER extends UTIL
                     {
                         $hashMap[$value][] = $object;
                         if( $parentStore !== null )
-                        {
-                            $object->ancestor = self::findAncestor($parentStore, $object);
-                            /*
-                            $findAncestor = $parentStore->find($object->name(), null, TRUE);
-                            if( $findAncestor !== null )
-                                $object->ancestor = $findAncestor;
-                            */
-                        }
+                            $object->ancestor = self::findAncestor($parentStore, $object, "serviceStore");
                     }
                     else
                         $upperHashMap[$value][] = $object;
@@ -2446,7 +2423,7 @@ class MERGER extends UTIL
 
             PH::print_stdout( "\n\nDuplicates removal is now done. Number of objects after cleanup: '{$store->countServices()}' (removed {$countRemoved} services)\n" );
             if( count( $child_hashMap ) >0 )
-                PH::print_stdout( "Duplicates ChildDG removal is now done. Number of objects after cleanup: '{$store->countServices()}' (removed/created {$countChildRemoved}/{$countChildCreated} addresses)\n" );
+                PH::print_stdout( "Duplicates ChildDG removal is now done. Number of objects after cleanup: '{$store->countServices()}' (removed/created {$countChildRemoved}/{$countChildCreated} services)\n" );
 
             PH::print_stdout( "\n\n***********************************************\n" );
 
@@ -2559,14 +2536,7 @@ class MERGER extends UTIL
                     {
                         $hashMap[$value][] = $object;
                         if( $parentStore !== null )
-                        {
-                            $object->ancestor = self::findAncestor( $parentStore, $object );
-                            /*
-                            $findAncestor = $parentStore->find($object->name(), null, TRUE);
-                            if( $findAncestor !== null )
-                                $object->ancestor = $findAncestor;
-                            */
-                        }
+                            $object->ancestor = self::findAncestor( $parentStore, $object, "tagStore");
                     }
                     else
                         $upperHashMap[$value][] = $object;
@@ -2592,14 +2562,7 @@ class MERGER extends UTIL
                     {
                         $hashMap[$value][] = $object;
                         if( $parentStore !== null )
-                        {
-                            $object->ancestor = self::findAncestor( $parentStore, $object );
-                            /*
-                            $findAncestor = $parentStore->find($object->name(), null, TRUE);
-                            if( $findAncestor !== null )
-                                $object->ancestor = $findAncestor;
-                            */
-                        }
+                            $object->ancestor = self::findAncestor( $parentStore, $object, "tagStore");
                     }
                     else
                         $upperHashMap[$value][] = $object;
