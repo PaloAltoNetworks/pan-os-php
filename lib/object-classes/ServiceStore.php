@@ -995,7 +995,7 @@ class ServiceStore
     }
 
     /**
-     * Returns an Array with all Address|AddressGroup inside this store
+     * Returns an Array with all Service|ServiceGroup inside this store
      * @return Service[]|ServiceGroup[]
      */
     public function &resultingObjectSet()
