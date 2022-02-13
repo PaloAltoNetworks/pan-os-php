@@ -16,6 +16,7 @@ BUGFIX:
 * UTIL all MERGER | fix for location=any allowmergingwithupperlevel
 * UTIL all MERGER | bugfix to calculate ancestor
 * class InterfaceContainer | bugfix if xmlRoot === NULL
+* class VirtualRouterContainer | bugfix if VSYS has no XMLnode available to import new Virtual-Router; xmlRoot === null
 
 GENERAL:
 * class PanAPIConnector | introduce method commitAll() and commitPartial( $user)
