@@ -390,6 +390,8 @@ function updateScriptsyntax( Idx ) {
         message += "'";
     }
 
+    message += " shadow-ignoreinvalidaddressobjects";
+
     //console.log( message ); //this is full CLI command
     $("#command" + Idx).val( message );
 
@@ -414,6 +416,8 @@ function updateScriptsyntax( Idx ) {
         message2 += "&in=";
         message2 += dropdownselection;
     }
+
+    message2 += "&shadow-ignoreinvalidaddressobjects";
 
     //console.log( message2 ); //this is full API command
     $("#commandapi" + Idx).val( message2 );
