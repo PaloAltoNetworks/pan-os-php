@@ -10,6 +10,7 @@ UTILS:
 * UTIL all object merger | improve output which object get delete if ancestor is found
 * UTIL pan-os-php type=securityprofile | introduce 'actions=custom-url-category-add-ending-token' for securityProfileType=custom-url-category
 * UTIL all script argument 'outputformatset' | improve display set commands
+* UTIL develop | introduce new script - display-xpath-value  - display-xpath-for-node-filter
 
 BUGFIX:
 * UTIL UI - still in BETA - bugfix to create correct JSON playbook file if location argument is used
