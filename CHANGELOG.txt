@@ -10,17 +10,21 @@ UTILS:
 * UTIL all object merger | improve output which object get delete if ancestor is found
 * UTIL pan-os-php type=securityprofile | introduce 'actions=custom-url-category-add-ending-token' for securityProfileType=custom-url-category
 * UTIL all script argument 'outputformatset' | improve display set commands
+* UTIL develop | introduce new script - display-xpath-value  - display-xpath-for-node-filter
+* UTIL UI | per-default always set shadow-ignoreinvalidaddressobjects
 
 BUGFIX:
 * UTIL UI - still in BETA - bugfix to create correct JSON playbook file if location argument is used
 * UTIL all MERGER | fix for location=any allowmergingwithupperlevel
 * UTIL all MERGER | bugfix to calculate ancestor
 * class InterfaceContainer | bugfix if xmlRoot === NULL
+* class VirtualRouterContainer | bugfix if VSYS has no XMLnode available to import new Virtual-Router; xmlRoot === null
 
 GENERAL:
 * class PanAPIConnector | introduce method commitAll() and commitPartial( $user)
 * framework | split README into multiple files to get better introduction
 * framework | introduce new example - improve the example template
+* framework | introduce bash script "create_all_docker_container.sh"
 
 
 2.0.29 (20220204)

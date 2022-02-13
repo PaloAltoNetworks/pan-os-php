@@ -369,7 +369,7 @@ function updateScriptsyntax( Idx ) {
 
     var checkedValue = $( "#shadowjson" + Idx ).is(':checked');
     if( checkedValue )
-        message += " shadow-json";
+        message += " 'shadow-json'";
 
     var locationValue = $( "#location" + Idx ).val();
     if( locationValue !== "---" && locationValue !== "" )
@@ -389,6 +389,8 @@ function updateScriptsyntax( Idx ) {
         message += dropdownselection;
         message += "'";
     }
+
+    message += " 'shadow-ignoreinvalidaddressobjects'";
 
     //console.log( message ); //this is full CLI command
     $("#command" + Idx).val( message );
@@ -414,6 +416,8 @@ function updateScriptsyntax( Idx ) {
         message2 += "&in=";
         message2 += dropdownselection;
     }
+
+    message2 += "&shadow-ignoreinvalidaddressobjects";
 
     //console.log( message2 ); //this is full API command
     $("#commandapi" + Idx).val( message2 );
