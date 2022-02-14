@@ -195,7 +195,8 @@ class XMLISSUE extends UTIL
             $address_region = array();
             $address_name = array();
             $service_name = array();
-            $rule_name = array();
+            $secrule_name = array();
+            $natrule_name = array();
 
             $objectTypeNode = DH::findFirstElement('address', $locationNode);
             if( $objectTypeNode !== FALSE )
@@ -796,7 +797,7 @@ class XMLISSUE extends UTIL
 
                                     $objectName = $objectNode->getAttribute('name');
 
-                                    $this->check_name( $objectName, $objectNode, $rule_name );
+                                    $this->check_name( $objectName, $objectNode, $secrule_name );
 
                                     $secRules[$objectName][] = $objectNode;
 
@@ -977,7 +978,7 @@ class XMLISSUE extends UTIL
                     //
                     //
                     PH::print_stdout( " - Scanning for Security Rules with double spaces in name...");
-                    foreach( $rule_name as $objectName => $node )
+                    foreach( $secrule_name as $objectName => $node )
                     {
                         PH::print_stdout( "    - Security Rules object '{$objectName}' from DG/VSYS {$locationName} has '  ' double Spaces in name, this causes problems by copy&past 'set commands' ... (*FIX_MANUALLY*) at XML line #{$node->getLineNo()}");
                         $countSecRuleObjectsWithDoubleSpaces++;
@@ -1022,7 +1023,7 @@ class XMLISSUE extends UTIL
                     //
                     //
                     PH::print_stdout( " - Scanning for NAT Rules with double spaces in name...");
-                    foreach( $rule_name as $objectName => $node )
+                    foreach( $natrule_name as $objectName => $node )
                     {
                         PH::print_stdout( "    - NAT Rules object '{$objectName}' from DG/VSYS {$locationName} has '  ' double Spaces in name, this causes problems by copy&past 'set commands' ... (*FIX_MANUALLY*) at XML line #{$node->getLineNo()}");
                         $countNATRuleObjectsWithDoubleSpaces++;
@@ -1335,7 +1336,7 @@ class XMLISSUE extends UTIL
 
         PH::print_stdout( " - FIX_MANUALLY: Security Rules with double spaces in name: {$countSecRuleObjectsWithDoubleSpaces} (look in the logs )");
         PH::print_stdout( " - FIX_MANUALLY: duplicate Security Rules: {$countDuplicateSecRuleObjects} (look in the logs )");
-        PH::print_stdout( " - FIX_MANUALLY: NAT Rules with double spaces in name: {$countSecRuleObjectsWithDoubleSpaces} (look in the logs )");
+        PH::print_stdout( " - FIX_MANUALLY: NAT Rules with double spaces in name: {$countNATRuleObjectsWithDoubleSpaces} (look in the logs )");
         PH::print_stdout( " - FIX_MANUALLY: duplicate NAT Rules: {$countDuplicateNATRuleObjects} (look in the logs )");
         PH::print_stdout( "");
 
