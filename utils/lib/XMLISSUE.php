@@ -1335,7 +1335,7 @@ class XMLISSUE extends UTIL
 
         PH::print_stdout( " - FIX_MANUALLY: Security Rules with double spaces in name: {$countSecRuleObjectsWithDoubleSpaces} (look in the logs )");
         PH::print_stdout( " - FIX_MANUALLY: duplicate Security Rules: {$countDuplicateSecRuleObjects} (look in the logs )");
-        PH::print_stdout( " - FIX_MANUALLY: Security Rules with double spaces in name: {$countSecRuleObjectsWithDoubleSpaces} (look in the logs )");
+        PH::print_stdout( " - FIX_MANUALLY: NAT Rules with double spaces in name: {$countSecRuleObjectsWithDoubleSpaces} (look in the logs )");
         PH::print_stdout( " - FIX_MANUALLY: duplicate NAT Rules: {$countDuplicateNATRuleObjects} (look in the logs )");
         PH::print_stdout( "");
 
