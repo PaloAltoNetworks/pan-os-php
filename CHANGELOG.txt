@@ -12,6 +12,7 @@ UTILS:
 * UTIL all script argument 'outputformatset' | improve display set commands
 * UTIL develop | introduce new script - display-xpath-value  - display-xpath-for-node-filter
 * UTIL UI | per-default always set shadow-ignoreinvalidaddressobjects
+* UTIL pan-os-php type=xml-issue | introduce new check if address/-group/service/-group/secRule/natRule objectname has double spaces in it
 
 BUGFIX:
 * UTIL UI - still in BETA - bugfix to create correct JSON playbook file if location argument is used
