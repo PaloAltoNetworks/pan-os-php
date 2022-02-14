@@ -20,6 +20,7 @@ BUGFIX:
 * UTIL all MERGER | bugfix to calculate ancestor
 * class InterfaceContainer | bugfix if xmlRoot === NULL
 * class VirtualRouterContainer | bugfix if VSYS has no XMLnode available to import new Virtual-Router; xmlRoot === null
+* UTIL type=xml-issue | bugfix for finding correct sec/natRule for double whitespaces in object name
 
 GENERAL:
 * class PanAPIConnector | introduce method commitAll() and commitPartial( $user)
