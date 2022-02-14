@@ -109,6 +109,9 @@ class XMLISSUE extends UTIL
         $countDuplicateSecRuleObjects = 0;
         $countDuplicateNATRuleObjects = 0;
 
+        $countSecRuleObjectsWithDoubleSpaces = 0;
+        $countNATRuleObjectsWithDoubleSpaces = 0;
+
         $countMissconfiguredSecRuleServiceObjects=0;
         $countMissconfiguredSecRuleApplicationObjects=0;
 
@@ -119,8 +122,10 @@ class XMLISSUE extends UTIL
 
         $countMissconfiguredAddressObjects = 0;
         $countMissconfiguredAddressRegionObjects = 0;
+        $countAddressObjectsWithDoubleSpaces = 0;
 
         $countMissconfiguredServiceObjects = 0;
+        $countServiceObjectsWithDoubleSpaces = 0;
 
 
         $countEmptyAddressGroup = 0;
@@ -132,6 +137,8 @@ class XMLISSUE extends UTIL
         $countRulesWithAppDefault = 0;
 
         $address_region = array();
+        $address_name = array();
+
 
 
         /** @var DOMElement[] $locationNodes */
@@ -185,6 +192,10 @@ class XMLISSUE extends UTIL
             $zoneObjects = array();
             $zoneIndex = array();
 
+            $address_region = array();
+            $address_name = array();
+            $service_name = array();
+            $rule_name = array();
 
             $objectTypeNode = DH::findFirstElement('address', $locationNode);
             if( $objectTypeNode !== FALSE )
@@ -198,6 +209,7 @@ class XMLISSUE extends UTIL
                     $objectName = $objectNode->getAttribute('name');
 
                     $this->check_region( $objectName, $objectNode, $address_region );
+                    $this->check_name( $objectName, $objectNode, $address_name );
 
                     $addressObjects[$objectName][] = $objectNode;
 
@@ -221,6 +233,7 @@ class XMLISSUE extends UTIL
                     $objectName = $objectNode->getAttribute('name');
 
                     $this->check_region( $objectName, $objectNode, $address_region );
+                    $this->check_name( $objectName, $objectNode, $address_name );
 
                     $addressGroups[$objectName][] = $objectNode;
 
@@ -245,6 +258,16 @@ class XMLISSUE extends UTIL
             {
                 PH::print_stdout( "    - address object '{$objectName}' from DG/VSYS {$locationName} has lower precedence as REGION object ... (*FIX_MANUALLY*) at XML line #{$node->getLineNo()}");
                 $countMissconfiguredAddressRegionObjects++;
+            }
+
+            //
+            //
+            //
+            PH::print_stdout( " - Scanning for address / addressgroup with double spaces in name...");
+            foreach( $address_name as $objectName => $nodes )
+            {
+                PH::print_stdout( "    - address object '{$objectName}' from DG/VSYS {$locationName} has '  ' double Spaces in name, this causes problems by copy&past 'set commands' ... (*FIX_MANUALLY*) at XML line #{$node->getLineNo()}");
+                $countAddressObjectsWithDoubleSpaces++;
             }
 
             //
@@ -474,6 +497,8 @@ class XMLISSUE extends UTIL
 
                     $objectName = $objectNode->getAttribute('name');
 
+                    $this->check_name( $objectName, $objectNode, $service_name );
+
                     if( $objectName == "application-default" )
                         $service_app_default_available = true;
 
@@ -498,6 +523,7 @@ class XMLISSUE extends UTIL
 
                     $objectName = $objectNode->getAttribute('name');
 
+                    $this->check_name( $objectName, $objectNode, $service_name );
 
                     $serviceGroups[$objectName][] = $objectNode;
 
@@ -512,6 +538,16 @@ class XMLISSUE extends UTIL
             PH::print_stdout( "#####     #####     #####     #####     #####     #####     #####     #####     #####     #####     #####");
             PH::print_stdout( " - parsed " . count($serviceObjects) . " service objects and " . count($serviceGroups) . " groups");
             PH::print_stdout( "");
+
+            //
+            //
+            //
+            PH::print_stdout( " - Scanning for service / servicegroup with double spaces in name...");
+            foreach( $service_name as $objectName => $nodes )
+            {
+                PH::print_stdout( "    - service object '{$objectName}' from DG/VSYS {$locationName} has '  ' double Spaces in name, this causes problems by copy&past 'set commands' ... (*FIX_MANUALLY*) at XML line #{$node->getLineNo()}");
+                $countServiceObjectsWithDoubleSpaces++;
+            }
 
             //
             //
@@ -760,6 +796,7 @@ class XMLISSUE extends UTIL
 
                                     $objectName = $objectNode->getAttribute('name');
 
+                                    $this->check_name( $objectName, $objectNode, $rule_name );
 
                                     $secRules[$objectName][] = $objectNode;
 
@@ -936,7 +973,15 @@ class XMLISSUE extends UTIL
 
                     }
 
-
+                    //
+                    //
+                    //
+                    PH::print_stdout( " - Scanning for Security Rules with double spaces in name...");
+                    foreach( $rule_name as $objectName => $nodes )
+                    {
+                        PH::print_stdout( "    - Security Rules object '{$objectName}' from DG/VSYS {$locationName} has '  ' double Spaces in name, this causes problems by copy&past 'set commands' ... (*FIX_MANUALLY*) at XML line #{$node->getLineNo()}");
+                        $countSecRuleObjectsWithDoubleSpaces++;
+                    }
 
                     PH::print_stdout( " - Scanning for duplicate Security Rules...");
                     foreach( $secRuleIndex as $objectName => $objectNodes )
@@ -971,6 +1016,16 @@ class XMLISSUE extends UTIL
 
                             $countDuplicateSecRuleObjects++;
                         }
+                    }
+
+                    //
+                    //
+                    //
+                    PH::print_stdout( " - Scanning for NAT Rules with double spaces in name...");
+                    foreach( $rule_name as $objectName => $nodes )
+                    {
+                        PH::print_stdout( "    - NAT Rules object '{$objectName}' from DG/VSYS {$locationName} has '  ' double Spaces in name, this causes problems by copy&past 'set commands' ... (*FIX_MANUALLY*) at XML line #{$node->getLineNo()}");
+                        $countNATRuleObjectsWithDoubleSpaces++;
                     }
 
                     PH::print_stdout( "\n - Scanning for duplicate NAT Rules...");
@@ -1261,22 +1316,26 @@ class XMLISSUE extends UTIL
         PH::print_stdout( " - FIXED: duplicate application-group members: {$totalApplicationGroupsFixed}");
 
         PH::print_stdout( "\n\nIssues that could not be fixed (look in logs for FIX_MANUALLY keyword):");
-        PH::print_stdout( " - FIX_MANUALLY: address objects with same name as REGION: {$countMissconfiguredAddressRegionObjects} (look in the logs)");
-        PH::print_stdout( "");
+
 
         PH::print_stdout( " - FIX_MANUALLY: duplicate address objects: {$countDuplicateAddressObjects} (look in the logs )");
         PH::print_stdout( " - FIX_MANUALLY: duplicate service objects: {$countDuplicateServiceObjects} (look in the logs)");
         PH::print_stdout( "");
 
         PH::print_stdout( " - FIX_MANUALLY: missconfigured address objects: {$countMissconfiguredAddressObjects} (look in the logs)");
+        PH::print_stdout( " - FIX_MANUALLY: address objects with double spaces in name: {$countAddressObjectsWithDoubleSpaces} (look in the logs)");
+        PH::print_stdout( " - FIX_MANUALLY: address objects with same name as REGION: {$countMissconfiguredAddressRegionObjects} (look in the logs)");
         PH::print_stdout( " - FIX_MANUALLY: empty address-group: {$countEmptyAddressGroup} (look in the logs)");
         PH::print_stdout( "");
 
         PH::print_stdout( " - FIX_MANUALLY: missconfigured service objects: {$countMissconfiguredServiceObjects} (look in the logs)");
+        PH::print_stdout( " - FIX_MANUALLY: service objects with double spaces in name: {$countServiceObjectsWithDoubleSpaces} (look in the logs)");
         PH::print_stdout( " - FIX_MANUALLY: empty service-group: {$countEmptyServiceGroup} (look in the logs)");
         PH::print_stdout( "");
 
+        PH::print_stdout( " - FIX_MANUALLY: Security Rules with double spaces in name: {$countSecRuleObjectsWithDoubleSpaces} (look in the logs )");
         PH::print_stdout( " - FIX_MANUALLY: duplicate Security Rules: {$countDuplicateSecRuleObjects} (look in the logs )");
+        PH::print_stdout( " - FIX_MANUALLY: Security Rules with double spaces in name: {$countSecRuleObjectsWithDoubleSpaces} (look in the logs )");
         PH::print_stdout( " - FIX_MANUALLY: duplicate NAT Rules: {$countDuplicateNATRuleObjects} (look in the logs )");
         PH::print_stdout( "");
 
@@ -1316,6 +1375,20 @@ class XMLISSUE extends UTIL
             {
                 $address_region[ $name ] = $object;
             }
+        }
+    }
+
+    /**
+     * @param $name string
+     * @param $object DOMNode
+     * @param $address_name array
+     **/
+    function check_name( $name, $object, &$address_name )
+    {
+        $needle = "  ";
+        if( strpos( $name, $needle ) !== FALSE )
+        {
+            $address_name[ $name ] = $object;
         }
     }
 
