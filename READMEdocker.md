@@ -11,6 +11,7 @@ graph TD
     E2 --> F2[docker run -v %CD%:/share -it swaschkut/pan-os-php:latest]
     F1 --> G[pan-os-php version]
     F2 --> G[pan-os-php version]
+    G --> H[Have fun to optimise your business day!]
 ```
 
 ###MacOS
