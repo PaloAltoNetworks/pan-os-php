@@ -920,6 +920,10 @@ ServiceCallContext::$supportedActions[] = array(
         {
             $newName = str_replace('$$sourceport$$', $object->getSourcePort(), $newName);
         }
+        if( strpos($newName, '$$timeout$$') !== FALSE )
+        {
+            $newName = str_replace('$$timeout$$', $object->getTimeout(), $newName);
+        }
 
 
         if( $object->name() == $newName )
