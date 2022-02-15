@@ -126,6 +126,7 @@ class XMLISSUE extends UTIL
 
         $countMissconfiguredServiceObjects = 0;
         $countServiceObjectsWithDoubleSpaces = 0;
+        $countServiceObjectsWithNameappdefault = 0;
 
 
         $countEmptyAddressGroup = 0;
@@ -195,6 +196,7 @@ class XMLISSUE extends UTIL
             $address_region = array();
             $address_name = array();
             $service_name = array();
+            $service_name_appdefault = array();
             $secrule_name = array();
             $natrule_name = array();
 
@@ -499,6 +501,7 @@ class XMLISSUE extends UTIL
                     $objectName = $objectNode->getAttribute('name');
 
                     $this->check_name( $objectName, $objectNode, $service_name );
+                    $this->check_service_name_appdefault( $objectName, $objectNode, $service_name_appdefault );
 
                     if( $objectName == "application-default" )
                         $service_app_default_available = true;
@@ -525,6 +528,7 @@ class XMLISSUE extends UTIL
                     $objectName = $objectNode->getAttribute('name');
 
                     $this->check_name( $objectName, $objectNode, $service_name );
+                    $this->check_service_name_appdefault( $objectName, $objectNode, $service_name_appdefault );
 
                     $serviceGroups[$objectName][] = $objectNode;
 
@@ -547,7 +551,18 @@ class XMLISSUE extends UTIL
             foreach( $service_name as $objectName => $node )
             {
                 PH::print_stdout( "    - service object '{$objectName}' from DG/VSYS {$locationName} has '  ' double Spaces in name, this causes problems by copy&past 'set commands' ... (*FIX_MANUALLY*) at XML line #{$node->getLineNo()}");
-                $countServiceObjectsWithDoubleSpaces++;
+                $countServiceObjectsWithNameappdefault++;
+            }
+
+            //
+            //
+            //
+            PH::print_stdout( " - Scanning for service / servicegroup with application-default as name...");
+            foreach( $service_name_appdefault as $objectName => $node )
+            {
+                //PH::print_stdout( "    - service object '{$objectName}' from DG/VSYS {$locationName} has name 'application-default' this causes problems with the default behaviour of the firewall ... (*FIX_MANUALLY*) at XML line #{$node->getLineNo()}");
+                PH::print_stdout( "    - service object 'application-default' from DG/VSYS {$locationName} has name 'application-default' this causes problems with the default behaviour of the firewall ... (*FIX_MANUALLY*) at XML line #{$node->getLineNo()}");
+                $countServiceObjectsWithNameappdefault++;
             }
 
             //
@@ -1332,6 +1347,7 @@ class XMLISSUE extends UTIL
 
         PH::print_stdout( " - FIX_MANUALLY: missconfigured service objects: {$countMissconfiguredServiceObjects} (look in the logs)");
         PH::print_stdout( " - FIX_MANUALLY: service objects with double spaces in name: {$countServiceObjectsWithDoubleSpaces} (look in the logs)");
+        PH::print_stdout( " - FIX_MANUALLY: service objects with name 'application-default': {$countServiceObjectsWithNameappdefault} (look in the logs)");
         PH::print_stdout( " - FIX_MANUALLY: empty service-group: {$countEmptyServiceGroup} (look in the logs)");
         PH::print_stdout( "");
 
@@ -1392,6 +1408,17 @@ class XMLISSUE extends UTIL
         {
             $address_name[ $name ] = $object;
         }
+    }
+
+    /**
+     * @param $name string
+     * @param $object DOMNode
+     * @param $address_name array
+     **/
+    function check_service_name_appdefault( $name, $object, &$service_name_appdefault )
+    {
+        if( $name == "application-default" )
+            $service_name_appdefault[] = $object;
     }
 
     function checkRemoveDuplicateMembers( $locationNode, $locationName, $tagName, &$tagNameArray, &$tagNameIndex, &$totalTagNameFixed )
