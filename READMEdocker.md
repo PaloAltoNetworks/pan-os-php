@@ -9,8 +9,8 @@ graph TD
     C -->|Windows| E2[Check your Docker Desktop installation]
     E1 --> F1[docker run -v PLACEHOLDER:/share -it swaschkut/pan-os-php:latest]
     E2 --> F2[docker run -v %CD%:/share -it swaschkut/pan-os-php:latest]
-    F1 --> G[Enjoy your day!]
-    F2 --> G[Enjoy your day!]
+    F1 --> G[pan-os-php version]
+    F2 --> G[pan-os-php version]
 ```
 
 ###MacOS
