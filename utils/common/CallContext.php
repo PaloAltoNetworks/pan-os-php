@@ -153,7 +153,14 @@ class CallContext
                 derr("action '{$this->actionRef['name']}' argument#{$count} '{$argName}' requires a value, it has no default one");
 
             if( $argValue !== null && strlen($argValue) > 0 )
-                $argValue = trim($argValue);
+            {
+                if (ctype_space($argValue))
+                {
+
+                }
+                else
+                    $argValue = trim($argValue);
+            }
             else
                 $argValue = $properties['default'];
 
