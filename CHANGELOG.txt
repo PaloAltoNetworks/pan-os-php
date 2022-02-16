@@ -23,6 +23,7 @@ BUGFIX:
 * class InterfaceContainer | bugfix if xmlRoot === NULL
 * class VirtualRouterContainer | bugfix if VSYS has no XMLnode available to import new Virtual-Router; xmlRoot === null
 * UTIL type=xml-issue | bugfix for finding correct sec/natRule for double whitespaces in object name
+* UTIL type=device - actions=logforwardingprofile-create-bp | bugfix FW can only have 'set shared log-settings'
 
 GENERAL:
 * class PanAPIConnector | introduce method commitAll() and commitPartial( $user)
