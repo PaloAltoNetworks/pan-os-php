@@ -549,7 +549,7 @@ class DH
         if( $element->nodeType == XML_ELEMENT_NODE ) //1
         {
             $string = "";
-            self::CHILDelementToPanSetCommand( $type, $element, $array, $xpath, $string);
+            self::CHILDelementToPanSetCommandSVEN( $type, $element, $array, $xpath, $string);
         }
         else
             derr('unsupported node type=' . $element->nodeType);
@@ -558,11 +558,54 @@ class DH
     /**
      * @param DOMNode $element
      */
-    static public function CHILDelementToPanSetCommand( $type, $element, &$array, $xpath, &$string )
+    static public function CHILDelementToPanSetCommandSVEN( $type, $element, &$array, $xpath, $string )
+    {
+        if( $element->nodeType == XML_ELEMENT_NODE )
+        {
+            if( $element->nodeName == "entry" )
+            {
+                if( strpos( $xpath, $element->getAttribute('name') ) == FALSE )
+                    $string .= ' "' . $element->getAttribute('name').'"';
+
+                if( strpos( $xpath, "delete" ) !== FALSE )
+                {
+                    $array[] = $xpath.$string;
+                    return;
+                }
+            }
+            else
+            {
+                if( strpos( $xpath, $element->nodeName ) == FALSE )
+                    $string .= " ".$element->nodeName;
+            }
+        }
+        else
+        {
+            if( trim($element->nodeValue) !== '')
+            {
+                if( strpos( $element->nodeValue, " " ) !== FALSE )
+                    $array[] =  $xpath.$string.' "'.$element->nodeValue.'"';
+                else
+                    $array[] = $xpath.$string.' '.$element->nodeValue;
+            }
+        }
+
+        foreach( $element->childNodes as $childElement )
+        {
+            if( $element->nodeType == XML_ELEMENT_NODE ) //1
+                self::CHILDelementToPanSetCommandSVEN( $type, $childElement, $array, $xpath, $string );
+        }
+    }
+
+
+    /**NO longer needed - planned for deletion 20220216
+
+    static public function CHILDelementToPanSetCommandOLD( $type, $element, &$array, $xpath, &$string )
     {
         if( $element->nodeType == XML_ELEMENT_NODE ) //1
         {
             $skip = false;
+            $alreadySet = false;
             $skipArray = array();
             $skipArray[] = "shared content-preview";
 
@@ -573,6 +616,7 @@ class DH
             }
 
             $string = $xpath;
+            //print "XPATH: ".$xpath."\n";
 
             if( strpos( $xpath, "delete" ) === FALSE )
             {
@@ -595,17 +639,29 @@ class DH
                             {
                                 if( $element->parentNode->nodeName == "entry" )
                                     $string .= ' "' . $element->textContent . '"';
+                                elseif( $element->nodeName == "entry" )
+                                {
+                                    $string .= ' "'.$element->getAttribute('name').'"';
+                                }
                                 else
                                 {
                                     $string = str_replace( " ".$element->nodeName, "", $string);
-                                    $string .= $element->parentNode->nodeName . " " . $element->nodeName . ' "' . $element->textContent . '"';
+                                    $string .= $element->parentNode->nodeName . " 1" . $element->nodeName . ' "' . $element->textContent . '"';
                                 }
                             }
                         }
                         elseif( !empty( $element->textContent ) )
-                            $string .= " ".$element->nodeName.' "'.$element->textContent.'"';
-                    }
+                        {
+                            if( $element->nodeName == "entry" )
+                                $string .= ' "'.$element->getAttribute('name').'"';
+                            else
+                                $string .= " ".$element->nodeName.' "'.$element->textContent.'"';
+                            $tmpstring = "";
 
+                            self::ElementChildToSet( $type, $element, $array, $string,$tmpstring );
+                            $alreadySet = true;
+                        }
+                    }
                 }
                 elseif( count( $element->childNodes ) > 1 )
                 {
@@ -616,7 +672,17 @@ class DH
                     }
 
                     if( !$skip )
-                        self::ElementChildToSet( $type, $element, $array, $xpath,$string );
+                    {
+                        if( $element->nodeName != "entry" )
+                            $string .= ' '.$element->nodeName;
+                        //print "2: ".$string."\n";
+                        //self::ElementChildToSet( $type, $element, $array, $xpath,$string );
+                        $tmpstring = "";
+                        self::ElementChildToSet( $type, $element, $array, $string,$tmpstring );
+                        //$alreadySet = true;
+                        //print "3: ".$string."\n";
+                    }
+
                 }
 
                 if( strpos( $string, "member" ) !== FALSE )
@@ -637,7 +703,7 @@ class DH
                     $skip = true;
             }
 
-            if( !$skip )
+            if( !$skip  )
             {
                 if( count( $element->childNodes ) == 1 && strpos( $xpath, "delete" ) === FALSE )
                 {
@@ -646,10 +712,12 @@ class DH
                     //next step is not working:
                     //pan-os-php type=device 'actions=logforwardingprofile-create-bp' in=ASA-Config-initial-10_0-fw_backup.xml out=/tmp/testing.xml outputformatset debugapi
 
-                        $array[] = $string;
+                    //print "|".$string."|\n";
+                    $array[] = $string;
                 }
                 else
                 {
+                    //print "|".$string."|\n";
                     $array[] = $string;
                 }
             }
@@ -676,9 +744,16 @@ class DH
         else
         {
             if( $element->hasChildNodes() )
+            {
                 $string .= " ".$element->nodeName;
+            }
+
             else
+            {
                 self::elementAddtoSet( $element, $array, $xpath, $string );
+                return;
+            }
+
 
             foreach( $element->childNodes as $childNode )
             {
@@ -708,7 +783,7 @@ class DH
             $array[] = $needle;
         }
     }
-
+*/
 
 
     /**

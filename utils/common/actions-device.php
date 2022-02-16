@@ -1357,7 +1357,7 @@ DeviceCallContext::$supportedActions['LogForwardingProfile-create-BP'] = array(
             {
                 $sub = $object;
 
-                if( $context->arguments['shared'] && !$context->subSystem->isFirewall() )
+                if( $context->arguments['shared'] || $context->subSystem->isFirewall() )
                 {
                     $sharedStore = $sub->owner;
                     $xmlRoot = DH::findFirstElementOrCreate('shared', $sharedStore->xmlroot);

@@ -15,6 +15,7 @@ UTILS:
 * UTIL pan-os-php type=xml-issue | introduce new check if address/-group/service/-group/secRule/natRule objectname has double spaces in it
 * UTIL type=xml-issue | introduce additional validation if service/-group is available with name 'application-default'
 * UTIL pan-os-php type=service | actions=name-rename:$$timeout$$ - introduce VARIABLE $$timeout$$
+* UTIL all script | argument outputformatset - final BETA
 
 BUGFIX:
 * UTIL UI - still in BETA - bugfix to create correct JSON playbook file if location argument is used
@@ -23,6 +24,7 @@ BUGFIX:
 * class InterfaceContainer | bugfix if xmlRoot === NULL
 * class VirtualRouterContainer | bugfix if VSYS has no XMLnode available to import new Virtual-Router; xmlRoot === null
 * UTIL type=xml-issue | bugfix for finding correct sec/natRule for double whitespaces in object name
+* UTIL type=device - actions=logforwardingprofile-create-bp | bugfix FW can only have 'set shared log-settings'
 
 GENERAL:
 * class PanAPIConnector | introduce method commitAll() and commitPartial( $user)
