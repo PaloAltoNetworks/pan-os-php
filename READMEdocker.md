@@ -39,7 +39,8 @@ graph TD
     
     R --> S[Have fun to optimise your business day!]
 ```
-###Windows Docker WSL check
+Windows Docker WSL installation check
+===
 [<a href='https://docs.microsoft.com/en-gb/windows/wsl/install-manual'>Windows WSL support link</a>]
 
 ["<a href='https://docs.microsoft.com/en-gb/windows/wsl/install-manual#step-3---enable-virtual-machine-feature' target='_blank' rel='noopener noreferrer'>Step 3 - Enable Virtual Machine feature</a>"]
