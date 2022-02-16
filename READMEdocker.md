@@ -34,19 +34,19 @@ graph TD
     C8{CMD or PowerShell} --> F2[open: PowerShell]
     
     
-    E2 --> Z1[navigate to the folder with your offline configuration using the CD command]
-    
+    E2 --> Z1[navigate to the folder with your offline configuration using the CD command]  
     F2 --> Z1[navigate to the folder with your offline configuration using the CD command]
     
     
-    Z1 --> K1["TERMINAL: docker run -v ${PWD}:/share -it swaschkut/pan-os-php:latest<br />COMMANDLINE: docker run -v #quot;%cd%#quot;:/share -it swaschkut/pan-os-php:latest<br />POWERSHELL: docker run -v ${PWD}:/share -it swaschkut/pan-os-php:latest<br />"]
+    Z1 -->|TERMINAL| K1A["docker run -v ${PWD}:/share -it swaschkut/pan-os-php:latest"]
+    Z1 -->|COMMANDLINE| K1B["docker run -v #quot;%cd%#quot;:/share -it swaschkut/pan-os-php:latest"]
+    Z1 -->|POWERSHELL| K1C["docker run -v ${PWD}:/share -it swaschkut/pan-os-php:latest"]
     
+  
     
-    
-    
- 
-    
-    K1 --> K3[Docker container instance start]
+    K1A --> K3[Docker container instance start]
+    K1B --> K3[Docker container instance start]
+    K1C --> K3[Docker container instance start]
     K3 -->|type| L[pan-os-php version]
 
     L -->|check local file access| M[cd /share]
@@ -55,12 +55,15 @@ graph TD
     R --> S[Have fun to optimise your business day!]
 ```
 
-###PLACEHOLDER
-- Windows Link:  https://docs.microsoft.com/en-gb/windows/wsl/install-manual
+###Graph helper
+- [Windows Link](https://docs.microsoft.com/en-gb/windows/wsl/install-manual)
 
-- MacOS: ${PWD}
-- Windows PowerShell: ${PWD}
-- Windows CommandLine: "%cd%"
+- MacOS:
+  - ${PWD}
+- Windows PowerShell: 
+  - ${PWD}
+- Windows CommandLine: 
+  - "%cd%"
 
 
 Docker build
