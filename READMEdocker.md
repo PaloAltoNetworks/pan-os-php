@@ -3,20 +3,54 @@ Deploy PAN-OS-PHP with Docker
 
 ```mermaid
 graph TD
-    A[Deploy PAN-OS-PHP] --> B
-    B[Install Docker Desktop] --> C{Which OS you are running}
-    C -->|MacOS| E1[all fine]
-    C -->|Windows| E2[Check your Docker Desktop installation]
-    E1 --> F1[docker run -v PLACEHOLDER:/share -it swaschkut/pan-os-php:latest]
-    E2 --> F2[docker run -v %CD%:/share -it swaschkut/pan-os-php:latest]
-    F1 --> G[pan-os-php version]
-    F2 --> G[pan-os-php version]
-    G --> H[Have fun to optimise your business day!]
+    
+    
+    BB[Install Docker Desktop] -->|reboot needed| CC[run Docker Desktop]
+    CC --> CC1[which OS]
+    
+    CC1{Which OS you are running?} -->|MacOS| B1[open: Terminal]
+    CC1{Which OS you are running?} -->|Windows| C1[check Docker]
+    
+    
+    B1 --> Z1[navigate to the folder with your offline configuration using the CD command]
+       
+ 
+    
+    C1{WSL not correctly installed?} -->|no| F2[open: PowerShell]
+    C1{WSL not correctly installed?} -->|yes| C3[goto <a href='https://docs.microsoft.com/en-gb/windows/wsl/install-manual'>Windows WSL support link</a>]
+    
+   
+    
+    C3 --> C7[follow steps 2-5 on the support page]    
+    C7 --> F2[open: PowerShell]
+
+   
+   
+    F2 --> Z1[navigate to the folder with your offline configuration using the CD command]
+    
+    
+    Z1 -->|TERMINAL| K1["docker run -v ${PWD}:/share -it swaschkut/pan-os-php:latest"]
+    Z1 -->|POWERSHELL| K1["docker run -v ${PWD}:/share -it swaschkut/pan-os-php:latest"]
+    
+  
+    
+    K1 --> K3[Docker container instance start]
+    K3 -->|type| R[pan-os-php version]
+    
+    R --> S[your files should be available in<br />/share<br />folder inside the Container]
 ```
+Windows Docker WSL installation check
+===
+[<a href='https://docs.microsoft.com/en-gb/windows/wsl/install-manual'>Windows WSL support link</a>]
 
-###MacOS
-PLACEHOLDER => ${PWD}
+["<a href='https://docs.microsoft.com/en-gb/windows/wsl/install-manual#step-3---enable-virtual-machine-feature' target='_blank' rel='noopener noreferrer'>Step 3 - Enable Virtual Machine feature</a>"]
 
+["<a href='https://docs.microsoft.com/en-gb/windows/wsl/install-manual#step-4---download-the-linux-kernel-update-package' target='_blank' rel='noopener noreferrer'>Step 4 - Download the Linux kernel update package</a>"]
+
+["<a href='https://docs.microsoft.com/en-gb/windows/wsl/install-manual#step-5---set-wsl-2-as-your-default-version' target='_blank' rel='noopener noreferrer'>Step 5 - Set WSL 2 as your default version</a>"]
+
+
+#Additional Information
 
 Docker build
 ============
@@ -39,8 +73,12 @@ For a quick start please use [WIKI docker](https://github.com/PaloAltoNetworks/p
 	cd [pan-os-php Root folder]
 	docker build -t pan-os-php -f docker/Dockerfile .
 	cd [go to the Folder you like to share with the Container]
-	docker run -v %CD%:/share -it pan-os-php
+	docker run -v "%CD%":/share -it pan-os-php
 	```
+
+
+
+
 
 Docker PAN-OS-PHP API and UI
 ============
