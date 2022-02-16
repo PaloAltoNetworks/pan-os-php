@@ -15,7 +15,7 @@ graph TD
     B1 --> Z[navigate to the folder with your offline configuration using the CD command]
     
     Z -->|Terminal| Z1[PLACEHOLDER]
-    Z1 -->|"${PWD}"| K1[docker run -v PLACEHOLDER:/share -it swaschkut/pan-os-php:latest]
+    Z1 -->|"${PWD}"| K1A["docker run -v ${PWD}:/share -it swaschkut/pan-os-php:latest"]
     
     
    
@@ -46,14 +46,16 @@ graph TD
     F2 --> Z[navigate to the folder with your offline configuration using the CD command]
     Z -->|PowerShell| Z1[PLACEHOLDER]
     
-    Z1 -->|"%cd%"| K1[docker run -v PLACEHOLDER:/share -it swaschkut/pan-os-php:latest]
-    Z1 -->|"${PWD}"| K1[docker run -v PLACEHOLDER:/share -it swaschkut/pan-os-php:latest]
+    Z1 -->|"%cd%"| K1B["docker run -v PLACEHOLDER:/share -it swaschkut/pan-os-php:latest"]
+    Z1 -->|"${PWD}"| K1C["docker run -v ${PWD}:/share -it swaschkut/pan-os-php:latest"]
     
     
     
  
     
-    K1 --> K3[Docker container instance start]
+    K1A --> K3[Docker container instance start]
+    K1B --> K3[Docker container instance start]
+    K1C --> K3[Docker container instance start]
     K3 -->|type| L[pan-os-php version]
 
     
