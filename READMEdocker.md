@@ -32,8 +32,8 @@ graph TD
     
     C7 --> C8[continue]
     
-    C8{CMD or PowerShell} --> E2[open: CommandLine]
-    C8{CMD or PowerShell} --> F2[open: PowerShell]
+    C8{CommandLine<br />or<br />PowerShell} --> E2[open: CommandLine]
+    C8{CommandLine<br />or<br />PowerShell} --> F2[open: PowerShell]
     
     
     E2 --> Z1[navigate to the folder with your offline configuration using the CD command]  
@@ -57,15 +57,6 @@ graph TD
     R --> S[Have fun to optimise your business day!]
 ```
 
-###Graph helper
-- [Windows Link](https://docs.microsoft.com/en-gb/windows/wsl/install-manual)
-
-- MacOS:
-  - ${PWD}
-- Windows PowerShell: 
-  - ${PWD}
-- Windows CommandLine: 
-  - "%cd%"
 
 
 Docker build
