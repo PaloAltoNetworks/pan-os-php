@@ -16,8 +16,8 @@ graph TD
        
  
     
-    C1{WSL not correctly installed?} -->|no| F2[open: PowerShell]
-    C1{WSL not correctly installed?} -->|yes| C3[goto <a href='https://docs.microsoft.com/en-gb/windows/wsl/install-manual'>Windows WSL support link</a>]
+    C1{WSL correctly installed?} -->|yes| F2[open: PowerShell]
+    C1{WSL correctly installed?} -->|no| C3[goto <a href='https://docs.microsoft.com/en-gb/windows/wsl/install-manual'>Windows WSL support link</a>]
     
    
     
