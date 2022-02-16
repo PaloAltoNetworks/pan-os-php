@@ -17,11 +17,11 @@ graph TD
  
     
     C1{WSL not correctly installed?} -->|no| F2[open: PowerShell]
-    C1{WSL not correctly installed?} -->|yes| C3[go to this Windows support page]
+    C1{WSL not correctly installed?} -->|yes| C3[goto <a href='https://docs.microsoft.com/en-gb/windows/wsl/install-manual'>Windows WSL support link</a>]
     
    
     
-    C3 --> C7[check Windows WSL installation]    
+    C3 --> C7[follow steps 2-5 on the support page]    
     C7 --> F2[open: PowerShell]
 
    
@@ -37,7 +37,7 @@ graph TD
     K1 --> K3[Docker container instance start]
     K3 -->|type| R[pan-os-php version]
     
-    R --> S[Have fun to optimise your business day!]
+    R --> S[your files should be available in<br />/share<br />folder inside the Container]
 ```
 Windows Docker WSL installation check
 ===
@@ -49,6 +49,8 @@ Windows Docker WSL installation check
 
 ["<a href='https://docs.microsoft.com/en-gb/windows/wsl/install-manual#step-5---set-wsl-2-as-your-default-version' target='_blank' rel='noopener noreferrer'>Step 5 - Set WSL 2 as your default version</a>"]
 
+
+#Additional Information
 
 Docker build
 ============
@@ -71,8 +73,12 @@ For a quick start please use [WIKI docker](https://github.com/PaloAltoNetworks/p
 	cd [pan-os-php Root folder]
 	docker build -t pan-os-php -f docker/Dockerfile .
 	cd [go to the Folder you like to share with the Container]
-	docker run -v %CD%:/share -it pan-os-php
+	docker run -v "%CD%":/share -it pan-os-php
 	```
+
+
+
+
 
 Docker PAN-OS-PHP API and UI
 ============
