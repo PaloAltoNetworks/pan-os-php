@@ -16,47 +16,37 @@ graph TD
        
  
     
-    C1{WSL not correctly installed?} -->|no| C8[continue]
+    C1{WSL not correctly installed?} -->|no| F2[open: PowerShell]
     C1{WSL not correctly installed?} -->|yes| C3[go to this Windows support page]
     
    
     
-    C3 --> C4[<a href='https://docs.microsoft.com/en-gb/windows/wsl/install-manual'>Windows WSL support link</a>]
-    
-    
-    
-    C4 --> C5["<a href='https://docs.microsoft.com/en-gb/windows/wsl/install-manual#step-3---enable-virtual-machine-feature' target='_blank' rel='noopener noreferrer'>Step 3 - Enable Virtual Machine feature</a>"]
-    C5 --> C6["<a href='https://docs.microsoft.com/en-gb/windows/wsl/install-manual#step-4---download-the-linux-kernel-update-package' target='_blank' rel='noopener noreferrer'>Step 4 - Download the Linux kernel update package</a>"]
-    C6 --> C7["<a href='https://docs.microsoft.com/en-gb/windows/wsl/install-manual#step-5---set-wsl-2-as-your-default-version' target='_blank' rel='noopener noreferrer'>Step 5 - Set WSL 2 as your default version</a>"]
-    
-    
-    C7 --> C8[continue]
-    
-    C8{CommandLine<br />or<br />PowerShell} --> E2[open: CommandLine]
-    C8{CommandLine<br />or<br />PowerShell} --> F2[open: PowerShell]
-    
-    
-    E2 --> Z1[navigate to the folder with your offline configuration using the CD command]  
+    C3 --> C7[check Windows WSL installation]    
+    C7 --> F2[open: PowerShell]
+
+   
+   
     F2 --> Z1[navigate to the folder with your offline configuration using the CD command]
     
     
-    Z1 -->|TERMINAL| K1A["docker run -v ${PWD}:/share -it swaschkut/pan-os-php:latest"]
-    Z1 -->|COMMANDLINE| K1B["docker run -v #quot;%cd%#quot;:/share -it swaschkut/pan-os-php:latest"]
-    Z1 -->|POWERSHELL| K1C["docker run -v ${PWD}:/share -it swaschkut/pan-os-php:latest"]
+    Z1 -->|TERMINAL| K1["docker run -v ${PWD}:/share -it swaschkut/pan-os-php:latest"]
+    Z1 -->|POWERSHELL| K1["docker run -v ${PWD}:/share -it swaschkut/pan-os-php:latest"]
     
   
     
-    K1A --> K3[Docker container instance start]
-    K1B --> K3[Docker container instance start]
-    K1C --> K3[Docker container instance start]
-    K3 -->|type| L[pan-os-php version]
-
-    L -->|check local file access| M[cd /share]
-    M -->|type| R[ls -la]
+    K1 --> K3[Docker container instance start]
+    K3 -->|type| R[pan-os-php version]
     
     R --> S[Have fun to optimise your business day!]
 ```
+###Windows Docker WSL check
+[<a href='https://docs.microsoft.com/en-gb/windows/wsl/install-manual'>Windows WSL support link</a>]
 
+["<a href='https://docs.microsoft.com/en-gb/windows/wsl/install-manual#step-3---enable-virtual-machine-feature' target='_blank' rel='noopener noreferrer'>Step 3 - Enable Virtual Machine feature</a>"]
+
+["<a href='https://docs.microsoft.com/en-gb/windows/wsl/install-manual#step-4---download-the-linux-kernel-update-package' target='_blank' rel='noopener noreferrer'>Step 4 - Download the Linux kernel update package</a>"]
+
+["<a href='https://docs.microsoft.com/en-gb/windows/wsl/install-manual#step-5---set-wsl-2-as-your-default-version' target='_blank' rel='noopener noreferrer'>Step 5 - Set WSL 2 as your default version</a>"]
 
 
 Docker build
