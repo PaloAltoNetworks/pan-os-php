@@ -13,14 +13,7 @@ graph TD
     
     
     B1 --> Z1[navigate to the folder with your offline configuration using the CD command]
-    
-  
-    Z1 -->|Terminal| K1A["docker run -v ${PWD}:/share -it swaschkut/pan-os-php:latest"]
-    
-    
-   
-    
-    
+       
  
     
     C1{WSL not correctly installed?} -->|no| C8[continue]
@@ -46,16 +39,14 @@ graph TD
     F2 --> Z1[navigate to the folder with your offline configuration using the CD command]
     
     
-    Z1 -->|CommandLine| K1B["docker run -v #quot;%cd%#quot;:/share -it swaschkut/pan-os-php:latest"]
-    Z1 -->|PowerShell| K1C["docker run -v ${PWD}:/share -it swaschkut/pan-os-php:latest"]
+    Z1 --> K1["Terminal: docker run -v ${PWD}:/share -it swaschkut/pan-os-php:latest<br />CommandLine: docker run -v #quot;%cd%#quot;:/share -it swaschkut/pan-os-php:latest<br />PowerShell: docker run -v ${PWD}:/share -it swaschkut/pan-os-php:latest<br />"]
+    
     
     
     
  
     
-    K1A --> K3[Docker container instance start]
-    K1B --> K3[Docker container instance start]
-    K1C --> K3[Docker container instance start]
+    K1 --> K3[Docker container instance start]
     K3 -->|type| L[pan-os-php version]
 
     L -->|check local file access| M[cd /share]
