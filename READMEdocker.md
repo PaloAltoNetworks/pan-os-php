@@ -23,9 +23,11 @@ graph TD
     
     C3 --> C4[<a href='https://docs.microsoft.com/en-gb/windows/wsl/install-manual'>Windows WSL support link</a>]
     
-    C4 --> C5[Step 3 - Enable Virtual Machine feature]
-    C5 --> C6[Step 4 - Download the Linux kernel update package]
-    C6 --> C7[Step 5 - Set WSL 2 as your default version]
+    
+    
+    C4 --> C5[<a href='https://docs.microsoft.com/en-gb/windows/wsl/install-manual#step-3---enable-virtual-machine-feature'>Step 3 - Enable Virtual Machine feature</a>]
+    C5 --> C6[<a href='https://docs.microsoft.com/en-gb/windows/wsl/install-manual#step-4---download-the-linux-kernel-update-package'>Step 4 - Download the Linux kernel update package</a>]
+    C6 --> C7[<a href='https://docs.microsoft.com/en-gb/windows/wsl/install-manual#step-5---set-wsl-2-as-your-default-version'>Step 5 - Set WSL 2 as your default version</a>]
     
     
     C7 --> C8[continue]
