@@ -58,8 +58,10 @@ graph TD
     K1C --> K3[Docker container instance start]
     K3 -->|type| L[pan-os-php version]
 
+    L -->|check local file access| M[cd /share]
+    M -->|type| R[ls -la]
     
-    L --> M[Have fun to optimise your business day!]
+    R --> S[Have fun to optimise your business day!]
 ```
 
 ###PLACEHOLDER
