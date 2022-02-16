@@ -12,10 +12,10 @@ graph TD
     CC1{Which OS you are running?} -->|Windows| C1[check Docker]
     
     
-    B1 --> Z[navigate to the folder with your offline configuration using the CD command]
+    B1 --> Z1[navigate to the folder with your offline configuration using the CD command]
     
-    Z -->|Terminal| Z1[PLACEHOLDER]
-    Z1 -->|"${PWD}"| K1A["docker run -v ${PWD}:/share -it swaschkut/pan-os-php:latest"]
+  
+    Z1 -->|Terminal| K1A["docker run -v ${PWD}:/share -it swaschkut/pan-os-php:latest"]
     
     
    
@@ -41,13 +41,13 @@ graph TD
     C8{CMD or PowerShell} --> F2[open: PowerShell]
     
     
-    E2 --> Z[navigate to the folder with your offline configuration using the CD command]
-    Z -->|CommandLine| Z1[PLACEHOLDER]
-    F2 --> Z[navigate to the folder with your offline configuration using the CD command]
-    Z -->|PowerShell| Z1[PLACEHOLDER]
+    E2 --> Z1[navigate to the folder with your offline configuration using the CD command]
     
-    Z1 -->|"%cd%"| K1B["docker run -v PLACEHOLDER:/share -it swaschkut/pan-os-php:latest"]
-    Z1 -->|"${PWD}"| K1C["docker run -v ${PWD}:/share -it swaschkut/pan-os-php:latest"]
+    F2 --> Z1[navigate to the folder with your offline configuration using the CD command]
+    
+    
+    Z1 -->|CommandLine| K1B["docker run -v #quot;%cd%#quot;:/share -it swaschkut/pan-os-php:latest"]
+    Z1 -->|PowerShell| K1C["docker run -v ${PWD}:/share -it swaschkut/pan-os-php:latest"]
     
     
     
