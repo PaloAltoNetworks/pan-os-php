@@ -7,8 +7,20 @@ maintainable and allowing complex scenarios like rule merging, unused object tra
 conversion of checkpoint exclusion groups, massive rule editing, AppID conversion … . 
 It will work seamlessly on PAN-OS local xml config file or PAN-OS API.
 
-**Homepage** : download latest sources on [GitHub](https://github.com/PaloAltoNetworks/pan-os-php).
-Windows package with PHP binaries here: [Git PAN-OS-PHP Windows Package](https://github.com/PaloAltoNetworks/pan-os-php-windows-package)
+INSTALLATION
+============
+
+The recommended installation of PAN-OS-PHP is via Docker.
+Please install Docker Desktop if needed.
+
+[README docker](/READMEdocker.md)
+
+[WIKI docker](https://github.com/PaloAltoNetworks/pan-os-php/wiki/docker)
+
+
+Old detailed information
+============
+**Homepage** : latest sources on [GitHub](https://github.com/PaloAltoNetworks/pan-os-php).
 
 **Requirements** :
  - PHP 7.4 with curl module [ tested with PHP 5.5 / 5.6 / 7.3 / 7.4 / 8.0 / 8.1 ]
