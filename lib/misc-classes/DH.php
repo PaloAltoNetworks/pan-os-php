@@ -576,7 +576,11 @@ class DH
             else
             {
                 if( strpos( $xpath, $element->nodeName ) == FALSE )
-                    $string .= " ".$element->nodeName;
+                {
+                    if( $element->nodeName !== "member" )
+                        $string .= " ".$element->nodeName;
+                }
+
             }
         }
         else
