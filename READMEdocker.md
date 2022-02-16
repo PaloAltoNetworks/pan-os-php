@@ -4,8 +4,8 @@ Deploy PAN-OS-PHP with Docker
 ```mermaid
 graph TD
     
-    AA --> BB[Install Docker Desktop]
-    BB -->|reboot needed| CC[run Docker Desktop]
+    
+    BB[Install Docker Desktop] -->|reboot needed| CC[run Docker Desktop]
     CC --> CC1[which OS]
     
     CC1{Which OS you are running?} -->|MacOS| B1[open: Terminal]
