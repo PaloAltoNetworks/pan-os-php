@@ -3,19 +3,69 @@ Deploy PAN-OS-PHP with Docker
 
 ```mermaid
 graph TD
-    A[Deploy PAN-OS-PHP] --> B
-    B[Install Docker Desktop] --> C{Which OS you are running}
-    C -->|MacOS| E1[all fine]
-    C -->|Windows| E2[Check your Docker Desktop installation]
-    E1 --> F1[docker run -v PLACEHOLDER:/share -it swaschkut/pan-os-php:latest]
-    E2 --> F2[docker run -v %CD%:/share -it swaschkut/pan-os-php:latest]
-    F1 --> G[pan-os-php version]
-    F2 --> G[pan-os-php version]
-    G --> H[Have fun to optimise your business day!]
+    
+    AA --> BB[Install Docker Desktop]
+    BB -->|reboot needed| CC[run Docker Desktop]
+    CC --> CC1[which OS]
+    
+    CC1{Which OS you are running?} -->|MacOS| B1[open: Terminal]
+    CC1{Which OS you are running?} -->|Windows| C1[check Docker]
+    
+    
+    B1 --> Z[navigate to the folder with your offline configuration using the CD command]
+    
+    Z -->|Terminal| Z1[PLACEHOLDER]
+    Z1 -->|"${PWD}"| K1[docker run -v PLACEHOLDER:/share -it swaschkut/pan-os-php:latest]
+    
+    
+   
+    
+    
+ 
+    
+    C1{WSL not correctly installed?} -->|no| C8[continue]
+    C1{WSL not correctly installed?} -->|yes| C3[go to this Windows support page]
+    
+   
+    
+    C3 --> C4[<a href='https://docs.microsoft.com/en-gb/windows/wsl/install-manual'>Windows WSL support link</a>]
+    
+    C4 --> C5[Step 3 - Enable Virtual Machine feature]
+    C5 --> C6[Step 4 - Download the Linux kernel update package]
+    C6 --> C7[Step 5 - Set WSL 2 as your default version]
+    
+    
+    C7 --> C8[continue]
+    
+    C8{CMD or PowerShell} --> E2[open: CommandLine]
+    C8{CMD or PowerShell} --> F2[open: PowerShell]
+    
+    
+    E2 --> Z[navigate to the folder with your offline configuration using the CD command]
+    Z -->|CommandLine| Z1[PLACEHOLDER]
+    F2 --> Z[navigate to the folder with your offline configuration using the CD command]
+    Z -->|PowerShell| Z1[PLACEHOLDER]
+    
+    Z1 -->|"%cd%"| K1[docker run -v PLACEHOLDER:/share -it swaschkut/pan-os-php:latest]
+    Z1 -->|"${PWD}"| K1[docker run -v PLACEHOLDER:/share -it swaschkut/pan-os-php:latest]
+    
+    
+    
+ 
+    
+    K1 --> K3[Docker container instance start]
+    K3 -->|type| L[pan-os-php version]
+
+    
+    L --> M[Have fun to optimise your business day!]
 ```
 
-###MacOS
-PLACEHOLDER => ${PWD}
+###PLACEHOLDER
+- Windows Link:  https://docs.microsoft.com/en-gb/windows/wsl/install-manual
+
+- MacOS: ${PWD}
+- Windows PowerShell: ${PWD}
+- Windows CommandLine: "%cd%"
 
 
 Docker build

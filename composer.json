@@ -1,20 +1,20 @@
 {
-	"name": "paloaltonetworks/pan-os-php",
-	"type": "library",
-	"description": "Library and UTIL tools for work with PAN-OS Firewall and Panorama configuration in PHP.",
-	"keywords": ["git"],
-	"license": "ISC",
-	"authors": [
-		{
-			"name": "Sven Waschkut",
-			"email": "swaschkut _AT_ paloaltonetworks.com"
-		},
+    "name": "paloaltonetworks/pan-os-php",
+    "type": "library",
+    "description": "Library and UTIL tools for work with PAN-OS Firewall and Panorama configuration in PHP.",
+    "keywords": ["git"],
+    "license": "ISC",
+    "authors": [
+        {
+            "name": "Sven Waschkut",
+            "email": "swaschkut _AT_ paloaltonetworks.com"
+        },
         {
           "name": "Christoph Painchaud",
           "email": "shellescape _AT_ gmail.com"
         }
-	],
-	"require": {
-		"php": ">=5.6.0"
-	}
+    ],
+    "require": {
+        "php": ">=7.4.0"
+    }
 }
