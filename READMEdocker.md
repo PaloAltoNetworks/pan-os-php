@@ -39,7 +39,7 @@ graph TD
     F2 --> Z1[navigate to the folder with your offline configuration using the CD command]
     
     
-    Z1 --> K1["Terminal: docker run -v ${PWD}:/share -it swaschkut/pan-os-php:latest<br />CommandLine: docker run -v #quot;%cd%#quot;:/share -it swaschkut/pan-os-php:latest<br />PowerShell: docker run -v ${PWD}:/share -it swaschkut/pan-os-php:latest<br />"]
+    Z1 --> K1["TERMINAL: docker run -v ${PWD}:/share -it swaschkut/pan-os-php:latest<br />COMMANDLINE: docker run -v #quot;%cd%#quot;:/share -it swaschkut/pan-os-php:latest<br />POWERSHELL: docker run -v ${PWD}:/share -it swaschkut/pan-os-php:latest<br />"]
     
     
     
