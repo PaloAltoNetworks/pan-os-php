@@ -19,11 +19,11 @@
 
 class RUNSSH
 {
-    function __construct( $ip, $user, $password, $commands, &$output_string )
+    function __construct( $ip, $user, $password, $commands, &$output_string, $timeout = 10, $port = 22  )
     {
         PH::print_stdout("");
 
-        $ssh = new Net_SSH2($ip);
+        $ssh = new Net_SSH2($ip, $port, $timeout);
 
         PH::enableExceptionSupport();
         PH::print_stdout( " - connect to " . $ip . "...");
@@ -58,6 +58,28 @@ class RUNSSH
 
             $tmp_string = $ssh->read();
             PH::print_stdout( $tmp_string );
+
+            $checkArray = array( 'Invalid syntax.' );
+            foreach ($checkArray as $issue)
+            {
+                if (strpos($tmp_string, $issue) !== FALSE)
+                {
+                    $string = "this command was not correctly send: '".$command."'";
+                    PH::print_stdout( $string );
+                    derr( $string, null, false );
+                }
+            }
+
+            $warningArray = array( "Object doesn't exist" );
+            foreach ($warningArray as $issue)
+            {
+                if (strpos($tmp_string, $issue) !== FALSE)
+                {
+                    $string = "this command was not correctly send: '".$command."'";
+                    PH::print_stdout( $string );
+                    mwarning( $string, null, false );
+                }
+            }
 
 
             $output_string .= $tmp_string;

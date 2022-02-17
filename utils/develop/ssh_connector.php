@@ -56,6 +56,7 @@ $debug = FALSE;
 $output_string = "";
 $hiddenPW = TRUE;
 $RSAkey = null;
+$timeout = 10;
 
 //output string manipulation
 $manipulate = FALSE;
@@ -69,6 +70,9 @@ if( isset(PH::$args['nohiddenpw']) )
 
 if( isset(PH::$args['debug']) )
     $debug = TRUE;
+
+if( isset(PH::$args['timeout']) )
+    $timeout = PH::$args['timeout'];
 
 if( isset(PH::$args['in']) )
 {
@@ -92,6 +96,20 @@ if( isset(PH::$args['vendor']) )
 {
     $vendor = PH::$args['vendor'];
     $vendor = strtolower($vendor);
+}
+elseif( isset(PH::$args['setcommandfile']) )
+{
+    $commandfile = PH::$args['setcommandfile'];
+    $commands = file($commandfile, FILE_IGNORE_NEW_LINES);
+    array_unshift($commands , 'configure');
+
+
+    if( isset(PH::$args['out']) )
+    {
+        $outfile = PH::$args['out'];
+    }
+    else
+        derr("missing argument 'out=[outputfile.txt]'");
 }
 elseif( isset(PH::$args['command']) )
 {
@@ -189,7 +207,7 @@ else
 //START SSH connection
 ############################################
 
-$ssh = new RUNSSH( $ip, $user, $password, $commands, $output_string );
+$ssh = new RUNSSH( $ip, $user, $password, $commands, $output_string, $timeout );
 
 ############################################
 //START output string manipulation
