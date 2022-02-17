@@ -264,7 +264,7 @@ if( $manipulate )
     }
 }
 
-if( isset(PH::$args['command']) )
+if( isset(PH::$args['command']) || isset(PH::$args['setcommandfile']))
 {
     PH::print_stdout( "write output into file: " . $outfile );
     file_put_contents($outfile, $output_string);
