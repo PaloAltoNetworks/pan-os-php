@@ -597,9 +597,13 @@ SecurityProfileCallContext::$supportedActions['custom-url-category-add-ending-to
             PH::print_stdout(  "        - " . $member );
             PH::$JSON_TMP['sub']['object'][$object->name()]['members'][] = $member;
 
+            $skiptokenArray = array( '*' );
+
             $lastChar = substr($member, -1);
             if( in_array( $lastChar, $tokenArray ) )
                 PH::print_stdout(  "skipped! endingToken already available: '".$lastChar."'" );
+            elseif( in_array( $lastChar, $skiptokenArray ) )
+                PH::print_stdout(  "skipped! following token available at lastChar: '".$lastChar."'" );
             else
             {
                 $object->addMember( $member.$newToken );

@@ -17,6 +17,7 @@ UTILS:
 * UTIL pan-os-php type=service | actions=name-rename:$$timeout$$ - introduce VARIABLE $$timeout$$
 * UTIL  argument 'outputformatset' - correction of 'set commands' order print
 * UTIL develop/ssh_connector.php | introduce argument 'setcommandfile=FILE' for quick validation check of create "set commands"
+* UTIL type=securityprofile actions=custom-url-category-add-ending-token - improvement avoid adding token if '*' is already available at end of string
 
 BUGFIX:
 * UTIL UI - still in BETA - bugfix to create correct JSON playbook file if location argument is used

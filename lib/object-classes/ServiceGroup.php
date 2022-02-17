@@ -111,7 +111,7 @@ class ServiceGroup
                 foreach( $this->members as $member )
                     if( $member === $f )
                     {
-                        mwarning("service '{$memberName}' is already part of group '{$this->name}', you should review your config file");
+                        mwarning("duplicated member named '{$memberName}' detected in servicegroup '{$this->name}', you should review your XML config file", $this->xmlroot, false);
                         $alreadyInGroup = TRUE;
                         break;
                     }
@@ -138,7 +138,7 @@ class ServiceGroup
                 foreach( $this->members as $member )
                     if( $member === $f )
                     {
-                        mwarning("duplicated member named '{$memberName}' detected in service group '{$this->name}', you should review your XML config file", $this->xmlroot);
+                        mwarning("duplicated member named '{$memberName}' detected in servicegroup '{$this->name}', you should review your XML config file", $this->xmlroot, false);
                         $alreadyInGroup = TRUE;
                         break;
                     }
@@ -626,7 +626,7 @@ class ServiceGroup
             {
                 if( $this->name() == $object->name() )
                 {
-                    mwarning("servicegroup with name: " . $this->name() . " is added as subgroup to itself, you should review your XML config file");
+                    mwarning("servicegroup with name: " . $this->name() . " is added as subgroup to itself, you should review your XML config file", $this->xmlroot, false);
                     continue;
                 }
 
