@@ -132,6 +132,7 @@ class UTIL
     public $auditComment = null;
 
     public $outputformatset = FALSE;
+    public $outputformatsetFile = null;
     public $origXmlDoc = null;
 
     public $diff_set = array();
@@ -246,7 +247,7 @@ class UTIL
 
         $this->supportedArguments['auditcomment'] = array('niceName' => 'AuditComment', 'shortHelp' => 'set custom AuditComment instead of predefined: "PAN-OS-PHP $actions $time"', 'argDesc' => 'CustomAuditComment');
 
-        $this->supportedArguments['outputformatset'] = array('niceName' => 'outputformatset', 'shortHelp' => 'get all PAN-OS set commands about the task the UTIL script is doing', 'argDesc' => 'outputformatset');
+        $this->supportedArguments['outputformatset'] = array('niceName' => 'outputformatset', 'shortHelp' => 'get all PAN-OS set commands about the task the UTIL script is doing. outputformatset=FILENAME -> store set commands in file', 'argDesc' => 'outputformatset');
 
         $this->supportedArguments['shadow-disableoutputformatting'] = array('niceName' => 'shadow-disableoutputformatting', 'shortHelp' => 'XML output in offline config is not in cleaned PHP DOMDocument structure');
         $this->supportedArguments['shadow-enablexmlduplicatesdeletion']= array('niceName' => 'shadow-enablexmlduplicatesdeletion', 'shortHelp' => 'if duplicate objects are available, keep only one object of the same name');
@@ -751,6 +752,9 @@ class UTIL
         if( isset(PH::$args['outputformatset']) )
         {
             $this->outputformatset = TRUE;
+            $this->outputformatsetFile = PH::$args['outputformatset'];
+            #if( $this->outputformatsetFile !== null )
+            #    file_put_contents($this->outputformatsetFile, "-------\n", FILE_APPEND );
         }
 
         $this->inputValidation();
@@ -1831,7 +1835,12 @@ class UTIL
             PH::print_stdout( "" );
             PH::print_stdout( "" );
             foreach( $utilDiff->diff_set as $set )
+            {
                 PH::print_stdout( $set );
+                if( $this->outputformatsetFile !== null )
+                    file_put_contents($this->outputformatsetFile, $set."\n", FILE_APPEND);
+            }
+
 
             $deleteArray = array( "rulebase", "address-group", "address", "service-group", "service", "misc" );
 
@@ -1842,6 +1851,8 @@ class UTIL
                     foreach( $utilDiff->diff_delete[$item] as $key => $delete )
                     {
                         PH::print_stdout( $delete );
+                        if( $this->outputformatsetFile !== null )
+                            file_put_contents($this->outputformatsetFile, $delete."\n", FILE_APPEND);
                     }
                 }
             }
