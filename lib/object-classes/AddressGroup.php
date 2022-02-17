@@ -214,7 +214,7 @@ class AddressGroup
 
                     if( isset($membersIndex[$memberName]) )
                     {
-                        mwarning("duplicated member named '{$memberName}' detected in address group '{$this->name}',  you should review your XML config file", $this->xmlroot);
+                        mwarning("duplicated member named '{$memberName}' detected in addressgroup '{$this->name}',  you should review your XML config file", $this->xmlroot, false);
                         continue;
                     }
                     $membersIndex[$memberName] = TRUE;
@@ -772,7 +772,7 @@ class AddressGroup
             {
                 if( $this->name() == $object->name() )
                 {
-                    mwarning("addressgroup with name: " . $this->name() . " is added as subgroup to itself, you should review your XML config file");
+                    mwarning("addressgroup with name: " . $this->name() . " is added as subgroup to itself, you should review your XML config file", $this->xmlroot, false);
                     continue;
                 }
 
