@@ -244,7 +244,7 @@ class GARPSEND extends UTIL
                 $ip = DH::findFirstElement("ip", $entry);
                 $interface = DH::findFirstElement("interface", $entry);
 
-                $intIP = $interfaceIP[$interface->textContent];
+                $intIP = $this->interfaceIP[$interface->textContent];
                 $intIP = explode("/", $intIP);
                 $intIP = $intIP[0];
 

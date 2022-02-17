@@ -15,7 +15,7 @@ UTILS:
 * UTIL pan-os-php type=xml-issue | introduce new check if address/-group/service/-group/secRule/natRule objectname has double spaces in it
 * UTIL type=xml-issue | introduce additional validation if service/-group is available with name 'application-default'
 * UTIL pan-os-php type=service | actions=name-rename:$$timeout$$ - introduce VARIABLE $$timeout$$
-* UTIL all script | argument outputformatset - final BETA
+* UTIL  argument 'outputformatset' - correction of 'set commands' order print
 
 BUGFIX:
 * UTIL UI - still in BETA - bugfix to create correct JSON playbook file if location argument is used
