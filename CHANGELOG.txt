@@ -16,6 +16,7 @@ UTILS:
 * UTIL type=xml-issue | introduce additional validation if service/-group is available with name 'application-default'
 * UTIL pan-os-php type=service | actions=name-rename:$$timeout$$ - introduce VARIABLE $$timeout$$
 * UTIL  argument 'outputformatset' - correction of 'set commands' order print
+* UTIL develop/ssh_connector.php | introduce argument 'setcommandfile=FILE' for quick validation check of create "set commands"
 
 BUGFIX:
 * UTIL UI - still in BETA - bugfix to create correct JSON playbook file if location argument is used
