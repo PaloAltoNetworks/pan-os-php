@@ -73,7 +73,13 @@ class PLAYBOOK__
             $this->debugAPI = TRUE;
 
         if( isset(PH::$args['outputformatset']) )
+        {
             $this->outputformatset = TRUE;
+            $this->outputformatsetFile = PH::$args['outputformatset'];
+            if( $this->outputformatsetFile !== null )
+                file_put_contents($this->outputformatsetFile, "" );
+        }
+
 
 
         if( isset(PH::$args['json']) )
@@ -180,7 +186,14 @@ class PLAYBOOK__
                 $arguments[] = "debugapi";
 
             if( $this->outputformatset )
-                $arguments[] = "outputformatset";
+            {
+                $string = "";
+                if( $this->outputformatsetFile !== null)
+                    $string = "=".$this->outputformatsetFile;
+
+                $arguments[] = "outputformatset".$string;
+            }
+
 
             ###############################################################################
             //IN / OUT specification
