@@ -546,6 +546,10 @@ class DH
 
         $xpath = $type . $fullpath;
 
+
+        if( strpos( $xpath, " member" ) !== FALSE )
+            $xpath = str_replace( " member", "", $xpath );
+
         //print "XPATH:|".$xpath."|\n";
 
         if( $element->nodeType == XML_ELEMENT_NODE ) //1
@@ -577,9 +581,11 @@ class DH
             }
             else
             {
-                //print "XPATH:|".$xpath."|\n";
-                //print $element->nodeName."\n";
-                //print "STRING1:|".$string."|\n";
+                /*
+                print "XPATH:|".$xpath."|\n";
+                print $element->nodeName."\n";
+                print "STRING1:|".$string."|\n";
+                */
                 if( strpos( $xpath, " ".$element->nodeName ) === FALSE )
                 {
                     if( $element->nodeName !== "member" )
