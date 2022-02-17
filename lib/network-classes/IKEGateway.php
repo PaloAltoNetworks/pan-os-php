@@ -91,16 +91,20 @@ class IKEGateway
             {
                 $tmp_psk = DH::findFirstElement('pre-shared-key', $node);
                 if( $tmp_psk != null )
-                    $this->preSharedKey = DH::findFirstElement('key', $tmp_psk)->textContent;
+                {
+                    $tmp_key = DH::findFirstElement('key', $tmp_psk);
+                    if( $tmp_key != null )
+                        $this->preSharedKey = $tmp_key->textContent;
+                }
+
             }
 
             if( $node->nodeName == 'local-address' )
             {
-                $tmp_gw_interface = DH::findFirstElement('interface', $node)->textContent;
-
-                if( $tmp_gw_interface != null )
+                $tmp_interface = DH::findFirstElement('interface', $node);
+                if( $tmp_interface != null )
                 {
-                    $this->localInterface = $tmp_gw_interface;
+                    $this->localInterface = $tmp_interface->textContent;
 
                     $tmp_interface = $this->owner->owner->network->findInterfaceOrCreateTmp($this->localInterface);
                     $tmp_interface->addReference($this);

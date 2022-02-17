@@ -602,6 +602,8 @@ SecurityProfileCallContext::$supportedActions['custom-url-category-add-ending-to
             $lastChar = substr($member, -1);
             if( in_array( $lastChar, $tokenArray ) )
                 PH::print_stdout(  "skipped! endingToken already available: '".$lastChar."'" );
+            elseif( strpos( $member, $newToken ) !== FALSE )
+                PH::print_stdout(  "skipped! endingToken already available: '".$member."'" );
             elseif( in_array( $lastChar, $skiptokenArray ) )
                 PH::print_stdout(  "skipped! following token available at lastChar: '".$lastChar."'" );
             else
