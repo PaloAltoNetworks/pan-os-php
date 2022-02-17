@@ -27,6 +27,7 @@ BUGFIX:
 * UTIL type=xml-issue | bugfix for finding correct sec/natRule for double whitespaces in object name
 * UTIL type=device - actions=logforwardingprofile-create-bp | bugfix FW can only have 'set shared log-settings'
 * UTIL type=gratuitous-arp | bugfix to get feature working after the migration to classes
+* UTIL argument 'outputformatset' | bugfix to include all XMLnode value information
 
 GENERAL:
 * class PanAPIConnector | introduce method commitAll() and commitPartial( $user)
