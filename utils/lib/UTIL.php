@@ -1834,16 +1834,22 @@ class UTIL
 
             PH::print_stdout( "" );
             PH::print_stdout( "" );
-            $setArray = array( "address", "address-group", "service", "service-group", "profile", "profile-group", "misc", "rulebase" );
-            foreach( $utilDiff->diff_set as $set )
+            $setArray = array( "address", "address-group", "service", "service-group", "profiles", "profile-group", "misc", "rulebase" );
+            foreach( $setArray as $item )
             {
-                PH::print_stdout( $set );
-                if( $this->outputformatsetFile !== null )
-                    file_put_contents($this->outputformatsetFile, $set."\n", FILE_APPEND);
+                if( isset( $utilDiff->diff_set[$item] ) )
+                {
+                    foreach( $utilDiff->diff_set[$item] as $key => $set )
+                    {
+                        PH::print_stdout( $set );
+                        if( $this->outputformatsetFile !== null )
+                            file_put_contents($this->outputformatsetFile, $set."\n", FILE_APPEND);
+                    }
+                }
             }
 
 
-            $deleteArray = array( "rulebase", "address-group", "address", "service-group", "service", "profile-group", "profile", "misc" );
+            $deleteArray = array( "rulebase", "address-group", "address", "service-group", "service", "profile-group", "profiles", "misc" );
 
             foreach( $deleteArray as $item )
             {

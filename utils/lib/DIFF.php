@@ -296,7 +296,7 @@ class DIFF extends UTIL
 
                 //same xpath different content
                 //$this->displayDIFF( $xpath, $text, array( $el1 ), array($el2) );
-                $this->displayDIFF( $xpath, $text, array( $el2 ), array( $el1 ) );
+                $this->displayDIFF( $xpath, $text, array( $el2 ), array( $el1 ), array( $el1 ) );
             }
             return;
         }
@@ -544,7 +544,7 @@ class DIFF extends UTIL
         $this->displayDIFF( $xpath, $text, $plus, $minus );
     }
 
-    public function displayDIFF( $xpath, $text, $plus, $minus )
+    public function displayDIFF( $xpath, $text, $plus, $minus, $edit = array() )
     {
         if( $text != '' )
         {
@@ -558,7 +558,38 @@ class DIFF extends UTIL
                     //PH::print_stdout("\nTEXT: $text");
                 }
 
+                /*
+                foreach( $edit as $element )
+                {
+                    if( $element === null )
+                        continue;
 
+                    $array = array();
+
+                    if( $this->debugAPI )
+                    {
+                        PH::print_stdout( "EDIT");
+                        //intermediate, remove it later on
+
+                        $doc2 = new DOMDocument();
+                        $node = $doc2->importNode($element, true);
+                        $doc2->appendChild($node);
+                        PH::print_stdout( $doc2->saveXML( $doc2->documentElement) );
+                        PH::print_stdout( "");
+
+                    }
+
+                    DH::elementToPanSetCommand( 'edit', $element, $array );
+
+
+                    foreach( $array as $entry )
+                    {
+                        if( !in_array( $entry, $this->diff_set ) )
+                            $this->diff_edit[] = $entry;
+                    }
+
+                }
+                */
 
                 foreach( $plus as $element )
                 {
@@ -571,7 +602,6 @@ class DIFF extends UTIL
                     {
                         PH::print_stdout( "ADD");
                         //intermediate, remove it later on
-
 
                         $doc2 = new DOMDocument();
                         $node = $doc2->importNode($element, true);
@@ -587,7 +617,24 @@ class DIFF extends UTIL
                     foreach( $array as $entry )
                     {
                         if( !in_array( $entry, $this->diff_set ) )
-                            $this->diff_set[] = $entry;
+                        {
+                            if( strpos( $entry, "rulebase " ) !== false )
+                                $this->diff_set['rulebase'][] = $entry;
+                            elseif( strpos( $entry, " address-group " ) !== false )
+                                $this->diff_set['address-group'][] = $entry;
+                            elseif( strpos( $entry, " address " ) !== false )
+                                $this->diff_set['address'][] = $entry;
+                            elseif( strpos( $entry, " service-group " ) !== false )
+                                $this->diff_set['service-group'][] = $entry;
+                            elseif( strpos( $entry, " service " ) !== false )
+                                $this->diff_set['service'][] = $entry;
+                            elseif( strpos( $entry, " profile-group " ) !== false )
+                                $this->diff_set['profile-group'][] = $entry;
+                            elseif( strpos( $entry, " profiles " ) !== false )
+                                $this->diff_set['profiles'][] = $entry;
+                            else
+                                $this->diff_set['misc'][] = $entry;
+                        }
                     }
 
                 }
@@ -629,6 +676,10 @@ class DIFF extends UTIL
                                 $this->diff_delete['service-group'][] = $entry;
                             elseif( strpos( $entry, " service " ) !== false )
                                 $this->diff_delete['service'][] = $entry;
+                            elseif( strpos( $entry, " profile-group " ) !== false )
+                                $this->diff_delete['profile-group'][] = $entry;
+                            elseif( strpos( $entry, " profiles " ) !== false )
+                                $this->diff_delete['profiles'][] = $entry;
                             else
                                 $this->diff_delete['misc'][] = $entry;
                         }
