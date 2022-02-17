@@ -301,6 +301,7 @@ class cidr
 
     static public function &StartEndToIParray( $startEndarray )
     {
+        $ipArray = array();
         $network = $startEndarray['network'];
         $start = $startEndarray['start'];
         $end = $startEndarray['end'];
