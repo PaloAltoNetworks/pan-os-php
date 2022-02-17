@@ -1834,6 +1834,7 @@ class UTIL
 
             PH::print_stdout( "" );
             PH::print_stdout( "" );
+            $setArray = array( "address", "address-group", "service", "service-group", "profile", "profile-group", "misc", "rulebase" );
             foreach( $utilDiff->diff_set as $set )
             {
                 PH::print_stdout( $set );
@@ -1842,7 +1843,7 @@ class UTIL
             }
 
 
-            $deleteArray = array( "rulebase", "address-group", "address", "service-group", "service", "misc" );
+            $deleteArray = array( "rulebase", "address-group", "address", "service-group", "service", "profile-group", "profile", "misc" );
 
             foreach( $deleteArray as $item )
             {

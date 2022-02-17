@@ -21,6 +21,14 @@ class GARPSEND extends UTIL
 {
     public $utilType = null;
 
+    public $commands = array();
+    public $interfaceIP = array();
+    public $ipRangeInt = array();
+
+    public $offline_config_test = false;
+    public $user = "";
+    public $password = "";
+
 
     public function utilStart()
     {
@@ -64,9 +72,9 @@ class GARPSEND extends UTIL
         ###################################################################################
 
 
-        $offline_config_test = false;
-        $user = "";
-        $password = "";
+        $this->offline_config_test = false;
+        $this->user = "";
+        $this->password = "";
 
 
 
@@ -76,13 +84,13 @@ class GARPSEND extends UTIL
         if( !isset(PH::$args['help']) )
         {
             if( isset(PH::$args['test']) )
-                $offline_config_test = TRUE;
+                $this->offline_config_test = TRUE;
 
             if( isset(PH::$args['in']) )
             {
                 $configInput = PH::$args['in'];
 
-                if( strpos($configInput, "api://") === FALSE && !$offline_config_test )
+                if( strpos($configInput, "api://") === FALSE && !$this->offline_config_test )
                     derr("only PAN-OS API connection is supported", null, false);
 
                 $configInput = str_replace("api://", "", $configInput);
@@ -93,18 +101,18 @@ class GARPSEND extends UTIL
 
 
         if( isset(PH::$args['user']) )
-            $user = PH::$args['user'];
+            $this->user = PH::$args['user'];
         else
         {
-            if( !$offline_config_test )
+            if( !$this->offline_config_test )
                 derr("argument 'user' is needed", null, false);
         }
 
         if( isset(PH::$args['pw']) )
-            $password = PH::$args['pw'];
+            $this->password = PH::$args['pw'];
         else
         {
-            if( !$offline_config_test )
+            if( !$this->offline_config_test )
                 derr("argument 'pw' is needed", null, false);
         }
 
@@ -114,11 +122,11 @@ class GARPSEND extends UTIL
         PH::$argv = array();
         $argv2[] = "key-manager";
         $argv2[] = "add=" . $configInput;
-        $argv2[] = "user=" . $user;
-        $argv2[] = "pw=" . $password;
+        $argv2[] = "user=" . $this->user;
+        $argv2[] = "pw=" . $this->password;
         $argc2 = count($argv2);
 
-        if( !$offline_config_test )
+        if( !$this->offline_config_test )
             $util = new KEYMANGER("key-manager", $argv2, $argc2, __FILE__);
         }
 
@@ -132,16 +140,14 @@ class GARPSEND extends UTIL
         if( !$util->pan->isFirewall() )
             derr("only PAN-OS FW is supported");
 
-        if( !$util->apiMode && !$offline_config_test )
+        if( !$util->apiMode && !$this->offline_config_test )
             derr("only PAN-OS API connection is supported");
 
         $inputConnector = $util->pan->connector;
 
 
         $interfaces = $util->pan->network->getAllInterfaces();
-        $commands = array();
-        $interfaceIP = array();
-        $ipRangeInt = array();
+
 
         foreach( $interfaces as $int )
         {
@@ -179,11 +185,11 @@ class GARPSEND extends UTIL
 
                 if( $key == 0 )
                 {
-                    $interfaceIP[$name] = $intIP;
+                    $this->interfaceIP[$name] = $intIP;
                 }
-                $ipRangeInt[$ip] = $name;
+                $this->ipRangeInt[$ip] = $name;
 
-                $commands[$intIP . $name] = "test arp gratuitous ip " . $intIP . " interface " . $name;
+                $this->commands[$intIP . $name] = "test arp gratuitous ip " . $intIP . " interface " . $name;
             }
         }
 
@@ -199,7 +205,7 @@ class GARPSEND extends UTIL
                 #print "NAME: ".$rule->name()."\n";
                 $dstObjects = $rule->destination->getAll();
                 foreach( $dstObjects as $object )
-                    getTestCommands($vsys, $object, $commands);
+                    self::getTestCommands($vsys, $object);
             }
 
             $natSNATrules = $vsys->natRules->rules('(snat is.set)');
@@ -213,14 +219,14 @@ class GARPSEND extends UTIL
                 $snatObjects = $rule->snathosts->getAll();
 
                 foreach( $snatObjects as $object )
-                    getTestCommands($vsys, $object, $commands);
+                    $this->getTestCommands($vsys, $object);
             }
 
             //bidirNAT are already involved in the SNAT calculation above
         }
 
 
-        if( !$offline_config_test || $util->apiMode )
+        if( !$this->offline_config_test || $util->apiMode )
         {
             $cmd = "<show><arp><entry name = 'all'/></arp></show>";
             $response = $inputConnector->sendOpRequest($cmd);
@@ -242,7 +248,7 @@ class GARPSEND extends UTIL
                 $intIP = explode("/", $intIP);
                 $intIP = $intIP[0];
 
-                $commands[] = "ping source " . $intIP . " count 2 host " . $ip->textContent;
+                $this->commands[] = "ping source " . $intIP . " count 2 host " . $ip->textContent;
             }
         }
         else
@@ -254,10 +260,10 @@ class GARPSEND extends UTIL
 
 
         PH::print_stdout("");
-        PH::print_stdout("Display the commands like to send to the FW:");
+        PH::print_stdout("Display the commands you like to send to the FW:");
         PH::print_stdout("");
 
-        foreach( $commands as $command )
+        foreach( $this->commands as $command )
             PH::print_stdout($command);
 
 
@@ -265,12 +271,12 @@ class GARPSEND extends UTIL
         ##############################################
         PH::print_stdout("");
         $output_string = "";
-        if( !$offline_config_test )
+        if( !$this->offline_config_test )
         {
             $configInputExplode = explode('/', $configInput);
             if( count($configInputExplode) > 1 )
                 $configInput = $configInputExplode[0];
-            $ssh = new RUNSSH($configInput, $user, $password, $commands, $output_string);
+            $ssh = new RUNSSH($configInput, $this->user, $this->password, $this->commands, $output_string);
         }
 
 
@@ -279,63 +285,63 @@ class GARPSEND extends UTIL
         ##############################################
 
 
-        function getTestCommands($vsys, $object, &$commands)
+
+    }
+
+    function getTestCommands($vsys, $object)
+    {
+        /** @var Address $object */
+        #print "DST: ".$object->name()."\n";
+        #print "IP: ".$object->value()."\n";
+
+        if( $object->isType_FQDN() || $object->isType_ipWildcard() )
+            return;
+
+        $dstIP = $object->value();
+        $dstIP = str_replace("/32", "", $dstIP);
+
+        $this->IParray = array();
+        if( strpos($dstIP, "/") === FALSE and strpos($dstIP, "-") === FALSE )
         {
-            global $ipRangeInt;
+            $this->IParray[$dstIP] = $dstIP;
+        }
+        else
+        {
+            $startEndarray = CIDR::stringToStartEnd($dstIP);
+            $this->IParray = CIDR::StartEndToIParray($startEndarray);
+        }
 
-            /** @var Address $object */
-            #print "DST: ".$object->name()."\n";
-            #print "IP: ".$object->value()."\n";
 
-            if( $object->isType_FQDN() || $object->isType_ipWildcard() )
-                return;
+        foreach( $this->IParray as $dstIP )
+        {
+            if( filter_var($dstIP, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) )
+                continue;
 
-            $dstIP = $object->value();
-            $dstIP = str_replace("/32", "", $dstIP);
-
-            $IParray = array();
-            if( strpos($dstIP, "/") === FALSE and strpos($dstIP, "-") === FALSE )
+            //this is from above to get all interfaces
+            foreach( $this->ipRangeInt as $key => $intName )
             {
-                $IParray[$dstIP] = $dstIP;
-            }
-            else
-            {
-                $startEndarray = CIDR::stringToStartEnd($dstIP);
-                $IParray = CIDR::StartEndToIParray($startEndarray);
-            }
-
-
-            foreach( $IParray as $dstIP )
-            {
-                if( filter_var($dstIP, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) )
-                    continue;
-
-                //this is from above to get all interfaces
-                foreach( $ipRangeInt as $key => $intName )
+                $IP_network = explode("/", $key);
+                $value = $IP_network[0];
+                if( !isset($IP_network[1]) )
                 {
-                    $IP_network = explode("/", $key);
-                    $value = $IP_network[0];
-                    if( !isset($IP_network[1]) )
-                    {
-                        //more validation if object is used
-                        /** @var VirtualSystem $vsys */
-                        $object = $vsys->addressStore->find($key);
+                    //more validation if object is used
+                    /** @var VirtualSystem $vsys */
+                    $object = $vsys->addressStore->find($key);
 
-                        if( $object->isType_FQDN() || $object->isType_ipWildcard() )
-                            continue;
+                    if( $object->isType_FQDN() || $object->isType_ipWildcard() )
+                        continue;
 
-                        $value = $object->getNetworkValue();
-                        $netmask = $object->getNetworkMask();
-                    }
-                    else
-                    {
-                        $netmask = $IP_network[1];
-                    }
-                    $network = cidr::cidr2network($value, $netmask);
-
-                    if( cidr::cidr_match($dstIP, $network, $netmask) )
-                        $commands[$dstIP . $intName] = "test arp gratuitous ip " . $dstIP . " interface " . $intName;
+                    $value = $object->getNetworkValue();
+                    $netmask = $object->getNetworkMask();
                 }
+                else
+                {
+                    $netmask = $IP_network[1];
+                }
+                $network = cidr::cidr2network($value, $netmask);
+
+                if( cidr::cidr_match($dstIP, $network, $netmask) )
+                    $this->commands[$dstIP . $intName] = "test arp gratuitous ip " . $dstIP . " interface " . $intName;
             }
         }
     }
