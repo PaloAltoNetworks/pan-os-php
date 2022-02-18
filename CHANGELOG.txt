@@ -30,6 +30,7 @@ BUGFIX:
 * UTIL type=gratuitous-arp | bugfix to get feature working after the migration to classes
 * UTIL argument 'outputformatset' | bugfix to include all XMLnode value information
 * class IKEGateway | bugfix for reading XML if XMLnode is not available
+* UTIL argument 'outputformatset' bugfix for attribute name
 
 GENERAL:
 * class PanAPIConnector | introduce method commitAll() and commitPartial( $user)

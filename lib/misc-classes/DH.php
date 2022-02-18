@@ -570,7 +570,7 @@ class DH
         {
             if( $element->nodeName == "entry" )
             {
-                if( strpos( $xpath, $element->getAttribute('name') ) == FALSE )
+                if( strpos( $xpath, ' "'.$element->getAttribute('name').'"' ) === FALSE )
                     $string .= ' "' . $element->getAttribute('name').'"';
 
                 if( strpos( $xpath, "delete" ) !== FALSE )
