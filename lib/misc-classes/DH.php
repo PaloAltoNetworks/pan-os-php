@@ -566,7 +566,7 @@ class DH
      */
     static public function CHILDelementToPanSetCommand( $type, $element, &$array, $xpath, $string )
     {
-        $debug = true;
+        $debug = false;
 
         if( $element->nodeType == XML_ELEMENT_NODE )
         {
