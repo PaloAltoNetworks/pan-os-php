@@ -583,22 +583,23 @@ class DH
             }
             else
             {
-                if( $debug )
-                {
-                    print "XPATH:|".$xpath."|\n";
-                    print $element->nodeName."\n";
-                    print "STRING1:|".$string."|\n";
-                }
-
-
                 if( strpos( $xpath, " ".$element->nodeName ) === FALSE )
                 {
                     if( $element->nodeName !== "member" )
                         $string .= " ".$element->nodeName;
-                }
+                    else
+                    {
+                        if( strpos( $xpath, "delete" ) !== FALSE )
+                        {
+                            $finalstring = $xpath.$string;
+                            if( strpos( $finalstring, " profile-setting group" ) !== FALSE )
+                                $finalstring = str_replace( " profile-setting group", " profile-setting", $finalstring );
 
-                if( $debug )
-                    print "STRING2:|".$string."|\n";
+                            $array[] = $finalstring;
+                            return;
+                        }
+                    }
+                }
             }
 
 
@@ -609,12 +610,7 @@ class DH
             {
                 $finalstring = $xpath.$string;
                 if( !empty( $finalstring ) )
-                {
                     $array[] = $finalstring;
-
-                    if( $debug )
-                        print "FINAL:".$finalstring."\n";
-                }
             }
         }
         else
@@ -633,22 +629,15 @@ class DH
                     if( strpos( $finalstring, " flood " ) !== FALSE )
                         $finalstring = "";
                 }
+                elseif( strpos( $finalstring, " security rules " ) !== FALSE || strpos( $finalstring, " default-security-rules rules " ) !== FALSE)
+                {
+                    //Problem security rules - log-end no - not allowed
+                    if( strpos( $finalstring, "delete " ) !== FALSE && strpos( $finalstring, " log-end no" ) !== FALSE )
+                        $finalstring = "";
+                }
 
                 if( !empty( $finalstring ) )
-                {
                     $array[] = $finalstring;
-
-                    if( $debug )
-                        print "FINAL:".$finalstring."\n";
-                }
-            }
-            else
-            {
-                if( $debug )
-                {
-                    print "not added:\n";
-                    print "STRING3:|".$string."|\n";
-                }
             }
         }
     }

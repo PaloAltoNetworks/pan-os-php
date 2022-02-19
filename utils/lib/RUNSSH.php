@@ -51,10 +51,41 @@ class RUNSSH
         //fetch key of the last element of the array.
         $lastElementKey = key($commands);
 
+        $configureFound = false;
         foreach( $commands as $k => $command )
         {
             PH::print_stdout(  strtoupper($command) . ":");
+
+            /*
+            if( strpos( $command, "configure" ) !== FALSE )
+            {
+                $configureFound = true;
+                $ssh->write($command . "\n");
+                $configureCounter = 0;
+            }
+
+
+            if( $configureFound )
+            {
+                //Todo: count command, if count = 10 set combined file
+                if( $configureCounter !== 0 )
+                {
+                    $combinedCommands .= $command."\n";
+
+                    if( $configureCounter == 10 )
+                    {
+                        $configureCounter = 1;
+
+                        $ssh->write( $combinedCommands );
+                    }
+
+                }
+            }
+            else
+                $ssh->write($command . "\n");
+            */
             $ssh->write($command . "\n");
+
 
             $tmp_string = $ssh->read();
             PH::print_stdout( $tmp_string );
