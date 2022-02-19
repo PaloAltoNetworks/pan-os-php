@@ -124,7 +124,7 @@ elseif( isset(PH::$args['command']) )
         derr("missing argument 'out=[outputfile.txt]'");
 }
 else
-    derr("missing argument 'vendor=[VENDOR]' OR 'command=[COMMANDS]'");
+    derr("missing argument 'vendor=[VENDOR]' OR 'command=[COMMANDS]' OR 'setcommandfile=[FILE]'");
 
 
 if( $vendor == "paloalto" )
