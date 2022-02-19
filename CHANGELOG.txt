@@ -31,6 +31,7 @@ BUGFIX:
 * UTIL argument 'outputformatset' | bugfix to include all XMLnode value information
 * class IKEGateway | bugfix for reading XML if XMLnode is not available
 * UTIL argument 'outputformatset' bugfix for attribute name
+* UTIL argument "outputformatset" - bugfix to get all XMLnode without any child and no textContent
 
 GENERAL:
 * class PanAPIConnector | introduce method commitAll() and commitPartial( $user)

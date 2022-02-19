@@ -521,7 +521,7 @@ class DH
      */
     static public function elementToPanSetCommand( $type, $element, &$array )
     {
-        $debug = true;
+        $debug = false;
 
         $xpath = '';
         if( $type !== "set" && $type !== "delete" )
@@ -566,6 +566,8 @@ class DH
      */
     static public function CHILDelementToPanSetCommand( $type, $element, &$array, $xpath, $string )
     {
+        $debug = true;
+
         if( $element->nodeType == XML_ELEMENT_NODE )
         {
             if( $element->nodeName == "entry" )
@@ -581,17 +583,38 @@ class DH
             }
             else
             {
-                /*
-                print "XPATH:|".$xpath."|\n";
-                print $element->nodeName."\n";
-                print "STRING1:|".$string."|\n";
-                */
+                if( $debug )
+                {
+                    print "XPATH:|".$xpath."|\n";
+                    print $element->nodeName."\n";
+                    print "STRING1:|".$string."|\n";
+                }
+
+
                 if( strpos( $xpath, " ".$element->nodeName ) === FALSE )
                 {
                     if( $element->nodeName !== "member" )
                         $string .= " ".$element->nodeName;
                 }
-                //print "STRING2:|".$string."|\n";
+
+                if( $debug )
+                    print "STRING2:|".$string."|\n";
+            }
+
+
+            foreach( $element->childNodes as $childElement )
+                self::CHILDelementToPanSetCommand( $type, $childElement, $array, $xpath, $string );
+
+            if( $element->hasChildNodes() === FALSE )
+            {
+                $finalstring = $xpath.$string;
+                if( !empty( $finalstring ) )
+                {
+                    $array[] = $finalstring;
+
+                    if( $debug )
+                        print "FINAL:".$finalstring."\n";
+                }
             }
         }
         else
@@ -599,16 +622,34 @@ class DH
             if( trim($element->nodeValue) !== '')
             {
                 if( strpos( $element->nodeValue, " " ) !== FALSE )
-                    $array[] =  $xpath.$string.' "'.$element->nodeValue.'"';
+                    $finalstring =  $xpath.$string.' "'.$element->nodeValue.'"';
                 else
-                    $array[] = $xpath.$string.' '.$element->nodeValue;
-            }
-        }
+                    $finalstring = $xpath.$string.' '.$element->nodeValue;
 
-        foreach( $element->childNodes as $childElement )
-        {
-            if( $element->nodeType == XML_ELEMENT_NODE ) //1
-                self::CHILDelementToPanSetCommand( $type, $childElement, $array, $xpath, $string );
+
+                if( strpos( $finalstring, " profiles zone-protection-profile " ) !== FALSE )
+                {
+                    //Problem Zoneprotection - flood is not a valid set command
+                    if( strpos( $finalstring, " flood " ) !== FALSE )
+                        $finalstring = "";
+                }
+
+                if( !empty( $finalstring ) )
+                {
+                    $array[] = $finalstring;
+
+                    if( $debug )
+                        print "FINAL:".$finalstring."\n";
+                }
+            }
+            else
+            {
+                if( $debug )
+                {
+                    print "not added:\n";
+                    print "STRING3:|".$string."|\n";
+                }
+            }
         }
     }
 
