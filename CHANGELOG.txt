@@ -18,6 +18,9 @@ UTILS:
 * UTIL  argument 'outputformatset' - correction of 'set commands' order print
 * UTIL develop/ssh_connector.php | introduce argument 'setcommandfile=FILE' for quick validation check of create "set commands"
 * UTIL type=securityprofile actions=custom-url-category-add-ending-token - improvement avoid adding token if '*' is already available at end of string
+* UTIL type=device | improvments for JSON output
+* UTIL argument outputformatset | improvement to move exceptions to separate method()
+* class SecurityRule - optimisation of rewriteXML if no SecurityProfile/SecurityProfileGroup is set
 
 BUGFIX:
 * UTIL UI - still in BETA - bugfix to create correct JSON playbook file if location argument is used
@@ -33,6 +36,7 @@ BUGFIX:
 * UTIL argument 'outputformatset' bugfix for attribute name
 * UTIL argument "outputformatset" - bugfix to get all XMLnode without any child and no textContent
 * UTIL argument 'outputformatset' another bugfix to define "set commands" correct
+* class customURLProfile - bugfix to create correct "set commands" for version 91
 
 GENERAL:
 * class PanAPIConnector | introduce method commitAll() and commitPartial( $user)

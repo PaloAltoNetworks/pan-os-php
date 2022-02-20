@@ -246,7 +246,7 @@ class customURLProfile
     }
 
     static public $templatexml = '<entry name="**temporarynamechangeme**"></entry>';
-    static public $templatexml_v9 = '<entry name="**temporarynamechangeme**"><type>URL List</type><list></list></entry>';
+    static public $templatexml_v9 = '<entry name="**temporarynamechangeme**"><type>URL List</type></entry>';
 
     public function isCustomURL()
     {
