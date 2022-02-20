@@ -51,7 +51,7 @@ class SOFTWARE_DOWNLOAD extends UTIL
         $this->main();
 
 
-        $this->endOfScript();
+        
     }
 
     public function main()

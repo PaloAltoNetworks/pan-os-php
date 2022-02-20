@@ -38,7 +38,7 @@ class LICENSE__
         $this->main();
 
 
-        $this->endOfScript();
+        
     }
 
     public function main( $argv, $argc)

@@ -39,7 +39,7 @@ class SOFTWARE_PREPARATION__
         $this->main();
 
 
-        $this->endOfScript();
+        
     }
 
     public function main( $argv, $argc)

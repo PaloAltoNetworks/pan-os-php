@@ -51,7 +51,7 @@ class DIFF extends UTIL
             }
         }
 
-        $this->endOfScript();
+        
     }
 
     public function main()

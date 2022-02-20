@@ -34,7 +34,7 @@ class APPIDENABLER extends UTIL
 
         $this->save_our_work();
 
-        $this->endOfScript();
+        
     }
 
     public function main()

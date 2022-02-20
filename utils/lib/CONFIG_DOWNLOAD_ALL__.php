@@ -39,7 +39,7 @@ class CONFIG_DOWNLOAD_ALL__ extends UTIL
         $this->main();
 
 
-        $this->endOfScript();
+        
     }
 
     public function main( )
