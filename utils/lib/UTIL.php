@@ -209,7 +209,7 @@ class UTIL
         //vulnarability?
         //$this->log->info("END UTIL: " . $this->PHP_FILE);
 
-        $this->endOfScript();
+        
     }
 
     /*

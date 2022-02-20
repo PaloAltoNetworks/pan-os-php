@@ -46,7 +46,7 @@ class UPLOAD extends UTIL
         $this->main();
 
 
-        $this->endOfScript();
+        
     }
 
     public function main()

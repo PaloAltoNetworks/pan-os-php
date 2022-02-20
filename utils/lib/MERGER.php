@@ -2909,6 +2909,6 @@ class MERGER extends UTIL
             }
         }
 
-        $this->endOfScript();
+        
     }
 }

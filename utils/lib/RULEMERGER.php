@@ -187,7 +187,7 @@ class RULEMERGER extends UTIL
         $this->save_our_work( true );
 
 
-        $this->endOfScript();
+        
     }
     
     /**

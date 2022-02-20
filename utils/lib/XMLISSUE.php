@@ -45,7 +45,7 @@ class XMLISSUE extends UTIL
         $this->save_our_work( true );
 
 
-        $this->endOfScript();
+        
     }
 
     public function main()
