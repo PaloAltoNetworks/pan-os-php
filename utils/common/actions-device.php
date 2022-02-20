@@ -1399,7 +1399,11 @@ DeviceCallContext::$supportedActions['LogForwardingProfile-create-BP'] = array(
                     }
                 }
                 else
-                    mwarning( "LogForwardingProfile 'default' already available. BestPractise LogForwardingProfile 'default' not created", null, false );
+                {
+                    $string = "LogForwardingProfile 'default' already available. BestPractise LogForwardingProfile 'default' not created";
+                    PH::ACTIONstatus( $context, "SKIPPED", $string );
+                }
+
 
 
                 $context->first = false;
@@ -1493,7 +1497,11 @@ DeviceCallContext::$supportedActions['ZoneProtectionProfile-create-BP'] = array(
                 }
 
                 else
-                    mwarning( "ZoneProtectionProfile 'Recommended_Zone_Protection' already available. BestPractise ZoneProtectionProfile 'Recommended_Zone_Protection' not created", null, FALSE );
+                {
+                    $string = "ZoneProtectionProfile 'Recommended_Zone_Protection' already available. BestPractise ZoneProtectionProfile 'Recommended_Zone_Protection' not created";
+                    PH::ACTIONstatus( $context, "SKIPPED", $string );
+                }
+
 
                 //create for all VSYS and all templates
                 #$context->first = false;
@@ -2030,10 +2038,137 @@ DeviceCallContext::$supportedActions['DefaultSecurityRule-securityProfile-Remove
     )
 );
 
+/*
+DeviceCallContext::$supportedActions['DefaultSecurityRule-action-set'] = array(
+    'name' => 'defaultsecurityrule-action-set',
+    'GlobalInitFunction' => function (DeviceCallContext $context) {
+        $context->first = true;
+    },
+    'MainFunction' => function (DeviceCallContext $context) {
+        $object = $context->object;
+        $classtype = get_class($object);
+
+        if( $context->arguments['ruletype'] )
+            $ruletype = $context->arguments['ruletype'];
+
+        if( $context->arguments['action'] )
+            $action = $context->arguments['action'];
+
+        if( $ruletype !== 'intrazone' && $ruletype !== 'interzone' && $ruletype !== 'all' )
+        {
+            $string ="only ruletype 'intrazone'|'interzone'|'all' is allowed";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+        else
+            $ruletype .= "-default";
+
+        if( $action !== 'allow' && $action !== 'deny' )
+        {
+            $string = "only action 'allow' or 'deny' is allowed";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+
+        if( $context->first )
+        {
+            if( $classtype == "VirtualSystem" || $classtype == "DeviceGroup" )
+            {
+                $sub = $object;
+
+                if( $classtype == "VirtualSystem" )
+                {
+                    $sharedStore = $sub;
+                    $xmlRoot = $sharedStore->xmlroot;
+
+                    $rulebase = DH::findFirstElementOrCreate( "rulebase", $xmlRoot );
+                }
+                elseif( $classtype == "DeviceGroup" )
+                {
+                    $sharedStore = $sub->owner;
+                    $xmlRoot = DH::findFirstElementOrCreate('shared', $sharedStore->xmlroot);
+
+                    $rulebase = DH::findFirstElementOrCreate( "post-rulebase", $xmlRoot );
+                }
+
+                $defaultSecurityRules = DH::findFirstElementOrCreate( "default-security-rules", $rulebase );
+                $rules = DH::findFirstElementOrCreate( "rules", $defaultSecurityRules );
+
+                if( $ruletype === 'all-default' )
+                    $array = array( "intrazone-default", "interzone-default" );
+                else
+                    $array = array( $ruletype );
+
+                foreach( $array as $entry)
+                {
+                    $tmp_XYZzone_xml = DH::findFirstElementByNameAttrOrCreate( "entry", $entry, $rules, $sharedStore->xmlroot->ownerDocument );
+
+                    $action = DH::findFirstElement( "action", $tmp_XYZzone_xml );
+
+                    if( $entry === "intrazone-default" )
+                        $action_txt = $action;
+                    elseif( $entry === "interzone-default" )
+                        $action_txt = $action;
+
+                    if( $entry === "intrazone-default" && $action === "allow" )
+                    {
+                        $string = "ruletype: intrazone-default and action:allow - is default value";
+                        PH::ACTIONstatus( $context, "SKIPPED", $string );
+                        return;
+                    }
+
+
+                    $skip = false;
+                    $xmlAction = DH::findFirstElement( "action", $tmp_XYZzone_xml );
+                    if( $xmlAction !== FALSE )
+                    {
+                        if( $xmlAction->textContent === $action_txt )
+                            $skip = true;
+                    }
+
+                    if( !$skip )
+                    {
+                        $action = DH::findFirstElementOrCreate( "action", $tmp_XYZzone_xml );
+                        $action->textContent = $action_txt;
+                    }
+
+                    if( $context->isAPI )
+                    {
+                        $defaultSecurityRules_xmlroot = DH::findFirstElementOrCreate( "default-security-rules", $rulebase );
+                        $rules_zml = DH::findFirstElementOrCreate( "rules", $defaultSecurityRules_xmlroot );
+                        $tmp_XYZzone_xml = DH::findFirstElementByNameAttr( "entry", $entry, $rules_zml, $sharedStore->xmlroot->ownerDocument );
+
+                        $xpath = DH::elementToPanXPath($tmp_XYZzone_xml);
+                        $con = findConnectorOrDie($object);
+
+                        $getXmlText_inline = DH::dom_to_xml($defaultSecurityRules_xmlroot, -1, FALSE);
+                        $con->sendEditRequest($xpath, $getXmlText_inline);
+                    }
+
+                }
+
+
+
+                if( $classtype == "DeviceGroup" )
+                    $context->first = false;
+            }
+        }
+    },
+    'args' => array(
+        'ruletype' => array('type' => 'string', 'default' => '*nodefault*',
+            'help' => "define which ruletype; 'intrazone'|'interzone'|'all' "
+        ),
+        'action' => array('type' => 'string', 'default' => '*nodefault*',
+            'help' => "define the action you like to set 'allow'|'deny'"
+        )
+    )
+);
+*/
+
 DeviceCallContext::$supportedActions['find-zone-from-ip'] = array(
     'name' => 'find-zone-from-ip',
     'GlobalInitFunction' => function (DeviceCallContext $context) {
-        #mwarning( "This action is ALPHA", null, false );
+        //
     },
     'MainFunction' => function (DeviceCallContext $context) {
         $device = $context->object;

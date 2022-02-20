@@ -18,6 +18,7 @@ UTILS:
 * UTIL  argument 'outputformatset' - correction of 'set commands' order print
 * UTIL develop/ssh_connector.php | introduce argument 'setcommandfile=FILE' for quick validation check of create "set commands"
 * UTIL type=securityprofile actions=custom-url-category-add-ending-token - improvement avoid adding token if '*' is already available at end of string
+* UTIL type=device | improvments for JSON output
 
 BUGFIX:
 * UTIL UI - still in BETA - bugfix to create correct JSON playbook file if location argument is used
