@@ -752,6 +752,13 @@ class SecurityRule extends RuleWithUserID
                 $ntmp->appendChild($this->secprofroot->ownerDocument->createTextNode($value));
             }
         }
+        elseif( $this->secproftype == 'none' )
+        {
+            $this->secprofroot = DH::findFirstElement( 'profile-setting', $this->xmlroot);
+            if( $this->secprofroot !== FALSE )
+                $this->xmlroot->removeChild( $this->secprofroot );
+        }
+
     }
 
     /**
