@@ -1990,36 +1990,45 @@ DeviceCallContext::$supportedActions['DefaultSecurityRule-securityProfile-Remove
                     $rulebase = DH::findFirstElementOrCreate( "post-rulebase", $xmlRoot );
                 }
 
-                $defaultSecurityRules = DH::findFirstElementOrCreate( "default-security-rules", $rulebase );
-                $rules = DH::findFirstElementOrCreate( "rules", $defaultSecurityRules );
+                $defaultSecurityRules = DH::findFirstElement( "default-security-rules", $rulebase );
+                if( $defaultSecurityRules === FALSE )
+                    return;
+
+                $rules = DH::findFirstElement( "rules", $defaultSecurityRules );
+                if( $rules === FALSE )
+                    return;
 
                 $array = array( "intrazone-default", "interzone-default" );
                 foreach( $array as $entry)
                 {
-                    $tmp_XYZzone_xml = DH::findFirstElementByNameAttrOrCreate( "entry", $entry, $rules, $sharedStore->xmlroot->ownerDocument );
-
-                    $action = DH::findFirstElement( "action", $tmp_XYZzone_xml );
-                    if( $action === FALSE )
+                    $tmp_XYZzone_xml = DH::findFirstElementByNameAttr( "entry", $entry, $rules, $sharedStore->xmlroot->ownerDocument );
+                    if( $tmp_XYZzone_xml !== null )
                     {
-                        if( $entry === "intrazone-default" )
-                            $action_txt = "allow";
-                        elseif( $entry === "interzone-default" )
-                            $action_txt = "deny";
-                    }
-                    else
-                        $action_txt = $action->textContent;
+                        $action = DH::findFirstElement( "action", $tmp_XYZzone_xml );
+                        if( $action === FALSE )
+                        {
+                            if( $entry === "intrazone-default" )
+                                $action_txt = "allow";
+                            elseif( $entry === "interzone-default" )
+                                $action_txt = "deny";
+                        }
+                        else
+                            $action_txt = $action->textContent;
 
-                    if( $action_txt !== "allow" || $force )
-                    {
-                        $profilesetting = DH::findFirstElement( "profile-setting", $tmp_XYZzone_xml );
-                        if( $profilesetting !== FALSE )
-                            $tmp_XYZzone_xml->removeChild( $profilesetting );
+                        if( $action_txt !== "allow" || $force )
+                        {
+                            $profilesetting = DH::findFirstElement( "profile-setting", $tmp_XYZzone_xml );
+                            if( $profilesetting !== FALSE )
+                                $tmp_XYZzone_xml->removeChild( $profilesetting );
+                        }
                     }
                 }
 
                 if( $context->isAPI )
                 {
-                    $defaultSecurityRules_xmlroot = DH::findFirstElementOrCreate( "default-security-rules", $rulebase );
+                    $defaultSecurityRules_xmlroot = DH::findFirstElement( "default-security-rules", $rulebase );
+                    if( $defaultSecurityRules === FALSE )
+                        return;
 
                     $xpath = DH::elementToPanXPath($defaultSecurityRules_xmlroot);
                     $con = findConnectorOrDie($object);
