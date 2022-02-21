@@ -613,30 +613,10 @@ class DIFF extends UTIL
 
                     DH::elementToPanSetCommand( 'set', $element, $array );
 
+                    //manipulation needed based on flood xyz red issue in PAN-OS
+                    self::fixFloodSetCommand($array);
 
-                    foreach( $array as $entry )
-                    {
-                        if( !in_array( $entry, $this->diff_set ) )
-                        {
-                            if( strpos( $entry, "rulebase " ) !== false )
-                                $this->diff_set['rulebase'][] = $entry;
-                            elseif( strpos( $entry, " address-group " ) !== false )
-                                $this->diff_set['address-group'][] = $entry;
-                            elseif( strpos( $entry, " address " ) !== false )
-                                $this->diff_set['address'][] = $entry;
-                            elseif( strpos( $entry, " service-group " ) !== false )
-                                $this->diff_set['service-group'][] = $entry;
-                            elseif( strpos( $entry, " service " ) !== false )
-                                $this->diff_set['service'][] = $entry;
-                            elseif( strpos( $entry, " profile-group " ) !== false )
-                                $this->diff_set['profile-group'][] = $entry;
-                            elseif( strpos( $entry, " profiles " ) !== false )
-                                $this->diff_set['profiles'][] = $entry;
-                            else
-                                $this->diff_set['misc'][] = $entry;
-                        }
-                    }
-
+                    self::arraySetCommand( $array, "diff_set" );
                 }
 
                 foreach( $minus as $element )
@@ -662,29 +642,7 @@ class DIFF extends UTIL
 
                     DH::elementToPanSetCommand( 'delete', $element, $array );
 
-                    foreach(  $array as $entry )
-                    {
-                        if( !in_array( $entry, $this->diff_delete ) )
-                        {
-                            if( strpos( $entry, "rulebase " ) !== false )
-                                $this->diff_delete['rulebase'][] = $entry;
-                            elseif( strpos( $entry, " address-group " ) !== false )
-                                $this->diff_delete['address-group'][] = $entry;
-                            elseif( strpos( $entry, " address " ) !== false )
-                                $this->diff_delete['address'][] = $entry;
-                            elseif( strpos( $entry, " service-group " ) !== false )
-                                $this->diff_delete['service-group'][] = $entry;
-                            elseif( strpos( $entry, " service " ) !== false )
-                                $this->diff_delete['service'][] = $entry;
-                            elseif( strpos( $entry, " profile-group " ) !== false )
-                                $this->diff_delete['profile-group'][] = $entry;
-                            elseif( strpos( $entry, " profiles " ) !== false )
-                                $this->diff_delete['profiles'][] = $entry;
-                            else
-                                $this->diff_delete['misc'][] = $entry;
-                        }
-
-                    }
+                    self::arraySetCommand( $array, "diff_delete" );
                 }
             }
             else
@@ -695,5 +653,72 @@ class DIFF extends UTIL
         }
     }
 
+
+    public function arraySetCommand( $array, $type )
+    {
+        foreach(  $array as $entry )
+        {
+            if( !in_array( $entry, $this->$type ) )
+            {
+                if( strpos( $entry, "rulebase " ) !== false )
+                    $this->$type['rulebase'][] = $entry;
+                elseif( strpos( $entry, " address-group " ) !== false )
+                    $this->$type['address-group'][] = $entry;
+                elseif( strpos( $entry, " address " ) !== false )
+                    $this->$type['address'][] = $entry;
+                elseif( strpos( $entry, " service-group " ) !== false )
+                    $this->$type['service-group'][] = $entry;
+                elseif( strpos( $entry, " service " ) !== false )
+                    $this->$type['service'][] = $entry;
+                elseif( strpos( $entry, " profile-group " ) !== false )
+                    $this->$type['profile-group'][] = $entry;
+                elseif( strpos( $entry, " profiles " ) !== false )
+                    $this->$type['profiles'][] = $entry;
+                else
+                    $this->$type['misc'][] = $entry;
+            }
+
+        }
+    }
+
+    public function fixFloodSetCommand( &$array)
+    {
+        $tmpArray = array( " flood tcp-syn ", " flood icmpv6 ", " flood icmp ", " flood other-ip ", " flood udp " );
+        foreach( $tmpArray as $tmpString )
+        {
+            $endstring = "";
+            $tmpKey = "";
+            foreach( $array as $key => $string )
+            {
+                if( strpos($string, $tmpString) !== FALSE )
+                {
+                    $pos = strpos($string, $tmpString);
+                    $fixpos = strlen($tmpString);
+                    $mainstring = substr($string, 0, $pos + $fixpos);
+
+                    if( $endstring === "" )
+                    {
+                        $tmpKey = $key;
+                        $endstring .= trim($mainstring);
+                    }
+                    elseif( strpos($endstring, $mainstring) === FALSE )
+                    {
+                        //print "KEY: ".$tmpKey."  END: ".$endstring."\n";
+                        $array[ $tmpKey ] = $endstring;
+                        $tmpKey = $key;
+                        $endstring = trim($mainstring);
+                    }
+
+                    $substring = substr($string, $pos + $fixpos);
+                    $endstring .= " " . $substring;
+                    if( $key !== $tmpKey )
+                        unset( $array[ $key ] );
+                }
+            }
+            if( !empty($endstring)  )
+                $array[ $tmpKey ] = $endstring;
+            //print "KEY: ".$tmpKey."  END: ".$endstring."\n";
+        }
+    }
 }
 
