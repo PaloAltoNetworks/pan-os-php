@@ -1936,19 +1936,19 @@ DeviceCallContext::$supportedActions['DefaultSecurityRule-remove-override'] = ar
                 $defaultSecurityRules = DH::findFirstElement( "default-security-rules", $rulebase );
                 if( $defaultSecurityRules !== FALSE )
                     $rulebase->removeChild( $defaultSecurityRules );
+                else
+                    return;
 
                 if( $context->isAPI )
                 {
-                    $defaultSecurityRules_xmlroot = DH::findFirstElement( "default-security-rules", $rulebase );
-                    if( $defaultSecurityRules !== FALSE )
+                    $defaultSecurityRules_xmlroot = DH::findFirstElementOrCreate( "default-security-rules", $rulebase );
+                    if( $defaultSecurityRules_xmlroot !== FALSE )
                     {
                         $xpath = DH::elementToPanXPath($defaultSecurityRules_xmlroot);
                         $con = findConnectorOrDie($object);
 
                         $con->sendDeleteRequest( $xpath );
                     }
-
-
                 }
 
                 if( $classtype == "DeviceGroup" )
@@ -2001,7 +2001,7 @@ DeviceCallContext::$supportedActions['DefaultSecurityRule-securityProfile-Remove
                 $array = array( "intrazone-default", "interzone-default" );
                 foreach( $array as $entry)
                 {
-                    $tmp_XYZzone_xml = DH::findFirstElementByNameAttr( "entry", $entry, $rules, $sharedStore->xmlroot->ownerDocument );
+                    $tmp_XYZzone_xml = DH::findFirstElementByNameAttr( "entry", $entry, $rules );
                     if( $tmp_XYZzone_xml !== null )
                     {
                         $action = DH::findFirstElement( "action", $tmp_XYZzone_xml );
@@ -2049,7 +2049,7 @@ DeviceCallContext::$supportedActions['DefaultSecurityRule-securityProfile-Remove
     )
 );
 
-/*
+
 DeviceCallContext::$supportedActions['DefaultSecurityRule-action-set'] = array(
     'name' => 'defaultsecurityrule-action-set',
     'GlobalInitFunction' => function (DeviceCallContext $context) {
@@ -2114,34 +2114,37 @@ DeviceCallContext::$supportedActions['DefaultSecurityRule-action-set'] = array(
                 {
                     $tmp_XYZzone_xml = DH::findFirstElementByNameAttrOrCreate( "entry", $entry, $rules, $sharedStore->xmlroot->ownerDocument );
 
-                    $action = DH::findFirstElement( "action", $tmp_XYZzone_xml );
-
                     if( $entry === "intrazone-default" )
                         $action_txt = $action;
                     elseif( $entry === "interzone-default" )
                         $action_txt = $action;
 
+                    /*
                     if( $entry === "intrazone-default" && $action === "allow" )
                     {
                         $string = "ruletype: intrazone-default and action:allow - is default value";
                         PH::ACTIONstatus( $context, "SKIPPED", $string );
                         return;
                     }
+                    */
 
 
-                    $skip = false;
                     $xmlAction = DH::findFirstElement( "action", $tmp_XYZzone_xml );
                     if( $xmlAction !== FALSE )
                     {
-                        if( $xmlAction->textContent === $action_txt )
-                            $skip = true;
+                        if( $xmlAction->textContent !== $action_txt )
+                        {
+                            $action = DH::findFirstElementOrCreate( "action", $tmp_XYZzone_xml );
+                            $xmlAction->nodeValue = $action_txt;
+                        }
+                    }
+                    else
+                    {
+                        $xmlAction = DH::findFirstElementOrCreate( "action", $tmp_XYZzone_xml );
+                        $xmlAction->nodeValue = $action_txt;
                     }
 
-                    if( !$skip )
-                    {
-                        $action = DH::findFirstElementOrCreate( "action", $tmp_XYZzone_xml );
-                        $action->textContent = $action_txt;
-                    }
+
 
                     if( $context->isAPI )
                     {
@@ -2149,7 +2152,7 @@ DeviceCallContext::$supportedActions['DefaultSecurityRule-action-set'] = array(
                         $rules_zml = DH::findFirstElementOrCreate( "rules", $defaultSecurityRules_xmlroot );
                         $tmp_XYZzone_xml = DH::findFirstElementByNameAttr( "entry", $entry, $rules_zml, $sharedStore->xmlroot->ownerDocument );
 
-                        $xpath = DH::elementToPanXPath($tmp_XYZzone_xml);
+                        $xpath = DH::elementToPanXPath($defaultSecurityRules_xmlroot);
                         $con = findConnectorOrDie($object);
 
                         $getXmlText_inline = DH::dom_to_xml($defaultSecurityRules_xmlroot, -1, FALSE);
@@ -2174,7 +2177,7 @@ DeviceCallContext::$supportedActions['DefaultSecurityRule-action-set'] = array(
         )
     )
 );
-*/
+
 
 DeviceCallContext::$supportedActions['find-zone-from-ip'] = array(
     'name' => 'find-zone-from-ip',
