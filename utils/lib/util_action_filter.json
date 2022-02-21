@@ -1171,6 +1171,23 @@
                     }
                 }
             },
+            "defaultsecurityrule-action-set": {
+                "name": "defaultsecurityrule-action-set",
+                "GlobalInitFunction": {},
+                "MainFunction": {},
+                "args": {
+                    "ruletype": {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "help": "define which ruletype; 'intrazone'|'interzone'|'all' "
+                    },
+                    "action": {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "help": "define the action you like to set 'allow'|'deny'"
+                    }
+                }
+            },
             "defaultsecurityrule-create-bp": {
                 "name": "defaultsecurityRule-create-bp",
                 "GlobalInitFunction": {},
