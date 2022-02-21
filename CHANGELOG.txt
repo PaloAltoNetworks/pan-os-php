@@ -38,6 +38,7 @@ BUGFIX:
 * UTIL argument 'outputformatset' another bugfix to define "set commands" correct
 * class customURLProfile - bugfix to create correct "set commands" for version 91
 * UTIL type=device - bugfix actions=DefaultSecurityRule-remove-override if no override is availalbe
+* UTIL argument outputformatset | bugfix for zone-protection-profile - combine multiple set commands related to 'flood xyz red'
 
 GENERAL:
 * class PanAPIConnector | introduce method commitAll() and commitPartial( $user)

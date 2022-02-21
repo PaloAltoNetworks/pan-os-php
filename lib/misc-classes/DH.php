@@ -521,9 +521,6 @@ class DH
      */
     static public function elementToPanSetCommand( $type, $element, &$array )
     {
-        $debug = false;
-
-        $xpath = '';
         if( $type !== "set" && $type !== "delete" )
             return;
 
@@ -550,8 +547,6 @@ class DH
         if( strpos( $xpath, " member" ) !== FALSE )
             $xpath = str_replace( " member", "", $xpath );
 
-        //print "XPATH:|".$xpath."|\n";
-
         if( $element->nodeType == XML_ELEMENT_NODE ) //1
         {
             $string = "";
@@ -566,8 +561,6 @@ class DH
      */
     static public function CHILDelementToPanSetCommand( $type, $element, &$array, $xpath, $string )
     {
-        $debug = false;
-
         if( $element->nodeType == XML_ELEMENT_NODE )
         {
             if( $element->nodeName == "entry" )
@@ -579,8 +572,6 @@ class DH
                 {
                     $finalstring = $xpath.$string;
 
-                    //if( !empty( $finalstring ) )
-                    //    $array[] = $finalstring;
                     self::setCommandvalidation( $finalstring, $array);
 
                     return;
@@ -598,15 +589,6 @@ class DH
                         {
                             $finalstring = $xpath.$string;
 
-                            /*
-                            if( strpos( $finalstring, "delete" ) !== FALSE
-                                && strpos( $finalstring, " profile-setting group" ) !== FALSE
-                            )
-                                $finalstring = str_replace( " profile-setting group", " profile-setting", $finalstring );
-
-                            if( !empty( $finalstring ) )
-                                $array[] = $finalstring;
-                            */
                             self::setCommandvalidation( $finalstring, $array);
 
                             return;
@@ -623,8 +605,6 @@ class DH
             {
                 $finalstring = $xpath.$string;
 
-                //if( !empty( $finalstring ) )
-                //    $array[] = $finalstring;
                 self::setCommandvalidation( $finalstring, $array);
             }
         }
@@ -637,35 +617,6 @@ class DH
                 else
                     $finalstring = $xpath.$string.' '.$element->nodeValue;
 
-                /*
-                if( strpos( $finalstring, "set " ) !== FALSE
-                    && strpos( $finalstring, " profiles zone-protection-profile " ) !== FALSE
-                    && strpos( $finalstring, " flood " ) !== FALSE
-                )
-                {
-                    //Problem Zoneprotection - flood is not a valid set command
-                    //set network profiles zone-protection-profile Recommended_Zone_Protection
-                    //flood tcp-syn enable yes red activate-rate 10000 alarm-rate 10000 maximal-rate 40000
-                    //
-                    //set network profiles zone-protection-profile "Recommended_Zone_Protection" flood tcp-syn red alarm-rate 10000
-                    //set network profiles zone-protection-profile "Recommended_Zone_Protection" flood tcp-syn red activate-rate 10000
-                    //set network profiles zone-protection-profile "Recommended_Zone_Protection" flood tcp-syn red maximal-rate 40000
-                    //set network profiles zone-protection-profile "Recommended_Zone_Protection" flood tcp-syn enable no
-                        $finalstring = "";
-                }
-
-                if( strpos( $finalstring, "delete " ) !== FALSE
-                    && ( strpos( $finalstring, " security rules " ) !== FALSE || strpos( $finalstring, " default-security-rules rules " ) !== FALSE )
-                    && strpos( $finalstring, " log-end no" ) !== FALSE
-                )
-                {
-                    //Problem security rules - log-end no - not allowed
-                        $finalstring = "";
-                }
-
-                if( !empty( $finalstring ) )
-                    $array[] = $finalstring;
-                */
                 self::setCommandvalidation( $finalstring, $array);
             }
         }
@@ -682,15 +633,8 @@ class DH
             && strpos($finalstring, " flood ") !== FALSE
         )
         {
-            //Problem Zoneprotection - flood is not a valid set command
-            //set network profiles zone-protection-profile Recommended_Zone_Protection
-            //flood tcp-syn enable yes red activate-rate 10000 alarm-rate 10000 maximal-rate 40000
-            //
-            //set network profiles zone-protection-profile "Recommended_Zone_Protection" flood tcp-syn red alarm-rate 10000
-            //set network profiles zone-protection-profile "Recommended_Zone_Protection" flood tcp-syn red activate-rate 10000
-            //set network profiles zone-protection-profile "Recommended_Zone_Protection" flood tcp-syn red maximal-rate 40000
-            //set network profiles zone-protection-profile "Recommended_Zone_Protection" flood tcp-syn enable no
-            $finalstring = "";
+            //fixed in DIFF
+            //$finalstring = "";
         }
 
         if( strpos($finalstring, "delete ") !== FALSE
