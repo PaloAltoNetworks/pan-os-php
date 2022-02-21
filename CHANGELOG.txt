@@ -1,6 +1,14 @@
 CHANGELOG
 
-2.0.30
+2.0.31
+UTILS:
+
+BUGFIX:
+
+GENERAL:
+
+
+2.0.30 (2022-221)
 UTILS:
 * UTIL pan-os-php type=device | introduce actions=find-zone-from-IP:IPADDRESS (working on devicetype=virtualsystem / manageddevice)
 * UTIL pan-os-php type=xml-to-json | improve for cycleconnectedfirewalls
