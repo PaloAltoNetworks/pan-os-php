@@ -1360,8 +1360,8 @@ var subjectObject =
                     }
                 }
             },
-            "securityprofile-create-alert-only": {
-                "name": "securityprofile-create-alert-only",
+            "sp_spg-create-alert-only-bp": {
+                "name": "sp_spg-create-alert-only-bp",
                 "GlobalInitFunction": {},
                 "MainFunction": {},
                 "args": {
@@ -4409,6 +4409,17 @@ var subjectObject =
                     }
                 }
             },
+            "custom-url-category-add-ending-token": {
+                "name": "custom-url-category-add-ending-token",
+                "MainFunction": {},
+                "args": {
+                    "endingtoken": {
+                        "type": "string",
+                        "default": "\/",
+                        "help": "supported ending token: '.', '\/', '?', '&', '=', ';', '+'\n\n'actions=custom-url-category-add-ending-token:\/' is the default value, it can NOT be run directly\nplease use: 'actions=custom-url-category-add-ending-token' to avoid problems like: '**ERROR** unsupported Action:\"\"'"
+                    }
+                }
+            },
             "delete": {
                 "name": "delete",
                 "MainFunction": {}
@@ -5254,7 +5265,7 @@ var subjectObject =
                     "stringFormula": {
                         "type": "string",
                         "default": "*nodefault*",
-                        "help": "This string is used to compose a name. You can use the following aliases :\n  - $$current.name$$ : current name of the object\n  - $$destinationport$$ : destination Port\n  - $$protocol$$ : service protocol\n  - $$sourceport$$ : source Port\n  - $$value$$ : value of the object\n"
+                        "help": "This string is used to compose a name. You can use the following aliases :\n  - $$current.name$$ : current name of the object\n  - $$destinationport$$ : destination Port\n  - $$protocol$$ : service protocol\n  - $$sourceport$$ : source Port\n  - $$value$$ : value of the object\n  - $$timeout$$ : timeout value of the object\n"
                     }
                 },
                 "help": ""

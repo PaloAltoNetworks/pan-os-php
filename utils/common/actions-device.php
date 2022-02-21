@@ -1076,7 +1076,7 @@ DeviceCallContext::$supportedActions['geoIP-check'] = array(
 );
 
 DeviceCallContext::$supportedActions['sp_spg-create-alert-only-BP'] = array(
-    'name' => 'sp_spg-create-alert-only-BP',
+    'name' => 'sp_spg-create-alert-only-bp',
     'GlobalInitFunction' => function (DeviceCallContext $context) {
         $context->first = true;
 

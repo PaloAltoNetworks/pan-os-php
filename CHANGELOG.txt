@@ -21,6 +21,7 @@ UTILS:
 * UTIL type=device | improvments for JSON output
 * UTIL argument outputformatset | improvement to move exceptions to separate method()
 * class SecurityRule - optimisation of rewriteXML if no SecurityProfile/SecurityProfileGroup is set
+* UTIL type=device | rename actions=securityprofile-create-only => actions=sp_spg-create-alert-only-bp
 
 BUGFIX:
 * UTIL UI - still in BETA - bugfix to create correct JSON playbook file if location argument is used
