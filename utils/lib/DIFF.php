@@ -683,7 +683,7 @@ class DIFF extends UTIL
 
     public function fixFloodSetCommand( &$array)
     {
-        $tmpArray = array( " flood tcp-syn ", " flood icmpv6 ", " flood icmp ", " flood other-ip ", " flood udp " );
+        $tmpArray = array( " flood tcp-syn red", " flood icmpv6 red", " flood icmp red", " flood other-ip red", " flood udp red" );
         foreach( $tmpArray as $tmpString )
         {
             $endstring = "";
@@ -710,7 +710,7 @@ class DIFF extends UTIL
                     }
 
                     $substring = substr($string, $pos + $fixpos);
-                    $endstring .= " " . $substring;
+                    $endstring .= $substring;
                     if( $key !== $tmpKey )
                         unset( $array[ $key ] );
                 }
