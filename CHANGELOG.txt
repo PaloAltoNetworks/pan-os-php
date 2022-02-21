@@ -37,6 +37,7 @@ BUGFIX:
 * UTIL argument "outputformatset" - bugfix to get all XMLnode without any child and no textContent
 * UTIL argument 'outputformatset' another bugfix to define "set commands" correct
 * class customURLProfile - bugfix to create correct "set commands" for version 91
+* UTIL type=device - bugfix actions=DefaultSecurityRule-remove-override if no override is availalbe
 
 GENERAL:
 * class PanAPIConnector | introduce method commitAll() and commitPartial( $user)

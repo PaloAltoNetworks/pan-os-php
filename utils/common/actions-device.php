@@ -1075,8 +1075,8 @@ DeviceCallContext::$supportedActions['geoIP-check'] = array(
     )
 );
 
-DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = array(
-    'name' => 'securityprofile-create-alert-only',
+DeviceCallContext::$supportedActions['sp_spg-create-alert-only-BP'] = array(
+    'name' => 'sp_spg-create-alert-only-BP',
     'GlobalInitFunction' => function (DeviceCallContext $context) {
         $context->first = true;
 
@@ -1324,8 +1324,6 @@ DeviceCallContext::$supportedActions['securityprofile-create-alert-only'] = arra
         )
     )
 );
-
-
 
 
 DeviceCallContext::$supportedActions['LogForwardingProfile-create-BP'] = array(
@@ -1935,18 +1933,22 @@ DeviceCallContext::$supportedActions['DefaultSecurityRule-remove-override'] = ar
                     $rulebase = DH::findFirstElementOrCreate( "post-rulebase", $xmlRoot );
                 }
 
-                $defaultSecurityRules = DH::findFirstElementOrCreate( "default-security-rules", $rulebase );
-
-                $rulebase->removeChild( $defaultSecurityRules );
+                $defaultSecurityRules = DH::findFirstElement( "default-security-rules", $rulebase );
+                if( $defaultSecurityRules !== FALSE )
+                    $rulebase->removeChild( $defaultSecurityRules );
 
                 if( $context->isAPI )
                 {
-                    $defaultSecurityRules_xmlroot = DH::findFirstElementOrCreate( "default-security-rules", $rulebase );
+                    $defaultSecurityRules_xmlroot = DH::findFirstElement( "default-security-rules", $rulebase );
+                    if( $defaultSecurityRules !== FALSE )
+                    {
+                        $xpath = DH::elementToPanXPath($defaultSecurityRules_xmlroot);
+                        $con = findConnectorOrDie($object);
 
-                    $xpath = DH::elementToPanXPath($defaultSecurityRules_xmlroot);
-                    $con = findConnectorOrDie($object);
+                        $con->sendDeleteRequest( $xpath );
+                    }
 
-                    $con->sendDeleteRequest( $xpath );
+
                 }
 
                 if( $classtype == "DeviceGroup" )
