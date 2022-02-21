@@ -21,6 +21,7 @@ UTILS:
 * UTIL type=device | improvments for JSON output
 * UTIL argument outputformatset | improvement to move exceptions to separate method()
 * class SecurityRule - optimisation of rewriteXML if no SecurityProfile/SecurityProfileGroup is set
+* UTIL type=device | rename actions=securityprofile-create-only => actions=sp_spg-create-alert-only-bp
 
 BUGFIX:
 * UTIL UI - still in BETA - bugfix to create correct JSON playbook file if location argument is used
@@ -39,6 +40,7 @@ BUGFIX:
 * class customURLProfile - bugfix to create correct "set commands" for version 91
 * UTIL type=device - bugfix actions=DefaultSecurityRule-remove-override if no override is availalbe
 * UTIL argument outputformatset | bugfix for zone-protection-profile - combine multiple set commands related to 'flood xyz red'
+* UTIL type=device actions=defaultsecurityrule-securityprofile-remove:false | bugfix to remove secprof correctly in API mode
 
 GENERAL:
 * class PanAPIConnector | introduce method commitAll() and commitPartial( $user)
