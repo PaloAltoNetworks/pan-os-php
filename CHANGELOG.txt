@@ -4,6 +4,7 @@ CHANGELOG
 UTILS:
 
 BUGFIX:
+* UTIL type=diff | replace derr() with mwarning() - fix for argument outputformat
 
 GENERAL:
 
