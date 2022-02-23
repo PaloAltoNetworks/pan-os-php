@@ -52,11 +52,13 @@ class RUNSSH
         $lastElementKey = key($commands);
 
         $configureFound = false;
+        $combinedCommands = "";
+        $write = false;
         foreach( $commands as $k => $command )
         {
             PH::print_stdout(  strtoupper($command) . ":");
 
-            /*
+
             if( strpos( $command, "configure" ) !== FALSE )
             {
                 $configureFound = true;
@@ -65,55 +67,64 @@ class RUNSSH
             }
 
 
-            if( $configureFound )
+            if( $configureFound && $configureCounter != 0 )
             {
-                //Todo: count command, if count = 10 set combined file
-                if( $configureCounter !== 0 )
+                $combinedCommands .= $command."\n";
+                $configureCounter++;
+                if( $configureCounter == 20 )
                 {
-                    $combinedCommands .= $command."\n";
+                    $configureCounter = 1;
 
-                    if( $configureCounter == 10 )
-                    {
-                        $configureCounter = 1;
-
-                        $ssh->write( $combinedCommands );
-                    }
-
+                    $ssh->write( $combinedCommands );
+                    $write = true;
+                    $combinedCommands = "";
                 }
+            }
+            elseif( $configureFound && $configureCounter == 0 )
+            {
+                $configureCounter++;
             }
             else
+            {
                 $ssh->write($command . "\n");
-            */
-            $ssh->write($command . "\n");
-
-
-            $tmp_string = $ssh->read();
-            PH::print_stdout( $tmp_string );
-
-            $checkArray = array( 'Invalid syntax.' );
-            foreach ($checkArray as $issue)
-            {
-                if (strpos($tmp_string, $issue) !== FALSE)
-                {
-                    $string = "this command was not correctly send: '".$command."'";
-                    PH::print_stdout( $string );
-                    derr( $string, null, false );
-                }
-            }
-
-            $warningArray = array( "Object doesn't exist" );
-            foreach ($warningArray as $issue)
-            {
-                if (strpos($tmp_string, $issue) !== FALSE)
-                {
-                    $string = "this command was not correctly send: '".$command."'";
-                    PH::print_stdout( $string );
-                    mwarning( $string, null, false );
-                }
+                $write = true;
             }
 
 
-            $output_string .= $tmp_string;
+            //$ssh->write($command . "\n");
+
+            if( $write )
+            {
+                $tmp_string = $ssh->read();
+                PH::print_stdout( $tmp_string );
+
+                $checkArray = array( 'Invalid syntax.' );
+                foreach ($checkArray as $issue)
+                {
+                    if (strpos($tmp_string, $issue) !== FALSE)
+                    {
+                        $string = "this command was not correctly send: '".$command."'";
+                        PH::print_stdout( $string );
+                        derr( $string, null, false );
+                    }
+                }
+
+                $warningArray = array( "Object doesn't exist" );
+                foreach ($warningArray as $issue)
+                {
+                    if (strpos($tmp_string, $issue) !== FALSE)
+                    {
+                        $string = "this command was not correctly send: '".$command."'";
+                        PH::print_stdout( $string );
+                        mwarning( $string, null, false );
+                    }
+                }
+
+
+                $output_string .= $tmp_string;
+                $write = false;
+            }
+
         }
 
 
