@@ -2,6 +2,7 @@ CHANGELOG
 
 2.0.31
 UTILS:
+* pan-os-php type=xml-issue | extend fix for custom-url-category
 
 BUGFIX:
 * UTIL type=diff | replace derr() with mwarning() - fix for argument outputformat
@@ -9,7 +10,7 @@ BUGFIX:
 GENERAL:
 
 
-2.0.30 (2022-221)
+2.0.30 (20220221)
 UTILS:
 * UTIL pan-os-php type=device | introduce actions=find-zone-from-IP:IPADDRESS (working on devicetype=virtualsystem / manageddevice)
 * UTIL pan-os-php type=xml-to-json | improve for cycleconnectedfirewalls
