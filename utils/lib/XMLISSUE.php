@@ -1323,51 +1323,52 @@ class XMLISSUE extends UTIL
 
         ////////////////////////////////////////////////////////////
 
-        PH::print_stdout( "");
-        PH::print_stdout( "Summary:");
+        PH::print_stdout( "" );
+        PH::print_stdout( "Summary:" );
         PH::print_stdout( " - FIXED: duplicate address-group members: {$totalAddressGroupsFixed}");
         PH::print_stdout( " - FIXED: duplicate service-group members: {$totalServiceGroupsFixed}");
         PH::print_stdout( " - FIXED: own address-group as subgroup member: {$totalAddressGroupsSubGroupFixed}");
         PH::print_stdout( " - FIXED: own service-group as subgroup members: {$totalServiceGroupsSubGroupFixed}");
 
         PH::print_stdout( " - FIXED: duplicate application-group members: {$totalApplicationGroupsFixed}");
+        PH::print_stdout( " - FIXED: duplicate custom-url-category members: {$totalCustomUrlCategoryFixed}");
 
         PH::print_stdout( "\n\nIssues that could not be fixed (look in logs for FIX_MANUALLY keyword):");
 
 
         PH::print_stdout( " - FIX_MANUALLY: duplicate address objects: {$countDuplicateAddressObjects} (look in the logs )");
         PH::print_stdout( " - FIX_MANUALLY: duplicate service objects: {$countDuplicateServiceObjects} (look in the logs)");
-        PH::print_stdout( "");
+        PH::print_stdout( "" );
 
         PH::print_stdout( " - FIX_MANUALLY: missconfigured address objects: {$countMissconfiguredAddressObjects} (look in the logs)");
         PH::print_stdout( " - FIX_MANUALLY: address objects with double spaces in name: {$countAddressObjectsWithDoubleSpaces} (look in the logs)");
         PH::print_stdout( " - FIX_MANUALLY: address objects with same name as REGION: {$countMissconfiguredAddressRegionObjects} (look in the logs)");
         PH::print_stdout( " - FIX_MANUALLY: empty address-group: {$countEmptyAddressGroup} (look in the logs)");
-        PH::print_stdout( "");
+        PH::print_stdout( "" );
 
         PH::print_stdout( " - FIX_MANUALLY: missconfigured service objects: {$countMissconfiguredServiceObjects} (look in the logs)");
         PH::print_stdout( " - FIX_MANUALLY: service objects with double spaces in name: {$countServiceObjectsWithDoubleSpaces} (look in the logs)");
         PH::print_stdout( " - FIX_MANUALLY: service objects with name 'application-default': {$countServiceObjectsWithNameappdefault} (look in the logs)");
         PH::print_stdout( " - FIX_MANUALLY: empty service-group: {$countEmptyServiceGroup} (look in the logs)");
-        PH::print_stdout( "");
+        PH::print_stdout( "" );
 
         PH::print_stdout( " - FIX_MANUALLY: Security Rules with double spaces in name: {$countSecRuleObjectsWithDoubleSpaces} (look in the logs )");
         PH::print_stdout( " - FIX_MANUALLY: duplicate Security Rules: {$countDuplicateSecRuleObjects} (look in the logs )");
         PH::print_stdout( " - FIX_MANUALLY: NAT Rules with double spaces in name: {$countNATRuleObjectsWithDoubleSpaces} (look in the logs )");
         PH::print_stdout( " - FIX_MANUALLY: duplicate NAT Rules: {$countDuplicateNATRuleObjects} (look in the logs )");
-        PH::print_stdout( "");
+        PH::print_stdout( "" );
 
         PH::print_stdout( " - FIX_MANUALLY: missconfigured Source Field in Security Rules: {$countMissconfiguredSecRuleSourceObjects} (look in the logs )");
         PH::print_stdout( " - FIX_MANUALLY: missconfigured Destination Field in Security Rules: {$countMissconfiguredSecRuleDestinationObjects} (look in the logs )");
         PH::print_stdout( " - FIX_MANUALLY: missconfigured Service Field in Security Rules: {$countMissconfiguredSecRuleServiceObjects} (look in the logs )");
         PH::print_stdout( " - FIX_MANUALLY: missconfigured Application Field in Security Rules: {$countMissconfiguredSecRuleApplicationObjects} (look in the logs )");
         PH::print_stdout( " - FIX_MANUALLY: missconfigured Category Field in Security Rules: {$countMissconfiguredSecRuleCategoryObjects} (look in the logs )");
-        PH::print_stdout( "");
+        PH::print_stdout( "" );
 
         if( $service_app_default_available )
         {
             PH::print_stdout( " - FIX_MANUALLY: SERVICE OBJECT 'application-default' available and used in Security Rules: {$countMissconfiguredSecRuleServiceAppDefaultObjects} (look in the logs )");
-            PH::print_stdout( "");
+            PH::print_stdout( "" );
         }
 
         if( $this->configInput['type'] == 'api' )
