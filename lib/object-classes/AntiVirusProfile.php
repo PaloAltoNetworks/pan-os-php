@@ -127,7 +127,7 @@ class AntiVirusProfile
 
                 $appName = DH::findAttribute('name', $tmp_entry);
                 if( $appName === FALSE )
-                    derr("secprof name not found\n");
+                    derr("Virus SecurityProfile name not found\n");
 
 
                 #$tmp_array['virus'][$this->name][$appName] = array();

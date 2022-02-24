@@ -13,7 +13,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+      -
+        name: Checkout
+        uses: actions/checkout@v2
       -
         name: Login to Docker Hub
         uses: docker/login-action@v1
@@ -30,7 +32,7 @@ jobs:
           context: .
           file: docker/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/pan-os-php:latest
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/pan-os-php:${{ secrets.DOCKER_HUB_TAG }}
       -
         name: Build and push pan-os-php-cli
         uses: docker/build-push-action@v2
@@ -38,7 +40,7 @@ jobs:
           context: .
           file: docker/Dockerfile-php
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/pan-os-php-cli:latest
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/pan-os-php-cli:${{ secrets.DOCKER_HUB_TAG }}
       -
         name: Build and push pan-os-php-api
         uses: docker/build-push-action@v2
@@ -46,4 +48,4 @@ jobs:
           context: .
           file: docker/Dockerfile-API
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/pan-os-php-api:latest
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/pan-os-php-api:${{ secrets.DOCKER_HUB_TAG }}
