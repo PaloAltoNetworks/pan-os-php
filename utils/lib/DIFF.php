@@ -71,7 +71,7 @@ class DIFF extends UTIL
         {
             $configInput = PH::processIOMethod(PH::$args['in'], TRUE);
             if( $configInput['status'] == 'fail' )
-                mwarning($configInput['msg'], null, false);
+                derr($configInput['msg'], null, false);
 
             if( $configInput['type'] == 'api' )
             {
@@ -91,7 +91,7 @@ class DIFF extends UTIL
 
             }
             else
-                mwarning('only API is supported', null, false);
+                false('only API is supported', null, false);
         }
         else
         {
@@ -99,7 +99,7 @@ class DIFF extends UTIL
                 $this->display_error_usage_exit('"file1" is missing from arguments');
             $file1 = PH::$args['file1'];
             if( !file_exists($file1) )
-                mwarning( "FILE: ". $file1. " not available", null, false);
+                derr( "FILE: ". $file1. " not available", null, false);
             if( !is_string($file1) || strlen($file1) < 1 )
                 $this->display_error_usage_exit('"file1" argument is not a valid string');
 
@@ -107,20 +107,20 @@ class DIFF extends UTIL
                 $this->display_error_usage_exit('"file2" is missing from arguments');
             $file2 = PH::$args['file2'];
             if( !file_exists($file2) )
-                mwarning( "FILE: ". $file2. " not available", null, false);
+                derr( "FILE: ". $file2. " not available", null, false);
             if( !is_string($file2) || strlen($file2) < 1 )
                 $this->display_error_usage_exit('"file1" argument is not a valid string');
 
             PH::print_stdout( "Opening ORIGINAL '{$file1}' XML file... ");
             $doc1 = new DOMDocument();
             if( $doc1->load($file1) === FALSE )
-                mwarning('Error while parsing xml:' . libxml_get_last_error()->message , null, false);
+                derr('Error while parsing xml:' . libxml_get_last_error()->message , null, false);
 
 
             PH::print_stdout( "Opening COMPARE '{$file2}' XML file... ");
             $doc2 = new DOMDocument();
             if( $doc2->load($file2) === FALSE )
-                mwarning('Error while parsing xml:' . libxml_get_last_error()->message, null, false);
+                derr('Error while parsing xml:' . libxml_get_last_error()->message, null, false);
 
         }
 
@@ -354,7 +354,7 @@ class DIFF extends UTIL
                 }
             }
             if( $el1BasicNode !== null && count($nodeArray1) > 0 )
-                mwarning('unsupported situation where <node> and <node name=""> were both seen', $el1, false);
+                derr('unsupported situation where <node> and <node name=""> were both seen', $el1, false);
 
             $el2BasicNode = null;
             foreach( $nodeArray2 as $nodeIndex => $node )
@@ -382,7 +382,7 @@ class DIFF extends UTIL
                 }
             }
             if( $el2BasicNode !== null && count($nodeArray2) > 0 )
-                mwarning('unsupported situation where <node> and <node name=""> where both seen in same document', $el2, false);
+                derr('unsupported situation where <node> and <node name=""> where both seen in same document', $el2, false);
 
             if( $el1BasicNode === null && $el2BasicNode !== null )
                 mwarning('found an issue where file1 has <node> but file2 has <node name="">', null, false);
@@ -464,8 +464,7 @@ class DIFF extends UTIL
                     $nodeName = $node->getAttribute('name');
                     if( isset($el1NameSorted[$nodeName]) )
                     {
-                        #mwarning('<node name="' . $nodeName . '"> was found twice in file1', $el1);
-                        mwarning('<node name="' . $nodeName . '"> was found twice in file1', $el1);
+                        mwarning('<node name="' . $nodeName . '"> was found twice in file1', $el1, false);
                     }
 
                     else
@@ -476,8 +475,7 @@ class DIFF extends UTIL
                     $nodeName = $node->getAttribute('name');
                     if( isset($el2NameSorted[$nodeName]) )
                     {
-                        #mwarning('<node name="' . $nodeName . '"> was found twice in file2', $el2);
-                        mwarning('<node name="' . $nodeName . '"> was found twice in file2', $el2);
+                        mwarning('<node name="' . $nodeName . '"> was found twice in file2', $el2, false);
                     }
                     else
                         $el2NameSorted[$nodeName] = $node;
