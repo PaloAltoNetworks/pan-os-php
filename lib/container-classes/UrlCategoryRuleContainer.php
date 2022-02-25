@@ -187,7 +187,7 @@ class UrlCategoryRuleContainer extends ObjRuleContainer
             if( $lower == 'any' )
             {
                 if( count($this->o) != 0 )
-                    mwarning('rule has a bad combination of url categories', $xml);
+                    mwarning('rule has a bad combination of url categories', $xml, false);
 
                 $this->o = array();
                 continue;

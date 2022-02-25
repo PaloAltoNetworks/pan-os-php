@@ -882,6 +882,26 @@ var subjectObject =
                     }
                 }
             },
+            "decoder": {
+                "operators": {
+                    "has": {
+                        "Function": {},
+                        "arg": true,
+                        "ci": {
+                            "fString": "(%PROP% evasive) ",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    },
+                    "is.set": {
+                        "Function": {},
+                        "arg": false,
+                        "ci": {
+                            "fString": "(%PROP% evasive) ",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    }
+                }
+            },
             "name": {
                 "operators": {
                     "eq": {

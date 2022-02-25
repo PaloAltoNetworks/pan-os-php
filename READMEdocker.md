@@ -5,8 +5,9 @@ Deploy PAN-OS-PHP with Docker
 graph TD
     
     
-    BB[Install Docker Desktop] -->|reboot needed| CC[run Docker Desktop]
-    CC --> CC1[which OS]
+    BB[Install Docker Desktop] -->|reboot needed| BB1
+    BB1[run Docker Desktop] -->|allow sharing local folders| CC1[which OS]
+    
     
     CC1{Which OS you are running?} -->|MacOS| B1[open: Terminal]
     CC1{Which OS you are running?} -->|Windows| C1[check Docker]

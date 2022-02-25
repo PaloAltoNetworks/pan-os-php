@@ -431,6 +431,37 @@ class AppStore extends ObjStore
                 }
             }
 
+            $cursor = DH::findFirstElement('tunnel-applications', $appx);
+            if( $cursor !== FALSE )
+            {
+                foreach( $cursor->childNodes as $depNode )
+                {
+                    if( $depNode->nodeType != XML_ELEMENT_NODE )
+                        continue;
+
+                    $depName = $depNode->textContent;
+                    if( strlen($depName) < 1 )
+                        derr("dependency name length is < 0");
+                    $depApp = $this->findOrCreate($depName);
+                    $app->tunnelApp[] = $depApp;
+                }
+            }
+
+            $cursor = DH::findFirstElement('applicable-decoders', $appx);
+            if( $cursor !== FALSE )
+            {
+                foreach( $cursor->childNodes as $depNode )
+                {
+                    if( $depNode->nodeType != XML_ELEMENT_NODE )
+                        continue;
+
+                    $depName = $depNode->textContent;
+                    if( strlen($depName) < 1 )
+                        derr("dependency name length is < 0");
+
+                    $app->decoder[$depName] = $depName;
+                }
+            }
             $cursor = DH::findFirstElement('default', $appx);
             if( $cursor === FALSE )
                 continue;
