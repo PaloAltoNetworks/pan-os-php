@@ -4,6 +4,7 @@ CHANGELOG
 UTILS:
 * pan-os-php type=xml-issue | extend fix for custom-url-category
 * UTIL type=application | introduce new 'filters=( decoder has XYZ )' / (decoder is.set)
+* UTIL type=securityprofile securityprofiletype=custom-url-category | actions=exporttoexcel introduce display of member information
 
 BUGFIX:
 * UTIL type=diff | replace derr() with mwarning() - fix for argument outputformatset

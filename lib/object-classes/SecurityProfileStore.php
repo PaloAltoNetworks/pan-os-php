@@ -23,7 +23,7 @@ class SecurityProfileStore extends ObjStore
 
 
     /** @var null|SecurityProfileStore */
-    protected $parentCentralStore = null;
+    public $parentCentralStore = null;
 
     public static $childn = 'SecurityProfile';
 

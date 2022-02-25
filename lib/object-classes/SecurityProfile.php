@@ -30,7 +30,8 @@ class SecurityProfile
     const TypeDNS_security = 8;
     const TypeSaas_security = 9;
 
-    static private $SecurityProfileTypes = array(self::TypeTmp => 'tmp',
+    static private $SecurityProfileTypes = array(
+        self::TypeTmp => 'tmp',
         self::TypeVirus => 'virus',
         self::TypeSpyware => 'spyware',
         self::TypeVulnerability => 'vulnerability',
@@ -87,7 +88,7 @@ class SecurityProfile
 
         $this->name = DH::findAttribute('name', $xml);
         if( $this->name === FALSE )
-            derr("address name not found\n");
+            derr("secprof name not found\n");
 
         $this->_load_description_from_domxml();
 
@@ -132,140 +133,15 @@ class SecurityProfile
         return TRUE;
     }
 
-    /**
-     * @return null|string
-     */
-    public function value()
-    {
-        if( $this->isTmpAddr() )
-        {
-            if( $this->nameIsValidRuleIPEntry() )
-                return $this->name();
-        }
 
-        return $this->value;
-    }
 
     public function display()
     {
-        PH::print_stdout(  "     * " . get_class($this) . " '" . $this->name() . "'" );
+        PH::print_stdout(  "     * " . get_class($this) . " '" . $this->name() . "'"  );
         PH::$JSON_TMP['sub']['object'][$this->name()]['name'] = $this->name();
         PH::$JSON_TMP['sub']['object'][$this->name()]['type'] = get_class($this);
     }
 
-    /**
-     * @param string $newValue
-     * @param bool $rewriteXml
-     * @return bool
-     * @throws Exception
-     */
-    public function setValue($newValue, $rewriteXml = TRUE)
-    {
-        if( isset($this->_ip4Map) )
-            unset($this->_ip4Map);
-
-        if( !is_string($newValue) )
-            derr('value can be text only');
-
-        if( $newValue == $this->value )
-            return FALSE;
-
-        if( $this->isTmpAddr() )
-            return FALSE;
-
-        $this->value = $newValue;
-
-        if( $rewriteXml )
-        {
-
-            $valueRoot = DH::findFirstElementOrDie(self::$SecurityProfileTypes[$this->type], $this->xmlroot);
-            DH::setDomNodeText($valueRoot, $this->value);
-        }
-
-        return TRUE;
-    }
-
-    /**
-     * @param $newType string
-     * @param bool $rewritexml
-     * @return bool true if successful
-     */
-    public function setType($newType, $rewritexml = TRUE)
-    {
-        if( isset($this->_ip4Map) )
-            unset($this->_ip4Map);
-
-        $tmp = array_search($newType, self::$SecurityProfileTypes);
-        if( $tmp === FALSE )
-            derr('this type is not supported : ' . $newType);
-
-        if( $newType === $tmp )
-            return FALSE;
-
-        $this->type = $tmp;
-
-        if( $rewritexml )
-            $this->rewriteXML();
-
-        return TRUE;
-    }
-
-    /**
-     * @param $newType string
-     * @return bool true if successful
-     */
-    public function API_setType($newType)
-    {
-        if( !$this->setType($newType) )
-            return FALSE;
-
-        $c = findConnectorOrDie($this);
-        $xpath = $this->getXPath();
-
-        $c->sendSetRequest($xpath, DH::dom_to_xml($this->xmlroot, -1, FALSE));
-
-        $this->setType($newType);
-
-        return TRUE;
-    }
-
-    /**
-     * @param string $newValue
-     * @return bool
-     */
-    public function API_setValue($newValue)
-    {
-        if( !$this->setValue($newValue) )
-            return FALSE;
-
-        $c = findConnectorOrDie($this);
-        $xpath = $this->getXPath();
-
-        $c->sendSetRequest($xpath, DH::dom_to_xml($this->xmlroot, -1, FALSE));
-
-        $this->setValue($newValue);
-
-        return TRUE;
-    }
-
-    /**
-     * @param string $newValue
-     * @return bool
-     */
-    public function API_editValue($newValue)
-    {
-        if( !$this->setValue($newValue) )
-            return FALSE;
-
-        $c = findConnectorOrDie($this);
-        $xpath = $this->getXPath();
-
-        $c->sendEditRequest($xpath, DH::dom_to_xml($this->xmlroot, -1, FALSE));
-
-        $this->setValue($newValue);
-
-        return TRUE;
-    }
 
 
     public function rewriteXML()
@@ -283,35 +159,6 @@ class SecurityProfile
         }
     }
 
-    /**
-     * change the name of this object
-     * @param string $newName
-     *
-     */
-    public function setName($newName)
-    {
-        $this->setRefName($newName);
-        $this->xmlroot->setAttribute('name', $newName);
-
-        if( $this->isTmpAddr() )
-            unset($this->_ip4Map);
-    }
-
-    /**
-     * @param string $newName
-     */
-    public function API_setName($newName)
-    {
-        if( $this->isTmpAddr() )
-        {
-            mwarning('renaming of TMP object in API is not possible, it was ignored');
-            return;
-        }
-        $c = findConnectorOrDie($this);
-        $xpath = $this->getXPath();
-        $c->sendRenameRequest($xpath, $newName);
-        $this->setName($newName);
-    }
 
 
     /**
@@ -330,7 +177,8 @@ class SecurityProfile
      */
     public function type()
     {
-        return self::$SecurityProfileTypes[$this->type];
+        //return self::$SecurityProfileTypes[$this->type];
+        return $this->type;
     }
 
     public function isSecurityProfile()
@@ -340,10 +188,15 @@ class SecurityProfile
 
     public function isTmpSecProf()
     {
-        if( $this->type == self::TypeTmp )
+        if( $this->type === self::$SecurityProfileTypes[self::TypeTmp] )
             return TRUE;
 
         return FALSE;
+    }
+
+    public function isTmp()
+    {
+        return self::isTmpSecProf();
     }
 
     public function isType_Virus()
@@ -424,42 +277,6 @@ class SecurityProfile
             //todo fix as remove has protected
             #$this->owner->remove($this);
         }
-
-    }
-
-
-    public function nameIsValidRuleIPEntry()
-    {
-        if( filter_var($this->name, FILTER_VALIDATE_IP) !== FALSE )
-            return TRUE;
-
-        $ex = explode('-', $this->name);
-
-        if( count($ex) == 2 )
-        {
-            if( filter_var($ex[0], FILTER_VALIDATE_IP) === FALSE || filter_var($ex[1], FILTER_VALIDATE_IP) === FALSE )
-            {
-                return FALSE;
-            }
-            return TRUE;
-        }
-
-        $ex = explode('/', $this->name);
-
-        if( count($ex) != 2 )
-            return FALSE;
-
-        $mask = &$ex[1];
-        if( !is_numeric($mask) )
-            return FALSE;
-
-        if( (int)$mask > 32 || (int)$mask < 0 )
-            return FALSE;
-
-        if( filter_var($ex[0], FILTER_VALIDATE_IP) !== FALSE )
-            return TRUE;
-
-        return FALSE;
 
     }
 

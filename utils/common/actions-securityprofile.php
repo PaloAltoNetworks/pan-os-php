@@ -428,7 +428,8 @@ SecurityProfileCallContext::$supportedActions[] = array(
 
 
         #$headers = '<th>location</th><th>name</th><th>type</th><th>value</th><th>description</th><th>tags</th>';
-        $headers = '<th>location</th><th>name</th><th>store</th><th>type</th><th>exception</th>';
+        $headers = '<th>location</th><th>name</th><th>store</th><th>type</th><th>exception</th><th>members</th>';
+
 
         if( $addWhereUsed )
             $headers .= '<th>where used</th>';
@@ -517,6 +518,21 @@ SecurityProfileCallContext::$supportedActions[] = array(
                 else
                     $lines .= $encloseFunction('');
 
+                if( get_class($object) == "customURLProfile" )
+                {
+                    /**
+                     * @var $object customURLProfile
+                     */
+                    foreach( $object->getmembers() as  $member )
+                        $tmp_array[] = $member;
+
+                    $string = implode( ",", $tmp_array);
+                    $lines .= $encloseFunction( $tmp_array );
+                }
+                else
+                {
+                    $lines .= $encloseFunction('');
+                }
 
                 if( $addWhereUsed )
                 {

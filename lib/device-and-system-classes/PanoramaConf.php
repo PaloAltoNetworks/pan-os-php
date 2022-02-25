@@ -977,14 +977,43 @@ class PanoramaConf
                     {
                         $parentDG->_childDeviceGroups[$dgName] = $ldv;
                         $ldv->parentDeviceGroup = $parentDG;
+
+                        $storeType = array(
+                            'addressStore', 'serviceStore', 'tagStore', 'scheduleStore', 'appStore',
+
+                            'securityProfileGroupStore',
+
+                            'URLProfileStore', 'AntiVirusProfileStore', 'FileBlockingProfileStore', 'DataFilteringProfileStore',
+                            'VulnerabilityProfileStore', 'AntiSpywareProfileStore', 'WildfireProfileStore',
+                            'DecryptionProfileStore', 'HipObjectsProfileStore'
+
+                            );
+
+                        foreach( $storeType as $type )
+                            $ldv->$type->parentCentralStore = $parentDG->$type;
+
+                        /*
                         $ldv->addressStore->parentCentralStore = $parentDG->addressStore;
                         $ldv->serviceStore->parentCentralStore = $parentDG->serviceStore;
                         $ldv->tagStore->parentCentralStore = $parentDG->tagStore;
+
                         $ldv->scheduleStore->parentCentralStore = $parentDG->scheduleStore;
                         $ldv->appStore->parentCentralStore = $parentDG->appStore;
                         $ldv->securityProfileGroupStore->parentCentralStore = $parentDG->securityProfileGroupStore;
+
                         //Todo: swaschkut 20210505 - check if other Stores must be added
-                        //- appStore;scheduleStore/securityProfileGroupStore/all kind of SecurityProfile
+                        //- /all kind of SecurityProfile
+                        $this->URLProfileStore->parentCentralStore = $parentDG->URLProfileStore;
+                        $this->AntiVirusProfileStore->parentCentralStore = $parentDG->AntiVirusProfileStore;
+                        $this->FileBlockingProfileStore->parentCentralStore = $parentDG->FileBlockingProfileStore;
+                        $this->DataFilteringProfileStore->parentCentralStore = $parentDG->DataFilteringProfileStore;
+
+                        $this->VulnerabilityProfileStore->parentCentralStore = $parentDG->VulnerabilityProfileStore;
+                        $this->AntiSpywareProfileStore->parentCentralStore = $parentDG->AntiSpywareProfileStore;
+                        $this->WildfireProfileStore->parentCentralStore = $parentDG->WildfireProfileStore;
+                        $this->DecryptionProfileStore->parentCentralStore = $parentDG->DecryptionProfileStore;
+                        $this->HipObjectsProfileStore->parentCentralStore = $parentDG->HipObjectsProfileStore;
+                        */
                     }
                 }
 
