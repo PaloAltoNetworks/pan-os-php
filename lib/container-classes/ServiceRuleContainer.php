@@ -209,7 +209,7 @@ class ServiceRuleContainer extends ObjRuleContainer
             {
                 if( count($this->o) != 0 && !$this->wrongService)
                 {
-                    mwarning('rule has a bad combination of services', $xml);
+                    mwarning('rule has a bad combination of services', $xml, false);
                     $this->wrongService = true;
                 }
 
@@ -221,7 +221,7 @@ class ServiceRuleContainer extends ObjRuleContainer
             {
                 if( count($this->o) != 0 && !$this->wrongService )
                 {
-                    mwarning('rule has a bad combination of services', $xml);
+                    mwarning('rule has a bad combination of services', $xml, false);
                     $this->wrongService = true;
                 }
 
@@ -235,7 +235,7 @@ class ServiceRuleContainer extends ObjRuleContainer
                 if( $this->appDef == TRUE && !$this->wrongService )
                     #if( count($this->o) != 0 )
                 {
-                    mwarning('rule has a bad combination of services', $xml);
+                    mwarning('rule has a bad combination of services', $xml, false);
                     $this->wrongService = TRUE;
                 }
             }
