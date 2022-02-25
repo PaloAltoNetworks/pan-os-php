@@ -1316,8 +1316,7 @@ class UTIL
                         $this->objectsToProcess[] = array('store' => $this->pan->threatStore, 'objects' => $this->pan->threatStore->getAll());
 
                     $locationFound = TRUE;
-                    //Todo: check if needed
-                    //self::GlobalInitAction($this->pan);
+                    self::GlobalInitAction($this->pan);
                 }
                 foreach( $this->pan->getVirtualSystems() as $sub )
                 {
@@ -1358,10 +1357,6 @@ class UTIL
                         $locationFound = TRUE;
                         self::GlobalInitAction($sub);
                     }
-                    #}
-
-
-
                 }
             }
             else

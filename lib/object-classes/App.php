@@ -78,6 +78,11 @@ class App
     /** @var string[] */
     public $_characteristics = array();
 
+    /** @var null|array */
+    public $explicitUse = array();
+    public $tunnelApp = array();
+    public $decoder = array();
+
     //Todo: new dynamic content contains SAAS appid-saas-risk-fields
     static public $_supportedCharacteristics = array(
         'evasive' => 'evasive',
@@ -129,6 +134,10 @@ class App
         return FALSE;
     }
 
+    /**
+     * @return App[]
+     * @throws Exception
+     */
     public function containerApps()
     {
         if( !$this->isContainer() )
@@ -561,6 +570,21 @@ class App
             }
         }
 
+        if( isset( $this->tunnelApp) && count( $this->tunnelApp ) > 0 )
+        {
+            $tmpString = "";
+            foreach( $this->tunnelApp as $tmpapp )
+            {
+                $tmpString .= $tmpapp->name().", ";
+            }
+            PH::print_stdout( $padding_above. "tunnelApps: ".$tmpString );
+        }
+
+        if( isset( $this->decoder) && count( $this->decoder ) > 0 )
+        {
+            PH::print_stdout( $padding_above. "decoders: ".implode( "|", $this->decoder) );
+        }
+
         if( isset( $this->icmpsub )  )
         {
             PH::print_stdout( "               icmp type: ". $this->icmpsub );
@@ -603,6 +627,7 @@ class App
             {
                 foreach( $this->groupapps as $tmpapp)
                 {
+                    /** @var App $tmpapp */
                     $tmparray = array();
                     $tmpapp->print_appdetails( $padding_above, true, $tmparray );
                     $subarray['application-group'][] = $tmparray;

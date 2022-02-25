@@ -485,4 +485,42 @@ RQuery::$defaultFilters['application']['risk']['operators']['>,<,=,!'] = array(
     )
 );
 
+RQuery::$defaultFilters['application']['decoder']['operators']['has'] = array(
+    'Function' => function (ApplicationRQueryContext $context) {
+        $app = $context->object;
+
+        if( $app->isContainer() )
+            return null;
+
+        $sanitizedValue = strtolower($context->value);
+        if( isset( $app->decoder[$sanitizedValue] ) )
+            return TRUE;
+
+        return FALSE;
+    },
+    'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP% evasive) ',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
+RQuery::$defaultFilters['application']['decoder']['operators']['is.set'] = array(
+    'Function' => function (ApplicationRQueryContext $context) {
+        $app = $context->object;
+
+        if( $app->isContainer() )
+            return null;
+
+        if( count( $app->decoder ) > 0 )
+            return TRUE;
+
+        return FALSE;
+    },
+    'arg' => FALSE,
+    'ci' => array(
+        'fString' => '(%PROP% evasive) ',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 // </editor-fold>
