@@ -6,7 +6,7 @@ UTILS:
 * UTIL type=application | introduce new 'filters=( decoder has XYZ )' / (decoder is.set)
 
 BUGFIX:
-* UTIL type=diff | replace derr() with mwarning() - fix for argument outputformat
+* UTIL type=diff | replace derr() with mwarning() - fix for argument outputformatset
 
 GENERAL:
 
