@@ -8,6 +8,7 @@ UTILS:
 
 BUGFIX:
 * UTIL type=diff | replace derr() with mwarning() - fix for argument outputformatset
+* class SecurityProfilStore | bugfix to handle parentStore correctly
 
 GENERAL:
 

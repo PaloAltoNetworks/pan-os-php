@@ -650,7 +650,7 @@ class SecurityProfileStore extends ObjStore
     {
         $this->parentCentralStore = null;
 
-        $profileType = $this->type;
+        $profileType = $this->type."Store";
 
         $cur = $this;
         while( isset($cur->owner) && $cur->owner !== null )
