@@ -171,7 +171,7 @@ class AppRuleContainer extends ObjRuleContainer
             {
                 if( !$this->wrongApplication )
                 {
-                    mwarning('rule has a bad combination of application', $xml);
+                    mwarning('rule has a bad combination of application', $xml, false);
                     $this->wrongApplication = TRUE;
                 }
                 $this->appANY = TRUE;
@@ -181,7 +181,7 @@ class AppRuleContainer extends ObjRuleContainer
             {
                 if( !$this->wrongApplication )
                 {
-                    mwarning('rule has a bad combination of application', $xml);
+                    mwarning('rule has a bad combination of application', $xml, false);
                     $this->wrongApplication = TRUE;
                 }
             }

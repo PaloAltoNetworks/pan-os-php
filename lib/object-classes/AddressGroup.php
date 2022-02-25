@@ -149,9 +149,9 @@ class AddressGroup
                 {
                     $tmp2 = DH::firstChildElement($xml);
                     if( $tmp2 === FALSE )
-                        mwarning('empty AddressGroup : ', $xml);
+                        mwarning('empty AddressGroup : ', $xml, false);
                     else
-                        mwarning('unsupported AddressGroup type: ', $xml);
+                        mwarning('unsupported AddressGroup type: ', $xml, false);
                 }
                 else
                 {
@@ -290,7 +290,7 @@ class AddressGroup
 
         if( $this->name() == $newObject->name() )
         {
-            mwarning("AddressGroup can not be added to itself!");
+            mwarning("AddressGroup can not be added to itself!", null, false);
             return FALSE;
         }
 
@@ -533,7 +533,7 @@ class AddressGroup
             return TRUE;
         }
         elseif( !$this->isDynamic() )
-                mwarning("object is not part of this group: " . $old->toString());
+                mwarning("object is not part of this group: " . $old->toString(), null, false);
 
 
 
