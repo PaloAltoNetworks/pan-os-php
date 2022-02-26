@@ -40,16 +40,6 @@ class ThreatStore extends ObjStore
         #$this->o = &$this->apps;
         $this->o = array();
 
-        /*
-        if( isset($owner->parentDeviceGroup) && $owner->parentDeviceGroup !== null )
-            $this->parentCentralStore = $owner->parentDeviceGroup->appStore;
-        elseif( isset($owner->parentContainer) && $owner->parentContainer !== null )
-        {
-            $this->parentCentralStore = $owner->parentContainer->appStore;
-        }
-        else
-            $this->findParentCentralStore();
-        */
     }
 
     public function load_from_predefinedfile($filename = null)

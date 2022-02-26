@@ -11,7 +11,7 @@ BUGFIX:
 * class SecurityProfilStore | bugfix to handle parentStore correctly
 
 GENERAL:
-
+* framework all Object Classes | improve code for usage of single method parentCentralStore()
 
 2.0.30 (20220221)
 UTILS:

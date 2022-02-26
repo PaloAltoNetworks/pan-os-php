@@ -222,9 +222,9 @@ class RuleStore
 
         if( $rule->owner !== $this )
         {
-            $rule->from->findParentCentralStore();
+            $rule->from->findParentCentralStore('zoneStore');
             if( !$rule->isPbfRule() )
-                $rule->to->findParentCentralStore();
+                $rule->to->findParentCentralStore('zoneStore');
         }
 
         $ser = spl_object_hash($rule);

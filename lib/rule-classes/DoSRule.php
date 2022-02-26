@@ -66,7 +66,7 @@ class DoSRule extends RuleWithUserID
             $this->_zoneBasedFrom = TRUE;
             $this->from = new ZoneRuleContainer($this);
             $this->from->name = 'from';
-            $this->from->findParentCentralStore();
+            $this->from->findParentCentralStore( 'zoneStore' );
             $this->from->load_from_domxml($tmp);
         }
         elseif( $tmp->tagName == 'interface' )
@@ -97,7 +97,7 @@ class DoSRule extends RuleWithUserID
             $this->_zoneBasedTo = TRUE;
             $this->to = new ZoneRuleContainer($this);
             $this->to->name = 'to';
-            $this->to->findParentCentralStore();
+            $this->to->findParentCentralStore('zoneStore');
             $this->to->load_from_domxml($tmp);
         }
         elseif( $tmp->tagName == 'interface' )

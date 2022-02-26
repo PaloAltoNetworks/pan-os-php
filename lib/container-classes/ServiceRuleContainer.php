@@ -42,7 +42,7 @@ class ServiceRuleContainer extends ObjRuleContainer
         $this->owner = $owner;
         $this->o = array();
 
-        $this->findParentCentralStore();
+        $this->findParentCentralStore( 'serviceStore' );
     }
 
 
@@ -258,36 +258,6 @@ class ServiceRuleContainer extends ObjRuleContainer
             DH::Hosts_to_xmlDom($this->xmlroot, $this->o, 'member', TRUE, 'application-default');
         else
             DH::Hosts_to_xmlDom($this->xmlroot, $this->o, 'member', TRUE);
-    }
-
-
-    /**
-     *
-     * @ignore
-     */
-    protected function findParentCentralStore()
-    {
-        $this->parentCentralStore = null;
-
-        if( $this->owner )
-        {
-            $currentObject = $this;
-            while( isset($currentObject->owner) && $currentObject->owner !== null )
-            {
-
-                if( isset($currentObject->owner->serviceStore) &&
-                    $currentObject->owner->serviceStore !== null )
-                {
-                    $this->parentCentralStore = $currentObject->owner->serviceStore;
-                    //PH::print_stdout( $this->toString()." : found a parent central store: ".$parentCentralStore->toString());
-                    return;
-                }
-                $currentObject = $currentObject->owner;
-            }
-        }
-
-        #mwarning('no parent store found!', null, false);
-
     }
 
 

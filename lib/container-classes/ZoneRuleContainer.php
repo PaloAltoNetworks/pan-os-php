@@ -34,7 +34,8 @@ class ZoneRuleContainer extends ObjRuleContainer
         $this->owner = $owner;
         #$this->name = 'zone';
 
-        #$this->findParentCentralStore();
+        //problem with PBF to; as there are no zone possible
+        #$this->findParentCentralStore( 'zoneStore' );
     }
 
 
@@ -218,34 +219,6 @@ class ZoneRuleContainer extends ObjRuleContainer
 
         $out = parent::toString_inline();
         return $out;
-    }
-
-
-    /**
-     *
-     * @ignore
-     */
-    public function findParentCentralStore()
-    {
-        $this->parentCentralStore = null;
-
-        if( $this->owner )
-        {
-            $curo = $this;
-            while( isset($curo->owner) && $curo->owner !== null )
-            {
-
-                if( isset($curo->owner->zoneStore) &&
-                    $curo->owner->zoneStore !== null )
-                {
-                    $this->parentCentralStore = $curo->owner->zoneStore;
-                    //PH::print_stdout(  $this->toString()." : found a parent central store: ".$parentCentralStore->toString() );
-                    return;
-                }
-                $curo = $curo->owner;
-            }
-        }
-
     }
 
 

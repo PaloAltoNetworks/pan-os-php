@@ -47,7 +47,7 @@ class ScheduleStore extends ObjStore
             $this->parentCentralStore = $owner->parentContainer->scheduleStore;
         }
         else
-            $this->findParentCentralStore();
+            $this->findParentCentralStore( 'scheduleStore' );
 
     }
 
@@ -294,29 +294,6 @@ class ScheduleStore extends ObjStore
     }
 
 
-    /**
-     *
-     * @ignore
-     */
-    protected function findParentCentralStore()
-    {
-        $this->parentCentralStore = null;
-
-        $cur = $this->owner;
-        while( isset($cur->owner) && $cur->owner !== null )
-        {
-            $ref = $cur->owner;
-            if( isset($ref->scheduleStore) &&
-                $ref->scheduleStore !== null )
-            {
-                $this->parentCentralStore = $ref->scheduleStore;
-                //PH::print_stdout(  $this->toString()." : found a parent central store: ".$parentCentralStore->toString() );
-                return;
-            }
-            $cur = $ref;
-        }
-
-    }
 
     /**
      * @return Schedule[]

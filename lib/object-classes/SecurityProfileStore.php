@@ -79,18 +79,9 @@ class SecurityProfileStore extends ObjStore
 
         $this->name = self::$storeNameByType[$this->type]['name'];
 
+        $storeType = $profileType."Store";
 
-        if( isset($owner->parentDeviceGroup) && $owner->parentDeviceGroup !== null && isset( $owner->parentDeviceGroup->$profileType ))
-        {
-            print "NAME: ".$owner->parentDeviceGroup->name()."\n";
-            $this->parentCentralStore = $owner->parentDeviceGroup->$profileType;
-        }
-        elseif( isset($owner->parentContainer) && $owner->parentContainer !== null && isset( $owner->parentContainer->$profileType ))
-        {
-            $this->parentCentralStore = $owner->parentContainer->$profileType;
-        }
-        else
-            $this->findParentCentralStore();
+        $this->setParentCentralStore( $storeType );
 
         $this->_SecurityProfiles = array();
 
@@ -392,12 +383,6 @@ class SecurityProfileStore extends ObjStore
         if( $rule->owner !== null )
             derr('Trying to add a rule that has a owner already !');
 
-        /*if( $rule->owner !== $this )
-        {
-            $rule->from->findParentCentralStore();
-            if( !$rule->isPbfRule() )
-                $rule->to->findParentCentralStore();
-        }*/
 
         $ser = spl_object_hash($rule);
 
@@ -641,29 +626,4 @@ class SecurityProfileStore extends ObjStore
         }
     }
 
-
-    /**
-     *
-     * @ignore
-     */
-    protected function findParentCentralStore()
-    {
-        $this->parentCentralStore = null;
-
-        $profileType = $this->type."Store";
-
-        $cur = $this;
-        while( isset($cur->owner) && $cur->owner !== null )
-        {
-            $ref = $cur->owner;
-            if( isset($ref->$profileType) &&
-                $ref->$profileType !== null )
-            {
-                $this->parentCentralStore = $ref->$profileType;
-                #PH::print_stdout(  $this->toString()." : found a parent central store: ".$this->parentCentralStore->toString() );
-                return;
-            }
-            $cur = $ref;
-        }
-    }
 }

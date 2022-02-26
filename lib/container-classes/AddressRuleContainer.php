@@ -378,34 +378,7 @@ class AddressRuleContainer extends ObjRuleContainer
     }
 
 
-    /**
-     *
-     * @ignore
-     */
-    protected function findParentCentralStore()
-    {
-        $this->parentCentralStore = null;
 
-        if( $this->owner )
-        {
-            $currentObject = $this;
-            while( isset($currentObject->owner) && $currentObject->owner !== null )
-            {
-
-                if( isset($currentObject->owner->addressStore) &&
-                    $currentObject->owner->addressStore !== null )
-                {
-                    $this->parentCentralStore = $currentObject->owner->addressStore;
-                    //PH::print_stdout( $this->toString()." : found a parent central store: ".$parentCentralStore->toString() );
-                    return;
-                }
-                $currentObject = $currentObject->owner;
-            }
-        }
-
-        mwarning('no parent store found!');
-
-    }
 
 
     /**

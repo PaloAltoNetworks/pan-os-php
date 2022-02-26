@@ -34,7 +34,7 @@ class TagRuleContainer extends ObjRuleContainer
         $this->owner = $owner;
         $this->name = 'tag';
 
-        $this->findParentCentralStore();
+        $this->findParentCentralStore( 'tagStore' );
     }
 
 
@@ -254,28 +254,6 @@ class TagRuleContainer extends ObjRuleContainer
     }
 
 
-    /**
-     *
-     * @ignore
-     */
-    protected function findParentCentralStore()
-    {
-        $this->parentCentralStore = null;
-
-        $cur = $this;
-        while( isset($cur->owner) && $cur->owner !== null )
-        {
-            $ref = $cur->owner;
-            if( isset($ref->tagStore) &&
-                $ref->tagStore !== null )
-            {
-                $this->parentCentralStore = $ref->tagStore;
-                return;
-            }
-            $cur = $ref;
-        }
-
-    }
 
     public function copy(TagRuleContainer $other)
     {

@@ -345,5 +345,37 @@ class ObjStore
         return $res;
     }
 
+    protected function findParentCentralStore( $storeType )
+    {
+        $this->parentCentralStore = null;
+
+        if( $this->owner )
+        {
+            $currentObject = $this;
+            while( isset($currentObject->owner) && $currentObject->owner !== null )
+            {
+                if( isset($currentObject->owner->$storeType) && $currentObject->owner->$storeType !== null )
+                {
+                    $this->parentCentralStore = $currentObject->owner->$storeType;
+                    return;
+                }
+                $currentObject = $currentObject->owner;
+            }
+        }
+        #mwarning('no parent store found for: '.$storeType.'!');
+    }
+
+    protected function setParentCentralStore( $storeType )
+    {
+        if( isset($owner->parentDeviceGroup) && $owner->parentDeviceGroup !== null )
+            $this->parentCentralStore = $owner->parentDeviceGroup->$storeType;
+
+        elseif( isset($owner->parentContainer) && $owner->parentContainer !== null )
+            $this->parentCentralStore = $owner->parentContainer->$storeType;
+
+        else
+            $this->findParentCentralStore( $storeType );
+    }
+
 }
 
