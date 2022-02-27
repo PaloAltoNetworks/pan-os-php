@@ -58,6 +58,8 @@ $hiddenPW = TRUE;
 $RSAkey = null;
 $timeout = 10;
 
+$setcommandMaxLine = 20;
+
 //output string manipulation
 $manipulate = FALSE;
 $includesearch = FALSE;
@@ -73,6 +75,7 @@ if( isset(PH::$args['debug']) )
 
 if( isset(PH::$args['timeout']) )
     $timeout = PH::$args['timeout'];
+
 
 if( isset(PH::$args['in']) )
 {
@@ -97,12 +100,14 @@ if( isset(PH::$args['vendor']) )
     $vendor = PH::$args['vendor'];
     $vendor = strtolower($vendor);
 }
-elseif( isset(PH::$args['setcommandfile']) )
+elseif( isset(PH::$args['setcommand-file']) )
 {
-    $commandfile = PH::$args['setcommandfile'];
+    $commandfile = PH::$args['setcommand-file'];
     $commands = file($commandfile, FILE_IGNORE_NEW_LINES);
     array_unshift($commands , 'configure');
 
+    if( isset(PH::$args['setcommand-maxlinecount']) )
+        $setcommandMaxLine = PH::$args['setcommand-maxlinecount'];
 
     if( isset(PH::$args['out']) )
     {
@@ -207,7 +212,7 @@ else
 //START SSH connection
 ############################################
 
-$ssh = new RUNSSH( $ip, $user, $password, $commands, $output_string, $timeout );
+$ssh = new RUNSSH( $ip, $user, $password, $commands, $output_string, $timeout, 22, $setcommandMaxLine );
 
 ############################################
 //START output string manipulation
@@ -264,7 +269,7 @@ if( $manipulate )
     }
 }
 
-if( isset(PH::$args['command']) || isset(PH::$args['setcommandfile']))
+if( isset(PH::$args['command']) || isset(PH::$args['setcommand-file']))
 {
     PH::print_stdout( "write output into file: " . $outfile );
     file_put_contents($outfile, $output_string);

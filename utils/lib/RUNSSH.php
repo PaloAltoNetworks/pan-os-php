@@ -19,7 +19,7 @@
 
 class RUNSSH
 {
-    function __construct( $ip, $user, $password, $commands, &$output_string, $timeout = 10, $port = 22  )
+    function __construct( $ip, $user, $password, $commands, &$output_string, $timeout = 10, $port = 22, $setcommandMaxLine = 20  )
     {
         PH::print_stdout("");
 
@@ -71,7 +71,7 @@ class RUNSSH
             {
                 $combinedCommands .= $command."\n";
                 $configureCounter++;
-                if( $configureCounter == 20 )
+                if( $configureCounter == $setcommandMaxLine )
                 {
                     $configureCounter = 1;
 
@@ -95,6 +95,7 @@ class RUNSSH
 
             if( $write )
             {
+                sleep(1);
                 $tmp_string = $ssh->read();
                 PH::print_stdout( $tmp_string );
 
