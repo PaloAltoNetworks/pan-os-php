@@ -523,6 +523,7 @@ SecurityProfileCallContext::$supportedActions[] = array(
                     /**
                      * @var $object customURLProfile
                      */
+                    $tmp_array = array();
                     foreach( $object->getmembers() as  $member )
                         $tmp_array[] = $member;
 

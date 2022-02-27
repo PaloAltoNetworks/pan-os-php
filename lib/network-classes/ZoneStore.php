@@ -44,7 +44,7 @@ class ZoneStore extends ObjStore
 
         $this->owner = $owner;
 
-        $this->findParentCentralStore();
+        $this->findParentCentralStore( 'zoneStore' );
     }
 
 
@@ -175,35 +175,6 @@ class ZoneStore extends ObjStore
                     $this->xmlroot->appendChild($zone->xmlroot);
             }
         }
-
-    }
-
-    /**
-     *
-     * @ignore
-     */
-    protected function findParentCentralStore()
-    {
-        $this->parentCentralStore = null;
-
-        if( $this->owner )
-        {
-            $curo = $this;
-            while( isset($curo->owner) && $curo->owner !== null )
-            {
-
-                if( isset($curo->owner->zoneStore) &&
-                    $curo->owner->zoneStore !== null )
-                {
-                    $this->parentCentralStore = $curo->owner->zoneStore;
-                    //PH::print_stdout(  $this->toString()." : found a parent central store: ".$parentCentralStore->toString() );
-                    return;
-                }
-                $curo = $curo->owner;
-            }
-        }
-
-        //PH::print_stdout( $this->toString().": no parent store found" );
 
     }
 

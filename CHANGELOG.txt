@@ -5,13 +5,15 @@ UTILS:
 * pan-os-php type=xml-issue | extend fix for custom-url-category
 * UTIL type=application | introduce new 'filters=( decoder has XYZ )' / (decoder is.set)
 * UTIL type=securityprofile securityprofiletype=custom-url-category | actions=exporttoexcel introduce display of member information
+* UTIL BETA ssh_connector.php | extend with argument setcommand-maxline=20
 
 BUGFIX:
 * UTIL type=diff | replace derr() with mwarning() - fix for argument outputformatset
 * class SecurityProfilStore | bugfix to handle parentStore correctly
+* UTIL type=securityprofile | bugfix missing array variable declaration
 
 GENERAL:
-
+* framework all Object Classes | improve code for usage of single method parentCentralStore()
 
 2.0.30 (20220221)
 UTILS:

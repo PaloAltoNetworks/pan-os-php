@@ -38,7 +38,7 @@ class AppRuleContainer extends ObjRuleContainer
     {
         $this->owner = $owner;
 
-        $this->findParentCentralStore();
+        $this->findParentCentralStore( 'appStore' );
     }
 
     public function find($name, $ref = null)
@@ -293,34 +293,6 @@ class AppRuleContainer extends ObjRuleContainer
     }
 
 
-    /**
-     *
-     * @ignore
-     */
-    protected function findParentCentralStore()
-    {
-        $this->parentCentralStore = null;
-
-        if( $this->owner )
-        {
-            $curo = $this;
-            while( isset($curo->owner) && $curo->owner !== null )
-            {
-
-                if( isset($curo->owner->appStore) &&
-                    $curo->owner->appStore !== null )
-                {
-                    $this->parentCentralStore = $curo->owner->appStore;
-                    //PH::print_stdout(  $this->toString()." : found a parent central store: ".$parentCentralStore->toString() );
-                    return;
-                }
-                $curo = $curo->owner;
-            }
-        }
-
-        //PH::print_stdout(  $this->toString().": no parent store found" );
-
-    }
 
     /**
      * @param App|string can be Tag object or tag name (string). this is case sensitive

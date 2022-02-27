@@ -38,15 +38,7 @@ class SecurityProfileGroupStore extends ObjStore
         $this->owner = $owner;
         $this->o = array();
 
-        if( isset($owner->parentDeviceGroup) && $owner->parentDeviceGroup !== null )
-            $this->parentCentralStore = $owner->parentDeviceGroup->securityProfileGroupStore;
-        elseif( isset($owner->parentContainer) && $owner->parentContainer !== null )
-        {
-            $this->parentCentralStore = $owner->parentContainer->securityProfileGroupStore;
-        }
-        else
-            $this->findParentCentralStore();
-
+        $this->setParentCentralStore( 'securityProfileGroupStore' );
     }
 
     public function all()
@@ -406,29 +398,6 @@ class SecurityProfileGroupStore extends ObjStore
     }
 
 
-    /**
-     *
-     * @ignore
-     */
-    protected function findParentCentralStore()
-    {
-        $this->parentCentralStore = null;
-
-        $cur = $this->owner;
-        while( isset($cur->owner) && $cur->owner !== null )
-        {
-            $ref = $cur->owner;
-            if( isset($ref->SecurityProfileGroupStore) &&
-                $ref->SecurityProfileGroupStore !== null )
-            {
-                $this->parentCentralStore = $ref->SecurityProfileGroupStore;
-                //PH::print_stdout(  $this->toString()." : found a parent central store: ".$parentCentralStore->toString() );
-                return;
-            }
-            $cur = $ref;
-        }
-
-    }
 
     public function createXmlRoot()
     {

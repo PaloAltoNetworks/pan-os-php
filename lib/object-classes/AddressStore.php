@@ -62,18 +62,7 @@ class AddressStore
     {
         $this->owner = $owner;
 
-        if( isset($owner->parentDeviceGroup) && $owner->parentDeviceGroup !== null )
-        {
-            $this->parentCentralStore = $owner->parentDeviceGroup->addressStore;
-        }
-        elseif( isset($owner->parentContainer) && $owner->parentContainer !== null )
-        {
-            $this->parentCentralStore = $owner->parentContainer->addressStore;
-        }
-        else
-        {
-            $this->findParentCentralStore();
-        }
+        $this->setParentCentralStore( 'addressStore' );
 
         $this->_addressObjects = array();
         $this->_addressGroups = array();
@@ -374,7 +363,7 @@ class AddressStore
      *
      * @ignore
      */
-    protected function findParentCentralStore()
+    protected function findParentCentralStore( $storeType )
     {
         $this->parentCentralStore = null;
 
@@ -383,17 +372,30 @@ class AddressStore
             $curo = $this;
             while( isset($curo->owner) && $curo->owner !== null )
             {
-
-                if( isset($curo->owner->addressStore) &&
-                    $curo->owner->addressStore !== null )
+                if( isset($curo->owner->$storeType) && $curo->owner->$storeType !== null )
                 {
-                    $this->parentCentralStore = $curo->owner->addressStore;
-                    #PH::print_stdout( $this->toString()." : found a parent central store: ".$this->parentCentralStore->toString() );
+                    $this->parentCentralStore = $curo->owner->$storeType;
                     return;
                 }
                 $curo = $curo->owner;
             }
         }
+    }
+
+    /**
+     *
+     * @ignore
+     */
+    protected function setParentCentralStore( $storeType )
+    {
+        if( isset($owner->parentDeviceGroup) && $owner->parentDeviceGroup !== null )
+            $this->parentCentralStore = $owner->parentDeviceGroup->$storeType;
+
+        elseif( isset($owner->parentContainer) && $owner->parentContainer !== null )
+            $this->parentCentralStore = $owner->parentContainer->$storeType;
+
+        else
+            $this->findParentCentralStore( $storeType );
     }
 
     /**

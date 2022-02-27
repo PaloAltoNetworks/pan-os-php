@@ -40,15 +40,7 @@ class TagStore extends ObjStore
         $this->owner = $owner;
         $this->o = array();
 
-        if( isset($owner->parentDeviceGroup) && $owner->parentDeviceGroup !== null )
-            $this->parentCentralStore = $owner->parentDeviceGroup->tagStore;
-        elseif( isset($owner->parentContainer) && $owner->parentContainer !== null )
-        {
-            $this->parentCentralStore = $owner->parentContainer->tagStore;
-        }
-        else
-            $this->findParentCentralStore();
-
+        $this->setParentCentralStore( 'tagStore' );
     }
 
     /**
@@ -298,30 +290,6 @@ class TagStore extends ObjStore
         }
     }
 
-
-    /**
-     *
-     * @ignore
-     */
-    protected function findParentCentralStore()
-    {
-        $this->parentCentralStore = null;
-
-        $cur = $this->owner;
-        while( isset($cur->owner) && $cur->owner !== null )
-        {
-            $ref = $cur->owner;
-            if( isset($ref->tagStore) &&
-                $ref->tagStore !== null )
-            {
-                $this->parentCentralStore = $ref->tagStore;
-                //PH::print_stdout( $this->toString()." : found a parent central store: ".$parentCentralStore->toString() );
-                return;
-            }
-            $cur = $ref;
-        }
-
-    }
 
     /**
      * @return Tag[]

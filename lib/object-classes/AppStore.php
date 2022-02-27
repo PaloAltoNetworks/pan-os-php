@@ -76,15 +76,7 @@ class AppStore extends ObjStore
         #$this->o = &$this->apps;
         $this->o = array();
 
-
-        if( isset($owner->parentDeviceGroup) && $owner->parentDeviceGroup !== null )
-            $this->parentCentralStore = $owner->parentDeviceGroup->appStore;
-        elseif( isset($owner->parentContainer) && $owner->parentContainer !== null )
-        {
-            $this->parentCentralStore = $owner->parentContainer->appStore;
-        }
-        else
-            $this->findParentCentralStore();
+        $this->setParentCentralStore( 'appStore' );
     }
 
     /**
@@ -132,31 +124,6 @@ class AppStore extends ObjStore
         return $this->o;
     }
 
-
-    /**
-     *
-     * @ignore
-     */
-    protected function findParentCentralStore()
-    {
-        $this->parentCentralStore = null;
-
-        $cur = $this->owner;
-        while( isset($cur->owner) && $cur->owner !== null )
-        {
-            $ref = $cur->owner;
-            if( isset($ref->appStore) &&
-                $ref->appStore !== null )
-            {
-                $this->parentCentralStore = $ref->appStore;
-                #PH::print_stdout( $this->toString()." : found a parent central store: ".$this->parentCentralStore->toString() );
-                return;
-            }
-            $cur = $ref;
-        }
-        //PH::print_stdout( $this->toString().": no parent store found");
-
-    }
 
     /**
      * @return App[]

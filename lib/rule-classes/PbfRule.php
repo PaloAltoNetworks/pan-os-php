@@ -31,7 +31,7 @@ class PbfRule extends RuleWithUserID
             $this->_zoneBased = TRUE;
             $this->from = new ZoneRuleContainer($this);
             $this->from->name = 'from';
-            $this->from->findParentCentralStore();
+            $this->from->findParentCentralStore('zoneStore');
             $this->from->load_from_domxml($tmp);
         }
         elseif( $tmp->tagName == 'interface' )

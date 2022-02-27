@@ -743,7 +743,7 @@ class Rule
             derr('unsupported');
 
         //Workaround
-        $zoneContainer->findParentCentralStore();
+        $zoneContainer->findParentCentralStore('zoneStore');
         $zoneStore = $zoneContainer->parentCentralStore;
 
 

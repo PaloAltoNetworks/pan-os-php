@@ -38,7 +38,7 @@ class UrlCategoryRuleContainer extends ObjRuleContainer
         $this->owner = $owner;
         $this->o = array();
 
-        $this->findParentCentralStore();
+        $this->findParentCentralStore( 'customURLProfileStore' );
     }
 
 
@@ -212,35 +212,6 @@ class UrlCategoryRuleContainer extends ObjRuleContainer
         DH::Hosts_to_xmlDom($this->xmlroot, $this->o, 'member', TRUE);
     }
 
-
-    /**
-     *
-     * @ignore
-     */
-    protected function findParentCentralStore()
-    {
-        $this->parentCentralStore = null;
-
-        if( $this->owner )
-        {
-            $currentObject = $this;
-            while( isset($currentObject->owner) && $currentObject->owner !== null )
-            {
-
-                if( isset($currentObject->owner->customURLProfileStore) &&
-                    $currentObject->owner->customURLProfileStore !== null )
-                {
-                    $this->parentCentralStore = $currentObject->owner->customURLProfileStore;
-                    //PH::print_stdout(  $this->toString()." : found a parent central store: ".$parentCentralStore->toString() );
-                    return;
-                }
-                $currentObject = $currentObject->owner;
-            }
-        }
-
-        mwarning('no parent store found!');
-
-    }
 
 
     /**
