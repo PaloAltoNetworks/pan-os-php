@@ -581,10 +581,19 @@ class DH
             {
                 if( strpos( $xpath, " ".$element->nodeName ) === FALSE )
                 {
+                    print "nodename: ".$element->nodeName."\n";
                     if( $element->nodeName !== "member" )
                         $string .= " ".$element->nodeName;
+                    elseif( strpos( $xpath, " list" ) !== FALSE || strpos( $string, " list" ) !== FALSE )
+                    {
+                        //validation check - this is needed for custom url
+                    }
                     else
                     {
+                        #print "nodename: ".$element->nodeName."\n";
+                        #print "xpath: ".$xpath."\n";
+                        #print "string: ".$string."\n";
+
                         if( strpos( $xpath, "delete" ) !== FALSE )
                         {
                             $finalstring = $xpath.$string;
