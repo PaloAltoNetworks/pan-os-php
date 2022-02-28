@@ -586,7 +586,7 @@ class DH
                         $string .= " ".$element->nodeName;
                     elseif( strpos( $xpath, " list" ) !== FALSE || strpos( $string, " list" ) !== FALSE )
                     {
-                        //validation check - not working for custom url
+                        //validation check - this is needed for custom url
                     }
                     else
                     {

@@ -11,6 +11,7 @@ BUGFIX:
 * UTIL type=diff | replace derr() with mwarning() - fix for argument outputformatset
 * class SecurityProfilStore | bugfix to handle parentStore correctly
 * UTIL type=securityprofile | bugfix missing array variable declaration
+* UTIL type=rule | bugfix for 'filter=(service has.value.recursive PORT-RANGE)'
 
 GENERAL:
 * framework all Object Classes | improve code for usage of single method parentCentralStore()

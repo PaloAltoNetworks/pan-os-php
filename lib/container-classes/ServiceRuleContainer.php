@@ -603,6 +603,13 @@ class ServiceRuleContainer extends ObjRuleContainer
      */
     function hasValue($value, $check_recursive = FALSE)
     {
+        $rangeValue = false;
+        if( strpos($value, "-") !== FALSE )
+        {
+            $rangeValue = true;
+            $port_value_range = explode("-", $value);
+        }
+
         $objects = $this->o;
         foreach( $objects as $object )
         {
@@ -630,8 +637,16 @@ class ServiceRuleContainer extends ObjRuleContainer
                 if( strpos($port_mapping_text, "-") !== FALSE )
                 {
                     $port_mapping_range = explode("-", $port_mapping_text);
-                    if( intval($port_mapping_range[0]) <= intval($value) && intval($port_mapping_range[1]) >= intval($value) )
-                        return TRUE;
+                    if( $rangeValue )
+                    {
+                        if( intval($port_mapping_range[0]) <= intval($port_value_range[0]) && intval($port_mapping_range[1]) >= intval($port_value_range[1]) )
+                            return TRUE;
+                    }
+                    else
+                    {
+                        if( intval($port_mapping_range[0]) <= intval($value) && intval($port_mapping_range[1]) >= intval($value) )
+                            return TRUE;
+                    }
                 }
                 elseif( strpos($port_mapping_text, ",") !== FALSE )
                 {
