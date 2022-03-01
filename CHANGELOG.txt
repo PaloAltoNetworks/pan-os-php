@@ -12,6 +12,7 @@ BUGFIX:
 * class SecurityProfilStore | bugfix to handle parentStore correctly
 * UTIL type=securityprofile | bugfix missing array variable declaration
 * UTIL type=rule | bugfix for 'filter=(service has.value.recursive PORT-RANGE)'
+* UTIL type=rule 'filter=(service has.value.recursive PORT-RANGE)' | bugfix if searched PORT-RANGE is partial available, and if multiple port-range are available in service-group
 
 GENERAL:
 * framework all Object Classes | improve code for usage of single method parentCentralStore()

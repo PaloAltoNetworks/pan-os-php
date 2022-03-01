@@ -604,6 +604,7 @@ class ServiceRuleContainer extends ObjRuleContainer
     function hasValue($value, $check_recursive = FALSE)
     {
         $rangeValue = false;
+        $port_value_range = array();
         if( strpos($value, "-") !== FALSE )
         {
             $rangeValue = true;
@@ -634,35 +635,47 @@ class ServiceRuleContainer extends ObjRuleContainer
                 $text_replace = array('tcp/', 'udp/');
                 $port_mapping_text = str_replace($text_replace, "", $port_mapping_text);
 
-                if( strpos($port_mapping_text, "-") !== FALSE )
+                if( strpos($port_mapping_text, ",") !== FALSE )
                 {
-                    $port_mapping_range = explode("-", $port_mapping_text);
-                    if( $rangeValue )
-                    {
-                        if( intval($port_mapping_range[0]) <= intval($port_value_range[0]) && intval($port_mapping_range[1]) >= intval($port_value_range[1]) )
-                            return TRUE;
-                    }
-                    else
-                    {
-                        if( intval($port_mapping_range[0]) <= intval($value) && intval($port_mapping_range[1]) >= intval($value) )
-                            return TRUE;
-                    }
-                }
-                elseif( strpos($port_mapping_text, ",") !== FALSE )
-                {
-                    $port_mapping_list = explode(",", $port_mapping_text);
+                $port_mapping_list = explode(",", $port_mapping_text);
                     foreach( $port_mapping_list as $list_object )
                     {
                         if( $value == $list_object )
                             return TRUE;
+                        elseif( strpos($list_object, "-") !== FALSE )
+                        {
+                            if( self::checkValueRange( $rangeValue, $port_value_range, $value, $list_object) )
+                                return TRUE;
+                        }
                     }
                 }
+                elseif( strpos($port_mapping_text, "-") !== FALSE )
+                {
+                    if( self::checkValueRange( $rangeValue, $port_value_range, $value, $port_mapping_text) )
+                        return TRUE;
+                }
+
                 elseif( $value == $port_mapping_text )
                     return TRUE;
             }
         }
 
         return FALSE;
+    }
+
+    public function checkValueRange( $rangeValue, $port_value_range, $value, $port_mapping_text)
+    {
+        $port_mapping_range = explode("-", $port_mapping_text);
+        if( $rangeValue )
+        {
+            if( intval($port_mapping_range[0]) <= intval($port_value_range[0]) && intval($port_mapping_range[1]) >= intval($port_value_range[1]) )
+                return TRUE;
+        }
+        else
+        {
+            if( intval($port_mapping_range[0]) <= intval($value) && intval($port_mapping_range[1]) >= intval($value) )
+                return TRUE;
+        }
     }
 }
 
