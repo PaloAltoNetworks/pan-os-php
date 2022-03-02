@@ -6,6 +6,7 @@ UTILS:
 * UTIL type=application | introduce new 'filters=( decoder has XYZ )' / (decoder is.set)
 * UTIL type=securityprofile securityprofiletype=custom-url-category | actions=exporttoexcel introduce display of member information
 * UTIL BETA ssh_connector.php | extend with argument setcommand-maxline=20
+* UTIL type=rule | introduce new 'filter=(service port.counter.greater.than 1000)' / service port.tcp.counter.greater.than 1000 / service port.udp.counter.greater.than
 
 BUGFIX:
 * UTIL type=diff | replace derr() with mwarning() - fix for argument outputformatset

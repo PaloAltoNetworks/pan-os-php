@@ -22,6 +22,11 @@ class ServiceDstPortMapping
 {
     public $tcpPortMap = array();
     public $udpPortMap = array();
+
+    public $tcpPortCounter = 0;
+    public $udpPortCounter = 0;
+    public $PortCounter = 0;
+
     /** @var Service[]|ServiceGroup[] */
     public $unresolved = array();
 
@@ -328,5 +333,33 @@ class ServiceDstPortMapping
             $returnText .= $this->udpMappingToText();
 
         return $returnText;
+    }
+
+
+    public function countPortmapping()
+    {
+        foreach( $this->tcpPortMap as &$map )
+        {
+            if( $map['start'] == $map['end'] )
+                $this->tcpPortCounter += 1;
+            else
+            {
+                $tmpcount = (int)$map['end'] - (int)$map['start'] +1;
+                $this->tcpPortCounter += $tmpcount;
+            }
+        }
+
+        foreach( $this->udpPortMap as &$map )
+        {
+            if( $map['start'] == $map['end'] )
+                $this->udpPortCounter += 1;
+            else
+            {
+                $tmpcount = (int)$map['end'] - (int)$map['start'] +1;
+                $this->udpPortCounter += $tmpcount;
+            }
+        }
+
+        $this->PortCounter = $this->tcpPortCounter + $this->udpPortCounter;
     }
 }

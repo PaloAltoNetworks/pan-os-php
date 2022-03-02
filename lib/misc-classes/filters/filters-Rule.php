@@ -1615,6 +1615,95 @@ RQuery::$defaultFilters['rule']['service']['operators']['has.value.only'] = arra
     )
 );
 
+RQuery::$defaultFilters['rule']['service']['operators']['port.counter.greater.than'] = array(
+    'Function' => function (RuleRQueryContext $context) {
+        $counter = $context->value;
+        $rule = $context->object;
+
+        if( $rule->isNatRule() )
+        {
+            mwarning("this filter does not yet support NAT Rules");
+            return FALSE;
+        }
+
+        $objects = $rule->services->o;
+
+        $dst_port_mapping = new ServiceDstPortMapping();
+        $dst_port_mapping->mergeWithArrayOfServiceObjects( $objects);
+
+        $dst_port_mapping->countPortmapping();
+
+        if( $dst_port_mapping->PortCounter > $counter )
+            return TRUE;
+
+        return FALSE;
+    },
+    'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP% 443)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
+RQuery::$defaultFilters['rule']['service']['operators']['port.tcp.counter.greater.than'] = array(
+    'Function' => function (RuleRQueryContext $context) {
+        $counter = $context->value;
+        $rule = $context->object;
+
+        if( $rule->isNatRule() )
+        {
+            mwarning("this filter does not yet support NAT Rules");
+            return FALSE;
+        }
+
+        $objects = $rule->services->o;
+
+        $dst_port_mapping = new ServiceDstPortMapping();
+        $dst_port_mapping->mergeWithArrayOfServiceObjects( $objects);
+
+        $dst_port_mapping->countPortmapping();
+
+        if( $dst_port_mapping->tcpPortCounter > $counter )
+            return TRUE;
+
+        return FALSE;
+    },
+    'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP% 443)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
+RQuery::$defaultFilters['rule']['service']['operators']['port.udp.counter.greater.than'] = array(
+    'Function' => function (RuleRQueryContext $context) {
+        $counter = $context->value;
+        $rule = $context->object;
+
+        if( $rule->isNatRule() )
+        {
+            mwarning("this filter does not yet support NAT Rules");
+            return FALSE;
+        }
+
+        $objects = $rule->services->o;
+
+        $dst_port_mapping = new ServiceDstPortMapping();
+        $dst_port_mapping->mergeWithArrayOfServiceObjects( $objects);
+
+        $dst_port_mapping->countPortmapping();
+
+        if( $dst_port_mapping->udpPortCounter > $counter )
+            return TRUE;
+
+        return FALSE;
+    },
+    'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP% 443)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 //                                              //
 //                SecurityProfile properties    //
 //                                              //
