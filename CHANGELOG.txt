@@ -16,6 +16,7 @@ BUGFIX:
 * UTIL type=rule | bugfix for 'filter=(service has.value.recursive PORT-RANGE)'
 * UTIL type=rule 'filter=(service has.value.recursive PORT-RANGE)' | bugfix if searched PORT-RANGE is partial available, and if multiple port-range are available in service-group
 * UTIL type=rule | bugfix for 'filter=(service has.value.recursive PORT-RANGE)' to match if two different nested groups has combined the filtered PORT-RANGE
+* UTIL type=rule | class ServiceDstPortMapping - bugfix to for 'filter=(service port.counter.greater.than 10)'
 
 GENERAL:
 * framework all Object Classes | improve code for usage of single method parentCentralStore()

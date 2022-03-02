@@ -124,14 +124,24 @@ class ServiceDstPortMapping
 
         $mapKeys = array_keys($newMapping);
         $mapCount = count($newMapping);
+        self::calculateMergerOverlapping($newMapping, $mapKeys, $mapCount );
+
+
+        $newMapping = &$this->udpPortMap;
+
+        $mapKeys = array_keys($newMapping);
+        $mapCount = count($newMapping);
+        self::calculateMergerOverlapping($newMapping, $mapKeys, $mapCount );
+    }
+
+    public function calculateMergerOverlapping(&$newMapping, $mapKeys, $mapCount )
+    {
         for( $i = 0; $i < $mapCount; $i++ )
         {
             $current = &$newMapping[$mapKeys[$i]];
-            //PH::print_stdout( "     - handling ".long2ip($current['start'])."-".long2ip($current['end']) );
             for( $j = $i + 1; $j < $mapCount; $j++ )
             {
                 $compare = &$newMapping[$mapKeys[$j]];
-                //PH::print_stdout( "       - vs ".long2ip($compare['start'])."-".long2ip($compare['end']) );
 
                 if( $compare['start'] > $current['end'] + 1 )
                     break;
@@ -140,35 +150,11 @@ class ServiceDstPortMapping
                     $current['end'] = $compare['end'];
 
                 unset($newMapping[$mapKeys[$j]]);
-
                 $i++;
             }
         }
-
-        $newMapping = &$this->udpPortMap;
-
-        $mapKeys = array_keys($newMapping);
-        $mapCount = count($newMapping);
-        for( $i = 0; $i < $mapCount; $i++ )
-        {
-            $current = &$newMapping[$mapKeys[$i]];
-            //PH::print_stdout( "     - handling ".long2ip($current['start'])."-".long2ip($current['end']) );
-            for( $j = $i + 1; $j < $mapCount; $j++ )
-            {
-                $compare = &$newMapping[$mapKeys[$j]];
-                //PH::print_stdout( "       - vs ".long2ip($compare['start'])."-".long2ip($compare['end']) );
-
-                if( $compare['start'] > $current['end'] + 1 )
-                    break;
-
-                $current['end'] = $compare['end'];
-
-                unset($newMapping[$mapKeys[$j]]);
-                $i++;
-            }
-        }
-
     }
+
 
     public function mergeWithMapping(ServiceDstPortMapping $otherMapping)
     {
@@ -211,7 +197,7 @@ class ServiceDstPortMapping
                 if( $map['start'] == $map['end'] )
                     $mapsText[] = "tcp/".(string)$map['start'];
                 else
-                    $mapsText[] = "tcp/".$map['start'] . '-' . $map['end'];
+                    $mapsText[] = "tcp/".(string)$map['start'] . '-' . (string)$map['end'];
             }
 
             $returnText = PH::list_to_string($mapsText, ",");
@@ -235,7 +221,7 @@ class ServiceDstPortMapping
                 if( $map['start'] == $map['end'] )
                     $mapsText[] = "udp/".(string)$map['start'];
                 else
-                    $mapsText[] = "udp/".$map['start'] . '-' . $map['end'];
+                    $mapsText[] = "udp/".(string)$map['start'] . '-' . (string)$map['end'];
             }
 
             $returnText = PH::list_to_string($mapsText, ",");
