@@ -8,6 +8,7 @@ UTILS:
 * UTIL BETA ssh_connector.php | extend with argument setcommand-maxline=20
 * UTIL type=rule | introduce new 'filter=(service port.counter.greater.than 1000)' / service port.tcp.counter.greater.than 1000 / service port.udp.counter.greater.than
 * UTIL type=service | introduce new actions=show-dstportmapping
+* UTIL type=address | improvement for actions=showip4mapping to display unresolved objects
 
 BUGFIX:
 * UTIL type=diff | replace derr() with mwarning() - fix for argument outputformatset
