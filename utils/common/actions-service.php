@@ -1376,6 +1376,35 @@ ServiceCallContext::$supportedActions[] = array(
 );
 
 ServiceCallContext::$supportedActions[] = array(
+    'name' => 'show-dstportmapping',
+    'MainFunction' => function (ServiceCallContext $context) {
+        $object = $context->object;
+
+        $tmp_array = array();
+        $tmp_array[] = $object;
+        $dst_port_mapping = new ServiceDstPortMapping();
+        $dst_port_mapping->mergeWithArrayOfServiceObjects( $tmp_array);
+
+        $dst_port_mapping->countPortmapping();
+
+        if( count( $dst_port_mapping->tcpPortMap ) > 0 )
+        {
+            $string = str_replace( "tcp/", "", $dst_port_mapping->tcpMappingToText());
+            PH::print_stdout( $context->padding."  TCP: ".$string );
+            PH::print_stdout( $context->padding."  TCP-counter: ".$dst_port_mapping->tcpPortCounter );
+        }
+
+        if( count( $dst_port_mapping->udpPortMap ) > 0 )
+        {
+            $string = str_replace( "udp/", "", $dst_port_mapping->udpMappingToText());
+            PH::print_stdout( $context->padding."  UDP: ".$string );
+            PH::print_stdout( $context->padding."  UDP-counter: ".$dst_port_mapping->udpPortCounter );
+        }
+
+    }
+);
+
+ServiceCallContext::$supportedActions[] = array(
     'name' => 'create-service',
     'MainFunction' => function (ServiceCallContext $context) {
     },

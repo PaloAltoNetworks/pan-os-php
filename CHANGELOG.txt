@@ -7,6 +7,7 @@ UTILS:
 * UTIL type=securityprofile securityprofiletype=custom-url-category | actions=exporttoexcel introduce display of member information
 * UTIL BETA ssh_connector.php | extend with argument setcommand-maxline=20
 * UTIL type=rule | introduce new 'filter=(service port.counter.greater.than 1000)' / service port.tcp.counter.greater.than 1000 / service port.udp.counter.greater.than
+* UTIL type=service | introduce new actions=show-dstportmapping
 
 BUGFIX:
 * UTIL type=diff | replace derr() with mwarning() - fix for argument outputformatset
