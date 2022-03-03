@@ -1,5 +1,13 @@
 CHANGELOG
 
+2.0.32
+UTILS:
+
+BUGFIX:
+
+GENERAL:
+
+
 2.0.31 (20220303)
 UTILS:
 * pan-os-php type=xml-issue | extend fix for custom-url-category
