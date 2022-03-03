@@ -1579,8 +1579,9 @@ AddressCallContext::$supportedActions[] = array(
         if( $object->isGroup() )
         {
             $resolvMap = $object->getIP4Mapping();
-            $string = "* {$resolvMap->count()} entries";
+            $string = "{$resolvMap->count()} entries";
             PH::ACTIONlog( $context, $string );
+
 
             foreach( $resolvMap->getMapArray() as &$resolvRecord )
             {
@@ -1588,11 +1589,19 @@ AddressCallContext::$supportedActions[] = array(
                 $string = str_pad(long2ip($resolvRecord['start']), 14) . " - " . long2ip($resolvRecord['end']);
                 PH::ACTIONlog( $context, $string );
             }
-            /*foreach($resolvMap['unresolved'] as &$resolvRecord)
+            $unresolvedCount = count($resolvMap->unresolved);
+            $string = "unresolved: {$unresolvedCount} entries";
+            if( $unresolvedCount > 0 )
             {
-                PH::print_stdout( "     * UNRESOLVED: {$resolvRecord->name()}" );
-            }*/
+                PH::print_stdout("" );
+                PH::ACTIONlog( $context, $string );
 
+                foreach($resolvMap->unresolved as &$resolvRecord)
+                {
+                    $string ="UNRESOLVED: objname: '{$resolvRecord->name()}' of type: ".$resolvRecord->type();
+                    PH::ACTIONlog( $context, $string );
+                }
+            }
         }
         else
         {

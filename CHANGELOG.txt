@@ -1,11 +1,14 @@
 CHANGELOG
 
-2.0.31
+2.0.31 (20220303)
 UTILS:
 * pan-os-php type=xml-issue | extend fix for custom-url-category
 * UTIL type=application | introduce new 'filters=( decoder has XYZ )' / (decoder is.set)
 * UTIL type=securityprofile securityprofiletype=custom-url-category | actions=exporttoexcel introduce display of member information
 * UTIL BETA ssh_connector.php | extend with argument setcommand-maxline=20
+* UTIL type=rule | introduce new 'filter=(service port.counter.greater.than 1000)' / service port.tcp.counter.greater.than 1000 / service port.udp.counter.greater.than
+* UTIL type=service | introduce new actions=show-dstportmapping
+* UTIL type=address | improvement for actions=showip4mapping to display unresolved objects
 
 BUGFIX:
 * UTIL type=diff | replace derr() with mwarning() - fix for argument outputformatset
@@ -13,6 +16,8 @@ BUGFIX:
 * UTIL type=securityprofile | bugfix missing array variable declaration
 * UTIL type=rule | bugfix for 'filter=(service has.value.recursive PORT-RANGE)'
 * UTIL type=rule 'filter=(service has.value.recursive PORT-RANGE)' | bugfix if searched PORT-RANGE is partial available, and if multiple port-range are available in service-group
+* UTIL type=rule | bugfix for 'filter=(service has.value.recursive PORT-RANGE)' to match if two different nested groups has combined the filtered PORT-RANGE
+* UTIL type=rule | class ServiceDstPortMapping - bugfix to for 'filter=(service port.counter.greater.than 10)'
 
 GENERAL:
 * framework all Object Classes | improve code for usage of single method parentCentralStore()
