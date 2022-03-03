@@ -1,6 +1,6 @@
 CHANGELOG
 
-2.0.31
+2.0.31 (20220303)
 UTILS:
 * pan-os-php type=xml-issue | extend fix for custom-url-category
 * UTIL type=application | introduce new 'filters=( decoder has XYZ )' / (decoder is.set)
