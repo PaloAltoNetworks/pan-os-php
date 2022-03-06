@@ -6,6 +6,7 @@ UTILS:
 * UTIL type=rule | extend actions=exportToExcel with service Counter
 
 BUGFIX:
+* UTIL type=rule | actions=exportToExcel - bugfix for service.count if application-default is set
 
 GENERAL:
 

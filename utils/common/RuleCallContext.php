@@ -698,6 +698,8 @@ class RuleCallContext extends CallContext
             elseif( $type === "udp" )
                 $calculatedCounter = $dst_port_mapping->udpPortCounter;
         }
+        elseif( $rule->services->isApplicationDefault() )
+            $calculatedCounter = "";
         else
         {
             $maxPortcount = 65536;
