@@ -1615,7 +1615,7 @@ RQuery::$defaultFilters['rule']['service']['operators']['has.value.only'] = arra
     )
 );
 
-RQuery::$defaultFilters['rule']['service']['operators']['port.counter.greater.than'] = array(
+RQuery::$defaultFilters['rule']['service.port.count']['operators']['>,<,=,!'] = array(
     'Function' => function (RuleRQueryContext $context) {
         $counter = $context->value;
         $rule = $context->object;
@@ -1626,14 +1626,11 @@ RQuery::$defaultFilters['rule']['service']['operators']['port.counter.greater.th
             return FALSE;
         }
 
-        $objects = $rule->services->o;
+        $calculatedCounter = $context->ServiceCount( $rule, "both");
 
-        $dst_port_mapping = new ServiceDstPortMapping();
-        $dst_port_mapping->mergeWithArrayOfServiceObjects( $objects);
-
-        $dst_port_mapping->countPortmapping();
-
-        if( $dst_port_mapping->PortCounter > $counter )
+        $operator = $context->operator;
+        $operator_string = $calculatedCounter." ".$operator." ".$counter;
+        if( eval("return $operator_string;" ) )
             return TRUE;
 
         return FALSE;
@@ -1644,8 +1641,7 @@ RQuery::$defaultFilters['rule']['service']['operators']['port.counter.greater.th
         'input' => 'input/panorama-8.0.xml'
     )
 );
-
-RQuery::$defaultFilters['rule']['service']['operators']['port.tcp.counter.greater.than'] = array(
+RQuery::$defaultFilters['rule']['service.port.tcp.count']['operators']['>,<,=,!'] = array(
     'Function' => function (RuleRQueryContext $context) {
         $counter = $context->value;
         $rule = $context->object;
@@ -1656,14 +1652,11 @@ RQuery::$defaultFilters['rule']['service']['operators']['port.tcp.counter.greate
             return FALSE;
         }
 
-        $objects = $rule->services->o;
+        $calculatedCounter = $context->ServiceCount( $rule, "tcp");
 
-        $dst_port_mapping = new ServiceDstPortMapping();
-        $dst_port_mapping->mergeWithArrayOfServiceObjects( $objects);
-
-        $dst_port_mapping->countPortmapping();
-
-        if( $dst_port_mapping->tcpPortCounter > $counter )
+        $operator = $context->operator;
+        $operator_string = $calculatedCounter." ".$operator." ".$counter;
+        if( eval("return $operator_string;" ) )
             return TRUE;
 
         return FALSE;
@@ -1674,8 +1667,7 @@ RQuery::$defaultFilters['rule']['service']['operators']['port.tcp.counter.greate
         'input' => 'input/panorama-8.0.xml'
     )
 );
-
-RQuery::$defaultFilters['rule']['service']['operators']['port.udp.counter.greater.than'] = array(
+RQuery::$defaultFilters['rule']['service.port.udp.count']['operators']['>,<,=,!'] = array(
     'Function' => function (RuleRQueryContext $context) {
         $counter = $context->value;
         $rule = $context->object;
@@ -1686,14 +1678,11 @@ RQuery::$defaultFilters['rule']['service']['operators']['port.udp.counter.greate
             return FALSE;
         }
 
-        $objects = $rule->services->o;
+        $calculatedCounter = $context->ServiceCount( $rule, "udp");
 
-        $dst_port_mapping = new ServiceDstPortMapping();
-        $dst_port_mapping->mergeWithArrayOfServiceObjects( $objects);
-
-        $dst_port_mapping->countPortmapping();
-
-        if( $dst_port_mapping->udpPortCounter > $counter )
+        $operator = $context->operator;
+        $operator_string = $calculatedCounter." ".$operator." ".$counter;
+        if( eval("return $operator_string;" ) )
             return TRUE;
 
         return FALSE;
@@ -1704,6 +1693,7 @@ RQuery::$defaultFilters['rule']['service']['operators']['port.udp.counter.greate
         'input' => 'input/panorama-8.0.xml'
     )
 );
+//
 //                                              //
 //                SecurityProfile properties    //
 //                                              //

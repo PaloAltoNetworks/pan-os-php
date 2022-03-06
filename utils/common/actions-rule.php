@@ -3128,6 +3128,10 @@ RuleCallContext::$supportedActions[] = array(
             {
                 PH::$JSON_TMP['sub']['object'][$rule->name()]['srv_resolved_sum'] = $context->ServiceResolveSummary( $rule );
             }
+            PH::$JSON_TMP['sub']['object'][$rule->name()]['srv_count'] = $context->ServiceCount( $rule, "both" );
+            PH::$JSON_TMP['sub']['object'][$rule->name()]['srv_count_tcp'] = $context->ServiceCount( $rule, "tcp" );
+            PH::$JSON_TMP['sub']['object'][$rule->name()]['srv_count_udp'] = $context->ServiceCount( $rule, "udp" );
+
             if( $addResolvedApplicationSummary )
             {
                 PH::$JSON_TMP['sub']['object'][$rule->name()]['app_resolved_sum'] = $context->ApplicationResolveSummary( $rule );
@@ -3542,6 +3546,9 @@ RuleCallContext::$supportedActions[] = array(
             'dst_resolved_sum' => 'dst_resolved_sum',
             'service' => 'service',
             'service_resolved_sum' => 'service_resolved_sum',
+            'service_count' => 'service_count',
+            'service_count_tcp' => 'service_count_tcp',
+            'service_count_udp' => 'service_count_udp',
             'application' => 'application',
             'application_resolved_sum' => 'application_resolved_sum',
             'action' => 'action',
