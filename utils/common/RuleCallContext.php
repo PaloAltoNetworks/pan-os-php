@@ -360,6 +360,24 @@ class RuleCallContext extends CallContext
             return self::enclose($port_mapping_text);
         }
 
+        if( $fieldName == 'service_count' )
+        {
+            $calculatedCounter = self::ServiceCount( $rule, "both" );
+            return self::enclose((string)$calculatedCounter);
+        }
+
+        if( $fieldName == 'service_count_tcp' )
+        {
+            $calculatedCounter = self::ServiceCount( $rule, "tcp" );
+            return self::enclose((string)$calculatedCounter);
+        }
+
+        if( $fieldName == 'service_count_udp' )
+        {
+            $calculatedCounter = self::ServiceCount( $rule, "udp" );
+            return self::enclose((string)$calculatedCounter);
+        }
+
         if( $fieldName == 'application' )
         {
             if( !$rule->isSecurityRule() )
@@ -661,6 +679,35 @@ class RuleCallContext extends CallContext
         }
 
         return $port_mapping_text;
+    }
+
+    public function ServiceCount( $rule, $type = "both" )
+    {
+        $objects = $rule->services->o;
+
+        if( count($objects  ) > 0 )
+        {
+            $dst_port_mapping = new ServiceDstPortMapping();
+            $dst_port_mapping->mergeWithArrayOfServiceObjects( $objects);
+
+            $dst_port_mapping->countPortmapping();
+            if( $type === "both" )
+                $calculatedCounter = $dst_port_mapping->PortCounter;
+            elseif( $type === "tcp" )
+                $calculatedCounter = $dst_port_mapping->tcpPortCounter;
+            elseif( $type === "udp" )
+                $calculatedCounter = $dst_port_mapping->udpPortCounter;
+        }
+        else
+        {
+            $maxPortcount = 65536;
+            if( $type === "both" )
+                $calculatedCounter = ($maxPortcount * 2);
+            elseif( $type === "tcp" || $type === "udp" )
+                $calculatedCounter = $maxPortcount;
+        }
+
+        return $calculatedCounter;
     }
 
     public function ApplicationResolveSummary( $rule, $returnString = false )

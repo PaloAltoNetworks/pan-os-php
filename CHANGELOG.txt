@@ -1,5 +1,15 @@
 CHANGELOG
 
+2.0.32
+UTILS:
+* UTIL type=rule | rework 'filter=(service port.counter)' is now 'filter=(service.port.count >,<,=,! COUNT)')
+* UTIL type=rule | extend actions=exportToExcel with service Counter
+
+BUGFIX:
+
+GENERAL:
+
+
 2.0.31 (20220303)
 UTILS:
 * pan-os-php type=xml-issue | extend fix for custom-url-category
