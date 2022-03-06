@@ -7,6 +7,7 @@ UTILS:
 
 BUGFIX:
 * UTIL type=rule | actions=exportToExcel - bugfix for service.count if application-default is set
+* UTIL type=rule | 'filter=(service.port.count = PORTCOUNT)' - bugfix to change in code to '=='
 
 GENERAL:
 
