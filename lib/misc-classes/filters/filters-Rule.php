@@ -1629,6 +1629,9 @@ RQuery::$defaultFilters['rule']['service.port.count']['operators']['>,<,=,!'] = 
         $calculatedCounter = $context->ServiceCount( $rule, "both");
 
         $operator = $context->operator;
+        if( $operator == '=' )
+            $operator = '==';
+
         $operator_string = $calculatedCounter." ".$operator." ".$counter;
         if( eval("return $operator_string;" ) )
             return TRUE;
@@ -1655,6 +1658,9 @@ RQuery::$defaultFilters['rule']['service.port.tcp.count']['operators']['>,<,=,!'
         $calculatedCounter = $context->ServiceCount( $rule, "tcp");
 
         $operator = $context->operator;
+        if( $operator == '=' )
+            $operator = '==';
+
         $operator_string = $calculatedCounter." ".$operator." ".$counter;
         if( eval("return $operator_string;" ) )
             return TRUE;
@@ -1681,6 +1687,9 @@ RQuery::$defaultFilters['rule']['service.port.udp.count']['operators']['>,<,=,!'
         $calculatedCounter = $context->ServiceCount( $rule, "udp");
 
         $operator = $context->operator;
+        if( $operator == '=' )
+            $operator = '==';
+
         $operator_string = $calculatedCounter." ".$operator." ".$counter;
         if( eval("return $operator_string;" ) )
             return TRUE;

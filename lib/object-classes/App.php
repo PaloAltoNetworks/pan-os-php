@@ -782,6 +782,17 @@ class App
                 $subarray[$this->name()][$protocol] = $text;
             }
         }
+
+        /*
+        //check if ip-protocol
+        if( $this->proto != null)
+            //$subarray[$this->name()]['ipprotocol'] = $this->proto;
+            $subarray[$this->name()]['tcp'] = $this->proto;
+
+        if($this->icmpcode != null)
+            //$subarray[$this->name()]['icmpcode'] = $this->icmpcode;
+            $subarray[$this->name()]['tcp'] = $this->icmpcode;
+        */
     }
 }
 

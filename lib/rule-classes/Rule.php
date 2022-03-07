@@ -1335,7 +1335,9 @@ class Rule
                             $timestamp_value = $node->textContent;
                             $filter_timestamp = strtotime($context->value);
                             $operator = $context->operator;
-
+                            if( $operator == '=' )
+                                $operator = '==';
+                            
                             $operator_string = $timestamp_value." ".$operator." ".$filter_timestamp;
                             if( eval("return $operator_string;" ) )
                             {

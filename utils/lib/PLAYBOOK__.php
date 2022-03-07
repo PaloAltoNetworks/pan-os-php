@@ -135,7 +135,8 @@ class PLAYBOOK__
         $in_exclude = array(
             'ironskillet-update',
             "maxmind-update",
-            "util_get-action-filter"
+            "util_get-action-filter",
+            "protocoll-number-download"
         );
 
         $out_exclude = array(
@@ -146,7 +147,8 @@ class PLAYBOOK__
             "bpa-generator",
             "ironskillet-update",
             "maxmind-update",
-            "util_get-action-filter"
+            "util_get-action-filter",
+            "protocoll-number-download"
         );
 
         if( isset($details['header-comment']) && !empty($details['header-comment']) )

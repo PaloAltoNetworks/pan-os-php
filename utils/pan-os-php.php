@@ -28,6 +28,8 @@ require_once dirname(__FILE__)."/../utils/lib/PLAYBOOK__.php";
 require_once dirname(__FILE__)."/../utils/lib/UTIL_GET_ACTION_FILTER.php";
 require_once dirname(__FILE__)."/../utils/lib/IRONSKILLET_UPDATE__.php";
 
+require_once(dirname(__FILE__)."/../utils/lib/PROTOCOLL_NUMBERS__.php");
+
 PH::processCliArgs();
 
 //Todo: API not supported scripts:
