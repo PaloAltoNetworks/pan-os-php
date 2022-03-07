@@ -338,7 +338,7 @@ class VirtualRouter
             {
                 if( !$this->attachedInterfaces->hasInterfaceNamed($nexthopIf->name()) )
                 {
-                    mwarning("route {$route->name()}/{$route->destination()} ignored because its attached to interface {$nexthopIf->name()} but this interface does not belong to this virtual router'");
+                    mwarning("route {$route->name()}/{$route->destination()} ignored because its attached to interface {$nexthopIf->name()} but this interface does not belong to this virtual router'", null, FALSE);
                     continue;
                 }
                 if( $contextVSYS->importedInterfaces->hasInterfaceNamed($nexthopIf->name()) )
@@ -346,7 +346,7 @@ class VirtualRouter
                     $findZone = $contextVSYS->zoneStore->findZoneMatchingInterfaceName($nexthopIf->name());
                     if( $findZone === null )
                     {
-                        mwarning("route {$route->name()}/{$route->destination()} ignored because its attached to interface {$nexthopIf->name()} but this interface is not attached to a Zone in vsys {$contextVSYS->name()}'");
+                        mwarning("route {$route->name()}/{$route->destination()} ignored because its attached to interface {$nexthopIf->name()} but this interface is not attached to a Zone in vsys {$contextVSYS->name()}'", null, FALSE);
                         continue;
                     }
                     else
@@ -363,14 +363,14 @@ class VirtualRouter
 
                     if( $findVsys === null )
                     {
-                        mwarning("route {$route->name()}/{$route->destination()} ignored because its attached to interface {$nexthopIf->name()} but this interface is attached to no VSYS");
+                        mwarning("route {$route->name()}/{$route->destination()} ignored because its attached to interface {$nexthopIf->name()} but this interface is attached to no VSYS", null, FALSE);
                         continue;
                     }
                     $externalZone = $contextVSYS->zoneStore->findZoneWithExternalVsys($findVsys);
 
                     if( $externalZone == null )
                     {
-                        mwarning("route {$route->name()}/{$route->destination()} ignored because its attached to interface {$nexthopIf->name()} but this interface is attached to wrong vsys '{$findVsys->name()}' and no external zone could be found");
+                        mwarning("route {$route->name()}/{$route->destination()} ignored because its attached to interface {$nexthopIf->name()} but this interface is attached to wrong vsys '{$findVsys->name()}' and no external zone could be found", null, FALSE);
                         continue;
                     }
 
@@ -408,7 +408,7 @@ class VirtualRouter
                                 $findZone = $contextVSYS->zoneStore->findZoneMatchingInterfaceName($if->name());
                                 if( $findZone === null )
                                 {
-                                    mwarning("route {$route->name()}/{$route->destination()} ignored because its attached to interface {$if->name()} but this interface is not attached to a Zone in vsys {$contextVSYS->name()}'");
+                                    mwarning("route {$route->name()}/{$route->destination()} ignored because its attached to interface {$if->name()} but this interface is not attached to a Zone in vsys {$contextVSYS->name()}'", null, FALSE);
                                     continue;
                                 }
 
@@ -428,7 +428,7 @@ class VirtualRouter
                 if( $findZone === null )
                 {
                     //Todo: check for some template config this is triggered
-                    mwarning("route {$route->name()}/{$route->destination()} ignored because no matching interface was found for nexthop={$nexthopIP}");
+                    mwarning("route {$route->name()}/{$route->destination()} ignored because no matching interface was found for nexthop={$nexthopIP}", null, FALSE);
                     continue;
                 }
 
@@ -442,13 +442,13 @@ class VirtualRouter
                 $nextVR = $route->nexthopVR();
                 if( $nextVR === null )
                 {
-                    mwarning("route {$route->name()}/{$route->destination()} ignored because nextVR is blank or invalid '", $route->xmlroot);
+                    mwarning("route {$route->name()}/{$route->destination()} ignored because nextVR is blank or invalid '", $route->xmlroot, null, FALSE);
                     continue;
                 }
                 $nextvrObject = $this->owner->findVirtualRouter($nextVR);
                 if( $nextvrObject === null )
                 {
-                    mwarning("route {$route->name()}/{$route->destination()} ignored because nextVR '{$nextVR}' was not found");
+                    mwarning("route {$route->name()}/{$route->destination()} ignored because nextVR '{$nextVR}' was not found", null, FALSE);
                     continue;
                 }
 
@@ -520,7 +520,7 @@ class VirtualRouter
             }
             else
             {
-                mwarning("route {$route->name()}/{$route->destination()} ignored because of unknown type '{$route->nexthopType()}'");
+                mwarning("route {$route->name()}/{$route->destination()} ignored because of unknown type '{$route->nexthopType()}'", null, FALSE);
                 continue;
             }
         }

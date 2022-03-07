@@ -35,6 +35,7 @@ BUGFIX:
 GENERAL:
 * framework all Object Classes | improve code for usage of single method parentCentralStore()
 
+
 2.0.30 (20220221)
 UTILS:
 * UTIL pan-os-php type=device | introduce actions=find-zone-from-IP:IPADDRESS (working on devicetype=virtualsystem / manageddevice)
