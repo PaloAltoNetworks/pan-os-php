@@ -193,6 +193,9 @@ class IP4Map
         if( $other->count() == 0 )
             return 0;
 
+        if( $this->count() == 0 )
+            return 0;
+
         $thisCopy = clone $this;
 
         $affectedRowsThis = $thisCopy->substract($other);
