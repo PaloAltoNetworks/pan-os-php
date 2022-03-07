@@ -168,6 +168,9 @@ class IP4Map
      */
     public function includesOtherMap(IP4Map $other)
     {
+        if( $other->count() == 0 )
+            return 0;
+        
         if( $this->count() == 0 )
             return 0;
 
