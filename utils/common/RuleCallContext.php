@@ -251,6 +251,17 @@ class RuleCallContext extends CallContext
             return self::enclose($rule->owner->owner->name(), $wrap);
         }
 
+        if( $fieldName == 'rulebase' )
+        {
+            $string = "";
+            if( $rule->isPreRule() )
+                $string = "pre";
+            elseif( $rule->isPostRule() )
+                $string = "post";
+
+            return self::enclose($string, $wrap);
+        }
+
         if( $fieldName == 'name' )
             return self::enclose($rule->name(), $wrap);
 
