@@ -3533,6 +3533,7 @@ RuleCallContext::$supportedActions[] = array(
             $addResolvedScheduleSummary = TRUE;
         $fields = array(
             'location' => 'location',
+            'rulebase' => 'rulebase',
             'type' => 'type',
             'name' => 'name',
             'tag' => 'tags',
