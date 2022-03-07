@@ -400,4 +400,16 @@ RQuery::$defaultFilters['schedule']['object']['operators']['is.expired'] = array
     },
     'arg' => false,
 );
+RQuery::$defaultFilters['schedule']['expire.in.days']['operators']['>,<,=,!'] = array(
+    'Function' => function (ScheduleRQueryContext $context) {
+        $value = $context->object;
+
+        $operator = $context->operator;
+        if( $operator == '=' )
+            $operator = '==';
+
+        return $value->isExpired( $context->value, $operator );
+    },
+    'arg' => true,
+);
 // </editor-fold>
