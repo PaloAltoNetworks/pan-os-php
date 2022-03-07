@@ -925,14 +925,16 @@ class PH
         "license",
         "config-download-all",
         "spiffy",
-        "config-commit"
+        "config-commit",
+        "protocoll-number-download"
         );
 
 
     public static $in_exclude = array(
         'ironskillet-update',
         "maxmind-update",
-        "util_get-action-filter"
+        "util_get-action-filter",
+        "protocoll-number-download"
     );
 
     public static $out_exclude = array(
@@ -950,7 +952,8 @@ class PH
         "license",
         "config-download-all",
         "spiffy",
-        'config-commit'
+        'config-commit',
+        "protocoll-number-download"
     );
 
     public static function callPANOSPHP( $type, $argv, $argc, $PHP_FILE )
@@ -1028,6 +1031,9 @@ class PH
 
         elseif( $type == "maxmind-update" )
             $util = new MAXMIND__( );
+
+        elseif( $type == "protocoll-number-download" )
+            $util = new PROTOCOLL_NUMBERS__( );
 
         elseif( $type == "software-remove" )
             $util = new SOFTWAREREMOVE($type, $argv, $argc,$PHP_FILE." type=".$type);

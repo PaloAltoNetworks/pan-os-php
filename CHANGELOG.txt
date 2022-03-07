@@ -4,6 +4,7 @@ CHANGELOG
 UTILS:
 * UTIL type=rule | rework 'filter=(service port.counter)' is now 'filter=(service.port.count >,<,=,! COUNT)')
 * UTIL type=rule | extend actions=exportToExcel with service Counter
+* UTIL type=protocoll-number-download | introduction for future usage
 
 BUGFIX:
 * UTIL type=rule | actions=exportToExcel - bugfix for service.count if application-default is set

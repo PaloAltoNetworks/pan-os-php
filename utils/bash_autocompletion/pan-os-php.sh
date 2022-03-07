@@ -89,6 +89,7 @@ __pan-os-php_scripts()
       "config-download-all"
       "spiffy"
       "config-commit"
+      "protocoll-number-download"
     )
 
 		checkArray=('in' 'out' 'actions' 'filter' 'location')
