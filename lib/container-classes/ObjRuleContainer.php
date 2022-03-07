@@ -441,7 +441,7 @@ class ObjRuleContainer
                 $currentObject = $currentObject->owner;
             }
         }
-        mwarning('no parent store found!');
+        //mwarning('no parent store found!');
     }
 
 
