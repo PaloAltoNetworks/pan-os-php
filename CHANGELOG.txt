@@ -6,6 +6,7 @@ UTILS:
 * UTIL type=rule | extend actions=exportToExcel with service Counter
 * UTIL type=protocoll-number-download | introduction for future usage
 * UTIL type=rule | actions=exportToExcel - introduce 'rulebase' column
+* UTIL type=rule | 'filter=(schedule expire.in.days XYZ) renamed to 'filter=(schedule.expire.in.days >,<,=,! XYZ)'
 
 BUGFIX:
 * UTIL type=rule | actions=exportToExcel - bugfix for service.count if application-default is set

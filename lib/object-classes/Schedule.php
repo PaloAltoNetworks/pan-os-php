@@ -342,7 +342,7 @@ class Schedule
         return $this->recurring_type;
     }
 
-    public function isExpired( $futuredate = 0 )
+    public function isExpired( $futuredate = 0, $operator = "<" )
     {
         if( $this->recurring_type != 'non-recurring' )
             return false;
@@ -358,7 +358,9 @@ class Schedule
             $d2 = DateTime::createFromFormat('Y/m/d@H:i', $member['end']);
             $timestamp = $d2->getTimestamp();
 
-            if( $timestamp < $d )
+            $operator_string = $timestamp." ".$operator." ".$d;
+
+            if( eval("return $operator_string;" ) )
                 $expired = true;
             else
                 $expired = false;
