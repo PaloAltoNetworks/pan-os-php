@@ -12,6 +12,7 @@ BUGFIX:
 * UTIL type=rule | actions=exportToExcel - bugfix for service.count if application-default is set
 * UTIL type=rule | 'filter=(service.port.count = PORTCOUNT)' - bugfix to change in code to '=='
 * class IP4MAP | bugfix for all filters where IP calculation is used e.g. UTIL type=rule 'filter=(src is.partially.or.fully.included.in.list LIST)'
+* class SecurityProfileGroupStrore | bugfix to search for available object name only in current Store
 
 GENERAL:
 

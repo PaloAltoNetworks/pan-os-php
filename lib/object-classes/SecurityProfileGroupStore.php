@@ -226,7 +226,7 @@ class SecurityProfileGroupStore extends ObjStore
             else
                 $newname = $base . $suffix . $inc;
 
-            if( $this->find($newname) === null )
+            if( $this->find($newname, null, FALSE) === null )
                 return $newname;
 
             if( $startCount == '' )
