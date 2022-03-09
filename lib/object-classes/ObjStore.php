@@ -367,11 +367,11 @@ class ObjStore
 
     protected function setParentCentralStore( $storeType )
     {
-        if( isset($owner->parentDeviceGroup) && $owner->parentDeviceGroup !== null )
-            $this->parentCentralStore = $owner->parentDeviceGroup->$storeType;
+        if( isset($this->owner->parentDeviceGroup) && $this->owner->parentDeviceGroup !== null )
+            $this->parentCentralStore = $this->owner->parentDeviceGroup->$storeType;
 
-        elseif( isset($owner->parentContainer) && $owner->parentContainer !== null )
-            $this->parentCentralStore = $owner->parentContainer->$storeType;
+        elseif( isset($this->owner->parentContainer) && $this->owner->parentContainer !== null )
+            $this->parentCentralStore = $this->owner->parentContainer->$storeType;
 
         else
             $this->findParentCentralStore( $storeType );
