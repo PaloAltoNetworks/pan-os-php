@@ -216,6 +216,7 @@ class SecurityProfileStore extends ObjStore
             return $foundObject;
         }*/
 
+        /*
         // when load a PANOS firewall attached to a Panorama
         if( $nested && isset($this->panoramaShared) )
         {
@@ -231,6 +232,7 @@ class SecurityProfileStore extends ObjStore
             if( $f !== null )
                 return $f;
         }
+        */
 
         if( $nested && $this->parentCentralStore !== null )
         {

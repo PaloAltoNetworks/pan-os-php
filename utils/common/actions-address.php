@@ -1464,8 +1464,15 @@ AddressCallContext::$supportedActions[] = array(
 
         if( $object->isGroup() )
         {
-            if( $object->equals($conflictObject) )
+            $localMap = $object->getIP4Mapping();
+            $targetMap = $conflictObject->getIP4Mapping();
+
+            if( $object->equals($conflictObject) && $localMap->equals($targetMap) )
+            //if( $object->equals($conflictObject) )
             {
+                //
+                //bug; deep matching ip4mapping needed
+
                 $string = "Removed because target has same content";
                 PH::ACTIONlog( $context, $string );
 
@@ -1486,9 +1493,6 @@ AddressCallContext::$supportedActions[] = array(
                     PH::ACTIONstatus( $context, "SKIPPED", $string );
                     return;
                 }
-
-                $localMap = $object->getIP4Mapping();
-                $targetMap = $conflictObject->getIP4Mapping();
 
                 if( !$localMap->equals($targetMap) )
                 {
