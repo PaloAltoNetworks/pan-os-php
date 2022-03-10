@@ -1541,6 +1541,7 @@ class PanoramaConf
             else
             {
                 $parentDG->_childDeviceGroups[$name] = $newDG;
+                /*
                 $newDG->parentDeviceGroup = $parentDG;
                 $newDG->addressStore->parentCentralStore = $parentDG->addressStore;
                 $newDG->serviceStore->parentCentralStore = $parentDG->serviceStore;
@@ -1548,8 +1549,23 @@ class PanoramaConf
                 $newDG->scheduleStore->parentCentralStore = $parentDG->scheduleStore;
                 $newDG->appStore->parentCentralStore = $parentDG->appStore;
                 $newDG->securityProfileGroupStore->parentCentralStore = $parentDG->securityProfileGroupStore;
+                */
                 //Todo: swaschkut 20210505 - check if other Stores must be added
                 //- appStore;scheduleStore/securityProfileGroupStore/all kind of SecurityProfile
+
+                $storeType = array(
+                    'addressStore', 'serviceStore', 'tagStore', 'scheduleStore', 'appStore',
+
+                    'securityProfileGroupStore',
+
+                    'URLProfileStore', 'AntiVirusProfileStore', 'FileBlockingProfileStore', 'DataFilteringProfileStore',
+                    'VulnerabilityProfileStore', 'AntiSpywareProfileStore', 'WildfireProfileStore',
+                    'DecryptionProfileStore', 'HipObjectsProfileStore'
+
+                );
+
+                foreach( $storeType as $type )
+                    $newDG->$type->parentCentralStore = $parentDG->$type;
             }
         }
 
