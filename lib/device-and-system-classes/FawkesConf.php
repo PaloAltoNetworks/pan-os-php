@@ -354,9 +354,13 @@ class FawkesConf
 
                         'securityProfileGroupStore',
 
-                        'URLProfileStore', 'AntiVirusProfileStore', 'FileBlockingProfileStore', 'DataFilteringProfileStore',
-                        'VulnerabilityProfileStore', 'AntiSpywareProfileStore', 'WildfireProfileStore',
-                        'DecryptionProfileStore', 'HipObjectsProfileStore'
+                        'URLProfileStore', 'VirusAndWildfireProfileStore', 'FileBlockingProfileStore',
+                        //'DataFilteringProfileStore',
+                        'VulnerabilityProfileStore', 'AntiSpywareProfileStore',
+                        //'WildfireProfileStore',
+                        'DecryptionProfileStore', 'HipObjectsProfileStore',
+
+                        'DNSSecurityProfileStore', 'SaasSecurityProfileStore'
 
                     );
 
@@ -889,10 +893,13 @@ class FawkesConf
 
                 'securityProfileGroupStore',
 
-                'URLProfileStore', 'AntiVirusProfileStore', 'FileBlockingProfileStore', 'DataFilteringProfileStore',
-                'VulnerabilityProfileStore', 'AntiSpywareProfileStore', 'WildfireProfileStore',
-                'DecryptionProfileStore', 'HipObjectsProfileStore'
+                'URLProfileStore', 'VirusAndWildfireProfileStore', 'FileBlockingProfileStore',
+                //'DataFilteringProfileStore',
+                'VulnerabilityProfileStore', 'AntiSpywareProfileStore',
+                //'WildfireProfileStore',
+                'DecryptionProfileStore', 'HipObjectsProfileStore',
 
+                'DNSSecurityProfileStore', 'SaasSecurityProfileStore'
             );
 
             foreach( $storeType as $type )
@@ -981,9 +988,13 @@ class FawkesConf
 
                 'securityProfileGroupStore',
 
-                'URLProfileStore', 'AntiVirusProfileStore', 'FileBlockingProfileStore', 'DataFilteringProfileStore',
-                'VulnerabilityProfileStore', 'AntiSpywareProfileStore', 'WildfireProfileStore',
-                'DecryptionProfileStore', 'HipObjectsProfileStore'
+                'URLProfileStore', 'VirusAndWildfireProfileStore', 'FileBlockingProfileStore',
+                //'DataFilteringProfileStore',
+                'VulnerabilityProfileStore', 'AntiSpywareProfileStore',
+                //'WildfireProfileStore',
+                'DecryptionProfileStore', 'HipObjectsProfileStore',
+
+                'DNSSecurityProfileStore', 'SaasSecurityProfileStore'
 
             );
 

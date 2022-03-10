@@ -329,9 +329,13 @@ class DeviceCloud
 
                     'securityProfileGroupStore',
 
-                    'URLProfileStore', 'AntiVirusProfileStore', 'FileBlockingProfileStore', 'DataFilteringProfileStore',
-                    'VulnerabilityProfileStore', 'AntiSpywareProfileStore', 'WildfireProfileStore',
-                    'DecryptionProfileStore', 'HipObjectsProfileStore'
+                    'URLProfileStore', 'VirusAndWildfireProfileStore', 'FileBlockingProfileStore',
+                    //'DataFilteringProfileStore',
+                    'VulnerabilityProfileStore', 'AntiSpywareProfileStore',
+                    //'WildfireProfileStore',
+                    'DecryptionProfileStore', 'HipObjectsProfileStore',
+
+                    'DNSSecurityProfileStore', 'SaasSecurityProfileStore'
 
                 );
 
