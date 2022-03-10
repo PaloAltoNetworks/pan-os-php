@@ -14,6 +14,7 @@ BUGFIX:
 * class IP4MAP | bugfix for all filters where IP calculation is used e.g. UTIL type=rule 'filter=(src is.partially.or.fully.included.in.list LIST)'
 * class SecurityProfileGroupStrore | bugfix to search for available object name only in current Store
 * UTIL type=address actions=move:XYZ,removeifmatch | bugfix if address-group has same nested address-group member, but this nested group has different members
+* UTIL type=service actions=move:XYZ,removeifmatch | bugfix for nested servicegroups with different members
 
 GENERAL:
 

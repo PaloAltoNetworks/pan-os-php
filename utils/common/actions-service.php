@@ -581,7 +581,10 @@ ServiceCallContext::$supportedActions[] = array(
 
         if( $object->isGroup() )
         {
-            if( $object->equals($conflictObject) )
+            $localMap = $object->dstPortMapping();
+            $targetMap = $conflictObject->dstPortMapping();
+
+            if( $object->equals($conflictObject) && $localMap->equals($targetMap) )
             {
                 $string = "Removed because target has same content";
                 PH::ACTIONlog( $context, $string );
@@ -597,9 +600,6 @@ ServiceCallContext::$supportedActions[] = array(
                     PH::ACTIONstatus( $context, "SKIPPED", $string );
                     return;
                 }
-
-                $localMap = $object->dstPortMapping();
-                $targetMap = $conflictObject->dstPortMapping();
 
                 if( !$localMap->equals($targetMap) )
                 {
