@@ -17,6 +17,7 @@ BUGFIX:
 * UTIL type=service actions=move:XYZ,removeifmatch | bugfix for nested servicegroups with different members
 * class DeviceCloud/FawkesConf/PanoramaConfg - bugfix to calculate parentCentralStore
 * class Devicecloud / FawkesConfig | bugfix to handle securityProfileStore correctly
+* class SecurityProfileGroup | bugfix to get correct reference calculation
 
 GENERAL:
 

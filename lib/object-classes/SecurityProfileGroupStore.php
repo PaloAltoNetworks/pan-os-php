@@ -57,9 +57,6 @@ class SecurityProfileGroupStore extends ObjStore
         $this->xmlroot = $this->securityProfileGroupRoot;
 
 
-        $duplicatesRemoval = array();
-        $nameIndex = array();
-
         foreach( $this->securityProfileGroupRoot->childNodes as $node )
         {
             if( $node->nodeType != XML_ELEMENT_NODE )
@@ -69,7 +66,7 @@ class SecurityProfileGroupStore extends ObjStore
             $tmp_secgroup = new SecurityProfileGroup( $name, $this, true );
 
             $this->o[] = $tmp_secgroup;
-            $this->nameIndex[$name] = TRUE;
+            $this->nameIndex[$name] = $tmp_secgroup;
 
             $tmp_secgroup->load_from_domxml( $node, $this);
 
@@ -87,24 +84,6 @@ class SecurityProfileGroupStore extends ObjStore
         return $this->name;
     }
 
-    /**
-     * @param $name
-     * @param null $ref
-     * @param bool $nested
-     * @return null|SecurityProfileGroup
-     */
-    public function find($name, $ref = null, $nested = TRUE)
-    {
-        $f = $this->findByName($name, $ref, $nested);
-
-        if( $f !== null )
-            return $f;
-
-        if( $nested && $this->parentCentralStore !== null )
-            return $this->parentCentralStore->find($name, $ref, $nested);
-
-        return null;
-    }
 
     public function findByHash( $hash)
     {
@@ -146,7 +125,7 @@ class SecurityProfileGroupStore extends ObjStore
         $tmp_secProfGroup = new SecurityProfileGroup( $name, $this, true );
 
         $this->o[] = $tmp_secProfGroup;
-        $this->nameIndex[$name] = TRUE;
+        $this->nameIndex[$name] = $tmp_secProfGroup;
 
         $string = "<entry name=\"".$name."\">\n";
 
