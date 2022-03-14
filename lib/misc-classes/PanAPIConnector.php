@@ -1209,7 +1209,7 @@ class PanAPIConnector
         $httpReplyContent = curl_exec($this->_curl_handle);
 
         if( $httpReplyContent === FALSE )
-            derr( 'Could not retrieve URL: ' . $finalUrl . ' because of the following error: ' . curl_error($this->_curl_handle) );
+            derr( 'Could not retrieve URL: ' . $finalUrl . ' because of the following error: ' . curl_error($this->_curl_handle), null, FALSE );
 
 
         $curlHttpStatusCode = curl_getinfo($this->_curl_handle, CURLINFO_HTTP_CODE);
