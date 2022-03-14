@@ -273,7 +273,7 @@ SecurityProfileGroupCallContext::$supportedActions[] = array(
             $addUsedInLocation = TRUE;
 
 
-        $headers = '<th>location</th><th>name</th><th>Antivirus</th><th>Anti-Spyware</th><th>Vulnerability</th><th>URL Filtering</th><th>File Blocking</th><th>Data Filtering</th><th>WildFire Analysis</th>';
+        $headers = '<th>location</th><th>name</th><th>used in location</th><th>used counter</th><th>Antivirus</th><th>Anti-Spyware</th><th>Vulnerability</th><th>URL Filtering</th><th>File Blocking</th><th>Data Filtering</th><th>WildFire Analysis</th>';
 
         if( $addWhereUsed )
             $headers .= '<th>where used</th>';
@@ -296,6 +296,29 @@ SecurityProfileGroupCallContext::$supportedActions[] = array(
                 $lines .= $encloseFunction(PH::getLocationString($object));
 
                 $lines .= $encloseFunction($object->name());
+
+                //get all references
+                //get reference location and count
+                $counter_array = array();
+                $refLoc = $object->getReferencesLocation($counter_array);
+                if( count( $refLoc ) == 0 )
+                    $refLoc = "---";
+                else
+                {
+                    $tmparray = array();
+                    foreach( $refLoc as $key => $loc )
+                        $tmparray[$key] = $loc." ".$counter_array[$key];
+                    $refLoc = $tmparray;
+
+                }
+                $lines .= $encloseFunction($refLoc);
+
+                $refCount = $object->countReferences();
+                if( $refCount == 0 )
+                    $refCount = "---";
+                else
+                    $refCount = (string)$refCount ;
+                $lines .= $encloseFunction( $refCount );
 
                 //private $secprof_array = array('virus', 'spyware', 'vulnerability', 'file-blocking', 'wildfire-analysis', 'url-filtering', 'data-filtering');
 

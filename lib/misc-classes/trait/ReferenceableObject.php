@@ -228,15 +228,36 @@ trait ReferenceableObject
         return $references;
     }
 
-    public function getReferencesLocation()
+    public function getReferencesLocation( &$counter_array = array() )
     {
         $location_array = array();
         foreach( $this->refrules as $cur )
         {
-            if( isset($cur->owner->owner->owner) && $cur->owner->owner->owner !== null && $cur->owner->owner->owner->name() !== "")
-                $location_array[$cur->owner->owner->owner->name()] = $cur->owner->owner->owner->name();
+            #print get_class( $cur)."\n";
+            //Firewall
+            if( isset($cur->owner->owner) && $cur->owner->owner !== null && $cur->owner->owner->name() !== "")
+            {
+                #print $cur->owner->owner->name()."\n";
+                $location_array[$cur->owner->owner->name()] = $cur->owner->owner->name();
+                if( isset($counter_array[$cur->owner->owner->name()]))
+                    $counter_array[$cur->owner->owner->name()] += 1;
+                else
+                    $counter_array[$cur->owner->owner->name()] = 1;
+            }
 
-            if( get_class( $cur ) == "AddressGroup" ||get_class( $cur ) == "ServiceGroup"  )
+            //Panorama
+            if( isset($cur->owner->owner->owner) && $cur->owner->owner->owner !== null && $cur->owner->owner->owner->name() !== "")
+            {
+                #print $cur->owner->owner->owner->name()."\n";
+                $location_array[$cur->owner->owner->owner->name()] = $cur->owner->owner->owner->name();
+                if( isset($counter_array[$cur->owner->owner->name()]))
+                    $counter_array[$cur->owner->owner->name()] += 1;
+                else
+                    $counter_array[$cur->owner->owner->name()] = 1;
+            }
+
+
+            if( get_class( $cur ) == "AddressGroup" || get_class( $cur ) == "ServiceGroup"  )
             {
                 $recursive_loc_array = $cur->getReferencesLocation( );
                 $location_array = array_merge( $location_array, $recursive_loc_array );
