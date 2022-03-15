@@ -90,6 +90,16 @@ function addNewRow()
                         location
                         <input type="text" id="location${Idx}" name="location${Idx}" value="" />
                         </li>
+                        <li>
+                        allowmergingwithupperlevel
+                        <input type="checkbox" id="allowmergingwithupperlevel${Idx}" name="allowmergingwithupperlevel${Idx}"
+                        >
+                        </li>
+                        <li>
+                        shadow-ignoreinvalidaddressobjects
+                        <input type="checkbox" id="shadowignoreinvalidaddressobjects${Idx}" name="shadowignoreinvalidaddressobjects${Idx}" checked
+                        >
+                        </li>
                     </td>
                     <td>
                         <button id="add-action${Idx}-${ActionIdx}" class="btn btn-md btn-primary add-action${Idx}-${ActionIdx}" type="button">new Action</button>
@@ -246,6 +256,15 @@ function addNewRow()
         updateScriptsyntax( Idx );
     });
 
+    $("#allowmergingwithupperlevel" + Idx ).change( function()
+    {
+        updateScriptsyntax( Idx );
+    });
+
+    $("#shadowignoreinvalidaddressobjects" + Idx ).change( function()
+    {
+        updateScriptsyntax( Idx );
+    });
 
     $('#add-action' + Idx + '-' + ActionIdx).on('click', function() {
         console.log("TEST1");
@@ -379,6 +398,10 @@ function updateScriptsyntax( Idx ) {
         message += "'";
     }
 
+    var allowmergingcheckedValue = $( "#allowmergingwithupperlevel" + Idx ).is(':checked');
+    if( allowmergingcheckedValue )
+        message += " 'allowmergingwithupperlevel'";
+
     var e = document.getElementById("configSelect");
     var dropdownselection = e.options[e.selectedIndex].text;
     console.log( "DropDown: "+dropdownselection );
@@ -410,6 +433,9 @@ function updateScriptsyntax( Idx ) {
         message2 += "&location=";
         message2 += locationValue;
     }
+
+    if( allowmergingcheckedValue )
+        message2 += "&allowmergingwithupperlevel";
 
     if( dropdownselection !== "---" )
     {
@@ -660,6 +686,31 @@ function ActionSet( Idx, ActionIdx, ACTION, ACTIONinput )
     }
 }
 
+function shadowjsonSet( Idx )
+{
+    $( "#shadowjson" + Idx ).attr("checked", true);
+    $( "#shadowjson" + Idx ).change();
+}
+
+function locationSet( Idx, locationValue )
+{
+    $( "#location" + Idx ).val( locationValue );
+    $( "#location" + Idx ).change();
+}
+
+function allowmergingwithupperlevelSet( Idx )
+{
+    $( "#allowmergingwithupperlevel" + Idx ).attr("checked", true);
+    $( "#allowmergingwithupperlevel" + Idx ).change();
+}
+
+function shadowignoreinvalidaddressobjects( Idx )
+{
+    $( "#shadowignoreinvalidaddressobjects" + Idx ).attr("checked", true);
+    $( "#shadowignoreinvalidaddressobjects" + Idx ).change();
+}
+
+
 function FILTERSet( Idx, FilterIdx, FILTER, FILTERoperator, FILTERandor, FILTERinput )
 {
     $("#filter" + Idx+"-"+FilterIdx ).find('option[value="'+ FILTER +'"]').attr('selected','selected');
@@ -802,6 +853,26 @@ function createTableFromJSON( textValue )
             }
 
         }
+
+        //missing part; load shadow-json / allowmergingwithupperlevel / location aso.
+        if( "location" in command[i] )
+        {
+            var locationValue = command[i]['location'];
+            locationSet(Idx, locationValue)
+        }
+        if( "shadow-json" in command[i] )
+        {
+            shadowjsonSet(Idx);
+        }
+        if( "allowmergingwithupperlevel" in command[i] )
+        {
+            allowmergingwithupperlevelSet(Idx)
+        }
+        if( "shadowignoreinvalidaddressobjects" in command[i] )
+        {
+            shadowignoreinvalidaddressobjects(Idx)
+        }
+
     }
 }
 
