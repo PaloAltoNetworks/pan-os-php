@@ -277,7 +277,7 @@ class NatRule extends Rule
                         if( $subtype !== FALSE )
                         {
                             if( DH::firstChildElement($subtype) === FALSE )
-                                derr("Cannot understand dynmaic NAT for rule '" . $this->name . "'\n");
+                                derr("Cannot understand dynamic NAT for rule '" . $this->name . "'\n");
 
                             foreach( $subtype->childNodes as $node )
                             {
@@ -308,7 +308,7 @@ class NatRule extends Rule
                         }
                         else
                         {
-                            mwarning("Unknown dynamic SNAT type on rule '" . $this->name . " don't mess too much with this rule or face unpredictable results");
+                            mwarning("Unknown dynamic SNAT type on rule '" . $this->name . " don't mess too much with this rule or face unpredictable results", null, FALSE);
                         }
                     }
 

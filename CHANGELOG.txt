@@ -7,6 +7,7 @@ UTILS:
 * UTIL type=protocoll-number-download | introduction for future usage
 * UTIL type=rule | actions=exportToExcel - introduce 'rulebase' column
 * UTIL type=rule | 'filter=(schedule expire.in.days XYZ) renamed to 'filter=(schedule.expire.in.days >,<,=,! XYZ)'
+* UTIL type=securityProfilegroup actions=exporttoexcel | introduce information about used location and counter
 
 BUGFIX:
 * UTIL type=rule | actions=exportToExcel - bugfix for service.count if application-default is set
@@ -17,6 +18,8 @@ BUGFIX:
 * UTIL type=service actions=move:XYZ,removeifmatch | bugfix for nested servicegroups with different members
 * class DeviceCloud/FawkesConf/PanoramaConfg - bugfix to calculate parentCentralStore
 * class Devicecloud / FawkesConfig | bugfix to handle securityProfileStore correctly
+* class SecurityProfileGroup | bugfix to get correct reference calculation
+* UTIL type=device actions=display-shadowrule | bugfix for nat rules
 
 GENERAL:
 

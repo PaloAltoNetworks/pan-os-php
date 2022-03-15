@@ -55,9 +55,10 @@ else
 
 
 $nodeList = $xmldoc->getElementsByTagName($qualifiedNodeName);
+$nodeArray = iterator_to_array($nodeList);
 
 $templateEntryArray = array();
-foreach( $nodeList as $item )
+foreach( $nodeArray as $item )
 {
     $text = DH::elementToPanXPath( $item );
     $replace_template = "/config/devices/entry[@name='localhost.localdomain']/template/";

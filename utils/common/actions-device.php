@@ -794,8 +794,8 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
         $object = $context->object;
         $classtype = get_class($object);
 
-        #if( $context->object->version < 91 )
-        #    derr( "PAN-OS >= 9.1 is needed for display-shadowrule", null, false );
+        if( $context->object->version < 91 )
+            derr( "PAN-OS >= 9.1 is needed for display-shadowrule", null, false );
 
         $shadowArray = array();
         if( $classtype == "VirtualSystem" )
@@ -846,10 +846,16 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
             {
                 if( $ruletype == 'security'  || $ruletype == "security-rule" )
                     $ruletype = "securityRules";
+                elseif( $ruletype == 'nat'  || $ruletype == "nat-rule" )
+                    $ruletype = "natRules";
                 elseif( $ruletype == 'decryption' || $ruletype == "ssl-rule" )
                     $ruletype = "decryptionRules";
                 else
+                {
+                    mwarning( "bugfix needed for type: ".$ruletype, null, false );
                     $ruletype = "securityRules";
+                }
+
 
                 if( $classtype == "ManagedDevice" )
                 {
@@ -912,7 +918,9 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
                                 }
                             }
                         }
-                        $replace = "Rule '".$rule->name()."'";
+
+                        if( $rule !== null )
+                            $replace = "Rule '".$rule->name()."'";
                     }
                     elseif( $classtype == "DeviceGroup" )
                     {
@@ -940,10 +948,11 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
                         }
                     }
 
+                    PH::print_stdout("");
                     if( $rule !== null )
-                        PH::print_stdout( "        * RULE: '" . $rule->name(). "' owner: '".$ownerDG."' shadows rule: " );
+                        PH::print_stdout( "        * RULE of type ".$ruletype.": '" . $rule->name(). "' owner: '".$ownerDG."' shadows rule: " );
                     else
-                        PH::print_stdout( "        * RULE: '" . $key."'" );
+                        PH::print_stdout( "        * RULE of type ".$ruletype.": '" . $key."'" );
 
                     foreach( $item as $shadow )
                     {
