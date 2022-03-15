@@ -24,6 +24,8 @@ class PLAYBOOK__
     public $debugAPI = false;
     public $outputformatset = false;
 
+    public $mainLocation = null;
+
     function __construct( $argv, $argc )
     {
 
@@ -126,6 +128,11 @@ class PLAYBOOK__
             $command_array = $details['command'];
         }
 
+        if( isset(PH::$args['location']) )
+        {
+            $this->mainLocation = PH::$args['location'];
+        }
+
 ###############################################################################
 //EXECUTION
 ###############################################################################
@@ -179,6 +186,11 @@ class PLAYBOOK__
             {
                 $arguments[] = "location=".$command['location'];
                 unset( $command['location'] );
+            }
+            else
+            {
+                if( $this->mainLocation !== null )
+                    $arguments[] = "location=".$this->mainLocation;
             }
 
             foreach( $command as $arg )

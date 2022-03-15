@@ -9,6 +9,7 @@ UTILS:
 * UTIL type=rule | 'filter=(schedule expire.in.days XYZ) renamed to 'filter=(schedule.expire.in.days >,<,=,! XYZ)'
 * UTIL type=securityProfilegroup actions=exporttoexcel | introduce information about used location and counter
 * UTIL UI - introduce additional arguments for playbook JSON file
+* UTIL type=playbook | introduce argument location= handling
 
 BUGFIX:
 * UTIL type=rule | actions=exportToExcel - bugfix for service.count if application-default is set
