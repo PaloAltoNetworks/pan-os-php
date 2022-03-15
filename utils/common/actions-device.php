@@ -851,7 +851,11 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
                 elseif( $ruletype == 'decryption' || $ruletype == "ssl-rule" )
                     $ruletype = "decryptionRules";
                 else
+                {
+                    mwarning( "bugfix needed for type: ".$ruletype, null, false );
                     $ruletype = "securityRules";
+                }
+
 
                 if( $classtype == "ManagedDevice" )
                 {
@@ -944,10 +948,11 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
                         }
                     }
 
+                    PH::print_stdout("");
                     if( $rule !== null )
-                        PH::print_stdout( "        * RULE: '" . $rule->name(). "' owner: '".$ownerDG."' shadows rule: " );
+                        PH::print_stdout( "        * RULE of type ".$ruletype.": '" . $rule->name(). "' owner: '".$ownerDG."' shadows rule: " );
                     else
-                        PH::print_stdout( "        * RULE: '" . $key."'" );
+                        PH::print_stdout( "        * RULE of type ".$ruletype.": '" . $key."'" );
 
                     foreach( $item as $shadow )
                     {
