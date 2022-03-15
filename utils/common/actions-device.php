@@ -794,8 +794,8 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
         $object = $context->object;
         $classtype = get_class($object);
 
-        #if( $context->object->version < 91 )
-        #    derr( "PAN-OS >= 9.1 is needed for display-shadowrule", null, false );
+        if( $context->object->version < 91 )
+            derr( "PAN-OS >= 9.1 is needed for display-shadowrule", null, false );
 
         $shadowArray = array();
         if( $classtype == "VirtualSystem" )
@@ -846,6 +846,8 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
             {
                 if( $ruletype == 'security'  || $ruletype == "security-rule" )
                     $ruletype = "securityRules";
+                elseif( $ruletype == 'nat'  || $ruletype == "nat-rule" )
+                    $ruletype = "natRules";
                 elseif( $ruletype == 'decryption' || $ruletype == "ssl-rule" )
                     $ruletype = "decryptionRules";
                 else
@@ -912,7 +914,9 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
                                 }
                             }
                         }
-                        $replace = "Rule '".$rule->name()."'";
+
+                        if( $rule !== null )
+                            $replace = "Rule '".$rule->name()."'";
                     }
                     elseif( $classtype == "DeviceGroup" )
                     {
