@@ -3590,7 +3590,8 @@ RuleCallContext::$supportedActions[] = array(
                 {
                     if( (($fieldName == 'src_resolved_sum' || $fieldName == 'dst_resolved_sum' ||
                                 $fieldName == 'dnat_host_resolved_sum' || $fieldName == 'snat_address_resolved_sum') && !$addResolvedAddressSummary) ||
-                        (($fieldName == 'service_resolved_sum') && !$addResolvedServiceSummary) ||
+                        (($fieldName == 'service_resolved_sum' ||
+                                $fieldName == 'service_count' || $fieldName == 'service_count_tcp' || $fieldName == 'service_count_udp') && !$addResolvedServiceSummary) ||
                         (($fieldName == 'application_resolved_sum') && !$addResolvedApplicationSummary) ||
                         (($fieldName == 'schedule_resolved_sum') && !$addResolvedScheduleSummary)
                     )
@@ -3610,7 +3611,8 @@ RuleCallContext::$supportedActions[] = array(
         {
             if( (($fieldName == 'src_resolved_sum' || $fieldName == 'dst_resolved_sum' ||
                         $fieldName == 'dnat_host_resolved_sum' || $fieldName == 'snat_address_resolved_sum') && !$addResolvedAddressSummary) ||
-                (($fieldName == 'service_resolved_sum') && !$addResolvedServiceSummary) ||
+                (($fieldName == 'service_resolved_sum' ||
+                        $fieldName == 'service_count' || $fieldName == 'service_count_tcp' || $fieldName == 'service_count_udp') && !$addResolvedServiceSummary) ||
                 (($fieldName == 'application_resolved_sum') && !$addResolvedApplicationSummary) ||
                 (($fieldName == 'schedule_resolved_sum') && !$addResolvedScheduleSummary)
             )
