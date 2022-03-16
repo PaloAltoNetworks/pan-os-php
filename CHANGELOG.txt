@@ -24,6 +24,7 @@ BUGFIX:
 * class SecurityProfileGroup | bugfix to get correct reference calculation
 * UTIL type=device actions=display-shadowrule | bugfix for nat rules
 * UTIL type=rule actions=exporttoExcel:FILE.html,ResolveScheduleSummary | bugfix to  display all type of schedule
+* class Rule.php methode zonecalculation - bugfix for NAT to
 
 GENERAL:
 
