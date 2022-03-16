@@ -22,7 +22,7 @@ BUGFIX:
 * class Devicecloud / FawkesConfig | bugfix to handle securityProfileStore correctly
 * class SecurityProfileGroup | bugfix to get correct reference calculation
 * UTIL type=device actions=display-shadowrule | bugfix for nat rules
-* UTIL type=rule actions=exporttoexcel bugfix for resolveschedulesummary
+* UTIL type=rule actions=exporttoExcel:FILE.html,ResolveScheduleSummary | bugfix to  display all type of schedule
 
 GENERAL:
 

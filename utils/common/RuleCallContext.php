@@ -813,13 +813,36 @@ class RuleCallContext extends CallContext
             $expired = false;
             $timestampString = array();
             $recurring = $schedule->getRecurring();
-            foreach( $recurring['non-recurring'] as $member )
+            if( isset($recurring['non-recurring']) )
             {
-                #$d2 = DateTime::createFromFormat('Y/m/d@H:i', $member['end']);
-                #$timestamp = $d2->getTimestamp();
-                $timestampString[] = $member['end'];
+                foreach( $recurring['non-recurring'] as $member )
+                {
+                    #$d2 = DateTime::createFromFormat('Y/m/d@H:i', $member['end']);
+                    #$timestamp = $d2->getTimestamp();
+
+                    #foreach( $member as $startEnd )
+                    #    $timestampString[] = $startEnd['start'].'-'.$startEnd['end'];
+                    $timestampString[] = $member['start'].'-'.$member['end'];
+                }
+                $timestampString = 'non-recurring | '.implode( ",", $timestampString );
             }
-            $timestampString = implode( ",", $timestampString );
+            elseif( isset($recurring['weekly']) )
+            {
+                foreach( $recurring['weekly'] as $key => $member )
+                {
+                    #$d2 = DateTime::createFromFormat('Y/m/d@H:i', $member['end']);
+                    #$timestamp = $d2->getTimestamp();
+                    foreach( $member as $startEnd )
+                        $timestampString[] = $key."=>".$startEnd['start'].'-'.$startEnd['end'];
+                }
+                $timestampString = 'weekly | '.implode( ",", $timestampString );
+            }
+            elseif( isset($recurring['daily']) )
+            {
+                $timestampString = 'daily | '.$recurring['daily']['start'].'-'.$recurring['daily']['end'];
+            }
+
+
             return $timestampString;
         }
 
