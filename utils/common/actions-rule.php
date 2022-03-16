@@ -3611,7 +3611,8 @@ RuleCallContext::$supportedActions[] = array(
             if( (($fieldName == 'src_resolved_sum' || $fieldName == 'dst_resolved_sum' ||
                         $fieldName == 'dnat_host_resolved_sum' || $fieldName == 'snat_address_resolved_sum') && !$addResolvedAddressSummary) ||
                 (($fieldName == 'service_resolved_sum') && !$addResolvedServiceSummary) ||
-                (($fieldName == 'application_resolved_sum') && !$addResolvedApplicationSummary)
+                (($fieldName == 'application_resolved_sum') && !$addResolvedApplicationSummary) ||
+                (($fieldName == 'schedule_resolved_sum') && !$addResolvedScheduleSummary)
             )
                 continue;
             $tableHeaders .= "<th>{$fieldName}</th>\n";
