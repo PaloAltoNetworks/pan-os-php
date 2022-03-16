@@ -1080,7 +1080,9 @@ class Rule
                     foreach( $zoneStore->getAll() as $zone )
                         $allZones[] = $zone->name();
 
-                    self::zoneCalculationNatClone( $allZones, $zoneStore, $padding, $isAPI );
+                    //swaschkut 20220316 - for migration parser
+                    $this->setDisabled( TRUE );
+                    //self::zoneCalculationNatClone( $allZones, $zoneStore, $padding, $isAPI );
                 }
                 else
                     PH::print_stdout( " *** IGNORED because value is 'ANY' ***" );

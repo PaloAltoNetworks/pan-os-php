@@ -10,6 +10,7 @@ UTILS:
 * UTIL type=securityProfilegroup actions=exporttoexcel | introduce information about used location and counter
 * UTIL UI - introduce additional arguments for playbook JSON file
 * UTIL type=playbook | introduce argument location= handling
+* UTIL type=rule | actions=exporttoexcel:file.html,ResolveServiceSummary | improvement for Service Counters
 
 BUGFIX:
 * UTIL type=rule | actions=exportToExcel - bugfix for service.count if application-default is set
@@ -22,6 +23,8 @@ BUGFIX:
 * class Devicecloud / FawkesConfig | bugfix to handle securityProfileStore correctly
 * class SecurityProfileGroup | bugfix to get correct reference calculation
 * UTIL type=device actions=display-shadowrule | bugfix for nat rules
+* UTIL type=rule actions=exporttoExcel:FILE.html,ResolveScheduleSummary | bugfix to  display all type of schedule
+* class Rule.php methode zonecalculation - bugfix for NAT to
 
 GENERAL:
 
