@@ -25,6 +25,7 @@ BUGFIX:
 * UTIL type=device actions=display-shadowrule | bugfix for nat rules
 * UTIL type=rule actions=exporttoExcel:FILE.html,ResolveScheduleSummary | bugfix to  display all type of schedule
 * class Rule.php methode zonecalculation - bugfix for NAT to
+* UTIL type=service-merger - class ServiceGroup | bugfix to not delete ServiceGroup members during merge, if this member is available in same name and value at upperlevel
 
 GENERAL:
 

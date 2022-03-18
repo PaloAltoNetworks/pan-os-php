@@ -316,16 +316,21 @@ class ServiceGroup
 
         if( $pos !== FALSE )
         {
+            while( $pos !== FALSE )
+            {
+                unset($this->members[$pos]);
+                $pos = array_search($old, $this->members, TRUE);
+            }
+
             if( $new !== null && !$this->has( $new->name() ) )
             {
-                $this->addMember($new, FALSE);
-                if( $old->name() == $new->name() )
-                    $this->removeMember($old, FALSE);
-                else
-                    $this->removeMember($old);
+                $this->members[] = $new;
+                $new->addReference($this);
             }
-            else
-                $this->removeMember($old);
+            $old->removeReference($this);
+
+            if( $new === null || $new->name() != $old->name() )
+                $this->rewriteXML();
 
             return TRUE;
         }
