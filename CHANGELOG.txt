@@ -1,6 +1,14 @@
 CHANGELOG
 
-2.0.32
+2.0.33
+UTILS:
+
+BUGFIX:
+
+GENERAL:
+
+
+2.0.32 (20220318)
 UTILS:
 * UTIL type=rule | rework 'filter=(service port.counter)' is now 'filter=(service.port.count >,<,=,! COUNT)')
 * UTIL type=rule | extend actions=exportToExcel with service Counter
