@@ -2448,3 +2448,32 @@ AddressCallContext::$supportedActions['create-AddressGroup'] = array(
         'name' => array('type' => 'string', 'default' => '*nodefault*')
     )
 );
+
+AddressCallContext::$supportedActions['range2network'] = array(
+    'name' => 'create-range2network',
+    'MainFunction' => function (AddressCallContext $context) {
+        $object = $context->object;
+
+        if( $object->isGroup() )
+            return false;
+
+        if( !$object->isType_ipRange() )
+            return false;
+
+        $array = explode( "-", $object->value() );
+        $start = ip2long( $array[0] );
+        $end = ip2long( $array[1] );
+
+        $range = CIDR::range2network( $start, $end );
+
+        if( $range !== false )
+        {
+            //network' => $start, 'mask' => $netmask, 'string' => long2ip($start) . '/' . $netmask
+            $object->setType( "ip-netmask" );
+            $object->setValue( $range['string'] );
+
+            if( $context->isAPI )
+                $object->API_sync();
+        }
+    }
+);

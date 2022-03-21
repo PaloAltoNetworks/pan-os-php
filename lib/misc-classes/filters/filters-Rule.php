@@ -3410,6 +3410,7 @@ RQuery::$defaultFilters['rule']['schedule.expire.in.days']['operators']['>,<,=,!
         if( !$rule->isSecurityRule() )
             return FALSE;
 
+        /** @var Schedule $schedule */
         $schedule = $rule->schedule();
 
         if( is_object( $schedule ) )
