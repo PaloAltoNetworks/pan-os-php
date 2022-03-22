@@ -1270,6 +1270,7 @@ RQuery::$defaultFilters['address']['ip.count']['operators']['>,<,=,!'] = array(
             return false;
     },
     'arg' => true,
+    'help' => 'returns TRUE if object IP value describe multiple IP addresses; e.g. ip-range: 10.0.0.0-10.0.0.255 will match "ip.count > 200"',
     'ci' => array(
         'fString' => '(%PROP%)',
         'input' => 'input/panorama-8.0.xml'

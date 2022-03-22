@@ -1602,7 +1602,11 @@ AddressCallContext::$supportedActions[] = array(
 
                 foreach($resolvMap->unresolved as &$resolvRecord)
                 {
-                    $string ="UNRESOLVED: objname: '{$resolvRecord->name()}' of type: ".$resolvRecord->type();
+                    if( get_class( $resolvRecord ) == "AddressGroup" )
+                        $type = "AddressGroup";
+                    else
+                        $type = $resolvRecord->type();
+                    $string ="UNRESOLVED: objname: '{$resolvRecord->name()}' of type: ".$type;
                     PH::ACTIONlog( $context, $string );
                 }
             }
