@@ -2,7 +2,7 @@ CHANGELOG
 
 2.0.33
 UTILS:
-* UTIL type=address | introduce 'filter=(ip.count >,<,=! VALUE)' AND 'actions=create-range2network'
+* UTIL type=address | introduce 'filter=(ip.count >,<,=! VALUE)' AND 'actions=move-range2network'
 
 BUGFIX:
 

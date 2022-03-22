@@ -1224,7 +1224,11 @@ RQuery::$defaultFilters['address']['ip.count']['operators']['>,<,=,!'] = array(
             $operator = '==';
 
         if( $object->isGroup() )
+        {
+            //count IP addresses
             return false;
+        }
+
 
         $value = $object->value();
 
@@ -1240,8 +1244,13 @@ RQuery::$defaultFilters['address']['ip.count']['operators']['>,<,=,!'] = array(
             else
                 $int = 1;
         }
-        elseif( $object->isType_FQDN() || $object->isType_ipWildcard() )
+        elseif( $object->isType_FQDN() )
             return false;
+        elseif( $object->isType_ipWildcard() )
+        {
+            //count IP addresses
+            return false;
+        }
         elseif( $object->isType_ipRange() )
         {
             $array = explode( "-", $value );

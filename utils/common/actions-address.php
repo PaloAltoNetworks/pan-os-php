@@ -2449,16 +2449,18 @@ AddressCallContext::$supportedActions['create-AddressGroup'] = array(
     )
 );
 
-AddressCallContext::$supportedActions['range2network'] = array(
-    'name' => 'create-range2network',
+AddressCallContext::$supportedActions['move-range2network'] = array(
+    'name' => 'move-range2network',
     'MainFunction' => function (AddressCallContext $context) {
         $object = $context->object;
 
-        if( $object->isGroup() )
+        if( $object->isGroup() || !$object->isType_ipRange() )
+        {
+            $string = "Address object is not of type ip-range";
+            PH::ACTIONstatus( $context, 'skipped', $string);
             return false;
+        }
 
-        if( !$object->isType_ipRange() )
-            return false;
 
         $array = explode( "-", $object->value() );
         $start = ip2long( $array[0] );
@@ -2474,6 +2476,14 @@ AddressCallContext::$supportedActions['range2network'] = array(
 
             if( $context->isAPI )
                 $object->API_sync();
+            $string = "moved to type ip-netmask with value: ".$range['string'];
+            PH::ACTIONlog( $context, $string );
         }
+        else
+        {
+            $string = "Address object of type ip-range named '" . $object->name() . "' cannot moved to an ip-netmask object type. value: ".$object->value();
+            PH::ACTIONlog( $context, $string );
+        }
+
     }
 );
