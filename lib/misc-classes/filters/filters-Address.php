@@ -1213,4 +1213,67 @@ RQuery::$defaultFilters['address']['description']['operators']['is.empty'] = arr
         'input' => 'input/panorama-8.0.xml'
     )
 );
+
+RQuery::$defaultFilters['address']['ip.count']['operators']['>,<,=,!'] = array(
+    'Function' => function (AddressRQueryContext $context) {
+        $object = $context->object;
+        $arg = $context->value;
+
+        $operator = $context->operator;
+        if( $operator == '=' )
+            $operator = '==';
+
+        if( $object->isGroup() )
+        {
+            //count IP addresses
+            return false;
+        }
+
+
+        $value = $object->value();
+
+        if( $object->isType_ipNetmask() )
+        {
+            $array = explode( "/", $value );
+            $start = ip2long($array[0]);
+            if( isset($array[1]) )
+            {
+                $end = ip2long($array[1]);
+                $int = $end - $start;
+            }
+            else
+                $int = 1;
+        }
+        elseif( $object->isType_FQDN() )
+            return false;
+        elseif( $object->isType_ipWildcard() )
+        {
+            //count IP addresses
+            return false;
+        }
+        elseif( $object->isType_ipRange() )
+        {
+            $array = explode( "-", $value );
+            $addr_given_1 = ip2long($array[0]);
+            $addr_given_2 = ip2long($array[1]);
+
+            $int = $addr_given_2 - $addr_given_1;
+        }
+        elseif( $object->isType_TMP() )
+            $int = 1;
+
+        $operator_string = $int." ".$operator." ".$arg;
+
+        if( eval("return $operator_string;" ) )
+            return true;
+        else
+            return false;
+    },
+    'arg' => true,
+    'help' => 'returns TRUE if object IP value describe multiple IP addresses; e.g. ip-range: 10.0.0.0-10.0.0.255 will match "ip.count > 200"',
+    'ci' => array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 // </editor-fold>

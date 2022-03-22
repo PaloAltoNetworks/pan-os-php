@@ -1602,7 +1602,11 @@ AddressCallContext::$supportedActions[] = array(
 
                 foreach($resolvMap->unresolved as &$resolvRecord)
                 {
-                    $string ="UNRESOLVED: objname: '{$resolvRecord->name()}' of type: ".$resolvRecord->type();
+                    if( get_class( $resolvRecord ) == "AddressGroup" )
+                        $type = "AddressGroup";
+                    else
+                        $type = $resolvRecord->type();
+                    $string ="UNRESOLVED: objname: '{$resolvRecord->name()}' of type: ".$type;
                     PH::ACTIONlog( $context, $string );
                 }
             }
@@ -2447,4 +2451,43 @@ AddressCallContext::$supportedActions['create-AddressGroup'] = array(
     'args' => array(
         'name' => array('type' => 'string', 'default' => '*nodefault*')
     )
+);
+
+AddressCallContext::$supportedActions['move-range2network'] = array(
+    'name' => 'move-range2network',
+    'MainFunction' => function (AddressCallContext $context) {
+        $object = $context->object;
+
+        if( $object->isGroup() || !$object->isType_ipRange() )
+        {
+            $string = "Address object is not of type ip-range";
+            PH::ACTIONstatus( $context, 'skipped', $string);
+            return false;
+        }
+
+
+        $array = explode( "-", $object->value() );
+        $start = ip2long( $array[0] );
+        $end = ip2long( $array[1] );
+
+        $range = CIDR::range2network( $start, $end );
+
+        if( $range !== false )
+        {
+            //network' => $start, 'mask' => $netmask, 'string' => long2ip($start) . '/' . $netmask
+            $object->setType( "ip-netmask" );
+            $object->setValue( $range['string'] );
+
+            if( $context->isAPI )
+                $object->API_sync();
+            $string = "moved to type ip-netmask with value: ".$range['string'];
+            PH::ACTIONlog( $context, $string );
+        }
+        else
+        {
+            $string = "Address object of type ip-range named '" . $object->name() . "' cannot moved to an ip-netmask object type. value: ".$object->value();
+            PH::ACTIONlog( $context, $string );
+        }
+
+    }
 );
