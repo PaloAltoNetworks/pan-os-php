@@ -176,6 +176,10 @@ var subjectObject =
                     }
                 }
             },
+            "move-range2network": {
+                "name": "move-range2network",
+                "MainFunction": {}
+            },
             "name-addprefix": {
                 "name": "name-addPrefix",
                 "MainFunction": {},
@@ -385,6 +389,19 @@ var subjectObject =
                     "is.empty": {
                         "Function": {},
                         "arg": false,
+                        "ci": {
+                            "fString": "(%PROP%)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    }
+                }
+            },
+            "ip.count": {
+                "operators": {
+                    ">,<,=,!": {
+                        "Function": {},
+                        "arg": true,
+                        "help": "returns TRUE if object IP value describe multiple IP addresses; e.g. ip-range: 10.0.0.0-10.0.0.255 will match \"ip.count > 200\"",
                         "ci": {
                             "fString": "(%PROP%)",
                             "input": "input\/panorama-8.0.xml"
@@ -1544,6 +1561,11 @@ var subjectObject =
     },
     "playbook": {
         "name": "playbook",
+        "action": [],
+        "filter": []
+    },
+    "protocoll-number-download": {
+        "name": "protocoll-number-download",
         "action": [],
         "filter": []
     },
@@ -3497,8 +3519,12 @@ var subjectObject =
                     "is.expired": {
                         "Function": {},
                         "arg": false
-                    },
-                    "expire.in.days": {
+                    }
+                }
+            },
+            "schedule.expire.in.days": {
+                "operators": {
+                    ">,<,=,!": {
                         "Function": {},
                         "arg": true
                     }
@@ -3780,6 +3806,42 @@ var subjectObject =
                         }
                     },
                     "has.value.only": {
+                        "Function": {},
+                        "arg": true,
+                        "ci": {
+                            "fString": "(%PROP% 443)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    }
+                }
+            },
+            "service.port.count": {
+                "operators": {
+                    ">,<,=,!": {
+                        "Function": {},
+                        "arg": true,
+                        "ci": {
+                            "fString": "(%PROP% 443)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    }
+                }
+            },
+            "service.port.tcp.count": {
+                "operators": {
+                    ">,<,=,!": {
+                        "Function": {},
+                        "arg": true,
+                        "ci": {
+                            "fString": "(%PROP% 443)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    }
+                }
+            },
+            "service.port.udp.count": {
+                "operators": {
+                    ">,<,=,!": {
                         "Function": {},
                         "arg": true,
                         "ci": {
@@ -4263,6 +4325,14 @@ var subjectObject =
             }
         },
         "filter": {
+            "expire.in.days": {
+                "operators": {
+                    ">,<,=,!": {
+                        "Function": {},
+                        "arg": true
+                    }
+                }
+            },
             "location": {
                 "operators": {
                     "is": {
@@ -5354,6 +5424,10 @@ var subjectObject =
                         "default": "*nodefault*"
                     }
                 }
+            },
+            "show-dstportmapping": {
+                "name": "show-dstportmapping",
+                "MainFunction": {}
             },
             "sourceport-delete": {
                 "name": "sourceport-delete",
