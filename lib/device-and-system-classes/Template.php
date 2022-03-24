@@ -28,8 +28,6 @@ class Template
     /** @var PanoramaConf */
     public $owner;
 
-    /** @var DOMElement */
-    public $xmlroot;
 
     /** @var  PANConf */
     public $deviceConfiguration;

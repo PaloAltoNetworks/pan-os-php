@@ -5,6 +5,7 @@ UTILS:
 * UTIL type=address | introduce 'filter=(ip.count >,<,=! VALUE)' AND 'actions=move-range2network'
 
 BUGFIX:
+* class DeviceGroup / Template - remove $xmlroot as already defined in trait XmlConvertible
 
 GENERAL:
 
