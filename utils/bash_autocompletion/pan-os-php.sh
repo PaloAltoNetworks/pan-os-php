@@ -52,7 +52,12 @@ __pan-os-php_scripts()
 		declare -a checkArray
 
 
-		arguments=('type=' 'in=' 'out=' 'actions=' 'filter=' 'location=' 'loadpanoramapushedconfig' 'loadplugin=' 'help'  'listactions' 'listfilters' 'debugapi' 'apitimeout=' 'shadow-apikeynohidden' 'shadow-apikeynosave' 'shadow-disableoutputformatting' 'shadow-displaycurlrequest' 'shadow-enablexmlduplicatesdeletion' 'shadow-ignoreinvalidaddressobjects' 'shadow-json' 'shadow-reducexml' 'stats' 'template=' 'version' )
+		arguments=('type=' 'in=' 'out=' 'actions=' 'filter=' 'location=' 'loadpanoramapushedconfig' 'loadplugin=' 'help'
+		 'listactions' 'listfilters' 'debugapi' 'apitimeout='
+		 'shadow-apikeynohidden' 'shadow-apikeynosave' 'shadow-disableoutputformatting' 'shadow-displaycurlrequest' 'shadow-enablexmlduplicatesdeletion'
+		 'shadow-ignoreinvalidaddressobjects' 'shadow-json' 'shadow-reducexml'
+		 'outputformatset='
+		 'stats' 'template=' 'version' )
     type=(
       "stats"
       "address" "service" "tag" "schedule" "application" "threat"
