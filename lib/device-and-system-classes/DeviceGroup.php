@@ -32,8 +32,6 @@ class DeviceGroup
     /** @var PanoramaConf */
     public $owner = null;
 
-    /** @var DOMElement */
-    public $xmlroot;
 
     /** @var DOMElement */
     public $devicesRoot;
