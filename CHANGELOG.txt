@@ -4,6 +4,7 @@ CHANGELOG
 UTILS:
 * UTIL type=address | introduce 'filter=(ip.count >,<,=! VALUE)' AND 'actions=move-range2network'
 * UTIL bash-autocompletion | introduce argument "outputformatset="
+* UTIL type=address | actions=exportToExcel:FILE.html - extend with ip.count value
 
 BUGFIX:
 * class DeviceGroup / Template - remove $xmlroot as already defined in trait XmlConvertible

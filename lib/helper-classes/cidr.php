@@ -367,6 +367,10 @@ class cidr
             $version = "ipv6";
             $maskvalue = 128;
         }
+        else
+        {
+            derr( "not a valid IPv4 or IPv6 address: ".$ex[0], null, FALSE );
+        }
 
         if( count($ex) > 1 && (($version == "ipv4" && $ex[1] != $maskvalue) || ($version == "ipv6" && $ex[1] != $maskvalue) ))
         {

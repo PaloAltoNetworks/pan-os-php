@@ -650,6 +650,40 @@ class Address
         $pickedObject->description_merge( $this );
     }
 
+    public function getIPcount()
+    {
+        $value = $this->value();
+
+        if( $this->isType_ipNetmask() )
+        {
+            $startEndArray = CIDR::stringToStartEnd( $value );
+            $start = $startEndArray['start'];
+            $end = $startEndArray['end'];
+
+            $int = $end - $start + 1;
+        }
+        elseif( $this->isType_FQDN() )
+            return false;
+        elseif( $this->isType_ipWildcard() )
+        {
+            //count IP addresses
+            return false;
+        }
+        elseif( $this->isType_ipRange() )
+        {
+            $startEndArray = CIDR::stringToStartEnd( $value );
+            $start = $startEndArray['start'];
+            $end = $startEndArray['end'];
+
+            $int = $end - $start + 1;
+        }
+        elseif( $this->isType_TMP() )
+            $int = 1;
+
+
+        return $int;
+    }
+
     static protected $templatexml = '<entry name="**temporarynamechangeme**"><ip-netmask>tempvaluechangeme</ip-netmask></entry>';
 
 }
