@@ -1821,6 +1821,7 @@ class UTIL
 
         if( $this->outputformatset )
         {
+            PH::print_stdout(" * script was called with argument 'outputformatset' - please wait for calcuation");
             $utilDiff = new DIFF( "custom", array(), array(), "" );
             $utilDiff->outputFormatSet = TRUE;
 
@@ -1837,38 +1838,37 @@ class UTIL
 
             PH::print_stdout( "" );
             PH::print_stdout( "" );
+
             $setArray = array( "address", "address-group", "service", "service-group", "profiles", "profile-group", "misc", "rulebase" );
+            $tmp_string = "";
             foreach( $setArray as $item )
             {
                 if( isset( $utilDiff->diff_set[$item] ) )
                 {
                     foreach( $utilDiff->diff_set[$item] as $key => $set )
-                    {
-                        PH::print_stdout( $set );
-                        if( $this->outputformatsetFile !== null )
-                            file_put_contents($this->outputformatsetFile, $set."\n", FILE_APPEND);
-                    }
+                        $tmp_string .= $set."\n";
                 }
             }
+            if( $this->outputformatsetFile !== null )
+                file_put_contents($this->outputformatsetFile, $tmp_string, FILE_APPEND);
+            else
+                PH::print_stdout( $tmp_string );
 
 
             $deleteArray = array( "rulebase", "address-group", "address", "service-group", "service", "profile-group", "profiles", "misc" );
-
+            $tmp_string = "";
             foreach( $deleteArray as $item )
             {
                 if( isset( $utilDiff->diff_delete[$item] ) )
                 {
                     foreach( $utilDiff->diff_delete[$item] as $key => $delete )
-                    {
-                        PH::print_stdout( $delete );
-                        if( $this->outputformatsetFile !== null )
-                            file_put_contents($this->outputformatsetFile, $delete."\n", FILE_APPEND);
-                    }
+                        $tmp_string .= $delete."\n";
                 }
             }
-
-
-
+            if( $this->outputformatsetFile !== null )
+                file_put_contents($this->outputformatsetFile, $tmp_string, FILE_APPEND);
+            else
+                PH::print_stdout( $tmp_string );
         }
     }
 

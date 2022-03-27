@@ -727,7 +727,7 @@ AddressCallContext::$supportedActions[] = array(
         if( isset($optionalFields['NestedMembers']) )
             $addNestedMembers = TRUE;
 
-        $headers = '<th>location</th><th>name</th><th>type</th><th>value</th><th>description</th><th>tags</th>';
+        $headers = '<th>location</th><th>name</th><th>type</th><th>value</th><th>description</th><th>IPcount</th><th>tags</th>';
 
         if( $addWhereUsed )
             $headers .= '<th>where used</th>';
@@ -803,6 +803,7 @@ AddressCallContext::$supportedActions[] = array(
                         $lines .= $encloseFunction($object->members());
                     }
                     $lines .= $encloseFunction($object->description(), FALSE);
+                    $lines .= $encloseFunction('---');
                     $lines .= $encloseFunction($object->tags->tags());
                 }
                 elseif( $object->isAddress() )
@@ -813,12 +814,14 @@ AddressCallContext::$supportedActions[] = array(
                         $lines .= $encloseFunction('');
                         $lines .= $encloseFunction('');
                         $lines .= $encloseFunction('');
+                        $lines .= $encloseFunction('');
                     }
                     else
                     {
                         $lines .= $encloseFunction($object->type());
                         $lines .= $encloseFunction($object->value());
                         $lines .= $encloseFunction($object->description(), FALSE);
+                        $lines .= $encloseFunction( (string)$object->getIPcount() );
                         $lines .= $encloseFunction($object->tags->tags());
                     }
                 }
@@ -879,9 +882,6 @@ AddressCallContext::$supportedActions[] = array(
         $jscontent .= "\n\$('table').stickyTableHeaders();\n";
 
         $content = str_replace('%JSCONTENT%', $jscontent, $content);
-
-        file_put_contents($filename, $content);
-
 
         file_put_contents($filename, $content);
     },
@@ -1691,11 +1691,12 @@ AddressCallContext::$supportedActions[] = array(
             if( count($object->tags->tags()) > 0 )
                 $tag_string = "tag: '".$object->tags->toString_inline()."'";
 
-            PH::print_stdout( $context->padding . "* " . get_class($object) . " '{$object->name()}'  value: '{$object->value()}'  desc: '{$object->description()}' $tag_string" );
+            PH::print_stdout( $context->padding . "* " . get_class($object) . " '{$object->name()}'  value: '{$object->value()}'  desc: '{$object->description()}' IPcount: '{$object->getIPcount()}' $tag_string" );
             PH::$JSON_TMP['sub']['object'][$object->name()]['type'] = get_class($object);
             PH::$JSON_TMP['sub']['object'][$object->name()]['value'] = $object->value();
             PH::$JSON_TMP['sub']['object'][$object->name()]['tag'] = $tag_string;
             PH::$JSON_TMP['sub']['object'][$object->name()]['description'] = $object->description();
+            PH::$JSON_TMP['sub']['object'][$object->name()]['ipcount'] = $object->getIPcount();
         }
         elseif( $object->isRegion() )
         {

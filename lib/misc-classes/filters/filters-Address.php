@@ -1229,38 +1229,7 @@ RQuery::$defaultFilters['address']['ip.count']['operators']['>,<,=,!'] = array(
             return false;
         }
 
-
-        $value = $object->value();
-
-        if( $object->isType_ipNetmask() )
-        {
-            $array = explode( "/", $value );
-            $start = ip2long($array[0]);
-            if( isset($array[1]) )
-            {
-                $end = ip2long($array[1]);
-                $int = $end - $start;
-            }
-            else
-                $int = 1;
-        }
-        elseif( $object->isType_FQDN() )
-            return false;
-        elseif( $object->isType_ipWildcard() )
-        {
-            //count IP addresses
-            return false;
-        }
-        elseif( $object->isType_ipRange() )
-        {
-            $array = explode( "-", $value );
-            $addr_given_1 = ip2long($array[0]);
-            $addr_given_2 = ip2long($array[1]);
-
-            $int = $addr_given_2 - $addr_given_1;
-        }
-        elseif( $object->isType_TMP() )
-            $int = 1;
+        $int = $object->getIPcount();
 
         $operator_string = $int." ".$operator." ".$arg;
 

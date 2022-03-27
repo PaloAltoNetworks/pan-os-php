@@ -581,7 +581,7 @@ class DH
             {
                 if( strpos( $xpath, " ".$element->nodeName ) === FALSE )
                 {
-                    print "nodename: ".$element->nodeName."\n";
+                    //print "nodename: ".$element->nodeName."\n";
                     if( $element->nodeName !== "member" )
                         $string .= " ".$element->nodeName;
                     elseif( strpos( $xpath, " list" ) !== FALSE || strpos( $string, " list" ) !== FALSE )
