@@ -1249,11 +1249,8 @@ class MERGER extends UTIL
                                     $object->merge_tag_description_to($ancestor, $this->apiMode);
 
                                     $text = "    - object '{$object->name()}' merged with its ancestor, deleting: " . $object->_PANC_shortName();
-                                    $this->deletedObjects[$index]['kept'] = $pickedObject->_PANC_shortName();
-                                    if( $this->deletedObjects[$index]['removed'] == "" )
-                                        $this->deletedObjects[$index]['removed'] = $object->_PANC_shortName();
-                                    else
-                                        $this->deletedObjects[$index]['removed'] .= "|" . $object->_PANC_shortName();
+                                    self::deletedObject( $index, $pickedObject, $object);
+
                                     $object->replaceMeGlobally($ancestor);
 
                                     if( $this->apiMode )
@@ -1299,7 +1296,6 @@ class MERGER extends UTIL
                             $text .= "  value: '{$ancestor->value()}' ";
                             PH::print_stdout($text);
 
-                            #unset($this->deletedObjects[$index]);
                             $this->deletedObjects[$index]['removed'] .= "|->ERROR ancestor: '" . $object->_PANC_shortName() . "' cannot be merged";
 
                             continue;
@@ -1318,11 +1314,8 @@ class MERGER extends UTIL
                             if( $success )
                             {
                                 PH::print_stdout("    - deleting '{$object->_PANC_shortName()}'");
-                                $this->deletedObjects[$index]['kept'] = $pickedObject->_PANC_shortName();
-                                if( $this->deletedObjects[$index]['removed'] == "" )
-                                    $this->deletedObjects[$index]['removed'] = $object->_PANC_shortName();
-                                else
-                                    $this->deletedObjects[$index]['removed'] .= "|" . $object->_PANC_shortName();
+                                self::deletedObject( $index, $pickedObject, $object);
+
                                 if( $this->apiMode )
                                     $object->owner->API_remove($object);
                                 else
@@ -1470,11 +1463,8 @@ class MERGER extends UTIL
                         $object->merge_tag_description_to($tmp_address, $this->apiMode);
     
                         PH::print_stdout("    - deleting '{$object->_PANC_shortName()}'");
-                        $this->deletedObjects[$index]['kept'] = $tmp_address->_PANC_shortName();
-                        if( $this->deletedObjects[$index]['removed'] == "" )
-                            $this->deletedObjects[$index]['removed'] = $object->_PANC_shortName();
-                        else
-                            $this->deletedObjects[$index]['removed'] .= "|" . $object->_PANC_shortName();
+                        self::deletedObject( $index, $tmp_address, $object);
+
                         if( $this->apiMode )
                             $object->owner->API_remove($object);
                         else
@@ -2284,11 +2274,8 @@ class MERGER extends UTIL
                             #$object->merge_tag_description_to($tmp_service, $this->apiMode);
 
                             PH::print_stdout("    - deleting '{$object->_PANC_shortName()}'");
-                            $this->deletedObjects[$index]['kept'] = $tmp_service->_PANC_shortName();
-                            if( $this->deletedObjects[$index]['removed'] == "" )
-                                $this->deletedObjects[$index]['removed'] = $object->_PANC_shortName();
-                            else
-                                $this->deletedObjects[$index]['removed'] .= "|" . $object->_PANC_shortName();
+                            self::deletedObject( $index, $tmp_service, $object);
+
                             if( $this->apiMode )
                                 $object->owner->API_remove($object);
                             else
@@ -2653,11 +2640,7 @@ class MERGER extends UTIL
                                         }
 
                                     $text = "    - object '{$object->name()}' merged with its ancestor, deleting: " . $object->_PANC_shortName();
-                                    $this->deletedObjects[$index]['kept'] = $pickedObject->_PANC_shortName();
-                                    if( $this->deletedObjects[$index]['removed'] == "" )
-                                        $this->deletedObjects[$index]['removed'] = $object->_PANC_shortName();
-                                    else
-                                        $this->deletedObjects[$index]['removed'] .= "|" . $object->_PANC_shortName();
+                                    self::deletedObject( $index, $pickedObject, $object);
 
                                     if( $this->action === "merge" )
                                     {
@@ -2702,7 +2685,6 @@ class MERGER extends UTIL
                             $text .= "  color: '{$ancestor->getColor()}' ";
                             PH::print_stdout($text);
 
-                            #unset($this->deletedObjects[$index]);
                             $this->deletedObjects[$index]['removed'] .= "|->ERROR ancestor: '" . $object->_PANC_shortName() . "' cannot be merged";
 
                             continue;
@@ -2719,11 +2701,7 @@ class MERGER extends UTIL
                             #$object->__replaceWhereIamUsed($this->apiMode, $pickedObject, TRUE, 5);
 
                             PH::print_stdout("    - deleting '{$object->_PANC_shortName()}'");
-                            $this->deletedObjects[$index]['kept'] = $pickedObject->_PANC_shortName();
-                            if( $this->deletedObjects[$index]['removed'] == "" )
-                                $this->deletedObjects[$index]['removed'] = $object->_PANC_shortName();
-                            else
-                                $this->deletedObjects[$index]['removed'] .= "|" . $object->_PANC_shortName();
+                            self::deletedObject( $index, $pickedObject, $object);
 
                             if( $this->action === "merge" )
                             {
@@ -2843,11 +2821,8 @@ class MERGER extends UTIL
                         #$object->merge_tag_description_to($tmp_tag, $this->apiMode);
 
                         PH::print_stdout("    - deleting '{$object->_PANC_shortName()}'");
-                        $this->deletedObjects[$index]['kept'] = $tmp_tag->_PANC_shortName();
-                        if( $this->deletedObjects[$index]['removed'] == "" )
-                            $this->deletedObjects[$index]['removed'] = $object->_PANC_shortName();
-                        else
-                            $this->deletedObjects[$index]['removed'] .= "|" . $object->_PANC_shortName();
+                        self::deletedObject( $index, $tmp_tag, $object);
+
                         if( $this->apiMode )
                             $object->owner->API_removeTag($object);
                         else
@@ -2875,21 +2850,14 @@ class MERGER extends UTIL
 
         if( $this->exportcsv )
         {
-            PH::print_stdout(" * script was called with argument 'exportCSV' - please wait for calcuation");
+            PH::print_stdout(" * script was called with argument 'exportCSV' - please wait for calculation");
 
             $tmp_string = "value,kept,removed";
             foreach( $this->deletedObjects as $obj_index => $object_name )
-            {
-                //if( !isset($object_name['kept']) )
-                //    print_r($object_name);
                 $tmp_string .= $obj_index . "," . $object_name['kept'] . "," . $object_name['removed']."\n";
-            }
-            if( $this->exportcsvFile !== null )
-            {
-                //file_put_contents($this->exportcsvFile, $tmp_string, FILE_APPEND);
-                self::exportCSVToHtml();
-            }
 
+            if( $this->exportcsvFile !== null )
+                self::exportCSVToHtml();
             else
                 PH::print_stdout( $tmp_string );
         }
@@ -2969,5 +2937,14 @@ class MERGER extends UTIL
         $content = str_replace('%JSCONTENT%', $jscontent, $content);
 
         file_put_contents($this->exportcsvFile, $content);
+    }
+
+    private function deletedObject( $index, $keptOBJ, $removedOBJ)
+    {
+        $this->deletedObjects[$index]['kept'] = $keptOBJ->_PANC_shortName();
+        if( $this->deletedObjects[$index]['removed'] == "" )
+            $this->deletedObjects[$index]['removed'] = $removedOBJ->_PANC_shortName();
+        else
+            $this->deletedObjects[$index]['removed'] .= "|" . $removedOBJ->_PANC_shortName();
     }
 }
