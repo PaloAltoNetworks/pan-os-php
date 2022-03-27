@@ -5,6 +5,7 @@ UTILS:
 * UTIL type=address | introduce 'filter=(ip.count >,<,=! VALUE)' AND 'actions=move-range2network'
 * UTIL bash-autocompletion | introduce argument "outputformatset="
 * UTIL type=address | actions=exportToExcel:FILE.html - extend with ip.count value
+* UTIL type=ALLMERGER | extend argument 'exportCSV' to 'exportCSV=FILE.html' which export the info into EXCEL / HTML format
 
 BUGFIX:
 * class DeviceGroup / Template - remove $xmlroot as already defined in trait XmlConvertible

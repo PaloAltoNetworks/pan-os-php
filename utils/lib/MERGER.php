@@ -28,11 +28,17 @@ class MERGER extends UTIL
     public $dupAlg = null;
     public $deletedObjects = array();
     public $addMissingObjects = FALSE;
+    public $action = "merge";
+
+    public $exportcsv = FALSE;
+    public $exportcsvFile = null;
 
     public function utilStart()
     {
         $this->usageMsg = PH::boldText('USAGE: ') . "php " . basename(__FILE__) . " in=inputfile.xml [out=outputfile.xml] location=shared [DupAlgorithm=XYZ] [MergeCountLimit=100] ['pickFilter=(name regex /^H-/)'] ...";
 
+        $this->action = "merge";
+        
         $this->add_supported_arguments();
 
 
@@ -41,6 +47,19 @@ class MERGER extends UTIL
         PH::processCliArgs();
 
         $this->arg_validation();
+
+        if( isset(PH::$args['outputformatset']) )
+        {
+            $this->outputformatset = TRUE;
+            $this->outputformatsetFile = PH::$args['outputformatset'];
+        }
+
+        if( isset(PH::$args['exportcsv']) )
+        {
+            $this->exportcsv = TRUE;
+            $this->exportcsvFile = PH::$args['exportcsv'];
+        }
+
         $this->help(PH::$args);
         $this->inDebugapiArgument();
         $this->inputValidation();
@@ -284,7 +303,6 @@ class MERGER extends UTIL
             PH::print_stdout( " - pickFilter was input: " );
             $this->pickFilter->display();
             PH::print_stdout( "" );
-
         }
 
         if( isset(PH::$args['excludefilter']) )
@@ -312,8 +330,7 @@ class MERGER extends UTIL
                 return $findAncestor;
                 break;
             }
-
-
+            
             if( isset($current->owner->parentDeviceGroup) && $current->owner->parentDeviceGroup !== null )
                 $current = $current->owner->parentDeviceGroup->$StoreType;
             elseif( isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
@@ -326,7 +343,6 @@ class MERGER extends UTIL
                 break;
             }
         }
-
     }
 
     function add_supported_arguments()
@@ -586,20 +602,9 @@ class MERGER extends UTIL
                 $skipThisOne = FALSE;
 
                 // Object with descendants in lower device groups should be excluded
-                if( $this->pan->isPanorama() )
+                if( $this->pan->isPanorama() && $object->owner === $store )
                 {
-                    /*
-                    foreach( $childDeviceGroups as $dg )
-                    {
-                        if( $dg->addressStore->find($object->name(), null, FALSE) !== null )
-                        {
-                            $skipThisOne = TRUE;
-                            break;
-                        }
-                    }
-                    if( $skipThisOne )
-                        continue;
-                    */
+                    //do something
                 }
                 elseif( $this->pan->isFawkes() && $object->owner === $store )
                 {
@@ -710,147 +715,150 @@ class MERGER extends UTIL
                     }
                 }
 
-                // Merging loop finally!
-                foreach( $hash as $object )
+                if( $this->action === "merge" )
                 {
-                    /** @var AddressGroup $object */
-                    if( isset($object->ancestor) )
+                    // Merging loop finally!
+                    foreach( $hash as $object )
                     {
-                        $ancestor = $object->ancestor;
-                        /** @var AddressGroup $ancestor */
-                        if( $this->upperLevelSearch && $ancestor->isGroup() && !$ancestor->isDynamic() && $this->dupAlg != 'whereused' )
+                        /** @var AddressGroup $object */
+                        if( isset($object->ancestor) )
                         {
-                            if( $hashGenerator($object) != $hashGenerator($ancestor) )
+                            $ancestor = $object->ancestor;
+                            /** @var AddressGroup $ancestor */
+                            if( $this->upperLevelSearch && $ancestor->isGroup() && !$ancestor->isDynamic() && $this->dupAlg != 'whereused' )
                             {
-                                $ancestor->displayValueDiff( $object, 7 );
-
-                                if( $this->addMissingObjects )
+                                if( $hashGenerator($object) != $hashGenerator($ancestor) )
                                 {
-                                    $diff = $ancestor->getValueDiff( $object );
+                                    $ancestor->displayValueDiff($object, 7);
 
-                                    if( count($diff['minus']) != 0 )
-                                        foreach( $diff['minus'] as $d )
-                                        {
-                                            /** @var Address|AddressGroup $d */
+                                    if( $this->addMissingObjects )
+                                    {
+                                        $diff = $ancestor->getValueDiff($object);
 
-                                            if( $ancestor->owner->find( $d->name() ) !== null )
+                                        if( count($diff['minus']) != 0 )
+                                            foreach( $diff['minus'] as $d )
                                             {
-                                                $text = "      - adding objects to group: ";
-                                                $text .= $d->name();
-                                                PH::print_stdout($text);
-                                                if( $this->apiMode )
-                                                    $ancestor->API_addMember( $d );
-                                                else
-                                                    $ancestor->addMember( $d );
+                                                /** @var Address|AddressGroup $d */
+
+                                                if( $ancestor->owner->find($d->name()) !== null )
+                                                {
+                                                    $text = "      - adding objects to group: ";
+                                                    $text .= $d->name();
+                                                    PH::print_stdout($text);
+                                                    if( $this->apiMode )
+                                                        $ancestor->API_addMember($d);
+                                                    else
+                                                        $ancestor->addMember($d);
+                                                }
                                             }
-                                        }
 
-                                    if( count($diff['plus']) != 0 )
-                                        foreach( $diff['plus'] as $d )
-                                        {
-                                            /** @var Address|AddressGroup $d */
-                                            //TMP usage to clean DG level ADDRESSgroup up
-                                            $object->addMember( $d );
-                                        }
+                                        if( count($diff['plus']) != 0 )
+                                            foreach( $diff['plus'] as $d )
+                                            {
+                                                /** @var Address|AddressGroup $d */
+                                                //TMP usage to clean DG level ADDRESSgroup up
+                                                $object->addMember($d);
+                                            }
+                                    }
                                 }
-                            }
 
-                            if( $hashGenerator($object) == $hashGenerator($ancestor) )
-                            {
-                                $text = "    - group '{$object->name()}' merged with its ancestor, deleting: ".$object->_PANC_shortName();
-                                $object->replaceMeGlobally($ancestor);
-                                if( $this->apiMode )
-                                    $object->owner->API_remove($object, TRUE);
-                                else
-                                    $object->owner->remove($object, TRUE);
-
-                                PH::print_stdout( $text );
-
-                                if( $pickedObject === $object )
-                                    $pickedObject = $ancestor;
-
-                                $countRemoved++;
-                                if( $this->mergeCountLimit !== FALSE && $countRemoved >= $this->mergeCountLimit )
+                                if( $hashGenerator($object) == $hashGenerator($ancestor) )
                                 {
-                                    PH::print_stdout( "\n *** STOPPING MERGE OPERATIONS NOW SINCE WE REACHED mergeCountLimit ({$this->mergeCountLimit})" );
-                                    break 2;
+                                    $text = "    - group '{$object->name()}' merged with its ancestor, deleting: " . $object->_PANC_shortName();
+                                    $object->replaceMeGlobally($ancestor);
+                                    if( $this->apiMode )
+                                        $object->owner->API_remove($object, TRUE);
+                                    else
+                                        $object->owner->remove($object, TRUE);
+
+                                    PH::print_stdout($text);
+
+                                    if( $pickedObject === $object )
+                                        $pickedObject = $ancestor;
+
+                                    $countRemoved++;
+                                    if( $this->mergeCountLimit !== FALSE && $countRemoved >= $this->mergeCountLimit )
+                                    {
+                                        PH::print_stdout("\n *** STOPPING MERGE OPERATIONS NOW SINCE WE REACHED mergeCountLimit ({$this->mergeCountLimit})");
+                                        break 2;
+                                    }
+                                    continue;
                                 }
-                                continue;
                             }
+                            PH::print_stdout("    - group '{$object->name()}' cannot be merged because it has an ancestor");
+                            continue;
                         }
-                        PH::print_stdout( "    - group '{$object->name()}' cannot be merged because it has an ancestor" );
-                        continue;
-                    }
 
-                    if( $object === $pickedObject )
-                        continue;
+                        if( $object === $pickedObject )
+                            continue;
 
-                    if( $this->dupAlg == 'whereused' )
-                    {
-                        PH::print_stdout( "    - merging '{$object->name()}' members into '{$pickedObject->name()}': " );
-                        foreach( $object->members() as $member )
+                        if( $this->dupAlg == 'whereused' )
                         {
-                            $text = "     - adding member '{$member->name()}'... ";
+                            PH::print_stdout("    - merging '{$object->name()}' members into '{$pickedObject->name()}': ");
+                            foreach( $object->members() as $member )
+                            {
+                                $text = "     - adding member '{$member->name()}'... ";
+                                if( $this->apiMode )
+                                    $pickedObject->API_addMember($member);
+                                else
+                                    $pickedObject->addMember($member);
+                                PH::print_stdout($text);
+                            }
+                            PH::print_stdout("    - now removing '{$object->name()} from where it's used");
                             if( $this->apiMode )
-                                $pickedObject->API_addMember($member);
-                            else
-                                $pickedObject->addMember($member);
-                            PH::print_stdout( $text );
-                        }
-                        PH::print_stdout( "    - now removing '{$object->name()} from where it's used" );
-                        if( $this->apiMode )
-                        {
-                            $object->API_removeWhereIamUsed(TRUE, 6);
-                            $text = "    - deleting '{$object->name()}'... ";
-                            $object->owner->API_remove($object);
+                            {
+                                $object->API_removeWhereIamUsed(TRUE, 6);
+                                $text = "    - deleting '{$object->name()}'... ";
+                                $object->owner->API_remove($object);
 
-                            PH::print_stdout( $text );
+                                PH::print_stdout($text);
+                            }
+                            else
+                            {
+                                $object->removeWhereIamUsed(TRUE, 6);
+                                $text = "    - deleting '{$object->name()}'... ";
+                                $object->owner->remove($object);
+
+                                PH::print_stdout($text);
+                            }
                         }
                         else
                         {
-                            $object->removeWhereIamUsed(TRUE, 6);
-                            $text = "    - deleting '{$object->name()}'... ";
-                            $object->owner->remove($object);
-
-                            PH::print_stdout( $text );
-                        }
-                    }
-                    else
-                    {
-                        /*
-                        if( $pickedObject->has( $object ) )
-                        {
-                            PH::print_stdout(  "   * SKIPPED : the pickedgroup {$pickedObject->_PANC_shortName()} has an object member named '{$object->_PANC_shortName()} that is planned to be replaced by this group" );
-                            $skip = true;
-                            continue;
-                        }*/
-                        PH::print_stdout( "    - replacing '{$object->_PANC_shortName()}' ..." );
-                        $success = $object->__replaceWhereIamUsed($this->apiMode, $pickedObject, TRUE, 5);
-
-                        if( $success )
-                        {
-                            PH::print_stdout( "    - deleting '{$object->_PANC_shortName()}'" );
-                            if( $this->apiMode )
+                            /*
+                            if( $pickedObject->has( $object ) )
                             {
-                                //true flag needed for nested groups in a specific constellation
-                                $object->owner->API_remove($object, TRUE);
-                            }
-                            else
+                                PH::print_stdout(  "   * SKIPPED : the pickedgroup {$pickedObject->_PANC_shortName()} has an object member named '{$object->_PANC_shortName()} that is planned to be replaced by this group" );
+                                $skip = true;
+                                continue;
+                            }*/
+                            PH::print_stdout("    - replacing '{$object->_PANC_shortName()}' ...");
+                            $success = $object->__replaceWhereIamUsed($this->apiMode, $pickedObject, TRUE, 5);
+
+                            if( $success )
                             {
-                                $object->owner->remove($object, TRUE);
+                                PH::print_stdout("    - deleting '{$object->_PANC_shortName()}'");
+                                if( $this->apiMode )
+                                {
+                                    //true flag needed for nested groups in a specific constellation
+                                    $object->owner->API_remove($object, TRUE);
+                                }
+                                else
+                                {
+                                    $object->owner->remove($object, TRUE);
+                                }
                             }
                         }
-                    }
 
-                    #if( $skip )
-                    #    continue;
+                        #if( $skip )
+                        #    continue;
 
-                    $countRemoved++;
+                        $countRemoved++;
 
-                    if( $this->mergeCountLimit !== FALSE && $countRemoved >= $this->mergeCountLimit )
-                    {
-                        PH::print_stdout( "\n *** STOPPING MERGE OPERATIONS NOW SINCE WE REACHED mergeCountLimit ({$this->mergeCountLimit})" );
-                        break 2;
+                        if( $this->mergeCountLimit !== FALSE && $countRemoved >= $this->mergeCountLimit )
+                        {
+                            PH::print_stdout("\n *** STOPPING MERGE OPERATIONS NOW SINCE WE REACHED mergeCountLimit ({$this->mergeCountLimit})");
+                            break 2;
+                        }
                     }
                 }
             }
@@ -906,21 +914,23 @@ class MERGER extends UTIL
                     if( $skip )
                         continue;
 
-                    /** @var AddressStore $store */
-                    if( $this->apiMode )
+                    if( $this->action === "merge" )
                     {
-                        $oldXpath = $pickedObject->getXPath();
-                        $pickedObject->owner->remove($pickedObject);
-                        $store->add($pickedObject);
-                        $pickedObject->API_sync();
-                        $this->pan->connector->sendDeleteRequest($oldXpath);
+                        /** @var AddressStore $store */
+                        if( $this->apiMode )
+                        {
+                            $oldXpath = $pickedObject->getXPath();
+                            $pickedObject->owner->remove($pickedObject);
+                            $store->add($pickedObject);
+                            $pickedObject->API_sync();
+                            $this->pan->connector->sendDeleteRequest($oldXpath);
+                        }
+                        else
+                        {
+                            $pickedObject->owner->remove($pickedObject);
+                            $store->add($pickedObject);
+                        }
                     }
-                    else
-                    {
-                        $pickedObject->owner->remove($pickedObject);
-                        $store->add($pickedObject);
-                    }
-
 
                     $countChildCreated++;
                 }
@@ -946,24 +956,27 @@ class MERGER extends UTIL
                     }
                 }
 
-                // Merging loop finally!
-                foreach( $hash as $objectIndex => $object )
+                if( $this->action === "merge" )
                 {
-                    if( $object !==  $tmp_address)
+                    // Merging loop finally!
+                    foreach( $hash as $objectIndex => $object )
                     {
-                        PH::print_stdout( "    - group '{$object->name()}' DG: '".$object->owner->owner->name()."' merged with its ancestor at DG: '".$store->owner->name()."', deleting: ".$object->_PANC_shortName() );
-
-                        PH::print_stdout( "    - replacing '{$object->_PANC_shortName()}' ..." );
-                        $success = $object->__replaceWhereIamUsed($this->apiMode, $tmp_address, TRUE, 5);
-
-                        if( $success )
+                        if( $object !== $tmp_address )
                         {
-                            if( $this->apiMode )
-                                $object->owner->API_remove($object, TRUE);
-                            else
-                                $object->owner->remove($object, TRUE);
+                            PH::print_stdout("    - group '{$object->name()}' DG: '" . $object->owner->owner->name() . "' merged with its ancestor at DG: '" . $store->owner->name() . "', deleting: " . $object->_PANC_shortName());
 
-                            $countChildRemoved++;
+                            PH::print_stdout("    - replacing '{$object->_PANC_shortName()}' ...");
+                            $success = $object->__replaceWhereIamUsed($this->apiMode, $tmp_address, TRUE, 5);
+
+                            if( $success )
+                            {
+                                if( $this->apiMode )
+                                    $object->owner->API_remove($object, TRUE);
+                                else
+                                    $object->owner->remove($object, TRUE);
+
+                                $countChildRemoved++;
+                            }
                         }
                     }
                 }
@@ -1056,46 +1069,11 @@ class MERGER extends UTIL
                     // Object with descendants in lower device groups should be excluded
                     if( $this->pan->isPanorama() && $object->owner === $store )
                     {
-
-                        /*
-                        foreach( $childDeviceGroups as $dg )
-                        {
-                            foreach( $dg->addressStore->addressObjects() as $object )
-                            {
-                                if( !$object->isAddress() )
-                                    continue;
-                                if( $object->isTmpAddr() )
-                                    continue;
-
-                                $value = $object->value();
-
-                                PH::print_stdout( "add objNAME: ".$object->name(). " DG: ".$object->owner->owner->name()."" );
-                                $child_hashMap[$value][] = $object;
-                            }*/
-                            /*
-                             * //this does not make sense, why we should NOT merge higher level objects, if same name is available at lower???
-                            if( $dg->addressStore->find($object->name(), null, FALSE) !== null )
-                            {
-                                $tmp_obj = $dg->addressStore->find($object->name(), null, FALSE);
-
-                                PH::print_stdout( "\n- object '" . $object->name() . "' [value '{$object->value()}'] skipped because of same object name [ ";
-                                if( $tmp_obj->isAddress() )
-                                    PH::print_stdout( "with value '{$tmp_obj->value()}'";
-                                else
-                                    PH::print_stdout( "but as ADDRESSGROUP";
-                                PH::print_stdout( " ] available at lower level DG: " . $dg->name() . "" );
-
-                                $skipThisOne = TRUE;
-                                break;
-                            }*/
-                        //}
-
-                        /*
-                        if( $skipThisOne )
-                            continue;
-                        */
-
-
+                        //do something
+                    }
+                    elseif( $this->pan->isFawkes() && $object->owner === $store )
+                    {
+                        //do something
                     }
 
                     $value = $object->value();
@@ -1239,127 +1217,130 @@ class MERGER extends UTIL
                 }
 
 
-                // Merging loop finally!
-                foreach( $hash as $objectIndex => $object )
+                if( $this->action === "merge" )
                 {
-                    /** @var Address $object */
-                    if( isset($object->ancestor) )
+                    // Merging loop finally!
+                    foreach( $hash as $objectIndex => $object )
                     {
-                        $ancestor = $object->ancestor;
-                        $ancestor_different_value = "";
-
-                        if( !$ancestor->isAddress() )
+                        /** @var Address $object */
+                        if( isset($object->ancestor) )
                         {
-                            PH::print_stdout( "    - SKIP: object name '{$object->_PANC_shortName()}' as one ancestor is of type addressgroup" );
+                            $ancestor = $object->ancestor;
+                            $ancestor_different_value = "";
+
+                            if( !$ancestor->isAddress() )
+                            {
+                                PH::print_stdout("    - SKIP: object name '{$object->_PANC_shortName()}' as one ancestor is of type addressgroup");
+                                continue;
+                            }
+
+                            /** @var Address $ancestor */
+                            if( $this->upperLevelSearch && !$ancestor->isGroup() && !$ancestor->isTmpAddr() && ($ancestor->isType_ipNetmask() || $ancestor->isType_ipRange() || $ancestor->isType_FQDN()) )
+                            {
+                                if( $object->getIP4Mapping()->equals($ancestor->getIP4Mapping()) || ($object->isType_FQDN() && $ancestor->isType_FQDN()) && ($object->value() == $ancestor->value()) )
+                                {
+                                    if( $this->dupAlg == 'identical' )
+                                        if( $pickedObject->name() != $ancestor->name() )
+                                        {
+                                            PH::print_stdout("    - SKIP: object name '{$pickedObject->_PANC_shortName()}' [with value '{$pickedObject->value()}'] is not IDENTICAL to object name from upperlevel '{$ancestor->_PANC_shortName()}' [with value '{$ancestor->value()}'] ");
+                                            continue;
+                                        }
+
+                                    $object->merge_tag_description_to($ancestor, $this->apiMode);
+
+                                    $text = "    - object '{$object->name()}' merged with its ancestor, deleting: " . $object->_PANC_shortName();
+                                    $this->deletedObjects[$index]['kept'] = $pickedObject->_PANC_shortName();
+                                    if( $this->deletedObjects[$index]['removed'] == "" )
+                                        $this->deletedObjects[$index]['removed'] = $object->_PANC_shortName();
+                                    else
+                                        $this->deletedObjects[$index]['removed'] .= "|" . $object->_PANC_shortName();
+                                    $object->replaceMeGlobally($ancestor);
+
+                                    if( $this->apiMode )
+                                        $object->owner->API_remove($object);
+                                    else
+                                        $object->owner->remove($object);
+
+                                    PH::print_stdout($text);
+
+                                    $text = "         ancestor name: '{$ancestor->name()}' DG: ";
+                                    if( $ancestor->owner->owner->name() == "" )
+                                        $text .= "'shared'";
+                                    else
+                                        $text .= "'{$ancestor->owner->owner->name()}'";
+                                    $text .= "  value: '{$ancestor->value()}' ";
+                                    PH::print_stdout($text);
+
+                                    if( $pickedObject === $object )
+                                        $pickedObject = $ancestor;
+
+                                    $countRemoved++;
+
+                                    if( $this->mergeCountLimit !== FALSE && $countRemoved >= $this->mergeCountLimit )
+                                    {
+                                        PH::print_stdout("\n *** STOPPING MERGE OPERATIONS NOW SINCE WE REACHED mergeCountLimit ({$this->mergeCountLimit})");
+                                        break 2;
+                                    }
+
+                                    continue;
+                                }
+                                else
+                                    $ancestor_different_value = "with different value";
+
+
+                            }
+                            PH::print_stdout("    - object '{$object->name()}' '{$ancestor->type()}' cannot be merged because it has an ancestor " . $ancestor_different_value . "");
+
+                            $text = "         ancestor name: '{$ancestor->name()}' DG: ";
+                            if( $ancestor->owner->owner->name() == "" )
+                                $text .= "'shared'";
+                            else
+                                $text .= "'{$ancestor->owner->owner->name()}'";
+                            $text .= "  value: '{$ancestor->value()}' ";
+                            PH::print_stdout($text);
+
+                            #unset($this->deletedObjects[$index]);
+                            $this->deletedObjects[$index]['removed'] .= "|->ERROR ancestor: '" . $object->_PANC_shortName() . "' cannot be merged";
+
                             continue;
                         }
 
-                        /** @var Address $ancestor */
-                        if( $this->upperLevelSearch && !$ancestor->isGroup() && !$ancestor->isTmpAddr() && ($ancestor->isType_ipNetmask() || $ancestor->isType_ipRange() || $ancestor->isType_FQDN()) )
+                        if( $object === $pickedObject )
+                            continue;
+
+                        if( $this->dupAlg != 'identical' )
                         {
-                            if( $object->getIP4Mapping()->equals($ancestor->getIP4Mapping())  || ( $object->isType_FQDN() && $ancestor->isType_FQDN() ) && ($object->value() == $ancestor->value() ) )
+                            PH::print_stdout("    - replacing '{$object->_PANC_shortName()}' ...");
+                            $success = $object->__replaceWhereIamUsed($this->apiMode, $pickedObject, TRUE, 5);
+
+                            $object->merge_tag_description_to($pickedObject, $this->apiMode);
+
+                            if( $success )
                             {
-                                if( $this->dupAlg == 'identical' )
-                                    if( $pickedObject->name() != $ancestor->name() )
-                                    {
-                                        PH::print_stdout( "    - SKIP: object name '{$pickedObject->_PANC_shortName()}' [with value '{$pickedObject->value()}'] is not IDENTICAL to object name from upperlevel '{$ancestor->_PANC_shortName()}' [with value '{$ancestor->value()}'] " );
-                                        continue;
-                                    }
-
-                                $object->merge_tag_description_to( $ancestor, $this->apiMode );
-
-                                $text = "    - object '{$object->name()}' merged with its ancestor, deleting: ".$object->_PANC_shortName();
-                                $this->deletedObjects[$index]['kept'] = $pickedObject->name();
+                                PH::print_stdout("    - deleting '{$object->_PANC_shortName()}'");
+                                $this->deletedObjects[$index]['kept'] = $pickedObject->_PANC_shortName();
                                 if( $this->deletedObjects[$index]['removed'] == "" )
-                                    $this->deletedObjects[$index]['removed'] = $object->name();
+                                    $this->deletedObjects[$index]['removed'] = $object->_PANC_shortName();
                                 else
-                                    $this->deletedObjects[$index]['removed'] .= "|" . $object->name();
-                                $object->replaceMeGlobally($ancestor);
-
+                                    $this->deletedObjects[$index]['removed'] .= "|" . $object->_PANC_shortName();
                                 if( $this->apiMode )
                                     $object->owner->API_remove($object);
                                 else
                                     $object->owner->remove($object);
 
-                                PH::print_stdout( $text );
-
-                                $text = "         ancestor name: '{$ancestor->name()}' DG: ";
-                                if( $ancestor->owner->owner->name() == "" )
-                                    $text .= "'shared'";
-                                else
-                                    $text .= "'{$ancestor->owner->owner->name()}'";
-                                $text .=  "  value: '{$ancestor->value()}' ";
-                                PH::print_stdout( $text );
-
-                                if( $pickedObject === $object )
-                                    $pickedObject = $ancestor;
-
                                 $countRemoved++;
-
-                                if( $this->mergeCountLimit !== FALSE && $countRemoved >= $this->mergeCountLimit )
-                                {
-                                    PH::print_stdout( "\n *** STOPPING MERGE OPERATIONS NOW SINCE WE REACHED mergeCountLimit ({$this->mergeCountLimit})" );
-                                    break 2;
-                                }
-
-                                continue;
                             }
-                            else
-                                $ancestor_different_value = "with different value";
 
 
+                            if( $this->mergeCountLimit !== FALSE && $countRemoved >= $this->mergeCountLimit )
+                            {
+                                PH::print_stdout("\n *** STOPPING MERGE OPERATIONS NOW SINCE WE REACHED mergeCountLimit ({$this->mergeCountLimit})");
+                                break 2;
+                            }
                         }
-                        PH::print_stdout( "    - object '{$object->name()}' '{$ancestor->type()}' cannot be merged because it has an ancestor " . $ancestor_different_value . "" );
-
-                        $text = "         ancestor name: '{$ancestor->name()}' DG: ";
-                        if( $ancestor->owner->owner->name() == "" )
-                            $text .= "'shared'";
                         else
-                            $text .= "'{$ancestor->owner->owner->name()}'";
-                        $text .=  "  value: '{$ancestor->value()}' ";
-                        PH::print_stdout($text);
-
-                        #unset($this->deletedObjects[$index]);
-                        $this->deletedObjects[$index]['removed'] .= "|->ERROR ancestor: '" . $object->name() . "' cannot be merged";
-
-                        continue;
+                            PH::print_stdout("    - SKIP: object name '{$object->_PANC_shortName()}' is not IDENTICAL");
                     }
-
-                    if( $object === $pickedObject )
-                        continue;
-
-                    if( $this->dupAlg != 'identical' )
-                    {
-                        PH::print_stdout( "    - replacing '{$object->_PANC_shortName()}' ..." );
-                        $success = $object->__replaceWhereIamUsed($this->apiMode, $pickedObject, TRUE, 5);
-
-                        $object->merge_tag_description_to( $pickedObject, $this->apiMode );
-
-                        if( $success )
-                        {
-                            PH::print_stdout( "    - deleting '{$object->_PANC_shortName()}'" );
-                            $this->deletedObjects[$index]['kept'] = $pickedObject->name();
-                            if( $this->deletedObjects[$index]['removed'] == "" )
-                                $this->deletedObjects[$index]['removed'] = $object->name();
-                            else
-                                $this->deletedObjects[$index]['removed'] .= "|" . $object->name();
-                            if( $this->apiMode )
-                                $object->owner->API_remove($object);
-                            else
-                                $object->owner->remove($object);
-
-                            $countRemoved++;
-                        }
-
-
-                        if( $this->mergeCountLimit !== FALSE && $countRemoved >= $this->mergeCountLimit )
-                        {
-                            PH::print_stdout( "\n *** STOPPING MERGE OPERATIONS NOW SINCE WE REACHED mergeCountLimit ({$this->mergeCountLimit})" );
-                            break 2;
-                        }
-                    }
-                    else
-                        PH::print_stdout( "    - SKIP: object name '{$object->_PANC_shortName()}' is not IDENTICAL" );
                 }
             }
 
@@ -1368,8 +1349,8 @@ class MERGER extends UTIL
             $countChildCreated = 0;
             foreach( $child_hashMap as $index => &$hash )
             {
-                PH::print_stdout( "" );
-                PH::print_stdout( " - value '{$index}'" );
+                PH::print_stdout("");
+                PH::print_stdout(" - value '{$index}'");
                 $this->deletedObjects[$index]['kept'] = "";
                 $this->deletedObjects[$index]['removed'] = "";
 
@@ -1399,50 +1380,53 @@ class MERGER extends UTIL
                 if( $tmp_DG_name == "" )
                     $tmp_DG_name = 'shared';
 
-                $tmp_address = $store->find( $pickedObject->name() );
+                $tmp_address = $store->find($pickedObject->name());
                 if( $tmp_address == null )
                 {
-                    if( isset( $child_NamehashMap[ $pickedObject->name() ] ) )
+                    if( isset($child_NamehashMap[$pickedObject->name()]) )
                     {
-                        $exit = false;
+                        $exit = FALSE;
                         $exitObject = null;
-                        foreach( $child_NamehashMap[ $pickedObject->name() ] as $obj )
+                        foreach( $child_NamehashMap[$pickedObject->name()] as $obj )
                         {
                             if( $obj === $pickedObject )
                                 continue;
 
                             /** @var Address $obj */
                             /** @var Address $pickedObject */
-                            if( (!$obj->isType_FQDN() && !$pickedObject->isType_FQDN() ) &&  $obj->getNetworkMask() == '32' && $pickedObject->getNetworkMask() == '32'  )
+                            if( (!$obj->isType_FQDN() && !$pickedObject->isType_FQDN()) && $obj->getNetworkMask() == '32' && $pickedObject->getNetworkMask() == '32' )
                             {
-                                if( ($obj->getNetworkMask() == $pickedObject->getNetworkMask() ) && $obj->getNetworkValue() == $pickedObject->getNetworkValue() )
-                                    $exit = false;
+                                if( ($obj->getNetworkMask() == $pickedObject->getNetworkMask()) && $obj->getNetworkValue() == $pickedObject->getNetworkValue() )
+                                    $exit = FALSE;
                                 else
                                 {
-                                    $exit = true;
+                                    $exit = TRUE;
                                     $exitObject = $obj;
                                 }
                             }
-                            elseif(  $obj->value() !== $pickedObject->value() )
+                            elseif( $obj->value() !== $pickedObject->value() )
                             {
-                                $exit = true;
+                                $exit = TRUE;
                                 $exitObject = $obj;
                             }
                         }
 
                         if( $exit )
                         {
-                            PH::print_stdout( "   * SKIP: no creation of object in DG: '".$tmp_DG_name."' as object with same name '{$exitObject->name()}' and different value '{$exitObject->value()}' exist at childDG level" );
+                            PH::print_stdout("   * SKIP: no creation of object in DG: '" . $tmp_DG_name . "' as object with same name '{$exitObject->name()}' and different value '{$exitObject->value()}' exist at childDG level");
                             continue;
                         }
                     }
-                    PH::print_stdout( "   * create object in DG: '".$tmp_DG_name."' : '".$pickedObject->name()."'" );
+                    PH::print_stdout("   * create object in DG: '" . $tmp_DG_name . "' : '" . $pickedObject->name() . "'");
 
-                    /** @var AddressStore $store */
-                    if( $this->apiMode )
-                        $tmp_address = $store->API_newAddress($pickedObject->name(), $pickedObject->type(), $pickedObject->value(), $pickedObject->description() );
-                    else
-                        $tmp_address = $store->newAddress($pickedObject->name(), $pickedObject->type(), $pickedObject->value(), $pickedObject->description() );
+                    if( $this->action === "merge" )
+                    {
+                        /** @var AddressStore $store */
+                        if( $this->apiMode )
+                            $tmp_address = $store->API_newAddress($pickedObject->name(), $pickedObject->type(), $pickedObject->value(), $pickedObject->description());
+                        else
+                            $tmp_address = $store->newAddress($pickedObject->name(), $pickedObject->type(), $pickedObject->value(), $pickedObject->description());
+                    }
 
                     $countChildCreated++;
                 }
@@ -1451,7 +1435,7 @@ class MERGER extends UTIL
                     /** @var Address $tmp_address */
                     if( $tmp_address->isAddress() && $pickedObject->isAddress() && $tmp_address->type() === $pickedObject->type() && $tmp_address->value() === $pickedObject->value() )
                     {
-                        PH::print_stdout( "   * keeping object '{$tmp_address->_PANC_shortName()}'" );
+                        PH::print_stdout("   * keeping object '{$tmp_address->_PANC_shortName()}'");
                     }
                     else
                     {
@@ -1469,32 +1453,35 @@ class MERGER extends UTIL
                         else
                             $string .= " [AdressGroup]";
 
-                        PH::print_stdout( $string );
+                        PH::print_stdout($string);
 
                         continue;
                     }
                 }
 
-                // Merging loop finally!
-                foreach( $hash as $objectIndex => $object )
+                if( $this->action === "merge" )
                 {
-                    PH::print_stdout( "    - replacing '{$object->_PANC_shortName()}' ..." );
-                    $object->__replaceWhereIamUsed($this->apiMode, $tmp_address, TRUE, 5);
-
-                    $object->merge_tag_description_to($tmp_address, $this->apiMode);
-
-                    PH::print_stdout( "    - deleting '{$object->_PANC_shortName()}'" );
-                    $this->deletedObjects[$index]['kept'] = $tmp_address->name();
-                    if( $this->deletedObjects[$index]['removed'] == "" )
-                        $this->deletedObjects[$index]['removed'] = $object->name();
-                    else
-                        $this->deletedObjects[$index]['removed'] .= "|" . $object->name();
-                    if( $this->apiMode )
-                        $object->owner->API_remove($object);
-                    else
-                        $object->owner->remove($object);
-
-                    $countChildRemoved++;
+                    // Merging loop finally!
+                    foreach( $hash as $objectIndex => $object )
+                    {
+                        PH::print_stdout("    - replacing '{$object->_PANC_shortName()}' ...");
+                        $object->__replaceWhereIamUsed($this->apiMode, $tmp_address, TRUE, 5);
+    
+                        $object->merge_tag_description_to($tmp_address, $this->apiMode);
+    
+                        PH::print_stdout("    - deleting '{$object->_PANC_shortName()}'");
+                        $this->deletedObjects[$index]['kept'] = $tmp_address->_PANC_shortName();
+                        if( $this->deletedObjects[$index]['removed'] == "" )
+                            $this->deletedObjects[$index]['removed'] = $object->_PANC_shortName();
+                        else
+                            $this->deletedObjects[$index]['removed'] .= "|" . $object->_PANC_shortName();
+                        if( $this->apiMode )
+                            $object->owner->API_remove($object);
+                        else
+                            $object->owner->remove($object);
+    
+                        $countChildRemoved++;
+                    }
                 }
             }
 
@@ -1661,11 +1648,11 @@ class MERGER extends UTIL
             $countRemoved = 0;
             foreach( $hashMap as $index => &$hash )
             {
-                PH::print_stdout( "" );
+                PH::print_stdout("");
 
                 if( $this->dupAlg == 'sameportmapping' )
                 {
-                    PH::print_stdout( " - value '{$index}'" );
+                    PH::print_stdout(" - value '{$index}'");
                 }
 
                 $setList = array();
@@ -1674,7 +1661,7 @@ class MERGER extends UTIL
                     /** @var Service $object */
                     $setList[] = PH::getLocationString($object->owner->owner) . '/' . $object->name();
                 }
-                PH::print_stdout( " - duplicate set : '" . PH::list_to_string($setList) . "'" );
+                PH::print_stdout(" - duplicate set : '" . PH::list_to_string($setList) . "'");
 
                 $pickedObject = null;
 
@@ -1693,7 +1680,7 @@ class MERGER extends UTIL
                         if( $pickedObject === null )
                             $pickedObject = reset($upperHashMap[$index]);
 
-                        PH::print_stdout( "   * using object from upper level : '{$pickedObject->_PANC_shortName()}'" );
+                        PH::print_stdout("   * using object from upper level : '{$pickedObject->_PANC_shortName()}'");
                     }
                     else
                     {
@@ -1708,7 +1695,7 @@ class MERGER extends UTIL
                         if( $pickedObject === null )
                             $pickedObject = reset($hash);
 
-                        PH::print_stdout( "   * keeping object '{$pickedObject->_PANC_shortName()}'" );
+                        PH::print_stdout("   * keeping object '{$pickedObject->_PANC_shortName()}'");
                     }
                 }
                 else
@@ -1716,142 +1703,144 @@ class MERGER extends UTIL
                     if( isset($upperHashMap[$index]) )
                     {
                         $pickedObject = reset($upperHashMap[$index]);
-                        PH::print_stdout( "   * using object from upper level : '{$pickedObject->_PANC_shortName()}'" );
+                        PH::print_stdout("   * using object from upper level : '{$pickedObject->_PANC_shortName()}'");
                     }
                     else
                     {
                         $pickedObject = reset($hash);
-                        PH::print_stdout( "   * keeping object '{$pickedObject->_PANC_shortName()}'" );
+                        PH::print_stdout("   * keeping object '{$pickedObject->_PANC_shortName()}'");
                     }
                 }
-
-                // Merging loop finally!
-                foreach( $hash as $object )
+                if( $this->action === "merge" )
                 {
-                    /** @var ServiceGroup $object */
-                    if( isset($object->ancestor) )
+                    // Merging loop finally!
+                    foreach( $hash as $object )
                     {
-                        $ancestor = $object->ancestor;
-                        /** @var ServiceGroup $ancestor */
-                        if( $this->upperLevelSearch && $ancestor->isGroup() )
+                        /** @var ServiceGroup $object */
+                        if( isset($object->ancestor) )
                         {
-                            if( $hashGenerator($object) != $hashGenerator($ancestor) )
+                            $ancestor = $object->ancestor;
+                            /** @var ServiceGroup $ancestor */
+                            if( $this->upperLevelSearch && $ancestor->isGroup() )
                             {
-                                $ancestor->displayValueDiff( $object, 7 );
-
-                                if( $this->addMissingObjects )
+                                if( $hashGenerator($object) != $hashGenerator($ancestor) )
                                 {
-                                    $diff = $ancestor->getValueDiff( $object );
-
-                                    if( count($diff['minus']) != 0 )
-                                        foreach( $diff['minus'] as $d )
-                                        {
-                                            /** @var Service|ServiceGroup $d */
-
-                                            if( $ancestor->owner->find( $d->name() ) !== null )
+                                    $ancestor->displayValueDiff($object, 7);
+    
+                                    if( $this->addMissingObjects )
+                                    {
+                                        $diff = $ancestor->getValueDiff($object);
+    
+                                        if( count($diff['minus']) != 0 )
+                                            foreach( $diff['minus'] as $d )
                                             {
-                                                PH::print_stdout( "      - adding objects to group: ".$d->name()."" );
-                                                if( $this->apiMode )
-                                                    $ancestor->API_addMember( $d );
-                                                else
-                                                    $ancestor->addMember( $d );
+                                                /** @var Service|ServiceGroup $d */
+    
+                                                if( $ancestor->owner->find($d->name()) !== null )
+                                                {
+                                                    PH::print_stdout("      - adding objects to group: " . $d->name() . "");
+                                                    if( $this->apiMode )
+                                                        $ancestor->API_addMember($d);
+                                                    else
+                                                        $ancestor->addMember($d);
+                                                }
                                             }
-                                        }
-
-                                    if( count($diff['plus']) != 0 )
-                                        foreach( $diff['plus'] as $d )
-                                        {
-                                            /** @var Service|ServiceGroup $d */
-                                            //TMP usage to clean DG level SERVICEgroup up
-                                            $object->addMember( $d );
-                                        }
+    
+                                        if( count($diff['plus']) != 0 )
+                                            foreach( $diff['plus'] as $d )
+                                            {
+                                                /** @var Service|ServiceGroup $d */
+                                                //TMP usage to clean DG level SERVICEgroup up
+                                                $object->addMember($d);
+                                            }
+                                    }
                                 }
-                            }
-
-                            if( $hashGenerator($object) == $hashGenerator($ancestor) )
-                            {
-                                $text = "    - group '{$object->name()}' merged with its ancestor, deleting: ".$object->_PANC_shortName();
-                                $object->replaceMeGlobally($ancestor);
-                                if( $this->apiMode )
-                                    $object->owner->API_remove($object);
-                                else
-                                    $object->owner->remove($object);
-
-                                PH::print_stdout( $text );
-
-                                if( $pickedObject === $object )
-                                    $pickedObject = $ancestor;
-
-                                $countRemoved++;
-                                if( $this->mergeCountLimit !== FALSE && $countRemoved >= $this->mergeCountLimit )
+    
+                                if( $hashGenerator($object) == $hashGenerator($ancestor) )
                                 {
-                                    PH::print_stdout( "\n *** STOPPING MERGE OPERATIONS NOW SINCE WE REACHED mergeCountLimit ({$this->mergeCountLimit})" );
-                                    break 2;
+                                    $text = "    - group '{$object->name()}' merged with its ancestor, deleting: " . $object->_PANC_shortName();
+                                    $object->replaceMeGlobally($ancestor);
+                                    if( $this->apiMode )
+                                        $object->owner->API_remove($object);
+                                    else
+                                        $object->owner->remove($object);
+    
+                                    PH::print_stdout($text);
+    
+                                    if( $pickedObject === $object )
+                                        $pickedObject = $ancestor;
+    
+                                    $countRemoved++;
+                                    if( $this->mergeCountLimit !== FALSE && $countRemoved >= $this->mergeCountLimit )
+                                    {
+                                        PH::print_stdout("\n *** STOPPING MERGE OPERATIONS NOW SINCE WE REACHED mergeCountLimit ({$this->mergeCountLimit})");
+                                        break 2;
+                                    }
+                                    continue;
                                 }
-                                continue;
+                            }
+                            PH::print_stdout("    - group '{$object->name()}' cannot be merged because it has an ancestor");
+                            continue;
+                        }
+    
+                        if( $object === $pickedObject )
+                            continue;
+    
+                        if( $this->dupAlg == 'whereused' )
+                        {
+                            PH::print_stdout("    - merging '{$object->name()}' members into '{$pickedObject->name()}': ");
+                            foreach( $object->members() as $member )
+                            {
+                                $text = "     - adding member '{$member->name()}'... ";
+                                if( $this->apiMode )
+                                    $pickedObject->API_addMember($member);
+                                else
+                                    $pickedObject->addMember($member);
+    
+                                PH::print_stdout($text);
+                            }
+                            PH::print_stdout("    - now removing '{$object->name()} from where it's used");
+                            if( $this->apiMode )
+                            {
+                                $object->API_removeWhereIamUsed(TRUE, 6);
+                                $text = "    - deleting '{$object->name()}'... ";
+                                $object->owner->API_remove($object);
+    
+                                PH::print_stdout($text);
+                            }
+                            else
+                            {
+                                $object->removeWhereIamUsed(TRUE, 6);
+                                $text = "    - deleting '{$object->name()}'... ";
+                                $object->owner->remove($object);
+    
+                                PH::print_stdout($text);
                             }
                         }
-                        PH::print_stdout( "    - group '{$object->name()}' cannot be merged because it has an ancestor" );
-                        continue;
-                    }
-
-                    if( $object === $pickedObject )
-                        continue;
-
-                    if( $this->dupAlg == 'whereused' )
-                    {
-                        PH::print_stdout( "    - merging '{$object->name()}' members into '{$pickedObject->name()}': " );
-                        foreach( $object->members() as $member )
+                        else
                         {
-                            $text = "     - adding member '{$member->name()}'... ";
+                            PH::print_stdout("    - replacing '{$object->_PANC_shortName()}' ...");
+                            $object->__replaceWhereIamUsed($this->apiMode, $pickedObject, TRUE, 5);
+    
+                            PH::print_stdout("    - deleting '{$object->_PANC_shortName()}'");
                             if( $this->apiMode )
-                                $pickedObject->API_addMember($member);
+                            {
+                                //true flag needed for nested groups in a specific constellation
+                                $object->owner->API_remove($object, TRUE);
+                            }
                             else
-                                $pickedObject->addMember($member);
-
-                            PH::print_stdout( $text );
+                            {
+                                $object->owner->remove($object, TRUE);
+                            }
                         }
-                        PH::print_stdout( "    - now removing '{$object->name()} from where it's used" );
-                        if( $this->apiMode )
+    
+                        $countRemoved++;
+    
+                        if( $this->mergeCountLimit !== FALSE && $countRemoved >= $this->mergeCountLimit )
                         {
-                            $object->API_removeWhereIamUsed(TRUE, 6);
-                            $text = "    - deleting '{$object->name()}'... ";
-                            $object->owner->API_remove($object);
-
-                            PH::print_stdout( $text );
+                            PH::print_stdout("\n *** STOPPING MERGE OPERATIONS NOW SINCE WE REACHED mergeCountLimit ({$this->mergeCountLimit})");
+                            break 2;
                         }
-                        else
-                        {
-                            $object->removeWhereIamUsed(TRUE, 6);
-                            $text = "    - deleting '{$object->name()}'... ";
-                            $object->owner->remove($object);
-
-                            PH::print_stdout( $text );
-                        }
-                    }
-                    else
-                    {
-                        PH::print_stdout( "    - replacing '{$object->_PANC_shortName()}' ..." );
-                        $object->__replaceWhereIamUsed($this->apiMode, $pickedObject, TRUE, 5);
-
-                        PH::print_stdout( "    - deleting '{$object->_PANC_shortName()}'" );
-                        if( $this->apiMode )
-                        {
-                            //true flag needed for nested groups in a specific constellation
-                            $object->owner->API_remove($object, TRUE);
-                        }
-                        else
-                        {
-                            $object->owner->remove($object, TRUE);
-                        }
-                    }
-
-                    $countRemoved++;
-
-                    if( $this->mergeCountLimit !== FALSE && $countRemoved >= $this->mergeCountLimit )
-                    {
-                        PH::print_stdout( "\n *** STOPPING MERGE OPERATIONS NOW SINCE WE REACHED mergeCountLimit ({$this->mergeCountLimit})" );
-                        break 2;
                     }
                 }
             }
@@ -1937,29 +1926,9 @@ class MERGER extends UTIL
                     $skipThisOne = FALSE;
 
                     // Object with descendants in lower device groups should be excluded
-                    if( $this->pan->isPanorama() && $object->owner === $store )
+                    if( $this->pan->isPanorama() )
                     {
-                        /*
-                        foreach( $childDeviceGroups as $dg )
-                        {
-                            if( $dg->serviceStore->find($object->name(), null, FALSE) !== null )
-                            {
-                                $tmp_obj = $dg->serviceStore->find($object->name(), null, FALSE);
-
-                                PH::print_stdout( "\n- object '" . $object->name() . "' [prot: '{$object->protocol()}' dst: '{$object->dstPortMapping()->mappingToText()}' src: '{$object->srcPortMapping()->mappingToText()}'] skipped because of same object name [ ";
-                                if( $tmp_obj->isService() )
-                                    PH::print_stdout( "with prot: '{$tmp_obj->protocol()}' dst: '{$tmp_obj->dstPortMapping()->mappingToText()}' src: '{$tmp_obj->srcPortMapping()->mappingToText()}'";
-                                else
-                                    PH::print_stdout( "but as SERVICEGROUP";
-                                PH::print_stdout( " ] available at lower level DG: " . $dg->name() . "" );
-
-                                $skipThisOne = TRUE;
-                                break;
-                            }
-                        }
-                        if( $skipThisOne )
-                            continue;
-                        */
+                        //do something
                     }
                     elseif( $this->pan->isFawkes() && $object->owner === $store )
                     {
@@ -2129,11 +2098,14 @@ class MERGER extends UTIL
                                     }
 
                                     $text = "    - object '{$object->name()}' merged with its ancestor, deleting: ".$object->_PANC_shortName();
-                                    $object->replaceMeGlobally($ancestor);
-                                    if( $this->apiMode )
-                                        $object->owner->API_remove($object, TRUE);
-                                    else
-                                        $object->owner->remove($object, TRUE);
+                                    if( $this->action === "merge" )
+                                    {
+                                        $object->replaceMeGlobally($ancestor);
+                                        if( $this->apiMode )
+                                            $object->owner->API_remove($object, TRUE);
+                                        else
+                                            $object->owner->remove($object, TRUE);
+                                    }
 
                                     PH::print_stdout( $text );
 
@@ -2181,18 +2153,16 @@ class MERGER extends UTIL
                         if( $object === $pickedObject )
                             continue;
 
-
-                        PH::print_stdout( "    - replacing '{$object->_PANC_shortName()}' ..." );
-                        $object->__replaceWhereIamUsed($this->apiMode, $pickedObject, TRUE, 5);
-
-                        PH::print_stdout( "    - deleting '{$object->_PANC_shortName()}'" );
-                        if( $this->apiMode )
+                        if( $this->action === "merge" )
                         {
-                            $object->owner->API_remove($object, TRUE);
-                        }
-                        else
-                        {
-                            $object->owner->remove($object, TRUE);
+                            PH::print_stdout("    - replacing '{$object->_PANC_shortName()}' ...");
+                            $object->__replaceWhereIamUsed($this->apiMode, $pickedObject, TRUE, 5);
+
+                            PH::print_stdout("    - deleting '{$object->_PANC_shortName()}'");
+                            if( $this->apiMode )
+                                $object->owner->API_remove($object, TRUE);
+                            else
+                                $object->owner->remove($object, TRUE);
                         }
 
                         $countRemoved++;
@@ -2265,11 +2235,14 @@ class MERGER extends UTIL
                         }
                         PH::print_stdout( "   * create object in DG: '".$tmp_DG_name."' : '".$pickedObject->name()."'" );
 
-                        /** @var ServiceStore $store */
-                        if( $this->apiMode )
-                            $tmp_service = $store->API_newService($pickedObject->name(), $pickedObject->protocol(), $pickedObject->getDestPort(), $pickedObject->description(), $pickedObject->getSourcePort() );
-                        else
-                            $tmp_service = $store->newService($pickedObject->name(), $pickedObject->protocol(), $pickedObject->getDestPort(), $pickedObject->description(), $pickedObject->getSourcePort() );
+                        if( $this->action === "merge" )
+                        {
+                            /** @var ServiceStore $store */
+                            if( $this->apiMode )
+                                $tmp_service = $store->API_newService($pickedObject->name(), $pickedObject->protocol(), $pickedObject->getDestPort(), $pickedObject->description(), $pickedObject->getSourcePort());
+                            else
+                                $tmp_service = $store->newService($pickedObject->name(), $pickedObject->protocol(), $pickedObject->getDestPort(), $pickedObject->description(), $pickedObject->getSourcePort());
+                        }
 
                         $countChildCreated++;
                     }
@@ -2299,27 +2272,30 @@ class MERGER extends UTIL
                             continue;
                         }
                     }
-
-                    // Merging loop finally!
-                    foreach( $hash as $objectIndex => $object )
+                    
+                    if( $this->action === "merge" )
                     {
-                        PH::print_stdout( "    - replacing '{$object->_PANC_shortName()}' ..." );
-                        $object->__replaceWhereIamUsed($this->apiMode, $tmp_service, TRUE, 5);
+                        // Merging loop finally!
+                        foreach( $hash as $objectIndex => $object )
+                        {
+                            PH::print_stdout("    - replacing '{$object->_PANC_shortName()}' ...");
+                            $object->__replaceWhereIamUsed($this->apiMode, $tmp_service, TRUE, 5);
 
-                        #$object->merge_tag_description_to($tmp_service, $this->apiMode);
+                            #$object->merge_tag_description_to($tmp_service, $this->apiMode);
 
-                        PH::print_stdout( "    - deleting '{$object->_PANC_shortName()}'" );
-                        $this->deletedObjects[$index]['kept'] = $tmp_service->name();
-                        if( $this->deletedObjects[$index]['removed'] == "" )
-                            $this->deletedObjects[$index]['removed'] = $object->name();
-                        else
-                            $this->deletedObjects[$index]['removed'] .= "|" . $object->name();
-                        if( $this->apiMode )
-                            $object->owner->API_remove($object);
-                        else
-                            $object->owner->remove($object);
+                            PH::print_stdout("    - deleting '{$object->_PANC_shortName()}'");
+                            $this->deletedObjects[$index]['kept'] = $tmp_service->_PANC_shortName();
+                            if( $this->deletedObjects[$index]['removed'] == "" )
+                                $this->deletedObjects[$index]['removed'] = $object->_PANC_shortName();
+                            else
+                                $this->deletedObjects[$index]['removed'] .= "|" . $object->_PANC_shortName();
+                            if( $this->apiMode )
+                                $object->owner->API_remove($object);
+                            else
+                                $object->owner->remove($object);
 
-                        $countChildRemoved++;
+                            $countChildRemoved++;
+                        }
                     }
                 }
             }
@@ -2380,32 +2356,34 @@ class MERGER extends UTIL
 
                         $localMapping = $object->dstPortMapping();
                         PH::print_stdout( "    - adding the following ports to first service: " . $localMapping->mappingToText() . "" );
-                        $localMapping->mergeWithMapping($pickedObject->dstPortMapping());
-
-                        if( $this->apiMode )
+                        if( $this->action === "merge" )
                         {
-                            if( $pickedObject->isTcp() )
-                                $pickedObject->API_setDestPort($localMapping->tcpMappingToText());
-                            else
-                                $pickedObject->API_setDestPort($localMapping->udpMappingToText());
-                            PH::print_stdout( "    - removing '{$object->name()}' from places where it's used:" );
-                            $object->API_removeWhereIamUsed(TRUE, 7);
-                            $object->owner->API_remove($object);
-                            $countRemoved++;
-                        }
-                        else
-                        {
-                            if( $pickedObject->isTcp() )
-                                $pickedObject->setDestPort($localMapping->tcpMappingToText());
-                            else
-                                $pickedObject->setDestPort($localMapping->udpMappingToText());
+                            $localMapping->mergeWithMapping($pickedObject->dstPortMapping());
 
-                            PH::print_stdout( "    - removing '{$object->name()}' from places where it's used:" );
-                            $object->removeWhereIamUsed(TRUE, 7);
-                            $object->owner->remove($object);
-                            $countRemoved++;
-                        }
+                            if( $this->apiMode )
+                            {
+                                if( $pickedObject->isTcp() )
+                                    $pickedObject->API_setDestPort($localMapping->tcpMappingToText());
+                                else
+                                    $pickedObject->API_setDestPort($localMapping->udpMappingToText());
+                                PH::print_stdout("    - removing '{$object->name()}' from places where it's used:");
+                                $object->API_removeWhereIamUsed(TRUE, 7);
+                                $object->owner->API_remove($object);
+                                $countRemoved++;
+                            }
+                            else
+                            {
+                                if( $pickedObject->isTcp() )
+                                    $pickedObject->setDestPort($localMapping->tcpMappingToText());
+                                else
+                                    $pickedObject->setDestPort($localMapping->udpMappingToText());
 
+                                PH::print_stdout("    - removing '{$object->name()}' from places where it's used:");
+                                $object->removeWhereIamUsed(TRUE, 7);
+                                $object->owner->remove($object);
+                                $countRemoved++;
+                            }
+                        }
 
                         if( $this->mergeCountLimit !== FALSE && $countRemoved >= $this->mergeCountLimit )
                         {
@@ -2501,20 +2479,7 @@ class MERGER extends UTIL
                     // Object with descendants in lower device groups should be excluded
                     if( $this->pan->isPanorama() && $object->owner === $store )
                     {
-                        /*
-                        foreach( $childDeviceGroups as $dg )
-                        {
-                            if( $dg->tagStore->find($object->name(), null, FALSE) !== null )
-                            {
-                                $tmp_obj = $dg->tagStore->find($object->name(), null, FALSE);
-                                PH::print_stdout( PH::boldText("\n\n - object '" . $object->name() . "' [value '{$object->getColor()}'] skipped because of same object name [with value '{$tmp_obj->getColor()}'] available at lower level DG: " . $dg->name() . "\n\n");
-                                $skipThisOne = TRUE;
-                                break;
-                            }
-                        }
-                        if( $skipThisOne )
-                            continue;
-                        */
+                        //do something
                     }
                     elseif( $this->pan->isPanorama() && $object->owner === $store )
                     {
@@ -2657,122 +2622,128 @@ class MERGER extends UTIL
                     }
                 }
 
-
-                // Merging loop finally!
-                foreach( $hash as $objectIndex => $object )
+                if( $this->action === "merge" )
                 {
-                    /** @var Tag $object */
-                    if( isset($object->ancestor) )
+                    // Merging loop finally!
+                    foreach( $hash as $objectIndex => $object )
                     {
-                        $ancestor = $object->ancestor;
-                        $ancestor_different_color = "";
-
-                        if( !$ancestor->isTag() )
+                        /** @var Tag $object */
+                        if( isset($object->ancestor) )
                         {
-                            PH::print_stdout( "    - SKIP: object name '{$object->_PANC_shortName()}' has one ancestor which is not TAG object" );
+                            $ancestor = $object->ancestor;
+                            $ancestor_different_color = "";
+
+                            if( !$ancestor->isTag() )
+                            {
+                                PH::print_stdout("    - SKIP: object name '{$object->_PANC_shortName()}' has one ancestor which is not TAG object");
+                                continue;
+                            }
+
+                            /** @var Tag $ancestor */
+                            #if( $this->upperLevelSearch && !$ancestor->isGroup() && !$ancestor->isTmpAddr() && ($ancestor->isType_ipNetmask() || $ancestor->isType_ipRange() || $ancestor->isType_FQDN()) )
+                            if( $this->upperLevelSearch && !$ancestor->isTmp() )
+                            {
+                                if( $object->sameValue($ancestor) || $this->dupAlg == 'samename' ) //same color
+                                {
+                                    if( $this->dupAlg == 'identical' )
+                                        if( $pickedObject->name() != $ancestor->name() )
+                                        {
+                                            PH::print_stdout("    - SKIP: object name '{$object->_PANC_shortName()}' is not IDENTICAL to object name from upperlevel '{$pickedObject->_PANC_shortName()}' ");
+                                            continue;
+                                        }
+
+                                    $text = "    - object '{$object->name()}' merged with its ancestor, deleting: " . $object->_PANC_shortName();
+                                    $this->deletedObjects[$index]['kept'] = $pickedObject->_PANC_shortName();
+                                    if( $this->deletedObjects[$index]['removed'] == "" )
+                                        $this->deletedObjects[$index]['removed'] = $object->_PANC_shortName();
+                                    else
+                                        $this->deletedObjects[$index]['removed'] .= "|" . $object->_PANC_shortName();
+
+                                    if( $this->action === "merge" )
+                                    {
+                                        $object->replaceMeGlobally($ancestor);
+                                        if( $this->apiMode )
+                                            $object->owner->API_removeTag($object);
+                                        else
+                                            $object->owner->removeTag($object);
+                                    }
+
+                                    PH::print_stdout($text);
+
+                                    $text = "         ancestor name: '{$ancestor->name()}' DG: ";
+                                    if( $ancestor->owner->owner->name() == "" ) $text .= "'shared'";
+                                    else $text .= "'{$ancestor->owner->owner->name()}'";
+                                    $text .= "  color: '{$ancestor->getColor()}' ";
+                                    PH::print_stdout($text);
+
+                                    if( $pickedObject === $object )
+                                        $pickedObject = $ancestor;
+
+                                    $countRemoved++;
+
+                                    if( $this->mergeCountLimit !== FALSE && $countRemoved >= $this->mergeCountLimit )
+                                    {
+                                        PH::print_stdout("\n *** STOPPING MERGE OPERATIONS NOW SINCE WE REACHED mergeCountLimit ({$this->mergeCountLimit})");
+                                        break 2;
+                                    }
+
+                                    continue;
+                                }
+                                else
+                                    $ancestor_different_color = "with different color";
+
+
+                            }
+                            PH::print_stdout("    - object '{$object->name()}' cannot be merged because it has an ancestor " . $ancestor_different_color . "");
+
+                            $text = "         ancestor name: '{$ancestor->name()}' DG: ";
+                            if( $ancestor->owner->owner->name() == "" ) $text .= "'shared'";
+                            else $text .= "'{$ancestor->owner->owner->name()}'";
+                            $text .= "  color: '{$ancestor->getColor()}' ";
+                            PH::print_stdout($text);
+
+                            #unset($this->deletedObjects[$index]);
+                            $this->deletedObjects[$index]['removed'] .= "|->ERROR ancestor: '" . $object->_PANC_shortName() . "' cannot be merged";
+
                             continue;
                         }
 
-                        /** @var Tag $ancestor */
-                        #if( $this->upperLevelSearch && !$ancestor->isGroup() && !$ancestor->isTmpAddr() && ($ancestor->isType_ipNetmask() || $ancestor->isType_ipRange() || $ancestor->isType_FQDN()) )
-                        if( $this->upperLevelSearch && !$ancestor->isTmp() )
-                        {
-                            if( $object->sameValue($ancestor) || $this->dupAlg == 'samename' ) //same color
-                            {
-                                if( $this->dupAlg == 'identical' )
-                                    if( $pickedObject->name() != $ancestor->name() )
-                                    {
-                                        PH::print_stdout( "    - SKIP: object name '{$object->_PANC_shortName()}' is not IDENTICAL to object name from upperlevel '{$pickedObject->_PANC_shortName()}' " );
-                                        continue;
-                                    }
+                        if( $object === $pickedObject )
+                            continue;
 
-                                $text = "    - object '{$object->name()}' merged with its ancestor, deleting: ".$object->_PANC_shortName();
-                                $this->deletedObjects[$index]['kept'] = $pickedObject->name();
-                                if( $this->deletedObjects[$index]['removed'] == "" )
-                                    $this->deletedObjects[$index]['removed'] = $object->name();
-                                else
-                                    $this->deletedObjects[$index]['removed'] .= "|" . $object->name();
-                                $object->replaceMeGlobally($ancestor);
+                        if( $this->dupAlg != 'identical' )
+                        {
+                            PH::print_stdout("    - replacing '{$object->_PANC_shortName()}' ...");
+                            mwarning("implementation needed for TAG");
+                            //Todo;SWASCHKUT
+                            #$object->__replaceWhereIamUsed($this->apiMode, $pickedObject, TRUE, 5);
+
+                            PH::print_stdout("    - deleting '{$object->_PANC_shortName()}'");
+                            $this->deletedObjects[$index]['kept'] = $pickedObject->_PANC_shortName();
+                            if( $this->deletedObjects[$index]['removed'] == "" )
+                                $this->deletedObjects[$index]['removed'] = $object->_PANC_shortName();
+                            else
+                                $this->deletedObjects[$index]['removed'] .= "|" . $object->_PANC_shortName();
+
+                            if( $this->action === "merge" )
+                            {
                                 if( $this->apiMode )
                                     $object->owner->API_removeTag($object);
                                 else
                                     $object->owner->removeTag($object);
-
-                                PH::print_stdout($text);
-
-                                $text = "         ancestor name: '{$ancestor->name()}' DG: ";
-                                if( $ancestor->owner->owner->name() == "" ) $text .= "'shared'";
-                                else $text .= "'{$ancestor->owner->owner->name()}'";
-                                $text .=  "  color: '{$ancestor->getColor()}' ";
-                                PH::print_stdout($text);
-
-                                if( $pickedObject === $object )
-                                    $pickedObject = $ancestor;
-
-                                $countRemoved++;
-
-                                if( $this->mergeCountLimit !== FALSE && $countRemoved >= $this->mergeCountLimit )
-                                {
-                                    PH::print_stdout( "\n *** STOPPING MERGE OPERATIONS NOW SINCE WE REACHED mergeCountLimit ({$this->mergeCountLimit})" );
-                                    break 2;
-                                }
-
-                                continue;
                             }
-                            else
-                                $ancestor_different_color = "with different color";
 
+                            $countRemoved++;
 
-                        }
-                        PH::print_stdout( "    - object '{$object->name()}' cannot be merged because it has an ancestor " . $ancestor_different_color . "" );
-
-                        $text = "         ancestor name: '{$ancestor->name()}' DG: ";
-                        if( $ancestor->owner->owner->name() == "" ) $text .= "'shared'";
-                        else $text .= "'{$ancestor->owner->owner->name()}'";
-                        $text .=  "  color: '{$ancestor->getColor()}' ";
-                        PH::print_stdout($text);
-
-                        #unset($this->deletedObjects[$index]);
-                        $this->deletedObjects[$index]['removed'] .= "|->ERROR ancestor: '" . $object->name() . "' cannot be merged";
-
-                        continue;
-                    }
-
-                    if( $object === $pickedObject )
-                        continue;
-
-                    if( $this->dupAlg != 'identical' )
-                    {
-                        PH::print_stdout( "    - replacing '{$object->_PANC_shortName()}' ..." );
-                        mwarning("implementation needed for TAG");
-                        //Todo;SWASCHKUT
-                        #$object->__replaceWhereIamUsed($this->apiMode, $pickedObject, TRUE, 5);
-
-                        PH::print_stdout( "    - deleting '{$object->_PANC_shortName()}'" );
-                        $this->deletedObjects[$index]['kept'] = $pickedObject->name();
-                        if( $this->deletedObjects[$index]['removed'] == "" )
-                            $this->deletedObjects[$index]['removed'] = $object->name();
-                        else
-                            $this->deletedObjects[$index]['removed'] .= "|" . $object->name();
-                        if( $this->apiMode )
-                        {
-                            $object->owner->API_removeTag($object);
+                            if( $this->mergeCountLimit !== FALSE && $countRemoved >= $this->mergeCountLimit )
+                            {
+                                PH::print_stdout("\n *** STOPPING MERGE OPERATIONS NOW SINCE WE REACHED mergeCountLimit ({$this->mergeCountLimit})");
+                                break 2;
+                            }
                         }
                         else
-                        {
-                            $object->owner->removeTag($object);
-                        }
-
-                        $countRemoved++;
-
-                        if( $this->mergeCountLimit !== FALSE && $countRemoved >= $this->mergeCountLimit )
-                        {
-                            PH::print_stdout( "\n *** STOPPING MERGE OPERATIONS NOW SINCE WE REACHED mergeCountLimit ({$this->mergeCountLimit})" );
-                            break 2;
-                        }
+                            PH::print_stdout("    - SKIP: object name '{$object->_PANC_shortName()}' is not IDENTICAL");
                     }
-                    else
-                        PH::print_stdout( "    - SKIP: object name '{$object->_PANC_shortName()}' is not IDENTICAL" );
                 }
             }
 
@@ -2836,15 +2807,15 @@ class MERGER extends UTIL
                     }
                     PH::print_stdout( "   * create object in DG: '".$tmp_DG_name."' : '".$pickedObject->name()."'" );
 
-                    $tmp_tag = $store->createTag($pickedObject->name() );
-                    $tmp_tag->setColor( $pickedObject->getColor() );
-
-                    /** @var TagStore $store */
-                    if( $this->apiMode )
+                    if( $this->action === "merge" )
                     {
-                        $tmp_tag->API_sync();;
-                    }
+                        $tmp_tag = $store->createTag($pickedObject->name() );
+                        $tmp_tag->setColor( $pickedObject->getColor() );
 
+                        /** @var TagStore $store */
+                        if( $this->apiMode )
+                            $tmp_tag->API_sync();
+                    }
 
                     $countChildCreated++;
                 }
@@ -2861,26 +2832,29 @@ class MERGER extends UTIL
                     }
                 }
 
-                // Merging loop finally!
-                foreach( $hash as $objectIndex => $object )
+                if( $this->action === "merge" )
                 {
-                    PH::print_stdout( "    - replacing '{$object->_PANC_shortName()}' ..." );
-                    #$object->__replaceWhereIamUsed($this->apiMode, $tmp_tag, TRUE, 5);
-                    $object->replaceMeGlobally($tmp_tag);
-                    #$object->merge_tag_description_to($tmp_tag, $this->apiMode);
+                    // Merging loop finally!
+                    foreach( $hash as $objectIndex => $object )
+                    {
+                        PH::print_stdout("    - replacing '{$object->_PANC_shortName()}' ...");
+                        #$object->__replaceWhereIamUsed($this->apiMode, $tmp_tag, TRUE, 5);
+                        $object->replaceMeGlobally($tmp_tag);
+                        #$object->merge_tag_description_to($tmp_tag, $this->apiMode);
 
-                    PH::print_stdout( "    - deleting '{$object->_PANC_shortName()}'" );
-                    $this->deletedObjects[$index]['kept'] = $tmp_tag->name();
-                    if( $this->deletedObjects[$index]['removed'] == "" )
-                        $this->deletedObjects[$index]['removed'] = $object->name();
-                    else
-                        $this->deletedObjects[$index]['removed'] .= "|" . $object->name();
-                    if( $this->apiMode )
-                        $object->owner->API_removeTag($object);
-                    else
-                        $object->owner->removeTag($object);
+                        PH::print_stdout("    - deleting '{$object->_PANC_shortName()}'");
+                        $this->deletedObjects[$index]['kept'] = $tmp_tag->_PANC_shortName();
+                        if( $this->deletedObjects[$index]['removed'] == "" )
+                            $this->deletedObjects[$index]['removed'] = $object->_PANC_shortName();
+                        else
+                            $this->deletedObjects[$index]['removed'] .= "|" . $object->_PANC_shortName();
+                        if( $this->apiMode )
+                            $object->owner->API_removeTag($object);
+                        else
+                            $object->owner->removeTag($object);
 
-                    $countChildRemoved++;
+                        $countChildRemoved++;
+                    }
                 }
             }
 
@@ -2899,16 +2873,101 @@ class MERGER extends UTIL
     {
         $this->save_our_work( true );
 
-        if( isset(PH::$args['exportcsv']) )
+        if( $this->exportcsv )
         {
+            PH::print_stdout(" * script was called with argument 'exportCSV' - please wait for calcuation");
+
+            $tmp_string = "value,kept,removed";
             foreach( $this->deletedObjects as $obj_index => $object_name )
             {
-                if( !isset($object_name['kept']) )
-                    print_r($object_name);
-                PH::print_stdout($obj_index . "," . $object_name['kept'] . "," . $object_name['removed'] );
+                //if( !isset($object_name['kept']) )
+                //    print_r($object_name);
+                $tmp_string .= $obj_index . "," . $object_name['kept'] . "," . $object_name['removed']."\n";
+            }
+            if( $this->exportcsvFile !== null )
+            {
+                //file_put_contents($this->exportcsvFile, $tmp_string, FILE_APPEND);
+                self::exportCSVToHtml();
+            }
+
+            else
+                PH::print_stdout( $tmp_string );
+        }
+    }
+
+    function exportCSVToHtml()
+    {
+        $headers = '<th>value</th><th>kept</th><th>removed</th>';
+
+
+        $lines = '';
+        $encloseFunction = function ($value, $nowrap = TRUE) {
+            if( is_string($value) )
+                $output = htmlspecialchars($value);
+            elseif( is_array($value) )
+            {
+                $output = '';
+                $first = TRUE;
+                foreach( $value as $subValue )
+                {
+                    if( !$first )
+                    {
+                        $output .= '<br />';
+                    }
+                    else
+                        $first = FALSE;
+
+                    if( is_string($subValue) )
+                        $output .= htmlspecialchars($subValue);
+                    else
+                        $output .= htmlspecialchars($subValue->name());
+                }
+            }
+            else
+                derr('unsupported');
+
+            if( $nowrap )
+                return '<td style="white-space: nowrap">' . $output . '</td>';
+
+            return '<td>' . $output . '</td>';
+        };
+
+        $count = 0;
+        if( isset($this->deletedObjects) )
+        {
+            foreach( $this->deletedObjects as $index => $line )
+            {
+                $count++;
+
+                if( $count % 2 == 1 )
+                    $lines .= "<tr>\n";
+                else
+                    $lines .= "<tr bgcolor=\"#DDDDDD\">";
+
+                $lines .= $encloseFunction( $index );
+
+                $lines .= $encloseFunction( $line['kept'] );
+
+                $removedArray = explode( "|", $line['removed'] );
+                $lines .= $encloseFunction( $removedArray );
+
+                $lines .= "</tr>\n";
+
             }
         }
 
-        
+        $content = file_get_contents(dirname(__FILE__) . '/../common//html/export-template.html');
+        $content = str_replace('%TableHeaders%', $headers, $content);
+
+        $content = str_replace('%lines%', $lines, $content);
+
+        $jscontent = file_get_contents(dirname(__FILE__) . '/../common/html/jquery.min.js');
+        $jscontent .= "\n";
+        $jscontent .= file_get_contents(dirname(__FILE__) . '/../common//html/jquery.stickytableheaders.min.js');
+        $jscontent .= "\n\$('table').stickyTableHeaders();\n";
+
+        $content = str_replace('%JSCONTENT%', $jscontent, $content);
+
+        file_put_contents($this->exportcsvFile, $content);
     }
 }
