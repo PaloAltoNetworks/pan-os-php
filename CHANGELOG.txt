@@ -11,6 +11,7 @@ UTILS:
 
 BUGFIX:
 * class DeviceGroup / Template - remove $xmlroot as already defined in trait XmlConvertible
+* UTIL ALLMERGER scripts | bugfix for argument exportCSV=FILE.html - to display all merged objects
 
 GENERAL:
 
