@@ -1466,7 +1466,7 @@ class UTIL
         {
             foreach( $this->pan->getVirtualSystems() as $sub )
             {
-                PH::print_stdout( " - " . $sub->name() );
+                PH::print_stdout( " - " . $sub->name() . " [".$sub->alternativeName()."]" );
             }
         }
         else
@@ -1821,7 +1821,7 @@ class UTIL
 
         if( $this->outputformatset )
         {
-            PH::print_stdout(" * script was called with argument 'outputformatset' - please wait for calcuation");
+            PH::print_stdout(" * script was called with argument 'outputformatset' - please wait for calculation");
             $utilDiff = new DIFF( "custom", array(), array(), "" );
             $utilDiff->outputFormatSet = TRUE;
 

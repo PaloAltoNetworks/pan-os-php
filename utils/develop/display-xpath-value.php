@@ -16,6 +16,7 @@ PH::print_stdout("");
 
 PH::print_stdout( "PAN-OS-PHP version: ".PH::frameworkVersion() );
 
+$displayAttributeName = false;
 
 $supportedArguments = Array();
 $supportedArguments['in'] = Array('niceName' => 'in', 'shortHelp' => 'input file or api. ie: in=config.xml  or in=api://192.168.1.1 or in=api://0018CAEC3@panorama.company.com', 'argDesc' => '[filename]|[api://IP]|[api://serial@IP]');
@@ -23,6 +24,7 @@ $supportedArguments['out'] = Array('niceName' => 'out', 'shortHelp' => 'output f
 $supportedArguments['debugapi'] = Array('niceName' => 'DebugAPI', 'shortHelp' => 'prints API calls when they happen');
 $supportedArguments['help'] = Array('niceName' => 'help', 'shortHelp' => 'this message');
 $supportedArguments['xpath'] = Array('niceName' => 'xpath', 'shortHelp' => 'specify the xpath to get the value defined on this config');
+$supportedArguments['displayattributename'] = Array('niceName' => 'displayAttributeName', 'shortHelp' => 'display not full Xpath content, only attribute name');
 
 $usageMsg = PH::boldText("USAGE: ")."php ".basename(__FILE__)." in=inputfile.xml ".
     "\"xpath=/config/devices/entry[@name='localhost.localdomain']/deviceconfig/system/update-server\"\n".
@@ -50,7 +52,8 @@ if( !isset( PH::$args['xpath'] ) )
 else
     $xpath = PH::$args['xpath'];
 
-
+if( isset( PH::$args['displayattributename'] ) )
+    $displayAttributeName = true;
 ########################################################################################################################
 if( $connector !==  null )
 {
@@ -73,13 +76,18 @@ if( $connector !==  null )
             $fw_con->refreshSystemInfos();
             if( $util->debugAPI )
                 $fw_con->setShowApiCalls( $util->debugAPI );
-
-            getXpathDisplay( $xpath, $util, $connector->serial);
+            if( $displayAttributeName )
+                getXpathDisplayEntryName( $xpath, $util, $connector->serial);
+            else
+                getXpathDisplay( $xpath, $util, $connector->serial);
         }
         else
         {
             $connector->refreshSystemInfos();
-            getXpathDisplay( $xpath, $util, $connector->info_serial);
+            if( $displayAttributeName )
+                getXpathDisplayEntryName( $xpath, $util, $connector->serial);
+            else
+                getXpathDisplay( $xpath, $util, $connector->info_serial);
         }
     }
     elseif( $util->configType == 'panorama' )
@@ -101,12 +109,21 @@ if( $connector !==  null )
             PH::print_stdout( $string );
             $i++;
 
-            getXpathDisplay( $xpath, $util, $child['serial']);
+            if( $displayAttributeName )
+                getXpathDisplayEntryName( $xpath, $util, $child['serial']);
+            else
+                getXpathDisplay( $xpath, $util, $child['serial']);
         }
     }
 }
 else
-    getXpathDisplay( $xpath, $util, "");
+{
+    if( $displayAttributeName )
+        getXpathDisplayEntryName( $xpath, $util, "");
+    else
+        getXpathDisplay( $xpath, $util, "");
+}
+
 
 
 
@@ -137,6 +154,44 @@ function getXpathDisplay( $xpath, $util, $serial)
         $newdoc->appendChild($node);
         PH::print_stdout( "   * VALUE: ".$newdoc->saveXML( $newdoc->documentElement ) );
         PH::$JSON_TMP[$serial]['value'] = $newdoc->saveXML( $newdoc->documentElement );
+    }
+
+    if( count($xpathResult) == 0 )
+    {
+        PH::print_stdout( "   * VALUE: not set" );
+        PH::$JSON_TMP[$serial]['value'] = "---";
+    }
+
+
+    PH::print_stdout( "" );
+}
+
+function getXpathDisplayEntryName( $xpath, $util, $serial)
+{
+    PH::$JSON_TMP[$serial]['serial'] = $serial;
+    //check Xpath
+    $xpathResult = DH::findXPath( $xpath, $util->xmlDoc);
+    PH::print_stdout( "   * XPATH: ".$xpath );
+    PH::$JSON_TMP[$serial]['xpath'] = $xpath;
+
+    foreach( $xpathResult as $xpath1 )
+    {
+        $newdoc = new DOMDocument;
+        $node = $newdoc->importNode($xpath1, true);
+        $newdoc->appendChild($node);
+
+        foreach( $node->childNodes as $child )
+        {
+            if( $child->nodeType != XML_ELEMENT_NODE )
+                continue;
+
+            PH::print_stdout( "     - name: ". $child->getAttribute('name') );
+
+        }
+        /*
+        PH::print_stdout( "   * VALUE: ".$newdoc->saveXML( $newdoc->documentElement ) );
+        PH::$JSON_TMP[$serial]['value'] = $newdoc->saveXML( $newdoc->documentElement );
+        */
     }
 
     if( count($xpathResult) == 0 )

@@ -73,22 +73,8 @@ class DEVICEUTIL extends UTIL
 
             if( $this->configType == 'panos' )
             {
-                
                 if( array_search('any', $this->deviceTypes) !== FALSE || array_search('vsys', $this->deviceTypes) !== FALSE )
                     $this->objectsToProcess[] = array('store' => $this->pan, 'objects' => $this->pan->getVirtualSystems());
-                
-                
-                /*
-                foreach( $subGroups as $sub )
-                {
-                    if( isset(PH::$args['loadpanoramapushedconfig']) )
-                    {
-                    }
-                    else
-                    {
-                    }
-                }
-                */
             }
             elseif( $this->configType == 'panorama' )
             {
@@ -113,10 +99,6 @@ class DEVICEUTIL extends UTIL
 
                 
             self::GlobalInitAction($this->pan);
-
-            
-            //if( !$locationFound )
-            //    DEVICEUTIL::locationNotFound($location, $this->configType, $this->pan);
         }
     }
 

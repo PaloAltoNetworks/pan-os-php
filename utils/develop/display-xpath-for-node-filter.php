@@ -16,6 +16,8 @@ PH::print_stdout("");
 
 PH::print_stdout( "PAN-OS-PHP version: ".PH::frameworkVersion() );
 
+$fullxpath = false;
+
 
 $supportedArguments = Array();
 $supportedArguments['in'] = Array('niceName' => 'in', 'shortHelp' => 'input file or api. ie: in=config.xml  or in=api://192.168.1.1 or in=api://0018CAEC3@panorama.company.com', 'argDesc' => '[filename]|[api://IP]|[api://serial@IP]');
@@ -23,6 +25,7 @@ $supportedArguments['out'] = Array('niceName' => 'out', 'shortHelp' => 'output f
 $supportedArguments['debugapi'] = Array('niceName' => 'DebugAPI', 'shortHelp' => 'prints API calls when they happen');
 $supportedArguments['help'] = Array('niceName' => 'help', 'shortHelp' => 'this message');
 $supportedArguments['nodefilter'] = Array('niceName' => 'nodefilter', 'shortHelp' => 'specify the nodefilter to get all xPath within this configuration file');
+$supportedArguments['fullxpath'] = Array('niceName' => 'fullxpath', 'shortHelp' => 'display full xpath for templates');
 
 $usageMsg = PH::boldText("USAGE: ")."php ".basename(__FILE__)." in=inputfile.xml ".
     "\"xpath=/config/devices/entry[@name='localhost.localdomain']/deviceconfig/system/update-server\"\n".
@@ -50,6 +53,9 @@ if( !isset( PH::$args['nodefilter'] ) )
     $util->display_error_usage_exit('"nodefilter" argument is not set: example "certificate"');
 else
     $qualifiedNodeName = PH::$args['nodefilter'];
+
+if( isset( PH::$args['fullxpath'] ) )
+    $fullxpath = true;
 
 ########################################################################################################################
 
@@ -96,7 +102,8 @@ foreach( $nodeArray as $item )
             foreach( $templateEntry as $item )
             {
                 PH::print_stdout( "  - ". $item['text'] );
-                //PH::print_stdout( "     |". $item['xpath']."|" );
+                if( $fullxpath )
+                    PH::print_stdout( "     |". $item['xpath']."|" );
             }
 
         }
