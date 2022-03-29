@@ -874,11 +874,6 @@ class MERGER extends UTIL
             {
                 PH::print_stdout( "" );
                 PH::print_stdout( " - value '{$index}'" );
-                if( !isset( $this->deletedObjects[$index]['kept'] ) )
-                    $this->deletedObjects[$index]['kept'] = "";
-                if( !isset( $this->deletedObjects[$index]['removed'] ) )
-                    $this->deletedObjects[$index]['removed'] = "";
-
 
                 $pickedObject = null;
 
@@ -1171,10 +1166,6 @@ class MERGER extends UTIL
             {
                 PH::print_stdout( "" );
                 PH::print_stdout( " - value '{$index}'" );
-                if( !isset( $this->deletedObjects[$index]['kept'] ) )
-                    $this->deletedObjects[$index]['kept'] = "";
-                if( !isset( $this->deletedObjects[$index]['removed'] ) )
-                    $this->deletedObjects[$index]['removed'] = "";
 
 
                 $pickedObject = null;
@@ -1307,7 +1298,8 @@ class MERGER extends UTIL
                         $text .= "  value: '{$ancestor->value()}' ";
                         PH::print_stdout($text);
 
-                        $this->deletedObjects[$index]['removed'] .= "|->ERROR ancestor: '" . $object->_PANC_shortName() . "' cannot be merged";
+                        $tmpstring = "|->ERROR ancestor: '" . $object->_PANC_shortName() . "' cannot be merged";
+                        self::deletedObjectSetRemoved( $index, $tmpstring );
 
                         continue;
                     }
@@ -1357,10 +1349,6 @@ class MERGER extends UTIL
             {
                 PH::print_stdout("");
                 PH::print_stdout(" - value '{$index}'");
-                if( !isset( $this->deletedObjects[$index]['kept'] ) )
-                    $this->deletedObjects[$index]['kept'] = "";
-                if( !isset( $this->deletedObjects[$index]['removed'] ) )
-                    $this->deletedObjects[$index]['removed'] = "";
 
 
                 $pickedObject = null;
@@ -2203,11 +2191,6 @@ class MERGER extends UTIL
                 {
                     PH::print_stdout( "" );
                     PH::print_stdout( " - value '{$index}'" );
-                    if( !isset( $this->deletedObjects[$index]['kept'] ) )
-                        $this->deletedObjects[$index]['kept'] = "";
-                    if( !isset( $this->deletedObjects[$index]['removed'] ) )
-                        $this->deletedObjects[$index]['removed'] = "";
-
 
                     $pickedObject = null;
 
@@ -2593,10 +2576,6 @@ class MERGER extends UTIL
             {
                 PH::print_stdout( "" );
                 PH::print_stdout( " - name '{$index}'" );
-                if( !isset( $this->deletedObjects[$index]['kept'] ) )
-                    $this->deletedObjects[$index]['kept'] = "";
-                if( !isset( $this->deletedObjects[$index]['removed'] ) )
-                    $this->deletedObjects[$index]['removed'] = "";
 
 
                 $pickedObject = null;
@@ -2723,7 +2702,8 @@ class MERGER extends UTIL
                         $text .= "  color: '{$ancestor->getColor()}' ";
                         PH::print_stdout($text);
 
-                        $this->deletedObjects[$index]['removed'] .= "|->ERROR ancestor: '" . $object->_PANC_shortName() . "' cannot be merged";
+                        $tmpstring = "|->ERROR ancestor: '" . $object->_PANC_shortName() . "' cannot be merged";
+                        self::deletedObjectSetRemoved( $index, $tmpstring );
 
                         continue;
                     }
@@ -2769,10 +2749,6 @@ class MERGER extends UTIL
             {
                 PH::print_stdout( "" );
                 PH::print_stdout( " - value '{$index}'" );
-                if( !isset( $this->deletedObjects[$index]['kept'] ) )
-                    $this->deletedObjects[$index]['kept'] = "";
-                if( !isset( $this->deletedObjects[$index]['removed'] ) )
-                    $this->deletedObjects[$index]['removed'] = "";
 
 
                 $pickedObject = null;
@@ -2895,7 +2871,14 @@ class MERGER extends UTIL
 
             $tmp_string = "value,kept,removed";
             foreach( $this->deletedObjects as $obj_index => $object_name )
-                $tmp_string .= $obj_index . "," . $object_name['kept'] . "," . $object_name['removed']."\n";
+            {
+                if( isset($object_name['kept']) )
+                    $tmp_kept = $object_name['kept'];
+                else
+                    $tmp_kept = "";
+                $tmp_string .= $obj_index . "," . $tmp_kept . "," . $object_name['removed']."\n";
+            }
+
 
             if( $this->exportcsvFile !== null )
                 self::exportCSVToHtml();
@@ -2933,7 +2916,10 @@ class MERGER extends UTIL
                 }
             }
             else
-                derr('unsupported');
+            {
+                derr('unsupported: '.$value);
+            }
+
 
             if( $nowrap )
                 return '<td style="white-space: nowrap">' . $output . '</td>';
@@ -2953,9 +2939,12 @@ class MERGER extends UTIL
                 else
                     $lines .= "<tr bgcolor=\"#DDDDDD\">";
 
-                $lines .= $encloseFunction( $index );
+                $lines .= $encloseFunction( (string)$index );
 
-                $lines .= $encloseFunction( $line['kept'] );
+                if( isset( $line['kept'] ) )
+                    $lines .= $encloseFunction( $line['kept'] );
+                else
+                    $lines .= $encloseFunction( "" );
 
                 $removedArray = explode( "|", $line['removed'] );
                 $lines .= $encloseFunction( $removedArray );
@@ -2997,8 +2986,8 @@ class MERGER extends UTIL
             $tmpDG = "shared";
         else
             $tmpDG = $removedOBJ->owner->owner->name();
-        if( $this->deletedObjects[$index]['removed'] == "" )
-            //$this->deletedObjects[$index]['removed'] = $removedOBJ->_PANC_shortName();
+
+        if( !isset( $this->deletedObjects[$index]['removed'] ) )
             $this->deletedObjects[$index]['removed'] = "[".$tmpDG. "] - ".$removedOBJ->name();
         else
         {
@@ -3008,5 +2997,13 @@ class MERGER extends UTIL
                 $this->deletedObjects[$index]['removed'] .= "|" . $tmpstring;
         }
 
+    }
+
+    private function deletedObjectSetRemoved( $index, $tmpstring )
+    {
+        if( !isset( $this->deletedObjects[$index]['removed'] ) )
+            $this->deletedObjects[$index]['removed'] = "";
+
+        $this->deletedObjects[$index]['removed'] .= $tmpstring;
     }
 }
