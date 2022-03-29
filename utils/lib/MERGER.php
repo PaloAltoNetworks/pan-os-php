@@ -3001,6 +3001,12 @@ class MERGER extends UTIL
             //$this->deletedObjects[$index]['removed'] = $removedOBJ->_PANC_shortName();
             $this->deletedObjects[$index]['removed'] = "[".$tmpDG. "] - ".$removedOBJ->name();
         else
-            $this->deletedObjects[$index]['removed'] .= "|" . "[".$tmpDG. "] - ".$removedOBJ->name();
+        {
+            $tmpstring = "[".$tmpDG. "] - ".$removedOBJ->name();
+
+            if( strpos( $this->deletedObjects[$index]['removed'], $tmpstring ) === FALSE )
+                $this->deletedObjects[$index]['removed'] .= "|" . $tmpstring;
+        }
+
     }
 }

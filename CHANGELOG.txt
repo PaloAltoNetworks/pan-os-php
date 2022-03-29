@@ -8,6 +8,7 @@ UTILS:
 * UTIL type=ALLMERGER | extend argument 'exportCSV' to 'exportCSV=FILE.html' which export the info into EXCEL / HTML format
 * UTIL develop display-xpath-for-node-filter | add argument fullxpath - to display also for template info the full. output
 * UTIL develop display-xpath-value | introduce argument displayattributename - to only display the attribute, not full content
+* UTIL type=service | introduce actions=split-large-service-groups:MAXnumber
 
 BUGFIX:
 * class DeviceGroup / Template - remove $xmlroot as already defined in trait XmlConvertible
