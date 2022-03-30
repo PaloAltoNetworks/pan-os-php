@@ -495,6 +495,7 @@ class MERGER extends UTIL
             else
                 $childDeviceGroups = array();
 
+            PH::print_stdout( "\n\n***********************************************\n" );
             PH::print_stdout( " - upper level search status : " . boolYesNo($this->upperLevelSearch) . "" );
             if( is_string($findLocation) )
                 PH::print_stdout( " - location 'shared' found" );
@@ -989,9 +990,6 @@ class MERGER extends UTIL
             if( count( $child_hashMap ) >0 )
                 PH::print_stdout( "Duplicates ChildDG removal is now done. Number of objects after cleanup: '{$store->countAddresses()}' (removed/created {$countChildRemoved}/{$countChildCreated} addresses)\n" );
 
-            PH::print_stdout( "\n\n***********************************************\n" );
-
-            PH::print_stdout( "\n" );
         }    
     }
 
@@ -1007,6 +1005,7 @@ class MERGER extends UTIL
             else
                 $childDeviceGroups = array();
 
+            PH::print_stdout( "\n\n***********************************************\n" );
             PH::print_stdout( " - upper level search status : " . boolYesNo($this->upperLevelSearch) . "" );
             if( is_string($findLocation) )
                 PH::print_stdout( " - location 'shared' found" );
@@ -1021,10 +1020,7 @@ class MERGER extends UTIL
 // Building a hash table of all address objects with same value
 //
             if( $this->upperLevelSearch )
-            {
                 $objectsToSearchThrough = $store->nestedPointOfView();
-                #$objectsToSearchThrough = $store->nestedPointOfView_sven();
-            }
             else
                 $objectsToSearchThrough = $store->addressObjects();
 
@@ -1048,6 +1044,11 @@ class MERGER extends UTIL
                             continue;
 
                         $value = $object->value();
+
+                        // if object is /32, let's remove it to match equivalent non /32 syntax
+                        if( $object->isType_ipNetmask() && strpos($object->value(), '/32') !== FALSE )
+                            $value = substr($value, 0, strlen($value) - 3);
+
                         $value = $object->type() . '-' . $value;
 
                         #PH::print_stdout( "add objNAME: " . $object->name() . " DG: " . $object->owner->owner->name() . "" );
@@ -1133,24 +1134,10 @@ class MERGER extends UTIL
 // Hashes with single entries have no duplicate, let's remove them
 //
             $countConcernedObjects = 0;
-            foreach( $hashMap as $index => &$hash )
-            {
-                if( count($hash) == 1 && !isset($upperHashMap[$index]) && !isset($child_hashMap[$index]) && !isset(reset($hash)->ancestor) )
-                    unset($hashMap[$index]);
-                else
-                    $countConcernedObjects += count($hash);
-            }
-            unset($hash);
+            self::removeSingleEntries( $hashMap, $child_hashMap, $upperHashMap, $countConcernedObjects);
 
             $countConcernedChildObjects = 0;
-            foreach( $child_hashMap as $index => &$hash )
-            {
-                if( count($hash) == 1 && !isset($upperHashMap[$index]) && !isset($hashMap[$index]) && !isset(reset($hash)->ancestor) )
-                    unset($child_hashMap[$index]);
-                else
-                    $countConcernedChildObjects += count($hash);
-            }
-            unset($hash);
+            self::removeSingleEntries( $child_hashMap, $hashMap, $upperHashMap, $countConcernedChildObjects);
 
 
 
@@ -1298,7 +1285,10 @@ class MERGER extends UTIL
                         $text .= "  value: '{$ancestor->value()}' ";
                         PH::print_stdout($text);
 
-                        $tmpstring = "|->ERROR ancestor: '" . $object->_PANC_shortName() . "' cannot be merged";
+                        if( $this->upperLevelSearch )
+                            $tmpstring = "|->ERROR ancestor: '" . $object->_PANC_shortName() . "' cannot be merged. ";
+                        else
+                            $tmpstring = "|-> ancestor: '" . $object->_PANC_shortName() . "' you did not allow to merged";
                         self::deletedObjectSetRemoved( $index, $tmpstring );
 
                         continue;
@@ -1424,7 +1414,7 @@ class MERGER extends UTIL
                             $tmp_address = $store->newAddress($pickedObject->name(), $pickedObject->type(), $pickedObject->value(), $pickedObject->description());
                     }
                     else
-                        $tmp_address = "[".$tmp_DG_name."] - ".$pickedObject->name();
+                        $tmp_address = "[".$tmp_DG_name."] - ".$pickedObject->name(). " {new}";
 
                     $countChildCreated++;
                 }
@@ -1484,14 +1474,11 @@ class MERGER extends UTIL
                 }
 
             }
-
-
-
-            PH::print_stdout( "\n\nDuplicates removal is now done. Number of objects after cleanup: '{$store->countAddresses()}' (removed {$countRemoved} addresses)\n" );
             if( count( $child_hashMap ) >0 )
                 PH::print_stdout( "Duplicates ChildDG removal is now done. Number of objects after cleanup: '{$store->countAddresses()}' (removed/created {$countChildRemoved}/{$countChildCreated} addresses)\n" );
 
-            PH::print_stdout( "\n\n***********************************************\n" );
+
+            PH::print_stdout( "\n\nDuplicates removal is now done. Number of objects after cleanup: '{$store->countAddresses()}' (removed {$countRemoved} addresses)\n" );
 
         }    
     }
@@ -1508,6 +1495,7 @@ class MERGER extends UTIL
             else
                 $childDeviceGroups = array();
 
+            PH::print_stdout( "\n\n***********************************************\n" );
             PH::print_stdout( " - upper level search status : " . boolYesNo($this->upperLevelSearch) . "" );
             if( is_string($findLocation) )
                 PH::print_stdout( " - location 'shared' found" );
@@ -1855,9 +1843,6 @@ class MERGER extends UTIL
 
             PH::print_stdout( "\n\nDuplicates removal is now done. Number of objects after cleanup: '{$store->countServiceGroups()}' (removed {$countRemoved} groups)\n" );
 
-            PH::print_stdout( "\n\n***********************************************\n" );
-
-            PH::print_stdout( "\n" );
         }
     }
     
@@ -1873,6 +1858,7 @@ class MERGER extends UTIL
             else
                 $childDeviceGroups = array();
 
+            PH::print_stdout( "\n\n***********************************************\n" );
             PH::print_stdout( " - upper level search status : " . boolYesNo($this->upperLevelSearch) . "" );
             if( is_string($findLocation) )
                 PH::print_stdout( " - location 'shared' found" );
@@ -1988,23 +1974,10 @@ class MERGER extends UTIL
 // Hashes with single entries have no duplicate, let's remove them
 //
             $countConcernedObjects = 0;
-            foreach( $hashMap as $index => &$hash )
-            {
-                if( count($hash) == 1 && !isset($upperHashMap[$index]) && !isset(reset($hash)->ancestor) )
-                    unset($hashMap[$index]);
-                else
-                    $countConcernedObjects += count($hash);
-            }
-            unset($hash);
+            self::removeSingleEntries( $hashMap, $child_hashMap, $upperHashMap, $countConcernedObjects);
+
             $countConcernedChildObjects = 0;
-            foreach( $child_hashMap as $index => &$hash )
-            {
-                if( count($hash) == 1 && !isset($upperHashMap[$index]) && !isset(reset($hash)->ancestor) )
-                    unset($child_hashMap[$index]);
-                else
-                    $countConcernedChildObjects += count($hash);
-            }
-            unset($hash);
+            self::removeSingleEntries( $child_hashMap, $hashMap, $upperHashMap, $countConcernedChildObjects);
 
 
             PH::print_stdout( " - found " . count($hashMap) . " duplicates values totalling {$countConcernedObjects} service objects which are duplicate" );
@@ -2138,6 +2111,12 @@ class MERGER extends UTIL
                             $text .=  "  value: '{$ancestor->getDestPort()}' ";
                             PH::print_stdout( $text );
 
+                            if( $this->upperLevelSearch )
+                                $tmpstring = "|->ERROR ancestor: '" . $object->_PANC_shortName() . "' cannot be merged. ";
+                            else
+                                $tmpstring = "|-> ancestor: '" . $object->_PANC_shortName() . "' you did not allow to merged";
+                            self::deletedObjectSetRemoved( $index, $tmpstring );
+
                             continue;
                         }
                         else
@@ -2251,7 +2230,7 @@ class MERGER extends UTIL
                                 $tmp_service = $store->newService($pickedObject->name(), $pickedObject->protocol(), $pickedObject->getDestPort(), $pickedObject->description(), $pickedObject->getSourcePort());
                         }
                         else
-                            $tmp_service = "[".$tmp_DG_name."] - ".$pickedObject->name();
+                            $tmp_service = "[".$tmp_DG_name."] - ".$pickedObject->name()." {new}";
 
                         $countChildCreated++;
                     }
@@ -2355,6 +2334,12 @@ class MERGER extends UTIL
                             $text .=  "  value: '{$ancestor->value()}' ";
                             PH::print_stdout($text);
 
+                            if( $this->upperLevelSearch )
+                                $tmpstring = "|->ERROR ancestor: '" . $object->_PANC_shortName() . "' cannot be merged. ";
+                            else
+                                $tmpstring = "|-> ancestor: '" . $object->_PANC_shortName() . "' you did not allow to merged";
+                            self::deletedObjectSetRemoved( $index, $tmpstring );
+
                             continue;
                         }
 
@@ -2409,9 +2394,6 @@ class MERGER extends UTIL
             PH::print_stdout( "\n\nDuplicates removal is now done. Number of objects after cleanup: '{$store->countServices()}' (removed {$countRemoved} services)\n" );
             if( count( $child_hashMap ) >0 )
                 PH::print_stdout( "Duplicates ChildDG removal is now done. Number of objects after cleanup: '{$store->countServices()}' (removed/created {$countChildRemoved}/{$countChildCreated} services)\n" );
-
-            PH::print_stdout( "\n\n***********************************************\n" );
-
         }
     }
 
@@ -2424,6 +2406,7 @@ class MERGER extends UTIL
             $parentStore = $tmp_location['parentStore'];
             $childDeviceGroups = $tmp_location['childDeviceGroups'];
 
+            PH::print_stdout( "\n\n***********************************************\n" );
             PH::print_stdout( " - upper level search status : " . boolYesNo($this->upperLevelSearch) . "" );
             if( is_string($findLocation) )
                 PH::print_stdout( " - location 'shared' found" );
@@ -2545,23 +2528,10 @@ class MERGER extends UTIL
 // Hashes with single entries have no duplicate, let's remove them
 //
             $countConcernedObjects = 0;
-            foreach( $hashMap as $index => &$hash )
-            {
-                if( count($hash) == 1 && !isset($upperHashMap[$index]) && !isset(reset($hash)->ancestor) )
-                    unset($hashMap[$index]);
-                else
-                    $countConcernedObjects += count($hash);
-            }
-            unset($hash);
+            self::removeSingleEntries( $hashMap, $child_hashMap, $upperHashMap, $countConcernedObjects);
+
             $countConcernedChildObjects = 0;
-            foreach( $child_hashMap as $index => &$hash )
-            {
-                if( count($hash) == 1 && !isset($upperHashMap[$index]) && !isset(reset($hash)->ancestor) )
-                    unset($child_hashMap[$index]);
-                else
-                    $countConcernedChildObjects += count($hash);
-            }
-            unset($hash);
+            self::removeSingleEntries( $child_hashMap, $hashMap, $upperHashMap, $countConcernedChildObjects);
 
 
             PH::print_stdout( " - found " . count($hashMap) . " duplicates values totalling {$countConcernedObjects} tag objects which are duplicate" );
@@ -2702,7 +2672,10 @@ class MERGER extends UTIL
                         $text .= "  color: '{$ancestor->getColor()}' ";
                         PH::print_stdout($text);
 
-                        $tmpstring = "|->ERROR ancestor: '" . $object->_PANC_shortName() . "' cannot be merged";
+                        if( $this->upperLevelSearch )
+                            $tmpstring = "|->ERROR ancestor: '" . $object->_PANC_shortName() . "' cannot be merged. ";
+                        else
+                            $tmpstring = "|-> ancestor: '" . $object->_PANC_shortName() . "' you did not allow to merged";
                         self::deletedObjectSetRemoved( $index, $tmpstring );
 
                         continue;
@@ -2810,6 +2783,8 @@ class MERGER extends UTIL
                         if( $this->apiMode )
                             $tmp_tag->API_sync();
                     }
+                    else
+                        $tmp_tag = "[".$tmp_DG_name."] - ".$pickedObject->name()." {new}";
 
                     $countChildCreated++;
                 }
@@ -2855,8 +2830,6 @@ class MERGER extends UTIL
             if( count( $child_hashMap ) >0 )
                 PH::print_stdout( "Duplicates ChildDG removal is now done. Number of objects after cleanup: '{$store->count()}' (removed/created {$countChildRemoved}/{$countChildCreated} tags)\n" );
 
-            PH::print_stdout( "\n\n***********************************************\n" );
-
         }
     }
 
@@ -2869,7 +2842,7 @@ class MERGER extends UTIL
         {
             PH::print_stdout(" * script was called with argument 'exportCSV' - please wait for calculation");
 
-            $tmp_string = "value,kept,removed";
+            $tmp_string = "value,kept(create),removed";
             foreach( $this->deletedObjects as $obj_index => $object_name )
             {
                 if( isset($object_name['kept']) )
@@ -2889,7 +2862,7 @@ class MERGER extends UTIL
 
     function exportCSVToHtml()
     {
-        $headers = '<th>value</th><th>kept</th><th>removed</th>';
+        $headers = '<th>ID</th><th>value</th><th>kept (create)</th><th>removed</th>';
 
 
         $lines = '';
@@ -2938,6 +2911,8 @@ class MERGER extends UTIL
                     $lines .= "<tr>\n";
                 else
                     $lines .= "<tr bgcolor=\"#DDDDDD\">";
+
+                $lines .= $encloseFunction( (string)$count );
 
                 $lines .= $encloseFunction( (string)$index );
 
@@ -3005,5 +2980,17 @@ class MERGER extends UTIL
             $this->deletedObjects[$index]['removed'] = "";
 
         $this->deletedObjects[$index]['removed'] .= $tmpstring;
+    }
+
+    private function removeSingleEntries( &$hashMap, $other_hashMap, $upperHashMap, &$countObjects = 0)
+    {
+        foreach( $hashMap as $index => &$hash )
+        {
+            if( count($hash) == 1 && !isset($upperHashMap[$index]) && !isset($other_hashMap[$index]) && !isset(reset($hash)->ancestor) )
+                unset($hashMap[$index]);
+            else
+                $countObjects += count($hash);
+        }
+        unset($hash);
     }
 }
