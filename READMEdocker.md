@@ -51,6 +51,13 @@ Windows Docker WSL installation check
 ["<a href='https://docs.microsoft.com/en-gb/windows/wsl/install-manual#step-5---set-wsl-2-as-your-default-version' target='_blank' rel='noopener noreferrer'>Step 5 - Set WSL 2 as your default version</a>"]
 
 
+Update your Docker PAN-OS-PHP container
+============
+```bash
+    docker pull swaschkut/pan-os-php:latest
+```
+
+
 #Additional Information
 
 Docker build
@@ -76,7 +83,6 @@ For a quick start please use [WIKI docker](https://github.com/PaloAltoNetworks/p
 	cd [go to the Folder you like to share with the Container]
 	docker run -v "%CD%":/share -it pan-os-php
 	```
-
 
 
 
