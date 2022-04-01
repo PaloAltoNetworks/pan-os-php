@@ -2058,6 +2058,323 @@ DeviceCallContext::$supportedActions['DefaultSecurityRule-securityProfile-Remove
     )
 );
 
+DeviceCallContext::$supportedActions['DefaultSecurityRule-SecurityProfileGroup-Set'] = array(
+    'name' => 'defaultsecurityrule-securityprofilegroup-set',
+    'GlobalInitFunction' => function (DeviceCallContext $context) {
+        $context->first = true;
+    },
+    'MainFunction' => function (DeviceCallContext $context) {
+        $object = $context->object;
+        $classtype = get_class($object);
+
+        if( $context->first )
+        {
+            $secProfGroup = $context->arguments['securityProfileGroup'];
+
+
+
+            if( $classtype == "VirtualSystem" || $classtype == "DeviceGroup" )
+            {
+                $sub = $object;
+
+                //validation, if this group name is available in the relevant store or above
+                $tmp_secgroup = $sub->securityProfileGroupStore->find( $secProfGroup );
+                if( $tmp_secgroup === null )
+                {
+                    PH::ACTIONstatus($context, "skipped", "SecurityProfileGroup name: ".$secProfGroup." not found!" );
+                    return;
+                }
+
+                if( $classtype == "VirtualSystem" )
+                {
+                    $sharedStore = $sub;
+                    $xmlRoot = $sharedStore->xmlroot;
+
+                    $rulebase = DH::findFirstElementOrCreate( "rulebase", $xmlRoot );
+                }
+                elseif( $classtype == "DeviceGroup" )
+                {
+                    $sharedStore = $sub->owner;
+                    $xmlRoot = DH::findFirstElementOrCreate('shared', $sharedStore->xmlroot);
+
+                    $rulebase = DH::findFirstElementOrCreate( "post-rulebase", $xmlRoot );
+                }
+
+                $defaultSecurityRules = DH::findFirstElement( "default-security-rules", $rulebase );
+                if( $defaultSecurityRules === FALSE )
+                    return;
+
+                $rules = DH::findFirstElement( "rules", $defaultSecurityRules );
+                if( $rules === FALSE )
+                    return;
+
+                $array = array( "intrazone-default", "interzone-default" );
+                foreach( $array as $entry)
+                {
+                    $tmp_XYZzone_xml = DH::findFirstElementByNameAttr( "entry", $entry, $rules );
+                    if( $tmp_XYZzone_xml !== null )
+                    {
+                        $action = DH::findFirstElement( "action", $tmp_XYZzone_xml );
+                        if( $action === FALSE )
+                        {
+                            if( $entry === "intrazone-default" )
+                                $action_txt = "allow";
+                            elseif( $entry === "interzone-default" )
+                                $action_txt = "deny";
+                        }
+                        else
+                            $action_txt = $action->textContent;
+
+                        if( $action_txt == "allow")
+                        {
+                            $profilesetting = DH::findFirstElement( "profile-setting", $tmp_XYZzone_xml );
+
+                            if( $profilesetting === false )
+                                $profilesetting = DH::findFirstElementOrCreate( "profile-setting", $tmp_XYZzone_xml );
+                            else
+                            {
+                                $tmp_XYZzone_xml->removeChild( $profilesetting );
+                                $profilesetting = DH::findFirstElementOrCreate( "profile-setting", $tmp_XYZzone_xml );
+                            }
+
+                            $group = DH::findFirstElementOrCreate( "group", $profilesetting );
+                            $tmp = DH::findFirstElementOrCreate( "member", $group );
+
+                            $tmp->textContent = $secProfGroup;
+                        }
+                    }
+                }
+
+                if( $context->isAPI )
+                {
+                    $defaultSecurityRules_xmlroot = DH::findFirstElement( "default-security-rules", $rulebase );
+                    if( $defaultSecurityRules === FALSE )
+                        return;
+
+                    $xpath = DH::elementToPanXPath($defaultSecurityRules_xmlroot);
+                    $con = findConnectorOrDie($object);
+
+                    $getXmlText_inline = DH::dom_to_xml($defaultSecurityRules_xmlroot, -1, FALSE);
+                    $con->sendEditRequest($xpath, $getXmlText_inline);
+                }
+
+                if( $classtype == "DeviceGroup" )
+                    $context->first = false;
+            }
+        }
+    },
+    'args' => array(
+        'securityProfileGroup' => array('type' => 'string', 'default' => '*nodefault*',
+            'help' => "set SecurityProfileGroup to default SecurityRules, if the Rule is an allow rule"
+        )
+    )
+);
+
+DeviceCallContext::$supportedActions['DefaultSecurityRule-SecurityProfile-SetAlert'] = array(
+    'name' => 'defaultsecurityrule-securityprofile-setAlert',
+    'GlobalInitFunction' => function (DeviceCallContext $context) {
+        $context->first = true;
+    },
+    'MainFunction' => function (DeviceCallContext $context) {
+        $object = $context->object;
+        $classtype = get_class($object);
+
+        $force = $context->arguments['force'];
+
+        if( $context->first )
+        {
+            $secProfGroup = "Alert-Only";
+
+            $secProf = array();
+            $secProf['VP'] = "Alert-Only-VP";
+            $secProf['AS'] = "Alert-Only-AS";
+            $secProf['AV'] = "Alert-Only-AV";
+            $secProf['URL'] = "Alert-Only-URL";
+            $secProf['FB'] = "Alert-Only-FB";
+            $secProf['WF'] = "Alert-Only-WF";
+
+            if( $classtype == "VirtualSystem" || $classtype == "DeviceGroup" )
+            {
+                /** @var VirtualSystem|DeviceGroup $sub */
+                $sub = $object;
+
+                //validation, if this group name is available in the relevant store or above
+                $tmp_secgroup = $sub->securityProfileGroupStore->find( $secProfGroup );
+                if( $tmp_secgroup === null )
+                {
+                    PH::ACTIONstatus($context, "skipped", "SecurityProfileGroup name: ".$secProfGroup." not found!" );
+                    return;
+                }
+                $tmp_secprof = $sub->VulnerabilityProfileStore->find( $secProf['VP'] );
+                if( $tmp_secprof === null )
+                {
+                    PH::ACTIONstatus($context, "skipped", "SecurityProfile VP name: ".$secProf['VP']." not found!" );
+                    return;
+                }
+                $tmp_secprof = $sub->AntiSpywareProfileStore->find( $secProf['AS'] );
+                if( $tmp_secprof === null )
+                {
+                    PH::ACTIONstatus($context, "skipped", "SecurityProfile AS name: ".$secProf['AS']." not found!" );
+                    return;
+                }
+                $tmp_secprof = $sub->AntiVirusProfileStore->find( $secProf['AV'] );
+                if( $tmp_secprof === null )
+                {
+                    PH::ACTIONstatus($context, "skipped", "SecurityProfile AV name: ".$secProf['AV']." not found!" );
+                    return;
+                }
+                $tmp_secprof = $sub->URLProfileStore->find( $secProf['URL'] );
+                if( $tmp_secprof === null )
+                {
+                    PH::ACTIONstatus($context, "skipped", "SecurityProfile URL name: ".$secProf['URL']." not found!" );
+                    return;
+                }
+                $tmp_secprof = $sub->FileBlockingProfileStore->find( $secProf['FB'] );
+                if( $tmp_secprof === null )
+                {
+                    PH::ACTIONstatus($context, "skipped", "SecurityProfile FB name: ".$secProf['FB']." not found!" );
+                    return;
+                }
+                $tmp_secprof = $sub->WildfireProfileStore->find( $secProf['WF'] );
+                if( $tmp_secprof === null )
+                {
+                    PH::ACTIONstatus($context, "skipped", "SecurityProfile WF name: ".$secProf['WF']." not found!" );
+                    return;
+                }
+
+
+                if( $classtype == "VirtualSystem" )
+                {
+                    $sharedStore = $sub;
+                    $xmlRoot = $sharedStore->xmlroot;
+
+                    $rulebase = DH::findFirstElementOrCreate( "rulebase", $xmlRoot );
+                }
+                elseif( $classtype == "DeviceGroup" )
+                {
+                    $sharedStore = $sub->owner;
+                    $xmlRoot = DH::findFirstElementOrCreate('shared', $sharedStore->xmlroot);
+
+                    $rulebase = DH::findFirstElementOrCreate( "post-rulebase", $xmlRoot );
+                }
+
+                $defaultSecurityRules = DH::findFirstElement( "default-security-rules", $rulebase );
+                if( $defaultSecurityRules === FALSE )
+                    return;
+
+                $rules = DH::findFirstElement( "rules", $defaultSecurityRules );
+                if( $rules === FALSE )
+                    return;
+
+                $array = array( "intrazone-default", "interzone-default" );
+                foreach( $array as $entry)
+                {
+                    $tmp_XYZzone_xml = DH::findFirstElementByNameAttr( "entry", $entry, $rules );
+                    if( $tmp_XYZzone_xml !== null )
+                    {
+                        $action = DH::findFirstElement( "action", $tmp_XYZzone_xml );
+                        if( $action === FALSE )
+                        {
+                            if( $entry === "intrazone-default" )
+                                $action_txt = "allow";
+                            elseif( $entry === "interzone-default" )
+                                $action_txt = "deny";
+                        }
+                        else
+                            $action_txt = $action->textContent;
+
+                        if( $action_txt == "allow")
+                        {
+                            $profilesetting = DH::findFirstElement( "profile-setting", $tmp_XYZzone_xml );
+
+                            if( $profilesetting === false )
+                            {
+                                $profilesetting = DH::findFirstElementOrCreate( "profile-setting", $tmp_XYZzone_xml );
+                                $group = DH::findFirstElementOrCreate( "group", $profilesetting );
+                                $tmp = DH::findFirstElementOrCreate( "member", $group );
+
+                                $tmp->textContent = $secProfGroup;
+                            }
+
+                            else
+                            {
+                                $profiles = DH::findFirstElement( "profiles", $profilesetting );
+                                if( $profiles !== false )
+                                {
+                                    $seprof = DH::findFirstElement( "url-filtering", $profiles );
+                                    if( $seprof === false )
+                                    {
+                                        $seprof = DH::findFirstElementOrCreate( "url-filtering", $profiles );
+                                        $tmp = DH::findFirstElementOrCreate( "member", $seprof );
+                                        if( $tmp->textContent === "" || $tmp->textContent === "None" || $tmp->textContent === "none" )
+                                            $tmp->textContent = $secProf['URL'];
+                                    }
+                                    $seprof = DH::findFirstElement( "file-blocking", $profiles );
+                                    if( $seprof === false )
+                                    {
+                                        $seprof = DH::findFirstElementOrCreate( "file-blocking", $profiles );
+                                        $tmp = DH::findFirstElementOrCreate( "member", $seprof );
+                                        if( $tmp->textContent === "" || $tmp->textContent === "None" || $tmp->textContent === "none" )
+                                            $tmp->textContent = $secProf['FB'];
+                                    }
+                                    $seprof = DH::findFirstElement( "virus", $profiles );
+                                    if( $seprof === false )
+                                    {
+                                        $seprof = DH::findFirstElementOrCreate( "virus", $profiles );
+                                        $tmp = DH::findFirstElementOrCreate( "member", $seprof );
+                                        if( $tmp->textContent === "" || $tmp->textContent === "None" || $tmp->textContent === "none" )
+                                            $tmp->textContent = $secProf['AV'];
+                                    }
+                                    $seprof = DH::findFirstElement( "spyware", $profiles );
+                                    if( $seprof === false )
+                                    {
+                                        $seprof = DH::findFirstElementOrCreate( "spyware", $profiles );
+                                        $tmp = DH::findFirstElementOrCreate( "member", $seprof );
+                                        if( $tmp->textContent === "" || $tmp->textContent === "None" || $tmp->textContent === "none" )
+                                            $tmp->textContent = $secProf['AS'];
+                                    }
+                                    $seprof = DH::findFirstElement( "vulnerability", $profiles );
+                                    if( $seprof === false )
+                                    {
+                                        $seprof = DH::findFirstElementOrCreate( "vulnerability", $profiles );
+                                        $tmp = DH::findFirstElementOrCreate( "member", $seprof );
+                                        if( $tmp->textContent === "" || $tmp->textContent === "None" || $tmp->textContent === "none" )
+                                            $tmp->textContent = $secProf['VP'];
+                                    }
+                                    $seprof = DH::findFirstElement( "wildfire-analysis", $profiles );
+                                    if( $seprof === false )
+                                    {
+                                        $seprof = DH::findFirstElementOrCreate( "wildfire-analysis", $profiles );
+                                        $tmp = DH::findFirstElementOrCreate( "member", $seprof );
+                                        if( $tmp->textContent === "" || $tmp->textContent === "None" || $tmp->textContent === "none" )
+                                            $tmp->textContent = $secProf['WF'];
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if( $context->isAPI )
+                {
+                    $defaultSecurityRules_xmlroot = DH::findFirstElement( "default-security-rules", $rulebase );
+                    if( $defaultSecurityRules === FALSE )
+                        return;
+
+                    $xpath = DH::elementToPanXPath($defaultSecurityRules_xmlroot);
+                    $con = findConnectorOrDie($object);
+
+                    $getXmlText_inline = DH::dom_to_xml($defaultSecurityRules_xmlroot, -1, FALSE);
+                    $con->sendEditRequest($xpath, $getXmlText_inline);
+                }
+
+                if( $classtype == "DeviceGroup" )
+                    $context->first = false;
+            }
+        }
+    }
+);
+
 
 DeviceCallContext::$supportedActions['DefaultSecurityRule-action-set'] = array(
     'name' => 'defaultsecurityrule-action-set',

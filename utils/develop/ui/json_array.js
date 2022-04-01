@@ -5443,6 +5443,16 @@ var subjectObject =
                     }
                 }
             },
+            "split-large-service-groups": {
+                "name": "split-large-service-groups",
+                "MainFunction": {},
+                "args": {
+                    "largeGroupsCount": {
+                        "type": "string",
+                        "default": "2490"
+                    }
+                }
+            },
             "tag-add": {
                 "name": "tag-Add",
                 "section": "tag",

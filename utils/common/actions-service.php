@@ -1490,3 +1490,102 @@ ServiceCallContext::$supportedActions['create-ServiceGroup'] = array(
         'name' => array('type' => 'string', 'default' => '*nodefault*')
     )
 );
+
+//starting with 7.0 PAN-OS support max. 2500 members per group, but if any service with timeout is available only 128 members
+ServiceCallContext::$supportedActions[] = array(
+    'name' => 'split-large-service-groups',
+    'MainFunction' => function (ServiceCallContext $context) {
+        $largeGroupsCount = $context->arguments['largeGroupsCount'];
+        $splitCount = $largeGroupsCount - 1;
+
+        $group = $context->object;
+
+
+        if( $group->isGroup() )
+        {
+            $membersCount = $group->count();
+
+            // if this group has more members than $largeGroupsCount then we must split it
+            if( $membersCount > $largeGroupsCount )
+            {
+                $string = "ServiceGroup named '" . $group->name() . "' with $membersCount members";
+                PH::ACTIONlog( $context, $string );
+
+                // get member list in $members
+                $members = $group->members();
+
+                $i = 0;
+
+                if( isset($newGroup) ) unset($newGroup);
+
+                // loop move every member to a new subgroup
+                foreach( $members as $member )
+                {
+                    // Condition to detect if previous sub-group is full
+                    // so we have to create a new one
+                    if( $i % $splitCount == 0 )
+                    {
+                        if( isset($newGroup) )
+                        { // now we can rewrite XML
+                            $newGroup->rewriteXML();
+                        }
+
+                        // create a new sub-group with name 'original--1'
+                        if( $context->isAPI )
+                            $newGroup = $group->owner->API_newServiceGroup($group->name() . '--' . ($i / $splitCount));
+                        else
+                            $newGroup = $group->owner->newServiceGroup($group->name() . '--' . ($i / $splitCount));
+                        $string = "New ServiceGroup object created with name: " . $newGroup->name();
+                        PH::ACTIONlog( $context, $string );
+
+                        // add this new sub-group to the original one. Don't rewrite XML for performance reasons.
+                        if( $context->isAPI )
+                            $group->API_addMember($newGroup, FALSE);
+                        else
+                            $group->addMember($newGroup, FALSE);
+                    }
+
+                    // remove current group member from old group, don't rewrite XML yet for performance savings
+                    if( $context->isAPI )
+                        $group->API_removeMember($member, FALSE);
+                    else
+                        $group->removeMember($member, FALSE);
+
+                    // we add current group member to new subgroup
+                    if( $context->isAPI )
+                        $newGroup->API_addMember($member, FALSE);
+                    else
+                        $newGroup->addMember($member, FALSE);
+
+                    $i++;
+                }
+                if( isset($newGroup) )
+                { // now we can rewrite XML
+                    $newGroup->rewriteXML();
+                }
+
+                // Now we can rewrite XML
+                $group->rewriteXML();
+
+                $string = "ServiceGroup count after split: " . $group->count();
+                PH::ACTIONlog( $context, $string );
+                PH::print_stdout("");
+            }
+            else
+            {
+
+                $string = "SERVICE GROUP members count is smaller as largeGroupsCount argument is set: " . $largeGroupsCount;
+                PH::ACTIONstatus( $context, "SKIPPED", $string );
+            }
+        }
+        else
+        {
+            $string = "service object is not a SERVICE GROUP.";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+        }
+
+
+    },
+    'args' => array('largeGroupsCount' => array('type' => 'string', 'default' => '2490')
+    )
+);
