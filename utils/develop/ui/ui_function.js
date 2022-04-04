@@ -419,7 +419,7 @@ function updateScriptsyntax( Idx ) {
     $("#command" + Idx).val( message );
 
 
-    var message2 = server_url + "/utils/develop/api/v1/tool.php/" +SCRIPT+ "?";
+    var message2 = server_url + "/utils/api/v1/tool.php/" +SCRIPT+ "?";
     message2 += Actiontextapi;
     message2 += Filtertextapi;
 
@@ -632,7 +632,7 @@ function runButton( Idx)
 
 function uploadButton( )
 {
-    var message = server_url + "/utils/develop/api/v1/file_upload.php"
+    var message = server_url + "/utils/api/v1/file_upload.php"
     document.getElementById("user_form").action = message;
     document.getElementById("user_form").submit();
 }

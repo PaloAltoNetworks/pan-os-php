@@ -25,8 +25,8 @@
 // - use git module to do all manipulation against one file within a project folder
 
 
-require_once dirname(__FILE__)."/../../../../lib/pan_php_framework.php";
-require_once ( dirname(__FILE__)."/../../../lib/UTIL.php");
+require_once dirname(__FILE__)."/../../../lib/pan_php_framework.php";
+require_once ( dirname(__FILE__)."/../../lib/UTIL.php");
 
 
 set_exception_handler(function ($e) {
@@ -49,7 +49,7 @@ if( !isset( $_GET['in'] ) && isset($_FILES['configInput']) )
 
     $response = array();
     $upload_dir = '';
-    //$server_url = 'http://localhost:8082/utils/develop/api/v1';
+    //$server_url = 'http://localhost:8082/utils/api/v1';
 
     $file_name = $_FILES['configInput']["name"];
     $file_tmp_name = $_FILES['configInput']["tmp_name"];
@@ -101,7 +101,7 @@ sort(PH::$supportedUTILTypes );
 // catch this here, we don't support many routes yet
 if( empty( $url_pieces) || ( isset($url_pieces[1]) && !in_array( $url_pieces[1], PH::$supportedUTILTypes ) ) )
 {
-    $example = "http://localhost:8082/utils/develop/api/v1/tool.php/address?shadow-json";
+    $example = "http://localhost:8082/utils/api/v1/tool.php/address?shadow-json";
     $message = 'Unknown endpoint. supported: '.implode( ", ", PH::$supportedUTILTypes ).' Example: '.$example;
     $message = 'Unknown endpoint.';
 
