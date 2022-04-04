@@ -537,6 +537,7 @@ class PanAPIConnector
         PH::print_stdout( " - PAN-OS version: ".$this->info_PANOS_version );
         PH::$JSON_TMP[$checkHost]['panos']['version'] = $this->info_PANOS_version;
         PH::$JSON_TMP[$checkHost]['panos']['type'] = $this->info_deviceType;
+        PH::$JSON_TMP[$checkHost]['status'] = "success";
     }
 
 

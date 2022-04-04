@@ -11,6 +11,7 @@ UTILS:
 * UTIL type=service | introduce actions=split-large-service-groups:MAXnumber
 * UTIL type=[ALLMERGER] - duplicate code reduction - output improvements
 * UTIL type=device | introduce new actions=DefaultSecurityRule-SecurityProfile-SetAlert/ DefaultSecurityRule-SecurityProfileGroup-Set:SECPROFGROUP
+* UTIL API - move from develop into production
 
 BUGFIX:
 * class DeviceGroup / Template - remove $xmlroot as already defined in trait XmlConvertible

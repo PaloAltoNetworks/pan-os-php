@@ -1,0 +1,312 @@
+{
+	"info": {
+		"_postman_id": "dbc48068-b7cf-4b1f-b251-b38590380227",
+		"name": "PAN-OS-PHP",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "endpoints",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php",
+					"host": [
+						"{{SERVER}}"
+					],
+					"path": [
+						"utils",
+						"api",
+						"{{VERSION}}",
+						"tool.php"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "address?&help",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/address?&help",
+					"host": [
+						"{{SERVER}}"
+					],
+					"path": [
+						"utils",
+						"api",
+						"{{VERSION}}",
+						"tool.php",
+						"address"
+					],
+					"query": [
+						{
+							"key": null,
+							"value": null
+						},
+						{
+							"key": "help",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "address?&listactions",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/address?&listactions",
+					"host": [
+						"{{SERVER}}"
+					],
+					"path": [
+						"utils",
+						"api",
+						"{{VERSION}}",
+						"tool.php",
+						"address"
+					],
+					"query": [
+						{
+							"key": null,
+							"value": null
+						},
+						{
+							"key": "listactions",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "address?&listfilters",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/address?&listfilters",
+					"host": [
+						"{{SERVER}}"
+					],
+					"path": [
+						"utils",
+						"api",
+						"{{VERSION}}",
+						"tool.php",
+						"address"
+					],
+					"query": [
+						{
+							"key": null,
+							"value": null
+						},
+						{
+							"key": "listfilters",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "address?&in=api://{{MGMT-IP}}",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/address?&in=api://{{MGMT-IP}}&actions=display&location=any&shadow-nojson",
+					"host": [
+						"{{SERVER}}"
+					],
+					"path": [
+						"utils",
+						"api",
+						"{{VERSION}}",
+						"tool.php",
+						"address"
+					],
+					"query": [
+						{
+							"key": null,
+							"value": null
+						},
+						{
+							"key": "in",
+							"value": "api://{{MGMT-IP}}"
+						},
+						{
+							"key": "actions",
+							"value": "display"
+						},
+						{
+							"key": "location",
+							"value": "any"
+						},
+						{
+							"key": "shadow-nojson",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "key-manager",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/key-manager",
+					"host": [
+						"{{SERVER}}"
+					],
+					"path": [
+						"utils",
+						"api",
+						"{{VERSION}}",
+						"tool.php",
+						"key-manager"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "key-manager?&add={{MGMT-IP}}",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/key-manager?&add={{MGMT-IP}}&user={{USERNAME}}&pw={{PASSWORD}}",
+					"host": [
+						"{{SERVER}}"
+					],
+					"path": [
+						"utils",
+						"api",
+						"{{VERSION}}",
+						"tool.php",
+						"key-manager"
+					],
+					"query": [
+						{
+							"key": null,
+							"value": null
+						},
+						{
+							"key": "add",
+							"value": "{{MGMT-IP}}"
+						},
+						{
+							"key": "user",
+							"value": "{{USERNAME}}"
+						},
+						{
+							"key": "pw",
+							"value": "{{PASSWORD}}"
+						},
+						{
+							"key": "shadow-nojson",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "key-manager?&test={{MGMT-IP}}",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/key-manager?&test={{MGMT-IP}}",
+					"host": [
+						"{{SERVER}}"
+					],
+					"path": [
+						"utils",
+						"api",
+						"{{VERSION}}",
+						"tool.php",
+						"key-manager"
+					],
+					"query": [
+						{
+							"key": null,
+							"value": null
+						},
+						{
+							"key": "test",
+							"value": "{{MGMT-IP}}"
+						},
+						{
+							"key": "shadow-nojson",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "MGMT-IP",
+			"value": "192.168.10.38"
+		},
+		{
+			"key": "USERNAME",
+			"value": "admin"
+		},
+		{
+			"key": "PASSWORD",
+			"value": "Admin123."
+		},
+		{
+			"key": "SERVER",
+			"value": "localhost:8082"
+		},
+		{
+			"key": "PATH",
+			"value": "/develop"
+		},
+		{
+			"key": "VERSION",
+			"value": "v1"
+		}
+	]
+}

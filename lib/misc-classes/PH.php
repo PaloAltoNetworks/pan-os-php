@@ -1077,6 +1077,8 @@ class PH
         )
             $util = new UTIL($type, $argv, $argc,$PHP_FILE." type=".$type);
 
+        $util->endOfScript();
+
         return $util;
     }
 }

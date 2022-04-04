@@ -250,6 +250,8 @@ class KEYMANGER extends UTIL
             $key = $connector->apikey;
             if( strlen($key) > 24 )
                 $key = substr($key, 0, 12) . '...' . substr($key, strlen($key) - 12);
+            elseif( strlen($key) > 10 )
+                $key = substr($key, 0, 5) . '...' . substr($key, strlen($key) - 5);
             $host = str_pad($connector->apihost, 15, ' ', STR_PAD_RIGHT);
 
             PH::print_stdout( " - Host {$host}: key={$key}");

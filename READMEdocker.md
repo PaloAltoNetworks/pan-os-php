@@ -51,6 +51,13 @@ Windows Docker WSL installation check
 ["<a href='https://docs.microsoft.com/en-gb/windows/wsl/install-manual#step-5---set-wsl-2-as-your-default-version' target='_blank' rel='noopener noreferrer'>Step 5 - Set WSL 2 as your default version</a>"]
 
 
+Update your Docker PAN-OS-PHP container
+============
+```bash
+    docker pull swaschkut/pan-os-php:latest
+```
+
+
 #Additional Information
 
 Docker build
@@ -80,7 +87,6 @@ For a quick start please use [WIKI docker](https://github.com/PaloAltoNetworks/p
 
 
 
-
 Docker PAN-OS-PHP API and UI
 ============
 final production Container:
@@ -102,12 +108,12 @@ To get it working on your own PAN-OS Firewall / Panorama config files,
 please upload your config files via PAN-OS-PHP UI (URL above)
 
 It is also now possible to start using it with the previous uploaded file via PAN-OS-PHP API:
-http://localhost:8082/utils/develop/api/v1/tool.php/address?in=YOUR_CONFIG_FILE.xml
+http://localhost:8082/utils/api/v1/tool.php/address?in=YOUR_CONFIG_FILE.xml
 
 
 The PAN-OS-PHP API is right now under development, but please feel free to try it out:
    ```bash
-   http://localhost:8082/utils/develop/api/v1/tool.php
+   http://localhost:8082/utils/api/v1/tool.php
    ```
 
 The following "RESTAPI" routes are available:
@@ -156,16 +162,16 @@ The following "RESTAPI" routes are available:
 
 PAN-OS-PHP API is also working with PAN-OS XML API, therefor you need to prepare you Docker installation:
 ```bash
-   API: http://localhost:8082/utils/develop/api/v1/tool.php/key-manager?&add=MGMTIP&user=USERNAME&pw=PASSWORD
+   API: http://localhost:8082/utils/api/v1/tool.php/key-manager?&add=MGMTIP&user=USERNAME&pw=PASSWORD
    ```
 
 
 Exmamples to run PAN-OS-PHP against PAN-OS FW and Panorama offline configuration files, and manipulate in the same way as on PAN-OS-PHP ClI:
    ```bash
    ClI: pan-os-php type=address help
-   API: http://localhost:8082/utils/develop/api/v1/tool.php/address?help
+   API: http://localhost:8082/utils/api/v1/tool.php/address?help
    ```
    ```bash
    CLI: pan-os-php type=address listactions
-   API: http://localhost:8082/utils/develop/api/v1/tool.php/address?listactions
+   API: http://localhost:8082/utils/api/v1/tool.php/address?listactions
    ```
