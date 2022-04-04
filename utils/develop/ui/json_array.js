@@ -1282,6 +1282,23 @@ var subjectObject =
                     }
                 }
             },
+            "defaultsecurityrule-securityprofile-setalert": {
+                "name": "defaultsecurityrule-securityprofile-setAlert",
+                "GlobalInitFunction": {},
+                "MainFunction": {}
+            },
+            "defaultsecurityrule-securityprofilegroup-set": {
+                "name": "defaultsecurityrule-securityprofilegroup-set",
+                "GlobalInitFunction": {},
+                "MainFunction": {},
+                "args": {
+                    "securityProfileGroup": {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "help": "set SecurityProfileGroup to default SecurityRules, if the Rule is an allow rule"
+                    }
+                }
+            },
             "devicegroup-create": {
                 "name": "devicegroup-create",
                 "MainFunction": {},

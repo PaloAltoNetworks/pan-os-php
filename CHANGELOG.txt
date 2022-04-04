@@ -2,6 +2,7 @@ CHANGELOG
 
 2.0.34
 UTILS:
+* UTIL API - introduce postman_collection
 
 BUGFIX:
 

@@ -129,7 +129,7 @@ elseif( isset($_GET['in']) )
     if( !isset($_GET['out']) )
         $argv[] = "out=true";
 }
-elseif( isset($_GET['help']) || isset($_GET['listfilters']) || isset($_GET['listactions']) || $url_pieces[1] == "key-manager" )
+elseif( isset($_GET['help']) || isset($_GET['listfilters']) || isset($_GET['listactions']) || $url_pieces[1] == "key-manager" || $url_pieces[1] == "util_get-action-filter" )
 {
 }
 else{
