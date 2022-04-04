@@ -1,6 +1,14 @@
 CHANGELOG
 
-2.0.33
+2.0.34
+UTILS:
+
+BUGFIX:
+
+GENERAL:
+
+
+2.0.33 (20220404)
 UTILS:
 * UTIL type=address | introduce 'filter=(ip.count >,<,=! VALUE)' AND 'actions=move-range2network'
 * UTIL bash-autocompletion | introduce argument "outputformatset="
