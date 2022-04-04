@@ -97,7 +97,7 @@
                         <select id="configSelect" name="configSelect" class="form-control input-sm">
                             <option value="---" selected>---</option>
                             <?php
-                            foreach( glob(dirname(__FILE__) . '/../api/v1/project/*') as $filename )
+                            foreach( glob(dirname(__FILE__) . '/../../api/v1/project/*') as $filename )
                             {
                                 $filename = basename($filename);
 
