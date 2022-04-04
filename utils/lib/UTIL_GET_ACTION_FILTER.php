@@ -49,11 +49,20 @@ class UTIL_GET_ACTION_FILTER
 
         $JSON_pretty =  json_encode( $tmp_array, JSON_PRETTY_PRINT );
 
-        print $JSON_pretty;
+
+        if( PH::$shadow_json )
+        {
+            print $JSON_pretty;
+            exit(0);
+        }
+        else
+        {
+            print $JSON_pretty;
+            file_put_contents(__DIR__ . "/util_action_filter.json", $JSON_pretty);
+        }
+
 
         $this->createJSONarrayFILE( $JSON_pretty);
-
-        file_put_contents(__DIR__ . "/util_action_filter.json", $JSON_pretty);
     }
 
     function createJSONarrayFILE( $JSON_pretty )

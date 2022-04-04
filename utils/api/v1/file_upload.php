@@ -52,7 +52,8 @@ if($_FILES['configInput'])
                 "status" => "success",
                 "error" => false,
                 "message" => "File uploaded successfully",
-                "url" => $server_url."/".$upload_name
+                "url" => $server_url."/".$upload_name,
+                "filename" => $random_name
             );
         }else
         {

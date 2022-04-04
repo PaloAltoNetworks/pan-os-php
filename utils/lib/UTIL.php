@@ -63,6 +63,12 @@ require_once(dirname(__FILE__)."/CONFIG_DOWNLOAD_ALL__.php");
 require_once(dirname(__FILE__)."/SPIFFY__.php");
 require_once(dirname(__FILE__)."/CONFIG_COMMIT__.php");
 
+require_once dirname(__FILE__)."/MAXMIND__.php";
+require_once dirname(__FILE__)."/PLAYBOOK__.php";
+require_once dirname(__FILE__)."/UTIL_GET_ACTION_FILTER.php";
+require_once dirname(__FILE__)."/IRONSKILLET_UPDATE__.php";
+
+require_once(dirname(__FILE__)."/PROTOCOLL_NUMBERS__.php");
 
 require_once dirname(__FILE__)."/../../phpseclib/Net/SSH2.php";
 require_once dirname(__FILE__)."/../../phpseclib/Crypt/RSA.php";
@@ -1849,10 +1855,21 @@ class UTIL
                         $tmp_string .= $set."\n";
                 }
             }
-            if( $this->outputformatsetFile !== null )
-                file_put_contents($this->outputformatsetFile, $tmp_string, FILE_APPEND);
+            if( PH::$shadow_json )
+            {
+                if( isset(PH::$JSON_OUT['setcommands']) )
+                    PH::$JSON_OUT['setcommands'] .= $tmp_string;
+                else
+                    PH::$JSON_OUT['setcommands'] = $tmp_string;
+            }
             else
-                PH::print_stdout( $tmp_string );
+            {
+                if( $this->outputformatsetFile !== null )
+                    file_put_contents($this->outputformatsetFile, $tmp_string, FILE_APPEND);
+                else
+                    PH::print_stdout( $tmp_string );
+            }
+
 
 
             $deleteArray = array( "rulebase", "address-group", "address", "service-group", "service", "profile-group", "profiles", "misc" );
@@ -1865,10 +1882,20 @@ class UTIL
                         $tmp_string .= $delete."\n";
                 }
             }
-            if( $this->outputformatsetFile !== null )
-                file_put_contents($this->outputformatsetFile, $tmp_string, FILE_APPEND);
+            if( PH::$shadow_json )
+            {
+                if( isset(PH::$JSON_OUT['setcommands']) )
+                    PH::$JSON_OUT['setcommands'] .= $tmp_string;
+                else
+                    PH::$JSON_OUT['setcommands'] = $tmp_string;
+            }
             else
-                PH::print_stdout( $tmp_string );
+            {
+                if( $this->outputformatsetFile !== null )
+                    file_put_contents($this->outputformatsetFile, $tmp_string, FILE_APPEND);
+                else
+                    PH::print_stdout($tmp_string);
+            }
         }
     }
 

@@ -6,6 +6,730 @@
 	},
 	"item": [
 		{
+			"name": "help",
+			"item": [
+				{
+					"name": "address?&help",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/address?&help",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"utils",
+								"api",
+								"{{VERSION}}",
+								"tool.php",
+								"address"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": null
+								},
+								{
+									"key": "help",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "service?&help",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/service?&help",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"utils",
+								"api",
+								"{{VERSION}}",
+								"tool.php",
+								"service"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": null
+								},
+								{
+									"key": "help",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "tag?&help",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/tag?&help",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"utils",
+								"api",
+								"{{VERSION}}",
+								"tool.php",
+								"tag"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": null
+								},
+								{
+									"key": "help",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "rule?&help",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/rule?&help",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"utils",
+								"api",
+								"{{VERSION}}",
+								"tool.php",
+								"rule"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": null
+								},
+								{
+									"key": "help",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "address-merger?&help",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/address-merger?&help",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"utils",
+								"api",
+								"{{VERSION}}",
+								"tool.php",
+								"address-merger"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": null
+								},
+								{
+									"key": "help",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "addressgroup-merger?&help",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/addressgroup-merger?&help",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"utils",
+								"api",
+								"{{VERSION}}",
+								"tool.php",
+								"addressgroup-merger"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": null
+								},
+								{
+									"key": "help",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "service-merger?&help",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/service-merger?&help",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"utils",
+								"api",
+								"{{VERSION}}",
+								"tool.php",
+								"service-merger"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": null
+								},
+								{
+									"key": "help",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "servicegroup-merger?&help",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/servicegroup-merger?&help",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"utils",
+								"api",
+								"{{VERSION}}",
+								"tool.php",
+								"servicegroup-merger"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": null
+								},
+								{
+									"key": "help",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "device?&help",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/device?&help",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"utils",
+								"api",
+								"{{VERSION}}",
+								"tool.php",
+								"device"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": null
+								},
+								{
+									"key": "help",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "merging",
+			"item": [
+				{
+					"name": "address-merger?&in=api://{{MGMT-IP}}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/address-merger?&in=api://{{MGMT-IP}}&location=any&allowmergingwithupperlevel&exportcsv",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"utils",
+								"api",
+								"{{VERSION}}",
+								"tool.php",
+								"address-merger"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": null
+								},
+								{
+									"key": "in",
+									"value": "api://{{MGMT-IP}}"
+								},
+								{
+									"key": "location",
+									"value": "any"
+								},
+								{
+									"key": "allowmergingwithupperlevel",
+									"value": null
+								},
+								{
+									"key": "exportcsv",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "addressgroup-merger?&in=api://{{MGMT-IP}}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/addressgroup-merger?&in=api://{{MGMT-IP}}&location=any&allowmergingwithupperlevel&exportcsv",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"utils",
+								"api",
+								"{{VERSION}}",
+								"tool.php",
+								"addressgroup-merger"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": null
+								},
+								{
+									"key": "in",
+									"value": "api://{{MGMT-IP}}"
+								},
+								{
+									"key": "location",
+									"value": "any"
+								},
+								{
+									"key": "allowmergingwithupperlevel",
+									"value": null
+								},
+								{
+									"key": "exportcsv",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "service-merger?&in=api://{{MGMT-IP}}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/service-merger?&in=api://{{MGMT-IP}}&location=any&allowmergingwithupperlevel&exportcsv",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"utils",
+								"api",
+								"{{VERSION}}",
+								"tool.php",
+								"service-merger"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": null
+								},
+								{
+									"key": "in",
+									"value": "api://{{MGMT-IP}}"
+								},
+								{
+									"key": "location",
+									"value": "any"
+								},
+								{
+									"key": "allowmergingwithupperlevel",
+									"value": null
+								},
+								{
+									"key": "exportcsv",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "servicegroup-merger?&in=api://{{MGMT-IP}}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/servicegroup-merger?&in=api://{{MGMT-IP}}&location=any&allowmergingwithupperlevel&exportcsv",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"utils",
+								"api",
+								"{{VERSION}}",
+								"tool.php",
+								"servicegroup-merger"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": null
+								},
+								{
+									"key": "in",
+									"value": "api://{{MGMT-IP}}"
+								},
+								{
+									"key": "location",
+									"value": "any"
+								},
+								{
+									"key": "allowmergingwithupperlevel",
+									"value": null
+								},
+								{
+									"key": "exportcsv",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "tag-merger?&in=api://{{MGMT-IP}}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/tag-merger?&in=api://{{MGMT-IP}}&location=any&allowmergingwithupperlevel&exportcsv",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"utils",
+								"api",
+								"{{VERSION}}",
+								"tool.php",
+								"tag-merger"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": null
+								},
+								{
+									"key": "in",
+									"value": "api://{{MGMT-IP}}"
+								},
+								{
+									"key": "location",
+									"value": "any"
+								},
+								{
+									"key": "allowmergingwithupperlevel",
+									"value": null
+								},
+								{
+									"key": "exportcsv",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "rule-merger?&in=api://{{MGMT-IP}}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/rule-merger?&in=api://{{MGMT-IP}}&location=any&dupalgorithm",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"utils",
+								"api",
+								"{{VERSION}}",
+								"tool.php",
+								"rule-merger"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": null
+								},
+								{
+									"key": "in",
+									"value": "api://{{MGMT-IP}}"
+								},
+								{
+									"key": "location",
+									"value": "any"
+								},
+								{
+									"key": "dupalgorithm",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "listactions/filters",
+			"item": [
+				{
+					"name": "util_get-action-filter",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/util_get-action-filter",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"utils",
+								"api",
+								"{{VERSION}}",
+								"tool.php",
+								"util_get-action-filter"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "address?&listactions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/address?&listactions",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"utils",
+								"api",
+								"{{VERSION}}",
+								"tool.php",
+								"address"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": null
+								},
+								{
+									"key": "listactions",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "address?&listfilters",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/address?&listfilters",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"utils",
+								"api",
+								"{{VERSION}}",
+								"tool.php",
+								"address"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": null
+								},
+								{
+									"key": "listfilters",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "service?&listactions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/service?&listactions",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"utils",
+								"api",
+								"{{VERSION}}",
+								"tool.php",
+								"service"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": null
+								},
+								{
+									"key": "listactions",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "tag?&listactions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/tag?&listactions",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"utils",
+								"api",
+								"{{VERSION}}",
+								"tool.php",
+								"tag"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": null
+								},
+								{
+									"key": "listactions",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "rule?&listactions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/rule?&listactions",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"utils",
+								"api",
+								"{{VERSION}}",
+								"tool.php",
+								"rule"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": null
+								},
+								{
+									"key": "listactions",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "endpoints",
 			"request": {
 				"method": "GET",
@@ -26,105 +750,12 @@
 			"response": []
 		},
 		{
-			"name": "address?&help",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/address?&help",
-					"host": [
-						"{{SERVER}}"
-					],
-					"path": [
-						"utils",
-						"api",
-						"{{VERSION}}",
-						"tool.php",
-						"address"
-					],
-					"query": [
-						{
-							"key": null,
-							"value": null
-						},
-						{
-							"key": "help",
-							"value": null
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "address?&listactions",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/address?&listactions",
-					"host": [
-						"{{SERVER}}"
-					],
-					"path": [
-						"utils",
-						"api",
-						"{{VERSION}}",
-						"tool.php",
-						"address"
-					],
-					"query": [
-						{
-							"key": null,
-							"value": null
-						},
-						{
-							"key": "listactions",
-							"value": null
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "address?&listfilters",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/address?&listfilters",
-					"host": [
-						"{{SERVER}}"
-					],
-					"path": [
-						"utils",
-						"api",
-						"{{VERSION}}",
-						"tool.php",
-						"address"
-					],
-					"query": [
-						{
-							"key": null,
-							"value": null
-						},
-						{
-							"key": "listfilters",
-							"value": null
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "address?&in=api://{{MGMT-IP}}",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/address?&in=api://{{MGMT-IP}}&actions=display&location=any&shadow-nojson",
+					"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/address?&in=api://{{MGMT-IP}}&actions=display&location=any",
 					"host": [
 						"{{SERVER}}"
 					],
@@ -151,10 +782,6 @@
 						{
 							"key": "location",
 							"value": "any"
-						},
-						{
-							"key": "shadow-nojson",
-							"value": null
 						}
 					]
 				}
@@ -257,6 +884,86 @@
 							"value": null,
 							"disabled": true
 						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "playbook?&in=api://{{MGMT-IP}} - body send JSON file",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "json",
+							"type": "file",
+							"src": []
+						}
+					]
+				},
+				"url": {
+					"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/playbook?&in=api://{{MGMT-IP}}",
+					"host": [
+						"{{SERVER}}"
+					],
+					"path": [
+						"utils",
+						"api",
+						"{{VERSION}}",
+						"tool.php",
+						"playbook"
+					],
+					"query": [
+						{
+							"key": null,
+							"value": null
+						},
+						{
+							"key": "in",
+							"value": "api://{{MGMT-IP}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "fileupload",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "multipart/form-data",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "configInput",
+							"type": "file",
+							"src": []
+						}
+					]
+				},
+				"url": {
+					"raw": "{{SERVER}}/utils/api/{{VERSION}}/file_upload.php",
+					"host": [
+						"{{SERVER}}"
+					],
+					"path": [
+						"utils",
+						"api",
+						"{{VERSION}}",
+						"file_upload.php"
 					]
 				}
 			},
