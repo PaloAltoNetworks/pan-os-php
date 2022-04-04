@@ -293,12 +293,12 @@
 			"name": "merging",
 			"item": [
 				{
-					"name": "address-merger?&in=api://{{MGMT-IP}}",
+					"name": "address-merger?&in={{INPUT}}",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/address-merger?&in=api://{{MGMT-IP}}&location=any&allowmergingwithupperlevel&exportcsv",
+							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/address-merger?&in={{INPUT}}&location=any&allowmergingwithupperlevel&exportcsv",
 							"host": [
 								"{{SERVER}}"
 							],
@@ -316,7 +316,7 @@
 								},
 								{
 									"key": "in",
-									"value": "api://{{MGMT-IP}}"
+									"value": "{{INPUT}}"
 								},
 								{
 									"key": "location",
@@ -336,12 +336,12 @@
 					"response": []
 				},
 				{
-					"name": "addressgroup-merger?&in=api://{{MGMT-IP}}",
+					"name": "addressgroup-merger?&in={{INPUT}}",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/addressgroup-merger?&in=api://{{MGMT-IP}}&location=any&allowmergingwithupperlevel&exportcsv",
+							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/addressgroup-merger?&in={{INPUT}}&location=any&allowmergingwithupperlevel&exportcsv",
 							"host": [
 								"{{SERVER}}"
 							],
@@ -359,7 +359,7 @@
 								},
 								{
 									"key": "in",
-									"value": "api://{{MGMT-IP}}"
+									"value": "{{INPUT}}"
 								},
 								{
 									"key": "location",
@@ -379,12 +379,12 @@
 					"response": []
 				},
 				{
-					"name": "service-merger?&in=api://{{MGMT-IP}}",
+					"name": "service-merger?&in={{INPUT}}",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/service-merger?&in=api://{{MGMT-IP}}&location=any&allowmergingwithupperlevel&exportcsv",
+							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/service-merger?&in={{INPUT}}&location=any&allowmergingwithupperlevel&exportcsv",
 							"host": [
 								"{{SERVER}}"
 							],
@@ -402,7 +402,7 @@
 								},
 								{
 									"key": "in",
-									"value": "api://{{MGMT-IP}}"
+									"value": "{{INPUT}}"
 								},
 								{
 									"key": "location",
@@ -422,12 +422,12 @@
 					"response": []
 				},
 				{
-					"name": "servicegroup-merger?&in=api://{{MGMT-IP}}",
+					"name": "servicegroup-merger?&in={{INPUT}}",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/servicegroup-merger?&in=api://{{MGMT-IP}}&location=any&allowmergingwithupperlevel&exportcsv",
+							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/servicegroup-merger?&in={{INPUT}}&location=any&allowmergingwithupperlevel&exportcsv",
 							"host": [
 								"{{SERVER}}"
 							],
@@ -445,7 +445,7 @@
 								},
 								{
 									"key": "in",
-									"value": "api://{{MGMT-IP}}"
+									"value": "{{INPUT}}"
 								},
 								{
 									"key": "location",
@@ -465,12 +465,12 @@
 					"response": []
 				},
 				{
-					"name": "tag-merger?&in=api://{{MGMT-IP}}",
+					"name": "tag-merger?&in={{INPUT}}",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/tag-merger?&in=api://{{MGMT-IP}}&location=any&allowmergingwithupperlevel&exportcsv",
+							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/tag-merger?&in={{INPUT}}&location=any&allowmergingwithupperlevel&exportcsv",
 							"host": [
 								"{{SERVER}}"
 							],
@@ -488,7 +488,7 @@
 								},
 								{
 									"key": "in",
-									"value": "api://{{MGMT-IP}}"
+									"value": "{{INPUT}}"
 								},
 								{
 									"key": "location",
@@ -508,12 +508,12 @@
 					"response": []
 				},
 				{
-					"name": "rule-merger?&in=api://{{MGMT-IP}}",
+					"name": "rule-merger?&in={{INPUT}}",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/rule-merger?&in=api://{{MGMT-IP}}&location=any&dupalgorithm",
+							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/rule-merger?&in={{INPUT}}&location=any&dupalgorithm",
 							"host": [
 								"{{SERVER}}"
 							],
@@ -531,7 +531,7 @@
 								},
 								{
 									"key": "in",
-									"value": "api://{{MGMT-IP}}"
+									"value": "{{INPUT}}"
 								},
 								{
 									"key": "location",
@@ -730,6 +730,1445 @@
 			]
 		},
 		{
+			"name": "utils",
+			"item": [
+				{
+					"name": "notdone",
+					"item": [
+						{
+							"name": "xml-issue",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/xml-issue?&in={{INPUT}}&shadow-nojson",
+									"host": [
+										"{{SERVER}}"
+									],
+									"path": [
+										"utils",
+										"api",
+										"{{VERSION}}",
+										"tool.php",
+										"xml-issue"
+									],
+									"query": [
+										{
+											"key": null,
+											"value": null
+										},
+										{
+											"key": "in",
+											"value": "{{INPUT}}"
+										},
+										{
+											"key": "shadow-nojson",
+											"value": null
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "appid-enabler",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/appid-enabler?&in={{INPUT}}&shadow-nojson",
+									"host": [
+										"{{SERVER}}"
+									],
+									"path": [
+										"utils",
+										"api",
+										"{{VERSION}}",
+										"tool.php",
+										"appid-enabler"
+									],
+									"query": [
+										{
+											"key": null,
+											"value": null
+										},
+										{
+											"key": "in",
+											"value": "{{INPUT}}"
+										},
+										{
+											"key": "shadow-nojson",
+											"value": null
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "bpa-generator",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/bpa-generator?&in={{INPUT}}&shadow-nojson",
+									"host": [
+										"{{SERVER}}"
+									],
+									"path": [
+										"utils",
+										"api",
+										"{{VERSION}}",
+										"tool.php",
+										"bpa-generator"
+									],
+									"query": [
+										{
+											"key": null,
+											"value": null
+										},
+										{
+											"key": "in",
+											"value": "{{INPUT}}"
+										},
+										{
+											"key": "shadow-nojson",
+											"value": null
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "config-size",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/config-size?&in={{INPUT}}&shadow-nojson",
+									"host": [
+										"{{SERVER}}"
+									],
+									"path": [
+										"utils",
+										"api",
+										"{{VERSION}}",
+										"tool.php",
+										"config-size"
+									],
+									"query": [
+										{
+											"key": null,
+											"value": null
+										},
+										{
+											"key": "in",
+											"value": "{{INPUT}}"
+										},
+										{
+											"key": "shadow-nojson",
+											"value": null
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "config-commit",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/config-commit?&in={{INPUT}}&shadow-nojson",
+									"host": [
+										"{{SERVER}}"
+									],
+									"path": [
+										"utils",
+										"api",
+										"{{VERSION}}",
+										"tool.php",
+										"config-commit"
+									],
+									"query": [
+										{
+											"key": null,
+											"value": null
+										},
+										{
+											"key": "in",
+											"value": "{{INPUT}}"
+										},
+										{
+											"key": "shadow-nojson",
+											"value": null
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "config-download-all",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/config-download-all?&in={{INPUT}}&shadow-nojson",
+									"host": [
+										"{{SERVER}}"
+									],
+									"path": [
+										"utils",
+										"api",
+										"{{VERSION}}",
+										"tool.php",
+										"config-download-all"
+									],
+									"query": [
+										{
+											"key": null,
+											"value": null
+										},
+										{
+											"key": "in",
+											"value": "{{INPUT}}"
+										},
+										{
+											"key": "shadow-nojson",
+											"value": null
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "diff",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/diff?&in={{INPUT}}&shadow-nojson",
+									"host": [
+										"{{SERVER}}"
+									],
+									"path": [
+										"utils",
+										"api",
+										"{{VERSION}}",
+										"tool.php",
+										"diff"
+									],
+									"query": [
+										{
+											"key": null,
+											"value": null
+										},
+										{
+											"key": "in",
+											"value": "{{INPUT}}"
+										},
+										{
+											"key": "shadow-nojson",
+											"value": null
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "download-predefined",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/download-predefined?&in={{INPUT}}&shadow-nojson",
+									"host": [
+										"{{SERVER}}"
+									],
+									"path": [
+										"utils",
+										"api",
+										"{{VERSION}}",
+										"tool.php",
+										"download-predefined"
+									],
+									"query": [
+										{
+											"key": null,
+											"value": null
+										},
+										{
+											"key": "in",
+											"value": "{{INPUT}}"
+										},
+										{
+											"key": "shadow-nojson",
+											"value": null
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "gratuitous-arp",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/gratuitous-arp?&in={{INPUT}}&shadow-nojson",
+									"host": [
+										"{{SERVER}}"
+									],
+									"path": [
+										"utils",
+										"api",
+										"{{VERSION}}",
+										"tool.php",
+										"gratuitous-arp"
+									],
+									"query": [
+										{
+											"key": null,
+											"value": null
+										},
+										{
+											"key": "in",
+											"value": "{{INPUT}}"
+										},
+										{
+											"key": "shadow-nojson",
+											"value": null
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "ironskillet-update",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/ironskillet-update?&in={{INPUT}}&shadow-nojson",
+									"host": [
+										"{{SERVER}}"
+									],
+									"path": [
+										"utils",
+										"api",
+										"{{VERSION}}",
+										"tool.php",
+										"ironskillet-update"
+									],
+									"query": [
+										{
+											"key": null,
+											"value": null
+										},
+										{
+											"key": "in",
+											"value": "{{INPUT}}"
+										},
+										{
+											"key": "shadow-nojson",
+											"value": null
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "license",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/ironskillet-update?&in={{INPUT}}&shadow-nojson",
+									"host": [
+										"{{SERVER}}"
+									],
+									"path": [
+										"utils",
+										"api",
+										"{{VERSION}}",
+										"tool.php",
+										"ironskillet-update"
+									],
+									"query": [
+										{
+											"key": null,
+											"value": null
+										},
+										{
+											"key": "in",
+											"value": "{{INPUT}}"
+										},
+										{
+											"key": "shadow-nojson",
+											"value": null
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "maxmind-update",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/maxmind-update?&in={{INPUT}}&shadow-nojson",
+									"host": [
+										"{{SERVER}}"
+									],
+									"path": [
+										"utils",
+										"api",
+										"{{VERSION}}",
+										"tool.php",
+										"maxmind-update"
+									],
+									"query": [
+										{
+											"key": null,
+											"value": null
+										},
+										{
+											"key": "in",
+											"value": "{{INPUT}}"
+										},
+										{
+											"key": "shadow-nojson",
+											"value": null
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "override-finder",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/override-finder?&in={{INPUT}}&shadow-nojson",
+									"host": [
+										"{{SERVER}}"
+									],
+									"path": [
+										"utils",
+										"api",
+										"{{VERSION}}",
+										"tool.php",
+										"override-finder"
+									],
+									"query": [
+										{
+											"key": null,
+											"value": null
+										},
+										{
+											"key": "in",
+											"value": "{{INPUT}}"
+										},
+										{
+											"key": "shadow-nojson",
+											"value": null
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "protocoll-number-download",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/protocoll-number-download?&in={{INPUT}}&shadow-nojson",
+									"host": [
+										"{{SERVER}}"
+									],
+									"path": [
+										"utils",
+										"api",
+										"{{VERSION}}",
+										"tool.php",
+										"protocoll-number-download"
+									],
+									"query": [
+										{
+											"key": null,
+											"value": null
+										},
+										{
+											"key": "in",
+											"value": "{{INPUT}}"
+										},
+										{
+											"key": "shadow-nojson",
+											"value": null
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "register-ip-mgr",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/register-ip-mgr?&in={{INPUT}}&shadow-nojson",
+									"host": [
+										"{{SERVER}}"
+									],
+									"path": [
+										"utils",
+										"api",
+										"{{VERSION}}",
+										"tool.php",
+										"register-ip-mgr"
+									],
+									"query": [
+										{
+											"key": null,
+											"value": null
+										},
+										{
+											"key": "in",
+											"value": "{{INPUT}}"
+										},
+										{
+											"key": "shadow-nojson",
+											"value": null
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "software-download",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/software-download?&in={{INPUT}}&shadow-nojson",
+									"host": [
+										"{{SERVER}}"
+									],
+									"path": [
+										"utils",
+										"api",
+										"{{VERSION}}",
+										"tool.php",
+										"software-download"
+									],
+									"query": [
+										{
+											"key": null,
+											"value": null
+										},
+										{
+											"key": "in",
+											"value": "{{INPUT}}"
+										},
+										{
+											"key": "shadow-nojson",
+											"value": null
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "software-preparation",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/software-preparation?&in={{INPUT}}&shadow-nojson",
+									"host": [
+										"{{SERVER}}"
+									],
+									"path": [
+										"utils",
+										"api",
+										"{{VERSION}}",
+										"tool.php",
+										"software-preparation"
+									],
+									"query": [
+										{
+											"key": null,
+											"value": null
+										},
+										{
+											"key": "in",
+											"value": "{{INPUT}}"
+										},
+										{
+											"key": "shadow-nojson",
+											"value": null
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "software-remove",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/software-remove?&in={{INPUT}}&shadow-nojson",
+									"host": [
+										"{{SERVER}}"
+									],
+									"path": [
+										"utils",
+										"api",
+										"{{VERSION}}",
+										"tool.php",
+										"software-remove"
+									],
+									"query": [
+										{
+											"key": null,
+											"value": null
+										},
+										{
+											"key": "in",
+											"value": "{{INPUT}}"
+										},
+										{
+											"key": "shadow-nojson",
+											"value": null
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "spiffy",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/spiffy?&in={{INPUT}}&shadow-nojson",
+									"host": [
+										"{{SERVER}}"
+									],
+									"path": [
+										"utils",
+										"api",
+										"{{VERSION}}",
+										"tool.php",
+										"spiffy"
+									],
+									"query": [
+										{
+											"key": null,
+											"value": null
+										},
+										{
+											"key": "in",
+											"value": "{{INPUT}}"
+										},
+										{
+											"key": "shadow-nojson",
+											"value": null
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "system-log",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/system-log?&in={{INPUT}}&shadow-nojson",
+									"host": [
+										"{{SERVER}}"
+									],
+									"path": [
+										"utils",
+										"api",
+										"{{VERSION}}",
+										"tool.php",
+										"system-log"
+									],
+									"query": [
+										{
+											"key": null,
+											"value": null
+										},
+										{
+											"key": "in",
+											"value": "{{INPUT}}"
+										},
+										{
+											"key": "shadow-nojson",
+											"value": null
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "traffic-log",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/traffic-log?&in={{INPUT}}&shadow-nojson",
+									"host": [
+										"{{SERVER}}"
+									],
+									"path": [
+										"utils",
+										"api",
+										"{{VERSION}}",
+										"tool.php",
+										"traffic-log"
+									],
+									"query": [
+										{
+											"key": null,
+											"value": null
+										},
+										{
+											"key": "in",
+											"value": "{{INPUT}}"
+										},
+										{
+											"key": "shadow-nojson",
+											"value": null
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "upload",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/upload?&in={{INPUT}}&shadow-nojson",
+									"host": [
+										"{{SERVER}}"
+									],
+									"path": [
+										"utils",
+										"api",
+										"{{VERSION}}",
+										"tool.php",
+										"upload"
+									],
+									"query": [
+										{
+											"key": null,
+											"value": null
+										},
+										{
+											"key": "in",
+											"value": "{{INPUT}}"
+										},
+										{
+											"key": "shadow-nojson",
+											"value": null
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "userid-mgr",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/userid-mgr?&in={{INPUT}}&shadow-nojson",
+									"host": [
+										"{{SERVER}}"
+									],
+									"path": [
+										"utils",
+										"api",
+										"{{VERSION}}",
+										"tool.php",
+										"userid-mgr"
+									],
+									"query": [
+										{
+											"key": null,
+											"value": null
+										},
+										{
+											"key": "in",
+											"value": "{{INPUT}}"
+										},
+										{
+											"key": "shadow-nojson",
+											"value": null
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "xml-op-json",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/xml-op-json?&in={{INPUT}}&shadow-nojson",
+									"host": [
+										"{{SERVER}}"
+									],
+									"path": [
+										"utils",
+										"api",
+										"{{VERSION}}",
+										"tool.php",
+										"xml-op-json"
+									],
+									"query": [
+										{
+											"key": null,
+											"value": null
+										},
+										{
+											"key": "in",
+											"value": "{{INPUT}}"
+										},
+										{
+											"key": "shadow-nojson",
+											"value": null
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "address?&in={{INPUT}}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/address?&in={{INPUT}}&actions=display&location=any",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"utils",
+								"api",
+								"{{VERSION}}",
+								"tool.php",
+								"address"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": null
+								},
+								{
+									"key": "in",
+									"value": "{{INPUT}}"
+								},
+								{
+									"key": "actions",
+									"value": "display"
+								},
+								{
+									"key": "location",
+									"value": "any"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "service?&in={{INPUT}}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/service?&in={{INPUT}}&actions=display&location=any",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"utils",
+								"api",
+								"{{VERSION}}",
+								"tool.php",
+								"service"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": null
+								},
+								{
+									"key": "in",
+									"value": "{{INPUT}}"
+								},
+								{
+									"key": "actions",
+									"value": "display"
+								},
+								{
+									"key": "location",
+									"value": "any"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "tag?&in={{INPUT}}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/tag?&in={{INPUT}}&actions=display&location=any",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"utils",
+								"api",
+								"{{VERSION}}",
+								"tool.php",
+								"tag"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": null
+								},
+								{
+									"key": "in",
+									"value": "{{INPUT}}"
+								},
+								{
+									"key": "actions",
+									"value": "display"
+								},
+								{
+									"key": "location",
+									"value": "any"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "rule?&in={{INPUT}}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/rule?&in={{INPUT}}&actions=display&location=any&ruletype=any",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"utils",
+								"api",
+								"{{VERSION}}",
+								"tool.php",
+								"rule"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": null
+								},
+								{
+									"key": "in",
+									"value": "{{INPUT}}"
+								},
+								{
+									"key": "actions",
+									"value": "display"
+								},
+								{
+									"key": "location",
+									"value": "any"
+								},
+								{
+									"key": "ruletype",
+									"value": "any"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "schedule?&in={{INPUT}}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/schedule?&in={{INPUT}}&actions=display&location=any",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"utils",
+								"api",
+								"{{VERSION}}",
+								"tool.php",
+								"schedule"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": null
+								},
+								{
+									"key": "in",
+									"value": "{{INPUT}}"
+								},
+								{
+									"key": "actions",
+									"value": "display"
+								},
+								{
+									"key": "location",
+									"value": "any"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "device?&in={{INPUT}}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/device?&in={{INPUT}}&actions=display&location=any&devicetype=any",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"utils",
+								"api",
+								"{{VERSION}}",
+								"tool.php",
+								"device"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": null
+								},
+								{
+									"key": "in",
+									"value": "{{INPUT}}"
+								},
+								{
+									"key": "actions",
+									"value": "display"
+								},
+								{
+									"key": "location",
+									"value": "any"
+								},
+								{
+									"key": "devicetype",
+									"value": "any"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "virtualwire?&in={{INPUT}}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/virtualwire?&in={{INPUT}}&actions=display&location=any",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"utils",
+								"api",
+								"{{VERSION}}",
+								"tool.php",
+								"virtualwire"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": null
+								},
+								{
+									"key": "in",
+									"value": "{{INPUT}}"
+								},
+								{
+									"key": "actions",
+									"value": "display"
+								},
+								{
+									"key": "location",
+									"value": "any"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "zone?&in={{INPUT}}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/zone?&in={{INPUT}}&actions=display&location=any",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"utils",
+								"api",
+								"{{VERSION}}",
+								"tool.php",
+								"zone"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": null
+								},
+								{
+									"key": "in",
+									"value": "{{INPUT}}"
+								},
+								{
+									"key": "actions",
+									"value": "display"
+								},
+								{
+									"key": "location",
+									"value": "any"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "application?&in={{INPUT}}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/application?&in={{INPUT}}&actions=display&location=any",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"utils",
+								"api",
+								"{{VERSION}}",
+								"tool.php",
+								"application"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": null
+								},
+								{
+									"key": "in",
+									"value": "{{INPUT}}"
+								},
+								{
+									"key": "actions",
+									"value": "display"
+								},
+								{
+									"key": "location",
+									"value": "any"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "interface?&in={{INPUT}}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/interface?&in={{INPUT}}&actions=display&location=any",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"utils",
+								"api",
+								"{{VERSION}}",
+								"tool.php",
+								"interface"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": null
+								},
+								{
+									"key": "in",
+									"value": "{{INPUT}}"
+								},
+								{
+									"key": "actions",
+									"value": "display"
+								},
+								{
+									"key": "location",
+									"value": "any"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "routing?&in={{INPUT}}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/routing?&in={{INPUT}}&actions=display&location=any",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"utils",
+								"api",
+								"{{VERSION}}",
+								"tool.php",
+								"routing"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": null
+								},
+								{
+									"key": "in",
+									"value": "{{INPUT}}"
+								},
+								{
+									"key": "actions",
+									"value": "display"
+								},
+								{
+									"key": "location",
+									"value": "any"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "securityprofile?&in={{INPUT}}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/securityprofile?&in={{INPUT}}&actions=display&location=any",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"utils",
+								"api",
+								"{{VERSION}}",
+								"tool.php",
+								"securityprofile"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": null
+								},
+								{
+									"key": "in",
+									"value": "{{INPUT}}"
+								},
+								{
+									"key": "actions",
+									"value": "display"
+								},
+								{
+									"key": "location",
+									"value": "any"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "securityprofilegroup?&in={{INPUT}}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/securityprofilegroup?&in={{INPUT}}&actions=display&location=any",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"utils",
+								"api",
+								"{{VERSION}}",
+								"tool.php",
+								"securityprofilegroup"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": null
+								},
+								{
+									"key": "in",
+									"value": "{{INPUT}}"
+								},
+								{
+									"key": "actions",
+									"value": "display"
+								},
+								{
+									"key": "location",
+									"value": "any"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "stats?&in={{INPUT}}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/stats?&in={{INPUT}}&location=any",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"utils",
+								"api",
+								"{{VERSION}}",
+								"tool.php",
+								"stats"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": null
+								},
+								{
+									"key": "in",
+									"value": "{{INPUT}}"
+								},
+								{
+									"key": "location",
+									"value": "any"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "threat?&in={{INPUT}}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/securityprofilegroup?&in={{INPUT}}&actions=display&location=any",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"utils",
+								"api",
+								"{{VERSION}}",
+								"tool.php",
+								"securityprofilegroup"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": null
+								},
+								{
+									"key": "in",
+									"value": "{{INPUT}}"
+								},
+								{
+									"key": "actions",
+									"value": "display"
+								},
+								{
+									"key": "location",
+									"value": "any"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "endpoints",
 			"request": {
 				"method": "GET",
@@ -744,45 +2183,6 @@
 						"api",
 						"{{VERSION}}",
 						"tool.php"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "address?&in=api://{{MGMT-IP}}",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/address?&in=api://{{MGMT-IP}}&actions=display&location=any",
-					"host": [
-						"{{SERVER}}"
-					],
-					"path": [
-						"utils",
-						"api",
-						"{{VERSION}}",
-						"tool.php",
-						"address"
-					],
-					"query": [
-						{
-							"key": null,
-							"value": null
-						},
-						{
-							"key": "in",
-							"value": "api://{{MGMT-IP}}"
-						},
-						{
-							"key": "actions",
-							"value": "display"
-						},
-						{
-							"key": "location",
-							"value": "any"
-						}
 					]
 				}
 			},
@@ -890,7 +2290,7 @@
 			"response": []
 		},
 		{
-			"name": "playbook?&in=api://{{MGMT-IP}} - body send JSON file",
+			"name": "playbook?&in={{INPUT}} - body send JSON file",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -908,7 +2308,7 @@
 					]
 				},
 				"url": {
-					"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/playbook?&in=api://{{MGMT-IP}}",
+					"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/playbook?&in={{INPUT}}",
 					"host": [
 						"{{SERVER}}"
 					],
@@ -926,7 +2326,7 @@
 						},
 						{
 							"key": "in",
-							"value": "api://{{MGMT-IP}}"
+							"value": "{{INPUT}}"
 						}
 					]
 				}
@@ -1008,12 +2408,16 @@
 			"value": "localhost:8082"
 		},
 		{
-			"key": "PATH",
-			"value": "/develop"
-		},
-		{
 			"key": "VERSION",
 			"value": "v1"
+		},
+		{
+			"key": "OUTPUT",
+			"value": "out=/dev/null"
+		},
+		{
+			"key": "INPUT",
+			"value": "api://192.168.10.38"
 		}
 	]
 }

@@ -5,6 +5,7 @@ UTILS:
 * UTIL API - introduce postman_collection
 
 BUGFIX:
+* UTIL API - bugfix related to JSON output
 
 GENERAL:
 

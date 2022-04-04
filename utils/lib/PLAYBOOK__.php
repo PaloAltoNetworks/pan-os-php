@@ -261,8 +261,6 @@ class PLAYBOOK__
 
             $util = PH::callPANOSPHP( $script, PH::$argv, $argc, $PHP_FILE );
 
-            $util->endOfScript();
-
             PH::print_stdout("");
             PH::print_stdout( "############################################################################");
             PH::print_stdout("");

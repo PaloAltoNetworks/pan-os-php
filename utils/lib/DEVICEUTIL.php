@@ -53,7 +53,7 @@ class DEVICEUTIL extends UTIL
         if( PH::$shadow_json )
         {
             PH::$JSON_OUT['log'] = PH::$JSON_OUTlog;
-            print json_encode( PH::$JSON_OUT, JSON_PRETTY_PRINT );
+            //print json_encode( PH::$JSON_OUT, JSON_PRETTY_PRINT );
         }
     }
 
