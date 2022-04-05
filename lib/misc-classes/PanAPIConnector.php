@@ -1089,7 +1089,6 @@ class PanAPIConnector
                     $finalUrl .= '?key=' . urlencode($this->apikey) . '&target=' . $this->serial;
                 else
                 {
-                    //Todo: possible improvements for API security with PAN-OS 9.0 [20181030]
                     $finalUrl .= '?target=' . $this->serial;
                     curl_setopt($this->_curl_handle, CURLOPT_HTTPHEADER, array('X-PAN-KEY: ' . $this->apikey));
                 }
@@ -1107,26 +1106,15 @@ class PanAPIConnector
                     $finalUrl .= '?key=' . urlencode($this->apikey);
                 else
                 {
-                    //Todo: possible improvements for API security with PAN-OS 9.0 [20181030]
                     $finalUrl .= '?';
                     curl_setopt($this->_curl_handle, CURLOPT_HTTPHEADER, array('X-PAN-KEY: ' . $this->apikey));
                 }
-
             }
-
         }
 
         if( !$sendThroughPost )
-        {
-            #print_r( $parameters );
-            //$url = str_replace('#', '%23', $parameters);
-            if( !PH::$sendAPIkeyviaHeader )
-                $finalUrl .= '&' . $parameters;
-            else
-            {
-                $finalUrl .= $parameters;
-            }
-        }
+            $finalUrl .= '&' . $parameters;
+
 
         curl_setopt($this->_curl_handle, CURLOPT_URL, $finalUrl);
 
