@@ -1613,6 +1613,50 @@
 					]
 				},
 				{
+					"name": "manipulation",
+					"item": [
+						{
+							"name": "securityprofile?&in={{INPUT}}&actions=custom-url-category-add-ending-token",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/securityprofile?&in={{INPUT}}&actions=custom-url-category-add-ending-token&location=any",
+									"host": [
+										"{{SERVER}}"
+									],
+									"path": [
+										"utils",
+										"api",
+										"{{VERSION}}",
+										"tool.php",
+										"securityprofile"
+									],
+									"query": [
+										{
+											"key": null,
+											"value": null
+										},
+										{
+											"key": "in",
+											"value": "{{INPUT}}"
+										},
+										{
+											"key": "actions",
+											"value": "custom-url-category-add-ending-token"
+										},
+										{
+											"key": "location",
+											"value": "any"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
 					"name": "address?&in={{INPUT}}",
 					"request": {
 						"method": "GET",
@@ -1773,6 +1817,100 @@
 					"response": []
 				},
 				{
+					"name": "rule?&in={{INPUT}} filter=(rule is.unused.fast)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/rule?&in={{INPUT}}&actions=display&location=any&ruletype=any&filter=(rule is.unused.fast)",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"utils",
+								"api",
+								"{{VERSION}}",
+								"tool.php",
+								"rule"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": null
+								},
+								{
+									"key": "in",
+									"value": "{{INPUT}}"
+								},
+								{
+									"key": "actions",
+									"value": "display"
+								},
+								{
+									"key": "location",
+									"value": "any"
+								},
+								{
+									"key": "ruletype",
+									"value": "any"
+								},
+								{
+									"key": "filter",
+									"value": "(rule is.unused.fast)"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "rule?&in={{INPUT}} filter=(timestamp-last-hit.fast > DD-MM-YY)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/rule?&in={{INPUT}}&actions=display&location=any&ruletype=any&filter=(timestamp-last-hit.fast > 01-04-2022)",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"utils",
+								"api",
+								"{{VERSION}}",
+								"tool.php",
+								"rule"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": null
+								},
+								{
+									"key": "in",
+									"value": "{{INPUT}}"
+								},
+								{
+									"key": "actions",
+									"value": "display"
+								},
+								{
+									"key": "location",
+									"value": "any"
+								},
+								{
+									"key": "ruletype",
+									"value": "any"
+								},
+								{
+									"key": "filter",
+									"value": "(timestamp-last-hit.fast > 01-04-2022)"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "schedule?&in={{INPUT}}",
 					"request": {
 						"method": "GET",
@@ -1848,6 +1986,94 @@
 								{
 									"key": "devicetype",
 									"value": "any"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "device?&in={{INPUT}}&actions=display-shadowrule",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/device?&in={{INPUT}}&actions=display-shadowrule&filter=(name eq vsys1)&shadow-nojson=",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"utils",
+								"api",
+								"{{VERSION}}",
+								"tool.php",
+								"device"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": null
+								},
+								{
+									"key": "in",
+									"value": "{{INPUT}}"
+								},
+								{
+									"key": "actions",
+									"value": "display-shadowrule"
+								},
+								{
+									"key": "filter",
+									"value": "(name eq vsys1)"
+								},
+								{
+									"key": "shadow-nojson",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "device?&in={{INPUT}}&actions=display-shadowrule",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/device?&in={{INPUT}}/merged-config&actions=display-shadowrule&filter=(name eq vsys2)&loadpanoramapushedconfig=",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"utils",
+								"api",
+								"{{VERSION}}",
+								"tool.php",
+								"device"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": null
+								},
+								{
+									"key": "in",
+									"value": "{{INPUT}}/merged-config",
+									"description": "panorama pushed template"
+								},
+								{
+									"key": "actions",
+									"value": "display-shadowrule"
+								},
+								{
+									"key": "filter",
+									"value": "(name eq vsys2)"
+								},
+								{
+									"key": "loadpanoramapushedconfig",
+									"value": "",
+									"description": "panorama pushed rules"
 								}
 							]
 						}

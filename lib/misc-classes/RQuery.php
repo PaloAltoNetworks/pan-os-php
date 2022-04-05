@@ -156,10 +156,12 @@ class RQuery
                             {
                                 derr("\neval code was : $eval\n");
                             }
+
                             if( $objectFind === null )
                             {
                                 $locationStr = PH::getLocationString($object);
-                                derr("\n\n**ERROR** cannot find object with name '{$this->argument}' in location '{$locationStr}' or its parents. If you didn't write a typo then try a REGEX based filter instead\n\n");
+                                //derr("\n\n**ERROR** cannot find object with name '{$this->argument}' in location '{$locationStr}' or its parents. If you didn't write a typo then try a REGEX based filter instead\n\n");
+                                return false;
                             }
                             if( !is_string($this->refOperator['eval']) )
                             {
@@ -185,7 +187,8 @@ class RQuery
                                 if( $objectFind === null )
                                 {
                                     $locationStr = PH::getLocationString($object);
-                                    derr("\n\n**ERROR** cannot find object with name '{$this->argument}' in location '{$locationStr}' or its parents. If you didn't write a typo then try a REGEX based filter instead\n\n");
+                                    //derr("\n\n**ERROR** cannot find object with name '{$this->argument}' in location '{$locationStr}' or its parents. If you didn't write a typo then try a REGEX based filter instead\n\n");
+                                    return false;
                                 }
                                 if( !is_string($this->refOperator['eval']) )
                                 {
