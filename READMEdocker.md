@@ -13,7 +13,7 @@ graph TD
     CC1{Which OS you are running?} -->|Windows| C1[check Docker]
     
     
-    B1 --> Z1[navigate to the folder with your offline configuration using the CD command]
+    B1 --> Z1[navigate to the folder with your PAN-OS XML offline configuration using the CD command]
        
  
     
@@ -27,7 +27,7 @@ graph TD
 
    
    
-    F2 --> Z1[navigate to the folder with your offline configuration using the CD command]
+    F2 --> Z1[navigate to the folder with your PAN-OS XML offline configuration using the CD command]
     
     
     Z1 -->|TERMINAL| K1["docker run -v ${PWD}:/share -it swaschkut/pan-os-php:latest"]
@@ -92,8 +92,8 @@ Docker PAN-OS-PHP API and UI
 final production Container:
    ```bash
     cd [pan-os-php Root folder]
-    docker build -t pan-os-php:latest -f docker/Dockerfile-API .
-    docker run -d -p 8082:80 pan-os-php:latest
+    docker build -t pan-os-php-api:latest -f docker/Dockerfile-API .
+    docker run -d -p 8082:80 pan-os-php-api:latest
    ```
 local Development Container:
    ```bash
@@ -128,7 +128,7 @@ The following "RESTAPI" routes are available:
 - /securityprofilegroup
 - /schedule
 
-- /applicaton
+- /application
 - /threat
 
 - /device
@@ -166,7 +166,7 @@ PAN-OS-PHP API is also working with PAN-OS XML API, therefor you need to prepare
    ```
 
 
-Exmamples to run PAN-OS-PHP against PAN-OS FW and Panorama offline configuration files, and manipulate in the same way as on PAN-OS-PHP ClI:
+Examples to run PAN-OS-PHP against PAN-OS FW and Panorama offline configuration files, and manipulate in the same way as on PAN-OS-PHP ClI:
    ```bash
    ClI: pan-os-php type=address help
    API: http://localhost:8082/utils/api/v1/tool.php/address?help

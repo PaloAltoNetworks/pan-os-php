@@ -317,7 +317,11 @@ class AppRuleContainer extends ObjRuleContainer
                 $tag = strtolower($tag);
             $app = $this->parentCentralStore->find($tag);
             if( $app == null )
-                derr("\n\n**ERROR** cannot find object with name '{$tag}' in location '{$this->getLocationString()}' or its parents. If you didn't write a typo then try a REGEX based filter instead\n\n");
+            {
+                //derr("\n\n**ERROR** cannot find object with name '{$tag}' in location '{$this->getLocationString()}' or its parents. If you didn't write a typo then try a REGEX based filter instead\n\n");
+                return false;
+            }
+
         }
         else
             $app = $tag;
@@ -355,7 +359,11 @@ class AppRuleContainer extends ObjRuleContainer
                 $tag = strtolower($tag);
             $app = $this->parentCentralStore->find($tag);
             if( $app == null )
-                derr("\n\n**ERROR** cannot find object with name '{$tag}' in location '{$this->getLocationString()}' or its parents. If you didn't write a typo then try a REGEX based filter instead\n\n");
+            {
+                //derr("\n\n**ERROR** cannot find object with name '{$tag}' in location '{$this->getLocationString()}' or its parents. If you didn't write a typo then try a REGEX based filter instead\n\n");
+                return false;
+            }
+
         }
         else
             $app = $tag;
