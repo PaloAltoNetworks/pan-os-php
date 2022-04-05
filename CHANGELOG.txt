@@ -7,6 +7,7 @@ UTILS:
 BUGFIX:
 * UTIL API - bugfix related to JSON output
 * UTIL type=rule | bugfix 'filter=(rule is.unused.fast)' if searching via API mode on Panorama
+* class PanAPIConnector | bugfix to avoid using shadow-apikeynohidden for PAN-OS >=9 if Panorama is used as proxy
 
 GENERAL:
 
