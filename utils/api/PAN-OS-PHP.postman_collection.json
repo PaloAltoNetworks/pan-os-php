@@ -286,6 +286,37 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "rule-merger?&help",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/rule-merger?&help",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"utils",
+								"api",
+								"{{VERSION}}",
+								"tool.php",
+								"rule-merger"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": null
+								},
+								{
+									"key": "help",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -513,7 +544,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/rule-merger?&in={{INPUT}}&location=any&dupalgorithm",
+							"raw": "{{SERVER}}/utils/api/{{VERSION}}/tool.php/rule-merger?&in={{INPUT}}&location=any&method=matchFromToSrcDstApp&outputformatset",
 							"host": [
 								"{{SERVER}}"
 							],
@@ -538,7 +569,11 @@
 									"value": "any"
 								},
 								{
-									"key": "dupalgorithm",
+									"key": "method",
+									"value": "matchFromToSrcDstApp"
+								},
+								{
+									"key": "outputformatset",
 									"value": null
 								}
 							]

@@ -6,6 +6,7 @@ UTILS:
 
 BUGFIX:
 * UTIL API - bugfix related to JSON output
+* UTIL type=rule | bugfix 'filter=(rule is.unused.fast)' if searching via API mode on Panorama
 
 GENERAL:
 

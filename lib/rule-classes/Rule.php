@@ -1219,9 +1219,7 @@ class Rule
                 }
 
                 if( $this->owner->owner->version >= 81 )
-                {
                     self::ruleUsage81( $sub, null, $rule_base, $connector, $hitType, $unused_flag, $context );
-                }
             }
             else
             {
@@ -1270,9 +1268,7 @@ class Rule
                         }
 
                         if( $newConnector->info_PANOS_version_int >= 81 )
-                        {
-                            self::ruleUsage81( $sub, $vsys, $rule_base, $connector, $hitType, $unused_flag, $context );
-                        }
+                            self::ruleUsage81( $sub, $vsys, $rule_base, $newConnector, $hitType, $unused_flag, $context );
 
                         if( !$firstLoop )
                         {
