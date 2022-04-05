@@ -231,7 +231,6 @@ class UTIL
         $this->supportedArguments['in'] = array('niceName' => 'in', 'shortHelp' => 'input file or api. ie: in=config.xml  or in=api://192.168.1.1 or in=api://0018CAEC3@panorama.company.com', 'argDesc' => '[filename]|[api://IP]|[api://serial@IP]');
         $this->supportedArguments['out'] = array('niceName' => 'out', 'shortHelp' => 'output file to save config after changes. Only required when input is a file. ie: out=save-config.xml', 'argDesc' => '[filename]');
         $this->supportedArguments['location'] = array('niceName' => 'Location', 'shortHelp' => 'specify if you want to limit your query to a VSYS/DG. By default location=shared for Panorama, =vsys1 for PANOS. ie: location=any or location=vsys2,vsys1', 'argDesc' => 'sub1[,sub2]');
-        $this->supportedArguments['scope'] = array('niceName' => 'Scope', 'shortHelp' => 'specify if you want to limit your query to a VSYS/DG. By default location=shared for Panorama, =vsys1 for PANOS. ie: location=any or location=vsys2,vsys1', 'argDesc' => 'sub1[,sub2]');
         $this->supportedArguments['listactions'] = array('niceName' => 'ListActions', 'shortHelp' => 'lists available Actions');
         $this->supportedArguments['listfilters'] = array('niceName' => 'ListFilters', 'shortHelp' => 'lists available Filters');
         $this->supportedArguments['stats'] = array('niceName' => 'Stats', 'shortHelp' => 'display stats after changes');
@@ -951,12 +950,6 @@ class UTIL
             if( !is_string($this->objectsLocation) || strlen($this->objectsLocation) < 1 )
                 $this->display_error_usage_exit('"location" argument is not a valid string');
         }
-        elseif( isset(PH::$args['scope']) )
-        {
-            $this->objectsLocation = PH::$args['scope'];
-            if( !is_string($this->objectsLocation) || strlen($this->objectsLocation) < 1 )
-                $this->display_error_usage_exit('"scope" argument is not a valid string');
-        }
         else
         {
             if( $this->configType == 'panos' )
@@ -969,10 +962,9 @@ class UTIL
             if( get_class( $this ) == "NETWORKUTIL" )
                 $this->objectsLocation = 'any';
 
-            PH::print_stdout( " - No 'location/scope' provided so using default ='".$this->objectsLocation."'" );
+            PH::print_stdout( " - No 'location' provided so using default ='".$this->objectsLocation."'" );
         }
         PH::print_stdout( array( $this->objectsLocation ), false, "location");
-        PH::print_stdout( array( $this->objectsLocation ), false, "scope");
         //
         // Template provided in CLI ?
         //
