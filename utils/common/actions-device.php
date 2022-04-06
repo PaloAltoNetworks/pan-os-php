@@ -1400,11 +1400,24 @@ DeviceCallContext::$supportedActions['sp_spg-create-BP'] = array(
 
                 $ownerDocument = $sub->xmlroot->ownerDocument;
 
-                $name = "Alert-Only";
-                $nameArray = array("Alert-Only", "Outbound", "Inbound", "Internal", "Exception");
+                $force = false; // check about actions argument introduction
+                if( isset($context->arguments['sp-name']) )
+                    $nameArray = array("Outbound");
+                else
+                    $nameArray = array("Alert-Only", "Outbound", "Inbound", "Internal", "Exception");
+
 
                 foreach( $nameArray as $name)
                 {
+                    if( isset($context->arguments['sp-name']) )
+                    {
+                        $ironskilletName = $name;
+                        $name = $context->arguments['sp-name'];
+                    }
+                    else
+                        $ironskilletName = $name;
+
+
                     if( $context->object->owner->version < 90 )
                         $customURLarray = array("Black-List", "White-List", "Custom-No-Decrypt");
                     else
@@ -1434,12 +1447,14 @@ DeviceCallContext::$supportedActions['sp_spg-create-BP'] = array(
                         else
                             $newdoc->loadXML($av_xmlString_v10);
                         $node = $newdoc->importNode($newdoc->firstChild, TRUE);
-                        $node = DH::findFirstElementByNameAttr("entry", $name . "-AV", $node);
+                        $node = DH::findFirstElementByNameAttr("entry", $ironskilletName . "-AV", $node);
                         if( $node !== null && $node->hasChildNodes() )
                         {
                             $node = $ownerDocument->importNode($node, TRUE);
                             $av->load_from_domxml($node);
                             $av->owner = null;
+                            if( isset($context->arguments['sp-name']) )
+                                $av->setName( $name."-AV");
                             $store->addSecurityProfile($av);
 
                             if( $context->isAPI )
@@ -1465,13 +1480,15 @@ DeviceCallContext::$supportedActions['sp_spg-create-BP'] = array(
                         else
                             $newdoc->loadXML($as_xmlString_v10);
                         $node = $newdoc->importNode($newdoc->firstChild, TRUE);
-                        $node = DH::findFirstElementByNameAttr("entry", $name . "-AS", $node);
+                        $node = DH::findFirstElementByNameAttr("entry", $ironskilletName . "-AS", $node);
                         if( $node !== null && $node->hasChildNodes() )
                         {
                             $node = $newdoc->importNode($node, TRUE);
                             $node = $ownerDocument->importNode($node, TRUE);
                             $as->load_from_domxml($node);
                             $as->owner = null;
+                            if( isset($context->arguments['sp-name']) )
+                                $as->setName( $name."-AS");
                             $store->addSecurityProfile($as);
 
                             if( $context->isAPI )
@@ -1492,13 +1509,15 @@ DeviceCallContext::$supportedActions['sp_spg-create-BP'] = array(
                         $newdoc = new DOMDocument;
                         $newdoc->loadXML($vp_xmlString);
                         $node = $newdoc->importNode($newdoc->firstChild, TRUE);
-                        $node = DH::findFirstElementByNameAttr("entry", $name . "-VP", $node);
+                        $node = DH::findFirstElementByNameAttr("entry", $ironskilletName . "-VP", $node);
                         if( $node !== null && $node->hasChildNodes() )
                         {
                             $node = $newdoc->importNode($node, TRUE);
                             $node = $ownerDocument->importNode($node, TRUE);
                             $vp->load_from_domxml($node);
                             $vp->owner = null;
+                            if( isset($context->arguments['sp-name']) )
+                                $vp->setName( $name."-VP");
                             $store->addSecurityProfile($vp);
 
                             if( $context->isAPI )
@@ -1524,13 +1543,15 @@ DeviceCallContext::$supportedActions['sp_spg-create-BP'] = array(
                         else
                             $newdoc->loadXML($url_xmlString_v10);
                         $node = $newdoc->importNode($newdoc->firstChild, TRUE);
-                        $node = DH::findFirstElementByNameAttr("entry", $name . "-URL", $node);
+                        $node = DH::findFirstElementByNameAttr("entry", $ironskilletName . "-URL", $node);
                         if( $node !== null && $node->hasChildNodes() )
                         {
                             $node = $newdoc->importNode($node, TRUE);
                             $node = $ownerDocument->importNode($node, TRUE);
                             $url->load_from_domxml($node);
                             $url->owner = null;
+                            if( isset($context->arguments['sp-name']) )
+                                $url->setName( $name."-URL");
                             $store->addSecurityProfile($url);
 
                             if( $context->isAPI )
@@ -1551,13 +1572,15 @@ DeviceCallContext::$supportedActions['sp_spg-create-BP'] = array(
                         $newdoc = new DOMDocument;
                         $newdoc->loadXML($fb_xmlString);
                         $node = $newdoc->importNode($newdoc->firstChild, TRUE);
-                        $node = DH::findFirstElementByNameAttr("entry", $name . "-FB", $node);
+                        $node = DH::findFirstElementByNameAttr("entry", $ironskilletName . "-FB", $node);
                         if( $node !== null && $node->hasChildNodes() )
                         {
                             $node = $newdoc->importNode($node, TRUE);
                             $node = $ownerDocument->importNode($node, TRUE);
                             $fb->load_from_domxml($node);
                             $fb->owner = null;
+                            if( isset($context->arguments['sp-name']) )
+                                $fb->setName( $name."-FB");
                             $store->addSecurityProfile($fb);
 
                             if( $context->isAPI )
@@ -1578,13 +1601,15 @@ DeviceCallContext::$supportedActions['sp_spg-create-BP'] = array(
                         $newdoc = new DOMDocument;
                         $newdoc->loadXML($wf_xmlString);
                         $node = $newdoc->importNode($newdoc->firstChild, TRUE);
-                        $node = DH::findFirstElementByNameAttr("entry", $name . "-WF", $node);
+                        $node = DH::findFirstElementByNameAttr("entry", $ironskilletName . "-WF", $node);
                         if( $node !== null && $node->hasChildNodes() )
                         {
                             $node = $newdoc->importNode($node, TRUE);
                             $node = $ownerDocument->importNode($node, TRUE);
                             $wf->load_from_domxml($node);
                             $wf->owner = null;
+                            if( isset($context->arguments['sp-name']) )
+                                $wf->setName( $name."-WF");
                             $store->addSecurityProfile($wf);
 
                             if( $context->isAPI )
@@ -1630,6 +1655,9 @@ DeviceCallContext::$supportedActions['sp_spg-create-BP'] = array(
     'args' => array(
         'shared' => array('type' => 'bool', 'default' => 'false',
             'help' => "if set to true; securityProfiles are create at SHARED level; at least one DG must be available"
+        ),
+        'sp-name' => array('type' => 'string', 'default' => '*nodefault*',
+            'help' => "if set, only ironskillet SP called 'Outbound' are created with the name defined"
         )
     )
 );
