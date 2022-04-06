@@ -85,7 +85,7 @@ for( $i = 1; $i < 10; $i++ )
         //IP   A.B.C.D => A.B. == 192.168
         //C => i
         //D => ii
-        $IP = $tmp_ip . "." . $i . "." . $ii . "/32";
+        $IP = $tmp_ip . "." . $i . "." . $ii . "";
         print "add IP: " . $IP . " to template mgmt permitted IPs\n";
 
 
