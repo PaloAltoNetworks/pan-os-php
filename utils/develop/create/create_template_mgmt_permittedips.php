@@ -39,6 +39,7 @@ $supportedArguments = array();
 $supportedArguments['in'] = array('niceName' => 'in', 'shortHelp' => 'input file or api. ie: in=config.xml  or in=api://192.168.1.1 or in=api://0018CAEC3@panorama.company.com', 'argDesc' => '[filename]|[api://IP]|[api://serial@IP]');
 $supportedArguments['out'] = array('niceName' => 'out', 'shortHelp' => 'output file to save config after changes. Only required when input is a file. ie: out=save-config.xml', 'argDesc' => '[filename]');
 $supportedArguments['location'] = array('niceName' => 'location', 'shortHelp' => 'specify if you want to limit your query to a VSYS. By default location=vsys1 for PANOS. ie: location=any or location=vsys2,vsys1', 'argDesc' => '=sub1[,sub2]');
+$supportedArguments['template'] = array('niceName' => 'template', 'shortHelp' => 'specify if you want to limit your query to a TEMPLATE. By default template=any for Panorama', 'argDesc' => 'template');
 $supportedArguments['debugapi'] = array('niceName' => 'DebugAPI', 'shortHelp' => 'prints API calls when they happen');
 $supportedArguments['help'] = array('niceName' => 'help', 'shortHelp' => 'this message');
 $supportedArguments['loadpanoramapushedconfig'] = array('niceName' => 'loadPanoramaPushedConfig', 'shortHelp' => 'load Panorama pushed config from the firewall to take in account panorama objects and rules');
@@ -65,34 +66,54 @@ $connector = $pan->connector;
 
 ///////////////////////////////////////////////////////
 
-//$sub = $pan->findVirtualSystem($util->objectsLocation);
+if( $pan->isFirewall() )
+{
+    $str = "";
+    $tmp_name = "Firewall";
+}
 
-$template_name = "test-template";
+elseif( $pan->isPanorama() )
+{
+    if( isset(PH::$args['template']) )
+        $template_name = PH::$args['template'];
+    else
+        derr( "argument 'template=TEMPLATENAME' missing " );
 
-$str = "/config/devices/entry[@name='localhost.localdomain']/template/entry[@name='" . $template_name . "']";
+    $template = $pan->findTemplate( $template_name );
+    if( $template === null )
+    {
+        PH::print_stdout("");
+        PH::print_stdout("   * available templates:");
+        foreach( $pan->getTemplates() as $temp )
+            PH::print_stdout( "    - ".$temp->name() );
+
+        derr( "template name: '".$template_name."' not found in configuration", null, false );
+    }
+
+    $str = "/config/devices/entry[@name='localhost.localdomain']/template/entry[@name='" . $template_name . "']";
+    $tmp_name = "Template ".$template_name;
+}
 
 $tmp_additional = "/config/devices/entry[@name='localhost.localdomain']/deviceconfig/system/permitted-ip";
-//set template test-template config deviceconfig system permitted-ip 192.168.227.0
+
 
 
 $tmp_ip = "192.168";
 
 
-for( $i = 1; $i < 10; $i++ )
+for( $i = 1; $i < 2; $i++ )
 {
-    for( $ii = 1; $ii < 50; $ii++ )
+    for( $ii = 1; $ii < 2; $ii++ )
     {
         //IP   A.B.C.D => A.B. == 192.168
         //C => i
         //D => ii
         $IP = $tmp_ip . "." . $i . "." . $ii . "";
-        print "add IP: " . $IP . " to template mgmt permitted IPs\n";
-
+        PH::print_stdout( "   - add IP: " . $IP . " to ".$tmp_name." mgmt permitted IPs" );
 
 
         $xpath = $str;
         $xpath .= $tmp_additional;
-
 
         $connector->sendSetRequest($xpath, "<entry name='{$IP}'/>");
     }
