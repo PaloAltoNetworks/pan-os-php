@@ -840,6 +840,7 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
         }
 
 
+        $jsonArray = array();
         foreach( $shadowArray as $name => $array )
         {
             foreach( $array as $ruletype => $entries )
@@ -950,9 +951,17 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
 
                     PH::print_stdout("");
                     if( $rule !== null )
+                    {
                         PH::print_stdout( "        * RULE of type ".$ruletype.": '" . $rule->name(). "' owner: '".$ownerDG."' shadows rule: " );
+                        $tmpName = $rule->name();
+                    }
+
                     else
+                    {
                         PH::print_stdout( "        * RULE of type ".$ruletype.": '" . $key."'" );
+                        $tmpName = $key;
+                    }
+
 
                     foreach( $item as $shadow )
                     {
@@ -964,10 +973,13 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
                         $shadow = str_replace( ".", "", $shadow );
                         $shadow = str_replace( "'", "", $shadow );
                         PH::print_stdout( "          - '" . $shadow."'" );
+                        $jsonArray[$ruletype][$tmpName][] = $shadow;
                     }
                 }
             }
         }
+
+        PH::$JSON_TMP['sub'] = $jsonArray;
     }
 );
 
