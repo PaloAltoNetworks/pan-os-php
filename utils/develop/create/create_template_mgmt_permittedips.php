@@ -99,8 +99,8 @@ $tmp_additional = "/config/devices/entry[@name='localhost.localdomain']/deviceco
 
 
 $tmp_ip = "192.168";
-$thirdOctet = 50;
-$fourthOctet = 50;
+$thirdOctet = 255;
+$fourthOctet = 255;
 
 for( $i = 1; $i < $thirdOctet; $i++ )
 {
