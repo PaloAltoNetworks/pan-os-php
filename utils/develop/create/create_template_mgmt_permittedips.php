@@ -99,11 +99,13 @@ $tmp_additional = "/config/devices/entry[@name='localhost.localdomain']/deviceco
 
 
 $tmp_ip = "192.168";
+$thirdOctet = 50;
+$fourthOctet = 50;
 
-
-for( $i = 1; $i < 2; $i++ )
+for( $i = 1; $i < $thirdOctet; $i++ )
 {
-    for( $ii = 1; $ii < 2; $ii++ )
+    $tmp_value = "";
+    for( $ii = 1; $ii < $fourthOctet; $ii++ )
     {
         //IP   A.B.C.D => A.B. == 192.168
         //C => i
@@ -115,8 +117,9 @@ for( $i = 1; $i < 2; $i++ )
         $xpath = $str;
         $xpath .= $tmp_additional;
 
-        $connector->sendSetRequest($xpath, "<entry name='{$IP}'/>");
+        $tmp_value .="<entry name='{$IP}'/>";
     }
+    $connector->sendSetRequest($xpath, $tmp_value);
 }
 
 
