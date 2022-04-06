@@ -5,6 +5,7 @@ UTILS:
 * UTIL API - introduce postman_collection
 * UTIL type=device actions=display-shadowrule | improve JSON output
 * UTIL develop - introduce create_template_mgmt_permittedips.php
+* UTIL type=device | introduce actions==sp_spg-create-BP
 
 BUGFIX:
 * UTIL API - bugfix related to JSON output

@@ -1347,6 +1347,293 @@ DeviceCallContext::$supportedActions['sp_spg-create-alert-only-BP'] = array(
 );
 
 
+DeviceCallContext::$supportedActions['sp_spg-create-BP'] = array(
+    'name' => 'sp_spg-create-bp',
+    'GlobalInitFunction' => function (DeviceCallContext $context) {
+        $context->first = true;
+
+        if( $context->subSystem->isPanorama() )
+        {
+            $countDG = count( $context->subSystem->getDeviceGroups() );
+            if( $countDG == 0  )
+            {
+                #$dg = $context->subSystem->createDeviceGroup( "alert-only" );
+                derr( "NO DG available; please run 'pa_device-edit in=InputConfig.xml out=OutputConfig.xml actions=devicegroup-create:DG-NAME' first", null, false );
+            }
+        }
+    },
+    'MainFunction' => function (DeviceCallContext $context)
+    {
+        $object = $context->object;
+        $classtype = get_class($object);
+
+        if( $context->first )
+        {
+            $pathString = dirname(__FILE__)."/../../iron-skillet";
+            $av_xmlString_v8 = file_get_contents( $pathString."/panos_v8.1/templates/panorama/snippets/profiles_virus.xml");
+            $av_xmlString_v9 = file_get_contents( $pathString."/panos_v9.1/templates/panorama/snippets/profiles_virus.xml");
+            $av_xmlString_v10 = file_get_contents( $pathString."/panos_v10.0/templates/panorama/snippets/profiles_virus.xml");
+
+            $as_xmlString_v8 = file_get_contents( $pathString."/panos_v8.1/templates/panorama/snippets/profiles_spyware.xml");
+            $as_xmlString_v9 = file_get_contents( $pathString."/panos_v9.1/templates/panorama/snippets/profiles_spyware.xml");
+            $as_xmlString_v10 = file_get_contents( $pathString."/panos_v10.0/templates/panorama/snippets/profiles_spyware.xml");
+
+            $vp_xmlString = file_get_contents( $pathString."/panos_v10.0/templates/panorama/snippets/profiles_vulnerability.xml");
+
+            $url_xmlString_v8 = file_get_contents( $pathString."/panos_v8.1/templates/panorama/snippets/profiles_url_filtering.xml");
+            $url_xmlString_v9 = file_get_contents( $pathString."/panos_v9.1/templates/panorama/snippets/profiles_url_filtering.xml");
+            $url_xmlString_v10 = file_get_contents( $pathString."/panos_v10.0/templates/panorama/snippets/profiles_url_filtering.xml");
+
+            $fb_xmlString = file_get_contents( $pathString."/panos_v10.0/templates/panorama/snippets/profiles_file_blocking.xml");
+
+            $wf_xmlString = file_get_contents( $pathString."/panos_v10.0/templates/panorama/snippets/profiles_wildfire_analysis.xml");
+
+            if( $classtype == "VirtualSystem" || $classtype == "DeviceGroup" )
+            {
+                $sub = $object;
+
+                if( $context->arguments['shared'] && !$context->subSystem->isFirewall() )
+                    $sharedStore = $sub->owner;
+                else
+                    $sharedStore = $sub;
+
+
+                $ownerDocument = $sub->xmlroot->ownerDocument;
+
+                $name = "Alert-Only";
+                $nameArray = array("Alert-Only", "Outbound", "Inbound", "Internal", "Exception");
+
+                foreach( $nameArray as $name)
+                {
+                    if( $context->object->owner->version < 90 )
+                        $customURLarray = array("Black-List", "White-List", "Custom-No-Decrypt");
+                    else
+                        $customURLarray = array("Block", "Allow", "Custom-No-Decrypt");
+                    foreach( $customURLarray as $entry )
+                    {
+                        $block = $sharedStore->customURLProfileStore->find($entry);
+                        if( $block === null )
+                        {
+                            $block = $sharedStore->customURLProfileStore->newCustomSecurityProfileURL($entry);
+                            if( $context->isAPI )
+                                $block->API_sync();
+                        }
+                    }
+
+
+                    $av = $sharedStore->AntiVirusProfileStore->find($name . "-AV");
+                    if( $av === null )
+                    {
+                        $store = $sharedStore->AntiVirusProfileStore;
+                        $av = new AntiVirusProfile($name . "-AV", $store);
+                        $newdoc = new DOMDocument;
+                        if( $context->object->owner->version < 90 )
+                            $newdoc->loadXML($av_xmlString_v8);
+                        elseif( $context->object->owner->version < 100 )
+                            $newdoc->loadXML($av_xmlString_v9);
+                        else
+                            $newdoc->loadXML($av_xmlString_v10);
+                        $node = $newdoc->importNode($newdoc->firstChild, TRUE);
+                        $node = DH::findFirstElementByNameAttr("entry", $name . "-AV", $node);
+                        if( $node !== null && $node->hasChildNodes() )
+                        {
+                            $node = $ownerDocument->importNode($node, TRUE);
+                            $av->load_from_domxml($node);
+                            $av->owner = null;
+                            $store->addSecurityProfile($av);
+
+                            if( $context->isAPI )
+                                $av->API_sync();
+                        }
+                        else
+                        {
+                            $store->removeSecurityProfile( $av );
+                            $av = null;
+                        }
+                    }
+
+                    $as = $sharedStore->AntiSpywareProfileStore->find($name . "-AS");
+                    if( $as === null )
+                    {
+                        $store = $sharedStore->AntiSpywareProfileStore;
+                        $as = new AntiSpywareProfile($name . "-AS", $store);
+                        $newdoc = new DOMDocument;
+                        if( $context->object->owner->version < 90 )
+                            $newdoc->loadXML($as_xmlString_v8);
+                        elseif( $context->object->owner->version < 100 )
+                            $newdoc->loadXML($as_xmlString_v9);
+                        else
+                            $newdoc->loadXML($as_xmlString_v10);
+                        $node = $newdoc->importNode($newdoc->firstChild, TRUE);
+                        $node = DH::findFirstElementByNameAttr("entry", $name . "-AS", $node);
+                        if( $node !== null && $node->hasChildNodes() )
+                        {
+                            $node = $newdoc->importNode($node, TRUE);
+                            $node = $ownerDocument->importNode($node, TRUE);
+                            $as->load_from_domxml($node);
+                            $as->owner = null;
+                            $store->addSecurityProfile($as);
+
+                            if( $context->isAPI )
+                                $as->API_sync();
+                        }
+                        else
+                        {
+                            $store->removeSecurityProfile( $as );
+                            $as = null;
+                        }
+                    }
+
+                    $vp = $sharedStore->VulnerabilityProfileStore->find($name . "-VP");
+                    if( $vp === null )
+                    {
+                        $store = $sharedStore->VulnerabilityProfileStore;
+                        $vp = new VulnerabilityProfile($name . "-VP", $store);
+                        $newdoc = new DOMDocument;
+                        $newdoc->loadXML($vp_xmlString);
+                        $node = $newdoc->importNode($newdoc->firstChild, TRUE);
+                        $node = DH::findFirstElementByNameAttr("entry", $name . "-VP", $node);
+                        if( $node !== null && $node->hasChildNodes() )
+                        {
+                            $node = $newdoc->importNode($node, TRUE);
+                            $node = $ownerDocument->importNode($node, TRUE);
+                            $vp->load_from_domxml($node);
+                            $vp->owner = null;
+                            $store->addSecurityProfile($vp);
+
+                            if( $context->isAPI )
+                                $vp->API_sync();
+                        }
+                        else
+                        {
+                            $store->removeSecurityProfile( $vp );
+                            $vp = null;
+                        }
+                    }
+
+                    $url = $sharedStore->URLProfileStore->find($name . "-URL");
+                    if( $url === null )
+                    {
+                        $store = $sharedStore->URLProfileStore;
+                        $url = new URLProfile($name . "-URL", $store);
+                        $newdoc = new DOMDocument;
+                        if( $context->object->owner->version < 90 )
+                            $newdoc->loadXML($url_xmlString_v8);
+                        elseif( $context->object->owner->version < 100 )
+                            $newdoc->loadXML($url_xmlString_v9);
+                        else
+                            $newdoc->loadXML($url_xmlString_v10);
+                        $node = $newdoc->importNode($newdoc->firstChild, TRUE);
+                        $node = DH::findFirstElementByNameAttr("entry", $name . "-URL", $node);
+                        if( $node !== null && $node->hasChildNodes() )
+                        {
+                            $node = $newdoc->importNode($node, TRUE);
+                            $node = $ownerDocument->importNode($node, TRUE);
+                            $url->load_from_domxml($node);
+                            $url->owner = null;
+                            $store->addSecurityProfile($url);
+
+                            if( $context->isAPI )
+                                $url->API_sync();
+                        }
+                        else
+                        {
+                            $store->removeSecurityProfile( $url );
+                            $url = null;
+                        }
+                    }
+
+                    $fb = $sharedStore->FileBlockingProfileStore->find($name . "-FB");
+                    if( $fb === null )
+                    {
+                        $store = $sharedStore->FileBlockingProfileStore;
+                        $fb = new FileBlockingProfile($name . "-FB", $store);
+                        $newdoc = new DOMDocument;
+                        $newdoc->loadXML($fb_xmlString);
+                        $node = $newdoc->importNode($newdoc->firstChild, TRUE);
+                        $node = DH::findFirstElementByNameAttr("entry", $name . "-FB", $node);
+                        if( $node !== null && $node->hasChildNodes() )
+                        {
+                            $node = $newdoc->importNode($node, TRUE);
+                            $node = $ownerDocument->importNode($node, TRUE);
+                            $fb->load_from_domxml($node);
+                            $fb->owner = null;
+                            $store->addSecurityProfile($fb);
+
+                            if( $context->isAPI )
+                                $fb->API_sync();
+                        }
+                        else
+                        {
+                            $store->removeSecurityProfile( $fb );
+                            $fb = null;
+                        }
+                    }
+
+                    $wf = $sharedStore->WildfireProfileStore->find($name . "-WF");
+                    if( $wf === null )
+                    {
+                        $store = $sharedStore->WildfireProfileStore;
+                        $wf = new WildfireProfile($name . "-WF", $store);
+                        $newdoc = new DOMDocument;
+                        $newdoc->loadXML($wf_xmlString);
+                        $node = $newdoc->importNode($newdoc->firstChild, TRUE);
+                        $node = DH::findFirstElementByNameAttr("entry", $name . "-WF", $node);
+                        if( $node !== null && $node->hasChildNodes() )
+                        {
+                            $node = $newdoc->importNode($node, TRUE);
+                            $node = $ownerDocument->importNode($node, TRUE);
+                            $wf->load_from_domxml($node);
+                            $wf->owner = null;
+                            $store->addSecurityProfile($wf);
+
+                            if( $context->isAPI )
+                                $wf->API_sync();
+                        }
+                        else
+                        {
+                            $store->removeSecurityProfile( $wf );
+                            $wf = null;
+                        }
+                    }
+
+                    $secprofgrp = $sharedStore->securityProfileGroupStore->find($name);
+                    if( $secprofgrp === null )
+                    {
+                        $secprofgrp = new SecurityProfileGroup($name, $sharedStore->securityProfileGroupStore, TRUE);
+
+                        if( $av !== null )
+                            $secprofgrp->setSecProf_AV($av->name());
+                        if( $as !== null )
+                            $secprofgrp->setSecProf_Spyware($as->name());
+                        if( $vp !== null )
+                            $secprofgrp->setSecProf_Vuln($vp->name());
+                        if( $url !== null )
+                            $secprofgrp->setSecProf_URL($url->name());
+                        if( $fb !== null )
+                            $secprofgrp->setSecProf_FileBlock($fb->name());
+                        if( $wf !== null )
+                            $secprofgrp->setSecProf_Wildfire($wf->name());
+
+
+                        $sharedStore->securityProfileGroupStore->addSecurityProfileGroup($secprofgrp);
+
+                        if( $context->isAPI )
+                            $secprofgrp->API_sync();
+                    }
+                }
+
+                $context->first = false;
+            }
+        }
+    },
+    'args' => array(
+        'shared' => array('type' => 'bool', 'default' => 'false',
+            'help' => "if set to true; securityProfiles are create at SHARED level; at least one DG must be available"
+        )
+    )
+);
+
 DeviceCallContext::$supportedActions['LogForwardingProfile-create-BP'] = array(
     'name' => 'logforwardingprofile-create-bp',
     'GlobalInitFunction' => function (DeviceCallContext $context) {

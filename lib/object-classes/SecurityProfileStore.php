@@ -512,11 +512,11 @@ class SecurityProfileStore extends ObjStore
 
 
     /**
-     * @param SecurityProfile $tag
+     * @param SecurityProfile| URLProfile | AntiSpywareProfile | AntiVirusProfile | VulnerabilityProfile | FileBlockingProfile | WildfireProfile $tag
      *
      * @return bool  True if Zone was found and removed. False if not found.
      */
-    public function removeSecurityProfile(SecurityProfile $tag)
+    public function removeSecurityProfile( $tag)
     {
         $ret = $this->remove($tag);
 
