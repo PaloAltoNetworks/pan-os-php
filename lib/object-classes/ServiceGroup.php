@@ -755,28 +755,36 @@ class ServiceGroup
             }
         }
 
-
         $store = $this->owner;
-
         $store->remove($this);
 
         if( $mapping->hasUdpMappings() )
-            $newService = $store->newService($this->name(), 'udp', $mapping->udpMappingToText());
+        {
+            $tmp_string = str_replace("udp/", "", $mapping->udpMappingToText());
+            $newService = $store->newService($this->name(), 'udp', $tmp_string);
+        }
         else
-            $newService = $store->newService($this->name(), 'tcp', $mapping->tcpMappingToText());
+        {
+            $tmp_string = str_replace("tcp/", "", $mapping->tcpMappingToText() );
+            $newService = $store->newService($this->name(), 'tcp', $tmp_string);
+        }
 
         $this->replaceMeGlobally($newService);
 
         if( $mapping->hasUdpMappings() )
         {
-            $string = " * replaced by service with same name and value: udp/{$newService->dstPortMapping()->udpMappingToText()}";
+            $tmp_dstmapping = $newService->dstPortMapping();
+            $string = " * replaced by service with same name and value: {$tmp_dstmapping->udpMappingToText()}";
             PH::ACTIONlog($context, $string);
         }
         else
         {
-            $string = " * replaced by service with same name and value: tcp/{$newService->dstPortMapping()->tcpMappingToText()}";
+            $tmp_dstmapping = $newService->dstPortMapping();
+            $string = " * replaced by service with same name and value: {$tmp_dstmapping->tcpMappingToText()}";
             PH::ACTIONlog($context, $string);
         }
+
+
 
         return TRUE;
     }

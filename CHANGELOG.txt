@@ -17,6 +17,7 @@ BUGFIX:
 * UTIL type=tag | bugfix for 'filter=(reflocation is shared )'
 
 GENERAL:
+* introduce UTIL actions test script
 
 
 2.0.33 (20220404)

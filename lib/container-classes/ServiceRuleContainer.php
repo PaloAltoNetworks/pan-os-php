@@ -256,8 +256,13 @@ class ServiceRuleContainer extends ObjRuleContainer
     {
         if( $this->appDef )
             DH::Hosts_to_xmlDom($this->xmlroot, $this->o, 'member', TRUE, 'application-default');
-        else
+        elseif( $this->xmlroot !== null )
             DH::Hosts_to_xmlDom($this->xmlroot, $this->o, 'member', TRUE);
+        elseif( $this->xmlroot === null )
+        {
+            //DH::Hosts_to_xmlDom($this->xmlroot, $this->o, 'member', TRUE);
+        }
+
     }
 
 

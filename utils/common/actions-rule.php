@@ -1425,6 +1425,13 @@ RuleCallContext::$supportedActions[] = array(
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
 
+        if( !$rule->isSecurityRule()  )
+        {
+            $string = "Rule is of type ".get_class($rule)." - not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+
         if( $context->isAPI )
             $rule->services->API_setApplicationDefault();
         else
@@ -1437,8 +1444,21 @@ RuleCallContext::$supportedActions[] = array(
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
 
+        if( $rule->isNatRule()  )
+        {
+            $string = "Rule is of type ".get_class($rule)." - implementation missing";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+        elseif( $rule->isAppOverrideRule()  )
+        {
+            $string = "Rule is of type ".get_class($rule)." - not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+
         if( $context->isAPI )
-            $rule->services->API_setAny();
+                $rule->services->API_setAny();
         else
             $rule->services->setAny();
     },
@@ -1501,6 +1521,15 @@ RuleCallContext::$supportedActions[] = array(
     'section' => 'app',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
+
+        if( !$rule->isSecurityRule()  )
+        {
+            $string = "Rule is NOT of type Security";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+
+
         if( $context->isAPI )
             $rule->apps->API_setAny();
         else
@@ -1820,7 +1849,12 @@ RuleCallContext::$supportedActions[] = array(
         }
 
         if( !$context->isAPI )
-            derr("only supported in API mode!");
+        {
+            $string = "only supported in API mode!";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+
 
         if( $rule->setLogStart(TRUE) )
         {
@@ -1848,7 +1882,12 @@ RuleCallContext::$supportedActions[] = array(
         }
 
         if( !$context->isAPI )
-            derr("only supported in API mode!");
+        {
+            $string = "only supported in API mode!";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+
 
         if( $rule->setLogStart(FALSE) )
         {
@@ -1918,7 +1957,11 @@ RuleCallContext::$supportedActions[] = array(
         }
 
         if( !$context->isAPI )
-            derr("only supported in API mode!");
+        {
+            $string = "only supported in API mode!";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
 
         if( $rule->setLogEnd(FALSE) )
         {
@@ -1946,7 +1989,11 @@ RuleCallContext::$supportedActions[] = array(
         }
 
         if( !$context->isAPI )
-            derr("only supported in API mode!");
+        {
+            $string = "only supported in API mode!";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
 
         if( $rule->setLogEnd(TRUE) )
         {
@@ -1996,7 +2043,11 @@ RuleCallContext::$supportedActions[] = array(
         }
 
         if( !$context->isAPI )
-            derr("only supported in API mode!");
+        {
+            $string = "only supported in API mode!";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
 
         if( $rule->setLogSetting($context->arguments['profName']) )
         {
@@ -2259,7 +2310,11 @@ RuleCallContext::$supportedActions[] = array(
         }
 
         if( !$context->isAPI )
-            derr("only supported in API mode!");
+        {
+            $string = "only supported in API mode!";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
 
         if( $rule->removeSecurityProfile() )
         {
@@ -2286,7 +2341,11 @@ RuleCallContext::$supportedActions[] = array(
         }
 
         if( !$context->isAPI )
-            derr("only supported in API mode!");
+        {
+            $string = "only supported in API mode!";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
 
         if( $rule->setSecurityProfileGroup($context->arguments['profName']) )
         {

@@ -723,7 +723,7 @@ class AddressStore
      */
     public function newAddress($name, $type, $value, $description = '')
     {
-        $found = $this->find($name, null, TRUE);
+        $found = $this->find($name, null, FALSE);
         if( $found !== null )
             derr("cannot create Address named '" . $name . "' as this name is already in use");
 
