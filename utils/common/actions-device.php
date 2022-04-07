@@ -3119,3 +3119,10 @@ DeviceCallContext::$supportedActions['find-zone-from-ip'] = array(
         "    - find-zone-from-ip:8.8.8.8,vr5,Datacenter_template\n" .
         "    - find-zone-from-ip:8.8.8.8,vr3,file@firewall.xml,vsys1\n"
 );
+
+
+//new actions:
+//1     /api/?type=op&cmd=<request><restart><system></system></restart></request>
+
+//2     /api/?type=op&cmd=<show><admins></admins></show>
+//     /api/?&type=op&cmd=<delete><admin-sessions><username>admin</username></admin-sessions></delete>

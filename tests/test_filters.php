@@ -104,20 +104,19 @@ foreach( RQuery::$defaultFilters as $type => &$filtersByField )
 
 
             if( $type == 'rule' )
-                $util = '../utils/rules-edit.php';
+                $util = '../utils/pan-os-php.php type=rule';
             elseif( $type == 'address' )
-                $util = '../utils/address-edit.php';
+                $util = '../utils/pan-os-php.php type=address';
             elseif( $type == 'service' )
-                $util = '../utils/service-edit.php';
+                $util = '../utils/pan-os-php.php type=service';
             elseif( $type == 'tag' )
-                $util = '../utils/tag-edit.php';
+                $util = '../utils/pan-os-php.php type=tag';
             elseif( $type == 'zone' )
-                $util = '../utils/zone-edit.php';
+                $util = '../utils/pan-os-php.php type=zone';
             elseif( $type == 'schedule' )
-                $util = '../utils/schedule-edit.php';
+                $util = '../utils/pan-os-php.php type=schedule';
             #elseif( $type == 'application' )
             #    $util = '../utils/application-edit.php';
-
 
             elseif( $type == 'securityprofile' )
             {
