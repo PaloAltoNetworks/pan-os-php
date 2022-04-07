@@ -146,15 +146,15 @@ foreach( RQuery::$defaultFilters as $type => &$filtersByField )
 
 
             if( $type == 'rule' )
-                $util = '../utils/rules-edit.php';
+                $util = '../utils/pan-os-php type=rule';
             elseif( $type == 'address' )
-                $util = '../utils/address-edit.php';
+                $util = '../utils/pan-os-php type=address';
             elseif( $type == 'service' )
-                $util = '../utils/service-edit.php';
+                $util = '../utils/pan-os-php type=service';
             elseif( $type == 'tag' )
-                $util = '../utils/tag-edit.php';
+                $util = '../utils/pan-os-php type=tag';
             elseif( $type == 'zone' )
-                $util = '../utils/zone-edit.php';
+                $util = '../utils/pan-os-php type=zone';
             elseif( $type == 'securityprofile' )
             {
                 PH::print_stdout( "******* SKIPPED for now *******" );

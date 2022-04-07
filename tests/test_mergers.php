@@ -136,6 +136,8 @@ foreach( $test_merger as $merger )
             #if( $merger != 'address' )
                 $cli .= " DupAlgorithm={$dupalgorithm}";
 
+
+            $cli .= ' shadow-ignoreinvalidaddressobjects';
             $cli .= ' 2>&1';
 
             PH::print_stdout( " * Executing CLI: {$cli}" );

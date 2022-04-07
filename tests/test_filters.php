@@ -75,8 +75,8 @@ $missing_filters = array();
 foreach( RQuery::$defaultFilters as $type => &$filtersByField )
 {
 
-    #if( $type != 'zone' )
-    #    continue;
+    if( $type != 'rule' )
+        continue;
 
     foreach( $filtersByField as $fieldName => &$filtersByOperator )
     {
@@ -167,6 +167,7 @@ foreach( RQuery::$defaultFilters as $type => &$filtersByField )
                 derr('unsupported');
             }
 
+            $ci['input'] = '/Users/swaschkut/Downloads/theBig_fixed.xml';
 
             $location = 'any';
             $output = '/dev/null';
@@ -178,6 +179,7 @@ foreach( RQuery::$defaultFilters as $type => &$filtersByField )
             if( $type == 'rule' )
                 $cli .= " ruletype={$ruletype}";
 
+            $cli .= ' shadow-ignoreinvalidaddressobjects';
             $cli .= ' 2>&1';
 
             PH::print_stdout( " * Executing CLI: {$cli}" );

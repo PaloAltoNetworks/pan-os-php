@@ -82,12 +82,25 @@ $json_a = json_decode($JSONarray, true);
 
 foreach( $json_a as $type => $UTILtype )
 {
+    #if( $type !== "rule" )
+    #    continue;
+
     $ci = array();
     $ci['input'] = 'input/panorama-8.0.xml';
 
     foreach( $UTILtype['action'] as $actionName => &$action )
     {
         $totalActionCount++;
+
+        if( $type == "address" && ($actionName == 'value-set-reverse-dns' ||
+            $actionName == 'value-set-ip-for-fqdn' )
+        )
+            continue;
+
+        if( $type == "rule" && ($actionName == 'position-move-to-bottom' ||
+            $actionName == 'position-move-to-top' )
+        )
+            continue;
 
 
         if( isset($action['args']) )
@@ -186,6 +199,7 @@ foreach( $json_a as $type => $UTILtype )
         if( $type == 'rule' )
             $cli .= " ruletype={$ruletype}";
 
+        $cli .= ' shadow-ignoreinvalidaddressobjects';
         $cli .= ' 2>&1';
 
         PH::print_stdout(" * Executing CLI: {$cli}");

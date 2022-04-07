@@ -126,12 +126,12 @@ foreach( $test_merger as $merger )
     $dupalgorithm_array = array();
     if( $merger == 'address' )
     {
-        $util = '../utils/address-merger.php';
+        $util = '../utils/pan-os-php type=address-merger';
         $dupalgorithm_array[] = '';
     }
     elseif( $merger == 'addressgroup' )
     {
-        $util = '../utils/addressgroup-merger.php';
+        $util = '../utils/pan-os-php type=addressgroup-merger';
         $dupalgorithm_array[] = 'SameMembers';
         $dupalgorithm_array[] = 'SameIP4Mapping';
         $dupalgorithm_array[] = 'Whereused';
@@ -139,13 +139,13 @@ foreach( $test_merger as $merger )
     }
     elseif( $merger == 'service' )
     {
-        $util = '../utils/service-merger.php';
+        $util = '../utils/pan-os-php type=service-merger';
         $dupalgorithm_array[] = 'SamePorts';
         $dupalgorithm_array[] = 'Whereused';
     }
     elseif( $merger == 'servicegroup' )
     {
-        $util = '../utils/servicegroup-merger.php';
+        $util = '../utils/pan-os-php type=servicegroup-merger';
         $dupalgorithm_array[] = 'SameMembers';
         $dupalgorithm_array[] = 'SamePortMapping';
         $dupalgorithm_array[] = 'Whereused';
