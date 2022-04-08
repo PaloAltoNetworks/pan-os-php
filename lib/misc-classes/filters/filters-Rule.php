@@ -1084,6 +1084,10 @@ RQuery::$defaultFilters['rule']['tag']['operators']['has.nocase'] = array(
 );
 RQuery::$defaultFilters['rule']['tag']['operators']['has.regex'] = array(
     'Function' => function (RuleRQueryContext $context) {
+
+        if( !isset( $context->object->tags ) )
+            return FALSE;
+
         foreach( $context->object->tags->tags() as $tag )
         {
             $matching = preg_match($context->value, $tag->name());
@@ -1148,7 +1152,8 @@ RQuery::$defaultFilters['rule']['app']['operators']['has.nocase'] = array(
 RQuery::$defaultFilters['rule']['app']['operators']['has.regex'] = array(
     'Function' => function (RuleRQueryContext $context) {
         $rule = $context->object;
-        if( $rule->isNatRule() || $rule->isDecryptionRule() || $rule->isCaptivePortalRule() || $rule->isAuthenticationRule() || $rule->isDoSRule() )
+
+        if( !isset( $context->object->apps ) )
             return FALSE;
 
         foreach( $context->object->apps->apps() as $app )
@@ -1172,7 +1177,7 @@ RQuery::$defaultFilters['rule']['app']['operators']['has.regex'] = array(
 RQuery::$defaultFilters['rule']['app']['operators']['has.recursive'] = array(
     'Function' => function (RuleRQueryContext $context) {
         $rule = $context->object;
-        if( $rule->isNatRule() || $rule->isDecryptionRule() || $rule->isCaptivePortalRule() || $rule->isAuthenticationRule() || $rule->isDoSRule() )
+        if( !isset( $rule->apps ) )
             return FALSE;
 
         foreach( $rule->apps->getAll() as $app)
@@ -1208,7 +1213,7 @@ RQuery::$defaultFilters['rule']['app']['operators']['has.recursive'] = array(
 RQuery::$defaultFilters['rule']['app']['operators']['includes.full.or.partial'] = array(
     'Function' => function (RuleRQueryContext $context) {
         $rule = $context->object;
-        if( $rule->isNatRule() || $rule->isDecryptionRule() || $rule->isCaptivePortalRule() || $rule->isAuthenticationRule() || $rule->isDoSRule() )
+        if( !isset( $rule->apps ) )
             return FALSE;
 
         /** @var Rule|SecurityRule|AppOverrideRule|PbfRule|QoSRule $object */
@@ -1224,7 +1229,7 @@ RQuery::$defaultFilters['rule']['app']['operators']['includes.full.or.partial'] 
 RQuery::$defaultFilters['rule']['app']['operators']['includes.full.or.partial.nocase'] = array(
     'Function' => function (RuleRQueryContext $context) {
         $rule = $context->object;
-        if( $rule->isNatRule() || $rule->isDecryptionRule() || $rule->isCaptivePortalRule() || $rule->isAuthenticationRule() || $rule->isDoSRule() )
+        if( !isset( $rule->apps ) )
             return FALSE;
 
         return $rule->apps->includesApp($context->value, FALSE) === TRUE;
@@ -1238,7 +1243,7 @@ RQuery::$defaultFilters['rule']['app']['operators']['includes.full.or.partial.no
 RQuery::$defaultFilters['rule']['app']['operators']['included-in.full.or.partial'] = array(
     'Function' => function (RuleRQueryContext $context) {
         $rule = $context->object;
-        if( $rule->isNatRule() || $rule->isDecryptionRule() || $rule->isCaptivePortalRule() || $rule->isAuthenticationRule() || $rule->isDoSRule() )
+        if( !isset( $rule->apps ) )
             return FALSE;
 
         /** @var Rule|SecurityRule|AppOverrideRule|PbfRule|QoSRule $object */
@@ -1254,7 +1259,7 @@ RQuery::$defaultFilters['rule']['app']['operators']['included-in.full.or.partial
 RQuery::$defaultFilters['rule']['app']['operators']['included-in.full.or.partial.nocase'] = array(
     'Function' => function (RuleRQueryContext $context) {
         $rule = $context->object;
-        if( $rule->isNatRule() || $rule->isDecryptionRule() || $rule->isCaptivePortalRule() || $rule->isAuthenticationRule() || $rule->isDoSRule() )
+        if( !isset( $rule->apps ) )
             return FALSE;
 
         return $rule->apps->includedInApp($context->value, FALSE) === TRUE;
@@ -1268,7 +1273,7 @@ RQuery::$defaultFilters['rule']['app']['operators']['included-in.full.or.partial
 RQuery::$defaultFilters['rule']['app']['operators']['custom.has.signature'] = array(
     'Function' => function (RuleRQueryContext $context) {
         $rule = $context->object;
-        if( $rule->isNatRule() || $rule->isDecryptionRule() || $rule->isCaptivePortalRule() || $rule->isAuthenticationRule() || $rule->isDoSRule() )
+        if( !isset( $rule->apps ) )
             return FALSE;
 
         /** @var Rule|SecurityRule|AppOverrideRule|PbfRule|QoSRule $object */
@@ -1289,6 +1294,9 @@ RQuery::$defaultFilters['rule']['service']['operators']['is.any'] = array(
         $rule = $context->object;
         if( $rule->isNatRule() )
             return $rule->service === null;
+
+        if( $rule->services ===  null )
+            return false;
 
         return $rule->services->isAny();
     },
@@ -1311,7 +1319,7 @@ RQuery::$defaultFilters['rule']['service']['operators']['is.application-default'
 RQuery::$defaultFilters['rule']['service']['operators']['has'] = array(
     'eval' => function ($object, &$nestedQueries, $value) {
         /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AuthenticationRule|PbfRule|QoSRule|DoSRule $object */
-        return $object->services->has($value) === TRUE;
+        return $object->isSecurityRule() && $object->services->has($value) === TRUE;
     },
     'arg' => TRUE,
     'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->services->parentCentralStore->find('!value!');"
@@ -1325,6 +1333,9 @@ RQuery::$defaultFilters['rule']['service']['operators']['has.only'] = array(
                 return FALSE;
             return $object->service === $value;
         }
+        if( $object->services === null )
+            return FALSE;
+
         if( $object->services->count() != 1 || !$object->services->has($value) )
             return FALSE;
 
@@ -1348,6 +1359,9 @@ RQuery::$defaultFilters['rule']['service']['operators']['has.regex'] = array(
                 return TRUE;
             return FALSE;
         }
+
+        if( $rule->services === null )
+            return FALSE;
 
         foreach( $rule->services->all() as $service )
         {
@@ -1387,6 +1401,9 @@ RQuery::$defaultFilters['rule']['service']['operators']['has.recursive'] = array
             return $rule->service->hasNamedObjectRecursive($value);
         }
 
+        if( $rule->services === null )
+            return FALSE;
+
         return $rule->services->hasNamedObjectRecursive($value);
     },
     'arg' => TRUE,
@@ -1405,6 +1422,9 @@ RQuery::$defaultFilters['rule']['service']['operators']['is.tcp.only'] = array(
             mwarning("this filter does not yet support NAT Rules");
             return FALSE;
         }
+
+        if( $rule->services === null )
+            return FALSE;
 
         /** @var Service|ServiceGroup $value */
         $objects = $rule->services->all();
@@ -1445,6 +1465,9 @@ RQuery::$defaultFilters['rule']['service']['operators']['is.udp.only'] = array(
             return FALSE;
         }
 
+        if( $rule->services === null )
+            return FALSE;
+
         /** @var Service|ServiceGroup $value */
         $objects = $rule->services->all();
         foreach( $objects as $object )
@@ -1483,6 +1506,9 @@ RQuery::$defaultFilters['rule']['service']['operators']['is.tcp'] = array(
             mwarning("this filter does not yet support NAT Rules");
             return FALSE;
         }
+
+        if( $rule->services === null )
+            return FALSE;
 
         /** @var Service|ServiceGroup $value */
         $objects = $rule->services->all();
@@ -1524,6 +1550,9 @@ RQuery::$defaultFilters['rule']['service']['operators']['is.udp'] = array(
             return FALSE;
         }
 
+        if( $rule->services === null )
+            return FALSE;
+
         /** @var Service|ServiceGroup $value */
         $objects = $rule->services->all();
         foreach( $objects as $object )
@@ -1563,6 +1592,9 @@ RQuery::$defaultFilters['rule']['service']['operators']['has.value.recursive'] =
             return FALSE;
         }
 
+        if( $rule->services === null )
+            return FALSE;
+
         return $rule->services->hasValue($value, TRUE);
     },
     'arg' => TRUE,
@@ -1582,6 +1614,9 @@ RQuery::$defaultFilters['rule']['service']['operators']['has.value'] = array(
             mwarning("this filter does not yet support NAT Rules");
             return FALSE;
         }
+
+        if( $rule->services === null )
+            return FALSE;
 
         return $rule->services->hasValue($value);
     },
@@ -1603,6 +1638,9 @@ RQuery::$defaultFilters['rule']['service']['operators']['has.value.only'] = arra
             return FALSE;
         }
 
+        if( $rule->services === null )
+            return FALSE;
+
         if( $rule->services->count() != 1 )
             return FALSE;
 
@@ -1620,9 +1658,9 @@ RQuery::$defaultFilters['rule']['service.port.count']['operators']['>,<,=,!'] = 
         $counter = $context->value;
         $rule = $context->object;
 
-        if( $rule->isNatRule() )
+        if( !$rule->isSecurityRule() )
         {
-            mwarning("this filter does not yet support NAT Rules");
+            mwarning("this filter does only yet support Security Rules", null, FALSE);
             return FALSE;
         }
 
@@ -1649,9 +1687,9 @@ RQuery::$defaultFilters['rule']['service.port.tcp.count']['operators']['>,<,=,!'
         $counter = $context->value;
         $rule = $context->object;
 
-        if( $rule->isNatRule() )
+        if( !$rule->isSecurityRule() )
         {
-            mwarning("this filter does not yet support NAT Rules");
+            mwarning("this filter does only yet support Security Rules", null, FALSE);
             return FALSE;
         }
 
@@ -1678,9 +1716,9 @@ RQuery::$defaultFilters['rule']['service.port.udp.count']['operators']['>,<,=,!'
         $counter = $context->value;
         $rule = $context->object;
 
-        if( $rule->isNatRule() )
+        if( !$rule->isSecurityRule() )
         {
-            mwarning("this filter does not yet support NAT Rules");
+            mwarning("this filter does only yet support Security Rules", null, FALSE);
             return FALSE;
         }
 

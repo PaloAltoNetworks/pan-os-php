@@ -60,6 +60,7 @@ foreach( $supportedUTILTypes as $util )
 
     $cli .= $additional;
 
+    $cli .= ' shadow-ignoreinvalidaddressobjects';
     $cli .= ' 2>&1';
 
     PH::print_stdout( " * Executing CLI: {$cli}" );

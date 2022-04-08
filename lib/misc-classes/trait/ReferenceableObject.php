@@ -235,7 +235,7 @@ trait ReferenceableObject
         {
             #print get_class( $cur)."\n";
             //Firewall
-            if( isset($cur->owner->owner) && $cur->owner->owner !== null && $cur->owner->owner->name() !== "")
+            if( isset($cur->owner->owner) && $cur->owner->owner !== null && method_exists($cur->owner->owner,'name') && $cur->owner->owner->name() !== "")
             {
                 #print $cur->owner->owner->name()."\n";
                 $location_array[$cur->owner->owner->name()] = $cur->owner->owner->name();
@@ -246,14 +246,14 @@ trait ReferenceableObject
             }
 
             //Panorama
-            if( isset($cur->owner->owner->owner) && $cur->owner->owner->owner !== null && $cur->owner->owner->owner->name() !== "")
+            if( isset($cur->owner->owner->owner) && $cur->owner->owner->owner !== null && method_exists($cur->owner->owner->owner,'name') && $cur->owner->owner->owner->name() !== "")
             {
                 #print $cur->owner->owner->owner->name()."\n";
                 $location_array[$cur->owner->owner->owner->name()] = $cur->owner->owner->owner->name();
-                if( isset($counter_array[$cur->owner->owner->name()]))
-                    $counter_array[$cur->owner->owner->name()] += 1;
+                if( isset($counter_array[$cur->owner->owner->owner->name()]))
+                    $counter_array[$cur->owner->owner->owner->name()] += 1;
                 else
-                    $counter_array[$cur->owner->owner->name()] = 1;
+                    $counter_array[$cur->owner->owner->owner->name()] = 1;
             }
 
 

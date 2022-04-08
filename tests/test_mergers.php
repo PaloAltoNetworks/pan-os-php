@@ -85,14 +85,14 @@ foreach( $test_merger as $merger )
     $dupalgorithm_array = array();
     if( $merger == 'address' )
     {
-        $util = '../utils/address-merger.php';
+        $util = '../utils/pan-os-php.php type=address-merger';
         $dupalgorithm_array[] = 'SameAddress';
         $dupalgorithm_array[] = 'Identical';
         $dupalgorithm_array[] = 'Whereused';
     }
     elseif( $merger == 'addressgroup' )
     {
-        $util = '../utils/addressgroup-merger.php';
+        $util = '../utils/pan-os-php.php type=addressgroup-merger';
         $dupalgorithm_array[] = 'SameMembers';
         $dupalgorithm_array[] = 'SameIP4Mapping';
         $dupalgorithm_array[] = 'Whereused';
@@ -100,20 +100,20 @@ foreach( $test_merger as $merger )
     }
     elseif( $merger == 'service' )
     {
-        $util = '../utils/service-merger.php';
+        $util = '../utils/pan-os-php.php type=service-merger';
         $dupalgorithm_array[] = 'SamePorts';
         $dupalgorithm_array[] = 'Whereused';
     }
     elseif( $merger == 'servicegroup' )
     {
-        $util = '../utils/servicegroup-merger.php';
+        $util = '../utils/pan-os-php.php type=servicegroup-merger';
         $dupalgorithm_array[] = 'SameMembers';
         $dupalgorithm_array[] = 'SamePortMapping';
         $dupalgorithm_array[] = 'Whereused';
     }
     elseif( $merger == 'tag' )
     {
-        $util = '../utils/tag-merger.php';
+        $util = '../utils/pan-os-php.php type=tag-merger';
         $dupalgorithm_array[] = 'SameColor';
         $dupalgorithm_array[] = 'Identical';
         $dupalgorithm_array[] = 'WhereUsed';
@@ -136,6 +136,8 @@ foreach( $test_merger as $merger )
             #if( $merger != 'address' )
                 $cli .= " DupAlgorithm={$dupalgorithm}";
 
+
+            $cli .= ' shadow-ignoreinvalidaddressobjects';
             $cli .= ' 2>&1';
 
             PH::print_stdout( " * Executing CLI: {$cli}" );

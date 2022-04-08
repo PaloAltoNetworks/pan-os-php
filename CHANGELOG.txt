@@ -3,14 +3,22 @@ CHANGELOG
 2.0.34
 UTILS:
 * UTIL API - introduce postman_collection
+* UTIL type=device actions=display-shadowrule | improve JSON output
+* UTIL develop - introduce create_template_mgmt_permittedips.php
+* UTIL type=device | introduce actions==sp_spg-create-BP
+* UTIL type=device | extend actions=actions=sp_spg-create-BP:true/false,SP-NAME - with SP-NAME defined only the OUTBOUND profile is created with the defined SP-NAME
+* UTIL optimise test_filter script for QA
 
 BUGFIX:
 * UTIL API - bugfix related to JSON output
 * UTIL type=rule | bugfix 'filter=(rule is.unused.fast)' if searching via API mode on Panorama
 * class PanAPIConnector | bugfix to avoid using shadow-apikeynohidden for PAN-OS >=9 if Panorama is used as proxy
 * UTIL type=rule 'filter=(src has OBJECTNAME)' - fix if object does not exist at same DG level or above - filter is now returning false
+* UTIL type=tag | bugfix for 'filter=(reflocation is shared )'
 
 GENERAL:
+* introduce UTIL actions test script
+* framework | bugfixes for different CLASSES related to UTIL test_filter / test_action found issues
 
 
 2.0.33 (20220404)

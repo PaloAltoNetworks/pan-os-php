@@ -123,6 +123,7 @@ foreach( $test_merger as $merger )
 
                 $cli .= " {$prePost}";
 
+                $cli .= ' shadow-ignoreinvalidaddressobjects';
                 $cli .= ' 2>&1';
 
                 PH::print_stdout(" * Executing CLI: {$cli}");

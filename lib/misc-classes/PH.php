@@ -885,6 +885,8 @@ class PH
         mwarning( 'this script '.basename($PHP_FILE).' is deprecated, please use: pan-os-php.php', null, FALSE );
         PH::print_stdout( PH::boldText("pan-os-php".$argString) );
 
+        PH::print_stdout( PH::boldText("sleeping now 15 seconds") );
+        sleep(15);
 
         PH::callPANOSPHP( $type, $argv, $argc, $PHP_FILE );
 

@@ -1382,7 +1382,11 @@ class RuleStore
                 if( count($this->_postRules ) > 0 )
                     $this->postRulesRoot->removeChild($rule->xmlroot);
                 else
-                    DH::clearDomNodeChilds($this->xmlroot);
+                {
+                    if( $this->xmlroot !== null )
+                        DH::clearDomNodeChilds($this->xmlroot);
+                }
+
 
                 $rule->owner = null;
 

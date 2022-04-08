@@ -15,6 +15,11 @@
         }
     ],
     "require": {
-        "php": ">=7.4.0"
+      "php": ">=7.4.0",
+      "ext-json": "*",
+      "ext-curl": "*",
+      "ext-dom": "*",
+      "ext-mbstring": "*",
+      "ext-bcmath": "*"
     }
 }

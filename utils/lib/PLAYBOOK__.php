@@ -94,10 +94,20 @@ class PLAYBOOK__
                 derr( "invalid JSON file provided", null, FALSE );
 
             if( !isset(PH::$args['in']) )
-                $input = $details['in'];
+            {
+                if( !isset( $details['in'] ) )
+                    derr( "argument 'in=inputconfig.xml' missing", null, false );
+                else
+                    $input = $details['in'];
+            }
 
             if( !isset(PH::$args['out']) && !$this->isAPI )
-                $output = $details['out'];
+            {
+                if( !isset( $details['out'] ) )
+                    derr( "argument 'out=outputconfig.xml' missing", null, false );
+                else
+                    $output = $details['out'];
+            }
 
             if( !isset(PH::$args['stagename']) && !$this->isAPI )
             {
