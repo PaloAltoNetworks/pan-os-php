@@ -21,14 +21,14 @@ $p = new PanoramaConf();
 $p->load_from_file($inputfile);
 
 PH::print_stdout("***********************************************");
-PH::print_stdout("" );
+PH::print_stdout();
 
 
 
 
 // display some statiscs for debug and exit program!
 PH::print_stdout("***********************************************");
-PH::print_stdout("" );
+PH::print_stdout();
 $p->display_statistics();
 
 

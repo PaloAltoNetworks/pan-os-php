@@ -265,15 +265,15 @@ class PLAYBOOK__
             }
 
             $tool = "pan-os-php type=".$script;
-            PH::print_stdout("");
+            PH::print_stdout();
             PH::print_stdout( PH::boldText( "[ ".$tool. " ".implode( " ", PH::$argv )." ]" ) );
-            PH::print_stdout("");
+            PH::print_stdout();
 
             $util = PH::callPANOSPHP( $script, PH::$argv, $argc, $PHP_FILE );
 
-            PH::print_stdout("");
+            PH::print_stdout();
             PH::print_stdout( "############################################################################");
-            PH::print_stdout("");
+            PH::print_stdout();
         }
 
         if( isset(PH::$args['out']) )
@@ -281,7 +281,7 @@ class PLAYBOOK__
             //now save the latest out= from the foreach loop "$out" into "$output" file;
             PH::print_stdout("FINAL script task: the processed PAN-OS configuration are copy to file: ".$output);
             PH::print_stdout("please use this file: ".$output." and upload it to your device");
-            PH::print_stdout("");
+            PH::print_stdout();
             PH::print_stdout( "############################################################################");
             copy( $out, $output );
         }
@@ -299,12 +299,12 @@ class PLAYBOOK__
 
     function printCOMMENTS( $string )
     {
-        PH::print_stdout("");
+        PH::print_stdout();
 
         $array = explode( "/n", $string );
         foreach( $array as $line )
             PH::print_stdout($line );
 
-        PH::print_stdout("");
+        PH::print_stdout();
     }
 }

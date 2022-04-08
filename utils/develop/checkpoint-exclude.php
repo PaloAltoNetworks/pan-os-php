@@ -279,7 +279,7 @@ foreach( $groupsToProcess as $group )
                 PH::print_stdout( "NO match" );
         }
 
-        PH::print_stdout( "" );
+        PH::print_stdout();
     }
 
     //

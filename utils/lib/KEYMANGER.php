@@ -75,7 +75,7 @@ class KEYMANGER extends UTIL
         PanAPIConnector::loadConnectorsFromUserHome( $debugAPI);
 
 
-        PH::print_stdout("");
+        PH::print_stdout();
 
 
         if( isset(PH::$args['delete']) )
@@ -201,7 +201,7 @@ class KEYMANGER extends UTIL
                     }
 
                     PH::disableExceptionSupport();
-                    PH::print_stdout("");
+                    PH::print_stdout();
                 }
             }
             else
@@ -226,7 +226,7 @@ class KEYMANGER extends UTIL
                     $connector->testConnectivity( $checkHost );
                 }
 
-                PH::print_stdout("");
+                PH::print_stdout();
             }
             PH::print_stdout( PH::$JSON_TMP, false, 'test' );
             PH::$JSON_TMP = array();
@@ -265,7 +265,7 @@ class KEYMANGER extends UTIL
 
         if( $noArgProvided )
         {
-            PH::print_stdout("");
+            PH::print_stdout();
             $this->display_usage_and_exit();
         }
     }

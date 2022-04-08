@@ -90,7 +90,7 @@ foreach ($list as $rule)
     	    PH::print_stdout( "          Updated To: ".$rule->to->toString_inline()."" );
     }
     
-    PH::print_stdout( "" );
+    PH::print_stdout();
     
 }
 
@@ -131,7 +131,7 @@ foreach ($list as $rule)
     	    PH::print_stdout( "          Updated To: ".$rule->to->toString_inline()."" );
     }
     
-    PH::print_stdout( "" );
+    PH::print_stdout();
     
 }
 

@@ -303,7 +303,7 @@ class MERGER extends UTIL
                 derr("invalid pickFilter was input: " . $errMsg);
             PH::print_stdout( " - pickFilter was input: " );
             $this->pickFilter->display();
-            PH::print_stdout( "" );
+            PH::print_stdout();
         }
 
         if( isset(PH::$args['excludefilter']) )
@@ -314,7 +314,7 @@ class MERGER extends UTIL
                 derr("invalid pickFilter was input: " . $errMsg);
             PH::print_stdout( " - excludeFilter was input: " );
             $this->excludeFilter->display();
-            PH::print_stdout( "" );
+            PH::print_stdout();
         }
 
         if( isset(PH::$args['allowmergingwithupperlevel']) )
@@ -665,7 +665,7 @@ class MERGER extends UTIL
             {
                 #$skip = false;
 
-                PH::print_stdout( "" );
+                PH::print_stdout();
                 PH::print_stdout( " - value '{$index}'" );
 
                 $pickedObject = null;
@@ -873,7 +873,7 @@ class MERGER extends UTIL
             $countChildCreated = 0;
             foreach( $child_hashMap as $index => &$hash )
             {
-                PH::print_stdout( "" );
+                PH::print_stdout();
                 PH::print_stdout( " - value '{$index}'" );
 
                 $pickedObject = null;
@@ -1151,7 +1151,7 @@ class MERGER extends UTIL
             $countRemoved = 0;
             foreach( $hashMap as $index => &$hash )
             {
-                PH::print_stdout( "" );
+                PH::print_stdout();
                 PH::print_stdout( " - value '{$index}'" );
 
 
@@ -1337,7 +1337,7 @@ class MERGER extends UTIL
             $countChildCreated = 0;
             foreach( $child_hashMap as $index => &$hash )
             {
-                PH::print_stdout("");
+                PH::print_stdout();
                 PH::print_stdout(" - value '{$index}'");
 
 
@@ -1636,7 +1636,7 @@ class MERGER extends UTIL
             $countRemoved = 0;
             foreach( $hashMap as $index => &$hash )
             {
-                PH::print_stdout("");
+                PH::print_stdout();
 
                 if( $this->dupAlg == 'sameportmapping' )
                 {
@@ -1992,7 +1992,7 @@ class MERGER extends UTIL
             {
                 foreach( $hashMap as $index => &$hash )
                 {
-                    PH::print_stdout( "" );
+                    PH::print_stdout();
                     PH::print_stdout( " - value '{$index}'" );
 
                     $pickedObject = null;
@@ -2168,7 +2168,7 @@ class MERGER extends UTIL
                 $countChildCreated = 0;
                 foreach( $child_hashMap as $index => &$hash )
                 {
-                    PH::print_stdout( "" );
+                    PH::print_stdout();
                     PH::print_stdout( " - value '{$index}'" );
 
                     $pickedObject = null;
@@ -2288,7 +2288,7 @@ class MERGER extends UTIL
             elseif( $this->dupAlg == 'whereused' )
                 foreach( $hashMap as $index => &$hash )
                 {
-                    PH::print_stdout( "" );
+                    PH::print_stdout();
 
                     $setList = array();
                     foreach( $hash as $object )
@@ -2400,7 +2400,7 @@ class MERGER extends UTIL
                     }
                     PH::print_stdout( "   * final mapping for service '{$pickedObject->name()}': {$pickedObject->getDestPort()}" );
 
-                    PH::print_stdout( "" );
+                    PH::print_stdout();
                 }
             else derr("unsupported use case");
 
@@ -2558,7 +2558,7 @@ class MERGER extends UTIL
             $countRemoved = 0;
             foreach( $hashMap as $index => &$hash )
             {
-                PH::print_stdout( "" );
+                PH::print_stdout();
                 PH::print_stdout( " - name '{$index}'" );
 
 
@@ -2734,7 +2734,7 @@ class MERGER extends UTIL
             $countChildCreated = 0;
             foreach( $child_hashMap as $index => &$hash )
             {
-                PH::print_stdout( "" );
+                PH::print_stdout();
                 PH::print_stdout( " - value '{$index}'" );
 
 

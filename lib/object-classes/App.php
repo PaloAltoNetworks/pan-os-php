@@ -474,7 +474,7 @@ class App
         $text = "";
         if( $printName )
         {
-            #PH::print_stdout("");
+            #PH::print_stdout();
             $text .= $padding_above . " - " . str_pad(PH::boldText($this->name()), $padding) . " - ";
         }
         $subarray[$this->name()]['name'] = $this->name();

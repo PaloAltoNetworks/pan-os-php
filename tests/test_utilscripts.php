@@ -80,5 +80,5 @@ foreach( $supportedUTILTypes as $util )
     if( $retValue != 0 && $util != "key-manager" )
         derr("CLI exit with error code '{$retValue}'");
 
-    PH::print_stdout( "" );
+    PH::print_stdout();
 }

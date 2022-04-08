@@ -287,7 +287,7 @@ RuleCallContext::$commonActionFunctions['calculate-zones'] = array(
             }
             else
             {
-                PH::print_stdout( "" );
+                PH::print_stdout();
 
                 if( $rule->isNatRule() && $fromOrTo == 'to' )
                 {

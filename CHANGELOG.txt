@@ -1,6 +1,15 @@
 CHANGELOG
 
-2.0.34
+2.0.35
+UTILS:
+
+BUGFIX:
+
+GENERAL:
+framework | optimise method PH::print_stdout()
+
+
+2.0.34 (20220408)
 UTILS:
 * UTIL API - introduce postman_collection
 * UTIL type=device actions=display-shadowrule | improve JSON output

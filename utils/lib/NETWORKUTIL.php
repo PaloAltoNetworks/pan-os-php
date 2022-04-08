@@ -34,10 +34,10 @@ class NETWORKUTIL extends UTIL
 
         $this->GlobalFinishAction();
 
-        PH::print_stdout( "" );
+        PH::print_stdout();
         PH::print_stdout( " **** PROCESSED $this->totalObjectsProcessed objects over {$this->totalObjectsOfSelectedStores} available ****" );
-        PH::print_stdout( "" );
-        PH::print_stdout( "" );
+        PH::print_stdout();
+        PH::print_stdout();
 
         $this->stats();
 

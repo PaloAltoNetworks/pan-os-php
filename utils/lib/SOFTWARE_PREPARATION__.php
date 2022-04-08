@@ -46,10 +46,10 @@ class SOFTWARE_PREPARATION__
     {
         $tmp_ph = new PH($argv, $argc);
 
-        PH::print_stdout("");
+        PH::print_stdout();
         PH::print_stdout("***********************************************");
         PH::print_stdout("*********** " . basename(__FILE__) . " UTILITY **************");
-        PH::print_stdout("");
+        PH::print_stdout();
 
         PH::print_stdout( "PAN-OS-PHP version: ".PH::frameworkVersion() );
         PH::processCliArgs();

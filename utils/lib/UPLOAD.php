@@ -526,7 +526,7 @@ class UPLOAD extends UTIL
                 PH::print_stdout($text);
             }
 
-            PH::print_stdout("");
+            PH::print_stdout();
         }
 
         exit(1);

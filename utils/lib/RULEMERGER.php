@@ -101,15 +101,15 @@ class RULEMERGER extends UTIL
 
         if( count( $this->location_array ) > 1 )
         {
-            PH::print_stdout("");
+            PH::print_stdout();
             PH::print_stdout("#####################################");
-            PH::print_stdout("");
+            PH::print_stdout();
 
             $this->pan->display_statistics();
 
-            PH::print_stdout("");
+            PH::print_stdout();
             PH::print_stdout("#####################################");
-            PH::print_stdout("");
+            PH::print_stdout();
         }
 
 
@@ -162,7 +162,7 @@ class RULEMERGER extends UTIL
             $this->UTIL_calculate_rule_hash();
 
 
-            PH::print_stdout("");
+            PH::print_stdout();
             PH::print_stdout("Stats before merging :");
             $this->processedLocation->display_statistics();
 
@@ -172,13 +172,13 @@ class RULEMERGER extends UTIL
 
             ##################
 
-            PH::print_stdout("");
+            PH::print_stdout();
             PH::print_stdout("Stats after merging :");
             $this->processedLocation->display_statistics();
 
-            PH::print_stdout("");
+            PH::print_stdout();
             PH::print_stdout("#####################################");
-            PH::print_stdout("");
+            PH::print_stdout();
         }
 
         ##################

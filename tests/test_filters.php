@@ -197,7 +197,7 @@ foreach( RQuery::$defaultFilters as $type => &$filtersByField )
             if( $retValue != 0 )
                 derr("CLI exit with error code '{$retValue}'");
 
-            PH::print_stdout( "" );
+            PH::print_stdout();
 
         }
     }
@@ -211,7 +211,7 @@ PH::print_stdout( "\n" );
 PH::print_stdout( " - the following filters has no test argument:" );
 print_r($missing_filters);
 
-PH::print_stdout( "" );
+PH::print_stdout();
 PH::print_stdout( "\n*********** FINISHED TESTING FILTERS ************" );
 PH::print_stdout( "*************************************************\n" );
 

@@ -36,8 +36,8 @@ class DIFF extends UTIL
 
         if( $this->outputFormatSet )
         {
-            PH::print_stdout( "" );
-            PH::print_stdout( "" );
+            PH::print_stdout();
+            PH::print_stdout();
             foreach( $this->diff_set as $set )
                 PH::print_stdout( $set );
 

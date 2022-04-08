@@ -1008,7 +1008,7 @@ class Rule
             }
             else
             {
-                PH::print_stdout( "" );
+                PH::print_stdout();
 
                 if( $this->isNatRule() && $fromOrTo == 'to' )
                 {
@@ -1091,7 +1091,7 @@ class Rule
                 PH::print_stdout( " *** IGNORED because no missing zones were found ***" );
             else
             {
-                PH::print_stdout( "" );
+                PH::print_stdout();
 
                 if( $this->isNatRule() && $fromOrTo == 'to' )
                 {
@@ -1119,7 +1119,7 @@ class Rule
                 PH::print_stdout( " *** IGNORED because no unneeded zones were found ***" );
             else
             {
-                PH::print_stdout( "" );
+                PH::print_stdout();
 
                 if( $this->isNatRule() && $fromOrTo == 'to' )
                 {

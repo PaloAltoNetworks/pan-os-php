@@ -176,7 +176,7 @@ RQuery::$defaultFilters['tag']['location']['operators']['is.child.of'] = array(
             {
                 PH::print_stdout( " - " . $sub1->name() );
             }
-            PH::print_stdout("" );
+            PH::print_stdout();
             exit(1);
         }
 
@@ -226,7 +226,7 @@ RQuery::$defaultFilters['tag']['location']['operators']['is.parent.of'] = array(
             {
                 PH::print_stdout( " - " . $sub1->name() );
             }
-            PH::print_stdout("" );
+            PH::print_stdout();
             exit(1);
         }
 

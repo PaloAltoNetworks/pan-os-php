@@ -23,10 +23,10 @@
 set_include_path(dirname(__FILE__) . '/../' . PATH_SEPARATOR . get_include_path());
 require_once dirname(__FILE__)."/../../lib/pan_php_framework.php";
 
-PH::print_stdout("");
+PH::print_stdout();
 PH::print_stdout("***********************************************");
 PH::print_stdout("*********** " . basename(__FILE__) . " UTILITY **************");
-PH::print_stdout("");
+PH::print_stdout();
 
 function display_usage_and_exit($shortMessage = FALSE)
 {
@@ -55,7 +55,7 @@ function display_usage_and_exit($shortMessage = FALSE)
             PH::print_stdout( $text);
         }
 
-        PH::print_stdout("");
+        PH::print_stdout();
     }
 
     exit(1);
@@ -71,7 +71,7 @@ function display_error_usage_exit($msg)
 }
 
 
-PH::print_stdout("");
+PH::print_stdout();
 
 $configType = null;
 $configInput = null;
@@ -353,7 +353,7 @@ foreach( $template_array as $template )
         {
             //todo: improvments needed so that output contains only IKE/IPsec information to specific VSYS
 
-            PH::print_stdout("");
+            PH::print_stdout();
             PH::print_stdout( "VSYS: " . $sub->name() );
 
             $IKE = $sub->owner->network->ikeCryptoProfileStore->ikeCryptoProfil();
@@ -380,7 +380,7 @@ foreach( $template_array as $template )
             $ipsec = $sub->owner->network->ipsecCryptoProfileStore->ipsecCryptoProfil();
             if( count($ipsec) > 0 )
             {
-                PH::print_stdout("");
+                PH::print_stdout();
                 PH::print_stdout( PH::boldText("IPSEC - Phase 2"));
             }
 
@@ -415,7 +415,7 @@ foreach( $template_array as $template )
             $ikeGateways = $sub->owner->network->ikeGatewayStore->gateways();
             if( count($ikeGateways) > 0 )
             {
-                PH::print_stdout("");
+                PH::print_stdout();
                 PH::print_stdout( PH::boldText("IKE GATEWAY") );
             }
 
@@ -451,7 +451,7 @@ foreach( $template_array as $template )
             $ipsecTunnel = $sub->owner->network->ipsecTunnelStore->tunnels();
             if( count($ipsecTunnel) > 0 )
             {
-                PH::print_stdout("");
+                PH::print_stdout();
                 PH::print_stdout( PH::boldText("IPSEC tunnel") );
             }
 
@@ -482,7 +482,7 @@ foreach( $template_array as $template )
 
 ##############################################
 
-PH::print_stdout("");
+PH::print_stdout();
 
 // save our work !!!
 if( $configOutput !== null )
@@ -494,6 +494,6 @@ if( $configOutput !== null )
 }
 
 
-PH::print_stdout("");
+PH::print_stdout();
 PH::print_stdout("************* END OF SCRIPT " . basename(__FILE__) . " ************" );
-PH::print_stdout("");
+PH::print_stdout();

@@ -245,7 +245,7 @@ class AuthenticationRule extends RuleWithUserID
         }
 
 
-        PH::print_stdout("");
+        PH::print_stdout();
     }
 
     public function cleanForDestruction()

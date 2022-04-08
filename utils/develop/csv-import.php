@@ -40,10 +40,10 @@ $supportedArguments['location'] = array('niceName' => 'Location', 'shortHelp' =>
 
 $usageMsg = PH::boldText('USAGE: ') . "php " . basename(__FILE__) . " in=api:://[MGMT-IP] [cycleconnectedFirewalls] [actions=display]";
 
-PH::print_stdout("");
+PH::print_stdout();
 PH::print_stdout("***********************************************");
 PH::print_stdout("*********** " . basename(__FILE__) . " UTILITY **************");
-PH::print_stdout("");
+PH::print_stdout();
 
 $util = new UTIL("custom", $argv, $argc,__FILE__, $supportedArguments, $usageMsg);
 $util->utilInit();
@@ -483,6 +483,6 @@ if( $actions == "display" )
 $util->save_our_work();
 $this->endOfScript();
 
-PH::print_stdout("");
+PH::print_stdout();
 PH::print_stdout("************* END OF SCRIPT " . basename(__FILE__) . " ************" );
-PH::print_stdout("");
+PH::print_stdout();

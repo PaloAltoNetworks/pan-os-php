@@ -39,10 +39,10 @@ class SECURITYPROFILEUTIL extends UTIL
 
         $this->GlobalFinishAction();
 
-        PH::print_stdout( "" );
+        PH::print_stdout();
         PH::print_stdout( " **** PROCESSED $this->totalObjectsProcessed objects over {$this->totalObjectsOfSelectedStores} available ****" );
-        PH::print_stdout( "" );
-        PH::print_stdout( "" );
+        PH::print_stdout();
+        PH::print_stdout();
 
         $this->stats();
 
@@ -399,7 +399,7 @@ class SECURITYPROFILEUTIL extends UTIL
 
             $this->totalObjectsOfSelectedStores += $store->count();
 
-            PH::print_stdout( "" );
+            PH::print_stdout();
             $string = "* processing SecurityProfileset '" . $store->toString() . " that holds " . count($rules) . "' SecurityProfiles";
             PH::print_stdout( $string );
 
@@ -448,7 +448,7 @@ class SECURITYPROFILEUTIL extends UTIL
                     $doAction->padding = '      ';
                     $doAction->executeAction($rule);
 
-                    PH::print_stdout( "" );
+                    PH::print_stdout();
                 }
             }
 
@@ -469,9 +469,9 @@ class SECURITYPROFILEUTIL extends UTIL
             else
                 $tmp_platform = get_class( $store );
 
-            PH::print_stdout( "" );
+            PH::print_stdout();
             PH::print_stdout( "* objects processed in DG/Vsys '{$tmp_name}' : $subObjectsProcessed" );
-            PH::print_stdout( "" );
+            PH::print_stdout();
 
             PH::$JSON_TMP['sub']['summary']['processed'] = $subObjectsProcessed;
             PH::$JSON_TMP['sub']['summary']['available'] = $store->count();
@@ -479,7 +479,7 @@ class SECURITYPROFILEUTIL extends UTIL
             PH::$JSON_TMP = array();
             #PH::print_stdout( "* objects processed in DG/Vsys '{$store->owner->name()}' : $subObjectsProcessed filtered over {$store->count()} available\n\n" );
         }
-        PH::print_stdout( "" );
+        PH::print_stdout();
         // </editor-fold>
     }
 }

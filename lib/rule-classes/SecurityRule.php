@@ -1222,7 +1222,7 @@ class SecurityRule extends RuleWithUserID
         }
 
 
-        PH::print_stdout( "" );
+        PH::print_stdout();
     }
 
 

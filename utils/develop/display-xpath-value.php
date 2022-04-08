@@ -9,10 +9,10 @@
 require_once("lib/pan_php_framework.php");
 require_once ( "utils/lib/UTIL.php");
 
-PH::print_stdout("");
+PH::print_stdout();
 PH::print_stdout("***********************************************");
 PH::print_stdout("*********** " . basename(__FILE__) . " UTILITY **************");
-PH::print_stdout("");
+PH::print_stdout();
 
 PH::print_stdout( "PAN-OS-PHP version: ".PH::frameworkVersion() );
 
@@ -59,10 +59,10 @@ if( $connector !==  null )
 {
     $connector->refreshSystemInfos();
 
-    PH::print_stdout( "" );
+    PH::print_stdout();
     PH::print_stdout( "##########################################" );
     PH::print_stdout( 'MASTER device serial: '.$connector->info_serial );
-    PH::print_stdout( "" );
+    PH::print_stdout();
 
     PH::$JSON_TMP['serial'] = $connector->info_serial;
     PH::print_stdout(PH::$JSON_TMP, false, "master device");
@@ -135,9 +135,9 @@ PH::$JSON_TMP = array();
 
 $util->endOfScript();
 
-PH::print_stdout("");
+PH::print_stdout();
 PH::print_stdout("************* END OF SCRIPT " . basename(__FILE__) . " ************" );
-PH::print_stdout("");
+PH::print_stdout();
 ########################################################################################################################
 function getXpathDisplay( $xpath, $util, $serial)
 {
@@ -163,7 +163,7 @@ function getXpathDisplay( $xpath, $util, $serial)
     }
 
 
-    PH::print_stdout( "" );
+    PH::print_stdout();
 }
 
 function getXpathDisplayEntryName( $xpath, $util, $serial)
@@ -201,5 +201,5 @@ function getXpathDisplayEntryName( $xpath, $util, $serial)
     }
 
 
-    PH::print_stdout( "" );
+    PH::print_stdout();
 }

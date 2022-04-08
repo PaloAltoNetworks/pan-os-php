@@ -140,7 +140,7 @@ class HipProfilesProfile
         }*/
 
 
-        PH::print_stdout("");
+        PH::print_stdout();
     }
 
     static public $templatexml = '<entry name="**temporarynamechangeme**"></entry>';

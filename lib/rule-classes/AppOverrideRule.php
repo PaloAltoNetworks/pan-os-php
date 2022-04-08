@@ -184,7 +184,7 @@ class AppOverrideRule extends Rule
         }
 
 
-        PH::print_stdout("");
+        PH::print_stdout();
     }
 
 

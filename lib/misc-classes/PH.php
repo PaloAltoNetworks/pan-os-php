@@ -520,7 +520,7 @@ class PH
 
     }
 
-    static public function print_stdout( $text, $printArray = false, $arrayKey = null  )
+    static public function print_stdout( $text = "", $printArray = false, $arrayKey = null  )
     {
         if( is_array( $text ) )
         {

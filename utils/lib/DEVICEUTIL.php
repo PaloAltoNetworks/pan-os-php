@@ -38,10 +38,10 @@ class DEVICEUTIL extends UTIL
 
         $this->GlobalFinishAction();
 
-        PH::print_stdout( "" );
+        PH::print_stdout();
         PH::print_stdout( " **** PROCESSED $this->totalObjectsProcessed objects over {$this->totalObjectsOfSelectedStores} available ****" );
-        PH::print_stdout( "" );
-        PH::print_stdout( "" );
+        PH::print_stdout();
+        PH::print_stdout();
 
         $this->stats();
 
@@ -162,7 +162,7 @@ class DEVICEUTIL extends UTIL
                 $doAction->subSystem = $store;
             }
 
-            PH::print_stdout( "" );
+            PH::print_stdout();
             #PH::print_stdout( "* processing deviceset '" . $store->toString() . "' that holds " . count($objects) . " rules" );
             $string = "* processing deviceset '" . $store->name()."'";
             PH::print_stdout( $string );
@@ -192,7 +192,7 @@ class DEVICEUTIL extends UTIL
                     $doAction->padding = '      ';
                     $doAction->executeAction($object);
 
-                    PH::print_stdout( "" );
+                    PH::print_stdout();
                 }
             }
 
@@ -212,7 +212,7 @@ class DEVICEUTIL extends UTIL
             PH::print_stdout( PH::$JSON_TMP, false, $tmp_platform );
             PH::$JSON_TMP = array();
         }
-        PH::print_stdout( "" );
+        PH::print_stdout();
         // </editor-fold>
     }
 }

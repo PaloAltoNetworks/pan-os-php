@@ -79,7 +79,7 @@ class APPIDENABLER extends UTIL
         ##########################################
         ##########################################
         if( !PH::$shadow_json )
-            PH::print_stdout( "" );
+            PH::print_stdout();
 
 
     }

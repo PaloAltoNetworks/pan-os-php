@@ -85,16 +85,16 @@ class SYSTEMLOG extends UTIL
         $output = $inputConnector->getLog($apiArgs);
 
 
-        PH::print_stdout( "" );
+        PH::print_stdout();
         PH::print_stdout( "##########################################" );
         PH::print_stdout( "system log filter: '".$query."'" );
-        PH::print_stdout( "" );
+        PH::print_stdout();
 
         if( !empty($output) )
         {
             /*
             PH::print_stdout( "PPPoE was successfully established during the last ".$hours."h:" );
-            PH::print_stdout( "" );
+            PH::print_stdout();
             */
 
             foreach( $output as $log )
@@ -107,19 +107,19 @@ class SYSTEMLOG extends UTIL
                 */
                 #print_r( $log );
                 PH::print_stdout(  " - ".http_build_query($log,'',' | ') );
-                PH::print_stdout( "" );
+                PH::print_stdout();
                 PH::$JSON_OUT['system-log'][] = $log;
             }
         }
         else
         {
             PH::print_stdout( "nothing found" );
-            PH::print_stdout( "" );
+            PH::print_stdout();
             PH::$JSON_OUT['system-log'] = array();
         }
 
         PH::print_stdout( "##########################################" );
-        PH::print_stdout( "" );
+        PH::print_stdout();
     }
 
 }

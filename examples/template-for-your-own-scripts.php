@@ -5,9 +5,9 @@ require_once("lib/pan_php_framework.php");
 require_once "utils/lib/UTIL.php";
 
 
-PH::print_stdout("");
+PH::print_stdout();
 PH::print_stdout("*********** START OF SCRIPT ".basename(__FILE__)." ************" );
-PH::print_stdout("");
+PH::print_stdout();
 
 
 $supportedArguments = array();
@@ -62,9 +62,9 @@ $apiMode = $util->apiMode;
 /** @var array $args */
 $args = PH::$args;
 
-PH::print_stdout("");
+PH::print_stdout();
 PH::print_stdout( "    **********     **********" );
-PH::print_stdout("");
+PH::print_stdout();
 
 /*********************************
  * *
@@ -83,7 +83,7 @@ PH::print_stdout("");
 
 
 $util->save_our_work();
-PH::print_stdout("");
+PH::print_stdout();
 PH::print_stdout( "************* END OF SCRIPT ".basename(__FILE__)." ************" );
-PH::print_stdout("");
+PH::print_stdout();
 

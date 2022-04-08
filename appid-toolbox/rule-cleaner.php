@@ -503,7 +503,7 @@ else
     PH::print_stdout( "Cleaned: $countCleaned " );
 }
 
-PH::print_stdout( "" );
+PH::print_stdout();
 
 $lineLength = 50;
 PH::print_stdout( str_pad("SKIPPED#1 Too many rules :", $lineLength).str_pad($countSkipped1_TooManyRules,8,' ',STR_PAD_LEFT) );
@@ -537,7 +537,7 @@ elseif( $configInput['type'] == 'file' )
         }
     }
 }
-PH::print_stdout( "" );
-PH::print_stdout( "" );
+PH::print_stdout();
+PH::print_stdout();
 
 PH::print_stdout( "************* END OF SCRIPT ".basename(__FILE__)." ************");

@@ -38,10 +38,10 @@ class RULEUTIL extends UTIL
 
         $this->GlobalFinishAction();
 
-        PH::print_stdout( "" );
+        PH::print_stdout();
         PH::print_stdout( " **** PROCESSED $this->totalObjectsProcessed objects over {$this->totalObjectsOfSelectedStores} available ****" );
-        PH::print_stdout( "" );
-        PH::print_stdout( "" );
+        PH::print_stdout();
+        PH::print_stdout();
 
         $this->stats();
 
@@ -327,7 +327,7 @@ class RULEUTIL extends UTIL
                 $doAction->store = $store;
             }
 
-            PH::print_stdout( "" );
+            PH::print_stdout();
             $string = "* processing ruleset '" . $store->toString() . "' that holds " . count($rules) . " rules";
             PH::print_stdout( $string );
 
@@ -356,7 +356,7 @@ class RULEUTIL extends UTIL
                     $doAction->padding = '      ';
                     $doAction->executeAction($rule);
 
-                    PH::print_stdout( "" );
+                    PH::print_stdout();
                 }
             }
 
@@ -368,13 +368,13 @@ class RULEUTIL extends UTIL
                 $tmp_platform = get_class( $store );
 
             PH::print_stdout( "* objects processed in DG/Vsys '{$store->owner->name()}' : $subObjectsProcessed filtered over {$store->count()} available" );
-            PH::print_stdout( "" );
+            PH::print_stdout();
             PH::$JSON_TMP['sub']['summary']['processed'] = $subObjectsProcessed;
             PH::$JSON_TMP['sub']['summary']['available'] = $store->count();
             PH::print_stdout( PH::$JSON_TMP, false, $tmp_platform );
             PH::$JSON_TMP = array();
         }
-        PH::print_stdout( "" );
+        PH::print_stdout();
         // </editor-fold>
     }
 }

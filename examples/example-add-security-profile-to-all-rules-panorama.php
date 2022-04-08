@@ -31,9 +31,9 @@ if( $dg === null )
 	derr("DeviceGroup {$targetDG} was not found ? Exit\n");
 }
 
-PH::print_stdout("" );
+PH::print_stdout();
 PH::print_stdout("***********************************************" );
-PH::print_stdout("" );
+PH::print_stdout();
 
 
 // Going after each pre-Security rules to add a profile
@@ -44,7 +44,7 @@ foreach( $dg->securityRules->rules() as $rule )
 }
 
 
-PH::print_stdout("" );
+PH::print_stdout();
 PH::print_stdout("***********************************************" );
 
 

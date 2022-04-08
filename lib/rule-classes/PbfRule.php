@@ -194,7 +194,7 @@ class PbfRule extends RuleWithUserID
             PH::print_stdout( $padding . "  Desc:  " . $this->_description );
             PH::$JSON_TMP['sub']['object'][$this->name()]['description'] = $this->_description;
         }
-        PH::print_stdout("");
+        PH::print_stdout();
     }
 
     public function cleanForDestruction()

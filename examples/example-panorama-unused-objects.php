@@ -20,9 +20,9 @@ $p = new PanoramaConf();
 // and load it from a XML file
 $p->load_from_file($inputfile);
 
-PH::print_stdout("");
+PH::print_stdout();
 PH::print_stdout("***********************************************" );
-PH::print_stdout("");
+PH::print_stdout();
 
 
 
@@ -71,17 +71,17 @@ foreach( $centralstores as $store )
 			derr("this class of object is not supported!");
 	}
 
-    PH::print_stdout("");
+    PH::print_stdout();
 }
 
-PH::print_stdout("");
-PH::print_stdout("");
+PH::print_stdout();
+PH::print_stdout();
 PH::print_stdout( "Found $countUnused unused objects");
-PH::print_stdout("");
+PH::print_stdout();
 
 // display some statiscs for debug and exit program!
-PH::print_stdout("");
-PH::print_stdout("");
+PH::print_stdout();
+PH::print_stdout();
 PH::print_stdout("***********************************************" );
 $p->display_statistics();
 

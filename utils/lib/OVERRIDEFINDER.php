@@ -202,7 +202,7 @@ class OVERRIDEFINDER extends UTIL
             }
             else
             {
-                PH::print_stdout( "" );
+                PH::print_stdout();
 
                 PH::print_stdout( $padding . " ** Looking for overrides **" );
 
@@ -245,10 +245,10 @@ class OVERRIDEFINDER extends UTIL
                 PH::print_stdout( $text );
             }
 
-            PH::print_stdout("" );
+            PH::print_stdout();
         }
 
-        PH::print_stdout("" );
+        PH::print_stdout();
         exit(1);
     }
 }

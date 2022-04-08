@@ -210,7 +210,7 @@ class BPAGENERATOR extends UTIL
         $clock .= $response_end;
 
         // Submit job to BPA API
-        PH::print_stdout("");
+        PH::print_stdout();
         PH::print_stdout( " - Attempting to generate BPA for {$connector->info_hostname}" );
 
         $result[$connector->info_serial] = $this->send_bpa_api($this->bpa_url . 'create/', "POST", $config, $system_info, $license, $clock);
@@ -229,7 +229,7 @@ class BPAGENERATOR extends UTIL
         {
             if( isset($result[$connector->info_serial]) )
             {
-                PH::print_stdout("");
+                PH::print_stdout();
                 PH::print_stdout( " - Checking " . $connector->info_hostname . " job ID " . $result[$connector->info_serial] );
                 $reply = $this->send_bpa_api($this->bpa_url . 'results/' . $result[$connector->info_serial] . '/', "GET");
                 $parsed_reply = json_decode($reply, TRUE);

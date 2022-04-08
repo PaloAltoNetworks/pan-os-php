@@ -73,7 +73,7 @@ VsysCallContext::$supportedActions['display'] = array(
         }
 
         PH::print_stdout( $text );
-        PH::print_stdout( "" );
+        PH::print_stdout();
     },
     'GlobalFinishFunction' => function (VsysCallContext $context) {
         PH::print_stdout( PH::boldText("\n\nall interfaces NOT attached to an vsys:") );
@@ -106,7 +106,7 @@ VsysCallContext::$supportedActions['display'] = array(
             }
 
             PH::print_stdout( $text );
-            PH::print_stdout( "" );
+            PH::print_stdout();
         }
     },
 );

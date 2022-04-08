@@ -64,7 +64,7 @@ foreach( $output as $line )
 
 if( $retValue != 0 )
     derr("CLI exit with error code '{$retValue}'");
-PH::print_stdout( "" );
+PH::print_stdout();
 
 function display_error_usage_exit($msg)
 {
@@ -179,13 +179,13 @@ foreach( $test_merger as $merger )
         {
             $string = '   ##  ';
             $string .= $line;
-            PH::print_stdout( "" );
+            PH::print_stdout();
         }
 
         if( $retValue != 0 )
             derr("CLI exit with error code '{$retValue}'");
 
-        PH::print_stdout( "" );
+        PH::print_stdout();
     }
 
 
@@ -195,7 +195,7 @@ PH::print_stdout( "\n*****  *****" );
 #PH::print_stdout( " - Processed {$totalFilterCount} filters" );
 #PH::print_stdout( " - Found {$totalFilterWithCiCount} that are CI enabled" );
 
-PH::print_stdout( "" );
+PH::print_stdout();
 PH::print_stdout( "\n*********** FINISHED TESTING MERGERS ************" );
 PH::print_stdout( "*************************************************\n" );
 

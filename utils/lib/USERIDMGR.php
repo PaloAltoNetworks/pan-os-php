@@ -57,7 +57,7 @@ class USERIDMGR extends UTIL
         if( $action == 'display' || $action == 'unregister-all' )
         {
             PH::print_stdout(" - action is '$action'");
-            PH::print_stdout("");
+            PH::print_stdout();
 
             $unregister_array = array();
 
@@ -91,7 +91,7 @@ class USERIDMGR extends UTIL
             {
                 foreach( $unregister_array as $vsysName => $vsys )
                 {
-                    PH::print_stdout("" );
+                    PH::print_stdout();
                     PH::print_stdout("     * unregister all userid information from VSYS: ".$vsysName );
                     if( isset( $vsys['ip'] ) && isset( $vsys['user'] ) )
                         $response = $this->pan->connector->userIDLogout($vsys['ip'], $vsys['user'], $vsysName)  ;

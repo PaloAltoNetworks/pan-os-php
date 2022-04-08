@@ -21,7 +21,7 @@ class RUNSSH
 {
     function __construct( $ip, $user, $password, $commands, &$output_string, $timeout = 10, $port = 22, $setcommandMaxLine = 20  )
     {
-        PH::print_stdout("");
+        PH::print_stdout();
 
         $ssh = new Net_SSH2($ip, $port, $timeout);
 
@@ -136,6 +136,6 @@ class RUNSSH
         }
 
 
-        PH::print_stdout("");
+        PH::print_stdout();
     }
 }

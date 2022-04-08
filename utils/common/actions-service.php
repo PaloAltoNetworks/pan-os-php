@@ -143,8 +143,8 @@ ServiceCallContext::$supportedActions[] = array(
             } catch(Exception $e)
             {
                 PH::disableExceptionSupport();
-                PH::print_stdout("" );
-                PH::print_stdout("" );
+                PH::print_stdout();
+                PH::print_stdout();
                 $string = PH::boldText("  ***** an error occured : ") . $e->getMessage();
                 PH::ACTIONlog( $context, $string );
 
@@ -1569,7 +1569,7 @@ ServiceCallContext::$supportedActions[] = array(
 
                 $string = "ServiceGroup count after split: " . $group->count();
                 PH::ACTIONlog( $context, $string );
-                PH::print_stdout("");
+                PH::print_stdout();
             }
             else
             {

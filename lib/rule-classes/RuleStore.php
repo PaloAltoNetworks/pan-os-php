@@ -749,7 +749,7 @@ class RuleStore
     {
         if( $ruleToBeMoved === $ruleRef )
         {
-            PH::print_stdout("");
+            PH::print_stdout();
             PH::print_stdout( "   - skip object '" . PH::boldText($ruleToBeMoved->name()) . "' can't move after self!" );
             return;
         }
@@ -803,7 +803,7 @@ class RuleStore
     {
         if( $ruleToBeMoved === $ruleRef )
         {
-            PH::print_stdout("");
+            PH::print_stdout();
             PH::print_stdout( "   - skipp object '" . PH::boldText($ruleToBeMoved->name()) . "' can't move before self!" );
             return;
         }
@@ -927,7 +927,7 @@ class RuleStore
     {
         if( $ruleToBeMoved === $ruleRef )
         {
-            PH::print_stdout("");
+            PH::print_stdout();
             PH::print_stdout( "   - skipp object '" . PH::boldText($ruleToBeMoved->name()) . "' can't move befor self!" );
             return;
         }

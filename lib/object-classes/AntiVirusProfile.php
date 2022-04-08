@@ -219,7 +219,7 @@ class AntiVirusProfile
             }
         }
 
-        PH::print_stdout("");
+        PH::print_stdout();
 
         if( !empty( $this->threatException ) )
         {

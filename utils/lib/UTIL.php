@@ -156,10 +156,10 @@ class UTIL
 
         if( $this->utilType != "custom" )
         {
-            PH::print_stdout("");
+            PH::print_stdout();
             PH::print_stdout("***********************************************");
             PH::print_stdout("*********** " . basename($this->PHP_FILE) . " UTILITY **************");
-            PH::print_stdout("");
+            PH::print_stdout();
         }
 
         if( empty($_supportedArguments) )
@@ -202,9 +202,9 @@ class UTIL
         $this->GlobalFinishAction();
 
 
-        PH::print_stdout( "" );
+        PH::print_stdout();
         PH::print_stdout( "**** PROCESSING OF $this->totalObjectsProcessed OBJECTS DONE ****" );
-        PH::print_stdout( "" );
+        PH::print_stdout();
 
         PH::print_stdout( array("PROCESSING OF $this->totalObjectsProcessed OBJECTS DONE"), false,'summary' );
 
@@ -304,8 +304,8 @@ class UTIL
             ksort(RQuery::$defaultFilters[$this->utilType]);
 
             PH::print_stdout( "Listing of supported filters:" );
-            PH::print_stdout( "" );
-            PH::print_stdout( "" );
+            PH::print_stdout();
+            PH::print_stdout();
 
             foreach( RQuery::$defaultFilters[$this->utilType] as $index => &$filter )
             {
@@ -326,7 +326,7 @@ class UTIL
                     PH::$JSON_TMP[$index]['operators'][$oindex]['name'] = $oindex;
                     PH::$JSON_TMP[$index]['operators'][$oindex]['operator'] = $operator;
                 }
-                PH::print_stdout( "" );
+                PH::print_stdout();
             }
 
             PH::print_stdout( PH::$JSON_TMP, false, 'listfilters' );
@@ -390,8 +390,8 @@ class UTIL
             ksort($tmp_array);
 
             PH::print_stdout( "Listing of supported actions:" );
-            PH::print_stdout( "" );
-            PH::print_stdout( "" );
+            PH::print_stdout();
+            PH::print_stdout();
 
             PH::print_stdout( str_pad('', 100, '-') . "" );
             PH::print_stdout( str_pad('Action name', 28, ' ', STR_PAD_BOTH) . "|" . str_pad("Argument:Type", 24, ' ', STR_PAD_BOTH) . " |" .
@@ -536,8 +536,8 @@ class UTIL
             else
             {
                 PH::print_stdout( "\nListing arguments:" );
-                PH::print_stdout( "" );
-                PH::print_stdout( "" );
+                PH::print_stdout();
+                PH::print_stdout();
                 foreach( $action['args'] as $argName => &$argDetails )
                 {
                     PH::print_stdout( "-- " . PH::boldText($argName) . " :" );
@@ -548,20 +548,20 @@ class UTIL
                     {
                         PH::print_stdout( "     choices: " . PH::list_to_string($argDetails['choices']) );
                     }
-                    PH::print_stdout( "" );
+                    PH::print_stdout();
                     if( isset($argDetails['help']) )
                         PH::print_stdout( " " . str_replace("\n", "\n ", $argDetails['help']) );
                     else
                         PH::print_stdout( "  *no help available*" );
-                    PH::print_stdout( "" );
-                    PH::print_stdout( "" );
+                    PH::print_stdout();
+                    PH::print_stdout();
                 }
 
             }
 
 
-            PH::print_stdout( "" );
-            PH::print_stdout( "" );
+            PH::print_stdout();
+            PH::print_stdout();
 
             exit(0);
         }
@@ -629,14 +629,14 @@ class UTIL
             PH::$JSON_TMP['usage'] = $this->usageMsg;
         }
 
-        PH::print_stdout( "" );
-        PH::print_stdout( "" );
+        PH::print_stdout();
+        PH::print_stdout();
 
         if( !$shortMessage )
         {
             PH::print_stdout( PH::boldText("\nListing available arguments") );
-            PH::print_stdout( "" );
-            PH::print_stdout( "" );
+            PH::print_stdout();
+            PH::print_stdout();
 
             ksort($this->supportedArguments);
             foreach( $this->supportedArguments as &$arg )
@@ -664,14 +664,14 @@ class UTIL
                 }
 
 
-                PH::print_stdout( "" );
+                PH::print_stdout();
             }
 
             PH::print_stdout( PH::$JSON_TMP, false, 'help' );
             PH::$JSON_TMP = array();
 
 
-            PH::print_stdout( "" );
+            PH::print_stdout();
 
         }
 
@@ -1452,7 +1452,7 @@ class UTIL
         if( $this->pan == null )
             $this->pan = $pan;
 
-        PH::print_stdout( "" );
+        PH::print_stdout();
         $errorString = "ERROR: location '$location' was not found. Here is a list of available ones:";
         PH::print_stdout( $errorString );
         if( PH::$shadow_json )
@@ -1484,8 +1484,8 @@ class UTIL
                 PH::print_stdout( " - " . $sub->name() );
             }
         }
-        PH::print_stdout( "" );
-        PH::print_stdout( "" );
+        PH::print_stdout();
+        PH::print_stdout();
 
         if( PH::$shadow_json )
         {
@@ -1523,7 +1523,7 @@ class UTIL
             $store = $objectsRecord['store'];
             $objects = &$objectsRecord['objects'];
 
-            PH::print_stdout( "" );
+            PH::print_stdout();
             $string = "* processing store '" . PH::boldText($store->toString()) . "' that holds " . count($objects) . " objects";
             PH::print_stdout( $string );
 
@@ -1571,7 +1571,7 @@ class UTIL
                     {
                         $doAction->padding = '     ';
                         $doAction->executeAction($object);
-                        PH::print_stdout( "" );
+                        PH::print_stdout();
                     }
                 }
             }
@@ -1589,9 +1589,9 @@ class UTIL
                 $tmp_platform = get_class( $store );
 
 
-            PH::print_stdout( "" );
+            PH::print_stdout();
             PH::print_stdout( "* objects processed in DG/Vsys '{$tmp_name}' : $subObjectsProcessed" );
-            PH::print_stdout( "" );
+            PH::print_stdout();
             PH::$JSON_TMP['sub']['summary']['processed'] = $subObjectsProcessed;
             PH::$JSON_TMP['sub']['summary']['available'] = $store->count();
 
@@ -1752,7 +1752,7 @@ class UTIL
             $arg_array = array();
             if( $this->configInput['type'] != 'api' && $this->configOutput == "/dev/null" )
             {
-                PH::print_stdout( "" );
+                PH::print_stdout();
                 PH::print_stdout( "argument 'out' was used with '/dev/null' - nothing is saved to an output file" );
                 $arg_array['out'] = "/dev/null";
             }
@@ -1812,9 +1812,9 @@ class UTIL
 
         if( $this->utilType !== "custom" )
         {
-            PH::print_stdout("");
+            PH::print_stdout();
             PH::print_stdout("************* END OF SCRIPT " . basename($this->PHP_FILE) . " ************");
-            PH::print_stdout("");
+            PH::print_stdout();
         }
 
         if( $this->outputformatset )
@@ -1834,8 +1834,8 @@ class UTIL
 
             $utilDiff->runDiff( $this->origXmlDoc, $doc2 );
 
-            PH::print_stdout( "" );
-            PH::print_stdout( "" );
+            PH::print_stdout();
+            PH::print_stdout();
 
             $setArray = array( "address", "address-group", "service", "service-group", "profiles", "profile-group", "misc", "rulebase" );
             $tmp_string = "";

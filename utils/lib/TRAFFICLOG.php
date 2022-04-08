@@ -90,17 +90,17 @@ class TRAFFICLOG extends UTIL
 
 
 
-        PH::print_stdout( "" );
+        PH::print_stdout();
         PH::print_stdout( "##########################################" );
         PH::print_stdout( "traffic log filter: '".$query."'" );
-        PH::print_stdout( "" );
+        PH::print_stdout();
 
         if( !empty($output) )
         {
             foreach( $output as $log )
             {
                 PH::print_stdout(  " - ".http_build_query($log,'',' | ') );
-                PH::print_stdout( "" );
+                PH::print_stdout();
 
                 PH::$JSON_OUT['traffic-log'][] = $log;
             }
@@ -108,13 +108,13 @@ class TRAFFICLOG extends UTIL
         else
         {
             PH::print_stdout( "nothing found" );
-            PH::print_stdout( "" );
+            PH::print_stdout();
 
             PH::$JSON_OUT['traffic-log'] = array();
         }
 
         PH::print_stdout( "##########################################" );
-        PH::print_stdout( "" );
+        PH::print_stdout();
     }
 
 }
