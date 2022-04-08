@@ -133,7 +133,7 @@ DeviceCallContext::$supportedActions['display'] = array(
             //Todo: PH::print_stdout( where this template is used // full templateStack hierarchy
         }
 
-        PH::print_stdout( "" );
+        PH::print_stdout();
     },
 );
 DeviceCallContext::$supportedActions['displayreferences'] = array(
@@ -509,7 +509,7 @@ DeviceCallContext::$supportedActions['template-add'] = array(
             else
                 $object->addTemplate( $template, $position );
         }
-        PH::print_stdout( "" );
+        PH::print_stdout();
     },
     'args' => array(
         'templateName' => array('type' => 'string', 'default' => 'false'),
@@ -949,7 +949,7 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
                         }
                     }
 
-                    PH::print_stdout("");
+                    PH::print_stdout();
                     if( $rule !== null )
                     {
                         PH::print_stdout( "        * RULE of type ".$ruletype.": '" . $rule->name(). "' owner: '".$ownerDG."' shadows rule: " );
@@ -1079,11 +1079,11 @@ DeviceCallContext::$supportedActions['geoIP-check'] = array(
             PH::print_stdout("not working for PAN-OS - ipv6 syntax for 'show location ip' not yet clear");
         }
 
-        PH::print_stdout("");
-        PH::print_stdout("");
+        PH::print_stdout();
+        PH::print_stdout();
         PH::print_stdout($geoip);
         PH::print_stdout($panos_geoip);
-        PH::print_stdout("");
+        PH::print_stdout();
 
     },
     'MainFunction' => function (DeviceCallContext $context)
@@ -3121,8 +3121,235 @@ DeviceCallContext::$supportedActions['find-zone-from-ip'] = array(
 );
 
 
-//new actions:
-//1     /api/?type=op&cmd=<request><restart><system></system></restart></request>
+DeviceCallContext::$supportedActions['system-mgt-config_users'] = array(
+    'name' => 'system-mgt-config_users',
+    'GlobalInitFunction' => function (DeviceCallContext $context) {
+        $context->first = true;
+    },
+    'MainFunction' => function (DeviceCallContext $context) {
+        $object = $context->object;
+        $classtype = get_class($object);
+        
+        $apiArgs = array();
+        $apiArgs['type'] = 'config';
+        $apiArgs['action'] = 'get';
+        $apiArgs['xpath'] = '/config/mgt-config/users';
 
+
+        if( $context->isAPI )
+        {
+            $response = $context->connector->sendRequest($apiArgs);
+            $cursor = DH::findXPathSingleEntryOrDie('/response', $response);
+            $cursor = DH::findFirstElement('result', $cursor);
+        }
+        else
+        {
+            $cursor = DH::findXPathSingleEntryOrDie( "/config/mgt-config", $context->object->owner->xmldoc);
+        }
+
+
+
+        if( $context->first )
+        {
+
+            $cursor = DH::findFirstElement('users', $cursor);
+
+            foreach( $cursor->childNodes as $user )
+            {
+                if( $user->nodeType != XML_ELEMENT_NODE ) continue;
+
+                PH::print_stdout();
+                PH::print_stdout("NAME: '" . PH::boldText($user->getAttribute('name')) . "'");
+
+                foreach( $user->childNodes as $node )
+                {
+                    if( $node->nodeType != XML_ELEMENT_NODE )
+                        continue;
+
+                    if( $node->nodeName === "authentication-profile" )
+                    {
+                        PH::print_stdout("AUTHENTICATION-PROFILE: '" . PH::boldText($node->textContent) . "'");
+                    }
+                    elseif( $node->nodeName === "permissions" )
+                    {
+                        //role-based
+                        $cursor = DH::findFirstElement('role-based', $node);
+
+                        foreach( $cursor->childNodes as $node2 )
+                        {
+                            if( $node2->nodeType != XML_ELEMENT_NODE )
+                                continue;
+
+                            PH::print_stdout("ROLE: '" . PH::boldText($node2->nodeName) . "'");
+                        }
+                    }
+                }
+                PH::print_stdout();
+                PH::print_stdout("-----------------");
+            }
+
+            if( $classtype == "DeviceGroup" )
+                $context->first = FALSE;
+        }
+    },
+    'help' => "This Action will display the configured Admin users on the Device"
+);
+
+
+
+DeviceCallContext::$supportedActions['system-restart'] = array(
+    'name' => 'system-restart',
+    'GlobalInitFunction' => function (DeviceCallContext $context) {
+        $context->first = true;
+    },
+    'MainFunction' => function (DeviceCallContext $context) {
+        $object = $context->object;
+        $classtype = get_class($object);
+
+        $apiArgs = array();
+        $apiArgs['type'] = 'op';
+        $apiArgs['cmd'] = '<request><restart><system></system></restart></request>';
+
+        if( $context->isAPI )
+        {
+            $response = $context->connector->sendRequest($apiArgs);
+            $cursor = DH::findXPathSingleEntryOrDie('/response', $response);
+            $cursor = DH::findFirstElement('result', $cursor);
+        }
+        else
+            derr( "only working in API mode" );
+
+
+        if( $context->first )
+        {
+            PH::print_stdout( $cursor->textContent );
+            PH::print_stdout( "Device reboot in progress" );
+
+            if( $classtype == "DeviceGroup" )
+                $context->first = FALSE;
+        }
+    },
+    'help' => "This Action is rebooting the Device"
+);
+
+DeviceCallContext::$supportedActions['system-admin-session'] = array(
+    'name' => 'system-admin-session',
+    'GlobalInitFunction' => function (DeviceCallContext $context) {
+        $context->first = true;
+    },
+    'MainFunction' => function (DeviceCallContext $context) {
+        $object = $context->object;
+        $classtype = get_class($object);
+
+        $action = $context->arguments['action'];
+
+        $apiArgs = array();
+        $apiArgs['type'] = 'op';
+        $apiArgs['cmd'] = '<show><admins></admins></show>';
+//new actions:
 //2     /api/?type=op&cmd=<show><admins></admins></show>
 //     /api/?&type=op&cmd=<delete><admin-sessions><username>admin</username></admin-sessions></delete>
+
+        if( $context->isAPI )
+        {
+            $response = $context->connector->sendRequest($apiArgs);
+            $cursor = DH::findXPathSingleEntryOrDie('/response', $response);
+            $cursor = DH::findFirstElement('result', $cursor);
+            $cursor = DH::findFirstElement('admins', $cursor);
+        }
+        else
+            derr( "only working in API mode" );
+
+
+        if( $context->first )
+        {
+            foreach( $cursor->childNodes as $admin)
+            {
+                if( $admin->nodeType != XML_ELEMENT_NODE )
+                    continue;
+
+                #DH::DEBUGprintDOMDocument( $admin );
+                //<entry>
+                //<admin>admin2</admin>
+                //<from>192.168.10.13</from>
+                //<type>Web</type>
+                //<session-start>04/08 23:41:55</session-start>
+                //<idle-for>00:00:00s</idle-for>
+                //<self/>
+                //<session-expiry>05/08 23:41:55</session-expiry>
+                //</entry>
+                PH::print_stdout();
+
+                $tmpString = DH::findFirstElement('admin', $admin);
+                $adminUser = $tmpString->textContent;
+                $string = "   - USER: ";
+                PH::print_stdout( str_pad( $string, 22 ).$tmpString->textContent);
+
+                $tmpString = DH::findFirstElement('from', $admin);
+                $string = "   - IP: ";
+                PH::print_stdout( str_pad( $string, 22 ).$tmpString->textContent);
+
+                $tmpString = DH::findFirstElement('type', $admin);
+                $string = "   - TYPE: ";
+                PH::print_stdout( str_pad( $string, 22 ).$tmpString->textContent);
+
+                $tmpString = DH::findFirstElement('session-start', $admin);
+                $sessionStart = $tmpString->textContent;
+                $string = "   - SESSION START: ";
+                PH::print_stdout( str_pad( $string, 22 ).$tmpString->textContent);
+
+                $tmpString = DH::findFirstElement('session-expiry', $admin);
+                $string = "   - SESSION EXPIRY: ";
+                PH::print_stdout( str_pad( $string, 22 ).$tmpString->textContent);
+
+
+                if( $action == "delete" )
+                {
+                    $hours = $context->arguments['session-start-before-hours'];
+                    if( is_integer($hours) )
+                        derr( "argument need to be an integer" );
+
+
+                    #date_default_timezone_set("Europe/Berlin");
+                    $time = time() - ($hours * 3600);
+                    $time = date('Y/m/d H:i:s', $time);
+
+                    $dateTime = new DateTime($sessionStart);
+                    $newtime = $dateTime->format('Y/m/d H:i:s'); // 15th Apr 2010
+
+                    if( $time < $dateTime )
+                    {
+                        #print $time."\n";
+                        #print  $newtime."\n";
+                        PH::print_stdout( "this session is not old enough - skipped for deletion");
+                        continue;
+                    }
+
+
+                    PH::print_stdout();
+                    PH::print_stdout( "   action delete is defined - deleting this admin session:");
+
+                    $apiArgs = array();
+                    $apiArgs['type'] = 'op';
+                    $apiArgs['cmd'] = '<delete><admin-sessions><username>'.$adminUser.'</username></admin-sessions></delete>';
+
+                    $response = $context->connector->sendRequest($apiArgs);
+                    $cursor = DH::findXPathSingleEntryOrDie('/response', $response);
+                    $cursor = DH::findFirstElement('result', $cursor);
+
+                    PH::print_stdout( "   * ".$cursor->textContent );
+                }
+
+                PH::print_stdout( "-------------------");
+            }
+
+            if( $classtype == "DeviceGroup" )
+                $context->first = FALSE;
+        }
+    },
+    'args' => array(
+        'action' => array('type' => 'string', 'default' => 'display'),
+        'session-start-before-hours' => array('type' => 'string', 'default' => '1')
+    ),
+    'help' => "This Action is displaying the actual logged in admin sessions"
+);
