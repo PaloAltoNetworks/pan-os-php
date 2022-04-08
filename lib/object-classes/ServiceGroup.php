@@ -394,6 +394,9 @@ class ServiceGroup
         if( !isset($this->owner->owner) )
             return;
 
+        if( $this->xmlroot === false )
+            return;
+
         if( $this->owner->owner->version >= 60 )
         {
             $membersRoot = DH::findFirstElement('members', $this->xmlroot);

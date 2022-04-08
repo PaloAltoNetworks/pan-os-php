@@ -120,7 +120,7 @@ class AddressRuleContainer extends ObjRuleContainer
      *
      * @return bool  True if Zone was found and removed. False if not found.
      */
-    public function remove($Obj, $rewriteXml = TRUE, $forceAny = FALSE)
+    public function remove($Obj, $rewriteXml = TRUE, $forceAny = FALSE, $context = null)
     {
         $count = count($this->o);
 
@@ -128,8 +128,12 @@ class AddressRuleContainer extends ObjRuleContainer
 
         if( $ret && $count == 1 && !$forceAny )
         {
-            derr("you are trying to remove last Object from a rule which will set it to ANY, please use forceAny=true for object: "
-                . $this->toString());
+            $string = "you are trying to remove last Object from a rule which will set it to ANY, please use forceAny=true for object: " . $this->toString();
+            if( $context === null )
+                derr( $string );
+
+            PH::ACTIONstatus( $context, 'skipped', $string);
+            return false;
         }
 
         if( $ret && $rewriteXml )
@@ -144,9 +148,9 @@ class AddressRuleContainer extends ObjRuleContainer
      * @param bool $forceAny
      * @return bool
      */
-    public function API_remove($Obj, $forceAny = FALSE)
+    public function API_remove($Obj, $forceAny = FALSE, $context = null)
     {
-        if( $this->remove($Obj, TRUE, $forceAny) )
+        if( $this->remove($Obj, TRUE, $forceAny, $context) )
         {
             $con = findConnectorOrDie($this);
 

@@ -1950,7 +1950,7 @@ AddressCallContext::$supportedActions[] = array(
         $fqdn = $object->value();
 
         $reverseDns = gethostbynamel($fqdn);
-        if( count( $reverseDns ) == 0 )
+        if( $reverseDns === FALSE || count( $reverseDns ) == 0 )
         {
             $string = "'value-set-ip-for-fqdn' could not be resolved";
             return;
@@ -2240,9 +2240,9 @@ AddressCallContext::$supportedActions[] = array(
                         $objectRef->addObject($objToReplace);
 
                     if( $context->isAPI )
-                        $objectRef->API_remove($object);
+                        $objectRef->API_remove($object, FALSE, $context);
                     else
-                        $objectRef->remove($object);
+                        $objectRef->remove($object, TRUE, FALSE, $context);
                 }
                 elseif( $class == 'NatRule' )
                 {
@@ -2332,7 +2332,13 @@ AddressCallContext::$supportedActions[] = array(
                         if( $object === $member )
                             $text .= $context->padding . PH::boldText( $member->value() );
                         else
-                            $text .= $context->padding . $member->value();
+                        {
+                            if( $member->isAddress() )
+                                $text .= $context->padding . $member->value();
+                            else
+                                $text .= $context->padding . "GROUP: ".$member->name()." missing IPv4";
+                        }
+
                     }
                     foreach( $objRef_owner->snathosts->members() as $key => $member )
                     {

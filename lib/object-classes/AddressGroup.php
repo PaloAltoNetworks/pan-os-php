@@ -600,6 +600,12 @@ class AddressGroup
         if( $this->isDynamic() )
             derr('unsupported rewriteXML for dynamic group');
 
+        if( !isset($this->owner->owner) )
+            return;
+
+        if( $this->xmlroot === false || $this->membersRoot === false )
+            return;
+
         if( $this->owner->owner->version >= 60 )
             DH::Hosts_to_xmlDom($this->membersRoot, $this->members, 'member', FALSE);
         else

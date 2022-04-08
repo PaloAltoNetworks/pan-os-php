@@ -2331,8 +2331,8 @@ class MERGER extends UTIL
                             $text = "         ancestor name: '{$ancestor->name()}' DG: ";
                             if( $ancestor->owner->owner->name() == "" ) $text .= "'shared'";
                             else $text .= "'{$ancestor->owner->owner->name()}'";
-                            $text .=  "  value: '{$ancestor->value()}' ";
-                            PH::print_stdout($text);
+                            $text .=  "  value: '{$ancestor->getDestPort()}' ";
+                            PH::print_stdout( $text );
 
                             if( $this->upperLevelSearch )
                                 $tmpstring = "|->ERROR ancestor: '" . $object->_PANC_shortName() . "' cannot be merged. ";
@@ -2355,9 +2355,16 @@ class MERGER extends UTIL
                             if( $this->apiMode )
                             {
                                 if( $pickedObject->isTcp() )
-                                    $pickedObject->API_setDestPort($localMapping->tcpMappingToText());
+                                {
+                                    $tmp_string = str_replace("tcp/", "", $localMapping->tcpMappingToText());
+                                    $pickedObject->API_setDestPort( $tmp_string );
+                                }
                                 else
-                                    $pickedObject->API_setDestPort($localMapping->udpMappingToText());
+                                {
+                                    $tmp_string = str_replace("udp/", "", $localMapping->udpMappingToText());
+                                    $pickedObject->API_setDestPort( $tmp_string );
+                                }
+
                                 PH::print_stdout("    - removing '{$object->name()}' from places where it's used:");
                                 $object->API_removeWhereIamUsed(TRUE, 7);
                                 $object->owner->API_remove($object);
@@ -2366,9 +2373,16 @@ class MERGER extends UTIL
                             else
                             {
                                 if( $pickedObject->isTcp() )
-                                    $pickedObject->setDestPort($localMapping->tcpMappingToText());
+                                {
+                                    $tmp_string = str_replace("tcp/", "", $localMapping->tcpMappingToText());
+                                    $pickedObject->setDestPort($tmp_string);
+                                }
                                 else
-                                    $pickedObject->setDestPort($localMapping->udpMappingToText());
+                                {
+                                    $tmp_string = str_replace("udp/", "", $localMapping->udpMappingToText());
+                                    $pickedObject->setDestPort( $tmp_string );
+                                }
+
 
                                 PH::print_stdout("    - removing '{$object->name()}' from places where it's used:");
                                 $object->removeWhereIamUsed(TRUE, 7);
