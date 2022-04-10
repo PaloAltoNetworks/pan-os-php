@@ -3281,26 +3281,42 @@ DeviceCallContext::$supportedActions['system-admin-session'] = array(
                 PH::print_stdout();
 
                 $tmpString = DH::findFirstElement('admin', $admin);
-                $adminUser = $tmpString->textContent;
-                $string = "   - USER: ";
-                PH::print_stdout( str_pad( $string, 22 ).$tmpString->textContent);
+                if( $tmpString !== FALSE )
+                {
+                    $adminUser = $tmpString->textContent;
+                    $string = "   - USER: ";
+                    PH::print_stdout(str_pad($string, 22) . $tmpString->textContent);
+                }
 
                 $tmpString = DH::findFirstElement('from', $admin);
-                $string = "   - IP: ";
-                PH::print_stdout( str_pad( $string, 22 ).$tmpString->textContent);
+                if( $tmpString !== FALSE )
+                {
+                    $string = "   - IP: ";
+                    PH::print_stdout(str_pad($string, 22) . $tmpString->textContent);
+                }
 
                 $tmpString = DH::findFirstElement('type', $admin);
-                $string = "   - TYPE: ";
-                PH::print_stdout( str_pad( $string, 22 ).$tmpString->textContent);
+                if( $tmpString !== FALSE )
+                {
+                    $string = "   - TYPE: ";
+                    PH::print_stdout(str_pad($string, 22) . $tmpString->textContent);
+                }
 
                 $tmpString = DH::findFirstElement('session-start', $admin);
-                $sessionStart = $tmpString->textContent;
-                $string = "   - SESSION START: ";
-                PH::print_stdout( str_pad( $string, 22 ).$tmpString->textContent);
+                if( $tmpString !== FALSE )
+                {
+                    $sessionStart = $tmpString->textContent;
+                    $string = "   - SESSION START: ";
+                    PH::print_stdout(str_pad($string, 22) . $tmpString->textContent);
+                }
 
                 $tmpString = DH::findFirstElement('session-expiry', $admin);
-                $string = "   - SESSION EXPIRY: ";
-                PH::print_stdout( str_pad( $string, 22 ).$tmpString->textContent);
+                if( $tmpString !== FALSE )
+                {
+                    $string = "   - SESSION EXPIRY: ";
+                    PH::print_stdout( str_pad( $string, 22 ).$tmpString->textContent);
+                }
+
 
 
                 if( $action == "delete" )

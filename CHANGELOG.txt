@@ -5,6 +5,7 @@ UTILS:
 * UTIL type=device | introduce actions=system-restart / system-mgt-config_users /  system-admin-session:display / system-admin-session:delete,1
 
 BUGFIX:
+* UTIL type=device | bugfix for actions=system-admin-session
 
 GENERAL:
 framework | optimise method PH::print_stdout()
