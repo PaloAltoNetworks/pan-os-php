@@ -603,6 +603,17 @@ class PANConf
                             $this->_auditComment = TRUE;
                 }
             }
+
+            $systemroot = DH::findFirstElement('system', $this->deviceconfigroot);
+            if( $systemroot !== FALSE )
+            {
+                $timezone = DH::findFirstElement('timezone', $systemroot);
+                if( $timezone )
+                {
+                    $this->timezone = $timezone->textContent;
+                    date_default_timezone_set( $timezone->textContent );
+                }
+            }
         }
         //
     }

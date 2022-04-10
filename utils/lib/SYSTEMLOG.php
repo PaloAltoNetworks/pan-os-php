@@ -54,7 +54,8 @@ class SYSTEMLOG extends UTIL
             $hours = 0.25;
         PH::print_stdout( " - argument 'hours' set to '{$hours}'" );
 
-        date_default_timezone_set("Europe/Berlin");
+        //check if Device timezone is correctly used;
+        #date_default_timezone_set("Europe/Berlin");
         $time = time() - ($hours * 3600);
         $time = date('Y/m/d H:i:s', $time);
 

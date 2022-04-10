@@ -67,6 +67,8 @@ class PanoramaConf
 
     public $version = null;
 
+    public $timezone = null;
+
     public $managedFirewallsSerials = array();
     public $managedFirewallsStore;
     public $managedFirewallsSerialsModel = array();
@@ -1032,7 +1034,7 @@ class PanoramaConf
         //
         if( $this->deviceconfigroot !== FALSE )
         {
-            $settingroot = DH::findFirstElementOrCreate('setting', $this->deviceconfigroot);
+            $settingroot = DH::findFirstElement('setting', $this->deviceconfigroot);
             if( $settingroot !== FALSE )
             {
                 $tmp1 = DH::findFirstElement('wildfire', $settingroot);
@@ -1052,6 +1054,17 @@ class PanoramaConf
                     if( $auditComment != FALSE )
                         if( $auditComment->textContent === "yes" )
                             $this->_auditComment = TRUE;
+                }
+            }
+
+            $systemroot = DH::findFirstElement('system', $this->deviceconfigroot);
+            if( $systemroot !== FALSE )
+            {
+                $timezone = DH::findFirstElement('timezone', $systemroot);
+                if( $timezone )
+                {
+                    $this->timezone = $timezone->textContent;
+                    date_default_timezone_set( $timezone->textContent );
                 }
             }
         }

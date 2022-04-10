@@ -10,6 +10,7 @@ BUGFIX:
 
 GENERAL:
 framework | optimise method PH::print_stdout()
+framework | introduce PAN-OS device timezone - make use for this in type=device actions=system-admin-session
 
 
 2.0.34 (20220408)

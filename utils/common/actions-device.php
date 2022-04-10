@@ -3141,8 +3141,6 @@ DeviceCallContext::$supportedActions['system-mgt-config_users'] = array(
             {
                 if( $user->nodeType != XML_ELEMENT_NODE ) continue;
 
-                #DH::DEBUGprintDOMDocument( $user );
-
                 PH::print_stdout();
                 PH::print_stdout("NAME: '" . PH::boldText($user->getAttribute('name')) . "'");
 
@@ -3187,9 +3185,6 @@ DeviceCallContext::$supportedActions['system-mgt-config_users'] = array(
                                     PH::print_stdout("  - AccessDomain: '".PH::boldText($entryName)."'" );
                                     PH::print_stdout("  - DG-Template Profile: '" . PH::boldText( $profileName ) . "'");
                                 }
-                                else
-                                    DH::DEBUGprintDOMDocument( $node2 );
-
                             }
                         }
                     }
@@ -3324,24 +3319,28 @@ DeviceCallContext::$supportedActions['system-admin-session'] = array(
                         derr( "argument need to be an integer" );
 
 
-                    #date_default_timezone_set("Europe/Berlin");
                     $time = time() - ($hours * 3600);
-                    $time = date('Y/m/d H:i:s', $time);
+                    $calculatedtime = date('Y/m/d H:i:s', $time);
 
                     $dateTime = new DateTime($sessionStart);
-                    $newtime = $dateTime->format('Y/m/d H:i:s'); // 15th Apr 2010
+                    $sessiontime = $dateTime->format('Y/m/d H:i:s'); // 15th Apr 2010
 
-                    if( $time < $dateTime )
+                    PH::print_stdout();
+                    PH::print_stdout(  "      * Session Start : ".$sessiontime );
+                    PH::print_stdout( "      * calculated Time for deletion, if Session start before: ".$calculatedtime );
+                    #if( $time < $dateTime )
+                    if( $calculatedtime < $sessiontime )
                     {
-                        #print $time."\n";
-                        #print  $newtime."\n";
-                        PH::print_stdout( "this session is not old enough - skipped for deletion");
+                        PH::print_stdout();
+                        PH::print_stdout( "      * this session is not old enough - skipped for deletion");
+                        PH::print_stdout();
+                        PH::print_stdout( "-------------------");
                         continue;
                     }
 
 
                     PH::print_stdout();
-                    PH::print_stdout( "   action delete is defined - deleting this admin session:");
+                    PH::print_stdout( "      * action delete is defined - deleting this admin session:");
 
                     $apiArgs = array();
                     $apiArgs['type'] = 'op';
@@ -3354,6 +3353,7 @@ DeviceCallContext::$supportedActions['system-admin-session'] = array(
                     PH::print_stdout( "   * ".$cursor->textContent );
                 }
 
+                PH::print_stdout();
                 PH::print_stdout( "-------------------");
             }
 
