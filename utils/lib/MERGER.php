@@ -1131,6 +1131,11 @@ class MERGER extends UTIL
 
                     $value = $object->getRefHashComp() . $object->getNetworkValue();
                     $value = $object->value();
+
+                    // if object is /32, let's remove it to match equivalent non /32 syntax
+                    if( $object->isType_ipNetmask() && strpos($object->value(), '/32') !== FALSE )
+                        $value = substr($value, 0, strlen($value) - 3);
+
                     $value = $object->type() . '-' . $value;
                     if( $object->owner === $store )
                     {

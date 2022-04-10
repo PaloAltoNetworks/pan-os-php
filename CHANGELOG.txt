@@ -9,6 +9,7 @@ UTILS:
 
 BUGFIX:
 * UTIL type=device | bugfix for actions=system-admin-session
+* UTIL type=address-merger | bugfix for address value if netmaks /32 is used
 
 GENERAL:
 framework | optimise method PH::print_stdout()
