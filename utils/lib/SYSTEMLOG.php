@@ -37,8 +37,8 @@ class SYSTEMLOG extends UTIL
     public function main()
     {
 
-        if( !$this->pan->isFirewall() )
-            derr( "only PAN-OS FW is supported" );
+        #if( !$this->pan->isFirewall() )
+        #    derr( "only PAN-OS FW is supported" );
 
 #if( !$util->apiMode && !$offline_config_test )
         if( !$this->apiMode )
@@ -54,8 +54,8 @@ class SYSTEMLOG extends UTIL
             $hours = 0.25;
         PH::print_stdout( " - argument 'hours' set to '{$hours}'" );
 
-        //check if Device timezone is correctly used;
-        #date_default_timezone_set("Europe/Berlin");
+        $this->setTimezone();
+
         $time = time() - ($hours * 3600);
         $time = date('Y/m/d H:i:s', $time);
 
