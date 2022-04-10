@@ -3130,33 +3130,18 @@ DeviceCallContext::$supportedActions['system-mgt-config_users'] = array(
         $object = $context->object;
         $classtype = get_class($object);
         
-        $apiArgs = array();
-        $apiArgs['type'] = 'config';
-        $apiArgs['action'] = 'get';
-        $apiArgs['xpath'] = '/config/mgt-config/users';
-
-
-        if( $context->isAPI )
-        {
-            $response = $context->connector->sendRequest($apiArgs);
-            $cursor = DH::findXPathSingleEntryOrDie('/response', $response);
-            $cursor = DH::findFirstElement('result', $cursor);
-        }
-        else
-        {
-            $cursor = DH::findXPathSingleEntryOrDie( "/config/mgt-config", $context->object->owner->xmldoc);
-        }
-
-
 
         if( $context->first )
         {
+            $cursor = DH::findXPathSingleEntryOrDie( "/config/mgt-config", $context->object->owner->xmldoc);
 
             $cursor = DH::findFirstElement('users', $cursor);
 
             foreach( $cursor->childNodes as $user )
             {
                 if( $user->nodeType != XML_ELEMENT_NODE ) continue;
+
+                #DH::DEBUGprintDOMDocument( $user );
 
                 PH::print_stdout();
                 PH::print_stdout("NAME: '" . PH::boldText($user->getAttribute('name')) . "'");
@@ -3168,7 +3153,7 @@ DeviceCallContext::$supportedActions['system-mgt-config_users'] = array(
 
                     if( $node->nodeName === "authentication-profile" )
                     {
-                        PH::print_stdout("AUTHENTICATION-PROFILE: '" . PH::boldText($node->textContent) . "'");
+                        PH::print_stdout("  - AUTHENTICATION-PROFILE: '" . PH::boldText($node->textContent) . "'");
                     }
                     elseif( $node->nodeName === "permissions" )
                     {
@@ -3180,7 +3165,32 @@ DeviceCallContext::$supportedActions['system-mgt-config_users'] = array(
                             if( $node2->nodeType != XML_ELEMENT_NODE )
                                 continue;
 
-                            PH::print_stdout("ROLE: '" . PH::boldText($node2->nodeName) . "'");
+                            PH::print_stdout("  - ROLE: '" . PH::boldText($node2->nodeName) . "'");
+
+                            if( $node2->nodeName == "custom" )
+                            {
+                                $customProfile = DH::findFirstElement('profile', $node2);
+                                $customDGProfile = DH::findFirstElement( 'dg-template-profiles', $node2);
+                                if( $customProfile !== FALSE )
+                                {
+                                    $profileName = $customProfile->textContent;
+                                    PH::print_stdout("  - Profile:: '" . PH::boldText( $profileName ) . "'");
+                                }
+                                elseif( $customDGProfile !== FALSE )
+                                {
+                                    $customEntry = DH::findFirstElement('entry', $customDGProfile);
+                                    $entryName = DH::findAttribute( 'name', $customEntry );
+
+                                    $customEntry = DH::findFirstElement('profile', $customEntry);
+
+                                    $profileName = $customEntry->textContent;
+                                    PH::print_stdout("  - AccessDomain: '".PH::boldText($entryName)."'" );
+                                    PH::print_stdout("  - DG-Template Profile: '" . PH::boldText( $profileName ) . "'");
+                                }
+                                else
+                                    DH::DEBUGprintDOMDocument( $node2 );
+
+                            }
                         }
                     }
                 }
@@ -3188,8 +3198,7 @@ DeviceCallContext::$supportedActions['system-mgt-config_users'] = array(
                 PH::print_stdout("-----------------");
             }
 
-            if( $classtype == "DeviceGroup" )
-                $context->first = FALSE;
+            $context->first = FALSE;
         }
     },
     'help' => "This Action will display the configured Admin users on the Device"
@@ -3206,22 +3215,24 @@ DeviceCallContext::$supportedActions['system-restart'] = array(
         $object = $context->object;
         $classtype = get_class($object);
 
-        $apiArgs = array();
-        $apiArgs['type'] = 'op';
-        $apiArgs['cmd'] = '<request><restart><system></system></restart></request>';
-
-        if( $context->isAPI )
-        {
-            $response = $context->connector->sendRequest($apiArgs);
-            $cursor = DH::findXPathSingleEntryOrDie('/response', $response);
-            $cursor = DH::findFirstElement('result', $cursor);
-        }
-        else
-            derr( "only working in API mode" );
-
 
         if( $context->first )
         {
+
+            $apiArgs = array();
+            $apiArgs['type'] = 'op';
+            $apiArgs['cmd'] = '<request><restart><system></system></restart></request>';
+
+            if( $context->isAPI )
+            {
+                $response = $context->connector->sendRequest($apiArgs);
+                $cursor = DH::findXPathSingleEntryOrDie('/response', $response);
+                $cursor = DH::findFirstElement('result', $cursor);
+            }
+            else
+                derr( "only working in API mode" );
+
+
             PH::print_stdout( $cursor->textContent );
             PH::print_stdout( "Device reboot in progress" );
 
@@ -3243,41 +3254,28 @@ DeviceCallContext::$supportedActions['system-admin-session'] = array(
 
         $action = $context->arguments['action'];
 
-        $apiArgs = array();
-        $apiArgs['type'] = 'op';
-        $apiArgs['cmd'] = '<show><admins></admins></show>';
-//new actions:
-//2     /api/?type=op&cmd=<show><admins></admins></show>
-//     /api/?&type=op&cmd=<delete><admin-sessions><username>admin</username></admin-sessions></delete>
-
-        if( $context->isAPI )
-        {
-            $response = $context->connector->sendRequest($apiArgs);
-            $cursor = DH::findXPathSingleEntryOrDie('/response', $response);
-            $cursor = DH::findFirstElement('result', $cursor);
-            $cursor = DH::findFirstElement('admins', $cursor);
-        }
-        else
-            derr( "only working in API mode" );
-
-
         if( $context->first )
         {
+            $apiArgs = array();
+            $apiArgs['type'] = 'op';
+            $apiArgs['cmd'] = '<show><admins></admins></show>';
+
+            if( $context->isAPI )
+            {
+                $response = $context->connector->sendRequest($apiArgs);
+                $cursor = DH::findXPathSingleEntryOrDie('/response', $response);
+                $cursor = DH::findFirstElement('result', $cursor);
+                $cursor = DH::findFirstElement('admins', $cursor);
+            }
+            else
+                derr( "only working in API mode" );
+
+
             foreach( $cursor->childNodes as $admin)
             {
                 if( $admin->nodeType != XML_ELEMENT_NODE )
                     continue;
 
-                #DH::DEBUGprintDOMDocument( $admin );
-                //<entry>
-                //<admin>admin2</admin>
-                //<from>192.168.10.13</from>
-                //<type>Web</type>
-                //<session-start>04/08 23:41:55</session-start>
-                //<idle-for>00:00:00s</idle-for>
-                //<self/>
-                //<session-expiry>05/08 23:41:55</session-expiry>
-                //</entry>
                 PH::print_stdout();
 
                 $tmpString = DH::findFirstElement('admin', $admin);
