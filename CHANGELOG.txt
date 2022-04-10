@@ -19,8 +19,8 @@ UTILS:
 * UTIL API - introduce postman_collection
 * UTIL type=device actions=display-shadowrule | improve JSON output
 * UTIL develop - introduce create_template_mgmt_permittedips.php
-* UTIL type=device | introduce actions==sp_spg-create-BP
-* UTIL type=device | extend actions=actions=sp_spg-create-BP:true/false,SP-NAME - with SP-NAME defined only the OUTBOUND profile is created with the defined SP-NAME
+* UTIL type=device | introduce actions=sp_spg-create-BP
+* UTIL type=device | extend actions=sp_spg-create-BP:true/false,SP-NAME - with SP-NAME defined only the OUTBOUND profile is created with the defined SP-NAME
 * UTIL optimise test_filter script for QA
 
 BUGFIX:
