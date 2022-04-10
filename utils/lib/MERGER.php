@@ -37,8 +37,9 @@ class MERGER extends UTIL
     {
         $this->usageMsg = PH::boldText('USAGE: ') . "php " . basename(__FILE__) . " in=inputfile.xml [out=outputfile.xml] location=shared [DupAlgorithm=XYZ] [MergeCountLimit=100] ['pickFilter=(name regex /^H-/)'] ...";
 
-        $this->action = "merge";
-        //$this->action = "display";
+
+
+
         
         $this->add_supported_arguments();
 
@@ -48,6 +49,15 @@ class MERGER extends UTIL
         PH::processCliArgs();
 
         $this->arg_validation();
+
+        if( isset(PH::$args['actions']) )
+        {
+            $this->action = PH::$args['actions'];
+            if( $this->action !== 'merge' && $this->action !== 'display' )
+                derr( 'argument actions only support value: merge or display | actions=merge' );
+        }
+        else
+            $this->action = "merge";
 
         if( isset(PH::$args['outputformatset']) )
         {
@@ -76,6 +86,11 @@ class MERGER extends UTIL
 
         $this->merger_arguments( );
 
+        if( $this->action === "display" )
+        {
+            $this->apiMode = FALSE;
+            $this->action = "merge";
+        }
 
         if( $this->utilType == "address-merger" )
             $this->address_merging();

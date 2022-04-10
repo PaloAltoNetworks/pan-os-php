@@ -5,6 +5,7 @@ UTILS:
 * UTIL type=device | introduce actions=system-restart / system-mgt-config_users /  system-admin-session:display / system-admin-session:delete,1
 * UTIL type=device | actions=actions=system-mgt-config_users - extend information for customer Rolebase
 * UTIL type=system-log/traffic-log | optimisation of device timezone usage
+* UTIL all merger scripts | introduce new argument actions=merge/display
 
 BUGFIX:
 * UTIL type=device | bugfix for actions=system-admin-session
