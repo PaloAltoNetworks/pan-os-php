@@ -6,6 +6,7 @@ UTILS:
 * UTIL type=device | actions=actions=system-mgt-config_users - extend information for customer Rolebase
 * UTIL type=system-log/traffic-log | optimisation of device timezone usage
 * UTIL all merger scripts | introduce new argument actions=merge/display
+* UTIL type=rule-merger | introduce argument actions=display / actions=merge is still default behaviour
 
 BUGFIX:
 * UTIL type=device | bugfix for actions=system-admin-session

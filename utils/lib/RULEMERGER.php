@@ -61,6 +61,15 @@ class RULEMERGER extends UTIL
         $this->inputValidation();
         $this->location_provided();
 
+        if( isset(PH::$args['actions']) )
+        {
+            $this->action = PH::$args['actions'];
+            if( $this->action !== 'merge' && $this->action !== 'display' )
+                derr( 'argument actions only support value: merge or display | actions=merge' );
+        }
+        else
+            $this->action = "merge";
+
         if( isset(PH::$args['additionalmatch']) )
         {
             $tmp_additionalmatch = strtolower( PH::$args['additionalmatch'] );
@@ -94,6 +103,12 @@ class RULEMERGER extends UTIL
 
         $this->mergerArguments();
 
+
+        if( $this->action === "display" )
+        {
+            $this->apiMode = FALSE;
+            $this->action = "merge";
+        }
 
         ########################################################################################################################
         #      merging
@@ -365,11 +380,14 @@ class RULEMERGER extends UTIL
 
         // clean this rule from hash table
         unset($this->UTIL_hashTable[$ruleToMerge->mergeHash][$rule->serial]);
-        if( $this->configInput['type'] == 'api' && $this->configOutput == null )
-            $ruleToMerge->owner->API_remove($ruleToMerge);
-        else
-            $ruleToMerge->owner->remove($ruleToMerge);
-        $ruleToMerge->alreadyMerged = TRUE;
+        if( $this->action === "merge" )
+        {
+            if( $this->configInput['type'] == 'api' && $this->configOutput == null )
+                $ruleToMerge->owner->API_remove($ruleToMerge);
+            else
+                $ruleToMerge->owner->remove($ruleToMerge);
+            $ruleToMerge->alreadyMerged = TRUE;
+        }
 
         //updateRuleHash($rule, $method);
     }
@@ -588,8 +606,11 @@ class RULEMERGER extends UTIL
             PH::print_stdout( "    - Rule after merge:");
             $rule->display(5);
 
-            if( $this->configInput['type'] == 'api' && $this->configOutput == null )
-                $rule->API_sync();
+            if( $this->action === "merge" )
+            {
+                if( $this->configInput['type'] == 'api' && $this->configOutput == null )
+                    $rule->API_sync();
+            }
             unset($this->UTIL_hashTable[$rule->mergeHash][$rule->serial]);
         }
 
