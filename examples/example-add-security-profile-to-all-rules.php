@@ -32,9 +32,9 @@ if( $vsys1 === null )
 	derr("vsys1 was not found ? Exit\n");
 }
 
-PH::print_stdout("");
+PH::print_stdout();
 PH::print_stdout("***********************************************" );
-PH::print_stdout("");
+PH::print_stdout();
 
 // first get the list of rules in an array
 $rules = $vsys1->securityRules->rules();
@@ -49,7 +49,7 @@ foreach( $rules as $rule )
 
 
 
-PH::print_stdout("");
+PH::print_stdout();
 PH::print_stdout("***********************************************" );
 
 // Save resulting config to a file

@@ -37,8 +37,9 @@ class MERGER extends UTIL
     {
         $this->usageMsg = PH::boldText('USAGE: ') . "php " . basename(__FILE__) . " in=inputfile.xml [out=outputfile.xml] location=shared [DupAlgorithm=XYZ] [MergeCountLimit=100] ['pickFilter=(name regex /^H-/)'] ...";
 
-        $this->action = "merge";
-        //$this->action = "display";
+
+
+
         
         $this->add_supported_arguments();
 
@@ -48,6 +49,15 @@ class MERGER extends UTIL
         PH::processCliArgs();
 
         $this->arg_validation();
+
+        if( isset(PH::$args['actions']) )
+        {
+            $this->action = PH::$args['actions'];
+            if( $this->action !== 'merge' && $this->action !== 'display' )
+                derr( 'argument actions only support value: merge or display | actions=merge' );
+        }
+        else
+            $this->action = "merge";
 
         if( isset(PH::$args['outputformatset']) )
         {
@@ -76,6 +86,11 @@ class MERGER extends UTIL
 
         $this->merger_arguments( );
 
+        if( $this->action === "display" )
+        {
+            $this->apiMode = FALSE;
+            $this->action = "merge";
+        }
 
         if( $this->utilType == "address-merger" )
             $this->address_merging();
@@ -303,7 +318,7 @@ class MERGER extends UTIL
                 derr("invalid pickFilter was input: " . $errMsg);
             PH::print_stdout( " - pickFilter was input: " );
             $this->pickFilter->display();
-            PH::print_stdout( "" );
+            PH::print_stdout();
         }
 
         if( isset(PH::$args['excludefilter']) )
@@ -314,7 +329,7 @@ class MERGER extends UTIL
                 derr("invalid pickFilter was input: " . $errMsg);
             PH::print_stdout( " - excludeFilter was input: " );
             $this->excludeFilter->display();
-            PH::print_stdout( "" );
+            PH::print_stdout();
         }
 
         if( isset(PH::$args['allowmergingwithupperlevel']) )
@@ -665,7 +680,7 @@ class MERGER extends UTIL
             {
                 #$skip = false;
 
-                PH::print_stdout( "" );
+                PH::print_stdout();
                 PH::print_stdout( " - value '{$index}'" );
 
                 $pickedObject = null;
@@ -873,7 +888,7 @@ class MERGER extends UTIL
             $countChildCreated = 0;
             foreach( $child_hashMap as $index => &$hash )
             {
-                PH::print_stdout( "" );
+                PH::print_stdout();
                 PH::print_stdout( " - value '{$index}'" );
 
                 $pickedObject = null;
@@ -1116,6 +1131,11 @@ class MERGER extends UTIL
 
                     $value = $object->getRefHashComp() . $object->getNetworkValue();
                     $value = $object->value();
+
+                    // if object is /32, let's remove it to match equivalent non /32 syntax
+                    if( $object->isType_ipNetmask() && strpos($object->value(), '/32') !== FALSE )
+                        $value = substr($value, 0, strlen($value) - 3);
+
                     $value = $object->type() . '-' . $value;
                     if( $object->owner === $store )
                     {
@@ -1151,7 +1171,7 @@ class MERGER extends UTIL
             $countRemoved = 0;
             foreach( $hashMap as $index => &$hash )
             {
-                PH::print_stdout( "" );
+                PH::print_stdout();
                 PH::print_stdout( " - value '{$index}'" );
 
 
@@ -1337,7 +1357,7 @@ class MERGER extends UTIL
             $countChildCreated = 0;
             foreach( $child_hashMap as $index => &$hash )
             {
-                PH::print_stdout("");
+                PH::print_stdout();
                 PH::print_stdout(" - value '{$index}'");
 
 
@@ -1636,7 +1656,7 @@ class MERGER extends UTIL
             $countRemoved = 0;
             foreach( $hashMap as $index => &$hash )
             {
-                PH::print_stdout("");
+                PH::print_stdout();
 
                 if( $this->dupAlg == 'sameportmapping' )
                 {
@@ -1992,7 +2012,7 @@ class MERGER extends UTIL
             {
                 foreach( $hashMap as $index => &$hash )
                 {
-                    PH::print_stdout( "" );
+                    PH::print_stdout();
                     PH::print_stdout( " - value '{$index}'" );
 
                     $pickedObject = null;
@@ -2168,7 +2188,7 @@ class MERGER extends UTIL
                 $countChildCreated = 0;
                 foreach( $child_hashMap as $index => &$hash )
                 {
-                    PH::print_stdout( "" );
+                    PH::print_stdout();
                     PH::print_stdout( " - value '{$index}'" );
 
                     $pickedObject = null;
@@ -2288,7 +2308,7 @@ class MERGER extends UTIL
             elseif( $this->dupAlg == 'whereused' )
                 foreach( $hashMap as $index => &$hash )
                 {
-                    PH::print_stdout( "" );
+                    PH::print_stdout();
 
                     $setList = array();
                     foreach( $hash as $object )
@@ -2400,7 +2420,7 @@ class MERGER extends UTIL
                     }
                     PH::print_stdout( "   * final mapping for service '{$pickedObject->name()}': {$pickedObject->getDestPort()}" );
 
-                    PH::print_stdout( "" );
+                    PH::print_stdout();
                 }
             else derr("unsupported use case");
 
@@ -2558,7 +2578,7 @@ class MERGER extends UTIL
             $countRemoved = 0;
             foreach( $hashMap as $index => &$hash )
             {
-                PH::print_stdout( "" );
+                PH::print_stdout();
                 PH::print_stdout( " - name '{$index}'" );
 
 
@@ -2734,7 +2754,7 @@ class MERGER extends UTIL
             $countChildCreated = 0;
             foreach( $child_hashMap as $index => &$hash )
             {
-                PH::print_stdout( "" );
+                PH::print_stdout();
                 PH::print_stdout( " - value '{$index}'" );
 
 

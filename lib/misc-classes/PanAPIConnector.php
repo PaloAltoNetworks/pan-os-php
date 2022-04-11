@@ -467,7 +467,7 @@ class PanAPIConnector
                 else
                     $password = $cliPW;
 
-                PH::print_stdout( "" );
+                PH::print_stdout();
 
                 PH::print_stdout( " * Now generating an API key from '$host'..." );
                 $con = new PanAPIConnector($host, '', 'panos', null, $port);
@@ -494,7 +494,7 @@ class PanAPIConnector
                 PH::print_stdout( " OK, key is $apiKey");
                 PH::$JSON_TMP[$host]['status'] = "OK";
                 PH::$JSON_TMP[$host]['key'] = $apiKey;
-                PH::print_stdout("");
+                PH::print_stdout();
 
             }
 
@@ -516,7 +516,7 @@ class PanAPIConnector
         if( $checkConnectivity )
         {
             $connector->testConnectivity( $host );
-            PH::print_stdout("");
+            PH::print_stdout();
             if( !$wrongLogin )
                 self::$savedConnectors[] = $connector;
             if( PH::$saveAPIkey )
@@ -1223,9 +1223,9 @@ class PanAPIConnector
         {
             PH::disableExceptionSupport();
             PH::print_stdout( " ***** an error occured : " . $e->getMessage() );
-            PH::print_stdout("");
+            PH::print_stdout();
             PH::print_stdout(  $httpReplyContent );
-            PH::print_stdout("");
+            PH::print_stdout();
 
             return;
         }
@@ -2300,7 +2300,7 @@ class PanAPIConnector
         }
         elseif( $report->textContent == 'There are no changes to commit.' )
         {
-            PH::print_stdout( "" );
+            PH::print_stdout();
             PH::print_stdout( "*********************************************************" );
             PH::print_stdout( "*                                                       *" );
             PH::print_stdout( "*                FIREWALL " . $this->info_hostname . " COMMIT               *" );
@@ -2311,7 +2311,7 @@ class PanAPIConnector
         }
         else
         {
-            PH::print_stdout( "" );
+            PH::print_stdout();
             PH::print_stdout( "*********************************************************" );
             PH::print_stdout( "*                                                       *" );
             PH::print_stdout( "*                FIREWALL " . $this->info_hostname . " COMMIT               *" );

@@ -30,14 +30,14 @@ if( $vsys1 === null )
 	derr("vsys1 was not found ? Exit\n");
 }
 
-PH::print_stdout("" );
+PH::print_stdout();
 PH::print_stdout("***********************************************" );
-PH::print_stdout("");
+PH::print_stdout();
 
-PH::print_stdout("");
-PH::print_stdout("");
+PH::print_stdout();
+PH::print_stdout();
 PH::print_stdout( "************ Security Rules before changes  *********" );
-PH::print_stdout("");
+PH::print_stdout();
 
 // $vsys1->securityRules is an object containing all VSYS1 rules. Here we call display() to display them in console.
 $vsys1->securityRules->display();
@@ -97,13 +97,13 @@ $vsys1->natRules->find('rule3 - dynamic IP address')->snathosts->addObject($vsys
 
 
 
-PH::print_stdout("");
+PH::print_stdout();
 PH::print_stdout("************ Security Rules after changes  *********" );
-PH::print_stdout("");
+PH::print_stdout();
 
 $vsys1->securityRules->display();
 
-PH::print_stdout("");
+PH::print_stdout();
 PH::print_stdout("***********************************************" );
 
 

@@ -231,7 +231,7 @@ class AntiSpywareProfile
         PH::$JSON_TMP['sub']['object'][$this->name()]['name'] = $this->name();
         PH::$JSON_TMP['sub']['object'][$this->name()]['type'] = get_class($this);
 
-        PH::print_stdout("");
+        PH::print_stdout();
         //Todo: continue for display out
 
         if( !empty( $this->threatException ) )
@@ -254,7 +254,7 @@ class AntiSpywareProfile
         }
 
 
-        #PH::print_stdout( "" );
+        #PH::print_stdout();
     }
 
 

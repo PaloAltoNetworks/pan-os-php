@@ -285,7 +285,7 @@ class DoSRule extends RuleWithUserID
             PH::$JSON_TMP['sub']['object'][$this->name()]['description'] = $this->_description;
         }
 
-        PH::print_stdout("");
+        PH::print_stdout();
     }
 
     public function cleanForDestruction()

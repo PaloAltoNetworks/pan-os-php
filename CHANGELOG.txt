@@ -1,12 +1,29 @@
 CHANGELOG
 
-2.0.34
+2.0.35 (20220411)
+UTILS:
+* UTIL type=device | introduce actions=system-restart / system-mgt-config_users /  system-admin-session:display / system-admin-session:delete,1
+* UTIL type=device | actions=actions=system-mgt-config_users - extend information for customer Rolebase
+* UTIL type=system-log/traffic-log | optimisation of device timezone usage
+* UTIL all merger scripts | introduce new argument actions=merge/display
+* UTIL type=rule-merger | introduce argument actions=display / actions=merge is still default behaviour
+
+BUGFIX:
+* UTIL type=device | bugfix for actions=system-admin-session
+* UTIL type=address-merger | bugfix for address value if netmaks /32 is used
+
+GENERAL:
+framework | optimise method PH::print_stdout()
+framework | introduce PAN-OS device timezone - make use for this in type=device actions=system-admin-session
+
+
+2.0.34 (20220408)
 UTILS:
 * UTIL API - introduce postman_collection
 * UTIL type=device actions=display-shadowrule | improve JSON output
 * UTIL develop - introduce create_template_mgmt_permittedips.php
-* UTIL type=device | introduce actions==sp_spg-create-BP
-* UTIL type=device | extend actions=actions=sp_spg-create-BP:true/false,SP-NAME - with SP-NAME defined only the OUTBOUND profile is created with the defined SP-NAME
+* UTIL type=device | introduce actions=sp_spg-create-BP
+* UTIL type=device | extend actions=sp_spg-create-BP:true/false,SP-NAME - with SP-NAME defined only the OUTBOUND profile is created with the defined SP-NAME
 * UTIL optimise test_filter script for QA
 
 BUGFIX:

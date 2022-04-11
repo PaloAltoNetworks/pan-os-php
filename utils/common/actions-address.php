@@ -122,8 +122,8 @@ AddressCallContext::$supportedActions[] = array(
             } catch(Exception $e)
             {
                 PH::disableExceptionSupport();
-                PH::print_stdout("" );
-                PH::print_stdout("" );
+                PH::print_stdout();
+                PH::print_stdout();
                 $string = PH::boldText("  ***** an error occured : ") . $e->getMessage();
                 PH::ACTIONlog( $context, $string );
 
@@ -1597,7 +1597,7 @@ AddressCallContext::$supportedActions[] = array(
             $string = "unresolved: {$unresolvedCount} entries";
             if( $unresolvedCount > 0 )
             {
-                PH::print_stdout("" );
+                PH::print_stdout();
                 PH::ACTIONlog( $context, $string );
 
                 foreach($resolvMap->unresolved as &$resolvRecord)
@@ -2053,7 +2053,7 @@ AddressCallContext::$supportedActions[] = array(
 
                 $string = "AddressGroup count after split: " . $group->count();
                 PH::ACTIONlog( $context, $string );
-                PH::print_stdout("");
+                PH::print_stdout();
             }
             else
             {
@@ -2316,7 +2316,7 @@ AddressCallContext::$supportedActions[] = array(
                     return;
                 }
 
-                PH::print_stdout( "" );
+                PH::print_stdout();
 
                 if( $objRef_owner->sourceNatIsEnabled() )
                 {

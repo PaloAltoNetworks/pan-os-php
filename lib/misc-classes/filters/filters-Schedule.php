@@ -193,7 +193,7 @@ RQuery::$defaultFilters['schedule']['location']['operators']['is.child.of'] = ar
             {
                 PH::print_stdout( " - " . $sub1->name() );
             }
-            PH::print_stdout( "" );
+            PH::print_stdout();
             exit(1);
         }
 
@@ -243,7 +243,7 @@ RQuery::$defaultFilters['schedule']['location']['operators']['is.parent.of'] = a
             {
                 PH::print_stdout( " - " . $sub1->name() );
             }
-            PH::print_stdout("" );
+            PH::print_stdout();
             exit(1);
         }
 

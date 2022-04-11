@@ -59,9 +59,9 @@ else if( $mode == 'panos')
 else 
 	derr('Please set mode="panos" or mode ="panorama"');
 
-PH::print_stdout("");
+PH::print_stdout();
 PH::print_stdout( "***********" );
-PH::print_stdout("");
+PH::print_stdout();
 
 
 // For every VSYS/DeviceGroups we're going to list Groups and count their members.
@@ -128,7 +128,7 @@ foreach($subs as $sub )
 			$group->rewriteXML();
 
             PH::print_stdout( "     AddressGroup count after split: ".$group->count() );
-            PH::print_stdout("");
+            PH::print_stdout();
 			
 		}
 	}
@@ -136,8 +136,8 @@ foreach($subs as $sub )
 }
 
 
-PH::print_stdout("");
-PH::print_stdout("");
+PH::print_stdout();
+PH::print_stdout();
 
 
 $p->save_to_file($outputfile);

@@ -66,7 +66,7 @@ if( isset(PH::$args['upload']) )
 
     if( $retValue != 0 )
         derr("CLI exit with error code '{$retValue}'");
-    PH::print_stdout( "" );
+    PH::print_stdout();
 }
 
 //$api_ip_address = "192.168.55.208";
@@ -221,7 +221,7 @@ foreach( RQuery::$defaultFilters as $type => &$filtersByField )
             if( $retValue != 0 )
                 derr("CLI exit with error code '{$retValue}'");
 
-            PH::print_stdout( "" );
+            PH::print_stdout();
 
         }
     }
@@ -231,7 +231,7 @@ PH::print_stdout( "\n*****  *****" );
 PH::print_stdout( " - Processed {$totalFilterCount} filters" );
 PH::print_stdout( " - Found {$totalFilterWithCiCount} that are CI enabled" );
 
-PH::print_stdout( "" );
+PH::print_stdout();
 PH::print_stdout( "\n*********** FINISHED TESTING FILTERS ************" );
 PH::print_stdout( "*************************************************\n" );
 

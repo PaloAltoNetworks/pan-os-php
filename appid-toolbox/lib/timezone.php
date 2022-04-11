@@ -36,21 +36,21 @@ else
     PH::print_stdout( "UNIX" );
 }
 
-PH::print_stdout( "" );
-PH::print_stdout( "" );
+PH::print_stdout();
+PH::print_stdout();
 PH::print_stdout("-------------------------------------------------" );
-PH::print_stdout( "" );
+PH::print_stdout();
 PH::print_stdout("|".$system_timezone."|" );
-PH::print_stdout( "" );
+PH::print_stdout();
 PH::print_stdout("-------------------------------------------------" );
-PH::print_stdout( "" );
+PH::print_stdout();
 $timezone_name = timezone_name_from_abbr( $system_timezone );
 
-PH::print_stdout( "" );
-PH::print_stdout( "" );
+PH::print_stdout();
+PH::print_stdout();
 PH::print_stdout("-------------------------------------------------" );
-PH::print_stdout( "" );
+PH::print_stdout();
 PH::print_stdout("|".$timezone_name."|" );
-PH::print_stdout( "" );
+PH::print_stdout();
 PH::print_stdout("-------------------------------------------------" );
-PH::print_stdout( "" );
+PH::print_stdout();

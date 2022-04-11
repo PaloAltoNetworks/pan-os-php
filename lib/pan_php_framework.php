@@ -46,7 +46,7 @@ if( !defined('XML_PARSE_BIG_LINES') )
     define('XML_PARSE_BIG_LINES', 4194304);
 }
 
-
+//check if Device timezone is correctly used after loading the config
 date_default_timezone_set('UTC');
 
 if( !extension_loaded('curl') )

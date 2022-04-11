@@ -9,10 +9,10 @@
 require_once("lib/pan_php_framework.php");
 require_once ( "utils/lib/UTIL.php");
 
-PH::print_stdout("");
+PH::print_stdout();
 PH::print_stdout("***********************************************");
 PH::print_stdout("*********** " . basename(__FILE__) . " UTILITY **************");
-PH::print_stdout("");
+PH::print_stdout();
 
 PH::print_stdout( "PAN-OS-PHP version: ".PH::frameworkVersion() );
 
@@ -97,7 +97,7 @@ foreach( $nodeArray as $item )
     {
         foreach( $templateEntryArray['template'] as $templateName => $templateEntry )
         {
-            PH::print_stdout( "" );
+            PH::print_stdout();
             PH::print_stdout( "TEMPLATE: ".$templateName );
             foreach( $templateEntry as $item )
             {
@@ -120,7 +120,7 @@ foreach( $nodeArray as $item )
     }
 
 
-    PH::print_stdout( "" );
+    PH::print_stdout();
 
 
 
@@ -128,7 +128,7 @@ foreach( $nodeArray as $item )
 
 $util->endOfScript();
 
-PH::print_stdout("");
+PH::print_stdout();
 PH::print_stdout("************* END OF SCRIPT " . basename(__FILE__) . " ************" );
-PH::print_stdout("");
+PH::print_stdout();
 ########################################################################################################################

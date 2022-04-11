@@ -28,7 +28,7 @@ if( $v === null )
 }
 
 PH::print_stdout( "***********************************************" );
-PH::print_stdout("" );
+PH::print_stdout();
 
 
 $v->securityRules->removeAll();
@@ -70,7 +70,7 @@ for( $i=0; $i < 1500; $i++ )
 
 
 
-PH::print_stdout("" );
+PH::print_stdout();
 PH::print_stdout( "***********************************************" );
 
 $v->display_statistics();

@@ -5,10 +5,10 @@ require_once dirname(__FILE__)."/../../lib/pan_php_framework.php";
 require_once dirname(__FILE__)."/../../utils/lib/UTIL.php";
 
 
-PH::print_stdout( "" );
+PH::print_stdout();
 PH::print_stdout( "***********************************************" );
 PH::print_stdout( "************ interface getIP for specific Zone UTILITY ****************" );
-PH::print_stdout( "" );
+PH::print_stdout();
 
 
 $supportedArguments = Array();
@@ -89,7 +89,7 @@ if( $cycleConnectedFirewalls && $util->pan->isPanorama() )
             $array[ $fw['serial'] ][ "error" ]['name'] = "error";
             $array[ $fw['serial'] ][ "error" ]['ip'] = "connection";
 
-            PH::print_stdout( "" );
+            PH::print_stdout();
             PH::print_stdout( $fw['serial'].",error,connection" );
             PH::print_stdout( "--------------------------------------------------------------------------------" );
         }
@@ -152,7 +152,7 @@ function getIntIP( $pan, $zoneName, &$array )
         $array[ $inputConnector->info_hostname ][ $zoneInterface->name() ]['name'] = $zoneInterface->name();
         $array[ $inputConnector->info_hostname ][ $zoneInterface->name() ]['ip'] = $ip_info;
 
-        PH::print_stdout( "" );
+        PH::print_stdout();
         PH::print_stdout( $inputConnector->info_hostname.",".$zoneInterface->name().",".$ip_info );
         PH::print_stdout( "--------------------------------------------------------------------------------" );
     }

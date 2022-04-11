@@ -180,7 +180,7 @@ RQuery::$defaultFilters['securityprofile']['location']['operators']['is.child.of
             {
                 PH::print_stdout( " - " . $sub1->name() . "" );
             }
-            PH::print_stdout( "" );
+            PH::print_stdout();
             exit(1);
         }
 
@@ -230,7 +230,7 @@ RQuery::$defaultFilters['securityprofile']['location']['operators']['is.parent.o
             {
                 PH::print_stdout( " - " . $sub1->name() . "" );
             }
-            PH::print_stdout( "" );
+            PH::print_stdout();
             exit(1);
         }
 

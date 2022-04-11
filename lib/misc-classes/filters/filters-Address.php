@@ -585,7 +585,7 @@ RQuery::$defaultFilters['address']['location']['operators']['is.child.of'] = arr
             {
                 PH::print_stdout( " - " . $sub1->name() );
             }
-            PH::print_stdout("");
+            PH::print_stdout();
             exit(1);
         }
 
@@ -635,7 +635,7 @@ RQuery::$defaultFilters['address']['location']['operators']['is.parent.of'] = ar
             {
                 PH::print_stdout( " - " . $sub1->name() );
             }
-            PH::print_stdout("");
+            PH::print_stdout();
             exit(1);
         }
 

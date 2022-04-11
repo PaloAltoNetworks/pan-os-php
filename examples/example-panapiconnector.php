@@ -57,9 +57,9 @@ if( $vsys1 === null )
 	derr("vsys1 was not found ? Exit\n");
 }
 
-PH::print_stdout("" );
+PH::print_stdout();
 PH::print_stdout("***********************************************" );
-PH::print_stdout("" );
+PH::print_stdout();
 
 //display rules
 $vsys1->securityRules->display();
@@ -96,7 +96,7 @@ $rule->source->API_remove($object);
 
 
 // display some statiscs for debug and exit program!
-PH::print_stdout("" );
+PH::print_stdout();
 PH::print_stdout("***********************************************" );
 $vsys1->display_statistics();
 

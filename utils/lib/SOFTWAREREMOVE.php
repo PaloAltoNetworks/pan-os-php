@@ -77,10 +77,10 @@ class SOFTWAREREMOVE extends UTIL
         ########################################################################################################################
         $connector->refreshSystemInfos();
     
-        PH::print_stdout("");
+        PH::print_stdout();
         PH::print_stdout("##########################################");
         PH::print_stdout('MASTER device serial: ' . $connector->info_serial);
-        PH::print_stdout("");
+        PH::print_stdout();
     
         PH::$JSON_TMP['serial'] = $connector->info_serial;
         PH::print_stdout(PH::$JSON_TMP, FALSE, "master device");
@@ -151,10 +151,10 @@ class SOFTWAREREMOVE extends UTIL
 
         foreach( $queries as $key => $query )
         {
-            PH::print_stdout("");
+            PH::print_stdout();
             PH::print_stdout("-------------------------------");
             PH::print_stdout("Display uploaded part for: " . $key);
-            PH::print_stdout("");
+            PH::print_stdout();
 
             $string = " - installed: ";
 
@@ -173,7 +173,7 @@ class SOFTWAREREMOVE extends UTIL
                 $version = $connector->info_wildfire_version;
 
             PH::print_stdout($string . $version);
-            PH::print_stdout("");
+            PH::print_stdout();
 
             #$queries['content'] = '&type=op&action=complete&xpath=/operations/request/content/upgrade/install/file';
             $ret = $connector->sendRequest($query);

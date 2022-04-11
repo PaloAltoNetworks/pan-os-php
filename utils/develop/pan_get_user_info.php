@@ -21,10 +21,10 @@ set_include_path(dirname(__FILE__) . '/../' . PATH_SEPARATOR . get_include_path(
 require_once dirname(__FILE__)."/../../lib/pan_php_framework.php";
 require_once dirname(__FILE__)."/../../utils/lib/UTIL.php";
 
-PH::print_stdout("");
+PH::print_stdout();
 PH::print_stdout("***********************************************");
 PH::print_stdout("*********** " . basename(__FILE__) . " UTILITY **************");
-PH::print_stdout("");
+PH::print_stdout();
 
 $file = null;
 
@@ -61,9 +61,7 @@ $apiArgs['xpath'] = '/config/mgt-config/users';
 
 
 if( $util->configInput['type'] == 'api' )
-{
     $response = $connector->sendRequest($apiArgs);
-}
 else
 {
     //Todo: remove the entry in the XML, then offline mode should be supported
@@ -72,10 +70,6 @@ else
 
 print "\n";
 
-#print "RESPONSE:\n";
-#print $response->saveXML();
-
-//print DH::dom_to_xml($ret, 0, true, 4);
 
 $cursor = DH::findXPathSingleEntryOrDie('/response', $response);
 $cursor = DH::findFirstElement('result', $cursor);
@@ -102,12 +96,8 @@ foreach( $cursor->childNodes as $user )
         elseif( $node->nodeName === "permissions" )
         {
             //role-based
-
-
-
             $cursor = DH::findFirstElement('role-based', $node);
-            #print "TEST: ".$cursor->textContent."\n";
-            #print "Nodename: ".$cursor->nodeName."\n";
+
             foreach( $cursor->childNodes as $node2 )
             {
                 if( $node2->nodeType != XML_ELEMENT_NODE )
@@ -115,8 +105,6 @@ foreach( $cursor->childNodes as $user )
 
                 print "ROLE: '".PH::boldText( $node2->nodeName )."'\n";
             }
-
-
         }
     }
     print "\n-----------------\n";

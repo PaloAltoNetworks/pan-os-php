@@ -53,10 +53,10 @@ RoutingCallContext::$supportedActions['display'] = Array(
             PH::print_stdout( $text );
         }
 
-        PH::print_stdout( "" );
+        PH::print_stdout();
         PH::print_stdout( "- - - - - - - - - - - - - - - -" );
-        PH::print_stdout( "" );
-        PH::print_stdout( "" );
+        PH::print_stdout();
+        PH::print_stdout();
     },
 
     //Todo: display routes to zone / Interface IP

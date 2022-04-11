@@ -37,7 +37,7 @@ class XMLOPJSON extends UTIL
 
         ##########################################
         ##########################################
-        PH::print_stdout("");
+        PH::print_stdout();
 
         $this->save_our_work();
 
@@ -109,14 +109,14 @@ class XMLOPJSON extends UTIL
             $xml_string = "<response status=\"error\"><error>pan-os-php - cmd argument not found</error></response>";
 
 
-        PH::print_stdout("");
+        PH::print_stdout();
         PH::print_stdout( "XML response:");
         PH::print_stdout( $xml_string );
 
         $xml = simplexml_load_string($xml_string);
         $json =  json_encode($xml, JSON_PRETTY_PRINT);
 
-        PH::print_stdout("");
+        PH::print_stdout();
         PH::print_stdout( "JSON:");
 
         //this is the original JSON, so print it out

@@ -35,7 +35,7 @@ VirtualWireCallContext::$supportedActions['display'] = Array(
         $text .= "interface2: ".$object->attachedInterface2;
         PH::print_stdout( $text );
 
-        PH::print_stdout( "" );
+        PH::print_stdout();
     },
 
 );

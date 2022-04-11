@@ -389,7 +389,7 @@ RQuery::$defaultFilters['service']['location']['operators']['is.child.of'] = arr
             {
                 PH::print_stdout( " - " . $sub1->name() );
             }
-            PH::print_stdout( "" );
+            PH::print_stdout();
             exit(1);
         }
 

@@ -2481,7 +2481,7 @@ RQuery::$defaultFilters['rule']['location']['operators']['is.child.of'] = array(
             {
                 PH::print_stdout( " - " . $sub1->name()  );
             }
-            PH::print_stdout( "" );
+            PH::print_stdout();
             exit(1);
         }
 

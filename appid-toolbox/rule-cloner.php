@@ -529,6 +529,6 @@ PH::print_stdout( " - revised rules fatal NTBR: {$count_revised_NTBR}");
 
 
 
-PH::print_stdout( "" );
+PH::print_stdout();
 PH::print_stdout( "************* END OF SCRIPT ".basename(__FILE__)." ************");
 

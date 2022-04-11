@@ -826,7 +826,17 @@ class DH
         return count($toMove);
     }
 
+    static public function DEBUGprintDOMDocument( $node )
+    {
+        if( $node != null )
+        {
+            $newdoc = new DOMDocument;
+            $node = $newdoc->importNode($node, true);
+            $newdoc->appendChild($node);
+            print $newdoc->saveXML();
+        }
 
+    }
     //todo: 20210615 swaschkut
     //merge two XML node // DomDocument
 }

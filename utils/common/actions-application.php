@@ -93,7 +93,7 @@ ApplicationCallContext::$supportedActions[] = array(
                     $app1->print_appdetails( $context->padding, true, $tmparray );
                     PH::$JSON_TMP['sub']['object'][$app->name()]['container']['app'][] = $tmparray;
 
-                    PH::print_stdout("" );
+                    PH::print_stdout();
                 }
             }
         }
@@ -105,7 +105,7 @@ ApplicationCallContext::$supportedActions[] = array(
                 #PH::print_stdout( "     ->" . $app1->type . " | " );
                 $app1->print_appdetails( $context->padding, true, $tmparray );
                 PH::$JSON_TMP['sub']['object'][$app->name()]['group']['app'][] = $tmparray;
-                PH::print_stdout("" );
+                PH::print_stdout();
             }
         }
         elseif( $app->isApplicationFilter() )
@@ -116,7 +116,7 @@ ApplicationCallContext::$supportedActions[] = array(
                 #PH::print_stdout( "     ->" . $app1->type . " | " );
                 $app1->print_appdetails( $context->padding, true, $tmparray );
                 PH::$JSON_TMP['sub']['object'][$app->name()]['filter']['app'][] = $tmparray;
-                PH::print_stdout("" );
+                PH::print_stdout();
             }
         }
         else

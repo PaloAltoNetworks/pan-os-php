@@ -39,7 +39,7 @@ function display_usage_and_exit()
     PH::print_stdout( " - skipIfLastReportLessThanXDays : if previous data was found, erase them and insert newly generated statistics instead (incompatible with update flag)" );
     PH::print_stdout( " - updatePreviousData : if previous data was found, merge with previous statistics (incompatible with reset flag)" );
 
-    PH::print_stdout( "" );
+    PH::print_stdout();
 
 
     exit(1);
@@ -340,7 +340,7 @@ foreach($rules as $rule)
 
     $ruleStats->save_to_file($ruleStatFile);
 
-    PH::print_stdout( "" );
+    PH::print_stdout();
 }
 
 //Todo - export not working for HTML but tool is using XML file - HTML is only for user

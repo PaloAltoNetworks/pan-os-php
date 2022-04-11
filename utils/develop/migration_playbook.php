@@ -187,9 +187,9 @@ foreach( $command_array as $key => $command )
         $util = new UTIL($script, $argv, $argc, $tool );
     }
 
-    PH::print_stdout("");
+    PH::print_stdout();
     PH::print_stdout( "############################################################################");
-    PH::print_stdout("");
+    PH::print_stdout();
 
 }
 
@@ -204,7 +204,7 @@ if( isset(PH::$args['out']) )
 
 function print_tool_usage( $tool, $argv )
 {
-    PH::print_stdout("");
+    PH::print_stdout();
     PH::print_stdout( PH::boldText( "[ ".$tool. " ".implode( " ", $argv )." ]" ) );
-    PH::print_stdout("");
+    PH::print_stdout();
 }

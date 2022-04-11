@@ -253,15 +253,15 @@ class GARPSEND extends UTIL
         }
         else
         {
-            PH::print_stdout("");
+            PH::print_stdout();
             PH::print_stdout("ping commands can not be prepared in offline");
-            PH::print_stdout("");
+            PH::print_stdout();
         }
 
 
-        PH::print_stdout("");
+        PH::print_stdout();
         PH::print_stdout("Display the commands you like to send to the FW:");
-        PH::print_stdout("");
+        PH::print_stdout();
 
         foreach( $this->commands as $command )
             PH::print_stdout($command);
@@ -269,7 +269,7 @@ class GARPSEND extends UTIL
 
         ##############################################
         ##############################################
-        PH::print_stdout("");
+        PH::print_stdout();
         $output_string = "";
         if( !$this->offline_config_test )
         {

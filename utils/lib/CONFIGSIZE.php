@@ -113,7 +113,7 @@ class CONFIGSIZE extends UTIL
         $this->print_length( $this->xmlDoc );
 
         ##########################################
-        PH::print_stdout("");
+        PH::print_stdout();
 
         //Todo: what about API mode - filename is empty
         if( !$this->apiMode )

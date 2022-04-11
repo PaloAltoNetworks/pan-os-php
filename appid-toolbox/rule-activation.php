@@ -42,7 +42,7 @@ function display_usage_and_exit()
     PH::print_stdout( " - confirm : no change will be made to the config unless you use this argument" );
     PH::print_stdout( " - tagIssues : adds a tag to rules which cannot be activated" );
 
-    PH::print_stdout( "" );
+    PH::print_stdout();
 
 
     exit(1);
@@ -219,7 +219,7 @@ foreach( $ridTagLibrary->_tagsToObjects as $tagName => &$taggedRules )
     {
         PH::print_stdout( " - rule '{$rule->name()}'" );
     }
-    PH::print_stdout( "" );
+    PH::print_stdout();
 
     if( count($taggedRules) > 2 )
     {
@@ -491,12 +491,12 @@ elseif( $configInput['type'] == 'file' )
     {
         if( $configOutput != '/dev/null' )
         {
-            PH::print_stdout( "" );
+            PH::print_stdout();
             $pan->save_to_file($configOutput);
         }
     }
 }
-PH::print_stdout( "" );
+PH::print_stdout();
 
 PH::print_stdout( "************* END OF SCRIPT ".basename(__FILE__)." ************" );
 

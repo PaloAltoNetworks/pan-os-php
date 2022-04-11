@@ -36,7 +36,7 @@ function display_usage_and_exit()
 
     PH::print_stdout("Listing optional arguments:");
 
-    PH::print_stdout("");
+    PH::print_stdout();
 
 
     exit(1);
@@ -195,7 +195,7 @@ foreach($rules as $rule)
 
 
     $newTagName = $ridTagLibrary->findAvailableTagName('appRID#');
-    PH::print_stdout("" );
+    PH::print_stdout();
     PH::print_stdout("    * creating Virtual TAG '$newTagName' ... ");
 
     PH::print_stdout("    * applying tag to rule description... ");
