@@ -2,6 +2,7 @@ CHANGELOG
 
 2.0.36
 UTILS:
+* UTIL type=device | introduce idle time for actions=system-admin-session
 
 BUGFIX:
 

@@ -3303,13 +3303,20 @@ DeviceCallContext::$supportedActions['system-admin-session'] = array(
                     PH::print_stdout(str_pad($string, 22) . $tmpString->textContent);
                 }
 
+                $tmpString = DH::findFirstElement('idle-for', $admin);
+                if( $tmpString !== FALSE )
+                {
+                    $string = "   - SESSION IDLE for: ";
+                    PH::print_stdout( str_pad( $string, 22 ).$tmpString->textContent);
+                }
+
                 $tmpString = DH::findFirstElement('session-expiry', $admin);
                 if( $tmpString !== FALSE )
                 {
                     $string = "   - SESSION EXPIRY: ";
                     PH::print_stdout( str_pad( $string, 22 ).$tmpString->textContent);
                 }
-
+//
 
 
                 if( $action == "delete" )
