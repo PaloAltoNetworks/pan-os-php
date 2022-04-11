@@ -1,5 +1,13 @@
 CHANGELOG
 
+2.0.36
+UTILS:
+
+BUGFIX:
+
+GENERAL:
+
+
 2.0.35 (20220411)
 UTILS:
 * UTIL type=device | introduce actions=system-restart / system-mgt-config_users /  system-admin-session:display / system-admin-session:delete,1
