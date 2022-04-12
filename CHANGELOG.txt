@@ -8,6 +8,8 @@ UTILS:
 BUGFIX:
 
 GENERAL:
+* framework | all API request are now send via GET, POST method is no longer supported with PAN-OS 10.2
+* framework | API KEY will be revert to send via URL, not using the secure method to send via Header which is available since PAN-OS 9.0
 
 
 2.0.35 (20220411)

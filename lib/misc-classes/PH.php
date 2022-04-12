@@ -134,7 +134,7 @@ class PH
     public static $ignoreInvalidAddressObjects = FALSE;
 
     /** @var bool set to true if you want to send API key via HEADER - possible starting with PAN-OS 9.0 */
-    public static $sendAPIkeyviaHeader = TRUE;
+    public static $sendAPIkeyviaHeader = FALSE;
 
     public static $saveAPIkey = TRUE;
 
