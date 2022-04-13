@@ -667,7 +667,7 @@ class ServiceStore
      **/
     public function newServiceGroup($name)
     {
-        $found = $this->find($name, null, TRUE);
+        $found = $this->find($name, null, FALSE);
         if( $found !== null )
             derr("cannot create ServiceGroup named '" . $name . "' as this name is already in use");
 
@@ -687,7 +687,7 @@ class ServiceStore
      **/
     public function API_newServiceGroup($name)
     {
-        $found = $this->find($name, null, TRUE);
+        $found = $this->find($name, null, FALSE);
         if( $found !== null )
             derr("cannot create ServiceGroup named '" . $name . "' as this name is already in use");
 

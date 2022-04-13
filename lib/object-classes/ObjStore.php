@@ -91,9 +91,9 @@ class ObjStore
         return null;
     }
 
-    public function find($name )
+    public function find($name, $ref = null, $nested = TRUE )
     {
-        $f = $this->findByName( $name );
+        $f = $this->findByName( $name, null, $nested );
 
         if( $f !== null )
             return $f;

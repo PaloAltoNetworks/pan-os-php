@@ -199,7 +199,7 @@ class ZoneStore extends ObjStore
                 derr("Zone: " . $name . " already available\n");
         }
 
-        $found = $this->find($name, null);
+        $found = $this->find($name, null, FALSE);
         if( $found !== null )
             derr("cannot create Zone named '" . $name . "' as this name is already in use ");
 
