@@ -1146,7 +1146,7 @@ class UTIL
         PH::print_stdout( " - PAN-OS APP-ID version: ".$panc_version );
         PH::print_stdout( array( $panc_version ), false, "PAN-OS APP-ID version" );
 
-        if( $this->pan->timezone !== null )
+        if( isset( $this->pan->timezone ) && $this->pan->timezone !== null )
             PH::print_stdout( " - PAN-OS Device timezone: ".$this->pan->timezone ." is used. actual time: ".date('Y/m/d H:i:s') );
 
         /*
