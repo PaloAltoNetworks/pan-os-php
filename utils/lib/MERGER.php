@@ -1928,6 +1928,8 @@ class MERGER extends UTIL
 
                 foreach( $objectsToSearchThrough as $object )
                 {
+                    /** @var Service $object */
+
                     if( !$object->isService() )
                         continue;
                     if( $object->isTmpSrv() )
@@ -2113,7 +2115,7 @@ class MERGER extends UTIL
                                     $text = "         ancestor name: '{$ancestor->name()}' DG: ";
                                     if( $ancestor->owner->owner->name() == "" ) $text .= "'shared'";
                                     else $text .= "'{$ancestor->owner->owner->name()}'";
-                                    $text .=  "  value: '{$ancestor->getDestPort()}' ";
+                                    $text .=  "  value: '{$ancestor->protocol()}/{$ancestor->getDestPort()}' ";
                                     PH::print_stdout( $text );
 
                                     if( $pickedObject === $object )
@@ -2128,7 +2130,7 @@ class MERGER extends UTIL
                             $text = "         ancestor name: '{$ancestor->name()}' DG: ";
                             if( $ancestor->owner->owner->name() == "" ) $text .= "'shared'";
                             else $text .= "'{$ancestor->owner->owner->name()}'";
-                            $text .=  "  value: '{$ancestor->getDestPort()}' ";
+                            $text .=  "  value: '{$ancestor->protocol()}/{$ancestor->getDestPort()}' ";
                             PH::print_stdout( $text );
 
                             if( $this->upperLevelSearch )
@@ -2351,7 +2353,7 @@ class MERGER extends UTIL
                             $text = "         ancestor name: '{$ancestor->name()}' DG: ";
                             if( $ancestor->owner->owner->name() == "" ) $text .= "'shared'";
                             else $text .= "'{$ancestor->owner->owner->name()}'";
-                            $text .=  "  value: '{$ancestor->getDestPort()}' ";
+                            $text .=  "  value: '{$ancestor->protocol()}/{$ancestor->getDestPort()}' ";
                             PH::print_stdout( $text );
 
                             if( $this->upperLevelSearch )

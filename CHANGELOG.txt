@@ -4,6 +4,7 @@ CHANGELOG
 UTILS:
 * UTIL type=device | introduce idle time for actions=system-admin-session
 * UTIL type=device | actions=system-admin-session:delete,8
+* UTIL type=service-merger | extend output with protocol
 
 BUGFIX:
 * CLASS ZoneStore/AddressStore/ObjStore/ServiceStore | bugfix to NOT search parentstore of object name during creation of new object
