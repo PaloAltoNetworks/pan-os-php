@@ -241,6 +241,9 @@ class Schedule
             $valueRoot = DH::findFirstElementOrCreate("schedule-type", $this->xmlroot);
             $valueRoot = DH::findFirstElementOrCreate("recurring", $valueRoot);
             $valueRoot = DH::findFirstElementOrCreate("daily", $valueRoot);
+
+            DH::clearDomNodeChilds($valueRoot);
+
             foreach( $this->recurring_array['daily'] as $entry )
             {
                 DH::createElement($valueRoot, 'member', $entry['start']."-".$entry['end']);

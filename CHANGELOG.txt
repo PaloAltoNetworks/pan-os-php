@@ -8,6 +8,7 @@ UTILS:
 BUGFIX:
 * CLASS ZoneStore/AddressStore/ObjStore/ServiceStore | bugfix to NOT search parentstore of object name during creation of new object
 * class UTIL | bugfix for Fawkes config type related to timezone setting
+* class Schedule | bugfix for method setRecurringDaily() - rewritexml correction
 
 GENERAL:
 * framework | all API request are now send via GET, POST method is no longer supported with PAN-OS 10.2
