@@ -2978,11 +2978,9 @@ class MERGER extends UTIL
         $content = str_replace('%JSCONTENT%', $jscontent, $content);
 
         if( PH::$shadow_json )
-        {
             PH::$JSON_OUT['exportcsv'] = $content;
-        }
-        else
-            file_put_contents($this->exportcsvFile, $content);
+
+        file_put_contents($this->exportcsvFile, $content);
     }
 
     private function deletedObject( $index, $keptOBJ, $removedOBJ)
