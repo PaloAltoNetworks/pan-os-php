@@ -2965,14 +2965,14 @@ class MERGER extends UTIL
             }
         }
 
-        $content = file_get_contents(dirname(__FILE__) . '/../common//html/export-template.html');
+        $content = file_get_contents(dirname(__FILE__) . '/../common/html/export-template.html');
         $content = str_replace('%TableHeaders%', $headers, $content);
 
         $content = str_replace('%lines%', $lines, $content);
 
         $jscontent = file_get_contents(dirname(__FILE__) . '/../common/html/jquery.min.js');
         $jscontent .= "\n";
-        $jscontent .= file_get_contents(dirname(__FILE__) . '/../common//html/jquery.stickytableheaders.min.js');
+        $jscontent .= file_get_contents(dirname(__FILE__) . '/../common/html/jquery.stickytableheaders.min.js');
         $jscontent .= "\n\$('table').stickyTableHeaders();\n";
 
         $content = str_replace('%JSCONTENT%', $jscontent, $content);

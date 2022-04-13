@@ -1061,14 +1061,8 @@ class PanAPIConnector
     {
         $sendThroughPost = FALSE;
 
-        $tmp_parameters = "";
         if( is_array($parameters) )
-        {
-            foreach( $parameters as $key => $parameter )
-                $tmp_parameters .= "&".$key."=".$parameter;
-            $parameters = substr($tmp_parameters, 1);
-            #$sendThroughPost = TRUE;
-        }
+            $sendThroughPost = TRUE;
 
 
         $this->_createOrRenewCurl();
