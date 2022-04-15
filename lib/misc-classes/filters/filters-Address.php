@@ -78,7 +78,7 @@ RQuery::$defaultFilters['address']['object']['operators']['is.tmp'] = array(
 );
 RQuery::$defaultFilters['address']['object']['operators']['is.ip-range'] = array(
     'Function' => function (AddressRQueryContext $context) {
-        if( !$context->object->isGroup() )
+        if( !$context->object->isGroup() && !$context->object->isRegion() )
             return $context->object->isType_ipRange() == TRUE;
 
         return FALSE;
@@ -91,7 +91,7 @@ RQuery::$defaultFilters['address']['object']['operators']['is.ip-range'] = array
 );
 RQuery::$defaultFilters['address']['object']['operators']['is.ip-netmask'] = array(
     'Function' => function (AddressRQueryContext $context) {
-        if( !$context->object->isGroup() )
+        if( !$context->object->isGroup() && !$context->object->isRegion() )
             return $context->object->isType_ipNetmask() == TRUE;
 
         return FALSE;
@@ -104,7 +104,7 @@ RQuery::$defaultFilters['address']['object']['operators']['is.ip-netmask'] = arr
 );
 RQuery::$defaultFilters['address']['object']['operators']['is.fqdn'] = array(
     'Function' => function (AddressRQueryContext $context) {
-        if( !$context->object->isGroup() )
+        if( !$context->object->isGroup() && !$context->object->isRegion() )
             return $context->object->isType_FQDN() == TRUE;
         else
             return FALSE;
@@ -117,7 +117,7 @@ RQuery::$defaultFilters['address']['object']['operators']['is.fqdn'] = array(
 );
 RQuery::$defaultFilters['address']['object']['operators']['is.ip-wildcard'] = array(
     'Function' => function (AddressRQueryContext $context) {
-        if( !$context->object->isGroup() )
+        if( !$context->object->isGroup() && !$context->object->isRegion() )
             return $context->object->isType_ipWildcard() == TRUE;
         else
             return FALSE;
@@ -133,7 +133,7 @@ RQuery::$defaultFilters['address']['object']['operators']['is.ipv4'] = Array(
     {
         $object = $context->object;
 
-        if( !$object->isGroup() )
+        if( !$object->isGroup() && !$object->isRegion()  )
         {
             if( $object->isType_FQDN() )
             {
@@ -141,7 +141,7 @@ RQuery::$defaultFilters['address']['object']['operators']['is.ipv4'] = Array(
                 return false;
             }
 
-            if( strpos( $object->value(), ":") !== false )
+            if( $object->value() !== null && strpos( $object->value(), ":") !== false )
                 return false;
 
             $addr_value = $object->value();
@@ -152,7 +152,7 @@ RQuery::$defaultFilters['address']['object']['operators']['is.ipv4'] = Array(
                 $addr_value = $ip_range[0];
             }
 
-            if( substr_count( $addr_value, '.' ) == 3 )
+            if( $addr_value !== null && substr_count( $addr_value, '.' ) == 3 )
             {
                 #check that all four octects are ipv4
                 $tmp_addr_value = explode( "/", $addr_value );
@@ -185,7 +185,7 @@ RQuery::$defaultFilters['address']['object']['operators']['is.ipv6'] = Array(
     {
         $object = $context->object;
 
-        if( !$object->isGroup() )
+        if( !$object->isGroup() && !$object->isRegion()  )
         {
             if( $object->isType_FQDN() )
             {
@@ -301,7 +301,7 @@ RQuery::$defaultFilters['address']['object']['operators']['is.recursive.member.o
         if( $addressGroup === null )
             return FALSE;
 
-        if( !$context->object->isGroup() )
+        if( !$context->object->isGroup() && !$context->object->isRegion() )
         {
             if( $addressGroup->hasObjectRecursive($context->object) )
                 return TRUE;
@@ -362,7 +362,7 @@ RQuery::$defaultFilters['address']['name']['operators']['regex'] = array(
         if( strpos($value, '$$value$$') !== FALSE )
         {
             $replace = '%%%INVALID\.FOR\.THIS\.TYPE\.OF\.OBJECT%%%';
-            if( !$object->isGroup() )
+            if( !$object->isGroup() && !$object->isRegion() && $object->value() !== null  )
                 $replace = str_replace(array('.', '/'), array('\.', '\/'), $object->value());
 
             $value = str_replace('$$value$$', $replace, $value);
@@ -385,15 +385,19 @@ RQuery::$defaultFilters['address']['name']['operators']['regex'] = array(
         if( strpos($value, '$$value.no-netmask$$') !== FALSE )
         {
             $replace = '%%%INVALID\.FOR\.THIS\.TYPE\.OF\.OBJECT%%%';
-            if( !$object->isGroup() && $object->isType_ipNetmask() )
+            if( !$object->isGroup() && !$object->isRegion() && $object->isType_ipNetmask() )
+            {
                 $replace = str_replace('.', '\.', $object->getNetworkValue());
+                #PH::print_stdout( "|".$object->getNetworkValue()."|name:".$object->name() );
+            }
+
 
             $value = str_replace('$$value.no-netmask$$', $replace, $value);
         }
         if( strpos($value, '$$netmask$$') !== FALSE )
         {
             $replace = '%%%INVALID\.FOR\.THIS\.TYPE\.OF\.OBJECT%%%';
-            if( !$object->isGroup() && $object->isType_ipNetmask() )
+            if( !$object->isGroup() && !$object->isRegion() && $object->isType_ipNetmask() )
                 $replace = $object->getNetworkMask();
 
             $value = str_replace('$$netmask$$', $replace, $value);
@@ -401,7 +405,7 @@ RQuery::$defaultFilters['address']['name']['operators']['regex'] = array(
         if( strpos($value, '$$netmask.blank32$$') !== FALSE )
         {
             $replace = '%%%INVALID\.FOR\.THIS\.TYPE\.OF\.OBJECT%%%';
-            if( !$object->isGroup() && $object->isType_ipNetmask() )
+            if( !$object->isGroup() && !$object->isRegion() && $object->isType_ipNetmask() )
             {
                 $netmask = $object->getNetworkMask();
                 if( $netmask != 32 )
@@ -414,6 +418,9 @@ RQuery::$defaultFilters['address']['name']['operators']['regex'] = array(
         if( strlen($value) == 0 )
             return FALSE;
         if( strpos($value, '//') !== FALSE )
+            return FALSE;
+
+        if( !$object->isGroup() && !$object->isRegion() && $object->isType_TMP() )
             return FALSE;
 
         $matching = preg_match($value, $object->name());
@@ -461,7 +468,7 @@ RQuery::$defaultFilters['address']['name']['operators']['is.in.file'] = array(
     'arg' => TRUE
 );
 RQuery::$defaultFilters['address']['netmask']['operators']['>,<,=,!'] = array(
-    'eval' => '!$object->isGroup() && $object->isType_ipNetmask() && $object->getNetworkMask() !operator! !value!',
+    'eval' => '!$object->isGroup() && !$object->isRegion() && $object->isType_ipNetmask() && $object->getNetworkMask() !operator! !value!',
     'arg' => TRUE,
     'ci' => array(
         'fString' => '(%PROP% 1)',
@@ -477,7 +484,7 @@ RQuery::$defaultFilters['address']['members.count']['operators']['>,<,=,!'] = ar
     )
 );
 RQuery::$defaultFilters['address']['tag.count']['operators']['>,<,=,!'] = array(
-    'eval' => "\$object->tags->count() !operator! !value!",
+    'eval' => "!\$object->isRegion() && \$object->tags->count() !operator! !value!",
     'arg' => TRUE,
     'ci' => array(
         'fString' => '(%PROP% 1)',
@@ -486,6 +493,8 @@ RQuery::$defaultFilters['address']['tag.count']['operators']['>,<,=,!'] = array(
 );
 RQuery::$defaultFilters['address']['tag']['operators']['has'] = array(
     'Function' => function (AddressRQueryContext $context) {
+        if( $context->object->isRegion() )
+            return FALSE;
         return $context->object->tags->hasTag($context->value) === TRUE;
     },
     'arg' => TRUE,
@@ -497,6 +506,8 @@ RQuery::$defaultFilters['address']['tag']['operators']['has'] = array(
 );
 RQuery::$defaultFilters['address']['tag']['operators']['has.nocase'] = array(
     'Function' => function (AddressRQueryContext $context) {
+        if( $context->object->isRegion() )
+            return FALSE;
         return $context->object->tags->hasTag($context->value, FALSE) === TRUE;
     },
     'arg' => TRUE,
@@ -507,6 +518,8 @@ RQuery::$defaultFilters['address']['tag']['operators']['has.nocase'] = array(
 );
 RQuery::$defaultFilters['address']['tag']['operators']['has.regex'] = array(
     'Function' => function (AddressRQueryContext $context) {
+        if( $context->object->isRegion() )
+            return FALSE;
         foreach( $context->object->tags->tags() as $tag )
         {
             $matching = preg_match($context->value, $tag->name());
@@ -1126,7 +1139,7 @@ RQuery::$defaultFilters['address']['value']['operators']['is.in.file'] = Array(
         else
             $list = &$context->cachedList;
 
-        if( !$object->isGroup() )
+        if( !$object->isGroup() && !$object->isRegion()  )
         {
             //TODO: if not IPv4 -  return false
             if( $object->getNetworkMask() == '32' )
@@ -1175,6 +1188,9 @@ RQuery::$defaultFilters['address']['description']['operators']['regex'] = array(
         $object = $context->object;
         $value = $context->value;
 
+        if( $object->isRegion() )
+            return FALSE;
+
         if( strlen($value) > 0 && $value[0] == '%' )
         {
             $value = substr($value, 1);
@@ -1202,6 +1218,9 @@ RQuery::$defaultFilters['address']['description']['operators']['is.empty'] = arr
         $object = $context->object;
         $value = $context->value;
 
+        if( $object->isRegion() )
+            return FALSE;
+
         if( strlen($object->description()) == 0 )
             return TRUE;
 
@@ -1223,13 +1242,16 @@ RQuery::$defaultFilters['address']['ip.count']['operators']['>,<,=,!'] = array(
         if( $operator == '=' )
             $operator = '==';
 
-        if( $object->isGroup() )
+        if( $object->isGroup() || $object->isRegion() )
         {
             //count IP addresses
             return false;
         }
 
         $int = $object->getIPcount();
+
+        if( $int == FALSE )
+            return FALSE;
 
         $operator_string = $int." ".$operator." ".$arg;
 
