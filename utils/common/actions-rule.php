@@ -729,7 +729,8 @@ RuleCallContext::$supportedActions[] = array(
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
 
-        if( ($rule->isPbfRule() && $rule->isZoneBased()) || ($rule->isDoSRule() && $rule->isZoneBasedFrom()) )
+        /** @var PbfRule $rule */
+        if( ($rule->isPbfRule() && ($rule->isZoneBased() or $rule->isInterfaceBased()) )  || ($rule->isDoSRule() && $rule->isZoneBasedFrom()) )
         {
             $string = "FROM is Zone based, not supported yet.";
             PH::ACTIONstatus( $context, "SKIPPED", $string );
@@ -1042,6 +1043,13 @@ RuleCallContext::$supportedActions[] = array(
     'section' => 'address',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
+
+        if( !$rule->isSecurityRule()  )
+        {
+            $string = "Rule is of type ".get_class($rule)." - not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
 
         $old_srcs = $rule->source->getAll();
         $old_dsts = $rule->destination->getAll();
