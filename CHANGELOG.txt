@@ -7,6 +7,7 @@ UTILS:
 * UTIL type=service-merger | extend output with protocol
 * UTIL type=ALLOBJECTMERGER script | shadow-json and exportcsv argument will now also store HTML file locally
 * class Tag | improve method setColor() - to successfully read SASE API config response
+* UTIL type=service | delete deprecated actions=deleteForce - use actions=delete-Force
 
 BUGFIX:
 * CLASS ZoneStore/AddressStore/ObjStore/ServiceStore | bugfix to NOT search parentstore of object name during creation of new object
