@@ -1801,14 +1801,6 @@ class SecurityRule extends RuleWithUserID
                 $this->schedule->removeReference($this);
 
             $this->schedule = null;
-            $tmpRoot = DH::findFirstElement('schedule', $this->xmlroot);
-
-            if( $tmpRoot === FALSE )
-                return TRUE;
-
-            $this->xmlroot->removeChild($tmpRoot);
-
-
         }
         else
         {
@@ -1824,11 +1816,11 @@ class SecurityRule extends RuleWithUserID
                 $f->addReference( $this );
 
             $this->schedule = $f;
-
-            #$this->schedule = $newSchedule;
-            $tmpRoot = DH::findFirstElementOrCreate('schedule', $this->xmlroot);
-            DH::setDomNodeText($tmpRoot, $this->schedule->name());
         }
+
+        $this->rewriteSchedule_XML();
+
+
 
         return TRUE;
     }
@@ -2130,6 +2122,33 @@ class SecurityRule extends RuleWithUserID
         }
 
         return true;
+    }
+
+    public function referencedObjectRenamed($h, $oldname = "")
+    {
+        if( $this->schedule === $h )
+        {
+            $this->rewriteSchedule_XML();
+            return;
+        }
+    }
+
+    public function rewriteSchedule_XML()
+    {
+        if( $this->schedule === null )
+        {
+            $tmpRoot = DH::findFirstElement('schedule', $this->xmlroot);
+
+            if( $tmpRoot === FALSE )
+                return TRUE;
+
+            $this->xmlroot->removeChild($tmpRoot);
+        }
+        else
+        {
+            $tmpRoot = DH::findFirstElementOrCreate('schedule', $this->xmlroot);
+            DH::setDomNodeText($tmpRoot, $this->schedule->name());
+        }
     }
 
     static public $templatexml = '<entry name="**temporarynamechangeme**"><option><disable-server-response-inspection>no</disable-server-response-inspection></option><from><member>any</member></from><to><member>any</member></to><source><member>any</member></source><destination><member>any</member></destination><source-user><member>any</member></source-user><category><member>any</member></category><application><member>any</member></application><service><member>any</member></service><hip-profiles><member>any</member></hip-profiles><action>allow</action><log-start>no</log-start><log-end>yes</log-end><negate-source>no</negate-source><negate-destination>no</negate-destination><tag/><description/><disabled>no</disabled></entry>';
