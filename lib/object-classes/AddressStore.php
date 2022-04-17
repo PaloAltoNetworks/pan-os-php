@@ -358,6 +358,10 @@ class AddressStore
         return count($this->_tmpAddresses);
     }
 
+    public function countRegionObjects()
+    {
+        return count($this->_regionObjects);
+    }
 
     /**
      *
@@ -653,8 +657,14 @@ class AddressStore
             if( $cleanInMemory )
                 $s->removeAll(FALSE);
         }
+        else if( $class == 'Region' )
+        {
+            unset($this->_regionObjects[$objectName]);
+            if( $cleanInMemory )
+                $s->removeAll(FALSE);
+        }
         else
-            derr('invalid class found');
+            derr('AddressStore remove - invalid class found');
 
         $s->owner = null;
 
@@ -676,8 +686,15 @@ class AddressStore
                 else
                     DH::clearDomNodeChilds($this->addressGroupRoot);
             }
+            elseif( $class == "Region" )
+            {
+                if( count($this->_regionObjects) > 0 )
+                    $this->regionRoot->removeChild($s->xmlroot);
+                else
+                    DH::clearDomNodeChilds($this->regionRoot);
+            }
             else
-                derr('unsupported');
+                derr('unsupported AddressStore remove class');
         }
 
         if( $cleanInMemory )
