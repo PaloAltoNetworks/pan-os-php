@@ -19,6 +19,7 @@ BUGFIX:
 
 GENERAL:
 * framework | API KEY will be revert to send via URL, not using the secure method to send via Header which is available since PAN-OS 9.0
+* framework | extend test_actions and test_filers
 
 
 2.0.35 (20220411)
