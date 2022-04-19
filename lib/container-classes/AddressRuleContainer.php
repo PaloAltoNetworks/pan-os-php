@@ -365,6 +365,9 @@ class AddressRuleContainer extends ObjRuleContainer
 
         foreach( $this->o as $o )
         {
+            if( $o->isRegion() )
+                continue;
+
             $localResult = $o->includesIP4Network($netStartEnd);
             if( $localResult == 1 )
             {

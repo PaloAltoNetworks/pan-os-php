@@ -16,6 +16,7 @@ BUGFIX:
 * class Schedule | bugfix for method setRecurringDaily() - rewritexml correction
 * UTIL type=rule | bugfix for actions=from-Set-Any / actions=src-dst-swap
 * UTIL type=address | bugfix related to custom Region object - class Region()
+* class AddressGroup | bugfix for dynamic AddressGroup - do not add own Group if tagged as member
 
 GENERAL:
 * framework | API KEY will be revert to send via URL, not using the secure method to send via Header which is available since PAN-OS 9.0

@@ -75,7 +75,7 @@ $missing_filters = array();
 foreach( RQuery::$defaultFilters as $type => &$filtersByField )
 {
 
-    #if( $type != 'rule' )
+    #if( $type != 'address' )
     #    continue;
 
     $start = false;
@@ -104,45 +104,13 @@ foreach( RQuery::$defaultFilters as $type => &$filtersByField )
             $filterString = str_replace('%PROP%', "{$fieldName} {$operator}", $ci['fString']);
 
 
-
-
-
 /*
-            if( strpos( $filterString, "src includes.full" ) !== false )
+            if( strpos( $filterString, "refobjectname is.recursive" ) !== false )
                 $start = true;
 
             if( !$start )
                 continue;
 */
-            //
-            //address problems memory leak
-            if( isset(PH::$args['in']) && $type === 'address' && strpos( $filterString, "refobjectname is.recursive" ) !== false )
-                continue;
-
-
-            if( isset(PH::$args['in']) && $type === 'rule' )
-            {
-                //something not working
-                //src included-in.full
-                //src included-in.partial
-                //src included-in.full.or.partial
-                if(strpos( $filterString, "src included-in." ) !== false )
-                    continue;
-
-                if(strpos( $filterString, "dst included-in." ) !== false )
-                    continue;
-
-                //error out
-                //Fatal error: Uncaught Error: Call to undefined method Region::includesIP4Network() in /Users/swaschkut/Documents/PAN-scripting/pan-os-php/lib/container-classes/AddressRuleContainer.php:368
-                //src includes.full
-                //src includes.partial
-                //src includes.full.or.partial
-                if(strpos( $filterString, "src includes." ) !== false )
-                    continue;
-                if(strpos( $filterString, "dst includes." ) !== false )
-                    continue;
-            }
-
 
 
             if( $type == 'rule' )

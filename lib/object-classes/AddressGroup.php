@@ -195,8 +195,15 @@ class AddressGroup
                     $tmp_found_addresses = $this->owner->all($tagFilter);
                     foreach( $tmp_found_addresses as $address )
                     {
-                        $this->members[] = $address;
-                        $address->addReference($this);
+                        if( $this->name() == $address->name() )
+                        {
+                            mwarning("dynamic AddressGroup with name: " . $this->name() . " is added as subgroup to itself, you should review your XML config file", $this->xmlroot, false);
+                        }
+                        else
+                        {
+                            $this->members[] = $address;
+                            $address->addReference($this);
+                        }
                     }
                 }
             }
