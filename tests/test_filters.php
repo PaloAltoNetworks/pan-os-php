@@ -75,9 +75,10 @@ $missing_filters = array();
 foreach( RQuery::$defaultFilters as $type => &$filtersByField )
 {
 
-    #if( $type != 'rule' )
+    #if( $type != 'address' )
     #    continue;
 
+    $start = false;
     foreach( $filtersByField as $fieldName => &$filtersByOperator )
     {
         foreach( $filtersByOperator['operators'] as $operator => &$filter )
@@ -101,6 +102,15 @@ foreach( RQuery::$defaultFilters as $type => &$filtersByField )
             $ci = &$filter['ci'];
 
             $filterString = str_replace('%PROP%', "{$fieldName} {$operator}", $ci['fString']);
+
+
+/*
+            if( strpos( $filterString, "refobjectname is.recursive" ) !== false )
+                $start = true;
+
+            if( !$start )
+                continue;
+*/
 
 
             if( $type == 'rule' )
@@ -171,8 +181,18 @@ foreach( RQuery::$defaultFilters as $type => &$filtersByField )
             $output = '/dev/null';
             $ruletype = 'any';
 
+            if( isset(PH::$args['in']) )
+            {
+                $input = PH::$args['in'];
 
-            $cli = "php $util in={$ci['input']} out={$output} location={$location} actions=display 'filter={$filterString}'";
+                if( strpos( $filterString, "location" ) !== false )
+                    continue;
+            }
+
+            else
+                $input = $ci['input'];
+
+            $cli = "php $util in={$input} out={$output} location={$location} actions=display 'filter={$filterString}'";
 
             if( $type == 'rule' )
                 $cli .= " ruletype={$ruletype}";

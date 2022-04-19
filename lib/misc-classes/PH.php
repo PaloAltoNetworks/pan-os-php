@@ -134,7 +134,7 @@ class PH
     public static $ignoreInvalidAddressObjects = FALSE;
 
     /** @var bool set to true if you want to send API key via HEADER - possible starting with PAN-OS 9.0 */
-    public static $sendAPIkeyviaHeader = TRUE;
+    public static $sendAPIkeyviaHeader = FALSE;
 
     public static $saveAPIkey = TRUE;
 
@@ -153,7 +153,7 @@ class PH
 
     private static $library_version_major = 2;
     private static $library_version_sub = 0;
-    private static $library_version_bugfix = 35;
+    private static $library_version_bugfix = 36;
 
     //BASIC AUTH PAN-OS 7.1
     public static $softwareupdate_key = "658d787f293e631196dac9fb29490f1cc1bb3827";

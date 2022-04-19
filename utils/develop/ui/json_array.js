@@ -403,7 +403,7 @@ var subjectObject =
                         "arg": true,
                         "help": "returns TRUE if object IP value describe multiple IP addresses; e.g. ip-range: 10.0.0.0-10.0.0.255 will match \"ip.count > 200\"",
                         "ci": {
-                            "fString": "(%PROP%)",
+                            "fString": "(%PROP% 5)",
                             "input": "input\/panorama-8.0.xml"
                         }
                     }
@@ -503,7 +503,7 @@ var subjectObject =
             "netmask": {
                 "operators": {
                     ">,<,=,!": {
-                        "eval": "!$object->isGroup() && $object->isType_ipNetmask() && $object->getNetworkMask() !operator! !value!",
+                        "eval": "!$object->isGroup() && !$object->isRegion() && $object->isType_ipNetmask() && $object->getNetworkMask() !operator! !value!",
                         "arg": true,
                         "ci": {
                             "fString": "(%PROP% 1)",
@@ -757,7 +757,7 @@ var subjectObject =
             "tag.count": {
                 "operators": {
                     ">,<,=,!": {
-                        "eval": "$object->tags->count() !operator! !value!",
+                        "eval": "!$object->isRegion() && $object->tags->count() !operator! !value!",
                         "arg": true,
                         "ci": {
                             "fString": "(%PROP% 1)",
@@ -1442,6 +1442,51 @@ var subjectObject =
                         "help": "if set to true; securityProfiles are create at SHARED level; at least one DG must be available"
                     }
                 }
+            },
+            "sp_spg-create-bp": {
+                "name": "sp_spg-create-bp",
+                "GlobalInitFunction": {},
+                "MainFunction": {},
+                "args": {
+                    "shared": {
+                        "type": "bool",
+                        "default": "false",
+                        "help": "if set to true; securityProfiles are create at SHARED level; at least one DG must be available"
+                    },
+                    "sp-name": {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "help": "if set, only ironskillet SP called 'Outbound' are created with the name defined"
+                    }
+                }
+            },
+            "system-admin-session": {
+                "name": "system-admin-session",
+                "GlobalInitFunction": {},
+                "MainFunction": {},
+                "args": {
+                    "action": {
+                        "type": "string",
+                        "default": "display"
+                    },
+                    "idle-since-hours": {
+                        "type": "string",
+                        "default": "8"
+                    }
+                },
+                "help": "This Action is displaying the actual logged in admin sessions"
+            },
+            "system-mgt-config_users": {
+                "name": "system-mgt-config_users",
+                "GlobalInitFunction": {},
+                "MainFunction": {},
+                "help": "This Action will display the configured Admin users on the Device"
+            },
+            "system-restart": {
+                "name": "system-restart",
+                "GlobalInitFunction": {},
+                "MainFunction": {},
+                "help": "This Action is rebooting the Device"
             },
             "template-add": {
                 "name": "template-add",
@@ -3293,7 +3338,7 @@ var subjectObject =
             "from.count": {
                 "operators": {
                     ">,<,=,!": {
-                        "eval": "$object->from->count() !operator! !value!",
+                        "eval": "!$object->isPbfRule() && $object->from->count() !operator! !value!",
                         "arg": true,
                         "ci": {
                             "fString": "(%PROP% 1)",
@@ -4154,7 +4199,7 @@ var subjectObject =
             "to.count": {
                 "operators": {
                     ">,<,=,!": {
-                        "eval": "$object->to->count() !operator! !value!",
+                        "eval": "!$object->isPbfRule() && $object->to->count() !operator! !value!",
                         "arg": true,
                         "ci": {
                             "fString": "(%PROP% 1)",
@@ -5273,11 +5318,6 @@ var subjectObject =
             "delete-force": {
                 "name": "delete-Force",
                 "MainFunction": {}
-            },
-            "deleteforce": {
-                "name": "deleteForce",
-                "MainFunction": {},
-                "deprecated": "this filter \"secprof is.profile\" is deprecated, you should use \"secprof type.is.profile\" instead!"
             },
             "description-append": {
                 "name": "description-Append",

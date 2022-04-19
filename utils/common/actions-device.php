@@ -3303,18 +3303,27 @@ DeviceCallContext::$supportedActions['system-admin-session'] = array(
                     PH::print_stdout(str_pad($string, 22) . $tmpString->textContent);
                 }
 
+                $tmpString = DH::findFirstElement('idle-for', $admin);
+                if( $tmpString !== FALSE )
+                {
+                    $idleTime = $tmpString->textContent;
+                    $idleTime = str_replace( "s", "", $idleTime);
+                    $string = "   - SESSION IDLE for: ";
+                    PH::print_stdout( str_pad( $string, 22 ).$tmpString->textContent);
+                }
+
                 $tmpString = DH::findFirstElement('session-expiry', $admin);
                 if( $tmpString !== FALSE )
                 {
                     $string = "   - SESSION EXPIRY: ";
                     PH::print_stdout( str_pad( $string, 22 ).$tmpString->textContent);
                 }
-
+//
 
 
                 if( $action == "delete" )
                 {
-                    $hours = $context->arguments['session-start-before-hours'];
+                    $hours = $context->arguments['idle-since-hours'];
                     if( is_integer($hours) )
                         derr( "argument need to be an integer" );
 
@@ -3325,11 +3334,28 @@ DeviceCallContext::$supportedActions['system-admin-session'] = array(
                     $dateTime = new DateTime($sessionStart);
                     $sessiontime = $dateTime->format('Y/m/d H:i:s'); // 15th Apr 2010
 
+
+
+                    $seconds = strtotime("1970-01-01 $idleTime UTC");
+                    #PH::print_stdout( "      * idle seconds: ".$seconds );
+                    $actual = date('Y/m/d H:i:s');
+                    $idlesince = strtotime( $actual ) - $seconds;
+                    $idleTime = date("Y-m-d H:i:s", $idlesince);
+
+
+
+                    if( strpos( $adminUser,"panorama" ) !== false )
+                    {
+                        PH::ACTIONstatus( $context, "SKIPPED", "needed for Panorama connection");
+                        continue;
+                    }
+
+
                     PH::print_stdout();
-                    PH::print_stdout(  "      * Session Start : ".$sessiontime );
-                    PH::print_stdout( "      * calculated Time for deletion, if Session start before: ".$calculatedtime );
+                    PH::print_stdout(  "      * Idle since : ".$idleTime);//." - ".strtotime( $idleTime ) );
+                    PH::print_stdout( "      * deletion, if Idle before: ".$calculatedtime );//. " - ".strtotime( $calculatedtime ) );
                     #if( $time < $dateTime )
-                    if( $calculatedtime < $sessiontime )
+                    if( strtotime($calculatedtime) < strtotime($idleTime) )
                     {
                         PH::print_stdout();
                         PH::print_stdout( "      * this session is not old enough - skipped for deletion");
@@ -3363,7 +3389,7 @@ DeviceCallContext::$supportedActions['system-admin-session'] = array(
     },
     'args' => array(
         'action' => array('type' => 'string', 'default' => 'display'),
-        'session-start-before-hours' => array('type' => 'string', 'default' => '1')
+        'idle-since-hours' => array('type' => 'string', 'default' => '8')
     ),
     'help' => "This Action is displaying the actual logged in admin sessions"
 );

@@ -1928,6 +1928,8 @@ class MERGER extends UTIL
 
                 foreach( $objectsToSearchThrough as $object )
                 {
+                    /** @var Service $object */
+
                     if( !$object->isService() )
                         continue;
                     if( $object->isTmpSrv() )
@@ -2113,7 +2115,7 @@ class MERGER extends UTIL
                                     $text = "         ancestor name: '{$ancestor->name()}' DG: ";
                                     if( $ancestor->owner->owner->name() == "" ) $text .= "'shared'";
                                     else $text .= "'{$ancestor->owner->owner->name()}'";
-                                    $text .=  "  value: '{$ancestor->getDestPort()}' ";
+                                    $text .=  "  value: '{$ancestor->protocol()}/{$ancestor->getDestPort()}' ";
                                     PH::print_stdout( $text );
 
                                     if( $pickedObject === $object )
@@ -2128,7 +2130,7 @@ class MERGER extends UTIL
                             $text = "         ancestor name: '{$ancestor->name()}' DG: ";
                             if( $ancestor->owner->owner->name() == "" ) $text .= "'shared'";
                             else $text .= "'{$ancestor->owner->owner->name()}'";
-                            $text .=  "  value: '{$ancestor->getDestPort()}' ";
+                            $text .=  "  value: '{$ancestor->protocol()}/{$ancestor->getDestPort()}' ";
                             PH::print_stdout( $text );
 
                             if( $this->upperLevelSearch )
@@ -2351,7 +2353,7 @@ class MERGER extends UTIL
                             $text = "         ancestor name: '{$ancestor->name()}' DG: ";
                             if( $ancestor->owner->owner->name() == "" ) $text .= "'shared'";
                             else $text .= "'{$ancestor->owner->owner->name()}'";
-                            $text .=  "  value: '{$ancestor->getDestPort()}' ";
+                            $text .=  "  value: '{$ancestor->protocol()}/{$ancestor->getDestPort()}' ";
                             PH::print_stdout( $text );
 
                             if( $this->upperLevelSearch )
@@ -2963,24 +2965,22 @@ class MERGER extends UTIL
             }
         }
 
-        $content = file_get_contents(dirname(__FILE__) . '/../common//html/export-template.html');
+        $content = file_get_contents(dirname(__FILE__) . '/../common/html/export-template.html');
         $content = str_replace('%TableHeaders%', $headers, $content);
 
         $content = str_replace('%lines%', $lines, $content);
 
         $jscontent = file_get_contents(dirname(__FILE__) . '/../common/html/jquery.min.js');
         $jscontent .= "\n";
-        $jscontent .= file_get_contents(dirname(__FILE__) . '/../common//html/jquery.stickytableheaders.min.js');
+        $jscontent .= file_get_contents(dirname(__FILE__) . '/../common/html/jquery.stickytableheaders.min.js');
         $jscontent .= "\n\$('table').stickyTableHeaders();\n";
 
         $content = str_replace('%JSCONTENT%', $jscontent, $content);
 
         if( PH::$shadow_json )
-        {
             PH::$JSON_OUT['exportcsv'] = $content;
-        }
-        else
-            file_put_contents($this->exportcsvFile, $content);
+
+        file_put_contents($this->exportcsvFile, $content);
     }
 
     private function deletedObject( $index, $keptOBJ, $removedOBJ)

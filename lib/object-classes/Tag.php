@@ -52,7 +52,8 @@ class Tag
     const color14 = 'black';
     const color15 = 'gold';
     const color16 = 'brown';
-    const color17 = 'dark green';
+    //all above have first character capital in Fawkes
+    const color17 = 'dark green'; //Olive in Fawkes
     //color18 not defined in PAN-OS
     const color19 = 'Maroon';
 
@@ -210,6 +211,14 @@ class Tag
     {
         if( !is_string($newColor) )
             derr('value can be text only');
+
+        if( !isset(self::$TagColors[$newColor]) )
+        {
+            if( $newColor === "Olive" )
+                $newColor = "dark green";
+            elseif( !isset( TAG::$TagColors[ $newColor ] ) )
+                $newColor = lcfirst( $newColor );
+        }
 
         if( !isset(self::$TagColors[$newColor]) )
         {

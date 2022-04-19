@@ -80,13 +80,27 @@ $pathString = dirname(__FILE__)."/../utils/lib";
 $JSONarray = file_get_contents( $pathString."/util_action_filter.json");
 $json_a = json_decode($JSONarray, true);
 
+
+$start = FALSE;
 foreach( $json_a as $type => $UTILtype )
 {
-    #if( $type !== "rule" )
+    #if( $type === "address" || $type === "rule" )
     #    continue;
 
+
+
     $ci = array();
-    $ci['input'] = 'input/panorama-8.0.xml';
+    if( isset(PH::$args['in']) )
+    {
+        $ci['input'] = PH::$args['in'];
+
+        #if( strpos( $filterString, "location" ) !== false )
+        #    continue;
+    }
+
+    else
+        $ci['input'] = 'input/panorama-8.0.xml';
+
 
     foreach( $UTILtype['action'] as $actionName => &$action )
     {
@@ -119,6 +133,16 @@ foreach( $json_a as $type => $UTILtype )
         }
 
         $totalActionWithCiCount++;
+
+
+        //start from
+        #if( isset(PH::$args['in']) && $type === 'address' && strpos( $actionName, "display-NAT-usage" ) !== false )
+        #    $start = TRUE;
+
+        #if( !$start )
+        #    continue;
+
+
 
         print "check TYPE: " . $type . " action: " . $actionName . "\n";
 

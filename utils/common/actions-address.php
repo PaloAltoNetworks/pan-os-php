@@ -515,6 +515,13 @@ AddressCallContext::$supportedActions[] = array(
             PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
+        elseif( $object->isRegion() )
+        {
+            $string = "because object is of type REGION";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+
         $objectFind = $object->tags->parentCentralStore->find($context->arguments['tagName']);
         if( $objectFind === null )
             derr("tag named '{$context->arguments['tagName']}' not found");
@@ -535,6 +542,12 @@ AddressCallContext::$supportedActions[] = array(
         if( $object->isTmpAddr() )
         {
             $string = "because object is temporary";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+        elseif( $object->isRegion() )
+        {
+            $string = "because object is of type REGION";
             PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
@@ -566,6 +579,12 @@ AddressCallContext::$supportedActions[] = array(
             PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
+        elseif( $object->isRegion() )
+        {
+            $string = "because object is of type REGION";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
 
         $objectFind = $object->tags->parentCentralStore->find($context->arguments['tagName']);
         if( $objectFind === null )
@@ -586,6 +605,12 @@ AddressCallContext::$supportedActions[] = array(
         if( $object->isTmpAddr() )
         {
             $string = "because object is temporary";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+        elseif( $object->isRegion() )
+        {
+            $string = "because object is of type REGION";
             PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
@@ -614,6 +639,13 @@ AddressCallContext::$supportedActions[] = array(
             PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
+        elseif( $object->isRegion() )
+        {
+            $string = "because object is of type REGION";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+
         $pattern = '/' . $context->arguments['regex'] . '/';
         foreach( $object->tags->tags() as $tag )
         {
@@ -824,6 +856,11 @@ AddressCallContext::$supportedActions[] = array(
                         $lines .= $encloseFunction( (string)$object->getIPcount() );
                         $lines .= $encloseFunction($object->tags->tags());
                     }
+                }
+                elseif( $object->isRegion() )
+                {
+                    //swaschkut - 20220417
+                    //what to do here?
                 }
 
                 if( $addWhereUsed )
@@ -1611,6 +1648,11 @@ AddressCallContext::$supportedActions[] = array(
                 }
             }
         }
+        elseif( $object->isRegion() )
+        {
+            $string = "UNSUPPORTED";
+            PH::ACTIONlog( $context, $string );
+        }
         else
         {
             $type = $object->type();
@@ -1715,14 +1757,21 @@ AddressCallContext::$supportedActions[] = array(
     'name' => 'description-Append',
     'MainFunction' => function (AddressCallContext $context) {
         $address = $context->object;
-        $description = $address->description();
 
         if( $address->isTmpAddr() )
         {
-            $string = "object is tmp";
+            $string = "object is of type TMP";
             PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
+        elseif( $address->isRegion() )
+        {
+            $string = "object is of type Region";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+
+        $description = $address->description();
 
         $textToAppend = "";
         if( $description != "" )
@@ -1777,14 +1826,21 @@ AddressCallContext::$supportedActions[] = array(
     'name' => 'description-Delete',
     'MainFunction' => function (AddressCallContext $context) {
         $address = $context->object;
-        $description = $address->description();
 
         if( $address->isTmpAddr() )
         {
-            $string = "object is tmp";
+            $string = "object is of type TMP";
             PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
+        elseif( $address->isRegion() )
+        {
+            $string = "object is of type Region";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+
+        $description = $address->description();
         if( $description == "" )
         {
             $string = "no description available";
@@ -1850,6 +1906,12 @@ AddressCallContext::$supportedActions[] = array(
             PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
+        elseif( $address->isRegion() )
+        {
+            $string = "object is of type Region";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
 
         if( !$address->isType_ipNetmask() )
         {
@@ -1893,6 +1955,13 @@ AddressCallContext::$supportedActions[] = array(
             PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
+        elseif( $object->isRegion() )
+        {
+            $string = "object is of type Region";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+
         if( !$object->isType_ipNetmask() )
         {
             $string = "'value-set-reverse-dns' alias is compatible with ip-netmask type objects";
@@ -1939,6 +2008,13 @@ AddressCallContext::$supportedActions[] = array(
             PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
+        elseif( $object->isRegion() )
+        {
+            $string = "object is of type Region";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+
         if( !$object->isType_FQDN() )
         {
             $string = "object is NOT of type FQDN";
@@ -2086,9 +2162,9 @@ AddressCallContext::$supportedActions[] = array(
             return;
         }
 
-        if( $object->isGroup() )
+        if( $object->isGroup() || $object->isRegion() )
         {
-            $string = "because object is address group";
+            $string = "because object is or GROUP or REGION";
             PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
@@ -2330,7 +2406,13 @@ AddressCallContext::$supportedActions[] = array(
                     foreach( $objRef_owner->source->members() as $key =>$member )
                     {
                         if( $object === $member )
-                            $text .= $context->padding . PH::boldText( $member->value() );
+                        {
+                            if( $member->isAddress() )
+                                $text .= $context->padding . PH::boldText( $member->value() );
+                            else
+                                $text .= $context->padding . "GROUP: ".$member->name()." missing IPv4";
+                        }
+
                         else
                         {
                             if( $member->isAddress() )
@@ -2344,9 +2426,17 @@ AddressCallContext::$supportedActions[] = array(
                     {
                         $text .= " => ";
                         if( $object === $member )
-                            $text .= PH::boldText( $member->value() );
+                            if( $member->isAddress() )
+                                $text .= PH::boldText( $member->value() );
+                            else
+                                $text .= " GROUP: ".$member->name()." missing IPv4";
                         else
-                            $text .= $member->value();
+                        {
+                            if( $member->isAddress() )
+                                $text .= $member->value();
+                            else
+                                $text .= " GROUP: ".$member->name()." missing IPv4";
+                        }
                     }
 
 
@@ -2465,7 +2555,7 @@ AddressCallContext::$supportedActions['move-range2network'] = array(
     'MainFunction' => function (AddressCallContext $context) {
         $object = $context->object;
 
-        if( $object->isGroup() || !$object->isType_ipRange() )
+        if( $object->isGroup() || $object->isRegion() || !$object->isType_ipRange() )
         {
             $string = "Address object is not of type ip-range";
             PH::ACTIONstatus( $context, 'skipped', $string);

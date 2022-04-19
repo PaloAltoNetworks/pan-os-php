@@ -107,7 +107,7 @@ RQuery::$defaultFilters['rule']['to']['operators']['has.regex'] = array(
 );
 
 RQuery::$defaultFilters['rule']['from.count']['operators']['>,<,=,!'] = array(
-    'eval' => "\$object->from->count() !operator! !value!",
+    'eval' => "!\$object->isPbfRule() && \$object->from->count() !operator! !value!",
     'arg' => TRUE,
     'ci' => array(
         'fString' => '(%PROP% 1)',
@@ -115,7 +115,7 @@ RQuery::$defaultFilters['rule']['from.count']['operators']['>,<,=,!'] = array(
     )
 );
 RQuery::$defaultFilters['rule']['to.count']['operators']['>,<,=,!'] = array(
-    'eval' => "\$object->to->count() !operator! !value!",
+    'eval' => "!\$object->isPbfRule() && \$object->to->count() !operator! !value!",
     'arg' => TRUE,
     'ci' => array(
         'fString' => '(%PROP% 1)',
@@ -125,6 +125,9 @@ RQuery::$defaultFilters['rule']['to.count']['operators']['>,<,=,!'] = array(
 
 RQuery::$defaultFilters['rule']['from']['operators']['is.any'] = array(
     'Function' => function (RuleRQueryContext $context) {
+        if( $context->object->isPbfRule() )
+            return FALSE;
+
         return $context->object->from->isAny();
     },
     'arg' => FALSE,

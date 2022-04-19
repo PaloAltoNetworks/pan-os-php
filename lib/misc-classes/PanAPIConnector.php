@@ -1064,6 +1064,7 @@ class PanAPIConnector
         if( is_array($parameters) )
             $sendThroughPost = TRUE;
 
+
         $this->_createOrRenewCurl();
 
         curl_setopt($this->_curl_handle, CURLOPT_RETURNTRANSFER, TRUE);

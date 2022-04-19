@@ -26,7 +26,7 @@ ServiceCallContext::$supportedActions[] = array(
 
         if( $object->countReferences() != 0 )
         {
-            $string = "this object is used by other objects and cannot be deleted (use deleteForce to try anyway)";
+            $string = "this object is used by other objects and cannot be deleted (use delete-Force to try anyway)";
             PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
@@ -36,27 +36,6 @@ ServiceCallContext::$supportedActions[] = array(
         else
             $object->owner->remove($object);
     },
-);
-
-ServiceCallContext::$supportedActions[] = array(
-    'name' => 'deleteForce',
-    'MainFunction' => function (ServiceCallContext $context) {
-        $object = $context->object;
-
-        mwarning('this action "deleteForce" is deprecated, you should use "delete-Force" instead!');
-
-        if( $object->countReferences() != 0 )
-        {
-            $string = "this object seems to be used so deletion may fail.";
-            PH::ACTIONstatus($context, "WARNING", $string);
-        }
-
-        if( $context->isAPI )
-            $object->owner->API_remove($object);
-        else
-            $object->owner->remove($object);
-    },
-    'deprecated' => 'this filter "secprof is.profile" is deprecated, you should use "secprof type.is.profile" instead!'
 );
 
 ServiceCallContext::$supportedActions[] = Array(
