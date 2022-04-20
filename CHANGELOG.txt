@@ -1,6 +1,15 @@
 CHANGELOG
 
-2.0.36
+2.0.37
+UTILS:
+
+BUGFIX:
+* UTIL type=address actions=delete 'filter=(object is.unused)' | bugfix for FW to not delete used objects - not fixed yet or Panorama
+
+GENERAL:
+
+
+2.0.36 (20220419)
 UTILS:
 * UTIL type=device | introduce idle time for actions=system-admin-session
 * UTIL type=device | actions=system-admin-session:delete,8

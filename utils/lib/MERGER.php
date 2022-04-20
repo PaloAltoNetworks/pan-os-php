@@ -782,7 +782,7 @@ class MERGER extends UTIL
 
                             if( $hashGenerator($object) == $hashGenerator($ancestor) )
                             {
-                                $text = "    - group '{$object->name()}' merged with its ancestor, deleting: " . $object->_PANC_shortName();
+                                $text = "    - group '{$object->name()} DG: '" . $object->owner->owner->name() . "' merged with its ancestor at DG: '" . $ancestor->owner->owner->name() . "', deleting: " . $object->_PANC_shortName();
                                 if( $this->action === "merge" )
                                 {
                                     $object->replaceMeGlobally($ancestor);
@@ -806,7 +806,7 @@ class MERGER extends UTIL
                                 continue;
                             }
                         }
-                        PH::print_stdout("    - group '{$object->name()}' cannot be merged because it has an ancestor");
+                        PH::print_stdout("    - group '{$object->name()}' cannot be merged because it has an ancestor at DG: ".$ancestor->owner->owner->name() );
                         continue;
                     }
 
@@ -980,7 +980,7 @@ class MERGER extends UTIL
                 {
                     if( $object !== $tmp_address )
                     {
-                        PH::print_stdout("    - group '{$object->name()}' DG: '" . $object->owner->owner->name() . "' merged with its ancestor at DG: '" . $store->owner->name() . "', deleting: " . $object->_PANC_shortName());
+                        PH::print_stdout("    - group '{$object->name()}' DG: '" . $object->owner->owner->name() . "' merged with its ancestor at DG: '" . $tmp_address->owner->owner->name() . "', deleting: " . $object->_PANC_shortName());
 
                         PH::print_stdout("    - replacing '{$object->_PANC_shortName()}' ...");
                         if( $this->action === "merge" )
@@ -1255,7 +1255,7 @@ class MERGER extends UTIL
                                 if( $this->action === "merge" )
                                     $object->merge_tag_description_to($ancestor, $this->apiMode);
 
-                                $text = "    - object '{$object->name()}' merged with its ancestor, deleting: " . $object->_PANC_shortName();
+                                $text = "    - object '{$object->name()}' DG: '" . $object->owner->owner->name() . "' merged with its ancestor at DG: '" . $ancestor->owner->owner->name() . "', deleting: " . $object->_PANC_shortName();
                                 self::deletedObject($index, $ancestor, $object);
 
                                 if( $this->action === "merge" )
@@ -1769,7 +1769,7 @@ class MERGER extends UTIL
 
                             if( $hashGenerator($object) == $hashGenerator($ancestor) )
                             {
-                                $text = "    - group '{$object->name()}' merged with its ancestor, deleting: " . $object->_PANC_shortName();
+                                $text = "    - group '{$object->name()}' DG: '" . $object->owner->owner->name() . "' merged with its ancestor at DG: '" . $ancestor->owner->owner->name() . "', deleting: " . $object->_PANC_shortName();
                                 if( $this->action === "merge" )
                                 {
                                     $object->replaceMeGlobally($ancestor);
@@ -1793,7 +1793,7 @@ class MERGER extends UTIL
                                 continue;
                             }
                         }
-                        PH::print_stdout("    - group '{$object->name()}' cannot be merged because it has an ancestor");
+                        PH::print_stdout("    - group '{$object->name()}' cannot be merged because it has an ancestor at DG: ".$ancestor->owner->owner->name() );
                         continue;
                     }
 
