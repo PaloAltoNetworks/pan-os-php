@@ -528,13 +528,6 @@ class PANConf
 
         }
 
-        //
-        // Extract network related configs
-        //
-        $tmp = DH::findFirstElement('network', $this->localhostroot);
-        if( $tmp !== FALSE )
-            $this->network->load_from_domxml($tmp);
-        //
 
 
         // Now listing and extracting all VirtualSystem configurations
@@ -615,6 +608,15 @@ class PANConf
                 }
             }
         }
+        //
+
+
+        //
+        // Extract network related configs
+        //
+        $tmp = DH::findFirstElement('network', $this->localhostroot);
+        if( $tmp !== FALSE )
+            $this->network->load_from_domxml($tmp);
         //
     }
 

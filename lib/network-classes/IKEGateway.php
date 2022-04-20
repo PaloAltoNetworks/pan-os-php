@@ -116,7 +116,32 @@ class IKEGateway
             {
                 $peerAddressNode = DH::findFirstElement('ip', $node);
                 if( $peerAddressNode != null )
+                {
                     $this->peerAddress = $peerAddressNode->textContent;
+
+                    if( isset($this->owner->owner) && $this->owner->owner->isFirewall() )
+                    {
+                        if( isset($this->owner->owner->owner->owner) && $this->owner->owner->owner->owner->isPanorama() )
+                        {
+                            //check which template;
+                            //check if template is used / matching to a DG
+                            //check all matching device groups;
+                        }
+                        else
+                        {
+                            $tmp_vsys_array = $this->owner->owner->getVirtualSystems();
+                            foreach( $tmp_vsys_array as $sub )
+                            {
+                                $tmp_address = $sub->addressStore->find( $this->peerAddress );
+                                if( $tmp_address !== null )
+                                {
+                                    $tmp_address->addReference($this);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
 

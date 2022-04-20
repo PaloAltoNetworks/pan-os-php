@@ -4,6 +4,7 @@ CHANGELOG
 UTILS:
 
 BUGFIX:
+* UTIL type=address actions=delete 'filter=(object is.unused)' | bugfix for FW to not delete used objects - not fixed yet or Panorama
 
 GENERAL:
 
