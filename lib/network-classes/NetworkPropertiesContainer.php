@@ -120,6 +120,13 @@ class NetworkPropertiesContainer
         if( $tmp !== FALSE )
             $this->virtualWireStore->load_from_domxml($tmp);
 
+
+    }
+
+    function load_from_domxml_2(DOMElement $xml)
+    {
+        $this->xmlroot = $xml;
+
         $tmp = DH::findFirstElement('ike', $this->xmlroot);
         if( $tmp !== FALSE )
         {
@@ -153,6 +160,7 @@ class NetworkPropertiesContainer
                 $this->ipsecTunnelStore->load_from_domxml($tmp);
         }
     }
+
 
     /**
      * @return EthernetInterface[]|IPsecTunnel[]|LoopbackInterface[]|AggregateEthernetInterface[]|TmpInterface[]|VlanInterface[]
