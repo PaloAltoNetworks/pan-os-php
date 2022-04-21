@@ -569,9 +569,7 @@ class PANConf
             $importedInterfaces = $localVsys->importedInterfaces->interfaces();
             foreach( $importedInterfaces as &$ifName )
             {
-                $resolvedIf = $this->network->findInterface($ifName);
-                if( $resolvedIf !== null )
-                    $resolvedIf->importedByVSYS = $localVsys;
+                $ifName->importedByVSYS = $localVsys;
             }
         }
 
@@ -618,6 +616,13 @@ class PANConf
         //
 
 
+        //
+        // Extract network IKE / IPsec related configs
+        //
+        $tmp = DH::findFirstElement('network', $this->localhostroot);
+        if( $tmp !== FALSE )
+            $this->network->load_from_domxml_2($tmp);
+        //
     }
 
 

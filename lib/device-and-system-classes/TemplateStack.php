@@ -57,9 +57,6 @@ class TemplateStack
         if( $this->name === FALSE )
             derr("templatestack name not found\n", $xml);
 
-
-        //Todo: how common it is to have device config inside templateStack???
-
         #print "template-stack: ".$this->name."\n";
         $this->templateRoot = DH::findFirstElement('templates', $xml);
 
@@ -73,6 +70,8 @@ class TemplateStack
 
                 $template = $this->owner->findTemplate( $ldv );
                 $this->templates[] = $template;
+
+                $template->addReference( $this );
 
             }
         }
@@ -89,13 +88,13 @@ class TemplateStack
 
         }
 
+        //Todo: how common it is to have device config inside templateStack???
         $tmp = DH::findFirstElement('config', $xml);
 
         if( $tmp !== false )
         {
             $this->deviceConfiguration->load_from_domxml($tmp);
         }
-
     }
 
     public function name()

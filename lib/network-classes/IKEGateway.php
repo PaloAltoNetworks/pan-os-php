@@ -74,6 +74,8 @@ class IKEGateway
      */
     public function load_from_domxml($xml)
     {
+        $tmp_interface = null;
+
         $this->xmlroot = $xml;
 
         $this->name = DH::findAttribute('name', $xml);
@@ -101,10 +103,10 @@ class IKEGateway
 
             if( $node->nodeName == 'local-address' )
             {
-                $tmp_interface = DH::findFirstElement('interface', $node);
-                if( $tmp_interface != null )
+                $tmp_interface_string = DH::findFirstElement('interface', $node);
+                if( $tmp_interface_string != null )
                 {
-                    $this->localInterface = $tmp_interface->textContent;
+                    $this->localInterface = $tmp_interface_string->textContent;
 
                     $tmp_interface = $this->owner->owner->network->findInterfaceOrCreateTmp($this->localInterface);
                     $tmp_interface->addReference($this);
@@ -119,24 +121,65 @@ class IKEGateway
                 {
                     $this->peerAddress = $peerAddressNode->textContent;
 
-                    if( isset($this->owner->owner) && $this->owner->owner->isFirewall() )
+                    $isIP = FALSE;
+                    if( filter_var($this->peerAddress, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)
+                        or filter_var($this->peerAddress, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)
+                    )
+                        $isIP = TRUE;
+
+                    if( !$isIP )
                     {
-                        if( isset($this->owner->owner->owner->owner) && $this->owner->owner->owner->owner->isPanorama() )
+                        if( isset($this->owner->owner) && $this->owner->owner->isFirewall() )
                         {
-                            //check which template;
-                            //check if template is used / matching to a DG
-                            //check all matching device groups;
-                        }
-                        else
-                        {
-                            $tmp_vsys_array = $this->owner->owner->getVirtualSystems();
-                            foreach( $tmp_vsys_array as $sub )
+                            if( isset($this->owner->owner->owner->owner) && $this->owner->owner->owner->owner->isPanorama() )
                             {
-                                $tmp_address = $sub->addressStore->find( $this->peerAddress );
-                                if( $tmp_address !== null )
+                                //check which template;
+                                /** @var Template $template1 */
+                                $template1 = $this->owner->owner->owner;
+                                print "template Name: ".$template1->name()."\n";
+
+                                $references = $template1->getReferences();
+                                foreach( $references as $ref )
+                                    print get_class( $ref )."\n";
+
+                                //check if template is used / matching to a DG
+                                $tmp_stack = $template1->owner->templatestacks;
+                                $tmp_stack = $template1->owner->getTemplatesStacks();
+                                foreach( $tmp_stack as $stack )
                                 {
-                                    $tmp_address->addReference($this);
-                                    break;
+                                    print "1STack: ".$stack->name()."\n";
+                                    /** @var TemplateStack $stack*/
+                                    foreach( $stack->templates as $template2 )
+                                    {
+                                        print "2stackTemplate: ".$template2->name()."\n";
+                                        if( $template1->name() == $template2->name() )
+                                            print "STack: ".$stack->name()."\n";
+                                    }
+                                }
+
+
+                                //check all matching device groups;
+
+
+
+                            }
+                            else
+                            {
+                                //FW get vsys
+                                if( $tmp_interface !== null )
+                                {
+                                    /** @var VirtualSystem $tmp_vsys */
+                                    $tmp_vsys = $tmp_interface->importedByVSYS;
+
+                                    if( $tmp_vsys !== null )
+                                    {
+                                        $tmp_address = $tmp_vsys->addressStore->find($this->peerAddress,null, TRUE);
+                                        if( $tmp_address !== null )
+                                        {
+                                            $tmp_address->addReference($this);
+                                            break;
+                                        }
+                                    }
                                 }
                             }
                         }
