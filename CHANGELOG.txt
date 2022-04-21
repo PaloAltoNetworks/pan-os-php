@@ -2,6 +2,7 @@ CHANGELOG
 
 2.0.37
 UTILS:
+* UTIL type=Rule | introduce 'filter=(timestamp-first-hit.fast < - 90 days)'
 
 BUGFIX:
 * UTIL type=address actions=delete 'filter=(object is.unused)' | bugfix for FW to not delete used objects - not fixed yet or Panorama

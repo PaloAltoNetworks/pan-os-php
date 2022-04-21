@@ -2600,6 +2600,29 @@ RQuery::$defaultFilters['rule']['timestamp-last-hit.fast']['operators']['>,<,=,!
     'help' => 'returns TRUE if rule name matches the specified timestamp MM/DD/YYYY [american] / DD-MM-YYYY [european] / 21 September 2021 / - 90 days',
 );
 
+RQuery::$defaultFilters['rule']['timestamp-first-hit.fast']['operators']['>,<,=,!'] = array(
+    'Function' => function (RuleRQueryContext $context) {
+        $object = $context->object;
+
+        if( !$object->isSecurityRule() && !$object->isNatRule() )
+            derr("unsupported filter : rule type " . $object->ruleNature() . " is not supported yet. " . $object->toString());
+
+        $str = $context->value;
+        if (($timestamp = strtotime($str)) === false)
+        {
+            #echo "The string ($str) is bogus"."\n";
+        }
+        else
+        {
+            #echo "$str == " . date('l dS \o\f F Y h:i:s A', $timestamp)."\n";
+        }
+
+        return $object->ruleUsageFast( $context, 'first-hit-timestamp' );
+    },
+    'arg' => TRUE,
+    'help' => 'returns TRUE if rule name matches the specified timestamp MM/DD/YYYY [american] / DD-MM-YYYY [european] / 21 September 2021 / - 90 days',
+);
+
 RQuery::$defaultFilters['rule']['name']['operators']['eq'] = array(
     'Function' => function (RuleRQueryContext $context) {
         return $context->object->name() == $context->value;
