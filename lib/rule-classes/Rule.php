@@ -1171,7 +1171,7 @@ class Rule
         /** @var @var RuleRQueryContext $context */
 
 
-        $supported_hitType = array( 'hit-count', 'last-hit-timestamp' );
+        $supported_hitType = array( 'hit-count', 'last-hit-timestamp', 'first-hit-timestamp' );
         if( !in_array( $hitType, $supported_hitType ) )
             derr( "supported hitType: ".implode( ", ", $supported_hitType ) );
 
@@ -1328,7 +1328,7 @@ class Rule
                                     unset($sub->apiCache[$unused_flag][$ruleName]);
                             }
                         }
-                        elseif( $hitType == "last-hit-timestamp" )
+                        elseif( $hitType == "last-hit-timestamp" || $hitType == "first-hit-timestamp" )
                         {
                             $timestamp_value = $node->textContent;
                             $filter_timestamp = strtotime($context->value);

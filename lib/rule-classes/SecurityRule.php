@@ -905,7 +905,7 @@ class SecurityRule extends RuleWithUserID
 
         $domNode = DH::findFirstElementOrDie('action', $this->xmlroot);
         $connector = findConnectorOrDie($this);
-        $connector->sendSetRequest($this->getXPath(), $domNode);
+        $connector->sendSetRequest($this->getXPath(), '<action>'.$domNode->textContent.'</action>');
     }
 
 
