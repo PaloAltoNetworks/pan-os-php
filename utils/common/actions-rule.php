@@ -4330,6 +4330,37 @@ RuleCallContext::$supportedActions[] = array(
 
     },
 );
+
+//                                                 //
+//              Rule actions property Based Actions         //
+//                                                 //
+RuleCallContext::$supportedActions[] = array(
+    'name' => 'action-Set',
+    'section' => 'action',
+    'MainFunction' => function (RuleCallContext $context) {
+        $rule = $context->object;
+
+        //validate supported action
+        $tmp_action = $context->arguments['action'];
+
+        if( !$rule->isSecurityRule() )
+        {
+            $string = "Rule is not of type Security";
+            PH::ACTIONstatus($context, "SKIPPED", $string);
+            return;
+        }
+
+        if( $context->isAPI )
+            $rule->API_setAction( $tmp_action );
+        else
+            $rule->setAction( $tmp_action );
+    },
+    'args' => array(
+        'action' => array('type' => 'string', 'default' => '*nodefault*',
+            'help' => "supported Security Rule actions: 'allow','deny','drop','reset-client','reset-server','reset-both'"        ),
+    ),
+
+);
 /************************************ */
 
 
