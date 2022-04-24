@@ -159,50 +159,74 @@ class AddressGroup
                     $tmp_filter = DH::findFirstElement('filter', $tmp);
                     $this->filter = $tmp_filter->nodeValue;
 
-
+                    //Todo: swaschkut 20220423 what if filter is 'tag' or ('tag1' and 'tag2')
                     $patterns = array( "@'(.*?)'@", "@\"(.*?)\"@");
                     $tagFilter = $this->filter;
-                    foreach( $patterns as $pattern)
+
+
+                    $memberName = trim( $tagFilter );
+                    $filterAndArray = explode( " and ", $memberName );
+                    $filterOrArray = explode( " or ", $memberName );
+
+
+
+                    if( count( $filterAndArray ) > 1 && count( $filterOrArray ) > 1  )
                     {
-                        $names = array();
+                        //something bad
+                        mwarning("dynamic AddressGroup with name: " . $this->name() . " has multiple tag and/or - not supported yet", $this->xmlroot, false);
+                    }
+                    else
+                    {
+                        if( count( $filterAndArray ) > 1 )
+                            $filterType = "and";
+                        elseif( count( $filterOrArray ) > 1 )
+                            $filterType = "or";
+                        else
+                            $filterType = "single";
 
-                        $is_match = preg_match_all($pattern, $tagFilter, $names);
-                        foreach( $names[1] as $key => $replaceTXT )
+                        foreach( $patterns as $pattern)
                         {
-                            $pattern = $names[0][$key];
-                            $replacements = "(tag has ".$replaceTXT.")";
+                            $names = array();
 
-                            $tagFilter = str_replace( $pattern, $replacements, $tagFilter );
+                            $is_match = preg_match_all($pattern, $tagFilter, $names);
 
-                            $tag = $this->owner->owner->tagStore->find($replaceTXT);
-                            if( $tag !== null )
-                                $tag->addReference($this);
-                            else
+                            foreach( $names[1] as $key => $replaceTXT )
                             {
-                                #Todo: what if TAG is in parent tagStore?
-                                #stop throwing WARNING - as it could be that DAG filter is not based on TAG, e.g. VMware info
-                                #mwarning( "TAG not found: ".$test." - for DAG: '".$this->name()."' in location: ".$this->owner->owner->name(), null, false );
+                                $pattern = $names[0][$key];
+                                $replacements = "(tag has ".$replaceTXT.")";
+
+                                $tagFilter = str_replace( $pattern, $replacements, $tagFilter );
+
+                                $tag = $this->owner->owner->tagStore->find($replaceTXT);
+                                if( $tag !== null )
+                                    $tag->addReference($this);
+                                else
+                                {
+                                    #Todo: what if TAG is in parent tagStore?
+                                    #stop throwing WARNING - as it could be that DAG filter is not based on TAG, e.g. VMware info
+                                    #mwarning( "TAG not found: ".$test." - for DAG: '".$this->name()."' in location: ".$this->owner->owner->name(), null, false );
+                                }
                             }
                         }
-                    }
-                    if( strpos( $tagFilter, '(tag has' ) === false )
-                    {
-                        $tagFilter = "(tag has ".$tagFilter.")";
-                    }
-
-                    $this->filter = $tagFilter;
-
-                    $tmp_found_addresses = $this->owner->all($tagFilter);
-                    foreach( $tmp_found_addresses as $address )
-                    {
-                        if( $this->name() == $address->name() )
+                        if( strpos( $tagFilter, '(tag has' ) === false )
                         {
-                            mwarning("dynamic AddressGroup with name: " . $this->name() . " is added as subgroup to itself, you should review your XML config file", $this->xmlroot, false);
+                            $tagFilter = "(tag has ".$tagFilter.")";
                         }
-                        else
+
+                        $this->filter = $tagFilter;
+
+                        $tmp_found_addresses = $this->owner->all($tagFilter);
+                        foreach( $tmp_found_addresses as $address )
                         {
-                            $this->members[] = $address;
-                            $address->addReference($this);
+                            if( $this->name() == $address->name() )
+                            {
+                                mwarning("dynamic AddressGroup with name: " . $this->name() . " is added as subgroup to itself, you should review your XML config file", $this->xmlroot, false);
+                            }
+                            else
+                            {
+                                $this->members[] = $address;
+                                $address->addReference($this);
+                            }
                         }
                     }
                 }
