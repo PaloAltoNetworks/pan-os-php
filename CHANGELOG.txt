@@ -5,6 +5,7 @@ UTILS:
 * UTIL type=Rule | introduce 'filter=(timestamp-first-hit.fast < - 90 days)'
 * UTIL type=rule | introduce actions=action-set:[ACTION] | supported Security Rule actions: 'allow','deny','drop','reset-client','reset-server','reset-both'
 * UTIL type=service | introduce new additional argument actions=exporttoexcel,FILE.HTML,resolvesrv
+* UTIL type=xml-issue | extend fix if Dynamic AddressGroup filter contains own tag
 
 BUGFIX:
 * UTIL type=address actions=delete 'filter=(object is.unused)' | bugfix for FW to not delete used objects - not fixed yet or Panorama
