@@ -1746,8 +1746,6 @@ class MERGER extends UTIL
                                 {
                                     $diff = $ancestor->getValueDiff($object);
 
-                                    print_r( $diff );
-
                                     if( count($diff['minus']) != 0 )
                                         foreach( $diff['minus'] as $d )
                                         {
