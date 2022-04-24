@@ -474,6 +474,9 @@ class MERGER extends UTIL
             if( $this->dupAlg != 'samemembers' && $this->dupAlg != 'sameportmapping' && $this->dupAlg != 'whereused' )
                 $display_error = true;
 
+            if( isset(PH::$args['allowaddingmissingobjects']) )
+                $this->addMissingObjects = TRUE;
+
             $defaultDupAlg = 'samemembers';
         }
         elseif( $this->utilType == "tag-merger" )
@@ -768,6 +771,10 @@ class MERGER extends UTIL
                                                         $ancestor->addMember($d);
                                                 }
                                             }
+                                            else
+                                            {
+                                                PH::print_stdout("      - object not found: " . $d->name() . "");
+                                            }
                                         }
 
                                     if( count($diff['plus']) != 0 )
@@ -807,6 +814,7 @@ class MERGER extends UTIL
                             }
                         }
                         PH::print_stdout("    - group '{$object->name()}' cannot be merged because it has an ancestor at DG: ".$ancestor->owner->owner->name() );
+                        PH::print_stdout( "    - ancestor type: ".get_class( $ancestor ) );
                         continue;
                     }
 
@@ -1738,6 +1746,8 @@ class MERGER extends UTIL
                                 {
                                     $diff = $ancestor->getValueDiff($object);
 
+                                    print_r( $diff );
+
                                     if( count($diff['minus']) != 0 )
                                         foreach( $diff['minus'] as $d )
                                         {
@@ -1753,6 +1763,10 @@ class MERGER extends UTIL
                                                     else
                                                         $ancestor->addMember($d);
                                                 }
+                                            }
+                                            else
+                                            {
+                                                PH::print_stdout("      - object not found: " . $d->name() . "");
                                             }
                                         }
 
@@ -1794,6 +1808,7 @@ class MERGER extends UTIL
                             }
                         }
                         PH::print_stdout("    - group '{$object->name()}' cannot be merged because it has an ancestor at DG: ".$ancestor->owner->owner->name() );
+                        PH::print_stdout( "    - ancestor type: ".get_class( $ancestor ) );
                         continue;
                     }
 
