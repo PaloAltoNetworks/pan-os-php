@@ -1662,6 +1662,18 @@ var subjectObject =
     "rule": {
         "name": "rule",
         "action": {
+            "action-set": {
+                "name": "action-Set",
+                "section": "action",
+                "MainFunction": {},
+                "args": {
+                    "action": {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "help": "supported Security Rule actions: 'allow','deny','drop','reset-client','reset-server','reset-both'"
+                    }
+                }
+            },
             "app-add": {
                 "name": "app-Add",
                 "section": "app",
@@ -4147,6 +4159,15 @@ var subjectObject =
                     }
                 }
             },
+            "timestamp-first-hit.fast": {
+                "operators": {
+                    ">,<,=,!": {
+                        "Function": {},
+                        "arg": true,
+                        "help": "returns TRUE if rule name matches the specified timestamp MM\/DD\/YYYY [american] \/ DD-MM-YYYY [european] \/ 21 September 2021 \/ - 90 days"
+                    }
+                }
+            },
             "timestamp-last-hit.fast": {
                 "operators": {
                     ">,<,=,!": {
@@ -5357,9 +5378,10 @@ var subjectObject =
                         "default": "*NONE*",
                         "choices": [
                             "WhereUsed",
-                            "UsedInLocation"
+                            "UsedInLocation",
+                            "ResolveSRV"
                         ],
-                        "help": "pipe(|) separated list of additional field to include in the report. The following is available:\n  - WhereUsed : list places where object is used (rules, groups ...)\n  - UsedInLocation : list locations (vsys,dg,shared) where object is used\n"
+                        "help": "pipe(|) separated list of additional field to include in the report. The following is available:\n  - WhereUsed : list places where object is used (rules, groups ...)\n  - UsedInLocation : list locations (vsys,dg,shared) where object is used\n  - ResolveSRV\n"
                     }
                 }
             },

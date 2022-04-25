@@ -10,7 +10,7 @@ UTILS:
 * UTIL type=addressgroup-/servicegroup-merger | add information for argument exportCSV
 
 BUGFIX:
-* UTIL type=address actions=delete 'filter=(object is.unused)' | bugfix for FW to not delete used objects - not fixed yet or Panorama
+* UTIL type=address actions=delete 'filter=(object is.unused)' | bugfix for FW to not delete used objects - not fixed yet for Panorama
 * class SecurityRule | bugfix for method 'API_setAction()'
 * UTIL type=ALLMERGER | argument allowaddingmissingobjects - bugfix to support this argument in type=service-group
 
