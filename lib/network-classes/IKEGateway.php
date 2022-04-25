@@ -136,7 +136,7 @@ class IKEGateway
                                 //check which template;
                                 /** @var Template $template1 */
                                 $template1 = $this->owner->owner->owner;
-                                print "template Name: ".$template1->name()."\n";
+                                #print "template Name: ".$template1->name()."\n";
 
                                 $references = $template1->getReferences();
                                 foreach( $references as $ref )
