@@ -7,6 +7,7 @@ UTILS:
 * UTIL type=service | introduce new additional argument actions=exporttoexcel,FILE.HTML,resolvesrv
 * UTIL type=xml-issue | extend fix if Dynamic AddressGroup filter contains own tag
 * class AddressGroup | extend validation if dynamic AddressGroup filter contains own tag objects
+* UTIL type=addressgroup-/servicegroup-merger | add information for argument exportCSV
 
 BUGFIX:
 * UTIL type=address actions=delete 'filter=(object is.unused)' | bugfix for FW to not delete used objects - not fixed yet or Panorama

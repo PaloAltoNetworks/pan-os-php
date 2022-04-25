@@ -810,6 +810,7 @@ class MERGER extends UTIL
                                     PH::print_stdout("\n *** STOPPING MERGE OPERATIONS NOW SINCE WE REACHED mergeCountLimit ({$this->mergeCountLimit})");
                                     break 2;
                                 }
+                                self::deletedObject($index, $ancestor, $object);
                                 continue;
                             }
                         }
@@ -852,6 +853,7 @@ class MERGER extends UTIL
                             }
                         }
                         PH::print_stdout($text);
+                        self::deletedObject($index, $pickedObject, $object);
                     }
                     else
                     {
@@ -870,6 +872,7 @@ class MERGER extends UTIL
                             if( $success )
                             {
                                 PH::print_stdout("    - deleting '{$object->_PANC_shortName()}'");
+                                self::deletedObject($index, $pickedObject, $object);
                                 if( $this->apiMode )
                                     //true flag needed for nested groups in a specific constellation
                                     $object->owner->API_remove($object, TRUE);
@@ -1802,6 +1805,7 @@ class MERGER extends UTIL
                                     PH::print_stdout("\n *** STOPPING MERGE OPERATIONS NOW SINCE WE REACHED mergeCountLimit ({$this->mergeCountLimit})");
                                     break 2;
                                 }
+                                self::deletedObject($index, $ancestor, $object);
                                 continue;
                             }
                         }
@@ -1845,6 +1849,7 @@ class MERGER extends UTIL
                             }
                         }
                         PH::print_stdout($text);
+                        self::deletedObject($index, $pickedObject, $object);
                     }
                     else
                     {
@@ -1853,6 +1858,7 @@ class MERGER extends UTIL
                             $object->__replaceWhereIamUsed($this->apiMode, $pickedObject, TRUE, 5);
 
                         PH::print_stdout("    - deleting '{$object->_PANC_shortName()}'");
+                        self::deletedObject($index, $pickedObject, $object);
                         if( $this->action === "merge" )
                         {
                             if( $this->apiMode )
@@ -2181,6 +2187,7 @@ class MERGER extends UTIL
                             $object->__replaceWhereIamUsed($this->apiMode, $pickedObject, TRUE, 5);
 
                         PH::print_stdout("    - deleting '{$object->_PANC_shortName()}'");
+                        self::deletedObject($index, $pickedObject, $object);
                         if( $this->action === "merge" )
                         {
                             if( $this->apiMode )
