@@ -282,6 +282,8 @@ ServiceCallContext::$supportedActions[] = array(
         if( isset($optionalFields['UsedInLocation']) )
             $addUsedInLocation = TRUE;
 
+        if( isset($optionalFields['ResolveSRV']) )
+            $addResolveGroupSRVCoverage = TRUE;
 
         $headers = '<th>location</th><th>name</th><th>type</th><th>dport</th><th>sport</th><th>timeout</th><th>members</th><th>description</th><th>tags</th>';
 
@@ -289,6 +291,8 @@ ServiceCallContext::$supportedActions[] = array(
             $headers .= '<th>where used</th>';
         if( $addUsedInLocation )
             $headers .= '<th>location used</th>';
+        if( $addResolveGroupSRVCoverage )
+            $headers .= '<th>srv resolution</th>';
 
         $count = 0;
         if( isset($context->objectList) )
@@ -363,6 +367,58 @@ ServiceCallContext::$supportedActions[] = array(
 
                     $lines .= $encloseFunction($refTextArray);
                 }
+                if( $addResolveGroupSRVCoverage )
+                {
+                    $port_mapping_text = array();
+
+                    $port_mapping = $object->dstPortMapping();
+                    $mapping_texts = $port_mapping->mappingToText();
+
+                    //TODO: handle predefined service objects in a different way
+                    if( $object->name() == 'service-http' )
+                        $mapping_texts = 'tcp/80';
+                    if( $object->name() == 'service-https' )
+                        $mapping_texts = 'tcp/443';
+
+
+                    if( strpos($mapping_texts, " ") !== FALSE )
+                        $mapping_text_array = explode(" ", $mapping_texts);
+                    else
+                        $mapping_text_array[] = $mapping_texts;
+
+
+                    $protocol = "tmp";
+                    foreach( $mapping_text_array as $mapping_text )
+                    {
+                        if( strpos($mapping_text, "tcp/") !== FALSE )
+                            $protocol = "tcp/";
+                        elseif( strpos($mapping_text, "udp/") !== FALSE )
+                            $protocol = "udp/";
+
+                        $mapping_text = str_replace($protocol, "", $mapping_text);
+                        $mapping_text = explode(",", $mapping_text);
+
+                        foreach( $mapping_text as $mapping )
+                        {
+                            if( !in_array( $protocol . $mapping, $port_mapping_text ) )
+                            {
+                                $port_mapping_text[$protocol . $mapping] = $protocol . $mapping;
+
+                                if( strpos($mapping, "-") !== FALSE )
+                                {
+                                    $array[$protocol . $mapping] = $protocol . $mapping;
+                                    $range = explode("-", $mapping);
+                                    for( $i = $range[0]; $i <= $range[1]; $i++ )
+                                        $array[$protocol . $i] = $protocol . $i;
+                                }
+                                else
+                                    $array[$protocol . $mapping] = $protocol . $mapping;
+                            }
+                        }
+                    }
+
+                    $lines .= $encloseFunction($port_mapping_text);
+                }
 
                 $lines .= "</tr>\n";
             }
@@ -387,11 +443,14 @@ ServiceCallContext::$supportedActions[] = array(
             array('type' => 'pipeSeparatedList',
                 'subtype' => 'string',
                 'default' => '*NONE*',
-                'choices' => array('WhereUsed', 'UsedInLocation'),
+                'choices' => array('WhereUsed', 'UsedInLocation', 'ResolveSRV'),
                 'help' =>
                     "pipe(|) separated list of additional field to include in the report. The following is available:\n" .
                     "  - WhereUsed : list places where object is used (rules, groups ...)\n" .
-                    "  - UsedInLocation : list locations (vsys,dg,shared) where object is used\n")
+                    "  - UsedInLocation : list locations (vsys,dg,shared) where object is used\n".
+                    "  - ResolveSRV\n"
+
+            )
     )
 );
 

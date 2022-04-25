@@ -474,6 +474,9 @@ class MERGER extends UTIL
             if( $this->dupAlg != 'samemembers' && $this->dupAlg != 'sameportmapping' && $this->dupAlg != 'whereused' )
                 $display_error = true;
 
+            if( isset(PH::$args['allowaddingmissingobjects']) )
+                $this->addMissingObjects = TRUE;
+
             $defaultDupAlg = 'samemembers';
         }
         elseif( $this->utilType == "tag-merger" )
@@ -768,6 +771,10 @@ class MERGER extends UTIL
                                                         $ancestor->addMember($d);
                                                 }
                                             }
+                                            else
+                                            {
+                                                PH::print_stdout("      - object not found: " . $d->name() . "");
+                                            }
                                         }
 
                                     if( count($diff['plus']) != 0 )
@@ -803,10 +810,12 @@ class MERGER extends UTIL
                                     PH::print_stdout("\n *** STOPPING MERGE OPERATIONS NOW SINCE WE REACHED mergeCountLimit ({$this->mergeCountLimit})");
                                     break 2;
                                 }
+                                self::deletedObject($index, $ancestor, $object);
                                 continue;
                             }
                         }
                         PH::print_stdout("    - group '{$object->name()}' cannot be merged because it has an ancestor at DG: ".$ancestor->owner->owner->name() );
+                        PH::print_stdout( "    - ancestor type: ".get_class( $ancestor ) );
                         continue;
                     }
 
@@ -844,6 +853,7 @@ class MERGER extends UTIL
                             }
                         }
                         PH::print_stdout($text);
+                        self::deletedObject($index, $pickedObject, $object);
                     }
                     else
                     {
@@ -862,6 +872,7 @@ class MERGER extends UTIL
                             if( $success )
                             {
                                 PH::print_stdout("    - deleting '{$object->_PANC_shortName()}'");
+                                self::deletedObject($index, $pickedObject, $object);
                                 if( $this->apiMode )
                                     //true flag needed for nested groups in a specific constellation
                                     $object->owner->API_remove($object, TRUE);
@@ -1754,6 +1765,10 @@ class MERGER extends UTIL
                                                         $ancestor->addMember($d);
                                                 }
                                             }
+                                            else
+                                            {
+                                                PH::print_stdout("      - object not found: " . $d->name() . "");
+                                            }
                                         }
 
                                     if( count($diff['plus']) != 0 )
@@ -1790,10 +1805,12 @@ class MERGER extends UTIL
                                     PH::print_stdout("\n *** STOPPING MERGE OPERATIONS NOW SINCE WE REACHED mergeCountLimit ({$this->mergeCountLimit})");
                                     break 2;
                                 }
+                                self::deletedObject($index, $ancestor, $object);
                                 continue;
                             }
                         }
                         PH::print_stdout("    - group '{$object->name()}' cannot be merged because it has an ancestor at DG: ".$ancestor->owner->owner->name() );
+                        PH::print_stdout( "    - ancestor type: ".get_class( $ancestor ) );
                         continue;
                     }
 
@@ -1832,6 +1849,7 @@ class MERGER extends UTIL
                             }
                         }
                         PH::print_stdout($text);
+                        self::deletedObject($index, $pickedObject, $object);
                     }
                     else
                     {
@@ -1840,6 +1858,7 @@ class MERGER extends UTIL
                             $object->__replaceWhereIamUsed($this->apiMode, $pickedObject, TRUE, 5);
 
                         PH::print_stdout("    - deleting '{$object->_PANC_shortName()}'");
+                        self::deletedObject($index, $pickedObject, $object);
                         if( $this->action === "merge" )
                         {
                             if( $this->apiMode )
@@ -2168,6 +2187,7 @@ class MERGER extends UTIL
                             $object->__replaceWhereIamUsed($this->apiMode, $pickedObject, TRUE, 5);
 
                         PH::print_stdout("    - deleting '{$object->_PANC_shortName()}'");
+                        self::deletedObject($index, $pickedObject, $object);
                         if( $this->action === "merge" )
                         {
                             if( $this->apiMode )

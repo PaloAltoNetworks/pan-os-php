@@ -101,6 +101,7 @@ class XMLISSUE extends UTIL
 
 
         $totalAddressGroupsSubGroupFixed = 0;
+        $totalDynamicAddressGroupsTagFixed = 0;
         $totalServiceGroupsSubGroupFixed = 0;
 
         $countDuplicateAddressObjects = 0;
@@ -384,6 +385,130 @@ class XMLISSUE extends UTIL
                             $staticNodeMember->parentNode->removeChild($staticNodeMember);
                             $totalAddressGroupsSubGroupFixed++;
                             continue;
+                        }
+                    }
+                }
+            }
+
+
+            //
+            //
+            //
+            PH::print_stdout( " - Scanning for dynamic address groups where tag and filter is same...");
+            foreach( $addressGroups as $objectName => $nodes )
+            {
+                $filterArray = array();
+                $tagArray = array();
+
+                foreach( $nodes as $node )
+                {
+                    $dynamicNode = DH::findFirstElement('dynamic', $node);
+                    if( $dynamicNode === FALSE )
+                        continue;
+
+                    $membersIndex = array();
+                    /** @var DOMElement[] $nodesToRemove */
+                    $nodesToRemove = array();
+
+                    $tagNode = DH::findFirstElement('tag', $node);
+                    if( $tagNode === FALSE )
+                        continue;
+
+
+                    foreach( $dynamicNode->childNodes as $filterNodeMember )
+                    {
+                        /** @var DOMElement $filterNodeMember */
+                        if( $filterNodeMember->nodeType != XML_ELEMENT_NODE )
+                            continue;
+
+                        $memberName = $filterNodeMember->textContent;
+
+
+                        //something more todo; explode and / or maybe something more
+                        $memberName = trim( $memberName );
+                        $filterAndArray = explode( " and ", $memberName );
+                        $filterOrArray = explode( " or ", $memberName );
+
+
+
+                        if( count( $filterAndArray ) > 1 && count( $filterOrArray ) > 1  )
+                        {
+                            $filterArray = array();
+                            $filterType = 'andor';
+                        }
+                        elseif( count( $filterAndArray ) > 1 )
+                        {
+                            foreach( $filterAndArray as $member )
+                            {
+                                $member = str_replace("'", "", $member);
+                                $filterArray[ $member ] = $member;
+                            }
+                            $filterType = 'and';
+                        }
+                        elseif( count( $filterOrArray ) > 1 )
+                        {
+                            foreach( $filterOrArray as $member )
+                            {
+                                $member = str_replace("'", "", $member);
+                                $filterArray[ $member ] = $member;
+                            }
+                            $filterType = 'or';
+                        }
+                        else
+                        {
+                            $memberName = str_replace("'", "", $memberName);
+                            $filterArray[ $memberName ] = $memberName;
+                            $filterType = 'single';
+                        }
+                    }
+
+
+                    foreach( $tagNode->childNodes as $tagNodeMember )
+                    {
+                        /** @var DOMElement $tagNodeMember */
+                        if( $tagNodeMember->nodeType != XML_ELEMENT_NODE )
+                            continue;
+
+                        $memberName = $tagNodeMember->textContent;
+                        $tagArray[ $memberName ] = $tagNodeMember;
+                    }
+
+                    if( count( $tagArray ) == 0 )
+                        continue;
+
+                    if( $filterType == "single" && in_array( array_key_first($tagArray), $filterArray ) )
+                    {
+                        PH::print_stdout( "    - group '{$objectName}' from DG/VSYS {$locationName} has its own filter as tag: '{$memberName}' ... *FIXED*");
+
+                        $node = reset( $tagArray );
+                        $node->parentNode->removeChild($node);
+                        $totalDynamicAddressGroupsTagFixed++;
+                        continue;
+                    }
+                    elseif( $filterType == "and" )
+                    {
+                        foreach( $tagArray as $tag => $value )
+                            unset( $filterArray[$tag] );
+
+                        if( count( $filterArray ) == 0 )
+                        {
+                            PH::print_stdout( "    - group '{$objectName}' from DG/VSYS {$locationName} has its own filter as tag: '{$memberName}' ... *FIXED*");
+                            $value->parentNode->removeChild($value);
+                            $totalDynamicAddressGroupsTagFixed++;
+                            continue;
+                        }
+                    }
+                    elseif( $filterType == "or" )
+                    {
+                        foreach( $tagArray as $tag )
+                        {
+                            if( in_array( $tag, $filterArray ) )
+                            {
+                                PH::print_stdout( "    - group '{$objectName}' from DG/VSYS {$locationName} has its own filter as tag: '{$memberName}' ... *FIXED*");
+                                $tagNodeMember->parentNode->removeChild($tagNodeMember);
+                                $totalDynamicAddressGroupsTagFixed++;
+                                continue;
+                            }
                         }
                     }
                 }
@@ -1328,6 +1453,8 @@ class XMLISSUE extends UTIL
         PH::print_stdout( " - FIXED: duplicate address-group members: {$totalAddressGroupsFixed}");
         PH::print_stdout( " - FIXED: duplicate service-group members: {$totalServiceGroupsFixed}");
         PH::print_stdout( " - FIXED: own address-group as subgroup member: {$totalAddressGroupsSubGroupFixed}");
+        PH::print_stdout( " - FIXED: own dynamic address-group as tag member: {$totalDynamicAddressGroupsTagFixed}");
+
         PH::print_stdout( " - FIXED: own service-group as subgroup members: {$totalServiceGroupsSubGroupFixed}");
 
         PH::print_stdout( " - FIXED: duplicate application-group members: {$totalApplicationGroupsFixed}");
