@@ -4,6 +4,7 @@ CHANGELOG
 UTILS:
 
 BUGFIX:
+* UTIL type=service | actions=exporttoexcel,FILE.HTML,resolvesrv - bugfix
 
 GENERAL:
 
