@@ -1,5 +1,14 @@
 CHANGELOG
 
+2.0.38
+UTILS:
+
+BUGFIX:
+* UTIL type=service | actions=exporttoexcel,FILE.HTML,resolvesrv - bugfix
+
+GENERAL:
+
+
 2.0.37 (20220425)
 UTILS:
 * UTIL type=Rule | introduce 'filter=(timestamp-first-hit.fast < - 90 days)'

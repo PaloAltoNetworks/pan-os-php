@@ -273,6 +273,7 @@ ServiceCallContext::$supportedActions[] = array(
 
         $addWhereUsed = FALSE;
         $addUsedInLocation = FALSE;
+        $addResolveGroupSRVCoverage = FALSE;
 
         $optionalFields = &$context->arguments['additionalFields'];
 
