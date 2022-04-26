@@ -5,6 +5,7 @@ UTILS:
 
 BUGFIX:
 * UTIL type=service | actions=exporttoexcel,FILE.HTML,resolvesrv - bugfix
+* UTIL type=ALLMERGER _ bugfix for printing out information
 
 GENERAL:
 * UTIL - introduce new argument 'projectfolder' - to store all produced action files into this folder
