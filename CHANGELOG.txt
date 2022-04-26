@@ -2,6 +2,7 @@ CHANGELOG
 
 2.0.38
 UTILS:
+* UTIL type=playbook | improvements related to argument projectfolder=DIRECTORY
 
 BUGFIX:
 * UTIL type=service | actions=exporttoexcel,FILE.HTML,resolvesrv - bugfix
