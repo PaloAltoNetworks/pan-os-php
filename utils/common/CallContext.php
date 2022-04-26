@@ -30,6 +30,7 @@ class CallContext
     public $actionRef;
 
     public $isAPI = FALSE;
+    public $projectFolder = null;
 
     /** @var  $baseObject PANConf|PanoramaConf */
     public $baseObject;
@@ -53,6 +54,8 @@ class CallContext
     public function __construct($actionProperties, $arguments, $nestedQueries = null, $util = null)
     {
         $this->util = $util;
+        if( $this->util !== null )
+            $this->projectFolder = $util->projectFolder;
 
         $this->actionRef = $actionProperties;
         $this->prepareArgumentsForAction($arguments);
@@ -234,7 +237,13 @@ class CallContext
             {
                 derr("unsupported argument type '{$properties['type']}' for  action '{$this->actionRef['name']}' arg#{$count} helper#'{$argName}'");
             }
-            $this->arguments[$argName] = $argValue;
+
+            if( $argName === "filename" && $this->projectFolder !== null )
+            {
+                $this->arguments[$argName] = $this->projectFolder."/".$argValue;
+            }
+            else
+                $this->arguments[$argName] = $argValue;
         }
 
     }

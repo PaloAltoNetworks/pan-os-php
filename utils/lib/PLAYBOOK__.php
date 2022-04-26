@@ -74,10 +74,22 @@ class PLAYBOOK__
         if( isset(PH::$args['debugapi']) )
             $this->debugAPI = TRUE;
 
+        if( isset(PH::$args['projectfolder']) )
+        {
+            $this->projectFolder = PH::$args['projectfolder'];
+            if (!file_exists($this->projectFolder)) {
+                mkdir($this->projectFolder, 0777, true);
+            }
+        }
+
         if( isset(PH::$args['outputformatset']) )
         {
             $this->outputformatset = TRUE;
             $this->outputformatsetFile = PH::$args['outputformatset'];
+
+            if( $this->projectFolder !== null )
+                $this->outputformatsetFile = $this->projectFolder."/".$this->outputformatsetFile;
+
             if( $this->outputformatsetFile !== null )
                 file_put_contents($this->outputformatsetFile, "" );
         }
@@ -114,7 +126,13 @@ class PLAYBOOK__
                 if( !isset( $details['stagename'] ) )
                     derr( "argument 'stagename' missing ", null, false );
                 else
-                    $stage_name = $details['stagename'];
+                {
+                    if( isset( $details['projectfolder'] ) )
+                        $stage_name = $details['projectfolder']."/".$details['stagename'];
+                    else
+                        $stage_name = $details['stagename'];
+                }
+
             }
 
 
@@ -133,7 +151,12 @@ class PLAYBOOK__
             if( !isset(PH::$args['out']) )
                 $output = $details['out'];
             if( !isset(PH::$args['stagename']) )
-                $stage_name = $details['stagename'];
+            {
+                if( isset( $details['projectfolder'] ) )
+                    $stage_name = $details['projectfolder']."/".$details['stagename'];
+                else
+                    $stage_name = $details['stagename'];
+            }
 
             $command_array = $details['command'];
         }

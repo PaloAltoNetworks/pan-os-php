@@ -39,6 +39,9 @@ class BPAGENERATOR extends UTIL
 
         $this->utilInit();
 
+        if( $this->projectFolder !== null )
+            $this->filename_prefix = $this->projectFolder."/".$this->filename_prefix;
+
         $this->main();
 
 

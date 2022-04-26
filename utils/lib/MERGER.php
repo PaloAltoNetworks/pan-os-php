@@ -69,6 +69,9 @@ class MERGER extends UTIL
         {
             $this->exportcsv = TRUE;
             $this->exportcsvFile = PH::$args['exportcsv'];
+
+            if( $this->projectFolder !== null )
+                $this->exportcsvFile = $this->projectFolder."/".$this->exportcsvFile;
         }
 
         $this->help(PH::$args);

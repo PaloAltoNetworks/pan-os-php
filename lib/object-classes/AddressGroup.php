@@ -210,10 +210,7 @@ class AddressGroup
                                     }
                                 }
                                 else
-                                {
-                                    #mwarning('empty dynamic AddressGroup filter : ', $xml, false);
                                     mwarning("dynamic AddressGroup with name: " . $this->name() . " has an empty filter, you should review your XML config file", $this->xmlroot, false);
-                                }
                             }
                         }
 
