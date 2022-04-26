@@ -70,6 +70,8 @@ require_once dirname(__FILE__)."/IRONSKILLET_UPDATE__.php";
 
 require_once(dirname(__FILE__)."/PROTOCOLL_NUMBERS__.php");
 
+require_once(dirname(__FILE__)."/HTMLmerger__.php");
+
 require_once dirname(__FILE__)."/../../phpseclib/Net/SSH2.php";
 require_once dirname(__FILE__)."/../../phpseclib/Crypt/RSA.php";
 
@@ -96,6 +98,8 @@ class UTIL
     public $objectsFilter = null;
     public $errorMessage = '';
     public $debugAPI = FALSE;
+
+    public $projectFolder = null;
 
     /** @var DOMDocument $xmlDoc */
     public $xmlDoc = null;
@@ -254,6 +258,8 @@ class UTIL
         $this->supportedArguments['auditcomment'] = array('niceName' => 'AuditComment', 'shortHelp' => 'set custom AuditComment instead of predefined: "PAN-OS-PHP $actions $time"', 'argDesc' => 'CustomAuditComment');
 
         $this->supportedArguments['outputformatset'] = array('niceName' => 'outputformatset', 'shortHelp' => 'get all PAN-OS set commands about the task the UTIL script is doing. outputformatset=FILENAME -> store set commands in file', 'argDesc' => 'outputformatset');
+
+        $this->supportedArguments['projectfolder'] = array('niceName' => 'projectFolder', 'shortHelp' => 'the project folder where all outputfiles are stored. projectfolder=FILENAME -> store all created files into this folder', 'argDesc' => 'projectfolder');
 
         $this->supportedArguments['shadow-disableoutputformatting'] = array('niceName' => 'shadow-disableoutputformatting', 'shortHelp' => 'XML output in offline config is not in cleaned PHP DOMDocument structure');
         $this->supportedArguments['shadow-enablexmlduplicatesdeletion']= array('niceName' => 'shadow-enablexmlduplicatesdeletion', 'shortHelp' => 'if duplicate objects are available, keep only one object of the same name');
@@ -755,12 +761,21 @@ class UTIL
             $this->auditComment = PH::$args['auditcomment'];
         }
 
+        if( isset(PH::$args['projectfolder']) )
+        {
+            $this->projectFolder = PH::$args['projectfolder'];
+            if (!file_exists($this->projectFolder)) {
+                mkdir($this->projectFolder, 0777, true);
+            }
+        }
+
         if( isset(PH::$args['outputformatset']) )
         {
             $this->outputformatset = TRUE;
             $this->outputformatsetFile = PH::$args['outputformatset'];
-            #if( $this->outputformatsetFile !== null )
-            #    file_put_contents($this->outputformatsetFile, "-------\n", FILE_APPEND );
+
+            if( $this->projectFolder !== null )
+                $this->outputformatsetFile = $this->projectFolder."/".$this->outputformatsetFile;
         }
 
         $this->inputValidation();
@@ -1064,6 +1079,11 @@ class UTIL
             {
                 $context->isAPI = TRUE;
                 $context->connector = $this->pan->connector;
+            }
+
+            if( $this->projectFolder !== null )
+            {
+                $context->projectFolder = $this->projectFolder;
             }
 
             $this->doActions[] = $context;

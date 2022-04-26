@@ -69,6 +69,9 @@ class MERGER extends UTIL
         {
             $this->exportcsv = TRUE;
             $this->exportcsvFile = PH::$args['exportcsv'];
+
+            if( $this->projectFolder !== null )
+                $this->exportcsvFile = $this->projectFolder."/".$this->exportcsvFile;
         }
 
         $this->help(PH::$args);
@@ -790,6 +793,7 @@ class MERGER extends UTIL
                             if( $hashGenerator($object) == $hashGenerator($ancestor) )
                             {
                                 $text = "    - group '{$object->name()} DG: '" . $object->owner->owner->name() . "' merged with its ancestor at DG: '" . $ancestor->owner->owner->name() . "', deleting: " . $object->_PANC_shortName();
+                                self::deletedObject($index, $ancestor, $object);
                                 if( $this->action === "merge" )
                                 {
                                     $object->replaceMeGlobally($ancestor);
@@ -810,7 +814,6 @@ class MERGER extends UTIL
                                     PH::print_stdout("\n *** STOPPING MERGE OPERATIONS NOW SINCE WE REACHED mergeCountLimit ({$this->mergeCountLimit})");
                                     break 2;
                                 }
-                                self::deletedObject($index, $ancestor, $object);
                                 continue;
                             }
                         }
@@ -839,6 +842,7 @@ class MERGER extends UTIL
                         }
                         PH::print_stdout("    - now removing '{$object->name()} from where it's used");
                         $text = "    - deleting '{$object->name()}'... ";
+                        self::deletedObject($index, $pickedObject, $object);
                         if( $this->action === "merge" )
                         {
                             if( $this->apiMode )
@@ -853,7 +857,6 @@ class MERGER extends UTIL
                             }
                         }
                         PH::print_stdout($text);
-                        self::deletedObject($index, $pickedObject, $object);
                     }
                     else
                     {
@@ -1785,6 +1788,7 @@ class MERGER extends UTIL
                             if( $hashGenerator($object) == $hashGenerator($ancestor) )
                             {
                                 $text = "    - group '{$object->name()}' DG: '" . $object->owner->owner->name() . "' merged with its ancestor at DG: '" . $ancestor->owner->owner->name() . "', deleting: " . $object->_PANC_shortName();
+                                self::deletedObject($index, $pickedObject, $object);
                                 if( $this->action === "merge" )
                                 {
                                     $object->replaceMeGlobally($ancestor);
@@ -1805,7 +1809,6 @@ class MERGER extends UTIL
                                     PH::print_stdout("\n *** STOPPING MERGE OPERATIONS NOW SINCE WE REACHED mergeCountLimit ({$this->mergeCountLimit})");
                                     break 2;
                                 }
-                                self::deletedObject($index, $ancestor, $object);
                                 continue;
                             }
                         }
@@ -1835,6 +1838,7 @@ class MERGER extends UTIL
                         }
                         PH::print_stdout("    - now removing '{$object->name()} from where it's used");
                         $text = "    - deleting '{$object->name()}'... ";
+                        self::deletedObject($index, $pickedObject, $object);
                         if( $this->action === "merge" )
                         {
                             if( $this->apiMode )
@@ -1849,7 +1853,6 @@ class MERGER extends UTIL
                             }
                         }
                         PH::print_stdout($text);
-                        self::deletedObject($index, $pickedObject, $object);
                     }
                     else
                     {

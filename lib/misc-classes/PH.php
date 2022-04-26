@@ -928,7 +928,8 @@ class PH
         "config-download-all",
         "spiffy",
         "config-commit",
-        "protocoll-number-download"
+        "protocoll-number-download",
+        "html-merger"
         );
 
 
@@ -955,7 +956,8 @@ class PH
         "config-download-all",
         "spiffy",
         'config-commit',
-        "protocoll-number-download"
+        "protocoll-number-download",
+        "html-merger"
     );
 
     public static function callPANOSPHP( $type, $argv, $argc, $PHP_FILE )
@@ -1068,6 +1070,9 @@ class PH
 
         elseif( $type == "config-commit" )
             $util = new CONFIG_COMMIT__( $type, $argv, $argc,$PHP_FILE." type=".$type);
+
+        elseif( $type == "html-merger" )
+            $util = new HTMLmerger__( $argv, $argc);
 
         elseif( $type == 'address'
             || $type == 'service'

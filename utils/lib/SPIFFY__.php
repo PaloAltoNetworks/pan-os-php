@@ -76,6 +76,10 @@ class SPIFFY__
         $util = new RULEUTIL( "rule", $argv, $argc, __FILE__ );
 
     }
+
+    function endOfScript()
+    {
+    }
 }
 
 

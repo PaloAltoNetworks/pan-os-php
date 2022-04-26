@@ -74,10 +74,22 @@ class PLAYBOOK__
         if( isset(PH::$args['debugapi']) )
             $this->debugAPI = TRUE;
 
+        if( isset(PH::$args['projectfolder']) )
+        {
+            $this->projectFolder = PH::$args['projectfolder'];
+            if (!file_exists($this->projectFolder)) {
+                mkdir($this->projectFolder, 0777, true);
+            }
+        }
+
         if( isset(PH::$args['outputformatset']) )
         {
             $this->outputformatset = TRUE;
             $this->outputformatsetFile = PH::$args['outputformatset'];
+
+            if( $this->projectFolder !== null )
+                $this->outputformatsetFile = $this->projectFolder."/".$this->outputformatsetFile;
+
             if( $this->outputformatsetFile !== null )
                 file_put_contents($this->outputformatsetFile, "" );
         }
@@ -103,10 +115,11 @@ class PLAYBOOK__
 
             if( !isset(PH::$args['out']) && !$this->isAPI )
             {
-                if( !isset( $details['out'] ) )
-                    derr( "argument 'out=outputconfig.xml' missing", null, false );
-                else
+                if( isset( $details['out'] ) )
                     $output = $details['out'];
+                else
+                    $output = "/dev/null";
+
             }
 
             if( !isset(PH::$args['stagename']) && !$this->isAPI )
@@ -114,7 +127,15 @@ class PLAYBOOK__
                 if( !isset( $details['stagename'] ) )
                     derr( "argument 'stagename' missing ", null, false );
                 else
-                    $stage_name = $details['stagename'];
+                {
+                    if( isset(PH::$args['projectfolder']) )
+                        $stage_name = PH::$args['projectfolder']."/".$details['stagename'];
+                    elseif( isset( $details['projectfolder'] ) )
+                        $stage_name = $details['projectfolder']."/".$details['stagename'];
+                    else
+                        $stage_name = $details['stagename'];
+                }
+
             }
 
 
@@ -131,9 +152,20 @@ class PLAYBOOK__
                 $input = $details['in'];
 
             if( !isset(PH::$args['out']) )
-                $output = $details['out'];
+            {
+                if( isset($details['out']) )
+                    $output = $details['out'];
+                else
+                    $output= "/dev/null";
+            }
+
             if( !isset(PH::$args['stagename']) )
-                $stage_name = $details['stagename'];
+            {
+                if( isset( $details['projectfolder'] ) )
+                    $stage_name = $details['projectfolder']."/".$details['stagename'];
+                else
+                    $stage_name = $details['stagename'];
+            }
 
             $command_array = $details['command'];
         }
@@ -194,7 +226,8 @@ class PLAYBOOK__
 
             if( isset( $command['location'] ) )
             {
-                $arguments[] = "location=".$command['location'];
+                #$arguments[] = "location=".$command['location'];
+                $arguments[] = $command['location'];
                 unset( $command['location'] );
             }
             else
@@ -218,6 +251,15 @@ class PLAYBOOK__
                 $arguments[] = "outputformatset".$string;
             }
 
+            if( $this->projectFolder !== null )
+            {
+                $string = "";
+                if( $this->projectFolder !== null)
+                    $string = "=".$this->projectFolder;
+
+                $arguments[] = "projectfolder".$string;
+            }
+
 
             ###############################################################################
             //IN / OUT specification
@@ -228,7 +270,11 @@ class PLAYBOOK__
             {
                 $out_counter = 0;
                 $in = $input;
-                if( !in_array( $script, $out_exclude ) )
+                if( $output == "/dev/null" )
+                {
+                    $out = "/dev/null";
+                }
+                elseif( !in_array( $script, $out_exclude ) )
                 {
                     $out = $stage_name.$out_counter.".xml";
                     $out_counter = $out_counter+10;
@@ -238,10 +284,14 @@ class PLAYBOOK__
             }
             elseif( $key > 0 )
             {
-                if( !in_array( $script, $in_exclude ) && !$this->isAPI )
+                if( $output == "/dev/null" )
+                    $in = $input;
+                elseif( !in_array( $script, $in_exclude ) && !$this->isAPI )
                     $in = $out;
 
-                if( !in_array( $script, $out_exclude ) )
+                if( $output == "/dev/null" )
+                    $out = "/dev/null";
+                elseif( !in_array( $script, $out_exclude ) )
                 {
                     $out = $stage_name.$out_counter.".xml";
                     $out_counter = $out_counter+10;
