@@ -12,6 +12,7 @@ RUN apt-get install -y tzdata git bash-completion
 
 RUN apt-get install -y php$php_var php$php_var-curl php$php_var-dom php$php_var-mbstring php$php_var-bcmath
 
+RUN apt-get install -y python3 python3-pandas python3-xlsxwriter
 
 RUN mkdir /tools; mkdir /tools/pan-os-php;
 

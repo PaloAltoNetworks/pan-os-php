@@ -95,6 +95,7 @@ __pan-os-php_scripts()
       "spiffy"
       "config-commit"
       "protocoll-number-download"
+      "html-merger"
     )
 
 		checkArray=('in' 'out' 'actions' 'filter' 'location')

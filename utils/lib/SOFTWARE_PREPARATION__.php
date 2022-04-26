@@ -342,5 +342,8 @@ class SOFTWARE_PREPARATION__
 
         return $string;
     }
-    
+
+    function endOfScript()
+    {
+    }
 }

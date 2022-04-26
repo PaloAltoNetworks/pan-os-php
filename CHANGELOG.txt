@@ -1,8 +1,9 @@
 CHANGELOG
 
-2.0.38
+2.0.38 (20220426)
 UTILS:
 * UTIL type=playbook | improvements related to argument projectfolder=DIRECTORY
+* UTIL type=html-merger - introduction | script to merge muliple HTML files, formerly created with actions=exportToExcel
 
 BUGFIX:
 * UTIL type=service | actions=exporttoexcel,FILE.HTML,resolvesrv - bugfix

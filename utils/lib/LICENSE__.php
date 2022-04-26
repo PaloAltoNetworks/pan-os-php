@@ -620,4 +620,8 @@ class LICENSE__
                 print "    - Successfully installed license key\n\n\n";
         }
     }
+
+    function endOfScript()
+    {
+    }
 }

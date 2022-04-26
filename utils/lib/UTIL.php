@@ -70,6 +70,8 @@ require_once dirname(__FILE__)."/IRONSKILLET_UPDATE__.php";
 
 require_once(dirname(__FILE__)."/PROTOCOLL_NUMBERS__.php");
 
+require_once(dirname(__FILE__)."/HTMLmerger__.php");
+
 require_once dirname(__FILE__)."/../../phpseclib/Net/SSH2.php";
 require_once dirname(__FILE__)."/../../phpseclib/Crypt/RSA.php";
 
