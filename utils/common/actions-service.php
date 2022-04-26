@@ -371,6 +371,7 @@ ServiceCallContext::$supportedActions[] = array(
                 if( $addResolveGroupSRVCoverage )
                 {
                     $port_mapping_text = array();
+                    $mapping_text_array = array();
 
                     $port_mapping = $object->dstPortMapping();
                     $mapping_texts = $port_mapping->mappingToText();
