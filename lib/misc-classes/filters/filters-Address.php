@@ -887,7 +887,7 @@ RQuery::$defaultFilters['address']['value']['operators']['string.eq'] = array(
 
         if( $object->isAddress() )
         {
-            if( $object->type() == 'ip-range' || $object->type() == 'ip-netmask' )
+            if( $object->type() == 'ip-range' || $object->type() == 'ip-netmask' || $object->isType_TMP() )
             {
                 if( $object->value() == $context->value )
                     return TRUE;
@@ -1051,9 +1051,9 @@ RQuery::$defaultFilters['address']['value']['operators']['string.regex'] = array
                 return null;
         }
 
-        if( $object->isType_ipNetmask() || $object->isType_ipRange() || $object->isType_FQDN() )
+        if( $object->isType_ipNetmask() || $object->isType_ipRange() || $object->isType_FQDN() || $object->isType_TMP() )
         {
-            if( $object->isType_ipRange() || $object->isType_FQDN() )
+            if( $object->isType_ipRange() || $object->isType_FQDN() || $object->isType_TMP() )
             {
                 $addr_value = $object->value();
             }

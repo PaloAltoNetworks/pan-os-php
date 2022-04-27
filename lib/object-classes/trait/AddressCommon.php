@@ -508,8 +508,15 @@ trait AddressCommon
             {
                 if( $this->type() !== $withObject->type() )
                 {
-                    PH::print_stdout( "- SKIP: not possible due to different object type" );
-                    continue;
+                    if($this->isType_TMP() || $withObject->isType_TMP() )
+                    {
+
+                    }
+                    else
+                    {
+                        PH::print_stdout( "- SKIP: not possible due to different object type" );
+                        continue;
+                    }
                 }
 
                 $tmp_store = null;
