@@ -974,6 +974,44 @@ class AddressStore
                     }
                 }
             }
+
+            foreach( $current->_tmpAddresses as $o )
+            {
+                if( empty($o->value()) )
+                    continue;
+
+                if( !isset($objects[$o->name()]) )
+                    $objects[$o->name()] = $o;
+                else
+                {
+                    $tmp_o = &$objects[ $o->name() ];
+                    $tmp_ref_count = $tmp_o->countReferences();
+
+                    $objects_overwritten[$o->name()][$tmp_o->owner->owner->name()] = $tmp_o;
+                    $objects_overwritten[$o->name()][$location] = $o;
+
+                    if( $tmp_ref_count == 0 && $tmp_o->isAddress() )
+                    {
+                        // if object is /32, let's remove it to match equivalent non /32 syntax
+                        $tmp_value = $tmp_o->value();
+                        if( ( $tmp_o->isType_ipNetmask() || $tmp_o->isType_TMP()) && strpos($tmp_o->value(), '/32') !== FALSE )
+                            $tmp_value = substr($tmp_value, 0, strlen($tmp_value) - 3);
+
+                        $o_value = $o->value();
+                        if( ( $o->isType_ipNetmask() || $o->isType_TMP() ) && strpos($o->value(), '/32') !== FALSE )
+                            $o_value = substr($o_value, 0, strlen($o_value) - 3);
+                        $o_ref_count = $o->countReferences();
+
+                        if( $tmp_value != $o_value && ($o_ref_count > 0) )
+                        {
+                            if( $location != "shared" )
+                                foreach( $o->refrules as $ref )
+                                    $tmp_o->addReference( $ref );
+                        }
+                    }
+                }
+            }
+
             foreach( $current->_addressGroups as $o )
             {
                 if( !isset($objects[$o->name()]) )

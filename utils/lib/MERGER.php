@@ -1066,8 +1066,8 @@ class MERGER extends UTIL
                     {
                         if( !$object->isAddress() )
                             continue;
-                        if( $object->isTmpAddr() )
-                            continue;
+                        #if( $object->isTmpAddr() )
+                        #    continue;
 
                         if( $this->excludeFilter !== null && $this->excludeFilter->matchSingleObject(array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
                             continue;
@@ -1075,10 +1075,14 @@ class MERGER extends UTIL
                         $value = $object->value();
 
                         // if object is /32, let's remove it to match equivalent non /32 syntax
-                        if( $object->isType_ipNetmask() && strpos($object->value(), '/32') !== FALSE )
+                        #if( $object->isType_ipNetmask() && strpos($object->value(), '/32') !== FALSE )
+                        if( ($object->isType_ipNetmask() || $object->isType_TMP() ) && strpos($object->value(), '/32') !== FALSE )
                             $value = substr($value, 0, strlen($value) - 3);
 
-                        $value = $object->type() . '-' . $value;
+                        if( $object->type() === "tmp" )
+                            $value = "ip-netmask" . '-' . $value;
+                        else
+                            $value = $object->type() . '-' . $value;
 
                         #PH::print_stdout( "add objNAME: " . $object->name() . " DG: " . $object->owner->owner->name() . "" );
                         $child_hashMap[$value][] = $object;
@@ -1091,8 +1095,8 @@ class MERGER extends UTIL
                 {
                     if( !$object->isAddress() )
                         continue;
-                    if( $object->isTmpAddr() )
-                        continue;
+                    #if( $object->isTmpAddr() )
+                    #    continue;
 
                     if( $this->excludeFilter !== null && $this->excludeFilter->matchSingleObject(array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
                         continue;
@@ -1112,10 +1116,14 @@ class MERGER extends UTIL
                     $value = $object->value();
 
                     // if object is /32, let's remove it to match equivalent non /32 syntax
-                    if( $object->isType_ipNetmask() && strpos($object->value(), '/32') !== FALSE )
+                    #if( $object->isType_ipNetmask() && strpos($object->value(), '/32') !== FALSE )
+                    if( ($object->isType_ipNetmask() || $object->isType_TMP() ) && strpos($object->value(), '/32') !== FALSE )
                         $value = substr($value, 0, strlen($value) - 3);
 
-                    $value = $object->type() . '-' . $value;
+                    if( $object->type() === "tmp" )
+                        $value = "ip-netmask" . '-' . $value;
+                    else
+                        $value = $object->type() . '-' . $value;
 
                     if( $object->owner === $store )
                     {
@@ -1134,8 +1142,8 @@ class MERGER extends UTIL
                 {
                     if( !$object->isAddress() )
                         continue;
-                    if( $object->isTmpAddr() )
-                        continue;
+                    #if( $object->isTmpAddr() )
+                    #    continue;
 
                     if( $object->countReferences() == 0 )
                         continue;
@@ -1147,10 +1155,14 @@ class MERGER extends UTIL
                     $value = $object->value();
 
                     // if object is /32, let's remove it to match equivalent non /32 syntax
-                    if( $object->isType_ipNetmask() && strpos($object->value(), '/32') !== FALSE )
+                    if( ($object->isType_ipNetmask() || $object->isType_TMP() ) && strpos($object->value(), '/32') !== FALSE )
                         $value = substr($value, 0, strlen($value) - 3);
 
-                    $value = $object->type() . '-' . $value;
+                    if( $object->type() === "tmp" )
+                        $value = "ip-netmask" . '-' . $value;
+                    else
+                        $value = $object->type() . '-' . $value;
+
                     if( $object->owner === $store )
                     {
                         $hashMap[$value][] = $object;
@@ -1352,6 +1364,8 @@ class MERGER extends UTIL
                     {
                         foreach( $upperHashMap[$index] as $object )
                         {
+                            #if( $object->isType_TMP() )
+                            #    continue;
                             if( $this->pickFilter->matchSingleObject(array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
                             {
                                 $pickedObject = $object;
@@ -1367,6 +1381,8 @@ class MERGER extends UTIL
                     {
                         foreach( $hash as $object )
                         {
+                            #if( $object->isType_TMP() )
+                            #    continue;
                             if( $this->pickFilter->matchSingleObject(array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
                             {
                                 $pickedObject = $object;
@@ -1384,7 +1400,13 @@ class MERGER extends UTIL
                     if( isset($upperHashMap[$index]) )
                     {
                         $pickedObject = reset($upperHashMap[$index]);
-                        PH::print_stdout( "   * using object from upper level : '{$pickedObject->_PANC_shortName()}'" );
+                        if( $pickedObject->isType_TMP() )
+                        {
+                            $pickedObject = reset($hash);
+                            PH::print_stdout( "   * keeping object '{$pickedObject->_PANC_shortName()}'" );
+                        }
+                        else
+                            PH::print_stdout( "   * using object from upper level : '{$pickedObject->_PANC_shortName()}'" );
                     }
                     else
                     {
@@ -1410,7 +1432,8 @@ class MERGER extends UTIL
                         }
 
                         /** @var Address $ancestor */
-                        if( $this->upperLevelSearch && !$ancestor->isGroup() && !$ancestor->isTmpAddr() && ($ancestor->isType_ipNetmask() || $ancestor->isType_ipRange() || $ancestor->isType_FQDN()) )
+                        #if( $this->upperLevelSearch && !$ancestor->isGroup() && !$ancestor->isTmpAddr() && ($ancestor->isType_ipNetmask() || $ancestor->isType_ipRange() || $ancestor->isType_FQDN()) )
+                        if( $this->upperLevelSearch && !$ancestor->isGroup() && ($ancestor->isType_ipNetmask() || $ancestor->isType_ipRange() || $ancestor->isType_FQDN()) )
                         {
                             if( $object->getIP4Mapping()->equals($ancestor->getIP4Mapping()) || ($object->isType_FQDN() && $ancestor->isType_FQDN()) && ($object->value() == $ancestor->value()) )
                             {
@@ -1501,12 +1524,15 @@ class MERGER extends UTIL
 
                             if( $success )
                             {
-                                if( $this->apiMode )
-                                    $object->owner->API_remove($object);
-                                else
-                                    $object->owner->remove($object);
+                                if( $object->owner !== null )
+                                {
+                                    if( $this->apiMode )
+                                        $object->owner->API_remove($object);
+                                    else
+                                        $object->owner->remove($object);
 
-                                $countRemoved++;
+                                    $countRemoved++;
+                                }
                             }
                         }
 
@@ -1515,6 +1541,147 @@ class MERGER extends UTIL
                             PH::print_stdout("\n *** STOPPING MERGE OPERATIONS NOW SINCE WE REACHED mergeCountLimit ({$this->mergeCountLimit})");
                             break 2;
                         }
+                    }
+                    else
+                        PH::print_stdout("    - SKIP: object name '{$object->_PANC_shortName()}' is not IDENTICAL");
+                }
+            }
+
+
+            $countChildRemoved = 0;
+            $countChildCreated = 0;
+            foreach( $child_hashMap as $index => &$hash )
+            {
+                PH::print_stdout();
+                PH::print_stdout(" - value '{$index}'");
+
+
+                $pickedObject = null;
+
+                if( $this->pickFilter !== null )
+                {
+                    foreach( $hash as $object )
+                    {
+                        if( $this->pickFilter->matchSingleObject(array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
+                        {
+                            $pickedObject = $object;
+                            break;
+                        }
+                    }
+                    if( $pickedObject === null )
+                        $pickedObject = reset($hash);
+                }
+                else
+                {
+                    $pickedObject = reset($hash);
+                }
+
+                $tmp_DG_name = $store->owner->name();
+                if( $tmp_DG_name == "" )
+                    $tmp_DG_name = 'shared';
+
+                $tmp_address = $store->find($pickedObject->name());
+                if( $tmp_address == null )
+                {
+                    if( isset($child_NamehashMap[$pickedObject->name()]) )
+                    {
+                        $exit = FALSE;
+                        $exitObject = null;
+                        foreach( $child_NamehashMap[$pickedObject->name()] as $obj )
+                        {
+                            if( $obj === $pickedObject )
+                                continue;
+
+                            /** @var Address $obj */
+                            /** @var Address $pickedObject */
+                            if( (!$obj->isType_FQDN() && !$pickedObject->isType_FQDN()) && $obj->getNetworkMask() == '32' && $pickedObject->getNetworkMask() == '32' )
+                            {
+                                if( ($obj->getNetworkMask() == $pickedObject->getNetworkMask()) && $obj->getNetworkValue() == $pickedObject->getNetworkValue() )
+                                    $exit = FALSE;
+                                else
+                                {
+                                    $exit = TRUE;
+                                    $exitObject = $obj;
+                                }
+                            }
+                            elseif( $obj->value() !== $pickedObject->value() )
+                            {
+                                $exit = TRUE;
+                                $exitObject = $obj;
+                            }
+                        }
+
+                        if( $exit )
+                        {
+                            PH::print_stdout("   * SKIP: no creation of object in DG: '" . $tmp_DG_name . "' as object with same name '{$exitObject->name()}' and different value '{$exitObject->value()}' exist at childDG level");
+                            continue;
+                        }
+                    }
+                    PH::print_stdout("   * create object in DG: '" . $tmp_DG_name . "' : '" . $pickedObject->name() . "'");
+
+                    if( $this->action === "merge" )
+                    {
+                        /** @var AddressStore $store */
+                        if( $this->apiMode )
+                            $tmp_address = $store->API_newAddress($pickedObject->name(), $pickedObject->type(), $pickedObject->value(), $pickedObject->description());
+                        else
+                            $tmp_address = $store->newAddress($pickedObject->name(), $pickedObject->type(), $pickedObject->value(), $pickedObject->description());
+                    }
+                    else
+                        $tmp_address = "[".$tmp_DG_name."] - ".$pickedObject->name(). " {new}";
+
+                    $countChildCreated++;
+                }
+                else
+                {
+                    /** @var Address $tmp_address */
+                    if( $tmp_address->isAddress() && $pickedObject->isAddress() && $tmp_address->type() === $pickedObject->type() && $tmp_address->value() === $pickedObject->value() )
+                    {
+                        PH::print_stdout("   * keeping object '{$tmp_address->_PANC_shortName()}'");
+                    }
+                    else
+                    {
+                        $string = "    - SKIP: object name '{$pickedObject->_PANC_shortName()}'";
+
+                        if( $pickedObject->isAddress() )
+                            $string .= " [with value '{$pickedObject->value()}']";
+                        else
+                            $string .= " [AdressGroup]";
+
+                        $string .= " is not IDENTICAL to object name: '{$tmp_address->_PANC_shortName()}'";
+
+                        if( $tmp_address->isAddress() )
+                            $string .= " [with value '{$tmp_address->value()}']";
+                        else
+                            $string .= " [AdressGroup]";
+
+                        PH::print_stdout($string);
+
+                        continue;
+                    }
+                }
+
+
+                // Merging loop finally!
+                foreach( $hash as $objectIndex => $object )
+                {
+                    PH::print_stdout("    - replacing '{$object->_PANC_shortName()}' ...");
+                    if( $this->action === "merge" )
+                    {
+                        $object->__replaceWhereIamUsed($this->apiMode, $tmp_address, TRUE, 5);
+
+                        $object->merge_tag_description_to($tmp_address, $this->apiMode);
+                    }
+
+                    PH::print_stdout("    - deleting '{$object->_PANC_shortName()}'");
+                    self::deletedObject($index, $tmp_address, $object);
+
+                    if( $this->action === "merge" )
+                    {
+                        if( $this->apiMode )
+                            $object->owner->API_remove($object);
+                        else
+                            $object->owner->remove($object);
                     }
                     else
                         PH::print_stdout("    - SKIP: object name '{$object->_PANC_shortName()}' is not IDENTICAL");
@@ -2548,14 +2715,6 @@ class MERGER extends UTIL
                     $value = $object->getColor();
                     $value = $object->name();
 
-                    /*
-                    // if object is /32, let's remove it to match equivalent non /32 syntax
-                    if( $object->isType_ipNetmask() && strpos($object->value(), '/32') !== FALSE )
-                        $value = substr($value, 0, strlen($value) - 3);
-        
-                    $value = $object->type() . '-' . $value;
-                    */
-
                     if( $object->owner === $store )
                     {
                         $hashMap[$value][] = $object;
@@ -2792,7 +2951,7 @@ class MERGER extends UTIL
                         }
 
                         /** @var Tag $ancestor */
-                        #if( $this->upperLevelSearch && !$ancestor->isGroup() && !$ancestor->isTmpAddr() && ($ancestor->isType_ipNetmask() || $ancestor->isType_ipRange() || $ancestor->isType_FQDN()) )
+                        ##if( $this->upperLevelSearch && !$ancestor->isGroup() && !$ancestor->isTmpAddr() && ($ancestor->isType_ipNetmask() || $ancestor->isType_ipRange() || $ancestor->isType_FQDN()) )
                         if( $this->upperLevelSearch && !$ancestor->isTmp() )
                         {
                             if( $object->sameValue($ancestor) || $this->dupAlg == 'samename' ) //same color
@@ -3043,6 +3202,10 @@ class MERGER extends UTIL
 
         if( !isset( $this->deletedObjects[$index]['removed'] ) )
         {
+            $tmpstring = "[".$tmpDG. "] - ".$removedOBJ->name();
+            if( $removedOBJ->isType_TMP() )
+                $tmpstring .= " (tmp)";
+
             $this->deletedObjects[$index]['removed'] = "[".$tmpDG. "] - ".$removedOBJ->name();
             if( $debug )
                 print "removed: ".$removedOBJ->name()."\n";
@@ -3050,6 +3213,8 @@ class MERGER extends UTIL
         else
         {
             $tmpstring = "[".$tmpDG. "] - ".$removedOBJ->name();
+            if( $removedOBJ->isType_TMP() )
+                $tmpstring .= " (tmp)";
 
             if( strpos( $this->deletedObjects[$index]['removed'], $tmpstring ) === FALSE )
                 $this->deletedObjects[$index]['removed'] .= "|" . $tmpstring;
