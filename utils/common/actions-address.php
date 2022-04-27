@@ -2517,6 +2517,195 @@ AddressCallContext::$supportedActions['create-Address'] = array(
     )
 );
 
+AddressCallContext::$supportedActions[] = Array(
+    'name' => 'create-address-from-file',
+    'GlobalInitFunction' => function(AddressCallContext $context){},
+    'MainFunction' => function(AddressCallContext $context){},
+    'GlobalFinishFunction' => function(AddressCallContext $context)
+    {
+        /*
+
+        file syntax:
+            AddressObjectName,IP-Address,Address-group
+
+        example:
+            h-192.168.0.1,192.168.0.1/32,private-network-AddressGroup
+            n-192.168.2.0m24,192.168.2.0/24,private-network-AddressGroup
+
+        */
+        $create_addressGroup = false;
+        $address_addressgroup = "";
+
+        $object = $context->object;
+        if( !is_object( $object ) )
+        {
+            derr( 'addressStore is empty - create first an address object via the Palo Alto Networks GUI' );
+            #how to access the addressstore????
+        }
+
+        $addressStore = $object->owner;
+
+        if( !isset($context->cachedList) )
+        {
+            $text = file_get_contents( $context->arguments['file'] );
+
+            if( $text === false )
+                derr("cannot open file '{$context->arguments['file']}");
+
+            $lines = explode("\n", $text);
+            foreach( $lines as  $line)
+            {
+                $line = trim($line);
+                if(strlen($line) == 0)
+                    continue;
+                $list[$line] = true;
+            }
+
+            $context->cachedList = &$list;
+        }
+        else
+            $list = &$context->cachedList;
+
+
+        if( count( $list ) == 0 )
+            derr( 'called file: '.$context->arguments['file'].' is empty' );
+
+
+        foreach( $list as $key => $item )
+        {
+            $create_addressGroup = false;
+
+            $address_information = explode(",", $key);
+
+            $address_name = $address_information[0];
+            $address_value = $address_information[1];
+            if( count($address_information) == 3 )
+            {
+                $create_addressGroup = true;
+                $address_addressgroup = $address_information[2];
+
+                $newAddressGroup = $addressStore->find( $address_addressgroup );
+
+                if( $newAddressGroup == null )
+                {
+                    $string = $context->padding."- object: '{$address_addressgroup}'\n";
+                    $string .= $context->padding.$context->padding." *** create addressgroup with name: '{$address_addressgroup}'\n";
+                    PH::ACTIONlog( $context, $string );
+                    if( $context->isAPI )
+                        $addressStore->API_newAddressGroup( $address_addressgroup );
+                    else
+                        $addressStore->newAddressGroup( $address_addressgroup );
+                }
+                else
+                {
+                    $string = $context->padding . "- object: '{$address_addressgroup}'\n";
+                    $string .= $context->padding . $context->padding . " *** SKIPPED addressgroup name: '{$address_addressgroup}' already available\n";
+                    PH::ACTIONlog( $context, $string );
+                    #maybe print out the members of the group
+                }
+            }
+
+
+            $key = $address_value;
+
+            $addressstring = "";
+            $networkvalue = "";
+            //VALIDATION for $key
+            if( substr_count($key, '.') == 3 )
+            {
+                $testvalue = CIDR::stringToStartEnd( $key );
+                $range = CIDR::range2network( $testvalue['start'], $testvalue['end'] );
+
+                $networkvalue = long2ip( $range['network'] );
+                $networkmask = $range['mask'];
+                $addressstring = $range['string'];
+            }
+            elseif( strpos( $key, ":") !== false )
+            {
+                /*
+                if( substr_count($key, '/') == 0 )
+                    $key = $key."/64";
+
+                $test = Ipv6_Prefix2Range( $key );
+                if( $test === false )
+                    print "FALSE\n";
+                else
+                {
+                    print "TRUE\n";
+                    print_r( $test );
+                }
+                */
+
+                derr( "IPv6 addresses are not supported yet." );
+            }
+            else
+                derr( "not a valid IPv4 or IPv6 address." );
+
+
+            $new_address_name = $address_name;
+            $new_address_value = $addressstring;
+
+            $new_address = $addressStore->find( $new_address_name );
+            if( $new_address == null )
+            {
+                $string = $context->padding."- object: '{$new_address_name}'\n";
+                $string .= $context->padding.$context->padding." *** create addressobject with name: '{$new_address_name}' and value: '{$new_address_value}'\n";
+                PH::ACTIONlog( $context, $string );
+
+                if( $context->isAPI )
+                    $newObj = $addressStore->API_newAddress( $new_address_name, 'ip-netmask', $new_address_value );
+                else
+                    $newObj = $addressStore->newAddress( $new_address_name, 'ip-netmask', $new_address_value );
+            }
+            else
+            {
+                $string = $context->padding."- object: '{$new_address_name}'\n";
+                $string .= $context->padding.$context->padding." *** SKIPPED addressobject with name: '{$new_address_name}' already available. old-value: '{$new_address->value()}' - new-value:'{$new_address_value}'\n\n";
+                PH::ACTIONlog( $context, $string );
+
+                if( $new_address_value != $new_address->value() )
+                    derr( "address value differ from existing address object: existing-value: '{$new_address->value()}' - new-value:'{$new_address_value}'\n" );
+
+                $newObj = $new_address;
+            }
+
+            if( $create_addressGroup )
+            {
+                $newgrpObj = $addressStore->find( $address_addressgroup );
+                if( $newgrpObj != null )
+                {
+                    if( $newgrpObj->has( $newObj ) == false )
+                    {
+                        $string = $context->padding.$context->padding." *** add addressobject with name: '{$new_address_name}' as member to addressgroup: '{$address_addressgroup}'\n\n";
+                        PH::ACTIONlog( $context, $string );
+                        if( $context->isAPI )
+                            $newgrpObj->API_addMember( $newObj );
+                        else
+                            $newgrpObj->addMember( $newObj );
+                    }
+                }
+                else
+                {
+                    $string = "addressgroup: ".$address_addressgroup." not available";
+                    PH::ACTIONstatus( $context, 'SKIPPED', $string);
+                }
+            }
+        }
+
+    },
+    'args' => Array(
+        'file' => Array( 'type' => 'string',
+            'default' => '*nodefault*',
+            'help' =>
+                "file syntax:   AddressObjectName,IP-Address,Address-group
+
+example:
+    h-192.168.0.1,192.168.0.1/32,private-network-AddressGroup
+    n-192.168.2.0m24,192.168.2.0/24,private-network-AddressGroup\n"
+        )
+    ),
+);
+
 AddressCallContext::$supportedActions['create-AddressGroup'] = array(
     'name' => 'create-addressgroup',
     'MainFunction' => function (AddressCallContext $context) {

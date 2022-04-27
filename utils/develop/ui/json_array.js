@@ -61,6 +61,19 @@ var subjectObject =
                     }
                 }
             },
+            "create-address-from-file": {
+                "name": "create-address-from-file",
+                "GlobalInitFunction": {},
+                "MainFunction": {},
+                "GlobalFinishFunction": {},
+                "args": {
+                    "file": {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "help": "file syntax:   AddressObjectName,IP-Address,Address-group\n\nexample:\n    h-192.168.0.1,192.168.0.1\/32,private-network-AddressGroup\n    n-192.168.2.0m24,192.168.2.0\/24,private-network-AddressGroup\n"
+                    }
+                }
+            },
             "create-addressgroup": {
                 "name": "create-addressgroup",
                 "MainFunction": {},
@@ -1570,6 +1583,11 @@ var subjectObject =
     },
     "gratuitous-arp": {
         "name": "gratuitous-arp",
+        "action": [],
+        "filter": []
+    },
+    "html-merger": {
+        "name": "html-merger",
         "action": [],
         "filter": []
     },
