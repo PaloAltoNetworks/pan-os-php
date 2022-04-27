@@ -552,7 +552,7 @@ class AddressStore
         $objectName = $s->name();
 
         // there is already an object named like that
-        if( isset($this->_all[$objectName]) && $this->_all[$objectName] !== $s )
+        if( isset($this->_all[$objectName]) && $this->_all[$objectName] !== $s && !$this->_all[$objectName]->isType_TMP() )
         {
             derr('You cannot add object with same name in a store');
         }
@@ -741,7 +741,7 @@ class AddressStore
     public function newAddress($name, $type, $value, $description = '')
     {
         $found = $this->find($name, null, FALSE);
-        if( $found !== null )
+        if( $found !== null && !$found->isType_TMP() )
             derr("cannot create Address named '" . $name . "' as this name is already in use");
 
         $newObject = new Address($name, $this, TRUE);
