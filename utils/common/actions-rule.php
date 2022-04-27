@@ -969,6 +969,52 @@ RuleCallContext::$supportedActions[] = array(
     'help' => "adds an object in the 'SOURCE' field of a rule, if that field was set to 'ANY' it will then be replaced by this object."
 );
 RuleCallContext::$supportedActions[] = array(
+    'name' => 'src-Add-from-file',
+    'section' => 'address',
+    'MainFunction' => function (RuleCallContext $context) {
+        $rule = $context->object;
+
+        if( !isset($context->cachedList) )
+        {
+            $text = file_get_contents( $context->arguments['file'] );
+
+            if( $text === false )
+                derr("cannot open file '{$context->arguments['file']}");
+
+            $lines = explode("\n", $text);
+            foreach( $lines as  $line)
+            {
+                $line = trim($line);
+                if(strlen($line) == 0)
+                    continue;
+                $list[$line] = true;
+            }
+
+            $context->cachedList = &$list;
+        }
+        else
+            $list = &$context->cachedList;
+
+        if( count( $list ) == 0 )
+            derr( 'called file: '.$context->arguments['file'].' is empty' );
+
+        foreach( $list as $key => $item )
+        {
+            $objectFind = $rule->source->parentCentralStore->find( $key );
+            if( $objectFind === null )
+                derr("address-type object named '{$key}' not found");
+
+            if( $context->isAPI )
+                $rule->source->API_add($objectFind);
+            else
+                $rule->source->addObject($objectFind);
+        }
+    },
+    'args' => array('file' => Array( 'type' => 'string', 'default' => '*nodefault*') ),
+    'help' => "adds all objects to the 'SOURCE' field of a rule, if that field was set to 'ANY' it will then be replaced by these objects defined in file."
+);
+
+RuleCallContext::$supportedActions[] = array(
     'name' => 'src-Remove',
     'section' => 'address',
     'MainFunction' => function (RuleCallContext $context) {
@@ -1227,6 +1273,51 @@ RuleCallContext::$supportedActions[] = array(
     },
     'args' => array('objName' => array('type' => 'string', 'default' => '*nodefault*')),
     'help' => "adds an object in the 'DESTINATION' field of a rule, if that field was set to 'ANY' it will then be replaced by this object."
+);
+RuleCallContext::$supportedActions[] = array(
+    'name' => 'dst-Add-from-file',
+    'section' => 'address',
+    'MainFunction' => function (RuleCallContext $context) {
+        $rule = $context->object;
+
+        if( !isset($context->cachedList) )
+        {
+            $text = file_get_contents( $context->arguments['file'] );
+
+            if( $text === false )
+                derr("cannot open file '{$context->arguments['file']}");
+
+            $lines = explode("\n", $text);
+            foreach( $lines as  $line)
+            {
+                $line = trim($line);
+                if(strlen($line) == 0)
+                    continue;
+                $list[$line] = true;
+            }
+
+            $context->cachedList = &$list;
+        }
+        else
+            $list = &$context->cachedList;
+
+        if( count( $list ) == 0 )
+            derr( 'called file: '.$context->arguments['file'].' is empty' );
+
+        foreach( $list as $key => $item )
+        {
+            $objectFind = $rule->source->parentCentralStore->find( $key );
+            if( $objectFind === null )
+                derr("address-type object named '{$key}' not found");
+
+            if( $context->isAPI )
+                $rule->destination->API_add($objectFind);
+            else
+                $rule->destination->addObject($objectFind);
+        }
+    },
+    'args' => array('file' => Array( 'type' => 'string', 'default' => '*nodefault*') ),
+    'help' => "adds all objects to the 'DESTINATION' field of a rule, if that field was set to 'ANY' it will then be replaced by these objects defined in file."
 );
 RuleCallContext::$supportedActions[] = array(
     'name' => 'dst-Remove',

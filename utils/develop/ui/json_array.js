@@ -1953,6 +1953,18 @@ var subjectObject =
                 },
                 "help": "adds an object in the 'DESTINATION' field of a rule, if that field was set to 'ANY' it will then be replaced by this object."
             },
+            "dst-add-from-file": {
+                "name": "dst-Add-from-file",
+                "section": "address",
+                "MainFunction": {},
+                "args": {
+                    "file": {
+                        "type": "string",
+                        "default": "*nodefault*"
+                    }
+                },
+                "help": "adds all objects to the 'DESTINATION' field of a rule, if that field was set to 'ANY' it will then be replaced by these objects defined in file."
+            },
             "dst-negate-set": {
                 "name": "dst-Negate-Set",
                 "section": "address",
@@ -2615,6 +2627,18 @@ var subjectObject =
                     }
                 },
                 "help": "adds an object in the 'SOURCE' field of a rule, if that field was set to 'ANY' it will then be replaced by this object."
+            },
+            "src-add-from-file": {
+                "name": "src-Add-from-file",
+                "section": "address",
+                "MainFunction": {},
+                "args": {
+                    "file": {
+                        "type": "string",
+                        "default": "*nodefault*"
+                    }
+                },
+                "help": "adds all objects to the 'SOURCE' field of a rule, if that field was set to 'ANY' it will then be replaced by these objects defined in file."
             },
             "src-dst-swap": {
                 "name": "src-dst-swap",
