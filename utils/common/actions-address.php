@@ -2660,11 +2660,15 @@ AddressCallContext::$supportedActions[] = Array(
             else
             {
                 $string = $context->padding."- object: '{$new_address_name}'\n";
-                $string .= $context->padding.$context->padding." *** SKIPPED addressobject with name: '{$new_address_name}' already available. old-value: '{$new_address->value()}' - new-value:'{$new_address_value}'\n\n";
+                $string .= $context->padding.$context->padding." *** SKIPPED creating; addressobject with name: '{$new_address_name}' already available. old-value: '{$new_address->value()}' - new-value:'{$new_address_value}'\n\n";
                 PH::ACTIONlog( $context, $string );
 
                 if( $new_address_value != $new_address->value() )
-                    derr( "address value differ from existing address object: existing-value: '{$new_address->value()}' - new-value:'{$new_address_value}'\n" );
+                {
+                    mwarning( "address value differ from existing address object: existing-value: '{$new_address->value()}' - new-value:'{$new_address_value}'\n", null, false);
+                    continue;
+                }
+
 
                 $newObj = $new_address;
             }
