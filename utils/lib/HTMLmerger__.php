@@ -40,7 +40,12 @@ class HTMLmerger__
 
 
         if( isset(PH::$args['projectfolder']) )
+        {
             $this->projectfolder = PH::$args['projectfolder'];
+            if( substr("$this->projectfolder", -1) !== "/" )
+                $this->projectfolder .= "/";
+        }
+
 
         $this->supportedArguments = Array();
         $this->supportedArguments['projectfolder'] = Array('niceName' => 'projectFolder', 'shortHelp' => 'define the projectfolder', 'argDesc' => 'projectfolder=[DIRECTORY]');
@@ -77,7 +82,7 @@ class HTMLmerger__
         }
 
         PH::print_stdout( );
-        PH::print_stdout( "Excel file created: ".$this->projectfolder."/".$excelfilename );
+        PH::print_stdout( "Excel file created: ".$this->projectfolder."".$excelfilename );
         PH::print_stdout( );
     }
 

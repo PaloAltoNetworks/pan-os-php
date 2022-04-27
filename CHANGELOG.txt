@@ -1,5 +1,14 @@
 CHANGELOG
 
+2.0.39
+UTILS:
+* UTIL type=html-merger | optimisation
+
+BUGFIX:
+
+GENERAL:
+
+
 2.0.38 (20220426)
 UTILS:
 * UTIL type=playbook | improvements related to argument projectfolder=DIRECTORY

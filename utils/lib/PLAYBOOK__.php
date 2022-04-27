@@ -326,7 +326,7 @@ class PLAYBOOK__
             PH::print_stdout();
         }
 
-        if( isset(PH::$args['out']) )
+        if( isset(PH::$args['out']) && PH::$args['out'] !== "/dev/null" )
         {
             //now save the latest out= from the foreach loop "$out" into "$output" file;
             PH::print_stdout("FINAL script task: the processed PAN-OS configuration are copy to file: ".$output);

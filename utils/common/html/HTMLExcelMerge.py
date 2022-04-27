@@ -8,7 +8,12 @@ import pandas as pd
 import sys
 
 
-filepath = sys.argv[1]+'/'
+filepath = sys.argv[1]
+if filepath.endswith('/'):
+	filepath = filepath
+else:
+	filepath = sys.argv[1]+'/'
+
 excelfilename = sys.argv[2]
 
 cwd = os.path.dirname(filepath)
