@@ -1209,8 +1209,8 @@ class MERGER extends UTIL
                     {
                         foreach( $upperHashMap[$index] as $object )
                         {
-                            if( $object->isType_TMP() )
-                                continue;
+                            #if( $object->isType_TMP() )
+                            #    continue;
                             if( $this->pickFilter->matchSingleObject(array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
                             {
                                 $pickedObject = $object;
@@ -1226,8 +1226,8 @@ class MERGER extends UTIL
                     {
                         foreach( $hash as $object )
                         {
-                            if( $object->isType_TMP() )
-                                continue;
+                            #if( $object->isType_TMP() )
+                            #    continue;
                             if( $this->pickFilter->matchSingleObject(array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
                             {
                                 $pickedObject = $object;
@@ -3042,10 +3042,19 @@ class MERGER extends UTIL
             $tmpDG = $removedOBJ->owner->owner->name();
 
         if( !isset( $this->deletedObjects[$index]['removed'] ) )
-            $this->deletedObjects[$index]['removed'] = "[".$tmpDG. "] - ".$removedOBJ->name();
+        {
+            $tmpstring = "[".$tmpDG. "] - ".$removedOBJ->name();
+            if( $removedOBJ->isType_TMP() )
+                $tmpstring .= " (tmp)";
+
+            $this->deletedObjects[$index]['removed'] = $tmpstring;
+        }
+
         else
         {
             $tmpstring = "[".$tmpDG. "] - ".$removedOBJ->name();
+            if( $removedOBJ->isType_TMP() )
+                $tmpstring .= " (tmp)";
 
             if( strpos( $this->deletedObjects[$index]['removed'], $tmpstring ) === FALSE )
                 $this->deletedObjects[$index]['removed'] .= "|" . $tmpstring;
