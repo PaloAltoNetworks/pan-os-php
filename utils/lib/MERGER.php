@@ -3039,11 +3039,8 @@ class MERGER extends UTIL
 
     private function deletedObject( $index, $keptOBJ, $removedOBJ)
     {
-        $debug = false;
         if( is_object( $keptOBJ ) )
         {
-            if( $debug )
-                print "kept: ".$keptOBJ->name()."\n";
             if( $keptOBJ->owner->owner->name() === "" )
                 $tmpDG = "shared";
             else
@@ -3053,8 +3050,6 @@ class MERGER extends UTIL
         else
         {
             $this->deletedObjects[$index]['kept'] = $keptOBJ;
-            if( $debug )
-                print "kept: ".$keptOBJ."\n";
         }
 
 
@@ -3069,9 +3064,7 @@ class MERGER extends UTIL
             if( $removedOBJ->isType_TMP() )
                 $tmpstring .= " (tmp)";
 
-            $this->deletedObjects[$index]['removed'] = "[".$tmpDG. "] - ".$removedOBJ->name();
-            if( $debug )
-                print "removed: ".$removedOBJ->name()."\n";
+            $this->deletedObjects[$index]['removed'] = $tmpstring;
         }
         else
         {
@@ -3081,10 +3074,7 @@ class MERGER extends UTIL
 
             if( strpos( $this->deletedObjects[$index]['removed'], $tmpstring ) === FALSE )
                 $this->deletedObjects[$index]['removed'] .= "|" . $tmpstring;
-            if( $debug )
-                print "removed: ".$removedOBJ->name()."\n";
         }
-
     }
 
     private function deletedObjectSetRemoved( $index, $tmpstring )
