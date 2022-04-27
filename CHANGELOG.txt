@@ -7,6 +7,7 @@ UTILS:
 * UTIL type=rule | introduce actions=src-add-from-file:FILE.txt / dst-add-from-file:FILE.txt
 * UTIL type=address | introduce new 'filter=(value ip4.match.exact.from.file FILE)
 * UTIL type=address | improve actions=replace-IP-by-MT-like-Object/create-address/create-address-from-file - related to easily create address object which same name as TMP object
+* UTIL type=address-/service-/tag-merger | optimisation if argument allowmergingwithupperlevel is used
 
 BUGFIX:
 * UTIL type=rule | actions=src-add/src-add-from-file/dst-add/dst-add-from-file - move from error out to warning
