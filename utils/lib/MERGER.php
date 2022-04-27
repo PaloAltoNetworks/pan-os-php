@@ -1286,7 +1286,7 @@ class MERGER extends UTIL
                     {
                         PH::print_stdout("   * keeping object '{$tmp_address->_PANC_shortName()}'");
                     }
-                    elseif( $tmp_address->getNetworkValue() == $pickedObject->getNetworkValue() )
+                    elseif( $tmp_address->isAddress() && $pickedObject->isAddress() && $tmp_address->getNetworkValue() == $pickedObject->getNetworkValue() )
                     {
                         if( $tmp_address->isType_ipNetmask() && strpos($tmp_address->value(), '/32') !== FALSE )
                             $value = substr($tmp_address->value(), 0, strlen($tmp_address->value()) - 3);
