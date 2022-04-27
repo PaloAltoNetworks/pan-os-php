@@ -934,6 +934,43 @@ RQuery::$defaultFilters['address']['value']['operators']['ip4.match.exact'] = ar
         'input' => 'input/panorama-8.0.xml'
     )
 );
+RQuery::$defaultFilters['address']['value']['operators']['ip4.match.exact.from.file'] = Array(
+    'Function' => function(AddressRQueryContext $context )
+    {
+        $object = $context->object;
+
+
+        if( !isset($context->cachedValueMapping) )
+        {
+            $text = file_get_contents($context->value);
+
+            if( $text === false )
+                derr("cannot open file '{$context->value}");
+
+            print $text."n";
+            $lines = explode("\n", $text);
+
+            $mapping = new IP4Map();
+
+            $count = 0;
+            foreach( $lines as $net )
+            {
+                $net = trim($net);
+                if( strlen($net) < 1 )
+                    derr("empty network/IP name provided for argument #$count");
+                $mapping->addMap(IP4Map::mapFromText($net));
+                $count++;
+            }
+            $context->cachedValueMapping = $mapping;
+        }
+        else
+            $mapping = $context->cachedValueMapping;
+
+        return $object->getIP4Mapping()->equals($mapping);
+
+    },
+    'arg' => true
+);
 RQuery::$defaultFilters['address']['value']['operators']['ip4.included-in'] = array(
     'Function' => function (AddressRQueryContext $context) {
         $object = $context->object;

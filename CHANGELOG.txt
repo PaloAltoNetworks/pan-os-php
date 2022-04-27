@@ -5,6 +5,7 @@ UTILS:
 * UTIL type=html-merger | optimisation
 * UTIL type=address | introduce actions=create-address-from-file:FILE.txt
 * UTIL type=rule | introduce actions=src-add-from-file:FILE.txt / dst-add-from-file:FILE.txt
+* UTIL type=address | introduce new 'filter=(value ip4.match.exact.from.file FILE)
 
 BUGFIX:
 
