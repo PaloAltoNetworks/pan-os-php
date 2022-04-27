@@ -151,8 +151,6 @@ AddressCallContext::$supportedActions[] = array(
             return;
         }
 
-        $rangeDetected = FALSE;
-
         if( !$object->nameIsValidRuleIPEntry() )
         {
             $string = "because object is not an IP address/netmask or range";
@@ -160,6 +158,17 @@ AddressCallContext::$supportedActions[] = array(
             return;
         }
 
+        $prefix = array();
+        $prefix['host'] = "H-";
+
+        $prefix['network'] = "N-";
+        $prefix['networkmask'] = "-";
+
+        $prefix['range'] = "R-";
+        $prefix['rangeseparator'] = "-";
+
+        $object->replaceIPbyObject( $context, $prefix );
+        /*
         $objectRefs = $object->getReferences();
         $clearForAction = TRUE;
         foreach( $objectRefs as $objectRef )
@@ -263,6 +272,7 @@ AddressCallContext::$supportedActions[] = array(
                 if( $class == 'AddressRuleContainer' )
                 {
                     /** @var AddressRuleContainer $objectRef */
+        /*
                     $string = "replacing in {$objectRef->toString()}";
                     PH::ACTIONlog( $context, $string );
 
@@ -290,6 +300,7 @@ AddressCallContext::$supportedActions[] = array(
                 elseif( $class == 'NatRule' )
                 {
                     /** @var NatRule $objectRef */
+        /*
                     $string = "replacing in {$objectRef->toString()}";
                     PH::ACTIONlog( $context, $string );
 
@@ -305,6 +316,7 @@ AddressCallContext::$supportedActions[] = array(
 
             }
         }
+        */
     },
 );
 
@@ -2493,7 +2505,9 @@ AddressCallContext::$supportedActions['create-Address'] = array(
             return;
         }
 
-        if( $addressStore->find( $newName ) === null )
+        /** @var Address $tmpAddress */
+        $tmpAddress = $addressStore->find( $newName );
+        if( $tmpAddress === null )
         {
             $string = "create Address object : '" . $newName . "'";
             PH::ACTIONlog( $context, $string );
@@ -2505,8 +2519,24 @@ AddressCallContext::$supportedActions['create-Address'] = array(
         }
         else
         {
-            $string = "Address named '" . $newName . "' already exists, cannot create";
-            PH::ACTIONlog( $context, $string );
+            if( $tmpAddress->isType_TMP() )
+            {
+                $prefix = array();
+                $prefix['host'] = "";
+
+                $prefix['network'] = "";
+                $prefix['networkmask'] = "m";
+
+                $prefix['range'] = "";
+                $prefix['rangeseparator'] = "-";
+
+                $tmpAddress->replaceIPbyObject( $context, $prefix );
+            }
+            else
+            {
+                $string = "Address named '" . $newName . "' already exists, cannot create";
+                PH::ACTIONlog( $context, $string );
+            }
         }
 
     },
@@ -2659,16 +2689,31 @@ AddressCallContext::$supportedActions[] = Array(
             }
             else
             {
-                $string = $context->padding."- object: '{$new_address_name}'\n";
-                $string .= $context->padding.$context->padding." *** SKIPPED creating; addressobject with name: '{$new_address_name}' already available. old-value: '{$new_address->value()}' - new-value:'{$new_address_value}'\n\n";
-                PH::ACTIONlog( $context, $string );
-
-                if( $new_address_value != $new_address->value() )
+                if( $new_address->isType_TMP() )
                 {
-                    mwarning( "address value differ from existing address object: existing-value: '{$new_address->value()}' - new-value:'{$new_address_value}'\n", null, false);
-                    continue;
-                }
+                    $prefix = array();
+                    $prefix['host'] = "";
 
+                    $prefix['network'] = "";
+                    $prefix['networkmask'] = "m";
+
+                    $prefix['range'] = "";
+                    $prefix['rangeseparator'] = "-";
+
+                    $new_address->replaceIPbyObject( $context, $prefix );
+                }
+                else
+                {
+                    $string = $context->padding."- object: '{$new_address_name}'\n";
+                    $string .= $context->padding.$context->padding." *** SKIPPED creating; addressobject with name: '{$new_address_name}' already available. old-value: '{$new_address->value()}' - new-value:'{$new_address_value}'\n\n";
+                    PH::ACTIONlog( $context, $string );
+
+                    if( $new_address_value != $new_address->value() )
+                    {
+                        mwarning( "address value differ from existing address object: existing-value: '{$new_address->value()}' - new-value:'{$new_address_value}'\n", null, false);
+                        continue;
+                    }
+                }
 
                 $newObj = $new_address;
             }
