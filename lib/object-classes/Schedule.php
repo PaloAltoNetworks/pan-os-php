@@ -356,10 +356,10 @@ class Schedule
         if( $this->recurring_type != 'non-recurring' )
             return false;
 
-        $d = time();
+        $d_actual = time();
         if( $futuredate !== 0 )
         {
-            $d = $d + ($futuredate)*24*3600;
+            $d = $d_actual + ($futuredate)*24*3600;
         }
         $expired = false;
         foreach( $this->recurring_array['non-recurring'] as $member )
@@ -367,7 +367,10 @@ class Schedule
             $d2 = DateTime::createFromFormat('Y/m/d@H:i', $member['end']);
             $timestamp = $d2->getTimestamp();
 
-            $operator_string = $timestamp." ".$operator." ".$d;
+            if( $operator === "<" )
+                $operator_string = "(".$timestamp." ".$operator." ".$d.") && (".$timestamp." > ".$d_actual.")";
+            else
+                $operator_string = $timestamp." ".$operator." ".$d;
 
             if( eval("return $operator_string;" ) )
                 $expired = true;

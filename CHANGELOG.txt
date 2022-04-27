@@ -10,6 +10,7 @@ UTILS:
 
 BUGFIX:
 * UTIL type=rule | actions=src-add/src-add-from-file/dst-add/dst-add-from-file - move from error out to warning
+* class Schedule | bugfix to display expired objects correctly
 
 GENERAL:
 
