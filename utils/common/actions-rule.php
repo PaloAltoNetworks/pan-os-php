@@ -958,7 +958,10 @@ RuleCallContext::$supportedActions[] = array(
         $rule = $context->object;
         $objectFind = $rule->source->parentCentralStore->find($context->arguments['objName']);
         if( $objectFind === null )
-            derr("address-type object named '{$context->arguments['objName']}' not found");
+        {
+            mwarning("address-type object named '{$context->arguments['objName']}' not found", null, false);
+            return false;
+        }
 
         if( $context->isAPI )
             $rule->source->API_add($objectFind);
@@ -1002,7 +1005,11 @@ RuleCallContext::$supportedActions[] = array(
         {
             $objectFind = $rule->source->parentCentralStore->find( $key );
             if( $objectFind === null )
-                derr("address-type object named '{$key}' not found");
+            {
+                mwarning("address-type object named '{$key}' not found", null, false);
+                continue;
+            }
+
 
             if( $context->isAPI )
                 $rule->source->API_add($objectFind);
@@ -1021,7 +1028,10 @@ RuleCallContext::$supportedActions[] = array(
         $rule = $context->object;
         $objectFind = $rule->source->parentCentralStore->find($context->arguments['objName']);
         if( $objectFind === null )
-            derr("address-type object named '{$context->arguments['objName']}' not found");
+        {
+            mwarning("address-type object named '{$context->arguments['objName']}' not found", null, false);
+            return false;
+        }
 
         if( $context->isAPI )
             $rule->source->API_remove($objectFind);
@@ -1248,7 +1258,10 @@ RuleCallContext::$supportedActions[] = array(
         $rule = $context->object;
         $objectFind = $rule->source->parentCentralStore->find($context->arguments['objName']);
         if( $objectFind === null )
-            derr("address-type object named '{$context->arguments['objName']}' not found");
+        {
+            mwarning("address-type object named '{$context->arguments['objName']}' not found", null, false);
+            return false;
+        }
 
         if( $context->isAPI )
             $rule->source->API_remove($objectFind, TRUE);
@@ -1264,7 +1277,10 @@ RuleCallContext::$supportedActions[] = array(
         $rule = $context->object;
         $objectFind = $rule->source->parentCentralStore->find($context->arguments['objName']);
         if( $objectFind === null )
-            derr("address-type object named '{$context->arguments['objName']}' not found");
+        {
+            mwarning("address-type object named '{$context->arguments['objName']}' not found", null, false);
+            return false;
+        }
 
         if( $context->isAPI )
             $rule->destination->API_add($objectFind);
@@ -1308,7 +1324,10 @@ RuleCallContext::$supportedActions[] = array(
         {
             $objectFind = $rule->source->parentCentralStore->find( $key );
             if( $objectFind === null )
-                derr("address-type object named '{$key}' not found");
+            {
+                mwarning("address-type object named '{$key}' not found", null, false);
+                continue;
+            }
 
             if( $context->isAPI )
                 $rule->destination->API_add($objectFind);
@@ -1326,7 +1345,10 @@ RuleCallContext::$supportedActions[] = array(
         $rule = $context->object;
         $objectFind = $rule->source->parentCentralStore->find($context->arguments['objName']);
         if( $objectFind === null )
-            derr("address-type object named '{$context->arguments['objName']}' not found");
+        {
+            mwarning("address-type object named '{$context->arguments['objName']}' not found", null, false);
+            return false;
+        }
 
         if( $context->isAPI )
             $rule->destination->API_remove($objectFind);
