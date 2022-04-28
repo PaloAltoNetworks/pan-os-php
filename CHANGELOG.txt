@@ -13,6 +13,7 @@ UTILS:
 BUGFIX:
 * UTIL type=rule | actions=src-add/src-add-from-file/dst-add/dst-add-from-file - move from error out to warning
 * class Schedule | bugfix to display expired objects correctly
+* class AddressStroe | bugfix if DAG includes filter where tag has also () in name
 
 GENERAL:
 * class EthernetInterface - reduce duplicate code

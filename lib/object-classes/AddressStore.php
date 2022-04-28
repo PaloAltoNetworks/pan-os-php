@@ -212,7 +212,11 @@ class AddressStore
             $errMesg = '';
             $query = new RQuery('address');
             if( $query->parseFromString($withFilter, $errMsg) === FALSE )
-                derr("error while parsing query: {$errMesg} - filter: {$withFilter}");
+            {
+                mwarning("error while parsing query: {$errMesg} - filter: {$withFilter}", null, FALSE);
+                return array();
+            }
+
 
             $res = array();
             foreach( $this->_all as $obj )
