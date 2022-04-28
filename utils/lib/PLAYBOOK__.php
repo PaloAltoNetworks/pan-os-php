@@ -26,8 +26,17 @@ class PLAYBOOK__
 
     public $mainLocation = null;
 
+    public $projectFolder = null;
+
     function __construct( $argv, $argc )
     {
+
+        $this->supportedArguments['in'] = array('niceName' => 'in', 'shortHelp' => 'input file or api. ie: in=config.xml  or in=api://192.168.1.1 or in=api://0018CAEC3@panorama.company.com', 'argDesc' => '[filename]|[api://IP]|[api://serial@IP]');
+        $this->supportedArguments['out'] = array('niceName' => 'out', 'shortHelp' => 'output file to save config after changes. Only required when input is a file. ie: out=save-config.xml', 'argDesc' => '[filename]');
+        $this->supportedArguments['location'] = array('niceName' => 'Location', 'shortHelp' => 'specify if you want to limit your query to a VSYS/DG. By default location=shared for Panorama, =vsys1 for PANOS. ie: location=any or location=vsys2,vsys1', 'argDesc' => 'sub1[,sub2]');
+        $this->supportedArguments['type'] = array('niceName' => 'pan-os-php type=');
+        $this->supportedArguments['json'] = array('niceName' => 'json=PLAYBOOK.json');
+        $this->supportedArguments['projectfolder'] = array('niceName' => 'projectfolder=PROJECTFOLDER');
 
 ###############################################################################
 //PLAYBOOK
@@ -42,6 +51,15 @@ class PLAYBOOK__
 //playbook arguments
 ###############################################################################
         PH::processCliArgs();
+
+        foreach( PH::$args as $index => &$arg )
+        {
+            if( !isset($this->supportedArguments[$index]) )
+            {
+                //var_dump($supportedArguments);
+                $this->display_error_usage_exit("unsupported argument provided: '$index'");
+            }
+        }
 
         $PHP_FILE = __FILE__;
 
@@ -356,5 +374,15 @@ class PLAYBOOK__
             PH::print_stdout($line );
 
         PH::print_stdout();
+    }
+
+    public function display_error_usage_exit($msg)
+    {
+        if( PH::$shadow_json )
+            PH::$JSON_OUT['error'] = $msg;
+        else
+            fwrite(STDERR, PH::boldText("\n**ERROR** ") . $msg . "\n\n");
+        #$this->display_usage_and_exit(TRUE);
+        exit();
     }
 }
