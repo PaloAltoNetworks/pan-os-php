@@ -1,0 +1,154 @@
+{
+  "stagename": "secops-",
+  "command": [
+    {
+     "comment": "Enabled Rules allows you to observe the whole rulebase and look for things these filters may not cover.",
+     "type": "rule",
+     "actions": "actions=exportToExcel:EnabledRules.html",
+     "filter": "filter=(rule is.enabled)",
+     "location": "location=any",
+     "shadow-ignoreInvalidAddressObjects": "shadow-ignoreInvalidAddressObjects"
+    },
+    {
+     "comment": "Finds any rules with no log forwarding enabled.",
+     "type": "rule",
+     "actions": "actions=exportToExcel:NoLogFwd.html",
+     "filter": "filter=!(logprof is.set)",
+     "location": "location=any",
+     "shadow-ignoreInvalidAddressObjects": "shadow-ignoreInvalidAddressObjects"
+    },
+    {
+     "comment": "Finds any rules with no logging at session end.",
+     "type": "rule",
+     "actions": "actions=exportToExcel:NoLogSessEnd.html",
+     "filter": "filter=!(log at.end)",
+     "location": "location=any",
+     "shadow-ignoreInvalidAddressObjects": "shadow-ignoreInvalidAddressObjects"
+    },
+    {
+     "comment": "Finds any rules that are disabled.",
+     "type": "rule",
+     "actions": "actions=exportToExcel:Disabled.html",
+     "filter": "filter=(rule is.disabled)",
+     "location": "location=any",
+     "shadow-ignoreInvalidAddressObjects": "shadow-ignoreInvalidAddressObjects"
+    },
+    {
+     "comment": "Finds any rules with no security profiles.",
+     "type": "rule",
+     "actions": "actions=exportToExcel:NoSecProfiles.html",
+     "filter": "filter=(rule is.enabled) and (action is.allow) and (secprof not.set)",
+     "location": "location=any",
+     "shadow-ignoreInvalidAddressObjects": "shadow-ignoreInvalidAddressObjects"
+    },
+    {
+     "comment": "Finds any rules with no security profile groups. May return rules with individual profiles.",
+     "type": "rule",
+     "actions": "actions=exportToExcel:NoSecGroups.html",
+     "filter": "filter=(rule is.enabled) and (action is.allow) and !(secprof type.is.group)",
+     "location": "location=any",
+     "shadow-ignoreInvalidAddressObjects": "shadow-ignoreInvalidAddressObjects"
+    },
+    {
+     "comment": "Finds any rules with application any and service any - wide open communication between the sources and destinations.",
+     "type": "rule",
+     "actions": "actions=exportToExcel:AnyAppAnySvc.html",
+     "filter": "filter=(rule is.enabled) and (action is.allow) and (app is.any) and (service is.any)",
+     "location": "location=any",
+     "shadow-ignoreInvalidAddressObjects": "shadow-ignoreInvalidAddressObjects"
+    },
+    {
+     "comment": "Finds rules with app ID enabled, but any service port. You want application-default in most cases.",
+     "type": "rule",
+     "actions": "actions=exportToExcel:AppWithAnySvc.html",
+     "filter": "filter=(rule is.enabled) and !(app is.any) and (service is.any)",
+     "location": "location=any",
+     "shadow-ignoreInvalidAddressObjects": "shadow-ignoreInvalidAddressObjects"
+    },
+    {
+     "comment": "Finds rules with no App ID, but has Service Ports enabled. These should typicanyy be converted to app ID rules.",
+     "type": "rule",
+     "actions": "actions=exportToExcel:NoAppID.html",
+     "filter": "filter=(rule is.enabled) and (app is.any) and !(service is.any)",
+     "location": "location=any",
+     "shadow-ignoreInvalidAddressObjects": "shadow-ignoreInvalidAddressObjects"
+    },
+    {
+     "comment": "Finds any rules with any source and any destination with an action of allow. Pay attention to Zones.",
+     "type": "rule",
+     "actions": "actions=exportToExcel:AnySrcAnyDst.html",
+     "filter": "filter=(rule is.enabled) and (action is.allow) and (src is.any) and (dst is.any)",
+     "location": "location=any",
+     "shadow-ignoreInvalidAddressObjects": "shadow-ignoreInvalidAddressObjects"
+    },
+    {
+     "comment": "Finds any rules with an action of Deny. Your customer may want to change the action to Drop.",
+     "type": "rule",
+     "actions": "actions=exportToExcel:ActionDeny.html",
+     "filter": "filter=(rule is.enabled) and (action is.deny)",
+     "location": "location=any",
+     "shadow-ignoreInvalidAddressObjects": "shadow-ignoreInvalidAddressObjects"
+    },
+    {
+     "comment": "Finds any allow rules with no Data Filtering Profile and no Group.",
+     "type": "rule",
+     "actions": "actions=exportToExcel:NoDataProfile.html",
+     "filter": "filter=(rule is.enabled) and (action is.allow) and !(secprof data-profile.is.set) and !(secprof type.is.group)",
+     "location": "location=any",
+     "shadow-ignoreInvalidAddressObjects": "shadow-ignoreInvalidAddressObjects"
+    },
+    {
+     "comment": "Finds any allow rules with no Antivirus Profile and no Group.",
+     "type": "rule",
+     "actions": "actions=exportToExcel:NoAVProfile.html",
+     "filter": "filter=(rule is.enabled) and (action is.allow) and !(secprof av-profile.is.set) and !(secprof type.is.group)",
+     "location": "location=any",
+     "shadow-ignoreInvalidAddressObjects": "shadow-ignoreInvalidAddressObjects"
+    },
+    {
+     "comment": "Finds any allow rules with no Anti-Spyware Profile and no Group.",
+     "type": "rule",
+     "actions": "actions=exportToExcel:NoSpyProfile.html",
+     "filter": "filter=(rule is.enabled) and (action is.allow) and !(secprof as-profile.is.set) and !(secprof type.is.group)",
+     "location": "location=any",
+     "shadow-ignoreInvalidAddressObjects": "shadow-ignoreInvalidAddressObjects"
+    },
+    {
+     "comment": "Finds any allow rules with no Vulnerability Profile and no Group.",
+     "type": "rule",
+     "actions": "actions=exportToExcel:NoVulnProfile.html",
+     "filter": "filter=(rule is.enabled) and (action is.allow) and !(secprof vuln-profile.is.set) and !(secprof type.is.group)",
+     "location": "location=any",
+     "shadow-ignoreInvalidAddressObjects": "shadow-ignoreInvalidAddressObjects"
+    },
+    {
+     "comment": "Finds any allow rules with no URL Filtering Profile and no Group.",
+     "type": "rule",
+     "actions": "actions=exportToExcel:NoURLProfile.html",
+     "filter": "filter=(rule is.enabled) and (action is.allow) and !(secprof url-profile.is.set) and !(secprof type.is.group)",
+     "location": "location=any",
+     "shadow-ignoreInvalidAddressObjects": "shadow-ignoreInvalidAddressObjects"
+    },
+    {
+     "comment": "Finds any allow rules with no Wildfire Profile and no Group.",
+     "type": "rule",
+     "actions": "actions=exportToExcel:NoWFProfile.html",
+     "filter": "filter=(rule is.enabled) and (action is.allow) and !(secprof wf-profile.is.set) and !(secprof type.is.group)",
+     "location": "location=any",
+     "shadow-ignoreInvalidAddressObjects": "shadow-ignoreInvalidAddressObjects"
+    },
+    {
+     "comment": "Finds any allow rules with no File Blocking Profile and no Group.",
+     "type": "rule",
+     "actions": "actions=exportToExcel:NoFileBlkProfile.html",
+     "filter": "filter=(rule is.enabled) and (action is.allow) and !(secprof file-profile.is.set) and !(secprof type.is.group)",
+     "location": "location=any",
+     "shadow-ignoreInvalidAddressObjects": "shadow-ignoreInvalidAddressObjects"
+    },
+    {
+      "comment": "merge all previously created html files into one Excel sheet",
+      "type": "html-merger"
+    }
+  ]
+}
+
