@@ -14,6 +14,7 @@ BUGFIX:
 * UTIL type=rule | actions=src-add/src-add-from-file/dst-add/dst-add-from-file - move from error out to warning
 * class Schedule | bugfix to display expired objects correctly
 * class AddressStroe | bugfix if DAG includes filter where tag has also () in name
+* UTIL type=ALLMERGER - bugfix to validate only address object if TMP
 
 GENERAL:
 * class EthernetInterface - reduce duplicate code

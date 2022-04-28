@@ -3069,7 +3069,7 @@ class MERGER extends UTIL
         if( !isset( $this->deletedObjects[$index]['removed'] ) )
         {
             $tmpstring = "[".$tmpDG. "] - ".$removedOBJ->name();
-            if( $removedOBJ->isType_TMP() )
+            if( get_class( $removedOBJ ) === "Address" && $removedOBJ->isType_TMP() )
                 $tmpstring .= " (tmp)";
 
             $this->deletedObjects[$index]['removed'] = $tmpstring;
@@ -3077,7 +3077,7 @@ class MERGER extends UTIL
         else
         {
             $tmpstring = "[".$tmpDG. "] - ".$removedOBJ->name();
-            if( $removedOBJ->isType_TMP() )
+            if( get_class( $removedOBJ ) === "Address" && $removedOBJ->isType_TMP() )
                 $tmpstring .= " (tmp)";
 
             if( strpos( $this->deletedObjects[$index]['removed'], $tmpstring ) === FALSE )
