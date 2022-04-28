@@ -34,7 +34,7 @@ class PLAYBOOK__
 ###############################################################################
 //example of an JSON file syntax
         $visibility_pathString = dirname(__FILE__)."/../api/v1/playbook";
-        $JSONarray = file_get_contents( $visibility_pathString."/visibility_PS.json");
+        $JSONarray = file_get_contents( $visibility_pathString."/visibility.json");
 
         $tmp_ph = new PH($argv, $argc);
 
