@@ -29,6 +29,7 @@ class MERGER extends UTIL
     public $deletedObjects = array();
     public $addMissingObjects = FALSE;
     public $action = "merge";
+    public $mergermodeghost = TRUE;
 
     public $exportcsv = FALSE;
     public $exportcsvFile = null;
@@ -53,8 +54,15 @@ class MERGER extends UTIL
         if( isset(PH::$args['actions']) )
         {
             $this->action = PH::$args['actions'];
-            if( $this->action !== 'merge' && $this->action !== 'display' )
-                derr( 'argument actions only support value: merge or display | actions=merge' );
+
+            if( $this->action !== 'merge' && $this->action !== 'display' && $this->action !== 'mergenoghost' )
+                derr( 'argument actions only support value: merge / display / mergenoghost | actions=merge' );
+
+            if( $this->action === 'mergenoghost' )
+            {
+                $this->action = "merge";
+                $this->mergermodeghost = FALSE;
+            }
         }
         else
             $this->action = "merge";
@@ -1066,8 +1074,8 @@ class MERGER extends UTIL
                     {
                         if( !$object->isAddress() )
                             continue;
-                        #if( $object->isTmpAddr() )
-                        #    continue;
+                        if( !$this->mergermodeghost && $object->isTmpAddr() )
+                            continue;
 
                         if( $this->excludeFilter !== null && $this->excludeFilter->matchSingleObject(array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
                             continue;
@@ -1095,8 +1103,8 @@ class MERGER extends UTIL
                 {
                     if( !$object->isAddress() )
                         continue;
-                    #if( $object->isTmpAddr() )
-                    #    continue;
+                    if( !$this->mergermodeghost && $object->isTmpAddr() )
+                        continue;
 
                     if( $this->excludeFilter !== null && $this->excludeFilter->matchSingleObject(array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
                         continue;
