@@ -3256,9 +3256,11 @@ RQuery::$defaultFilters['rule']['schedule']['operators']['has.regex'] = array(
                 derr("regular expression error on '{$context->value}'");
             if( $matching === 1 )
                 return TRUE;
+            else
+                return FALSE;
         }
-
-        return FALSE;
+        else
+            return null;
     },
     'arg' => TRUE,
 );
@@ -3275,8 +3277,8 @@ RQuery::$defaultFilters['rule']['schedule']['operators']['is.expired'] = array(
         {
             return $schedule->isExpired( );
         }
-
-        return FALSE;
+        else
+            return null;
     },
     'arg' => false,
 );
@@ -3297,8 +3299,8 @@ RQuery::$defaultFilters['rule']['schedule.expire.in.days']['operators']['>,<,=,!
 
             return $schedule->isExpired( $context->value, $operator );
         }
-
-        return FALSE;
+        else
+            return null;
     },
     'arg' => true,
 );

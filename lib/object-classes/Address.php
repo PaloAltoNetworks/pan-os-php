@@ -684,6 +684,174 @@ class Address
         return $int;
     }
 
+    public function replaceIPbyObject( $context, $prefix = array() )
+    {
+        if( empty( $prefix ) )
+        {
+            $prefix['host'] = "H-";
+
+            $prefix['network'] = "N-";
+            $prefix['networkmask'] = "-";
+
+            $prefix['range'] = "R-";
+            $prefix['rangeseparator'] = "-";
+        }
+        $rangeDetected = FALSE;
+
+
+        $objectRefs = $this->getReferences();
+        $clearForAction = TRUE;
+        foreach( $objectRefs as $objectRef )
+        {
+            $class = get_class($objectRef);
+            if( $class != 'AddressRuleContainer' && $class != 'NatRule' )
+            {
+                $clearForAction = FALSE;
+                $string = "because its used in unsupported class $class";
+                PH::ACTIONstatus( $context, "SKIPPED", $string );
+                return;
+            }
+        }
+
+        $pan = PH::findRootObjectOrDie($this->owner);
+
+        if( strpos($this->name(), '-') === FALSE )
+        {
+            $explode = explode('/', $this->name());
+
+            if( count($explode) > 1 )
+            {
+                $name = $explode[0];
+                $mask = $explode[1];
+            }
+            else
+            {
+                $name = $this->name();
+                $mask = 32;
+            }
+
+            if( $mask > 32 || $mask < 0 )
+            {
+                $string = "because of invalid mask detected : '$mask'";
+                PH::ACTIONstatus( $context, "SKIPPED", $string );
+                return;
+            }
+
+            if( filter_var($name, FILTER_VALIDATE_IP) === FALSE )
+            {
+                $string = "because of invalid IP detected : '$name'";
+                PH::ACTIONstatus( $context, "SKIPPED", $string );
+                return;
+            }
+
+            if( $mask == 32 )
+            {
+                $newName = $prefix['host'] . $name;
+            }
+            else
+            {
+                $newName = $prefix['network'] . $name . $prefix['networkmask'] . $mask;
+            }
+        }
+        else
+        {
+            $rangeDetected = TRUE;
+            $explode = explode('-', $this->name());
+            $newName = $prefix['range'] . $explode[0] . $prefix['rangeseparator'] . $explode[1];
+        }
+
+        $string = "new object name will be $newName";
+        PH::ACTIONlog( $context, $string );
+
+        $objToReplace = $this->owner->find($newName);
+        if( $objToReplace === null || $objToReplace->isType_TMP() )
+        {
+            if( $context->isAPI )
+            {
+                if( $rangeDetected )
+                    $objToReplace = $this->owner->API_newAddress($newName, 'ip-range', $explode[0] . '-' . $explode[1]);
+                else
+                    $objToReplace = $this->owner->API_newAddress($newName, 'ip-netmask', $name . '/' . $mask);
+            }
+            else
+            {
+                if( $rangeDetected )
+                    $objToReplace = $this->owner->newAddress($newName, 'ip-range', $explode[0] . '-' . $explode[1]);
+                else
+                    $objToReplace = $this->owner->newAddress($newName, 'ip-netmask', $name . '/' . $mask);
+            }
+        }
+        else
+        {
+            $objMap = IP4Map::mapFromText($name . '/' . $mask);
+            if( !$objMap->equals($objToReplace->getIP4Mapping()) )
+            {
+                $string = "because an object with same name exists but has different value";
+                PH::ACTIONstatus( $context, "SKIPPED", $string );
+                return;
+            }
+        }
+
+
+        if( $clearForAction )
+        {
+            foreach( $objectRefs as $objectRef )
+            {
+                $class = get_class($objectRef);
+
+                if( $class == 'AddressRuleContainer' )
+                {
+                    /** @var AddressRuleContainer $objectRef */
+                    $string = "replacing in {$objectRef->toString()}";
+                    PH::ACTIONlog( $context, $string );
+
+                    if( $objectRef->owner->isNatRule()
+                        && $objectRef->name == 'snathosts'
+                        && $objectRef->owner->sourceNatTypeIs_DIPP()
+                        && $objectRef->owner->snatinterface !== null )
+                    {
+                        $string = "because it's a SNAT with Interface IP address";
+                        PH::ACTIONstatus( $context, "SKIPPED", $string );
+                        continue;
+                    }
+
+                    $oldName = $this->name();
+                    $newName = $objToReplace->name();
+
+                    if( $context->isAPI )
+                        $objectRef->API_add($objToReplace);
+                    else
+                        $objectRef->addObject($objToReplace);
+
+                    if( $oldName !== $newName )
+                    {
+                        if( $context->isAPI )
+                            $objectRef->API_remove($this);
+                        else
+                            $objectRef->remove($this);
+                    }
+
+                }
+                elseif( $class == 'NatRule' )
+                {
+                    /** @var NatRule $objectRef */
+                    $string = "replacing in {$objectRef->toString()}";
+                    PH::ACTIONlog( $context, $string );
+
+                    if( $context->isAPI )
+                        $objectRef->API_setDNAT($objToReplace, $objectRef->dnatports);
+                    else
+                        $objectRef->replaceReferencedObject($this, $objToReplace);
+                }
+                else
+                {
+                    derr("unsupported class '$class'");
+                }
+            }
+        }
+    }
+
+
     static protected $templatexml = '<entry name="**temporarynamechangeme**"><ip-netmask>tempvaluechangeme</ip-netmask></entry>';
 
 }

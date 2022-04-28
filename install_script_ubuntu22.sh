@@ -15,6 +15,7 @@ echo "START \"install PAN-OS-PHP on UBUNTU\"" \
 && echo "" \
 && apt install -y git php${PHP_VAR} vim php${PHP_VAR}-curl php${PHP_VAR}-dom php${PHP_VAR}-mbstring php${PHP_VAR}-bcmath \
 && echo "" \
+&& apt install -y python3 python3-pandas python3-xlsxwriter \
 && echo "" \
 && echo "" \
 && php -v \

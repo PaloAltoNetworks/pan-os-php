@@ -77,8 +77,16 @@ $test_merger = array('address', 'service', 'addressgroup', 'servicegroup', 'tag'
 
 foreach( $test_merger as $merger )
 {
-    #$ci['input'] = 'input/panorama-8.0-merger.xml';
-    $ci['input'] = 'input/panorama-10.0-merger.xml';
+    if( isset(PH::$args['in']) )
+    {
+        $ci['input'] = PH::$args['in'];
+    }
+    else
+    {
+        #$ci['input'] = 'input/panorama-8.0-merger.xml';
+        $ci['input'] = 'input/panorama-10.0-merger.xml';
+    }
+
 
     PH::print_stdout( "\n\n\n *** Processing merger: {$merger} " );
 

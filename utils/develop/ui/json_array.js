@@ -61,6 +61,19 @@ var subjectObject =
                     }
                 }
             },
+            "create-address-from-file": {
+                "name": "create-address-from-file",
+                "GlobalInitFunction": {},
+                "MainFunction": {},
+                "GlobalFinishFunction": {},
+                "args": {
+                    "file": {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "help": "file syntax:   AddressObjectName,IP-Address,Address-group\n\nexample:\n    h-192.168.0.1,192.168.0.1\/32,private-network-AddressGroup\n    n-192.168.2.0m24,192.168.2.0\/24,private-network-AddressGroup\n"
+                    }
+                }
+            },
             "create-addressgroup": {
                 "name": "create-addressgroup",
                 "MainFunction": {},
@@ -1573,6 +1586,11 @@ var subjectObject =
         "action": [],
         "filter": []
     },
+    "html-merger": {
+        "name": "html-merger",
+        "action": [],
+        "filter": []
+    },
     "interface": {
         "name": "interface",
         "action": {
@@ -1934,6 +1952,18 @@ var subjectObject =
                     }
                 },
                 "help": "adds an object in the 'DESTINATION' field of a rule, if that field was set to 'ANY' it will then be replaced by this object."
+            },
+            "dst-add-from-file": {
+                "name": "dst-Add-from-file",
+                "section": "address",
+                "MainFunction": {},
+                "args": {
+                    "file": {
+                        "type": "string",
+                        "default": "*nodefault*"
+                    }
+                },
+                "help": "adds all objects to the 'DESTINATION' field of a rule, if that field was set to 'ANY' it will then be replaced by these objects defined in file."
             },
             "dst-negate-set": {
                 "name": "dst-Negate-Set",
@@ -2597,6 +2627,18 @@ var subjectObject =
                     }
                 },
                 "help": "adds an object in the 'SOURCE' field of a rule, if that field was set to 'ANY' it will then be replaced by this object."
+            },
+            "src-add-from-file": {
+                "name": "src-Add-from-file",
+                "section": "address",
+                "MainFunction": {},
+                "args": {
+                    "file": {
+                        "type": "string",
+                        "default": "*nodefault*"
+                    }
+                },
+                "help": "adds all objects to the 'SOURCE' field of a rule, if that field was set to 'ANY' it will then be replaced by these objects defined in file."
             },
             "src-dst-swap": {
                 "name": "src-dst-swap",

@@ -1,0 +1,62 @@
+{
+  "command": [
+    {
+      "type": "tag",
+      "actions": "actions=delete",
+      "filter": "filter=(object is.unused )",
+      "shadow-ignoreinvalidaddressobjects": "shadow-ignoreinvalidaddressobjects"
+    },
+    {
+      "type": "address",
+      "actions": "actions=delete",
+      "filter": "filter=(object is.unused.recursive )",
+      "shadow-ignoreinvalidaddressobjects": "shadow-ignoreinvalidaddressobjects"
+    },
+    {
+      "type": "service",
+      "actions": "actions=delete",
+      "filter": "filter=(object is.unused.recursive )",
+      "shadow-ignoreinvalidaddressobjects": "shadow-ignoreinvalidaddressobjects"
+    },
+    {
+      "type": "tag-merger",
+      "allowmergingwithupperlevel": "allowmergingwithupperlevel",
+      "shadow-ignoreinvalidaddressobjects": "shadow-ignoreinvalidaddressobjects"
+    },
+    {
+      "type": "tag",
+      "actions": "actions=move:shared,removeIfMatch",
+      "shadow-ignoreinvalidaddressobjects": "shadow-ignoreinvalidaddressobjects"
+    },
+    {
+      "type": "address-merger",
+      "allowmergingwithupperlevel": "allowmergingwithupperlevel",
+      "shadow-ignoreinvalidaddressobjects": "shadow-ignoreinvalidaddressobjects"
+    },
+    {
+      "type": "addressgroup-merger",
+      "allowmergingwithupperlevel": "allowmergingwithupperlevel",
+      "shadow-ignoreinvalidaddressobjects": "shadow-ignoreinvalidaddressobjects"
+    },
+    {
+      "type": "address",
+      "actions": "actions=move:shared,removeIfMatch",
+      "shadow-ignoreinvalidaddressobjects": "shadow-ignoreinvalidaddressobjects"
+    },
+    {
+      "type": "service-merger",
+      "allowmergingwithupperlevel": "allowmergingwithupperlevel",
+      "shadow-ignoreinvalidaddressobjects": "shadow-ignoreinvalidaddressobjects"
+    },
+    {
+      "type": "servicegroup-merger",
+      "allowmergingwithupperlevel": "allowmergingwithupperlevel",
+      "shadow-ignoreinvalidaddressobjects": "shadow-ignoreinvalidaddressobjects"
+    },
+    {
+      "type": "service",
+      "actions": "actions=move:shared,removeIfMatch",
+      "shadow-ignoreinvalidaddressobjects": "shadow-ignoreinvalidaddressobjects"
+    }
+  ]
+}

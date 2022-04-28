@@ -1,5 +1,25 @@
 CHANGELOG
 
+2.0.39
+UTILS:
+* UTIL type=html-merger | optimisation
+* UTIL type=address | introduce actions=create-address-from-file:FILE.txt
+* UTIL type=rule | introduce actions=src-add-from-file:FILE.txt / dst-add-from-file:FILE.txt
+* UTIL type=address | introduce new 'filter=(value ip4.match.exact.from.file FILE)
+* UTIL type=address | improve actions=replace-IP-by-MT-like-Object/create-address/create-address-from-file - related to easily create address object which same name as TMP object
+* UTIL type=address-/service-/tag-merger | optimisation if argument allowmergingwithupperlevel is used
+* UTIL type=address-merger | introduce actions=mergenoghost
+
+BUGFIX:
+* UTIL type=rule | actions=src-add/src-add-from-file/dst-add/dst-add-from-file - move from error out to warning
+* class Schedule | bugfix to display expired objects correctly
+* class AddressStroe | bugfix if DAG includes filter where tag has also () in name
+* UTIL type=ALLMERGER - bugfix to validate only address object if TMP
+
+GENERAL:
+* class EthernetInterface - reduce duplicate code
+
+
 2.0.38 (20220426)
 UTILS:
 * UTIL type=playbook | improvements related to argument projectfolder=DIRECTORY
