@@ -417,20 +417,8 @@ class EthernetInterface
         if( $this->type != 'layer3' )
             derr('cannot be requested from a non Layer3 Interface');
 
-        if( strpos($ip, "/") === FALSE )
-        {
-            $tmp_vsys = $this->owner->owner->network->findVsysInterfaceOwner($this->name());
-            if( is_object($tmp_vsys) )
-                $object = $tmp_vsys->addressStore->find($ip);
-            else
-                derr("vsys for interface: " . $this->name() . " not found. \n", $this);
+        $ip = $this->findorCreateAddressObject( $ip );
 
-            if( is_object($object) )
-                $object->addReference($this);
-            else
-                derr("objectname: " . $ip . " not found. Can not be added to interface.\n", $this);
-            $ip = $object->value();
-        }
 
         $mapping_new = new IP4Map();
         $mapping_new->addMap(IP4Map::mapFromText($ip));
@@ -529,16 +517,7 @@ class EthernetInterface
             return FALSE;
         }
 
-        if( strpos($ip, "/") === FALSE )
-        {
-            $tmp_vsys = $this->owner->owner->network->findVsysInterfaceOwner($this->name());
-            $object = $tmp_vsys->addressStore->find($ip);
-
-            if( is_object($object) )
-                $object->removeReference($this);
-            else
-                mwarning("objectname: " . $ip . " not found. Can not be removed from interface.\n", $this);
-        }
+        $this->removeAddressObjectReference( $ip );
 
         if( $this->isSubInterface() )
             $tmp_xmlroot = $this->parentInterface->xmlroot;
@@ -602,19 +581,7 @@ class EthernetInterface
         if( $this->type != 'layer3' )
             derr('cannot be requested from a non Layer3 Interface');
 
-        if( strpos($ip, "/") === FALSE )
-        {
-            $tmp_vsys = $this->owner->owner->network->findVsysInterfaceOwner($this->name());
-            if( is_object($tmp_vsys) )
-                $object = $tmp_vsys->addressStore->find($ip);
-            else
-                derr("vsys for interface: " . $this->name() . " not found. \n", $this);
-
-            if( is_object($object) )
-                $object->addReference($this);
-            else
-                derr("objectname: " . $ip . " not found. Can not be added to interface.\n", $this);
-        }
+        $ip = $this->findorCreateAddressObject( $ip );
 
         /*
         $mapping_new = new IP4Map();
@@ -806,6 +773,42 @@ class EthernetInterface
         }
 
         mwarning("object is not part of this static route : {$h->toString()}");
+    }
+
+    public function findorCreateAddressObject( $ip )
+    {
+        if( strpos($ip, "/") === FALSE ){
+            $tmp_vsys = $this->owner->owner->network->findVsysInterfaceOwner($this->name());
+            if( is_object($tmp_vsys) )
+            {
+                $object = $tmp_vsys->addressStore->find($ip);
+                #$object = $tmp_vsys->addressStore->findOrCreate($ip);
+            }
+
+            else
+                derr("vsys for interface: " . $this->name() . " not found. \n", $this);
+
+            if( is_object($object) )
+                $object->addReference($this);
+            else
+                derr("objectname: " . $ip . " not found. Can not be added to interface.\n", $this);
+
+            return $object->value();
+        }
+        return $ip;
+    }
+
+    public function removeAddressObjectReference( $ip )
+    {
+        if( strpos($ip, "/") === FALSE ){
+            $tmp_vsys = $this->owner->owner->network->findVsysInterfaceOwner($this->name());
+            $object = $tmp_vsys->addressStore->find($ip);
+
+            if( is_object($object) )
+                $object->removeReference($this);
+            else
+                mwarning("objectname: " . $ip . " not found. Can not be removed from interface.\n", $this);
+        }
     }
 
     static public $templatexml = '<entry name="**temporarynamechangeme**">

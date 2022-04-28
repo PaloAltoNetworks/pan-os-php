@@ -15,6 +15,7 @@ BUGFIX:
 * class Schedule | bugfix to display expired objects correctly
 
 GENERAL:
+* class EthernetInterface - reduce duplicate code
 
 
 2.0.38 (20220426)
