@@ -1709,8 +1709,16 @@ AddressCallContext::$supportedActions[] = array(
             {
                 $tag_string = "";
                 if( count($object->tags->tags()) > 0 )
-                    $tag_string = "tag: '".$object->tags->toString_inline()."'";
-                PH::print_stdout( $context->padding . "* " . get_class($object) . " '{$object->name()}' (DYNAMIC)  ({$object->count()} members)  desc: '{$object->description()}' $tag_string filter: '{$object->filter}" );
+                {
+                    $toStringInline = $object->tags->toString_inline();
+                    TAG::revertreplaceNamewith( $toStringInline );
+                    $tag_string = "tag: '".$toStringInline."'";
+                }
+
+
+                $tmpFilter = $object->filter;
+                TAG::revertreplaceNamewith( $tmpFilter );
+                PH::print_stdout( $context->padding . "* " . get_class($object) . " '{$object->name()}' (DYNAMIC)  ({$object->count()} members)  desc: '{$object->description()}' $tag_string filter: '{$tmpFilter}" );
                 PH::$JSON_TMP['sub']['object'][$object->name()]['type'] = get_class($object)." (DYNAMIC)";
 
                 PH::$JSON_TMP['sub']['object'][$object->name()]['tag'] = $tag_string;
@@ -1743,7 +1751,11 @@ AddressCallContext::$supportedActions[] = array(
         {
             $tag_string = "";
             if( count($object->tags->tags()) > 0 )
-                $tag_string = "tag: '".$object->tags->toString_inline()."'";
+            {
+                $toStringInline = $object->tags->toString_inline();
+                TAG::revertreplaceNamewith( $toStringInline );
+                $tag_string = "tag: '".$toStringInline."'";
+            }
 
             PH::print_stdout( $context->padding . "* " . get_class($object) . " '{$object->name()}'  value: '{$object->value()}'  desc: '{$object->description()}' IPcount: '{$object->getIPcount()}' $tag_string" );
             PH::$JSON_TMP['sub']['object'][$object->name()]['type'] = get_class($object);

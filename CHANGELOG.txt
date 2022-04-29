@@ -5,6 +5,7 @@ UTILS:
 * UTIL type=playbook | introduce argument validation
 
 BUGFIX:
+* UTIL type=tag | bugfix to support correctly tag name with characters '(' and ')'  - benefit for dynamic address group filter
 
 GENERAL:
 

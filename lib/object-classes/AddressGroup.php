@@ -194,8 +194,11 @@ class AddressGroup
                             {
                                 if( !empty($replaceTXT) )
                                 {
+                                    $replaceTXT2 = $replaceTXT;
+                                    TAG::replaceNamewith( $replaceTXT2 );
+
                                     $pattern = $names[0][$key];
-                                    $replacements = "(tag has " . $replaceTXT . ")";
+                                    $replacements = "(tag has " . $replaceTXT2 . ")";
 
                                     $tagFilter = str_replace($pattern, $replacements, $tagFilter);
 
