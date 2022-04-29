@@ -135,6 +135,11 @@ class Tag
         self::color42 => 'color42'
     );
 
+    static public $pattern1 = "(";
+    static public $pattern2 = ")";
+    static public $replacewith1 = "/{";
+    static public $replacewith2 = "/}";
+
     /**
      * @param string $name
      * @param TagStore|null $owner
@@ -142,6 +147,7 @@ class Tag
      */
     public function __construct($name, $owner, $fromXmlTemplate = FALSE)
     {
+        $this->replaceNamewith( $name );
         $this->name = $name;
 
 
@@ -180,6 +186,7 @@ class Tag
      */
     public function setName($newName)
     {
+        $this->replaceNamewith( $newName );
         $ret = $this->setRefName($newName);
 
         if( $this->xmlroot === null )
@@ -324,7 +331,10 @@ class Tag
     {
         $this->xmlroot = $xml;
 
-        $this->name = DH::findAttribute('name', $xml);
+        $tmpName = DH::findAttribute('name', $xml);
+        $this->replaceNamewith( $tmpName );
+
+        $this->name = $tmpName;
         if( $this->name === FALSE )
             derr("tag name not found\n", $xml);
 
@@ -496,6 +506,18 @@ class Tag
             return FALSE;
 
         return TRUE;
+    }
+
+    public static function replaceNamewith( &$name )
+    {
+        $name = str_replace( TAG::$pattern1, TAG::$replacewith1, $name);
+        $name = str_replace( TAG::$pattern2, TAG::$replacewith2, $name);
+    }
+
+    public static function revertreplaceNamewith( &$name )
+    {
+        $name = str_replace( TAG::$replacewith1, TAG::$pattern1, $name);
+        $name = str_replace( TAG::$replacewith2, TAG::$pattern2, $name);
     }
 }
 

@@ -26,8 +26,19 @@ class PLAYBOOK__
 
     public $mainLocation = null;
 
+    public $projectFolder = null;
+    public $usageMsg = null;
+    public $PHP_FILE = "pan-os-php.php type=playbook";
+
     function __construct( $argv, $argc )
     {
+
+        $this->supportedArguments['in'] = array('niceName' => 'in', 'shortHelp' => 'input file or api. ie: in=config.xml  or in=api://192.168.1.1 or in=api://0018CAEC3@panorama.company.com', 'argDesc' => '[filename]|[api://IP]|[api://serial@IP]');
+        $this->supportedArguments['out'] = array('niceName' => 'out', 'shortHelp' => 'output file to save config after changes. Only required when input is a file. ie: out=save-config.xml', 'argDesc' => '[filename]');
+        $this->supportedArguments['location'] = array('niceName' => 'Location', 'shortHelp' => 'specify if you want to limit your query to a VSYS/DG. By default location=shared for Panorama, =vsys1 for PANOS. ie: location=any or location=vsys2,vsys1', 'argDesc' => 'sub1[,sub2]');
+        $this->supportedArguments['type'] = array('niceName' => 'pan-os-php type=');
+        $this->supportedArguments['json'] = array('niceName' => 'json=PLAYBOOK.json');
+        $this->supportedArguments['projectfolder'] = array('niceName' => 'projectfolder=PROJECTFOLDER');
 
 ###############################################################################
 //PLAYBOOK
@@ -42,6 +53,15 @@ class PLAYBOOK__
 //playbook arguments
 ###############################################################################
         PH::processCliArgs();
+
+        foreach( PH::$args as $index => &$arg )
+        {
+            if( !isset($this->supportedArguments[$index]) )
+            {
+                //var_dump($supportedArguments);
+                $this->display_error_usage_exit("unsupported argument provided: '$index'");
+            }
+        }
 
         $PHP_FILE = __FILE__;
 
@@ -356,5 +376,88 @@ class PLAYBOOK__
             PH::print_stdout($line );
 
         PH::print_stdout();
+    }
+
+    public function display_error_usage_exit($msg)
+    {
+        if( PH::$shadow_json )
+            PH::$JSON_OUT['error'] = $msg;
+        else
+            fwrite(STDERR, PH::boldText("\n**ERROR** ") . $msg . "\n\n");
+        $this->display_usage_and_exit(TRUE);
+    }
+
+    public function display_usage_and_exit($shortMessage = FALSE)
+    {
+        if( $this->usageMsg == "" )
+            $this->usageMessage();
+        else
+        {
+            PH::print_stdout( $this->usageMsg );
+            PH::$JSON_TMP['usage'] = $this->usageMsg;
+        }
+
+        PH::print_stdout();
+        PH::print_stdout();
+
+        if( !$shortMessage )
+        {
+            PH::print_stdout( PH::boldText("\nListing available arguments") );
+            PH::print_stdout();
+            PH::print_stdout();
+
+            ksort($this->supportedArguments);
+            foreach( $this->supportedArguments as &$arg )
+            {
+
+                PH::$JSON_TMP['arguments'][$arg['niceName']]['name'] = $arg['niceName'];
+
+                $tmp_text = PH::boldText($arg['niceName']);
+                if( isset($arg['argDesc']) )
+                {
+                    $tmp_text .= '=' . $arg['argDesc'] ;
+                    PH::$JSON_TMP['arguments'][$arg['niceName']]['argdescription'] = $arg['argDesc'];
+                }
+
+                //."=";
+                PH::print_stdout( " - " .$tmp_text );
+                PH::$JSON_TMP['arguments'][$arg['niceName']]['example'] = $tmp_text;
+
+
+
+                if( isset($arg['shortHelp']) )
+                {
+                    PH::print_stdout( "     " . $arg['shortHelp'] );
+                    PH::$JSON_TMP['arguments'][$arg['niceName']]['shorthelp'] = $arg['shortHelp'];
+                }
+
+
+                PH::print_stdout();
+            }
+
+            PH::print_stdout( PH::$JSON_TMP, false, 'help' );
+            PH::$JSON_TMP = array();
+
+
+            PH::print_stdout();
+
+        }
+
+        if( PH::$shadow_json )
+        {
+            PH::$JSON_OUT['log'] = PH::$JSON_OUTlog;
+            print json_encode( PH::$JSON_OUT, JSON_PRETTY_PRINT );
+        }
+        exit(1);
+    }
+
+    public function usageMessage()
+    {
+        $string = PH::boldText("USAGE: ") . "php " . $this->PHP_FILE . " in=inputfile.xml out=outputfile.xml location=any|shared|sub " .
+            "json=PLAYBOOK.json projectfolder=DIRECTORY\n";
+
+
+        PH::print_stdout( $string );
+        PH::$JSON_TMP['usage'] = $string;
     }
 }

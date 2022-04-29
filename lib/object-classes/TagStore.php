@@ -53,6 +53,7 @@ class TagStore extends ObjStore
     #NEW - public function find($name, $ref = null, $nested = FALSE)
     public function find($name, $ref = null, $nested = TRUE)
     {
+        TAG::replaceNamewith( $name );
         $f = $this->findByName($name, $ref, $nested);
 
         if( $f !== null )
@@ -97,6 +98,8 @@ class TagStore extends ObjStore
      */
     public function findAvailableTagName($base, $suffix, $startCount = '')
     {
+        TAG::replaceNamewith( $base );
+
         $maxl = 31;
         $basel = strlen($base);
         $suffixl = strlen($suffix);
@@ -135,6 +138,8 @@ class TagStore extends ObjStore
 
     function createTag($name, $ref = null)
     {
+        TAG::replaceNamewith( $name );
+
         if( $this->find($name, null, FALSE) !== null )
             derr('Tag named "' . $name . '" already exists, cannot create');
 
@@ -163,6 +168,7 @@ class TagStore extends ObjStore
 
     function findOrCreate($name, $ref = null, $nested = TRUE)
     {
+        TAG::replaceNamewith( $name );
         $f = $this->find($name, $ref, $nested);
 
         if( $f !== null )

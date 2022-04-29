@@ -361,9 +361,11 @@ TagCallContext::$supportedActions['display'] = array(
     'name' => 'display',
     'MainFunction' => function (TagCallContext $context) {
         $object = $context->object;
-        PH::print_stdout( "     * " . get_class($object) . " '{$object->name()}'  color: '{$object->getColor()}'  comments: '{$object->getComments()}'" );
+        $tmpName = $object->name();
+        TAG::replaceNamewith( $tmpName );
+        PH::print_stdout( "     * " . get_class($object) . " '{$tmpName}'  color: '{$object->getColor()}'  comments: '{$object->getComments()}'" );
 
-        PH::$JSON_TMP['sub']['object'][$object->name()]['name'] = $object->name();
+        PH::$JSON_TMP['sub']['object'][$object->name()]['name'] = $tmpName;
         PH::$JSON_TMP['sub']['object'][$object->name()]['type'] = get_class($object);
         PH::$JSON_TMP['sub']['object'][$object->name()]['color'] = $object->getColor();
         PH::$JSON_TMP['sub']['object'][$object->name()]['comments'] = $object->getComments();

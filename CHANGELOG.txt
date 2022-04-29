@@ -1,6 +1,16 @@
 CHANGELOG
 
-2.0.39
+2.0.40
+UTILS:
+* UTIL type=playbook | introduce argument validation
+
+BUGFIX:
+* UTIL type=tag | bugfix to support correctly tag name with characters '(' and ')'  - benefit for dynamic address group filter
+
+GENERAL:
+
+
+2.0.39 (20220428)
 UTILS:
 * UTIL type=html-merger | optimisation
 * UTIL type=address | introduce actions=create-address-from-file:FILE.txt
