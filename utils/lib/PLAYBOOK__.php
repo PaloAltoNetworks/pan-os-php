@@ -39,6 +39,10 @@ class PLAYBOOK__
         $this->supportedArguments['type'] = array('niceName' => 'pan-os-php type=');
         $this->supportedArguments['json'] = array('niceName' => 'json=PLAYBOOK.json');
         $this->supportedArguments['projectfolder'] = array('niceName' => 'projectfolder=PROJECTFOLDER');
+        $this->supportedArguments['stagename'] = array('niceName' => 'stagename');
+        $this->supportedArguments['help'] = array('niceName' => 'help', 'shortHelp' => 'this message');
+        $this->supportedArguments['debugapi'] = array('niceName' => 'DebugAPI', 'shortHelp' => 'prints API calls when they happen');
+        $this->supportedArguments['outputformatset'] = array('niceName' => 'outputformatset', 'shortHelp' => 'get all PAN-OS set commands about the task the UTIL script is doing. outputformatset=FILENAME -> store set commands in file', 'argDesc' => 'outputformatset');
 
 ###############################################################################
 //PLAYBOOK
