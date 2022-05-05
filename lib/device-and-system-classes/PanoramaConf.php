@@ -398,7 +398,7 @@ class PanoramaConf
         //
         // Extract region objects
         //
-        $tmp = DH::findFirstElement('region', $xml);
+        $tmp = DH::findFirstElement('region', $this->sharedroot);
         if( $tmp !== false )
             $this->addressStore->load_regions_from_domxml($tmp);
         //print "VSYS '".$this->name."' address objectsloaded\n" ;
