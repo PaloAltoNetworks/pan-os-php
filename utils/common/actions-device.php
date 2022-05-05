@@ -931,6 +931,7 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
 
                         $rule = $object->$ruletype->findByUUID( $key );
                         $sub = $object;
+                        $ownerDG = $sub->name();
 
                         while( $rule === null )
                         {
