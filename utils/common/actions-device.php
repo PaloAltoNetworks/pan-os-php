@@ -868,7 +868,6 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
                 {
                     $rule = null;
                     $replace =  null;
-                    $ownerDG = "dummy";
 
                     //uid: $key -> search rule name for uid
                     if( $classtype == "ManagedDevice" )
@@ -878,8 +877,9 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
 
                         /** @var DeviceGroup $sub */
                         $sub = $pan->findDeviceGroup($name);
-
                         $rule = $sub->$ruletype->findByUUID( $key );
+                        $ownerDG = $name;
+
                         while( $rule === null )
                         {
                             $sub = $sub->parentDeviceGroup;
