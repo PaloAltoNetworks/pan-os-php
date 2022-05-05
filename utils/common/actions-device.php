@@ -868,6 +868,7 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
                 {
                     $rule = null;
                     $replace =  null;
+                    $ownerDG = "dummy";
 
                     //uid: $key -> search rule name for uid
                     if( $classtype == "ManagedDevice" )
