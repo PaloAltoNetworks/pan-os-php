@@ -726,7 +726,7 @@ class PANConf
     public function API_uploadConfig($config_name = 'panconfigurator-default.xml')
     {
 
-        PH::print_stdout(  "Uploadig config to device...." );
+        PH::print_stdout(  "Uploading config to device...." );
 
         $url = "&type=import&category=configuration";
 
@@ -807,7 +807,7 @@ class PANConf
             $gTagCount += $vsys->tagStore->count();
             $gTagUnusedCount += $vsys->tagStore->countUnused();
 
-            if( isset(PH::$args['loadpanoramapushedconfig']) )
+            if( isset(PH::$args['loadpanoramapushedconfig']) && isset($vsys->parentDeviceGroup) )
             {
                 $numSecRules += $vsys->parentDeviceGroup->securityRules->count();
                 $numNatRules += $vsys->parentDeviceGroup->natRules->count();
