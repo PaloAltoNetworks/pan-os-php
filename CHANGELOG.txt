@@ -11,6 +11,7 @@ BUGFIX:
 * class PanoramaConf | bugfix for reading custom region objects on shared level
 * class PANConf | bugfix for argument loadpanoramapushedconfig
 * UTIL type=device actions=display-shadowrule - bugfix for none declared variable
+* UTIL type=device | actions=display-shadowrule - bugfix to display rule owner
 
 GENERAL:
 
