@@ -8,6 +8,7 @@ UTILS:
 BUGFIX:
 * UTIL type=tag | bugfix to support correctly tag name with characters '(' and ')'  - benefit for dynamic address group filter
 * UTIL type=playbook | bugfix regarding supported arguments
+* class PanoramaConf | bugfix for reading custom region objects on shared level
 
 GENERAL:
 
