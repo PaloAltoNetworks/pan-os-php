@@ -832,7 +832,7 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
                     $type_name = $managedDevice->name();
                     $countInfo = "<" . $type . ">" . $type_name . "</" . $type . ">";
 
-                    $shadowArray2 = $context->connector->getShadowInfo($countInfo, true);
+                    $shadowArray2 = $context->connector->getShadowInfo($countInfo, true, $object->name() );
                     $shadowArray = array_merge( $shadowArray, $shadowArray2 );
                 }
             }

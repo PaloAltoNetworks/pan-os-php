@@ -12,6 +12,7 @@ BUGFIX:
 * class PANConf | bugfix for argument loadpanoramapushedconfig
 * UTIL type=device actions=display-shadowrule - bugfix for none declared variable
 * UTIL type=device | actions=display-shadowrule - bugfix to display rule owner
+* UTIL type=device actions=display-shadowrule - bugfix
 
 GENERAL:
 
