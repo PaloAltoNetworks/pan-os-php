@@ -109,12 +109,22 @@ class ServiceGroup
 
                 $alreadyInGroup = FALSE;
                 foreach( $this->members as $member )
+                {
                     if( $member === $f )
                     {
-                        mwarning("duplicated member named '{$memberName}' detected in servicegroup '{$this->name}', you should review your XML config file", $this->xmlroot, false);
+                        mwarning("duplicated member named '{$memberName}' detected in servicegroup '{$this->name}', you should review your XML config file", $this->xmlroot, FALSE, FALSE);
                         $alreadyInGroup = TRUE;
                         break;
                     }
+                }
+                if( $f->isGroup() )
+                {
+                    if( $this->name() == $f->name() )
+                    {
+                        mwarning("servicegroup with name: " . $this->name() . " is added as subgroup to itself, you should review your XML config file", $this->xmlroot, FALSE, false);
+                        continue;
+                    }
+                }
 
                 if( !$alreadyInGroup )
                     $this->members[] = $f;
@@ -138,7 +148,7 @@ class ServiceGroup
                 foreach( $this->members as $member )
                     if( $member === $f )
                     {
-                        mwarning("duplicated member named '{$memberName}' detected in servicegroup '{$this->name}', you should review your XML config file", $this->xmlroot, false);
+                        mwarning("duplicated member named '{$memberName}' detected in servicegroup '{$this->name}', you should review your XML config file", $this->xmlroot, false, false);
                         $alreadyInGroup = TRUE;
                         break;
                     }
@@ -624,26 +634,41 @@ class ServiceGroup
      * @param bool $keepGroupsInList
      * @return Service[]|ServiceGroup[] list of all member objects, if some of them are groups, they are exploded and their members inserted
      */
-    public function &expand($keepGroupsInList = FALSE)
+    public function &expand($keepGroupsInList = FALSE, &$grpArray=array())
     {
         $ret = array();
 
         foreach( $this->members as $object )
         {
+            #$serial = spl_object_hash($object);
+            $serial = $object->name();
             if( $object->isGroup() )
             {
+                if( array_key_exists($serial, $grpArray) )
+                {
+                    mwarning("servicegroup with name: " . $object->name() . " is added as subgroup to servicegroup: " . $this->name() . ", you should review your XML config file", $object->xmlroot, false);
+                    return $ret;
+                }
+                else
+                    $grpArray[$serial] = $serial;
+
                 if( $this->name() == $object->name() )
                 {
-                    mwarning("servicegroup with name: " . $this->name() . " is added as subgroup to itself, you should review your XML config file", $this->xmlroot, false);
+                    mwarning("servicegroup with name: " . $this->name() . " is added as subgroup to itself, you should review your XML config file", $this->xmlroot, false, false);
                     continue;
                 }
 
+                /** @var ServiceGroup $object */
+                $tmpList = $object->expand( false, $grpArray);
 
-                $ret = array_merge($ret, $object->expand());
+                $ret = array_merge($ret, $tmpList);
+                unset($tmpList);
                 if( $keepGroupsInList )
+                    #$ret[$serial] = $object;
                     $ret[] = $object;
             }
             else
+                #$ret[$serial] = $object;
                 $ret[] = $object;
         }
 

@@ -4,6 +4,7 @@ CHANGELOG
 UTILS:
 * UTIL type=playbook | introduce argument validation
 * class AddressGroup - dynamic Address Group with filter; every kind of filter is supported - revert warning
+* class AddressGroup/ServiceGroup/pan_php_framework - improvement for stdout
 
 BUGFIX:
 * UTIL type=tag | bugfix to support correctly tag name with characters '(' and ')'  - benefit for dynamic address group filter
