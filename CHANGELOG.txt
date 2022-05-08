@@ -14,6 +14,7 @@ BUGFIX:
 * UTIL type=device actions=display-shadowrule - bugfix for none declared variable
 * UTIL type=device | actions=display-shadowrule - bugfix to display rule owner
 * UTIL type=device actions=display-shadowrule - bugfix
+* UTIL ServiceStore | bugfix if serviceGroup A has a ServiceGroup B as member, which contains ServiceGroupA
 
 GENERAL:
 
