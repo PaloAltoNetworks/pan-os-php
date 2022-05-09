@@ -588,16 +588,20 @@ class ServiceGroup
     /**
      * @return ServiceDstPortMapping
      */
-    public function dstPortMapping()
+    public function dstPortMapping( $memberArray = array())
     {
         $mapping = new ServiceDstPortMapping();
 
-        foreach( $this->members as $member )
+        if( !array_key_exists( $this->name(), $memberArray ) )
         {
-            if( $member->isTmpSrv() && $this->name() != 'service-http' && $this->name() != 'service-https' )
-                $mapping->unresolved[$member->name()] = $member;
-            $localMapping = $member->dstPortMapping();
-            $mapping->mergeWithMapping($localMapping);
+            $memberArray[ $this->name() ] = $this->name();
+            foreach( $this->members as $member )
+            {
+                if( $member->isTmpSrv() && $this->name() != 'service-http' && $this->name() != 'service-https' )
+                    $mapping->unresolved[$member->name()] = $member;
+                $localMapping = $member->dstPortMapping($memberArray);
+                $mapping->mergeWithMapping($localMapping);
+            }
         }
 
         return $mapping;
@@ -710,14 +714,20 @@ class ServiceGroup
      * @param string $objectName
      * @return bool
      */
-    public function hasNamedObjectRecursive($objectName)
+    public function hasNamedObjectRecursive($objectName, $memberArray = array())
     {
         foreach( $this->members as $o )
         {
-            if( $o->name() === $objectName )
-                return TRUE;
-            if( $o->isGroup() )
-                if( $o->hasNamedObjectRecursive($objectName) ) return TRUE;
+            if( !array_key_exists( $o->name(), $memberArray ) )
+            {
+                $memberArray[$o->name()] = $o->name();
+                if( $o->name() === $objectName )
+                    return TRUE;
+                if( $o->isGroup() )
+                    if( $o->hasNamedObjectRecursive($objectName, $memberArray) ) return TRUE;
+            }
+            else
+                return FALSE;
         }
 
         return FALSE;
