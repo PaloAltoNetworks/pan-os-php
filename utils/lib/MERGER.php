@@ -2160,16 +2160,31 @@ class MERGER extends UTIL
                         }
                         else
                         {
-                            $string = "    - SKIP: object name '{$pickedObject->_PANC_shortName()}'";
+                            $string = "    - SKIP: object name '{$pickedObject->_PANC_shortName()}'\n";
                             if( $pickedObject->isService() )
-                                $string .= " [with value '{$pickedObject->getDestPort()}']";
+                            {
+                                $string .= "            [protocol '{$pickedObject->protocol()}']";
+                                $string .= " [with dport value '{$pickedObject->getDestPort()}']";
+                                if( !empty($pickedObject->getSourcePort()) )
+                                    $string .= " [with sport value '{$pickedObject->getSourcePort()}']\n";
+                                else
+                                    $string .= "\n";
+                            }
+
                             else
                                 $string .= " [ServiceGroup] ";
 
-                            $string .= " is not IDENTICAL to object name: '{$tmp_service->_PANC_shortName()}'";
+                            $string .= "       is not IDENTICAL to object name: '{$tmp_service->_PANC_shortName()}'\n";
 
                             if( $tmp_service->isService() )
-                                $string .= " [with value '{$tmp_service->getDestPort()}']";
+                            {
+                                $string .= "            [protocol '{$tmp_service->protocol()}']";
+                                $string .= " [with dport value '{$tmp_service->getDestPort()}']";
+                                if( !empty($tmp_service->getSourcePort()) )
+                                    $string .= " [with sport value '{$tmp_service->getSourcePort()}']";
+                                else
+                                    $string .= "\n";
+                            }
                             else
                                 $string .= " [ServiceGroup] ";
 

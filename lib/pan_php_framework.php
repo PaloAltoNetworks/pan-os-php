@@ -687,7 +687,7 @@ function mdeb($msg)
  * @param null|DOMNode|DOMElement $object
  * @throws Exception
  */
-function mwarning($msg, $object = null, $print_backtrace = TRUE)
+function mwarning($msg, $object = null, $print_backtrace = TRUE, $print_object = TRUE)
 {
     if( !PH::$PANC_WARN )
         return;
@@ -697,7 +697,9 @@ function mwarning($msg, $object = null, $print_backtrace = TRUE)
         $class = get_class($object);
         if( $class == 'DOMNode' || $class == 'DOMElement' || is_subclass_of($object, 'DOMNode') )
         {
-            $msg .= "\nXML line #" . $object->getLineNo() . ", XPATH: " . DH::elementToPanXPath($object) . "\n" . DH::dom_to_xml($object, 0, TRUE, 3);
+            $msg .= "\n"."XML line #" . $object->getLineNo() . ", XPATH: " . DH::elementToPanXPath($object);
+            if( $print_object )
+                $msg .= "\n". DH::dom_to_xml($object, 0, TRUE, 3);
         }
     }
 
@@ -718,14 +720,14 @@ function mwarning($msg, $object = null, $print_backtrace = TRUE)
     }
 
     else
-        fwrite(STDERR, PH::boldText("\n* ** WARNING ** * ") . $msg . "\n\n");
+        fwrite(STDERR, PH::boldText("* ** WARNING ** * ") . $msg . "\n\n");
 
 
     if( $print_backtrace )
     {
         backtrace_print();
 
-        $string = "\n\n";
+        $string = "\n";
         derr_print( $string );
     }
 

@@ -4,6 +4,9 @@ CHANGELOG
 UTILS:
 * UTIL type=playbook | introduce argument validation
 * class AddressGroup - dynamic Address Group with filter; every kind of filter is supported - revert warning
+* class AddressGroup/ServiceGroup/pan_php_framework - improvement for stdout
+* UTIL type=service-merger | improvement to stdout - why an object is skipped {protocol/dport/sport}
+* UTIL type=service | improvements to validate loop usage in ServiceGroup
 
 BUGFIX:
 * UTIL type=tag | bugfix to support correctly tag name with characters '(' and ')'  - benefit for dynamic address group filter
@@ -12,6 +15,8 @@ BUGFIX:
 * class PANConf | bugfix for argument loadpanoramapushedconfig
 * UTIL type=device actions=display-shadowrule - bugfix for none declared variable
 * UTIL type=device | actions=display-shadowrule - bugfix to display rule owner
+* UTIL type=device actions=display-shadowrule - bugfix
+* UTIL ServiceStore | bugfix if serviceGroup A has a ServiceGroup B as member, which contains ServiceGroupA
 
 GENERAL:
 

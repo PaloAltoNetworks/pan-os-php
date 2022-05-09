@@ -157,7 +157,7 @@ class ServiceStore
      * @return ServiceGroup[]
      * @var bool $sortByDependencies
      */
-    public function serviceGroups($sortByDependencies = TRUE)
+    public function serviceGroups($sortByDependencies = FALSE)
     {
         if( !$sortByDependencies )
             return $this->_serviceGroups;
@@ -195,6 +195,17 @@ class ServiceStore
 
                     foreach( $sortingArray as &$tmpGroupDeps )
                     {
+                        if( isset($tmpGroupDeps[$groupName]) )
+                            unset($tmpGroupDeps[$groupName]);
+                    }
+                }
+                elseif( count($groupDependencies) == 1 )
+                {
+                    unset($sortingArray[$groupName]);
+
+                    foreach( $sortingArray as &$tmpGroupDeps )
+                    {
+                        mwarning( "servicegroup: ".$groupName." is maybe not listed as it is involved in a loop usage", null, false );
                         if( isset($tmpGroupDeps[$groupName]) )
                             unset($tmpGroupDeps[$groupName]);
                     }

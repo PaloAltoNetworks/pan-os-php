@@ -193,7 +193,7 @@ class AddressGroup
                                 }
                             }
                             else
-                                mwarning("dynamic AddressGroup with name: " . $this->name() . " has an empty filter, you should review your XML config file", $this->xmlroot, false);
+                                mwarning("dynamic AddressGroup with name: " . $this->name() . " has an empty filter, you should review your XML config file", $this->xmlroot, false, false);
                         }
                     }
 
@@ -212,7 +212,7 @@ class AddressGroup
                         {
                             if( $this->name() == $address->name() )
                             {
-                                mwarning("dynamic AddressGroup with name: " . $this->name() . " is added as subgroup to itself, you should review your XML config file", $this->xmlroot, false);
+                                mwarning("dynamic AddressGroup with name: " . $this->name() . " is added as subgroup to itself, you should review your XML config file", $this->xmlroot, false, false);
                             }
                             else
                             {
@@ -237,12 +237,21 @@ class AddressGroup
 
                     if( isset($membersIndex[$memberName]) )
                     {
-                        mwarning("duplicated member named '{$memberName}' detected in addressgroup '{$this->name}',  you should review your XML config file", $this->xmlroot, false);
+                        mwarning("duplicated member named '{$memberName}' detected in addressgroup '{$this->name}',  you should review your XML config file", $this->xmlroot, false, false);
                         continue;
                     }
                     $membersIndex[$memberName] = TRUE;
 
                     $f = $this->owner->findOrCreate($memberName, $this, TRUE);
+
+                    if( $f->isGroup() )
+                    {
+                        if( $this->name() == $f->name() )
+                        {
+                            mwarning("addressgroup with name: " . $this->name() . " is added as subgroup to itself, you should review your XML config file", $this->xmlroot, FALSE, false);
+                            continue;
+                        }
+                    }
                     $this->members[] = $f;
 
                     if( $f->isAddress() && $f->isType_FQDN() )
@@ -801,7 +810,7 @@ class AddressGroup
             {
                 if( $this->name() == $object->name() )
                 {
-                    mwarning("addressgroup with name: " . $this->name() . " is added as subgroup to itself, you should review your XML config file", $this->xmlroot, false);
+                    mwarning("addressgroup with name: " . $this->name() . " is added as subgroup to itself, you should review your XML config file", $this->xmlroot, false, false);
                     continue;
                 }
 

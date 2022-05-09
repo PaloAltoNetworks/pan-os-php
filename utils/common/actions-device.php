@@ -832,7 +832,7 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
                     $type_name = $managedDevice->name();
                     $countInfo = "<" . $type . ">" . $type_name . "</" . $type . ">";
 
-                    $shadowArray2 = $context->connector->getShadowInfo($countInfo, true);
+                    $shadowArray2 = $context->connector->getShadowInfo($countInfo, true, $object->name() );
                     $shadowArray = array_merge( $shadowArray, $shadowArray2 );
                 }
             }
@@ -868,7 +868,6 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
                 {
                     $rule = null;
                     $replace =  null;
-                    $ownerDG = "dummy";
 
                     //uid: $key -> search rule name for uid
                     if( $classtype == "ManagedDevice" )
@@ -878,8 +877,9 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
 
                         /** @var DeviceGroup $sub */
                         $sub = $pan->findDeviceGroup($name);
-
                         $rule = $sub->$ruletype->findByUUID( $key );
+                        $ownerDG = $name;
+
                         while( $rule === null )
                         {
                             $sub = $sub->parentDeviceGroup;

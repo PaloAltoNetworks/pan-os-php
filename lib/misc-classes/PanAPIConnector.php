@@ -2109,7 +2109,7 @@ class PanAPIConnector
         return $password;
     }
 
-    public function getShadowInfo( $countInfo, $panorama = false )
+    public function getShadowInfo( $countInfo, $panorama = false, $devicegroupname = "" )
     {
         $cmd = "<show><shadow-warning><count>".$countInfo."</count></shadow-warning></show>";
         $response = $this->sendOpRequest( $cmd );
@@ -2118,43 +2118,51 @@ class PanAPIConnector
 
         $tmp = DH::findFirstElement( "result", $response);
         $tmp = DH::findFirstElement( "shadow-warnings-count", $tmp);
-        $tmp = DH::findFirstElement( "entry", $tmp);
 
         $shadowedRule = array();
-
-        //todo: if panorama - get
-        $devicegroup = "";
-        if( $panorama )
-        {
-            $name = $tmp->getAttribute( "dg" );
-            $devicegroup = "<device-group>".$name."</device-group>";
-        }
-        else
-        {
-            $name = $tmp->getAttribute( "vsys" );
-        }
 
         foreach( $tmp->childNodes as $entry )
         {
             if( $entry->nodeType != XML_ELEMENT_NODE )
                 continue;
 
-            $tmp_uid = $entry->getAttribute( "uuid" );
-            $tmp_ruletype = $entry->getAttribute( "ruletype" );
-            $cmd = "<show><shadow-warning><warning-message>".$countInfo.$devicegroup."<uuid>".$tmp_uid."</uuid></warning-message></shadow-warning></show>";
-            $response = $this->sendOpRequest( $cmd );
-
-            #print $response->saveXML();
-
-            $tmp = DH::findFirstElement( "result", $response);
-            $tmp = DH::findFirstElement( "warning-msg", $tmp);
-
-            foreach( $tmp->childNodes as $key => $entry )
+            //todo: if panorama - get
+            $devicegroup = "";
+            if( $panorama )
             {
-                if( $entry->nodeType != XML_ELEMENT_NODE )
+                $name = $entry->getAttribute("dg");
+                if( $devicegroupname !== $name )
                     continue;
 
-                $shadowedRule[$name][$tmp_ruletype][$tmp_uid][] = $entry->textContent;
+                $devicegroup = "<device-group>" . $name . "</device-group>";
+            }
+            else
+            {
+                $name = $entry->getAttribute("vsys");
+            }
+
+            foreach( $entry->childNodes as $entry2 )
+            {
+                if( $entry2->nodeType != XML_ELEMENT_NODE )
+                    continue;
+
+                $tmp_uid = $entry2->getAttribute("uuid");
+                $tmp_ruletype = $entry2->getAttribute("ruletype");
+                $cmd = "<show><shadow-warning><warning-message>" . $countInfo . $devicegroup . "<uuid>" . $tmp_uid . "</uuid></warning-message></shadow-warning></show>";
+                $response = $this->sendOpRequest($cmd);
+
+                #print $response->saveXML();
+
+                $tmp = DH::findFirstElement("result", $response);
+                $tmp = DH::findFirstElement("warning-msg", $tmp);
+
+                foreach( $tmp->childNodes as $key => $entry3 )
+                {
+                    if( $entry3->nodeType != XML_ELEMENT_NODE )
+                        continue;
+
+                    $shadowedRule[$name][$tmp_ruletype][$tmp_uid][] = $entry3->textContent;
+                }
             }
         }
 
