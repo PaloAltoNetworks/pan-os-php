@@ -205,6 +205,7 @@ class ServiceStore
 
                     foreach( $sortingArray as &$tmpGroupDeps )
                     {
+                        mwarning( "servicegroup: ".$groupName." is maybe not listed as it is involved in a loop usage", null, false );
                         if( isset($tmpGroupDeps[$groupName]) )
                             unset($tmpGroupDeps[$groupName]);
                     }
