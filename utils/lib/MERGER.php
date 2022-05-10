@@ -26,7 +26,10 @@ class MERGER extends UTIL
     public $upperLevelSearch = FALSE;
     public $mergeCountLimit = FALSE;
     public $dupAlg = null;
+
     public $deletedObjects = array();
+    public $skippedObjects = array();
+
     public $addMissingObjects = FALSE;
     public $action = "merge";
     public $mergermodeghost = TRUE;
@@ -979,6 +982,7 @@ class MERGER extends UTIL
                     if( !$tmp_address->isGroup() )
                     {
                         PH::print_stdout( "    - SKIP: object name '{$pickedObject->_PANC_shortName()}' of type AddressGroup can not be merged with object name: '{$tmp_address->_PANC_shortName()}' of type Address" );
+                        $this->skippedObject( $index, $pickedObject, $tmp_address);
                         continue;
                     }
 
@@ -992,6 +996,7 @@ class MERGER extends UTIL
                     else
                     {
                         PH::print_stdout( "    - SKIP: object name '{$pickedObject->_PANC_shortName()}' [with value '{$pickedObject_value}'] is not IDENTICAL to object name: '{$tmp_address->_PANC_shortName()}' [with value '{$tmp_address_value}']" );
+                        $this->skippedObject( $index, $pickedObject, $tmp_address);
                         continue;
                     }
                 }
@@ -1269,6 +1274,7 @@ class MERGER extends UTIL
                         if( $exit )
                         {
                             PH::print_stdout("   * SKIP: no creation of object in DG: '" . $tmp_DG_name . "' as object with same name '{$exitObject->name()}' and different value '{$exitObject->value()}' exist at childDG level");
+                            $this->skippedObject( $index, $pickedObject, $exitObject);
                             continue;
                         }
                     }
@@ -1326,6 +1332,7 @@ class MERGER extends UTIL
                             $string .= " [AdressGroup]";
 
                         PH::print_stdout($string);
+                        $this->skippedObject( $index, $pickedObject, $tmp_address);
 
                         continue;
                     }
@@ -1441,6 +1448,7 @@ class MERGER extends UTIL
                         if( !$ancestor->isAddress() )
                         {
                             PH::print_stdout("    - SKIP: object name '{$object->_PANC_shortName()}' as one ancestor is of type addressgroup");
+                            $this->skippedObject( $index, $object, $ancestor);
                             continue;
                         }
 
@@ -1454,6 +1462,7 @@ class MERGER extends UTIL
                                     if( $pickedObject->name() != $ancestor->name() )
                                     {
                                         PH::print_stdout("    - SKIP: object name '{$pickedObject->_PANC_shortName()}' [with value '{$pickedObject->value()}'] is not IDENTICAL to object name from upperlevel '{$ancestor->_PANC_shortName()}' [with value '{$ancestor->value()}'] ");
+                                        $this->skippedObject( $index, $pickedObject, $ancestor);
                                         continue;
                                     }
 
@@ -1514,7 +1523,7 @@ class MERGER extends UTIL
                             $tmpstring = "|->ERROR ancestor: '" . $object->_PANC_shortName() . "' cannot be merged. ";
                         else
                             $tmpstring = "|-> ancestor: '" . $object->_PANC_shortName() . "' you did not allow to merged";
-                        self::deletedObjectSetRemoved( $index, $tmpstring );
+                        self::deletedObjectSetRemoved($index, $tmpstring);
 
                         continue;
                     }
@@ -1556,7 +1565,9 @@ class MERGER extends UTIL
                         }
                     }
                     else
+                    {
                         PH::print_stdout("    - SKIP: object name '{$object->_PANC_shortName()}' is not IDENTICAL");
+                    }
                 }
             }
 
@@ -2134,6 +2145,7 @@ class MERGER extends UTIL
                             if( $exit )
                             {
                                 PH::print_stdout( "   * SKIP: no creation of object in DG: '".$tmp_DG_name."' as object with same name '{$exitObject->name()}' and different value '{$exitObject->dstPortMapping()->mappingToText()}' exist at childDG level" );
+                                $this->skippedObject( $index, $pickedObject, $exitObject);
                                 continue;
                             }
                         }
@@ -2189,6 +2201,7 @@ class MERGER extends UTIL
                                 $string .= " [ServiceGroup] ";
 
                             PH::print_stdout( $string );
+                            $this->skippedObject( $index, $pickedObject, $tmp_service);
 
                             continue;
                         }
@@ -2283,6 +2296,7 @@ class MERGER extends UTIL
                             if( !$ancestor->isService() )
                             {
                                 PH::print_stdout( "    - SKIP: object name '{$object->_PANC_shortName()}' as one ancestor is of type servicegroup" );
+                                $this->skippedObject( $index, $object, $ancestor);
                                 continue;
                             }
 
@@ -2708,6 +2722,7 @@ class MERGER extends UTIL
                         if( $exit )
                         {
                             PH::print_stdout( "   * SKIP: no creation of object in DG: '".$tmp_DG_name."' as object with same name '{$exitObject->name()}' and different value exist at childDG level" );
+                            $this->skippedObject( $index, $pickedObject, $exitObject);
                             continue;
                         }
                     }
@@ -2736,6 +2751,7 @@ class MERGER extends UTIL
                     else
                     {
                         PH::print_stdout( "    - SKIP: object name '{$pickedObject->_PANC_shortName()}' [with value '{$pickedObject->getColor()}'] is not IDENTICAL to object name: '{$tmp_tag->_PANC_shortName()}' [with value '{$tmp_tag->getColor()}'] " );
+                        $this->skippedObject( $index, $pickedObject, $tmp_tag);
                         continue;
                     }
                 }
@@ -2967,15 +2983,22 @@ class MERGER extends UTIL
 
 
             if( $this->exportcsvFile !== null )
+            {
                 self::exportCSVToHtml();
+                self::exportCSVToHtml( true );
+            }
+
             else
                 PH::print_stdout( $tmp_string );
         }
     }
 
-    function exportCSVToHtml()
+    function exportCSVToHtml( $skipped = FALSE)
     {
-        $headers = '<th>ID</th><th>value</th><th>kept (create)</th><th>removed</th>';
+        if( !$skipped )
+            $headers = '<th>ID</th><th>value</th><th>kept (create)</th><th>removed</th>';
+        else
+            $headers = '<th>ID</th><th>value</th><th>kept</th><th>not merged with</th>';
 
 
         $lines = '';
@@ -3013,10 +3036,21 @@ class MERGER extends UTIL
             return '<td>' . $output . '</td>';
         };
 
-        $count = 0;
-        if( isset($this->deletedObjects) )
+        $obj_Array = array();
+        if( !$skipped )
         {
-            foreach( $this->deletedObjects as $index => $line )
+            if( isset($this->deletedObjects) )
+                $obj_Array = $this->deletedObjects;
+        }
+        else
+        {
+            if( isset($this->skippedObjects) )
+                $obj_Array = $this->skippedObjects;
+        }
+
+
+        $count = 0;
+        foreach( $obj_Array as $index => $line )
             {
                 $count++;
 
@@ -3040,7 +3074,6 @@ class MERGER extends UTIL
                 $lines .= "</tr>\n";
 
             }
-        }
 
         $content = file_get_contents(dirname(__FILE__) . '/../common/html/export-template.html');
         $content = str_replace('%TableHeaders%', $headers, $content);
@@ -3057,7 +3090,11 @@ class MERGER extends UTIL
         if( PH::$shadow_json )
             PH::$JSON_OUT['exportcsv'] = $content;
 
-        file_put_contents($this->exportcsvFile, $content);
+        if( !$skipped )
+            $filename = $this->exportcsvFile;
+        else
+            $filename = "skipped-".$this->exportcsvFile;
+        file_put_contents($filename, $content);
     }
 
     private function deletedObject( $index, $keptOBJ, $removedOBJ)
@@ -3097,6 +3134,85 @@ class MERGER extends UTIL
 
             if( strpos( $this->deletedObjects[$index]['removed'], $tmpstring ) === FALSE )
                 $this->deletedObjects[$index]['removed'] .= "|" . $tmpstring;
+        }
+    }
+
+    private function skippedObject( $index, $keptOBJ, $removedOBJ)
+    {
+        if( is_object( $keptOBJ ) )
+        {
+            if( $keptOBJ->owner->owner->name() === "" )
+                $tmpDG = "shared";
+            else
+                $tmpDG = $keptOBJ->owner->owner->name();
+            $this->skippedObjects[$index]['kept'] = "[".$tmpDG. "] - ".$keptOBJ->name();
+            if( get_class( $removedOBJ ) === "Address" )
+            {
+                /** @var $keptOBJ Address */
+                $this->skippedObjects[$index]['kept'] .= "{value:".$keptOBJ->value()."}";
+            }
+            elseif( get_class( $removedOBJ ) === "Service" )
+            {
+                /** @var $keptOBJ Service */
+                $this->skippedObjects[$index]['kept'] .= " {prot:".$keptOBJ->protocol()."}{dport:".$keptOBJ->getDestPort()."}";
+                if( !empty($keptOBJ->getSourcePort()) )
+                    $this->skippedObjects[$index]['kept'] .= "{sport:".$keptOBJ->getSourcePort()."}";
+            }
+
+        }
+        else
+        {
+            $this->skippedObjects[$index]['kept'] = $keptOBJ;
+        }
+
+
+        if( $removedOBJ->owner->owner->name() === "" )
+            $tmpDG = "shared";
+        else
+            $tmpDG = $removedOBJ->owner->owner->name();
+
+        if( !isset( $this->skippedObjects[$index]['removed'] ) )
+        {
+            $tmpstring = "[".$tmpDG. "] - ".$removedOBJ->name();
+            if( get_class( $removedOBJ ) === "Address" && $removedOBJ->isType_TMP() )
+                $tmpstring .= " (tmp)";
+
+            $this->skippedObjects[$index]['removed'] = $tmpstring;
+            if( get_class( $removedOBJ ) === "Address" )
+            {
+                /** @var $keptOBJ Address */
+                $this->skippedObjects[$index]['removed'] .= "{value:".$removedOBJ->value()."}";
+            }
+            else if( get_class( $removedOBJ ) === "Service" )
+            {
+                /** @var $keptOBJ Service */
+                $this->skippedObjects[$index]['removed'] .= "{prot:".$removedOBJ->protocol()."}{dport:".$removedOBJ->getDestPort()."}";
+                if( !empty($removedOBJ->getSourcePort()) )
+                    $this->skippedObjects[$index]['removed'] .= "{sport:".$removedOBJ->getSourcePort()."}";
+            }
+        }
+        else
+        {
+            $tmpstring = "[" . $tmpDG . "] - " . $removedOBJ->name();
+            if( get_class($removedOBJ) === "Address" && $removedOBJ->isType_TMP() )
+                $tmpstring .= " (tmp)";
+
+            if( strpos($this->skippedObjects[$index]['removed'], $tmpstring) === FALSE )
+            {
+                $this->skippedObjects[$index]['removed'] .= "|" . $tmpstring;
+                if( get_class( $removedOBJ ) === "Address" )
+                {
+                    /** @var $keptOBJ Address */
+                    $this->skippedObjects[$index]['removed'] .= "{value:".$removedOBJ->value()."}";
+                }
+                elseif( get_class( $removedOBJ ) === "Service" )
+                {
+                    /** @var $keptOBJ Service */
+                    $this->skippedObjects[$index]['removed'] .= "{prot:".$removedOBJ->protocol()."}{dport:".$removedOBJ->getDestPort()."}";
+                    if( !empty($removedOBJ->getSourcePort()) )
+                        $this->skippedObjects[$index]['removed'] .= "{sport:".$removedOBJ->getSourcePort()."}";
+                }
+            }
         }
     }
 
