@@ -1,6 +1,15 @@
 CHANGELOG
 
-2.0.40
+2.0.41
+UTILS:
+* UTIL type=address-/service-merger | export also skipped objects
+
+BUGFIX;
+
+GENERAL:
+
+
+2.0.40 (20220509)
 UTILS:
 * UTIL type=playbook | introduce argument validation
 * class AddressGroup - dynamic Address Group with filter; every kind of filter is supported - revert warning
