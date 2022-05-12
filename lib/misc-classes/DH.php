@@ -561,8 +561,14 @@ class DH
      */
     static public function CHILDelementToPanSetCommand( $type, $element, &$array, $xpath, $string )
     {
+        #print "---------------\n";
+        #print "nodename: ".$element->nodeName."\n";
+        #print "xpath: ".$xpath."\n";
+        #print "string: ".$string."\n";
+
         if( $element->nodeType == XML_ELEMENT_NODE )
         {
+            #print "1\n";
             if( $element->nodeName == "entry" )
             {
                 if( strpos( $xpath, ' "'.$element->getAttribute('name').'"' ) === FALSE )
@@ -581,7 +587,10 @@ class DH
             {
                 if( strpos( $xpath, " ".$element->nodeName ) === FALSE )
                 {
-                    //print "nodename: ".$element->nodeName."\n";
+                    #print "nodename: ".$element->nodeName."\n";
+                    #print "xpath: ".$xpath."\n";
+                    #print "string: ".$string."\n";
+
                     if( $element->nodeName !== "member" )
                         $string .= " ".$element->nodeName;
                     elseif( strpos( $xpath, " list" ) !== FALSE || strpos( $string, " list" ) !== FALSE )
@@ -590,12 +599,16 @@ class DH
                     }
                     else
                     {
+                        #print "1-1\n";
                         #print "nodename: ".$element->nodeName."\n";
                         #print "xpath: ".$xpath."\n";
                         #print "string: ".$string."\n";
 
-                        if( strpos( $xpath, "delete" ) !== FALSE )
+                        if( strpos( $xpath, "delete" ) !== FALSE
+                            && (strpos( $xpath, "source" ) === FALSE && strpos( $xpath, "destination" ) === FALSE)
+                        )
                         {
+                            #print "1-2\n";
                             $finalstring = $xpath.$string;
 
                             self::setCommandvalidation( $finalstring, $array);
@@ -608,7 +621,11 @@ class DH
 
 
             foreach( $element->childNodes as $childElement )
+            {
+                #print "xpath: ".$xpath."\n";
+                #print "string: ".$string."\n";
                 self::CHILDelementToPanSetCommand( $type, $childElement, $array, $xpath, $string );
+            }
 
             if( $element->hasChildNodes() === FALSE )
             {
@@ -619,12 +636,15 @@ class DH
         }
         else
         {
+            #print "2\n";
             if( trim($element->nodeValue) !== '')
             {
                 if( strpos( $element->nodeValue, " " ) !== FALSE )
                     $finalstring =  $xpath.$string.' "'.$element->nodeValue.'"';
                 else
                     $finalstring = $xpath.$string.' '.$element->nodeValue;
+
+                #print "final: ".$finalstring."\n";
 
                 self::setCommandvalidation( $finalstring, $array);
             }

@@ -949,11 +949,13 @@ class AddressGroup
     {
         $mapObject = new IP4Map();
 
+        /*
         if( $this->isDynamic() )
         {
             $mapObject->unresolved[$this->name] = $this;
             return $mapObject;
         }
+        */
 
         foreach( $this->members as $member )
         {
