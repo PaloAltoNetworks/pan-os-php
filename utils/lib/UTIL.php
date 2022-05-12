@@ -772,10 +772,14 @@ class UTIL
         if( isset(PH::$args['outputformatset']) )
         {
             $this->outputformatset = TRUE;
-            $this->outputformatsetFile = PH::$args['outputformatset'];
 
-            if( $this->projectFolder !== null )
-                $this->outputformatsetFile = $this->projectFolder."/".$this->outputformatsetFile;
+            if( !is_bool(PH::$args['outputformatset']) )
+            {
+                $this->outputformatsetFile = PH::$args['outputformatset'];
+
+                if( $this->projectFolder !== null )
+                    $this->outputformatsetFile = $this->projectFolder."/".$this->outputformatsetFile;
+            }
         }
 
         $this->inputValidation();

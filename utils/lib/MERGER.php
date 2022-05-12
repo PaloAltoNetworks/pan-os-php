@@ -73,7 +73,16 @@ class MERGER extends UTIL
         if( isset(PH::$args['outputformatset']) )
         {
             $this->outputformatset = TRUE;
-            $this->outputformatsetFile = PH::$args['outputformatset'];
+
+            if( !is_bool(PH::$args['outputformatset']) )
+            {
+                $this->outputformatsetFile = PH::$args['outputformatset'];
+
+                if( $this->projectFolder !== null )
+                    $this->outputformatsetFile = $this->projectFolder."/".$this->outputformatsetFile;
+            }
+            else
+                $this->outputformatsetFile = null;
         }
 
         if( isset(PH::$args['exportcsv']) )

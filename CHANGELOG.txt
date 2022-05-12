@@ -6,6 +6,7 @@ UTILS:
 * UTIL type=address actions=exportToExcel:FILE.html,resolveIP - improvement for dynamic AddressGroup
 
 BUGFIX;
+* UTIL type=address-merger | bugfix for argument outputformatset - display objectname if delete
 
 GENERAL:
 
