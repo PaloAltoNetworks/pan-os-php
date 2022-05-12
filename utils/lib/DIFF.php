@@ -410,7 +410,7 @@ class DIFF extends UTIL
                     {
                         $nodeContent = $node->textContent;
                         if( isset($el1ContentSorted[$nodeContent]) )
-                            mwarning('cannot have <node>'.$nodeContent.'</node> nodes witch same content. file1', $el1, false);
+                            mwarning('cannot have <node>'.$nodeContent.'</node> nodes witch same content. file1', $el1, false, FALSE);
                         else
                             $el1ContentSorted[$nodeContent] = $node;
                     }
@@ -418,7 +418,7 @@ class DIFF extends UTIL
                     {
                         $nodeContent = $node->textContent;
                         if( isset($el2ContentSorted[$nodeContent]) )
-                            mwarning('cannot have <node>'.$nodeContent.'</node> nodes witch same content. file2', $el2, false);
+                            mwarning('cannot have <node>'.$nodeContent.'</node> nodes witch same content. file2', $el2, false, FALSE);
                         else
                             $el2ContentSorted[$nodeContent] = $node;
                     }
@@ -464,7 +464,7 @@ class DIFF extends UTIL
                     $nodeName = $node->getAttribute('name');
                     if( isset($el1NameSorted[$nodeName]) )
                     {
-                        mwarning('<node name="' . $nodeName . '"> was found twice in file1', $el1, false);
+                        mwarning('<node name="' . $nodeName . '"> was found twice in file1', $el1, false, FALSE);
                     }
 
                     else
@@ -475,7 +475,7 @@ class DIFF extends UTIL
                     $nodeName = $node->getAttribute('name');
                     if( isset($el2NameSorted[$nodeName]) )
                     {
-                        mwarning('<node name="' . $nodeName . '"> was found twice in file2', $el2, false);
+                        mwarning('<node name="' . $nodeName . '"> was found twice in file2', $el2, false, FALSE);
                     }
                     else
                         $el2NameSorted[$nodeName] = $node;
