@@ -545,7 +545,16 @@ class DH
 
 
         if( strpos( $xpath, " member" ) !== FALSE )
-            $xpath = str_replace( " member", "", $xpath );
+        {
+            if( strpos( $xpath, " members member" ) !== FALSE )
+                $xpath = str_replace( " members member", " members", $xpath );
+            elseif( strpos( $xpath, " members" ) !== FALSE )
+            {
+
+            }
+            else
+                $xpath = str_replace( " member", "", $xpath );
+        }
 
         if( $element->nodeType == XML_ELEMENT_NODE ) //1
         {
@@ -605,7 +614,24 @@ class DH
                         #print "string: ".$string."\n";
 
                         if( strpos( $xpath, "delete" ) !== FALSE
-                            && (strpos( $xpath, "source" ) === FALSE && strpos( $xpath, "destination" ) === FALSE)
+                            &&(
+                                (
+                                    strpos( $xpath, "address-group" ) !== FALSE
+                                    && (
+                                        strpos( $xpath, "static" ) === FALSE
+                                        && strpos( $xpath, "dynamic" ) === FALSE
+                                    )
+                                )
+                                || (
+                                    strpos( $xpath, "rule" ) !== FALSE
+                                    && (
+                                        strpos( $xpath, "source" ) === FALSE
+                                        && strpos( $xpath, "destination" ) === FALSE
+                                        && strpos( $xpath, "service" ) === FALSE
+                                        && strpos( $xpath, "tag" ) === FALSE
+                                    )
+                                )
+                            )
                         )
                         {
                             #print "1-2\n";

@@ -1909,7 +1909,10 @@ class UTIL
             else
             {
                 if( $this->outputformatsetFile !== null )
+                {
+                    PH::print_stdout( " * set commands are stored in FILE: ".$this->outputformatsetFile);
                     file_put_contents($this->outputformatsetFile, $tmp_string, FILE_APPEND);
+                }
                 else
                     PH::print_stdout( $tmp_string );
             }

@@ -4,9 +4,10 @@ CHANGELOG
 UTILS:
 * UTIL type=address-/service-merger | export also skipped objects
 * UTIL type=address actions=exportToExcel:FILE.html,resolveIP - improvement for dynamic AddressGroup
+* UTIL type=xml-issue | extend for SecRule from/to duplicate search and readonly template-stack
 
 BUGFIX;
-* UTIL type=address-merger | bugfix for argument outputformatset - display objectname if delete
+* UTIL type=ALL-MERGER | bugfix for argument outputformatset - display objectname if delete
 
 GENERAL:
 
