@@ -114,10 +114,19 @@ class XMLISSUE extends UTIL
         $countNATRuleObjectsWithDoubleSpaces = 0;
 
         $countMissconfiguredSecRuleServiceObjects=0;
+        $fixedSecRuleServiceObjects=0;
         $countMissconfiguredSecRuleApplicationObjects=0;
+        $fixedSecRuleApplicationObjects=0;
 
         $countMissconfiguredSecRuleSourceObjects=0;
+        $fixedSecRuleSourceObjects=0;
         $countMissconfiguredSecRuleDestinationObjects=0;
+        $fixedSecRuleDestinationObjects=0;
+
+        $countMissconfiguredSecRuleFromObjects=0;
+        $fixedSecRuleFromObjects=0;
+        $countMissconfiguredSecRuleToObjects=0;
+        $fixedSecRuleToObjects=0;
 
         $countMissconfiguredSecRuleCategoryObjects=0;
 
@@ -135,6 +144,10 @@ class XMLISSUE extends UTIL
 
         $service_app_default_available = false;
         $countMissconfiguredSecRuleServiceAppDefaultObjects = 0;
+
+        $fixedReadOnlyTemplateobjects=0;
+        $fixedReadOnlyTemplateStackobjects=0;
+
 
         $countRulesWithAppDefault = 0;
 
@@ -909,6 +922,8 @@ class XMLISSUE extends UTIL
                 $secRuleApplicationIndex = array();
                 $secRuleCategoryIndex = array();
                 $secRuleServiceAppDefaultIndex = array();
+                $secRuleFromIndex = array();
+                $secRuleToIndex = array();
 
                 if( $objectTypeNode_rulebase !== FALSE )
                 {
@@ -930,6 +945,8 @@ class XMLISSUE extends UTIL
                                     $secRuleApplication = array();
                                     $secRuleSource = array();
                                     $secRuleDestination = array();
+                                    $secRuleFrom = array();
+                                    $secRuleTo = array();
 
                                     /** @var DOMElement $objectNode */
                                     if( $objectNode->nodeType != XML_ELEMENT_NODE )
@@ -964,6 +981,7 @@ class XMLISSUE extends UTIL
                                             $objectNode_services->removeChild($objectService);
                                             $text .= PH::boldText(" (removed)");
                                             PH::print_stdout( $text );
+                                            $fixedSecRuleServiceObjects++;
                                         }
                                         else
                                             $secRuleServices[$objectServiceName] = $objectService;
@@ -1000,6 +1018,7 @@ class XMLISSUE extends UTIL
                                             $objectNode_applications->removeChild($objectNode_applications);
                                             $text .=PH::boldText(" (removed)")."\n";
                                             PH::print_stdout( $text );
+                                            $fixedSecRuleApplicationObjects++;
                                         }
                                         else
                                             $secRuleApplication[$objectApplicationName] = $objectApplication;
@@ -1030,7 +1049,7 @@ class XMLISSUE extends UTIL
                                             $objectNode_sources->removeChild($objectSource);
                                             $text .=PH::boldText(" (removed)");
                                             PH::print_stdout( $text );
-                                            $countMissconfiguredSecRuleSourceObjects++;
+                                            $fixedSecRuleSourceObjects++;
                                         }
                                         else
                                         {
@@ -1062,7 +1081,7 @@ class XMLISSUE extends UTIL
                                             $objectNode_destinations->removeChild($objectDestination);
                                             $text .= PH::boldText(" (removed)")."\n";
                                             PH::print_stdout( $text );
-                                            $countMissconfiguredSecRuleDestinationObjects++;
+                                            $fixedSecRuleDestinationObjects++;
                                         }
                                         else
                                             $secRuleDestination[$objectDestinationName] = $objectDestination;
@@ -1072,6 +1091,66 @@ class XMLISSUE extends UTIL
                                     if( isset($secRuleDestination['any']) and count($secRuleDestination) > 1 )
                                     {
                                         $secRuleDestinationIndex[$objectName] = $secRuleDestination['any'];
+                                        #PH::print_stdout( "     - Rule: '".$objectName."' has application 'any' + something else defined.") ;
+                                    }
+
+                                    //check if from has 'any' and additional
+                                    $objectNode_froms = DH::findFirstElement('from', $objectNode);
+                                    $demo = iterator_to_array($objectNode_froms->childNodes);
+                                    foreach( $demo as $objectFrom )
+                                    {
+                                        /** @var DOMElement $objectFrom */
+                                        if( $objectFrom->nodeType != XML_ELEMENT_NODE )
+                                            continue;
+
+                                        $objectFromName = $objectFrom->textContent;
+                                        #PH::print_stdout( "rule: ".$objectName." name: ".$objectDestinationName);
+                                        if( isset($secRuleFrom[$objectFromName]) )
+                                        {
+                                            $text = "     - Secrule: ".$objectName." has same from defined twice: ".$objectFromName;
+                                            $objectNode_froms->removeChild($objectFrom);
+                                            $text .= PH::boldText(" (removed)")."\n";
+                                            PH::print_stdout( $text );
+                                            $fixedSecRuleFromObjects++;
+                                        }
+                                        else
+                                            $secRuleFrom[$objectFromName] = $objectFrom;
+                                    }
+                                    #if( $objectName === "FW RULE-00.06" )
+                                    #derr('end');
+                                    if( isset($secRuleFrom['any']) and count($secRuleFrom) > 1 )
+                                    {
+                                        $secRuleFromIndex[$objectName] = $secRuleFrom['any'];
+                                        #PH::print_stdout( "     - Rule: '".$objectName."' has application 'any' + something else defined.") ;
+                                    }
+
+                                    //check if from has 'any' and additional
+                                    $objectNode_tos = DH::findFirstElement('to', $objectNode);
+                                    $demo = iterator_to_array($objectNode_tos->childNodes);
+                                    foreach( $demo as $objectTo )
+                                    {
+                                        /** @var DOMElement $objectTo */
+                                        if( $objectTo->nodeType != XML_ELEMENT_NODE )
+                                            continue;
+
+                                        $objectToName = $objectTo->textContent;
+                                        #PH::print_stdout( "rule: ".$objectName." name: ".$objectDestinationName);
+                                        if( isset($secRuleTo[$objectToName]) )
+                                        {
+                                            $text = "     - Secrule: ".$objectName." has same to defined twice: ".$objectToName;
+                                            $objectNode_tos->removeChild($objectTo);
+                                            $text .= PH::boldText(" (removed)")."\n";
+                                            PH::print_stdout( $text );
+                                            $fixedSecRuleToObjects++;
+                                        }
+                                        else
+                                            $secRuleTo[$objectToName] = $objectTo;
+                                    }
+                                    #if( $objectName === "FW RULE-00.06" )
+                                    #derr('end');
+                                    if( isset($secRuleTo['any']) and count($secRuleTo) > 1 )
+                                    {
+                                        $secRuleToIndex[$objectName] = $secRuleTo['any'];
                                         #PH::print_stdout( "     - Rule: '".$objectName."' has application 'any' + something else defined.") ;
                                     }
                                 }
@@ -1203,6 +1282,20 @@ class XMLISSUE extends UTIL
 
                             $countDuplicateNATRuleObjects++;
                         }
+                    }
+
+                    PH::print_stdout( "\n - Scanning for missconfigured From Field in Security Rules...");
+                    foreach( $secRuleFromIndex as $objectName => $objectNode )
+                    {
+                        PH::print_stdout( "   - found Security Rule named '{$objectName}' that has from 'any' and additional from configured at XML line #{$objectNode->getLineNo()}");
+                        $countMissconfiguredSecRuleFromObjects++;
+                    }
+
+                    PH::print_stdout( " - Scanning for missconfigured To Field in Security Rules...");
+                    foreach( $secRuleToIndex as $objectName => $objectNode )
+                    {
+                        PH::print_stdout( "   - found Security Rule named '{$objectName}' that has to 'any' and additional to configured at XML line #{$objectNode->getLineNo()}");
+                        $countMissconfiguredSecRuleToObjects++;
                     }
 
                     PH::print_stdout( "\n - Scanning for missconfigured Source Field in Security Rules...");
@@ -1439,11 +1532,54 @@ class XMLISSUE extends UTIL
                 $readonlyTemplates->removeChild($objectTemplate);
                 $text .=PH::boldText(" (removed)");
                 PH::print_stdout($text);
+                $fixedReadOnlyTemplateobjects++;
             }
             else
                 $readonlyTemplatesArray[$objectTemplateName] = $objectTemplate;
         }
 
+
+        ////////////////////////////////////////////////////////////
+        ///config/readonly/devices/entry[@name='localhost.localdomain']/template-stack
+
+        PH::print_stdout( " - Scanning for config/readonly/devices/entry[@name='localhost.localdomain'] for duplicate template-stack ...");
+        $tmpReadOnly = DH::findXPath("/config/readonly/devices/entry[@name='localhost.localdomain']", $this->xmlDoc);
+        $readOnly = array();
+
+        foreach( $tmpReadOnly as $node )
+            $readOnly[] = $node;
+
+        $readonlyTemplateStacksArray = array();
+
+        if( isset( $readOnly[0] ) )
+        {
+            $readonlyTemplateStacks = DH::findFirstElement('template-stack', $readOnly[0]);
+            if( $readonlyTemplateStacks !== false )
+                $demo = iterator_to_array($readonlyTemplateStacks->childNodes);
+            else
+                $demo = array();
+        }
+        else
+            $demo = array();
+
+        foreach( $demo as $objectTemplateStack )
+        {
+            /** @var DOMElement $objectTemplateStack */
+            if( $objectTemplateStack->nodeType != XML_ELEMENT_NODE )
+                continue;
+
+            $objectTemplateStackName = $objectTemplateStack->getAttribute('name');
+            if( isset($readonlyTemplateStacksArray[$objectTemplateStackName]) )
+            {
+                $text = "     - readOnly /config/readonly/devices/entry[@name='localhost.localdomain']/template-stack has same Template-Stack defined twice: ".$objectTemplateName;
+                $readonlyTemplateStacks->removeChild($objectTemplateStack);
+                $text .=PH::boldText(" (removed)");
+                PH::print_stdout($text);
+                $fixedReadOnlyTemplateStackobjects++;
+            }
+            else
+                $readonlyTemplateStacksArray[$objectTemplateStackName] = $objectTemplateStack;
+        }
 
 
         ////////////////////////////////////////////////////////////
@@ -1459,6 +1595,16 @@ class XMLISSUE extends UTIL
 
         PH::print_stdout( " - FIXED: duplicate application-group members: {$totalApplicationGroupsFixed}");
         PH::print_stdout( " - FIXED: duplicate custom-url-category members: {$totalCustomUrlCategoryFixed}");
+
+        PH::print_stdout( "\n - FIXED: SecRule with duplicate from members: {$fixedSecRuleFromObjects}");
+        PH::print_stdout( " - FIXED: SecRule with duplicate to members: {$fixedSecRuleToObjects}");
+        PH::print_stdout( " - FIXED: SecRule with duplicate source members: {$fixedSecRuleSourceObjects}");
+        PH::print_stdout( " - FIXED: SecRule with duplicate destination members: {$fixedSecRuleDestinationObjects}");
+        PH::print_stdout( " - FIXED: SecRule with duplicate service members: {$fixedSecRuleServiceObjects}");
+        PH::print_stdout( " - FIXED: SecRule with duplicate application members: {$fixedSecRuleApplicationObjects}");
+
+        PH::print_stdout( "\n - FIXED: ReadOnly duplicate Template : {$fixedReadOnlyTemplateobjects}");
+        PH::print_stdout( " - FIXED: ReadOnly duplicate TemplateStack : {$fixedReadOnlyTemplateStackobjects}");
 
         PH::print_stdout( "\n\nIssues that could not be fixed (look in logs for FIX_MANUALLY keyword):");
 
@@ -1485,6 +1631,8 @@ class XMLISSUE extends UTIL
         PH::print_stdout( " - FIX_MANUALLY: duplicate NAT Rules: {$countDuplicateNATRuleObjects} (look in the logs )");
         PH::print_stdout();
 
+        PH::print_stdout( " - FIX_MANUALLY: missconfigured From Field in Security Rules: {$countMissconfiguredSecRuleFromObjects} (look in the logs )");
+        PH::print_stdout( " - FIX_MANUALLY: missconfigured To Field in Security Rules: {$countMissconfiguredSecRuleToObjects} (look in the logs )");
         PH::print_stdout( " - FIX_MANUALLY: missconfigured Source Field in Security Rules: {$countMissconfiguredSecRuleSourceObjects} (look in the logs )");
         PH::print_stdout( " - FIX_MANUALLY: missconfigured Destination Field in Security Rules: {$countMissconfiguredSecRuleDestinationObjects} (look in the logs )");
         PH::print_stdout( " - FIX_MANUALLY: missconfigured Service Field in Security Rules: {$countMissconfiguredSecRuleServiceObjects} (look in the logs )");
