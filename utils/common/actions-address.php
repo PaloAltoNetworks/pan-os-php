@@ -924,7 +924,7 @@ AddressCallContext::$supportedActions[] = array(
                 {
                     if( $object->isGroup() )
                     {
-                        $members = $object->expand(TRUE);
+                        $members = $object->expand(FALSE);
                         $lines .= $encloseFunction($members);
                     }
                     else
