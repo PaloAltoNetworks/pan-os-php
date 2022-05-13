@@ -511,6 +511,10 @@ class RuleCallContext extends CallContext
             $strMapping = array_merge( $strMapping, $unresolvedArray );
             return self::enclose($strMapping);
         }
+        if( $fieldName == 'src_ip_count' )
+        {
+            //must NOT be done on addressresolvesummary; must be done on real objects
+        }
 
         if( $fieldName == 'dst_resolved_sum' )
         {
@@ -518,6 +522,10 @@ class RuleCallContext extends CallContext
             $strMapping = $this->AddressResolveSummary( $rule, "destination", $unresolvedArray );
             $strMapping = array_merge( $strMapping, $unresolvedArray );
             return self::enclose($strMapping);
+        }
+        if( $fieldName == 'dst_ip_count' )
+        {
+            //must NOT be done on addressresolvesummary; must be done on real objects
         }
 
         if( $fieldName == 'dnat_host_resolved_sum' )
