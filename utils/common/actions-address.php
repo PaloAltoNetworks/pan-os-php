@@ -863,6 +863,13 @@ AddressCallContext::$supportedActions[] = array(
                         $lines .= $encloseFunction( (string)count( $object->members() ));
                     else
                         $lines .= $encloseFunction( '---' );
+
+                    $counter = 0;
+                    $members = $object->expand(FALSE);
+                    foreach( $members as $member )
+                        $counter += $member->getIPcount();
+                    $lines .= $encloseFunction((string)$counter);
+
                     $lines .= $encloseFunction( '---' );
                     $lines .= $encloseFunction($object->tags->tags());
                 }
@@ -881,6 +888,7 @@ AddressCallContext::$supportedActions[] = array(
                         $lines .= $encloseFunction($object->type());
                         $lines .= $encloseFunction($object->value());
                         $lines .= $encloseFunction($object->description(), FALSE);
+                        $lines .= $encloseFunction( '---' );
                         $lines .= $encloseFunction( (string)$object->getIPcount() );
                         $lines .= $encloseFunction($object->tags->tags());
                     }
