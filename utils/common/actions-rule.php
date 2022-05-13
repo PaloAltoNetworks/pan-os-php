@@ -2597,7 +2597,7 @@ RuleCallContext::$supportedActions[] = array(
         'search' => array('type' => 'string', 'default' => '*nodefault*'),
         'replace' => array('type' => 'string', 'default' => '')
     ),
-    'help' => ''
+    'help' => 'possible variable $$comma$$ or $$pipe$$; example "actions=description-Replace-Character:$$comma$$word1"'
 );
 
 //                                                   //
