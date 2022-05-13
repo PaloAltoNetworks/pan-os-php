@@ -2,6 +2,7 @@ CHANGELOG
 
 2.0.42
 UTILS:
+* UTIL type=address 'actions=exporttoexcel:FILE.html,ResolveIP|NestedMembers' - extension with nested IP members ip resolution and count
 
 BUGFIX;
 

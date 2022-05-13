@@ -756,6 +756,8 @@ AddressCallContext::$supportedActions[] = array(
         $addUsedInLocation = FALSE;
         $addResolveGroupIPCoverage = FALSE;
         $addNestedMembers = FALSE;
+        $addResolveIPNestedMembers = FALSE;
+        $addNestedMembersCount = FALSE;
 
         $optionalFields = &$context->arguments['additionalFields'];
 
@@ -769,9 +771,14 @@ AddressCallContext::$supportedActions[] = array(
             $addResolveGroupIPCoverage = TRUE;
 
         if( isset($optionalFields['NestedMembers']) )
+        {
             $addNestedMembers = TRUE;
+            $addResolveIPNestedMembers = TRUE;
+            $addNestedMembersCount = TRUE;
+        }
 
-        $headers = '<th>location</th><th>name</th><th>type</th><th>value</th><th>description</th><th>IPcount</th><th>tags</th>';
+
+        $headers = '<th>location</th><th>name</th><th>type</th><th>value</th><th>description</th><th>Memberscount</th><th>IPcount</th><th>tags</th>';
 
         if( $addWhereUsed )
             $headers .= '<th>where used</th>';
@@ -781,6 +788,10 @@ AddressCallContext::$supportedActions[] = array(
             $headers .= '<th>ip resolution</th>';
         if( $addNestedMembers )
             $headers .= '<th>nested members</th>';
+        if( $addResolveIPNestedMembers )
+            $headers .= '<th>nested members ip resolution</th>';
+        if( $addNestedMembersCount )
+            $headers .= '<th>nested members count</th>';
 
         $lines = '';
         $encloseFunction = function ($value, $nowrap = TRUE) {
@@ -839,7 +850,8 @@ AddressCallContext::$supportedActions[] = array(
                     if( $object->isDynamic() )
                     {
                         $lines .= $encloseFunction('group-dynamic');
-                        $lines .= $encloseFunction('');
+                        #$lines .= $encloseFunction('');
+                        $lines .= $encloseFunction($object->members());
                     }
                     else
                     {
@@ -847,7 +859,11 @@ AddressCallContext::$supportedActions[] = array(
                         $lines .= $encloseFunction($object->members());
                     }
                     $lines .= $encloseFunction($object->description(), FALSE);
-                    $lines .= $encloseFunction('---');
+                    if( $object->isGroup() )
+                        $lines .= $encloseFunction( (string)count( $object->members() ));
+                    else
+                        $lines .= $encloseFunction( '---' );
+                    $lines .= $encloseFunction( '---' );
                     $lines .= $encloseFunction($object->tags->tags());
                 }
                 elseif( $object->isAddress() )
@@ -910,6 +926,28 @@ AddressCallContext::$supportedActions[] = array(
                     {
                         $members = $object->expand(TRUE);
                         $lines .= $encloseFunction($members);
+                    }
+                    else
+                        $lines .= $encloseFunction('');
+                }
+                if( $addResolveIPNestedMembers )
+                {
+                    if( $object->isGroup() )
+                    {   $resolve = array();
+                        $members = $object->expand(FALSE);
+                        foreach( $members as $member )
+                            $resolve[] = $member->value();
+                        $lines .= $encloseFunction($resolve);
+                    }
+                    else
+                        $lines .= $encloseFunction('');
+                }
+                if( $addNestedMembersCount )
+                {
+                    if( $object->isGroup() )
+                    {   $resolve = array();
+                        $members = $object->expand(FALSE);
+                        $lines .= $encloseFunction( (string)count($members) );
                     }
                     else
                         $lines .= $encloseFunction('');
