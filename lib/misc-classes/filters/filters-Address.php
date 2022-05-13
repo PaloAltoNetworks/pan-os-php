@@ -1279,13 +1279,20 @@ RQuery::$defaultFilters['address']['ip.count']['operators']['>,<,=,!'] = array(
         if( $operator == '=' )
             $operator = '==';
 
-        if( $object->isGroup() || $object->isRegion() )
+        if( $object->isRegion() )
         {
             //count IP addresses
             return false;
         }
-
-        $int = $object->getIPcount();
+        elseif( $object->isGroup() )
+        {
+            $int = 0;
+            $members = $object->expand(FALSE);
+            foreach( $members as $member )
+                $int += $member->getIPcount();
+        }
+        else
+            $int = $object->getIPcount();
 
         if( $int == FALSE )
             return FALSE;

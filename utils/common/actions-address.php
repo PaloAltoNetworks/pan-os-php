@@ -869,7 +869,7 @@ AddressCallContext::$supportedActions[] = array(
                     foreach( $members as $member )
                         $counter += $member->getIPcount();
                     $lines .= $encloseFunction((string)$counter);
-                    
+
                     $lines .= $encloseFunction($object->tags->tags());
                 }
                 elseif( $object->isAddress() )
