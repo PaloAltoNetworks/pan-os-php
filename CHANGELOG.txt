@@ -4,6 +4,7 @@ CHANGELOG
 UTILS:
 * UTIL type=address 'actions=exporttoexcel:FILE.html,ResolveIP|NestedMembers' - extension with nested IP members ip resolution and count
 * UTIL type=address 'filter=(ip.count > 200)' now also working for address-groups
+* UTIL type=service | introduce actions=exporttoexcel:file.html port.count | filter=(port.count ><= VALUE)
 
 BUGFIX;
 

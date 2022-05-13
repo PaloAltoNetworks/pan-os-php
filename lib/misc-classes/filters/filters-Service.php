@@ -904,4 +904,74 @@ RQuery::$defaultFilters['service']['timeout.value']['operators']['>,<,=,!'] = ar
         'input' => 'input/panorama-8.0.xml'
     )
 );
+
+RQuery::$defaultFilters['service']['port.count']['operators']['>,<,=,!'] = array(
+    'Function' => function (ServiceRQueryContext $context) {
+        $counter = $context->value;
+        $service = $context->object;
+
+        $calculatedCounter = $context->ServiceCount( $service, "both");
+
+        $operator = $context->operator;
+        if( $operator == '=' )
+            $operator = '==';
+
+        $operator_string = $calculatedCounter." ".$operator." ".$counter;
+        if( eval("return $operator_string;" ) )
+            return TRUE;
+
+        return FALSE;
+    },
+    'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP% 443)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['service']['port.tcp.count']['operators']['>,<,=,!'] = array(
+    'Function' => function (ServiceRQueryContext $context) {
+        $counter = $context->value;
+        $service = $context->object;
+
+        $calculatedCounter = $context->ServiceCount( $service, "tcp");
+
+        $operator = $context->operator;
+        if( $operator == '=' )
+            $operator = '==';
+
+        $operator_string = $calculatedCounter." ".$operator." ".$counter;
+        if( eval("return $operator_string;" ) )
+            return TRUE;
+
+        return FALSE;
+    },
+    'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP% 443)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['service']['port.udp.count']['operators']['>,<,=,!'] = array(
+    'Function' => function (ServiceRQueryContext $context) {
+        $counter = $context->value;
+        $service = $context->object;
+
+        $calculatedCounter = $context->ServiceCount( $service, "udp");
+
+        $operator = $context->operator;
+        if( $operator == '=' )
+            $operator = '==';
+
+        $operator_string = $calculatedCounter." ".$operator." ".$counter;
+        if( eval("return $operator_string;" ) )
+            return TRUE;
+
+        return FALSE;
+    },
+    'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP% 443)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 // </editor-fold>
