@@ -1968,7 +1968,7 @@ AddressCallContext::$supportedActions[] = array(
 
     },
     'args' => array(
-        'search' => array('type' => 'string', 'default' => ''),
+        'search' => array('type' => 'string', 'default' => '*nodefault*'),
         'replace' => array('type' => 'string', 'default' => '')
     ),
     'help' => ''

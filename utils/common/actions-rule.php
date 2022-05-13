@@ -2559,7 +2559,16 @@ RuleCallContext::$supportedActions[] = array(
         $object = $context->object;
 
         $characterToreplace = $context->arguments['search'];
+        if( strpos($characterToreplace, '$$comma$$') !== FALSE )
+            $characterToreplace = str_replace('$$comma$$', ",", $characterToreplace);
+        if( strpos($characterToreplace, '$$pipe$$') !== FALSE )
+            $characterToreplace = str_replace('$$pipe$$', "|", $characterToreplace);
+
         $characterForreplace = $context->arguments['replace'];
+        if( strpos($characterForreplace, '$$comma$$') !== FALSE )
+            $characterForreplace = str_replace('$$comma$$', ",", $characterForreplace);
+        if( strpos($characterForreplace, '$$pipe$$') !== FALSE )
+            $characterForreplace = str_replace('$$pipe$$', "|", $characterForreplace);
 
         $description = $object->description();
 
@@ -2586,7 +2595,7 @@ RuleCallContext::$supportedActions[] = array(
     },
     'args' => array(
         'search' => array('type' => 'string', 'default' => '*nodefault*'),
-        'replace' => array('type' => 'string', 'default' => '*nodefault*')
+        'replace' => array('type' => 'string', 'default' => '')
     ),
     'help' => ''
 );

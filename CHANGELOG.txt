@@ -6,6 +6,7 @@ UTILS:
 * UTIL type=address 'filter=(ip.count > 200)' now also working for address-groups
 * UTIL type=service | introduce actions=exporttoexcel:file.html port.count | filter=(port.count ><= VALUE)
 * UTIL type=address improve: 'actions=description-Replace-Character:$$comma$$word1'
+* UTIL type=rule improve: 'actions=description-Replace-Character:$$comma$$word1'
 
 BUGFIX:
 
