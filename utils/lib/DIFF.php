@@ -410,7 +410,7 @@ class DIFF extends UTIL
                     {
                         $nodeContent = $node->textContent;
                         if( isset($el1ContentSorted[$nodeContent]) )
-                            mwarning('cannot have <node>'.$nodeContent.'</node> nodes witch same content. file1', $el1, false, FALSE);
+                            mwarning('cannot have <node>'.$nodeContent.'</node> nodes with same content. file1', $el1, false, FALSE);
                         else
                             $el1ContentSorted[$nodeContent] = $node;
                     }
@@ -418,7 +418,7 @@ class DIFF extends UTIL
                     {
                         $nodeContent = $node->textContent;
                         if( isset($el2ContentSorted[$nodeContent]) )
-                            mwarning('cannot have <node>'.$nodeContent.'</node> nodes witch same content. file2', $el2, false, FALSE);
+                            mwarning('cannot have <node>'.$nodeContent.'</node> nodes with same content. file2', $el2, false, FALSE);
                         else
                             $el2ContentSorted[$nodeContent] = $node;
                     }
