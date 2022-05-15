@@ -288,6 +288,7 @@ ServiceCallContext::$supportedActions[] = array(
 
         $headers = '<th>location</th><th>name</th><th>type</th><th>dport</th><th>sport</th><th>timeout</th><th>members</th><th>description</th><th>tags</th>';
 
+        $headers .= '<th>port.count</th><th>port.tcp.count</th><th>port.udp.count</th>';
         if( $addWhereUsed )
             $headers .= '<th>where used</th>';
         if( $addUsedInLocation )
@@ -348,6 +349,16 @@ ServiceCallContext::$supportedActions[] = array(
                         $lines .= $encloseFunction($object->tags->tags());
                     }
                 }
+
+                $calculatedCounter = $context->ServiceCount( $object, "both" );
+                $lines .= $encloseFunction((string)$calculatedCounter);
+
+                $calculatedCounter = $context->ServiceCount( $object, "tcp" );
+                $lines .= $encloseFunction((string)$calculatedCounter);
+
+                $calculatedCounter = $context->ServiceCount( $object, "udp" );
+                $lines .= $encloseFunction((string)$calculatedCounter);
+
 
                 if( $addWhereUsed )
                 {

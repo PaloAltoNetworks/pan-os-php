@@ -1,6 +1,19 @@
 CHANGELOG
 
-2.0.41
+2.0.42
+UTILS:
+* UTIL type=address 'actions=exporttoexcel:FILE.html,ResolveIP|NestedMembers' - extension with nested IP members ip resolution and count
+* UTIL type=address 'filter=(ip.count > 200)' now also working for address-groups
+* UTIL type=service | introduce actions=exporttoexcel:file.html port.count | filter=(port.count ><= VALUE)
+* UTIL type=address improve: 'actions=description-Replace-Character:$$comma$$word1'
+* UTIL type=rule improve: 'actions=description-Replace-Character:$$comma$$word1'
+
+BUGFIX:
+
+GENERAL:
+
+
+2.0.41 (20220512)
 UTILS:
 * UTIL type=address-/service-merger | export also skipped objects
 * UTIL type=address actions=exportToExcel:FILE.html,resolveIP - improvement for dynamic AddressGroup

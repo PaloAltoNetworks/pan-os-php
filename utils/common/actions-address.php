@@ -756,6 +756,8 @@ AddressCallContext::$supportedActions[] = array(
         $addUsedInLocation = FALSE;
         $addResolveGroupIPCoverage = FALSE;
         $addNestedMembers = FALSE;
+        $addResolveIPNestedMembers = FALSE;
+        $addNestedMembersCount = FALSE;
 
         $optionalFields = &$context->arguments['additionalFields'];
 
@@ -769,9 +771,14 @@ AddressCallContext::$supportedActions[] = array(
             $addResolveGroupIPCoverage = TRUE;
 
         if( isset($optionalFields['NestedMembers']) )
+        {
             $addNestedMembers = TRUE;
+            $addResolveIPNestedMembers = TRUE;
+            $addNestedMembersCount = TRUE;
+        }
 
-        $headers = '<th>location</th><th>name</th><th>type</th><th>value</th><th>description</th><th>IPcount</th><th>tags</th>';
+
+        $headers = '<th>location</th><th>name</th><th>type</th><th>value</th><th>description</th><th>Memberscount</th><th>IPcount</th><th>tags</th>';
 
         if( $addWhereUsed )
             $headers .= '<th>where used</th>';
@@ -781,6 +788,10 @@ AddressCallContext::$supportedActions[] = array(
             $headers .= '<th>ip resolution</th>';
         if( $addNestedMembers )
             $headers .= '<th>nested members</th>';
+        if( $addResolveIPNestedMembers )
+            $headers .= '<th>nested members ip resolution</th>';
+        if( $addNestedMembersCount )
+            $headers .= '<th>nested members count</th>';
 
         $lines = '';
         $encloseFunction = function ($value, $nowrap = TRUE) {
@@ -839,7 +850,8 @@ AddressCallContext::$supportedActions[] = array(
                     if( $object->isDynamic() )
                     {
                         $lines .= $encloseFunction('group-dynamic');
-                        $lines .= $encloseFunction('');
+                        #$lines .= $encloseFunction('');
+                        $lines .= $encloseFunction($object->members());
                     }
                     else
                     {
@@ -847,7 +859,17 @@ AddressCallContext::$supportedActions[] = array(
                         $lines .= $encloseFunction($object->members());
                     }
                     $lines .= $encloseFunction($object->description(), FALSE);
-                    $lines .= $encloseFunction('---');
+                    if( $object->isGroup() )
+                        $lines .= $encloseFunction( (string)count( $object->members() ));
+                    else
+                        $lines .= $encloseFunction( '---' );
+
+                    $counter = 0;
+                    $members = $object->expand(FALSE);
+                    foreach( $members as $member )
+                        $counter += $member->getIPcount();
+                    $lines .= $encloseFunction((string)$counter);
+
                     $lines .= $encloseFunction($object->tags->tags());
                 }
                 elseif( $object->isAddress() )
@@ -865,6 +887,7 @@ AddressCallContext::$supportedActions[] = array(
                         $lines .= $encloseFunction($object->type());
                         $lines .= $encloseFunction($object->value());
                         $lines .= $encloseFunction($object->description(), FALSE);
+                        $lines .= $encloseFunction( '---' );
                         $lines .= $encloseFunction( (string)$object->getIPcount() );
                         $lines .= $encloseFunction($object->tags->tags());
                     }
@@ -908,8 +931,30 @@ AddressCallContext::$supportedActions[] = array(
                 {
                     if( $object->isGroup() )
                     {
-                        $members = $object->expand(TRUE);
+                        $members = $object->expand(FALSE);
                         $lines .= $encloseFunction($members);
+                    }
+                    else
+                        $lines .= $encloseFunction('');
+                }
+                if( $addResolveIPNestedMembers )
+                {
+                    if( $object->isGroup() )
+                    {   $resolve = array();
+                        $members = $object->expand(FALSE);
+                        foreach( $members as $member )
+                            $resolve[] = $member->value();
+                        $lines .= $encloseFunction($resolve);
+                    }
+                    else
+                        $lines .= $encloseFunction('');
+                }
+                if( $addNestedMembersCount )
+                {
+                    if( $object->isGroup() )
+                    {   $resolve = array();
+                        $members = $object->expand(FALSE);
+                        $lines .= $encloseFunction( (string)count($members) );
                     }
                     else
                         $lines .= $encloseFunction('');
@@ -1888,7 +1933,16 @@ AddressCallContext::$supportedActions[] = array(
         $object = $context->object;
 
         $characterToreplace = $context->arguments['search'];
+        if( strpos($characterToreplace, '$$comma$$') !== FALSE )
+            $characterToreplace = str_replace('$$comma$$', ",", $characterToreplace);
+        if( strpos($characterToreplace, '$$pipe$$') !== FALSE )
+            $characterToreplace = str_replace('$$pipe$$', "|", $characterToreplace);
+
         $characterForreplace = $context->arguments['replace'];
+        if( strpos($characterForreplace, '$$comma$$') !== FALSE )
+            $characterForreplace = str_replace('$$comma$$', ",", $characterForreplace);
+        if( strpos($characterForreplace, '$$pipe$$') !== FALSE )
+            $characterForreplace = str_replace('$$pipe$$', "|", $characterForreplace);
 
         $description = $object->description();
 
@@ -1915,9 +1969,9 @@ AddressCallContext::$supportedActions[] = array(
     },
     'args' => array(
         'search' => array('type' => 'string', 'default' => '*nodefault*'),
-        'replace' => array('type' => 'string', 'default' => '*nodefault*')
+        'replace' => array('type' => 'string', 'default' => '')
     ),
-    'help' => ''
+    'help' => 'possible variable $$comma$$ or $$pipe$$; example "actions=description-Replace-Character:$$comma$$word1"'
 );
 AddressCallContext::$supportedActions[] = array(
     'name' => 'value-host-object-add-netmask-m32',
