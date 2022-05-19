@@ -1,6 +1,15 @@
 CHANGELOG
 
-2.0.42
+2.0.43
+UTILS:
+
+BUGFIX:
+* class DH - set commands fix of FROM/TO field of rules
+
+GENERAL:
+
+
+2.0.42 (20220515)
 UTILS:
 * UTIL type=address 'actions=exporttoexcel:FILE.html,ResolveIP|NestedMembers' - extension with nested IP members ip resolution and count
 * UTIL type=address 'filter=(ip.count > 200)' now also working for address-groups
