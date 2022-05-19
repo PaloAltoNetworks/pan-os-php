@@ -629,6 +629,8 @@ class DH
                                         && strpos( $xpath, "destination" ) === FALSE
                                         && strpos( $xpath, "service" ) === FALSE
                                         && strpos( $xpath, "tag" ) === FALSE
+                                        && strpos( $xpath, "from" ) === FALSE
+                                        && strpos( $xpath, "to" ) === FALSE
                                     )
                                 )
                             )
