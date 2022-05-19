@@ -4,6 +4,7 @@ CHANGELOG
 UTILS:
 
 BUGFIX:
+* class DH - set commands fix of FROM/TO field of rules
 
 GENERAL:
 
