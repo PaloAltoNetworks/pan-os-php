@@ -2,6 +2,7 @@ CHANGELOG
 
 2.0.43
 UTILS:
+* UTIL type=rule | introduce new actions=app-postgres-fix
 
 BUGFIX:
 * class DH - set commands fix of FROM/TO field of rules

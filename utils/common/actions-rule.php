@@ -4485,5 +4485,84 @@ RuleCallContext::$supportedActions[] = array(
 );
 /************************************ */
 
+//                                                 //
+//              Rule actions property pan-os behaviour change         //
+//                                                 //
+RuleCallContext::$supportedActions[] = array(
+    'name' => 'app-postgres-fix',
+    'section' => 'action',
+    'MainFunction' => function (RuleCallContext $context) {
+        $rule = $context->object;
+
+        $postgresBool = $rule->apps->hasApp( "postgres" );
+        if( !$postgresBool )
+            return null;
+
+        if( !$rule->actionIsAllow() )
+            return null;
+
+        if( !$rule->services->isApplicationDefault() )
+            return null;
+
+        if( $rule->apps->count() > 1 )
+        {
+            $newRuleName = $rule->owner->findAvailableName($rule->name());
+            $newRule = $rule->owner->cloneRule($rule, $newRuleName);
+
+            $newRule->services->setAny();
+            $newRule->apps->setAny();
+            $string = "cloned rule with name '{$newRuleName}'";
+            PH::ACTIONlog( $context, $string );
+
+            if( $context->isAPI )
+            {
+                $newRule->API_sync();
+                $newRule->owner->API_moveRuleAfter($newRule, $rule);
+            }
+            else
+                $newRule->owner->moveRuleAfter($newRule, $rule);
+
+            $rule = $newRule;
+        }
+
+
+        $objectFind = $rule->apps->parentCentralStore->find("ssl");
+        $rule->apps->addApp( $objectFind );
+        if( $context->isAPI )
+            $rule->apps->API_sync();
+
+        $rule->services->setAny();
+
+        $tmp_service = $rule->services->parentCentralStore->findByProtocolDstSrcPort( "tcp", "5432" );
+        if( $tmp_service === null )
+        {
+            if( $context->isAPI )
+                $tmp_service = $rule->services->parentCentralStore->API_newService( "tcp_5432", "tcp", "5432" );
+            else
+                $tmp_service = $rule->services->parentCentralStore->newService( "tcp_5432", "tcp", "5432" );
+        }
+
+        $rule->services->add( $tmp_service );
+
+        //-----
+
+        $tmp_service = $rule->services->parentCentralStore->findByProtocolDstSrcPort( "tcp", "5434-5439" );
+        if( $tmp_service === null )
+        {
+            if( $context->isAPI )
+                $tmp_service = $rule->services->parentCentralStore->API_newService( "tcp_5434-5439", "tcp", "5434-5439" );
+            else
+                $tmp_service = $rule->services->parentCentralStore->newService( "tcp_5434-5439", "tcp", "5434-5439" );
+        }
+
+        $rule->services->add( $tmp_service );
+
+        if( $context->isAPI )
+            $rule->services->API_sync();
+    }
+
+);
+/************************************ */
+
 
 
