@@ -7,6 +7,7 @@ BUGFIX:
 * class DH - set commands fix of FROM/TO field of rules
 
 GENERAL:
+* update to Device App-ID version: 8571-7398
 
 
 2.0.42 (20220515)
