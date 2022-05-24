@@ -643,3 +643,30 @@ SecurityProfileCallContext::$supportedActions['custom-url-category-add-ending-to
         )
     )
 );
+SecurityProfileCallContext::$supportedActions['custom-url-category-fix-leading-dot'] = array(
+    'name' => 'custom-url-category-fix-leading-dot',
+    'MainFunction' => function (SecurityProfileCallContext $context) {
+        $object = $context->object;
+
+        if( get_class( $object) !== "customURLProfile")
+            return null;
+
+        foreach( $object->getmembers() as $member )
+        {
+            PH::print_stdout(  "        - " . $member );
+            PH::$JSON_TMP['sub']['object'][$object->name()]['members'][] = $member;
+
+
+            $fristChar = substr($member, 0, 1);
+            if( $fristChar === "." )
+            {
+                PH::print_stdout(  "following token available at firstChar: '".$fristChar."' adding '*' at beginning" );
+                $object->addMember( "*".$member );
+                $object->deleteMember( $member );
+
+                if( $context->isAPI )
+                    $object->API_sync();
+            }
+        }
+    }
+);
