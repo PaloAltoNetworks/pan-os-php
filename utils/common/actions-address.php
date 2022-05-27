@@ -2755,6 +2755,14 @@ AddressCallContext::$supportedActions[] = Array(
             }
             else
             {
+                if( $new_address->isGroup() )
+                {
+                    $string = $context->padding.$context->padding." *** SKIPPED creating; addressobject with name: '{$new_address_name}' already available as an address-group";
+                    PH::ACTIONlog( $context, $string );
+                    mwarning( "*** SKIPPED *** existing address object is group\n", null, false);
+                    continue;
+                }
+
                 if( $new_address->isType_TMP() )
                 {
                     $prefix = array();
