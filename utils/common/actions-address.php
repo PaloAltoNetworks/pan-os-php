@@ -2641,6 +2641,9 @@ AddressCallContext::$supportedActions[] = Array(
 
         $addressStore = $object->owner;
 
+        $forceAddToGroup = $context->arguments['force-add-to-group'];
+        $forceChangeValue = $context->arguments['force-change-value'];
+
         if( !isset($context->cachedList) )
         {
             $text = file_get_contents( $context->arguments['file'] );
@@ -2784,8 +2787,24 @@ AddressCallContext::$supportedActions[] = Array(
 
                     if( $new_address_value != $new_address->value() )
                     {
-                        mwarning( "address value differ from existing address object: existing-value: '{$new_address->value()}' - new-value:'{$new_address_value}'\n", null, false);
-                        continue;
+                        if( $forceAddToGroup )
+                        {
+                            $string = "force adding to address-Group as argument is used";
+                            PH::ACTIONlog($context, $string );
+
+                            if( $forceChangeValue )
+                            {
+                                $string = "force change value is used. set value to: ".$new_address_value;
+                                PH::ACTIONlog($context, $string );
+                                $new_address->setValue( $new_address_value );
+                            }
+
+                        }
+                        else
+                        {
+                            mwarning( "address value differ from existing address object: existing-value: '{$new_address->value()}' - new-value:'{$new_address_value}'\n", null, false);
+                            continue;
+                        }
                     }
                 }
 
@@ -2825,7 +2844,9 @@ AddressCallContext::$supportedActions[] = Array(
 example:
     h-192.168.0.1,192.168.0.1/32,private-network-AddressGroup
     n-192.168.2.0m24,192.168.2.0/24,private-network-AddressGroup\n"
-        )
+        ),
+        'force-add-to-group' => array('type' => 'bool', 'default' => FALSE),
+        'force-change-value' => array('type' => 'bool', 'default' => FALSE)
     ),
 );
 
