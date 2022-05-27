@@ -7,6 +7,7 @@ UTILS:
 
 BUGFIX:
 * class DH - set commands fix of FROM/TO field of rules
+* UTIL type=address actions=create | bugfix if exiting object is of type address-group
 
 GENERAL:
 * update to Device App-ID version: 8571-7398
