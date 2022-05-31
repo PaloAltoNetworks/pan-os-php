@@ -3174,54 +3174,66 @@ class MERGER extends UTIL
             $this->skippedObjects[$index]['kept'] = $keptOBJ;
         }
 
-
-        if( $removedOBJ->owner->owner->name() === "" )
-            $tmpDG = "shared";
-        else
-            $tmpDG = $removedOBJ->owner->owner->name();
-
-        if( !isset( $this->skippedObjects[$index]['removed'] ) )
+        if( is_object( $removedOBJ ) )
         {
-            $tmpstring = "[".$tmpDG. "] - ".$removedOBJ->name();
-            if( get_class( $removedOBJ ) === "Address" && $removedOBJ->isType_TMP() )
-                $tmpstring .= " (tmp)";
-
-            $this->skippedObjects[$index]['removed'] = $tmpstring;
-            if( get_class( $removedOBJ ) === "Address" )
+            if( !isset( $removedOBJ->owner->owner ) )
             {
-                /** @var $keptOBJ Address */
-                $this->skippedObjects[$index]['removed'] .= "{value:".$removedOBJ->value()."}";
+                $this->skippedObjects[$index]['removed'] = "1?????";
+                return null;
             }
-            else if( get_class( $removedOBJ ) === "Service" )
+
+            if( $removedOBJ->owner->owner->name() === "" )
+                $tmpDG = "shared";
+            else
+                $tmpDG = $removedOBJ->owner->owner->name();
+
+            if( !isset($this->skippedObjects[$index]['removed']) )
             {
-                /** @var $keptOBJ Service */
-                $this->skippedObjects[$index]['removed'] .= "{prot:".$removedOBJ->protocol()."}{dport:".$removedOBJ->getDestPort()."}";
-                if( !empty($removedOBJ->getSourcePort()) )
-                    $this->skippedObjects[$index]['removed'] .= "{sport:".$removedOBJ->getSourcePort()."}";
+                $tmpstring = "[" . $tmpDG . "] - " . $removedOBJ->name();
+                if( get_class($removedOBJ) === "Address" && $removedOBJ->isType_TMP() )
+                    $tmpstring .= " (tmp)";
+
+                $this->skippedObjects[$index]['removed'] = $tmpstring;
+                if( get_class($removedOBJ) === "Address" )
+                {
+                    /** @var $keptOBJ Address */
+                    $this->skippedObjects[$index]['removed'] .= "{value:" . $removedOBJ->value() . "}";
+                }
+                else if( get_class($removedOBJ) === "Service" )
+                {
+                    /** @var $keptOBJ Service */
+                    $this->skippedObjects[$index]['removed'] .= "{prot:" . $removedOBJ->protocol() . "}{dport:" . $removedOBJ->getDestPort() . "}";
+                    if( !empty($removedOBJ->getSourcePort()) )
+                        $this->skippedObjects[$index]['removed'] .= "{sport:" . $removedOBJ->getSourcePort() . "}";
+                }
+            }
+            else
+            {
+                $tmpstring = "[" . $tmpDG . "] - " . $removedOBJ->name();
+                if( get_class($removedOBJ) === "Address" && $removedOBJ->isType_TMP() )
+                    $tmpstring .= " (tmp)";
+
+                if( strpos($this->skippedObjects[$index]['removed'], $tmpstring) === FALSE )
+                {
+                    $this->skippedObjects[$index]['removed'] .= "|" . $tmpstring;
+                    if( get_class($removedOBJ) === "Address" )
+                    {
+                        /** @var $keptOBJ Address */
+                        $this->skippedObjects[$index]['removed'] .= "{value:" . $removedOBJ->value() . "}";
+                    }
+                    elseif( get_class($removedOBJ) === "Service" )
+                    {
+                        /** @var $keptOBJ Service */
+                        $this->skippedObjects[$index]['removed'] .= "{prot:" . $removedOBJ->protocol() . "}{dport:" . $removedOBJ->getDestPort() . "}";
+                        if( !empty($removedOBJ->getSourcePort()) )
+                            $this->skippedObjects[$index]['removed'] .= "{sport:" . $removedOBJ->getSourcePort() . "}";
+                    }
+                }
             }
         }
         else
         {
-            $tmpstring = "[" . $tmpDG . "] - " . $removedOBJ->name();
-            if( get_class($removedOBJ) === "Address" && $removedOBJ->isType_TMP() )
-                $tmpstring .= " (tmp)";
-
-            if( strpos($this->skippedObjects[$index]['removed'], $tmpstring) === FALSE )
-            {
-                $this->skippedObjects[$index]['removed'] .= "|" . $tmpstring;
-                if( get_class( $removedOBJ ) === "Address" )
-                {
-                    /** @var $keptOBJ Address */
-                    $this->skippedObjects[$index]['removed'] .= "{value:".$removedOBJ->value()."}";
-                }
-                elseif( get_class( $removedOBJ ) === "Service" )
-                {
-                    /** @var $keptOBJ Service */
-                    $this->skippedObjects[$index]['removed'] .= "{prot:".$removedOBJ->protocol()."}{dport:".$removedOBJ->getDestPort()."}";
-                    if( !empty($removedOBJ->getSourcePort()) )
-                        $this->skippedObjects[$index]['removed'] .= "{sport:".$removedOBJ->getSourcePort()."}";
-                }
-            }
+            $this->skippedObjects[$index]['removed'] = "2?????";
         }
     }
 
