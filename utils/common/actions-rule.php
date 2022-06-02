@@ -2563,12 +2563,16 @@ RuleCallContext::$supportedActions[] = array(
             $characterToreplace = str_replace('$$comma$$', ",", $characterToreplace);
         if( strpos($characterToreplace, '$$pipe$$') !== FALSE )
             $characterToreplace = str_replace('$$pipe$$', "|", $characterToreplace);
+        if( strpos($characterToreplace, '$$newline$$') !== FALSE )
+            $characterToreplace = str_replace('$$newline$$', "\n", $characterToreplace);
 
         $characterForreplace = $context->arguments['replace'];
         if( strpos($characterForreplace, '$$comma$$') !== FALSE )
             $characterForreplace = str_replace('$$comma$$', ",", $characterForreplace);
         if( strpos($characterForreplace, '$$pipe$$') !== FALSE )
             $characterForreplace = str_replace('$$pipe$$', "|", $characterForreplace);
+        if( strpos($characterForreplace, '$$newline$$') !== FALSE )
+            $characterForreplace = str_replace('$$newline$$', "\n", $characterForreplace);
 
         $description = $object->description();
 
@@ -2597,7 +2601,7 @@ RuleCallContext::$supportedActions[] = array(
         'search' => array('type' => 'string', 'default' => '*nodefault*'),
         'replace' => array('type' => 'string', 'default' => '')
     ),
-    'help' => 'possible variable $$comma$$ or $$pipe$$; example "actions=description-Replace-Character:$$comma$$word1"'
+    'help' => 'possible variable $$comma$$ or $$pipe$$ or $$newline$$; example "actions=description-Replace-Character:$$comma$$word1"'
 );
 
 //                                                   //

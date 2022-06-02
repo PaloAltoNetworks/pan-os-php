@@ -5,10 +5,12 @@ UTILS:
 * UTIL type=rule | introduce new actions=app-postgres-fix
 * UTIL type=securityprofile securityprofiletype=custom-url-category | introduce actions=custom-url-category-fix-leading-dot
 * UTIL type=address actions=create-address-from-file:FILE.txt - introduce two new bool argument: force-add-to-group' / 'force-change-value
+* UTIL type=rule action=description-Replace-Character | introduce variable $$newline$$
 
 BUGFIX:
 * class DH - set commands fix of FROM/TO field of rules
 * UTIL type=address actions=create | bugfix if exiting object is of type address-group
+* class DH - bugfix for "set commands" if value contains newline
 
 GENERAL:
 * update to Device App-ID version: 8571-7398
