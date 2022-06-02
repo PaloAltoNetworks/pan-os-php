@@ -10,6 +10,7 @@ UTILS:
 BUGFIX:
 * class DH - set commands fix of FROM/TO field of rules
 * UTIL type=address actions=create | bugfix if exiting object is of type address-group
+* class DH - bugfix for "set commands" if value contains newline
 
 GENERAL:
 * update to Device App-ID version: 8571-7398

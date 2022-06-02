@@ -667,10 +667,14 @@ class DH
             #print "2\n";
             if( trim($element->nodeValue) !== '')
             {
+                $value = $element->nodeValue;
+                if(strstr($value, PHP_EOL))
+                    $value = str_replace(PHP_EOL,"^M",$value);
+
                 if( strpos( $element->nodeValue, " " ) !== FALSE )
-                    $finalstring =  $xpath.$string.' "'.$element->nodeValue.'"';
+                    $finalstring =  $xpath.$string.' "'.$value.'"';
                 else
-                    $finalstring = $xpath.$string.' '.$element->nodeValue;
+                    $finalstring = $xpath.$string.' '.$value;
 
                 #print "final: ".$finalstring."\n";
 
