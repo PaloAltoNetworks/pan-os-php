@@ -2682,26 +2682,6 @@ AddressCallContext::$supportedActions[] = Array(
             {
                 $create_addressGroup = true;
                 $address_addressgroup = $address_information[2];
-
-                $newAddressGroup = $addressStore->find( $address_addressgroup );
-
-                if( $newAddressGroup == null )
-                {
-                    $string = $context->padding."- object: '{$address_addressgroup}'\n";
-                    $string .= $context->padding.$context->padding." *** create addressgroup with name: '{$address_addressgroup}'\n";
-                    PH::ACTIONlog( $context, $string );
-                    if( $context->isAPI )
-                        $addressStore->API_newAddressGroup( $address_addressgroup );
-                    else
-                        $addressStore->newAddressGroup( $address_addressgroup );
-                }
-                else
-                {
-                    $string = $context->padding . "- object: '{$address_addressgroup}'\n";
-                    $string .= $context->padding . $context->padding . " *** SKIPPED addressgroup name: '{$address_addressgroup}' already available\n";
-                    PH::ACTIONlog( $context, $string );
-                    #maybe print out the members of the group
-                }
             }
 
 
@@ -2787,21 +2767,23 @@ AddressCallContext::$supportedActions[] = Array(
 
                     if( $new_address_value != $new_address->value() )
                     {
+                        if( $forceChangeValue )
+                        {
+                            $string = "force change value is used. set value to: ".$new_address_value;
+                            PH::ACTIONlog($context, $string );
+                            if( $context->isAPI )
+                                $new_address->API_setValue( $new_address_value );
+                            else
+                                $new_address->setValue( $new_address_value );
+                        }
                         if( $forceAddToGroup )
                         {
                             $string = "force adding to address-Group as argument is used";
                             PH::ACTIONlog($context, $string );
-
-                            if( $forceChangeValue )
-                            {
-                                $string = "force change value is used. set value to: ".$new_address_value;
-                                PH::ACTIONlog($context, $string );
-                                $new_address->setValue( $new_address_value );
-                            }
-
                         }
                         else
                         {
+                            $create_addressGroup = false;
                             mwarning( "address value differ from existing address object: existing-value: '{$new_address->value()}' - new-value:'{$new_address_value}'\n", null, false);
                             continue;
                         }
@@ -2813,6 +2795,25 @@ AddressCallContext::$supportedActions[] = Array(
 
             if( $create_addressGroup )
             {
+                $newAddressGroup = $addressStore->find( $address_addressgroup );
+                if( $newAddressGroup == null )
+                {
+                    $string = $context->padding."- object: '{$address_addressgroup}'\n";
+                    $string .= $context->padding.$context->padding." *** create addressgroup with name: '{$address_addressgroup}'\n";
+                    PH::ACTIONlog( $context, $string );
+                    if( $context->isAPI )
+                        $addressStore->API_newAddressGroup( $address_addressgroup );
+                    else
+                        $addressStore->newAddressGroup( $address_addressgroup );
+                }
+                else
+                {
+                    $string = $context->padding . "- object: '{$address_addressgroup}'\n";
+                    $string .= $context->padding . $context->padding . " *** SKIPPED addressgroup name: '{$address_addressgroup}' already available\n";
+                    PH::ACTIONlog( $context, $string );
+                    #maybe print out the members of the group
+                }
+
                 $newgrpObj = $addressStore->find( $address_addressgroup );
                 if( $newgrpObj != null )
                 {

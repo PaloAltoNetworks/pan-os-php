@@ -240,7 +240,7 @@ class Address
         $c = findConnectorOrDie($this);
         $xpath = $this->getXPath();
 
-        $c->sendSetRequest($xpath, DH::dom_to_xml($this->xmlroot, -1, FALSE));
+        $c->sendEditRequest($xpath, DH::dom_to_xml($this->xmlroot, -1, FALSE));
 
         $this->setType($newType);
 
@@ -259,7 +259,7 @@ class Address
         $c = findConnectorOrDie($this);
         $xpath = $this->getXPath();
 
-        $c->sendSetRequest($xpath, DH::dom_to_xml($this->xmlroot, -1, FALSE));
+        $c->sendEditRequest($xpath, DH::dom_to_xml($this->xmlroot, -1, FALSE));
 
         $this->setValue($newValue);
 
