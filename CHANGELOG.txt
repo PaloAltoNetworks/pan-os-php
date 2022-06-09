@@ -14,6 +14,7 @@ BUGFIX:
 
 GENERAL:
 * update to Device App-ID version: 8571-7398
+* docker container update install more python modules
 
 
 2.0.42 (20220515)
