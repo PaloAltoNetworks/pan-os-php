@@ -14,6 +14,7 @@ BUGFIX:
 * UTIL type=address actions=create | bugfix if exiting object is of type address-group
 * class DH - bugfix for "set commands" if value contains newline
 * UTIL type=address actions=create-address-from-file | bugfixes
+* UTIL type=rule-merger | merging description correctly
 
 GENERAL:
 * update to Device App-ID version: 8571-7398
