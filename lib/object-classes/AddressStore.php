@@ -124,7 +124,7 @@ class AddressStore
             {
                 if( PH::$enableXmlDuplicatesDeletion )
                     $duplicatesRemoval[] = $node;
-                mwarning("an object with name '{$objectName}' already exists in this store, please investigate your xml file as this will be ignored and could eventually be lost.", $node);
+                mwarning("an object with name '{$objectName}' already exists in this store, please investigate your xml file as this will be ignored and could eventually be lost.", $node, false);
                 continue;
             }
 
@@ -174,7 +174,7 @@ class AddressStore
             {
                 if( PH::$enableXmlDuplicatesDeletion )
                     $duplicatesRemoval[] = $node;
-                mwarning("an object with name '{$objectName}' already exists in this store, please investigate your xml file as this will be ignored and could eventually be lost.", $node);
+                mwarning("an object with name '{$objectName}' already exists in this store, please investigate your xml file as this will be ignored and could eventually be lost.", $node, false);
                 continue;
             }
 
@@ -276,7 +276,7 @@ class AddressStore
             {
                 if( PH::$enableXmlDuplicatesDeletion )
                     $duplicatesRemoval[] = $node;
-                mwarning("an object with name '{$name}' already exists in this store, please investigate your xml file", $node);
+                mwarning("an object with name '{$name}' already exists in this store, please investigate your xml file", $node, false);
                 continue;
             }
 
@@ -302,7 +302,7 @@ class AddressStore
             }
             else
             {
-                mwarning( "earlier warning available that: an object with name '{$name}' already exists in this store, please investigate your xml file as this will be ignored and could eventually be lost.");
+                mwarning( "earlier warning available that: an object with name '{$name}' already exists in this store, please investigate your xml file as this will be ignored and could eventually be lost.",$node, false);
             }
 
         }
