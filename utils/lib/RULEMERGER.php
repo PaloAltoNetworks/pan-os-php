@@ -41,6 +41,9 @@ class RULEMERGER extends UTIL
     public $supportedMethods = array();
     public $processedLocation = null;
 
+    public $deletedObjects = array();
+    public $skippedObjects = array();
+
     public function utilStart()
     {
         $this->usageMsg = PH::boldText("USAGE: ") . "php " . basename(__FILE__) . " in=inputfile.xml|api://... location=shared|sub [out=outputfile.xml]" .
@@ -382,10 +385,23 @@ class RULEMERGER extends UTIL
         unset($this->UTIL_hashTable[$ruleToMerge->mergeHash][$rule->serial]);
         if( $this->action === "merge" )
         {
-            if( $this->configInput['type'] == 'api' && $this->configOutput == null )
+            //$this->apiMode
+            $mergedTag = $rule->owner->owner->tagStore->findOrCreate( "merged");
+            if( $this->apiMode && $this->configOutput == null )
+            {
+                $mergedTag->API_sync();
                 $ruleToMerge->owner->API_remove($ruleToMerge);
+
+                $rule->tags->API_addTag( $mergedTag );
+                $rule->API_setDescription( $rule->description()." |".$ruleToMerge->name() );
+            }
             else
+            {
                 $ruleToMerge->owner->remove($ruleToMerge);
+
+                $rule->tags->addTag( $mergedTag );
+                $rule->setDescription( $rule->description()." |".$ruleToMerge->name() );
+            }
             $ruleToMerge->alreadyMerged = TRUE;
         }
 
@@ -608,7 +624,7 @@ class RULEMERGER extends UTIL
 
             if( $this->action === "merge" )
             {
-                if( $this->configInput['type'] == 'api' && $this->configOutput == null )
+                if( $this->apiMode && $this->configOutput == null )
                     $rule->API_sync();
             }
             unset($this->UTIL_hashTable[$rule->mergeHash][$rule->serial]);

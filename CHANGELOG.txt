@@ -6,6 +6,7 @@ UTILS:
 * UTIL type=securityprofile securityprofiletype=custom-url-category | introduce actions=custom-url-category-fix-leading-dot
 * UTIL type=address actions=create-address-from-file:FILE.txt - introduce two new bool argument: force-add-to-group' / 'force-change-value
 * UTIL type=rule action=description-Replace-Character | introduce variable $$newline$$
+* UTIL type=rule-merger | introduce tag 'merged' and extend description which rules were merged
 
 BUGFIX:
 * class DH - set commands fix of FROM/TO field of rules
