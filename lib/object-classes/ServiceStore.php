@@ -79,7 +79,7 @@ class ServiceStore
             $ns->load_from_domxml($node);
             if( isset($this->_all[$ns->name()]) )
             {
-                mwarning("service named '{$ns->name()}' already exists and was ignored, check your XML configuration", $node);
+                mwarning("service named '{$ns->name()}' already exists and was ignored, check your XML configuration", $node, false);
                 if( PH::$enableXmlDuplicatesDeletion )
                     $duplicatesRemoval[] = $node;
 
@@ -88,7 +88,7 @@ class ServiceStore
 
             if( $ns->name() == "application-default")
             {
-                mwarning("service named '{$ns->name()}' is created, PAN-OS Security Rule default behaviour is affected", $node);
+                mwarning("service named '{$ns->name()}' is created, PAN-OS Security Rule default behaviour is affected", $node, false);
             }
 
             $this->_serviceObjects[$ns->name()] = $ns;
@@ -261,7 +261,7 @@ class ServiceStore
                 if( PH::$enableXmlDuplicatesDeletion )
                     $duplicatesRemoval[] = $node;
                 else
-                    mwarning("an object with name '{$name}' already exists in this store, please investigate your xml file", $node);
+                    mwarning("an object with name '{$name}' already exists in this store, please investigate your xml file", $node, false);
                 continue;
             }
 
