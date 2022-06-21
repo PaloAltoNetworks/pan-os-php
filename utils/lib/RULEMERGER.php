@@ -663,7 +663,7 @@ class RULEMERGER extends UTIL
                 #$this->deletedObjects[$rule->name()]['kept'] = $rule;
                 #$this->deletedObjects[$rule->name()]['removed'][$ruleToCompare->name()] =  $ruleToCompare;
 
-                $fields = array(
+                $this->context->fields = array(
                     'location' => 'location',
                     'rulebase' => 'rulebase',
                     'type' => 'type',
@@ -696,7 +696,7 @@ class RULEMERGER extends UTIL
 
 
                 $line = "";
-                foreach( $fields as $fieldName => $fieldID )
+                foreach( $this->context->fields as $fieldName => $fieldID )
                     $line .= $this->context->ruleFieldHtmlExport($ruleToCompare, $fieldID);
                 $this->deletedObjects[$rule->name()]['removed'][$ruleToCompare->name()] = $line;
 
@@ -709,7 +709,7 @@ class RULEMERGER extends UTIL
             $rule->display(5);
 
             $line = "";
-            foreach( $fields as $fieldName => $fieldID )
+            foreach( $this->context->fields as $fieldName => $fieldID )
                 $line .= $this->context->ruleFieldHtmlExport($rule, $fieldID);
             $this->deletedObjects[$rule->name()]['kept'] = $line;
 
@@ -1031,6 +1031,8 @@ class RULEMERGER extends UTIL
         else
             $headers = '<th>ID</th><th>rule name</th>';
 
+        foreach( $this->context->fields as $tmpfield )
+            $headers .= '<th>'.$tmpfield.'</th>';
 
         $lines = '';
         $encloseFunction = function ($value, $nowrap = TRUE) {
