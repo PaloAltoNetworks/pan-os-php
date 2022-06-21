@@ -41,11 +41,18 @@ class RULEMERGER extends UTIL
     public $supportedMethods = array();
     public $processedLocation = null;
 
+    public $deletedObjects = array();
+    public $skippedObjects = array();
+
     public function utilStart()
     {
         $this->usageMsg = PH::boldText("USAGE: ") . "php " . basename(__FILE__) . " in=inputfile.xml|api://... location=shared|sub [out=outputfile.xml]" .
             " ['filter=(from has external) or (to has dmz)']";
-        
+
+        $actionProperties = "exportToExcel";
+        $arguments = "";
+        $this->context = new RuleCallContext( $actionProperties, $arguments);
+
         $this->add_supported_arguments();
 
         $this->prepareSupportedArgumentsArray();
@@ -94,7 +101,38 @@ class RULEMERGER extends UTIL
             PH::print_stdout( " - rule filter after sanitizing : ");
             $this->UTIL_filterQuery->display();
         }
-        
+
+        if( isset(PH::$args['projectfolder']) )
+        {
+            $this->projectFolder = PH::$args['projectfolder'];
+            if (!file_exists($this->projectFolder)) {
+                mkdir($this->projectFolder, 0777, true);
+            }
+        }
+
+        if( isset(PH::$args['outputformatset']) )
+        {
+            $this->outputformatset = TRUE;
+
+            if( !is_bool(PH::$args['outputformatset']) )
+            {
+                $this->outputformatsetFile = PH::$args['outputformatset'];
+
+                if( $this->projectFolder !== null )
+                    $this->outputformatsetFile = $this->projectFolder."/".$this->outputformatsetFile;
+            }
+            else
+                $this->outputformatsetFile = null;
+        }
+
+        if( isset(PH::$args['exportcsv']) )
+        {
+            $this->exportcsv = TRUE;
+            $this->exportcsvFile = PH::$args['exportcsv'];
+
+            if( $this->projectFolder !== null )
+                $this->exportcsvFile = $this->projectFolder."/".$this->exportcsvFile;
+        }
         
         $this->load_config();
 
@@ -201,6 +239,16 @@ class RULEMERGER extends UTIL
         ##################
         $this->save_our_work( true );
 
+        if( $this->exportcsv )
+        {
+            PH::print_stdout(" * script was called with argument 'exportCSV' - please wait for calculation");
+
+            if( $this->exportcsvFile !== null )
+            {
+                self::exportCSVToHtml();
+                #self::exportCSVToHtml( true );
+            }
+        }
 
         
     }
@@ -382,10 +430,23 @@ class RULEMERGER extends UTIL
         unset($this->UTIL_hashTable[$ruleToMerge->mergeHash][$rule->serial]);
         if( $this->action === "merge" )
         {
-            if( $this->configInput['type'] == 'api' && $this->configOutput == null )
+            //$this->apiMode
+            $mergedTag = $rule->owner->owner->tagStore->findOrCreate( "merged");
+            if( $this->apiMode && $this->configOutput == null )
+            {
+                $mergedTag->API_sync();
                 $ruleToMerge->owner->API_remove($ruleToMerge);
+
+                $rule->tags->API_addTag( $mergedTag );
+                $rule->API_setDescription( $rule->description()." |".$ruleToMerge->name() );
+            }
             else
+            {
                 $ruleToMerge->owner->remove($ruleToMerge);
+
+                $rule->tags->addTag( $mergedTag );
+                $rule->setDescription( $rule->description()." |".$ruleToMerge->name() );
+            }
             $ruleToMerge->alreadyMerged = TRUE;
         }
 
@@ -599,6 +660,47 @@ class RULEMERGER extends UTIL
                 }
 
                 $ruleToCompare->display(9);
+                #$this->deletedObjects[$rule->name()]['kept'] = $rule;
+                #$this->deletedObjects[$rule->name()]['removed'][$ruleToCompare->name()] =  $ruleToCompare;
+
+                $fields = array(
+                    'location' => 'location',
+                    'rulebase' => 'rulebase',
+                    'type' => 'type',
+                    'name' => 'name',
+                    'tag' => 'tags',
+                    'from' => 'from',
+                    'to' => 'to',
+                    'src_negated' => 'source_negated',
+                    'src' => 'source',
+                    'dst_negated' => 'destination_negated',
+                    'dst' => 'destination',
+                    'service' => 'service',
+                    'application' => 'application',
+                    'action' => 'action',
+                    'security' => 'security-profile',
+                    'disabled' => 'disabled',
+                    'src user' => 'src-user',
+                    'log start' => 'log_start',
+                    'log end' => 'log_end',
+                    'log prof' => 'log_profile',
+                    'log prof name' => 'log_profile_name',
+                    'snat type' => 'snat_type',
+                    'snat_address' => 'snat_address',
+                    'dnat_host' => 'dnat_host',
+                    'description' => 'description',
+                    'schedule' => 'schedule',
+                    'target' => 'target'
+                );
+
+
+
+                $line = "";
+                foreach( $fields as $fieldName => $fieldID )
+                    $line .= $this->context->ruleFieldHtmlExport($ruleToCompare, $fieldID);
+                $this->deletedObjects[$rule->name()]['removed'][$ruleToCompare->name()] = $line;
+
+                #self::deletedObjectSetRemoved( $rule, $ruleToCompare );
                 $this->UTIL_mergeRules($rule, $ruleToCompare);
                 $mergedRulesCount++;
             }
@@ -606,9 +708,14 @@ class RULEMERGER extends UTIL
             PH::print_stdout( "    - Rule after merge:");
             $rule->display(5);
 
+            $line = "";
+            foreach( $fields as $fieldName => $fieldID )
+                $line .= $this->context->ruleFieldHtmlExport($rule, $fieldID);
+            $this->deletedObjects[$rule->name()]['kept'] = $line;
+
             if( $this->action === "merge" )
             {
-                if( $this->configInput['type'] == 'api' && $this->configOutput == null )
+                if( $this->apiMode && $this->configOutput == null )
                     $rule->API_sync();
             }
             unset($this->UTIL_hashTable[$rule->mergeHash][$rule->serial]);
@@ -656,6 +763,7 @@ class RULEMERGER extends UTIL
         $this->supportedArguments[] = array('niceName' => 'filter', 'shortHelp' => 'filter rules that can be converted');
         $this->supportedArguments[] = array('niceName' => 'additionalMatch', 'shortHelp' => 'add additional matching criterial', 'argDesc' => '[tag,secprof,user,urlcategory,target]');
         $this->supportedArguments[] = array('niceName' => 'DebugAPI', 'shortHelp' => 'prints API calls when they happen');
+        $this->supportedArguments[] = array('niceName' => 'exportCSV', 'shortHelp' => 'when this argument is specified, it instructs the script to display the kept and removed objects per value');
     }
 
     function mergerArguments()
@@ -906,5 +1014,149 @@ class RULEMERGER extends UTIL
         }
 
         return $location_array;
+    }
+
+    private function deletedObjectSetRemoved( $index, &$rule )
+    {
+        #if( !isset( $this->deletedObjects[$index]['removed'] ) )
+        #    $this->deletedObjects[$index]['removed'] = "";
+
+        $this->deletedObjects[$index->name()]['removed'][] =  &$rule;
+    }
+
+    function exportCSVToHtml( $skipped = FALSE)
+    {
+        if( !$skipped )
+            $headers = '<th>ID</th><th>rule name</th>';
+        else
+            $headers = '<th>ID</th><th>rule name</th>';
+
+
+        $lines = '';
+        $encloseFunction = function ($value, $nowrap = TRUE) {
+            if( is_string($value) )
+                $output = htmlspecialchars($value);
+            elseif( is_array($value) )
+            {
+                $output = '';
+                $first = TRUE;
+                foreach( $value as $subValue )
+                {
+                    if( !$first )
+                    {
+                        $output .= '<br />';
+                    }
+                    else
+                        $first = FALSE;
+
+                    if( is_string($subValue) )
+                        $output .= htmlspecialchars($subValue);
+                    else
+                        $output .= htmlspecialchars($subValue->name());
+                }
+            }
+            else
+            {
+                derr('unsupported: '.$value);
+            }
+
+
+            if( $nowrap )
+                return '<td style="white-space: nowrap">' . $output . '</td>';
+
+            return '<td>' . $output . '</td>';
+        };
+
+        $obj_Array = array();
+        if( !$skipped )
+        {
+            if( isset($this->deletedObjects) )
+                $obj_Array = $this->deletedObjects;
+        }
+        else
+        {
+            if( isset($this->skippedObjects) )
+                $obj_Array = $this->skippedObjects;
+        }
+
+        $count = 0;
+        foreach( $obj_Array as $index => $line )
+        {
+            $count++;
+
+            if( $count % 2 == 1 )
+            {
+                $color = false;
+                $lines .= "<tr>\n";
+            }
+            else
+            {
+                $lines .= "<tr bgcolor=\"#DDDDDD\">";
+                $color = true;
+            }
+
+
+            $lines .= $encloseFunction( (string)$count );
+
+            $lines .= $encloseFunction( (string)$index );
+            #$lines .= $encloseFunction( $line['kept']->name() );
+
+            #if( isset( $line['kept'] ) )
+            #    $lines .= $encloseFunction( $line['kept'] );
+            #else
+            #    $lines .= $encloseFunction( "" );
+
+            ##$removedArray = explode( "|", $line['removed'] );
+            ##$lines .= $encloseFunction( $removedArray );
+            #$lines .= $encloseFunction( $line['removed'] );
+
+            $lines .= $line['kept'] ;
+
+
+            $lines .= "</tr>\n";
+
+            foreach( $line['removed'] as $removed )
+            {
+                if( $color === false )
+                    $lines .= "<tr>\n";
+                else
+                    $lines .= "<tr bgcolor=\"#DDDDDD\">";
+
+                $lines .= $encloseFunction( "---" );
+                $lines .= $encloseFunction( "removed" );
+
+                #$lines .= $encloseFunction( (string)$index );
+
+                $lines .=  $removed ;
+
+
+
+
+                $lines .= "</tr>\n";
+            }
+
+
+        }
+
+        $content = file_get_contents(dirname(__FILE__) . '/../common/html/export-template.html');
+        $content = str_replace('%TableHeaders%', $headers, $content);
+
+        $content = str_replace('%lines%', $lines, $content);
+
+        $jscontent = file_get_contents(dirname(__FILE__) . '/../common/html/jquery.min.js');
+        $jscontent .= "\n";
+        $jscontent .= file_get_contents(dirname(__FILE__) . '/../common/html/jquery.stickytableheaders.min.js');
+        $jscontent .= "\n\$('table').stickyTableHeaders();\n";
+
+        $content = str_replace('%JSCONTENT%', $jscontent, $content);
+
+        if( PH::$shadow_json )
+            PH::$JSON_OUT['exportcsv'] = $content;
+
+        if( !$skipped )
+            $filename = $this->exportcsvFile;
+        else
+            $filename = "skipped-".$this->exportcsvFile;
+        file_put_contents($filename, $content);
     }
 }
