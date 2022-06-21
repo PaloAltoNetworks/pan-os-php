@@ -7,6 +7,7 @@ UTILS:
 * UTIL type=address actions=create-address-from-file:FILE.txt - introduce two new bool argument: force-add-to-group' / 'force-change-value
 * UTIL type=rule action=description-Replace-Character | introduce variable $$newline$$
 * UTIL type=rule-merger | introduce tag 'merged' and extend description which rules were merged
+* UTIL type=rule-merger | introduce argument exportCSV=merged.html
 
 BUGFIX:
 * class DH - set commands fix of FROM/TO field of rules
