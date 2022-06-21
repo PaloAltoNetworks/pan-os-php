@@ -280,7 +280,7 @@ class ServiceStore
             if( $node->nodeType != 1 ) continue;
 
             $name = $node->getAttribute('name');
-            if( isset( $this->_addressGroups[$name] ) )
+            if( isset( $this->_serviceGroups[$name] ) )
             {
                 $ns = $this->_serviceGroups[$name];
                 $ns->load_from_domxml($node);
