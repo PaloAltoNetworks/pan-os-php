@@ -2323,8 +2323,8 @@ class MERGER extends UTIL
                                     }
                                     elseif( $object->getOverride() != $ancestor->getOverride() )
                                     {
-                                        $text = "    - object '{$object->name()}' cannot be merged because of different Override information";
-                                        $text .="  object value: " . $object->getOverride() . " | pickedObject value: " . $ancestor->getOverride();
+                                        $text = "    - object '{$object->name()}' cannot be merged because of different timeout Override information";
+                                        $text .="  object timeout value: " . $object->getOverride() . " | pickedObject timeout value: " . $ancestor->getOverride();
                                         PH::print_stdout( $text );
                                         continue;
                                     }
@@ -2381,8 +2381,8 @@ class MERGER extends UTIL
                             }
                             elseif( $object->getOverride() != $pickedObject->getOverride() )
                             {
-                                $text = "    - object '{$object->name()}' cannot be merged because of different Override information";
-                                $text .= "  object value: " . $object->getOverride() . " | pickedObject value: " . $pickedObject->getOverride();
+                                $text = "    - object '{$object->name()}' cannot be merged because of different timeout Override information";
+                                $text .= "  object timeout value: " . $object->getOverride() . " | pickedObject timeout value: " . $pickedObject->getOverride();
                                 PH::print_stdout( $text );
                                 continue;
                             }
