@@ -9,12 +9,12 @@ and there goes a big thank you to:
 [Christoph Painchaud](https://github.com/cpainchaud)
 ----------------------
 Christophe started pan-configurator in 2014 as a Palo Alto Networks Professional Services Engineer,
-and brought in all main logic and base classes, which are still availalbe and used in PAN-OS-PHP.
+and brought in all main logic and base classes, which are still available and used in PAN-OS-PHP.
 
 [Sven Waschkut](https://github.com/swaschkut)
 ----------------------
-By End of 2016 Sven started contributing to pan-configurator also as a Palo Alto Networks Professional Services Egniner
-and took over the full contribution and maintance by start of year 2018. 
+By End of 2016 Sven started contributing to pan-configurator also as a Palo Alto Networks Professional Services Engineer
+and took over the full contribution and maintenance by start of year 2018. 
 
 
 Contributing

@@ -44,6 +44,9 @@ class RULEMERGER extends UTIL
     public $deletedObjects = array();
     public $skippedObjects = array();
 
+    public $exportcsv = FALSE;
+    public $exportcsvFile = null;
+
     public function utilStart()
     {
         $this->usageMsg = PH::boldText("USAGE: ") . "php " . basename(__FILE__) . " in=inputfile.xml|api://... location=shared|sub [out=outputfile.xml]" .

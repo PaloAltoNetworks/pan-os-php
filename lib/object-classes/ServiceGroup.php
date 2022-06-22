@@ -663,7 +663,7 @@ class ServiceGroup
                 }
 
                 /** @var ServiceGroup $object */
-                $tmpList = $object->expand( false, $grpArray);
+                $tmpList = $object->expand( $keepGroupsInList, $grpArray);
 
                 $ret = array_merge($ret, $tmpList);
                 unset($tmpList);
