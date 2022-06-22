@@ -16,6 +16,7 @@ BUGFIX:
 * UTIL type=address actions=create-address-from-file | bugfixes
 * UTIL type=rule-merger | merging description correctly
 * class ServiceStore | bugfix to NOT error out if duplicate servicegroup and service are available
+* UTIL type=rule-merger | bugfix for missing variables
 
 GENERAL:
 * update to Device App-ID version: 8571-7398

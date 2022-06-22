@@ -873,6 +873,17 @@ class AddressStore
                             unset($tmpGroupDeps[$groupName]);
                     }
                 }
+                elseif( count($groupDependencies) == 1 )
+                {
+                    unset($sortingArray[$groupName]);
+
+                    foreach( $sortingArray as &$tmpGroupDeps )
+                    {
+                        mwarning( "addressgroup: ".$groupName." is maybe not listed as it is involved in a loop usage", null, false );
+                        if( isset($tmpGroupDeps[$groupName]) )
+                            unset($tmpGroupDeps[$groupName]);
+                    }
+                }
             }
 
             $loopCount++;
