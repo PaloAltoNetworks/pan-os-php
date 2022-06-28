@@ -22,11 +22,11 @@
 // - create template-stack ( add to FW device (serial#))
 // - create template (incl adding to template-stack)
 // - add devicegroup to FW device serial#
-// - containercreate / devicecloudcreate
-// - devicegroupsetparent
-// - containersetparent / deviceloudsetparent
+// - container-create / devicecloud-create
+// - devicegroupe-setparent / container-setparent / deviceloud-setparent
 // - templatemovesharedtovsys
 // - templatestackmovetofirsttemplate
+// - delete manageddevice with decommission reference on DG, template-stack
 
 DeviceCallContext::$supportedActions['display'] = array(
     'name' => 'display',
@@ -304,6 +304,12 @@ DeviceCallContext::$supportedActions['Template-delete'] = array(
 
         if( get_class($object) == "Template" )
         {
+            if( $object->countReferences() > 0 )
+            {
+                $string ="Template is used and can NOT be removed!";
+                PH::ACTIONlog( $context, $string );
+                return null;
+            }
             /** @var Template $object */
             //if template is used in Template-Stack -> skip
             /*
@@ -334,6 +340,92 @@ DeviceCallContext::$supportedActions['Template-delete'] = array(
             //}
         }
     }
+);
+DeviceCallContext::$supportedActions['ManagedDevice-create'] = array(
+    'name' => 'manageddevice-create',
+    'MainFunction' => function (DeviceCallContext $context) {
+    },
+    'GlobalFinishFunction' => function (DeviceCallContext $context) {
+        $serialName = $context->arguments['serial'];
+
+        $pan = $context->subSystem;
+
+        if( !$pan->isPanorama() )
+            derr("only supported on Panorama config");
+
+
+        $tmp_manageddevice = $pan->managedFirewallsStore->find($serialName);
+        if( $tmp_manageddevice === null )
+        {
+            $string = "create ManagedDevice: " . $serialName;
+            PH::ACTIONlog($context, $string);
+
+            $dg = $pan->managedFirewallsStore->findOrCreate($serialName);
+
+            if( $context->isAPI )
+            {
+                $con = findConnectorOrDie($dg);
+
+                $xpath = '/config/mgt-config/devices';
+                $con->sendSetRequest($xpath, "<entry name='{$serialName}'/>");
+            }
+        }
+        else
+        {
+            $string = "ManagedDevice with name: " . $serialName . " already available!";
+            PH::ACTIONlog( $context, $string );
+        }
+    },
+    'args' => array(
+        'serial' => array('type' => 'string', 'default' => 'false'),
+    ),
+);
+DeviceCallContext::$supportedActions['ManagedDevice-delete'] = array(
+    'name' => 'manageddevice-delete',
+    'MainFunction' => function (DeviceCallContext $context) {
+    },
+    'GlobalFinishFunction' => function (DeviceCallContext $context) {
+        $serialName = $context->arguments['serial'];
+
+        $pan = $context->subSystem;
+
+        if( !$pan->isPanorama() )
+            derr("only supported on Panorama config");
+
+
+        $tmp_manageddevice = $pan->managedFirewallsStore->find($serialName);
+        if( $tmp_manageddevice !== null )
+        {
+            if( $tmp_manageddevice->countReferences() > 0 )
+            {
+                $string ="ManagedDevice is used and can NOT be removed!";
+                PH::ACTIONlog( $context, $string );
+                return null;
+            }
+
+            $string = "delete ManagedDevice: " . $serialName;
+            PH::ACTIONlog($context, $string);
+
+
+            if( $context->isAPI )
+            {
+                $con = findConnectorOrDie($tmp_manageddevice);
+                ///config/mgt-config/devices/entry[@name='1234567891']
+                $xpath = "/config/mgt-config/devices/entry[@name='{$serialName}']";
+                $con->sendDeleteRequest($xpath);
+            }
+            else
+                $pan->managedFirewallsStore->removeManagedDevice( $serialName );
+        }
+        else
+        {
+            $string = "ManagedDevice with name: " . $serialName . " not available!";
+            PH::ACTIONlog( $context, $string );
+        }
+    },
+    'args' => array(
+        'serial' => array('type' => 'string', 'default' => 'false'),
+    ),
 );
 
 DeviceCallContext::$supportedActions['exportToExcel'] = array(
