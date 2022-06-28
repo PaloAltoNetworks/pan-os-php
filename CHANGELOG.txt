@@ -2,6 +2,7 @@ CHANGELOG
 
 2.0.44
 UTILS:
+* UTIL type=xml-issue | extend visibility for removing duplicate address/service objects
 
 BUGFIX:
 
