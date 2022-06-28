@@ -911,6 +911,49 @@ class DeviceGroup
         return $dgs;
     }
 
+
+    public function addDevice( $serial, $vsys = "vsys1" )
+    {
+        if( isset( $this->devices[$serial] ) && $vsys !== "vsys1" )
+        {
+            $this->devices[$serial]['vsyslist'][$vsys] = $vsys;
+        }
+        else
+        {
+            $vsyslist['vsys1'] = 'vsys1';
+            $this->devices[$serial] = array('serial' => $serial, 'vsyslist' => $vsyslist);
+        }
+        //XML manipulation missing
+        $newXmlNode = DH::importXmlStringOrDie($this->xmlroot->ownerDocument, "<entry name='{$serial}'/>");
+        $devicenode = $this->devicesRoot->appendChild($newXmlNode);
+    }
+
+
+    public function removeDevice( $serial )
+    {
+        if( isset( $this->devices[$serial] ) )
+        {
+            unset( $this->devices[$serial] );
+            //missing XML manipulation
+
+            if( $this->devicesRoot !== FALSE )
+            {
+                foreach( $this->devicesRoot->childNodes as $device )
+                {
+                    if( $device->nodeType != 1 ) continue;
+                    $devname = DH::findAttribute('name', $device);
+
+                    if( $devname === $serial )
+                    {
+                        DH::removeChild( $this->devicesRoot, $device );
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
 }
 
 

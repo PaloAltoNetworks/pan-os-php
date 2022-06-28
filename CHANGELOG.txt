@@ -4,6 +4,7 @@ CHANGELOG
 UTILS:
 * UTIL type=xml-issue | extend visibility for removing duplicate address/service objects
 * UTIL type=device | introduce actions=manageddevice-create / manageddevice-delete
+* UTIL type=device | introduce actions=DeviceGroup-removeSerial/DeviceGroup-addSerial
 
 BUGFIX:
 

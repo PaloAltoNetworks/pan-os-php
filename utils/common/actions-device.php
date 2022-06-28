@@ -24,8 +24,8 @@
 // - add devicegroup to FW device serial#
 // - container-create / devicecloud-create
 // - devicegroupe-setparent / container-setparent / deviceloud-setparent
-// - templatemovesharedtovsys
-// - templatestackmovetofirsttemplate
+// - template-movesharedtovsys
+// - templatestack-movetofirsttemplate
 // - delete manageddevice with decommission reference on DG, template-stack
 
 DeviceCallContext::$supportedActions['display'] = array(
@@ -217,6 +217,93 @@ DeviceCallContext::$supportedActions['DeviceGroup-create'] = array(
         'parentdg' => array('type' => 'string', 'default' => 'null'),
     ),
 );
+DeviceCallContext::$supportedActions['DeviceGroup-addSerial'] = array(
+    'name' => 'devicegroup-addserial',
+    'MainFunction' => function (DeviceCallContext $context) {
+    },
+    'GlobalFinishFunction' => function (DeviceCallContext $context) {
+        $dgName = $context->arguments['name'];
+        $serial = $context->arguments['serial'];
+
+        $pan = $context->subSystem;
+
+        if( !$pan->isPanorama() )
+            derr("only supported on Panorama config");
+
+        $tmp_dg = $pan->findDeviceGroup($dgName);
+        if( $tmp_dg === null )
+        {
+            $string = "DeviceGroup with name: " . $dgName . " not available!";
+            PH::ACTIONlog( $context, $string );
+        }
+        else
+        {
+            $string = "DeviceGroup with name: " . $dgName . " got serial: ".$serial." added!";
+            PH::ACTIONlog( $context, $string );
+            if( $context->isAPI )
+            {
+                $con = findConnectorOrDie($tmp_dg);
+
+                #$xpath = DH::elementToPanXPath($object->xmlroot);
+
+                #$pan->removeDeviceGroup($object);
+                #$con->sendDeleteRequest($xpath);
+                $xpath = DH::elementToPanXPath($tmp_dg->xmlroot);
+                $xpath .= '/devices';
+                $con->sendSetRequest($xpath, "<entry name='{$serial}'/>");
+            }
+            else
+                $tmp_dg->addDevice( $serial );
+
+        }
+    },
+    'args' => array(
+        'name' => array('type' => 'string', 'default' => 'false'),
+        'serial' => array('type' => 'string', 'default' => 'null'),
+    ),
+);
+DeviceCallContext::$supportedActions['DeviceGroup-removeSerial'] = array(
+    'name' => 'devicegroup-removeserial',
+    'MainFunction' => function (DeviceCallContext $context) {
+    },
+    'GlobalFinishFunction' => function (DeviceCallContext $context) {
+        $dgName = $context->arguments['name'];
+        $serial = $context->arguments['serial'];
+
+        $pan = $context->subSystem;
+
+        if( !$pan->isPanorama() )
+            derr("only supported on Panorama config");
+
+        $tmp_dg = $pan->findDeviceGroup($dgName);
+        if( $tmp_dg === null )
+        {
+            $string = "DeviceGroup with name: " . $dgName . " not available!";
+            PH::ACTIONlog( $context, $string );
+        }
+        else
+        {
+            $string = "DeviceGroup with name: " . $dgName . " got serial: ".$serial." removed!";
+            PH::ACTIONlog( $context, $string );
+            if( $context->isAPI )
+            {
+                $con = findConnectorOrDie($tmp_dg);
+
+                $xpath = DH::elementToPanXPath($tmp_dg->xmlroot);
+                $xpath .= '/devices';
+                $xpath .= "/entry[@name='{$serial}']";
+
+                $con->sendDeleteRequest($xpath);
+            }
+
+            $tmp_dg->removeDevice( $serial );
+        }
+    },
+    'args' => array(
+        'name' => array('type' => 'string', 'default' => 'false'),
+        'serial' => array('type' => 'string', 'default' => 'null'),
+    ),
+);
 DeviceCallContext::$supportedActions['DeviceGroup-delete'] = array(
     'name' => 'devicegroup-delete',
     'MainFunction' => function (DeviceCallContext $context) {
@@ -241,18 +328,15 @@ DeviceCallContext::$supportedActions['DeviceGroup-delete'] = array(
                 $string ="     * delete DeviceGroup: " . $name;
                 PH::ACTIONlog( $context, $string );
 
-
                 if( $context->isAPI )
                 {
                     $con = findConnectorOrDie($object);
                     $xpath = DH::elementToPanXPath($object->xmlroot);
 
-                    $pan->removeDeviceGroup($object);
                     $con->sendDeleteRequest($xpath);
                 }
-                else
-                    $pan->removeDeviceGroup($object);
 
+                $pan->removeDeviceGroup($object);
             }
         }
     }
@@ -386,6 +470,7 @@ DeviceCallContext::$supportedActions['ManagedDevice-delete'] = array(
     },
     'GlobalFinishFunction' => function (DeviceCallContext $context) {
         $serialName = $context->arguments['serial'];
+        $force = $context->arguments['force'];
 
         $pan = $context->subSystem;
 
@@ -393,9 +478,43 @@ DeviceCallContext::$supportedActions['ManagedDevice-delete'] = array(
             derr("only supported on Panorama config");
 
 
+        /** @var ManagedDevice $tmp_manageddevice */
         $tmp_manageddevice = $pan->managedFirewallsStore->find($serialName);
         if( $tmp_manageddevice !== null )
         {
+            if( $force )
+            {
+                $string ="force delete ManagedDevice is not yet implemented!";
+                PH::ACTIONlog( $context, $string );
+                #return null;
+
+                $references = $tmp_manageddevice->getReferences();
+                foreach( $references as $ref )
+                {
+                    $class = get_class( $ref );
+                    print $class."\n";
+                    if( $class === "DeviceGroup"  )
+                    {
+                        /** @var DeviceGroup $ref */
+                        //remove serial from DG
+                        #$ref->
+                    }
+                    elseif( $class === "TemplateStack" )
+                    {
+                        /** @var TemplateStack $ref */
+                        //remove from template-stack
+                    }
+                    elseif( $class === "LogCollectorGroup" )
+                    {
+                        $string ="force delete ManagedDevice is not yet implemented for LogCollectorGroup!";
+                        PH::ACTIONlog( $context, $string );
+                        return null;
+                    }
+                }
+                //$tmp_manageddevice->removeReference();
+            }
+
+
             if( $tmp_manageddevice->countReferences() > 0 )
             {
                 $string ="ManagedDevice is used and can NOT be removed!";
@@ -425,6 +544,9 @@ DeviceCallContext::$supportedActions['ManagedDevice-delete'] = array(
     },
     'args' => array(
         'serial' => array('type' => 'string', 'default' => 'false'),
+        'force' => array('type' => 'bool', 'default' => 'false',
+            'help' => "decommission Manageddevice, also if used on Device-Group or Template-stack"
+        )
     ),
 );
 
