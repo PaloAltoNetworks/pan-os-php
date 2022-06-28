@@ -7,6 +7,7 @@ UTILS:
 * UTIL type=device | introduce actions=DeviceGroup-removeSerial/DeviceGroup-addSerial
 
 BUGFIX:
+* UTIL type=securityprofile actions=delete - bugfix to get API mode working
 
 GENERAL:
 

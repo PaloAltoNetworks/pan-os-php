@@ -520,7 +520,8 @@ class SecurityProfileStore extends ObjStore
     {
         $ret = $this->remove($tag);
 
-        if( $ret && !$tag->isTmpSecProf() && $this->xmlroot !== null )
+        #if( $ret && !$tag->isTmpSecProf() && $this->xmlroot !== null )
+        if( $ret && $this->xmlroot !== null )
         {
             $this->xmlroot->removeChild($tag->xmlroot);
         }
@@ -529,19 +530,21 @@ class SecurityProfileStore extends ObjStore
     }
 
     /**
-     * @param SecurityProfile $securityProfile
+     * @param SecurityProfile| URLProfile | AntiSpywareProfile | AntiVirusProfile | VulnerabilityProfile | FileBlockingProfile | WildfireProfile $securityProfile
      * @return bool
      */
-    public function API_removeSecurityProfile(SecurityProfile $securityProfile)
+    public function API_removeSecurityProfile( $securityProfile)
     {
         $xpath = null;
 
-        if( !$securityProfile->isTmp() )
-            $xpath = $securityProfile->getXPath();
+        #if( !$securityProfile->isTmp() )
+        $xpath = $securityProfile->owner->getXPath();
+        $xpath .= "/entry[@name='".$securityProfile->name()."']";
 
         $ret = $this->removeSecurityProfile($securityProfile);
 
-        if( $ret && !$securityProfile->isTmp() )
+        #if( $ret && !$securityProfile->isTmp() )
+        if( $ret )
         {
             $con = findConnectorOrDie($this);
             $con->sendDeleteRequest($xpath);
@@ -561,7 +564,7 @@ class SecurityProfileStore extends ObjStore
         else
             derr('unsupported');
 
-        $str = $str . '/profiles';
+        $str = $str . '/profiles/'.self::$storeNameByType[$this->type]['xpathRoot'];
 
         return $str;
     }
@@ -574,7 +577,8 @@ class SecurityProfileStore extends ObjStore
             $str = "/config/shared";
         }
         else
-            $str = $this->owner->getXPath();
+            #$str = $this->owner->getXPath();
+            $str = $this->getXPath();
 
 
         return $str;
@@ -582,7 +586,7 @@ class SecurityProfileStore extends ObjStore
 
     public function &getSecurityProfileStoreXPath()
     {
-        $path = $this->getBaseXPath() . '/profiles';
+        $path = $this->getBaseXPath();
         return $path;
     }
 
