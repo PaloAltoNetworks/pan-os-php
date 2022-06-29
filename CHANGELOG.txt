@@ -8,6 +8,7 @@ UTILS:
 
 BUGFIX:
 * UTIL type=securityprofile actions=delete - bugfix to get API mode working
+* UTIL type=address-merger | bugfix if one of the object has an empty description string
 
 GENERAL:
 
