@@ -2,6 +2,7 @@ CHANGELOG
 
 2.0.45
 UTILS:
+* UTIL type=device | actions=display show Container hierarchy for Fawkes
 
 BUGFIX:
 

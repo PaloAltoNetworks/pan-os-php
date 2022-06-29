@@ -132,6 +132,21 @@ DeviceCallContext::$supportedActions['display'] = array(
         {
             //Todo: PH::print_stdout( where this template is used // full templateStack hierarchy
         }
+        elseif( get_class($object) == "Container" )
+        {
+            /** @var Container $object */
+            $parentDGS = $object->parentContainers();
+            $parentDGS['All'] = $object->owner;
+
+
+            $tmp_padding = "";
+            foreach( array_reverse( $parentDGS ) as $key => $DG)
+            {
+                PH::print_stdout( $context->padding.$tmp_padding."- ".$key );
+                $tmp_padding .= "  ";
+                PH::$JSON_TMP['sub']['object'][$object->name()]['hierarchy'][] = $key;
+            }
+        }
 
         PH::print_stdout();
     },
