@@ -94,4 +94,69 @@ class ManagedDeviceStore extends ObjStore
 
         return null;
     }
+
+    /**
+     * @param $serial
+     * @param null $ref
+     * @param bool $nested
+     * @return null|ManagedDevice
+     */
+    public function findOrCreate($serial, $ref = null, $nested = TRUE)
+    {
+        $tmp_obj = $this->findByName($serial, $ref, $nested);
+
+        if( $tmp_obj === null )
+        {
+            $tmp_obj = new ManagedDevice($serial, $this);
+            $this->add($tmp_obj);
+        }
+
+        return $tmp_obj;
+    }
+
+    /**
+     * @param $serial
+     * @param null $ref
+     * @param bool $nested
+     * @return ManagedDevice
+     */
+    public function createManagedDevice($serial, $ref = null, $nested = TRUE)
+    {
+        $tmp_obj = $this->findByName($serial, $ref, $nested);
+
+        if( $tmp_obj === null )
+        {
+            $tmp_obj = new ManagedDevice($serial, $this);
+            $this->add($tmp_obj);
+        }
+        else
+        {
+            mwarning( "ManagedDevice with serial: ".$serial." is already available");
+            return null;
+        }
+
+        return $tmp_obj;
+    }
+
+    /**
+     * @param $serial
+     * @param null $ref
+     * @param bool $nested
+     * @return ManagedDevice
+     */
+    public function removeManagedDevice($serial, $ref = null, $nested = TRUE)
+    {
+        $tmp_obj = $this->findByName($serial, $ref, $nested);
+
+        if( $tmp_obj === null )
+        {
+            mwarning( "ManagedDevice with serial: ".$serial." is not available and can NOT be removed");
+            return null;
+        }
+        else
+        {
+            unset( $this->owner->managedFirewallsSerials[$serial] );
+            $this->remove( $tmp_obj );
+        }
+    }
 }

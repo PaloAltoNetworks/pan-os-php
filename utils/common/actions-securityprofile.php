@@ -30,12 +30,24 @@ SecurityProfileCallContext::$supportedActions['delete'] = array(
             return;
         }
         //Todo: continue improvement for SecProf
-        /*
+
+        if( get_class($object) == "customURLProfile" )
+        {
+            $string = "object of class customerURLProfile can not yet be checked if unused)";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+        elseif( get_class( $object ) === "PredefinedSecurityProfileURL" )
+        {
+            $string = "object of class PredefinedSecurityProfileURL can not be deleted)";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+
         if( $context->isAPI )
-            $object->owner->API_removeZone($object);
+            $object->owner->API_removeSecurityProfile( $object );
         else
-            $object->owner->removeZone($object);
-        */
+            $object->owner->removeSecurityProfile($object);
     },
 );
 
@@ -50,12 +62,25 @@ SecurityProfileCallContext::$supportedActions['deleteforce'] = array(
             PH::ACTIONstatus($context, "WARNING", $string);
         }
         //Todo: continue improvement for SecProf
-        /*
+
+        if( get_class($object) == "customURLProfile" )
+        {
+            $string = "object of class customerURLProfile can not yet be checked if unused)";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+        elseif( get_class( $object ) === "PredefinedSecurityProfileURL" )
+        {
+            $string = "object of class PredefinedSecurityProfileURL can not be deleted)";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+
         if( $context->isAPI )
-            $object->owner->API_removeZone($object);
+            $object->owner->API_removeSecurityProfile( $object );
         else
-            $object->owner->removeZone($object);
-        */
+            $object->owner->removeSecurityProfile($object);
+
     },
 );
 

@@ -105,7 +105,9 @@ class XMLISSUE extends UTIL
         $totalServiceGroupsSubGroupFixed = 0;
 
         $countDuplicateAddressObjects = 0;
+        $fixedDuplicateAddressObjects = 0;
         $countDuplicateServiceObjects = 0;
+        $fixedDuplicateServiceObjects = 0;
 
         $countDuplicateSecRuleObjects = 0;
         $countDuplicateNATRuleObjects = 0;
@@ -555,17 +557,19 @@ class XMLISSUE extends UTIL
                         //TODO: VALIDATION needed if working as expected
 
                         if( !isset($tmp_addr_array[$ip_netmaskNode->nodeValue]) )
+                        {
                             $tmp_addr_array[$ip_netmaskNode->nodeValue] = $ip_netmaskNode->nodeValue;
+                            $countDuplicateAddressObjects++;
+                        }
                         else
                         {
                             $objectNode->parentNode->removeChild($objectNode);
-                            $text .= PH::boldText(" (removed)");
+                            $text .= PH::boldText(" (removed - no manual fix needed)");
                             $countDuplicateAddressObjects--;
+                            $fixedDuplicateAddressObjects++;
                         }
 
                         PH::print_stdout( $text );
-
-                        $countDuplicateAddressObjects++;
                     }
                     elseif( $ip_fqdnNode !== FALSE )
                     {
@@ -604,17 +608,18 @@ class XMLISSUE extends UTIL
                     //TODO: VALIDATION needed if working as expected
 
                     if( !isset($tmp_srv_array[$txt]) )
+                    {
                         $tmp_srv_array[$txt] = $txt;
+                        $countDuplicateAddressObjects++;
+                    }
                     else
                     {
                         $objectNode->parentNode->removeChild($objectNode);
-                        $text .= PH::boldText(" (removed)");
+                        $text .= PH::boldText(" (removed - no manual fix needed)");
                         $countDuplicateAddressObjects--;
+                        $fixedDuplicateAddressObjects++;
                     }
                     PH::print_stdout( $text);
-
-
-                    $countDuplicateAddressObjects++;
                 }
                 #$countDuplicateAddressObjects--;
             }
@@ -836,16 +841,18 @@ class XMLISSUE extends UTIL
                     //TODO: VALIDATION needed if working as expected
 
                     if( !isset($tmp_srv_array[$protocolNode->nodeValue]) )
+                    {
                         $tmp_srv_array[$protocolNode->nodeValue] = $protocolNode->nodeValue;
+                        $countDuplicateServiceObjects++;
+                    }
                     else
                     {
                         $objectNode->parentNode->removeChild($objectNode);
-                        $text .= PH::boldText(" (removed)");
+                        $text .= PH::boldText(" (removed - no manual fix needed)");
                         $countDuplicateServiceObjects--;
+                        $fixedDuplicateServiceObjects++;
                     }
                     PH::print_stdout( $text);
-
-                    $countDuplicateServiceObjects++;
                 }
 
                 $tmp_srv_array = array();
@@ -863,16 +870,18 @@ class XMLISSUE extends UTIL
                     //TODO: VALIDATION needed if working as expected
 
                     if( !isset($tmp_srv_array[$protocolNode->nodeValue]) )
+                    {
                         $tmp_srv_array[$protocolNode->nodeValue] = $protocolNode->nodeValue;
+                        $countDuplicateServiceObjects++;
+                    }
                     else
                     {
                         $objectNode->parentNode->removeChild($objectNode);
-                        $text .= PH::boldText(" (removed)");
+                        $text .= PH::boldText("(removed - no manual fix needed)" );
                         $countDuplicateServiceObjects--;
+                        $fixedDuplicateServiceObjects++;
                     }
                     PH::print_stdout( $text);
-
-                    $countDuplicateServiceObjects++;
                 }
                 #$countDuplicateServiceObjects--;
             }
@@ -979,7 +988,7 @@ class XMLISSUE extends UTIL
                                             //Secrule service has twice same service added
                                             $text = "     - Secrule: ".$objectName." has same service defined twice: ".$objectServiceName;
                                             $objectNode_services->removeChild($objectService);
-                                            $text .= PH::boldText(" (removed)");
+                                            $text .= PH::boldText(" (removed - no manual fix needed)");
                                             PH::print_stdout( $text );
                                             $fixedSecRuleServiceObjects++;
                                         }
@@ -1586,7 +1595,10 @@ class XMLISSUE extends UTIL
 
         PH::print_stdout();
         PH::print_stdout( "Summary:" );
-        PH::print_stdout( " - FIXED: duplicate address-group members: {$totalAddressGroupsFixed}");
+        PH::print_stdout( " - FIXED: duplicate address objects: {$fixedDuplicateAddressObjects}");
+        PH::print_stdout( " - FIXED: duplicate service objects: {$fixedDuplicateServiceObjects}");
+
+        PH::print_stdout( "\n - FIXED: duplicate address-group members: {$totalAddressGroupsFixed}");
         PH::print_stdout( " - FIXED: duplicate service-group members: {$totalServiceGroupsFixed}");
         PH::print_stdout( " - FIXED: own address-group as subgroup member: {$totalAddressGroupsSubGroupFixed}");
         PH::print_stdout( " - FIXED: own dynamic address-group as tag member: {$totalDynamicAddressGroupsTagFixed}");

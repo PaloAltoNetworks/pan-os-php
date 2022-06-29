@@ -208,6 +208,7 @@ class Rule
                             continue;
                         }
 
+                        $managedFirewall = null;
                         if( $this->owner->owner !== null && get_class( $this->owner->owner ) == "PanoramaConf" )
                             $managedFirewall = $this->owner->owner->managedFirewallsStore->find($targetSerial);
                         elseif( $this->owner->owner->owner !== null && get_class( $this->owner->owner->owner ) == "PanoramaConf" )

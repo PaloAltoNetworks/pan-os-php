@@ -721,7 +721,7 @@ class SecurityRule extends RuleWithUserID
     public function rewriteSecProfXML()
     {
 
-        if( $this->secprofroot !== null )
+        if( $this->secprofroot !== null && $this->secprofroot !== false )
             DH::clearDomNodeChilds($this->secprofroot);
         if( $this->secproftype == 'group' )
         {

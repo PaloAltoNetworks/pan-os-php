@@ -97,7 +97,7 @@ trait ObjectWithDescription
         $description = $this->description();
         $other_description = $other->description();
 
-        if ( (empty($description) && empty($other_description)) || ( !empty($description) && !empty($description) && strpos($description, $other_description) !== false  )) {
+        if ( (empty($description) && empty($other_description)) || ( !empty($description) && !empty($other_description) && strpos($description, $other_description) !== false  )) {
             return;
         }
 

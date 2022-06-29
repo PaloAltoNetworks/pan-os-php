@@ -688,40 +688,40 @@ class DeviceGroup
         if( $this->devicesRoot !== FALSE )
         {
             foreach( $this->devicesRoot->childNodes as $device )
-        {
-            if( $device->nodeType != 1 ) continue;
-            $devname = DH::findAttribute('name', $device);
-            $vsyslist = array();
-
-            $vsysChild = DH::firstChildElement($device);
-
-            if( $vsysChild !== FALSE )
             {
-                foreach( $vsysChild->childNodes as $vsysentry )
+                if( $device->nodeType != 1 ) continue;
+                $devname = DH::findAttribute('name', $device);
+                $vsyslist = array();
+
+                $vsysChild = DH::firstChildElement($device);
+
+                if( $vsysChild !== FALSE )
                 {
-                    if( $vsysentry->nodeType != 1 ) continue;
-                    $vname = DH::findAttribute('name', $vsysentry);
-                    $vsyslist[$vname] = $vname;
+                    foreach( $vsysChild->childNodes as $vsysentry )
+                    {
+                        if( $vsysentry->nodeType != 1 ) continue;
+                        $vname = DH::findAttribute('name', $vsysentry);
+                        $vsyslist[$vname] = $vname;
+                    }
                 }
-            }
-            else
-            {
-                //print "No vsys for device '$devname'\n";
-                $vsyslist['vsys1'] = 'vsys1';
-            }
-
-            $this->devices[$devname] = array('serial' => $devname, 'vsyslist' => $vsyslist);
-            foreach( $this->devices as $serial => $array )
-            {
-                $managedFirewall = $this->owner->managedFirewallsStore->find($serial);
-                if( $managedFirewall !== null )
+                else
                 {
-                    $managedFirewall->addDeviceGroup($this->name);
-                    $managedFirewall->addReference($this);
+                    //print "No vsys for device '$devname'\n";
+                    $vsyslist['vsys1'] = 'vsys1';
                 }
 
+                $this->devices[$devname] = array('serial' => $devname, 'vsyslist' => $vsyslist);
+                foreach( $this->devices as $serial => $array )
+                {
+                    $managedFirewall = $this->owner->managedFirewallsStore->find($serial);
+                    if( $managedFirewall !== null )
+                    {
+                        $managedFirewall->addDeviceGroup($this->name);
+                        $managedFirewall->addReference($this);
+                    }
+
+                }
             }
-        }
         }
 
         $this->addressStore->nestedPointOfView();
@@ -911,6 +911,49 @@ class DeviceGroup
         return $dgs;
     }
 
+
+    public function addDevice( $serial, $vsys = "vsys1" )
+    {
+        if( isset( $this->devices[$serial] ) && $vsys !== "vsys1" )
+        {
+            $this->devices[$serial]['vsyslist'][$vsys] = $vsys;
+        }
+        else
+        {
+            $vsyslist['vsys1'] = 'vsys1';
+            $this->devices[$serial] = array('serial' => $serial, 'vsyslist' => $vsyslist);
+        }
+        //XML manipulation missing
+        $newXmlNode = DH::importXmlStringOrDie($this->xmlroot->ownerDocument, "<entry name='{$serial}'/>");
+        $devicenode = $this->devicesRoot->appendChild($newXmlNode);
+    }
+
+
+    public function removeDevice( $serial )
+    {
+        if( isset( $this->devices[$serial] ) )
+        {
+            unset( $this->devices[$serial] );
+            //missing XML manipulation
+
+            if( $this->devicesRoot !== FALSE )
+            {
+                foreach( $this->devicesRoot->childNodes as $device )
+                {
+                    if( $device->nodeType != 1 ) continue;
+                    $devname = DH::findAttribute('name', $device);
+
+                    if( $devname === $serial )
+                    {
+                        DH::removeChild( $this->devicesRoot, $device );
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
 }
 
 
