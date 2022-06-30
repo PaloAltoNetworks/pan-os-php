@@ -324,15 +324,18 @@ class FawkesConf
             {
                 mwarning("Container '$containerName' has not parent associated, assuming All");
             }
-            elseif( $containerToParent[$containerName] == 'All' )
-            {
-                // do nothing
-            }
             else
             {
                 $parentContainer = $this->findContainer($containerToParent[$containerName]);
                 if( $parentContainer === null )
-                    mwarning("Container '$containerName' has Container '{$containerToParent[$containerName]}' listed as parent but it cannot be found in XML");
+                {
+                    if( $containerToParent[$containerName] == 'All' )
+                    {
+                        // do nothing
+                    }
+                    else
+                        mwarning("Container '$containerName' has Container '{$containerToParent[$containerName]}' listed as parent but it cannot be found in XML");
+                }
                 else
                 {
                     $parentContainer->_childContainers[$containerName] = $ldv;
