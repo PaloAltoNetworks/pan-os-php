@@ -33,7 +33,7 @@ class SecurityProfileGroup
      *    <dns-security>    <spyware>   <vulnerability> <url-filtering> <file-blocking> <saas-security> <virus-and-wildfire-analysis>
      */
     private $secprof_array = array('virus', 'spyware', 'vulnerability', 'file-blocking', 'wildfire-analysis', 'url-filtering', 'data-filtering');
-    private $secprof_fawkes_array = array('virus-and-wildfire-analysis-analysis', 'spyware', 'vulnerability', 'file-blocking', 'dns-security', 'url-filtering', 'saas-security');
+    private $secprof_fawkes_array = array('virus-and-wildfire-analysis', 'spyware', 'vulnerability', 'file-blocking', 'dns-security', 'url-filtering', 'saas-security');
 
     /*
      * FAWKES
@@ -167,13 +167,14 @@ class SecurityProfileGroup
                     $profile = $this->owner->owner->$tmp_store_name->find( $tmp_type->nodeValue );
                     if( $profile != false )
                     {
+                        #PH::print_stdout( "SecurityProfileGroup: ".$this->name()." - proftype: ".$secprof_type." - PROFILE: ".$tmp_type->nodeValue." used");
                         $this->secprofiles[ $secprof_type ] = $profile;
                         $profile->addReference( $this );
                     }
                     else
                     {
                         //Todo: not a profile - default profile
-                        #PH::print_stdout( "PROFILE: ".$tmp_type->nodeValue." not found");
+                        #PH::print_stdout( "SecurityProfileGroup: ".$this->name()." - proftype: ".$secprof_type." - PROFILE: ".$tmp_type->nodeValue." not found");
                         $this->secprofiles[ $secprof_type ] = $tmp_type->nodeValue;
                     }
 

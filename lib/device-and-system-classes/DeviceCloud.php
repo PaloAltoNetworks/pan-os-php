@@ -781,6 +781,7 @@ class DeviceCloud
         $stdoutarray['securityProfileGroup objects'] = array();
         $stdoutarray['securityProfileGroup objects']['total'] = $this->securityProfileGroupStore->count();
 
+        /*
         $stdoutarray['securityProfile objects'] = array();
         $stdoutarray['securityProfile objects']['Anti-Spyware'] = $this->AntiSpywareProfileStore->count();
         $stdoutarray['securityProfile objects']['Vulnerability'] = $this->VulnerabilityProfileStore->count();
@@ -790,7 +791,28 @@ class DeviceCloud
         $stdoutarray['securityProfile objects']['URL'] = $this->URLProfileStore->count();
         $stdoutarray['securityProfile objects']['File-Blocking'] = $this->FileBlockingProfileStore->count();
         $stdoutarray['securityProfile objects']['Decryption'] = $this->DecryptionProfileStore->count();
+        */
 
+        $stdoutarray['Anti-Spyware objects'] = array();
+        $stdoutarray['Anti-Spyware objects']['total'] = $this->AntiSpywareProfileStore->count();
+        $stdoutarray['Vulnerability objects'] = array();
+        $stdoutarray['Vulnerability objects']['total'] = $this->VulnerabilityProfileStore->count();
+        $stdoutarray['WildfireAndAntivirus objects'] = array();
+        $stdoutarray['WildfireAndAntivirus objects']['total'] = $this->VirusAndWildfireProfileStore->count();
+
+        $stdoutarray['DNS-Security objects'] = array();
+        $stdoutarray['DNS-Security objects']['total'] = $this->DNSSecurityProfileStore->count();
+        $stdoutarray['Saas-Security objects'] = array();
+        $stdoutarray['Saas-Security objects']['total'] = $this->SaasSecurityProfileStore->count();
+
+        $stdoutarray['URL objects'] = array();
+        $stdoutarray['URL objects']['total'] = $this->URLProfileStore->count();
+        $stdoutarray['custom URL objects'] = array();
+        $stdoutarray['custom URL objects']['total'] = $this->customURLProfileStore->count();
+        $stdoutarray['File-Blocking objects'] = array();
+        $stdoutarray['File-Blocking objects']['total'] = $this->FileBlockingProfileStore->count();
+        $stdoutarray['Decryption objects'] = array();
+        $stdoutarray['Decryption objects']['total'] = $this->DecryptionProfileStore->count();
 
         $stdoutarray['zones'] = $this->zoneStore->count();
         $stdoutarray['apps'] = $this->appStore->count();

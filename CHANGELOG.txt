@@ -1,6 +1,17 @@
 CHANGELOG
 
-2.0.44
+2.0.45
+UTILS:
+* UTIL type=device | actions=display show Container hierarchy for Fawkes
+* UTIL type=stats | improve visibility for securityprofiles
+
+BUGFIX:
+* UTIL type=securityprofilegroup | bugfix for fawkes config
+
+GENERAL:
+
+
+2.0.44 (20220629)
 UTILS:
 * UTIL type=xml-issue | extend visibility for removing duplicate address/service objects
 * UTIL type=device | introduce actions=manageddevice-create / manageddevice-delete
