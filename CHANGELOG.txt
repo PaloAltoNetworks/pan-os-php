@@ -5,6 +5,7 @@ UTILS:
 * UTIL type=device | actions=display show Container hierarchy for Fawkes
 
 BUGFIX:
+* UTIL type=securityprofilegroup | bugfix for fawkes config
 
 GENERAL:
 
