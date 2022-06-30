@@ -878,6 +878,8 @@ class DeviceGroup
         $stdoutarray['Wildfire objects']['total'] = $this->WildfireProfileStore->count();
         $stdoutarray['URL objects'] = array();
         $stdoutarray['URL objects']['total'] = $this->URLProfileStore->count();
+        $stdoutarray['custom URL objects'] = array();
+        $stdoutarray['custom URL objects']['total'] = $this->customURLProfileStore->count();
         $stdoutarray['File-Blocking objects'] = array();
         $stdoutarray['File-Blocking objects']['total'] = $this->FileBlockingProfileStore->count();
         $stdoutarray['Decryption objects'] = array();

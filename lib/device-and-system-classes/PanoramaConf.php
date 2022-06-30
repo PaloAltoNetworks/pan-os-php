@@ -1194,6 +1194,17 @@ class PanoramaConf
         $gTagCount = $this->tagStore->count();
         $gTagUnusedCount = $this->tagStore->countUnused();
 
+        $gnsecurityprofileGs = $this->securityProfileGroupStore->count();
+
+        $gnantispyware = $this->AntiSpywareProfileStore->count();
+        $gnvulnerability = $this->VulnerabilityProfileStore->count();
+        $gnantivirus = $this->AntiVirusProfileStore->count();
+        $gnwildfire = $this->WildfireProfileStore->count();
+        $gnurlprofil = $this->URLProfileStore->count();
+        $gncustomurlprofil = $this->customURLProfileStore->count();
+        $gnfileblocking = $this->FileBlockingProfileStore->count();
+        $gndecryption = $this->DecryptionProfileStore->count();
+
         foreach( $this->deviceGroups as $cur )
         {
             $gpreSecRules += $cur->securityRules->countPreRules();
@@ -1230,6 +1241,18 @@ class PanoramaConf
 
             $gTagCount += $cur->tagStore->count();
             $gTagUnusedCount += $cur->tagStore->countUnused();
+
+
+            $gnsecurityprofileGs += $cur->securityProfileGroupStore->count();
+
+            $gnantispyware += $cur->AntiSpywareProfileStore->count();
+            $gnvulnerability += $cur->VulnerabilityProfileStore->count();
+            $gnantivirus += $cur->AntiVirusProfileStore->count();
+            $gnwildfire += $cur->WildfireProfileStore->count();
+            $gnurlprofil += $cur->URLProfileStore->count();
+            $gncustomurlprofil += $cur->customURLProfileStore->count();
+            $gnfileblocking += $cur->FileBlockingProfileStore->count();
+            $gndecryption += $cur->DecryptionProfileStore->count();
         }
 
         $stdoutarray = array();
@@ -1355,6 +1378,36 @@ class PanoramaConf
         $stdoutarray['tag objects']['shared'] = $this->tagStore->count();
         $stdoutarray['tag objects']['total_DGs'] = $gTagCount;
         $stdoutarray['tag objects']['unused'] = $gTagUnusedCount;
+
+        $stdoutarray['securityProfileGroup objects'] = array();
+        $stdoutarray['securityProfileGroup objects']['shared'] = $this->securityProfileGroupStore->count();
+        $stdoutarray['securityProfileGroup objects']['total_DGs'] = $gnsecurityprofileGs;
+
+
+        $stdoutarray['Anti-Spyware objects'] = array();
+        $stdoutarray['Anti-Spyware objects']['shared'] = $this->AntiSpywareProfileStore->count();
+        $stdoutarray['Anti-Spyware objects']['total_DGs'] = $gnantispyware;
+        $stdoutarray['Vulnerability objects'] = array();
+        $stdoutarray['Vulnerability objects']['shared'] = $this->VulnerabilityProfileStore->count();
+        $stdoutarray['Vulnerability objects']['total_DGs'] = $gnvulnerability;
+        $stdoutarray['Antivirus objects'] = array();
+        $stdoutarray['Antivirus objects']['shared'] = $this->AntiVirusProfileStore->count();
+        $stdoutarray['Antivirus objects']['total_DGs'] = $gnantivirus;
+        $stdoutarray['Wildfire objects'] = array();
+        $stdoutarray['Wildfire objects']['shared'] = $this->WildfireProfileStore->count();
+        $stdoutarray['Wildfire objects']['total_DGs'] = $gnwildfire;
+        $stdoutarray['URL objects'] = array();
+        $stdoutarray['URL objects']['shared'] = $this->URLProfileStore->count();
+        $stdoutarray['URL objects']['total_DGs'] = $gnurlprofil;
+        $stdoutarray['custom URL objects'] = array();
+        $stdoutarray['custom URL objects']['shared'] = $this->customURLProfileStore->count();
+        $stdoutarray['custom URL objects']['total_DGs'] = $gncustomurlprofil;
+        $stdoutarray['File-Blocking objects'] = array();
+        $stdoutarray['File-Blocking objects']['shared'] = $this->FileBlockingProfileStore->count();
+        $stdoutarray['File-Blocking objects']['total_DGs'] = $gnfileblocking;
+        $stdoutarray['Decryption objects'] = array();
+        $stdoutarray['Decryption objects']['shared'] = $this->DecryptionProfileStore->count();
+        $stdoutarray['Decryption objects']['total_DGs'] = $gndecryption;
 
         $stdoutarray['zones'] = $this->zoneStore->count();
         #$stdoutarray['apps'] = $this->appStore->count();
