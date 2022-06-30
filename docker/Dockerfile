@@ -1,27 +1,35 @@
-FROM ubuntu:20.04
+ARG IMAGE=ubuntu:20.04
+FROM ${IMAGE}
 
 ARG php_var="7.4"
 ARG user_var="root"
 
 SHELL ["/bin/bash", "-c"]
-ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt update -y --fix-missing
-RUN apt-get install -y tzdata git bash-completion
+RUN DEBIAN_FRONTEND=noninteractive apt-get update
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    tzdata \
+    git \
+    bash-completion \
+    php$php_var \
+    php$php_var-curl \
+    php$php_var-dom \
+    php$php_var-mbstring \
+    php$php_var-bcmath \
+    python3 \
+    python3-pandas \
+    python3-xlsxwriter \
+    python3-netaddr \
+    python3-requests
 
+WORKDIR /tools/pan-os-php
 
-RUN apt-get install -y php$php_var php$php_var-curl php$php_var-dom php$php_var-mbstring php$php_var-bcmath
-
-RUN apt-get install -y python3 python3-pandas python3-xlsxwriter python3-netaddr python3-requests
-
-RUN mkdir /tools; mkdir /tools/pan-os-php;
-
-COPY appid-toolbox /tools/pan-os-php/appid-toolbox
-COPY lib /tools/pan-os-php/lib
-COPY phpseclib /tools/pan-os-php/phpseclib
-COPY git-php /tools/pan-os-php/git-php
-COPY utils /tools/pan-os-php/utils
-COPY tests /tools/pan-os-php/tests
+COPY appid-toolbox ./appid-toolbox
+COPY lib ./lib
+COPY phpseclib ./phpseclib
+COPY git-php ./git-php
+COPY utils ./utils
+COPY tests ./tests
 
 
 # PHP library of pan-os-php
@@ -35,3 +43,13 @@ RUN cat /tools/pan-os-php/utils/bash_autocompletion/enable_bash.txt >> /$user_va
 COPY utils/bash_autocompletion/pan-os-php.sh /usr/share/bash-completion/completions/pan-os-php
 
 RUN git config --global user.email=test@test.com user.name=test
+
+# Entrypoint script
+WORKDIR /scripts
+COPY docker/entrypoint.sh .
+
+# Working dir for the app
+VOLUME /share
+WORKDIR /share
+
+ENTRYPOINT [ "/bin/bash", "/scripts/entrypoint.sh" ]
