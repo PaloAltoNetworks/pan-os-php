@@ -7,6 +7,7 @@ UTILS:
 
 BUGFIX:
 * UTIL type=securityprofilegroup | bugfix for fawkes config
+* UTIL type=xml-isse | bugfix for checking 'groups with own membership as subgroup'
 
 GENERAL:
 
