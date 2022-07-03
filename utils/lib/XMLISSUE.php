@@ -394,7 +394,7 @@ class XMLISSUE extends UTIL
 
                         $memberName = $staticNodeMember->textContent;
 
-                        if( $objectName == $memberName )
+                        if( strcmp( $objectName, $memberName) === 0 )
                         {
                             PH::print_stdout( "    - group '{$objectName}' from DG/VSYS {$locationName} has itself as member '{$memberName}' ... *FIXED*");
                             $staticNodeMember->parentNode->removeChild($staticNodeMember);
@@ -646,7 +646,7 @@ class XMLISSUE extends UTIL
                     $this->check_name( $objectName, $objectNode, $service_name );
                     $this->check_service_name_appdefault( $objectName, $objectNode, $service_name_appdefault );
 
-                    if( $objectName == "application-default" )
+                    if( strcmp( $objectName, "application-default") === 0 )
                         $service_app_default_available = true;
 
                     $serviceObjects[$objectName][] = $objectNode;
@@ -806,7 +806,7 @@ class XMLISSUE extends UTIL
 
                         $memberName = $staticNodeMember->textContent;
 
-                        if( $objectName == $memberName )
+                        if( strcmp( $objectName, $memberName) === 0 )
                         {
                             PH::print_stdout( "    - group '{$objectName}' from DG/VSYS {$locationName} has itself as member '{$memberName}' ... *FIXED*");
                             $staticNodeMember->parentNode->removeChild($staticNodeMember);
@@ -1095,8 +1095,7 @@ class XMLISSUE extends UTIL
                                         else
                                             $secRuleDestination[$objectDestinationName] = $objectDestination;
                                     }
-                                    #if( $objectName === "FW RULE-00.06" )
-                                    #derr('end');
+
                                     if( isset($secRuleDestination['any']) and count($secRuleDestination) > 1 )
                                     {
                                         $secRuleDestinationIndex[$objectName] = $secRuleDestination['any'];
@@ -1125,8 +1124,7 @@ class XMLISSUE extends UTIL
                                         else
                                             $secRuleFrom[$objectFromName] = $objectFrom;
                                     }
-                                    #if( $objectName === "FW RULE-00.06" )
-                                    #derr('end');
+
                                     if( isset($secRuleFrom['any']) and count($secRuleFrom) > 1 )
                                     {
                                         $secRuleFromIndex[$objectName] = $secRuleFrom['any'];
@@ -1155,8 +1153,7 @@ class XMLISSUE extends UTIL
                                         else
                                             $secRuleTo[$objectToName] = $objectTo;
                                     }
-                                    #if( $objectName === "FW RULE-00.06" )
-                                    #derr('end');
+
                                     if( isset($secRuleTo['any']) and count($secRuleTo) > 1 )
                                     {
                                         $secRuleToIndex[$objectName] = $secRuleTo['any'];

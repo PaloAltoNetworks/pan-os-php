@@ -5,6 +5,7 @@ alias pa_panorama-2-fawkes='php -r "require_once '"'"'parser/panorama2fawkes.php
 
 
 alias pa_docker-migration-parser='docker run -v ${PWD}:/expedition-converter -it expedition-converter_php php /tools/Expedition-Converter/parser/migration_parser.php'
+alias pa_docker-pan-os-php='docker run -v $PWD:/share -it swaschkut/pan-os-php:latest'
 
 
 
