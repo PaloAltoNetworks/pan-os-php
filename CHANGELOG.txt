@@ -1,5 +1,13 @@
 CHANGELOG
 
+2.0.46
+UTILS:
+
+BUGFIX:
+* UTIL type=xml-isse | bugfix for checking 'groups with own membership as subgroup'
+
+GENERAL:
+
 2.0.45
 UTILS:
 * UTIL type=device | actions=display show Container hierarchy for Fawkes
@@ -7,7 +15,6 @@ UTILS:
 
 BUGFIX:
 * UTIL type=securityprofilegroup | bugfix for fawkes config
-* UTIL type=xml-isse | bugfix for checking 'groups with own membership as subgroup'
 
 GENERAL:
 
