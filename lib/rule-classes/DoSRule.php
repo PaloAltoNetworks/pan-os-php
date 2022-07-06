@@ -262,9 +262,13 @@ class DoSRule extends RuleWithUserID
         }
         PH::print_stdout( $text );
 
-        PH::print_stdout( $padding . "  From: " . $this->from->toString_inline() . "  |  To:  " . $this->to->toString_inline() );
-        PH::$JSON_TMP['sub']['object'][$this->name()]['from'] = $this->from->toString_inline();
-        PH::$JSON_TMP['sub']['object'][$this->name()]['to'] = $this->to->toString_inline();
+        if( $this->from !== null && $this->to !== null )
+        {
+            PH::print_stdout( $padding . "  From: " . $this->from->toString_inline() . "  |  To:  " . $this->to->toString_inline() );
+            PH::$JSON_TMP['sub']['object'][$this->name()]['from'] = $this->from->toString_inline();
+            PH::$JSON_TMP['sub']['object'][$this->name()]['to'] = $this->to->toString_inline();
+        }
+
 
         PH::print_stdout( $padding . "  Source: $sourceNegated " . $this->source->toString_inline() );
         PH::$JSON_TMP['sub']['object'][$this->name()]['source'] = $this->source->toString_inline();

@@ -895,6 +895,9 @@ class RULEMERGER extends UTIL
                 $subGroups2 = $pan->getDeviceClouds();
 
                 $alldevicegroup = array_merge( $subGroups, $subGroups2 );
+
+                $subGroups2 = $this->pan->getDeviceOnPrems();
+                $alldevicegroup = array_merge( $alldevicegroup, $subGroups2 );
             }
             elseif( $pan->isFirewall() )
                 $alldevicegroup = $pan->virtualSystems;
