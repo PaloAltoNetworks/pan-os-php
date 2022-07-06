@@ -30,8 +30,8 @@ graph TD
     F2 --> Z1[navigate to the folder with your PAN-OS XML offline configuration using the CD command]
     
     
-    Z1 -->|TERMINAL| K1["docker run -v ${PWD}:/share -it swaschkut/pan-os-php:latest"]
-    Z1 -->|POWERSHELL| K1["docker run -v ${PWD}:/share -it swaschkut/pan-os-php:latest"]
+    Z1 -->|TERMINAL| K1["docker run  --name panosphp --rm -v ${PWD}:/share -it swaschkut/pan-os-php:latest"]
+    Z1 -->|POWERSHELL| K1["docker run  --name panosphp --rm -v ${PWD}:/share -it swaschkut/pan-os-php:latest"]
     
   
     
@@ -53,11 +53,27 @@ Windows Docker WSL installation check
 
 Update your Docker PAN-OS-PHP container
 ============
+- Pull last docker image
 ```bash
-    docker pull swaschkut/pan-os-php:latest
+docker pull swaschkut/pan-os-php:latest
 ```
 
+- Stop and remove old container
+```bash
+docker stop panosphp && docker rm panosphp
+```
 
+- Navigate to offline XML directory
+```bash
+cd [/rootFolder/parentFolder/childFolder]
+```
+
+- Share the XML folder with docker and deploy container
+```bash
+  docker run --name panosphp --rm -v ${PWD}:/share -it swaschkut/pan-os-php:latest
+```
+
+ 
 #Additional Information
 
 Docker build
