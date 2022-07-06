@@ -45,6 +45,16 @@ DeviceCallContext::$supportedActions['display'] = array(
                 PH::$JSON_TMP['sub']['object'][$object->name()]['template'][] = $template->name();
             }
             //Todo: PH::print_stdout( where this TemplateStack is used SERIAL
+
+            foreach( $object->FirewallsSerials as $serial )
+            {
+                $managedFirewall = $object->owner->managedFirewallsStore->find($serial);
+                if( $managedFirewall !== null )
+                {
+                    PH::print_stdout( $context->padding." - serial: ".$serial." - DG: ".$managedFirewall->devicegroup);
+                }
+
+            }
         }
         elseif( get_class($object) == "VirtualSystem" )
         {
@@ -67,7 +77,11 @@ DeviceCallContext::$supportedActions['display'] = array(
             }
             foreach( $object->getDevicesInGroup() as $key => $device )
             {
-                PH::print_stdout( $context->padding."- ".$key );
+                #PH::print_stdout( $context->padding."- ".$key );
+                $managedFirewall = $object->owner->managedFirewallsStore->find($key);
+                if( $managedFirewall !== null )
+                    PH::print_stdout( $context->padding." - serial: ".$key." - Template-Stack: ".$managedFirewall->template_stack);
+
                 PH::$JSON_TMP['sub']['object'][$object->name()]['devices'][] = $key;
             }
 
@@ -147,6 +161,38 @@ DeviceCallContext::$supportedActions['display'] = array(
                 PH::$JSON_TMP['sub']['object'][$object->name()]['hierarchy'][] = $key;
             }
         }
+        elseif( get_class($object) == "DeviceCloud" )
+        {
+            /** @var DeviceCloud $object */
+            $parentDGS = $object->parentContainer->parentContainers();
+            $parentDGS['All'] = $object->owner;
+            $parentDGS = array($object->name() => $object->name()) + $parentDGS;
+
+
+            $tmp_padding = "";
+            foreach( array_reverse( $parentDGS ) as $key => $DG)
+            {
+                PH::print_stdout( $context->padding.$tmp_padding."- ".$key );
+                $tmp_padding .= "  ";
+                PH::$JSON_TMP['sub']['object'][$object->name()]['hierarchy'][] = $key;
+            }
+        }
+        elseif( get_class($object) == "DeviceOnPrem" )
+        {
+            /** @var DeviceOnPrem $object */
+            $parentDGS = $object->parentContainer->parentContainers();
+            $parentDGS['All'] = $object->owner;
+            $parentDGS = array($object->name() => $object->name()) + $parentDGS;
+
+
+            $tmp_padding = "";
+            foreach( array_reverse( $parentDGS ) as $key => $DG)
+            {
+                PH::print_stdout( $context->padding.$tmp_padding."- ".$key );
+                $tmp_padding .= "  ";
+                PH::$JSON_TMP['sub']['object'][$object->name()]['hierarchy'][] = $key;
+            }
+        }
 
         PH::print_stdout();
     },
@@ -158,7 +204,7 @@ DeviceCallContext::$supportedActions['displayreferences'] = array(
 
         if( get_class($object) == "TemplateStack" )
         {
-
+            $object->display_references(7);
         }
         elseif( get_class($object) == "Template" )
         {

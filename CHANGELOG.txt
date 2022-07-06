@@ -2,6 +2,7 @@ CHANGELOG
 
 2.0.46
 UTILS:
+* class DeviceOnPrem - introduction - Buckbeak - improving other Rule classes to be prepared for Snippets
 
 BUGFIX:
 * UTIL type=xml-isse | bugfix for checking 'groups with own membership as subgroup'

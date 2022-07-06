@@ -20,11 +20,15 @@ class PbfRule extends RuleWithUserID
      */
     protected function load_from()
     {
-        $tmp = DH::findFirstElementOrCreate('from', $this->xmlroot);
+        $tmp1 = DH::findFirstElementOrCreate('from', $this->xmlroot);
 
-        $tmp = DH::firstChildElement($tmp);
-        if( $tmp === null )
-            derr("PBF rule has nothing inside <from> tag, please fix before going forward");
+        $tmp = DH::firstChildElement($tmp1);
+        if( $tmp === null || $tmp === false )
+        {
+            mwarning("PBF rule has nothing inside <from> tag, please fix before going forward", $tmp1, TRUE, TRUE);
+            return;
+        }
+
 
         if( $tmp->tagName == 'zone' )
         {
