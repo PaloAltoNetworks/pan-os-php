@@ -42,18 +42,23 @@ RUN yum -y install \
         php-dom \
         php-mbstring \
         php-bcmath \
+        python3 \
+        python3-pandas \
+        python3-xlsxwriter \
+        python3-netaddr \
+        python3-requests \
     && yum clean all
 
 
 ### PAN-OS-PHP
-RUN mkdir /tools; mkdir /tools/pan-os-php;
+WORKDIR /tools/pan-os-php
 
-COPY appid-toolbox /tools/pan-os-php/appid-toolbox
-COPY lib /tools/pan-os-php/lib
-COPY phpseclib /tools/pan-os-php/phpseclib
-COPY git-php /tools/pan-os-php/git-php
-COPY utils /tools/pan-os-php/utils
-COPY tests /tools/pan-os-php/tests
+COPY appid-toolbox ./appid-toolbox
+COPY lib ./lib
+COPY phpseclib ./phpseclib
+COPY git-php ./git-php
+COPY utils ./utils
+COPY tests ./tests
 
 
 # PHP library of pan-os-php
@@ -83,5 +88,12 @@ RUN cd bash-5.0 && ./configure && make && make install
 
 RUN yes | cp /usr/local/bin/bash /bin/bash
 
+# Entrypoint script
+WORKDIR /scripts
+COPY docker/entrypoint.sh .
 
+# Working dir for the app
+VOLUME /share
+WORKDIR /share
 
+ENTRYPOINT [ "/bin/bash", "/scripts/entrypoint.sh" ]

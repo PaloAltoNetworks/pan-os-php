@@ -7,6 +7,8 @@ BUGFIX:
 * UTIL type=xml-isse | bugfix for checking 'groups with own membership as subgroup'
 
 GENERAL:
+* updating Docker files
+
 
 2.0.45
 UTILS:
