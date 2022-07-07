@@ -4,6 +4,7 @@ CHANGELOG
 UTILS:
 * class DeviceOnPrem - introduction - Buckbeak - improving other Rule classes to be prepared for Snippets
 * Buckbeak - different classes - improvement to support new DeviceOnPrem / Snippet feature
+* UTIL type=[all-merger] - improve exportcsv export if argument projectfolder is used
 
 BUGFIX:
 * UTIL type=xml-isse | bugfix for checking 'groups with own membership as subgroup'
