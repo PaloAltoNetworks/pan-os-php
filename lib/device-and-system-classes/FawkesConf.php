@@ -452,6 +452,20 @@ class FawkesConf
         return null;
     }
 
+    /**
+     * @param string $name
+     * @return DeviceOnPrem|null
+     */
+    public function findDeviceOnPrem($name)
+    {
+        foreach( $this->onprems as $template )
+        {
+            if( $template->name() == $name )
+                return $template;
+        }
+
+        return null;
+    }
 
     /**
      * @param string $fileName
@@ -1037,6 +1051,94 @@ class FawkesConf
     {
         return $this->clouds;
     }
+
+    /**
+     * Create a blank template. Return that template object.
+     * @param string $name
+     * @return DeviceCloud
+     **/
+    public function createDeviceOnPrem($name, $parentContainer_txt )
+    {
+        $newDG = new DeviceOnPrem($this);
+
+        $xmlNode = DH::importXmlStringOrDie($this->xmldoc, DeviceOnPrem::$templateXml);
+
+        $xmlNode->setAttribute('name', $name);
+
+        #$newDG->load_from_domxml($xmlNode);
+        $newDG->load_from_templateOnPremXml();
+        $newDG->setName($name);
+
+        $parentNode = DH::findFirstElementOrCreate('parent', $newDG->xmlroot );
+        DH::setDomNodeText($parentNode, $parentContainer_txt );
+
+        $this->clouds[] = $newDG;
+
+        if( $this->version >= 70 )
+        {
+            if( $this->version >= 80 )
+                $dgMetaDataNode = DH::findXPathSingleEntryOrDie('/config/readonly/max-internal-id', $this->xmlroot);
+            else
+                $dgMetaDataNode = DH::findXPathSingleEntryOrDie('/config/readonly/dg-meta-data/max-dg-id', $this->xmlroot);
+
+            $dgMaxID = $dgMetaDataNode->textContent;
+            $dgMaxID++;
+            DH::setDomNodeText($dgMetaDataNode, "{$dgMaxID}");
+
+            if( $this->version >= 80 )
+                $dgMetaDataNode = DH::findXPathSingleEntryOrDie('/config/readonly/devices/entry[@name="localhost.localdomain"]/device/on-prem', $this->xmlroot);
+            else
+                $dgMetaDataNode = DH::findXPathSingleEntryOrDie('/config/readonly/dg-meta-data/dg-info', $this->xmlroot);
+
+            if( $this->version >= 80 )
+                $newXmlNode = DH::importXmlStringOrDie($this->xmldoc, "<entry name=\"{$name}\"><id>{$dgMaxID}</id></entry>");
+            else
+                $newXmlNode = DH::importXmlStringOrDie($this->xmldoc, "<entry name=\"{$name}\"><dg-id>{$dgMaxID}</dg-id></entry>");
+
+            $dgMetaDataNode->appendChild($newXmlNode);
+        }
+
+        $parentContainer = $this->findContainer( $parentContainer_txt );
+        if( $parentContainer === null )
+            mwarning("Container '$name' has Container '{$parentContainer_txt}' listed as parent but it cannot be found in XML");
+        else
+        {
+            $parentContainer->_childContainers[$name] = $newDG;
+            $newDG->parentContainer = $parentContainer;
+
+            /*
+            $newDG->addressStore->parentCentralStore = $parentContainer->addressStore;
+            $newDG->serviceStore->parentCentralStore = $parentContainer->serviceStore;
+            $newDG->tagStore->parentCentralStore = $parentContainer->tagStore;
+            $newDG->scheduleStore->parentCentralStore = $parentContainer->scheduleStore;
+            $newDG->appStore->parentCentralStore = $parentContainer->appStore;
+            $newDG->securityProfileGroupStore->parentCentralStore = $parentContainer->securityProfileGroupStore;
+            */
+            //Todo: swaschkut 20210505 - check if other Stores must be added
+            //- appStore;scheduleStore/securityProfileGroupStore/all kind of SecurityProfile
+
+            $storeType = array(
+                'addressStore', 'serviceStore', 'tagStore', 'scheduleStore', 'appStore',
+
+                'securityProfileGroupStore',
+
+                'URLProfileStore', 'VirusAndWildfireProfileStore', 'FileBlockingProfileStore',
+                //'DataFilteringProfileStore',
+                'VulnerabilityProfileStore', 'AntiSpywareProfileStore',
+                //'WildfireProfileStore',
+                'DecryptionProfileStore', 'HipObjectsProfileStore',
+
+                'DNSSecurityProfileStore', 'SaasSecurityProfileStore'
+
+            );
+
+            foreach( $storeType as $type )
+                $newDG->$type->parentCentralStore = $parentContainer->$type;
+        }
+
+        return $newDG;
+    }
+
 
     /**
      * @return DeviceOnPrem[]
