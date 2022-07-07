@@ -1,5 +1,20 @@
 CHANGELOG
 
+2.0.46
+UTILS:
+* class DeviceOnPrem - introduction - Buckbeak - improving other Rule classes to be prepared for Snippets
+* Buckbeak - different classes - improvement to support new DeviceOnPrem / Snippet feature
+* UTIL type=[all-merger] - improve exportcsv export if argument projectfolder is used
+
+BUGFIX:
+* UTIL type=xml-isse | bugfix for checking 'groups with own membership as subgroup'
+* Update class cidr | bugfix for Buckbeak address object variable handling
+
+GENERAL:
+* updating Docker files
+* Update READMEdocker - improving workflow Container update
+
+
 2.0.45
 UTILS:
 * UTIL type=device | actions=display show Container hierarchy for Fawkes
@@ -7,7 +22,6 @@ UTILS:
 
 BUGFIX:
 * UTIL type=securityprofilegroup | bugfix for fawkes config
-* UTIL type=xml-isse | bugfix for checking 'groups with own membership as subgroup'
 
 GENERAL:
 

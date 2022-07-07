@@ -57,6 +57,8 @@ class FawkesConf
     /** @var string[]|DomNode */
     public $cloudroot;
 
+    /** @var string[]|DomNode */
+    public $onpremroot;
 
 
     /** @var string[]|DomNode */
@@ -73,7 +75,9 @@ class FawkesConf
 
     /** @var DeviceCloud[] */
     public $clouds = array();
-    
+
+    /** @var DeviceOnPrem[] */
+    public $onprems = array();
 
 
 
@@ -206,6 +210,8 @@ class FawkesConf
         $this->containerroot = DH::findFirstElementOrCreate('container', $this->localhostroot);
         $this->devicecloudroot = DH::findFirstElementOrCreate('device', $this->localhostroot);
         $this->cloudroot = DH::findFirstElementOrCreate('cloud', $this->devicecloudroot);
+
+        $this->onpremroot = DH::findFirstElementOrCreate('on-prem', $this->devicecloudroot);
         
 
 
@@ -397,6 +403,22 @@ class FawkesConf
         // end of DeviceCloud
         //
 
+        //->devices/device/on-prem
+        //
+        // loading onpremss
+        //
+        foreach( $this->onpremroot->childNodes as $node )
+        {
+            if( $node->nodeType != XML_ELEMENT_NODE ) continue;
+
+            $ldv = new DeviceOnPrem( $this );
+
+            $ldv->load_from_domxml( $node );
+            $this->onprems[] = $ldv;
+        }
+        //
+        // end of DeviceCloud
+        //
     }
 
 
@@ -1016,6 +1038,13 @@ class FawkesConf
         return $this->clouds;
     }
 
+    /**
+     * @return DeviceOnPrem[]
+     */
+    public function getDeviceOnPrems()
+    {
+        return $this->onprems;
+    }
 
     public function isFawkes()
     {

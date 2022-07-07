@@ -32,7 +32,7 @@ class TemplateStack
 
     protected $templateRoot = null;
 
-    protected $FirewallsSerials = array();
+    public $FirewallsSerials = array();
 
     /** @var  PANConf */
     public $deviceConfiguration;

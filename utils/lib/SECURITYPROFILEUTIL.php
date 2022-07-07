@@ -271,6 +271,9 @@ class SECURITYPROFILEUTIL extends UTIL
                     $subGroups2 = $this->pan->getDeviceClouds();
 
                     $subGroups = array_merge( $subGroups, $subGroups2 );
+
+                    $subGroups2 = $this->pan->getDeviceOnPrems();
+                    $subGroups = array_merge( $subGroups, $subGroups2 );
                 }
 
 

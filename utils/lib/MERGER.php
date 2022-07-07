@@ -36,6 +36,7 @@ class MERGER extends UTIL
 
     public $exportcsv = FALSE;
     public $exportcsvFile = null;
+    public $exportcsvSkippedFile = null;
 
     public function utilStart()
     {
@@ -70,6 +71,14 @@ class MERGER extends UTIL
         else
             $this->action = "merge";
 
+        if( isset(PH::$args['projectfolder']) )
+        {
+            $this->projectFolder = PH::$args['projectfolder'];
+            if (!file_exists($this->projectFolder)) {
+                mkdir($this->projectFolder, 0777, true);
+            }
+        }
+
         if( isset(PH::$args['outputformatset']) )
         {
             $this->outputformatset = TRUE;
@@ -89,9 +98,14 @@ class MERGER extends UTIL
         {
             $this->exportcsv = TRUE;
             $this->exportcsvFile = PH::$args['exportcsv'];
+            $this->exportcsvSkippedFile = "skipped-".$this->exportcsvFile;
 
             if( $this->projectFolder !== null )
+            {
+                $this->exportcsvSkippedFile = $this->projectFolder."/skipped-".$this->exportcsvFile;
                 $this->exportcsvFile = $this->projectFolder."/".$this->exportcsvFile;
+            }
+
         }
 
         $this->help(PH::$args);
@@ -149,6 +163,9 @@ class MERGER extends UTIL
                 $subGroups2 = $pan->getDeviceClouds();
 
                 $alldevicegroup = array_merge( $subGroups, $subGroups2 );
+
+                $subGroups2 = $this->pan->getDeviceOnPrems();
+                $alldevicegroup = array_merge( $alldevicegroup, $subGroups2 );
             }
             elseif( $pan->isFirewall() )
                 $alldevicegroup = $pan->virtualSystems;
@@ -1529,7 +1546,7 @@ class MERGER extends UTIL
                         PH::print_stdout($text);
 
                         if( $this->upperLevelSearch )
-                            $tmpstring = "|->ERROR ancestor: '" . $object->_PANC_shortName() . "' cannot be merged. ";
+                            $tmpstring = "|->ERROR object '{$object->name()}' '{$ancestor->type()}' cannot be merged because it has an ancestor " . $ancestor_different_value . " | ".$text;
                         else
                             $tmpstring = "|-> ancestor: '" . $object->_PANC_shortName() . "' you did not allow to merged";
                         self::deletedObjectSetRemoved($index, $tmpstring);
@@ -2363,7 +2380,7 @@ class MERGER extends UTIL
                             PH::print_stdout( $text );
 
                             if( $this->upperLevelSearch )
-                                $tmpstring = "|->ERROR ancestor: '" . $object->_PANC_shortName() . "' cannot be merged. ";
+                                $tmpstring = "|->ERROR ancestor: '" . $object->_PANC_shortName() . "' cannot be merged. | ".$text;
                             else
                                 $tmpstring = "|-> ancestor: '" . $object->_PANC_shortName() . "' you did not allow to merged";
                             self::deletedObjectSetRemoved( $index, $tmpstring );
@@ -2466,7 +2483,7 @@ class MERGER extends UTIL
                             PH::print_stdout( $text );
 
                             if( $this->upperLevelSearch )
-                                $tmpstring = "|->ERROR ancestor: '" . $object->_PANC_shortName() . "' cannot be merged. ";
+                                $tmpstring = "|->ERROR ancestor: '" . $object->_PANC_shortName() . "' cannot be merged. | ".$text ;
                             else
                                 $tmpstring = "|-> ancestor: '" . $object->_PANC_shortName() . "' you did not allow to merged";
                             self::deletedObjectSetRemoved( $index, $tmpstring );
@@ -2921,7 +2938,7 @@ class MERGER extends UTIL
                         PH::print_stdout($text);
 
                         if( $this->upperLevelSearch )
-                            $tmpstring = "|->ERROR ancestor: '" . $object->_PANC_shortName() . "' cannot be merged. ";
+                            $tmpstring = "|->ERROR ancestor: '" . $object->_PANC_shortName() . "' cannot be merged. | ".$text;
                         else
                             $tmpstring = "|-> ancestor: '" . $object->_PANC_shortName() . "' you did not allow to merged";
                         self::deletedObjectSetRemoved( $index, $tmpstring );
@@ -3102,7 +3119,7 @@ class MERGER extends UTIL
         if( !$skipped )
             $filename = $this->exportcsvFile;
         else
-            $filename = "skipped-".$this->exportcsvFile;
+            $filename = $this->exportcsvSkippedFile;
         file_put_contents($filename, $content);
     }
 

@@ -60,7 +60,7 @@ class DEVICEUTIL extends UTIL
     public function supportedArguments()
     {
         parent::supportedArguments();
-        $this->supportedArguments['devicetype'] = array('niceName' => 'deviceType', 'shortHelp' => 'specify which type(s) of your device want to edit, (default is "dg". ie: devicetype=any  devicetype=vsys,devicegroup,templatestack,template,container,devicecloud,manageddevice', 'argDesc' => 'all|any|vsys|devicegroup|templatestack|template|container|devicecloud|manageddevice');
+        $this->supportedArguments['devicetype'] = array('niceName' => 'deviceType', 'shortHelp' => 'specify which type(s) of your device want to edit, (default is "dg". ie: devicetype=any  devicetype=vsys,devicegroup,templatestack,template,container,devicecloud,manageddevice,deviceonprem', 'argDesc' => 'all|any|vsys|devicegroup|templatestack|template|container|devicecloud|manageddevice|deviceonprem');
     }
 
     public function location_filter_object()
@@ -95,6 +95,8 @@ class DEVICEUTIL extends UTIL
                     $this->objectsToProcess[] = array('store' => $this->pan, 'objects' => $this->pan->getDeviceClouds());
                 if( array_search('any', $this->deviceTypes) !== FALSE || array_search('manageddevice', $this->deviceTypes) !== FALSE )
                     $this->objectsToProcess[] = array('store' => $this->pan->managedFirewallsStore, 'objects' => $this->pan->managedFirewallsStore->getAll());
+                if( array_search('any', $this->deviceTypes) !== FALSE || array_search('deviceonprem', $this->deviceTypes) !== FALSE )
+                    $this->objectsToProcess[] = array('store' => $this->pan, 'objects' => $this->pan->getDeviceOnPrems());
             }
 
                 
@@ -107,7 +109,7 @@ class DEVICEUTIL extends UTIL
         //
         // Determine device types
         //
-        $supportedRuleTypes = array( 'any', 'vsys', 'devicegroup', 'template', 'templatestack', 'container', 'devicecloud', 'manageddevice');
+        $supportedRuleTypes = array( 'any', 'vsys', 'devicegroup', 'template', 'templatestack', 'container', 'devicecloud', 'manageddevice', 'deviceonprem');
         if( !isset(PH::$args['devicetype']) )
         {
             if( $this->configType == 'panos' )

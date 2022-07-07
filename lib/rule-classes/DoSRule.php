@@ -55,11 +55,15 @@ class DoSRule extends RuleWithUserID
      */
     protected function load_from()
     {
-        $tmp = DH::findFirstElementOrCreate('from', $this->xmlroot);
+        $tmp1 = DH::findFirstElementOrCreate('from', $this->xmlroot);
 
-        $tmp = DH::firstChildElement($tmp);
-        if( $tmp === null )
-            derr("DOS rule has nothing inside <from> tag, please fix before going forward");
+        $tmp = DH::firstChildElement($tmp1);
+        if( $tmp === null || $tmp === false )
+        {
+            mwarning("DOS rule has nothing inside <from> tag, please fix before going forward", $tmp1);
+            return;
+        }
+
 
         if( $tmp->tagName == 'zone' )
         {
@@ -86,11 +90,15 @@ class DoSRule extends RuleWithUserID
      */
     protected function load_to()
     {
-        $tmp = DH::findFirstElementOrCreate('to', $this->xmlroot);
+        $tmp1 = DH::findFirstElementOrCreate('to', $this->xmlroot);
 
-        $tmp = DH::firstChildElement($tmp);
-        if( $tmp === null )
-            derr("DOS rule has nothing inside <to> tag, please fix before going forward");
+        $tmp = DH::firstChildElement($tmp1);
+        if( $tmp === null || $tmp === false )
+        {
+            mwarning("DOS rule has nothing inside <to> tag, please fix before going forward", $tmp1);
+            return;
+        }
+
 
         if( $tmp->tagName == 'zone' )
         {
@@ -174,6 +182,12 @@ class DoSRule extends RuleWithUserID
         // Begin <action> extraction
         //
         $tmp = DH::findFirstElement('action', $xml);
+        if( $tmp === null || $tmp === false )
+        {
+            mwarning("DOS rule has nothing inside <action> tag, please fix before going forward", $xml);
+            return;
+        }
+
         $tmp = DH::firstChildElement($tmp);
         if( $tmp !== FALSE )
         {
@@ -248,9 +262,13 @@ class DoSRule extends RuleWithUserID
         }
         PH::print_stdout( $text );
 
-        PH::print_stdout( $padding . "  From: " . $this->from->toString_inline() . "  |  To:  " . $this->to->toString_inline() );
-        PH::$JSON_TMP['sub']['object'][$this->name()]['from'] = $this->from->toString_inline();
-        PH::$JSON_TMP['sub']['object'][$this->name()]['to'] = $this->to->toString_inline();
+        if( $this->from !== null && $this->to !== null )
+        {
+            PH::print_stdout( $padding . "  From: " . $this->from->toString_inline() . "  |  To:  " . $this->to->toString_inline() );
+            PH::$JSON_TMP['sub']['object'][$this->name()]['from'] = $this->from->toString_inline();
+            PH::$JSON_TMP['sub']['object'][$this->name()]['to'] = $this->to->toString_inline();
+        }
+
 
         PH::print_stdout( $padding . "  Source: $sourceNegated " . $this->source->toString_inline() );
         PH::$JSON_TMP['sub']['object'][$this->name()]['source'] = $this->source->toString_inline();

@@ -20,11 +20,15 @@ class PbfRule extends RuleWithUserID
      */
     protected function load_from()
     {
-        $tmp = DH::findFirstElementOrCreate('from', $this->xmlroot);
+        $tmp1 = DH::findFirstElementOrCreate('from', $this->xmlroot);
 
-        $tmp = DH::firstChildElement($tmp);
-        if( $tmp === null )
-            derr("PBF rule has nothing inside <from> tag, please fix before going forward");
+        $tmp = DH::firstChildElement($tmp1);
+        if( $tmp === null || $tmp === false )
+        {
+            mwarning("PBF rule has nothing inside <from> tag, please fix before going forward", $tmp1, TRUE, TRUE);
+            return;
+        }
+
 
         if( $tmp->tagName == 'zone' )
         {
@@ -156,8 +160,11 @@ class PbfRule extends RuleWithUserID
         }
         PH::print_stdout( $text );
 
-        PH::print_stdout( $padding . "  From: " . $this->from->toString_inline() );
-        PH::$JSON_TMP['sub']['object'][$this->name()]['from'] = $this->from->toString_inline();
+        if( $this->from !== null )
+        {
+            PH::print_stdout( $padding . "  From: " . $this->from->toString_inline() );
+            PH::$JSON_TMP['sub']['object'][$this->name()]['from'] = $this->from->toString_inline();
+        }
 
         PH::print_stdout( $padding . "  Source: $sourceNegated " . $this->source->toString_inline() );
         PH::$JSON_TMP['sub']['object'][$this->name()]['source'] = $this->source->toString_inline();

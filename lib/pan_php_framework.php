@@ -263,6 +263,7 @@ require_once $basedir . '/device-and-system-classes/LogCollectorGroup.php';
 require_once $basedir . '/device-and-system-classes/FawkesConf.php';
 require_once $basedir . '/device-and-system-classes/Container.php';
 require_once $basedir . '/device-and-system-classes/DeviceCloud.php';
+require_once $basedir . '/device-and-system-classes/DeviceOnPrem.php';
 
 require_once $basedir . '/network-classes/trait/InterfaceType.php';
 require_once $basedir . '/network-classes/Zone.php';
