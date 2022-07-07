@@ -99,7 +99,7 @@ class DeviceOnPrem
 									<region></region><external-list></external-list><dynamic-user-group></dynamic-user-group>
 									</entry>';
 */
-    public static $templateCloudxml = '<entry name="**Need a Name**"><address></address>
+    public static $templateOnPremxml = '<entry name="**Need a Name**"><address></address>
                                     <rulebase><security><rules></rules></security><nat><rules></rules></nat></rulebase>
 									</entry>';
 
@@ -271,17 +271,17 @@ class DeviceOnPrem
         #$this->pbfRules->_networkStore = $this->owner->network;
     }
 
-    public function load_from_templateCloudeXml( )
+    public function load_from_templateOnPremXml( )
     {
         if( $this->owner === null )
             derr('cannot be used if owner === null');
 
         $fragment = $this->owner->xmlroot->ownerDocument->createDocumentFragment();
 
-        if( !$fragment->appendXML(self::$templateCloudxml) )
+        if( !$fragment->appendXML(self::$templateOnPremxml) )
             derr('error occured while loading device group template xml');
 
-        $element = $this->owner->cloudroot->appendChild($fragment);
+        $element = $this->owner->onpremroot->appendChild($fragment);
 
         $this->load_from_domxml($element);
     }

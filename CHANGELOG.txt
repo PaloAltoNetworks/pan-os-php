@@ -13,9 +13,10 @@ BUGFIX:
 GENERAL:
 * updating Docker files
 * Update READMEdocker - improving workflow Container update
+* class FawkesConf | introduce findDeviceOnPrem / createDeviceOnPrem
 
 
-2.0.45
+2.0.45 (20220630)
 UTILS:
 * UTIL type=device | actions=display show Container hierarchy for Fawkes
 * UTIL type=stats | improve visibility for securityprofiles
