@@ -15,6 +15,7 @@ GENERAL:
 * updating Docker files
 * Update READMEdocker - improving workflow Container update
 * class FawkesConf | introduce findDeviceOnPrem / createDeviceOnPrem
+* class ManagedDeviceStore | introduce method createManagedDevice for Panorama and Fawkes
 
 
 2.0.45 (20220630)

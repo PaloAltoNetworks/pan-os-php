@@ -76,16 +76,15 @@ class TemplateStack
             }
         }
 
-        $this->FirewallsSerials = $this->owner->managedFirewallsStore->get_serial_from_xml($xml);
-        foreach( $this->FirewallsSerials as $serial )
+        $this->FirewallsSerials = $this->owner->managedFirewallsSerials;
+        foreach( $this->FirewallsSerials as $serial => $managedFirewall )
         {
-            $managedFirewall = $this->owner->managedFirewallsStore->find($serial);
+            #$managedFirewall = $this->owner->managedFirewallsStore->find($serial);
             if( $managedFirewall !== null )
             {
                 $managedFirewall->addTemplateStack($this->name);
                 $managedFirewall->addReference( $this );
             }
-
         }
 
         //Todo: how common it is to have device config inside templateStack???

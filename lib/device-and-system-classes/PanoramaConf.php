@@ -327,7 +327,9 @@ class PanoramaConf
 
 
         $tmp = DH::findFirstElementOrCreate('mgt-config', $this->xmlroot);
-        $this->managedFirewallsSerials = $this->managedFirewallsStore->get_serial_from_xml($tmp, TRUE);
+        $tmp = DH::findFirstElement('devices', $tmp);
+        $this->managedFirewallsStore->load_from_domxml($tmp);
+        #$this->managedFirewallsSerials = $this->managedFirewallsStore->get_serial_from_xml($tmp, TRUE);
 
 
         if( is_object($this->connector) )
@@ -401,8 +403,7 @@ class PanoramaConf
         $tmp = DH::findFirstElement('region', $this->sharedroot);
         if( $tmp !== false )
             $this->addressStore->load_regions_from_domxml($tmp);
-        //print "VSYS '".$this->name."' address objectsloaded\n" ;
-        // End of address objects extraction
+        // End of region objects extraction
 
         //
         // Extract services

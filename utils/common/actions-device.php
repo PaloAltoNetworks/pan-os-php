@@ -46,14 +46,10 @@ DeviceCallContext::$supportedActions['display'] = array(
             }
             //Todo: PH::print_stdout( where this TemplateStack is used SERIAL
 
-            foreach( $object->FirewallsSerials as $serial )
+            foreach( $object->FirewallsSerials as $serial => $managedFirewall )
             {
-                $managedFirewall = $object->owner->managedFirewallsStore->find($serial);
                 if( $managedFirewall !== null )
-                {
                     PH::print_stdout( $context->padding." - serial: ".$serial." - DG: ".$managedFirewall->devicegroup);
-                }
-
             }
         }
         elseif( get_class($object) == "VirtualSystem" )
@@ -95,52 +91,69 @@ DeviceCallContext::$supportedActions['display'] = array(
             $padding = "       ";
             /** @var ManagedDevice $managedDevice */
 
-            if( $managedDevice->getDeviceGroup() != null )
+            if( $device->isPanorama() )
             {
-                PH::print_stdout( $padding."DG: ".$managedDevice->getDeviceGroup() );
-                PH::$JSON_TMP['sub']['object'][$object->name()]['dg'] = $managedDevice->getDeviceGroup();
-            }
-
-
-            if( $managedDevice->getTemplate() != null )
-            {
-                PH::print_stdout( $padding."Template: ".$managedDevice->getTemplate() );
-                PH::$JSON_TMP['sub']['object'][$object->name()]['template'] = $managedDevice->getTemplate();
-            }
-
-
-            if( $managedDevice->getTemplateStack() != null )
-            {
-                PH::print_stdout( $padding."TempalteStack: ".$managedDevice->getTemplateStack() );
-                PH::$JSON_TMP['sub']['object'][$object->name()]['templatestack'][$managedDevice->getTemplateStack()]['name'] = $managedDevice->getTemplateStack();
-
-                $templatestack = $device->findTemplateStack( $managedDevice->getTemplateStack() );
-                foreach( $templatestack->templates as $template )
+                if( $managedDevice->getDeviceGroup() != null )
                 {
-                    $template_obj = $device->findTemplate( $template );
-                    if( $template_obj !== null )
-                    {
-                        PH::print_stdout( " - ".$template_obj->name() );
-                        PH::$JSON_TMP['sub']['object'][$object->name()]['templatestack'][$managedDevice->getTemplateStack()]['templates'][] = $template_obj->name();
-                    }
+                    PH::print_stdout( $padding."DG: ".$managedDevice->getDeviceGroup() );
+                    PH::$JSON_TMP['sub']['object'][$object->name()]['dg'] = $managedDevice->getDeviceGroup();
+                }
 
+
+                if( $managedDevice->getTemplate() != null )
+                {
+                    PH::print_stdout( $padding."Template: ".$managedDevice->getTemplate() );
+                    PH::$JSON_TMP['sub']['object'][$object->name()]['template'] = $managedDevice->getTemplate();
+                }
+
+
+                if( $managedDevice->getTemplateStack() != null )
+                {
+                    PH::print_stdout( $padding."TempalteStack: ".$managedDevice->getTemplateStack() );
+                    PH::$JSON_TMP['sub']['object'][$object->name()]['templatestack'][$managedDevice->getTemplateStack()]['name'] = $managedDevice->getTemplateStack();
+
+                    $templatestack = $device->findTemplateStack( $managedDevice->getTemplateStack() );
+                    foreach( $templatestack->templates as $template )
+                    {
+                        $template_obj = $device->findTemplate( $template );
+                        if( $template_obj !== null )
+                        {
+                            PH::print_stdout( " - ".$template_obj->name() );
+                            PH::$JSON_TMP['sub']['object'][$object->name()]['templatestack'][$managedDevice->getTemplateStack()]['templates'][] = $template_obj->name();
+                        }
+
+                    }
+                }
+
+                if( $managedDevice->isConnected )
+                {
+                    PH::print_stdout( $padding."connected" );
+                    PH::print_stdout( $padding."IP-Address: ".$managedDevice->mgmtIP );
+                    PH::print_stdout( $padding."Hostname: ".$managedDevice->hostname );
+                    PH::print_stdout( $padding."PAN-OS: ".$managedDevice->version );
+                    PH::print_stdout( $padding."Model: ".$managedDevice->model );
+
+                    PH::$JSON_TMP['sub']['object'][$object->name()]['connected'] = "true";
+                    PH::$JSON_TMP['sub']['object'][$object->name()]['hostname'] = $managedDevice->hostname;
+                    PH::$JSON_TMP['sub']['object'][$object->name()]['ip-address'] = $managedDevice->mgmtIP;
+                    PH::$JSON_TMP['sub']['object'][$object->name()]['sw-version'] = $managedDevice->version;
+                    PH::$JSON_TMP['sub']['object'][$object->name()]['model'] = $managedDevice->model;
                 }
             }
-
-            if( $managedDevice->isConnected )
+            elseif( $device->isFawkes() )
             {
-                PH::print_stdout( $padding."connected" );
-                PH::print_stdout( $padding."IP-Address: ".$managedDevice->mgmtIP );
-                PH::print_stdout( $padding."Hostname: ".$managedDevice->hostname );
-                PH::print_stdout( $padding."PAN-OS: ".$managedDevice->version );
-                PH::print_stdout( $padding."Model: ".$managedDevice->model );
-                PH::$JSON_TMP['sub']['object'][$object->name()]['connected'] = "true";
-                PH::$JSON_TMP['sub']['object'][$object->name()]['hostname'] = $managedDevice->hostname;
-                PH::$JSON_TMP['sub']['object'][$object->name()]['ip-address'] = $managedDevice->mgmtIP;
-                PH::$JSON_TMP['sub']['object'][$object->name()]['sw-version'] = $managedDevice->version;
-                PH::$JSON_TMP['sub']['object'][$object->name()]['model'] = $managedDevice->model;
-            }
+                if( $managedDevice->getDeviceContainer() != null )
+                {
+                    PH::print_stdout( $padding."DeviceContainer: ".$managedDevice->getDeviceContainer() );
+                    PH::$JSON_TMP['sub']['object'][$object->name()]['on-prem'] = $managedDevice->getDeviceContainer();
+                }
 
+                if( $managedDevice->getDeviceVsysContainer() != null )
+                {
+                    PH::print_stdout( $padding."VsysContainer: ".$managedDevice->getDeviceVsysContainer() );
+                    PH::$JSON_TMP['sub']['object'][$object->name()]['vsyscontainer'] = $managedDevice->getDeviceVsysContainer();
+                }
+            }
         }
         elseif( get_class($object) == "Template" )
         {
