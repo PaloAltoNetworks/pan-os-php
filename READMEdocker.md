@@ -58,11 +58,6 @@ Update your Docker PAN-OS-PHP container
 docker pull swaschkut/pan-os-php:latest
 ```
 
-- Stop and remove old container
-```bash
-docker stop panosphp && docker rm panosphp
-```
-
 - Navigate to offline XML directory
 ```bash
 cd [/rootFolder/parentFolder/childFolder]
