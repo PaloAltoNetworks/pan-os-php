@@ -212,12 +212,15 @@ class FawkesConf
         $this->cloudroot = DH::findFirstElementOrCreate('cloud', $this->devicecloudroot);
 
         $this->onpremroot = DH::findFirstElementOrCreate('on-prem', $this->devicecloudroot);
-        
+
+        $tmp = DH::findFirstElementOrCreate('managed-devices', $this->localhostroot);
+        #$this->managedFirewallsSerials = $this->managedFirewallsStore->get_serial_from_xml($tmp, TRUE);
+        $this->managedFirewallsStore->load_from_domxml($tmp);
 
 
 
 
-        //->devices/container
+            //->devices/container
         //
         // loading Containers now
         //
@@ -1055,7 +1058,7 @@ class FawkesConf
     /**
      * Create a blank template. Return that template object.
      * @param string $name
-     * @return DeviceCloud
+     * @return DeviceOnPrem
      **/
     public function createDeviceOnPrem($name, $parentContainer_txt )
     {
@@ -1072,7 +1075,7 @@ class FawkesConf
         $parentNode = DH::findFirstElementOrCreate('parent', $newDG->xmlroot );
         DH::setDomNodeText($parentNode, $parentContainer_txt );
 
-        $this->clouds[] = $newDG;
+        $this->onprems[] = $newDG;
 
         if( $this->version >= 70 )
         {

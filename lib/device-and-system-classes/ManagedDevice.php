@@ -32,18 +32,49 @@ class ManagedDevice
     public $template;
     public $template_stack;
 
+    public $deviceContainer;
+    public $vsysContainer;
+
+
     public $isConnected = false;
     public $mgmtIP;
     public $version;
     public $model;
     public $hostname;
 
-    function __construct($name, $owner)
+    function __construct($name, $owner )
     {
         $this->owner = $owner;
         $this->name = $name;
     }
 
+    public function load_from_domxml(DOMElement $xml)
+    {
+        $this->xmlroot = $xml;
+
+        if( $this->owner->owner->isFawkes() )
+        {
+            #DH::DEBUGprintDOMDocument( $xml );
+
+            $tmp = DH::findFirstElement('device-container', $xml);
+            if( $tmp != false )
+                $this->deviceContainer = $tmp->textContent;
+
+            $tmp = DH::findFirstElement('vsys', $xml);
+            if( $tmp != false )
+            {
+                $vsysEntry = DH::findFirstElement('entry', $tmp);
+                $this->vsysContainer = DH::findAttribute('name', $vsysEntry);
+
+                $tmp = DH::findFirstElement('vsys-container', $vsysEntry);
+                if( $tmp != false )
+                {
+                    if( $tmp->textContent !== $this->deviceContainer )
+                        mwarning( "manageddevice: ".$this->name()." has device-container: ".$this->deviceContainer." but vsys-container: ".$tmp->textContent );
+                }
+            }
+        }
+    }
 
     public function addDeviceGroup($devicegroup)
     {
@@ -73,6 +104,16 @@ class ManagedDevice
     public function getTemplateStack()
     {
         return $this->template_stack;
+    }
+
+    public function getDeviceContainer()
+    {
+        return $this->deviceContainer;
+    }
+
+    public function getDeviceVsysContainer()
+    {
+        return $this->vsysContainer;
     }
 
     public function isManagedDevice()

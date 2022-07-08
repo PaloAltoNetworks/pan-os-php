@@ -55,27 +55,29 @@ class ManagedDeviceStore extends ObjStore
     {
         $tmp_managedFirewallsSerials = array();
 
-        $tmp = DH::findFirstElement('devices', $xml);
-        if( $tmp !== FALSE )
+        if( $xml !== FALSE )
         {
-            foreach( $tmp->childNodes as $serial )
+            foreach( $xml->childNodes as $node )
             {
-                if( $serial->nodeType != 1 )
+                $tmp_obj = null;
+
+                if( $node->nodeType != 1 )
                     continue;
-                $s = DH::findAttribute('name', $serial);
-                if( $s === FALSE )
+                $serial = DH::findAttribute('name', $node);
+                if( $serial === FALSE )
                     derr('no serial found');
 
                 if( $add_firewall )
                 {
-                    $tmp_obj = new ManagedDevice($s, $this);
+                    $tmp_obj = new ManagedDevice($serial, $this);
+                    $tmp_obj->load_from_domxml( $node );
                     $this->add($tmp_obj);
                 }
 
-
-                $tmp_managedFirewallsSerials[$s] = $s;
+                $tmp_managedFirewallsSerials[$serial] = $tmp_obj;
             }
         }
+
         return $tmp_managedFirewallsSerials;
     }
 
@@ -120,7 +122,7 @@ class ManagedDeviceStore extends ObjStore
      * @param bool $nested
      * @return ManagedDevice
      */
-    public function createManagedDevice($serial, $ref = null, $nested = TRUE)
+    public function createManagedDevice($serial, $ref = null, $nested = TRUE, $onPrem = null, $vsys = 'vsys1')
     {
         $tmp_obj = $this->findByName($serial, $ref, $nested);
 
@@ -128,6 +130,26 @@ class ManagedDeviceStore extends ObjStore
         {
             $tmp_obj = new ManagedDevice($serial, $this);
             $this->add($tmp_obj);
+
+            $entryNode = DH::findFirstElementByNameAttrOrCreate( 'entry', $serial, $this->xmlroot, $this->xmlroot->ownerDocument );
+            if( $this->owner->isPanorama() )
+            {
+                //no more changes needed yet
+            }
+            elseif( $this->owner->isFawkes() )
+            {
+                if( $onPrem === null )
+                {
+                    mwarning( "managedDevice with serial: ".$serial." need a DeviceOnPrem reference" );
+                    return null;
+                }
+
+                DH::findFirstElementOrCreate( 'device-container', $entryNode, $onPrem );
+                $vsysNode = DH::findFirstElementOrCreate( 'vsys', $entryNode);
+                $vsysEntryNode = DH::findFirstElementByNameAttrOrCreate( 'entry', $vsys, $vsysNode, $this->xmlroot->ownerDocument );
+
+                $vsysNode = DH::findFirstElementOrCreate( 'vsys-container', $vsysEntryNode, $onPrem);
+            }
         }
         else
         {
