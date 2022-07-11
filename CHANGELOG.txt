@@ -4,6 +4,7 @@ CHANGELOG
 UTILS:
 
 BUGFIX:
+* class AppRuleContainer | bugfix for method membersExpanded()
 
 GENERAL:
 
