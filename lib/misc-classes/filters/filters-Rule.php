@@ -1288,6 +1288,37 @@ RQuery::$defaultFilters['rule']['app']['operators']['custom.has.signature'] = ar
         'input' => 'input/panorama-8.0.xml'
     )
 );
+RQuery::$defaultFilters['rule']['app']['operators']['has.from.query'] = array(
+    'Function' => function (RuleRQueryContext $context) {
+        if( $context->object->apps->count() == 0 )
+            return FALSE;
+
+        if( $context->value === null || !isset($context->nestedQueries[$context->value]) )
+            derr("cannot find nested query called '{$context->value}'");
+
+        $errorMessage = '';
+
+        if( !isset($context->cachedSubRQuery) )
+        {
+            $rQuery = new RQuery('application');
+            if( $rQuery->parseFromString($context->nestedQueries[$context->value], $errorMessage) === FALSE )
+                derr('nested query execution error : ' . $errorMessage);
+            $context->cachedSubRQuery = $rQuery;
+        }
+        else
+            $rQuery = $context->cachedSubRQuery;
+
+        foreach( $context->object->apps->getAll() as $member )
+        {
+            if( $rQuery->matchSingleObject(array('object' => $member, 'nestedQueries' => &$context->nestedQueries)) )
+                return TRUE;
+        }
+
+        return FALSE;
+    },
+    'arg' => TRUE,
+    'help' => 'example: \'filter=(app has.from.query subquery1)\' \'subquery1=(object is.application-group)\'',
+);
 
 //                                              //
 //          Services properties                 //

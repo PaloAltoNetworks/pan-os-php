@@ -268,6 +268,7 @@ class AppRuleContainer extends ObjRuleContainer
         foreach( $this->o as $member )
         {
             $member->getAppsRecursive( $localA );
+            $localA[] = $member;
             /*
             if( $member->isContainer() )
             {
