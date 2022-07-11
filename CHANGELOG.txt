@@ -2,6 +2,7 @@ CHANGELOG
 
 2.0.47
 UTILS:
+* UTIL type=Rule | introduce 'filter=(app has.fromquery subquery1)' 'subquery=([application filters])'
 
 BUGFIX:
 * class AppRuleContainer | bugfix for method membersExpanded()
