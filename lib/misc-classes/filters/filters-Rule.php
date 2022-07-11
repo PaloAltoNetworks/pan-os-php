@@ -3133,7 +3133,7 @@ RQuery::$defaultFilters['rule']['app']['operators']['risk.is'] = array(
         if( $rule->apps->count() < 1 )
             return null;
 
-        foreach( $rule->apps->membersExpanded() as $app )
+        foreach( $rule->apps->getAll() as $app )
         {
             if( $app->type == "application-filter" )
             {
@@ -3152,7 +3152,30 @@ RQuery::$defaultFilters['rule']['app']['operators']['risk.is'] = array(
         'input' => 'input/panorama-8.0.xml'
     )
 );
+RQuery::$defaultFilters['rule']['app']['operators']['risk.recursive.is'] = array(
+    'Function' => function (RuleRQueryContext $context) {
+        $rule = $context->object;
 
+        if( !$rule->isSecurityRule() )
+            return null;
+
+        if( $rule->apps->count() < 1 )
+            return null;
+
+        foreach( $rule->apps->membersExpanded() as $app )
+        {
+            if( $app->risk == $context->value )
+                return TRUE;
+        }
+
+        return FALSE;
+    },
+    'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP% client-server)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 RQuery::$defaultFilters['rule']['app']['operators']['characteristic.has'] = array(
     'Function' => function (RuleRQueryContext $context) {
         $rule = $context->object;

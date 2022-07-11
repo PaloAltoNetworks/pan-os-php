@@ -267,25 +267,8 @@ class AppRuleContainer extends ObjRuleContainer
 
         foreach( $this->o as $member )
         {
-            $member->getAppsRecursive( $localA );
-            $localA[] = $member;
-            /*
-            if( $member->isContainer() )
-            {
-                foreach( $member->containerApps() as $containerApp )
-                {
-                    if( $containerApp->isContainer() )
-                    {
-                        foreach( $containerApp->containerApps() as $containerApp1 )
-                            $localA[] = $containerApp1;
-                    }
-                    else
-                        $localA[] = $containerApp;
-                }
-            }
-            else
-                $localA[] = $member;
-            */
+            $array = $member->getAppsRecursive( $localA );
+            $localA = array_merge($array, $localA);
         }
 
         $localA = array_unique_no_cast($localA);
