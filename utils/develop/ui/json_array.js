@@ -71,6 +71,14 @@ var subjectObject =
                         "type": "string",
                         "default": "*nodefault*",
                         "help": "file syntax:   AddressObjectName,IP-Address,Address-group\n\nexample:\n    h-192.168.0.1,192.168.0.1\/32,private-network-AddressGroup\n    n-192.168.2.0m24,192.168.2.0\/24,private-network-AddressGroup\n"
+                    },
+                    "force-add-to-group": {
+                        "type": "bool",
+                        "default": false
+                    },
+                    "force-change-value": {
+                        "type": "bool",
+                        "default": false
                     }
                 }
             },
@@ -129,10 +137,10 @@ var subjectObject =
                     },
                     "replace": {
                         "type": "string",
-                        "default": "*nodefault*"
+                        "default": ""
                     }
                 },
-                "help": ""
+                "help": "possible variable $$comma$$ or $$pipe$$; example \"actions=description-Replace-Character:$$comma$$word1\""
             },
             "display": {
                 "name": "display",
@@ -797,6 +805,10 @@ var subjectObject =
                             "input": "input\/panorama-8.0.xml"
                         }
                     },
+                    "ip4.match.exact.from.file": {
+                        "Function": {},
+                        "arg": true
+                    },
                     "ip4.included-in": {
                         "Function": {},
                         "arg": true,
@@ -1312,6 +1324,21 @@ var subjectObject =
                     }
                 }
             },
+            "devicegroup-addserial": {
+                "name": "devicegroup-addserial",
+                "MainFunction": {},
+                "GlobalFinishFunction": {},
+                "args": {
+                    "name": {
+                        "type": "string",
+                        "default": "false"
+                    },
+                    "serial": {
+                        "type": "string",
+                        "default": "null"
+                    }
+                }
+            },
             "devicegroup-create": {
                 "name": "devicegroup-create",
                 "MainFunction": {},
@@ -1330,6 +1357,21 @@ var subjectObject =
             "devicegroup-delete": {
                 "name": "devicegroup-delete",
                 "MainFunction": {}
+            },
+            "devicegroup-removeserial": {
+                "name": "devicegroup-removeserial",
+                "MainFunction": {},
+                "GlobalFinishFunction": {},
+                "args": {
+                    "name": {
+                        "type": "string",
+                        "default": "false"
+                    },
+                    "serial": {
+                        "type": "string",
+                        "default": "null"
+                    }
+                }
             },
             "display": {
                 "name": "display",
@@ -1441,6 +1483,33 @@ var subjectObject =
                         "type": "bool",
                         "default": "false",
                         "help": "if set to true; LogForwardingProfile is create at SHARED level; at least one DG must be available"
+                    }
+                }
+            },
+            "manageddevice-create": {
+                "name": "manageddevice-create",
+                "MainFunction": {},
+                "GlobalFinishFunction": {},
+                "args": {
+                    "serial": {
+                        "type": "string",
+                        "default": "false"
+                    }
+                }
+            },
+            "manageddevice-delete": {
+                "name": "manageddevice-delete",
+                "MainFunction": {},
+                "GlobalFinishFunction": {},
+                "args": {
+                    "serial": {
+                        "type": "string",
+                        "default": "false"
+                    },
+                    "force": {
+                        "type": "bool",
+                        "default": "false",
+                        "help": "decommission Manageddevice, also if used on Device-Group or Template-stack"
                     }
                 }
             },
@@ -1724,6 +1793,11 @@ var subjectObject =
                     }
                 }
             },
+            "app-postgres-fix": {
+                "name": "app-postgres-fix",
+                "section": "action",
+                "MainFunction": {}
+            },
             "app-remove": {
                 "name": "app-Remove",
                 "section": "app",
@@ -1857,10 +1931,10 @@ var subjectObject =
                     },
                     "replace": {
                         "type": "string",
-                        "default": "*nodefault*"
+                        "default": ""
                     }
                 },
-                "help": ""
+                "help": "possible variable $$comma$$ or $$pipe$$ or $$newline$$; example \"actions=description-Replace-Character:$$comma$$word1\""
             },
             "disabled-set": {
                 "name": "disabled-Set",
@@ -3078,6 +3152,11 @@ var subjectObject =
                             "input": "input\/panorama-8.0.xml"
                         }
                     },
+                    "has.from.query": {
+                        "Function": {},
+                        "arg": true,
+                        "help": "example: 'filter=(app has.from.query subquery1)' 'subquery1=(object is.application-group)'"
+                    },
                     "category.is": {
                         "Function": {},
                         "arg": true,
@@ -3103,6 +3182,14 @@ var subjectObject =
                         }
                     },
                     "risk.is": {
+                        "Function": {},
+                        "arg": true,
+                        "ci": {
+                            "fString": "(%PROP% client-server)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    },
+                    "risk.recursive.is": {
                         "Function": {},
                         "arg": true,
                         "ci": {
@@ -4652,6 +4739,10 @@ var subjectObject =
                     }
                 }
             },
+            "custom-url-category-fix-leading-dot": {
+                "name": "custom-url-category-fix-leading-dot",
+                "MainFunction": {}
+            },
             "delete": {
                 "name": "delete",
                 "MainFunction": {}
@@ -5828,6 +5919,42 @@ var subjectObject =
                         "arg": false,
                         "ci": {
                             "fString": "(%PROP%)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    }
+                }
+            },
+            "port.count": {
+                "operators": {
+                    ">,<,=,!": {
+                        "Function": {},
+                        "arg": true,
+                        "ci": {
+                            "fString": "(%PROP% 443)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    }
+                }
+            },
+            "port.tcp.count": {
+                "operators": {
+                    ">,<,=,!": {
+                        "Function": {},
+                        "arg": true,
+                        "ci": {
+                            "fString": "(%PROP% 443)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    }
+                }
+            },
+            "port.udp.count": {
+                "operators": {
+                    ">,<,=,!": {
+                        "Function": {},
+                        "arg": true,
+                        "ci": {
+                            "fString": "(%PROP% 443)",
                             "input": "input\/panorama-8.0.xml"
                         }
                     }

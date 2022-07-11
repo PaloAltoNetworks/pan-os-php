@@ -4,6 +4,7 @@ CHANGELOG
 UTILS:
 * UTIL type=Rule | introduce 'filter=(app has.fromquery subquery1)' 'subquery=([application filters])'
 * UTIL type=rule | introduce 'filter=(app risk.recursive.is 3)'
+* update internal JSON files for pan-os-php API usage
 
 BUGFIX:
 * class AppRuleContainer | bugfix for method membersExpanded()
