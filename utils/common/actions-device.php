@@ -205,6 +205,13 @@ DeviceCallContext::$supportedActions['display'] = array(
                 $tmp_padding .= "  ";
                 PH::$JSON_TMP['sub']['object'][$object->name()]['hierarchy'][] = $key;
             }
+
+            $padding = "       ";
+            foreach( $object->devices as $serial => $device )
+            {
+                PH::print_stdout( $padding."- serial: ".$serial );
+                PH::$JSON_TMP['sub']['object'][$object->name()]['serial'][$serial] = $serial;
+            }
         }
 
         PH::print_stdout();

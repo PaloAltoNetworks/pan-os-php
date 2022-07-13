@@ -60,16 +60,20 @@ class Template
 
         if( $this->owner->version <= 80 )
         {
-            $this->FirewallsSerials = $this->owner->managedFirewallsStore->get_serial_from_xml($xml);
-            foreach( $this->FirewallsSerials as $serial )
+            $xml = DH::findFirstElement('devices', $this->xmlroot);
+            if( $xml !== false )
             {
-                $managedFirewall = $this->owner->managedFirewallsStore->find($serial);
-                if( $managedFirewall !== null )
+                $this->FirewallsSerials = $this->owner->managedFirewallsStore->get_serial_from_xml($xml);
+                foreach( $this->FirewallsSerials as $serial )
                 {
-                    $managedFirewall->addTemplate($this->name);
-                    $managedFirewall->addReference( $this );
-                }
+                    $managedFirewall = $this->owner->managedFirewallsStore->find($serial);
+                    if( $managedFirewall !== null )
+                    {
+                        $managedFirewall->addTemplate($this->name);
+                        $managedFirewall->addReference( $this );
+                    }
 
+                }
             }
         }
     }

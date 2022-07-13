@@ -214,11 +214,6 @@ class FawkesConf
         $this->onpremroot = DH::findFirstElementOrCreate('on-prem', $this->devicecloudroot);
 
         $tmp = DH::findFirstElementOrCreate('managed-devices', $this->localhostroot);
-        #$this->managedFirewallsSerials = $this->managedFirewallsStore->get_serial_from_xml($tmp, TRUE);
-        $this->managedFirewallsStore->load_from_domxml($tmp);
-
-
-
 
             //->devices/container
         //
@@ -422,6 +417,9 @@ class FawkesConf
         //
         // end of DeviceCloud
         //
+
+        #$this->managedFirewallsSerials = $this->managedFirewallsStore->get_serial_from_xml($tmp, TRUE);
+        $this->managedFirewallsStore->load_from_domxml($tmp);
     }
 
 
@@ -1161,7 +1159,8 @@ class FawkesConf
         $return = $this->findContainer($location);
         if( $return == null )
             $return = $this->findDeviceCloud($location);
-
+        if( $return == null )
+            $return = $this->findDeviceOnPrem($location);
         return $return;
     }
 

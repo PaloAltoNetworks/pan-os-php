@@ -60,6 +60,13 @@ class ManagedDevice
             if( $tmp != false )
                 $this->deviceContainer = $tmp->textContent;
 
+            $deviceOnPrem = $this->owner->owner->findDeviceOnPrem( $this->deviceContainer );
+            if( $deviceOnPrem !== null )
+            {
+                $deviceOnPrem->devices[$this->name()] = $this;
+                $this->addReference( $deviceOnPrem );
+            }
+
             $tmp = DH::findFirstElement('vsys', $xml);
             if( $tmp != false )
             {

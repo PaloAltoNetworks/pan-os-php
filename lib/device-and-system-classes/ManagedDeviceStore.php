@@ -69,9 +69,13 @@ class ManagedDeviceStore extends ObjStore
 
                 if( $add_firewall )
                 {
-                    $tmp_obj = new ManagedDevice($serial, $this);
-                    $tmp_obj->load_from_domxml( $node );
-                    $this->add($tmp_obj);
+                    $tmp_obj = $this->find($serial);
+                    if( $tmp_obj === null )
+                    {
+                        $tmp_obj = new ManagedDevice($serial, $this);
+                        $tmp_obj->load_from_domxml( $node );
+                        $this->add($tmp_obj);
+                    }
                 }
 
                 $tmp_managedFirewallsSerials[$serial] = $tmp_obj;
@@ -149,6 +153,10 @@ class ManagedDeviceStore extends ObjStore
                 $vsysEntryNode = DH::findFirstElementByNameAttrOrCreate( 'entry', $vsys, $vsysNode, $this->xmlroot->ownerDocument );
 
                 $vsysNode = DH::findFirstElementOrCreate( 'vsys-container', $vsysEntryNode, $onPrem);
+
+                $deviceOnPrem = $this->owner->findDeviceOnPrem( $onPrem );
+                if( $deviceOnPrem !== null )
+                    $tmp_obj->addReference( $deviceOnPrem );
             }
         }
         else
