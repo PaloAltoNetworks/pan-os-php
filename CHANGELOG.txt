@@ -6,6 +6,7 @@ UTILS:
 * UTIL type=rule | introduce 'filter=(app risk.recursive.is 3)'
 * update internal JSON files for pan-os-php API usage
 * multiple classes | improvements for buckbeak
+* UTIL type=service-merger | improvements for exportcsv
 
 BUGFIX:
 * class AppRuleContainer | bugfix for method membersExpanded()
