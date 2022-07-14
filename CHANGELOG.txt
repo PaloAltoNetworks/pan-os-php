@@ -12,6 +12,7 @@ BUGFIX:
 * class AppRuleContainer | bugfix for method membersExpanded()
 
 GENERAL:
+* update predefined to 859207467
 
 
 2.0.46 (20220708)
