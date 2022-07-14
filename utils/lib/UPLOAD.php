@@ -510,6 +510,10 @@ class UPLOAD extends UTIL
         PH::print_stdout( " - php " . basename(__FILE__) . " in=staging/proserv-xpath.xml out=api://192.168.50.10 'fromXpath=/config/tag/*' 'toXpath=/config/devices/entry/device-group/entry[@name=\"DG-NAME\"]/tag' apiTimeout=2000" );
         PH::print_stdout( " - php " . basename(__FILE__) . " in=staging/proserv-xpath.xml out=api://192.168.50.13 'fromXpath=/config/*[name()=\"rules\"]' 'toXpath=/config/devices/entry/device-group/entry[@name=\"DG-NAME\"]/pre-rulebase/security' apiTimeout=2000" );
 
+        PH::print_stdout( " - php " . basename(__FILE__) . " in=staging/proserv-xpath.xml out=api://192.168.50.10");
+        PH::print_stdout( "            'fromXpath=/config/devices/entry/device-group/entry[@name=\"DG-NAME\"]/*[name()=\"address\" or name()=\"address-group\" or name()=\"service\" or name()=\"service-group\" or name()=\"tag\"]'" );
+        PH::print_stdout( "            'toXpath=/config/devices/entry/device-group/entry[@name=\"DG-NAME\"]' apiTimeout=2000" );
+
         if( !$shortMessage )
         {
             PH::print_stdout( PH::boldText("\nListing available arguments") );

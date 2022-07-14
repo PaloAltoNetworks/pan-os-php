@@ -7,6 +7,7 @@ UTILS:
 * update internal JSON files for pan-os-php API usage
 * multiple classes | improvements for buckbeak
 * UTIL type=service-merger | improvements for exportcsv
+* UTIL type=upload - extend help information
 
 BUGFIX:
 * class AppRuleContainer | bugfix for method membersExpanded()
