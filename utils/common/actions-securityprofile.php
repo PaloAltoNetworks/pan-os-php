@@ -695,3 +695,45 @@ SecurityProfileCallContext::$supportedActions['custom-url-category-fix-leading-d
         }
     }
 );
+SecurityProfileCallContext::$supportedActions['url-filtering-action-set'] = array(
+    'name' => 'url-filtering-action-set',
+    'MainFunction' => function (SecurityProfileCallContext $context) {
+        $object = $context->object;
+
+        if( get_class( $object) !== "URLProfile")
+            return null;
+
+        $category = $context->arguments['url-category'];
+        //validation needed of url-category is correct
+        /*
+        if(  get_class($object->owner->owner) == "PanoramaConf" || get_class($object->owner->owner) == "PANConf" || get_class($object->owner->owner) == "FawkesConf" )
+            $predefined_urls = $object->owner->owner->urlStore->securityProfiles();
+        else
+            $predefined_urls = $object->owner->owner->owner->urlStore->securityProfiles();
+        if( !in_array( $category, $predefined_urls ) )
+        {
+            mwarning( "url-filtering category: ".$category. " not supported" );
+            return false;
+        }
+        */
+
+
+        $action = $context->arguments['action'];
+
+        if( !in_array( $action, $object->tmp_url_prof_array ) )
+        {
+            mwarning( "url-filtering action support only: ".implode($object->tmp_url_prof_array). " action: ".$action. " not supported" );
+            return false;
+        }
+
+
+        $object->setAction( $action, $category );
+
+        if( $context->isAPI )
+            $object->API_sync();
+    },
+    'args' => array(
+        'action' => array('type' => 'string', 'default' => 'false'),
+        'url-category' => array('type' => 'string', 'default' => 'false'),
+    ),
+);
