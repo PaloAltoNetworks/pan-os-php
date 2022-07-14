@@ -27,6 +27,8 @@ class URLProfile
     public $continue = array();
     public $override = array();
 
+    public $predefined = array();
+
 
     /*
         const TypeTmp = 0;
@@ -134,6 +136,7 @@ class URLProfile
                 $predefined_urls = $this->owner->owner->owner->urlStore->securityProfiles();
             foreach( $predefined_urls as $predefined_url )
                 $this->allow[$predefined_url->name()] = $predefined_url->name();
+            $this->predefined = $this->allow;
         }
         else
         {
@@ -290,8 +293,14 @@ class URLProfile
             $this->$type[] = $newMember;
             if( $rewriteXml && $this->owner !== null )
             {
-                $tmp = DH::findFirstElementOrCreate($type, $this->xmlroot);
-                DH::createElement($tmp, 'member', $newMember);
+                #$tmp = DH::findFirstElementOrCreate("credential-enforcement", $this->xmlroot);
+                #$array = array( $this->xmlroot, $tmp );
+                $array = array( $this->xmlroot );
+                foreach( $array as $xmlNode )
+                {
+                    $tmp = DH::findFirstElementOrCreate($type, $xmlNode);
+                    DH::createElement($tmp, 'member', $newMember);
+                }
             }
 
             return TRUE;
@@ -318,15 +327,23 @@ class URLProfile
 
             if( $rewriteXml && $this->owner !== null )
             {
-                $tmp = DH::findFirstElementOrCreate($type, $this->xmlroot);
-
-                foreach( $tmp->childNodes as $membernode )
+                #$tmp = DH::findFirstElementOrCreate("credential-enforcement", $this->xmlroot);
+                #$array = array( $this->xmlroot, $tmp );
+                $array = array( $this->xmlroot );
+                foreach( $array as $xmlNode )
                 {
-                    /** @var DOMElement $membernode */
-                    if( $membernode->nodeType != 1 ) continue;
+                    $actionXMLnode = DH::findFirstElementOrCreate($type, $xmlNode);
+                    foreach( $actionXMLnode->childNodes as $membernode )
+                    {
+                        /** @var DOMElement $membernode */
+                        if( $membernode->nodeType != 1 ) continue;
 
-                    if( $membernode->textContent == $newMember )
-                        $tmp->removeChild( $membernode );
+                        if( $membernode->textContent == $newMember )
+                            $actionXMLnode->removeChild( $membernode );
+                    }
+
+                    if( count( $this->$type ) === 0 )
+                        $xmlNode->removeChild( $actionXMLnode );
                 }
             }
 

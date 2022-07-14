@@ -704,25 +704,18 @@ SecurityProfileCallContext::$supportedActions['url-filtering-action-set'] = arra
             return null;
 
         $category = $context->arguments['url-category'];
-        //validation needed of url-category is correct
-        /*
-        if(  get_class($object->owner->owner) == "PanoramaConf" || get_class($object->owner->owner) == "PANConf" || get_class($object->owner->owner) == "FawkesConf" )
-            $predefined_urls = $object->owner->owner->urlStore->securityProfiles();
-        else
-            $predefined_urls = $object->owner->owner->owner->urlStore->securityProfiles();
-        if( !in_array( $category, $predefined_urls ) )
+        if( !in_array( $category, $object->predefined ) )
         {
-            mwarning( "url-filtering category: ".$category. " not supported" );
+            mwarning( "url-filtering category: ".$category. " not supported", null, false );
             return false;
         }
-        */
 
 
         $action = $context->arguments['action'];
 
         if( !in_array( $action, $object->tmp_url_prof_array ) )
         {
-            mwarning( "url-filtering action support only: ".implode($object->tmp_url_prof_array). " action: ".$action. " not supported" );
+            mwarning( "url-filtering action support only: ".implode($object->tmp_url_prof_array). " action: ".$action. " not supported", null, false );
             return false;
         }
 

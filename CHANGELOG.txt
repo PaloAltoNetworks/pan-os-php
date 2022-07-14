@@ -2,6 +2,7 @@ CHANGELOG
 
 2.0.48
 UTILS:
+* UTIL type=securityprofile securityprofiletype=url-filtering | improvements actions=url-filtering-action-set:[ACTION],[category]
 
 BUGFIX:
 
