@@ -417,6 +417,25 @@ RQuery::$defaultFilters['securityprofile']['block']['operators']['has'] = array(
     )
 );
 
+RQuery::$defaultFilters['securityprofile']['allow']['operators']['has'] = array(
+    'Function' => function (SecurityProfileRQueryContext $context) {
+        $object = $context->object;
+        $value = $context->value;
+        $value = strtolower($value);
+
+        if( array_key_exists($value, $object->allow) )
+            return TRUE;
+
+        return FALSE;
+
+    },
+    'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP% securityrule )',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
 RQuery::$defaultFilters['securityprofile']['continue']['operators']['has'] = array(
     'Function' => function (SecurityProfileRQueryContext $context) {
         $object = $context->object;

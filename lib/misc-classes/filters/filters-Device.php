@@ -79,4 +79,26 @@ RQuery::$defaultFilters['device']['templatestack']['operators']['has.member'] = 
     )
 );
 
+RQuery::$defaultFilters['device']['manageddevice']['operators']['with-no-dg'] = array(
+    'Function' => function (DeviceRQueryContext $context) {
+        /** @var ManagedDevice $object */
+        $object = $context->object;
+
+        $class = get_class( $object );
+        if( $class !== "ManagedDevice" )
+            return false;
+
+        $DG = $object->getDeviceGroup();
+        if( $DG === "" )
+            return TRUE;
+
+        return false;
+    },
+    'arg' => false,
+    'ci' => array(
+        'fString' => '(%PROP% grp)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
 // </editor-fold>

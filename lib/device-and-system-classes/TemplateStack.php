@@ -72,18 +72,21 @@ class TemplateStack
                 $this->templates[] = $template;
 
                 $template->addReference( $this );
-
             }
         }
 
-        $this->FirewallsSerials = $this->owner->managedFirewallsSerials;
-        foreach( $this->FirewallsSerials as $serial => $managedFirewall )
+        $tmp = DH::findFirstElement('devices', $xml);
+        if( $tmp !== false )
         {
-            #$managedFirewall = $this->owner->managedFirewallsStore->find($serial);
-            if( $managedFirewall !== null )
+            $this->FirewallsSerials = $this->owner->managedFirewallsStore->get_serial_from_xml($tmp, TRUE);
+            #$this->FirewallsSerials = $this->owner->managedFirewallsStore->get_serial_from_xml($tmp);
+            foreach( $this->FirewallsSerials as $serial => $managedFirewall )
             {
-                $managedFirewall->addTemplateStack($this->name);
-                $managedFirewall->addReference( $this );
+                if( $managedFirewall !== null )
+                {
+                    $managedFirewall->addTemplateStack($this->name);
+                    $managedFirewall->addReference( $this );
+                }
             }
         }
 

@@ -856,6 +856,7 @@ class MERGER extends UTIL
                         }
                         PH::print_stdout("    - group '{$object->name()}' cannot be merged because it has an ancestor at DG: ".$ancestor->owner->owner->name() );
                         PH::print_stdout( "    - ancestor type: ".get_class( $ancestor ) );
+                        $this->skippedObject( $index, $object, $ancestor);
                         continue;
                     }
 
@@ -1899,6 +1900,7 @@ class MERGER extends UTIL
                         }
                         PH::print_stdout("    - group '{$object->name()}' cannot be merged because it has an ancestor at DG: ".$ancestor->owner->owner->name() );
                         PH::print_stdout( "    - ancestor type: ".get_class( $ancestor ) );
+                        $this->skippedObject( $index, $object, $ancestor);
                         continue;
                     }
 
@@ -2336,6 +2338,7 @@ class MERGER extends UTIL
                                         $text = "    - object '{$object->name()}' cannot be merged because of different SRC port information";
                                         $text .= "  object value: " . $object->srcPortMapping()->mappingToText() . " | pickedObject value: " . $ancestor->srcPortMapping()->mappingToText();
                                         PH::print_stdout( $text );
+                                        $this->skippedObject( $index, $object, $ancestor);
                                         continue;
                                     }
                                     elseif( $object->getOverride() != $ancestor->getOverride() )
@@ -2343,6 +2346,7 @@ class MERGER extends UTIL
                                         $text = "    - object '{$object->name()}' cannot be merged because of different timeout Override information";
                                         $text .="  object timeout value: " . $object->getOverride() . " | pickedObject timeout value: " . $ancestor->getOverride();
                                         PH::print_stdout( $text );
+                                        $this->skippedObject( $index, $object, $ancestor);
                                         continue;
                                     }
 
@@ -2394,6 +2398,7 @@ class MERGER extends UTIL
                                 $text = "    - object '{$object->name()}' cannot be merged because of different SRC port information";
                                 $text .= "  object value: " . $object->srcPortMapping()->mappingToText() . " | pickedObject value: " . $pickedObject->srcPortMapping()->mappingToText();
                                 PH::print_stdout( $text );
+                                $this->skippedObject( $index, $object, $pickedObject);
                                 continue;
                             }
                             elseif( $object->getOverride() != $pickedObject->getOverride() )
@@ -2401,6 +2406,7 @@ class MERGER extends UTIL
                                 $text = "    - object '{$object->name()}' cannot be merged because of different timeout Override information";
                                 $text .= "  object timeout value: " . $object->getOverride() . " | pickedObject timeout value: " . $pickedObject->getOverride();
                                 PH::print_stdout( $text );
+                                $this->skippedObject( $index, $object, $pickedObject);
                                 continue;
                             }
                         }

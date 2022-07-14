@@ -4,11 +4,17 @@ CHANGELOG
 UTILS:
 * UTIL type=Rule | introduce 'filter=(app has.fromquery subquery1)' 'subquery=([application filters])'
 * UTIL type=rule | introduce 'filter=(app risk.recursive.is 3)'
+* update internal JSON files for pan-os-php API usage
+* multiple classes | improvements for buckbeak
+* UTIL type=service-merger | improvements for exportcsv
+* UTIL type=upload - extend help information
+* UTIL type=securityprofile securityprofiletype=url-filtering | introduce actions=url-filtering-action-set:[ACTION],[category]
 
 BUGFIX:
 * class AppRuleContainer | bugfix for method membersExpanded()
 
 GENERAL:
+* update predefined to 859207467
 
 
 2.0.46 (20220708)

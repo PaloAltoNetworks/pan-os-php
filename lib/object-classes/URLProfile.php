@@ -222,33 +222,119 @@ class URLProfile
         return $this->override;
     }
 
-    public function setAction($action, $filter)
+    public function setAction($action, $category)
     {
-        if( $filter == "all" )
+        if( $category == "all" )
         {
             //Todo:
             //1) update memory
             //2) update XML
             //3) update API
         }
-        elseif( strpos($filter, "all-") !== FALSE )
+        elseif( strpos($category, "all-") !== FALSE )
         {
-            $tmp_action = explode("all-", $filter);
-
+            $tmp_action = explode("all-", $category);
 
         }
         else
         {
+            print "do something\n";
             //check if input is possible category;
-            $curr_action = getAction($filter);
-            //category
+            $curr_action = $this->getAction($category);
+
+            print "curAction: ".$curr_action."\n";
+
+            $this->deleteMember( $category, $curr_action );
+
+            $this->addMember( $category, $action);
+
         }
 
     }
 
+    public function getAction( $category )
+    {
+        if( isset( $this->alert[$category] ) )
+            return "alert";
+
+        if( isset( $this->block[$category] ) )
+            return "block";
+
+        if( isset( $this->continue[$category] ) )
+            return "continue";
+
+        if( isset( $this->override[$category] ) )
+            return "override";
+
+        return "allow";
+    }
+
+
 
 //ALL above are wrong and from addressstroe
 //TOdo:
+
+    /**
+     * Add a member to this group, it must be passed as an object
+     * @param string $newMember Object to be added
+     * @param bool $rewriteXml
+     * @return bool
+     */
+    public function addMember($newMember, $type, $rewriteXml = TRUE)
+    {
+        if( !in_array( $type, $this->tmp_url_prof_array ) )
+            return false;
+
+        if( !in_array($newMember, $this->$type, TRUE) )
+        {
+            $this->$type[] = $newMember;
+            if( $rewriteXml && $this->owner !== null )
+            {
+                $tmp = DH::findFirstElementOrCreate($type, $this->xmlroot);
+                DH::createElement($tmp, 'member', $newMember);
+            }
+
+            return TRUE;
+        }
+
+        return FALSE;
+    }
+
+    /**
+     * Add a member to this group, it must be passed as an object
+     * @param string $newMember Object to be added
+     * @param bool $rewriteXml
+     * @return bool
+     */
+    public function deleteMember($newMember, $type, $rewriteXml = TRUE)
+    {
+        if( !in_array( $type, $this->tmp_url_prof_array ) )
+            return false;
+
+        if( in_array($newMember, $this->$type, TRUE) )
+        {
+            $key = array_search($newMember, $this->$type);
+            unset($this->$type[$key]);
+
+            if( $rewriteXml && $this->owner !== null )
+            {
+                $tmp = DH::findFirstElementOrCreate($type, $this->xmlroot);
+
+                foreach( $tmp->childNodes as $membernode )
+                {
+                    /** @var DOMElement $membernode */
+                    if( $membernode->nodeType != 1 ) continue;
+
+                    if( $membernode->textContent == $newMember )
+                        $tmp->removeChild( $membernode );
+                }
+            }
+
+            return TRUE;
+        }
+
+        return FALSE;
+    }
 
     /**
      * @return string ie: 'ip-netmask' 'ip-range'

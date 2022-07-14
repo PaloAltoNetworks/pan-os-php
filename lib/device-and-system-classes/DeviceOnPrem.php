@@ -159,6 +159,9 @@ class DeviceOnPrem
 
     public $version = null;
 
+    /** @var Array */
+    public $devices = array();
+
 
     public function __construct(FawkesConf $owner, Container $applicableDG = null)
     {
