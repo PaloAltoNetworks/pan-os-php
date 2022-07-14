@@ -1,6 +1,14 @@
 CHANGELOG
 
-2.0.47
+2.0.48
+UTILS:
+
+BUGFIX:
+
+GENERAL:
+
+
+2.0.47 (20220714)
 UTILS:
 * UTIL type=Rule | introduce 'filter=(app has.fromquery subquery1)' 'subquery=([application filters])'
 * UTIL type=rule | introduce 'filter=(app risk.recursive.is 3)'
