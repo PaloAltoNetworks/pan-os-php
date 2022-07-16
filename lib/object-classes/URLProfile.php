@@ -342,7 +342,7 @@ class URLProfile
                             $actionXMLnode->removeChild( $membernode );
                     }
 
-                    if( count( $this->$type ) === 0 )
+                    if( count( $this->$type ) === 0 || $type === "allow")
                         $xmlNode->removeChild( $actionXMLnode );
                 }
             }

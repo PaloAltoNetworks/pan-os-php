@@ -60,7 +60,7 @@ class RULEUTIL extends UTIL
     public function supportedArguments()
     {
         parent::supportedArguments();
-        $this->supportedArguments['ruletype'] = array('niceName' => 'ruleType', 'shortHelp' => 'specify which type(s) of you rule want to edit, (default is "security". ie: ruletype=any  ruletype=security,nat', 'argDesc' => 'any|security|nat|decryption|pbf|qos|dos|appoverride');
+        $this->supportedArguments['ruletype'] = array('niceName' => 'ruleType', 'shortHelp' => 'specify which type(s) of you rule want to edit, (default is "security". ie: ruletype=any  ruletype=security,nat', 'argDesc' => 'any|security|nat|decryption|pbf|qos|dos|appoverride|tunnelinspection');
     }
 
     public function location_filter_object()
@@ -115,6 +115,10 @@ class RULEUTIL extends UTIL
                             {
                                 $this->objectsToProcess[] = array('store' => $sub->dosRules, 'rules' => $sub->dosRules->resultingRuleSet());
                             }
+                            if( array_search('any', $this->ruleTypes) !== FALSE || array_search('tunnelinspection', $this->ruleTypes) !== FALSE )
+                            {
+                                $this->objectsToProcess[] = array('store' => $sub->tunnelInspectionRules, 'rules' => $sub->tunnelInspectionRules->resultingRuleSet());
+                            }
                             $locationFound = TRUE;
                         }
                     }
@@ -157,6 +161,10 @@ class RULEUTIL extends UTIL
                             if( array_search('any', $this->ruleTypes) !== FALSE || array_search('dos', $this->ruleTypes) !== FALSE )
                             {
                                 $this->objectsToProcess[] = array('store' => $sub->dosRules, 'rules' => $sub->dosRules->rules());
+                            }
+                            if( array_search('any', $this->ruleTypes) !== FALSE || array_search('tunnelinspection', $this->ruleTypes) !== FALSE )
+                            {
+                                $this->objectsToProcess[] = array('store' => $sub->tunnelInspectionRules, 'rules' => $sub->tunnelInspectionRules->rules());
                             }
                             $locationFound = TRUE;
                         }
@@ -204,6 +212,10 @@ class RULEUTIL extends UTIL
                     if( array_search('any', $this->ruleTypes) !== FALSE || array_search('dos', $this->ruleTypes) !== FALSE )
                     {
                         $this->objectsToProcess[] = array('store' => $this->pan->dosRules, 'rules' => $this->pan->dosRules->rules());
+                    }
+                    if( array_search('any', $this->ruleTypes) !== FALSE || array_search('tunnelinspection', $this->ruleTypes) !== FALSE )
+                    {
+                        $this->objectsToProcess[] = array('store' => $this->pan->tunnelInspectionRules, 'rules' => $this->pan->tunnelInspectionRules->rules());
                     }
                     $locationFound = TRUE;
 
@@ -264,6 +276,10 @@ class RULEUTIL extends UTIL
                         {
                             $this->objectsToProcess[] = array('store' => $sub->dosRules, 'rules' => $sub->dosRules->rules());
                         }
+                        if( array_search('any', $this->ruleTypes) !== FALSE || array_search('tunnelinspection', $this->ruleTypes) !== FALSE )
+                        {
+                            $this->objectsToProcess[] = array('store' => $sub->tunnelInspectionRules, 'rules' => $sub->tunnelInspectionRules->rules());
+                        }
                         $locationFound = TRUE;
                     }
 
@@ -281,7 +297,7 @@ class RULEUTIL extends UTIL
         //
         // Determine rule types
         //
-        $supportedRuleTypes = array( 'any', 'security', 'nat', 'decryption', 'appoverride', 'captiveportal', 'authentication', 'pbf', 'qos', 'dos');
+        $supportedRuleTypes = array( 'any', 'security', 'nat', 'decryption', 'appoverride', 'captiveportal', 'authentication', 'pbf', 'qos', 'dos', 'tunnelinspection');
         if( !isset(PH::$args['ruletype']) )
         {
             PH::print_stdout( " - No 'ruleType' specified, using 'security' by default" );

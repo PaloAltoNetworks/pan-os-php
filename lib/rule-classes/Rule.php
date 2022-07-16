@@ -1409,6 +1409,11 @@ class Rule
         return FALSE;
     }
 
+    public function isTunnelInspectionRule()
+    {
+        return FALSE;
+    }
+
     public function ruleNature()
     {
         return 'unknown';

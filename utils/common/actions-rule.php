@@ -4498,6 +4498,9 @@ RuleCallContext::$supportedActions[] = array(
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
 
+        if( !isset( $rule->app ) )
+            return null;
+
         $postgresBool = $rule->apps->hasApp( "postgres" );
         if( !$postgresBool )
             return null;
