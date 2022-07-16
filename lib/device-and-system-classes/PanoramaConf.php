@@ -112,6 +112,9 @@ class PanoramaConf
     /** @var RuleStore */
     public $dosRules;
 
+    /** @var RuleStore */
+    public $tunnelInspectionRules;
+
     /** @var AddressStore */
     public $addressStore = null;
 
@@ -272,6 +275,7 @@ class PanoramaConf
         $this->pbfRules = new RuleStore($this, 'PbfRule', TRUE);
         $this->qosRules = new RuleStore($this, 'QoSRule', TRUE);
         $this->dosRules = new RuleStore($this, 'DoSRule', TRUE);
+        $this->tunnelInspectionRules = new RuleStore($this, 'TunnelInspectionRule', TRUE);
 
         $this->_fakeNetworkProperties = new NetworkPropertiesContainer($this);
 
@@ -811,6 +815,31 @@ class PanoramaConf
                 $tmpPost = null;
         }
         $this->dosRules->load_from_domxml($tmp, $tmpPost);//
+
+
+        if( $prerulebase === FALSE )
+            $tmp = null;
+        else
+        {
+            $tmp = DH::findFirstElement('tunnel-inspect', $prerulebase);
+            if( $tmp !== FALSE )
+                $tmp = DH::findFirstElement('rules', $tmp);
+
+            if( $tmp === FALSE )
+                $tmp = null;
+        }
+        if( $postrulebase === FALSE )
+            $tmpPost = null;
+        else
+        {
+            $tmpPost = DH::findFirstElement('tunnel-inspect', $postrulebase);
+            if( $tmpPost !== FALSE )
+                $tmpPost = DH::findFirstElement('rules', $tmpPost);
+
+            if( $tmpPost === FALSE )
+                $tmpPost = null;
+        }
+        $this->tunnelInspectionRules->load_from_domxml($tmp, $tmpPost);//
         //
         // end of policies extraction
         //

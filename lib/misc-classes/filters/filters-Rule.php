@@ -3194,7 +3194,7 @@ RQuery::$defaultFilters['rule']['app']['operators']['characteristic.has'] = arra
 
         foreach( $rule->apps->membersExpanded() as $app )
         {
-            if( $app->_characteristics[$sanitizedValue] === TRUE )
+            if( isset($app->_characteristics[$sanitizedValue]) && $app->_characteristics[$sanitizedValue] === TRUE )
                 return TRUE;
 
         }

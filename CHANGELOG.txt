@@ -1,6 +1,18 @@
 CHANGELOG
 
-2.0.47
+2.0.48
+UTILS:
+* UTIL type=securityprofile securityprofiletype=url-filtering | improvements actions=url-filtering-action-set:[ACTION],[category]
+* UTIL type=rule | introduce ruletype=tunnelinspection
+
+BUGFIX:
+* UTIL type=address/service/tag/application/zone | bugfix for 'filter=(object is.unused)' - direct benefit of class TunnelInspectionRule
+
+GENERAL:
+* introduce class TunnelInspectionRule
+
+
+2.0.47 (20220714)
 UTILS:
 * UTIL type=Rule | introduce 'filter=(app has.fromquery subquery1)' 'subquery=([application filters])'
 * UTIL type=rule | introduce 'filter=(app risk.recursive.is 3)'

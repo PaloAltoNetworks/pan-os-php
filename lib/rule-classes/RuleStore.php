@@ -25,13 +25,13 @@ class RuleStore
     use XmlConvertible;
 
     /**
-     * @var Rule[]|SecurityRule[]|NatRule[]|DecryptionRule[]|AppOverrideRule[]|CaptivePortalRule[]|PbfRule[]|QoSRule|DoSRule[]||DoSRule[]
+     * @var Rule[]|SecurityRule[]|NatRule[]|DecryptionRule[]|AppOverrideRule[]|CaptivePortalRule[]|PbfRule[]|QoSRule|DoSRule[]|TunnelInspectionRule[]
      */
     protected $_rules = array();
 
 
     /**
-     * @var Rule[]|SecurityRule[]|NatRule[]|DecryptionRule[]|AppOverrideRule[]|CaptivePortalRule[]|PbfRule[]|QoSRule|DoSRule[]||DoSRule[]
+     * @var Rule[]|SecurityRule[]|NatRule[]|DecryptionRule[]|AppOverrideRule[]|CaptivePortalRule[]|PbfRule[]|QoSRule|DoSRule[]|TunnelInspectionRule[]
      */
     protected $_postRules = array();
 
@@ -74,7 +74,8 @@ class RuleStore
         'AuthenticationRule' => array('name' => 'Authentication', 'varName' => 'authenticationRules', 'xpathRoot' => 'authentication'),
         'PbfRule' => array('name' => 'Pbf', 'varName' => 'pbfRules', 'xpathRoot' => 'pbf'),
         'QoSRule' => array('name' => 'QoS', 'varName' => 'qosRules', 'xpathRoot' => 'qos'),
-        'DoSRule' => array('name' => 'DoS', 'varName' => 'dosRules', 'xpathRoot' => 'dos')
+        'DoSRule' => array('name' => 'DoS', 'varName' => 'dosRules', 'xpathRoot' => 'dos'),
+        'TunnelInspectionRule' => array('name' => 'TunnelInspection', 'varName' => 'tunnelInspectionRules', 'xpathRoot' => 'tunnel-inspect')
     );
 
     public function __construct($owner, $ruleType, $isPreOrPost = FALSE)
