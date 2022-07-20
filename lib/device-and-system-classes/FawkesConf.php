@@ -419,7 +419,8 @@ class FawkesConf
         //
 
         #$this->managedFirewallsSerials = $this->managedFirewallsStore->get_serial_from_xml($tmp, TRUE);
-        $this->managedFirewallsStore->load_from_domxml($tmp);
+        if( $tmp !== false )
+            $this->managedFirewallsStore->load_from_domxml($tmp);
     }
 
 

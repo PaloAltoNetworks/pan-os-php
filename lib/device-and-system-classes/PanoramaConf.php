@@ -332,7 +332,8 @@ class PanoramaConf
 
         $tmp = DH::findFirstElementOrCreate('mgt-config', $this->xmlroot);
         $tmp = DH::findFirstElement('devices', $tmp);
-        $this->managedFirewallsStore->load_from_domxml($tmp);
+        if( $tmp !== false )
+            $this->managedFirewallsStore->load_from_domxml($tmp);
         #$this->managedFirewallsSerials = $this->managedFirewallsStore->get_serial_from_xml($tmp, TRUE);
 
 
