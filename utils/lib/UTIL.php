@@ -227,7 +227,7 @@ class UTIL
      */
     public function utilLogger()
     {
-        $this->log = new logWriter();
+        $this->log = new logWriter( "", array(), $this );
     }
 
     public function supportedArguments()

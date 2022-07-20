@@ -7,6 +7,9 @@ UTILS:
 
 BUGFIX:
 * UTIL type=address/service/tag/application/zone | bugfix for 'filter=(object is.unused)' - direct benefit of class TunnelInspectionRule
+* class logwriter/UTIL - fix to use settimezone() also on Expedition-Converter
+* class Manageddevice - bugfix for reading manageddevice from Panorama
+* class CIDR | bugfix for specific use case
 
 GENERAL:
 * introduce class TunnelInspectionRule
