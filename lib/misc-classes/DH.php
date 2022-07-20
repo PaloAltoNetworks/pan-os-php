@@ -889,6 +889,20 @@ class DH
         }
 
     }
+
+    static public function hasChild($p)
+    {
+        if( $p->hasChildNodes() )
+        {
+            foreach( $p->childNodes as $c )
+            {
+                if( $c->nodeType == XML_ELEMENT_NODE )
+                    return TRUE;
+            }
+        }
+        return false;
+    }
+
     //todo: 20210615 swaschkut
     //merge two XML node // DomDocument
 }

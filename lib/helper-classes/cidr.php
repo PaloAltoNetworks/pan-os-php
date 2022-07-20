@@ -356,6 +356,7 @@ class cidr
 
 
         $ex = explode('/', $value);
+        $version = "ipv4";
         if( filter_var($ex[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== FALSE )
         {
             $version = "ipv4";
