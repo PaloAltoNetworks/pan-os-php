@@ -41,14 +41,18 @@ class logWriter
         'dateFormat' => 'd-M-Y H:i:s'
     );
 
+    protected $util = null;
+
     /**
      * Class constructor
      * @param string $log_file - path and filename of log
      * @param array $params
      * @throws
      */
-    public function __construct($log_file = "", $params = array())
+    public function __construct($log_file = "", $params = array(), $util)
     {
+        $this->util = $util;
+
         $log_folder = __DIR__ . "/../../log";
         $log_file = $log_folder."/tool-log.txt";
         $this->log_file = $log_file;
@@ -164,7 +168,8 @@ class logWriter
         }
 
         //Grab time - based on timezone in php.ini
-        UTIL::setTimezone();
+        //
+        $this->util->setTimezone();
         $time = date($this->params['dateFormat']);
         // Write time, url, & message to end of file
         fwrite($this->file, "[$time] [$path] : [$severity] - $message" . PHP_EOL);
