@@ -49,7 +49,7 @@ class logWriter
      * @param array $params
      * @throws
      */
-    public function __construct($log_file = "", $params = array(), $util)
+    public function __construct($log_file = "", $params = array(), $util = null)
     {
         $this->util = $util;
 
@@ -169,7 +169,9 @@ class logWriter
 
         //Grab time - based on timezone in php.ini
         //
-        $this->util->setTimezone();
+        if( $this->util !== null )
+            $this->util->setTimezone();
+        
         $time = date($this->params['dateFormat']);
         // Write time, url, & message to end of file
         fwrite($this->file, "[$time] [$path] : [$severity] - $message" . PHP_EOL);
