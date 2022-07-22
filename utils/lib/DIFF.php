@@ -22,6 +22,9 @@ class DIFF extends UTIL
     public $el1rulebase = array();
     public $el2rulebase = array();
 
+    public $filters = array();
+    public $excludes = array();
+
     public function utilStart()
     {
         $this->usageMsg = PH::boldText('USAGE: ') . "php " . basename(__FILE__) . " file1=ORIGINAL.xml file2=NEWESTFILE.xml";
@@ -127,24 +130,53 @@ class DIFF extends UTIL
 
         if( isset(PH::$args['filter']) )
         {
-            $filter = PH::$args['filter'];
-            #$filter = '/config/devices/entry[@name="localhost.localdomain"]/vsys/entry[@name="vsys1"]/tag';
+            //Todo: check if filter is filename:
+            if( file_exists( PH::$args['filter'] ) )
+            {
+                $strJsonFileContents = file_get_contents(PH::$args['filter']);
 
-            PH::print_stdout( "");
-            PH::print_stdout( "FILTER is set to: '" . PH::boldText($filter) . "'");
-            PH::print_stdout( "");
+                $array = json_decode($strJsonFileContents, true);
+
+                $this->filters = $array['include'];
+                PH::print_stdout( "");
+                foreach( $this->filters as $filter )
+                    PH::print_stdout( "FILTER is set to: '" . PH::boldText( $filter ) . "'");
+
+                PH::print_stdout( "");
+
+                $this->excludes = $array['exclude'];
+
+                if( !empty( $this->excludes ) )
+                {
+                    PH::print_stdout( "");
+                    foreach( $this->excludes as $exclude )
+                        PH::print_stdout( "exclude is set to: '" . PH::boldText( $exclude ) . "'");
+
+                    PH::print_stdout( "");
+                }
+                #exit();
+            }
+            else
+            {
+                $this->filters[] = PH::$args['filter'];
+                #$filter = '/config/devices/entry[@name="localhost.localdomain"]/vsys/entry[@name="vsys1"]/tag';
+
+                PH::print_stdout( "");
+                PH::print_stdout( "FILTER is set to: '" . PH::boldText( PH::$args['filter'] ) . "'");
+                PH::print_stdout( "");
+            }
+
+
 
         }
-        else
-            $filter = FALSE;
 
         PH::print_stdout( "*** NOW DISPLAY DIFF ***");
-        $this->runDiff( $doc1, $doc2, $filter );
+        $this->runDiff( $doc1, $doc2 );
     }
 
-    public function runDiff( $doc1, $doc2, $filter = FALSE)
+    public function runDiff( $doc1, $doc2 )
     {
-        if( $filter == FALSE )
+        if( empty( $this->filters ) )
         {
             $doc1Root = DH::firstChildElement($doc1);
             $doc2Root = DH::firstChildElement($doc2);
@@ -154,37 +186,48 @@ class DIFF extends UTIL
         else
         {
             //Todo: 20200507 bring in xpath as filter
-
-            $doc1Root = DH::findXPathSingleEntry($filter, $doc1);
-            $doc2Root = DH::findXPathSingleEntry($filter, $doc2);
-
-            ##########################################
-
-            if( $doc1Root == FALSE || $doc2Root == FALSE )
+            foreach( $this->filters as $filter )
             {
-                $xmlDoc1 = new DOMDocument();
-                $xmlDoc1->preserveWhiteSpace = FALSE;
-                $xmlDoc1->formatOutput = TRUE;
+                $continue = false;
+                foreach( $this->excludes as $exclude )
+                {
+                    if( strpos( $filter, $exclude ) !== FALSE )
+                        $continue = true;
+                }
+                if( $continue )
+                    continue;
 
-                $filter_array = explode("/", $filter);
-                $item = end($filter_array);
+                $doc1Root = DH::findXPathSingleEntry($filter, $doc1);
+                $doc2Root = DH::findXPathSingleEntry($filter, $doc2);
 
-                $element = $xmlDoc1->createElement($item);
-                $config = $xmlDoc1->appendChild($element);
+                ##########################################
+
+                if( $doc1Root == FALSE || $doc2Root == FALSE )
+                {
+                    $xmlDoc1 = new DOMDocument();
+                    $xmlDoc1->preserveWhiteSpace = FALSE;
+                    $xmlDoc1->formatOutput = TRUE;
+
+                    $filter_array = explode("/", $filter);
+                    $item = end($filter_array);
+
+                    $element = $xmlDoc1->createElement($item);
+                    $config = $xmlDoc1->appendChild($element);
+                }
+                if( $doc1Root == FALSE )
+                {
+                    $doc1Root = $config;
+                    PH::print_stdout( "doc1Root : false" );
+                }
+
+                if( $doc2Root == FALSE )
+                {
+                    $doc2Root = $config;
+                    PH::print_stdout( "doc2Root : false" );
+                }
+
+                $this->compareElements($doc1Root, $doc2Root, $filter);
             }
-            if( $doc1Root == FALSE )
-            {
-                $doc1Root = $config;
-                PH::print_stdout( "doc1Root : false" );
-            }
-
-            if( $doc2Root == FALSE )
-            {
-                $doc2Root = $config;
-                PH::print_stdout( "doc2Root : false" );
-            }
-
-            $this->compareElements($doc1Root, $doc2Root, $filter);
         }
     }
 

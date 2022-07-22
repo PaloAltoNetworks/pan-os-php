@@ -20,6 +20,42 @@
  */
 
 
+//TODO swaschkut 20220720
+// - implement app-tag
+// - implement exclude
+
+/*
+  <application-filter>
+    <entry name="test">
+      <disable-override>no</disable-override>
+      <tagging>
+        <tag>
+          <member>[DLP App Exclusion]</member>
+        </tag>
+      </tagging>
+      <exclude>
+        <member>google-analytics</member>
+      </exclude>
+    </entry>
+  </application-filter>
+ */
+/*
+        <entry id="225" name="google-analytics" ori_country="USA" ori_language="English">
+...
+          <tag minver="9.1.0">
+            <member>[DLP App Exclusion]</member>
+            <member>[Web App]</member>
+          </tag>
+
+
+      <app-tag minver="9.1.0">
+        <entry name="Enterprise VoIP">
+          <version>8195</version>
+          <display>[Enterprise VoIP]</display>
+          <comment>This tag identifies the most common VoIP applications used in an enterprise environment. This will also include protocols like SIP, RTP, etc. for which we do not have App-IDs yet.</comment>
+          <description>This tag identifies the most common VoIP applications used in an enterprise environment. This will also include protocols like SIP, RTP, etc. for which we do not have App-IDs yet.</description>
+        </entry>
+ */
 class AppFilter extends App
 {
     use XmlConvertible;
