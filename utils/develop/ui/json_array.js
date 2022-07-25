@@ -1606,6 +1606,18 @@ var subjectObject =
             }
         },
         "filter": {
+            "manageddevice": {
+                "operators": {
+                    "with-no-dg": {
+                        "Function": {},
+                        "arg": false,
+                        "ci": {
+                            "fString": "(%PROP% grp)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    }
+                }
+            },
             "name": {
                 "operators": {
                     "eq": {
@@ -4832,10 +4844,36 @@ var subjectObject =
             "name-touppercase": {
                 "name": "name-toUpperCase",
                 "MainFunction": {}
+            },
+            "url-filtering-action-set": {
+                "name": "url-filtering-action-set",
+                "MainFunction": {},
+                "args": {
+                    "action": {
+                        "type": "string",
+                        "default": "false"
+                    },
+                    "url-category": {
+                        "type": "string",
+                        "default": "false"
+                    }
+                }
             }
         },
         "filter": {
             "alert": {
+                "operators": {
+                    "has": {
+                        "Function": {},
+                        "arg": true,
+                        "ci": {
+                            "fString": "(%PROP% securityrule )",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    }
+                }
+            },
+            "allow": {
                 "operators": {
                     "has": {
                         "Function": {},
