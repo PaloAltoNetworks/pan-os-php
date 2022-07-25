@@ -25,6 +25,8 @@ class DIFF extends UTIL
     public $filters = array();
     public $excludes = array();
 
+    public $ruleorderCHECK = TRUE;
+
     public function utilStart()
     {
         $this->usageMsg = PH::boldText('USAGE: ') . "php " . basename(__FILE__) . " file1=ORIGINAL.xml file2=NEWESTFILE.xml";
@@ -70,6 +72,9 @@ class DIFF extends UTIL
             $this->outputFormatSet = FALSE;
         //$this->outputFormatSet = TRUE;
 
+        if( isset(PH::$args['noruleordercheck']) )
+            $this->ruleorderCHECK = FALSe;
+
         if( isset(PH::$args['in']) )
         {
             $configInput = PH::processIOMethod(PH::$args['in'], TRUE);
@@ -106,29 +111,71 @@ class DIFF extends UTIL
             if( !is_string($file1) || strlen($file1) < 1 )
                 $this->display_error_usage_exit('"file1" argument is not a valid string');
 
-            if( !isset(PH::$args['file2']) )
-                $this->display_error_usage_exit('"file2" is missing from arguments');
-            $file2 = PH::$args['file2'];
-            if( !file_exists($file2) )
-                derr( "FILE: ". $file2. " not available", null, false);
-            if( !is_string($file2) || strlen($file2) < 1 )
-                $this->display_error_usage_exit('"file1" argument is not a valid string');
-
             PH::print_stdout( "Opening ORIGINAL '{$file1}' XML file... ");
             $doc1 = new DOMDocument();
             if( $doc1->load($file1) === FALSE )
                 derr('Error while parsing xml:' . libxml_get_last_error()->message , null, false);
 
 
-            PH::print_stdout( "Opening COMPARE '{$file2}' XML file... ");
-            $doc2 = new DOMDocument();
-            if( $doc2->load($file2) === FALSE )
-                derr('Error while parsing xml:' . libxml_get_last_error()->message, null, false);
+            //Todo:
+            // if filter isset and filter include $$NAME$$
+            // check if name1 and name2 is available
+            $replace = "13982";
+            if( isset(PH::$args['filter']) and strpos( PH::$args['filter'], $replace."name".$replace ) !== FALSE )
+            #if( isset(PH::$args['filter']) )
+            {
+                $doc2 = new DOMDocument();
+                if( $doc2->load($file1) === FALSE )
+                    derr('Error while parsing xml:' . libxml_get_last_error()->message , null, false);
 
+                $filterArgument = PH::$args['filter'];
+                $xpath = $filterArgument;
+                #print "filter: ".$filterArgument."\n";
+
+                $name1 = PH::$args['name1'];
+                if( isset( $name1 ) )
+                {
+                    #print "name1: ".$name1."\n";
+                    $xpath1 = str_replace( $replace."name".$replace, $name1, $xpath );
+                    $doc1Root = DH::findXPathSingleEntry($xpath1, $doc1);
+
+                    DH::makeElementAsRoot( $doc1Root, $doc1 );
+                }
+                else
+                    $this->display_error_usage_exit('"name1" is missing from arguments');
+
+                $name2 = PH::$args['name2'];
+                if( isset($name2) )
+                {
+                    #print "name2: ".$name2."\n";
+                    $xpath2 = str_replace( $replace."name".$replace, $name2, $xpath );
+                    $doc2Root = DH::findXPathSingleEntry($xpath2, $doc2);
+
+                    DH::makeElementAsRoot( $doc2Root, $doc2 );
+                }
+                else
+                     $this->display_error_usage_exit('"name2" is missing from arguments');
+                #exit();
+            }
+            else
+            {
+                if( !isset(PH::$args['file2']) )
+                    $this->display_error_usage_exit('"file2" is missing from arguments');
+                $file2 = PH::$args['file2'];
+                if( !file_exists($file2) )
+                    derr( "FILE: ". $file2. " not available", null, false);
+                if( !is_string($file2) || strlen($file2) < 1 )
+                    $this->display_error_usage_exit('"file1" argument is not a valid string');
+
+                PH::print_stdout( "Opening COMPARE '{$file2}' XML file... ");
+                $doc2 = new DOMDocument();
+                if( $doc2->load($file2) === FALSE )
+                    derr('Error while parsing xml:' . libxml_get_last_error()->message, null, false);
+            }
         }
 
-
-        if( isset(PH::$args['filter']) )
+        if( isset(PH::$args['filter']) and strpos( PH::$args['filter'], $replace."name".$replace ) === FALSE )
+        #if( isset(PH::$args['filter']) )
         {
             //Todo: check if filter is filename:
             if( file_exists( PH::$args['filter'] ) )
@@ -314,7 +361,7 @@ class DIFF extends UTIL
         }
 
         //calculating rule order
-        if( $this->endsWith( $xpath, "/rules" ) && strpos( $xpath, "rulebase/") !== false )
+        if( $this->ruleorderCHECK && $this->endsWith( $xpath, "/rules" ) && strpos( $xpath, "rulebase/") !== false )
         {
             if( isset( $el1Elements['entry'] ) && isset( $el2Elements['entry'] ) )
                 $this->calculateRuleorder( $el1Elements, $el2Elements);
