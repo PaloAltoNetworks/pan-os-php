@@ -7,6 +7,7 @@ UTILS:
 * type=diff | extend usage help for all possible arguments
 
 BUGFIX:
+* class UTIL | bugfix if no timezone setting can be found
 
 GENERAL:
 * update util_action_filter.json file
