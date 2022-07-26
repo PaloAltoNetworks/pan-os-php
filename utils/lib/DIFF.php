@@ -29,7 +29,25 @@ class DIFF extends UTIL
 
     public function utilStart()
     {
-        $this->usageMsg = PH::boldText('USAGE: ') . "php " . basename(__FILE__) . " file1=ORIGINAL.xml file2=NEWESTFILE.xml";
+        $this->usageMsg = PH::boldText('USAGE: ') ."\n".
+            "  - php " . basename(__FILE__) . " file1=ORIGINAL.xml file2=NEWESTFILE.xml\n".
+            "  - php " . basename(__FILE__) . " file1=ORIGINAL.xml file2=NEWESTFILE.xml \"filter=/config/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='DG-name']/pre-rules\"\n".
+            "  - php " . basename(__FILE__) . " file1=ORIGINAL.xml file2=NEWESTFILE.xml filter=file.json\n".
+            "JSON file structure:\n".
+            "{
+    \"include\": [
+        \"/config/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='testDG']/address\",
+        \"/config/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='testDG']/tag\",
+        \"/config/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='testDG']/service\",
+        \"/config/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='testDG']/address-group\"
+    ],
+    \"exclude\": [
+    	\"/config/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='testDG']/service-group\"
+    ]
+}\n".
+            "\n".
+            "  - php " . basename(__FILE__) . " file1=diff.xml \"filter=/config/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='$\$name$$']/pre-rules\" name1=testDG name2=testDG1"
+        ;
 
         #$this->prepareSupportedArgumentsArray();
         PH::processCliArgs();
@@ -139,7 +157,10 @@ class DIFF extends UTIL
                     $xpath1 = str_replace( $replace."name".$replace, $name1, $xpath );
                     $doc1Root = DH::findXPathSingleEntry($xpath1, $doc1);
 
-                    DH::makeElementAsRoot( $doc1Root, $doc1 );
+                    if( $doc1Root )
+                        DH::makeElementAsRoot( $doc1Root, $doc1 );
+                    else
+                        $this->display_error_usage_exit('"filter" argument is not a valid xPATH');
                 }
                 else
                     $this->display_error_usage_exit('"name1" is missing from arguments');
@@ -232,7 +253,6 @@ class DIFF extends UTIL
         }
         else
         {
-            //Todo: 20200507 bring in xpath as filter
             foreach( $this->filters as $filter )
             {
                 $continue = false;
@@ -379,10 +399,14 @@ class DIFF extends UTIL
                 $text = '';
 
                 $tmp = DH::dom_to_xml($el1);
-                $text .= '+' . str_replace("\n", "\n", $tmp);
+                #$text .= '+' . str_replace("\n", "\n", $tmp);
+                $text .= '+' . $tmp;
+
 
                 $tmp = DH::dom_to_xml($el2);
-                $text .= '-' . str_replace("\n", "\n", $tmp);
+                #$text .= '-' . str_replace("\n", "\n", $tmp);
+                $text .= '-' . $tmp;
+
 
                 //same xpath different content
                 //$this->displayDIFF( $xpath, $text, array( $el1 ), array($el2) );
@@ -620,12 +644,17 @@ class DIFF extends UTIL
         foreach( $plus as $node )
         {
             $tmp = DH::dom_to_xml($node);
+            $tmp = $this->str_lreplace( "\n", "", $tmp );
             $text .= '+' . str_replace("\n", "\n+", $tmp);
         }
+
+        if( count($plus) > 0 && count( $minus ) > 0 )
+            $text .= "\n";
 
         foreach( $minus as $node )
         {
             $tmp = DH::dom_to_xml($node);
+            $tmp = $this->str_lreplace( "\n", "", $tmp );
             $text .= '-' . str_replace("\n", "\n-", $tmp);
         }
 
@@ -808,5 +837,18 @@ class DIFF extends UTIL
             //print "KEY: ".$tmpKey."  END: ".$endstring."\n";
         }
     }
+
+    function str_lreplace($search, $replace, $subject)
+    {
+        $pos = strrpos($subject, $search);
+
+        if($pos !== false)
+        {
+            $subject = substr_replace($subject, $replace, $pos, strlen($search));
+        }
+
+        return $subject;
+    }
+
 }
 

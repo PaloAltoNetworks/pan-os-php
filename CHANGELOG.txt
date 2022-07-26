@@ -4,6 +4,7 @@ CHANGELOG
 UTILS:
 * pan-os-php type=diff | introduce for argument filter=JSONFILE.json
 * type=diff | introduce of filtering on xpath with name1 and name2 arguments as variable
+* type=diff | extend usage help for all possible arguments
 
 BUGFIX:
 
