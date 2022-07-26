@@ -26,7 +26,8 @@ class UTIL_GET_ACTION_FILTER
 
         //$array = array( 'address', 'service', 'tag', 'rule', 'zone', 'securityprofile', 'schedule','virtualwire','routing','interface','device', 'securityprofilegroup', 'application', 'threat');
         $array = PH::$supportedUTILTypes;
-
+        #$JSON_pretty =  json_encode( $array, JSON_PRETTY_PRINT );
+        #file_put_contents(__DIR__ . "/util_type.json", $JSON_pretty);
 
         foreach( $array as $entry )
         {
@@ -34,6 +35,8 @@ class UTIL_GET_ACTION_FILTER
 
             $util->utilType = $entry;
             $tmp_array[ $entry ]['action'] = $util->supportedActions();
+            #if( empty($tmp_array[ $entry ]['action']) )
+                #$tmp_array[ $entry ]['action'][] = "no actions available";
 
             if( isset(RQuery::$defaultFilters[$util->utilType]) )
             {
@@ -42,7 +45,11 @@ class UTIL_GET_ACTION_FILTER
                 $tmp_array[ $entry ]['filter'] = $filter_array;
             }
             else
+            {
                 $tmp_array[ $entry ]['filter'] = array();
+                #$tmp_array[ $entry ]['filter'][] = "no filters available";
+            }
+
 
         }
 

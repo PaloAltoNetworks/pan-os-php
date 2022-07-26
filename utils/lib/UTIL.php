@@ -1828,25 +1828,27 @@ class UTIL
         date_default_timezone_set($timezone_name);
         */
 
-        $configroot = DH::findFirstElementOrDie('config', $this->xmlDoc);
-
-        $devicesroot = DH::findFirstElementOrDie('devices', $configroot);
-
-
-        $localhostroot = DH::findFirstElementByNameAttrOrDie('entry', 'localhost.localdomain', $devicesroot);
-
-
-        $deviceconfigroot = DH::findFirstElement('deviceconfig', $localhostroot);
-
-        $systemroot = DH::findFirstElement('system', $deviceconfigroot);
-        if( $systemroot !== FALSE )
+        if( $this->xmlDoc !== false && $this->xmlDoc !== null )
         {
-            $timezone = DH::findFirstElement('timezone', $systemroot);
-            if( $timezone )
+            $configroot = DH::findFirstElementOrDie('config', $this->xmlDoc);
+            $devicesroot = DH::findFirstElementOrDie('devices', $configroot);
+
+
+            $localhostroot = DH::findFirstElementByNameAttrOrDie('entry', 'localhost.localdomain', $devicesroot);
+
+
+            $deviceconfigroot = DH::findFirstElement('deviceconfig', $localhostroot);
+
+            $systemroot = DH::findFirstElement('system', $deviceconfigroot);
+            if( $systemroot !== FALSE )
             {
-                $this->pan->timezone = $timezone->textContent;
-                date_default_timezone_set( $timezone->textContent );
-                PH::print_stdout( " - PAN-OS Device timezone: ".$this->pan->timezone ." is used. actual time: ".date('Y/m/d H:i:s') );
+                $timezone = DH::findFirstElement('timezone', $systemroot);
+                if( $timezone )
+                {
+                    $this->pan->timezone = $timezone->textContent;
+                    date_default_timezone_set( $timezone->textContent );
+                    PH::print_stdout( " - PAN-OS Device timezone: ".$this->pan->timezone ." is used. actual time: ".date('Y/m/d H:i:s') );
+                }
             }
         }
     }

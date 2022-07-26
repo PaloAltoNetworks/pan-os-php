@@ -22,9 +22,32 @@ class DIFF extends UTIL
     public $el1rulebase = array();
     public $el2rulebase = array();
 
+    public $filters = array();
+    public $excludes = array();
+
+    public $ruleorderCHECK = TRUE;
+
     public function utilStart()
     {
-        $this->usageMsg = PH::boldText('USAGE: ') . "php " . basename(__FILE__) . " file1=ORIGINAL.xml file2=NEWESTFILE.xml";
+        $this->usageMsg = PH::boldText('USAGE: ') ."\n".
+            "  - php " . basename(__FILE__) . " file1=ORIGINAL.xml file2=NEWESTFILE.xml\n".
+            "  - php " . basename(__FILE__) . " file1=ORIGINAL.xml file2=NEWESTFILE.xml \"filter=/config/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='DG-name']/pre-rules\"\n".
+            "  - php " . basename(__FILE__) . " file1=ORIGINAL.xml file2=NEWESTFILE.xml filter=file.json\n".
+            "JSON file structure:\n".
+            "{
+    \"include\": [
+        \"/config/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='testDG']/address\",
+        \"/config/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='testDG']/tag\",
+        \"/config/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='testDG']/service\",
+        \"/config/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='testDG']/address-group\"
+    ],
+    \"exclude\": [
+    	\"/config/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='testDG']/service-group\"
+    ]
+}\n".
+            "\n".
+            "  - php " . basename(__FILE__) . " file1=diff.xml \"filter=/config/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='$\$name$$']/pre-rules\" name1=testDG name2=testDG1"
+        ;
 
         #$this->prepareSupportedArgumentsArray();
         PH::processCliArgs();
@@ -67,6 +90,9 @@ class DIFF extends UTIL
             $this->outputFormatSet = FALSE;
         //$this->outputFormatSet = TRUE;
 
+        if( isset(PH::$args['noruleordercheck']) )
+            $this->ruleorderCHECK = FALSe;
+
         if( isset(PH::$args['in']) )
         {
             $configInput = PH::processIOMethod(PH::$args['in'], TRUE);
@@ -103,48 +129,122 @@ class DIFF extends UTIL
             if( !is_string($file1) || strlen($file1) < 1 )
                 $this->display_error_usage_exit('"file1" argument is not a valid string');
 
-            if( !isset(PH::$args['file2']) )
-                $this->display_error_usage_exit('"file2" is missing from arguments');
-            $file2 = PH::$args['file2'];
-            if( !file_exists($file2) )
-                derr( "FILE: ". $file2. " not available", null, false);
-            if( !is_string($file2) || strlen($file2) < 1 )
-                $this->display_error_usage_exit('"file1" argument is not a valid string');
-
             PH::print_stdout( "Opening ORIGINAL '{$file1}' XML file... ");
             $doc1 = new DOMDocument();
             if( $doc1->load($file1) === FALSE )
                 derr('Error while parsing xml:' . libxml_get_last_error()->message , null, false);
 
 
-            PH::print_stdout( "Opening COMPARE '{$file2}' XML file... ");
-            $doc2 = new DOMDocument();
-            if( $doc2->load($file2) === FALSE )
-                derr('Error while parsing xml:' . libxml_get_last_error()->message, null, false);
+            //Todo:
+            // if filter isset and filter include $$NAME$$
+            // check if name1 and name2 is available
+            $replace = "13982";
+            if( isset(PH::$args['filter']) and strpos( PH::$args['filter'], $replace."name".$replace ) !== FALSE )
+            #if( isset(PH::$args['filter']) )
+            {
+                $doc2 = new DOMDocument();
+                if( $doc2->load($file1) === FALSE )
+                    derr('Error while parsing xml:' . libxml_get_last_error()->message , null, false);
 
+                $filterArgument = PH::$args['filter'];
+                $xpath = $filterArgument;
+                #print "filter: ".$filterArgument."\n";
+
+                $name1 = PH::$args['name1'];
+                if( isset( $name1 ) )
+                {
+                    #print "name1: ".$name1."\n";
+                    $xpath1 = str_replace( $replace."name".$replace, $name1, $xpath );
+                    $doc1Root = DH::findXPathSingleEntry($xpath1, $doc1);
+
+                    if( $doc1Root )
+                        DH::makeElementAsRoot( $doc1Root, $doc1 );
+                    else
+                        $this->display_error_usage_exit('"filter" argument is not a valid xPATH');
+                }
+                else
+                    $this->display_error_usage_exit('"name1" is missing from arguments');
+
+                $name2 = PH::$args['name2'];
+                if( isset($name2) )
+                {
+                    #print "name2: ".$name2."\n";
+                    $xpath2 = str_replace( $replace."name".$replace, $name2, $xpath );
+                    $doc2Root = DH::findXPathSingleEntry($xpath2, $doc2);
+
+                    DH::makeElementAsRoot( $doc2Root, $doc2 );
+                }
+                else
+                     $this->display_error_usage_exit('"name2" is missing from arguments');
+                #exit();
+            }
+            else
+            {
+                if( !isset(PH::$args['file2']) )
+                    $this->display_error_usage_exit('"file2" is missing from arguments');
+                $file2 = PH::$args['file2'];
+                if( !file_exists($file2) )
+                    derr( "FILE: ". $file2. " not available", null, false);
+                if( !is_string($file2) || strlen($file2) < 1 )
+                    $this->display_error_usage_exit('"file1" argument is not a valid string');
+
+                PH::print_stdout( "Opening COMPARE '{$file2}' XML file... ");
+                $doc2 = new DOMDocument();
+                if( $doc2->load($file2) === FALSE )
+                    derr('Error while parsing xml:' . libxml_get_last_error()->message, null, false);
+            }
         }
 
-
-        if( isset(PH::$args['filter']) )
+        if( isset(PH::$args['filter']) and strpos( PH::$args['filter'], $replace."name".$replace ) === FALSE )
+        #if( isset(PH::$args['filter']) )
         {
-            $filter = PH::$args['filter'];
-            #$filter = '/config/devices/entry[@name="localhost.localdomain"]/vsys/entry[@name="vsys1"]/tag';
+            //Todo: check if filter is filename:
+            if( file_exists( PH::$args['filter'] ) )
+            {
+                $strJsonFileContents = file_get_contents(PH::$args['filter']);
 
-            PH::print_stdout( "");
-            PH::print_stdout( "FILTER is set to: '" . PH::boldText($filter) . "'");
-            PH::print_stdout( "");
+                $array = json_decode($strJsonFileContents, true);
+
+                $this->filters = $array['include'];
+                PH::print_stdout( "");
+                foreach( $this->filters as $filter )
+                    PH::print_stdout( "FILTER is set to: '" . PH::boldText( $filter ) . "'");
+
+                PH::print_stdout( "");
+
+                $this->excludes = $array['exclude'];
+
+                if( !empty( $this->excludes ) )
+                {
+                    PH::print_stdout( "");
+                    foreach( $this->excludes as $exclude )
+                        PH::print_stdout( "exclude is set to: '" . PH::boldText( $exclude ) . "'");
+
+                    PH::print_stdout( "");
+                }
+                #exit();
+            }
+            else
+            {
+                $this->filters[] = PH::$args['filter'];
+                #$filter = '/config/devices/entry[@name="localhost.localdomain"]/vsys/entry[@name="vsys1"]/tag';
+
+                PH::print_stdout( "");
+                PH::print_stdout( "FILTER is set to: '" . PH::boldText( PH::$args['filter'] ) . "'");
+                PH::print_stdout( "");
+            }
+
+
 
         }
-        else
-            $filter = FALSE;
 
         PH::print_stdout( "*** NOW DISPLAY DIFF ***");
-        $this->runDiff( $doc1, $doc2, $filter );
+        $this->runDiff( $doc1, $doc2 );
     }
 
-    public function runDiff( $doc1, $doc2, $filter = FALSE)
+    public function runDiff( $doc1, $doc2 )
     {
-        if( $filter == FALSE )
+        if( empty( $this->filters ) )
         {
             $doc1Root = DH::firstChildElement($doc1);
             $doc2Root = DH::firstChildElement($doc2);
@@ -153,38 +253,48 @@ class DIFF extends UTIL
         }
         else
         {
-            //Todo: 20200507 bring in xpath as filter
-
-            $doc1Root = DH::findXPathSingleEntry($filter, $doc1);
-            $doc2Root = DH::findXPathSingleEntry($filter, $doc2);
-
-            ##########################################
-
-            if( $doc1Root == FALSE || $doc2Root == FALSE )
+            foreach( $this->filters as $filter )
             {
-                $xmlDoc1 = new DOMDocument();
-                $xmlDoc1->preserveWhiteSpace = FALSE;
-                $xmlDoc1->formatOutput = TRUE;
+                $continue = false;
+                foreach( $this->excludes as $exclude )
+                {
+                    if( strpos( $filter, $exclude ) !== FALSE )
+                        $continue = true;
+                }
+                if( $continue )
+                    continue;
 
-                $filter_array = explode("/", $filter);
-                $item = end($filter_array);
+                $doc1Root = DH::findXPathSingleEntry($filter, $doc1);
+                $doc2Root = DH::findXPathSingleEntry($filter, $doc2);
 
-                $element = $xmlDoc1->createElement($item);
-                $config = $xmlDoc1->appendChild($element);
+                ##########################################
+
+                if( $doc1Root == FALSE || $doc2Root == FALSE )
+                {
+                    $xmlDoc1 = new DOMDocument();
+                    $xmlDoc1->preserveWhiteSpace = FALSE;
+                    $xmlDoc1->formatOutput = TRUE;
+
+                    $filter_array = explode("/", $filter);
+                    $item = end($filter_array);
+
+                    $element = $xmlDoc1->createElement($item);
+                    $config = $xmlDoc1->appendChild($element);
+                }
+                if( $doc1Root == FALSE )
+                {
+                    $doc1Root = $config;
+                    PH::print_stdout( "doc1Root : false" );
+                }
+
+                if( $doc2Root == FALSE )
+                {
+                    $doc2Root = $config;
+                    PH::print_stdout( "doc2Root : false" );
+                }
+
+                $this->compareElements($doc1Root, $doc2Root, $filter);
             }
-            if( $doc1Root == FALSE )
-            {
-                $doc1Root = $config;
-                PH::print_stdout( "doc1Root : false" );
-            }
-
-            if( $doc2Root == FALSE )
-            {
-                $doc2Root = $config;
-                PH::print_stdout( "doc2Root : false" );
-            }
-
-            $this->compareElements($doc1Root, $doc2Root, $filter);
         }
     }
 
@@ -271,7 +381,7 @@ class DIFF extends UTIL
         }
 
         //calculating rule order
-        if( $this->endsWith( $xpath, "/rules" ) && strpos( $xpath, "rulebase/") !== false )
+        if( $this->ruleorderCHECK && $this->endsWith( $xpath, "/rules" ) && strpos( $xpath, "rulebase/") !== false )
         {
             if( isset( $el1Elements['entry'] ) && isset( $el2Elements['entry'] ) )
                 $this->calculateRuleorder( $el1Elements, $el2Elements);
@@ -289,10 +399,14 @@ class DIFF extends UTIL
                 $text = '';
 
                 $tmp = DH::dom_to_xml($el1);
-                $text .= '+' . str_replace("\n", "\n", $tmp);
+                #$text .= '+' . str_replace("\n", "\n", $tmp);
+                $text .= '+' . $tmp;
+
 
                 $tmp = DH::dom_to_xml($el2);
-                $text .= '-' . str_replace("\n", "\n", $tmp);
+                #$text .= '-' . str_replace("\n", "\n", $tmp);
+                $text .= '-' . $tmp;
+
 
                 //same xpath different content
                 //$this->displayDIFF( $xpath, $text, array( $el1 ), array($el2) );
@@ -530,12 +644,17 @@ class DIFF extends UTIL
         foreach( $plus as $node )
         {
             $tmp = DH::dom_to_xml($node);
+            $tmp = $this->str_lreplace( "\n", "", $tmp );
             $text .= '+' . str_replace("\n", "\n+", $tmp);
         }
+
+        if( count($plus) > 0 && count( $minus ) > 0 )
+            $text .= "\n";
 
         foreach( $minus as $node )
         {
             $tmp = DH::dom_to_xml($node);
+            $tmp = $this->str_lreplace( "\n", "", $tmp );
             $text .= '-' . str_replace("\n", "\n-", $tmp);
         }
 
@@ -718,5 +837,18 @@ class DIFF extends UTIL
             //print "KEY: ".$tmpKey."  END: ".$endstring."\n";
         }
     }
+
+    function str_lreplace($search, $replace, $subject)
+    {
+        $pos = strrpos($subject, $search);
+
+        if($pos !== false)
+        {
+            $subject = substr_replace($subject, $replace, $pos, strlen($search));
+        }
+
+        return $subject;
+    }
+
 }
 
