@@ -50,6 +50,13 @@ class STATSUTIL extends RULEUTIL
         PH::$JSON_TMP = array();
         $this->stats();
         PH::print_stdout(PH::$JSON_TMP, false, "statistic");
+
+        //export stats as HTML, this is not the pretties way!!!!
+        #$string = json_encode( PH::$JSON_TMP, JSON_PRETTY_PRINT );
+        #$html = self::jsonToDebug( $string );
+        #$file = "stats.html";
+        #file_put_contents($file, $html);
+
         PH::$JSON_TMP = array();
 
         $runtime = number_format((microtime(TRUE) - $this->runStartTime), 2, '.', '');
@@ -68,4 +75,33 @@ class STATSUTIL extends RULEUTIL
         parent::supportedArguments();
     }
     */
+    public static function jsonToDebug($jsonText = '')
+    {
+        $arr = json_decode($jsonText, true);
+        $html = "";
+        if ($arr && is_array($arr)) {
+            $html .= self::_arrayToHtmlTableRecursive($arr);
+        }
+        return $html;
+    }
+
+    private static function _arrayToHtmlTableRecursive($arr) {
+        $str = "<table><tbody>";
+        foreach ($arr as $key => $val) {
+            $str .= "<tr>";
+            $str .= "<td>$key</td>";
+            $str .= "<td>";
+            if (is_array($val)) {
+                if (!empty($val)) {
+                    $str .= self::_arrayToHtmlTableRecursive($val);
+                }
+            } else {
+                $str .= "<strong>$val</strong>";
+            }
+            $str .= "</td></tr>";
+        }
+        $str .= "</tbody></table>";
+
+        return $str;
+    }
 }
