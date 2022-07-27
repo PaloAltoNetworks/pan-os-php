@@ -51,6 +51,9 @@ __pan-os-php_scripts()
 		declare -a type
 		declare -a checkArray
 
+		declare -a actions
+		declare -a filters
+
 
 		arguments=('type=' 'in=' 'out=' 'actions=' 'filter=' 'location=' 'loadpanoramapushedconfig' 'loadplugin=' 'help'
 		 'listactions' 'listfilters' 'debugapi' 'apitimeout='
@@ -58,45 +61,11 @@ __pan-os-php_scripts()
 		 'shadow-ignoreinvalidaddressobjects' 'shadow-json' 'shadow-reducexml'
 		 'outputformatset='
 		 'stats' 'template=' 'version' )
-    type=(
-      "stats"
-      "address" "service" "tag" "schedule" "application" "threat"
-      "rule"
-      "device" "securityprofile" "securityprofilegroup"
-      "zone"  "interface" "virtualwire" "routing"
-      "key-manager"
-      "address-merger" "addressgroup-merger"
-      "service-merger" "servicegroup-merger"
-      "tag-merger"
-      "rule-merger"
-      "override-finder"
-      "diff"
-      "upload"
-      "xml-issue"
-      "appid-enabler"
-      "config-size"
-      "download-predefined"
-      "register-ip-mgr"
-      "userid-mgr"
-      "xml-op-json"
-      "bpa-generator"
-      "playbook"
-      "ironskillet-update"
-      "maxmind-update"
-      "util_get-action-filter"
-      "software-remove"
-      "traffic-log"
-      "system-log"
-      "gratuitous-arp"
-      "software-download"
-      "software-preparation"
-      "license"
-      "config-download-all"
-      "spiffy"
-      "config-commit"
-      "protocoll-number-download"
-      "html-merger"
-    )
+
+    DIR="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
+    jsonFILE=$DIR"/../lib/util_action_filter.json"
+    type=$(jq -r 'keys[]' $jsonFILE)
+
 
 		checkArray=('in' 'out' 'actions' 'filter' 'location')
 
@@ -112,14 +81,22 @@ __pan-os-php_scripts()
 
 				compopt +o nospace
 				COMPREPLY=($(compgen -W '${type[*]}' -- "${cur2}"))
+				typeargument="${COMP_WORDS[COMP_CWORD]}"
 			elif [[ "${prev}" = "actions" || "${prev2}" = "actions" \
 			  ]] ; then
 
+          actions=$(jq -r ".\"${typeargument}\" | select(.action != []) | .action | keys[]" $jsonFILE )
+
 			    compopt +o nospace
+			    COMPREPLY=($(compgen -W '${actions[*]}' -- "${cur2}"))
+			    actionargument="${COMP_WORDS[COMP_CWORD]}"
 			elif [[ "${prev}" = "filter" || "${prev2}" = "filter" \
 			  ]] ; then
 
+          filters=$(jq -r ".\"${typeargument}\" | select(.filter != []) | .filter | keys[]" $jsonFILE)
+
 			    compopt +o nospace
+			    COMPREPLY=($(compgen -W '${filters[*]}' -- "${cur2}"))
 			elif [[ "${prev}" = "location" || "${prev2}" = "location" \
 			  ]] ; then
 
@@ -142,92 +119,95 @@ __pan-os-php_scripts()
 				compopt -o filenames
 		        COMPREPLY=( $(compgen -f -- ${cur2} ) )
 			fi
-		else
-			# remove used argument from array
-			local word
+		elif [[ "${cur}" = ":" || "${prev}" = ":" ]] ; then
+		  echo ":"
+    else
+      # remove used argument from array
+      local word
 
-			prevstring=""
-			for word in ${COMP_WORDS[*]}; do
-				if [[ ${word} = "=" ]]; then
-					case ${prevstring} in
-						type*)
-							unset 'arguments[0]'
-							;;
-						in*)
-							unset 'arguments[1]'
-							;;
-						out*)
-							unset 'arguments[2]'
-							;;
-					  actions*)
-							unset 'arguments[3]'
-							;;
-						filter*)
-							unset 'arguments[4]'
-							;;
-						location*)
-							unset 'arguments[5]'
-							;;
-						loadplugin*)
-					    unset 'arguments[7]'
-							;;
-						apitimeout*)
-					    unset 'arguments[12]'
-							;;
-					 template*)
-					    unset 'arguments[22]'
-							;;
-					esac
-				else
-					#arguments=( "${arguments[@]/$word}" )
-					case ${word} in
-					  loadpanoramapushedconfig )
-							unset 'arguments[6]'
-							;;
-					  help )
-					    unset 'arguments[8]'
-							;;
-						listactions )
-						  unset 'arguments[9]'
-							;;
-					  listfilters )
-					    unset 'arguments[10]'
-							;;
-					  debugapi )
-					    unset 'arguments[11]'
-							;;
-					  shadow-apikeynohidden )
-					    unset 'arguments[13]'
-							;;
-					# 'shadow-json' 'shadow-reducexml' 'stats' 'template')
-					  shadow-apikeynosave )
-					    unset 'arguments[14]'
-							;;
-					  shadow-disableoutputformatting )
-					    unset 'arguments[15]'
-							;;
-					  shadow-displaycurlrequest )
-					    unset 'arguments[16]'
-							;;
-					  shadow-enablexmlduplicatesdeletion )
-					    unset 'arguments[17]'
-							;;
-					  shadow-ignoreinvalidaddressobjects )
-					    unset 'arguments[18]'
-							;;
-					  shadow-json )
-					    unset 'arguments[19]'
-							;;
-					  shadow-reducexml )
-					    unset 'arguments[20]'
-							;;
-					  stats )
-					    unset 'arguments[21]'
-							;;
-					esac
-				fi
-				prevstring=${word}
-			done
+      prevstring=""
+      for word in ${COMP_WORDS[*]}; do
+        if [[ ${word} = "=" ]]; then
+          case ${prevstring} in
+            type*)
+              unset 'arguments[0]'
+              ;;
+            in*)
+              unset 'arguments[1]'
+              ;;
+            out*)
+              unset 'arguments[2]'
+              ;;
+            actions*)
+              unset 'arguments[3]'
+              ;;
+            filter*)
+              unset 'arguments[4]'
+              ;;
+            location*)
+              unset 'arguments[5]'
+              ;;
+            loadplugin*)
+              unset 'arguments[7]'
+              ;;
+            apitimeout*)
+              unset 'arguments[12]'
+              ;;
+           template*)
+              unset 'arguments[22]'
+              ;;
+          esac
+        else
+          #arguments=( "${arguments[@]/$word}" )
+          case ${word} in
+            loadpanoramapushedconfig )
+              unset 'arguments[6]'
+              ;;
+            help )
+              unset 'arguments[8]'
+              ;;
+            listactions )
+              unset 'arguments[9]'
+              ;;
+            listfilters )
+              unset 'arguments[10]'
+              ;;
+            debugapi )
+              unset 'arguments[11]'
+              ;;
+            shadow-apikeynohidden )
+              unset 'arguments[13]'
+              ;;
+          # 'shadow-json' 'shadow-reducexml' 'stats' 'template')
+            shadow-apikeynosave )
+              unset 'arguments[14]'
+              ;;
+            shadow-disableoutputformatting )
+              unset 'arguments[15]'
+              ;;
+            shadow-displaycurlrequest )
+              unset 'arguments[16]'
+              ;;
+            shadow-enablexmlduplicatesdeletion )
+              unset 'arguments[17]'
+              ;;
+            shadow-ignoreinvalidaddressobjects )
+              unset 'arguments[18]'
+              ;;
+            shadow-json )
+              unset 'arguments[19]'
+              ;;
+            shadow-reducexml )
+              unset 'arguments[20]'
+              ;;
+            stats )
+              unset 'arguments[21]'
+              ;;
+          esac
+        fi
+        prevstring=${word}
+      done
+
 
 			local arg compreply=""
 			COMPREPLY=($(compgen -W '${arguments[*]}' -- "${COMP_WORDS[COMP_CWORD]}"))

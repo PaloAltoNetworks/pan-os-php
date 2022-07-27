@@ -1,6 +1,15 @@
 CHANGELOG
 
-2.0.49
+2.0.50
+UTILS:
+
+BUGFIX:
+
+GENERAL:
+bash autocompletion - extension for actions= filter=
+
+
+2.0.49 (20220726)
 UTILS:
 * pan-os-php type=diff | introduce for argument filter=JSONFILE.json
 * type=diff | introduce of filtering on xpath with name1 and name2 arguments as variable

@@ -153,7 +153,7 @@ class PH
 
     private static $library_version_major = 2;
     private static $library_version_sub = 0;
-    private static $library_version_bugfix = 49;
+    private static $library_version_bugfix = 50;
 
     //BASIC AUTH PAN-OS 7.1
     public static $softwareupdate_key = "658d787f293e631196dac9fb29490f1cc1bb3827";
@@ -929,7 +929,8 @@ class PH
         "spiffy",
         "config-commit",
         "protocoll-number-download",
-        "html-merger"
+        "html-merger",
+        "dhcp"
         );
 
 
@@ -975,6 +976,7 @@ class PH
             || $type == "interface"
             || $type == "routing"
             || $type == "virtualwire"
+            || $type == "dhcp"
         )
             $util = new NETWORKUTIL($type, $argv, $argc,$PHP_FILE." type=".$type);
 
