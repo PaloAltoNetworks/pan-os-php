@@ -33,6 +33,8 @@ class VirtualRouter
     /** @var InterfaceContainer */
     public $attachedInterfaces;
 
+    protected $xmlroot_protocol = false;
+
     /**
      * @param $name string
      * @param $owner VirtualRouterStore
@@ -55,6 +57,8 @@ class VirtualRouter
         $this->name = DH::findAttribute('name', $xml);
         if( $this->name === FALSE )
             derr("virtual-router name not found\n");
+
+        $this->xmlroot_protocol = DH::findFirstElement('protocol', $xml);
 
         $node = DH::findFirstElementOrCreate('interface', $xml);
 

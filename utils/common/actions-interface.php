@@ -104,3 +104,13 @@ InterfaceCallContext::$supportedActions['display'] = Array(
 
     },
 );
+InterfaceCallContext::$supportedActions['displayreferences'] = Array(
+    'name' => 'displayreferences',
+    'MainFunction' => function ( InterfaceCallContext $context ) {
+        /** @var EthernetInterface $object */
+        $object = $context->object;
+        PH::print_stdout("     * " . get_class($object) . " '{$object->name()}'");
+
+        $object->display_references();
+    }
+);

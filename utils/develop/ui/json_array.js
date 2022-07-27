@@ -1652,6 +1652,29 @@ var subjectObject =
             }
         }
     },
+    "dhcp": {
+        "name": "dhcp",
+        "action": {
+            "display": {
+                "name": "display",
+                "MainFunction": {}
+            }
+        },
+        "filter": {
+            "name": {
+                "operators": {
+                    "eq": {
+                        "Function": {},
+                        "arg": true,
+                        "ci": {
+                            "fString": "(%PROP% ethernet1\/1)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    }
+                }
+            }
+        }
+    },
     "diff": {
         "name": "diff",
         "action": [],
@@ -1677,6 +1700,10 @@ var subjectObject =
         "action": {
             "display": {
                 "name": "display",
+                "MainFunction": {}
+            },
+            "displayreferences": {
+                "name": "displayreferences",
                 "MainFunction": {}
             }
         },

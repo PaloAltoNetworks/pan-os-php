@@ -73,6 +73,8 @@ class NETWORKUTIL extends UTIL
                         $this->objectsToProcess[] = Array('store' => $this->pan->network, 'objects' => $this->pan->network->getAllInterfaces());
                     elseif( $this->utilType == 'routing' )
                         $this->objectsToProcess[] = Array('store' => $this->pan->network->virtualRouterStore, 'objects' => $this->pan->network->virtualRouterStore->getAll());
+                    elseif( $this->utilType == 'dhcp' )
+                        $this->objectsToProcess[] = Array('store' => $this->pan->network->dhcpStore, 'objects' => $this->pan->network->dhcpStore->getAll());
                     elseif( $this->utilType == 'zone' )
                     {
                         //zone store only in vsys available
@@ -97,6 +99,8 @@ class NETWORKUTIL extends UTIL
                             {}
                             elseif( $this->utilType == 'zone' )
                             {}
+                            elseif( $this->utilType == 'dhcp' )
+                            {}
 
                             $locationFound = TRUE;
                         }
@@ -113,6 +117,8 @@ class NETWORKUTIL extends UTIL
                             {}
                             elseif( $this->utilType == 'zone' )
                                 $this->objectsToProcess[] = array('store' => $sub->zoneStore, 'objects' => $sub->zoneStore->getall());
+                            elseif( $this->utilType == 'dhcp' )
+                            {}
 
                             $locationFound = TRUE;
                         }
@@ -154,6 +160,8 @@ class NETWORKUTIL extends UTIL
                                 {
                                     //zone store only in vsys available
                                 }
+                                elseif( $this->utilType == 'dhcp' )
+                                    $this->objectsToProcess[] = Array('store' => $template->deviceConfiguration->network->dhcpStore, 'objects' => $template->deviceConfiguration->network->dhcpStore->getAll());
 
                                 $locationFound = true;
                             }
@@ -170,6 +178,8 @@ class NETWORKUTIL extends UTIL
                                     {}
                                     elseif( $this->utilType == 'zone' )
                                         $this->objectsToProcess[] = array('store' => $sub->zoneStore, 'objects' => $sub->zoneStore->getall());
+                                    elseif( $this->utilType == 'dhcp' )
+                                    {}
 
                                     $locationFound = TRUE;
                                 }
