@@ -859,12 +859,12 @@ class DIFF extends UTIL
         {
             if( strpos( $exclude, "\$\$name\$\$" ) !== FALSE )
             {
-                $escapedString = preg_quote( $string, '/' );
+                $escapedString = preg_quote( $exclude, '/' );
                 $escapedString = str_replace( "\\\$\\\$name\\\$\\\$", "(.*)", $escapedString );
 
                 $pattern = "/".$escapedString."/i";
 
-                $match = preg_match($pattern, $exclude); // Outputs 1
+                $match = preg_match($pattern, $string); // Outputs 1 if match
                 $continue = $match;
             }
             else
