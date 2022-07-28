@@ -4,6 +4,7 @@ CHANGELOG
 UTILS:
 * type=dhcp - introduction
 * development ike.php - extension for GreTunnel
+* type=diff filter=jsonfile.json | bugfix if no include filter is set but exclude must be triggered
 
 BUGFIX:
 

@@ -198,7 +198,6 @@ class DIFF extends UTIL
         if( isset(PH::$args['filter']) and strpos( PH::$args['filter'], $replace."name".$replace ) === FALSE )
         #if( isset(PH::$args['filter']) )
         {
-            //Todo: check if filter is filename:
             if( file_exists( PH::$args['filter'] ) )
             {
                 $strJsonFileContents = file_get_contents(PH::$args['filter']);
@@ -349,6 +348,15 @@ class DIFF extends UTIL
         //PH::print_stdout( "argument XPATH: ".$xpath );
         if( $xpath == null )
             $xpath = DH::elementToPanXPath($el1);
+
+        $continue = false;
+        foreach( $this->excludes as $exclude )
+        {
+            if( strpos( $xpath, $exclude ) !== FALSE )
+                $continue = true;
+        }
+        if( $continue )
+            return null;
 
         //PH::print_stdout( "*** COMPARING {$xpath}" );
 
