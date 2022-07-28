@@ -564,6 +564,42 @@ class RULEMERGER extends UTIL
             PH::print_stdout( "- Processing rule #$loopCount");
             $rule->display(4);
 
+            $this->context->fields = array(
+                'location' => 'location',
+                'rulebase' => 'rulebase',
+                'type' => 'type',
+                'name' => 'name',
+                'tag' => 'tags',
+                'from' => 'from',
+                'to' => 'to',
+                'src_negated' => 'source_negated',
+                'src' => 'source',
+                'dst_negated' => 'destination_negated',
+                'dst' => 'destination',
+                'service' => 'service',
+                'application' => 'application',
+                'action' => 'action',
+                'security' => 'security-profile',
+                'disabled' => 'disabled',
+                'src user' => 'src-user',
+                'log start' => 'log_start',
+                'log end' => 'log_end',
+                'log prof' => 'log_profile',
+                'log prof name' => 'log_profile_name',
+                'snat type' => 'snat_type',
+                'snat_address' => 'snat_address',
+                'dnat_host' => 'dnat_host',
+                'description' => 'description',
+                'schedule' => 'schedule',
+                'target' => 'target'
+            );
+
+
+            $line = "";
+            foreach( $this->context->fields as $fieldName => $fieldID )
+                $line .= $this->context->ruleFieldHtmlExport($rule, $fieldID);
+            $this->deletedObjects[$rule->name()]['manipulated'] = $line;
+
             $nextDenyRule = FALSE;
             if( $this->UTIL_stopMergingIfDenySeen )
             {
@@ -665,36 +701,6 @@ class RULEMERGER extends UTIL
                 $ruleToCompare->display(9);
                 #$this->deletedObjects[$rule->name()]['kept'] = $rule;
                 #$this->deletedObjects[$rule->name()]['removed'][$ruleToCompare->name()] =  $ruleToCompare;
-
-                $this->context->fields = array(
-                    'location' => 'location',
-                    'rulebase' => 'rulebase',
-                    'type' => 'type',
-                    'name' => 'name',
-                    'tag' => 'tags',
-                    'from' => 'from',
-                    'to' => 'to',
-                    'src_negated' => 'source_negated',
-                    'src' => 'source',
-                    'dst_negated' => 'destination_negated',
-                    'dst' => 'destination',
-                    'service' => 'service',
-                    'application' => 'application',
-                    'action' => 'action',
-                    'security' => 'security-profile',
-                    'disabled' => 'disabled',
-                    'src user' => 'src-user',
-                    'log start' => 'log_start',
-                    'log end' => 'log_end',
-                    'log prof' => 'log_profile',
-                    'log prof name' => 'log_profile_name',
-                    'snat type' => 'snat_type',
-                    'snat_address' => 'snat_address',
-                    'dnat_host' => 'dnat_host',
-                    'description' => 'description',
-                    'schedule' => 'schedule',
-                    'target' => 'target'
-                );
 
 
 
@@ -1123,8 +1129,27 @@ class RULEMERGER extends UTIL
 
             $lines .= "</tr>\n";
 
-            foreach( $line['removed'] as $removed )
+            $first = true;
+            foreach( $line['removed'] as  $removed )
             {
+                if( $first )
+                {
+                    if( $color === false )
+                        $lines .= "<tr>\n";
+                    else
+                        $lines .= "<tr bgcolor=\"#DDDDDD\">";
+
+                    $lines .= $encloseFunction( "---" );
+                    $lines .= $encloseFunction( "manipulated" );
+
+                    #$lines .= $encloseFunction( (string)$index );
+
+                    $lines .=  $line['manipulated'] ;
+
+                    $lines .= "</tr>\n";
+                    $first = false;
+                }
+
                 if( $color === false )
                     $lines .= "<tr>\n";
                 else

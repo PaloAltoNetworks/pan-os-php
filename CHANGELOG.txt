@@ -4,10 +4,11 @@ CHANGELOG
 UTILS:
 * type=dhcp - introduction
 * development ike.php - extension for GreTunnel
-* type=diff filter=jsonfile.json | bugfix if no include filter is set but exclude must be triggered
+* type=rule-merger | improved exportcsv to also display the original rule which is getting manipulate
 
 BUGFIX:
 * type=diff | bugfix if argument filter is used with $$name$$
+* type=diff filter=jsonfile.json | bugfix if no include filter is set but exclude must be triggered
 
 GENERAL:
 * bash autocompletion - extension for actions= filter=
