@@ -182,7 +182,6 @@ class DIFF extends UTIL
                 }
                 else
                      $this->display_error_usage_exit('"name2" is missing from arguments');
-                #exit();
             }
             else
             {
@@ -202,22 +201,25 @@ class DIFF extends UTIL
         }
 
         if( isset(PH::$args['filter']) and strpos( PH::$args['filter'], $this->replace."name".$this->replace ) === FALSE )
-        #if( isset(PH::$args['filter']) )
         {
             if( file_exists( PH::$args['filter'] ) )
             {
                 $strJsonFileContents = file_get_contents(PH::$args['filter']);
 
                 $array = json_decode($strJsonFileContents, true);
+                if( $array === null )
+                    derr( "invalid JSON file provided", null, FALSE );
 
-                $this->filters = $array['include'];
+                if( isset( $array['include'] ) )
+                    $this->filters = $array['include'];
                 PH::print_stdout( "");
                 foreach( $this->filters as $filter )
                     PH::print_stdout( "FILTER is set to: '" . PH::boldText( $filter ) . "'");
 
                 PH::print_stdout( "");
 
-                $this->excludes = $array['exclude'];
+                if( isset( $array['exclude'] ) )
+                    $this->excludes = $array['exclude'];
 
                 if( !empty( $this->excludes ) )
                 {
@@ -227,20 +229,15 @@ class DIFF extends UTIL
 
                     PH::print_stdout( "");
                 }
-                #exit();
             }
             else
             {
                 $this->filters[] = PH::$args['filter'];
-                #$filter = '/config/devices/entry[@name="localhost.localdomain"]/vsys/entry[@name="vsys1"]/tag';
 
                 PH::print_stdout( "");
                 PH::print_stdout( "FILTER is set to: '" . PH::boldText( PH::$args['filter'] ) . "'");
                 PH::print_stdout( "");
             }
-
-
-
         }
 
         PH::print_stdout( "*** NOW DISPLAY DIFF ***");

@@ -372,7 +372,8 @@ $string =  file_get_contents($urlSite );
 $string = find_string_between( $string, "({", "})" );
 $your_json_string = "{".$string."}";
 $data = json_decode($your_json_string, TRUE);
-
+if( $data === null )
+    derr( "invalid JSON file provided", null, FALSE );
 
 $jsonString = "{\n";
 foreach( $data['response']['docs'] as $mainkey => $fw )

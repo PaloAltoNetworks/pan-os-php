@@ -79,7 +79,8 @@ $missing_actions = array();
 $pathString = dirname(__FILE__)."/../utils/lib";
 $JSONarray = file_get_contents( $pathString."/util_action_filter.json");
 $json_a = json_decode($JSONarray, true);
-
+if( $json_a === null )
+    derr( "invalid JSON file provided", null, FALSE );
 
 $start = FALSE;
 foreach( $json_a as $type => $UTILtype )

@@ -1319,6 +1319,8 @@ DeviceCallContext::$supportedActions['geoIP-check'] = array(
         }
         $fileLine = file_get_contents( $file );
         $array = json_decode($fileLine, TRUE);
+        if( $array === null )
+            derr( "invalid JSON file provided", null, FALSE );
         unset( $fileLine);
 
         foreach( $array as $countryKey => $country )

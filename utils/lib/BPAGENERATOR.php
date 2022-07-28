@@ -169,6 +169,8 @@ class BPAGENERATOR extends UTIL
             if( $type == "POST" )
             {
                 $reply = json_decode($response, TRUE);
+                if( $reply === null )
+                    derr( "invalid JSON file provided", null, FALSE );
                 $response = $reply['task_id'];
             }
         } catch(Exception $e)
@@ -236,6 +238,8 @@ class BPAGENERATOR extends UTIL
                 PH::print_stdout( " - Checking " . $connector->info_hostname . " job ID " . $result[$connector->info_serial] );
                 $reply = $this->send_bpa_api($this->bpa_url . 'results/' . $result[$connector->info_serial] . '/', "GET");
                 $parsed_reply = json_decode($reply, TRUE);
+                if( $parsed_reply === null )
+                    derr( "invalid JSON file provided", null, FALSE );
                 #print_r( $parsed_reply );
                 if( $parsed_reply['status'] == 'processing' )
                 {
