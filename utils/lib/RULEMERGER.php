@@ -526,6 +526,35 @@ class RULEMERGER extends UTIL
         $this->UTIL_rulesArrayIndex = array_flip(array_keys($this->UTIL_rulesToProcess));
         $mergedRulesCount = 0;
 
+        $this->context->fields = array(
+            'location' => 'location',
+            'rulebase' => 'rulebase',
+            'type' => 'type',
+            'name' => 'name',
+            'tag' => 'tags',
+            'from' => 'from',
+            'to' => 'to',
+            'src_negated' => 'source_negated',
+            'src' => 'source',
+            'dst_negated' => 'destination_negated',
+            'dst' => 'destination',
+            'service' => 'service',
+            'application' => 'application',
+            'action' => 'action',
+            'security' => 'security-profile',
+            'disabled' => 'disabled',
+            'src user' => 'src-user',
+            'log start' => 'log_start',
+            'log end' => 'log_end',
+            'log prof' => 'log_profile',
+            'log prof name' => 'log_profile_name',
+            'snat type' => 'snat_type',
+            'snat_address' => 'snat_address',
+            'dnat_host' => 'dnat_host',
+            'description' => 'description',
+            'schedule' => 'schedule',
+            'target' => 'target'
+        );
 
         foreach( $this->UTIL_rulesToProcess as $index => $rule )
         {
@@ -564,35 +593,6 @@ class RULEMERGER extends UTIL
             PH::print_stdout( "- Processing rule #$loopCount");
             $rule->display(4);
 
-            $this->context->fields = array(
-                'location' => 'location',
-                'rulebase' => 'rulebase',
-                'type' => 'type',
-                'name' => 'name',
-                'tag' => 'tags',
-                'from' => 'from',
-                'to' => 'to',
-                'src_negated' => 'source_negated',
-                'src' => 'source',
-                'dst_negated' => 'destination_negated',
-                'dst' => 'destination',
-                'service' => 'service',
-                'application' => 'application',
-                'action' => 'action',
-                'security' => 'security-profile',
-                'disabled' => 'disabled',
-                'src user' => 'src-user',
-                'log start' => 'log_start',
-                'log end' => 'log_end',
-                'log prof' => 'log_profile',
-                'log prof name' => 'log_profile_name',
-                'snat type' => 'snat_type',
-                'snat_address' => 'snat_address',
-                'dnat_host' => 'dnat_host',
-                'description' => 'description',
-                'schedule' => 'schedule',
-                'target' => 'target'
-            );
 
 
             $line = "";

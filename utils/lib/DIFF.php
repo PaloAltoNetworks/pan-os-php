@@ -737,6 +737,11 @@ class DIFF extends UTIL
                     self::fixFloodSetCommand($array);
 
                     self::arraySetCommand( $array, "diff_set" );
+                    //Todo: swaschkut 20220728
+                    // - rulebase on parts below where it is planned to set to ANY:
+                    // - remove all other other objects before set command .... any
+                    // - service
+                    // - application
                 }
 
                 foreach( $minus as $element )
@@ -763,6 +768,9 @@ class DIFF extends UTIL
                     DH::elementToPanSetCommand( 'delete', $element, $array );
 
                     self::arraySetCommand( $array, "diff_delete" );
+                    //Todo: swaschkut 20220728
+                    // - part which were already set earlier, so it got manipulated, must not be delete anymore -> response "Invalid syntax."
+                    // - description - if it was set earlier to a different value
                 }
             }
             else
