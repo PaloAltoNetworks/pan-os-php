@@ -7,6 +7,7 @@ UTILS:
 * type=diff filter=jsonfile.json | bugfix if no include filter is set but exclude must be triggered
 
 BUGFIX:
+* type=diff | bugfix if argument filter is used with $$name$$
 
 GENERAL:
 * bash autocompletion - extension for actions= filter=

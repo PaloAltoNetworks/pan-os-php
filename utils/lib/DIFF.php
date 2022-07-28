@@ -27,6 +27,9 @@ class DIFF extends UTIL
 
     public $ruleorderCHECK = TRUE;
 
+    //needed for CLI input of argument filter=...$$name$$...
+    public $replace = "";
+
     public function utilStart()
     {
         $this->usageMsg = PH::boldText('USAGE: ') ."\n".
@@ -42,7 +45,8 @@ class DIFF extends UTIL
         \"/config/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='testDG']/address-group\"
     ],
     \"exclude\": [
-    	\"/config/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='testDG']/service-group\"
+    	\"/config/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='testDG']/service-group\",
+    	\"/config/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='$\$name$$']/address\"
     ]
 }\n".
             "\n".
@@ -134,14 +138,16 @@ class DIFF extends UTIL
             if( $doc1->load($file1) === FALSE )
                 derr('Error while parsing xml:' . libxml_get_last_error()->message , null, false);
 
-
-            //Todo:
-            // if filter isset and filter include $$NAME$$
-            // check if name1 and name2 is available
-            $replace = "13982";
-            if( isset(PH::$args['filter']) and strpos( PH::$args['filter'], $replace."name".$replace ) !== FALSE )
-            #if( isset(PH::$args['filter']) )
+            $pattern = "/(.*)[0-9]{5}name[0-9]{5}(.*)/i";
+            $matches = null;
+            if( isset(PH::$args['filter']) and preg_match( $pattern, PH::$args['filter'], $matches  ) )
             {
+                $substring = str_replace( $matches[1], "", PH::$args['filter'] );
+                $substring = str_replace( $matches[2], "", $substring );
+                $pid = explode( "name", $substring );
+                $this->replace = $pid[0];
+
+
                 $doc2 = new DOMDocument();
                 if( $doc2->load($file1) === FALSE )
                     derr('Error while parsing xml:' . libxml_get_last_error()->message , null, false);
@@ -154,7 +160,7 @@ class DIFF extends UTIL
                 if( isset( $name1 ) )
                 {
                     #print "name1: ".$name1."\n";
-                    $xpath1 = str_replace( $replace."name".$replace, $name1, $xpath );
+                    $xpath1 = str_replace( $this->replace."name".$this->replace, $name1, $xpath );
                     $doc1Root = DH::findXPathSingleEntry($xpath1, $doc1);
 
                     if( $doc1Root )
@@ -169,7 +175,7 @@ class DIFF extends UTIL
                 if( isset($name2) )
                 {
                     #print "name2: ".$name2."\n";
-                    $xpath2 = str_replace( $replace."name".$replace, $name2, $xpath );
+                    $xpath2 = str_replace( $this->replace."name".$this->replace, $name2, $xpath );
                     $doc2Root = DH::findXPathSingleEntry($xpath2, $doc2);
 
                     DH::makeElementAsRoot( $doc2Root, $doc2 );
@@ -195,7 +201,7 @@ class DIFF extends UTIL
             }
         }
 
-        if( isset(PH::$args['filter']) and strpos( PH::$args['filter'], $replace."name".$replace ) === FALSE )
+        if( isset(PH::$args['filter']) and strpos( PH::$args['filter'], $this->replace."name".$this->replace ) === FALSE )
         #if( isset(PH::$args['filter']) )
         {
             if( file_exists( PH::$args['filter'] ) )
@@ -255,11 +261,7 @@ class DIFF extends UTIL
             foreach( $this->filters as $filter )
             {
                 $continue = false;
-                foreach( $this->excludes as $exclude )
-                {
-                    if( strpos( $filter, $exclude ) !== FALSE )
-                        $continue = true;
-                }
+                $this->filter_exclude( $continue, $filter );
                 if( $continue )
                     continue;
 
@@ -350,11 +352,7 @@ class DIFF extends UTIL
             $xpath = DH::elementToPanXPath($el1);
 
         $continue = false;
-        foreach( $this->excludes as $exclude )
-        {
-            if( strpos( $xpath, $exclude ) !== FALSE )
-                $continue = true;
-        }
+        $this->filter_exclude( $continue, $xpath );
         if( $continue )
             return null;
 
@@ -856,6 +854,28 @@ class DIFF extends UTIL
         }
 
         return $subject;
+    }
+
+    function filter_exclude( &$continue, $string )
+    {
+        foreach( $this->excludes as $exclude )
+        {
+            if( strpos( $exclude, "\$\$name\$\$" ) !== FALSE )
+            {
+                $escapedString = preg_quote( $string, '/' );
+                $escapedString = str_replace( "\\\$\\\$name\\\$\\\$", "(.*)", $escapedString );
+
+                $pattern = "/".$escapedString."/i";
+
+                $match = preg_match($pattern, $exclude); // Outputs 1
+                $continue = $match;
+            }
+            else
+            {
+                if( strpos( $string, $exclude ) !== FALSE )
+                    $continue = true;
+            }
+        }
     }
 
 }
