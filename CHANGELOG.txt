@@ -11,6 +11,7 @@ BUGFIX:
 * type=diff filter=jsonfile.json | bugfix if no include filter is set but exclude must be triggered
 * type=[object]-merger | bugfix to use location=DG1,DG2
 * typ=address-merger dupalgorthm=identical | bugfix to NOT merge not identical objects but same value from childDG #584
+* type=address-merger | fix pickfilter if allowmergingwithupperlevel is used
 
 GENERAL:
 * bash autocompletion - extension for actions= filter=

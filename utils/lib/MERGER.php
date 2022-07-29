@@ -1428,38 +1428,45 @@ class MERGER extends UTIL
                 {
                     if( isset($upperHashMap[$index]) )
                     {
-                        foreach( $upperHashMap[$index] as $object )
-                        {
-                            #if( $object->isType_TMP() )
-                            #    continue;
-                            if( $this->pickFilter->matchSingleObject(array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
-                            {
-                                $pickedObject = $object;
-                                break;
-                            }
-                        }
-                        if( $pickedObject === null )
-                            $pickedObject = reset($upperHashMap[$index]);
-
-                        PH::print_stdout( "   * using object from upper level : '{$pickedObject->_PANC_shortName()}'" );
+                        $hashArray = $upperHashMap[$index];
+                        $printString = "   * using object from upper level : ";
                     }
                     else
                     {
-                        foreach( $hash as $object )
+                        $hashArray = $hash;
+                        $printString = "   * keeping object : ";
+                    }
+
+                    foreach( $hashArray as $object )
+                    {
+                        if( $this->pickFilter->matchSingleObject(array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
                         {
-                            #if( $object->isType_TMP() )
-                            #    continue;
-                            if( $this->pickFilter->matchSingleObject(array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
+                            $pickedObject = $object;
+                            break;
+                        }
+                    }
+
+                    if( $pickedObject === null )
+                    {
+                        if( isset($upperHashMap[$index]) )
+                        {
+                            $hashArray = $hash;
+                            $printString = "   * keeping object :";
+
+                            foreach( $hashArray as $object )
                             {
-                                $pickedObject = $object;
-                                break;
+                                if( $this->pickFilter->matchSingleObject(array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
+                                {
+                                    $pickedObject = $object;
+                                    break;
+                                }
                             }
                         }
-                        if( $pickedObject === null )
-                            $pickedObject = reset($hash);
-
-                        PH::print_stdout( "   * keeping object '{$pickedObject->_PANC_shortName()}'" );
+                        else
+                            $pickedObject = reset($hashArray);
                     }
+
+                    PH::print_stdout( $printString."'{$pickedObject->_PANC_shortName()}'" );
                 }
                 else
                 {
@@ -1507,7 +1514,8 @@ class MERGER extends UTIL
                                 if( $this->dupAlg == 'identical' )
                                     if( $pickedObject->name() != $ancestor->name() )
                                     {
-                                        PH::print_stdout("    - SKIP: object name '{$pickedObject->_PANC_shortName()}' [with value '{$pickedObject->value()}'] is not IDENTICAL to object name from upperlevel '{$ancestor->_PANC_shortName()}' [with value '{$ancestor->value()}'] ");
+                                        #PH::print_stdout("    - SKIP: object name '{$pickedObject->_PANC_shortName()}' [with value '{$pickedObject->value()}'] is not IDENTICAL to object name from upperlevel '{$ancestor->_PANC_shortName()}' [with value '{$ancestor->value()}'] ");
+                                        PH::print_stdout("    - SKIP: object name '{$ancestor->_PANC_shortName()}' [with value '{$ancestor->value()}'] is not IDENTICAL to object name from upperlevel '{$pickedObject->_PANC_shortName()}' [with value '{$pickedObject->value()}'] ");
                                         $this->skippedObject( $index, $pickedObject, $ancestor);
                                         continue;
                                     }
@@ -1612,7 +1620,8 @@ class MERGER extends UTIL
                     }
                     else
                     {
-                        PH::print_stdout("    - SKIP: object name '{$object->_PANC_shortName()}' is not IDENTICAL");
+                        #PH::print_stdout("    - SKIP: object name '{$object->_PANC_shortName()}' [with value '{$object->value()}'] is not IDENTICAL to object name from upperlevel '{$pickedObject->_PANC_shortName()}' [with value '{$pickedObject->value()}'] ");
+                        PH::print_stdout("    - SKIP: object name '{$object->_PANC_shortName()}' [with value '{$object->value()}'] is not IDENTICAL");
                     }
                 }
             }
