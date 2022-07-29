@@ -1269,9 +1269,7 @@ class MERGER extends UTIL
                         $pickedObject = reset($hash);
                 }
                 else
-                {
                     $pickedObject = reset($hash);
-                }
 
 
                 $tmp_DG_name = $store->owner->name();
@@ -1279,7 +1277,7 @@ class MERGER extends UTIL
                     $tmp_DG_name = 'shared';
 
                 $tmp_address = $store->find($pickedObject->name());
-                if( $tmp_address == null )
+                if( $tmp_address == null && $this->dupAlg != 'identical'  )
                 {
                     if( isset($child_NamehashMap[$pickedObject->name()]) )
                     {
@@ -1330,6 +1328,10 @@ class MERGER extends UTIL
                         $tmp_address = "[".$tmp_DG_name."] - ".$pickedObject->name(). " {new}";
 
                     $countChildCreated++;
+                }
+                elseif( $tmp_address == null )
+                {
+                    continue;
                 }
                 else
                 {

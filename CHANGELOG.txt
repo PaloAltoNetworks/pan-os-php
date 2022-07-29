@@ -5,6 +5,7 @@ UTILS:
 * type=dhcp - introduction
 * development ike.php - extension for GreTunnel
 * type=rule-merger | improved exportcsv to also display the original rule which is getting manipulate
+* type=address-merger | improvments for dupalgorithm=identical - do not create new objects
 
 BUGFIX:
 * type=diff | bugfix if argument filter is used with $$name$$
