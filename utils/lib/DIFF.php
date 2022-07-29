@@ -27,6 +27,9 @@ class DIFF extends UTIL
 
     public $ruleorderCHECK = TRUE;
 
+    //needed for CLI input of argument filter=...$$name$$...
+    public $replace = "";
+
     public function utilStart()
     {
         $this->usageMsg = PH::boldText('USAGE: ') ."\n".
@@ -42,7 +45,8 @@ class DIFF extends UTIL
         \"/config/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='testDG']/address-group\"
     ],
     \"exclude\": [
-    	\"/config/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='testDG']/service-group\"
+    	\"/config/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='testDG']/service-group\",
+    	\"/config/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='$\$name$$']/address\"
     ]
 }\n".
             "\n".
@@ -134,14 +138,16 @@ class DIFF extends UTIL
             if( $doc1->load($file1) === FALSE )
                 derr('Error while parsing xml:' . libxml_get_last_error()->message , null, false);
 
-
-            //Todo:
-            // if filter isset and filter include $$NAME$$
-            // check if name1 and name2 is available
-            $replace = "13982";
-            if( isset(PH::$args['filter']) and strpos( PH::$args['filter'], $replace."name".$replace ) !== FALSE )
-            #if( isset(PH::$args['filter']) )
+            $pattern = "/(.*)[0-9]{5}name[0-9]{5}(.*)/i";
+            $matches = null;
+            if( isset(PH::$args['filter']) and preg_match( $pattern, PH::$args['filter'], $matches  ) )
             {
+                $substring = str_replace( $matches[1], "", PH::$args['filter'] );
+                $substring = str_replace( $matches[2], "", $substring );
+                $pid = explode( "name", $substring );
+                $this->replace = $pid[0];
+
+
                 $doc2 = new DOMDocument();
                 if( $doc2->load($file1) === FALSE )
                     derr('Error while parsing xml:' . libxml_get_last_error()->message , null, false);
@@ -154,7 +160,7 @@ class DIFF extends UTIL
                 if( isset( $name1 ) )
                 {
                     #print "name1: ".$name1."\n";
-                    $xpath1 = str_replace( $replace."name".$replace, $name1, $xpath );
+                    $xpath1 = str_replace( $this->replace."name".$this->replace, $name1, $xpath );
                     $doc1Root = DH::findXPathSingleEntry($xpath1, $doc1);
 
                     if( $doc1Root )
@@ -169,14 +175,13 @@ class DIFF extends UTIL
                 if( isset($name2) )
                 {
                     #print "name2: ".$name2."\n";
-                    $xpath2 = str_replace( $replace."name".$replace, $name2, $xpath );
+                    $xpath2 = str_replace( $this->replace."name".$this->replace, $name2, $xpath );
                     $doc2Root = DH::findXPathSingleEntry($xpath2, $doc2);
 
                     DH::makeElementAsRoot( $doc2Root, $doc2 );
                 }
                 else
                      $this->display_error_usage_exit('"name2" is missing from arguments');
-                #exit();
             }
             else
             {
@@ -195,24 +200,26 @@ class DIFF extends UTIL
             }
         }
 
-        if( isset(PH::$args['filter']) and strpos( PH::$args['filter'], $replace."name".$replace ) === FALSE )
-        #if( isset(PH::$args['filter']) )
+        if( isset(PH::$args['filter']) and strpos( PH::$args['filter'], $this->replace."name".$this->replace ) === FALSE )
         {
-            //Todo: check if filter is filename:
             if( file_exists( PH::$args['filter'] ) )
             {
                 $strJsonFileContents = file_get_contents(PH::$args['filter']);
 
                 $array = json_decode($strJsonFileContents, true);
+                if( $array === null )
+                    derr( "invalid JSON file provided", null, FALSE );
 
-                $this->filters = $array['include'];
+                if( isset( $array['include'] ) )
+                    $this->filters = $array['include'];
                 PH::print_stdout( "");
                 foreach( $this->filters as $filter )
                     PH::print_stdout( "FILTER is set to: '" . PH::boldText( $filter ) . "'");
 
                 PH::print_stdout( "");
 
-                $this->excludes = $array['exclude'];
+                if( isset( $array['exclude'] ) )
+                    $this->excludes = $array['exclude'];
 
                 if( !empty( $this->excludes ) )
                 {
@@ -222,20 +229,15 @@ class DIFF extends UTIL
 
                     PH::print_stdout( "");
                 }
-                #exit();
             }
             else
             {
                 $this->filters[] = PH::$args['filter'];
-                #$filter = '/config/devices/entry[@name="localhost.localdomain"]/vsys/entry[@name="vsys1"]/tag';
 
                 PH::print_stdout( "");
                 PH::print_stdout( "FILTER is set to: '" . PH::boldText( PH::$args['filter'] ) . "'");
                 PH::print_stdout( "");
             }
-
-
-
         }
 
         PH::print_stdout( "*** NOW DISPLAY DIFF ***");
@@ -256,11 +258,7 @@ class DIFF extends UTIL
             foreach( $this->filters as $filter )
             {
                 $continue = false;
-                foreach( $this->excludes as $exclude )
-                {
-                    if( strpos( $filter, $exclude ) !== FALSE )
-                        $continue = true;
-                }
+                $this->filter_exclude( $continue, $filter );
                 if( $continue )
                     continue;
 
@@ -349,6 +347,11 @@ class DIFF extends UTIL
         //PH::print_stdout( "argument XPATH: ".$xpath );
         if( $xpath == null )
             $xpath = DH::elementToPanXPath($el1);
+
+        $continue = false;
+        $this->filter_exclude( $continue, $xpath );
+        if( $continue )
+            return null;
 
         //PH::print_stdout( "*** COMPARING {$xpath}" );
 
@@ -734,6 +737,11 @@ class DIFF extends UTIL
                     self::fixFloodSetCommand($array);
 
                     self::arraySetCommand( $array, "diff_set" );
+                    //Todo: swaschkut 20220728
+                    // - rulebase on parts below where it is planned to set to ANY:
+                    // - remove all other other objects before set command .... any
+                    // - service
+                    // - application
                 }
 
                 foreach( $minus as $element )
@@ -760,6 +768,9 @@ class DIFF extends UTIL
                     DH::elementToPanSetCommand( 'delete', $element, $array );
 
                     self::arraySetCommand( $array, "diff_delete" );
+                    //Todo: swaschkut 20220728
+                    // - part which were already set earlier, so it got manipulated, must not be delete anymore -> response "Invalid syntax."
+                    // - description - if it was set earlier to a different value
                 }
             }
             else
@@ -848,6 +859,28 @@ class DIFF extends UTIL
         }
 
         return $subject;
+    }
+
+    function filter_exclude( &$continue, $string )
+    {
+        foreach( $this->excludes as $exclude )
+        {
+            if( strpos( $exclude, "\$\$name\$\$" ) !== FALSE )
+            {
+                $escapedString = preg_quote( $exclude, '/' );
+                $escapedString = str_replace( "\\\$\\\$name\\\$\\\$", "(.*)", $escapedString );
+
+                $pattern = "/".$escapedString."/i";
+
+                $match = preg_match($pattern, $string); // Outputs 1 if match
+                $continue = $match;
+            }
+            else
+            {
+                if( strpos( $string, $exclude ) !== FALSE )
+                    $continue = true;
+            }
+        }
     }
 
 }

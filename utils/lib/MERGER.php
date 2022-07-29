@@ -43,9 +43,6 @@ class MERGER extends UTIL
         $this->usageMsg = PH::boldText('USAGE: ') . "php " . basename(__FILE__) . " in=inputfile.xml [out=outputfile.xml] location=shared [DupAlgorithm=XYZ] [MergeCountLimit=100] ['pickFilter=(name regex /^H-/)'] ...";
 
 
-
-
-        
         $this->add_supported_arguments();
 
 
@@ -115,6 +112,8 @@ class MERGER extends UTIL
 
         $this->load_config();
 
+        $this->location_filter();
+
         $this->location_array = $this->merger_location_array($this->utilType, $this->objectsLocation, $this->pan);
 
 
@@ -149,13 +148,11 @@ class MERGER extends UTIL
     {
         $this->utilType = $utilType;
 
-        #if( $objectsLocation == 'any' || $objectsLocation == 'all' )
-        if( $objectsLocation == 'any' )
+        if( $objectsLocation[0] == 'any' )
         {
             if( $pan->isPanorama() )
             {
                 $alldevicegroup = $pan->deviceGroups;
-                #getDeviceGroups()
             }
             elseif( $pan->isFawkes() )
             {
@@ -252,89 +249,103 @@ class MERGER extends UTIL
                 $location_array[$key + 1]['parentStore'] = null;
                 $location_array[$key + 1]['childDeviceGroups'] = $alldevicegroup;
             }
-
-
         }
         else
         {
-            if( !$pan->isFawkes() && $objectsLocation == 'shared' )
+            if( !$pan->isFawkes() )
             {
-                if( $this->utilType == "address-merger" || $this->utilType == "addressgroup-merger" )
-                    $store = $pan->addressStore;
-                elseif( $this->utilType == "service-merger" || $this->utilType == "servicegroup-merger" )
-                    $store = $pan->serviceStore;
-                elseif( $this->utilType == "tag-merger" )
-                    $store = $pan->tagStore;
-
-                $parentStore = null;
-                $location_array[0]['findLocation'] = $objectsLocation;
-                $location_array[0]['store'] = $store;
-                $location_array[0]['parentStore'] = $parentStore;
-            }
-            else
-            {
-                $findLocation = $pan->findSubSystemByName($objectsLocation);
-                if( $findLocation === null )
-                    $this->locationNotFound( $objectsLocation );
-                    #derr("cannot find DeviceGroup/VSYS named '{$objectsLocation}', check case or syntax");
-
-                if( $this->utilType == "address-merger" || $this->utilType == "addressgroup-merger" )
+                $objectsLocations = $objectsLocation;
+                foreach( $objectsLocations as $key => $objectsLocation )
                 {
-                    $store = $findLocation->addressStore;
+                    if( $objectsLocation == "shared" )
+                    {
+                        if( $this->utilType == "address-merger" || $this->utilType == "addressgroup-merger" )
+                            $store = $pan->addressStore;
+                        elseif( $this->utilType == "service-merger" || $this->utilType == "servicegroup-merger" )
+                            $store = $pan->serviceStore;
+                        elseif( $this->utilType == "tag-merger" )
+                            $store = $pan->tagStore;
 
-                    if( $pan->isPanorama() && isset($findLocation->parentDeviceGroup) && $findLocation->parentDeviceGroup !== null )
-                        $parentStore = $findLocation->parentDeviceGroup->addressStore;
-                    elseif( $pan->isFawkes() && isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
-                        $parentStore = $findLocation->parentContainer->addressStore;
+                        $parentStore = null;
+                        $location_array[$key]['findLocation'] = $objectsLocation;
+                        $location_array[$key]['store'] = $store;
+                        $location_array[$key]['parentStore'] = $parentStore;
+                    }
                     else
-                        $parentStore = $findLocation->owner->addressStore;
-                }
-                elseif( $this->utilType == "service-merger" || $this->utilType == "servicegroup-merger" )
-                {
-                    $store = $findLocation->serviceStore;
+                    {
+                        $findLocation = $pan->findSubSystemByName($objectsLocation);
+                        if( $findLocation === null )
+                            $this->locationNotFound($objectsLocation);
 
-                    if( $pan->isPanorama() && isset($findLocation->parentDeviceGroup) && $findLocation->parentDeviceGroup !== null )
-                        $parentStore = $findLocation->parentDeviceGroup->serviceStore;
-                    elseif( $pan->isFawkes() && isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
-                        $parentStore = $findLocation->parentContainer->serviceStore;
-                    else
-                        $parentStore = $findLocation->owner->serviceStore;
-                }
-                elseif( $this->utilType == "tag-merger" )
-                {
-                    $store = $findLocation->tagStore;
+                        if( $this->utilType == "address-merger" || $this->utilType == "addressgroup-merger" )
+                        {
+                            $store = $findLocation->addressStore;
 
-                    if( $pan->isPanorama() && isset($findLocation->parentDeviceGroup) && $findLocation->parentDeviceGroup !== null )
-                        $parentStore = $findLocation->parentDeviceGroup->tagStore;
-                    elseif( $pan->isFawkes() && isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
-                        $parentStore = $findLocation->parentContainer->tagStore;
-                    else
-                        $parentStore = $findLocation->owner->tagStore;
-                }
-                if( get_class( $findLocation->owner ) == "FawkesConf" )
-                    $parentStore = null;
+                            if( $pan->isPanorama() && isset($findLocation->parentDeviceGroup) && $findLocation->parentDeviceGroup !== null )
+                                $parentStore = $findLocation->parentDeviceGroup->addressStore;
+                            elseif( $pan->isFawkes() && isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
+                                $parentStore = $findLocation->parentContainer->addressStore;
+                            else
+                                $parentStore = $findLocation->owner->addressStore;
+                        }
+                        elseif( $this->utilType == "service-merger" || $this->utilType == "servicegroup-merger" )
+                        {
+                            $store = $findLocation->serviceStore;
 
-                $location_array[0]['findLocation'] = $findLocation;
-                $location_array[0]['store'] = $store;
-                $location_array[0]['parentStore'] = $parentStore;
+                            if( $pan->isPanorama() && isset($findLocation->parentDeviceGroup) && $findLocation->parentDeviceGroup !== null )
+                                $parentStore = $findLocation->parentDeviceGroup->serviceStore;
+                            elseif( $pan->isFawkes() && isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
+                                $parentStore = $findLocation->parentContainer->serviceStore;
+                            else
+                                $parentStore = $findLocation->owner->serviceStore;
+                        }
+                        elseif( $this->utilType == "tag-merger" )
+                        {
+                            $store = $findLocation->tagStore;
+
+                            if( $pan->isPanorama() && isset($findLocation->parentDeviceGroup) && $findLocation->parentDeviceGroup !== null )
+                                $parentStore = $findLocation->parentDeviceGroup->tagStore;
+                            elseif( $pan->isFawkes() && isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
+                                $parentStore = $findLocation->parentContainer->tagStore;
+                            else
+                                $parentStore = $findLocation->owner->tagStore;
+                        }
+                        if( get_class($findLocation->owner) == "FawkesConf" )
+                            $parentStore = null;
+
+                        $location_array[$key]['findLocation'] = $findLocation;
+                        $location_array[$key]['store'] = $store;
+                        $location_array[$key]['parentStore'] = $parentStore;
+                    }
+                }
             }
 
             if( $pan->isPanorama() )
             {
-                if( $objectsLocation == 'shared' )
-                    $childDeviceGroups = $pan->deviceGroups;
-                else
-                    $childDeviceGroups = $findLocation->childDeviceGroups(TRUE);
-                $location_array[0]['childDeviceGroups'] = $childDeviceGroups;
+
+                foreach( $this->objectsLocation as $key => $objectsLocation )
+                {
+                    if( $objectsLocation == 'shared' )
+                        $childDeviceGroups = $pan->deviceGroups;
+                    else
+                        $childDeviceGroups = $findLocation->childDeviceGroups(TRUE);
+                    $location_array[$key]['childDeviceGroups'] = $childDeviceGroups;
+                }
+
             }
             elseif( $pan->isFawkes() )
             {
                 //child Container/CloudDevices
                 //Todo: swaschkut 20210414
-                $location_array[0]['childDeviceGroups'] = array();
+                foreach( $this->objectsLocation as $key => $objectsLocation )
+                    $location_array[$key]['childDeviceGroups'] = array();
             }
             else
-                $location_array[0]['childDeviceGroups'] = array();
+            {
+                foreach( $this->objectsLocation as $key => $objectsLocation )
+                    $location_array[$key]['childDeviceGroups'] = array();
+            }
+
         }
 
         return $location_array;
@@ -1258,9 +1269,7 @@ class MERGER extends UTIL
                         $pickedObject = reset($hash);
                 }
                 else
-                {
                     $pickedObject = reset($hash);
-                }
 
 
                 $tmp_DG_name = $store->owner->name();
@@ -1268,7 +1277,7 @@ class MERGER extends UTIL
                     $tmp_DG_name = 'shared';
 
                 $tmp_address = $store->find($pickedObject->name());
-                if( $tmp_address == null )
+                if( $tmp_address == null && $this->dupAlg != 'identical'  )
                 {
                     if( isset($child_NamehashMap[$pickedObject->name()]) )
                     {
@@ -1320,6 +1329,10 @@ class MERGER extends UTIL
 
                     $countChildCreated++;
                 }
+                elseif( $tmp_address == null )
+                {
+                    continue;
+                }
                 else
                 {
                     /** @var Address $tmp_address */
@@ -1369,6 +1382,14 @@ class MERGER extends UTIL
                 // Merging loop finally!
                 foreach( $hash as $objectIndex => $object )
                 {
+                    if( $this->dupAlg == 'identical' )
+                        if( $object->name() != $tmp_address->name() )
+                        {
+                            PH::print_stdout("    - SKIP: object name '{$object->_PANC_shortName()}' [with value '{$object->value()}'] is not IDENTICAL to object name from upperlevel '{$tmp_address->_PANC_shortName()}' [with value '{$tmp_address->value()}'] ");
+                            $this->skippedObject( $index, $tmp_address, $object);
+                            continue;
+                        }
+
                     PH::print_stdout("    - replacing '{$object->_PANC_shortName()}' ...");
                     if( $this->action === "merge" )
                     {
@@ -1409,38 +1430,45 @@ class MERGER extends UTIL
                 {
                     if( isset($upperHashMap[$index]) )
                     {
-                        foreach( $upperHashMap[$index] as $object )
-                        {
-                            #if( $object->isType_TMP() )
-                            #    continue;
-                            if( $this->pickFilter->matchSingleObject(array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
-                            {
-                                $pickedObject = $object;
-                                break;
-                            }
-                        }
-                        if( $pickedObject === null )
-                            $pickedObject = reset($upperHashMap[$index]);
-
-                        PH::print_stdout( "   * using object from upper level : '{$pickedObject->_PANC_shortName()}'" );
+                        $hashArray = $upperHashMap[$index];
+                        $printString = "   * using object from upper level : ";
                     }
                     else
                     {
-                        foreach( $hash as $object )
+                        $hashArray = $hash;
+                        $printString = "   * keeping object : ";
+                    }
+
+                    foreach( $hashArray as $object )
+                    {
+                        if( $this->pickFilter->matchSingleObject(array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
                         {
-                            #if( $object->isType_TMP() )
-                            #    continue;
-                            if( $this->pickFilter->matchSingleObject(array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
+                            $pickedObject = $object;
+                            break;
+                        }
+                    }
+
+                    if( $pickedObject === null )
+                    {
+                        if( isset($upperHashMap[$index]) )
+                        {
+                            $hashArray = $hash;
+                            $printString = "   * keeping object :";
+
+                            foreach( $hashArray as $object )
                             {
-                                $pickedObject = $object;
-                                break;
+                                if( $this->pickFilter->matchSingleObject(array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
+                                {
+                                    $pickedObject = $object;
+                                    break;
+                                }
                             }
                         }
-                        if( $pickedObject === null )
-                            $pickedObject = reset($hash);
-
-                        PH::print_stdout( "   * keeping object '{$pickedObject->_PANC_shortName()}'" );
+                        else
+                            $pickedObject = reset($hashArray);
                     }
+
+                    PH::print_stdout( $printString."'{$pickedObject->_PANC_shortName()}'" );
                 }
                 else
                 {
@@ -1488,7 +1516,8 @@ class MERGER extends UTIL
                                 if( $this->dupAlg == 'identical' )
                                     if( $pickedObject->name() != $ancestor->name() )
                                     {
-                                        PH::print_stdout("    - SKIP: object name '{$pickedObject->_PANC_shortName()}' [with value '{$pickedObject->value()}'] is not IDENTICAL to object name from upperlevel '{$ancestor->_PANC_shortName()}' [with value '{$ancestor->value()}'] ");
+                                        #PH::print_stdout("    - SKIP: object name '{$pickedObject->_PANC_shortName()}' [with value '{$pickedObject->value()}'] is not IDENTICAL to object name from upperlevel '{$ancestor->_PANC_shortName()}' [with value '{$ancestor->value()}'] ");
+                                        PH::print_stdout("    - SKIP: object name '{$ancestor->_PANC_shortName()}' [with value '{$ancestor->value()}'] is not IDENTICAL to object name from upperlevel '{$pickedObject->_PANC_shortName()}' [with value '{$pickedObject->value()}'] ");
                                         $this->skippedObject( $index, $pickedObject, $ancestor);
                                         continue;
                                     }
@@ -1593,7 +1622,8 @@ class MERGER extends UTIL
                     }
                     else
                     {
-                        PH::print_stdout("    - SKIP: object name '{$object->_PANC_shortName()}' is not IDENTICAL");
+                        #PH::print_stdout("    - SKIP: object name '{$object->_PANC_shortName()}' [with value '{$object->value()}'] is not IDENTICAL to object name from upperlevel '{$pickedObject->_PANC_shortName()}' [with value '{$pickedObject->value()}'] ");
+                        PH::print_stdout("    - SKIP: object name '{$object->_PANC_shortName()}' [with value '{$object->value()}'] is not IDENTICAL");
                     }
                 }
             }

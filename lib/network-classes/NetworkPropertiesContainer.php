@@ -59,6 +59,7 @@ class NetworkPropertiesContainer
         $this->aggregateEthernetIfStore = new AggregateEthernetIfStore('AggregateEthernetIfaces', $owner);
         $this->loopbackIfStore = new LoopbackIfStore('LoopbackIfaces', $owner);
         $this->ipsecTunnelStore = new IPsecTunnelStore('IPsecTunnels', $owner);
+        $this->greTunnelStore = new GreTunnelStore('GreTunnels', $owner);
         $this->tmpInterfaceStore = new TmpInterfaceStore('TmpIfaces', $owner);
         $this->virtualRouterStore = new VirtualRouterStore('', $owner);
         $this->ikeCryptoProfileStore = new IkeCryptoProfileStore('IkeCryptoProfiles', $owner);
@@ -67,6 +68,7 @@ class NetworkPropertiesContainer
         $this->vlanIfStore = new VlanIfStore('VlanIfaces', $owner);
         $this->tunnelIfStore = new TunnelIfStore('TunnelIfaces', $owner);
         $this->virtualWireStore = new VirtualWireStore('', $owner);
+        $this->dhcpStore = new DHCPStore('DHCP', $owner);
     }
 
     function load_from_domxml(DOMElement $xml)
@@ -74,18 +76,16 @@ class NetworkPropertiesContainer
         $this->xmlroot = $xml;
 
 
-        $tmp = DH::findFirstElementOrCreate('interface', $this->xmlroot);
-        $tmp = DH::findFirstElement('ethernet', $tmp);
+        $xmlInterface = DH::findFirstElementOrCreate('interface', $this->xmlroot);
+        $tmp = DH::findFirstElement('ethernet', $xmlInterface);
         if( $tmp !== FALSE )
             $this->ethernetIfStore->load_from_domxml($tmp);
 
-        $tmp = DH::findFirstElementOrCreate('interface', $this->xmlroot);
-        $tmp = DH::findFirstElement('aggregate-ethernet', $tmp);
+        $tmp = DH::findFirstElement('aggregate-ethernet', $xmlInterface);
         if( $tmp !== FALSE )
             $this->aggregateEthernetIfStore->load_from_domxml($tmp);
 
-        $tmp = DH::findFirstElementOrCreate('interface', $this->xmlroot);
-        $tmp = DH::findFirstElement('loopback', $tmp);
+        $tmp = DH::findFirstElement('loopback', $xmlInterface);
         if( $tmp !== FALSE )
         {
             $tmp = DH::findFirstElement('units', $tmp);
@@ -93,8 +93,7 @@ class NetworkPropertiesContainer
                 $this->loopbackIfStore->load_from_domxml($tmp);
         }
 
-        $tmp = DH::findFirstElementOrCreate('interface', $this->xmlroot);
-        $tmp = DH::findFirstElement('vlan', $tmp);
+        $tmp = DH::findFirstElement('vlan', $xmlInterface);
         if( $tmp !== FALSE )
         {
             $tmp = DH::findFirstElement('units', $tmp);
@@ -102,8 +101,7 @@ class NetworkPropertiesContainer
                 $this->vlanIfStore->load_from_domxml($tmp);
         }
 
-        $tmp = DH::findFirstElementOrCreate('interface', $this->xmlroot);
-        $tmp = DH::findFirstElement('tunnel', $tmp);
+        $tmp = DH::findFirstElement('tunnel', $xmlInterface);
         if( $tmp !== FALSE )
         {
             $tmp = DH::findFirstElement('units', $tmp);
@@ -119,6 +117,14 @@ class NetworkPropertiesContainer
         $tmp = DH::findFirstElement('virtual-wire', $this->xmlroot);
         if( $tmp !== FALSE )
             $this->virtualWireStore->load_from_domxml($tmp);
+
+        $tmp = DH::findFirstElement('dhcp', $this->xmlroot);
+        if( $tmp !== FALSE )
+        {
+            $tmp = DH::findFirstElement('interface', $tmp);
+            if( $tmp !== FALSE )
+                $this->dhcpStore->load_from_domxml($tmp);
+        }
 
 
     }
@@ -155,9 +161,13 @@ class NetworkPropertiesContainer
         $tmp = DH::findFirstElement('tunnel', $this->xmlroot);
         if( $tmp !== FALSE )
         {
-            $tmp = DH::findFirstElement('ipsec', $tmp);
-            if( $tmp !== FALSE )
-                $this->ipsecTunnelStore->load_from_domxml($tmp);
+            $tmp1 = DH::findFirstElement('ipsec', $tmp);
+            if( $tmp1 !== FALSE )
+                $this->ipsecTunnelStore->load_from_domxml($tmp1);
+
+            $tmp1 = DH::findFirstElement('gre', $tmp);
+            if( $tmp1 !== FALSE )
+                $this->greTunnelStore->load_from_domxml($tmp1);
         }
     }
 
@@ -181,6 +191,9 @@ class NetworkPropertiesContainer
         foreach( $this->ipsecTunnelStore->getInterfaces() as $if )
             $ifs[$if->name()] = $if;
 
+        foreach( $this->greTunnelStore->getInterfaces() as $if )
+            $ifs[$if->name()] = $if;
+
         foreach( $this->vlanIfStore->getInterfaces() as $if )
             $ifs[$if->name()] = $if;
 
@@ -200,7 +213,7 @@ class NetworkPropertiesContainer
     }
     /**
      * @param string $interfaceName
-     * @return EthernetInterface|IPsecTunnel|TmpInterface|VlanInterface|TunnelInterface|LoopbackInterface|null
+     * @return EthernetInterface|IPsecTunnel|TmpInterface|VlanInterface|TunnelInterface|LoopbackInterface|GreTunnel|null
      */
     function findInterface($interfaceName)
     {

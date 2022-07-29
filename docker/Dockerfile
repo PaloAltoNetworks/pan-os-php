@@ -22,6 +22,8 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
     python3-netaddr \
     python3-requests
 
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y jq
+
 WORKDIR /tools/pan-os-php
 
 COPY appid-toolbox ./appid-toolbox
@@ -41,7 +43,8 @@ RUN cat /tools/pan-os-php/utils/alias.sh >> /$user_var/.bashrc
 RUN cat /tools/pan-os-php/utils/bash_autocompletion/enable_bash.txt >> /$user_var/.bashrc
 
 #set link instead of copying over
-COPY utils/bash_autocompletion/pan-os-php.sh /usr/share/bash-completion/completions/pan-os-php
+#COPY utils/bash_autocompletion/pan-os-php.sh /usr/share/bash-completion/completions/pan-os-php
+RUN ln -s /tools/pan-os-php/utils/bash_autocompletion/pan-os-php.sh /usr/share/bash-completion/completions/pan-os-php
 
 RUN git config --global user.email=test@test.com user.name=test
 

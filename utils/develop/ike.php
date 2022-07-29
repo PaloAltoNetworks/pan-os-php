@@ -353,7 +353,8 @@ foreach( $template_array as $template )
         {
             //todo: improvments needed so that output contains only IKE/IPsec information to specific VSYS
 
-            PH::print_stdout();
+            PH::print_stdout( "");
+            PH::print_stdout( "------------------------------------------------");
             PH::print_stdout( "VSYS: " . $sub->name() );
 
             $IKE = $sub->owner->network->ikeCryptoProfileStore->ikeCryptoProfil();
@@ -362,7 +363,7 @@ foreach( $template_array as $template )
 
             foreach( $IKE as $ikeCryptoProfil )
             {
-                PH::print_stdout( $ikeCryptoProfil->name() );
+                PH::print_stdout( " - ".$ikeCryptoProfil->name() );
                 $text = "hash: " . $ikeCryptoProfil->hash . " - dhgroup: " . $ikeCryptoProfil->dhgroup . " - encryption: " . $ikeCryptoProfil->encryption . " - ";
                 if( $ikeCryptoProfil->lifetime_seconds != "" )
                     $text .= $ikeCryptoProfil->lifetime_seconds . " seconds";
@@ -386,7 +387,7 @@ foreach( $template_array as $template )
 
             foreach( $ipsec as $ipsecCryptoProfil )
             {
-                PH::print_stdout( $ipsecCryptoProfil->name() . " - protocol: " . $ipsecCryptoProfil->ipsecProtocol );
+                PH::print_stdout( " - ".$ipsecCryptoProfil->name() . " - protocol: " . $ipsecCryptoProfil->ipsecProtocol );
                 $text = "encryption: " . $ipsecCryptoProfil->encryption . " - authentication: " . $ipsecCryptoProfil->authentication . " - dhgroup: " . $ipsecCryptoProfil->dhgroup;
 
                 if( $ipsecCryptoProfil->lifetime_seconds != "" )
@@ -422,7 +423,7 @@ foreach( $template_array as $template )
 
             foreach( $ikeGateways as $gateway )
             {
-                $text = "\nGateway: " . str_pad($gateway->name(), 25) . " ";
+                $text = " - "."Gateway: " . str_pad($gateway->name(), 25) . " ";
 
                 $text .= "-preSharedKey: " . $gateway->preSharedKey . " ";
 
@@ -458,7 +459,7 @@ foreach( $template_array as $template )
 
             foreach( $ipsecTunnel as $tunnel )
             {
-                $text = "\nTunnel: " . str_pad($tunnel->name(), 25) . " - IKE Gateway: " . $tunnel->gateway;
+                $text = " - "."Tunnel: " . str_pad($tunnel->name(), 25) . " - IKE Gateway: " . $tunnel->gateway;
                 $text .= " - interface: " . $tunnel->interface . " - proposal: " . $tunnel->proposal;
                 $text .= " -disabled: " . $tunnel->disabled;
                 PH::print_stdout($text);
@@ -474,6 +475,27 @@ foreach( $template_array as $template )
                     $text .= "type: " . $proxyId['type'];
                     PH::print_stdout($text);
                 }
+            }
+
+            $greTunnel = $sub->owner->network->greTunnelStore->tunnels();
+            if( count($greTunnel) > 0 )
+            {
+                PH::print_stdout();
+                PH::print_stdout( PH::boldText("GRE tunnel") );
+            }
+
+
+            foreach( $greTunnel as $tunnel )
+            {
+                $text = " - "."Tunnel: " . str_pad($tunnel->name(), 25);
+
+                foreach( $tunnel->tunnelInterface->interfaces() as $interface )
+                    $text .= " - tunnelinterface: " .$interface->name() ;
+                foreach( $tunnel->localInterface->interfaces() as $interface )
+                    $text .= " - localinterface: " .$interface->name() ;
+
+                $text .= " -disabled: " . $tunnel->disabled;
+                PH::print_stdout($text);
             }
 
         }

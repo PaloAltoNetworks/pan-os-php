@@ -99,6 +99,10 @@ class RQuery
             $this->contextObject = new DeviceRQueryContext($this);
         elseif( $this->objectType == 'threat' )
             $this->contextObject = new ThreatRQueryContext($this);
+        elseif( $this->objectType == 'interface' )
+            $this->contextObject = new InterfaceRQueryContext($this);
+        elseif( $this->objectType == 'dhcp' )
+            $this->contextObject = new DHCPRQueryContext($this);
         else
             derr("unsupported object type '$objectType'");
     }
@@ -683,5 +687,6 @@ require_once 'filters/filters-SecurityProfile.php';
 require_once 'filters/filters-SecurityProfileGroup.php';
 require_once 'filters/filters-Schedule.php';
 require_once 'filters/filters-Device.php';
+require_once 'filters/filters-DHCP.php';
 
 
