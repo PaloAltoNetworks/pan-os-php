@@ -9,6 +9,7 @@ UTILS:
 BUGFIX:
 * type=diff | bugfix if argument filter is used with $$name$$
 * type=diff filter=jsonfile.json | bugfix if no include filter is set but exclude must be triggered
+* type=[object]-merger | bugfix to use location=DG1,DG2
 
 GENERAL:
 * bash autocompletion - extension for actions= filter=

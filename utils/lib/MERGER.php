@@ -43,9 +43,6 @@ class MERGER extends UTIL
         $this->usageMsg = PH::boldText('USAGE: ') . "php " . basename(__FILE__) . " in=inputfile.xml [out=outputfile.xml] location=shared [DupAlgorithm=XYZ] [MergeCountLimit=100] ['pickFilter=(name regex /^H-/)'] ...";
 
 
-
-
-        
         $this->add_supported_arguments();
 
 
@@ -115,6 +112,8 @@ class MERGER extends UTIL
 
         $this->load_config();
 
+        $this->location_filter();
+
         $this->location_array = $this->merger_location_array($this->utilType, $this->objectsLocation, $this->pan);
 
 
@@ -149,13 +148,11 @@ class MERGER extends UTIL
     {
         $this->utilType = $utilType;
 
-        #if( $objectsLocation == 'any' || $objectsLocation == 'all' )
-        if( $objectsLocation == 'any' )
+        if( $objectsLocation[0] == 'any' )
         {
             if( $pan->isPanorama() )
             {
                 $alldevicegroup = $pan->deviceGroups;
-                #getDeviceGroups()
             }
             elseif( $pan->isFawkes() )
             {
@@ -257,84 +254,100 @@ class MERGER extends UTIL
         }
         else
         {
-            if( !$pan->isFawkes() && $objectsLocation == 'shared' )
+            if( !$pan->isFawkes() )
             {
-                if( $this->utilType == "address-merger" || $this->utilType == "addressgroup-merger" )
-                    $store = $pan->addressStore;
-                elseif( $this->utilType == "service-merger" || $this->utilType == "servicegroup-merger" )
-                    $store = $pan->serviceStore;
-                elseif( $this->utilType == "tag-merger" )
-                    $store = $pan->tagStore;
-
-                $parentStore = null;
-                $location_array[0]['findLocation'] = $objectsLocation;
-                $location_array[0]['store'] = $store;
-                $location_array[0]['parentStore'] = $parentStore;
-            }
-            else
-            {
-                $findLocation = $pan->findSubSystemByName($objectsLocation);
-                if( $findLocation === null )
-                    $this->locationNotFound( $objectsLocation );
-                    #derr("cannot find DeviceGroup/VSYS named '{$objectsLocation}', check case or syntax");
-
-                if( $this->utilType == "address-merger" || $this->utilType == "addressgroup-merger" )
+                $objectsLocations = $objectsLocation;
+                foreach( $objectsLocations as $key => $objectsLocation )
                 {
-                    $store = $findLocation->addressStore;
+                    if( $objectsLocation == "shared" )
+                    {
+                        if( $this->utilType == "address-merger" || $this->utilType == "addressgroup-merger" )
+                            $store = $pan->addressStore;
+                        elseif( $this->utilType == "service-merger" || $this->utilType == "servicegroup-merger" )
+                            $store = $pan->serviceStore;
+                        elseif( $this->utilType == "tag-merger" )
+                            $store = $pan->tagStore;
 
-                    if( $pan->isPanorama() && isset($findLocation->parentDeviceGroup) && $findLocation->parentDeviceGroup !== null )
-                        $parentStore = $findLocation->parentDeviceGroup->addressStore;
-                    elseif( $pan->isFawkes() && isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
-                        $parentStore = $findLocation->parentContainer->addressStore;
+                        $parentStore = null;
+                        $location_array[$key]['findLocation'] = $objectsLocation;
+                        $location_array[$key]['store'] = $store;
+                        $location_array[$key]['parentStore'] = $parentStore;
+                    }
                     else
-                        $parentStore = $findLocation->owner->addressStore;
-                }
-                elseif( $this->utilType == "service-merger" || $this->utilType == "servicegroup-merger" )
-                {
-                    $store = $findLocation->serviceStore;
+                    {
+                        $findLocation = $pan->findSubSystemByName($objectsLocation);
+                        if( $findLocation === null )
+                            $this->locationNotFound($objectsLocation);
 
-                    if( $pan->isPanorama() && isset($findLocation->parentDeviceGroup) && $findLocation->parentDeviceGroup !== null )
-                        $parentStore = $findLocation->parentDeviceGroup->serviceStore;
-                    elseif( $pan->isFawkes() && isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
-                        $parentStore = $findLocation->parentContainer->serviceStore;
-                    else
-                        $parentStore = $findLocation->owner->serviceStore;
-                }
-                elseif( $this->utilType == "tag-merger" )
-                {
-                    $store = $findLocation->tagStore;
+                        if( $this->utilType == "address-merger" || $this->utilType == "addressgroup-merger" )
+                        {
+                            $store = $findLocation->addressStore;
 
-                    if( $pan->isPanorama() && isset($findLocation->parentDeviceGroup) && $findLocation->parentDeviceGroup !== null )
-                        $parentStore = $findLocation->parentDeviceGroup->tagStore;
-                    elseif( $pan->isFawkes() && isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
-                        $parentStore = $findLocation->parentContainer->tagStore;
-                    else
-                        $parentStore = $findLocation->owner->tagStore;
-                }
-                if( get_class( $findLocation->owner ) == "FawkesConf" )
-                    $parentStore = null;
+                            if( $pan->isPanorama() && isset($findLocation->parentDeviceGroup) && $findLocation->parentDeviceGroup !== null )
+                                $parentStore = $findLocation->parentDeviceGroup->addressStore;
+                            elseif( $pan->isFawkes() && isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
+                                $parentStore = $findLocation->parentContainer->addressStore;
+                            else
+                                $parentStore = $findLocation->owner->addressStore;
+                        }
+                        elseif( $this->utilType == "service-merger" || $this->utilType == "servicegroup-merger" )
+                        {
+                            $store = $findLocation->serviceStore;
 
-                $location_array[0]['findLocation'] = $findLocation;
-                $location_array[0]['store'] = $store;
-                $location_array[0]['parentStore'] = $parentStore;
+                            if( $pan->isPanorama() && isset($findLocation->parentDeviceGroup) && $findLocation->parentDeviceGroup !== null )
+                                $parentStore = $findLocation->parentDeviceGroup->serviceStore;
+                            elseif( $pan->isFawkes() && isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
+                                $parentStore = $findLocation->parentContainer->serviceStore;
+                            else
+                                $parentStore = $findLocation->owner->serviceStore;
+                        }
+                        elseif( $this->utilType == "tag-merger" )
+                        {
+                            $store = $findLocation->tagStore;
+
+                            if( $pan->isPanorama() && isset($findLocation->parentDeviceGroup) && $findLocation->parentDeviceGroup !== null )
+                                $parentStore = $findLocation->parentDeviceGroup->tagStore;
+                            elseif( $pan->isFawkes() && isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
+                                $parentStore = $findLocation->parentContainer->tagStore;
+                            else
+                                $parentStore = $findLocation->owner->tagStore;
+                        }
+                        if( get_class($findLocation->owner) == "FawkesConf" )
+                            $parentStore = null;
+
+                        $location_array[$key]['findLocation'] = $findLocation;
+                        $location_array[$key]['store'] = $store;
+                        $location_array[$key]['parentStore'] = $parentStore;
+                    }
+                }
             }
 
             if( $pan->isPanorama() )
             {
-                if( $objectsLocation == 'shared' )
-                    $childDeviceGroups = $pan->deviceGroups;
-                else
-                    $childDeviceGroups = $findLocation->childDeviceGroups(TRUE);
-                $location_array[0]['childDeviceGroups'] = $childDeviceGroups;
+
+                foreach( $this->objectsLocation as $key => $objectsLocation )
+                {
+                    if( $objectsLocation == 'shared' )
+                        $childDeviceGroups = $pan->deviceGroups;
+                    else
+                        $childDeviceGroups = $findLocation->childDeviceGroups(TRUE);
+                    $location_array[$key]['childDeviceGroups'] = $childDeviceGroups;
+                }
+
             }
             elseif( $pan->isFawkes() )
             {
                 //child Container/CloudDevices
                 //Todo: swaschkut 20210414
-                $location_array[0]['childDeviceGroups'] = array();
+                foreach( $this->objectsLocation as $key => $objectsLocation )
+                    $location_array[$key]['childDeviceGroups'] = array();
             }
             else
-                $location_array[0]['childDeviceGroups'] = array();
+            {
+                foreach( $this->objectsLocation as $key => $objectsLocation )
+                    $location_array[$key]['childDeviceGroups'] = array();
+            }
+
         }
 
         return $location_array;
