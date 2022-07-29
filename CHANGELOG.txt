@@ -14,6 +14,7 @@ GENERAL:
 * bash autocompletion - extension for actions= filter=
 * introduce class DHCP / GreTunnel and all respective additions for UTILS
 * different classes | extend validation for usage of json_decode
+* update dynamic content version to 8597-7479
 
 
 2.0.49 (20220726)
