@@ -249,8 +249,6 @@ class MERGER extends UTIL
                 $location_array[$key + 1]['parentStore'] = null;
                 $location_array[$key + 1]['childDeviceGroups'] = $alldevicegroup;
             }
-
-
         }
         else
         {
@@ -1382,6 +1380,14 @@ class MERGER extends UTIL
                 // Merging loop finally!
                 foreach( $hash as $objectIndex => $object )
                 {
+                    if( $this->dupAlg == 'identical' )
+                        if( $object->name() != $tmp_address->name() )
+                        {
+                            PH::print_stdout("    - SKIP: object name '{$object->_PANC_shortName()}' [with value '{$object->value()}'] is not IDENTICAL to object name from upperlevel '{$tmp_address->_PANC_shortName()}' [with value '{$tmp_address->value()}'] ");
+                            $this->skippedObject( $index, $tmp_address, $object);
+                            continue;
+                        }
+
                     PH::print_stdout("    - replacing '{$object->_PANC_shortName()}' ...");
                     if( $this->action === "merge" )
                     {
