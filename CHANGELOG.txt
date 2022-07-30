@@ -1,6 +1,15 @@
 CHANGELOG
 
-2.0.50
+2.0.51
+UTILS:
+* UTIL different classes - improvement for usage output
+
+BUGFIX:
+
+GENERAL:
+
+
+2.0.50 (0220729)
 UTILS:
 * type=dhcp - introduction
 * development ike.php - extension for GreTunnel

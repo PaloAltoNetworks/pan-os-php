@@ -568,7 +568,8 @@ class SOFTWARE_DOWNLOAD extends UTIL
 
     }
 
-    public function display_usage_and_exit($shortMessage = false)
+    //duplicate code check UTIL::
+    public function display_usage_and_exit($shortMessage = false, $warningString = "")
     {
         print PH::boldText("USAGE: ")."php ".basename(__FILE__)." serial=[DEVICE-Serial#] model=[DEVICE-MODEL]\n";
         print PH::boldText("\nExamples:\n");
@@ -576,14 +577,15 @@ class SOFTWARE_DOWNLOAD extends UTIL
         print PH::boldText("\nFOR AUTOMATION please first run:\n");
         print " - php pan_software_download_preparation in=api://[DEVICE MGMT IP]\n\n";
 
-
+        if( !empty($warningString) )
+            mwarning( $warningString, null, false );
         exit(1);
     }
 
     public function display_error_usage_exit($msg)
     {
         fwrite(STDERR, PH::boldText("\n**ERROR** ").$msg."\n\n");
-        display_usage_and_exit(true);
+        display_usage_and_exit(true, $msg);
     }
 
     public function curl_request($url, $fields = array(), $data = '', $authType = "BASIC" )

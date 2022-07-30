@@ -493,7 +493,8 @@ class UPLOAD extends UTIL
         return $tmp_dirname;
     }
 
-    function display_usage_and_exit($shortMessage = FALSE)
+    //duplicate code
+    function display_usage_and_exit($shortMessage = FALSE, $warningString = "")
     {
         PH::print_stdout( PH::boldText("USAGE: ") . "php " . basename(__FILE__) . " in=file.xml|api://... out=file.xml|api://... [more arguments]");
 
@@ -532,7 +533,8 @@ class UPLOAD extends UTIL
 
             PH::print_stdout();
         }
-
+        if( !empty($warningString) )
+            mwarning( $warningString, null, false );
         exit(1);
     }
 

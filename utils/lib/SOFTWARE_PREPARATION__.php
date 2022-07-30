@@ -321,7 +321,7 @@ class SOFTWARE_PREPARATION__
     function display_error_usage_exit($msg)
     {
         fwrite(STDERR, PH::boldText("\n**ERROR** ").$msg."\n\n");
-        $this->display_usage_and_exit(true);
+        $this->display_usage_and_exit(true, $msg);
     }
 
     function print_string( $inputConnector )

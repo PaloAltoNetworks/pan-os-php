@@ -598,7 +598,7 @@ class UTIL
             PH::$JSON_OUT['error'] = $msg;
         else
             fwrite(STDERR, PH::boldText("\n**ERROR** ") . $msg . "\n\n");
-        $this->display_usage_and_exit(TRUE);
+        $this->display_usage_and_exit(TRUE, $msg );
     }
 
     public function usageMessage()
@@ -627,7 +627,7 @@ class UTIL
         PH::$JSON_TMP['usage'] = $string;
     }
 
-    public function display_usage_and_exit($shortMessage = FALSE)
+    public function display_usage_and_exit($shortMessage = FALSE, $warningString = "")
     {
         if( $this->usageMsg == "" )
             $this->usageMessage();
@@ -688,6 +688,8 @@ class UTIL
             PH::$JSON_OUT['log'] = PH::$JSON_OUTlog;
             print json_encode( PH::$JSON_OUT, JSON_PRETTY_PRINT );
         }
+        if( !empty($warningString) )
+            mwarning( $warningString, null, false );
         exit(1);
     }
 
@@ -708,7 +710,6 @@ class UTIL
 
         if( !isset(PH::$args['actions']) )
         {
-            #display_error_usage_exit('"actions" is missing from arguments');
             PH::$args['actions'] = "display";
         }
 
@@ -838,7 +839,6 @@ class UTIL
         {
             if( !isset(PH::$args['out']) )
             {
-                #display_error_usage_exit('"out" is missing from arguments');
                 PH::$args['out'] = "/dev/null";
             }
             if( isset(PH::$args['out']) )

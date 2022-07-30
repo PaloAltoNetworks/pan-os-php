@@ -92,8 +92,9 @@ elseif( !isset(PH::$args['type']) )
         PH::$JSON_TMP[] = $type;
     PH::print_stdout( PH::$JSON_TMP, false, 'type' );
 
-    mwarning( '"type" is missing from arguments', null, false );
-    $typeUTIL->display_usage_and_exit();
+    $warningString = '"type" is missing from arguments';
+    mwarning( $warningString, null, false );
+    $typeUTIL->display_usage_and_exit( false, $warningString );
 }
 elseif( isset(PH::$args['type']) )
 {
