@@ -4,6 +4,7 @@ CHANGELOG
 UTILS:
 * UTIL different classes - improvement for usage output
 * type=stats | introduce argument exportcsv=json.csv - to get stats exported in CSV
+* type=diff | final improvement for stdout of diff
 
 BUGFIX:
 * class ObjectwithDescription | method description_merge() - do not merge description if other description is empty`
