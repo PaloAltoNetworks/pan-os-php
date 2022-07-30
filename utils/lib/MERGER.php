@@ -1464,8 +1464,8 @@ class MERGER extends UTIL
                                 }
                             }
                         }
-                        else
-                            $pickedObject = reset($hashArray);
+                        if( $pickedObject === null )
+                            $pickedObject = reset($hash);
                     }
 
                     PH::print_stdout( $printString."'{$pickedObject->_PANC_shortName()}'" );
