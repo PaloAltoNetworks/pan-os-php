@@ -1123,17 +1123,7 @@ class MERGER extends UTIL
                         if( $this->excludeFilter !== null && $this->excludeFilter->matchSingleObject(array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
                             continue;
 
-                        $value = $object->value();
-
-                        // if object is /32, let's remove it to match equivalent non /32 syntax
-                        #if( $object->isType_ipNetmask() && strpos($object->value(), '/32') !== FALSE )
-                        if( ($object->isType_ipNetmask() || $object->isType_TMP() ) && strpos($object->value(), '/32') !== FALSE )
-                            $value = substr($value, 0, strlen($value) - 3);
-
-                        if( $object->type() === "tmp" )
-                            $value = "ip-netmask" . '-' . $value;
-                        else
-                            $value = $object->type() . '-' . $value;
+                        $value = $this->address_get_value_string( $object );
 
                         #PH::print_stdout( "add objNAME: " . $object->name() . " DG: " . $object->owner->owner->name() . "" );
                         $child_hashMap[$value][] = $object;
@@ -1164,17 +1154,7 @@ class MERGER extends UTIL
                         //do something
                     }
 
-                    $value = $object->value();
-
-                    // if object is /32, let's remove it to match equivalent non /32 syntax
-                    #if( $object->isType_ipNetmask() && strpos($object->value(), '/32') !== FALSE )
-                    if( ($object->isType_ipNetmask() || $object->isType_TMP() ) && strpos($object->value(), '/32') !== FALSE )
-                        $value = substr($value, 0, strlen($value) - 3);
-
-                    if( $object->type() === "tmp" )
-                        $value = "ip-netmask" . '-' . $value;
-                    else
-                        $value = $object->type() . '-' . $value;
+                    $value = $this->address_get_value_string( $object );
 
                     if( $object->owner === $store )
                     {
@@ -1202,17 +1182,7 @@ class MERGER extends UTIL
                     if( $this->excludeFilter !== null && $this->excludeFilter->matchSingleObject(array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
                         continue;
 
-                    $value = $object->getRefHashComp() . $object->getNetworkValue();
-                    $value = $object->value();
-
-                    // if object is /32, let's remove it to match equivalent non /32 syntax
-                    if( ($object->isType_ipNetmask() || $object->isType_TMP() ) && strpos($object->value(), '/32') !== FALSE )
-                        $value = substr($value, 0, strlen($value) - 3);
-
-                    if( $object->type() === "tmp" )
-                        $value = "ip-netmask" . '-' . $value;
-                    else
-                        $value = $object->type() . '-' . $value;
+                    $value = $this->address_get_value_string( $object );
 
                     if( $object->owner === $store )
                     {
@@ -1323,6 +1293,9 @@ class MERGER extends UTIL
                             $tmp_address = $store->API_newAddress($pickedObject->name(), $pickedObject->type(), $pickedObject->value(), $pickedObject->description());
                         else
                             $tmp_address = $store->newAddress($pickedObject->name(), $pickedObject->type(), $pickedObject->value(), $pickedObject->description());
+
+                        $value = $this->address_get_value_string( $tmp_address );
+                        $hashMap[$value][] = $tmp_address;
                     }
                     else
                         $tmp_address = "[".$tmp_DG_name."] - ".$pickedObject->name(). " {new}";
@@ -1632,7 +1605,21 @@ class MERGER extends UTIL
 
         }    
     }
-    
+
+    function address_get_value_string( $object )
+    {
+        $value = $object->value();
+        if( ($object->isType_ipNetmask() || $object->isType_TMP() ) && strpos($object->value(), '/32') !== FALSE )
+            $value = substr($value, 0, strlen($value) - 3);
+
+        if( $object->type() === "tmp" )
+            $value = "ip-netmask" . '-' . $value;
+        else
+            $value = $object->type() . '-' . $value;
+
+        return $value;
+    }
+
     function servicegroup_merging()
     {
         foreach( $this->location_array as $tmp_location )
@@ -2216,6 +2203,9 @@ class MERGER extends UTIL
                                 $tmp_service = $store->API_newService($pickedObject->name(), $pickedObject->protocol(), $pickedObject->getDestPort(), $pickedObject->description(), $pickedObject->getSourcePort());
                             else
                                 $tmp_service = $store->newService($pickedObject->name(), $pickedObject->protocol(), $pickedObject->getDestPort(), $pickedObject->description(), $pickedObject->getSourcePort());
+
+                            $value = $tmp_service->dstPortMapping()->mappingToText();
+                            $hashMap[$value][] = $tmp_service;
                         }
                         else
                             $tmp_service = "[".$tmp_DG_name."] - ".$pickedObject->name()." {new}";
@@ -2798,6 +2788,9 @@ class MERGER extends UTIL
                         /** @var TagStore $store */
                         if( $this->apiMode )
                             $tmp_tag->API_sync();
+
+                        $value = $tmp_tag->name();
+                        $hashMap[$value][] = $tmp_tag;
                     }
                     else
                         $tmp_tag = "[".$tmp_DG_name."] - ".$pickedObject->name()." {new}";

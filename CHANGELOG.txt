@@ -8,6 +8,7 @@ UTILS:
 
 BUGFIX:
 * class ObjectwithDescription | method description_merge() - do not merge description if other description is empty`
+* type=address-/service-/tag-merger | bugfix if object creation, to update objects in memory for merging part
 
 GENERAL:
 
