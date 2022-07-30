@@ -6,16 +6,17 @@ UTILS:
 * type=stats | introduce argument exportcsv=json.csv - to get stats exported in CSV
 
 BUGFIX:
+* class ObjectwithDescription | method description_merge() - do not merge description if other description is empty`
 
 GENERAL:
 
 
-2.0.50 (0220729)
+2.0.50 (20220729)
 UTILS:
 * type=dhcp - introduction
 * development ike.php - extension for GreTunnel
 * type=rule-merger | improved exportcsv to also display the original rule which is getting manipulate
-* type=address-merger | improvments for dupalgorithm=identical - do not create new objects
+* type=address-merger | improvements for dupalgorithm=identical - do not create new objects
 
 BUGFIX:
 * type=diff | bugfix if argument filter is used with $$name$$
