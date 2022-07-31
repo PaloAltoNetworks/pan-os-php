@@ -100,6 +100,8 @@ trait ObjectWithDescription
         if ( (empty($description) && empty($other_description)) || ( !empty($description) && !empty($other_description) && strpos($description, $other_description) !== false  )) {
             return;
         }
+        if( empty($other_description) )
+            return;
 
         $new_description = $description;
 

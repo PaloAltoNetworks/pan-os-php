@@ -51,12 +51,43 @@ class STATSUTIL extends RULEUTIL
         $this->stats();
         PH::print_stdout(PH::$JSON_TMP, false, "statistic");
 
-        //export stats as HTML, this is not the pretties way!!!!
-        $string = json_encode( PH::$JSON_TMP, JSON_PRETTY_PRINT );
+        if( isset(PH::$args['exportcsv'])  )
+        {
+            if( !isset(PH::$args['location']) )
+            {
+                $this->exportcsvFile = PH::$args['exportcsv'];
 
-        #string should be part of stats.json
-        #jq -rf json2csv.jq stats.json >> stats.csv
-        #save stats.csv as file
+                if( $this->projectFolder !== null )
+                    $this->exportcsvFile = $this->projectFolder."/".$this->exportcsvFile;
+
+
+                $string = json_encode( PH::$JSON_TMP, JSON_PRETTY_PRINT );
+
+
+                $jqFile = dirname(__FILE__)."/json2csv.jq";
+
+                //store string into tmp file:
+                $tmpJsonFile = $this->exportcsvFile."tmp_jq_string.json";
+                file_put_contents($tmpJsonFile, $string);
+
+                #$cli = "jq -rf $jqFile <<< $string >> ".$this->exportcsvFile;
+                #$cli = "jq -rf $jqFile <<< \"$string\" >> ".$this->exportcsvFile;
+                #$cli = "jq -rf $jqFile <echo \"$string\") >> ".$this->exportcsvFile;
+                //jq '.key' <(echo \"$json_data\")
+
+                ##working
+                $cli = "jq -rf $jqFile $tmpJsonFile >> ".$this->exportcsvFile;
+
+                #$cli = "echo \"$string\" | jq -rf $jqFile >> ".$this->exportcsvFile;
+
+                exec($cli, $output, $retValue);
+
+                unlink($tmpJsonFile);
+            }
+            else
+                mwarning( "exportcsv is right now only supported without argument location=... ", null, false );
+        }
+
 
         PH::$JSON_TMP = array();
 
@@ -70,11 +101,10 @@ class STATSUTIL extends RULEUTIL
         }
     }
 
-    /*
     public function supportedArguments()
     {
         parent::supportedArguments();
+        $this->supportedArguments['exportcsv'] = array('niceName' => 'deviceType', 'shortHelp' => 'specify which type(s) of your device want to edit, (default is "dg". ie: devicetype=any  devicetype=vsys,devicegroup,templatestack,template,container,devicecloud,manageddevice,deviceonprem', 'argDesc' => 'all|any|vsys|devicegroup|templatestack|template|container|devicecloud|manageddevice|deviceonprem');
     }
-    */
 
 }

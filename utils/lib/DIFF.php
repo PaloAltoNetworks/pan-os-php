@@ -644,21 +644,21 @@ class DIFF extends UTIL
 
         $text = '';
 
-        foreach( $plus as $node )
+        foreach( $plus as $key => $node )
         {
             $tmp = DH::dom_to_xml($node);
             $tmp = $this->str_lreplace( "\n", "", $tmp );
-            $text .= '+' . str_replace("\n", "\n+", $tmp);
+            $text .= "\n+" . str_replace("\n", "\n+", $tmp);
         }
 
         if( count($plus) > 0 && count( $minus ) > 0 )
             $text .= "\n";
 
-        foreach( $minus as $node )
+        foreach( $minus as $key => $node )
         {
             $tmp = DH::dom_to_xml($node);
             $tmp = $this->str_lreplace( "\n", "", $tmp );
-            $text .= '-' . str_replace("\n", "\n-", $tmp);
+            $text .= "\n-" . str_replace("\n", "\n-", $tmp);
         }
 
         $this->displayDIFF( $xpath, $text, $plus, $minus );

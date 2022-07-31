@@ -218,7 +218,8 @@ class OVERRIDEFINDER extends UTIL
         PH::disableExceptionSupport();
     }
 
-    function display_usage_and_exit($shortMessage = FALSE)
+    //duplicate code check UTIL::
+    function display_usage_and_exit($shortMessage = FALSE, $warningString = "")
     {
         PH::print_stdout( PH::boldText("USAGE: ") . "php " . basename(__FILE__) . " in=file.xml|api://... [more arguments]" );
         PH::print_stdout( "php " . basename(__FILE__) . " help          : more help messages" );
@@ -249,6 +250,8 @@ class OVERRIDEFINDER extends UTIL
         }
 
         PH::print_stdout();
+        if( !empty($warningString) )
+            mwarning( $warningString, null, false );
         exit(1);
     }
 }
