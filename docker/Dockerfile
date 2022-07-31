@@ -42,8 +42,7 @@ RUN chmod -R 777 /tools/pan-os-php
 RUN cat /tools/pan-os-php/utils/alias.sh >> /$user_var/.bashrc
 RUN cat /tools/pan-os-php/utils/bash_autocompletion/enable_bash.txt >> /$user_var/.bashrc
 
-#set link instead of copying over
-#COPY utils/bash_autocompletion/pan-os-php.sh /usr/share/bash-completion/completions/pan-os-php
+
 RUN ln -s /tools/pan-os-php/utils/bash_autocompletion/pan-os-php.sh /usr/share/bash-completion/completions/pan-os-php
 
 RUN git config --global user.email=test@test.com user.name=test

@@ -6,6 +6,7 @@ UTILS:
 BUGFIX:
 
 GENERAL:
+* udpate dockerfiles and install_script_ubuntu
 
 
 2.0.51 (20220731)
