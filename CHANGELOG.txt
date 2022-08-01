@@ -1,6 +1,18 @@
 CHANGELOG
 
-2.0.51
+2.0.52
+UTILS:
+* type=device | introduce 'filter=(name is.in.file FILE)'
+
+BUGFIX:
+* type=device actions=manageddevice-delete/-create | fix/rework method
+* type=rulemerger | bugfix for exportcsv if rule is skipped because of deny or none matching filter
+
+GENERAL:
+* udpate dockerfiles and install_script_ubuntu
+
+
+2.0.51 (20220731)
 UTILS:
 * UTIL different classes - improvement for usage output
 * type=stats | introduce argument exportcsv=json.csv - to get stats exported in CSV

@@ -1,15 +1,19 @@
 #!/usr/bin/env bash
 
 FOLDER_PATH="/tools/pan-os-php"
-USER_VAR=$USER
+USER_VAR=$(whoami)
 
-if [ "$USER" = "root" ]; then
-    USER_FOLDER_PATH="/"$USER
+echo "USER: ${USER_VAR}"
+
+if [ "${USER_VAR}" != "root" ]; then
+    USER_FOLDER_PATH="/home/"${USER_VAR}
 else
-    USER_FOLDER_PATH="/home/"$USER
+    USER_FOLDER_PATH="/"${USER_VAR}
 fi
 
+echo "FOLDERPATH: ${USER_FOLDER_PATH}"
 
+echo "bashrc: ${USER_FOLDER_PATH}/.bashrc"
 
 echo "START \"PAN-OS-PHP variables on UBUNTU\"" \
 && echo "" \
