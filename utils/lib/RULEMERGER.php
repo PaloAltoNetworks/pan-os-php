@@ -614,24 +614,25 @@ class RULEMERGER extends UTIL
             $adjacencyPositionReference = $rulePosition;
             foreach( $matchingHashTable as $ruleToCompare )
             {
+                $string = null;
                 $ruleToComparePosition = $this->UTIL_rulesArrayIndex[$ruleToCompare->indexPosition];
                 if( $loopCount > $ruleToComparePosition )
                 {
                     unset($matchingHashTable[$ruleToCompare->serial]);
-                    PH::print_stdout( "    - ignoring rule #{$ruleToComparePosition} '{$ruleToCompare->name()}' because it's placed before");
+                    $string = "    - ignoring rule #{$ruleToComparePosition} '{$ruleToCompare->name()}' because it's placed before";
                 }
                 else if( $nextDenyRule !== FALSE && $nextDenyRulePosition < $ruleToComparePosition )
                 {
                     if( !$this->UTIL_mergeDenyRules )
                     {
                         unset($matchingHashTable[$ruleToCompare->serial]);
-                        PH::print_stdout( "    - ignoring rule #{$ruleToComparePosition} '{$ruleToCompare->name()}' because DENY rule #{$nextDenyRulePosition} '{$nextDenyRule->name()}' is placed before");
+                        $string = "    - ignoring rule #{$ruleToComparePosition} '{$ruleToCompare->name()}' because DENY rule #{$nextDenyRulePosition} '{$nextDenyRule->name()}' is placed before";
                     }
                 }
                 elseif( $this->UTIL_filterQuery !== null && !$this->UTIL_filterQuery->matchSingleObject($ruleToCompare) )
                 {
                     unset($matchingHashTable[$ruleToCompare->serial]);
-                    PH::print_stdout( "    - ignoring rule #{$ruleToComparePosition} '{$ruleToCompare->name()}' because it's not matchin the filter query");
+                    $string = "    - ignoring rule #{$ruleToComparePosition} '{$ruleToCompare->name()}' because it's not matchin the filter query";
                 }
                 elseif( ($rule->sourceIsNegated() or $rule->destinationIsNegated()) or ($ruleToCompare->sourceIsNegated() or $ruleToCompare->destinationIsNegated()) )
                 {
@@ -642,9 +643,15 @@ class RULEMERGER extends UTIL
                     else
                     {
                         unset($matchingHashTable[$ruleToCompare->serial]);
-                        PH::print_stdout( "    - ignoring rule #{$ruleToComparePosition} '{$ruleToCompare->name()}' because it's source / destination is not matching NEGATION of original Rule");
+                        $string = "    - ignoring rule #{$ruleToComparePosition} '{$ruleToCompare->name()}' because it's source / destination is not matching NEGATION of original Rule";
                     }
                 }
+                if( $string != null )
+                {
+                    PH::print_stdout( $string );
+                    $this->deletedObjects[$rule->name()]['skipped'] = $string;
+                }
+
             }
 
             if( count($matchingHashTable) == 0 )
@@ -1096,6 +1103,9 @@ class RULEMERGER extends UTIL
         $count = 0;
         foreach( $obj_Array as $index => $line )
         {
+            if( isset($line['skipped']) )
+                continue;
+
             $count++;
 
             if( $count % 2 == 1 )
@@ -1124,12 +1134,22 @@ class RULEMERGER extends UTIL
             ##$lines .= $encloseFunction( $removedArray );
             #$lines .= $encloseFunction( $line['removed'] );
 
-            $lines .= $line['kept'] ;
+            if( isset($line['kept']) )
+                $lines .= $line['kept'];
+            elseif( isset($line['skipped']) )
+            {
+                $lines .= $encloseFunction( $line['skipped'] );
+            }
+            else
+                $lines .= $encloseFunction( "" );
 
 
             $lines .= "</tr>\n";
 
             $first = true;
+            if( !isset($line['removed']) )
+                continue;
+
             foreach( $line['removed'] as  $removed )
             {
                 if( $first )

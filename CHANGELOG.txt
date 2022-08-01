@@ -6,6 +6,7 @@ UTILS:
 
 BUGFIX:
 * type=device actions=manageddevice-delete/-create | fix/rework method
+* type=rulemerger | bugfix for exportcsv if rule is skipped because of deny or none matching filter
 
 GENERAL:
 * udpate dockerfiles and install_script_ubuntu
