@@ -2,6 +2,7 @@ CHANGELOG
 
 2.0.52
 UTILS:
+* type=device | introduce 'filter=(name is.in.file FILE)'
 
 BUGFIX:
 
