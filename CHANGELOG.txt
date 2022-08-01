@@ -5,6 +5,7 @@ UTILS:
 * type=device | introduce 'filter=(name is.in.file FILE)'
 
 BUGFIX:
+* type=device actions=manageddevice-delete/-create | fix/rework method
 
 GENERAL:
 * udpate dockerfiles and install_script_ubuntu
