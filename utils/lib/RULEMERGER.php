@@ -182,7 +182,7 @@ class RULEMERGER extends UTIL
             if( $store == null )
                 continue;
 
-            if( $this->pan->isPanorama() || ( $this->pan->isFawkes() && $sub->isContainer()) )
+            if( $this->pan->isPanorama() || ( ($this->pan->isFawkes() || $this->pan->isBuckbeak()) && $sub->isContainer()) )
             {
                 if( $this->panoramaPreRuleSelected )
                     $this->UTIL_rulesToProcess = $store->preRules();
@@ -789,7 +789,7 @@ class RULEMERGER extends UTIL
                 $this->panoramaPreRuleSelected = FALSE;
 
         }
-        elseif( $this->pan->isFawkes() )
+        elseif( ($this->pan->isFawkes() || $this->pan->isBuckbeak()) )
         {
             $sub = $this->pan->findContainer($this->objectsLocation);
             if( $sub === null )
@@ -895,7 +895,7 @@ class RULEMERGER extends UTIL
             {
                 $alldevicegroup = $pan->deviceGroups;
             }
-            elseif( $pan->isFawkes() )
+            elseif( $pan->isFawkes() || $pan->isBuckbeak() )
             {
                 $subGroups = $pan->getContainers();
                 $subGroups2 = $pan->getDeviceClouds();
@@ -940,7 +940,7 @@ class RULEMERGER extends UTIL
                     $childDeviceGroups = $findLocation->childDeviceGroups(TRUE);
                     $location_array[$key]['childDeviceGroups'] = $childDeviceGroups;
                 }
-                elseif( $pan->isFawkes() )
+                elseif( $pan->isFawkes() || $pan->isBuckbeak() )
                 {
                     //child Container/CloudDevices
                     //Todo: swaschkut 20210414
@@ -952,7 +952,7 @@ class RULEMERGER extends UTIL
 
             $location_array = array_reverse($location_array);
 
-            if( !$pan->isFawkes() )
+            if( !$pan->isFawkes() && !$pan->isBuckbeak() )
             {
                 $location_array[$key + 1]['findLocation'] = 'shared';
                 if( $this->utilType == "rule-merger"  )
@@ -970,7 +970,7 @@ class RULEMERGER extends UTIL
         }
         else
         {
-            if( !$pan->isFawkes() && $objectsLocation == 'shared' )
+            if( ( !$pan->isFawkes() && !$pan->isBuckbeak() ) && $objectsLocation == 'shared' )
             {
                 if( $this->utilType == "rule-merger"  )
                     $store = $pan->securityRules;
@@ -992,7 +992,7 @@ class RULEMERGER extends UTIL
 
                     if( $pan->isPanorama() && isset($findLocation->parentDeviceGroup) && $findLocation->parentDeviceGroup !== null )
                         $parentStore = $findLocation->parentDeviceGroup->securityRules;
-                    elseif( $pan->isFawkes() && isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
+                    elseif( ($pan->isFawkes() || $pan->isBuckbeak()) && isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
                         $parentStore = $findLocation->parentContainer->securityRules;
                     elseif( isset( $findLocation->owner->securityRules ) )
                         $parentStore = $findLocation->owner->securityRules;
@@ -1015,7 +1015,7 @@ class RULEMERGER extends UTIL
                     $childDeviceGroups = $findLocation->childDeviceGroups(TRUE);
                 $location_array[0]['childDeviceGroups'] = $childDeviceGroups;
             }
-            elseif( $pan->isFawkes() )
+            elseif( $pan->isFawkes() || $pan->isBuckbeak() )
             {
                 //child Container/CloudDevices
                 //Todo: swaschkut 20210414

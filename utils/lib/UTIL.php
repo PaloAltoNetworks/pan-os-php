@@ -887,7 +887,6 @@ class UTIL
             derr('not supported yet');
 
         $this->determineConfigType();
-
     }
 
     public function determineConfigType()
@@ -897,24 +896,20 @@ class UTIL
         //
         $xpathResult = DH::findXPath('/config', $this->xmlDoc);
         $xpathResult = $xpathResult->item(0);
+
+        //BUCKBEAK
+        $buckbeak_config_version = DH::findAttribute('buckbeak', $xpathResult);
+
+        //FAWKES
         $fawkes_config_version = DH::findAttribute('fawkes-config-version', $xpathResult);
+        if( $fawkes_config_version == null )
+            $fawkes_config_version = DH::findAttribute('fawkes-config', $xpathResult);
+
         if( $fawkes_config_version != null )
         {
             PH::print_stdout( " - FAWKES-CONFIG-VERSION: ".$fawkes_config_version );
             PH::print_stdout( array( $fawkes_config_version ), false, "fawkes-config-version" );
         }
-
-        else
-        {
-            $fawkes_config_version = DH::findAttribute('fawkes-config', $xpathResult);
-            if( $fawkes_config_version != null )
-            {
-                PH::print_stdout( " - FAWKES-CONFIG-VERSION: ".$fawkes_config_version );
-                PH::print_stdout( array( $fawkes_config_version ), false, "fawkes-config-version" );
-            }
-
-        }
-
 
 
         $xpathResult = DH::findXPath('/config/devices/entry/vsys', $this->xmlDoc);
@@ -922,7 +917,9 @@ class UTIL
             derr('XPath error happened');
         if( $xpathResult->length < 1 )
         {
-            if( $fawkes_config_version != null )
+            if( $buckbeak_config_version != null )
+                $this->configType = 'buckbeak';
+            elseif( $fawkes_config_version != null )
                 $this->configType = 'fawkes';
             else
                 $this->configType = 'panorama';
@@ -949,6 +946,8 @@ class UTIL
             $this->pan = new PanoramaConf();
         elseif( $this->configType == 'fawkes' )
             $this->pan = new FawkesConf();
+        elseif( $this->configType == 'buckbeak' )
+            $this->pan = new BuckbeakConf();
         else
             derr( "configType: ".$this->configType." not supported." );
 
@@ -977,7 +976,7 @@ class UTIL
                 $this->objectsLocation = 'vsys1';
             elseif( $this->configType == 'panorama' )
                 $this->objectsLocation = 'shared';
-            elseif( $this->configType == 'fawkes' )
+            elseif( $this->configType == 'fawkes' || $this->configType == 'buckbeak')
                 $this->objectsLocation = 'All';
 
             if( get_class( $this ) == "NETWORKUTIL" )
@@ -1001,7 +1000,7 @@ class UTIL
                 $this->objectsTemplate = 'any';
             elseif( $this->configType == 'panorama' )
                 $this->objectsTemplate = 'any';
-            elseif( $this->configType == 'fawkes' )
+            elseif( $this->configType == 'fawkes' || $this->configType == 'buckbeak')
                 $this->objectsTemplate = 'any';
 
             if( get_class( $this ) == "NETWORKUTIL" )
@@ -1246,7 +1245,7 @@ class UTIL
                 $this->objectsLocation[$key] = 'any';
             else if( strtolower($location) == 'all' )
             {
-                if( $this->configType == 'fawkes' )
+                if( $this->configType == 'fawkes' || $this->configType == 'buckbeak')
                     $this->objectsLocation[$key] = 'All';
                 else
                     $this->objectsLocation[$key] = 'any';
@@ -1435,7 +1434,7 @@ class UTIL
 
                 if( $this->configType == 'panorama' )
                     $subGroups = $this->pan->getDeviceGroups();
-                elseif( $this->configType == 'fawkes' )
+                elseif( $this->configType == 'fawkes' || $this->configType == 'buckbeak' )
                 {
                     $subGroups = $this->pan->getContainers();
                     $subGroups2 = $this->pan->getDeviceClouds();
@@ -1492,7 +1491,7 @@ class UTIL
         if( PH::$shadow_json )
             PH::$JSON_OUT['error'] = $errorString;
 
-        if( $this->configType != 'fawkes' )
+        if( $this->configType != 'fawkes' && $this->configType != 'buckbeak' )
             PH::print_stdout( " - shared" );
         if( $this->configType == 'panos' )
         {
@@ -1505,7 +1504,7 @@ class UTIL
         {
             if( $this->configType == 'panorama' )
                 $subGroups = $this->pan->getDeviceGroups();
-            elseif( $this->configType == 'fawkes' )
+            elseif( $this->configType == 'fawkes' || $this->configType == 'buckbeak' )
             {
                 $subGroups = $this->pan->getContainers();
                 $subGroups2 = $this->pan->getDeviceClouds();
@@ -1627,7 +1626,13 @@ class UTIL
 
 
             PH::print_stdout();
-            PH::print_stdout( "* objects processed in DG/Vsys '{$tmp_name}' : $subObjectsProcessed" );
+            if( $this->pan->isPanorama() )
+                $typeString = "DG";
+            elseif( $this->pan->isFirewall() )
+                $typeString = "Vsys";
+            elseif( $this->pan->isFawkes() || $this->pan->isBuckbeak() )
+                $typeString = "Container/DeviceCloud/DeviceOnPrem";
+            PH::print_stdout( "* objects processed in ".$typeString." '{$tmp_name}' : $subObjectsProcessed" );
             PH::print_stdout();
             PH::$JSON_TMP['sub']['summary']['processed'] = $subObjectsProcessed;
             PH::$JSON_TMP['sub']['summary']['available'] = $store->count();

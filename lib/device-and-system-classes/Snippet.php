@@ -18,7 +18,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-class DeviceOnPrem
+class Snippet
 {
     use PathableName;
     use PanSubHelperTrait;
@@ -88,17 +88,7 @@ class DeviceOnPrem
     public $scheduleStore = null;
 
 
-/*
-    public static $templateCloudxml = '<entry name="**Need a Name**"><address></address>
-                                    <rulebase><security><rules></rules></security><nat><rules></rules></nat></rulebase>
-									<profiles>
-									<url-filtering></url-filtering><dns-security></dns-security><spyware></spyware><vulnerability></vulnerability><file-blocking></file-blocking><virus-and-wildfire-analysis></virus-and-wildfire-analysis>
-									<saas-security></saas-security><custom-url-category></custom-url-category><decryption></decryption>
-									<hip-objects></hip-objects><hip-profiles></hip-profiles>
-									</profiles>
-									<region></region><external-list></external-list><dynamic-user-group></dynamic-user-group>
-									</entry>';
-*/
+
     public static $templateOnPremxml = '<entry name="**Need a Name**"><address></address>
                                     <rulebase><security><rules></rules></security><nat><rules></rules></nat></rulebase>
 									</entry>';
@@ -619,7 +609,10 @@ class DeviceOnPrem
         //
         $tmp = DH::findFirstElement('zone', $xml);
         if( $tmp != FALSE )
+        {
             $this->zoneStore->load_from_domxml($tmp);
+        }
+
         // End of Zone objects extraction
 
 

@@ -164,7 +164,7 @@ class AppStore extends ObjStore
                 $current = $current->owner->parentDeviceGroup->appStore;
             elseif( isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
                 $current = $current->owner->parentContainer->appStore;
-            elseif( isset($current->owner->owner) && $current->owner->owner !== null && !$current->owner->owner->isFawkes() )
+            elseif( isset($current->owner->owner) && $current->owner->owner !== null && !$current->owner->owner->isFawkes() && !$current->owner->owner->isBuckbeak() )
                 $current = $current->owner->owner->appStore;
             else
                 break;

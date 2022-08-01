@@ -109,7 +109,7 @@ class DeviceCloud
     /** @var string */
     protected $_alternativeName = '';
 
-    /** @var FawkesConf|null */
+    /** @var FawkesConf|Buckbeak|null */
     public $owner = null;
 
     /** @var DOMElement */
@@ -159,8 +159,8 @@ class DeviceCloud
 
     public $version = null;
 
-
-    public function __construct(FawkesConf $owner, Container $applicableDG = null)
+    /** @var FawkesConf|Buckbeak|null $owner */
+    public function __construct( $owner, Container $applicableDG = null)
     {
         $this->owner = $owner;
 

@@ -154,7 +154,7 @@ class MERGER extends UTIL
             {
                 $alldevicegroup = $pan->deviceGroups;
             }
-            elseif( $pan->isFawkes() )
+            elseif( $pan->isFawkes() || $device->isBuckbeak() )
             {
                 $subGroups = $pan->getContainers();
                 $subGroups2 = $pan->getDeviceClouds();
@@ -184,7 +184,7 @@ class MERGER extends UTIL
 
                     if( $pan->isPanorama() && isset($findLocation->parentDeviceGroup) && $findLocation->parentDeviceGroup !== null )
                         $parentStore = $findLocation->parentDeviceGroup->addressStore;
-                    elseif( $pan->isFawkes() && isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
+                    elseif( ($pan->isFawkes() || $device->isBuckbeak()) && isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
                         $parentStore = $findLocation->parentContainer->addressStore;
                     else
                         $parentStore = $findLocation->owner->addressStore;
@@ -195,7 +195,7 @@ class MERGER extends UTIL
 
                     if( $pan->isPanorama() && isset($findLocation->parentDeviceGroup) && $findLocation->parentDeviceGroup !== null )
                         $parentStore = $findLocation->parentDeviceGroup->serviceStore;
-                    elseif( $pan->isFawkes() && isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
+                    elseif( ($pan->isFawkes() || $device->isBuckbeak()) && isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
                         $parentStore = $findLocation->parentContainer->serviceStore;
                     else
                         $parentStore = $findLocation->owner->serviceStore;
@@ -206,7 +206,7 @@ class MERGER extends UTIL
 
                     if( $pan->isPanorama() && isset($findLocation->parentDeviceGroup) && $findLocation->parentDeviceGroup !== null )
                         $parentStore = $findLocation->parentDeviceGroup->tagStore;
-                    elseif( $pan->isFawkes() && isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
+                    elseif( ($pan->isFawkes() || $device->isBuckbeak()) && isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
                         $parentStore = $findLocation->parentContainer->tagStore;
                     else
                         $parentStore = $findLocation->owner->tagStore;
@@ -223,7 +223,7 @@ class MERGER extends UTIL
                     $childDeviceGroups = $findLocation->childDeviceGroups(TRUE);
                     $location_array[$key]['childDeviceGroups'] = $childDeviceGroups;
                 }
-                elseif( $pan->isFawkes() )
+                elseif( ($pan->isFawkes() || $device->isBuckbeak()) )
                 {
                     //child Container/CloudDevices
                     //Todo: swaschkut 20210414
@@ -236,7 +236,7 @@ class MERGER extends UTIL
 
             $location_array = array_reverse($location_array);
 
-            if( !$pan->isFawkes() )
+            if( !$pan->isFawkes() && !$pan->isBuckbeak() )
             {
                 $location_array[$key + 1]['findLocation'] = 'shared';
                 if( $this->utilType == "address-merger" || $this->utilType == "addressgroup-merger" )
@@ -252,7 +252,7 @@ class MERGER extends UTIL
         }
         else
         {
-            if( !$pan->isFawkes() )
+            if( !$pan->isFawkes() && !$pan->isBuckbeak() )
             {
                 $objectsLocations = $objectsLocation;
                 foreach( $objectsLocations as $key => $objectsLocation )
@@ -283,7 +283,7 @@ class MERGER extends UTIL
 
                             if( $pan->isPanorama() && isset($findLocation->parentDeviceGroup) && $findLocation->parentDeviceGroup !== null )
                                 $parentStore = $findLocation->parentDeviceGroup->addressStore;
-                            elseif( $pan->isFawkes() && isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
+                            elseif( ($pan->isFawkes() || $pan->isBuckbeak()) && isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
                                 $parentStore = $findLocation->parentContainer->addressStore;
                             else
                                 $parentStore = $findLocation->owner->addressStore;
@@ -294,7 +294,7 @@ class MERGER extends UTIL
 
                             if( $pan->isPanorama() && isset($findLocation->parentDeviceGroup) && $findLocation->parentDeviceGroup !== null )
                                 $parentStore = $findLocation->parentDeviceGroup->serviceStore;
-                            elseif( $pan->isFawkes() && isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
+                            elseif( ($pan->isFawkes() || $pan->isBuckbeak()) && isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
                                 $parentStore = $findLocation->parentContainer->serviceStore;
                             else
                                 $parentStore = $findLocation->owner->serviceStore;
@@ -305,7 +305,7 @@ class MERGER extends UTIL
 
                             if( $pan->isPanorama() && isset($findLocation->parentDeviceGroup) && $findLocation->parentDeviceGroup !== null )
                                 $parentStore = $findLocation->parentDeviceGroup->tagStore;
-                            elseif( $pan->isFawkes() && isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
+                            elseif( ($pan->isFawkes() || $pan->isBuckbeak()) && isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
                                 $parentStore = $findLocation->parentContainer->tagStore;
                             else
                                 $parentStore = $findLocation->owner->tagStore;
@@ -333,7 +333,7 @@ class MERGER extends UTIL
                 }
 
             }
-            elseif( $pan->isFawkes() )
+            elseif( $pan->isFawkes() || $pan->isBuckbeak() )
             {
                 //child Container/CloudDevices
                 //Todo: swaschkut 20210414
@@ -402,7 +402,7 @@ class MERGER extends UTIL
                 $current = $current->owner->parentDeviceGroup->$StoreType;
             elseif( isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
                 $current = $current->owner->parentContainer->$StoreType;
-            elseif( isset($current->owner->owner) && $current->owner->owner !== null && !$current->owner->owner->isFawkes() )
+            elseif( isset($current->owner->owner) && $current->owner->owner !== null && !$current->owner->owner->isFawkes() && !$current->owner->owner->isBuckbeak() )
                 $current = $current->owner->owner->$StoreType;
             else
             {
@@ -677,7 +677,7 @@ class MERGER extends UTIL
                 {
                     //do something
                 }
-                elseif( $this->pan->isFawkes() && $object->owner === $store )
+                elseif( ($this->pan->isFawkes() || $this->pan->isBuckbeak()) && $object->owner === $store )
                 {
                     //do something
                 }
@@ -1149,7 +1149,7 @@ class MERGER extends UTIL
                     {
                         //do something
                     }
-                    elseif( $this->pan->isFawkes() && $object->owner === $store )
+                    elseif( ($this->pan->isFawkes() || $this->pan->isBuckbeak()) && $object->owner === $store )
                     {
                         //do something
                     }
@@ -1730,7 +1730,7 @@ class MERGER extends UTIL
                     if( $skipThisOne )
                         continue;
                 }
-                elseif( $this->pan->isFawkes() && $object->owner === $store )
+                elseif( ($this->pan->isFawkes() || $this->pan->isBuckbeak()) && $object->owner === $store )
                 {
                     //do something
                 }
@@ -2072,7 +2072,7 @@ class MERGER extends UTIL
                     {
                         //do something
                     }
-                    elseif( $this->pan->isFawkes() && $object->owner === $store )
+                    elseif( ($this->pan->isFawkes() || $this->pan->isBuckbeak()) && $object->owner === $store )
                     {
                         //do something
                     }

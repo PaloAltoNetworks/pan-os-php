@@ -52,6 +52,11 @@ trait PanSubHelperTrait
         FALSE;
     }
 
+    public function isBuckbeak()
+    {
+        FALSE;
+    }
+
     public function isContainer()
     {
         FALSE;
