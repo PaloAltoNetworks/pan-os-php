@@ -51,8 +51,13 @@ class InterfaceContainer extends ObjRuleContainer
                 continue;
 
             $interfaceString = $node->textContent;
-            
-            if( isset($this->owner->owner->owner) && get_class( $this->owner->owner->owner ) === "Snippet")
+
+            if( isset($this->owner->owner->owner) && (
+                get_class( $this->owner->owner->owner ) === "Snippet" ||
+                get_class( $this->owner->owner->owner ) === "Container" ||
+                get_class( $this->owner->owner->owner ) === "DeviceCloud" ||
+                get_class( $this->owner->owner->owner ) === "DeviceOnPrem" )
+            )
             {
                 if( strpos( $interfaceString, "$" ) !== FALSE )
                 {
