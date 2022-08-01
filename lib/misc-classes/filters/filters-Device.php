@@ -64,6 +64,12 @@ RQuery::$defaultFilters['device']['name']['operators']['regex'] = array(
 RQuery::$defaultFilters['device']['templatestack']['operators']['has.member'] = array(
     'Function' => function (DeviceRQueryContext $context) {
 
+        $object = $context->object;
+
+        $class = get_class( $object );
+        if( $class !== "TemplateStack" )
+            return false;
+
         $used_templates = $context->object->templates;
         foreach( $used_templates as $template )
         {

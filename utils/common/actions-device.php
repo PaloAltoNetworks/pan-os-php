@@ -109,7 +109,7 @@ DeviceCallContext::$supportedActions['display'] = array(
 
                 if( $managedDevice->getTemplateStack() != null )
                 {
-                    PH::print_stdout( $padding."TempalteStack: ".$managedDevice->getTemplateStack() );
+                    PH::print_stdout( $padding."TemplateStack: ".$managedDevice->getTemplateStack() );
                     PH::$JSON_TMP['sub']['object'][$object->name()]['templatestack'][$managedDevice->getTemplateStack()]['name'] = $managedDevice->getTemplateStack();
 
                     $templatestack = $device->findTemplateStack( $managedDevice->getTemplateStack() );
