@@ -1,6 +1,15 @@
 CHANGELOG
 
-2.0.51
+2.0.52
+UTILS:
+
+BUGFIX:
+
+GENERAL:
+* udpate dockerfiles and install_script_ubuntu
+
+
+2.0.51 (20220731)
 UTILS:
 * UTIL different classes - improvement for usage output
 * type=stats | introduce argument exportcsv=json.csv - to get stats exported in CSV

@@ -15,7 +15,9 @@ echo "START \"install PAN-OS-PHP on UBUNTU\"" \
 && echo "" \
 && apt install -y git php${PHP_VAR} vim php${PHP_VAR}-curl php${PHP_VAR}-dom php${PHP_VAR}-mbstring php${PHP_VAR}-bcmath \
 && echo "" \
-&& apt install -y python3 python3-pandas python3-xlsxwriter \
+&& apt install -y python3 python3-pandas python3-xlsxwriter python3-netaddr python3-requests \
+&& echo "" \
+&& apt install -y jq \
 && echo "" \
 && echo "" \
 && php -v \
@@ -39,7 +41,7 @@ if grep -Fxq "$check" ${PHPINI}
   fi
 
 echo "" \
-&& cp ${FOLDER_PATH}/utils/bash_autocompletion/pan-os-php.sh /usr/share/bash-completion/completions/pan-os-php \
+&& ln -s ${FOLDER_PATH}/utils/bash_autocompletion/pan-os-php.sh /usr/share/bash-completion/completions/pan-os-php \
 && echo "" \
 && cd ${FOLDER_PATH} \
 && GIT_SSL_NO_VERIFY=true git submodule init \
