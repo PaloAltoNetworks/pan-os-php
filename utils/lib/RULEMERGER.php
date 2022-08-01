@@ -1103,9 +1103,6 @@ class RULEMERGER extends UTIL
         $count = 0;
         foreach( $obj_Array as $index => $line )
         {
-            if( isset($line['skipped']) )
-                continue;
-
             $count++;
 
             if( $count % 2 == 1 )
