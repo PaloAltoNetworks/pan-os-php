@@ -131,6 +131,8 @@ class MAXMIND__
             print "create file: ".$filename."\n";
 
             $JSONstring = json_encode( $csv, JSON_PRETTY_PRINT );
+            #$JSONstring = json_encode( $csv, JSON_PRETTY_PRINT|JSON_FORCE_OBJECT );
+
             file_put_contents( $filepath."/data/".$filename, $JSONstring);
         }
 

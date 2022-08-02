@@ -60,7 +60,8 @@ class STATSUTIL extends RULEUTIL
                 if( $this->projectFolder !== null )
                     $this->exportcsvFile = $this->projectFolder."/".$this->exportcsvFile;
 
-
+                //not working because jq can not handling this
+                #$string = json_encode( PH::$JSON_TMP, JSON_PRETTY_PRINT|JSON_FORCE_OBJECT );
                 $string = json_encode( PH::$JSON_TMP, JSON_PRETTY_PRINT );
 
 

@@ -115,6 +115,7 @@ class XMLOPJSON extends UTIL
 
         $xml = simplexml_load_string($xml_string);
         $json =  json_encode($xml, JSON_PRETTY_PRINT);
+        #$json =  json_encode($xml, JSON_PRETTY_PRINT|JSON_FORCE_OBJECT);
 
         PH::print_stdout();
         PH::print_stdout( "JSON:");
