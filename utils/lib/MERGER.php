@@ -737,54 +737,9 @@ class MERGER extends UTIL
                 PH::print_stdout();
                 PH::print_stdout( " - value '{$index}'" );
 
-                $pickedObject = null;
 
-                if( $this->pickFilter !== null )
-                {
-                    if( isset($upperHashMap[$index]) )
-                    {
-                        foreach( $upperHashMap[$index] as $object )
-                        {
-                            if( $this->pickFilter->matchSingleObject(array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
-                            {
-                                $pickedObject = $object;
-                                break;
-                            }
-                        }
-                        if( $pickedObject === null )
-                            $pickedObject = reset($upperHashMap[$index]);
+                $pickedObject = $this->hashMapPickfilter( $upperHashMap, $index, $hash );
 
-                        PH::print_stdout( "   * using object from upper level : '{$pickedObject->_PANC_shortName()}'" );
-                    }
-                    else
-                    {
-                        foreach( $hash as $object )
-                        {
-                            if( $this->pickFilter->matchSingleObject(array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
-                            {
-                                $pickedObject = $object;
-                                break;
-                            }
-                        }
-                        if( $pickedObject === null )
-                            $pickedObject = reset($hash);
-
-                        PH::print_stdout( "   * keeping object '{$pickedObject->_PANC_shortName()}'" );
-                    }
-                }
-                else
-                {
-                    if( isset($upperHashMap[$index]) )
-                    {
-                        $pickedObject = reset($upperHashMap[$index]);
-                        PH::print_stdout( "   * using object from upper level : '{$pickedObject->_PANC_shortName()}'" );
-                    }
-                    else
-                    {
-                        $pickedObject = reset($hash);
-                        PH::print_stdout( "   * keeping object '{$pickedObject->_PANC_shortName()}'" );
-                    }
-                }
 
                 // Merging loop finally!
                 foreach( $hash as $object )
@@ -954,25 +909,8 @@ class MERGER extends UTIL
                 PH::print_stdout();
                 PH::print_stdout( " - value '{$index}'" );
 
-                $pickedObject = null;
 
-                if( $this->pickFilter !== null )
-                {
-                    foreach( $hash as $object )
-                    {
-                        if( $this->pickFilter->matchSingleObject(array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
-                        {
-                            $pickedObject = $object;
-                            break;
-                        }
-                    }
-                    if( $pickedObject === null )
-                        $pickedObject = reset($hash);
-                }
-                else
-                {
-                    $pickedObject = reset($hash);
-                }
+                $pickedObject = $this->PickObject( $hash );
 
 
                 $tmp_DG_name = $store->owner->name();
@@ -1223,23 +1161,7 @@ class MERGER extends UTIL
                 PH::print_stdout(" - value '{$index}'");
 
 
-                $pickedObject = null;
-
-                if( $this->pickFilter !== null )
-                {
-                    foreach( $hash as $object )
-                    {
-                        if( $this->pickFilter->matchSingleObject(array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
-                        {
-                            $pickedObject = $object;
-                            break;
-                        }
-                    }
-                    if( $pickedObject === null )
-                        $pickedObject = reset($hash);
-                }
-                else
-                    $pickedObject = reset($hash);
+                $pickedObject = $this->PickObject( $hash );
 
 
                 $tmp_DG_name = $store->owner->name();
@@ -1397,71 +1319,7 @@ class MERGER extends UTIL
                 PH::print_stdout( " - value '{$index}'" );
 
 
-                $pickedObject = null;
-
-                if( $this->pickFilter !== null )
-                {
-                    if( isset($upperHashMap[$index]) )
-                    {
-                        $hashArray = $upperHashMap[$index];
-                        $printString = "   * using object from upper level : ";
-                    }
-                    else
-                    {
-                        $hashArray = $hash;
-                        $printString = "   * keeping object : ";
-                    }
-
-                    foreach( $hashArray as $object )
-                    {
-                        if( $this->pickFilter->matchSingleObject(array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
-                        {
-                            $pickedObject = $object;
-                            break;
-                        }
-                    }
-
-                    if( $pickedObject === null )
-                    {
-                        if( isset($upperHashMap[$index]) )
-                        {
-                            $hashArray = $hash;
-                            $printString = "   * keeping object :";
-
-                            foreach( $hashArray as $object )
-                            {
-                                if( $this->pickFilter->matchSingleObject(array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
-                                {
-                                    $pickedObject = $object;
-                                    break;
-                                }
-                            }
-                        }
-                        if( $pickedObject === null )
-                            $pickedObject = reset($hash);
-                    }
-
-                    PH::print_stdout( $printString."'{$pickedObject->_PANC_shortName()}'" );
-                }
-                else
-                {
-                    if( isset($upperHashMap[$index]) )
-                    {
-                        $pickedObject = reset($upperHashMap[$index]);
-                        if( $pickedObject->isType_TMP() )
-                        {
-                            $pickedObject = reset($hash);
-                            PH::print_stdout( "   * keeping object '{$pickedObject->_PANC_shortName()}'" );
-                        }
-                        else
-                            PH::print_stdout( "   * using object from upper level : '{$pickedObject->_PANC_shortName()}'" );
-                    }
-                    else
-                    {
-                        $pickedObject = reset($hash);
-                        PH::print_stdout( "   * keeping object '{$pickedObject->_PANC_shortName()}'" );
-                    }
-                }
+                $pickedObject = $this->hashMapPickfilter( $upperHashMap, $index, $hash );
 
 
                 // Merging loop finally!
@@ -1619,6 +1477,100 @@ class MERGER extends UTIL
 
         return $value;
     }
+
+    function hashMapPickfilter( $upperHashMap, $index, &$hash)
+    {
+        $pickedObject = null;
+        if( $this->pickFilter !== null )
+        {
+            if( isset($upperHashMap[$index]) )
+            {
+                $hashArray = $upperHashMap[$index];
+                $printString = "   * using object from upper level : ";
+            }
+            else
+            {
+                $hashArray = $hash;
+                $printString = "   * keeping object : ";
+            }
+
+            foreach( $hashArray as $object )
+            {
+                if( $this->pickFilter->matchSingleObject(array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
+                {
+                    $pickedObject = $object;
+                    break;
+                }
+            }
+
+            if( $pickedObject === null )
+            {
+                if( isset($upperHashMap[$index]) )
+                {
+                    $hashArray = $hash;
+                    $printString = "   * keeping object :";
+
+                    foreach( $hashArray as $object )
+                    {
+                        if( $this->pickFilter->matchSingleObject(array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
+                        {
+                            $pickedObject = $object;
+                            break;
+                        }
+                    }
+                }
+                if( $pickedObject === null )
+                    $pickedObject = reset($hash);
+            }
+
+            PH::print_stdout($printString . "'{$pickedObject->_PANC_shortName()}'");
+        }
+        else
+        {
+            if( isset($upperHashMap[$index]) )
+            {
+                $pickedObject = reset($upperHashMap[$index]);
+                /** @var Address $pickedObject */
+                if( get_class($pickedObject) === "Address" && $pickedObject->isType_TMP() )
+                {
+                    $pickedObject = reset($hash);
+                    PH::print_stdout( "   * keeping object '{$pickedObject->_PANC_shortName()}'" );
+                }
+                else
+                    PH::print_stdout( "   * using object from upper level : '{$pickedObject->_PANC_shortName()}'" );
+            }
+            else
+            {
+                $pickedObject = reset($hash);
+                PH::print_stdout( "   * keeping object '{$pickedObject->_PANC_shortName()}'" );
+            }
+        }
+
+        return $pickedObject;
+    }
+
+    function PickObject(&$hash)
+    {
+        $pickedObject = null;
+        if( $this->pickFilter !== null )
+        {
+            foreach( $hash as $object )
+            {
+                if( $this->pickFilter->matchSingleObject(array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
+                {
+                    $pickedObject = $object;
+                    break;
+                }
+            }
+            if( $pickedObject === null )
+                $pickedObject = reset($hash);
+        }
+        else
+            $pickedObject = reset($hash);
+
+        return $pickedObject;
+    }
+
 
     function servicegroup_merging()
     {
@@ -1788,54 +1740,9 @@ class MERGER extends UTIL
                 }
                 PH::print_stdout(" - duplicate set : '" . PH::list_to_string($setList) . "'");
 
-                $pickedObject = null;
 
-                if( $this->pickFilter !== null )
-                {
-                    if( isset($upperHashMap[$index]) )
-                    {
-                        foreach( $upperHashMap[$index] as $object )
-                        {
-                            if( $this->pickFilter->matchSingleObject(array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
-                            {
-                                $pickedObject = $object;
-                                break;
-                            }
-                        }
-                        if( $pickedObject === null )
-                            $pickedObject = reset($upperHashMap[$index]);
+                $pickedObject = $this->hashMapPickfilter( $upperHashMap, $index, $hash );
 
-                        PH::print_stdout("   * using object from upper level : '{$pickedObject->_PANC_shortName()}'");
-                    }
-                    else
-                    {
-                        foreach( $hash as $object )
-                        {
-                            if( $this->pickFilter->matchSingleObject(array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
-                            {
-                                $pickedObject = $object;
-                                break;
-                            }
-                        }
-                        if( $pickedObject === null )
-                            $pickedObject = reset($hash);
-
-                        PH::print_stdout("   * keeping object '{$pickedObject->_PANC_shortName()}'");
-                    }
-                }
-                else
-                {
-                    if( isset($upperHashMap[$index]) )
-                    {
-                        $pickedObject = reset($upperHashMap[$index]);
-                        PH::print_stdout("   * using object from upper level : '{$pickedObject->_PANC_shortName()}'");
-                    }
-                    else
-                    {
-                        $pickedObject = reset($hash);
-                        PH::print_stdout("   * keeping object '{$pickedObject->_PANC_shortName()}'");
-                    }
-                }
 
                 // Merging loop finally!
                 foreach( $hash as $object )
@@ -2145,25 +2052,8 @@ class MERGER extends UTIL
                     PH::print_stdout();
                     PH::print_stdout( " - value '{$index}'" );
 
-                    $pickedObject = null;
 
-                    if( $this->pickFilter !== null )
-                    {
-                        foreach( $hash as $object )
-                        {
-                            if( $this->pickFilter->matchSingleObject(array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
-                            {
-                                $pickedObject = $object;
-                                break;
-                            }
-                        }
-                        if( $pickedObject === null )
-                            $pickedObject = reset($hash);
-                    }
-                    else
-                    {
-                        $pickedObject = reset($hash);
-                    }
+                    $pickedObject = $this->PickObject( $hash );
 
 
                     $tmp_DG_name = $store->owner->name();
@@ -2284,54 +2174,9 @@ class MERGER extends UTIL
                     PH::print_stdout();
                     PH::print_stdout( " - value '{$index}'" );
 
-                    $pickedObject = null;
 
-                    if( $this->pickFilter !== null )
-                    {
-                        if( isset($upperHashMap[$index]) )
-                        {
-                            foreach( $upperHashMap[$index] as $object )
-                            {
-                                if( $this->pickFilter->matchSingleObject(array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
-                                {
-                                    $pickedObject = $object;
-                                    break;
-                                }
-                            }
-                            if( $pickedObject === null )
-                                $pickedObject = reset($upperHashMap[$index]);
+                    $pickedObject = $this->hashMapPickfilter( $upperHashMap, $index, $hash );
 
-                            PH::print_stdout( "   * using object from upper level : '{$pickedObject->_PANC_shortName()}'" );
-                        }
-                        else
-                        {
-                            foreach( $hash as $object )
-                            {
-                                if( $this->pickFilter->matchSingleObject(array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
-                                {
-                                    $pickedObject = $object;
-                                    break;
-                                }
-                            }
-                            if( $pickedObject === null )
-                                $pickedObject = reset($hash);
-
-                            PH::print_stdout( "   * keeping object '{$pickedObject->_PANC_shortName()}'" );
-                        }
-                    }
-                    else
-                    {
-                        if( isset($upperHashMap[$index]) )
-                        {
-                            $pickedObject = reset($upperHashMap[$index]);
-                            PH::print_stdout( "   * using object from upper level : '{$pickedObject->_PANC_shortName()}'" );
-                        }
-                        else
-                        {
-                            $pickedObject = reset($hash);
-                            PH::print_stdout( "   * keeping object '{$pickedObject->_PANC_shortName()}'" );
-                        }
-                    }
 
                     foreach( $hash as $object )
                     {
@@ -2472,25 +2317,10 @@ class MERGER extends UTIL
                     }
                     PH::print_stdout( " - duplicate set : '" . PH::list_to_string($setList) . "'" );
 
-                    /** @var Service $pickedObject */
-                    $pickedObject = null;
 
-                    if( $this->pickFilter !== null )
-                    {
-                        foreach( $hash as $object )
-                        {
-                            if( $this->pickFilter->matchSingleObject(array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
-                            {
-                                $pickedObject = $object;
-                                break;
-                            }
-                        }
-                    }
-
-                    if( $pickedObject === null )
-                        $pickedObject = reset($hash);
-
+                    $pickedObject = $this->PickObject( $hash);
                     PH::print_stdout( "   * keeping object '{$pickedObject->_PANC_shortName()}'" );
+
 
                     foreach( $hash as $object )
                     {
@@ -2729,25 +2559,7 @@ class MERGER extends UTIL
                 PH::print_stdout( " - value '{$index}'" );
 
 
-                $pickedObject = null;
-
-                if( $this->pickFilter !== null )
-                {
-                    foreach( $hash as $object )
-                    {
-                        if( $this->pickFilter->matchSingleObject(array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
-                        {
-                            $pickedObject = $object;
-                            break;
-                        }
-                    }
-                    if( $pickedObject === null )
-                        $pickedObject = reset($hash);
-                }
-                else
-                {
-                    $pickedObject = reset($hash);
-                }
+                $pickedObject = $this->PickObject( $hash);
 
 
                 $tmp_DG_name = $store->owner->name();
@@ -2842,54 +2654,7 @@ class MERGER extends UTIL
                 PH::print_stdout( " - name '{$index}'" );
 
 
-                $pickedObject = null;
-
-                if( $this->pickFilter !== null )
-                {
-                    if( isset($upperHashMap[$index]) )
-                    {
-                        foreach( $upperHashMap[$index] as $object )
-                        {
-                            if( $this->pickFilter->matchSingleObject(array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
-                            {
-                                $pickedObject = $object;
-                                break;
-                            }
-                        }
-                        if( $pickedObject === null )
-                            $pickedObject = reset($upperHashMap[$index]);
-
-                        PH::print_stdout( "   * using object from upper level : '{$pickedObject->_PANC_shortName()}'" );
-                    }
-                    else
-                    {
-                        foreach( $hash as $object )
-                        {
-                            if( $this->pickFilter->matchSingleObject(array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
-                            {
-                                $pickedObject = $object;
-                                break;
-                            }
-                        }
-                        if( $pickedObject === null )
-                            $pickedObject = reset($hash);
-
-                        PH::print_stdout( "   * keeping object '{$pickedObject->_PANC_shortName()}'" );
-                    }
-                }
-                else
-                {
-                    if( isset($upperHashMap[$index]) )
-                    {
-                        $pickedObject = reset($upperHashMap[$index]);
-                        PH::print_stdout( "   * using object from upper level : '{$pickedObject->_PANC_shortName()}'" );
-                    }
-                    else
-                    {
-                        $pickedObject = reset($hash);
-                        PH::print_stdout( "   * keeping object '{$pickedObject->_PANC_shortName()}'" );
-                    }
-                }
+                $pickedObject = $this->hashMapPickfilter( $upperHashMap, $index, $hash );
 
 
                 // Merging loop finally!
