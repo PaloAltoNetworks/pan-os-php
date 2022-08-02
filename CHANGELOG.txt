@@ -1,6 +1,11 @@
 CHANGELOG
 
-2.0.52
+2.0.53
+UTIL:
+* class MERGER | code cleaning - improvement to use methods | benefit for service-/tag-/addressgroup-/servicegroup-merger
+
+
+2.0.52 (20220801)
 UTILS:
 * type=device | introduce 'filter=(name is.in.file FILE)'
 
@@ -9,7 +14,7 @@ BUGFIX:
 * type=rulemerger | bugfix for exportcsv if rule is skipped because of deny or none matching filter
 
 GENERAL:
-* udpate dockerfiles and install_script_ubuntu
+* update dockerfiles and install_script_ubuntu
 
 
 2.0.51 (20220731)
