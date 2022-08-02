@@ -249,7 +249,7 @@ class RULEMERGER extends UTIL
             if( $this->exportcsvFile !== null )
             {
                 self::exportCSVToHtml();
-                #self::exportCSVToHtml( true );
+                self::exportCSVToHtml( true );
             }
         }
 
@@ -649,7 +649,19 @@ class RULEMERGER extends UTIL
                 if( $string != null )
                 {
                     PH::print_stdout( $string );
-                    $this->deletedObjects[$rule->name()]['skipped'] = $string;
+
+                    $line = "";
+                    foreach( $this->context->fields as $fieldName => $fieldID )
+                        $line .= $this->context->ruleFieldHtmlExport($rule, $fieldID);
+                    $this->skippedObjects[$rule->name()]['kept'] = $line;
+
+                    $line = "";
+                    foreach( $this->context->fields as $fieldName => $fieldID )
+                        $line .= $this->context->ruleFieldHtmlExport($ruleToCompare, $fieldID);
+                    $this->skippedObjects[$rule->name()]['removed'][$ruleToCompare->name()] =  $line;
+
+                    #unset( $this->deletedObjects[$rule->name()] );
+                    #$mergedRulesCount--;
                 }
 
             }
@@ -1135,7 +1147,7 @@ class RULEMERGER extends UTIL
                 $lines .= $line['kept'];
             elseif( isset($line['skipped']) )
             {
-                $lines .= $encloseFunction( $line['skipped'] );
+                #$lines .= $encloseFunction( $line['skipped'] );
             }
             else
                 $lines .= $encloseFunction( "" );
@@ -1151,19 +1163,23 @@ class RULEMERGER extends UTIL
             {
                 if( $first )
                 {
-                    if( $color === false )
-                        $lines .= "<tr>\n";
-                    else
-                        $lines .= "<tr bgcolor=\"#DDDDDD\">";
+                    if( isset($line['manipulated']) )
+                    {
+                        if( $color === false )
+                            $lines .= "<tr>\n";
+                        else
+                            $lines .= "<tr bgcolor=\"#DDDDDD\">";
 
-                    $lines .= $encloseFunction( "---" );
-                    $lines .= $encloseFunction( "manipulated" );
+                        $lines .= $encloseFunction( "---" );
+                        $lines .= $encloseFunction( "manipulated" );
 
-                    #$lines .= $encloseFunction( (string)$index );
+                        #$lines .= $encloseFunction( (string)$index );
 
-                    $lines .=  $line['manipulated'] ;
+                        $lines .=  $line['manipulated'] ;
 
-                    $lines .= "</tr>\n";
+                        $lines .= "</tr>\n";
+                    }
+
                     $first = false;
                 }
 
@@ -1173,7 +1189,10 @@ class RULEMERGER extends UTIL
                     $lines .= "<tr bgcolor=\"#DDDDDD\">";
 
                 $lines .= $encloseFunction( "---" );
-                $lines .= $encloseFunction( "removed" );
+                if( !$skipped )
+                    $lines .= $encloseFunction( "removed" );
+                else
+                    $lines .= $encloseFunction( "skipped" );
 
                 #$lines .= $encloseFunction( (string)$index );
 

@@ -4,6 +4,7 @@ CHANGELOG
 UTIL:
 * type=rule | new 'filter=(service.object.count ><=! VALUE)'
 * type=service-merger | improve output for exportcsv
+* type=rule-merger | improve output for exportcsv
 
 BUGFIX:
 
