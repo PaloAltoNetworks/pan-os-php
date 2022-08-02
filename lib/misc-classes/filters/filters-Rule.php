@@ -1774,6 +1774,35 @@ RQuery::$defaultFilters['rule']['service.port.udp.count']['operators']['>,<,=,!'
         'input' => 'input/panorama-8.0.xml'
     )
 );
+RQuery::$defaultFilters['rule']['service.object.count']['operators']['>,<,=,!'] = array(
+    'Function' => function (RuleRQueryContext $context) {
+        $counter = $context->value;
+        $rule = $context->object;
+
+        if( !$rule->isSecurityRule() )
+        {
+            mwarning("this filter does only yet support Security Rules", null, FALSE);
+            return FALSE;
+        }
+
+        $calculatedCounter = count( $rule->services->getAll() );
+
+        $operator = $context->operator;
+        if( $operator == '=' )
+            $operator = '==';
+
+        $operator_string = $calculatedCounter." ".$operator." ".$counter;
+        if( eval("return $operator_string;" ) )
+            return TRUE;
+
+        return FALSE;
+    },
+    'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP% 443)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 //
 //                                              //
 //                SecurityProfile properties    //

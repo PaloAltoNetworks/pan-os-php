@@ -1,6 +1,15 @@
 CHANGELOG
 
-2.0.53
+2.0.54
+UTIL:
+* type=rule | new 'filter=(service.object.count ><=! VALUE)'
+
+BUGFIX:
+
+GENERAL:
+
+
+2.0.53 (20220802)
 UTIL:
 * class MERGER | code cleaning - improvement to use methods | benefit for service-/tag-/addressgroup-/servicegroup-merger
 
