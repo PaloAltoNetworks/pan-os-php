@@ -2977,6 +2977,9 @@ class MERGER extends UTIL
                 $this->skippedObjects[$index]['kept'] .= " {prot:".$keptOBJ->protocol()."}{dport:".$keptOBJ->getDestPort()."}";
                 if( !empty($keptOBJ->getSourcePort()) )
                     $this->skippedObjects[$index]['kept'] .= "{sport:".$keptOBJ->getSourcePort()."}";
+                if( !empty($keptOBJ->getTimeout()) )
+                    $this->skippedObjects[$index]['kept'] .= "{timeout:".$keptOBJ->getTimeout()."}";
+
             }
 
         }
@@ -3016,6 +3019,8 @@ class MERGER extends UTIL
                     $this->skippedObjects[$index]['removed'] .= "{prot:" . $removedOBJ->protocol() . "}{dport:" . $removedOBJ->getDestPort() . "}";
                     if( !empty($removedOBJ->getSourcePort()) )
                         $this->skippedObjects[$index]['removed'] .= "{sport:" . $removedOBJ->getSourcePort() . "}";
+                    if( !empty($removedOBJ->getTimeout()) )
+                        $this->skippedObjects[$index]['removed'] .= "{timeout:".$removedOBJ->getTimeout()."}";
                 }
             }
             else
@@ -3038,6 +3043,8 @@ class MERGER extends UTIL
                         $this->skippedObjects[$index]['removed'] .= "{prot:" . $removedOBJ->protocol() . "}{dport:" . $removedOBJ->getDestPort() . "}";
                         if( !empty($removedOBJ->getSourcePort()) )
                             $this->skippedObjects[$index]['removed'] .= "{sport:" . $removedOBJ->getSourcePort() . "}";
+                        if( !empty($removedOBJ->getTimeout()) )
+                            $this->skippedObjects[$index]['removed'] .= "{timeout:".$removedOBJ->getTimeout()."}";
                     }
                 }
             }
