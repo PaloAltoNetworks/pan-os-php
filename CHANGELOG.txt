@@ -2,6 +2,7 @@ CHANGELOG
 
 2.0.54
 UTIL:
+* type=rule | new 'filter=(service.object.count ><=! VALUE)'
 
 BUGFIX:
 
