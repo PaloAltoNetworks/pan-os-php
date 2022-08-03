@@ -9,6 +9,7 @@ UTIL:
 * type=rule | introduce new 'filter=(service timeout.is.set)' | improve for 'filter=(service.object.count <>=! VALUE)'
 
 BUGFIX:
+* type=service-merger | bugfix if service timeout is set and on childDG compare to parentDG the timeout differ
 
 GENERAL:
 
