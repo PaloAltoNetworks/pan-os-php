@@ -1687,6 +1687,38 @@ RQuery::$defaultFilters['rule']['service']['operators']['has.value.only'] = arra
     )
 );
 
+RQuery::$defaultFilters['rule']['service']['operators']['timeout.is.set'] = array(
+    'Function' => function (RuleRQueryContext $context) {
+        $value = $context->value;
+        $rule = $context->object;
+
+        if( $rule->isNatRule() )
+        {
+            mwarning("this filter does not yet support NAT Rules");
+            return FALSE;
+        }
+
+        if( $rule->services === null )
+            return FALSE;
+
+        foreach( $rule->services->getAll() as $object )
+        {
+            /** @var Service|ServiceGroup $object */
+            if( $object->isService() && !empty( $object->getTimeout()) )
+                return true;
+            elseif( $object->isGroup() && $object->hasTimeoutRecursive() )
+                return true;
+        }
+
+        return FALSE;
+    },
+    'arg' => FALSE,
+    'ci' => array(
+        'fString' => '(%PROP% 443)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
 RQuery::$defaultFilters['rule']['service.port.count']['operators']['>,<,=,!'] = array(
     'Function' => function (RuleRQueryContext $context) {
         $counter = $context->value;
@@ -1785,7 +1817,15 @@ RQuery::$defaultFilters['rule']['service.object.count']['operators']['>,<,=,!'] 
             return FALSE;
         }
 
-        $calculatedCounter = count( $rule->services->getAll() );
+        $calculatedCounter = 0;
+        foreach( $rule->services->getAll() as $object )
+        {
+            /** @var Service|ServiceGroup $object */
+            if( $object->isService() )
+                $calculatedCounter++;
+            elseif( $object->isGroup() )
+                $calculatedCounter = $calculatedCounter + $object->countObjectsRecursive();
+        }
 
         $operator = $context->operator;
         if( $operator == '=' )

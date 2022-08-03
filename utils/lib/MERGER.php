@@ -2070,7 +2070,10 @@ class MERGER extends UTIL
                             $exitObject = null;
                             foreach( $child_NamehashMap[ $pickedObject->name() ] as $obj )
                             {
-                                if( !$obj->dstPortMapping()->equals($pickedObject->dstPortMapping()) || !$obj->srcPortMapping()->equals($pickedObject->srcPortMapping()) )
+                                if( !$obj->dstPortMapping()->equals($pickedObject->dstPortMapping())
+                                    || !$obj->srcPortMapping()->equals($pickedObject->srcPortMapping())
+                                    || $obj->getOverride() != $pickedObject->getOverride()
+                                )
                                 {
                                     $exit = true;
                                     $exitObject = $obj;
@@ -2149,7 +2152,12 @@ class MERGER extends UTIL
                     // Merging loop finally!
                     foreach( $hash as $objectIndex => $object )
                     {
+                        $skipped = $this->servicePickedObjectValidation( $index, $object, $tmp_service );
+                        if( $skipped )
+                            continue;
+
                         PH::print_stdout("    - replacing '{$object->_PANC_shortName()}' ...");
+
                         if( $this->action === "merge" )
                             $object->__replaceWhereIamUsed($this->apiMode, $tmp_service, TRUE, 5);
 
@@ -2198,22 +2206,9 @@ class MERGER extends UTIL
                             {
                                 if( $object->dstPortMapping()->equals($ancestor->dstPortMapping()) )
                                 {
-                                    if( !$object->srcPortMapping()->equals($ancestor->srcPortMapping()) && $this->dupAlg == 'samedstsrcports' )
-                                    {
-                                        $text = "    - object '{$object->name()}' cannot be merged because of different SRC port information";
-                                        $text .= "  object value: " . $object->srcPortMapping()->mappingToText() . " | pickedObject value: " . $ancestor->srcPortMapping()->mappingToText();
-                                        PH::print_stdout( $text );
-                                        $this->skippedObject( $index, $object, $ancestor);
+                                    $skipped = $this->servicePickedObjectValidation( $index, $object, $ancestor );
+                                    if( $skipped )
                                         continue;
-                                    }
-                                    elseif( $object->getOverride() != $ancestor->getOverride() )
-                                    {
-                                        $text = "    - object '{$object->name()}' cannot be merged because of different timeout Override information";
-                                        $text .="  object timeout value: " . $object->getOverride() . " | pickedObject timeout value: " . $ancestor->getOverride();
-                                        PH::print_stdout( $text );
-                                        $this->skippedObject( $index, $object, $ancestor);
-                                        continue;
-                                    }
 
                                     $text = "    - object '{$object->name()}' merged with its ancestor, deleting: ".$object->_PANC_shortName();
                                     if( $this->action === "merge" )
@@ -2258,22 +2253,9 @@ class MERGER extends UTIL
                         }
                         else
                         {
-                            if( !$object->srcPortMapping()->equals($pickedObject->srcPortMapping()) && $this->dupAlg == 'samedstsrcports' )
-                            {
-                                $text = "    - object '{$object->name()}' cannot be merged because of different SRC port information";
-                                $text .= "  object value: " . $object->srcPortMapping()->mappingToText() . " | pickedObject value: " . $pickedObject->srcPortMapping()->mappingToText();
-                                PH::print_stdout( $text );
-                                $this->skippedObject( $index, $object, $pickedObject);
+                            $skipped = $this->servicePickedObjectValidation( $index, $object, $pickedObject );
+                            if( $skipped )
                                 continue;
-                            }
-                            elseif( $object->getOverride() != $pickedObject->getOverride() )
-                            {
-                                $text = "    - object '{$object->name()}' cannot be merged because of different timeout Override information";
-                                $text .= "  object timeout value: " . $object->getOverride() . " | pickedObject timeout value: " . $pickedObject->getOverride();
-                                PH::print_stdout( $text );
-                                $this->skippedObject( $index, $object, $pickedObject);
-                                continue;
-                            }
                         }
 
                         if( $object === $pickedObject )
@@ -2413,6 +2395,28 @@ class MERGER extends UTIL
             if( count( $child_hashMap ) >0 )
                 PH::print_stdout( "Duplicates ChildDG removal is now done. Number of objects after cleanup: '{$store->countServices()}' (removed/created {$countChildRemoved}/{$countChildCreated} services)\n" );
         }
+    }
+
+    function servicePickedObjectValidation( $index, $object, $pickedObject )
+    {
+        $skipped = false;
+        if( !$object->srcPortMapping()->equals($pickedObject->srcPortMapping()) && $this->dupAlg == 'samedstsrcports' )
+        {
+            $text = "    - object '{$object->name()}' cannot be merged because of different SRC port information";
+            $text .= "  object value: " . $object->srcPortMapping()->mappingToText() . " | pickedObject value: " . $pickedObject->srcPortMapping()->mappingToText();
+            PH::print_stdout( $text );
+            $this->skippedObject( $index, $object, $pickedObject);
+            $skipped = true;
+        }
+        elseif( $object->getOverride() != $pickedObject->getOverride() )
+        {
+            $text = "    - object '{$object->name()}' cannot be merged because of different timeout Override information";
+            $text .="  object timeout value: " . $object->getOverride() . " | pickedObject timeout value: " . $pickedObject->getOverride();
+            PH::print_stdout( $text );
+            $this->skippedObject( $index, $object, $pickedObject);
+            $skipped = true;
+        }
+        return $skipped;
     }
 
     function tag_merging()
@@ -2977,6 +2981,9 @@ class MERGER extends UTIL
                 $this->skippedObjects[$index]['kept'] .= " {prot:".$keptOBJ->protocol()."}{dport:".$keptOBJ->getDestPort()."}";
                 if( !empty($keptOBJ->getSourcePort()) )
                     $this->skippedObjects[$index]['kept'] .= "{sport:".$keptOBJ->getSourcePort()."}";
+                if( !empty($keptOBJ->getTimeout()) )
+                    $this->skippedObjects[$index]['kept'] .= "{timeout:".$keptOBJ->getTimeout()."}";
+
             }
 
         }
@@ -3016,6 +3023,8 @@ class MERGER extends UTIL
                     $this->skippedObjects[$index]['removed'] .= "{prot:" . $removedOBJ->protocol() . "}{dport:" . $removedOBJ->getDestPort() . "}";
                     if( !empty($removedOBJ->getSourcePort()) )
                         $this->skippedObjects[$index]['removed'] .= "{sport:" . $removedOBJ->getSourcePort() . "}";
+                    if( !empty($removedOBJ->getTimeout()) )
+                        $this->skippedObjects[$index]['removed'] .= "{timeout:".$removedOBJ->getTimeout()."}";
                 }
             }
             else
@@ -3038,6 +3047,8 @@ class MERGER extends UTIL
                         $this->skippedObjects[$index]['removed'] .= "{prot:" . $removedOBJ->protocol() . "}{dport:" . $removedOBJ->getDestPort() . "}";
                         if( !empty($removedOBJ->getSourcePort()) )
                             $this->skippedObjects[$index]['removed'] .= "{sport:" . $removedOBJ->getSourcePort() . "}";
+                        if( !empty($removedOBJ->getTimeout()) )
+                            $this->skippedObjects[$index]['removed'] .= "{timeout:".$removedOBJ->getTimeout()."}";
                     }
                 }
             }

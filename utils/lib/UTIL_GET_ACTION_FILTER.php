@@ -55,6 +55,7 @@ class UTIL_GET_ACTION_FILTER
 
 
         $JSON_pretty =  json_encode( $tmp_array, JSON_PRETTY_PRINT );
+        #$JSON_pretty =  json_encode( $tmp_array, JSON_PRETTY_PRINT|JSON_FORCE_OBJECT );
 
 
         if( PH::$shadow_json )

@@ -644,22 +644,36 @@ class DIFF extends UTIL
 
         $text = '';
 
+        PH::$JSON_TMP = array();
+        if( count($plus) > 0 || count( $minus ) > 0 )
+            PH::$JSON_TMP['xpath'] = $xpath;
+
+        PH::$JSON_TMP['plus'] = array();
         foreach( $plus as $key => $node )
         {
             $tmp = DH::dom_to_xml($node);
             $tmp = $this->str_lreplace( "\n", "", $tmp );
+            PH::$JSON_TMP['plus'][] = $tmp;
+
             $text .= "\n+" . str_replace("\n", "\n+", $tmp);
         }
 
         if( count($plus) > 0 && count( $minus ) > 0 )
             $text .= "\n";
 
+        PH::$JSON_TMP['minus'] = array();
         foreach( $minus as $key => $node )
         {
             $tmp = DH::dom_to_xml($node);
             $tmp = $this->str_lreplace( "\n", "", $tmp );
+            PH::$JSON_TMP['minus'][] = $tmp;
+
             $text .= "\n-" . str_replace("\n", "\n-", $tmp);
         }
+
+        if( count($plus) > 0 || count( $minus ) > 0 )
+            PH::print_stdout( PH::$JSON_TMP, false, "diff" );
+        PH::$JSON_TMP = array();
 
         $this->displayDIFF( $xpath, $text, $plus, $minus );
     }

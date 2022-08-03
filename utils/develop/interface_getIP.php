@@ -108,6 +108,7 @@ PH::print_stdout( "-------------------------------------------------------------
 
 if( PH::$shadow_json )
     print json_encode( $array, JSON_PRETTY_PRINT );
+    #print json_encode( $array, JSON_PRETTY_PRINT|JSON_FORCE_OBJECT );
 else
 {
     #print_r( $array );
