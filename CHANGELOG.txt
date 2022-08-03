@@ -6,6 +6,7 @@ UTIL:
 * type=service-merger | improve output for exportcsv
 * type=rule-merger | improve output for exportcsv
 * type=diff | introduce working argument shadow-json
+* type=rule | introduce new 'filter=(service timeout.is.set)' | improve for 'filter=(service.object.count <>=! VALUE)'
 
 BUGFIX:
 

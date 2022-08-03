@@ -711,6 +711,52 @@ class ServiceGroup
     }
 
     /**
+     * @param Service|ServiceGroup $object
+     * @return bool
+     */
+    public function countObjectsRecursive()
+    {
+        return count( $this->membersRecursive() );
+    }
+
+    /**
+     * @param Service|ServiceGroup $object
+     * @return bool
+     */
+    public function hasTimeoutRecursive()
+    {
+        foreach( $this->membersRecursive() as $object)
+        {
+            /** @var Service $object */
+            if( !empty( $object->getTimeout() ) )
+                return true;
+        }
+
+        return FALSE;
+    }
+
+    /**
+     * @param Service|ServiceGroup $object
+     * @return array
+     */
+    public function membersRecursive()
+    {
+        $array = array();
+        foreach( $this->members as $o )
+        {
+            if( $o->isService() )
+                $array[] = $o;
+            elseif( $o->isGroup() )
+            {
+                $tmp_array = $o->membersRecursive();
+                $array = array_merge( $array, $tmp_array );
+            }
+        }
+
+        return $array;
+    }
+
+    /**
      * @param string $objectName
      * @return bool
      */
