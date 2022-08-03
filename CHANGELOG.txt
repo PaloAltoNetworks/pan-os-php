@@ -1,6 +1,14 @@
 CHANGELOG
 
-2.0.54
+2.0.55
+UTIL:
+
+BUGFIX:
+
+GENERAL:
+
+
+2.0.54 (20220803)
 UTIL:
 * type=rule | new 'filter=(service.object.count ><=! VALUE)'
 * type=service-merger | improve output for exportcsv
