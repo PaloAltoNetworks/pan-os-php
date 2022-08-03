@@ -1,12 +1,42 @@
 CHANGELOG
 
-2.0.52
-UTILS:
+2.0.55
+UTIL:
 
 BUGFIX:
 
 GENERAL:
-* udpate dockerfiles and install_script_ubuntu
+
+
+2.0.54 (20220803)
+UTIL:
+* type=rule | new 'filter=(service.object.count ><=! VALUE)'
+* type=service-merger | improve output for exportcsv
+* type=rule-merger | improve output for exportcsv
+* type=diff | introduce working argument shadow-json
+* type=rule | introduce new 'filter=(service timeout.is.set)' | improve for 'filter=(service.object.count <>=! VALUE)'
+
+BUGFIX:
+* type=service-merger | bugfix if service timeout is set and on childDG compare to parentDG the timeout differ
+
+GENERAL:
+
+
+2.0.53 (20220802)
+UTIL:
+* class MERGER | code cleaning - improvement to use methods | benefit for service-/tag-/addressgroup-/servicegroup-merger
+
+
+2.0.52 (20220801)
+UTILS:
+* type=device | introduce 'filter=(name is.in.file FILE)'
+
+BUGFIX:
+* type=device actions=manageddevice-delete/-create | fix/rework method
+* type=rulemerger | bugfix for exportcsv if rule is skipped because of deny or none matching filter
+
+GENERAL:
+* update dockerfiles and install_script_ubuntu
 
 
 2.0.51 (20220731)

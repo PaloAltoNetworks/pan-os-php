@@ -127,6 +127,8 @@ $filtersData['schedule'] = generateFilterJSON(RQuery::$defaultFilters['schedule'
 $data = array('actions' => &$actionsData, 'filters' => &$filtersData);
 
 $data = 'var data = ' . json_encode($data, JSON_PRETTY_PRINT) . ';';
+#$data = 'var data = ' . json_encode($data, JSON_PRETTY_PRINT|JSON_FORCE_OBJECT) . ';';
+
 
 file_put_contents($dataFile, $data);
 

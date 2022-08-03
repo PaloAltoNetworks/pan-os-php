@@ -61,8 +61,43 @@ RQuery::$defaultFilters['device']['name']['operators']['regex'] = array(
         'input' => 'input/panorama-8.0.xml'
     )
 );
+RQuery::$defaultFilters['device']['name']['operators']['is.in.file'] = array(
+    'Function' => function (DeviceRQueryContext $context) {
+        $object = $context->object;
+
+        if( !isset($context->cachedList) )
+        {
+            $text = file_get_contents($context->value);
+
+            if( $text === FALSE )
+                derr("cannot open file '{$context->value}");
+
+            $lines = explode("\n", $text);
+            foreach( $lines as $line )
+            {
+                $line = trim($line);
+                if( strlen($line) == 0 )
+                    continue;
+                $list[$line] = TRUE;
+            }
+
+            $context->cachedList = &$list;
+        }
+        else
+            $list = &$context->cachedList;
+
+        return isset($list[$object->name()]);
+    },
+    'arg' => TRUE
+);
 RQuery::$defaultFilters['device']['templatestack']['operators']['has.member'] = array(
     'Function' => function (DeviceRQueryContext $context) {
+
+        $object = $context->object;
+
+        $class = get_class( $object );
+        if( $class !== "TemplateStack" )
+            return false;
 
         $used_templates = $context->object->templates;
         foreach( $used_templates as $template )
