@@ -89,9 +89,7 @@ class Snippet
 
 
 
-    public static $templateOnPremxml = '<entry name="**Need a Name**"><address></address>
-                                    <rulebase><security><rules></rules></security><nat><rules></rules></nat></rulebase>
-									</entry>';
+    public static $templateSnippetxml = '<entry name="**Need a Name**"></entry>';
 
     /** @var string */
     public $name;
@@ -264,17 +262,17 @@ class Snippet
         #$this->pbfRules->_networkStore = $this->owner->network;
     }
 
-    public function load_from_templateOnPremXml( )
+    public function load_from_templateSnippetXml( )
     {
         if( $this->owner === null )
             derr('cannot be used if owner === null');
 
         $fragment = $this->owner->xmlroot->ownerDocument->createDocumentFragment();
 
-        if( !$fragment->appendXML(self::$templateOnPremxml) )
+        if( !$fragment->appendXML(self::$templateSnippetxml) )
             derr('error occured while loading device group template xml');
 
-        $element = $this->owner->onpremroot->appendChild($fragment);
+        $element = $this->owner->snippetroot->appendChild($fragment);
 
         $this->load_from_domxml($element);
     }
@@ -879,6 +877,6 @@ class Snippet
     }
 
 
-    static public $templateXml = '<entry name="temporarynamechangemeplease"><address/><address-group/><service/><service-group/><rulebase></rulebase></entry>';
+    static public $templateXml = '<entry name="temporarynamechangemeplease"></entry>';
 
 }

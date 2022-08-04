@@ -493,6 +493,21 @@ class BuckbeakConf
     }
 
     /**
+     * @param string $name
+     * @return Snippet|null
+     */
+    public function findSnippet($name)
+    {
+        foreach( $this->snippets as $template )
+        {
+            if( $template->name() == $name )
+                return $template;
+        }
+
+        return null;
+    }
+
+    /**
      * @param string $fileName
      * @param bool $printMessage
      * @param int $indentingXml
