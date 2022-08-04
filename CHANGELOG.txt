@@ -6,6 +6,7 @@ UTIL:
 BUGFIX:
 
 GENERAL:
+* extend different Fawkes and Buckbeak related classes
 
 
 2.0.54 (20220803)
