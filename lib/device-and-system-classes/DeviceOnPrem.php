@@ -99,9 +99,10 @@ class DeviceOnPrem
 									<region></region><external-list></external-list><dynamic-user-group></dynamic-user-group>
 									</entry>';
 */
-    public static $templateOnPremxml = '<entry name="**Need a Name**"><address></address>
-                                    <rulebase><security><rules></rules></security><nat><rules></rules></nat></rulebase>
-									</entry>';
+    #public static $templateOnPremxml = '<entry name="**Need a Name**"><address></address>
+    #                                <rulebase><security><rules></rules></security><nat><rules></rules></nat></rulebase>
+    #								</entry>';
+    public static $templateOnPremxml = '<entry name="**Need a Name**"></entry>';
 
     /** @var string */
     public $name;
@@ -109,7 +110,7 @@ class DeviceOnPrem
     /** @var string */
     protected $_alternativeName = '';
 
-    /** @var FawkesConf|null */
+    /** @var FawkesConf|Buckbeak|null */
     public $owner = null;
 
     /** @var DOMElement */
@@ -162,8 +163,8 @@ class DeviceOnPrem
     /** @var Array */
     public $devices = array();
 
-
-    public function __construct(FawkesConf $owner, Container $applicableDG = null)
+    /** @var FawkesConf|Buckbeak|null $owner */
+    public function __construct( $owner, Container $applicableDG = null)
     {
         $this->owner = $owner;
 
@@ -885,7 +886,14 @@ class DeviceOnPrem
         return TRUE;
     }
 
+    public function addSnippet( $name )
+    {
+        $snippets = DH::findFirstElementOrCreate('snippets', $this->xmlroot);
+        DH::findFirstElementByNameAttrOrCreate( "entry", $name, $snippets, $this->xmlroot->ownerDocument );
 
-    static public $templateXml = '<entry name="temporarynamechangemeplease"><address/><address-group/><service/><service-group/><rulebase></rulebase></entry>';
+    }
+
+    #static public $templateXml = '<entry name="temporarynamechangemeplease"><address/><address-group/><service/><service-group/><rulebase></rulebase></entry>';
+    static public $templateXml = '<entry name="temporarynamechangemeplease"></entry>';
 
 }

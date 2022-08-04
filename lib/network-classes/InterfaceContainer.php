@@ -52,9 +52,28 @@ class InterfaceContainer extends ObjRuleContainer
 
             $interfaceString = $node->textContent;
 
-            $interface = $this->parentCentralStore->findInterfaceOrCreateTmp($interfaceString);
-
-            $this->add($interface);
+            if( isset($this->owner->owner->owner) && (
+                get_class( $this->owner->owner->owner ) === "Snippet" ||
+                get_class( $this->owner->owner->owner ) === "Container" ||
+                get_class( $this->owner->owner->owner ) === "DeviceCloud" ||
+                get_class( $this->owner->owner->owner ) === "DeviceOnPrem" )
+            )
+            {
+                if( strpos( $interfaceString, "$" ) !== FALSE )
+                {
+                    //Todo: 20220801 swaschkut
+                    // - Buckbeak snippet issue with loading config as now network part was defined
+                    #DH::DEBUGprintDOMDocument($node);
+                    print "Snippet interface variable: ".$interfaceString."\n";
+                }
+                else
+                    mwarning( "not a correct Snippet interface variable", null, false );
+            }
+            else
+            {
+                $interface = $this->parentCentralStore->findInterfaceOrCreateTmp($interfaceString);
+                $this->add($interface);
+            }
         }
     }
 

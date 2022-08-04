@@ -52,7 +52,7 @@ class ManagedDevice
     {
         $this->xmlroot = $xml;
 
-        if( $this->owner->owner->isFawkes() )
+        if( $this->owner->owner->isFawkes() || $this->owner->owner->isBuckbeak() )
         {
             #DH::DEBUGprintDOMDocument( $xml );
 

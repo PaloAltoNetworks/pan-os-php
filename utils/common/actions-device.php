@@ -140,7 +140,7 @@ DeviceCallContext::$supportedActions['display'] = array(
                     PH::$JSON_TMP['sub']['object'][$object->name()]['model'] = $managedDevice->model;
                 }
             }
-            elseif( $device->isFawkes() )
+            elseif( $device->isFawkes() || $device->isBuckbeak() )
             {
                 if( $managedDevice->getDeviceContainer() != null )
                 {

@@ -140,7 +140,7 @@ class ManagedDeviceStore extends ObjStore
             {
                 //no more changes needed yet
             }
-            elseif( $this->owner->isFawkes() )
+            elseif( $this->owner->isFawkes() || $this->owner->isBuckbeak() )
             {
                 if( $onPrem === null )
                 {

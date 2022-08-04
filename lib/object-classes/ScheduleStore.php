@@ -334,7 +334,7 @@ class ScheduleStore extends ObjStore
                 $current = $current->owner->parentDeviceGroup->scheduleStore;
             elseif( isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
                 $current = $current->owner->parentContainer->scheduleStore;
-            elseif( isset($current->owner->owner) && $current->owner->owner !== null && !$current->owner->owner->isFawkes() )
+            elseif( isset($current->owner->owner) && $current->owner->owner !== null && !$current->owner->owner->isFawkes() && !$current->owner->owner->isBuckbeak() )
                 $current = $current->owner->owner->scheduleStore;
             else
                 break;

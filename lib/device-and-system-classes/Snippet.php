@@ -18,7 +18,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-class DeviceCloud
+class Snippet
 {
     use PathableName;
     use PanSubHelperTrait;
@@ -88,20 +88,8 @@ class DeviceCloud
     public $scheduleStore = null;
 
 
-/*
-    public static $templateCloudxml = '<entry name="**Need a Name**"><address></address>
-                                    <rulebase><security><rules></rules></security><nat><rules></rules></nat></rulebase>
-									<profiles>
-									<url-filtering></url-filtering><dns-security></dns-security><spyware></spyware><vulnerability></vulnerability><file-blocking></file-blocking><virus-and-wildfire-analysis></virus-and-wildfire-analysis>
-									<saas-security></saas-security><custom-url-category></custom-url-category><decryption></decryption>
-									<hip-objects></hip-objects><hip-profiles></hip-profiles>
-									</profiles>
-									<region></region><external-list></external-list><dynamic-user-group></dynamic-user-group>
-									</entry>';
-*/
-    public static $templateCloudxml = '<entry name="**Need a Name**"><address></address>
-                                    <rulebase><security><rules></rules></security><nat><rules></rules></nat></rulebase>
-									</entry>';
+
+    public static $templateSnippetxml = '<entry name="**Need a Name**"></entry>';
 
     /** @var string */
     public $name;
@@ -158,6 +146,9 @@ class DeviceCloud
     public $parentContainer = null;
 
     public $version = null;
+
+    /** @var Array */
+    public $devices = array();
 
     /** @var FawkesConf|Buckbeak|null $owner */
     public function __construct( $owner, Container $applicableDG = null)
@@ -271,17 +262,17 @@ class DeviceCloud
         #$this->pbfRules->_networkStore = $this->owner->network;
     }
 
-    public function load_from_templateCloudeXml( )
+    public function load_from_templateSnippetXml( )
     {
         if( $this->owner === null )
             derr('cannot be used if owner === null');
 
         $fragment = $this->owner->xmlroot->ownerDocument->createDocumentFragment();
 
-        if( !$fragment->appendXML(self::$templateCloudxml) )
+        if( !$fragment->appendXML(self::$templateSnippetxml) )
             derr('error occured while loading device group template xml');
 
-        $element = $this->owner->cloudroot->appendChild($fragment);
+        $element = $this->owner->snippetroot->appendChild($fragment);
 
         $this->load_from_domxml($element);
     }
@@ -297,7 +288,7 @@ class DeviceCloud
         // this VSYS has a name ?
         $this->name = DH::findAttribute('name', $xml);
         if( $this->name === FALSE )
-            derr("DeviceCloud name not found\n", $xml);
+            derr("DeviceOnPrem name not found\n", $xml);
 
 
         $tmp_parentContainer = DH::findFirstElement('parent', $xml);
@@ -307,7 +298,7 @@ class DeviceCloud
 
             $parentContainer = $this->owner->findContainer( $this->parentContainer );
             if( $parentContainer === null )
-                mwarning("DeviceCloud '$this->name' has Container '{$this->parentContainer}' listed as parent but it cannot be found in XML");
+                mwarning("DeviceOnPrem '$this->name' has Container '{$this->parentContainer}' listed as parent but it cannot be found in XML");
             else
             {
                 $parentContainer->_childContainers[$this->name] = $this;
@@ -616,7 +607,10 @@ class DeviceCloud
         //
         $tmp = DH::findFirstElement('zone', $xml);
         if( $tmp != FALSE )
+        {
             $this->zoneStore->load_from_domxml($tmp);
+        }
+
         // End of Zone objects extraction
 
 
@@ -734,7 +728,7 @@ class DeviceCloud
         return $str;
     }
 
-    public function isDeviceCloud()
+    public function isDeviceOnPrem()
     {
         return TRUE;
     }
@@ -883,6 +877,6 @@ class DeviceCloud
     }
 
 
-    static public $templateXml = '<entry name="temporarynamechangemeplease"><address/><address-group/><service/><service-group/><rulebase></rulebase></entry>';
+    static public $templateXml = '<entry name="temporarynamechangemeplease"></entry>';
 
 }

@@ -927,7 +927,7 @@ class AddressStore
             }
 
 
-            if( isset($current->owner->owner) && $current->owner->owner !== null && !$current->owner->owner->isFawkes() )
+            if( isset($current->owner->owner) && $current->owner->owner !== null && !$current->owner->owner->isFawkes() && !$current->owner->owner->isBuckbeak() )
                 $current = $current->owner->owner->addressStore;
             else
                 break;
@@ -1059,7 +1059,7 @@ class AddressStore
                 $current = $current->owner->parentDeviceGroup->addressStore;
             elseif( isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
                 $current = $current->owner->parentContainer->addressStore;
-            elseif( isset($current->owner->owner) && $current->owner->owner !== null && !$current->owner->owner->isFawkes() )
+            elseif( isset($current->owner->owner) && $current->owner->owner !== null && !$current->owner->owner->isFawkes() && !$current->owner->owner->isBuckbeak() )
                 $current = $current->owner->owner->addressStore;
             else
                 break;
