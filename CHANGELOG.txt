@@ -7,6 +7,7 @@ BUGFIX:
 
 GENERAL:
 * extend different Fawkes and Buckbeak related classes
+* improve bash completion script
 
 
 2.0.54 (20220803)

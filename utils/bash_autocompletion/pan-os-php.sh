@@ -71,45 +71,57 @@ __pan-os-php_scripts()
 
 		prev2=${COMP_WORDS[COMP_CWORD-2]}
 
-		if [[ "${cur}" = "=" || "${prev}" = "=" ]] ; then
+		if [[ "${cur}" == "=" || "${prev}" == "=" ]] ; then
 			RepPatt="="
 			RepBy=""
 			cur2="${cur//$RepPatt/$RepBy}"
 
-			if [[ "${prev}" = "type" || "${prev2}" = "type" \
+			if [[ "${prev}" == "type" || "${prev2}" == "type" \
 			  ]] ; then
 
 				compopt +o nospace
 				COMPREPLY=($(compgen -W '${type[*]}' -- "${cur2}"))
-				typeargument="${COMP_WORDS[COMP_CWORD]}"
-			elif [[ "${prev}" = "actions" || "${prev2}" = "actions" \
+
+			elif [[ "${prev}" == "actions" || "${prev2}" == "actions" \
 			  ]] ; then
 
-          actions=$(jq -r ".\"${typeargument}\" | select(.action != []) | .action | keys[]" $jsonFILE )
+          for KEY in "${!COMP_WORDS[@]}"; do
+            if [[ "${COMP_WORDS[$KEY]}" == "type" ]] ; then
+              typeargument=${COMP_WORDS[$KEY+2]}
+            fi
+          done
+
+          actions=$(jq -r ".\"${typeargument}\" | select(.action != null) | .action | keys[]" $jsonFILE )
 
 			    compopt +o nospace
 			    COMPREPLY=($(compgen -W '${actions[*]}' -- "${cur2}"))
 			    actionargument="${COMP_WORDS[COMP_CWORD]}"
-			elif [[ "${prev}" = "filter" || "${prev2}" = "filter" \
+			elif [[ "${prev}" == "filter" || "${prev2}" == "filter" \
 			  ]] ; then
 
-          filters=$(jq -r ".\"${typeargument}\" | select(.filter != []) | .filter | keys[]" $jsonFILE)
+          for KEY in "${!COMP_WORDS[@]}"; do
+            if [[ "${COMP_WORDS[$KEY]}" == "type" ]] ; then
+              typeargument=${COMP_WORDS[$KEY+2]}
+            fi
+          done
+
+          filters=$(jq -r ".\"${typeargument}\" | select(.filter != null) | .filter | keys[]" $jsonFILE)
 
 			    compopt +o nospace
 			    COMPREPLY=($(compgen -W '${filters[*]}' -- "${cur2}"))
-			elif [[ "${prev}" = "location" || "${prev2}" = "location" \
+			elif [[ "${prev}" == "location" || "${prev2}" == "location" \
 			  ]] ; then
 
 			    compopt +o nospace
-			elif [[ "${prev}" = "loadplugin" || "${prev2}" = "loadplugin" \
+			elif [[ "${prev}" == "loadplugin" || "${prev2}" == "loadplugin" \
 			  ]] ; then
 
 			    compopt +o nospace
-			elif [[ "${prev}" = "template" || "${prev2}" = "template" \
+			elif [[ "${prev}" == "template" || "${prev2}" == "template" \
 			  ]] ; then
 
 			    compopt +o nospace
-			elif [[ "${prev}" = "apitimeout" || "${prev2}" = "apitimeout" \
+			elif [[ "${prev}" == "apitimeout" || "${prev2}" == "apitimeout" \
 			  ]] ; then
 
 			    compopt +o nospace
@@ -119,7 +131,7 @@ __pan-os-php_scripts()
 				compopt -o filenames
 		        COMPREPLY=( $(compgen -f -- ${cur2} ) )
 			fi
-		elif [[ "${cur}" = ":" || "${prev}" = ":" ]] ; then
+		elif [[ "${cur}" == ":" || "${prev}" == ":" ]] ; then
 		  echo ":"
     else
       # remove used argument from array
@@ -127,7 +139,7 @@ __pan-os-php_scripts()
 
       prevstring=""
       for word in ${COMP_WORDS[*]}; do
-        if [[ ${word} = "=" ]]; then
+        if [[ ${word} == "=" ]]; then
           case ${prevstring} in
             type*)
               unset 'arguments[0]'
@@ -212,7 +224,7 @@ __pan-os-php_scripts()
 			local arg compreply=""
 			COMPREPLY=($(compgen -W '${arguments[*]}' -- "${COMP_WORDS[COMP_CWORD]}"))
 
-			if [[ ${#COMPREPLY[*]} = 1 ]] && [[ ${COMPREPLY[0]} =~ "=" ]] ; then
+			if [[ ${#COMPREPLY[*]} == 1 ]] && [[ ${COMPREPLY[0]} =~ "=" ]] ; then
 				compopt -o nospace
 			else
 				compopt +o nospace
@@ -265,7 +277,7 @@ __pan-os-php_scripts()
 
 	        COMPREPLY=( $(compgen -o filenames -f -- ${cur2} ) )
 
-			if [ ${#COMPREPLY[*]} = 1 ]; then
+			if [ ${#COMPREPLY[*]} == 1 ]; then
 		        [ -d "$COMPREPLY" ] && LASTCHAR=/
 		        COMPREPLY=$(printf %q%s "$COMPREPLY" "$LASTCHAR")
 		    fi
@@ -276,7 +288,7 @@ __pan-os-php_scripts()
 
 	        COMPREPLY=( $(compgen -o filenames -f  -- ${cur2} ) )
 
-			if [ ${#COMPREPLY[*]} = 1 ]; then
+			if [ ${#COMPREPLY[*]} == 1 ]; then
 		        [ -d "$COMPREPLY" ] && LASTCHAR=/
 		        COMPREPLY=$(printf %q%s "$COMPREPLY" "$LASTCHAR")
 		    fi
@@ -287,7 +299,7 @@ __pan-os-php_scripts()
 
 	        COMPREPLY=( $(compgen -o filenames -f -- ${cur2} ) )
 
-	        if [ ${#COMPREPLY[*]} = 1 ]; then
+	        if [ ${#COMPREPLY[*]} == 1 ]; then
 		        [ -d "$COMPREPLY" ] && LASTCHAR=/
 		        COMPREPLY=$(printf %q%s "$COMPREPLY" "$LASTCHAR")
 		    fi
@@ -334,6 +346,7 @@ __pan-os-php_scripts()
 	fi
 }
 
+
 if [ -n "$ZSH_VERSION" ]; then
   # assume Zsh
   echo "ZSH is not supported yet"
@@ -363,6 +376,3 @@ else
   echo "no supported SHELL"
   return 0
 fi
-
-
-
