@@ -1687,7 +1687,9 @@ class PanoramaConf
             //remove DG from XML
             $xPath = "/config/devices/entry[@name='localhost.localdomain']/device-group";
             $dgNode = DH::findXPathSingleEntryOrDie($xPath, $this->xmlroot);
-            $dgNode->removeChild( $DG->xmlroot );
+
+            $DGremove = DH::findFirstElementByNameAttrOrDie('entry', $DGname, $dgNode);
+            $dgNode->removeChild( $DGremove );
 
             //remove DG from DG Meta
             if( $this->version >= 80 )
@@ -1698,7 +1700,7 @@ class PanoramaConf
             $DGmetaData = DH::findFirstElementByNameAttrOrDie('entry', $DGname, $dgMetaDataNode);
             $dgMetaDataNode->removeChild( $DGmetaData );
 
-            //Todo: cleanup memory
+            unset($this->deviceGroups[ $DGname ]);
         }
 
 
@@ -1790,7 +1792,7 @@ class PanoramaConf
     {
         $Templatename = $template->name();
 
-        $template->display_references();
+        #$template->display_references();
 
         /*
          * //warning if template is used in TemplateStack
@@ -1809,9 +1811,50 @@ class PanoramaConf
             //remove Template from XML
             $xPath = "/config/devices/entry[@name='localhost.localdomain']/template";
             $dgNode = DH::findXPathSingleEntryOrDie($xPath, $this->xmlroot);
-            $dgNode->removeChild( $template->xmlroot );
 
+            $remove = DH::findFirstElementByNameAttrOrDie('entry', $Templatename, $dgNode);
+            $dgNode->removeChild( $remove );
+
+
+        unset($this->templates[$Templatename]);
             //Todo: cleanup memory
+        //}
+    }
+
+
+    /**
+     * Remove a template.
+     * @param TemplateStack $templateStack
+     **/
+    public function removeTemplateStack( $templateStack )
+    {
+        $TemplateStackname = $templateStack->name();
+
+        #$templateStack->display_references();
+
+        /*
+         * //warning if template is used in TemplateStack
+         * //implementation missing also in actions-device line 294
+         * DeviceCallContext::$supportedActions['Template-delete'] = array(
+         *
+        $childDGs = $DG->_childDeviceGroups;
+        if( count( $childDGs ) !== 0 )
+        {
+            mwarning("DeviceGroup '$DGname' has ChildDGs. Delete of DG not possible.");
+            return;
+        }
+        else
+        {
+        */
+        //remove TemplateSTack from XML
+        $xPath = "/config/devices/entry[@name='localhost.localdomain']/template-stack";
+        $dgNode = DH::findXPathSingleEntryOrDie($xPath, $this->xmlroot);
+
+        $remove = DH::findFirstElementByNameAttrOrDie('entry', $TemplateStackname, $dgNode);
+        $dgNode->removeChild( $remove );
+
+        unset($this->templatestacks[$TemplateStackname]);
+        
         //}
     }
 

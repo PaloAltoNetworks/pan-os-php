@@ -83,6 +83,16 @@ class Template
         return $this->name;
     }
 
+    //Todo: setName();
+    //Problem is that this Template part is never used and can not written in XML yet, how to continue????
+    //or can it????
+    public function setName($newName)
+    {
+        $this->xmlroot->setAttribute('name', $newName);
+
+        $this->name = $newName;
+    }
+
     public function &getXPath()
     {
         $str = "/config/devices/entry[@name='localhost.localdomain']/template/entry[@name='" . $this->name . "']";
@@ -95,15 +105,7 @@ class Template
         return TRUE;
     }
 
-    //Todo: setName();
-    //Problem is that this Template part is never used and can not written in XML yet, how to continue????
-    //or can it????
-    public function setName($newName)
-    {
-        $this->xmlroot->setAttribute('name', $newName);
 
-        $this->name = $newName;
-    }
 
     public function load_from_templateXml()
     {
