@@ -2,8 +2,12 @@ CHANGELOG
 
 2.0.55
 UTIL:
+* type=addressgroup-/servicegroup-/service-merger | introduce dupalgorithm=identical
+* type=servicegroup-merger | introduce childDG validation
 
 BUGFIX:
+* type=diff "filter=XPATH" | bugfix as filter was not used
+* type=UTIL-merger | fix for Buckbeak validation
 
 GENERAL:
 * extend different Fawkes and Buckbeak related classes
