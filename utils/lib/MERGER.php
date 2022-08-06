@@ -894,6 +894,14 @@ class MERGER extends UTIL
                         /** @var AddressGroup $ancestor */
                         if( $this->upperLevelSearch && $ancestor->isGroup() && !$ancestor->isDynamic() && $this->dupAlg != 'whereused' )
                         {
+                            if( $this->dupAlg == 'identical' )
+                                if( $object->name() != $ancestor->name() )
+                                {
+                                    PH::print_stdout("    - SKIP: object name '{$ancestor->_PANC_shortName()}' is not IDENTICAL to object name from upperlevel '{$object->_PANC_shortName()}'");
+                                    $this->skippedObject( $index, $object, $ancestor);
+                                    continue;
+                                }
+
                             if( $hashGenerator($object) != $hashGenerator($ancestor) )
                             {
                                 $ancestor->displayValueDiff($object, 7);
@@ -938,13 +946,6 @@ class MERGER extends UTIL
 
                             if( $hashGenerator($object) == $hashGenerator($ancestor) )
                             {
-                                if( $this->dupAlg == 'identical' )
-                                    if( $pickedObject->name() != $ancestor->name() )
-                                    {
-                                        PH::print_stdout("    - SKIP: object name '{$ancestor->_PANC_shortName()}' is not IDENTICAL to object name from upperlevel '{$pickedObject->_PANC_shortName()}'");
-                                        $this->skippedObject( $index, $pickedObject, $ancestor);
-                                        continue;
-                                    }
                                 $tmp_ancestor_DGname = $ancestor->owner->owner->name();
                                 if( $tmp_ancestor_DGname === "" )
                                     $tmp_ancestor_DGname = "shared";
@@ -984,7 +985,11 @@ class MERGER extends UTIL
                     }
 
                     if( $object === $pickedObject )
+                    {
+                        PH::print_stdout("    - SKIPPED: '{$object->name()}' === '{$pickedObject->name()}': ");
                         continue;
+                    }
+
 
                     if( $this->dupAlg == 'whereused' )
                     {
@@ -1469,7 +1474,10 @@ class MERGER extends UTIL
                     }
 
                     if( $object === $pickedObject )
+                    {
+                        PH::print_stdout("    - SKIPPED: '{$object->name()}' === '{$pickedObject->name()}': ");
                         continue;
+                    }
 
                     if( $this->dupAlg != 'identical' )
                     {
@@ -1949,6 +1957,14 @@ class MERGER extends UTIL
                         /** @var ServiceGroup $ancestor */
                         if( $this->upperLevelSearch && $ancestor->isGroup() )
                         {
+                            if( $this->dupAlg == 'identical' )
+                                if( $object->name() != $ancestor->name() )
+                                {
+                                    PH::print_stdout("    - SKIP: object name '{$ancestor->_PANC_shortName()}' is not IDENTICAL to object name from upperlevel '{$object->_PANC_shortName()}'");
+                                    $this->skippedObject( $index, $object, $ancestor);
+                                    continue;
+                                }
+
                             if( $hashGenerator($object) != $hashGenerator($ancestor) )
                             {
                                 $ancestor->displayValueDiff($object, 7);
@@ -1992,13 +2008,6 @@ class MERGER extends UTIL
 
                             if( $hashGenerator($object) == $hashGenerator($ancestor) )
                             {
-                                if( $this->dupAlg == 'identical' )
-                                    if( $pickedObject->name() != $ancestor->name() )
-                                    {
-                                        PH::print_stdout("    - SKIP: object name '{$ancestor->_PANC_shortName()}' is not IDENTICAL to object name from upperlevel '{$pickedObject->_PANC_shortName()}'");
-                                        $this->skippedObject( $index, $pickedObject, $ancestor);
-                                        continue;
-                                    }
                                 $tmp_ancestor_DGname = $ancestor->owner->owner->name();
                                 if( $tmp_ancestor_DGname === "" )
                                     $tmp_ancestor_DGname = "shared";
@@ -2037,7 +2046,10 @@ class MERGER extends UTIL
                     }
 
                     if( $object === $pickedObject )
+                    {
+                        PH::print_stdout("    - SKIPPED: '{$object->name()}' === '{$pickedObject->name()}': ");
                         continue;
+                    }
 
                     if( $this->dupAlg == 'whereused' )
                     {
@@ -2489,7 +2501,10 @@ class MERGER extends UTIL
                         }
 
                         if( $object === $pickedObject )
+                        {
+                            PH::print_stdout("    - SKIPPED: '{$object->name()}' === '{$pickedObject->name()}': ");
                             continue;
+                        }
 
                         if( $this->dupAlg == 'identical' )
                             if( $object->name() != $pickedObject->name() )
@@ -2567,7 +2582,10 @@ class MERGER extends UTIL
                         }
 
                         if( $object === $pickedObject )
+                        {
+                            PH::print_stdout("    - SKIPPED: '{$object->name()}' === '{$pickedObject->name()}': ");
                             continue;
+                        }
 
                         $localMapping = $object->dstPortMapping();
                         PH::print_stdout( "    - adding the following ports to first service: " . $localMapping->mappingToText() . "" );
@@ -2972,7 +2990,10 @@ class MERGER extends UTIL
                     }
 
                     if( $object === $pickedObject )
+                    {
+                        PH::print_stdout("    - SKIPPED: '{$object->name()}' === '{$pickedObject->name()}': ");
                         continue;
+                    }
 
                     if( $this->dupAlg != 'identical' )
                     {
