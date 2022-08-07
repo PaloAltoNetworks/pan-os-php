@@ -793,6 +793,8 @@ class MERGER extends UTIL
                             $store->add($pickedObject);
                         }
                         $tmp_address = $store->find( $pickedObject->name() );
+                        $value = $hashGenerator($tmp_address);
+                        $hashMap[$value][] = $tmp_address;
                     }
 
                     $countChildCreated++;
@@ -1819,9 +1821,8 @@ class MERGER extends UTIL
                 if( $tmp_DG_name == "" )
                     $tmp_DG_name = 'shared';
 
-                //it is normally an service
-                $tmp_address = $store->find( $pickedObject->name() );
-                if( $tmp_address == null && $this->dupAlg != "identical" )
+                $tmp_service = $store->find( $pickedObject->name() );
+                if( $tmp_service == null && $this->dupAlg != "identical" )
                 {
                     PH::print_stdout( "   * move object to DG: '".$tmp_DG_name."' : '".$pickedObject->name()."'" );
 
@@ -1852,33 +1853,35 @@ class MERGER extends UTIL
                             $pickedObject->owner->remove($pickedObject);
                             $store->add($pickedObject);
                         }
-                        $tmp_address = $store->find( $pickedObject->name() );
+                        $tmp_service = $store->find( $pickedObject->name() );
+                        $value = $hashGenerator($tmp_service);
+                        $hashMap[$value][] = $tmp_service;
                     }
 
                     $countChildCreated++;
                 }
-                elseif( $tmp_address === null )
+                elseif( $tmp_service === null )
                     continue;
                 else
                 {
-                    if( !$tmp_address->isGroup() )
+                    if( !$tmp_service->isGroup() )
                     {
-                        PH::print_stdout( "    - SKIP: object name '{$pickedObject->_PANC_shortName()}' of type AddressGroup can not be merged with object name: '{$tmp_address->_PANC_shortName()}' of type Address" );
-                        $this->skippedObject( $index, $pickedObject, $tmp_address);
+                        PH::print_stdout( "    - SKIP: object name '{$pickedObject->_PANC_shortName()}' of type AddressGroup can not be merged with object name: '{$tmp_service->_PANC_shortName()}' of type Address" );
+                        $this->skippedObject( $index, $pickedObject, $tmp_service);
                         continue;
                     }
 
                     $pickedObject_value = $hashGenerator($pickedObject);
-                    $tmp_address_value = $hashGenerator($tmp_address);
+                    $tmp_service_value = $hashGenerator($tmp_service);
 
-                    if( $pickedObject_value == $tmp_address_value )
+                    if( $pickedObject_value == $tmp_service_value )
                     {
-                        PH::print_stdout( "   * keeping object '{$tmp_address->_PANC_shortName()}'" );
+                        PH::print_stdout( "   * keeping object '{$tmp_service->_PANC_shortName()}'" );
                     }
                     else
                     {
-                        PH::print_stdout( "    - SKIP: object name '{$pickedObject->_PANC_shortName()}' [with value '{$pickedObject_value}'] is not IDENTICAL to object name: '{$tmp_address->_PANC_shortName()}' [with value '{$tmp_address_value}']" );
-                        $this->skippedObject( $index, $pickedObject, $tmp_address);
+                        PH::print_stdout( "    - SKIP: object name '{$pickedObject->_PANC_shortName()}' [with value '{$pickedObject_value}'] is not IDENTICAL to object name: '{$tmp_service->_PANC_shortName()}' [with value '{$tmp_service_value}']" );
+                        $this->skippedObject( $index, $pickedObject, $tmp_service);
                         continue;
                     }
                 }
@@ -1887,25 +1890,25 @@ class MERGER extends UTIL
                 // Merging loop finally!
                 foreach( $hash as $objectIndex => $object )
                 {
-                    if( $tmp_address === null )
+                    if( $tmp_service === null )
                         continue;
 
                     if( $this->dupAlg == 'identical' )
-                        if( $object->name() != $tmp_address->name() )
+                        if( $object->name() != $tmp_service->name() )
                         {
-                            PH::print_stdout("    - SKIP: object name '{$object->_PANC_shortName()}' is not IDENTICAL to object name from upperlevel '{$tmp_address->_PANC_shortName()}'");
-                            $this->skippedObject( $index, $tmp_address, $object);
+                            PH::print_stdout("    - SKIP: object name '{$object->_PANC_shortName()}' is not IDENTICAL to object name from upperlevel '{$tmp_service->_PANC_shortName()}'");
+                            $this->skippedObject( $index, $tmp_service, $object);
                             continue;
                         }
 
-                    if( $object !== $tmp_address )
+                    if( $object !== $tmp_service )
                     {
-                        PH::print_stdout("    - group '{$object->name()}' DG: '" . $object->owner->owner->name() . "' merged with its ancestor at DG: '" . $tmp_address->owner->owner->name() . "', deleting: " . $object->_PANC_shortName());
+                        PH::print_stdout("    - group '{$object->name()}' DG: '" . $object->owner->owner->name() . "' merged with its ancestor at DG: '" . $tmp_service->owner->owner->name() . "', deleting: " . $object->_PANC_shortName());
 
                         PH::print_stdout("    - replacing '{$object->_PANC_shortName()}' ...");
                         if( $this->action === "merge" )
                         {
-                            $success = $object->__replaceWhereIamUsed($this->apiMode, $tmp_address, TRUE, 5);
+                            $success = $object->__replaceWhereIamUsed($this->apiMode, $tmp_service, TRUE, 5);
 
                             if( $success )
                             {

@@ -4,6 +4,7 @@ CHANGELOG
 UTIL:
 * type=addressgroup-/servicegroup-/service-merger | introduce dupalgorithm=identical
 * type=servicegroup-merger | introduce childDG validation
+* type=addressgroup-/servicegroup-/merger - for childDG object move; correct hashmap object array of actual DG
 
 BUGFIX:
 * type=diff "filter=XPATH" | bugfix as filter was not used
@@ -14,6 +15,7 @@ GENERAL:
 * improve bash completion script
 * class TemplateStack | introduce method setName()
 * class PanoramaConf | introduce method removeTemplateStack - improve removeDeviceGroup and removeTemplate
+* class MERGER | method servicegroup_merger - correct variable name
 
 
 2.0.54 (20220803)
