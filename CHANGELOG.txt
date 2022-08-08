@@ -16,6 +16,7 @@ GENERAL:
 * class TemplateStack | introduce method setName()
 * class PanoramaConf | introduce method removeTemplateStack - improve removeDeviceGroup and removeTemplate
 * class MERGER | method servicegroup_merger - correct variable name
+* test script optimisation - MERGER output adjustment
 
 
 2.0.54 (20220803)

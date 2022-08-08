@@ -863,7 +863,7 @@ class MERGER extends UTIL
                 }
             }
             if( count( $child_hashMap ) >0 )
-                PH::print_stdout( "Duplicates ChildDG removal is now done. Number of objects after cleanup: '{$store->countAddressGroups()}' (removed/created {$countChildRemoved}/{$countChildCreated} addressgroups)\n" );
+                PH::print_stdout( "\n\nDuplicates ChildDG removal is now done. Number of objects after cleanup: '{$store->countAddressGroups()}' (removed/created {$countChildRemoved}/{$countChildCreated} addressgroups)\n" );
 
 
             $countRemoved = 0;
@@ -988,7 +988,7 @@ class MERGER extends UTIL
 
                     if( $object === $pickedObject )
                     {
-                        PH::print_stdout("    - SKIPPED: '{$object->name()}' === '{$pickedObject->name()}': ");
+                        #PH::print_stdout("    - SKIPPED: '{$object->name()}' === '{$pickedObject->name()}': ");
                         continue;
                     }
 
@@ -1368,7 +1368,7 @@ class MERGER extends UTIL
 
             }
             if( count( $child_hashMap ) >0 )
-                PH::print_stdout( "Duplicates ChildDG removal is now done. Number of objects after cleanup: '{$store->countAddresses()}' (removed/created {$countChildRemoved}/{$countChildCreated} addresses)\n" );
+                PH::print_stdout( "\n\nDuplicates ChildDG removal is now done. Number of objects after cleanup: '{$store->countAddresses()}' (removed/created {$countChildRemoved}/{$countChildCreated} addresses)\n" );
 
 
             $countRemoved = 0;
@@ -1477,7 +1477,7 @@ class MERGER extends UTIL
 
                     if( $object === $pickedObject )
                     {
-                        PH::print_stdout("    - SKIPPED: '{$object->name()}' === '{$pickedObject->name()}': ");
+                        #PH::print_stdout("    - SKIPPED: '{$object->name()}' === '{$pickedObject->name()}': ");
                         continue;
                     }
 
@@ -1924,7 +1924,7 @@ class MERGER extends UTIL
                 }
             }
             if( count( $child_hashMap ) >0 )
-                PH::print_stdout( "Duplicates ChildDG removal is now done. Number of objects after cleanup: '{$store->countServiceGroups()}' (removed/created {$countChildRemoved}/{$countChildCreated} servicegroups)\n" );
+                PH::print_stdout( "\n\nDuplicates ChildDG removal is now done. Number of objects after cleanup: '{$store->countServiceGroups()}' (removed/created {$countChildRemoved}/{$countChildCreated} servicegroups)\n" );
 
 
 
@@ -2050,7 +2050,7 @@ class MERGER extends UTIL
 
                     if( $object === $pickedObject )
                     {
-                        PH::print_stdout("    - SKIPPED: '{$object->name()}' === '{$pickedObject->name()}': ");
+                        #PH::print_stdout("    - SKIPPED: '{$object->name()}' === '{$pickedObject->name()}': ");
                         continue;
                     }
 
@@ -2411,7 +2411,7 @@ class MERGER extends UTIL
                 }
 
                 if( count( $child_hashMap ) >0 )
-                    PH::print_stdout( "Duplicates ChildDG removal is now done. Number of objects after cleanup: '{$store->countServices()}' (removed/created {$countChildRemoved}/{$countChildCreated} services)\n" );
+                    PH::print_stdout( "\n\nDuplicates ChildDG removal is now done. Number of objects after cleanup: '{$store->countServices()}' (removed/created {$countChildRemoved}/{$countChildCreated} services)\n" );
 
 
                 foreach( $hashMap as $index => &$hash )
@@ -2505,7 +2505,7 @@ class MERGER extends UTIL
 
                         if( $object === $pickedObject )
                         {
-                            PH::print_stdout("    - SKIPPED: '{$object->name()}' === '{$pickedObject->name()}': ");
+                            #PH::print_stdout("    - SKIPPED: '{$object->name()}' === '{$pickedObject->name()}': ");
                             continue;
                         }
 
@@ -2586,7 +2586,7 @@ class MERGER extends UTIL
 
                         if( $object === $pickedObject )
                         {
-                            PH::print_stdout("    - SKIPPED: '{$object->name()}' === '{$pickedObject->name()}': ");
+                            #PH::print_stdout("    - SKIPPED: '{$object->name()}' === '{$pickedObject->name()}': ");
                             continue;
                         }
 
@@ -2899,6 +2899,9 @@ class MERGER extends UTIL
                 }
             }
 
+            if( count( $child_hashMap ) >0 )
+                PH::print_stdout( "\n\nDuplicates ChildDG removal is now done. Number of objects after cleanup: '{$store->count()}' (removed/created {$countChildRemoved}/{$countChildCreated} tags)\n" );
+
             $countRemoved = 0;
             foreach( $hashMap as $index => &$hash )
             {
@@ -2994,7 +2997,7 @@ class MERGER extends UTIL
 
                     if( $object === $pickedObject )
                     {
-                        PH::print_stdout("    - SKIPPED: '{$object->name()}' === '{$pickedObject->name()}': ");
+                        #PH::print_stdout("    - SKIPPED: '{$object->name()}' === '{$pickedObject->name()}': ");
                         continue;
                     }
 
@@ -3031,8 +3034,6 @@ class MERGER extends UTIL
             }
 
             PH::print_stdout( "\n\nDuplicates removal is now done. Number of objects after cleanup: '{$store->count()}' (removed {$countRemoved} tags)\n" );
-            if( count( $child_hashMap ) >0 )
-                PH::print_stdout( "Duplicates ChildDG removal is now done. Number of objects after cleanup: '{$store->count()}' (removed/created {$countChildRemoved}/{$countChildCreated} tags)\n" );
 
         }
     }
