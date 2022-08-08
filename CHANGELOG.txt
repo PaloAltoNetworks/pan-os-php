@@ -1,6 +1,14 @@
 CHANGELOG
 
-2.0.55
+2.0.56
+UTIL:
+
+BUGFIX:
+
+GENERAL:
+
+
+2.0.55 (20220808)
 UTIL:
 * type=addressgroup-/servicegroup-/service-merger | introduce dupalgorithm=identical
 * type=servicegroup-merger | introduce childDG validation
