@@ -27,7 +27,14 @@ $supportedUTILTypes = array(
     ##"xml-op-json",
     ##"bpa-generator"
 );
-
+/*
+address                    config-commit              download-predefined        license                    routing                    service                    spiffy                     traffic-log                xml-op-json
+address-merger             config-download-all        gratuitous-arp             maxmind-update             rule                       service-merger             stats                      upload                     zone
+addressgroup-merger        config-size                html-merger                override-finder            rule-merger                servicegroup-merger        system-log                 userid-mgr
+appid-enabler              device                     interface                  playbook                   schedule                   software-download          tag                        util_get-action-filter
+application                dhcp                       ironskillet-update         protocoll-number-download  securityprofile            software-preparation       tag-merger                 virtualwire
+bpa-generator              diff                       key-manager                register-ip-mgr            securityprofilegroup       software-remove            threat                     xml-issue
+ */
 
 foreach( $supportedUTILTypes as $util )
 {

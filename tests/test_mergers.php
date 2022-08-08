@@ -103,13 +103,16 @@ foreach( $test_merger as $merger )
         $util = '../utils/pan-os-php.php type=addressgroup-merger';
         $dupalgorithm_array[] = 'SameMembers';
         $dupalgorithm_array[] = 'SameIP4Mapping';
+        $dupalgorithm_array[] = 'Identical';
         $dupalgorithm_array[] = 'Whereused';
 
     }
     elseif( $merger == 'service' )
     {
         $util = '../utils/pan-os-php.php type=service-merger';
+        $dupalgorithm_array[] = 'SameDstSrcPorts';
         $dupalgorithm_array[] = 'SamePorts';
+        $dupalgorithm_array[] = 'Identical';
         $dupalgorithm_array[] = 'Whereused';
     }
     elseif( $merger == 'servicegroup' )
@@ -117,6 +120,7 @@ foreach( $test_merger as $merger )
         $util = '../utils/pan-os-php.php type=servicegroup-merger';
         $dupalgorithm_array[] = 'SameMembers';
         $dupalgorithm_array[] = 'SamePortMapping';
+        $dupalgorithm_array[] = 'Identical';
         $dupalgorithm_array[] = 'Whereused';
     }
     elseif( $merger == 'tag' )

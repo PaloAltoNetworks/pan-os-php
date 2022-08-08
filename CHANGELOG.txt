@@ -2,11 +2,21 @@ CHANGELOG
 
 2.0.55
 UTIL:
+* type=addressgroup-/servicegroup-/service-merger | introduce dupalgorithm=identical
+* type=servicegroup-merger | introduce childDG validation
+* type=addressgroup-/servicegroup-/merger - for childDG object move; correct hashmap object array of actual DG
 
 BUGFIX:
+* type=diff "filter=XPATH" | bugfix as filter was not used
+* type=UTIL-merger | fix for Buckbeak validation
 
 GENERAL:
 * extend different Fawkes and Buckbeak related classes
+* improve bash completion script
+* class TemplateStack | introduce method setName()
+* class PanoramaConf | introduce method removeTemplateStack - improve removeDeviceGroup and removeTemplate
+* class MERGER | method servicegroup_merger - correct variable name
+* test script optimisation - MERGER output adjustment
 
 
 2.0.54 (20220803)

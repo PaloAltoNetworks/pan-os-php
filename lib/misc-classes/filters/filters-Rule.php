@@ -1714,7 +1714,7 @@ RQuery::$defaultFilters['rule']['service']['operators']['timeout.is.set'] = arra
     },
     'arg' => FALSE,
     'ci' => array(
-        'fString' => '(%PROP% 443)',
+        'fString' => '(%PROP%)',
         'input' => 'input/panorama-8.0.xml'
     )
 );
