@@ -49,16 +49,14 @@ class DHCP
         if( $this->name === FALSE )
             derr("DHCP name not found\n");
 
-        $interface = $this->owner->owner->network->findInterface( $this->name );
+        #$interface = $this->owner->owner->network->findInterface( $this->name );
+        $interface = $this->owner->owner->network->findInterfaceOrCreateTmp( $this->name );
         if( $interface !==  null )
             $interface->addReference( $this );
         else
-        {
-            //todo: 20220803 swaschkut: check why interface can not be found
-            #mwarning( "interface with name: ".$this->name." can not be found for DHCP: ".$this->name );
             mwarning( "interface with name: ".$this->name." can not be found for DHCP: ".$this->name." | ".$this->owner->owner->_PANC_shortName(), null, FALSE );
-        }
 
+        ///todo: update interface list - to correctly show all interfaces
     }
 
     /**
