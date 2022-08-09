@@ -55,8 +55,8 @@ class DHCP
         else
         {
             //todo: 20220803 swaschkut: check why interface can not be found
-            mwarning( "interface with name: ".$this->name." can not be found for DHCP: ".$this->name );
-            #mwarning( "interface with name: ".$this->name." can not be found for DHCP: ".$this->name, null, FALSE );
+            #mwarning( "interface with name: ".$this->name." can not be found for DHCP: ".$this->name );
+            mwarning( "interface with name: ".$this->name." can not be found for DHCP: ".$this->name." | ".$this->owner->owner->_PANC_shortName(), null, FALSE );
         }
 
     }

@@ -7,6 +7,7 @@ BUGFIX:
 * type=device | bugfix for actions=exportLicenseToExcel:file.html
 
 GENERAL:
+* class UTIL - argument template=XYZ - improve output message if template not found
 
 
 2.0.55 (20220808)
