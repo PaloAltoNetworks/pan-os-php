@@ -4,6 +4,7 @@ CHANGELOG
 UTIL:
 
 BUGFIX:
+* type=device | bugfix for actions=exportLicenseToExcel:file.html
 
 GENERAL:
 
