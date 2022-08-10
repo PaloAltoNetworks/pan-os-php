@@ -8,6 +8,7 @@ BUGFIX:
 
 GENERAL:
 * class UTIL - argument template=XYZ - improve output message if template not found
+* UI - improvement for ONLINE mode
 
 
 2.0.55 (20220808)

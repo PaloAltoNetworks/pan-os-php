@@ -88,6 +88,9 @@
             <table class="table table-bordered" style="width:100%">
                 <tr>
                     <td style="width:50%" >
+                        <b>offline MODE:</b>
+                        <input type="checkbox" id="offlinemode" name="offlinemode" checked>
+                        <br/>
                         INPUT-config:<br/>
                         <input type="file" id="configInput" name="configInput" >
                         <button onclick="uploadButton( )" id="uploadBtn" type="button">Upload</button>
@@ -108,6 +111,15 @@
                             }
                             ?>
                         </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width:50%" >
+                        <b>online MODE:</b>
+                        <input type="checkbox" id="onlinemode" name="onlinemode" >
+                    </td>
+                    <td style="width:50%" >
+                        api://<input type="text" id="configapi" name="configapi" value="192.168.10.1" />
                     </td>
                 </tr>
             </table>

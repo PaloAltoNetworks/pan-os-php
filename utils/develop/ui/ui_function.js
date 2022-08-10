@@ -402,16 +402,31 @@ function updateScriptsyntax( Idx ) {
     if( allowmergingcheckedValue )
         message += " 'allowmergingwithupperlevel'";
 
-    var e = document.getElementById("configSelect");
-    var dropdownselection = e.options[e.selectedIndex].text;
-    console.log( "DropDown: "+dropdownselection );
-
-    if( dropdownselection !== "---" )
+    var offlinemode = $( "#offlinemode" ).is(':checked');
+    if( offlinemode )
     {
-        message += " 'in=";
-        message += dropdownselection;
+        var e = document.getElementById("configSelect");
+        var dropdownselection = e.options[e.selectedIndex].text;
+        console.log( "DropDown: "+dropdownselection );
+
+        if( dropdownselection !== "---" )
+        {
+            message += " 'in=";
+            message += dropdownselection;
+            message += "'";
+        }
+    }
+
+    var onlinemode = $( "#onlinemode" ).is(':checked');
+    if( onlinemode )
+    {
+        var configapi = $( "#configapi" ).val();
+
+        message += " 'in=api://";
+        message += configapi;
         message += "'";
     }
+
 
     message += " 'shadow-ignoreinvalidaddressobjects'";
 
@@ -437,10 +452,20 @@ function updateScriptsyntax( Idx ) {
     if( allowmergingcheckedValue )
         message2 += "&allowmergingwithupperlevel";
 
-    if( dropdownselection !== "---" )
+
+    if( offlinemode )
     {
-        message2 += "&in=";
-        message2 += dropdownselection;
+        if( dropdownselection !== "---" )
+        {
+            message2 += "&in=";
+            message2 += dropdownselection;
+        }
+    }
+
+    if( onlinemode )
+    {
+        message2 += "&in=api://";
+        message2 += configapi;
     }
 
     message2 += "&shadow-ignoreinvalidaddressobjects";
