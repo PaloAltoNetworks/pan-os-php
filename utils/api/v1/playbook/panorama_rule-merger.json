@@ -1,0 +1,85 @@
+{
+  "command": [
+    {
+      "type": "rule-merger",
+      "method": "method=matchFromToSrcDstApp",
+      "location": "location=any",
+      "exportcsv": "exportcsv=00-Srv.html",
+      "panoramaprerules": "panoramaprerules",
+      "shadow-ignoreinvalidaddressobjects": "shadow-ignoreinvalidaddressobjects",
+      "additionalMatch": "additionalMatch=secprof,user,urlcategory,target"
+    },
+    {
+      "type": "rule-merger",
+      "method": "method=matchFromToSrcDstSvc",
+      "location": "location=any",
+      "exportcsv": "exportcsv=01-App.html",
+      "panoramaprerules": "panoramaprerules",
+      "shadow-ignoreinvalidaddressobjects": "shadow-ignoreinvalidaddressobjects",
+      "additionalMatch": "additionalMatch=secprof,user,urlcategory,target"
+    },
+    {
+      "type": "rule-merger",
+      "method": "method=matchFromToSrcSvcApp",
+      "location": "location=any",
+      "exportcsv": "exportcsv=02-Dst.html",
+      "panoramaprerules": "panoramaprerules",
+      "shadow-ignoreinvalidaddressobjects": "shadow-ignoreinvalidaddressobjects",
+      "additionalMatch": "additionalMatch=secprof,user,urlcategory,target"
+    },
+    {
+      "type": "rule-merger",
+      "method": "method=matchFromToDstSvcApp",
+      "location": "location=any",
+      "exportcsv": "exportcsv=03-Srv.html",
+      "panoramaprerules": "panoramaprerules",
+      "shadow-ignoreinvalidaddressobjects": "shadow-ignoreinvalidaddressobjects",
+      "additionalMatch": "additionalMatch=secprof,user,urlcategory,target"
+    },
+    {
+      "type": "rule-merger",
+      "method": "method=matchFromSrcDstSvcApp",
+      "location": "location=any",
+      "exportcsv": "exportcsv=04-To.html",
+      "panoramaprerules": "panoramaprerules",
+      "shadow-ignoreinvalidaddressobjects": "shadow-ignoreinvalidaddressobjects",
+      "additionalMatch": "additionalMatch=secprof,user,urlcategory,target"
+    },
+    {
+      "type": "rule-merger",
+      "method": "method=matchToSrcDstSvcApp",
+      "location": "location=any",
+      "exportcsv": "exportcsv=05-From.html",
+      "panoramaprerules": "panoramaprerules",
+      "shadow-ignoreinvalidaddressobjects": "shadow-ignoreinvalidaddressobjects",
+      "additionalMatch": "additionalMatch=secprof,user,urlcategory,target"
+    },
+    {
+      "type": "rule-merger",
+      "method": "method=matchToDstSvcApp",
+      "location": "location=any",
+      "exportcsv": "exportcsv=06-FromSrc.html",
+      "panoramaprerules": "panoramaprerules",
+      "shadow-ignoreinvalidaddressobjects": "shadow-ignoreinvalidaddressobjects",
+      "additionalMatch": "additionalMatch=secprof,user,urlcategory,target"
+    },
+    {
+      "type": "rule-merger",
+      "method": "method=matchFromSrcSvcApp",
+      "location": "location=any",
+      "exportcsv": "exportcsv=07-ToDst.html",
+      "panoramaprerules": "panoramaprerules",
+      "shadow-ignoreinvalidaddressobjects": "shadow-ignoreinvalidaddressobjects",
+      "additionalMatch": "additionalMatch=secprof,user,urlcategory,target"
+    },
+    {
+      "type": "rule-merger",
+      "method": "method=identical",
+      "location": "location=any",
+      "exportcsv": "exportcsv=08-identical.html",
+      "panoramaprerules": "panoramaprerules",
+      "shadow-ignoreinvalidaddressobjects": "shadow-ignoreinvalidaddressobjects",
+      "additionalMatch": "additionalMatch=secprof,user,urlcategory,target"
+    }
+  ]
+}

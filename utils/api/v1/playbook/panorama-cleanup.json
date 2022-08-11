@@ -1,12 +1,6 @@
 {
   "command": [
     {
-      "type": "tag",
-      "actions": "actions=delete",
-      "filter": "filter=(object is.unused )",
-      "shadow-ignoreinvalidaddressobjects": "shadow-ignoreinvalidaddressobjects"
-    },
-    {
       "type": "address",
       "actions": "actions=delete",
       "filter": "filter=(object is.unused.recursive )",
@@ -16,6 +10,12 @@
       "type": "service",
       "actions": "actions=delete",
       "filter": "filter=(object is.unused.recursive )",
+      "shadow-ignoreinvalidaddressobjects": "shadow-ignoreinvalidaddressobjects"
+    },
+    {
+      "type": "tag",
+      "actions": "actions=delete",
+      "filter": "filter=(object is.unused )",
       "shadow-ignoreinvalidaddressobjects": "shadow-ignoreinvalidaddressobjects"
     },
     {
