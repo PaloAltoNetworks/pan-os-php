@@ -77,8 +77,16 @@ $test_merger = array('rule');
 
 foreach( $test_merger as $merger )
 {
-    #$ci['input'] = 'input/panorama-8.0-merger.xml';
-    $ci['input'] = 'input/panorama-10.0-merger.xml';
+    if( isset(PH::$args['in']) )
+    {
+        $ci['input'] = PH::$args['in'];
+    }
+    else
+    {
+        #$ci['input'] = 'input/panorama-8.0-merger.xml';
+        $ci['input'] = 'input/panorama-10.0-merger.xml';
+    }
+
 
     PH::print_stdout( "\n\n\n *** Processing merger: {$merger} " );
 
@@ -105,16 +113,16 @@ foreach( $test_merger as $merger )
     $prePost_array = array("panoramaPreRules", "panoramaPostRules");
     $upperlevel_array = array( "", "allowmerginwithupperlevel" );
     $upperlevel_array = array( "" );
-    foreach( $prePost_array as $prePost )
+    foreach( $prePost_array as $prepostkey => $prePost )
     {
-        foreach( $upperlevel_array as $allowmergingwithupperlevel )
+        foreach( $upperlevel_array as $upperlevelkey => $allowmergingwithupperlevel )
         {
-            foreach( $method_array as $method )
+            foreach( $method_array as $methodkey => $method )
             {
                 $location = 'any';
                 $output = '/dev/null';
 
-                $cli = "php $util in={$ci['input']} out={$output} location={$location}";
+                $cli = "php $util in={$ci['input']} out={$output} location={$location} exportcsv={$prepostkey}-{$upperlevelkey}-{$methodkey}.html";
 
                 $cli .= " {$allowmergingwithupperlevel}";
 

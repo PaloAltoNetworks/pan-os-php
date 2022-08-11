@@ -9,6 +9,8 @@ BUGFIX:
 GENERAL:
 * class UTIL - argument template=XYZ - improve output message if template not found
 * UI - improvement for ONLINE mode
+* playbook json files | introduce rule-merger.json - small optimistation for panorama clean-up
+* improve test_rule_merger - to read input file
 
 
 2.0.55 (20220808)
