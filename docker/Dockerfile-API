@@ -12,7 +12,8 @@ RUN apt-get install -y tzdata git
 # libraries for PHP
 RUN apt-get install -y libcurl3-openssl-dev libxml2-dev libonig-dev
 # PHP Extensions
-RUN docker-php-ext-install -j$(nproc) curl dom mbstring bcmath
+RUN docker-php-ext-install -j$(nproc) curl dom mbstring bcmath mysqli
+RUN docker-php-ext-enable curl dom mbstring bcmath mysqli
 
 
 COPY appid-toolbox /var/www/html/appid-toolbox

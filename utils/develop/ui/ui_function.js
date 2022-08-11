@@ -267,12 +267,12 @@ function addNewRow()
     });
 
     $('#add-action' + Idx + '-' + ActionIdx).on('click', function() {
-        console.log("TEST1");
+        //console.log("TEST1");
         addActionBtn( Idx );
     });
 
     $('#add-filter' + Idx + '-' + FilterIdx).on('click', function() {
-        console.log("TEST2");
+        //console.log("TEST2");
         addFilterBtn( Idx );
     });
 }
@@ -496,7 +496,7 @@ function createAddScript()
 function createApiKey()
 {
     var message = document.getElementById("user_form").action;
-    console.log( 'action:'+message);
+    //console.log( 'action:'+message);
     document.getElementById("user_form").submit();
 }
 
@@ -531,7 +531,7 @@ function createAPIkeysyntax( ) {
 
     //document.getElementById("user_form").action = messageapikey;
     document.user_form.action = messageapikey;
-    console.log( 'action set');
+    //console.log( 'action set');
 }
 function updateActionFiltersyntax( selectedScript, Idx, ActionIdx, FilterIdx) {
     var selectedAction;

@@ -58,12 +58,23 @@
 
 <div style="border:0px solid #000000; padding: 10px; width:100%">
 
+    <div class="menu" style="border:1px solid black; padding: 10px;">
+        <table class="table table-bordered" style="width:100%">
+            <tr>
+            <tr>
+                <td><a href="index.php">MAIN page</a></td>
+                <td><a href="single.php">single command</a></td>
+                <td><a href="playbook.php">JSON PLAYBOOK</a></td>
+                <td><a href="preparation.php">upload file / store APIkey</a></td>
+            </tr>
+        </table>
+    </div>
+
     <form id="user_form" target="_blank" name="user_form" method="post" enctype="multipart/form-data">
 
         <div class="input-output" style="border:1px solid black; padding: 10px;">
             <table class="table table-bordered" style="width:100%">
                 <tr>
-                    <a href="index.php">back to Main page:</a>
                     <td style="width:50%" >
                         <b>offline MODE:</b>
                         <br/><br/>

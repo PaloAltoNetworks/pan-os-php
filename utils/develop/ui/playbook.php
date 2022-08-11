@@ -1,21 +1,28 @@
-<!--
+<?php
+session_start();
+include "test/db_conn.php";
+if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
+
+?>
+
+    <!--
 /**
- * ISC License
- *
- * Copyright (c) 2019, Palo Alto Networks Inc.
- *
- * Permission to use, copy, modify, and/or distribute this software for any
- * purpose with or without fee is hereby granted, provided that the above
- * copyright notice and this permission notice appear in all copies.
- *
- * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
- * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
- * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
- * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
- * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
- * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- */
+* ISC License
+*
+* Copyright (c) 2019, Palo Alto Networks Inc.
+*
+* Permission to use, copy, modify, and/or distribute this software for any
+* purpose with or without fee is hereby granted, provided that the above
+* copyright notice and this permission notice appear in all copies.
+*
+* THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+* WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+* MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+* ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+* WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+* ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+* OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+*/
 -->
 
 <!DOCTYPE html>
@@ -66,6 +73,7 @@
                 <td><a href="single.php">single command</a></td>
                 <td><a href="playbook.php">JSON PLAYBOOK</a></td>
                 <td><a href="preparation.php">upload file / store APIkey</a></td>
+                <td>logged in as: <?=$_SESSION['name']?>  |  <a href="test/logout.php">LOGOUT</a></td>
             </tr>
         </table>
     </div>
@@ -145,6 +153,7 @@
             </table>
         </div>
 
+
         <div class="table-responsive" style="border:1px solid black; padding: 10px; width:100%">
             <table id="myTable" class="table table-bordered" style="width:100%">
                 <thead>
@@ -189,3 +198,7 @@ securityprofiletype=</br>
 </body>
 
 </html>
+
+<?php }else{
+	header("Location: test/index.php");
+} ?>

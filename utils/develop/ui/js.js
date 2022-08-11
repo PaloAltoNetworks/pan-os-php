@@ -5,6 +5,8 @@ var pathToReplace = "/utils/develop/ui/";
 var path = fullpathname.replace(pathToReplace, "");
 path = path.replace("index.php", "");
 path = path.replace("preparation.php", "");
+path = path.replace("playbook.php", "");
+path = path.replace("single.php", "");
 
 server_url = server_url + path;
 
@@ -20,7 +22,7 @@ $(document).ready(function () {
     createAddScript();
 
     $( "#json-store" ).submit(function( event ) {
-        console.log( "done");
+        //console.log( "done");
         console.log( $( "#json-store" ).serialize() );
     });
 
