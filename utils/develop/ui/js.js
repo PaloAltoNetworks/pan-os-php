@@ -3,6 +3,9 @@ var fullpathname = window.location.pathname;
 var pathToReplace = "/utils/develop/ui/";
 
 var path = fullpathname.replace(pathToReplace, "");
+path = path.replace("index.php", "");
+path = path.replace("mode_uploadfile_createapikey.php", "");
+
 server_url = server_url + path;
 
 var subjectObject2 = subjectObject;
@@ -13,6 +16,8 @@ var columnFilterIdx = 0;
 var columnIdx = 2;
 
 $(document).ready(function () {
+
+    createAddScript();
 
     $( "#json-store" ).submit(function( event ) {
         console.log( "done");

@@ -477,6 +477,62 @@ function updateScriptsyntax( Idx ) {
     document.user_form.action = message2;
 }
 
+function createAddScript()
+{
+    $( "#configapi" ).change(function(){
+        createAPIkeysyntax( );
+    });
+    $( "#user" ).change(function(){
+        createAPIkeysyntax( );
+    });
+    $( "#pw" ).change(function(){
+        createAPIkeysyntax( );
+    });
+    $( "#apikey" ).change(function(){
+        createAPIkeysyntax( );
+    });
+}
+
+function createApiKey()
+{
+    var message = document.getElementById("user_form").action;
+    console.log( 'action:'+message);
+    document.getElementById("user_form").submit();
+}
+
+function createAPIkeysyntax( ) {
+
+    var messageapikey = server_url + "/utils/api/v1/tool.php/key-manager?";
+
+    var hostValue = $( "#configapi" ).val();
+    var userValue = $( "#user" ).val();
+    var pwValue = $( "#pw" ).val();
+    var apikeyValue = $( "#apikey" ).val();
+
+    messageapikey += "&add=";
+    messageapikey += hostValue;
+
+    if( apikeyValue !== "" )
+    {
+        messageapikey += "&apikey=";
+        messageapikey += apikeyValue;
+    }
+    else
+    {
+        messageapikey += "&user=";
+        messageapikey += userValue;
+
+        messageapikey += "&pw=";
+        messageapikey += pwValue;
+    }
+
+    //console.log( messageapikey ); //this is full API command
+    $("#commandapikey").val( messageapikey );
+
+    //document.getElementById("user_form").action = messageapikey;
+    document.user_form.action = messageapikey;
+    console.log( 'action set');
+}
 function updateActionFiltersyntax( selectedScript, Idx, ActionIdx, FilterIdx) {
     var selectedAction;
     var selectedFilter;
@@ -661,7 +717,6 @@ function uploadButton( )
     document.getElementById("user_form").action = message;
     document.getElementById("user_form").submit();
 }
-
 
 
 function deleteColumn( column, Idx )

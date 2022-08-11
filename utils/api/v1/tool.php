@@ -41,7 +41,11 @@ $projects_folder = "/project/";
 $file_tmp_name = "";
 $upload_dir = "";
 $PHP_FILE = __FILE__;
-if( !isset( $_GET['in'] ) && isset($_FILES['configInput']) )
+if( isset( $_POST['configapi'] ) )
+{
+
+}
+elseif( !isset( $_GET['in'] ) && isset($_FILES['configInput'])  )
 {
     #header('Content-Type: application/json; charset=utf-8');
     #header("Access-Control-Allow-Origin: *");
@@ -119,7 +123,11 @@ if( empty( $url_pieces) || ( isset($url_pieces[1]) && !in_array( $url_pieces[1],
 $argv = array();
 $argv[0] = "Standard input code";
 
-if( !isset($_GET['in']) && isset( $_FILES['configInput'] ) ){
+if( isset( $_POST['configapi'] ) )
+{
+
+}
+elseif( !isset($_GET['in']) && isset( $_FILES['configInput'] ) ){
     $argv[] = "in=".$file_tmp_name;
     #$argv[] = "out=".$upload_dir.$random."-new.xml";
     $argv[] = "out=true";

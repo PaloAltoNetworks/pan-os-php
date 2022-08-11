@@ -58,42 +58,22 @@
 
 <div style="border:0px solid #000000; padding: 10px; width:100%">
 
-    <div class="load-json" style="border:1px solid #000000; padding: 10px; width:100%">
-        <table class="table table-bordered" style="width:100%">
-            <tr>
-                <td style="width:50%" >
-                    load Playbook from JSON-file:
-
-                    <input type="button" value="Clear TextArea" onclick="eraseText();">
-                    <form method="post">
-                        <textarea disabled id="js-textarea" style="width:100%" ></textarea>
-                        <input type="file" id="js-file" accept=".txt,.json" onclick="this.value=null">
-                    </form>
-                </td>
-                <td>
-                    store Playbook to JSON-file:
-                    <input type="text" id="json-output" value="playbook.json" />
-                    <button class="btn btn-md btn-primary" id="storeBtn" type="button">download PLAYBOOK JSON file</button>
-                    <div>
-                        <textarea type="text" disabled id="json-display-out" name="json-display-out" style="width:100%" ></textarea>
-                    </div>
-                </td>
-            </tr>
-        </table>
-    </div>
-
     <form id="user_form" target="_blank" name="user_form" method="post" enctype="multipart/form-data">
 
         <div class="input-output" style="border:1px solid black; padding: 10px;">
             <table class="table table-bordered" style="width:100%">
                 <tr>
-                    <a href="preparation.php">go to preparation site:</a>
+                    <a href="index.php">back to Main page:</a>
                     <td style="width:50%" >
                         <b>offline MODE:</b>
-                        <input type="radio" id="offlinemode" name="mode" value="offlinemode" checked>
+                        <br/><br/>
+                        INPUT-config:<br/>
+                        <input type="file" id="configInput" name="configInput" />
+                        <br/>
+                        <button onclick="uploadButton( )" id="uploadBtn" type="button">Upload File</button>
                     </td>
                     <td style="width:50%" >
-                        select Project file:
+                        check available Project file(s):
                         <select id="configSelect" name="configSelect" class="form-control input-sm">
                             <option value="---" selected>---</option>
                             <?php
@@ -108,15 +88,31 @@
                             }
                             ?>
                         </select>
+                        //FR: remove file
                     </td>
                 </tr>
                 <tr>
                     <td style="width:50%" >
                         <b>online MODE:</b>
-                        <input type="radio" id="onlinemode" name="mode" value="onlinemode">
+                        <br/><br/>
+                        api://<input type="text" id="configapi" name="configapi" value="192.168.10.1" />
+                        <br/>
+
+                        username: <input type="text" id="user" name="user" value="" />
+                        password: <input type="text" id="pw" name="pw" value="" />
+
+                        <br/>
+                        or<br/>
+                        PAN-OS APIkey: <input type="text" id="apikey" name="apikey" value="" />
+                        <br/>
+                        <input type="text" disabled style="width:100%"
+                               id="commandapikey" name="commandapikey"
+                        >
+                        <br/><br/>
+                        <button onclick="createApiKey()" id="createAPIkey" type="button">store APIkey</button>
                     </td>
                     <td style="width:50%" >
-                        select Host for 'api://'
+                        check available Host IP(s):
                         <select id="configapi" name="configapi" class="form-control input-sm">
                             <option value="---" selected>---</option>
                             <?php
@@ -128,52 +124,13 @@
                             }
                             ?>
                         </select>
+                        //FR: remove entry
                     </td>
                 </tr>
             </table>
         </div>
 
-        <div class="table-responsive" style="border:1px solid black; padding: 10px; width:100%">
-            <table id="myTable" class="table table-bordered" style="width:100%">
-                <thead>
-                <tr>
-                    <th class="text-center">Remove Row</th>
-                    <th class="text-center">SCRIPT</th>
-                    <th class="text-center">
-                        ACTION
-
-
-                    </th>
-                </tr>
-                </thead>
-                <form id="json-store">
-                    <tbody id="tbody">
-
-                    </tbody>
-                </form>
-            </table>
-            <button class="btn btn-md btn-primary"
-                    id="addBtn" type="button">
-                new Row
-            </button>
-        </div>
     </form>
 
 
 </div>
-
-missing stuff:</br>
-1) rule filter 'dst' operator 'has.from.query subquery1' -> add this automatically and define based on filter src/dst/srv what subquery can be done and prefill the part there</br>
-2) migration part with vendor select</br>
-</br>
-3) user login [create first default project]</br>
-4) project creation</br>
-5) after running - possible to download: 1) log 2) XML file 3) JSON 4) full bundle</br>
-
-ruletype=</br>
-devicetype=</br>
-securityprofiletype=</br>
-
-</body>
-
-</html>
