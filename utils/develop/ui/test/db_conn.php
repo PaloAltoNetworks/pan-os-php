@@ -7,6 +7,7 @@ MYSQL_USER: MYSQL_USER
 MYSQL_PASSWORD: MYSQL_PASSWORD
 */
 
+/*
 $host = "localhost";
 $uname = "root";
 $password = "MYSQL_ROOT_PASSWORD";
@@ -29,3 +30,4 @@ if ($conn->connect_error) {
 } else {
     #echo "Connected to MySQL server successfully!";
 }
+*/
