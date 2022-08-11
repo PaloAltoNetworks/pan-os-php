@@ -4,7 +4,7 @@ var pathToReplace = "/utils/develop/ui/";
 
 var path = fullpathname.replace(pathToReplace, "");
 path = path.replace("index.php", "");
-path = path.replace("mode_uploadfile_createapikey.php", "");
+path = path.replace("preparation.php", "");
 
 server_url = server_url + path;
 
