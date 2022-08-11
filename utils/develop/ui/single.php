@@ -3,7 +3,17 @@ session_start();
 include "test/db_conn.php";
 if (isset($_SESSION['username']) && isset($_SESSION['id']))
 {
-
+    if( isset($_SESSION['folder']) && isset($_SESSION['id']) )
+    {
+        $panconfkeystoreFILE = $_SESSION['folder']."/.panconfkeystore";
+        $projectFOLDER = $_SESSION['folder'].'/*';
+    }
+    else
+    {
+        $tmpFOLDER = '/../../api/v1/project';
+        $panconfkeystoreFILE = dirname(__FILE__) . $tmpFOLDER.'/.panconfkeystore';
+        $projectFOLDER = dirname(__FILE__) . $tmpFOLDER.'/*';
+    }
 ?>
 
     <!--
@@ -94,7 +104,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']))
                         <select id="configSelect" name="configSelect" class="form-control input-sm">
                             <option value="---" selected>---</option>
                             <?php
-                            foreach( glob(dirname(__FILE__) . '/../../api/v1/project/*') as $filename )
+                            foreach( glob( $projectFOLDER ) as $filename )
                             {
                                 $filename = basename($filename);
 
@@ -117,7 +127,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']))
                         <select id="configapi" name="configapi" class="form-control input-sm">
                             <option value="---" selected>---</option>
                             <?php
-                            foreach( file(dirname(__FILE__) . '/../../api/v1/project/.panconfkeystore' ) as $entry )
+                            foreach( file( $panconfkeystoreFILE ) as $entry )
                             {
                                 $host = explode( ":", $entry);
 

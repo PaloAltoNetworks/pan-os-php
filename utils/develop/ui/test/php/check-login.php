@@ -43,6 +43,17 @@ if (isset($_POST['username']) && isset($_POST['password']) && isset($_POST['role
         		$_SESSION['id'] = $row['id'];
         		$_SESSION['role'] = $row['role'];
         		$_SESSION['username'] = $row['username'];
+                $_SESSION['folder'] = $row['folder'];
+
+                $user_directory = $_SESSION['folder'];
+                if (!file_exists($user_directory)) {
+                    mkdir($user_directory, 0777, true);
+                }
+                $file = $user_directory.'/.panconfkeystore';
+                if(!is_file($file)){
+                    $contents = '';           // Some simple example content.
+                    file_put_contents($file, $contents);     // Save our content to the file.
+                }
 
         		header("Location: ../home.php");
 

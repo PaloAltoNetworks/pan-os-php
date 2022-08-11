@@ -33,16 +33,17 @@ CREATE TABLE `users` (
   `role` enum('user','admin') NOT NULL,
   `username` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `name` varchar(255) NOT NULL
+  `name` varchar(255) NOT NULL,
+  `folder` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `role`, `username`, `password`, `name`) VALUES
-(1, 'admin', 'sven', '81dc9bdb52d04dc20036dbd8313ed055', 'Sven Waschkut'),
-(2, 'user', 'John', 'e2fc714c4727ee9395f324cd2e7f331f', 'John Doe');
+INSERT INTO `users` (`id`, `role`, `username`, `password`, `name`, `folder`) VALUES
+(1, 'admin', 'sven', '81dc9bdb52d04dc20036dbd8313ed055', 'Sven Waschkut', '0815'),
+(2, 'user', 'John', 'e2fc714c4727ee9395f324cd2e7f331f', 'John Doe', 'dummy');
 
 --
 -- Indexes for dumped tables

@@ -57,6 +57,7 @@ class PanAPIConnector
      * @var PanAPIConnector[]
      */
     static public $savedConnectors = array();
+    static public $projectfolder = "";
     static private $keyStoreFileName = '.panconfkeystore';
     static private $keyStoreInitialized = FALSE;
 
@@ -353,7 +354,12 @@ class PanAPIConnector
         else
         {
             //optimise this for API usage
-            $file = "project/" . self::$keyStoreFileName;
+            if( self::$projectfolder !== "" )
+            {
+                $file = self::$projectfolder."/" . self::$keyStoreFileName;
+            }
+            else
+                $file = "project/" . self::$keyStoreFileName;
         }
 
         return $file;

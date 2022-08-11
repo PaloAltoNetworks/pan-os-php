@@ -15,6 +15,7 @@ $db_name = "MYSQL_DATABASE";
 
 // The MySQL service named in the docker-compose.yml.
 $host = 'db';
+#$host = "127.0.0.1";
 // Database use name
 $user = 'MYSQL_USER';
 

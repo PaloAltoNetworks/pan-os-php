@@ -12,6 +12,11 @@
 <body>
       <div class="container d-flex justify-content-center align-items-center"
       style="min-height: 100vh">
+          <?php
+                $user_directory = $_SESSION['folder'];
+                if (!file_exists($user_directory)) {
+                    mkdir($user_directory, 0777, true);
+                } ?>
       	<?php if ($_SESSION['role'] == 'admin') {?>
       		<!-- For Admin -->
       		<div class="card" style="width: 18rem;">
@@ -76,6 +81,7 @@
                         <td><a href="../single.php">single command</a></td>
                         <td><a href="../playbook.php">JSON PLAYBOOK</a></td>
                         <td><a href="../preparation.php">upload file / store APIkey</a></td>
+                        <td>user folder: <?=$_SESSION['folder']?></td>
                         <td>logged in as: <?=$_SESSION['name']?>  |  <a href="logout.php">LOGOUT</a></td>
                     </tr>
                 </table>

@@ -1,3 +1,19 @@
+<?php
+session_start();
+include "test/db_conn.php";
+if( isset($_SESSION['folder']) && isset($_SESSION['id']) )
+{
+    $panconfkeystoreFILE = $_SESSION['folder']."/.panconfkeystore";
+    $projectFOLDER = $_SESSION['folder'].'/*';
+}
+else
+{
+    $tmpFOLDER = '/../../api/v1/project';
+    $panconfkeystoreFILE = dirname(__FILE__) . $tmpFOLDER.'/.panconfkeystore';
+    $projectFOLDER = dirname(__FILE__) . $tmpFOLDER.'/*';
+}
+
+?>
 <!--
 /**
  * ISC License
@@ -66,6 +82,12 @@
                 <td><a href="single.php">single command</a></td>
                 <td><a href="playbook.php">JSON PLAYBOOK</a></td>
                 <td><a href="preparation.php">upload file / store APIkey</a></td>
+                <?php
+                if( isset($_SESSION['folder']) && isset($_SESSION['id']) )
+                {
+                    echo '<td>logged in as: '.$_SESSION['name'].'  |  <a href="test/logout.php">LOGOUT</a></td>';
+                }
+                ?>
             </tr>
         </table>
     </div>
@@ -109,7 +131,7 @@
                         <select id="configSelect" name="configSelect" class="form-control input-sm">
                             <option value="---" selected>---</option>
                             <?php
-                            foreach( glob(dirname(__FILE__) . '/../../api/v1/project/*') as $filename )
+                            foreach( glob($projectFOLDER) as $filename )
                             {
                                 $filename = basename($filename);
 
@@ -132,7 +154,7 @@
                         <select id="configapi" name="configapi" class="form-control input-sm">
                             <option value="---" selected>---</option>
                             <?php
-                            foreach( file(dirname(__FILE__) . '/../../api/v1/project/.panconfkeystore' ) as $entry )
+                            foreach( file($panconfkeystoreFILE ) as $entry )
                             {
                                 $host = explode( ":", $entry);
 

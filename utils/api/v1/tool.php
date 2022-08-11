@@ -1,5 +1,15 @@
 <?php
-/**
+session_start();
+include "../../develop/ui/test/db_conn.php";
+if( isset($_SESSION['folder']) && isset($_SESSION['id']) )
+{
+    $projects_folder = $_SESSION['folder'];
+}
+else
+{
+    $projects_folder = dirname(__FILE__) ."/project";
+}
+    /**
  * ISC License
  *
  * Copyright (c) 2019, Palo Alto Networks Inc.
@@ -36,7 +46,7 @@ set_exception_handler(function ($e) {
     exit;
 });
 
-$projects_folder = "/project/";
+
 
 $file_tmp_name = "";
 $upload_dir = "";
@@ -295,79 +305,6 @@ function UTILcaller( $url_pieces, $argv, $argc, $PHP_FILE )
         $type = $url_pieces[1];
 
 
-        $util = PH::callPANOSPHP( $type, $argv, $argc, $PHP_FILE );
-        /*
-        if( $type == 'rule' )
-            $util = new RULEUTIL( $type, $argv, $argc, __FILE__);
-
-        elseif( $type == 'stats' )
-            $util = new STATSUTIL( $type, $argv, $argc, __FILE__);
-
-        elseif( $type == 'securityprofile' )
-            $util = new SECURITYPROFILEUTIL( $type, $argv, $argc, __FILE__);
-
-        elseif( $type == 'zone'
-            || $type == 'interface'
-            || $type == 'routing'
-            || $type == 'virtualwire'
-        )
-            $util = new NETWORKUTIL( $type, $argv, $argc, __FILE__);
-
-        elseif( $type == 'device' )
-            $util = new DEVICEUTIL( $type, $argv, $argc, __FILE__);
-
-        elseif( $type == "key-manager" )
-            $util = new KEYMANGER($type, $argv, $argc, __FILE__);
-
-        elseif( $type == "address-merger"
-            || $type == "addressgroup-merger"
-            || $type == "service-merger"
-            || $type == "servicegroup-merger"
-            || $type == "tag-merger"
-        )
-            $util = new MERGER($type, $argv, $argc, __FILE__);
-
-        elseif( $type == "rule-merger" )
-            $util = new RULEMERGER($type, $argv, $argc, __FILE__);
-
-        elseif( $type == "override-finder" )
-            $util = new OVERRIDEFINDER($type, $argv, $argc, __FILE__);
-        elseif( $type == "diff" )
-            $util = new DIFF($type, $argv, $argc, __FILE__);
-        elseif( $type == "upload" )
-            $util = new UPLOAD($type, $argv, $argc, __FILE__);
-        elseif( $type == "xml-issue" )
-            $util = new XMLISSUE($type, $argv, $argc, __FILE__);
-
-        elseif( $type == "appid-enabler" )
-            $util = new APPIDENABLER($type, $argv, $argc, __FILE__);
-        elseif( $type == "config-size" )
-            $util = new CONFIGSIZE($type, $argv, $argc, __FILE__);
-
-        elseif( $type == "download-predefined" )
-            $util = new PREDEFINED($type, $argv, $argc, __FILE__);
-
-        elseif( $type == "register-ip-mgr" )
-            $util = new REGISTERIP($type, $argv, $argc,__FILE__ );
-
-        elseif( $type == "userid-mgr" )
-            $util = new USERIDMGR($type, $argv, $argc,__FILE__ );
-
-        elseif( $type == "xml-op-json" )
-            $util = new XMLOPJSON($type, $argv, $argc,__FILE__ );
-
-        elseif( $type == "bpa-generator" )
-            $util = new BPAGENERATOR( $type, $argv, $argc, __FILE__);
-        
-        elseif( $type == 'address'
-            || $type == 'service'
-            || $type == 'tag'
-            || $type == 'schedule'
-            || $type == 'securityprofilegroup'
-            || $type == 'application'
-            || $type == 'threat'
-        )
-            $util = new UTIL( $type, $argv, $argc, __FILE__);
-        */
+        $util = PH::callPANOSPHP( $type, $argv, $argc, $PHP_FILE, array(), "", $projects_folder );
     }
 }

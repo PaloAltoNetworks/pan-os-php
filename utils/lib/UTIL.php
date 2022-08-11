@@ -148,8 +148,10 @@ class UTIL
     public $diff_set = array();
     public $diff_delete = array();
 
-    function __construct($utilType, $argv, $argc, $PHP_FILE, $_supportedArguments = array(), $_usageMsg = "")
+    function __construct($utilType, $argv, $argc, $PHP_FILE, $_supportedArguments = array(), $_usageMsg = "", $projectFolder = "")
     {
+        PanAPIConnector::$projectfolder = $projectFolder;
+
         $this->argv = $argv;
         $this->argc = $argc;
 

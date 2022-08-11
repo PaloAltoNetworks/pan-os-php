@@ -31,6 +31,7 @@ if (isset($_POST['username']) && isset($_POST['password']) && isset($_POST['role
 
         $table_name = "users";
 
+        $root_folder = "/tmp";
         ####################################################################################################
         $sql = "SELECT * FROM ".$table_name." WHERE username='$username'";
         $result = mysqli_query($conn, $sql);
@@ -44,7 +45,10 @@ if (isset($_POST['username']) && isset($_POST['password']) && isset($_POST['role
 
         ####################################################################################################
 
-        $sql = "INSERT INTO ".$table_name." (username, password, role, name) VALUES ( '".$username."', '".$password."', 'User', '".$fullname."')";
+        $c = uniqid (rand (),true);
+        $folder = $root_folder."/".$c;
+
+        $sql = "INSERT INTO ".$table_name." (username, password, role, name, folder) VALUES ( '".$username."', '".$password."', 'User', '".$fullname."', '".$folder."')";
         #$sql = "INSERT INTO MyGuests (firstname, lastname, email) VALUES ('John', 'Doe', 'john@example.com')";
         $result = mysqli_query($conn, $sql);
 
@@ -69,11 +73,23 @@ if (isset($_POST['username']) && isset($_POST['password']) && isset($_POST['role
         if ( $result_check === 1) {
         	// the user name must be unique
         	$row = mysqli_fetch_assoc($result);
-        	if ($row['password'] === $password && $row['role'] == $role) {
+        	if ($row['password'] === $password && $row['role'] == $role)
+            {
         		$_SESSION['name'] = $row['name'];
         		$_SESSION['id'] = $row['id'];
         		$_SESSION['role'] = $row['role'];
         		$_SESSION['username'] = $row['username'];
+                $_SESSION['folder'] = $row['folder'];
+
+                $user_directory = $_SESSION['folder'];
+                if (!file_exists($user_directory)) {
+                    mkdir($user_directory, 0777, true);
+                }
+                $file = $user_directory.'/.panconfkeystore';
+                if(!is_file($file)){
+                    $contents = '';           // Some simple example content.
+                    file_put_contents($file, $contents);     // Save our content to the file.
+                }
 
         		header("Location: ../home.php");
 
