@@ -85,7 +85,7 @@ else
                 <?php
                 if( isset($_SESSION['folder']) && isset($_SESSION['id']) )
                 {
-                    echo '<td>logged in as: '.$_SESSION['name'].'  |  <a href="test/logout.php">LOGOUT</a></td>';
+                    echo '<td>logged in as: <a href="test/home.php">'.$_SESSION['name'].'</a>  |  <a href="test/logout.php">LOGOUT</a></td>';
                 }
                 ?>
             </tr>
@@ -198,12 +198,8 @@ else
 
 missing stuff:</br>
 1) rule filter 'dst' operator 'has.from.query subquery1' -> add this automatically and define based on filter src/dst/srv what subquery can be done and prefill the part there</br>
-2) migration part with vendor select</br>
+2) converter - migration part with vendor select</br>
 </br>
-3) user login [create first default project]</br>
-4) project creation</br>
-5) after running - possible to download: 1) log 2) XML file 3) JSON 4) full bundle</br>
-
 ruletype=</br>
 devicetype=</br>
 securityprofiletype=</br>

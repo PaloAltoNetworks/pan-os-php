@@ -86,7 +86,7 @@ else
                 <?php
                 if( isset($_SESSION['folder']) && isset($_SESSION['id']) )
                 {
-                    echo '<td>logged in as: '.$_SESSION['name'].'  |  <a href="test/logout.php">LOGOUT</a></td>';
+                    echo '<td>logged in as: <a href="test/home.php">'.$_SESSION['name'].'</a>  |  <a href="test/logout.php">LOGOUT</a></td>';
                 }
                 ?>
 

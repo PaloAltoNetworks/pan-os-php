@@ -53,7 +53,6 @@
                         <td>logged in as: <?=$_SESSION['name']?>  |  <a href="logout.php">LOGOUT</a></td>
                     </tr>
                 </table>
-                //FR: display all files in USER folder
                 <?php
                 echo "</br>";
                 foreach( glob( $_SESSION['folder'].'/*' ) as $filename )
@@ -116,10 +115,16 @@
                         <td><a href="../playbook.php">JSON PLAYBOOK</a></td>
                         <td><a href="../preparation.php">upload file / store APIkey</a></td>
                         <td>user folder: <?=$_SESSION['folder']?></td>
-                        <td>logged in as: <?=$_SESSION['name']?>  |  <a href="logout.php">LOGOUT</a></td>
+                        <td>logged in as: <a href="home.php"><?=$_SESSION['name']?></a>  |  <a href="logout.php">LOGOUT</a></td>
                     </tr>
                 </table>
-                //FR: display all files in USER folder
+                //FR: display file content</br>
+                //FR: delete existing files</br>
+                //FR: delete complete user, incl. projectfolder and all files</br>
+                //FR: type=upload in=api:// into projectfolder</br>
+                //FR: introduce creating project which is git driven</br>
+                //FR: display project git changes</br>
+                //FR: after running - possible to download: 1) log (get info from JSON file) 2) XML file 3) JSON 4) full bundle</br>
                 <?php
                 echo "</br>";
                 foreach( glob( $_SESSION['folder'].'/*' ) as $filename )

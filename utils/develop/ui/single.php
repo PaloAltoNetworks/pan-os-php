@@ -84,7 +84,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']))
                 <td><a href="single.php">single command</a></td>
                 <td><a href="playbook.php">JSON PLAYBOOK</a></td>
                 <td><a href="preparation.php">upload file / store APIkey</a></td>
-                <td>logged in as: <?=$_SESSION['name']?>  |  <a href="test/logout.php">LOGOUT</a></td>
+                <td>logged in as: <a href="test/home.php"><?=$_SESSION['name']?></a>  |  <a href="test/logout.php">LOGOUT</a></td>
             </tr>
         </table>
     </div>
