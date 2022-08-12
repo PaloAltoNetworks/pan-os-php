@@ -1456,7 +1456,7 @@ class PanoramaConf
 
         $connector = findConnector( $this );
         if( $connector == null )
-            PH::$JSON_TMP[] = $stdoutarray;
+            PH::$JSON_TMP[$this->name] = $stdoutarray;
         else
             PH::$JSON_TMP[ $connector->info_serial ] = $stdoutarray;
 
