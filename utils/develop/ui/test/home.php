@@ -13,10 +13,21 @@
       <div class="container d-flex justify-content-center align-items-center"
       style="min-height: 100vh">
           <?php
+                $root_folder = "/tmp";
+                $table_name = "users";
+
                 $user_directory = $_SESSION['folder'];
-                if (!file_exists($user_directory)) {
-                    mkdir($user_directory, 0777, true);
-                } ?>
+              if( $user_directory === "null")
+              {
+                  $c = uniqid (rand (),true);
+                  $user_directory = $root_folder."/".$c;
+                  $sql = "UPDATE ".$table_name." SET folder = '".$user_directory."' WHERE username='".$_SESSION['username']."'";
+                  $result = mysqli_query($conn, $sql);
+                  $_SESSION['folder'] = $user_directory;
+              }
+              if (!file_exists($user_directory) ) {
+                  mkdir($user_directory, 0777, true);
+              } ?>
       	<?php if ($_SESSION['role'] == 'admin') {?>
       		<!-- For Admin -->
       		<div class="card" style="width: 18rem;">
@@ -31,6 +42,17 @@
 			  </div>
 			</div>
 			<div class="p-3">
+                <table class="card" style="width:100%">
+                    <tr>
+                    <tr>
+                        <td><a href="../index.php">MAIN page</a></td>
+                        <td><a href="../single.php">single command</a></td>
+                        <td><a href="../playbook.php">JSON PLAYBOOK</a></td>
+                        <td><a href="../preparation.php">upload file / store APIkey</a></td>
+                        <td>user folder: <?=$_SESSION['folder']?></td>
+                        <td>logged in as: <?=$_SESSION['name']?>  |  <a href="logout.php">LOGOUT</a></td>
+                    </tr>
+                </table>
 				<?php include 'php/members.php';
                  if (mysqli_num_rows($res) > 0) {?>
                   

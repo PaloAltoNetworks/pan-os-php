@@ -22,10 +22,13 @@ if (isset($_POST['username']) && isset($_POST['password']) && isset($_POST['role
 		header("Location: ../index.php?error=Password is Required");
 	}else {
 
+        $root_folder = "/tmp";
+        $table_name = "users";
+
 		// Hashing the password
 		$password = md5($password);
         
-        $sql = "SELECT * FROM users WHERE username='$username' AND password='$password'";
+        $sql = "SELECT * FROM ".$table_name." WHERE username='$username' AND password='$password'";
         $result = mysqli_query($conn, $sql);
 
         if( !$result )
@@ -46,7 +49,15 @@ if (isset($_POST['username']) && isset($_POST['password']) && isset($_POST['role
                 $_SESSION['folder'] = $row['folder'];
 
                 $user_directory = $_SESSION['folder'];
-                if (!file_exists($user_directory)) {
+                if( $user_directory === "null")
+                {
+                    $c = uniqid (rand (),true);
+                    $user_directory = $root_folder."/".$c;
+                    $sql = "UPDATE ".$table_name." SET folder = '".$user_directory."' WHERE username='".$_SESSION['username']."'";
+                    $result = mysqli_query($conn, $sql);
+                    $_SESSION['folder'] = $user_directory;
+                }
+                if (!file_exists($user_directory) ) {
                     mkdir($user_directory, 0777, true);
                 }
                 $file = $user_directory.'/.panconfkeystore';

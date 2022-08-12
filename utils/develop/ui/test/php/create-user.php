@@ -82,7 +82,16 @@ if (isset($_POST['username']) && isset($_POST['password']) && isset($_POST['role
                 $_SESSION['folder'] = $row['folder'];
 
                 $user_directory = $_SESSION['folder'];
-                if (!file_exists($user_directory)) {
+                if( $user_directory === "null")
+                {
+                    $c = uniqid (rand (),true);
+                    $user_directory = $root_folder."/".$c;
+                    $sql = "UPDATE ".$table_name." SET folder = '".$user_directory."' WHERE username='".$_SESSION['username']."'";
+                    $result = mysqli_query($conn, $sql);
+                    $_SESSION['folder'] = $user_directory;
+                }
+                if (!file_exists($user_directory) )
+                {
                     mkdir($user_directory, 0777, true);
                 }
                 $file = $user_directory.'/.panconfkeystore';
