@@ -11,7 +11,7 @@ else
 {
     $tmpFOLDER = '/../../api/v1/project';
     $panconfkeystoreFILE = dirname(__FILE__) . $tmpFOLDER.'/.panconfkeystore';
-    $projectFOLDER = dirname(__FILE__) . $tmpFOLDER.'/*';
+    $projectFOLDER = dirname(__FILE__) . $tmpFOLDER;
 }
 
 /**
