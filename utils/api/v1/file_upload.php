@@ -5,7 +5,7 @@ include "../../develop/ui/test/db_conn.php";
 if( isset($_SESSION['folder']) && isset($_SESSION['id']) )
 {
     $panconfkeystoreFILE = $_SESSION['folder']."/.panconfkeystore";
-    $projectFOLDER = $_SESSION['folder'].'/*';
+    $projectFOLDER = $_SESSION['folder'];
 }
 else
 {
@@ -60,7 +60,7 @@ if($_FILES['configInput'])
     }else
     {
         $random_name = rand(1000,1000000)."-".$avatar_name;
-        $upload_name = $projects_folder."/".strtolower($random_name);
+        $upload_name = $projectFOLDER."/".strtolower($random_name);
         $upload_name = preg_replace('/\s+/', '-', $upload_name);
         if(move_uploaded_file($avatar_tmp_name , $upload_name)) {
             $response = array(

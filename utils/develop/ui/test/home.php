@@ -53,6 +53,18 @@
                         <td>logged in as: <?=$_SESSION['name']?>  |  <a href="logout.php">LOGOUT</a></td>
                     </tr>
                 </table>
+                //FR: display all files in USER folder
+                <?php
+                echo "</br>";
+                foreach( glob( $_SESSION['folder'].'/*' ) as $filename )
+                {
+                    $fullpath = $filename;
+                    //display without full path
+                    $filename = basename($filename);
+
+                    echo " - ".$filename. "</br>";
+                }
+                ?>
 				<?php include 'php/members.php';
                  if (mysqli_num_rows($res) > 0) {?>
                   
@@ -107,6 +119,18 @@
                         <td>logged in as: <?=$_SESSION['name']?>  |  <a href="logout.php">LOGOUT</a></td>
                     </tr>
                 </table>
+                //FR: display all files in USER folder
+                <?php
+                echo "</br>";
+                foreach( glob( $_SESSION['folder'].'/*' ) as $filename )
+                {
+                    $fullpath = $filename;
+                    //display without full path
+                    $filename = basename($filename);
+
+                    echo " - ".$filename. "</br>";
+                }
+                ?>
             </div>
       	<?php } ?>
       </div>
