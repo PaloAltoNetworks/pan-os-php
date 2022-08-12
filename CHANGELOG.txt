@@ -2,6 +2,7 @@ CHANGELOG
 
 2.0.56
 UTIL:
+* type=stats - improvement for JSON output
 
 BUGFIX:
 * type=device | bugfix for actions=exportLicenseToExcel:file.html
