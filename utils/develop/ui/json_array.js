@@ -5799,6 +5799,10 @@ var subjectObject =
                     }
                 }
             },
+            "timeout-inherit": {
+                "name": "timeout-inherit",
+                "MainFunction": {}
+            },
             "timeout-set": {
                 "name": "timeout-set",
                 "MainFunction": {},
@@ -6981,9 +6985,9 @@ var subjectObject =
                 "name": "UserID-enable",
                 "MainFunction": {},
                 "args": {
-                    "ZPP-name": {
-                        "type": "string",
-                        "default": "*nodefault*"
+                    "enable": {
+                        "type": "bool",
+                        "default": "TRUE"
                     }
                 }
             },
