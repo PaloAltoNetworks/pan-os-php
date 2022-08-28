@@ -3,6 +3,8 @@ CHANGELOG
 2.0.56
 UTIL:
 * type=stats - improvement for JSON output
+* type=zone | introduce actions=display userid information | 'filter=(userid is.enbaled)'
+* type=zone | introduce actions=userid-enable:{BOOL} - per default {BOOL} is TRUE
 
 BUGFIX:
 * type=device | bugfix for actions=exportLicenseToExcel:file.html

@@ -1502,10 +1502,6 @@ var subjectObject =
                 "MainFunction": {},
                 "GlobalFinishFunction": {},
                 "args": {
-                    "serial": {
-                        "type": "string",
-                        "default": "false"
-                    },
                     "force": {
                         "type": "bool",
                         "default": "false",
@@ -1635,6 +1631,10 @@ var subjectObject =
                             "fString": "(%PROP% \/-group\/)",
                             "input": "input\/panorama-8.0.xml"
                         }
+                    },
+                    "is.in.file": {
+                        "Function": {},
+                        "arg": true
                     }
                 }
             },
@@ -4048,6 +4048,26 @@ var subjectObject =
                         }
                     },
                     "has.value.only": {
+                        "Function": {},
+                        "arg": true,
+                        "ci": {
+                            "fString": "(%PROP% 443)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    },
+                    "timeout.is.set": {
+                        "Function": {},
+                        "arg": false,
+                        "ci": {
+                            "fString": "(%PROP%)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    }
+                }
+            },
+            "service.object.count": {
+                "operators": {
+                    ">,<,=,!": {
                         "Function": {},
                         "arg": true,
                         "ci": {
@@ -6957,6 +6977,16 @@ var subjectObject =
                     }
                 }
             },
+            "userid-enable": {
+                "name": "UserID-enable",
+                "MainFunction": {},
+                "args": {
+                    "ZPP-name": {
+                        "type": "string",
+                        "default": "*nodefault*"
+                    }
+                }
+            },
             "zpp-set": {
                 "name": "zpp-Set",
                 "MainFunction": {},
@@ -7139,6 +7169,18 @@ var subjectObject =
                         "arg": true,
                         "ci": {
                             "fString": "(%PROP% securityrule )",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    }
+                }
+            },
+            "userid": {
+                "operators": {
+                    "is.enabled": {
+                        "Function": {},
+                        "arg": false,
+                        "ci": {
+                            "fString": "(%PROP%)",
                             "input": "input\/panorama-8.0.xml"
                         }
                     }

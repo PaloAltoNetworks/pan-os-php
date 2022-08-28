@@ -413,11 +413,13 @@ ZoneCallContext::$supportedActions['display'] = array(
     'MainFunction' => function (ZoneCallContext $context) {
         /** @var Zone $object */
         $object = $context->object;
-        $tmp_txt = "     * " . get_class($object) . " '{$object->name()}'   ( type: " . $object->_type . " )   ";
+        $tmp_txt = "     * " . get_class($object) . " '{$object->name()}'   ( type: " . $object->_type . " )";
         if( $object->zoneProtectionProfile !== null )
-            $tmp_txt .= "ZPP: " . $object->zoneProtectionProfile;
+            $tmp_txt .= ", ZPP: " . $object->zoneProtectionProfile;
         if( $object->logsetting !== null )
-            $tmp_txt .= "Log Setting: " . $object->logsetting;
+            $tmp_txt .= ", Log Setting: " . $object->logsetting;
+        if( $object->userID )
+            $tmp_txt .= ", UserID: enabled";
         PH::print_stdout( $tmp_txt );
 
         PH::$JSON_TMP['sub']['object'][$object->name()]['name'] = $object->name();
@@ -513,6 +515,28 @@ ZoneCallContext::$supportedActions['zpp-set'] = array(
             $object->setZPP($newzpp);
     },
     'args' => array('ZPP-name' => array('type' => 'string', 'default' => '*nodefault*')
+    ),
+);
+
+ZoneCallContext::$supportedActions['userid-enable'] = array(
+    'name' => 'UserID-enable',
+    'MainFunction' => function (ZoneCallContext $context) {
+        $object = $context->object;
+        $enableBool = $context->arguments['enable'];
+
+        if( $object->isTmp() )
+        {
+            $string = "not applicable to TMP objects";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+
+        if( $context->isAPI )
+            $object->API_useridEnable( $enableBool );
+        else
+            $object->useridEnable( $enableBool );
+    },
+    'args' => array('enable' => array('type' => 'bool', 'default' => 'TRUE')
     ),
 );
 

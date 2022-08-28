@@ -43,6 +43,7 @@ class Zone
     public $packetBufferProtection = FALSE;
     public $logsetting = null;
 
+    public $userID = FALSE;
 
     const TypeTmp = 0;
     const TypeLayer3 = 1;
@@ -149,6 +150,13 @@ class Zone
 
         if( strlen($this->name) < 1 )
             derr("Zone name '" . $this->name . "' is not valid", $xml);
+
+        $user_id_Node = DH::findFirstElement('enable-user-identification', $xml);
+        if( $user_id_Node !== FALSE )
+        {
+            if( $user_id_Node->textContent === "yes" )
+                $this->userID = TRUE;
+        }
 
         $networkNode = DH::findFirstElement('network', $xml);
 
@@ -302,6 +310,52 @@ class Zone
         }
         else
             $c->sendEditRequest($xpath, DH::dom_to_xml($this->xmlroot, -1, FALSE));
+
+        return TRUE;
+    }
+
+    /**
+     * @param string $newZPP
+     * @return bool
+     */
+    public function useridEnable( $bool)
+    {
+        if( $bool )
+            $this->userID = TRUE;
+        else
+            $this->userID = FALSE;
+
+        $valueRoot = DH::findFirstElement('enable-user-identification', $this->xmlroot);
+
+        if( $valueRoot !== FALSE )
+        {
+            if( $bool )
+                DH::setDomNodeText($valueRoot, "yes");
+            else
+                $this->xmlroot->removeChild($valueRoot);
+        }
+        elseif( $bool )
+        {
+            $valueRoot = DH::findFirstElementOrCreate('enable-user-identification', $this->xmlroot);
+            DH::setDomNodeText($valueRoot, "yes");
+        }
+
+        return TRUE;
+    }
+
+    /**
+     * @param string $newZPP
+     * @return bool
+     */
+    public function API_useridEnable($bool)
+    {
+        if( !$this->useridEnable($bool) )
+            return FALSE;
+
+        $c = findConnectorOrDie($this);
+        $xpath = $this->getXPath();
+
+        $c->sendEditRequest($xpath, DH::dom_to_xml($this->xmlroot, -1, FALSE));
 
         return TRUE;
     }
