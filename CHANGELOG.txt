@@ -6,6 +6,7 @@ UTIL:
 
 BUGFIX:
 * type=device | bugfix for actions=exportLicenseToExcel:file.html
+* class AddressGroup | fix for XML rewrite if addressgroup isdynamic
 
 GENERAL:
 * class UTIL - argument template=XYZ - improve output message if template not found

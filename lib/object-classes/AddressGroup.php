@@ -299,8 +299,7 @@ class AddressGroup
      */
     public function referencedObjectRenamed($h)
     {
-
-        if( in_array($h, $this->members, TRUE) )
+        if( !$this->isDynamic() && in_array($h, $this->members, TRUE) )
         {
             $this->rewriteXML();
         }
