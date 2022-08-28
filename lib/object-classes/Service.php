@@ -136,8 +136,6 @@ class Service
                 $this->tags->load_from_domxml($tagRoot);
         }
 
-        #if( $this->owner->owner->version >= 81 )
-        #{
         $this->overrideroot = DH::findFirstElement('override', $this->tcpOrUdpRoot);
         if( $this->overrideroot !== FALSE )
         {
@@ -157,7 +155,6 @@ class Service
                     $this->_timewait_timeout = $timewait_timeoutroot->textContent;
             }
         }
-        #}
     }
 
     /**
@@ -300,6 +297,7 @@ class Service
         $tmp = DH::findFirstElementOrCreate('yes', $tmp);
         $tmp = DH::findFirstElementOrCreate('timeout', $tmp, $this->_timeout);
         DH::setDomNodeText($tmp, $newTimeout);
+
         return TRUE;
     }
 
@@ -310,9 +308,52 @@ class Service
     public function API_setTimeout($newTimeout)
     {
         $ret = $this->setTimeout($newTimeout);
-        $connector = findConnectorOrDie($this);
+        if( $ret )
+        {
+            $connector = findConnectorOrDie($this);
+            $this->API_sync();
+        }
 
-        $this->API_sync();
+        return $ret;
+    }
+
+    /**
+     * @param string $newPorts
+     * @return bool
+     */
+    public function removeTimeout()
+    {
+        $this->_timeout = "";
+        $this->_halfclose_timeout = "";
+        $this->_timewait_timeout = "";
+
+        $tmp = DH::findFirstElement('override', $this->tcpOrUdpRoot);
+        if( $tmp !== false )
+        {
+            $tmpyes = DH::findFirstElement('yes', $tmp);
+            if( $tmpyes !== false )
+            {
+                $tmp->removeChild( $tmpyes );
+                $tmpno = DH::findFirstElementOrCreate('no', $tmp);
+                return TRUE;
+            }
+        }
+
+        return FALSE;
+    }
+
+    /**
+     * @param string $newPorts
+     * @return bool
+     */
+    public function API_removeTimeout()
+    {
+        $ret = $this->removeTimeout();
+        if( $ret )
+        {
+            $connector = findConnectorOrDie($this);
+            $this->API_sync();
+        }
 
         return $ret;
     }

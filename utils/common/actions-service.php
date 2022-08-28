@@ -1381,6 +1381,32 @@ ServiceCallContext::$supportedActions[] = array(
     'args' => array('timeoutValue' => array('type' => 'string', 'default' => '*nodefault*')),
 );
 ServiceCallContext::$supportedActions[] = array(
+    'name' => 'timeout-inherit',
+    'MainFunction' => function (ServiceCallContext $context) {
+        $object = $context->object;
+
+        $class = get_class($object);
+        if( $class === 'ServiceGroup' )
+        {
+            $string = "because object is ServiceGroup";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return null;
+        }
+
+        if( $object->overrideroot !== FALSE )
+        {
+            $override_noyes = DH::findFirstElement('yes', $object->overrideroot);
+            if( $override_noyes !== FALSE )
+            {
+                if( $context->isAPI )
+                    $object->API_removeTimeout();
+                else
+                    $object->removeTimeout();
+            }
+        }
+    }
+);
+ServiceCallContext::$supportedActions[] = array(
     'name' => 'sourceport-set',
     'MainFunction' => function (ServiceCallContext $context) {
         $object = $context->object;
