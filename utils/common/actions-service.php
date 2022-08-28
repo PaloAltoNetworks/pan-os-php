@@ -1399,9 +1399,21 @@ ServiceCallContext::$supportedActions[] = array(
             if( $override_noyes !== FALSE )
             {
                 if( $context->isAPI )
-                    $object->API_removeTimeout();
+                    $ret = $object->API_removeTimeout();
                 else
-                    $object->removeTimeout();
+                    $ret = $object->removeTimeout();
+
+                if( !$ret )
+                {
+                    $string = "because timeout is not set";
+                    PH::ACTIONstatus( $context, "SKIPPED", $string );
+                    return null;
+                }
+                else
+                {
+                    $string = "timeout removed - now inherit from application";
+                    PH::ACTIONlog( $context, $string );
+                }
             }
         }
     }
