@@ -84,7 +84,9 @@ class PLAYBOOK__
 
 //define out to save the final file into this file
         if( isset(PH::$args['out']) )
-            $output = PH::$args['out'];
+            $finaloutput = PH::$args['out'];
+        else
+            $finaloutput = null;
 
         if( isset(PH::$args['stagename']) )
             $stage_name = PH::$args['stagename'];
@@ -355,7 +357,7 @@ class PLAYBOOK__
             PH::print_stdout();
         }
 
-        if( isset(PH::$args['out']) && PH::$args['out'] !== "/dev/null" )
+        if( $finaloutput != null && $finaloutput !== "/dev/null" )
         {
             //now save the latest out= from the foreach loop "$out" into "$output" file;
             PH::print_stdout("FINAL script task: the processed PAN-OS configuration are copy to file: ".$output);
