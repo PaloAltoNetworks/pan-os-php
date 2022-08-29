@@ -225,7 +225,8 @@ class PLAYBOOK__
             "ironskillet-update",
             "maxmind-update",
             "util_get-action-filter",
-            "protocoll-number-download"
+            "protocoll-number-download",
+            "html-merger"
         );
 
         if( isset($details['header-comment']) && !empty($details['header-comment']) )

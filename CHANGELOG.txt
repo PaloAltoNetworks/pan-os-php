@@ -7,6 +7,7 @@ UTIL:
 BUGFIX:
 * type=address/service | fix for actions=name-rename - to skip if string length > 63
 * type=address actions=value-host-object-add-netmask-m32 | skip if IPv6 address
+* type=playbook | skip creating out file for usage of html-merger
 
 GENERAL:
 
