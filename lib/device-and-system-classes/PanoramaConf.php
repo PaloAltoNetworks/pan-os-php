@@ -951,11 +951,15 @@ class PanoramaConf
                 if( count($dgLoadOrder) <= $dgLoadOrderCount )
                 {
                     PH::print_stdout(  "Problems could be available with the following DeviceGroup(s)" );
-                    print_r($dgLoadOrder);
-                    derr('dg-meta-data seems to be corrupted, parent.child template cannot be calculated ', $dgMetaDataNode);
+                    #print_r($dgLoadOrder);
+                    print_r($parentToDG);
+                    foreach( $parentToDG as $key => $dgName )
+                    {
+                        PH::print_stdout( "there is no DeviceGroup name: ".$key." available");
+                        $tmp = DH::findFirstElementByNameAttr( "entry", $dgName[0], $dgMetaDataNode );
+                        derr('dg-meta-data seems to be corrupted, parent.child template cannot be calculated ', $tmp, FALSE);
+                    }
                 }
-
-
             }
 
             /*PH::print_stdout(  "DG loading order:" );

@@ -10,6 +10,7 @@ BUGFIX:
 * type=playbook | skip creating out file for usage of html-merger
 
 GENERAL:
+* class PanoramaConf | improve output if parentDG can not be calculated for DeviceGroup
 
 
 2.0.56 (20220829)
