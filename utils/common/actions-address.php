@@ -2014,7 +2014,12 @@ AddressCallContext::$supportedActions[] = array(
             PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
-
+        elseif( strpos( $value, ":") !== false )
+        {
+            $string = "object: " . $address->name() . " with value: " . $value . " is of type IPv6.";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
 
         //
         $new_value = $value . "/32";
