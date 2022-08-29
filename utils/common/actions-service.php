@@ -1294,7 +1294,17 @@ ServiceCallContext::$supportedActions[] = array(
         $textToAppend = "";
         if( $description != "" )
             $textToAppend = " ";
-        $textToAppend .= $context->rawArguments['text'];
+
+        $newName = $context->arguments['stringFormula'];
+
+        if( strpos($newName, '$$current.name$$') !== FALSE )
+        {
+            $textToAppend .= str_replace('$$current.name$$', $service->name(), $newName);
+        }
+        else
+        {
+            $textToAppend .= $newName;
+        }
 
         if( $context->object->owner->owner->version < 71 )
             $max_length = 253;
@@ -1316,7 +1326,15 @@ ServiceCallContext::$supportedActions[] = array(
         $text .= "OK";
         PH::ACTIONlog( $context, $text );
     },
-    'args' => array('text' => array('type' => 'string', 'default' => '*nodefault*'))
+    'args' => array(
+        'stringFormula' => array(
+            'type' => 'string',
+            'default' => '*nodefault*',
+            'help' =>
+                "This string is used to compose a name. You can use the following aliases :\n" .
+                "  - \$\$current.name\$\$ : current name of the object\n")
+    ),
+    'help' => ''
 );
 ServiceCallContext::$supportedActions[] = array(
     'name' => 'description-Delete',

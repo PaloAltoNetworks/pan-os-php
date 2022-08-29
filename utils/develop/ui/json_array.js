@@ -5562,11 +5562,13 @@ var subjectObject =
                 "name": "description-Append",
                 "MainFunction": {},
                 "args": {
-                    "text": {
+                    "stringFormula": {
                         "type": "string",
-                        "default": "*nodefault*"
+                        "default": "*nodefault*",
+                        "help": "This string is used to compose a name. You can use the following aliases :\n  - $$current.name$$ : current name of the object\n"
                     }
-                }
+                },
+                "help": ""
             },
             "description-delete": {
                 "name": "description-Delete",

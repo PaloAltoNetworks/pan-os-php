@@ -6,6 +6,7 @@ UTIL:
 * type=zone | introduce actions=display userid information | 'filter=(userid is.enbaled)'
 * type=zone | introduce actions=userid-enable:{BOOL} - per default {BOOL} is TRUE
 * type=service | introduce actions=timeout-inherit - to disable timeout override and inherit from application
+* type=service | improve actions=description-append:{TEXT} - with an additional variable $$current.name$$
 
 BUGFIX:
 * type=device | bugfix for actions=exportLicenseToExcel:file.html
