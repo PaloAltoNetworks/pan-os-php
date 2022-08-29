@@ -84,7 +84,10 @@ class PLAYBOOK__
 
 //define out to save the final file into this file
         if( isset(PH::$args['out']) )
+        {
             $finaloutput = PH::$args['out'];
+            $output = PH::$args['out'];
+        }
         else
             $finaloutput = null;
 
