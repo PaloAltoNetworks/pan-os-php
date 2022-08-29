@@ -1,6 +1,15 @@
 CHANGELOG
 
-2.0.56
+2.0.57
+UTIL:
+
+BUGFIX:
+* type=address/service | fix for actions=name-rename - to skip if string length > 63
+
+GENERAL:
+
+
+2.0.56 (20220829)
 UTIL:
 * type=stats - improvement for JSON output
 * type=zone | introduce actions=display userid information | 'filter=(userid is.enbaled)'

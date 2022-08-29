@@ -1131,6 +1131,14 @@ AddressCallContext::$supportedActions[] = array(
             return;
         }
 
+        $max_length = 63;
+        if( strlen($newName) > $max_length )
+        {
+            $string = "resulting name is too long";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+
         $string = "new name will be '{$newName}'";
         PH::ACTIONlog( $context, $string );
 
