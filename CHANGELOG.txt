@@ -2,6 +2,7 @@ CHANGELOG
 
 2.0.57
 UTIL:
+* type=rule | introduce new 'filter=(uuid eq 1234567890)'
 
 BUGFIX:
 * type=address/service | fix for actions=name-rename - to skip if string length > 63

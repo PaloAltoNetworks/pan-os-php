@@ -3427,5 +3427,16 @@ RQuery::$defaultFilters['rule']['schedule.expire.in.days']['operators']['>,<,=,!
     },
     'arg' => true,
 );
+RQuery::$defaultFilters['rule']['uuid']['operators']['eq'] = array(
+    'Function' => function (RuleRQueryContext $context) {
+        return $context->object->uuid() == $context->value;
+    },
+    'arg' => TRUE,
+    'help' => 'returns TRUE if rule uuid matches the one specified in argument',
+    'ci' => array(
+        'fString' => '(%PROP%  1234567890)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 // </editor-fold>
 
