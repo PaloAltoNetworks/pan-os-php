@@ -549,7 +549,13 @@ class Address
         $explode = explode('/', $this->value);
 
         if( count($explode) < 2 )
-            return 32;
+        {
+            if(filter_var($this->value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6))
+                return 128;
+            else
+                return 32;
+        }
+
 
         else
             return intval($explode[1]);
@@ -686,6 +692,11 @@ class Address
 
     public function replaceIPbyObject( $context, $prefix = array() )
     {
+        if(filter_var($this->value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6))
+            $maxmaskvalue = 128;
+        else
+            $maxmaskvalue = 32;
+
         if( empty( $prefix ) )
         {
             $prefix['host'] = "H-";
@@ -727,10 +738,10 @@ class Address
             else
             {
                 $name = $this->name();
-                $mask = 32;
+                $mask = $maxmaskvalue;
             }
 
-            if( $mask > 32 || $mask < 0 )
+            if( $mask > $maxmaskvalue || $mask < 0 )
             {
                 $string = "because of invalid mask detected : '$mask'";
                 PH::ACTIONstatus( $context, "SKIPPED", $string );
@@ -744,7 +755,7 @@ class Address
                 return;
             }
 
-            if( $mask == 32 )
+            if( $mask == $maxmaskvalue )
             {
                 $newName = $prefix['host'] . $name;
             }

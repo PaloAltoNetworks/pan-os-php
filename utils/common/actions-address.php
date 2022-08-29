@@ -1057,6 +1057,7 @@ AddressCallContext::$supportedActions[] = array(
         if( strpos($newName, '$$value$$') !== FALSE )
         {
             $newName = str_replace('$$value$$', $object->value(), $newName);
+            $newName = str_replace(':', "_", $newName);
         }
         if( strpos($newName, '$$value.no-netmask$$') !== FALSE )
         {
@@ -1066,6 +1067,7 @@ AddressCallContext::$supportedActions[] = array(
                 $replace = $object->value();
 
             $newName = str_replace('$$value.no-netmask$$', $replace, $newName);
+            $newName = str_replace(':', "_", $newName);
         }
         if( strpos($newName, '$$netmask$$') !== FALSE )
         {
@@ -2021,8 +2023,10 @@ AddressCallContext::$supportedActions[] = array(
             return;
         }
 
-        //
-        $new_value = $value . "/32";
+        //if(filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6))
+            //$new_value = $value . "/128";
+        //else
+            $new_value = $value . "/32";
 
         $text = $context->padding . " - new value will be: '" . $new_value . "'";
         if( $context->isAPI )
