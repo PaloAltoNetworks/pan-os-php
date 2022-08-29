@@ -47,6 +47,7 @@
 				$this->run($directory, [
 					'init',
 					$params,
+					'--end-of-options',
 					$directory
 				]);
 
@@ -90,6 +91,7 @@
 				$this->run($cwd, [
 					'clone',
 					$params,
+					'--end-of-options',
 					$url,
 					$directory
 				]);
@@ -121,6 +123,7 @@
 				'--heads',
 				'--quiet',
 				'--exit-code',
+				'--end-of-options',
 				$url,
 				$refs,
 			], [
