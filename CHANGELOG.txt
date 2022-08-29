@@ -1,6 +1,27 @@
 CHANGELOG
 
-2.0.55
+2.0.56
+UTIL:
+* type=stats - improvement for JSON output
+* type=zone | introduce actions=display userid information | 'filter=(userid is.enbaled)'
+* type=zone | introduce actions=userid-enable:{BOOL} - per default {BOOL} is TRUE
+* type=service | introduce actions=timeout-inherit - to disable timeout override and inherit from application
+* type=service | improve actions=description-append:{TEXT} - with an additional variable $$current.name$$
+
+BUGFIX:
+* type=device | bugfix for actions=exportLicenseToExcel:file.html
+* class AddressGroup | fix for XML rewrite if addressgroup isdynamic
+
+GENERAL:
+* class UTIL - argument template=XYZ - improve output message if template not found
+* playbook json files | introduce rule-merger.json - small optimistation for panorama clean-up
+* improve test_rule_merger - to read input file
+* UI - optimisation for offline/online mode - introduce new preparation.php to upload file / create apikey
+* UI - development - continue working on multi-user mode
+* UI - improvement for multi-user usage - projectfolder - panconfigkeystore
+
+
+2.0.55 (20220808)
 UTIL:
 * type=addressgroup-/servicegroup-/service-merger | introduce dupalgorithm=identical
 * type=servicegroup-merger | introduce childDG validation

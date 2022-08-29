@@ -11,8 +11,14 @@
 		}
 	],
 	"require": {
-		"php": ">=7.3"
-	},
+		"php": ">=7.3",
+        "ext-json": "*",
+        "ext-curl": "*",
+        "ext-dom": "*",
+        "ext-mbstring": "*",
+        "ext-bcmath": "*",
+        "ext-mysqli": "*"
+    },
 	"autoload": {
 		"classmap": ["src/"]
 	},

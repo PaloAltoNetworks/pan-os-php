@@ -148,8 +148,10 @@ class UTIL
     public $diff_set = array();
     public $diff_delete = array();
 
-    function __construct($utilType, $argv, $argc, $PHP_FILE, $_supportedArguments = array(), $_usageMsg = "")
+    function __construct($utilType, $argv, $argc, $PHP_FILE, $_supportedArguments = array(), $_usageMsg = "", $projectFolder = "")
     {
+        PanAPIConnector::$projectfolder = $projectFolder;
+
         $this->argv = $argv;
         $this->argc = $argc;
 
@@ -1294,7 +1296,6 @@ class UTIL
             {
                 $this->objectsTemplate[$key] = 'any';
             }
-
         }
         unset($location);
 
@@ -1317,8 +1318,24 @@ class UTIL
                 $this->template = $this->pan->findTemplate($this->templateName);
                 if( $this->template === null )
                 {
-                    derr("template: " . $this->template . " not found!");
-                    #$this->locationNotFound($this->location);
+                    $this->template = $this->pan->findTemplateStack($this->templateName);
+
+                    if( $this->template === null )
+                    {
+                        PH::print_stdout( "");
+                        PH::print_stdout("");
+                        PH::print_stdout( "  - available Templates:");
+                        foreach( $this->pan->templates as $template )
+                            PH::print_stdout( "   - ".$template->name() );
+
+                        PH::print_stdout("");
+                        PH::print_stdout( "  - available TemplateStack:");
+                        foreach( $this->pan->templatestacks as $templateStack )
+                            PH::print_stdout( "   - ".$templateStack->name() );
+
+                        derr("template: '" . $this->templateName . "' not found!", null, FALSE);
+                        #$this->locationNotFound($this->location);
+                    }
                 }
             }
         }

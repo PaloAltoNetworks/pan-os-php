@@ -285,7 +285,9 @@ class NetworkPropertiesContainer
         if( $resolved !== null )
             return $resolved;
 
-        return $this->tmpInterfaceStore->createTmp($interfaceName);
+        $tmp_interface = $this->tmpInterfaceStore->createTmp($interfaceName);
+
+        return $tmp_interface;
     }
 
     /**

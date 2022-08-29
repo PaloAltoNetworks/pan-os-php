@@ -267,12 +267,12 @@ function addNewRow()
     });
 
     $('#add-action' + Idx + '-' + ActionIdx).on('click', function() {
-        console.log("TEST1");
+        //console.log("TEST1");
         addActionBtn( Idx );
     });
 
     $('#add-filter' + Idx + '-' + FilterIdx).on('click', function() {
-        console.log("TEST2");
+        //console.log("TEST2");
         addFilterBtn( Idx );
     });
 }
@@ -402,16 +402,31 @@ function updateScriptsyntax( Idx ) {
     if( allowmergingcheckedValue )
         message += " 'allowmergingwithupperlevel'";
 
-    var e = document.getElementById("configSelect");
-    var dropdownselection = e.options[e.selectedIndex].text;
-    console.log( "DropDown: "+dropdownselection );
-
-    if( dropdownselection !== "---" )
+    var offlinemode = $( "#offlinemode" ).is(':checked');
+    if( offlinemode )
     {
-        message += " 'in=";
-        message += dropdownselection;
+        var e = document.getElementById("configSelect");
+        var dropdownselection = e.options[e.selectedIndex].text;
+        console.log( "DropDown: "+dropdownselection );
+
+        if( dropdownselection !== "---" )
+        {
+            message += " 'in=";
+            message += dropdownselection;
+            message += "'";
+        }
+    }
+
+    var onlinemode = $( "#onlinemode" ).is(':checked');
+    if( onlinemode )
+    {
+        var configapi = $( "#configapi" ).val();
+
+        message += " 'in=api://";
+        message += configapi;
         message += "'";
     }
+
 
     message += " 'shadow-ignoreinvalidaddressobjects'";
 
@@ -437,10 +452,20 @@ function updateScriptsyntax( Idx ) {
     if( allowmergingcheckedValue )
         message2 += "&allowmergingwithupperlevel";
 
-    if( dropdownselection !== "---" )
+
+    if( offlinemode )
     {
-        message2 += "&in=";
-        message2 += dropdownselection;
+        if( dropdownselection !== "---" )
+        {
+            message2 += "&in=";
+            message2 += dropdownselection;
+        }
+    }
+
+    if( onlinemode )
+    {
+        message2 += "&in=api://";
+        message2 += configapi;
     }
 
     message2 += "&shadow-ignoreinvalidaddressobjects";
@@ -452,6 +477,62 @@ function updateScriptsyntax( Idx ) {
     document.user_form.action = message2;
 }
 
+function createAddScript()
+{
+    $( "#configapi" ).change(function(){
+        createAPIkeysyntax( );
+    });
+    $( "#user" ).change(function(){
+        createAPIkeysyntax( );
+    });
+    $( "#pw" ).change(function(){
+        createAPIkeysyntax( );
+    });
+    $( "#apikey" ).change(function(){
+        createAPIkeysyntax( );
+    });
+}
+
+function createApiKey()
+{
+    var message = document.getElementById("user_form").action;
+    //console.log( 'action:'+message);
+    document.getElementById("user_form").submit();
+}
+
+function createAPIkeysyntax( ) {
+
+    var messageapikey = server_url + "/utils/api/v1/tool.php/key-manager?";
+
+    var hostValue = $( "#configapi" ).val();
+    var userValue = $( "#user" ).val();
+    var pwValue = $( "#pw" ).val();
+    var apikeyValue = $( "#apikey" ).val();
+
+    messageapikey += "&add=";
+    messageapikey += hostValue;
+
+    if( apikeyValue !== "" )
+    {
+        messageapikey += "&apikey=";
+        messageapikey += apikeyValue;
+    }
+    else
+    {
+        messageapikey += "&user=";
+        messageapikey += userValue;
+
+        messageapikey += "&pw=";
+        messageapikey += pwValue;
+    }
+
+    //console.log( messageapikey ); //this is full API command
+    $("#commandapikey").val( messageapikey );
+
+    //document.getElementById("user_form").action = messageapikey;
+    document.user_form.action = messageapikey;
+    //console.log( 'action set');
+}
 function updateActionFiltersyntax( selectedScript, Idx, ActionIdx, FilterIdx) {
     var selectedAction;
     var selectedFilter;
@@ -636,7 +717,6 @@ function uploadButton( )
     document.getElementById("user_form").action = message;
     document.getElementById("user_form").submit();
 }
-
 
 
 function deleteColumn( column, Idx )

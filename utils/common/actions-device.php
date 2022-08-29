@@ -972,7 +972,9 @@ DeviceCallContext::$supportedActions['exportLicenseToExcel'] = array(
                     {
                         #print $node->nodeName." : ".$node->textContent."\n";
                         $tmp_node = $node->textContent;
-                        $context->device_array[ $tmp_node ][ $node->nodeName ] = $tmp_node;
+                        #$tmp_key = $tmp_node;
+                        $tmp_key = $serial_no;
+                        $context->device_array[ $tmp_key ][ $node->nodeName ] = $tmp_node;
 
                         if( $node->childNodes->length > 1 )
                         {
@@ -985,7 +987,7 @@ DeviceCallContext::$supportedActions['exportLicenseToExcel'] = array(
                                 if( $child->nodeName == "entry" )
                                 {
                                     $tmp_node = $child->textContent;
-                                    $context->device_array[ $tmp_node ][ $child->getAttribute('name') ] = $tmp_node;
+                                    $context->device_array[ $tmp_key ][ $child->getAttribute('name') ] = $tmp_node;
                                 }
                             }
                         }

@@ -461,4 +461,14 @@ RQuery::$defaultFilters['zone']['zpp']['operators']['is'] = array(
         'input' => 'input/panorama-8.0.xml'
     )
 );
+RQuery::$defaultFilters['zone']['userid']['operators']['is.enabled'] = array(
+    'Function' => function (ZoneRQueryContext $context) {
+        return $context->object->userID;
+    },
+    'arg' => FALSE,
+    'ci' => array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 // </editor-fold>

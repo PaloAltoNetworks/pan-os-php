@@ -153,7 +153,7 @@ class PH
 
     private static $library_version_major = 2;
     private static $library_version_sub = 0;
-    private static $library_version_bugfix = 55;
+    private static $library_version_bugfix = 56;
 
     //BASIC AUTH PAN-OS 7.1
     public static $softwareupdate_key = "658d787f293e631196dac9fb29490f1cc1bb3827";
@@ -961,16 +961,16 @@ class PH
         "html-merger"
     );
 
-    public static function callPANOSPHP( $type, $argv, $argc, $PHP_FILE )
+    public static function callPANOSPHP( $type, $argv, $argc, $PHP_FILE, $_supportedArguments = array(), $_usageMsg = "", $projectfolder = "" )
     {
         if( $type == "rule" )
-            $util = new RULEUTIL($type, $argv, $argc,$PHP_FILE." type=".$type);
+            $util = new RULEUTIL($type, $argv, $argc,$PHP_FILE." type=".$type, $_supportedArguments, $_usageMsg, $projectfolder);
 
         elseif( $type == "stats" )
-            $util = new STATSUTIL( $type, $argv, $argc,$PHP_FILE." type=".$type);
+            $util = new STATSUTIL( $type, $argv, $argc,$PHP_FILE." type=".$type, $_supportedArguments, $_usageMsg, $projectfolder);
 
         elseif( $type == "securityprofile" )
-            $util = new SECURITYPROFILEUTIL($type, $argv, $argc,$PHP_FILE." type=".$type);
+            $util = new SECURITYPROFILEUTIL($type, $argv, $argc,$PHP_FILE." type=".$type, $_supportedArguments, $_usageMsg, $projectfolder);
 
         elseif( $type == "zone"
             || $type == "interface"
@@ -978,13 +978,13 @@ class PH
             || $type == "virtualwire"
             || $type == "dhcp"
         )
-            $util = new NETWORKUTIL($type, $argv, $argc,$PHP_FILE." type=".$type);
+            $util = new NETWORKUTIL($type, $argv, $argc,$PHP_FILE." type=".$type, $_supportedArguments, $_usageMsg, $projectfolder);
 
         elseif( $type == "device" )
-            $util = new DEVICEUTIL($type, $argv, $argc,$PHP_FILE." type=".$type);
+            $util = new DEVICEUTIL($type, $argv, $argc,$PHP_FILE." type=".$type, $_supportedArguments, $_usageMsg, $projectfolder);
 
         elseif( $type == "key-manager" )
-            $util = new KEYMANGER($type, $argv, $argc,$PHP_FILE." type=".$type);
+            $util = new KEYMANGER($type, $argv, $argc,$PHP_FILE." type=".$type, $_supportedArguments, $_usageMsg, $projectfolder);
 
         elseif( $type == "address-merger"
             || $type == "addressgroup-merger"
@@ -992,39 +992,39 @@ class PH
             || $type == "servicegroup-merger"
             || $type == "tag-merger"
         )
-            $util = new MERGER($type, $argv, $argc,$PHP_FILE." type=".$type);
+            $util = new MERGER($type, $argv, $argc,$PHP_FILE." type=".$type, $_supportedArguments, $_usageMsg, $projectfolder);
 
         elseif( $type == "rule-merger" )
-            $util = new RULEMERGER($type, $argv, $argc,$PHP_FILE." type=".$type );
+            $util = new RULEMERGER($type, $argv, $argc,$PHP_FILE." type=".$type, $_supportedArguments, $_usageMsg, $projectfolder);
 
         elseif( $type == "override-finder" )
-            $util = new OVERRIDEFINDER($type, $argv, $argc,$PHP_FILE." type=".$type);
+            $util = new OVERRIDEFINDER($type, $argv, $argc,$PHP_FILE." type=".$type, $_supportedArguments, $_usageMsg, $projectfolder);
         elseif( $type == "diff" )
-            $util = new DIFF($type, $argv, $argc,$PHP_FILE." type=".$type);
+            $util = new DIFF($type, $argv, $argc,$PHP_FILE." type=".$type, $_supportedArguments, $_usageMsg, $projectfolder);
         elseif( $type == "upload" )
-            $util = new UPLOAD($type, $argv, $argc,$PHP_FILE." type=".$type);
+            $util = new UPLOAD($type, $argv, $argc,$PHP_FILE." type=".$type, $_supportedArguments, $_usageMsg, $projectfolder);
         elseif( $type == "xml-issue" )
-            $util = new XMLISSUE($type, $argv, $argc,$PHP_FILE." type=".$type);
+            $util = new XMLISSUE($type, $argv, $argc,$PHP_FILE." type=".$type, $_supportedArguments, $_usageMsg, $projectfolder);
 
         elseif( $type == "appid-enabler" )
-            $util = new APPIDENABLER($type, $argv, $argc,$PHP_FILE." type=".$type);
+            $util = new APPIDENABLER($type, $argv, $argc,$PHP_FILE." type=".$type, $_supportedArguments, $_usageMsg, $projectfolder);
         elseif( $type == "config-size" )
-            $util = new CONFIGSIZE($type, $argv, $argc,$PHP_FILE." type=".$type);
+            $util = new CONFIGSIZE($type, $argv, $argc,$PHP_FILE." type=".$type, $_supportedArguments, $_usageMsg, $projectfolder);
 
         elseif( $type == "download-predefined" )
-            $util = new PREDEFINED($type, $argv, $argc,$PHP_FILE." type=".$type);
+            $util = new PREDEFINED($type, $argv, $argc,$PHP_FILE." type=".$type, $_supportedArguments, $_usageMsg, $projectfolder);
 
         elseif( $type == "register-ip-mgr" )
-            $util = new REGISTERIP($type, $argv, $argc,$PHP_FILE." type=".$type );
+            $util = new REGISTERIP($type, $argv, $argc,$PHP_FILE." type=".$type, $_supportedArguments, $_usageMsg, $projectfolder);
 
         elseif( $type == "userid-mgr" )
-            $util = new USERIDMGR($type, $argv, $argc,$PHP_FILE." type=".$type);
+            $util = new USERIDMGR($type, $argv, $argc,$PHP_FILE." type=".$type, $_supportedArguments, $_usageMsg, $projectfolder);
 
         elseif( $type == "xml-op-json" )
-            $util = new XMLOPJSON($type, $argv, $argc,$PHP_FILE." type=".$type );
+            $util = new XMLOPJSON($type, $argv, $argc,$PHP_FILE." type=".$type, $_supportedArguments, $_usageMsg, $projectfolder);
 
         elseif( $type == "bpa-generator" )
-            $util = new BPAGENERATOR($type, $argv, $argc,$PHP_FILE." type=".$type);
+            $util = new BPAGENERATOR($type, $argv, $argc,$PHP_FILE." type=".$type, $_supportedArguments, $_usageMsg, $projectfolder);
 
         elseif( $type == "playbook" )
             $util = new PLAYBOOK__( $argv, $argc );
@@ -1042,36 +1042,36 @@ class PH
             $util = new PROTOCOLL_NUMBERS__( );
 
         elseif( $type == "software-remove" )
-            $util = new SOFTWAREREMOVE($type, $argv, $argc,$PHP_FILE." type=".$type);
+            $util = new SOFTWAREREMOVE($type, $argv, $argc,$PHP_FILE." type=".$type, $_supportedArguments, $_usageMsg, $projectfolder);
 
         elseif( $type == "traffic-log" )
-            $util = new TRAFFICLOG($type, $argv, $argc,$PHP_FILE." type=".$type);
+            $util = new TRAFFICLOG($type, $argv, $argc,$PHP_FILE." type=".$type, $_supportedArguments, $_usageMsg, $projectfolder);
 
         elseif( $type == "system-log" )
-            $util = new SYSTEMLOG($type, $argv, $argc,$PHP_FILE." type=".$type);
+            $util = new SYSTEMLOG($type, $argv, $argc,$PHP_FILE." type=".$type, $_supportedArguments, $_usageMsg, $projectfolder);
 
         elseif( $type == "gratuitous-arp" )
-            $util = new GARPSEND($type, $argv, $argc,$PHP_FILE." type=".$type);
+            $util = new GARPSEND($type, $argv, $argc,$PHP_FILE." type=".$type, $_supportedArguments, $_usageMsg, $projectfolder);
 
         elseif( $type == "software-download" )
-            $util = new SOFTWARE_DOWNLOAD($type, $argv, $argc,$PHP_FILE." type=".$type);
+            $util = new SOFTWARE_DOWNLOAD($type, $argv, $argc,$PHP_FILE." type=".$type, $_supportedArguments, $_usageMsg, $projectfolder);
 
         elseif( $type == "software-preparation" )
-            #$util = new SOFTWARE_PREPARATION__($type, $argv, $argc,$PHP_FILE." type=".$type);
+            #$util = new SOFTWARE_PREPARATION__($type, $argv, $argc,$PHP_FILE." type=".$type, $_supportedArguments, $_usageMsg, $projectfolder);
             $util = new SOFTWARE_PREPARATION__( $argv, $argc );
 
         elseif( $type == "license" )
-            #$util = new SOFTWARE_PREPARATION__($type, $argv, $argc,$PHP_FILE." type=".$type);
+            #$util = new SOFTWARE_PREPARATION__($type, $argv, $argc,$PHP_FILE." type=".$type, $_supportedArguments, $_usageMsg, $projectfolder);
             $util = new LICENSE__( $argv, $argc );
 
         elseif( $type == "config-download-all" )
-            $util = new CONFIG_DOWNLOAD_ALL__($type, $argv, $argc,$PHP_FILE." type=".$type);
+            $util = new CONFIG_DOWNLOAD_ALL__($type, $argv, $argc,$PHP_FILE." type=".$type, $_supportedArguments, $_usageMsg, $projectfolder);
 
         elseif( $type == "spiffy" )
             $util = new SPIFFY__( $argv, $argc );
 
         elseif( $type == "config-commit" )
-            $util = new CONFIG_COMMIT__( $type, $argv, $argc,$PHP_FILE." type=".$type);
+            $util = new CONFIG_COMMIT__( $type, $argv, $argc,$PHP_FILE." type=".$type, $_supportedArguments, $_usageMsg, $projectfolder);
 
         elseif( $type == "html-merger" )
             $util = new HTMLmerger__( $argv, $argc);
@@ -1084,7 +1084,7 @@ class PH
             || $type == 'application'
             || $type == 'threat'
         )
-            $util = new UTIL($type, $argv, $argc,$PHP_FILE." type=".$type);
+            $util = new UTIL($type, $argv, $argc,$PHP_FILE." type=".$type, $_supportedArguments, $_usageMsg, $projectfolder);
 
         $util->endOfScript();
 

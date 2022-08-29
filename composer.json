@@ -20,6 +20,7 @@
       "ext-curl": "*",
       "ext-dom": "*",
       "ext-mbstring": "*",
-      "ext-bcmath": "*"
+      "ext-bcmath": "*",
+      "ext-mysqli": "*"
     }
 }

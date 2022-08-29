@@ -1502,10 +1502,6 @@ var subjectObject =
                 "MainFunction": {},
                 "GlobalFinishFunction": {},
                 "args": {
-                    "serial": {
-                        "type": "string",
-                        "default": "false"
-                    },
                     "force": {
                         "type": "bool",
                         "default": "false",
@@ -1635,6 +1631,10 @@ var subjectObject =
                             "fString": "(%PROP% \/-group\/)",
                             "input": "input\/panorama-8.0.xml"
                         }
+                    },
+                    "is.in.file": {
+                        "Function": {},
+                        "arg": true
                     }
                 }
             },
@@ -4054,6 +4054,26 @@ var subjectObject =
                             "fString": "(%PROP% 443)",
                             "input": "input\/panorama-8.0.xml"
                         }
+                    },
+                    "timeout.is.set": {
+                        "Function": {},
+                        "arg": false,
+                        "ci": {
+                            "fString": "(%PROP%)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    }
+                }
+            },
+            "service.object.count": {
+                "operators": {
+                    ">,<,=,!": {
+                        "Function": {},
+                        "arg": true,
+                        "ci": {
+                            "fString": "(%PROP% 443)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
                     }
                 }
             },
@@ -5542,11 +5562,13 @@ var subjectObject =
                 "name": "description-Append",
                 "MainFunction": {},
                 "args": {
-                    "text": {
+                    "stringFormula": {
                         "type": "string",
-                        "default": "*nodefault*"
+                        "default": "*nodefault*",
+                        "help": "This string is used to compose a name. You can use the following aliases :\n  - $$current.name$$ : current name of the object\n"
                     }
-                }
+                },
+                "help": ""
             },
             "description-delete": {
                 "name": "description-Delete",
@@ -5778,6 +5800,10 @@ var subjectObject =
                         "default": "*nodefault*"
                     }
                 }
+            },
+            "timeout-inherit": {
+                "name": "timeout-inherit",
+                "MainFunction": {}
             },
             "timeout-set": {
                 "name": "timeout-set",
@@ -6957,6 +6983,16 @@ var subjectObject =
                     }
                 }
             },
+            "userid-enable": {
+                "name": "UserID-enable",
+                "MainFunction": {},
+                "args": {
+                    "enable": {
+                        "type": "bool",
+                        "default": "TRUE"
+                    }
+                }
+            },
             "zpp-set": {
                 "name": "zpp-Set",
                 "MainFunction": {},
@@ -7139,6 +7175,18 @@ var subjectObject =
                         "arg": true,
                         "ci": {
                             "fString": "(%PROP% securityrule )",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    }
+                }
+            },
+            "userid": {
+                "operators": {
+                    "is.enabled": {
+                        "Function": {},
+                        "arg": false,
+                        "ci": {
+                            "fString": "(%PROP%)",
                             "input": "input\/panorama-8.0.xml"
                         }
                     }

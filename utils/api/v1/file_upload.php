@@ -1,4 +1,19 @@
 <?php
+
+session_start();
+include "../../develop/ui/test/db_conn.php";
+if( isset($_SESSION['folder']) && isset($_SESSION['id']) )
+{
+    $panconfkeystoreFILE = $_SESSION['folder']."/.panconfkeystore";
+    $projectFOLDER = $_SESSION['folder'];
+}
+else
+{
+    $tmpFOLDER = '/../../api/v1/project';
+    $panconfkeystoreFILE = dirname(__FILE__) . $tmpFOLDER.'/.panconfkeystore';
+    $projectFOLDER = dirname(__FILE__) . $tmpFOLDER;
+}
+
 /**
  * ISC License
  *
@@ -23,7 +38,7 @@ header('Content-Type: application/json; charset=utf-8');
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: PUT, GET, POST");
 $response = array();
-$upload_dir = 'project/';
+
 
 if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
     $server_url = "https://";
@@ -45,7 +60,7 @@ if($_FILES['configInput'])
     }else
     {
         $random_name = rand(1000,1000000)."-".$avatar_name;
-        $upload_name = $upload_dir.strtolower($random_name);
+        $upload_name = $projectFOLDER."/".strtolower($random_name);
         $upload_name = preg_replace('/\s+/', '-', $upload_name);
         if(move_uploaded_file($avatar_tmp_name , $upload_name)) {
             $response = array(

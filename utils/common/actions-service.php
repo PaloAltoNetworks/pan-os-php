@@ -1294,7 +1294,17 @@ ServiceCallContext::$supportedActions[] = array(
         $textToAppend = "";
         if( $description != "" )
             $textToAppend = " ";
-        $textToAppend .= $context->rawArguments['text'];
+
+        $newName = $context->arguments['stringFormula'];
+
+        if( strpos($newName, '$$current.name$$') !== FALSE )
+        {
+            $textToAppend .= str_replace('$$current.name$$', $service->name(), $newName);
+        }
+        else
+        {
+            $textToAppend .= $newName;
+        }
 
         if( $context->object->owner->owner->version < 71 )
             $max_length = 253;
@@ -1316,7 +1326,15 @@ ServiceCallContext::$supportedActions[] = array(
         $text .= "OK";
         PH::ACTIONlog( $context, $text );
     },
-    'args' => array('text' => array('type' => 'string', 'default' => '*nodefault*'))
+    'args' => array(
+        'stringFormula' => array(
+            'type' => 'string',
+            'default' => '*nodefault*',
+            'help' =>
+                "This string is used to compose a name. You can use the following aliases :\n" .
+                "  - \$\$current.name\$\$ : current name of the object\n")
+    ),
+    'help' => ''
 );
 ServiceCallContext::$supportedActions[] = array(
     'name' => 'description-Delete',
@@ -1379,6 +1397,44 @@ ServiceCallContext::$supportedActions[] = array(
         }
     },
     'args' => array('timeoutValue' => array('type' => 'string', 'default' => '*nodefault*')),
+);
+ServiceCallContext::$supportedActions[] = array(
+    'name' => 'timeout-inherit',
+    'MainFunction' => function (ServiceCallContext $context) {
+        $object = $context->object;
+
+        $class = get_class($object);
+        if( $class === 'ServiceGroup' )
+        {
+            $string = "because object is ServiceGroup";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return null;
+        }
+
+        if( $object->overrideroot !== FALSE )
+        {
+            $override_noyes = DH::findFirstElement('yes', $object->overrideroot);
+            if( $override_noyes !== FALSE )
+            {
+                if( $context->isAPI )
+                    $ret = $object->API_removeTimeout();
+                else
+                    $ret = $object->removeTimeout();
+
+                if( !$ret )
+                {
+                    $string = "because timeout is not set";
+                    PH::ACTIONstatus( $context, "SKIPPED", $string );
+                    return null;
+                }
+                else
+                {
+                    $string = "timeout removed - now inherit from application";
+                    PH::ACTIONlog( $context, $string );
+                }
+            }
+        }
+    }
 );
 ServiceCallContext::$supportedActions[] = array(
     'name' => 'sourceport-set',
