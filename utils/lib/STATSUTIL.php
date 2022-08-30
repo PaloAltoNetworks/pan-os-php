@@ -53,40 +53,40 @@ class STATSUTIL extends RULEUTIL
 
         if( isset(PH::$args['exportcsv'])  )
         {
-            if( !isset(PH::$args['location']) )
+            $this->exportcsvFile = PH::$args['exportcsv'];
+
+            if( $this->projectFolder !== null )
+                $this->exportcsvFile = $this->projectFolder."/".$this->exportcsvFile;
+
+            if( !isset(PH::$args['location']) || (isset(PH::$args['location']) && PH::$args['location'] === 'shared') )
+            {}
+            elseif( isset(PH::$args['location']) )
             {
-                $this->exportcsvFile = PH::$args['exportcsv'];
-
-                if( $this->projectFolder !== null )
-                    $this->exportcsvFile = $this->projectFolder."/".$this->exportcsvFile;
-
-                //not working because jq can not handling this
-                #$string = json_encode( PH::$JSON_TMP, JSON_PRETTY_PRINT|JSON_FORCE_OBJECT );
-                $string = json_encode( PH::$JSON_TMP, JSON_PRETTY_PRINT );
-
-
-                $jqFile = dirname(__FILE__)."/json2csv.jq";
-
-                //store string into tmp file:
-                $tmpJsonFile = $this->exportcsvFile."tmp_jq_string.json";
-                file_put_contents($tmpJsonFile, $string);
-
-                #$cli = "jq -rf $jqFile <<< $string >> ".$this->exportcsvFile;
-                #$cli = "jq -rf $jqFile <<< \"$string\" >> ".$this->exportcsvFile;
-                #$cli = "jq -rf $jqFile <echo \"$string\") >> ".$this->exportcsvFile;
-                //jq '.key' <(echo \"$json_data\")
-
-                ##working
-                $cli = "jq -rf $jqFile $tmpJsonFile >> ".$this->exportcsvFile;
-
-                #$cli = "echo \"$string\" | jq -rf $jqFile >> ".$this->exportcsvFile;
-
-                exec($cli, $output, $retValue);
-
-                unlink($tmpJsonFile);
+                unset( PH::$JSON_TMP[0] );
             }
-            else
-                mwarning( "exportcsv is right now only supported without argument location=... ", null, false );
+
+            PH::$JSON_TMP = array_values(PH::$JSON_TMP);
+            $string = json_encode( PH::$JSON_TMP, JSON_PRETTY_PRINT );
+
+            #$string = json_encode( PH::$JSON_TMP, JSON_PRETTY_PRINT|JSON_FORCE_OBJECT );
+            #$string = "[".$string."]";
+            #print $string;
+
+            $jqFile = dirname(__FILE__)."/json2csv.jq";
+
+            //store string into tmp file:
+            $tmpJsonFile = $this->exportcsvFile."tmp_jq_string.json";
+            file_put_contents($tmpJsonFile, $string);
+
+            if( file_exists($this->exportcsvFile) )
+                unlink($this->exportcsvFile);
+
+            ##working
+            $cli = "jq -rf $jqFile $tmpJsonFile >> ".$this->exportcsvFile;
+            #$cli = "echo \"$string\" | jq -rf $jqFile >> ".$this->exportcsvFile;
+            exec($cli, $output, $retValue);
+
+            unlink($tmpJsonFile);
         }
 
 

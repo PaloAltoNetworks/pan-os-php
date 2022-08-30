@@ -871,6 +871,7 @@ class DeviceGroup
         $stdoutarray['address objects']['address'] = $this->addressStore->countAddresses();
         $stdoutarray['address objects']['group'] = $this->addressStore->countAddressGroups();
         $stdoutarray['address objects']['tmp'] = $this->addressStore->countTmpAddresses();
+        $stdoutarray['address objects']['region'] = $this->addressStore->countRegionObjects();
         $stdoutarray['address objects']['unused'] = $this->addressStore->countUnused();
 
         $stdoutarray['service objects'] = array();
@@ -886,17 +887,6 @@ class DeviceGroup
 
         $stdoutarray['securityProfileGroup objects'] = array();
         $stdoutarray['securityProfileGroup objects']['total'] = $this->securityProfileGroupStore->count();
-
-        /*
-        $stdoutarray['securityProfile objects'] = array();
-        $stdoutarray['securityProfile objects']['Anti-Spyware'] = $this->AntiSpywareProfileStore->count();
-        $stdoutarray['securityProfile objects']['Vulnerability'] = $this->VulnerabilityProfileStore->count();
-        $stdoutarray['securityProfile objects']['Antivirus'] = $this->AntiVirusProfileStore->count();
-        $stdoutarray['securityProfile objects']['Wildfire'] = $this->WildfireProfileStore->count();
-        $stdoutarray['securityProfile objects']['URL'] = $this->URLProfileStore->count();
-        $stdoutarray['securityProfile objects']['File-Blocking'] = $this->FileBlockingProfileStore->count();
-        $stdoutarray['securityProfile objects']['Decryption'] = $this->DecryptionProfileStore->count();
-        */
 
         $stdoutarray['Anti-Spyware objects'] = array();
         $stdoutarray['Anti-Spyware objects']['total'] = $this->AntiSpywareProfileStore->count();
@@ -919,7 +909,8 @@ class DeviceGroup
         #$stdoutarray['apps'] = $this->appStore->count();
 
 
-        PH::$JSON_TMP[$this->name] = $stdoutarray;
+        #PH::$JSON_TMP[$this->name] = $stdoutarray;
+        PH::$JSON_TMP[] = $stdoutarray;
 
         if( !PH::$shadow_json )
             PH::print_stdout( $stdoutarray, true );

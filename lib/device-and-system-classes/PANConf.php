@@ -770,6 +770,7 @@ class PANConf
         $gnaddressGs = $this->addressStore->countAddressGroups();
         $gnaddressGsUnused = $this->addressStore->countUnusedAddressGroups();
         $gnTmpAddresses = $this->addressStore->countTmpAddresses();
+        $gnRegionAddresses = $this->addressStore->countRegionObjects();
 
         $numInterfaces = $this->network->ipsecTunnelStore->count() + $this->network->ethernetIfStore->count();
         $numSubInterfaces = $this->network->ethernetIfStore->countSubInterfaces();
@@ -803,6 +804,7 @@ class PANConf
             $gnaddressGs += $vsys->addressStore->countAddressGroups();
             $gnaddressGsUnused += $vsys->addressStore->countUnusedAddressGroups();
             $gnTmpAddresses += $vsys->addressStore->countTmpAddresses();
+            $gnRegionAddresses = $vsys->addressStore->countRegionObjects();
 
             $gTagCount += $vsys->tagStore->count();
             $gTagUnusedCount += $vsys->tagStore->countUnused();
@@ -830,6 +832,7 @@ class PANConf
                 $gnaddressGs += $vsys->parentDeviceGroup->addressStore->countAddressGroups();
                 $gnaddressGsUnused += $vsys->parentDeviceGroup->addressStore->countUnusedAddressGroups();
                 $gnTmpAddresses += $vsys->parentDeviceGroup->addressStore->countTmpAddresses();
+                $gnRegionAddresses += $vsys->parentDeviceGroup->addressStore->countRegionObjects();
 
                 $gTagCount += $vsys->parentDeviceGroup->tagStore->count();
                 $gTagUnusedCount += $vsys->parentDeviceGroup->tagStore->countUnused();
@@ -887,6 +890,9 @@ class PANConf
         $stdoutarray['temporary address objects']['shared'] = $this->addressStore->countAddresses();
         $stdoutarray['temporary address objects']['total VSYSs'] = $gnTmpAddresses;
 
+        $stdoutarray['region objects'] = array();
+        $stdoutarray['region objects']['shared'] = $this->addressStore->countRegionObjects();
+        $stdoutarray['region objects']['total VSYSs'] = $gnRegionAddresses;
 
         $stdoutarray['service objects'] = array();
         $stdoutarray['service objects']['shared'] = $this->serviceStore->countServices();
@@ -920,15 +926,13 @@ class PANConf
         $stdoutarray['sub-interfaces']['ethernet'] = $this->network->ethernetIfStore->countSubInterfaces();
 
 
-        $connector = findConnector( $this );
-        if( $connector == null )
-            PH::$JSON_TMP[] = $stdoutarray;
-        else
-            PH::$JSON_TMP[ $connector->info_serial ] = $stdoutarray;
+
+        PH::$JSON_TMP[] = $stdoutarray;
 
 
         if( !PH::$shadow_json )
             PH::print_stdout( $stdoutarray, true );
+
 
 
     }

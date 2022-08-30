@@ -1225,6 +1225,7 @@ class PanoramaConf
         $gnaddressGs = $this->addressStore->countAddressGroups();
         $gnaddressGsUnused = $this->addressStore->countUnusedAddressGroups();
         $gnTmpAddresses = $this->addressStore->countTmpAddresses();
+        $gnRegionAddresses = $this->addressStore->countRegionObjects();
 
         $gTagCount = $this->tagStore->count();
         $gTagUnusedCount = $this->tagStore->countUnused();
@@ -1273,6 +1274,7 @@ class PanoramaConf
             $gnaddressGs += $cur->addressStore->countAddressGroups();
             $gnaddressGsUnused += $cur->addressStore->countUnusedAddressGroups();
             $gnTmpAddresses += $cur->addressStore->countTmpAddresses();
+            $gnRegionAddresses += $cur->addressStore->countRegionObjects();
 
             $gTagCount += $cur->tagStore->count();
             $gTagUnusedCount += $cur->tagStore->countUnused();
@@ -1393,6 +1395,9 @@ class PanoramaConf
         $stdoutarray['temporary address objects']['shared'] = $this->addressStore->countTmpAddresses();
         $stdoutarray['temporary address objects']['total_DGs'] = $gnTmpAddresses;
 
+        $stdoutarray['region objects'] = array();
+        $stdoutarray['region objects']['shared'] = $this->addressStore->countRegionObjects();
+        $stdoutarray['region objects']['total_DGs'] = $gnRegionAddresses;
 
         $stdoutarray['service objects'] = array();
         $stdoutarray['service objects']['shared'] = $this->serviceStore->countServices();
@@ -1457,12 +1462,97 @@ class PanoramaConf
         $stdoutarray['sub-interfaces']['ethernet'] = $this->network->ethernetIfStore->countSubInterfaces();
         */
 
+        #PH::$JSON_TMP['all'] = $stdoutarray;
+        PH::$JSON_TMP[] = $stdoutarray;
 
-        $connector = findConnector( $this );
-        if( $connector == null )
-            PH::$JSON_TMP[$this->name] = $stdoutarray;
-        else
-            PH::$JSON_TMP[ $connector->info_serial ] = $stdoutarray;
+        if( !PH::$shadow_json )
+            PH::print_stdout( $stdoutarray, true );
+
+        //-----------------
+        $stdoutarray = array();
+
+        $stdoutarray['type'] = get_class( $this );
+
+        $header = "Statistics for DG '" . PH::boldText('shared') . "'";
+        $stdoutarray['header'] = $header;
+
+        $stdoutarray['security rules'] = array();
+        $stdoutarray['security rules']['pre'] = $this->securityRules->countPreRules();
+        $stdoutarray['security rules']['post'] = $this->securityRules->countPostRules();
+
+        $stdoutarray['nat rules'] = array();
+        $stdoutarray['nat rules']['pre'] = $this->natRules->countPreRules();
+        $stdoutarray['nat rules']['post'] = $this->natRules->countPostRules();
+
+        $stdoutarray['qos rules'] = array();
+        $stdoutarray['qos rules']['pre'] = $this->qosRules->countPreRules();
+        $stdoutarray['qos rules']['post'] = $this->qosRules->countPostRules();
+
+        $stdoutarray['pbf rules'] = array();
+        $stdoutarray['pbf rules']['pre'] = $this->pbfRules->countPreRules();
+        $stdoutarray['pbf rules']['post'] = $this->pbfRules->countPostRules();
+
+        $stdoutarray['decrypt rules'] = array();
+        $stdoutarray['decrypt rules']['pre'] = $this->decryptionRules->countPreRules();
+        $stdoutarray['decrypt rules']['post'] = $this->decryptionRules->countPostRules();
+
+        $stdoutarray['app-override rules'] = array();
+        $stdoutarray['app-override rules']['pre'] = $this->appOverrideRules->countPreRules();
+        $stdoutarray['app-override rules']['post'] = $this->appOverrideRules->countPostRules();
+
+        $stdoutarray['captive-portal rules'] = array();
+        $stdoutarray['captive-portal rules']['pre'] = $this->captivePortalRules->countPreRules();
+        $stdoutarray['captive-portal rules']['post'] = $this->captivePortalRules->countPostRules();
+
+        $stdoutarray['authentication rules'] = array();
+        $stdoutarray['authentication rules']['pre'] = $this->authenticationRules->countPreRules();
+        $stdoutarray['authentication rules']['post'] = $this->authenticationRules->countPostRules();
+
+        $stdoutarray['dos rules'] = array();
+        $stdoutarray['dos rules']['pre'] = $this->dosRules->countPreRules();
+        $stdoutarray['dos rules']['post'] = $this->dosRules->countPostRules();
+
+        $stdoutarray['address objects'] = array();
+        $stdoutarray['address objects']['total'] = $this->addressStore->count();
+        $stdoutarray['address objects']['address'] = $this->addressStore->countAddresses();
+        $stdoutarray['address objects']['group'] = $this->addressStore->countAddressGroups();
+        $stdoutarray['address objects']['tmp'] = $this->addressStore->countTmpAddresses();
+        $stdoutarray['address objects']['region'] = $this->addressStore->countRegionObjects();
+        $stdoutarray['address objects']['unused'] = $this->addressStore->countUnused();
+
+        $stdoutarray['service objects'] = array();
+        $stdoutarray['service objects']['total'] = $this->serviceStore->count();
+        $stdoutarray['service objects']['service'] = $this->serviceStore->countServices();
+        $stdoutarray['service objects']['group'] = $this->serviceStore->countServiceGroups();
+        $stdoutarray['service objects']['tmp'] = $this->serviceStore->countTmpServices();
+        $stdoutarray['service objects']['unused'] = $this->serviceStore->countUnused();
+
+        $stdoutarray['tag objects'] = array();
+        $stdoutarray['tag objects']['total'] = $this->tagStore->count();
+        $stdoutarray['tag objects']['unused'] = $this->tagStore->countUnused();
+
+        $stdoutarray['securityProfileGroup objects'] = array();
+        $stdoutarray['securityProfileGroup objects']['total'] = $this->securityProfileGroupStore->count();
+
+        $stdoutarray['Anti-Spyware objects'] = array();
+        $stdoutarray['Anti-Spyware objects']['total'] = $this->AntiSpywareProfileStore->count();
+        $stdoutarray['Vulnerability objects'] = array();
+        $stdoutarray['Vulnerability objects']['total'] = $this->VulnerabilityProfileStore->count();
+        $stdoutarray['Antivirus objects'] = array();
+        $stdoutarray['Antivirus objects']['total'] = $this->AntiVirusProfileStore->count();
+        $stdoutarray['Wildfire objects'] = array();
+        $stdoutarray['Wildfire objects']['total'] = $this->WildfireProfileStore->count();
+        $stdoutarray['URL objects'] = array();
+        $stdoutarray['URL objects']['total'] = $this->URLProfileStore->count();
+        $stdoutarray['custom URL objects'] = array();
+        $stdoutarray['custom URL objects']['total'] = $this->customURLProfileStore->count();
+        $stdoutarray['File-Blocking objects'] = array();
+        $stdoutarray['File-Blocking objects']['total'] = $this->FileBlockingProfileStore->count();
+        $stdoutarray['Decryption objects'] = array();
+        $stdoutarray['Decryption objects']['total'] = $this->DecryptionProfileStore->count();
+
+        #PH::$JSON_TMP['shared'] = $stdoutarray;
+        PH::$JSON_TMP[] = $stdoutarray;
 
         if( !PH::$shadow_json )
             PH::print_stdout( $stdoutarray, true );

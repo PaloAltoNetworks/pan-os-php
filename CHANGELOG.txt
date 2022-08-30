@@ -4,6 +4,7 @@ CHANGELOG
 UTIL:
 * type=rule | introduce new 'filter=(uuid eq 1234567890)'
 * type=rule | introduce 'actions=name-rename:$$current.name$$-$$uuid$$'
+* type=stats | improvement to get exportcsv=file.csv working for argument location
 
 BUGFIX:
 * type=address/service | fix for actions=name-rename - to skip if string length > 63
