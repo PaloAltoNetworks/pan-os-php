@@ -352,7 +352,13 @@
 		public function commit($message, $options = NULL)
 		{
             if( $this->hasChanges() )
-	
+            {
+                /*
+                $this->run('commit', $params, [
+                    '-m' => $message,
+                ]);
+                */
+            }
             else
                 print "nothing to commit, working tree clean\n";
 
