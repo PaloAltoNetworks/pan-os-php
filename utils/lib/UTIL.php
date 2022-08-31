@@ -1236,28 +1236,67 @@ class UTIL
         // Location Filter Processing
         //
 
-        // <editor-fold desc=" ****  Location Filter Processing  ****" defaultstate="collapsed" >
-        /**
-         * @var RuleStore[] $ruleStoresToProcess
-         */
-        $this->objectsLocation = explode(',', $this->objectsLocation);
-
-        foreach( $this->objectsLocation as $key => &$location )
+        if( strpos( $this->objectsLocation, "," ) !== FALSE )
         {
-            if( strtolower($location) == 'shared' )
-                $this->objectsLocation[$key] = 'shared';
-            else if( strtolower($location) == 'any' )
-                $this->objectsLocation[$key] = 'any';
-            else if( strtolower($location) == 'all' )
+            if( strpos( $this->objectsLocation, ":" ) !== FALSE )
+                derr( "location argument can only handle ',' or ':' not both", null, FALSE );
+            else
             {
-                if( $this->configType == 'fawkes' || $this->configType == 'buckbeak')
-                    $this->objectsLocation[$key] = 'All';
-                else
-                    $this->objectsLocation[$key] = 'any';
-            }
+                // <editor-fold desc=" ****  Location Filter Processing  ****" defaultstate="collapsed" >
+                /**
+                 * @var RuleStore[] $ruleStoresToProcess
+                 */
+                $this->objectsLocation = explode(',', $this->objectsLocation);
 
+                foreach( $this->objectsLocation as $key => &$location )
+                {
+                    if( strtolower($location) == 'shared' )
+                        $this->objectsLocation[$key] = 'shared';
+                    else if( strtolower($location) == 'any' )
+                        $this->objectsLocation[$key] = 'any';
+                    else if( strtolower($location) == 'all' )
+                    {
+                        if( $this->configType == 'fawkes' || $this->configType == 'buckbeak')
+                            $this->objectsLocation[$key] = 'All';
+                        else
+                            $this->objectsLocation[$key] = 'any';
+                    }
+
+                }
+                unset($location);
+            }
         }
-        unset($location);
+        elseif( strpos( $this->objectsLocation, ":" ) !== FALSE )
+        {
+            $loc_explode = explode( ":", $this->objectsLocation );
+
+            if( count( $loc_explode ) > 2 )
+                derr( "location argument with ':' found, can only handle one argument", null, FALSE );
+
+            $rootDG = $loc_explode[0];
+            $opt_argument = strtolower($loc_explode[1]);
+
+            $DG = $this->pan->findDeviceGroup( $rootDG );
+            $childDGs = $DG->childDeviceGroups( TRUE );
+
+            $this->objectsLocation = array();
+
+            $optArgArray = array( "includechilddgs", "excludemaindg" );
+            if( !in_array( $opt_argument, $optArgArray ) )
+                derr( "location has an optional argument which is not supported: '".$opt_argument."' - supported onces: ".implode( ", ", $optArgArray ), null, FALSE );
+
+            if( $opt_argument == "includechilddgs" )
+                $this->objectsLocation[] = $rootDG;
+            elseif( $opt_argument == "excludemaindg" )
+            {}
+
+            foreach( $childDGs as  $dgs )
+                $this->objectsLocation[] = $dgs->name();
+        }
+        else
+            $this->objectsLocation = explode(',', $this->objectsLocation);
+
+
 
         $this->objectsLocation = array_unique($this->objectsLocation);
         if( count( $this->objectsLocation ) == 1 )

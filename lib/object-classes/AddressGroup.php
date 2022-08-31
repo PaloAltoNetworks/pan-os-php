@@ -811,7 +811,7 @@ class AddressGroup
                 #if( isset( $ret[$serial] ) )
                 if( array_key_exists($serial, $grpArray) )
                 {
-                    mwarning("addressgroup with name: " . $object->name() . " is added as subgroup to servicegroup: " . $this->name() . ", you should review your XML config file", $object->xmlroot, false, false);
+                    mwarning("addressgroup with name: " . $object->name() . " is added as subgroup to addressgroup: " . $this->name() . ", you should review your XML config file", $object->xmlroot, false, false);
                     return $ret;
                 }
                 else
