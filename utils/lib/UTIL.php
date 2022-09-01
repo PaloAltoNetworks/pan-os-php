@@ -1277,6 +1277,9 @@ class UTIL
             $opt_argument = strtolower($loc_explode[1]);
 
             $DG = $this->pan->findDeviceGroup( $rootDG );
+            if( $DG === null )
+                $this->locationNotFound($rootDG);
+
             $childDGs = $DG->childDeviceGroups( TRUE );
 
             $this->objectsLocation = array();
