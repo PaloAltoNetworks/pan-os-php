@@ -18,6 +18,7 @@ BUGFIX:
 GENERAL:
 * class PanoramaConf | improve output if parentDG can not be calculated for DeviceGroup
 * update git-php
+* class AddressStore - revert group loop check
 
 
 2.0.56 (20220829)

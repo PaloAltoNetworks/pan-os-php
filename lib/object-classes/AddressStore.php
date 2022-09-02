@@ -873,6 +873,7 @@ class AddressStore
                             unset($tmpGroupDeps[$groupName]);
                     }
                 }
+                /*
                 elseif( count($groupDependencies) == 1 )
                 {
                     unset($sortingArray[$groupName]);
@@ -884,6 +885,7 @@ class AddressStore
                             unset($tmpGroupDeps[$groupName]);
                     }
                 }
+                */
             }
 
             $loopCount++;
