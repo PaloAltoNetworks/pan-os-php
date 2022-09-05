@@ -269,7 +269,7 @@ PH::print_stdout(" - the following actions are not tested:");
 print_r($missing_actionsArgument);
 
 PH::print_stdout();
-PH::print_stdout("\n*********** FINISHED TESTING FILTERS ************");
+PH::print_stdout("\n*********** FINISHED TESTING ACTIONS ************");
 PH::print_stdout("*************************************************\n");
 
 

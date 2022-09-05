@@ -125,6 +125,8 @@ class VirtualSystem
     /** @var RuleStore */
     public $tunnelInspectionRules;
 
+    /** @var RuleStore */
+    public $defaultSecurityRules = null;
 
     /** @var ZoneStore */
     public $zoneStore = null;
@@ -242,8 +244,11 @@ class VirtualSystem
         $this->dosRules = new RuleStore($this, 'DoSRule');
         $this->dosRules->name = 'DoS';
 
-        $this->tunnelInspectionRules = new RuleStore($this, 'TunnelInspectionRule', TRUE);
+        $this->tunnelInspectionRules = new RuleStore($this, 'TunnelInspectionRule');
         $this->tunnelInspectionRules->name = 'TunnelInspection';
+
+        $this->defaultSecurityRules = new RuleStore($this, 'DefaultSecurityRule', TRUE);
+        $this->defaultSecurityRules->name = 'DefaultSecurity';
 
         $this->dosRules->_networkStore = $this->owner->network;
         $this->pbfRules->_networkStore = $this->owner->network;
@@ -660,6 +665,17 @@ class VirtualSystem
                 $tmprulesroot = DH::findFirstElement('rules', $tmproot);
                 if( $tmprulesroot !== FALSE )
                     $this->tunnelInspectionRules->load_from_domxml($tmprulesroot);
+            }
+
+            //
+            // defaultSecurity Rules extraction
+            //
+            $tmproot = DH::findFirstElement('default-security-rules', $this->rulebaseroot);
+            if( $tmproot !== FALSE )
+            {
+                $tmprulesroot = DH::findFirstElement('rules', $tmproot);
+                if( $tmprulesroot !== FALSE )
+                    $this->defaultSecurityRules->load_from_domxml($tmprulesroot);
             }
         }
     }

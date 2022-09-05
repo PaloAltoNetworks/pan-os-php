@@ -177,7 +177,7 @@ foreach( $test_merger as $merger )
 }
 
 PH::print_stdout( "\n*****  *****" );
-#PH::print_stdout( " - Processed {$totalFilterCount} filters" );
+#PH::print_stdout( " - Processed {$totalFilterCount} actions" );
 #PH::print_stdout( " - Found {$totalFilterWithCiCount} that are CI enabled" );
 
 PH::print_stdout();

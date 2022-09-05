@@ -22,6 +22,9 @@
 class DoSRule extends RuleWithUserID
 {
     use NegatableRule;
+    use RuleWithSchedule;
+
+    protected $schedule = null;
 
     static public $templatexml = '<entry name="**temporarynamechangeme**"><from><zone></zone></from><to><zone></zone>></to>
 <protection/><source><member>any</member></source><destination><member>any</member></destination>
@@ -208,6 +211,8 @@ class DoSRule extends RuleWithUserID
         // End of <rule-type>
 
         $this->userID_loadUsersFromXml();
+
+        $this->schedule_loadFromXml();
     }
 
     public function action()
@@ -301,6 +306,12 @@ class DoSRule extends RuleWithUserID
         {
             PH::print_stdout( $padding . "  Desc:  " . $this->_description );
             PH::$JSON_TMP['sub']['object'][$this->name()]['description'] = $this->_description;
+        }
+
+        if( $this->schedule !== null )
+        {
+            PH::print_stdout( $padding . "  Schedule:  " . $this->schedule->name() );
+            PH::$JSON_TMP['sub']['object'][$this->name()]['schedule'][] = $this->schedule->name();
         }
 
         PH::print_stdout();

@@ -310,6 +310,7 @@ require_once $basedir . '/rule-classes/Rule.php';
 require_once $basedir . '/rule-classes/trait/NegatableRule.php';
 require_once $basedir . '/rule-classes/trait/RulewithLogging.php';
 require_once $basedir . '/rule-classes/RuleWithUserID.php';
+require_once $basedir . '/rule-classes/RuleWithSchedule.php';
 require_once $basedir . '/rule-classes/SecurityRule.php';
 require_once $basedir . '/rule-classes/NatRule.php';
 require_once $basedir . '/rule-classes/DecryptionRule.php';
@@ -320,6 +321,7 @@ require_once $basedir . '/rule-classes/PbfRule.php';
 require_once $basedir . '/rule-classes/QoSRule.php';
 require_once $basedir . '/rule-classes/DoSRule.php';
 require_once $basedir . '/rule-classes/TunnelInspectionRule.php';
+require_once $basedir . '/rule-classes/DefaultSecurityRule.php';
 
 if( isset( $_SERVER['REQUEST_METHOD'] ) )
 {

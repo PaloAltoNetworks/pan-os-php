@@ -3335,7 +3335,7 @@ RQuery::$defaultFilters['rule']['app']['operators']['has.missing.dependencies'] 
 RQuery::$defaultFilters['rule']['schedule']['operators']['is'] = array(
     'Function' => function (RuleRQueryContext $context) {
         $rule = $context->object;
-        if( !$rule->isSecurityRule() )
+        if( !$rule->isSecurityRule() && !$rule->isDoSRule() &&  !$rule->isPbfRule() && !$rule->isQoSRule() )
             return FALSE;
 
         $schedule = $rule->schedule();
@@ -3358,7 +3358,7 @@ RQuery::$defaultFilters['rule']['schedule']['operators']['is'] = array(
 RQuery::$defaultFilters['rule']['schedule']['operators']['is.set'] = array(
     'Function' => function (RuleRQueryContext $context) {
         $rule = $context->object;
-        if( !$rule->isSecurityRule() )
+        if( !$rule->isSecurityRule() && !$rule->isDoSRule() &&  !$rule->isPbfRule() && !$rule->isQoSRule() )
             return FALSE;
 
         $schedule = $rule->schedule();
@@ -3380,7 +3380,7 @@ RQuery::$defaultFilters['rule']['schedule']['operators']['is.set'] = array(
 RQuery::$defaultFilters['rule']['schedule']['operators']['has.regex'] = array(
     'Function' => function (RuleRQueryContext $context) {
         $rule = $context->object;
-        if( !$rule->isSecurityRule() )
+        if( !$rule->isSecurityRule() && !$rule->isDoSRule() &&  !$rule->isPbfRule() && !$rule->isQoSRule() )
             return FALSE;
 
         $schedule = $rule->schedule();
@@ -3408,7 +3408,7 @@ RQuery::$defaultFilters['rule']['schedule']['operators']['has.regex'] = array(
 RQuery::$defaultFilters['rule']['schedule']['operators']['is.expired'] = array(
     'Function' => function (RuleRQueryContext $context) {
         $rule = $context->object;
-        if( !$rule->isSecurityRule() )
+        if( !$rule->isSecurityRule() && !$rule->isDoSRule() &&  !$rule->isPbfRule() && !$rule->isQoSRule() )
             return FALSE;
 
         $schedule = $rule->schedule();
@@ -3429,7 +3429,7 @@ RQuery::$defaultFilters['rule']['schedule']['operators']['is.expired'] = array(
 RQuery::$defaultFilters['rule']['schedule.expire.in.days']['operators']['>,<,=,!'] = array(
     'Function' => function (RuleRQueryContext $context) {
         $rule = $context->object;
-        if( !$rule->isSecurityRule() )
+        if( !$rule->isSecurityRule() && !$rule->isDoSRule() &&  !$rule->isPbfRule() && !$rule->isQoSRule() )
             return FALSE;
 
         /** @var Schedule $schedule */

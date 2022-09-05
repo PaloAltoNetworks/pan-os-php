@@ -3,11 +3,15 @@ CHANGELOG
 2.0.58
 UTIL:
 * type=rule - improve filters for CI/CD
+* type=rule ruletype=any | introduce all filter/actions related to schedule for DoS/Pbf/Qos Rules
+* type=rule | introduce ruletype=defaultsecurity
+* type=device - extend all parts DG/template / template-stack with config-size information
 
 BUGFIX:
 * type=rule/schedule | bugfix for is.expired
 
 GENERAL:
+* introduce class DefaultSecurityRule - extend on all parts
 
 
 2.0.57 (20220905)

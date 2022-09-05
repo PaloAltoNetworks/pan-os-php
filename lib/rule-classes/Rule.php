@@ -1414,6 +1414,11 @@ class Rule
         return FALSE;
     }
 
+    public function isDefaultSecurityRule()
+    {
+        return FALSE;
+    }
+
     public function ruleNature()
     {
         return 'unknown';
