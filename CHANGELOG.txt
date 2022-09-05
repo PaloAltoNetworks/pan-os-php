@@ -5,6 +5,7 @@ UTIL:
 * type=rule - improve filters for CI/CD
 
 BUGFIX:
+* type=rule/schedule | bugfix for is.expired
 
 GENERAL:
 
