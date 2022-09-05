@@ -357,6 +357,7 @@ class Schedule
             return false;
 
         $d_actual = time();
+        $d = $d_actual;
         if( $futuredate !== 0 )
         {
             $d = $d_actual + ($futuredate)*24*3600;

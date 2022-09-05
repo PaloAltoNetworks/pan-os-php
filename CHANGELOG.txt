@@ -15,6 +15,7 @@ BUGFIX:
 * type=address | improvement for ipv6 if 'actions=name-rename:host.pub_$$value.no-netmask$$-$$netmask$$'
 * type=address-merger | bugfix for fqdn objects with different value but same name spread of DG hierarchy
 * type=ALL | argument location=DGname:includeChildDgs - bugfix if DG is not found
+* type=rule | bugfix for 'filter=(schedule is.expired)'
 
 GENERAL:
 * class PanoramaConf | improve output if parentDG can not be calculated for DeviceGroup
