@@ -2,6 +2,7 @@ CHANGELOG
 
 2.0.58
 UTIL:
+* type=rule - improve filters for CI/CD
 
 BUGFIX:
 

@@ -3272,7 +3272,7 @@ RQuery::$defaultFilters['rule']['app']['operators']['characteristic.has'] = arra
     },
     'arg' => TRUE,
     'ci' => array(
-        'fString' => '(%PROP% evasive) ',
+        'fString' => '(%PROP% evasive)',
         'input' => 'input/panorama-8.0.xml'
     )
 );
@@ -3300,6 +3300,7 @@ RQuery::$defaultFilters['rule']['app']['operators']['has.missing.dependencies'] 
         }
 
         $first = TRUE;
+        $string = "";
         foreach( $app_depends_on as $app => $dependencies )
         {
             if( !isset($app_array[$app]) )
@@ -3324,7 +3325,11 @@ RQuery::$defaultFilters['rule']['app']['operators']['has.missing.dependencies'] 
 
         return FALSE;
     },
-    'arg' => FALSE
+    'arg' => FALSE,
+    'ci' => array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 
 RQuery::$defaultFilters['rule']['schedule']['operators']['is'] = array(
@@ -3344,6 +3349,10 @@ RQuery::$defaultFilters['rule']['schedule']['operators']['is'] = array(
         return FALSE;
     },
     'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP% demo)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 
 RQuery::$defaultFilters['rule']['schedule']['operators']['is.set'] = array(
@@ -3362,6 +3371,10 @@ RQuery::$defaultFilters['rule']['schedule']['operators']['is.set'] = array(
         return FALSE;
     },
     'arg' => false,
+    'ci' => array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 
 RQuery::$defaultFilters['rule']['schedule']['operators']['has.regex'] = array(
@@ -3386,6 +3399,10 @@ RQuery::$defaultFilters['rule']['schedule']['operators']['has.regex'] = array(
             return null;
     },
     'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP% day)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 
 RQuery::$defaultFilters['rule']['schedule']['operators']['is.expired'] = array(
@@ -3404,6 +3421,10 @@ RQuery::$defaultFilters['rule']['schedule']['operators']['is.expired'] = array(
             return null;
     },
     'arg' => false,
+    'ci' => array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['schedule.expire.in.days']['operators']['>,<,=,!'] = array(
     'Function' => function (RuleRQueryContext $context) {
@@ -3426,6 +3447,10 @@ RQuery::$defaultFilters['rule']['schedule.expire.in.days']['operators']['>,<,=,!
             return null;
     },
     'arg' => true,
+    'ci' => array(
+        'fString' => '(%PROP% 5 )',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['uuid']['operators']['eq'] = array(
     'Function' => function (RuleRQueryContext $context) {
