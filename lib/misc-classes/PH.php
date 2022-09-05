@@ -63,6 +63,14 @@ class PH
                     $argc--;
                 continue;
             }
+            elseif( $arg == 'shadow-apikeyhidden' )
+            {
+                PH::$sendAPIkeyviaHeader = TRUE;
+                unset(PH::$argv[$argIndex]);
+                if( !isset( $_SERVER['REQUEST_METHOD'] ) )
+                    $argc--;
+                continue;
+            }
             elseif( $arg == 'shadow-apikeynosave' )
             {
                 PH::$saveAPIkey = FALSE;

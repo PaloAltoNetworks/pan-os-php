@@ -6,6 +6,7 @@ UTIL:
 * type=rule | introduce 'actions=name-rename:$$current.name$$-$$uuid$$'
 * type=stats | improvement to get exportcsv=file.csv working for argument location
 * type=ALL - introduce optional argument for location=DGname:includeChildDgs / location=DGname:excludeMainDg
+* type=ALL - introduce again argument shadow-apikeyhidden
 
 BUGFIX:
 * type=address/service | fix for actions=name-rename - to skip if string length > 63
