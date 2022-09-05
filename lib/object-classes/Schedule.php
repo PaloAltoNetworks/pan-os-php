@@ -368,7 +368,7 @@ class Schedule
             $d2 = DateTime::createFromFormat('Y/m/d@H:i', $member['end']);
             $timestamp = $d2->getTimestamp();
 
-            if( $operator === "<" )
+            if( $operator === "<" && $futuredate !== 0 )
                 $operator_string = "(".$timestamp." ".$operator." ".$d.") && (".$timestamp." > ".$d_actual.")";
             else
                 $operator_string = $timestamp." ".$operator." ".$d;
