@@ -4,6 +4,9 @@
 class PbfRule extends RuleWithUserID
 {
     use NegatableRule;
+    use RuleWithSchedule;
+
+    protected $schedule = null;
 
     static public $templatexml = '<entry name="**temporarynamechangeme**"><from><zone></zone></from>
 <source><member>any</member></source><destination><member>any</member></destination></entry>';
@@ -110,6 +113,8 @@ class PbfRule extends RuleWithUserID
         if( $tmp !== FALSE )
             $this->services->load_from_domxml($tmp);
         // end of <service> zone extraction
+
+        $this->schedule_loadFromXml();
     }
 
     /**
@@ -201,6 +206,13 @@ class PbfRule extends RuleWithUserID
             PH::print_stdout( $padding . "  Desc:  " . $this->_description );
             PH::$JSON_TMP['sub']['object'][$this->name()]['description'] = $this->_description;
         }
+
+        if( $this->schedule !== null )
+        {
+            PH::print_stdout( $padding . "  Schedule:  " . $this->schedule->name() );
+            PH::$JSON_TMP['sub']['object'][$this->name()]['schedule'][] = $this->schedule->name();
+        }
+
         PH::print_stdout();
     }
 

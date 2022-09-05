@@ -23,13 +23,13 @@ class SecurityRule extends RuleWithUserID
 {
     use NegatableRule;
     use RulewithLogging;
+    use RulewithSchedule;
 
     protected $action = self::ActionAllow;
 
     protected $logstart = FALSE;
     protected $logend = TRUE;
 
-    protected $schedule = null;
     protected $qosMarking = array();
 
     /** @var null|DOMElement */
@@ -247,16 +247,6 @@ class SecurityRule extends RuleWithUserID
             }
             elseif( $node->nodeName == 'schedule' )
             {
-                #$this->schedule = $node->textContent;
-
-                $f = $this->owner->owner->scheduleStore->find($node->textContent, $this);
-                if( $f == null && is_object($this->owner->owner->scheduleStore->parentCentralStore))
-                    $f = $this->owner->owner->scheduleStore->parentCentralStore->find($node->textContent, $this);
-                if( $f != null )
-                {
-                    $f->addReference( $this );
-                    $this->schedule = $f;
-                }
             }
             elseif( $node->nodeName == 'qos' )
             {
@@ -320,6 +310,8 @@ class SecurityRule extends RuleWithUserID
         // End of <rule-type>
 
         $this->userID_loadUsersFromXml();
+
+        $this->schedule_loadFromXml();
 
 
         //
@@ -1774,115 +1766,6 @@ class SecurityRule extends RuleWithUserID
         return $ret;
     }
 
-    /**
-     * return schedule txt if rule has scheduler set
-     * @return null
-     */
-    public function schedule()
-    {
-        return $this->schedule;
-    }
-
-    /**
-     * @param null|string $newSchedule empty or null description will erase existing one
-     * @return bool false if no update was made to description (already had same value)
-     */
-    function setSchedule($newSchedule = null)
-    {
-        if( is_object( $newSchedule ) )
-            $newSchedule = $newSchedule->name();
-
-        if( $newSchedule === null || strlen($newSchedule) < 1 )
-        {
-            if( $this->schedule === null )
-                return FALSE;
-
-            if( is_object($this->schedule) )
-                $this->schedule->removeReference($this);
-
-            $this->schedule = null;
-        }
-        else
-        {
-            $newSchedule = utf8_encode($newSchedule);
-            if( is_object( $this->schedule ) && $this->schedule->name() == $newSchedule )
-                return FALSE;
-
-            if( is_object($this->schedule) )
-                $this->schedule->removeReference($this);
-
-            $f = $this->owner->owner->scheduleStore->findOrCreate($newSchedule, $this);
-            if( $f != null )
-                $f->addReference( $this );
-
-            $this->schedule = $f;
-        }
-
-        $this->rewriteSchedule_XML();
-
-
-
-        return TRUE;
-    }
-
-    /**
-     * @return bool true if value was changed
-     */
-    public function API_setSchedule($newSchedule)
-    {
-        $ret = $this->setSchedule($newSchedule);
-        if( $ret )
-        {
-            $xpath = $this->getXPath() . '/schedule';
-            $con = findConnectorOrDie($this);
-
-            if( !is_object( $this->schedule )  )
-                $con->sendDeleteRequest($xpath);
-            else
-                $con->sendSetRequest($this->getXPath(), '<schedule>' . htmlspecialchars($this->schedule->name()) . '</schedule>');
-
-        }
-
-        return $ret;
-    }
-
-    /**
-     * @return bool false if no update was made to description (already had same value)
-     */
-    function removeSchedule()
-    {
-        if( $this->schedule === null )
-            return TRUE;
-
-        $this->schedule = null;
-        $tmpRoot = DH::findFirstElement('schedule', $this->xmlroot);
-
-        if( $tmpRoot === FALSE )
-            return TRUE;
-
-        $this->xmlroot->removeChild($tmpRoot);
-
-
-        return TRUE;
-    }
-
-    /**
-     * @param string $newSchedule
-     * @return bool true if value was changed
-     */
-    public function API_removeSchedule()
-    {
-        $ret = $this->removeSchedule();
-        if( $ret )
-        {
-            $xpath = $this->getXPath() . '/schedule';
-            $con = findConnectorOrDie($this);
-
-            $con->sendDeleteRequest($xpath);
-        }
-
-        return $ret;
-    }
 
 
     /**
@@ -2124,32 +2007,6 @@ class SecurityRule extends RuleWithUserID
         return true;
     }
 
-    public function referencedObjectRenamed($h, $oldname = "")
-    {
-        if( $this->schedule === $h )
-        {
-            $this->rewriteSchedule_XML();
-            return;
-        }
-    }
-
-    public function rewriteSchedule_XML()
-    {
-        if( $this->schedule === null )
-        {
-            $tmpRoot = DH::findFirstElement('schedule', $this->xmlroot);
-
-            if( $tmpRoot === FALSE )
-                return TRUE;
-
-            $this->xmlroot->removeChild($tmpRoot);
-        }
-        else
-        {
-            $tmpRoot = DH::findFirstElementOrCreate('schedule', $this->xmlroot);
-            DH::setDomNodeText($tmpRoot, $this->schedule->name());
-        }
-    }
 
     static public $templatexml = '<entry name="**temporarynamechangeme**"><option><disable-server-response-inspection>no</disable-server-response-inspection></option><from><member>any</member></from><to><member>any</member></to><source><member>any</member></source><destination><member>any</member></destination><source-user><member>any</member></source-user><category><member>any</member></category><application><member>any</member></application><service><member>any</member></service><hip-profiles><member>any</member></hip-profiles><action>allow</action><log-start>no</log-start><log-end>yes</log-end><negate-source>no</negate-source><negate-destination>no</negate-destination><tag/><description/><disabled>no</disabled></entry>';
 

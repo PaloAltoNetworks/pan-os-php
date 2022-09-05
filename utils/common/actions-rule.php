@@ -4332,9 +4332,9 @@ RuleCallContext::$supportedActions[] = array(
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
 
-        if( !$rule->isSecurityRule() )
+        if( !$rule->isSecurityRule() && !$rule->isDoSRule() &&  !$rule->isPbfRule() && !$rule->isQoSRule() )
         {
-            $string = "this is not a Security rule";
+            $string = "this rule type is not supported! ";
             PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
@@ -4352,9 +4352,9 @@ RuleCallContext::$supportedActions[] = array(
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
 
-        if( !$rule->isSecurityRule() )
+        if( !$rule->isSecurityRule() && !$rule->isDoSRule() &&  !$rule->isPbfRule() && !$rule->isQoSRule() )
         {
-            $string = "this is not a Security rule";
+            $string = "this rule type is not supported! ";
             PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
