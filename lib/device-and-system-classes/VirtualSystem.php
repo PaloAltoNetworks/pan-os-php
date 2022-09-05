@@ -721,7 +721,8 @@ class VirtualSystem
         $stdoutarray['apps'] = $this->appStore->count();
 
 
-        PH::$JSON_TMP[$this->name] = $stdoutarray;
+        #PH::$JSON_TMP[$this->name] = $stdoutarray;
+        PH::$JSON_TMP[] = $stdoutarray;
 
 
         if( !PH::$shadow_json )

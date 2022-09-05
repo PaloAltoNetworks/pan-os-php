@@ -1,6 +1,29 @@
 CHANGELOG
 
-2.0.56
+2.0.57
+UTIL:
+* type=rule | introduce new 'filter=(uuid eq 1234567890)'
+* type=rule | introduce 'actions=name-rename:$$current.name$$-$$uuid$$'
+* type=stats | improvement to get exportcsv=file.csv working for argument location
+* type=ALL - introduce optional argument for location=DGname:includeChildDgs / location=DGname:excludeMainDg
+* type=ALL - introduce again argument shadow-apikeyhidden
+
+BUGFIX:
+* type=address/service | fix for actions=name-rename - to skip if string length > 63
+* type=address actions=value-host-object-add-netmask-m32 | skip if IPv6 address
+* type=playbook | skip creating out file for usage of html-merger
+* type=address | improvement for ipv6 if 'actions=name-rename:host.pub_$$value.no-netmask$$-$$netmask$$'
+* type=address-merger | bugfix for fqdn objects with different value but same name spread of DG hierarchy
+* type=ALL | argument location=DGname:includeChildDgs - bugfix if DG is not found
+* type=rule | bugfix for 'filter=(schedule is.expired)'
+
+GENERAL:
+* class PanoramaConf | improve output if parentDG can not be calculated for DeviceGroup
+* update git-php
+* class AddressStore - revert group loop check
+
+
+2.0.56 (20220829)
 UTIL:
 * type=stats - improvement for JSON output
 * type=zone | introduce actions=display userid information | 'filter=(userid is.enbaled)'

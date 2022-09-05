@@ -3142,6 +3142,9 @@ RuleCallContext::$supportedActions[] = array(
         if( strpos($newName, '$$current.name$$') !== FALSE )
             $newName = str_replace('$$current.name$$', $rule->name(), $newName);
 
+        if( strpos($newName, '$$uuid$$') !== FALSE )
+            $newName = str_replace('$$uuid$$', $rule->uuid(), $newName);
+
         if( strlen($newName) > 31 )
         {
             if( $context->object->owner->owner->version > 80 && strlen($newName) <= 63 && $context->arguments['accept63characters'] )
@@ -3191,7 +3194,8 @@ RuleCallContext::$supportedActions[] = array(
         'help' =>
             "This string is used to compose a name. You can use the following aliases :\n" .
             "  - \$\$current.name\$\$ : current name of the object\n" .
-            "  - \$\$sequential.number\$\$ : sequential number - starting with 1\n"
+            "  - \$\$sequential.number\$\$ : sequential number - starting with 1\n" .
+            "  - \$\$uuid\$\$ : rule uuid\n"
     ),
         'accept63characters' => array(
             'type' => 'bool',

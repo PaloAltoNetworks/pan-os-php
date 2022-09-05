@@ -201,6 +201,8 @@ RQuery::$defaultFilters['address']['object']['operators']['is.ipv6'] = Array(
                 $addr_value = $ip_range[0];
             }
 
+            if( $addr_value == null )
+                $addr_value = "";
             $ip_range = explode( "/", $addr_value );
             $addr_value = $ip_range[0];
 

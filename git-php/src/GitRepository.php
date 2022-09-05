@@ -52,7 +52,7 @@
 		 */
 		public function createTag($name, $options = NULL)
 		{
-			$this->run('tag', $options, $name);
+			$this->run('tag', $options, '--end-of-options', $name);
 			return $this;
 		}
 
@@ -86,7 +86,7 @@
 		{
 			// http://stackoverflow.com/a/1873932
 			// create new as alias to old (`git tag NEW OLD`)
-			$this->run('tag', $newName, $oldName);
+			$this->run('tag', '--end-of-options', $newName, $oldName);
 			// delete old (`git tag -d OLD`)
 			$this->removeTag($oldName);
 			return $this;
@@ -114,7 +114,7 @@
 		 */
 		public function merge($branch, $options = NULL)
 		{
-			$this->run('merge', $options, $branch);
+			$this->run('merge', $options, '--end-of-options', $branch);
 			return $this;
 		}
 
@@ -133,7 +133,7 @@
             if( !in_array ( $name, $this->getBranches()) )
             {
                 // git branch $name
-                $this->run('branch', $name);
+				$this->run('branch', '--end-of-options', $name);
             }
 
 			if ($checkout) {
@@ -237,6 +237,18 @@
 		 */
 		public function checkout($name)
 		{
+			if (!is_string($name)) {
+				throw new InvalidArgumentException('Branch name must be string.');
+			}
+
+			if ($name === '') {
+				throw new InvalidArgumentException('Branch name cannot be empty.');
+			}
+
+			if ($name[0] === '-') {
+				throw new InvalidArgumentException('Branch name cannot be option name.');
+			}
+
 			$this->run('checkout', $name);
 			return $this;
 		}
@@ -256,7 +268,7 @@
 			}
 
 			foreach ($file as $item) {
-				$this->run('rm', $item, '-r');
+				$this->run('rm', '-r', '--end-of-options', $item);
 			}
 
 			return $this;
@@ -285,7 +297,7 @@
 					throw new GitException("The path at '$item' does not represent a valid file.");
 				}
 
-				$this->run('add', $item);
+				$this->run('add', '--end-of-options', $item);
 			}
 
 			return $this;
@@ -322,7 +334,7 @@
 			}
 
 			foreach ($file as $from => $to) {
-				$this->run('mv', $from, $to);
+				$this->run('mv', '--end-of-options', $from, $to);
 			}
 
 			return $this;
@@ -333,16 +345,20 @@
 		 * Commits changes
 		 * `git commit <params> -m <message>`
 		 * @param  string $message
-		 * @param  string[] $params  param => value
+		 * @param  array<mixed>|NULL $options
 		 * @throws GitException
 		 * @return static
 		 */
-		public function commit($message, $params = NULL)
+		public function commit($message, $options = NULL)
 		{
             if( $this->hasChanges() )
-			    $this->run('commit', $params, [
+            {
+                /*
+                $this->run('commit', $params, [
                     '-m' => $message,
                 ]);
+                */
+            }
             else
                 print "nothing to commit, working tree clean\n";
 
@@ -358,7 +374,7 @@
 		 */
 		public function getLastCommitId()
 		{
-			$result = $this->run('log', '--pretty=format:"%H"', '-n', '1');
+			$result = $this->run('log', '--pretty=format:%H', '-n', '1');
 			$lastLine = $result->getOutputLastLine();
 			return new CommitId((string) $lastLine);
 		}
@@ -384,24 +400,26 @@
 			}
 
 			// subject
-			$result = $this->run('log', '-1', $commitId, '--format="%s"');
+			$result = $this->run('log', '-1', $commitId, '--format=%s');
 			$subject = rtrim($result->getOutputAsString());
 
 			// body
-			$result = $this->run('log', '-1', $commitId, '--format="%b"');
+			$result = $this->run('log', '-1', $commitId, '--format=%b');
 			$body = rtrim($result->getOutputAsString());
 
 			// author email
-			$result = $this->run('log', '-1', $commitId, '--format="%ae"');
+			$result = $this->run('log', '-1', $commitId, '--format=%ae');
 			$authorEmail = rtrim($result->getOutputAsString());
 
 			// author name
-			$result = $this->run('log', '-1', $commitId, '--format="%an"');
+			$result = $this->run('log', '-1', $commitId, '--format=%an');
 			$authorName = rtrim($result->getOutputAsString());
 
 			// author date
-			#$result = $this->run('log', '-1', $commitId, '--pretty="format:%ad"', '--date=iso-strict');
+
+			#$result = $this->run('log', '-1', $commitId, '--pretty=format:%ad', '--date=iso-strict');
             $result = $this->run('log', '-1', $commitId, '--pretty="%ad"', '--date=iso-strict');
+
 			$authorDate = \DateTimeImmutable::createFromFormat(\DateTime::ATOM, (string) $result->getOutputLastLine());
 
 
@@ -410,16 +428,18 @@
 			}
 
 			// committer email
-			$result = $this->run('log', '-1', $commitId, '--format="%ce"');
+			$result = $this->run('log', '-1', $commitId, '--format=%ce');
 			$committerEmail = rtrim($result->getOutputAsString());
 
 			// committer name
-			$result = $this->run('log', '-1', $commitId, '--format="%cn"');
+			$result = $this->run('log', '-1', $commitId, '--format=%cn');
 			$committerName = rtrim($result->getOutputAsString());
 
 			// committer date
-			#$result = $this->run('log', '-1', $commitId, '--pretty="format:%cd"', '--date=iso-strict');
+			#$result = $this->run('log', '-1', $commitId, '--pretty=format:%cd', '--date=iso-strict');
             $result = $this->run('log', '-1', $commitId, '--pretty="%ad"', '--date=iso-strict');
+
+
 			$committerDate = \DateTimeImmutable::createFromFormat(\DateTime::ATOM, (string) $result->getOutputLastLine());
 
 			if (!($committerDate instanceof \DateTimeImmutable)) {
@@ -457,42 +477,42 @@
 
 		/**
 		 * Pull changes from a remote
-		 * @param  string|NULL $remote
-		 * @param  array<mixed>|NULL $params
+		 * @param  string|string[]|NULL $remote
+		 * @param  array<mixed>|NULL $options
 		 * @return static
 		 * @throws GitException
 		 */
-		public function pull($remote = NULL, array $params = NULL)
+		public function pull($remote = NULL, array $options = NULL)
 		{
-			$this->run('pull', $remote, $params);
+			$this->run('pull', $options, '--end-of-options', $remote);
 			return $this;
 		}
 
 
 		/**
 		 * Push changes to a remote
-		 * @param  string|NULL $remote
-		 * @param  array<mixed>|NULL $params
+		 * @param  string|string[]|NULL $remote
+		 * @param  array<mixed>|NULL $options
 		 * @return static
 		 * @throws GitException
 		 */
-		public function push($remote = NULL, array $params = NULL)
+		public function push($remote = NULL, array $options = NULL)
 		{
-			$this->run('push', $remote, $params);
+			$this->run('push', $options, '--end-of-options', $remote);
 			return $this;
 		}
 
 
 		/**
 		 * Run fetch command to get latest branches
-		 * @param  string|NULL $remote
-		 * @param  array<mixed>|NULL $params
+		 * @param  string|string[]|NULL $remote
+		 * @param  array<mixed>|NULL $options
 		 * @return static
 		 * @throws GitException
 		 */
-		public function fetch($remote = NULL, array $params = NULL)
+		public function fetch($remote = NULL, array $options = NULL)
 		{
-			$this->run('fetch', $remote, $params);
+			$this->run('fetch', $options, '--end-of-options', $remote);
 			return $this;
 		}
 
@@ -501,13 +521,13 @@
 		 * Adds new remote repository
 		 * @param  string $name
 		 * @param  string $url
-		 * @param  array<mixed>|NULL $params
+		 * @param  array<mixed>|NULL $options
 		 * @return static
 		 * @throws GitException
 		 */
-		public function addRemote($name, $url, array $params = NULL)
+		public function addRemote($name, $url, array $options = NULL)
 		{
-			$this->run('remote', 'add', $params, $name, $url);
+			$this->run('remote', 'add', $options, '--end-of-options', $name, $url);
 			return $this;
 		}
 
@@ -521,7 +541,7 @@
 		 */
 		public function renameRemote($oldName, $newName)
 		{
-			$this->run('remote', 'rename', $oldName, $newName);
+			$this->run('remote', 'rename', '--end-of-options', $oldName, $newName);
 			return $this;
 		}
 
@@ -534,7 +554,7 @@
 		 */
 		public function removeRemote($name)
 		{
-			$this->run('remote', 'remove', $name);
+			$this->run('remote', 'remove', '--end-of-options', $name);
 			return $this;
 		}
 
@@ -543,13 +563,13 @@
 		 * Changes remote repository URL
 		 * @param  string $name
 		 * @param  string $url
-		 * @param  array<mixed>|NULL $params
+		 * @param  array<mixed>|NULL $options
 		 * @return static
 		 * @throws GitException
 		 */
-		public function setRemoteUrl($name, $url, array $params = NULL)
+		public function setRemoteUrl($name, $url, array $options = NULL)
 		{
-			$this->run('remote', 'set-url', $params, $name, $url);
+			$this->run('remote', 'set-url', $options, '--end-of-options', $name, $url);
 			return $this;
 		}
 

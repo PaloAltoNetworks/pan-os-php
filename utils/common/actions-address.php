@@ -1057,6 +1057,7 @@ AddressCallContext::$supportedActions[] = array(
         if( strpos($newName, '$$value$$') !== FALSE )
         {
             $newName = str_replace('$$value$$', $object->value(), $newName);
+            $newName = str_replace(':', "_", $newName);
         }
         if( strpos($newName, '$$value.no-netmask$$') !== FALSE )
         {
@@ -1066,6 +1067,7 @@ AddressCallContext::$supportedActions[] = array(
                 $replace = $object->value();
 
             $newName = str_replace('$$value.no-netmask$$', $replace, $newName);
+            $newName = str_replace(':', "_", $newName);
         }
         if( strpos($newName, '$$netmask$$') !== FALSE )
         {
@@ -1127,6 +1129,14 @@ AddressCallContext::$supportedActions[] = array(
         if( $object->name() == $newName )
         {
             $string = "new name and old name are the same";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+
+        $max_length = 63;
+        if( strlen($newName) > $max_length )
+        {
+            $string = "resulting name is too long";
             PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
@@ -2006,10 +2016,17 @@ AddressCallContext::$supportedActions[] = array(
             PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
+        elseif( strpos( $value, ":") !== false )
+        {
+            $string = "object: " . $address->name() . " with value: " . $value . " is of type IPv6.";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
 
-
-        //
-        $new_value = $value . "/32";
+        //if(filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6))
+            //$new_value = $value . "/128";
+        //else
+            $new_value = $value . "/32";
 
         $text = $context->padding . " - new value will be: '" . $new_value . "'";
         if( $context->isAPI )

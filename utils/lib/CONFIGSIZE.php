@@ -124,7 +124,7 @@ class CONFIGSIZE extends UTIL
             PH::print_stdout( "The size of your original file is ".convert($filesize )." [100%]. It can be reduces to ".convert($len_xml_reduced)." [".$reduce_percent."%] (which is a reduction of ".convert($filesize-$len_xml_reduced)." [".(100-$reduce_percent)."%])");
         }
 
-        PH::print_stdout( PH::boldText( "Please be aware of that PAN-OS is automatically adding the xml overhead again during the next configuration load to the device" ) );
+        PH::print_stdout( PH::boldText( "Please be aware of that PAN-OS is automatically adding the xml overhead again during the configuration next configuration load [candidate-config] to the device" ) );
     }
 
     public function supportedArguments()
