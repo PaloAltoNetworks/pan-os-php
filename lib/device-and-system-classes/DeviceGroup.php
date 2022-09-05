@@ -132,6 +132,8 @@ class DeviceGroup
     /** @var RuleStore */
     public $tunnelInspectionRules;
 
+    /** @var RuleStore */
+    public $defaultSecurityRules = null;
 
     /**
      * @var null|DeviceGroup
@@ -228,6 +230,8 @@ class DeviceGroup
         $this->qosRules = new RuleStore($this, 'QoSRule', TRUE);
         $this->dosRules = new RuleStore($this, 'DoSRule', TRUE);
         $this->tunnelInspectionRules = new RuleStore($this, 'TunnelInspectionRule', TRUE);
+
+        $this->defaultSecurityRules = new RuleStore($this, 'DefaultSecurityRule', TRUE);
 
         $this->_fakeNetworkProperties = $this->owner->_fakeNetworkProperties;
         $this->dosRules->_networkStore = $this->_fakeNetworkProperties;
@@ -708,6 +712,24 @@ class DeviceGroup
                 $tmpPost = null;
         }
         $this->tunnelInspectionRules->load_from_domxml($tmp, $tmpPost);
+
+        //default-security-Rules are only available on POST
+        if( $prerulebase === FALSE )
+            $tmp = null;
+        else
+            $tmp = null;
+        if( $postrulebase === FALSE )
+            $tmpPost = null;
+        else
+        {
+            $tmpPost = DH::findFirstElement('default-security-rules', $postrulebase);
+            if( $tmpPost !== FALSE )
+                $tmpPost = DH::findFirstElement('rules', $tmpPost);
+
+            if( $tmpPost === FALSE )
+                $tmpPost = null;
+        }
+        $this->defaultSecurityRules->load_from_domxml($tmp, $tmpPost);
         //
         // end of policies extraction
         //

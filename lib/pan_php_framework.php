@@ -321,6 +321,7 @@ require_once $basedir . '/rule-classes/PbfRule.php';
 require_once $basedir . '/rule-classes/QoSRule.php';
 require_once $basedir . '/rule-classes/DoSRule.php';
 require_once $basedir . '/rule-classes/TunnelInspectionRule.php';
+require_once $basedir . '/rule-classes/DefaultSecurityRule.php';
 
 if( isset( $_SERVER['REQUEST_METHOD'] ) )
 {

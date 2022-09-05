@@ -1418,6 +1418,12 @@ ServiceCallContext::$supportedActions[] = array(
             PH::ACTIONstatus( $context, "SKIPPED", $string );
             return null;
         }
+        if( $object->isTmpSrv() )
+        {
+            $string = "because object is TMP";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return null;
+        }
 
         if( $object->overrideroot !== FALSE )
         {

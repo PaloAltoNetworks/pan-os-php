@@ -75,7 +75,8 @@ class RuleStore
         'PbfRule' => array('name' => 'Pbf', 'varName' => 'pbfRules', 'xpathRoot' => 'pbf'),
         'QoSRule' => array('name' => 'QoS', 'varName' => 'qosRules', 'xpathRoot' => 'qos'),
         'DoSRule' => array('name' => 'DoS', 'varName' => 'dosRules', 'xpathRoot' => 'dos'),
-        'TunnelInspectionRule' => array('name' => 'TunnelInspection', 'varName' => 'tunnelInspectionRules', 'xpathRoot' => 'tunnel-inspect')
+        'TunnelInspectionRule' => array('name' => 'TunnelInspection', 'varName' => 'tunnelInspectionRules', 'xpathRoot' => 'tunnel-inspect'),
+        'DefaultSecurityRule' => array('name' => 'DefaultSecurity', 'varName' => 'defaultSecurityRules', 'xpathRoot' => 'default-security-rules')
     );
 
     public function __construct($owner, $ruleType, $isPreOrPost = FALSE)

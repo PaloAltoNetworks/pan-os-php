@@ -51,6 +51,7 @@ class Service
     /** @var TagRuleContainer */
     public $tags;
 
+    public $overrideroot = FALSE;
 
     /**
      * @param $name
