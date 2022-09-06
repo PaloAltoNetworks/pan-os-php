@@ -2477,7 +2477,7 @@ RuleCallContext::$supportedActions[] = array(
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
 
-        if( !$rule->isSecurityRule() )
+        if( !$rule->isSecurityRule() && !$rule->isDefaultSecurityRule() )
         {
             $string = "this is not a Security rule" ;
             PH::ACTIONstatus( $context, "SKIPPED", $string );
@@ -2496,7 +2496,7 @@ RuleCallContext::$supportedActions[] = array(
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
 
-        if( !$rule->isSecurityRule() )
+        if( !$rule->isSecurityRule() && !$rule->isDefaultSecurityRule() )
         {
             $string = "this is not a Security rule" ;
             PH::ACTIONstatus( $context, "SKIPPED", $string );
@@ -2529,7 +2529,7 @@ RuleCallContext::$supportedActions[] = Array(
          */
         $rule = $context->object;
 
-        if( !$rule->isSecurityRule() )
+        if( !$rule->isSecurityRule() && !$rule->isDefaultSecurityRule() )
             return false;
 
         if( $rule->securityProfileIsBlank() || $rule->securityProfileType() == "group" )
@@ -2568,7 +2568,7 @@ RuleCallContext::$supportedActions[] = array(
         $type = $context->arguments['type'];
         $profName = $context->arguments['profName'];
 
-        if( !$rule->isSecurityRule() )
+        if( !$rule->isSecurityRule() && !$rule->isDefaultSecurityRule() )
         {
             $string = "this is not a Security rule";
             PH::ACTIONstatus( $context, "SKIPPED", $string );
@@ -2622,7 +2622,7 @@ RuleCallContext::$supportedActions[] = array(
         $rule = $context->object;
         $type = $context->arguments['type'];
 
-        if( !$rule->isSecurityRule() )
+        if( !$rule->isSecurityRule() && !$rule->isDefaultSecurityRule() )
         {
             $string = "this is not a Security rule" ;
             PH::ACTIONstatus( $context, "SKIPPED", $string );
@@ -2686,7 +2686,7 @@ RuleCallContext::$supportedActions[] = array(
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
 
-        if( !$rule->isSecurityRule() )
+        if( !$rule->isSecurityRule() && !$rule->isDefaultSecurityRule() )
         {
             $string = "this is not a Security rule" ;
             PH::ACTIONstatus( $context, "SKIPPED", $string );
@@ -2717,7 +2717,7 @@ RuleCallContext::$supportedActions[] = array(
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
 
-        if( !$rule->isSecurityRule() )
+        if( !$rule->isSecurityRule() && !$rule->isDefaultSecurityRule() )
         {
             $string = "this is not a Security rule" ;
             PH::ACTIONstatus( $context, "SKIPPED", $string );

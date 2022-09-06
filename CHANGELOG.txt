@@ -9,6 +9,7 @@ UTIL:
 
 BUGFIX:
 * type=rule/schedule | bugfix for is.expired
+* type=rule | actions=securityprofile... - fix to support DefaultSecurityRule
 
 GENERAL:
 * introduce class DefaultSecurityRule - extend on all parts
