@@ -12,6 +12,7 @@ BUGFIX:
 
 GENERAL:
 * introduce class DefaultSecurityRule - extend on all parts
+* extend usage of DefaultSecurityRule to class Container/DeviceCloud/DeviceOnPrem
 
 
 2.0.57 (20220905)
