@@ -152,6 +152,12 @@ class Container
     /** @var RuleStore */
     public $dosRules;
 
+    /** @var RuleStore */
+    public $tunnelInspectionRules;
+
+    /** @var RuleStore */
+    public $defaultSecurityRules = null;
+
     /**
      * @var null|Container
      */
@@ -252,6 +258,9 @@ class Container
         $this->pbfRules = new RuleStore($this, 'PbfRule', TRUE);
         $this->qosRules = new RuleStore($this, 'QoSRule', TRUE);
         $this->dosRules = new RuleStore($this, 'DoSRule', TRUE);
+        $this->tunnelInspectionRules = new RuleStore($this, 'TunnelInspectionRule', TRUE);
+
+        $this->defaultSecurityRules = new RuleStore($this, 'DefaultSecurityRule', TRUE);
 
         $this->_fakeNetworkProperties = $this->owner->_fakeNetworkProperties;
         $this->dosRules->_networkStore = $this->_fakeNetworkProperties;
@@ -718,6 +727,48 @@ class Container
                 $tmpPost = null;
         }
         $this->dosRules->load_from_domxml($tmp, $tmpPost);
+
+        if( $prerulebase === FALSE )
+            $tmp = null;
+        else
+        {
+            $tmp = DH::findFirstElement('tunnel-inspect', $prerulebase);
+            if( $tmp !== FALSE )
+                $tmp = DH::findFirstElement('rules', $tmp);
+
+            if( $tmp === FALSE )
+                $tmp = null;
+        }
+        if( $postrulebase === FALSE )
+            $tmpPost = null;
+        else
+        {
+            $tmpPost = DH::findFirstElement('tunnel-inspect', $postrulebase);
+            if( $tmpPost !== FALSE )
+                $tmpPost = DH::findFirstElement('rules', $tmpPost);
+
+            if( $tmpPost === FALSE )
+                $tmpPost = null;
+        }
+        $this->tunnelInspectionRules->load_from_domxml($tmp, $tmpPost);
+
+        //default-security-Rules are only available on POST
+        if( $prerulebase === FALSE )
+            $tmp = null;
+        else
+            $tmp = null;
+        if( $postrulebase === FALSE )
+            $tmpPost = null;
+        else
+        {
+            $tmpPost = DH::findFirstElement('default-security-rules', $postrulebase);
+            if( $tmpPost !== FALSE )
+                $tmpPost = DH::findFirstElement('rules', $tmpPost);
+
+            if( $tmpPost === FALSE )
+                $tmpPost = null;
+        }
+        $this->defaultSecurityRules->load_from_domxml($tmp, $tmpPost);
         //
         // end of policies extraction
         //
