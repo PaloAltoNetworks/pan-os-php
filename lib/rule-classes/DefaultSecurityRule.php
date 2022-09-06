@@ -131,10 +131,10 @@ class DefaultSecurityRule extends Rule
         $this->load_common_from_domxml();
 
 
-        $this->load_source();
-        $this->load_destination();
-        $this->load_from();
-        $this->load_to();
+        #$this->load_source();
+        #$this->load_destination();
+        #$this->load_from();
+        #$this->load_to();
 
 
         $this->_readLogSettingFromXml();
