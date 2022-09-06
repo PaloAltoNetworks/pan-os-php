@@ -15,6 +15,7 @@ GENERAL:
 * introduce class DefaultSecurityRule - extend on all parts
 * extend usage of DefaultSecurityRule to class Container/DeviceCloud/DeviceOnPrem
 * class DefaultSecurityRules - skip reading source/destination/from/to
+* pan_php_framework - optimise method convert()
 
 
 2.0.57 (20220905)
