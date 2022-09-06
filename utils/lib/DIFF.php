@@ -581,7 +581,8 @@ class DIFF extends UTIL
                     $nodeName = $node->getAttribute('name');
                     if( isset($el1NameSorted[$nodeName]) )
                     {
-                        mwarning('<node name="' . $nodeName . '"> was found twice in file1', $el1, false, FALSE);
+                        #mwarning('<node name="' . $nodeName . '"> was found twice in file1', $el1, false, FALSE);
+                        mwarning('<node name="' . $nodeName . '"> was found twice in file1', $node, false, FALSE);
                     }
 
                     else
@@ -592,7 +593,8 @@ class DIFF extends UTIL
                     $nodeName = $node->getAttribute('name');
                     if( isset($el2NameSorted[$nodeName]) )
                     {
-                        mwarning('<node name="' . $nodeName . '"> was found twice in file2', $el2, false, FALSE);
+                        #mwarning('<node name="' . $nodeName . '"> was found twice in file2', $el2, false, FALSE);
+                        mwarning('<node name="' . $nodeName . '"> was found twice in file2', $node, false, FALSE);
                     }
                     else
                         $el2NameSorted[$nodeName] = $node;

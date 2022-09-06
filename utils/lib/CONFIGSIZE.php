@@ -108,7 +108,7 @@ class CONFIGSIZE extends UTIL
         $len_overhead_percent = round( ( $len_overhead / $len_xml ) * 100, 0);
 
 
-        PH::print_stdout( "LENGTH str:".$len_xml_reduced." [xml overhead: ".($len_overhead)." (".$len_overhead_percent."%) ]");
+        PH::print_stdout( "LENGTH str: ".$len_xml_reduced." + [xml overhead: ".($len_overhead)." (".$len_overhead_percent."%)] = (".$len_xml.")");
 
         $this->print_length( $this->xmlDoc );
 
@@ -122,6 +122,19 @@ class CONFIGSIZE extends UTIL
 
             $reduce_percent = round( ($len_xml_reduced/$filesize)*100 );
             PH::print_stdout( "The size of your original file is ".convert($filesize )." [100%]. It can be reduces to ".convert($len_xml_reduced)." [".$reduce_percent."%] (which is a reduction of ".convert($filesize-$len_xml_reduced)." [".(100-$reduce_percent)."%])");
+
+            PH::print_stdout( "pan-os-php XML pretty config size is: ".convert( $len_xml ) );
+            if( $len_xml < $filesize )
+            {
+                $reduce_percent = round( ($len_xml/$filesize)*100 );
+                PH::print_stdout( "By using pan-os-php your config can be reduces to ".convert($len_xml)." [".$reduce_percent."%] (which is a reduction of ".convert($filesize-$len_xml)." [".(100-$reduce_percent)."%])");
+            }
+            else
+            {
+                $reduce_percent = round( ($filesize/$len_xml)*100 );
+                PH::print_stdout( "By using pan-os-php your config will be expanded to  ".convert($len_xml)." [".$reduce_percent."%] (which is an expand of ".convert($len_xml-$filesize)." [".(100-$reduce_percent)."%])");
+            }
+            PH::print_stdout();
         }
 
         PH::print_stdout( PH::boldText( "Please be aware of that PAN-OS is automatically adding the xml overhead again during the configuration next configuration load [candidate-config] to the device" ) );
@@ -210,7 +223,7 @@ class CONFIGSIZE extends UTIL
                     $length2_overhead_percent = 0;
                 else
                     $length2_overhead_percent = round( ( $length2_overhead / $length2 ) * 100, 0);
-                PH::print_stdout( $string." | " .$padding.str_pad( $length_reduced. "kB [xml overhead:".($length2_overhead)."kB (".$length2_overhead_percent."%)]" , 10, " ", STR_PAD_LEFT));
+                PH::print_stdout( $string." | " .$padding.str_pad( $length_reduced. "kB + [xml overhead:".($length2_overhead)."kB (".$length2_overhead_percent."%)] = (".$length2."kB)" , 10, " ", STR_PAD_LEFT));
 
                 if( $depth == 3 )
                     $previousNode = $nodeName;
