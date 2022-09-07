@@ -408,7 +408,7 @@ class RuleCallContext extends CallContext
 
         if( $fieldName == 'security-profile' )
         {
-            if( !$rule->isSecurityRule() )
+            if( !$rule->isSecurityRule() && !$rule->isDefaultSecurityRule() )
                 return self::enclose('');
 
             if( $rule->securityProfileType() == 'none' )
@@ -427,7 +427,7 @@ class RuleCallContext extends CallContext
 
         if( $fieldName == 'action' )
         {
-            if( !$rule->isSecurityRule() && !$rule->isCaptivePortalRule() )
+            if( !$rule->isSecurityRule() && !$rule->isDefaultSecurityRule() && !$rule->isCaptivePortalRule() )
                 return self::enclose('');
 
             return self::enclose(array($rule->action()));
@@ -448,20 +448,20 @@ class RuleCallContext extends CallContext
 
         if( $fieldName == 'log_start' )
         {
-            if( !$rule->isSecurityRule() )
+            if( !$rule->isSecurityRule() && !$rule->isDefaultSecurityRule() )
                 return self::enclose('');
             return self::enclose(boolYesNo($rule->logStart()), $wrap);
         }
         if( $fieldName == 'log_end' )
         {
-            if( !$rule->isSecurityRule() )
+            if( !$rule->isSecurityRule() && !$rule->isDefaultSecurityRule() )
                 return self::enclose('');
             return self::enclose(boolYesNo($rule->logEnd()), $wrap);
         }
 
         if( $fieldName == 'log_profile' )
         {
-            if( !$rule->isSecurityRule() )
+            if( !$rule->isSecurityRule() && !$rule->isDefaultSecurityRule() )
                 return self::enclose('');
 
             return self::enclose(boolYesNo($rule->logSetting()), $wrap);
@@ -469,7 +469,7 @@ class RuleCallContext extends CallContext
 
         if( $fieldName == 'log_profile_name' )
         {
-            if( !$rule->isSecurityRule() )
+            if( !$rule->isSecurityRule() && !$rule->isDefaultSecurityRule() )
                 return self::enclose('');
 
             if( $rule->logSetting() === FALSE )

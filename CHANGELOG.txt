@@ -13,6 +13,7 @@ BUGFIX:
 * type=rule/schedule | bugfix for is.expired
 * type=rule | actions=securityprofile... - fix to support DefaultSecurityRule
 * type=xml-issue | bugfix for Zone
+* type=rule ruletype=defaultsecurity | bugfix for actions=exporttoexcel
 
 GENERAL:
 * introduce class DefaultSecurityRule - extend on all parts
