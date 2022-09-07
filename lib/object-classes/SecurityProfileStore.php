@@ -66,7 +66,7 @@ class SecurityProfileStore extends ObjStore
         'SDWanSaasQualityProfile' => array('name' => 'SDWan-Saas-Quality-Profiles', 'varName' => 'sdwanSaasQualityProf', 'xpathRoot' => 'sdwan-saas-quality'),
         'SDWanTrafficDistributionProfile' => array('name' => 'SDWan-Traffic-Distribution-Profiles', 'varName' => 'sdwanTrafficDistributionProf', 'xpathRoot' => 'sdwan-traffic-distribution'),
 
-        'DataObjectsProfile' => array('name' => 'Data-Objects-Profiles', 'varName' => 'sdwanTrafficDistributionProf', 'xpathRoot' => 'data-objcts')
+        'DataObjectsProfile' => array('name' => 'Data-Objects-Profiles', 'varName' => 'dataObjectsProf', 'xpathRoot' => 'data-objects')
     );
 
 
