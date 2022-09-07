@@ -90,6 +90,27 @@ class Container
     /** @var SecurityProfileStore */
     public $HipProfilesProfileStore = null;
 
+    /** @var SecurityProfileStore */
+    public $GTPStore = null;
+
+    /** @var SecurityProfileStore */
+    public $SCEPStore = null;
+
+    /** @var SecurityProfileStore */
+    public $PacketBrokerStore = null;
+
+    /** @var SecurityProfileStore */
+    public $SDWanErrorCorrectionStore = null;
+
+    /** @var SecurityProfileStore */
+    public $SDWanPathQualityStore = null;
+
+    /** @var SecurityProfileStore */
+    public $SDWanSaasQualityStore = null;
+
+    /** @var SecurityProfileStore */
+    public $SDWanTrafficDistributionStore = null;
+
 
     /** @var ScheduleStore */
     public $scheduleStore = null;
@@ -252,6 +273,27 @@ class Container
 
         $this->HipProfilesProfileStore = new SecurityProfileStore($this, "HipProfilesProfile");
         $this->HipProfilesProfileStore->name = 'HipProfiles';
+
+        $this->GTPStore = new SecurityProfileStore($this, "GTPProfile");
+        $this->GTPStore->name = 'GTPProfiles';
+
+        $this->SCEPStore = new SecurityProfileStore($this, "SCEPProfile");
+        $this->SCEPStore->name = 'SCEPProfiles';
+
+        $this->PacketBrokerStore = new SecurityProfileStore($this, "PacketBrokerProfile");
+        $this->PacketBrokerStore->name = 'PacketBrokerProfiles';
+
+        $this->SDWanErrorCorrectionStore = new SecurityProfileStore($this, "SDWanErrorCorrectionProfile");
+        $this->SDWanErrorCorrectionStore->name = 'SDWanErrorCorrectionProfiles';
+
+        $this->SDWanPathQualityStore = new SecurityProfileStore($this, "SDWanPathQualityProfile");
+        $this->SDWanPathQualityStore->name = 'SDWanPathQualityProfiles';
+
+        $this->SDWanSaasQualityStore = new SecurityProfileStore($this, "SDWanSaasQualityProfile");
+        $this->SDWanSaasQualityStore->name = 'SDWanSaasQualityProfiles';
+
+        $this->SDWanTrafficDistributionStore = new SecurityProfileStore($this, "SDWanTrafficDistributionProfile");
+        $this->SDWanTrafficDistributionStore->name = 'SDWanTrafficDistributionProfiles';
 
         $this->scheduleStore = new ScheduleStore($this);
         $this->scheduleStore->setName('scheduleStore');
@@ -488,6 +530,69 @@ class Container
             if( $tmproot !== FALSE )
             {
                 $this->HipProfilesProfileStore->load_from_domxml($tmproot);
+            }
+
+            //
+            // GTP Profile extraction
+            //
+            $tmproot = DH::findFirstElement('gtp', $this->securityProfilebaseroot);
+            if( $tmproot !== FALSE )
+            {
+                $this->GTPStore->load_from_domxml($tmproot);
+            }
+
+            //
+            // SCEP Profile extraction
+            //
+            $tmproot = DH::findFirstElement('scep', $this->securityProfilebaseroot);
+            if( $tmproot !== FALSE )
+            {
+                $this->SCEPStore->load_from_domxml($tmproot);
+            }
+
+            //
+            // PacketBroker Profile extraction
+            //
+            $tmproot = DH::findFirstElement('packet-broker', $this->securityProfilebaseroot);
+            if( $tmproot !== FALSE )
+            {
+                $this->PacketBrokerStore->load_from_domxml($tmproot);
+            }
+
+            //
+            // SDWan Error Correction Profile extraction
+            //
+            $tmproot = DH::findFirstElement('sdwan-error-correction', $this->securityProfilebaseroot);
+            if( $tmproot !== FALSE )
+            {
+                $this->SDWanErrorCorrectionStore->load_from_domxml($tmproot);
+            }
+
+            //
+            // SDWan Path Quality Profile extraction
+            //
+            $tmproot = DH::findFirstElement('sdwan-path-quality', $this->securityProfilebaseroot);
+            if( $tmproot !== FALSE )
+            {
+                $this->SDWanPathQualityStore->load_from_domxml($tmproot);
+            }
+
+            //
+            // SDWan Saas Quality Profile extraction
+            //
+            $tmproot = DH::findFirstElement('sdwan-saas-quality', $this->securityProfilebaseroot);
+            if( $tmproot !== FALSE )
+            {
+                $this->SDWanSaasQualityStore->load_from_domxml($tmproot);
+            }
+
+            //
+            // SDWan Traffic Distribution Profile extraction
+            //
+            $tmproot = DH::findFirstElement('sdwan-traffic-distribution', $this->securityProfilebaseroot);
+            if( $tmproot !== FALSE )
+            {
+                $this->SDWanTrafficDistributionStore->load_from_domxml($tmproot);
             }
         }
 
@@ -1039,6 +1144,27 @@ class Container
         $stdoutarray['File-Blocking objects']['total'] = $this->FileBlockingProfileStore->count();
         $stdoutarray['Decryption objects'] = array();
         $stdoutarray['Decryption objects']['total'] = $this->DecryptionProfileStore->count();
+
+        $stdoutarray['HipObject objects'] = array();
+        $stdoutarray['HipObject objects']['total'] = $this->HipObjectsProfileStore->count();
+        $stdoutarray['HipProfile objects'] = array();
+        $stdoutarray['HipProfile objects']['total'] = $this->HipProfilesProfileStore->count();
+
+        $stdoutarray['GTP objects'] = array();
+        $stdoutarray['GTP objects']['total'] = $this->GTPStore->count();
+        $stdoutarray['SCEP objects'] = array();
+        $stdoutarray['SCEP objects']['total'] = $this->SCEPStore->count();
+        $stdoutarray['PacketBroker objects'] = array();
+        $stdoutarray['PacketBroker objects']['total'] = $this->PacketBrokerStore->count();
+
+        $stdoutarray['SDWanErrorCorrection objects'] = array();
+        $stdoutarray['SDWanErrorCorrection objects']['total'] = $this->SDWanErrorCorrectionStore->count();
+        $stdoutarray['SDWanPathQuality objects'] = array();
+        $stdoutarray['SDWanPathQuality objects']['total'] = $this->SDWanPathQualityStore->count();
+        $stdoutarray['SDWanSaasQuality objects'] = array();
+        $stdoutarray['SDWanSaasQuality objects']['total'] = $this->SDWanSaasQualityStore->count();
+        $stdoutarray['SDWanTrafficDistribution objects'] = array();
+        $stdoutarray['SDWanTrafficDistribution objects']['total'] = $this->SDWanTrafficDistributionStore->count();
 
         #$stdoutarray['zones'] = $this->zoneStore->count();
         #$stdoutarray['apps'] = $this->appStore->count();

@@ -56,6 +56,15 @@ class SecurityProfileStore extends ObjStore
         'DecryptionProfile' => array('name' => 'Decryption', 'varName' => 'decryptProf', 'xpathRoot' => 'decryption'),
         'HipObjectsProfile' => array('name' => 'HIP-Objects', 'varName' => 'hipObjProf', 'xpathRoot' => 'hip-objects'),
         'HipProfilesProfile' => array('name' => 'HIP-Profiles', 'varName' => 'hipProfProf', 'xpathRoot' => 'hip-profiles'),
+
+        'GTPProfile' => array('name' => 'GTP-Profiles', 'varName' => 'gtpProf', 'xpathRoot' => 'gtp'),
+        'SCEPProfile' => array('name' => 'SCEP-Profiles', 'varName' => 'scepProf', 'xpathRoot' => 'scep'),
+        'PacketBrokerProfile' => array('name' => 'PacketBroker-Profiles', 'varName' => 'packetBrokerProf', 'xpathRoot' => 'packet-broker'),
+
+        'SDWanErrorCorrectionProfile' => array('name' => 'SDWan-Error-Correction-Profiles', 'varName' => 'sdwanErrorCorrectionProf', 'xpathRoot' => 'sdwan-error-correction'),
+        'SDWanPathQualityProfile' => array('name' => 'SDWan-Path-Quality-Profiles', 'varName' => 'sdwanPathQualityProf', 'xpathRoot' => 'sdwan-path-quality'),
+        'SDWanSaasQualityProfile' => array('name' => 'SDWan-Saas-Quality-Profiles', 'varName' => 'sdwanSaasQualityProf', 'xpathRoot' => 'sdwan-saas-quality'),
+        'SDWanTrafficDistributionProfile' => array('name' => 'SDWan-Traffic-Distribution-Profiles', 'varName' => 'sdwanTrafficDistributionProf', 'xpathRoot' => 'sdwan-traffic-distribution')
     );
 
 

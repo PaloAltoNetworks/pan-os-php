@@ -247,8 +247,18 @@ require_once $basedir . '/object-classes/DNSSecurityProfile.php';
 require_once $basedir . '/object-classes/SaasSecurityProfile.php';
 
 require_once $basedir . '/object-classes/DecryptionProfile.php';
+
+require_once $basedir . '/object-classes/Profile.php';
 require_once $basedir . '/object-classes/HipObjectsProfile.php';
 require_once $basedir . '/object-classes/HipProfilesProfile.php';
+
+require_once $basedir . '/object-classes/GTPProfile.php';
+require_once $basedir . '/object-classes/SCEPProfile.php';
+require_once $basedir . '/object-classes/PacketBrokerProfile.php';
+require_once $basedir . '/object-classes/SDWanErrorCorrectionProfile.php';
+require_once $basedir . '/object-classes/SDWanPathQualityProfile.php';
+require_once $basedir . '/object-classes/SDWanSaasQualityProfile.php';
+require_once $basedir . '/object-classes/SDWanTrafficDistributionProfile.php';
 
 require_once $basedir . '/device-and-system-classes/VirtualSystem.php';
 require_once $basedir . '/device-and-system-classes/PANConf.php';
