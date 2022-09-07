@@ -322,6 +322,8 @@ require_once $basedir . '/rule-classes/QoSRule.php';
 require_once $basedir . '/rule-classes/DoSRule.php';
 require_once $basedir . '/rule-classes/TunnelInspectionRule.php';
 require_once $basedir . '/rule-classes/DefaultSecurityRule.php';
+require_once $basedir . '/rule-classes/NetworkPacketBrokerRule.php';
+require_once $basedir . '/rule-classes/SDWanRule.php';
 
 if( isset( $_SERVER['REQUEST_METHOD'] ) )
 {

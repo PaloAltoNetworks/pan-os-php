@@ -8,6 +8,7 @@ UTIL:
 * type=device - extend all parts DG/template / template-stack with config-size information
 * type=config-size - optimise output
 * type=rule | extend 'filter=(secprof ......)' for ryletype=defaultsecurity
+* type=rule | introduce ruletype=sdwan,networkpacketbroker
 
 BUGFIX:
 * type=rule/schedule | bugfix for is.expired

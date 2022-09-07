@@ -133,6 +133,16 @@ class Snippet
     /** @var RuleStore */
     public $dosRules;
 
+    /** @var RuleStore */
+    public $tunnelInspectionRules;
+
+    /** @var RuleStore */
+    public $networkPacketBrokerRules;
+
+    /** @var RuleStore */
+    public $sdWanRules;
+
+
     /** @var ZoneStore */
     public $zoneStore = null;
 
@@ -257,6 +267,15 @@ class Snippet
 
         $this->dosRules = new RuleStore($this, 'DoSRule');
         $this->dosRules->name = 'DoS';
+
+        $this->tunnelInspectionRules = new RuleStore($this, 'TunnelInspectionRule');
+        $this->tunnelInspectionRules->name = 'TunnelInspection';
+
+        $this->networkPacketBrokerRules = new RuleStore($this, 'NetworkPacketBrokerRule', TRUE);
+        $this->networkPacketBrokerRules->name = 'NetworkPacketBroker';
+
+        $this->sdWanRules = new RuleStore($this, 'SDWanRule', TRUE);
+        $this->sdWanRules->name = 'SDWan';
 
         #$this->dosRules->_networkStore = $this->owner->network;
         #$this->pbfRules->_networkStore = $this->owner->network;
@@ -717,6 +736,45 @@ class Snippet
                 $tmprulesroot = DH::findFirstElement('rules', $tmproot);
                 if( $tmprulesroot !== FALSE )
                     $this->dosRules->load_from_domxml($tmprulesroot);
+            }
+
+            //
+            // tunnelinspection Rules extraction
+            //
+            $xmlTagName = "tunnel-inspect";
+            $var = "tunnelInspectionRules";
+            $tmproot = DH::findFirstElement($xmlTagName, $this->rulebaseroot);
+            if( $tmproot !== FALSE )
+            {
+                $tmprulesroot = DH::findFirstElement('rules', $tmproot);
+                if( $tmprulesroot !== FALSE )
+                    $this->$var->load_from_domxml($tmprulesroot);
+            }
+
+            //
+            // network-packet-broker Rules extraction
+            //
+            $xmlTagName = "network-packet-broker";
+            $var = "networkPacketBrokerRules";
+            $tmproot = DH::findFirstElement($xmlTagName, $this->rulebaseroot);
+            if( $tmproot !== FALSE )
+            {
+                $tmprulesroot = DH::findFirstElement('rules', $tmproot);
+                if( $tmprulesroot !== FALSE )
+                    $this->$var->load_from_domxml($tmprulesroot);
+            }
+
+            //
+            // sdwan Rules extraction
+            //
+            $xmlTagName = "sdwan";
+            $var = "sdWanRules";
+            $tmproot = DH::findFirstElement($xmlTagName, $this->rulebaseroot);
+            if( $tmproot !== FALSE )
+            {
+                $tmprulesroot = DH::findFirstElement('rules', $tmproot);
+                if( $tmprulesroot !== FALSE )
+                    $this->$var->load_from_domxml($tmprulesroot);
             }
         }
     }

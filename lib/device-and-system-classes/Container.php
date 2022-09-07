@@ -158,6 +158,13 @@ class Container
     /** @var RuleStore */
     public $defaultSecurityRules = null;
 
+    /** @var RuleStore */
+    public $networkPacketBrokerRules;
+
+    /** @var RuleStore */
+    public $sdWanRules;
+
+
     /**
      * @var null|Container
      */
@@ -261,6 +268,9 @@ class Container
         $this->tunnelInspectionRules = new RuleStore($this, 'TunnelInspectionRule', TRUE);
 
         $this->defaultSecurityRules = new RuleStore($this, 'DefaultSecurityRule', TRUE);
+
+        $this->networkPacketBrokerRules = new RuleStore($this, 'NetworkPacketBrokerRule', TRUE);
+        $this->sdWanRules = new RuleStore($this, 'SDWanRule', TRUE);
 
         $this->_fakeNetworkProperties = $this->owner->_fakeNetworkProperties;
         $this->dosRules->_networkStore = $this->_fakeNetworkProperties;
@@ -769,6 +779,60 @@ class Container
                 $tmpPost = null;
         }
         $this->defaultSecurityRules->load_from_domxml($tmp, $tmpPost);
+
+        //network-packet-broker
+        $xmlTagName = "network-packet-broker";
+        $var = "networkPacketBrokerRules";
+        if( $prerulebase === FALSE )
+            $tmp = null;
+        else
+        {
+            $tmp = DH::findFirstElement($xmlTagName, $prerulebase);
+            if( $tmp !== FALSE )
+                $tmp = DH::findFirstElement('rules', $tmp);
+
+            if( $tmp === FALSE )
+                $tmp = null;
+        }
+        if( $postrulebase === FALSE )
+            $tmpPost = null;
+        else
+        {
+            $tmpPost = DH::findFirstElement($xmlTagName, $postrulebase);
+            if( $tmpPost !== FALSE )
+                $tmpPost = DH::findFirstElement('rules', $tmpPost);
+
+            if( $tmpPost === FALSE )
+                $tmpPost = null;
+        }
+        $this->$var->load_from_domxml($tmp, $tmpPost);
+
+        //sdwan
+        $xmlTagName = "sdwan";
+        $var = "sdWanRules";
+        if( $prerulebase === FALSE )
+            $tmp = null;
+        else
+        {
+            $tmp = DH::findFirstElement($xmlTagName, $prerulebase);
+            if( $tmp !== FALSE )
+                $tmp = DH::findFirstElement('rules', $tmp);
+
+            if( $tmp === FALSE )
+                $tmp = null;
+        }
+        if( $postrulebase === FALSE )
+            $tmpPost = null;
+        else
+        {
+            $tmpPost = DH::findFirstElement($xmlTagName, $postrulebase);
+            if( $tmpPost !== FALSE )
+                $tmpPost = DH::findFirstElement('rules', $tmpPost);
+
+            if( $tmpPost === FALSE )
+                $tmpPost = null;
+        }
+        $this->$var->load_from_domxml($tmp, $tmpPost);
         //
         // end of policies extraction
         //
