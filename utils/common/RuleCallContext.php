@@ -391,7 +391,7 @@ class RuleCallContext extends CallContext
 
         if( $fieldName == 'application' )
         {
-            if( !$rule->isSecurityRule() )
+            if( !$rule->isSecurityRule() && !$rule->isDefaultSecurityRule() )
                 return self::enclose('');
 
             if( $rule->apps->isAny() )
