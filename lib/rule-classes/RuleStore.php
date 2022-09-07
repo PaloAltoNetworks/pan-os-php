@@ -76,7 +76,9 @@ class RuleStore
         'QoSRule' => array('name' => 'QoS', 'varName' => 'qosRules', 'xpathRoot' => 'qos'),
         'DoSRule' => array('name' => 'DoS', 'varName' => 'dosRules', 'xpathRoot' => 'dos'),
         'TunnelInspectionRule' => array('name' => 'TunnelInspection', 'varName' => 'tunnelInspectionRules', 'xpathRoot' => 'tunnel-inspect'),
-        'DefaultSecurityRule' => array('name' => 'DefaultSecurity', 'varName' => 'defaultSecurityRules', 'xpathRoot' => 'default-security-rules')
+        'DefaultSecurityRule' => array('name' => 'DefaultSecurity', 'varName' => 'defaultSecurityRules', 'xpathRoot' => 'default-security-rules'),
+        'NetworkPacketBrokerRule' => array('name' => 'NetworkPacketBroker', 'varName' => 'networkPacketBrokerRules', 'xpathRoot' => 'network-packet-broker'),
+        'SDWanRule' => array('name' => 'SDWan', 'varName' => 'sdWanRules', 'xpathRoot' => 'sdwan')
     );
 
     public function __construct($owner, $ruleType, $isPreOrPost = FALSE)

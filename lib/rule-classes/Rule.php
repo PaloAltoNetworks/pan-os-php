@@ -1419,6 +1419,16 @@ class Rule
         return FALSE;
     }
 
+    public function isNetworkPacketBrokerRule()
+    {
+        return FALSE;
+    }
+
+    public function isSDWanRule()
+    {
+        return FALSE;
+    }
+
     public function ruleNature()
     {
         return 'unknown';

@@ -151,6 +151,13 @@ class DeviceCloud
     /** @var RuleStore */
     public $defaultSecurityRules = null;
 
+    /** @var RuleStore */
+    public $networkPacketBrokerRules;
+
+    /** @var RuleStore */
+    public $sdWanRules;
+
+
     /** @var ZoneStore */
     public $zoneStore = null;
 
@@ -278,6 +285,12 @@ class DeviceCloud
 
         $this->defaultSecurityRules = new RuleStore($this, 'DefaultSecurityRule', TRUE);
         $this->defaultSecurityRules->name = "DefaultSecurity";
+
+        $this->networkPacketBrokerRules = new RuleStore($this, 'NetworkPacketBrokerRule', TRUE);
+        $this->networkPacketBrokerRules->name = 'NetworkPacketBroker';
+
+        $this->sdWanRules = new RuleStore($this, 'SDWanRule', TRUE);
+        $this->sdWanRules->name = 'SDWan';
 
         #$this->dosRules->_networkStore = $this->owner->network;
         #$this->pbfRules->_networkStore = $this->owner->network;
@@ -757,6 +770,32 @@ class DeviceCloud
                 $tmprulesroot = DH::findFirstElement('rules', $tmproot);
                 if( $tmprulesroot !== FALSE )
                     $this->defaultSecurityRules->load_from_domxml($tmprulesroot);
+            }
+
+            //
+            // network-packet-broker Rules extraction
+            //
+            $xmlTagName = "network-packet-broker";
+            $var = "networkPacketBrokerRules";
+            $tmproot = DH::findFirstElement($xmlTagName, $this->rulebaseroot);
+            if( $tmproot !== FALSE )
+            {
+                $tmprulesroot = DH::findFirstElement('rules', $tmproot);
+                if( $tmprulesroot !== FALSE )
+                    $this->$var->load_from_domxml($tmprulesroot);
+            }
+
+            //
+            // sdwan Rules extraction
+            //
+            $xmlTagName = "sdwan";
+            $var = "sdWanRules";
+            $tmproot = DH::findFirstElement($xmlTagName, $this->rulebaseroot);
+            if( $tmproot !== FALSE )
+            {
+                $tmprulesroot = DH::findFirstElement('rules', $tmproot);
+                if( $tmprulesroot !== FALSE )
+                    $this->$var->load_from_domxml($tmprulesroot);
             }
         }
     }

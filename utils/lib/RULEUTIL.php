@@ -125,6 +125,14 @@ class RULEUTIL extends UTIL
                                 $this->objectsToProcess[] = array('store' => $sub->defaultSecurityRules, 'rules' => $sub->defaultSecurityRules->resultingRuleSet());
                             }
                             */
+                            if( array_search('any', $this->ruleTypes) !== FALSE || array_search('networkpacketbroker', $this->ruleTypes) !== FALSE )
+                            {
+                                $this->objectsToProcess[] = array('store' => $sub->networkPacketBrokerRules, 'rules' => $sub->networkPacketBrokerRules->resultingRuleSet());
+                            }
+                            if( array_search('any', $this->ruleTypes) !== FALSE || array_search('sdwan', $this->ruleTypes) !== FALSE )
+                            {
+                                $this->objectsToProcess[] = array('store' => $sub->sdWanRules, 'rules' => $sub->sdWanRules->resultingRuleSet());
+                            }
                             $locationFound = TRUE;
                         }
                     }
@@ -178,6 +186,14 @@ class RULEUTIL extends UTIL
                                 $this->objectsToProcess[] = array('store' => $sub->defaultSecurityRules, 'rules' => $sub->defaultSecurityRules->resultingRuleSet());
                             }
                             */
+                            if( array_search('any', $this->ruleTypes) !== FALSE || array_search('networkpacketbroker', $this->ruleTypes) !== FALSE )
+                            {
+                                $this->objectsToProcess[] = array('store' => $sub->networkPacketBrokerRules, 'rules' => $sub->networkPacketBrokerRules->rules());
+                            }
+                            if( array_search('any', $this->ruleTypes) !== FALSE || array_search('sdwan', $this->ruleTypes) !== FALSE )
+                            {
+                                $this->objectsToProcess[] = array('store' => $sub->sdWanRules, 'rules' => $sub->sdWanRules->rules());
+                            }
                             $locationFound = TRUE;
                         }
                     }
@@ -231,7 +247,15 @@ class RULEUTIL extends UTIL
                     }
                     if( array_search('any', $this->ruleTypes) !== FALSE || array_search('defaultsecurity', $this->ruleTypes) !== FALSE )
                     {
-                        $this->objectsToProcess[] = array('store' => $this->pan->defaultSecurityRules, 'rules' => $this->pan->defaultSecurityRules->resultingRuleSet());
+                        $this->objectsToProcess[] = array('store' => $this->pan->defaultSecurityRules, 'rules' => $this->pan->defaultSecurityRules->rules());
+                    }
+                    if( array_search('any', $this->ruleTypes) !== FALSE || array_search('networkpacketbroker', $this->ruleTypes) !== FALSE )
+                    {
+                        $this->objectsToProcess[] = array('store' => $this->pan->networkPacketBrokerRules, 'rules' => $this->pan->networkPacketBrokerRules->rules());
+                    }
+                    if( array_search('any', $this->ruleTypes) !== FALSE || array_search('sdwan', $this->ruleTypes) !== FALSE )
+                    {
+                        $this->objectsToProcess[] = array('store' => $this->pan->sdWanRules, 'rules' => $this->pan->sdWanRules->rules());
                     }
                     $locationFound = TRUE;
 
@@ -298,7 +322,15 @@ class RULEUTIL extends UTIL
                         }
                         if( array_search('any', $this->ruleTypes) !== FALSE || array_search('defaultsecurity', $this->ruleTypes) !== FALSE )
                         {
-                            $this->objectsToProcess[] = array('store' => $sub->defaultSecurityRules, 'rules' => $sub->defaultSecurityRules->resultingRuleSet());
+                            $this->objectsToProcess[] = array('store' => $sub->defaultSecurityRules, 'rules' => $sub->defaultSecurityRules->rules());
+                        }
+                        if( array_search('any', $this->ruleTypes) !== FALSE || array_search('networkpacketbroker', $this->ruleTypes) !== FALSE )
+                        {
+                            $this->objectsToProcess[] = array('store' => $sub->networkPacketBrokerRules, 'rules' => $sub->networkPacketBrokerRules->rules());
+                        }
+                        if( array_search('any', $this->ruleTypes) !== FALSE || array_search('sdwan', $this->ruleTypes) !== FALSE )
+                        {
+                            $this->objectsToProcess[] = array('store' => $sub->sdWanRules, 'rules' => $sub->sdWanRules->rules());
                         }
                         $locationFound = TRUE;
                     }
@@ -317,7 +349,7 @@ class RULEUTIL extends UTIL
         //
         // Determine rule types
         //
-        $supportedRuleTypes = array( 'any', 'security', 'nat', 'decryption', 'appoverride', 'captiveportal', 'authentication', 'pbf', 'qos', 'dos', 'tunnelinspection', 'defaultsecurity');
+        $supportedRuleTypes = array( 'any', 'security', 'nat', 'decryption', 'appoverride', 'captiveportal', 'authentication', 'pbf', 'qos', 'dos', 'tunnelinspection', 'defaultsecurity', 'networkpacketbroker', 'sdwan');
         if( !isset(PH::$args['ruletype']) )
         {
             PH::print_stdout( " - No 'ruleType' specified, using 'security' by default" );

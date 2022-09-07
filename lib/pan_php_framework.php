@@ -322,6 +322,8 @@ require_once $basedir . '/rule-classes/QoSRule.php';
 require_once $basedir . '/rule-classes/DoSRule.php';
 require_once $basedir . '/rule-classes/TunnelInspectionRule.php';
 require_once $basedir . '/rule-classes/DefaultSecurityRule.php';
+require_once $basedir . '/rule-classes/NetworkPacketBrokerRule.php';
+require_once $basedir . '/rule-classes/SDWanRule.php';
 
 if( isset( $_SERVER['REQUEST_METHOD'] ) )
 {
@@ -478,7 +480,9 @@ function convert($size, &$array = array())
 
     $unit = array('b', 'kb', 'mb', 'gb', 'tb', 'pb');
 
-    $returnValue = @round($size / pow(1024, ($i = floor(log($size, 1024)))), 2) . ' ' . $unit[$i];
+    $var = 1024;
+    $var = 1000;
+    $returnValue = @round($size / pow($var, ($i = floor(log($size, $var)))), 2) . ' ' . $unit[$i];
     $array = explode( " ", $returnValue );
     return $returnValue;
 }
