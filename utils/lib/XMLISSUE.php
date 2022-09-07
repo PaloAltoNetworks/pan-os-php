@@ -1438,20 +1438,22 @@ class XMLISSUE extends UTIL
                 foreach( $nodes as $node )
                 {
                     $zone_network = DH::findFirstElement('network', $node);
-
-                    foreach( $zone_network->childNodes as $key => $zone_type )
+                    if( $zone_network !== FALSE )
                     {
-                        /** @var DOMElement $objectNode */
-                        if( $zone_type->nodeType != XML_ELEMENT_NODE )
-                            continue;
-
-                        $str = $zone_type->nodeName;
-
-                        if( preg_match_all('/[A-Z][^A-Z]*/', $str, $results) )
+                        foreach( $zone_network->childNodes as $key => $zone_type )
                         {
-                            if( isset($results[0][0]) )
+                            /** @var DOMElement $objectNode */
+                            if( $zone_type->nodeType != XML_ELEMENT_NODE )
+                                continue;
+
+                            $str = $zone_type->nodeName;
+
+                            if( preg_match_all('/[A-Z][^A-Z]*/', $str, $results) )
                             {
-                                PH::print_stdout( "       - type 'Zone' name: '" . $node->getAttribute('name') . "' - '" . $results[0][0] . "' at XML line #{$zone_type->getLineNo()} (*FIX_MANUALLY*)");
+                                if( isset($results[0][0]) )
+                                {
+                                    PH::print_stdout("       - type 'Zone' name: '" . $node->getAttribute('name') . "' - '" . $results[0][0] . "' at XML line #{$zone_type->getLineNo()} (*FIX_MANUALLY*)");
+                                }
                             }
                         }
                     }
