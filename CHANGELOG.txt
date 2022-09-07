@@ -23,6 +23,7 @@ GENERAL:
 * pan_php_framework - optimise method convert()
 * class AddressStore | loop dependencies error with more details
 * introduce GTP/SCEP/PacketBroker/SDWAN-ErrorCorrection/-PathQuality/-SaasQuality/-TrafficDistribution Classes
+* introduce Profile DataObjects Class
 
 
 2.0.57 (20220905)

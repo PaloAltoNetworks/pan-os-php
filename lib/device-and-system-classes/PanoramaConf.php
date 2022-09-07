@@ -192,6 +192,10 @@ class PanoramaConf
     /** @var SecurityProfileStore */
     public $SDWanTrafficDistributionProfileStore = null;
 
+    /** @var SecurityProfileStore */
+    public $DataObjectsProfileStore = null;
+
+
     /** @var ScheduleStore */
     public $scheduleStore = null;
 
@@ -314,6 +318,10 @@ class PanoramaConf
 
         $this->SDWanTrafficDistributionProfileStore = new SecurityProfileStore($this, "SDWanTrafficDistributionProfile");
         $this->SDWanTrafficDistributionProfileStore->name = 'SDWanTrafficDistributionProfiles';
+
+        $this->DataObjectsProfileStore = new SecurityProfileStore($this, "DataObjectsProfile");
+        $this->DataObjectsProfileStore->name = 'DataObjectsProfileStoreProfiles';
+
 
         $this->scheduleStore = new ScheduleStore($this);
         $this->scheduleStore->setName('scheduleStore');
@@ -686,6 +694,15 @@ class PanoramaConf
             if( $tmproot !== FALSE )
             {
                 $this->SDWanTrafficDistributionProfileStore->load_from_domxml($tmproot);
+            }
+
+            //
+            // DataObjects Profile extraction
+            //
+            $tmproot = DH::findFirstElement('data-objects', $this->securityProfilebaseroot);
+            if( $tmproot !== FALSE )
+            {
+                $this->DataObjectsProfileStore->load_from_domxml($tmproot);
             }
         }
 
@@ -1457,6 +1474,8 @@ class PanoramaConf
         $gnsdwansaasquality = $this->SDWanSaasQualityProfileStore->count();
         $gnsdwantrafficdistribution = $this->SDWanTrafficDistributionProfileStore->count();
 
+        $gndataobjects = $this->DataObjectsProfileStore->count();
+
         foreach( $this->deviceGroups as $cur )
         {
             $gpreSecRules += $cur->securityRules->countPreRules();
@@ -1530,6 +1549,8 @@ class PanoramaConf
             $gnsdwanpathquality += $cur->SDWanPathQualityProfileStore->count();
             $gnsdwansaasquality += $cur->SDWanSaasQualityProfileStore->count();
             $gnsdwantrafficdistribution += $cur->SDWanTrafficDistributionProfileStore->count();
+
+            $gndataobjects += $cur->DataObjectsProfileStore->count();
         }
 
         $stdoutarray = array();
@@ -1750,6 +1771,9 @@ class PanoramaConf
         $stdoutarray['SDWanTrafficDistribution objects']['shared'] = $this->SDWanTrafficDistributionProfileStore->count();
         $stdoutarray['SDWanTrafficDistribution objects']['total_DGs'] = $gnsdwantrafficdistribution;
 
+        $stdoutarray['DataObjects objects']['shared'] = $this->DataObjectsProfileStore->count();
+        $stdoutarray['DataObjects objects']['total_DGs'] = $gndataobjects;
+
         $stdoutarray['zones'] = $this->zoneStore->count();
         #$stdoutarray['apps'] = $this->appStore->count();
 
@@ -1888,6 +1912,9 @@ class PanoramaConf
         $stdoutarray['SDWanSaasQuality objects']['total'] = $this->SDWanSaasQualityProfileStore->count();
         $stdoutarray['SDWanTrafficDistribution objects'] = array();
         $stdoutarray['SDWanTrafficDistribution objects']['total'] = $this->SDWanTrafficDistributionProfileStore->count();
+
+        $stdoutarray['DataObjects objects'] = array();
+        $stdoutarray['DataObjects objects']['total'] = $this->DataObjectsProfileStore->count();
 
         #PH::$JSON_TMP['shared'] = $stdoutarray;
         PH::$JSON_TMP[] = $stdoutarray;
