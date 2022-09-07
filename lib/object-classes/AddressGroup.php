@@ -798,9 +798,11 @@ class AddressGroup
      * @param bool $keepGroupsInList keep groups in the the list on top of just expanding them
      * @return Address[]|AddressGroup[] list of all member objects, if some of them are groups, they are exploded and their members inserted
      */
-    public function & expand($keepGroupsInList = FALSE, &$grpArray=array())
+    public function & expand($keepGroupsInList = FALSE, &$grpArray=array() )
     {
         $ret = array();
+
+        $grpArray[$this->name()] = $this;
 
         foreach( $this->members as $object )
         {
@@ -808,14 +810,18 @@ class AddressGroup
             $serial = $object->name();
             if( $object->isGroup() )
             {
-                #if( isset( $ret[$serial] ) )
                 if( array_key_exists($serial, $grpArray) )
                 {
-                    mwarning("addressgroup with name: " . $object->name() . " is added as subgroup to addressgroup: " . $this->name() . ", you should review your XML config file", $object->xmlroot, false, false);
+                    #mwarning("addressgroup with name: " . $object->name() . " is added as subgroup to addressgroup: " . $this->name() . ", you should review your XML config file", $object->xmlroot, false, false);
                     return $ret;
                 }
                 else
-                    $grpArray[$serial] = $serial;
+                {
+                    $grpArray[$serial] = $object;
+                    if( $keepGroupsInList )
+                        $ret[$serial] = $object;
+                }
+
 
                 if( $this->name() == $object->name() )
                 {
@@ -826,15 +832,26 @@ class AddressGroup
                 /** @var AddressGroup $object */
                 $tmpList = $object->expand( $keepGroupsInList, $grpArray );
 
-                $ret = array_merge($ret, $tmpList);
+                //$ret = array_merge($ret, $tmpList);
+                $ret = $ret + $tmpList;
+
                 unset($tmpList);
                 if( $keepGroupsInList )
-                    #$ret[$serial] = $object;
-                    $ret[] = $object;
+                {
+                    if( !array_key_exists($serial, $ret) )
+                    {
+                        $ret[$serial] = $object;
+                        #$ret[] = $object;
+                    }
+                }
             }
             else
-                #$ret[$serial] = $object;
-                $ret[] = $object;
+            {
+                if( !array_key_exists($serial, $ret) )
+                    $ret[$serial] = $object;
+                #$ret[] = $object;
+            }
+
         }
 
         $ret = array_unique_no_cast($ret);
