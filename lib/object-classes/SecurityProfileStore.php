@@ -64,7 +64,9 @@ class SecurityProfileStore extends ObjStore
         'SDWanErrorCorrectionProfile' => array('name' => 'SDWan-Error-Correction-Profiles', 'varName' => 'sdwanErrorCorrectionProf', 'xpathRoot' => 'sdwan-error-correction'),
         'SDWanPathQualityProfile' => array('name' => 'SDWan-Path-Quality-Profiles', 'varName' => 'sdwanPathQualityProf', 'xpathRoot' => 'sdwan-path-quality'),
         'SDWanSaasQualityProfile' => array('name' => 'SDWan-Saas-Quality-Profiles', 'varName' => 'sdwanSaasQualityProf', 'xpathRoot' => 'sdwan-saas-quality'),
-        'SDWanTrafficDistributionProfile' => array('name' => 'SDWan-Traffic-Distribution-Profiles', 'varName' => 'sdwanTrafficDistributionProf', 'xpathRoot' => 'sdwan-traffic-distribution')
+        'SDWanTrafficDistributionProfile' => array('name' => 'SDWan-Traffic-Distribution-Profiles', 'varName' => 'sdwanTrafficDistributionProf', 'xpathRoot' => 'sdwan-traffic-distribution'),
+
+        'DataObjectsProfile' => array('name' => 'Data-Objects-Profiles', 'varName' => 'sdwanTrafficDistributionProf', 'xpathRoot' => 'data-objcts')
     );
 
 

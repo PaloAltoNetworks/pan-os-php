@@ -259,6 +259,7 @@ require_once $basedir . '/object-classes/SDWanErrorCorrectionProfile.php';
 require_once $basedir . '/object-classes/SDWanPathQualityProfile.php';
 require_once $basedir . '/object-classes/SDWanSaasQualityProfile.php';
 require_once $basedir . '/object-classes/SDWanTrafficDistributionProfile.php';
+require_once $basedir . '/object-classes/DataObjectsProfile.php';
 
 require_once $basedir . '/device-and-system-classes/VirtualSystem.php';
 require_once $basedir . '/device-and-system-classes/PANConf.php';
