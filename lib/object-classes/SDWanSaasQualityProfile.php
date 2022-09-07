@@ -19,7 +19,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-class HipObjectsProfile extends Profile
+class SDWanSaasQualityProfile extends Profile
 {
     use ReferenceableObject;
     use PathableName;
