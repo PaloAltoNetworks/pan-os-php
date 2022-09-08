@@ -622,6 +622,14 @@ RuleCallContext::$supportedActions[] = array(
     'section' => 'zone',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
+
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+
         if( ($rule->isPbfRule() && $rule->isZoneBased()) || ($rule->isDoSRule() && $rule->isZoneBasedFrom()) )
         {
             $string = "FROM is Zone based, not supported yet.";
@@ -642,6 +650,14 @@ RuleCallContext::$supportedActions[] = array(
     'section' => 'zone',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
+
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+
         if( ($rule->isPbfRule() && $rule->isZoneBased()) || ($rule->isDoSRule() && $rule->isZoneBasedFrom()) )
         {
             $string = "FROM is Zone based, not supported yet.";
@@ -659,6 +675,13 @@ RuleCallContext::$supportedActions[] = array(
     'section' => 'zone',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
+
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
 
         if( ($rule->isPbfRule() && $rule->isZoneBased()) || ($rule->isDoSRule() && $rule->isZoneBasedFrom()) )
         {
@@ -690,6 +713,13 @@ RuleCallContext::$supportedActions[] = array(
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
 
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+
         if( ($rule->isPbfRule() && $rule->isZoneBased()) || ($rule->isDoSRule() && $rule->isZoneBasedFrom()) )
         {
             $string = "FROM is Zone based, not supported yet.";
@@ -718,6 +748,12 @@ RuleCallContext::$supportedActions[] = array(
     'name' => 'from-Replace',
     'section' => 'zone',
     'MainFunction' => function (RuleCallContext $context) {
+        if( $context->object->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         $f = RuleCallContext::$commonActionFunctions['zone-replace']['function'];
         $f($context, 'from');
     },
@@ -728,6 +764,13 @@ RuleCallContext::$supportedActions[] = array(
     'section' => 'zone',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
+
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
 
         /** @var PbfRule $rule */
         if( ($rule->isPbfRule() && ($rule->isZoneBased() or $rule->isInterfaceBased()) )  || ($rule->isDoSRule() && $rule->isZoneBasedFrom()) )
@@ -749,6 +792,14 @@ RuleCallContext::$supportedActions[] = array(
     'section' => 'zone',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
+
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+
         if( $rule->isDoSRule() && $rule->isZoneBasedTo() )
         {
             $string = "TO is Zone based, not supported yet.";
@@ -774,6 +825,12 @@ RuleCallContext::$supportedActions[] = array(
     'section' => 'zone',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         if( $rule->isDoSRule() && $rule->isZoneBasedTo() )
         {
             $string = "TO is Zone based, not supported yet.";
@@ -798,7 +855,12 @@ RuleCallContext::$supportedActions[] = array(
     'section' => 'zone',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
-
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         if( $rule->isDoSRule() && $rule->isZoneBasedTo() )
         {
             $string = "TO is Zone based, not supported yet.";
@@ -834,7 +896,12 @@ RuleCallContext::$supportedActions[] = array(
     'section' => 'zone',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
-
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         if( $rule->isDoSRule() && $rule->isZoneBasedTo() )
         {
             $string = "TO is Zone based, not supported yet.";
@@ -869,6 +936,12 @@ RuleCallContext::$supportedActions[] = array(
     'name' => 'to-Replace',
     'section' => 'zone',
     'MainFunction' => function (RuleCallContext $context) {
+        if( $context->object->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         $f = RuleCallContext::$commonActionFunctions['zone-replace']['function'];
         $f($context, 'to');
     },
@@ -879,7 +952,12 @@ RuleCallContext::$supportedActions[] = array(
     'section' => 'zone',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
-
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         if( $rule->isDoSRule() && $rule->isZoneBasedTo() )
         {
             $string = "TO is Zone based, not supported yet.";
@@ -905,7 +983,12 @@ RuleCallContext::$supportedActions[] = array(
     'section' => 'zone',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
-
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         if( ($rule->isPbfRule() && $rule->isZoneBased()) || ($rule->isDoSRule() && $rule->isZoneBasedFrom()) )
         {
             $string = "FROM is Zone based, not supported yet.";
@@ -926,6 +1009,12 @@ RuleCallContext::$supportedActions[] = array(
     'section' => 'zone',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         if( $rule->isDoSRule() && $rule->isZoneBasedTo() )
         {
             $string = "TO is Zone based, not supported yet.";
@@ -956,6 +1045,12 @@ RuleCallContext::$supportedActions[] = array(
     'section' => 'address',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         $objectFind = $rule->source->parentCentralStore->find($context->arguments['objName']);
         if( $objectFind === null )
         {
@@ -976,7 +1071,12 @@ RuleCallContext::$supportedActions[] = array(
     'section' => 'address',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
-
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         if( !isset($context->cachedList) )
         {
             $text = file_get_contents( $context->arguments['file'] );
@@ -1026,6 +1126,12 @@ RuleCallContext::$supportedActions[] = array(
     'section' => 'address',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         $objectFind = $rule->source->parentCentralStore->find($context->arguments['objName']);
         if( $objectFind === null )
         {
@@ -1044,7 +1150,12 @@ RuleCallContext::$supportedActions[] = array(
     'name' => 'src-Remove-Objects-Matching-Filter',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
-
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         if( $rule->source->count() < 1 )
             return;
 
@@ -1099,7 +1210,12 @@ RuleCallContext::$supportedActions[] = array(
     'section' => 'address',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
-
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         if( !$rule->isSecurityRule()  )
         {
             $string = "Rule is of type ".get_class($rule)." - not supported";
@@ -1145,7 +1261,12 @@ RuleCallContext::$supportedActions[] = array(
     'name' => 'dst-Remove-Objects-Matching-Filter',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
-
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         if( $rule->destination->count() < 1 )
             return;
 
@@ -1198,7 +1319,12 @@ RuleCallContext::$supportedActions[] = array(
     'name' => 'service-Remove-Objects-Matching-Filter',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
-
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         if( $rule->services->count() < 1 )
             return;
 
@@ -1256,6 +1382,12 @@ RuleCallContext::$supportedActions[] = array(
     'section' => 'address',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         $objectFind = $rule->source->parentCentralStore->find($context->arguments['objName']);
         if( $objectFind === null )
         {
@@ -1275,6 +1407,12 @@ RuleCallContext::$supportedActions[] = array(
     'section' => 'address',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         $objectFind = $rule->source->parentCentralStore->find($context->arguments['objName']);
         if( $objectFind === null )
         {
@@ -1295,7 +1433,12 @@ RuleCallContext::$supportedActions[] = array(
     'section' => 'address',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
-
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         if( !isset($context->cachedList) )
         {
             $text = file_get_contents( $context->arguments['file'] );
@@ -1343,6 +1486,12 @@ RuleCallContext::$supportedActions[] = array(
     'section' => 'address',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         $objectFind = $rule->source->parentCentralStore->find($context->arguments['objName']);
         if( $objectFind === null )
         {
@@ -1362,6 +1511,12 @@ RuleCallContext::$supportedActions[] = array(
     'section' => 'address',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         $objectFind = $rule->source->parentCentralStore->find($context->arguments['objName']);
         if( $objectFind === null )
             derr("address-type object named '{$context->arguments['objName']}' not found");
@@ -1378,6 +1533,12 @@ RuleCallContext::$supportedActions[] = array(
     'section' => 'address',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         if( $context->isAPI )
             $rule->source->API_setAny();
         else
@@ -1389,6 +1550,12 @@ RuleCallContext::$supportedActions[] = array(
     'section' => 'address',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         if( $context->isAPI )
             $rule->destination->API_setAny();
         else
@@ -1402,7 +1569,12 @@ RuleCallContext::$supportedActions[] = array(
     'section' => 'address',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
-
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         if( $context->isAPI )
             $rule->API_setSourceIsNegated($context->arguments['YESorNO']);
         else
@@ -1417,7 +1589,12 @@ RuleCallContext::$supportedActions[] = array(
     'section' => 'address',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
-
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         if( $context->isAPI )
             $rule->API_setDestinationIsNegated($context->arguments['YESorNO']);
         else
@@ -1545,7 +1722,12 @@ RuleCallContext::$supportedActions[] = array(
     'section' => 'service',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
-
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         if( !$rule->isSecurityRule()  )
         {
             $string = "Rule is of type ".get_class($rule)." - not supported";
@@ -1564,7 +1746,12 @@ RuleCallContext::$supportedActions[] = array(
     'section' => 'service',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
-
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         if( $rule->isNatRule()  )
         {
             $string = "Rule is of type ".get_class($rule)." - implementation missing";
@@ -1589,6 +1776,12 @@ RuleCallContext::$supportedActions[] = array(
     'section' => 'service',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         $objectFind = $rule->services->parentCentralStore->find($context->arguments['svcName']);
         if( $objectFind === null )
             derr("service named '{$context->arguments['svcName']}' not found");
@@ -1605,6 +1798,12 @@ RuleCallContext::$supportedActions[] = array(
     'section' => 'service',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         $objectFind = $rule->services->parentCentralStore->find($context->arguments['svcName']);
         if( $objectFind === null )
             derr("service named '{$context->arguments['svcName']}' not found");
@@ -1621,6 +1820,12 @@ RuleCallContext::$supportedActions[] = array(
     'section' => 'service',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         $objectFind = $rule->services->parentCentralStore->find($context->arguments['svcName']);
         if( $objectFind === null )
             derr("service named '{$context->arguments['svcName']}' not found");
@@ -1642,7 +1847,12 @@ RuleCallContext::$supportedActions[] = array(
     'section' => 'app',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
-
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         if( !$rule->isSecurityRule()  )
         {
             $string = "Rule is NOT of type Security";
@@ -1662,7 +1872,12 @@ RuleCallContext::$supportedActions[] = array(
     'section' => 'app',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
-
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         $appName = $context->arguments['appName'];
 
         $objectFind = $rule->apps->parentCentralStore->find($appName);
@@ -1684,6 +1899,12 @@ RuleCallContext::$supportedActions[] = array(
     'section' => 'app',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         $objectFind = $rule->apps->parentCentralStore->findorCreate($context->arguments['appName']);
         if( $objectFind === null )
             derr("application named '{$context->arguments['appName']}' not found");
@@ -1700,6 +1921,12 @@ RuleCallContext::$supportedActions[] = array(
     'section' => 'app',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         $objectFind = $rule->apps->parentCentralStore->find($context->arguments['appName']);
         if( $objectFind === null )
             derr("application named '{$context->arguments['appName']}' not found");
@@ -1716,6 +1943,12 @@ RuleCallContext::$supportedActions[] = array(
     'section' => 'app',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         $objectFind = $rule->apps->parentCentralStore->find($context->arguments['appName']);
         if( $objectFind === null )
             derr("application named '{$context->arguments['appName']}' not found");
@@ -1731,7 +1964,12 @@ RuleCallContext::$supportedActions[] = array(
     'name' => 'app-Fix-Dependencies',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
-
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         if( !$rule->isSecurityRule() )
             return null;
 
@@ -1779,7 +2017,12 @@ RuleCallContext::$supportedActions[] = array(
     'section' => 'app',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
-
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         if( $context->isAPI )
             $rule->API_clearPolicyAppUsageDATA();
         else
@@ -1821,7 +2064,12 @@ RuleCallContext::$supportedActions[] = array(
     'section' => 'target',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
-
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         if( $rule->target_isAny() )
         {
             $string = "target is already ANY";
@@ -1840,7 +2088,12 @@ RuleCallContext::$supportedActions[] = array(
     'section' => 'target',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
-
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         if( $rule->target_isNegated() == $context->arguments['trueOrFalse'] )
         {
             $string = "target negation is already '" . boolYesNo($rule->target_isNegated()) . "''";
@@ -1860,7 +2113,12 @@ RuleCallContext::$supportedActions[] = array(
     'section' => 'target',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
-
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         $vsys = null;
         if( $context->arguments['vsys'] != '*NULL*' )
             $vsys = $context->arguments['vsys'];
@@ -1888,7 +2146,12 @@ RuleCallContext::$supportedActions[] = array(
     'section' => 'target',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
-
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         $vsys = null;
         if( $context->arguments['vsys'] != '*NULL*' )
             $vsys = $context->arguments['vsys'];
@@ -2214,7 +2477,7 @@ RuleCallContext::$supportedActions[] = array(
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
 
-        if( !$rule->isSecurityRule() )
+        if( !$rule->isSecurityRule() && !$rule->isDefaultSecurityRule() )
         {
             $string = "this is not a Security rule" ;
             PH::ACTIONstatus( $context, "SKIPPED", $string );
@@ -2233,7 +2496,7 @@ RuleCallContext::$supportedActions[] = array(
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
 
-        if( !$rule->isSecurityRule() )
+        if( !$rule->isSecurityRule() && !$rule->isDefaultSecurityRule() )
         {
             $string = "this is not a Security rule" ;
             PH::ACTIONstatus( $context, "SKIPPED", $string );
@@ -2266,7 +2529,7 @@ RuleCallContext::$supportedActions[] = Array(
          */
         $rule = $context->object;
 
-        if( !$rule->isSecurityRule() )
+        if( !$rule->isSecurityRule() && !$rule->isDefaultSecurityRule() )
             return false;
 
         if( $rule->securityProfileIsBlank() || $rule->securityProfileType() == "group" )
@@ -2305,7 +2568,7 @@ RuleCallContext::$supportedActions[] = array(
         $type = $context->arguments['type'];
         $profName = $context->arguments['profName'];
 
-        if( !$rule->isSecurityRule() )
+        if( !$rule->isSecurityRule() && !$rule->isDefaultSecurityRule() )
         {
             $string = "this is not a Security rule";
             PH::ACTIONstatus( $context, "SKIPPED", $string );
@@ -2359,7 +2622,7 @@ RuleCallContext::$supportedActions[] = array(
         $rule = $context->object;
         $type = $context->arguments['type'];
 
-        if( !$rule->isSecurityRule() )
+        if( !$rule->isSecurityRule() && !$rule->isDefaultSecurityRule() )
         {
             $string = "this is not a Security rule" ;
             PH::ACTIONstatus( $context, "SKIPPED", $string );
@@ -2423,7 +2686,7 @@ RuleCallContext::$supportedActions[] = array(
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
 
-        if( !$rule->isSecurityRule() )
+        if( !$rule->isSecurityRule() && !$rule->isDefaultSecurityRule() )
         {
             $string = "this is not a Security rule" ;
             PH::ACTIONstatus( $context, "SKIPPED", $string );
@@ -2454,7 +2717,7 @@ RuleCallContext::$supportedActions[] = array(
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
 
-        if( !$rule->isSecurityRule() )
+        if( !$rule->isSecurityRule() && !$rule->isDefaultSecurityRule() )
         {
             $string = "this is not a Security rule" ;
             PH::ACTIONstatus( $context, "SKIPPED", $string );
@@ -2611,6 +2874,12 @@ RuleCallContext::$supportedActions[] = array(
     'name' => 'enabled-Set',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         if( $context->isAPI )
             $rule->API_setEnabled($context->arguments['trueOrFalse']);
         else
@@ -2622,6 +2891,12 @@ RuleCallContext::$supportedActions[] = array(
     'name' => 'enabled-Set-FastAPI',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         if( !$context->isAPI )
             derr('you cannot call this action without API mode');
 
@@ -2641,6 +2916,12 @@ RuleCallContext::$supportedActions[] = array(
     'name' => 'disabled-Set',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         if( $context->isAPI )
             $rule->API_setDisabled($context->arguments['trueOrFalse']);
         else
@@ -2652,6 +2933,12 @@ RuleCallContext::$supportedActions[] = array(
     'name' => 'disabled-Set-FastAPI',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         if( !$context->isAPI )
             derr('you cannot call this action without API mode');
 
@@ -2671,6 +2958,12 @@ RuleCallContext::$supportedActions[] = array(
     'name' => 'delete',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         if( $context->isAPI )
             $rule->owner->API_remove($rule);
         else
@@ -2681,7 +2974,12 @@ RuleCallContext::$supportedActions[] = array(
     'name' => 'dsri-Set',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
-
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         if( !$rule->isSecurityRule() )
         {
             $string = "it's not a security rule" ;
@@ -2700,7 +2998,12 @@ RuleCallContext::$supportedActions[] = array(
     'name' => 'dsri-Set-FastAPI',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
-
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         if( !$rule->isSecurityRule() )
         {
             $string = "it's not a security rule" ;
@@ -2727,7 +3030,12 @@ RuleCallContext::$supportedActions[] = array(
     'name' => 'biDirNat-Split',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
-
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         if( !$rule->isNatRule() )
         {
             $string = "it's not a NAT rule" ;
@@ -2774,7 +3082,12 @@ RuleCallContext::$supportedActions[] = array(
     'name' => 'DNat-set',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
-
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         if( !$rule->isNatRule() )
         {
             $string = "it's not a NAT rule" ;
@@ -2821,7 +3134,12 @@ RuleCallContext::$supportedActions[] = array(
     'name' => 'name-Prepend',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
-
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         $newName = $context->rawArguments['text'] . $rule->name();
 
         if( strlen($newName) > 31 )
@@ -2880,7 +3198,12 @@ RuleCallContext::$supportedActions[] = array(
     'name' => 'name-Append',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
-
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         $newName = $rule->name() . $context->rawArguments['text'];
 
         if( strlen($newName) > 31 )
@@ -2939,7 +3262,12 @@ RuleCallContext::$supportedActions[] = array(
     'name' => 'name-addPrefix',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
-
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         $newName = $context->rawArguments['text'] . $rule->name();
 
         if( strlen($newName) > 31 )
@@ -2997,7 +3325,12 @@ RuleCallContext::$supportedActions[] = array(
     'name' => 'name-addSuffix',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
-
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         $newName = $rule->name() . $context->rawArguments['text'];
 
         if( strlen($newName) > 31 )
@@ -3055,6 +3388,12 @@ RuleCallContext::$supportedActions[] = array(
     'name' => 'name-removePrefix',
     'MainFunction' => function (RuleCallContext $context) {
         $object = $context->object;
+        if( $object->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         $prefix = $context->rawArguments['prefix'];
 
         if( strpos($object->name(), $prefix) !== 0 )
@@ -3095,6 +3434,12 @@ RuleCallContext::$supportedActions[] = array(
     'name' => 'name-removeSuffix',
     'MainFunction' => function (RuleCallContext $context) {
         $object = $context->object;
+        if( $object->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         $suffix = $context->rawArguments['suffix'];
         $suffixStartIndex = strlen($object->name()) - strlen($suffix);
 
@@ -3132,7 +3477,12 @@ RuleCallContext::$supportedActions[] = array(
     },
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
-
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         $newName = $context->arguments['stringFormula'];
         $context->numCount++;
 
@@ -3214,7 +3564,12 @@ RuleCallContext::$supportedActions[] = array(
     },
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
-
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         $characterToreplace = $context->arguments['search'];
         $characterForreplace = $context->arguments['replace'];
 
@@ -3263,6 +3618,12 @@ RuleCallContext::$supportedActions[] = array(
     'name' => 'ruleType-Change',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         $newType = $context->arguments['text'];
 
         if( !$rule->isSecurityRule() )
@@ -3356,6 +3717,12 @@ RuleCallContext::$supportedActions[] = array(
 RuleCallContext::$supportedActions[] = array(
     'name' => 'invertPreAndPost',
     'MainFunction' => function (RuleCallContext $context) {
+        if( $context->object->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         if( !$context->isAPI )
         {
             if( $context->object->isPreRule() )
@@ -3382,6 +3749,12 @@ RuleCallContext::$supportedActions[] = array(
     'name' => 'copy',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         $args = &$context->arguments;
         $location = $args['location'];
         $pan = PH::findRootObjectOrDie($rule);;
@@ -3423,6 +3796,12 @@ RuleCallContext::$supportedActions[] = array(
     'name' => 'move',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         $args = &$context->arguments;
         $location = $args['location'];
         $pan = PH::findRootObjectOrDie($rule);;
@@ -3493,6 +3872,12 @@ RuleCallContext::$supportedActions[] = array(
     'name' => 'position-Move-to-Top',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         $ruleStore = $rule->owner;
 
         $serial = spl_object_hash($ruleStore);
@@ -3577,6 +3962,12 @@ RuleCallContext::$supportedActions[] = array(
     'name' => 'position-Move-to-Bottom',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         $ruleStore = $rule->owner;
 
         $referenceRule = $ruleStore->getRuleAtBottom($rule->isPreRule());
@@ -3602,6 +3993,12 @@ RuleCallContext::$supportedActions[] = array(
     'name' => 'position-Move-Before',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         $ruleStore = $rule->owner;
 
         $referenceRule = $ruleStore->find($context->arguments['rulename']);
@@ -3645,6 +4042,12 @@ RuleCallContext::$supportedActions[] = array(
     'name' => 'position-Move-After',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         $ruleStore = $rule->owner;
         $storeSerial = spl_object_hash($ruleStore);
 
@@ -3700,6 +4103,7 @@ RuleCallContext::$supportedActions[] = array(
     'name' => 'exportToExcel',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
+
         $context->ruleList[] = $rule;
     },
     'GlobalInitFunction' => function (RuleCallContext $context) {
@@ -3852,7 +4256,12 @@ RuleCallContext::$supportedActions[] = array(
     'name' => 'clone',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
-
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         $newName = $rule->owner->findAvailableName($rule->name(), $context->arguments['suffix']);
 
         $string = "cloned rule name will be '{$newName}'";
@@ -3884,7 +4293,12 @@ RuleCallContext::$supportedActions[] = array(
     'name' => 'cloneForAppOverride',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
-
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         if( !$rule->isSecurityRule() )
         {
             $string = "because rule is not type 'Security'" ;
@@ -4045,7 +4459,12 @@ RuleCallContext::$supportedActions[] = Array(
     'MainFunction' =>  function(RuleCallContext $context)
     {
         $rule = $context->object;
-
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         if( !$rule->isSecurityRule() )
         {
             $string = "this is not a Security rule";
@@ -4065,7 +4484,12 @@ RuleCallContext::$supportedActions[] = Array(
     'MainFunction' =>  function(RuleCallContext $context)
     {
         $rule = $context->object;
-
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         if( !$rule->isSecurityRule() )
         {
             $string = "this is not a Security rule";
@@ -4096,7 +4520,12 @@ RuleCallContext::$supportedActions[] = Array(
     'MainFunction' =>  function(RuleCallContext $context)
     {
         $rule = $context->object;
-
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         if( !$rule->isSecurityRule() )
         {
             $string = "this is not a Security rule";
@@ -4120,6 +4549,12 @@ RuleCallContext::$supportedActions[] = Array(
     },
     'MainFunction' => function(RuleCallContext $context)
     {
+        if( $context->object->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         $filtercriteria = $context->arguments['filtercriteria'];
         $existentUser = $context->arguments['existentUser'];
 
@@ -4307,7 +4742,12 @@ RuleCallContext::$supportedActions[] = array(
     'name' => 'hip-Set',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
-
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         if( !$rule->isSecurityRule() )
         {
             $string = "this is not a Security rule";
@@ -4331,10 +4771,15 @@ RuleCallContext::$supportedActions[] = array(
     'name' => 'schedule-Set',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
-
-        if( !$rule->isSecurityRule() )
+        if( $rule->isDefaultSecurityRule() )
         {
-            $string = "this is not a Security rule";
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+        if( !$rule->isSecurityRule() && !$rule->isDoSRule() &&  !$rule->isPbfRule() && !$rule->isQoSRule() )
+        {
+            $string = "this rule type is not supported! ";
             PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
@@ -4351,10 +4796,15 @@ RuleCallContext::$supportedActions[] = array(
     'name' => 'schedule-Remove',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
-
-        if( !$rule->isSecurityRule() )
+        if( $rule->isDefaultSecurityRule() )
         {
-            $string = "this is not a Security rule";
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+        if( !$rule->isSecurityRule() && !$rule->isDoSRule() &&  !$rule->isPbfRule() && !$rule->isQoSRule() )
+        {
+            $string = "this rule type is not supported! ";
             PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
@@ -4378,7 +4828,12 @@ RuleCallContext::$supportedActions[] = array(
     'name' => 'qosMarking-Set',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
-
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         if( !$rule->isSecurityRule() )
         {
             $string = "this is not a Security rule";
@@ -4403,7 +4858,12 @@ RuleCallContext::$supportedActions[] = array(
     'name' => 'qosMarking-Remove',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
-
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         if( !$rule->isSecurityRule() )
         {
             $string = "this is not a Security rule";
@@ -4501,7 +4961,12 @@ RuleCallContext::$supportedActions[] = array(
     'section' => 'action',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
-
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
         if( !isset( $rule->app ) )
             return null;
 

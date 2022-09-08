@@ -3,11 +3,27 @@ CHANGELOG
 2.0.58
 UTIL:
 * type=rule - improve filters for CI/CD
+* type=rule ruletype=any | introduce all filter/actions related to schedule for DoS/Pbf/Qos Rules
+* type=rule | introduce ruletype=defaultsecurity
+* type=device - extend all parts DG/template / template-stack with config-size information
+* type=config-size - optimise output
+* type=rule | extend 'filter=(secprof ......)' for ryletype=defaultsecurity
+* type=rule | introduce ruletype=sdwan,networkpacketbroker
 
 BUGFIX:
 * type=rule/schedule | bugfix for is.expired
+* type=rule | actions=securityprofile... - fix to support DefaultSecurityRule
+* type=xml-issue | bugfix for Zone
+* type=rule ruletype=defaultsecurity | bugfix for actions=exporttoexcel
 
 GENERAL:
+* introduce class DefaultSecurityRule - extend on all parts
+* extend usage of DefaultSecurityRule to class Container/DeviceCloud/DeviceOnPrem
+* class DefaultSecurityRules - skip reading source/destination/from/to
+* pan_php_framework - optimise method convert()
+* class AddressStore | loop dependencies error with more details
+* introduce GTP/SCEP/PacketBroker/SDWAN-ErrorCorrection/-PathQuality/-SaasQuality/-TrafficDistribution Classes
+* introduce Profile DataObjects Class
 
 
 2.0.57 (20220905)

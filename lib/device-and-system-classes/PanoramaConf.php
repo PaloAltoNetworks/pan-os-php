@@ -115,6 +115,16 @@ class PanoramaConf
     /** @var RuleStore */
     public $tunnelInspectionRules;
 
+    /** @var RuleStore */
+    public $defaultSecurityRules;
+
+    /** @var RuleStore */
+    public $networkPacketBrokerRules;
+
+    /** @var RuleStore */
+    public $sdWanRules;
+
+
     /** @var AddressStore */
     public $addressStore = null;
 
@@ -160,6 +170,31 @@ class PanoramaConf
 
     /** @var SecurityProfileStore */
     public $HipProfilesProfileStore = null;
+
+    /** @var SecurityProfileStore */
+    public $GTPProfileStore = null;
+
+    /** @var SecurityProfileStore */
+    public $SCEPProfileStore = null;
+
+    /** @var SecurityProfileStore */
+    public $PacketBrokerProfileStore = null;
+
+    /** @var SecurityProfileStore */
+    public $SDWanErrorCorrectionProfileStore = null;
+
+    /** @var SecurityProfileStore */
+    public $SDWanPathQualityProfileStore = null;
+
+    /** @var SecurityProfileStore */
+    public $SDWanSaasQualityProfileStore = null;
+
+    /** @var SecurityProfileStore */
+    public $SDWanTrafficDistributionProfileStore = null;
+
+    /** @var SecurityProfileStore */
+    public $DataObjectsProfileStore = null;
+
 
     /** @var ScheduleStore */
     public $scheduleStore = null;
@@ -263,6 +298,31 @@ class PanoramaConf
         $this->HipProfilesProfileStore = new SecurityProfileStore($this, "HipProfilesProfile");
         $this->HipProfilesProfileStore->name = 'HipProfiles';
 
+        $this->GTPProfileStore = new SecurityProfileStore($this, "GTPProfile");
+        $this->GTPProfileStore->name = 'GTPProfiles';
+
+        $this->SCEPProfileStore = new SecurityProfileStore($this, "SCEPProfile");
+        $this->SCEPProfileStore->name = 'SCEPProfiles';
+
+        $this->PacketBrokerProfileStore = new SecurityProfileStore($this, "PacketBrokerProfile");
+        $this->PacketBrokerProfileStore->name = 'PacketBrokerProfiles';
+
+        $this->SDWanErrorCorrectionProfileStore = new SecurityProfileStore($this, "SDWanErrorCorrectionProfile");
+        $this->SDWanErrorCorrectionProfileStore->name = 'SDWanErrorCorrectionProfiles';
+
+        $this->SDWanPathQualityProfileStore = new SecurityProfileStore($this, "SDWanPathQualityProfile");
+        $this->SDWanPathQualityProfileStore->name = 'SDWanPathQualityProfiles';
+
+        $this->SDWanSaasQualityProfileStore = new SecurityProfileStore($this, "SDWanSaasQualityProfile");
+        $this->SDWanSaasQualityProfileStore->name = 'SDWanSaasQualityProfiles';
+
+        $this->SDWanTrafficDistributionProfileStore = new SecurityProfileStore($this, "SDWanTrafficDistributionProfile");
+        $this->SDWanTrafficDistributionProfileStore->name = 'SDWanTrafficDistributionProfiles';
+
+        $this->DataObjectsProfileStore = new SecurityProfileStore($this, "DataObjectsProfile");
+        $this->DataObjectsProfileStore->name = 'DataObjectsProfileStoreProfiles';
+
+
         $this->scheduleStore = new ScheduleStore($this);
         $this->scheduleStore->setName('scheduleStore');
 
@@ -276,6 +336,10 @@ class PanoramaConf
         $this->qosRules = new RuleStore($this, 'QoSRule', TRUE);
         $this->dosRules = new RuleStore($this, 'DoSRule', TRUE);
         $this->tunnelInspectionRules = new RuleStore($this, 'TunnelInspectionRule', TRUE);
+        $this->defaultSecurityRules = new RuleStore($this, 'DefaultSecurityRule', TRUE);
+
+        $this->networkPacketBrokerRules = new RuleStore($this, 'NetworkPacketBrokerRule', TRUE);
+        $this->sdWanRules = new RuleStore($this, 'SDWanRule', TRUE);
 
         $this->_fakeNetworkProperties = new NetworkPropertiesContainer($this);
 
@@ -568,6 +632,78 @@ class PanoramaConf
             {
                 $this->HipProfilesProfileStore->load_from_domxml($tmproot);
             }
+
+            //
+            // GTP Profile extraction
+            //
+            $tmproot = DH::findFirstElement('gtp', $this->securityProfilebaseroot);
+            if( $tmproot !== FALSE )
+            {
+                $this->GTPProfileStore->load_from_domxml($tmproot);
+            }
+
+            //
+            // SCEP Profile extraction
+            //
+            $tmproot = DH::findFirstElement('scep', $this->securityProfilebaseroot);
+            if( $tmproot !== FALSE )
+            {
+                $this->SCEPProfileStore->load_from_domxml($tmproot);
+            }
+
+            //
+            // PacketBroker Profile extraction
+            //
+            $tmproot = DH::findFirstElement('packet-broker', $this->securityProfilebaseroot);
+            if( $tmproot !== FALSE )
+            {
+                $this->PacketBrokerProfileStore->load_from_domxml($tmproot);
+            }
+
+            //
+            // SDWan Error Correction Profile extraction
+            //
+            $tmproot = DH::findFirstElement('sdwan-error-correction', $this->securityProfilebaseroot);
+            if( $tmproot !== FALSE )
+            {
+                $this->SDWanErrorCorrectionProfileStore->load_from_domxml($tmproot);
+            }
+
+            //
+            // SDWan Path Quality Profile extraction
+            //
+            $tmproot = DH::findFirstElement('sdwan-path-quality', $this->securityProfilebaseroot);
+            if( $tmproot !== FALSE )
+            {
+                $this->SDWanPathQualityProfileStore->load_from_domxml($tmproot);
+            }
+
+            //
+            // SDWan Saas Quality Profile extraction
+            //
+            $tmproot = DH::findFirstElement('sdwan-saas-quality', $this->securityProfilebaseroot);
+            if( $tmproot !== FALSE )
+            {
+                $this->SDWanSaasQualityProfileStore->load_from_domxml($tmproot);
+            }
+
+            //
+            // SDWan Traffic Distribution Profile extraction
+            //
+            $tmproot = DH::findFirstElement('sdwan-traffic-distribution', $this->securityProfilebaseroot);
+            if( $tmproot !== FALSE )
+            {
+                $this->SDWanTrafficDistributionProfileStore->load_from_domxml($tmproot);
+            }
+
+            //
+            // DataObjects Profile extraction
+            //
+            $tmproot = DH::findFirstElement('data-objects', $this->securityProfilebaseroot);
+            if( $tmproot !== FALSE )
+            {
+                $this->DataObjectsProfileStore->load_from_domxml($tmproot);
+            }
         }
 
 
@@ -841,6 +977,79 @@ class PanoramaConf
                 $tmpPost = null;
         }
         $this->tunnelInspectionRules->load_from_domxml($tmp, $tmpPost);//
+
+
+        //default-security-Rules are only available on POST
+        if( $prerulebase === FALSE )
+            $tmp = null;
+        else
+            $tmp = null;
+        if( $postrulebase === FALSE )
+            $tmpPost = null;
+        else
+        {
+            $tmpPost = DH::findFirstElement('default-security-rules', $postrulebase);
+            if( $tmpPost !== FALSE )
+                $tmpPost = DH::findFirstElement('rules', $tmpPost);
+
+            if( $tmpPost === FALSE )
+                $tmpPost = null;
+        }
+        $this->defaultSecurityRules->load_from_domxml($tmp, $tmpPost);
+
+        //network-packet-broker
+        $xmlTagName = "network-packet-broker";
+        $var = "networkPacketBrokerRules";
+        if( $prerulebase === FALSE )
+            $tmp = null;
+        else
+        {
+            $tmp = DH::findFirstElement($xmlTagName, $prerulebase);
+            if( $tmp !== FALSE )
+                $tmp = DH::findFirstElement('rules', $tmp);
+
+            if( $tmp === FALSE )
+                $tmp = null;
+        }
+        if( $postrulebase === FALSE )
+            $tmpPost = null;
+        else
+        {
+            $tmpPost = DH::findFirstElement($xmlTagName, $postrulebase);
+            if( $tmpPost !== FALSE )
+                $tmpPost = DH::findFirstElement('rules', $tmpPost);
+
+            if( $tmpPost === FALSE )
+                $tmpPost = null;
+        }
+        $this->$var->load_from_domxml($tmp, $tmpPost);
+
+        //network-packet-broker
+        $xmlTagName = "sdwan";
+        $var = "sdWanRules";
+        if( $prerulebase === FALSE )
+            $tmp = null;
+        else
+        {
+            $tmp = DH::findFirstElement($xmlTagName, $prerulebase);
+            if( $tmp !== FALSE )
+                $tmp = DH::findFirstElement('rules', $tmp);
+
+            if( $tmp === FALSE )
+                $tmp = null;
+        }
+        if( $postrulebase === FALSE )
+            $tmpPost = null;
+        else
+        {
+            $tmpPost = DH::findFirstElement($xmlTagName, $postrulebase);
+            if( $tmpPost !== FALSE )
+                $tmpPost = DH::findFirstElement('rules', $tmpPost);
+
+            if( $tmpPost === FALSE )
+                $tmpPost = null;
+        }
+        $this->$var->load_from_domxml($tmp, $tmpPost);
         //
         // end of policies extraction
         //
@@ -1204,6 +1413,12 @@ class PanoramaConf
         $gpreQoSRules = $this->qosRules->countPreRules();
         $gpreDoSRules = $this->dosRules->countPreRules();
 
+        $gpreTunnelInspectionRules = $this->tunnelInspectionRules->countPreRules();
+        #$gpreDefaultSecurityRules = $this->defaultSecurityRules->countPreRules();
+        $gpreNetworkPacketBrockerRules = $this->networkPacketBrokerRules->countPreRules();
+        $gpreSDWanRules = $this->sdWanRules->countPreRules();
+
+
         $gpostSecRules = $this->securityRules->countPostRules();
         $gpostNatRules = $this->natRules->countPostRules();
         $gpostDecryptRules = $this->decryptionRules->countPostRules();
@@ -1213,6 +1428,12 @@ class PanoramaConf
         $gpostPbfRules = $this->pbfRules->countPostRules();
         $gpostQoSRules = $this->qosRules->countPostRules();
         $gpostDoSRules = $this->dosRules->countPostRules();
+
+        $gpostTunnelInspectionRules = $this->tunnelInspectionRules->countPostRules();
+        $gpostDefaultSecurityRules = $this->defaultSecurityRules->countPostRules();
+        $gpostNetworkPacketBrockerRules = $this->networkPacketBrokerRules->countPostRules();
+        $gpostSDWanRules = $this->sdWanRules->countPostRules();
+
 
         $gnservices = $this->serviceStore->countServices();
         $gnservicesUnused = $this->serviceStore->countUnusedServices();
@@ -1241,6 +1462,20 @@ class PanoramaConf
         $gnfileblocking = $this->FileBlockingProfileStore->count();
         $gndecryption = $this->DecryptionProfileStore->count();
 
+        $gnhipobjects = $this->HipObjectsProfileStore->count();
+        $gnhipprofiles = $this->HipProfilesProfileStore->count();
+
+        $gngtp = $this->GTPProfileStore->count();
+        $gnscep = $this->SCEPProfileStore->count();
+        $gnpacketbroker = $this->PacketBrokerProfileStore->count();
+
+        $gnsdwanerrorcorrection = $this->SDWanErrorCorrectionProfileStore->count();
+        $gnsdwanpathquality = $this->SDWanPathQualityProfileStore->count();
+        $gnsdwansaasquality = $this->SDWanSaasQualityProfileStore->count();
+        $gnsdwantrafficdistribution = $this->SDWanTrafficDistributionProfileStore->count();
+
+        $gndataobjects = $this->DataObjectsProfileStore->count();
+
         foreach( $this->deviceGroups as $cur )
         {
             $gpreSecRules += $cur->securityRules->countPreRules();
@@ -1253,6 +1488,12 @@ class PanoramaConf
             $gpreQoSRules += $cur->qosRules->countPreRules();
             $gpreDoSRules += $cur->dosRules->countPreRules();
 
+            $gpreTunnelInspectionRules += $cur->tunnelInspectionRules->countPreRules();
+            #$gpreDefaultSecurityRules += $cur->defaultSecurityRules->countPreRules();
+            $gpreNetworkPacketBrockerRules += $cur->networkPacketBrokerRules->countPreRules();
+            $gpreSDWanRules += $cur->sdWanRules->countPreRules();
+
+
             $gpostSecRules += $cur->securityRules->countPostRules();
             $gpostNatRules += $cur->natRules->countPostRules();
             $gpostDecryptRules += $cur->decryptionRules->countPostRules();
@@ -1262,6 +1503,12 @@ class PanoramaConf
             $gpostPbfRules += $cur->pbfRules->countPostRules();
             $gpostQoSRules += $cur->qosRules->countPostRules();
             $gpostDoSRules += $cur->dosRules->countPostRules();
+
+            $gpostTunnelInspectionRules += $cur->tunnelInspectionRules->countPostRules();
+            $gpostDefaultSecurityRules += $cur->defaultSecurityRules->countPostRules();
+            $gpostNetworkPacketBrockerRules += $cur->networkPacketBrokerRules->countPostRules();
+            $gpostSDWanRules += $cur->sdWanRules->countPostRules();
+
 
             $gnservices += $cur->serviceStore->countServices();
             $gnservicesUnused += $cur->serviceStore->countUnusedServices();
@@ -1290,6 +1537,20 @@ class PanoramaConf
             $gncustomurlprofil += $cur->customURLProfileStore->count();
             $gnfileblocking += $cur->FileBlockingProfileStore->count();
             $gndecryption += $cur->DecryptionProfileStore->count();
+
+            $gnhipobjects += $cur->HipObjectsProfileStore->count();
+            $gnhipprofiles += $cur->HipProfilesProfileStore->count();
+
+            $gngtp += $cur->GTPProfileStore->count();
+            $gnscep += $cur->SCEPProfileStore->count();
+            $gnpacketbroker += $cur->PacketBrokerProfileStore->count();
+
+            $gnsdwanerrorcorrection += $cur->SDWanErrorCorrectionProfileStore->count();
+            $gnsdwanpathquality += $cur->SDWanPathQualityProfileStore->count();
+            $gnsdwansaasquality += $cur->SDWanSaasQualityProfileStore->count();
+            $gnsdwantrafficdistribution += $cur->SDWanTrafficDistributionProfileStore->count();
+
+            $gndataobjects += $cur->DataObjectsProfileStore->count();
         }
 
         $stdoutarray = array();
@@ -1379,7 +1640,38 @@ class PanoramaConf
         $stdoutarray['post dos rules']['shared'] = $this->dosRules->countPostRules();
         $stdoutarray['post dos rules']['total_DGs'] = $gpostDoSRules;
 
+        $stdoutarray['pre tunnel-inspection rules'] = array();
+        $stdoutarray['pre tunnel-inspection rules']['shared'] = $this->tunnelInspectionRules->countPreRules();
+        $stdoutarray['pre tunnel-inspection rules']['total_DGs'] = $gpreTunnelInspectionRules;
 
+        $stdoutarray['post tunnel-inspection rules'] = array();
+        $stdoutarray['post tunnel-inspection rules']['shared'] = $this->tunnelInspectionRules->countPostRules();
+        $stdoutarray['post tunnel-inspection rules']['total_DGs'] = $gpostTunnelInspectionRules;
+
+        #pre default-security not existent
+        #$stdoutarray['pre default-security rules'] = array();
+        #$stdoutarray['pre default-security rules']['shared'] = $this->defaultSecurityRules->countPreRules();
+        #$stdoutarray['pre default-security rules']['total_DGs'] = $gpreDefaultSecurityRules;
+
+        $stdoutarray['post default-security rules'] = array();
+        $stdoutarray['post default-security rules']['shared'] = $this->defaultSecurityRules->countPostRules();
+        $stdoutarray['post default-security rules']['total_DGs'] = $gpostDefaultSecurityRules;
+
+        $stdoutarray['pre network-packet-broker rules'] = array();
+        $stdoutarray['pre network-packet-broker rules']['shared'] = $this->networkPacketBrokerRules->countPreRules();
+        $stdoutarray['pre network-packet-broker rules']['total_DGs'] = $gpreNetworkPacketBrockerRules;
+
+        $stdoutarray['post network-packet-broker rules'] = array();
+        $stdoutarray['post network-packet-broker rules']['shared'] = $this->networkPacketBrokerRules->countPostRules();
+        $stdoutarray['post network-packet-broker rules']['total_DGs'] = $gpostNetworkPacketBrockerRules;
+
+        $stdoutarray['pre sdwan rules'] = array();
+        $stdoutarray['pre sdwan rules']['shared'] = $this->sdWanRules->countPreRules();
+        $stdoutarray['pre sdwan rules']['total_DGs'] = $gpreSDWanRules;
+
+        $stdoutarray['post sdwan rules'] = array();
+        $stdoutarray['post sdwan rules']['shared'] = $this->sdWanRules->countPostRules();
+        $stdoutarray['post sdwan rules']['total_DGs'] = $gpostSDWanRules;
 
         $stdoutarray['address objects'] = array();
         $stdoutarray['address objects']['shared'] = $this->addressStore->countAddresses();
@@ -1449,6 +1741,39 @@ class PanoramaConf
         $stdoutarray['Decryption objects']['shared'] = $this->DecryptionProfileStore->count();
         $stdoutarray['Decryption objects']['total_DGs'] = $gndecryption;
 
+        $stdoutarray['HipObject objects'] = array();
+        $stdoutarray['HipObject objects']['shared'] = $this->HipObjectsProfileStore->count();
+        $stdoutarray['HipObject objects']['total_DGs'] = $gnhipobjects;
+        $stdoutarray['HipProfile objects'] = array();
+        $stdoutarray['HipProfile objects']['shared'] = $this->HipProfilesProfileStore->count();
+        $stdoutarray['HipProfile objects']['total_DGs'] = $gnhipprofiles;
+
+        $stdoutarray['GTP objects'] = array();
+        $stdoutarray['GTP objects']['shared'] = $this->GTPProfileStore->count();
+        $stdoutarray['GTP objects']['total_DGs'] = $gngtp;
+        $stdoutarray['SCEP objects'] = array();
+        $stdoutarray['SCEP objects']['shared'] = $this->SCEPProfileStore->count();
+        $stdoutarray['SCEP objects']['total_DGs'] = $gnscep;
+        $stdoutarray['PacketBroker objects'] = array();
+        $stdoutarray['PacketBroker objects']['shared'] = $this->PacketBrokerProfileStore->count();
+        $stdoutarray['PacketBroker objects']['total_DGs'] = $gnpacketbroker;
+
+        $stdoutarray['SDWanErrorCorrection objects'] = array();
+        $stdoutarray['SDWanErrorCorrection objects']['shared'] = $this->SDWanErrorCorrectionProfileStore->count();
+        $stdoutarray['SDWanErrorCorrection objects']['total_DGs'] = $gnsdwanerrorcorrection;
+        $stdoutarray['SDWanPathQuality objects'] = array();
+        $stdoutarray['SDWanPathQuality objects']['shared'] = $this->SDWanPathQualityProfileStore->count();
+        $stdoutarray['SDWanPathQuality objects']['total_DGs'] = $gnsdwanpathquality;
+        $stdoutarray['SDWanSaasQuality objects'] = array();
+        $stdoutarray['SDWanSaasQuality objects']['shared'] = $this->SDWanSaasQualityProfileStore->count();
+        $stdoutarray['SDWanSaasQuality objects']['total_DGs'] = $gnsdwansaasquality;
+        $stdoutarray['SDWanTrafficDistribution objects'] = array();
+        $stdoutarray['SDWanTrafficDistribution objects']['shared'] = $this->SDWanTrafficDistributionProfileStore->count();
+        $stdoutarray['SDWanTrafficDistribution objects']['total_DGs'] = $gnsdwantrafficdistribution;
+
+        $stdoutarray['DataObjects objects']['shared'] = $this->DataObjectsProfileStore->count();
+        $stdoutarray['DataObjects objects']['total_DGs'] = $gndataobjects;
+
         $stdoutarray['zones'] = $this->zoneStore->count();
         #$stdoutarray['apps'] = $this->appStore->count();
 
@@ -1512,6 +1837,22 @@ class PanoramaConf
         $stdoutarray['dos rules']['pre'] = $this->dosRules->countPreRules();
         $stdoutarray['dos rules']['post'] = $this->dosRules->countPostRules();
 
+        $stdoutarray['tunnel-inspection rules'] = array();
+        $stdoutarray['tunnel-inspection rules']['pre'] = $this->tunnelInspectionRules->countPreRules();
+        $stdoutarray['tunnel-inspection rules']['post'] = $this->tunnelInspectionRules->countPostRules();
+
+        $stdoutarray['default-security rules'] = array();
+        $stdoutarray['default-security rules']['pre'] = $this->defaultSecurityRules->countPreRules();
+        $stdoutarray['default-security rules']['post'] = $this->defaultSecurityRules->countPostRules();
+
+        $stdoutarray['network-packet-broker rules'] = array();
+        $stdoutarray['network-packet-broker rules']['pre'] = $this->networkPacketBrokerRules->countPreRules();
+        $stdoutarray['network-packet-broker rules']['post'] = $this->networkPacketBrokerRules->countPostRules();
+
+        $stdoutarray['sdwan rules'] = array();
+        $stdoutarray['sdwan rules']['pre'] = $this->sdWanRules->countPreRules();
+        $stdoutarray['sdwan rules']['post'] = $this->sdWanRules->countPostRules();
+
         $stdoutarray['address objects'] = array();
         $stdoutarray['address objects']['total'] = $this->addressStore->count();
         $stdoutarray['address objects']['address'] = $this->addressStore->countAddresses();
@@ -1550,6 +1891,30 @@ class PanoramaConf
         $stdoutarray['File-Blocking objects']['total'] = $this->FileBlockingProfileStore->count();
         $stdoutarray['Decryption objects'] = array();
         $stdoutarray['Decryption objects']['total'] = $this->DecryptionProfileStore->count();
+
+        $stdoutarray['HipObject objects'] = array();
+        $stdoutarray['HipObject objects']['total'] = $this->HipObjectsProfileStore->count();
+        $stdoutarray['HipProfile objects'] = array();
+        $stdoutarray['HipProfile objects']['total'] = $this->HipProfilesProfileStore->count();
+
+        $stdoutarray['GTP objects'] = array();
+        $stdoutarray['GTP objects']['total'] = $this->GTPProfileStore->count();
+        $stdoutarray['SCEP objects'] = array();
+        $stdoutarray['SCEP objects']['total'] = $this->SCEPProfileStore->count();
+        $stdoutarray['PacketBroker objects'] = array();
+        $stdoutarray['PacketBroker objects']['total'] = $this->PacketBrokerProfileStore->count();
+
+        $stdoutarray['SDWanErrorCorrection objects'] = array();
+        $stdoutarray['SDWanErrorCorrection objects']['total'] = $this->SDWanErrorCorrectionProfileStore->count();
+        $stdoutarray['SDWanPathQuality objects'] = array();
+        $stdoutarray['SDWanPathQuality objects']['total'] = $this->SDWanPathQualityProfileStore->count();
+        $stdoutarray['SDWanSaasQuality objects'] = array();
+        $stdoutarray['SDWanSaasQuality objects']['total'] = $this->SDWanSaasQualityProfileStore->count();
+        $stdoutarray['SDWanTrafficDistribution objects'] = array();
+        $stdoutarray['SDWanTrafficDistribution objects']['total'] = $this->SDWanTrafficDistributionProfileStore->count();
+
+        $stdoutarray['DataObjects objects'] = array();
+        $stdoutarray['DataObjects objects']['total'] = $this->DataObjectsProfileStore->count();
 
         #PH::$JSON_TMP['shared'] = $stdoutarray;
         PH::$JSON_TMP[] = $stdoutarray;

@@ -247,8 +247,19 @@ require_once $basedir . '/object-classes/DNSSecurityProfile.php';
 require_once $basedir . '/object-classes/SaasSecurityProfile.php';
 
 require_once $basedir . '/object-classes/DecryptionProfile.php';
+
+require_once $basedir . '/object-classes/Profile.php';
 require_once $basedir . '/object-classes/HipObjectsProfile.php';
 require_once $basedir . '/object-classes/HipProfilesProfile.php';
+
+require_once $basedir . '/object-classes/GTPProfile.php';
+require_once $basedir . '/object-classes/SCEPProfile.php';
+require_once $basedir . '/object-classes/PacketBrokerProfile.php';
+require_once $basedir . '/object-classes/SDWanErrorCorrectionProfile.php';
+require_once $basedir . '/object-classes/SDWanPathQualityProfile.php';
+require_once $basedir . '/object-classes/SDWanSaasQualityProfile.php';
+require_once $basedir . '/object-classes/SDWanTrafficDistributionProfile.php';
+require_once $basedir . '/object-classes/DataObjectsProfile.php';
 
 require_once $basedir . '/device-and-system-classes/VirtualSystem.php';
 require_once $basedir . '/device-and-system-classes/PANConf.php';
@@ -310,6 +321,7 @@ require_once $basedir . '/rule-classes/Rule.php';
 require_once $basedir . '/rule-classes/trait/NegatableRule.php';
 require_once $basedir . '/rule-classes/trait/RulewithLogging.php';
 require_once $basedir . '/rule-classes/RuleWithUserID.php';
+require_once $basedir . '/rule-classes/RuleWithSchedule.php';
 require_once $basedir . '/rule-classes/SecurityRule.php';
 require_once $basedir . '/rule-classes/NatRule.php';
 require_once $basedir . '/rule-classes/DecryptionRule.php';
@@ -320,6 +332,9 @@ require_once $basedir . '/rule-classes/PbfRule.php';
 require_once $basedir . '/rule-classes/QoSRule.php';
 require_once $basedir . '/rule-classes/DoSRule.php';
 require_once $basedir . '/rule-classes/TunnelInspectionRule.php';
+require_once $basedir . '/rule-classes/DefaultSecurityRule.php';
+require_once $basedir . '/rule-classes/NetworkPacketBrokerRule.php';
+require_once $basedir . '/rule-classes/SDWanRule.php';
 
 if( isset( $_SERVER['REQUEST_METHOD'] ) )
 {
@@ -476,7 +491,9 @@ function convert($size, &$array = array())
 
     $unit = array('b', 'kb', 'mb', 'gb', 'tb', 'pb');
 
-    $returnValue = @round($size / pow(1024, ($i = floor(log($size, 1024)))), 2) . ' ' . $unit[$i];
+    $var = 1024;
+    $var = 1000;
+    $returnValue = @round($size / pow($var, ($i = floor(log($size, $var)))), 2) . ' ' . $unit[$i];
     $array = explode( " ", $returnValue );
     return $returnValue;
 }

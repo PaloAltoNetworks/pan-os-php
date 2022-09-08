@@ -90,6 +90,30 @@ class Container
     /** @var SecurityProfileStore */
     public $HipProfilesProfileStore = null;
 
+    /** @var SecurityProfileStore */
+    public $GTPProfileStore = null;
+
+    /** @var SecurityProfileStore */
+    public $SCEPProfileStore = null;
+
+    /** @var SecurityProfileStore */
+    public $PacketBrokerProfileStore = null;
+
+    /** @var SecurityProfileStore */
+    public $SDWanErrorCorrectionProfileStore = null;
+
+    /** @var SecurityProfileStore */
+    public $SDWanPathQualityProfileStore = null;
+
+    /** @var SecurityProfileStore */
+    public $SDWanSaasQualityProfileStore = null;
+
+    /** @var SecurityProfileStore */
+    public $SDWanTrafficDistributionProfileStore = null;
+
+    /** @var SecurityProfileStore */
+    public $DataObjectsProfileStore = null;
+
 
     /** @var ScheduleStore */
     public $scheduleStore = null;
@@ -151,6 +175,19 @@ class Container
 
     /** @var RuleStore */
     public $dosRules;
+
+    /** @var RuleStore */
+    public $tunnelInspectionRules;
+
+    /** @var RuleStore */
+    public $defaultSecurityRules = null;
+
+    /** @var RuleStore */
+    public $networkPacketBrokerRules;
+
+    /** @var RuleStore */
+    public $sdWanRules;
+
 
     /**
      * @var null|Container
@@ -240,6 +277,31 @@ class Container
         $this->HipProfilesProfileStore = new SecurityProfileStore($this, "HipProfilesProfile");
         $this->HipProfilesProfileStore->name = 'HipProfiles';
 
+        $this->GTPProfileStore = new SecurityProfileStore($this, "GTPProfile");
+        $this->GTPProfileStore->name = 'GTPProfiles';
+
+        $this->SCEPProfileStore = new SecurityProfileStore($this, "SCEPProfile");
+        $this->SCEPProfileStore->name = 'SCEPProfiles';
+
+        $this->PacketBrokerProfileStore = new SecurityProfileStore($this, "PacketBrokerProfile");
+        $this->PacketBrokerProfileStore->name = 'PacketBrokerProfiles';
+
+        $this->SDWanErrorCorrectionProfileStore = new SecurityProfileStore($this, "SDWanErrorCorrectionProfile");
+        $this->SDWanErrorCorrectionProfileStore->name = 'SDWanErrorCorrectionProfiles';
+
+        $this->SDWanPathQualityProfileStore = new SecurityProfileStore($this, "SDWanPathQualityProfile");
+        $this->SDWanPathQualityProfileStore->name = 'SDWanPathQualityProfiles';
+
+        $this->SDWanSaasQualityProfileStore = new SecurityProfileStore($this, "SDWanSaasQualityProfile");
+        $this->SDWanSaasQualityProfileStore->name = 'SDWanSaasQualityProfiles';
+
+        $this->SDWanTrafficDistributionProfileStore = new SecurityProfileStore($this, "SDWanTrafficDistributionProfile");
+        $this->SDWanTrafficDistributionProfileStore->name = 'SDWanTrafficDistributionProfiles';
+
+        $this->DataObjectsProfileStore = new SecurityProfileStore($this, "DataObjectsProfile");
+        $this->DataObjectsProfileStore->name = 'DataObjectsProfileStoreProfiles';
+
+
         $this->scheduleStore = new ScheduleStore($this);
         $this->scheduleStore->setName('scheduleStore');
 
@@ -252,6 +314,12 @@ class Container
         $this->pbfRules = new RuleStore($this, 'PbfRule', TRUE);
         $this->qosRules = new RuleStore($this, 'QoSRule', TRUE);
         $this->dosRules = new RuleStore($this, 'DoSRule', TRUE);
+        $this->tunnelInspectionRules = new RuleStore($this, 'TunnelInspectionRule', TRUE);
+
+        $this->defaultSecurityRules = new RuleStore($this, 'DefaultSecurityRule', TRUE);
+
+        $this->networkPacketBrokerRules = new RuleStore($this, 'NetworkPacketBrokerRule', TRUE);
+        $this->sdWanRules = new RuleStore($this, 'SDWanRule', TRUE);
 
         $this->_fakeNetworkProperties = $this->owner->_fakeNetworkProperties;
         $this->dosRules->_networkStore = $this->_fakeNetworkProperties;
@@ -469,6 +537,78 @@ class Container
             if( $tmproot !== FALSE )
             {
                 $this->HipProfilesProfileStore->load_from_domxml($tmproot);
+            }
+
+            //
+            // GTP Profile extraction
+            //
+            $tmproot = DH::findFirstElement('gtp', $this->securityProfilebaseroot);
+            if( $tmproot !== FALSE )
+            {
+                $this->GTPProfileStore->load_from_domxml($tmproot);
+            }
+
+            //
+            // SCEP Profile extraction
+            //
+            $tmproot = DH::findFirstElement('scep', $this->securityProfilebaseroot);
+            if( $tmproot !== FALSE )
+            {
+                $this->SCEPProfileStore->load_from_domxml($tmproot);
+            }
+
+            //
+            // PacketBroker Profile extraction
+            //
+            $tmproot = DH::findFirstElement('packet-broker', $this->securityProfilebaseroot);
+            if( $tmproot !== FALSE )
+            {
+                $this->PacketBrokerProfileStore->load_from_domxml($tmproot);
+            }
+
+            //
+            // SDWan Error Correction Profile extraction
+            //
+            $tmproot = DH::findFirstElement('sdwan-error-correction', $this->securityProfilebaseroot);
+            if( $tmproot !== FALSE )
+            {
+                $this->SDWanErrorCorrectionProfileStore->load_from_domxml($tmproot);
+            }
+
+            //
+            // SDWan Path Quality Profile extraction
+            //
+            $tmproot = DH::findFirstElement('sdwan-path-quality', $this->securityProfilebaseroot);
+            if( $tmproot !== FALSE )
+            {
+                $this->SDWanPathQualityProfileStore->load_from_domxml($tmproot);
+            }
+
+            //
+            // SDWan Saas Quality Profile extraction
+            //
+            $tmproot = DH::findFirstElement('sdwan-saas-quality', $this->securityProfilebaseroot);
+            if( $tmproot !== FALSE )
+            {
+                $this->SDWanSaasQualityProfileStore->load_from_domxml($tmproot);
+            }
+
+            //
+            // SDWan Traffic Distribution Profile extraction
+            //
+            $tmproot = DH::findFirstElement('sdwan-traffic-distribution', $this->securityProfilebaseroot);
+            if( $tmproot !== FALSE )
+            {
+                $this->SDWanTrafficDistributionProfileStore->load_from_domxml($tmproot);
+            }
+
+            //
+            // DataObjects Profile extraction
+            //
+            $tmproot = DH::findFirstElement('data-objects', $this->securityProfilebaseroot);
+            if( $tmproot !== FALSE )
+            {
+                $this->DataObjectsProfileStore->load_from_domxml($tmproot);
             }
         }
 
@@ -718,6 +858,102 @@ class Container
                 $tmpPost = null;
         }
         $this->dosRules->load_from_domxml($tmp, $tmpPost);
+
+        if( $prerulebase === FALSE )
+            $tmp = null;
+        else
+        {
+            $tmp = DH::findFirstElement('tunnel-inspect', $prerulebase);
+            if( $tmp !== FALSE )
+                $tmp = DH::findFirstElement('rules', $tmp);
+
+            if( $tmp === FALSE )
+                $tmp = null;
+        }
+        if( $postrulebase === FALSE )
+            $tmpPost = null;
+        else
+        {
+            $tmpPost = DH::findFirstElement('tunnel-inspect', $postrulebase);
+            if( $tmpPost !== FALSE )
+                $tmpPost = DH::findFirstElement('rules', $tmpPost);
+
+            if( $tmpPost === FALSE )
+                $tmpPost = null;
+        }
+        $this->tunnelInspectionRules->load_from_domxml($tmp, $tmpPost);
+
+        //default-security-Rules are only available on POST
+        if( $prerulebase === FALSE )
+            $tmp = null;
+        else
+            $tmp = null;
+        if( $postrulebase === FALSE )
+            $tmpPost = null;
+        else
+        {
+            $tmpPost = DH::findFirstElement('default-security-rules', $postrulebase);
+            if( $tmpPost !== FALSE )
+                $tmpPost = DH::findFirstElement('rules', $tmpPost);
+
+            if( $tmpPost === FALSE )
+                $tmpPost = null;
+        }
+        $this->defaultSecurityRules->load_from_domxml($tmp, $tmpPost);
+
+        //network-packet-broker
+        $xmlTagName = "network-packet-broker";
+        $var = "networkPacketBrokerRules";
+        if( $prerulebase === FALSE )
+            $tmp = null;
+        else
+        {
+            $tmp = DH::findFirstElement($xmlTagName, $prerulebase);
+            if( $tmp !== FALSE )
+                $tmp = DH::findFirstElement('rules', $tmp);
+
+            if( $tmp === FALSE )
+                $tmp = null;
+        }
+        if( $postrulebase === FALSE )
+            $tmpPost = null;
+        else
+        {
+            $tmpPost = DH::findFirstElement($xmlTagName, $postrulebase);
+            if( $tmpPost !== FALSE )
+                $tmpPost = DH::findFirstElement('rules', $tmpPost);
+
+            if( $tmpPost === FALSE )
+                $tmpPost = null;
+        }
+        $this->$var->load_from_domxml($tmp, $tmpPost);
+
+        //sdwan
+        $xmlTagName = "sdwan";
+        $var = "sdWanRules";
+        if( $prerulebase === FALSE )
+            $tmp = null;
+        else
+        {
+            $tmp = DH::findFirstElement($xmlTagName, $prerulebase);
+            if( $tmp !== FALSE )
+                $tmp = DH::findFirstElement('rules', $tmp);
+
+            if( $tmp === FALSE )
+                $tmp = null;
+        }
+        if( $postrulebase === FALSE )
+            $tmpPost = null;
+        else
+        {
+            $tmpPost = DH::findFirstElement($xmlTagName, $postrulebase);
+            if( $tmpPost !== FALSE )
+                $tmpPost = DH::findFirstElement('rules', $tmpPost);
+
+            if( $tmpPost === FALSE )
+                $tmpPost = null;
+        }
+        $this->$var->load_from_domxml($tmp, $tmpPost);
         //
         // end of policies extraction
         //
@@ -924,6 +1160,30 @@ class Container
         $stdoutarray['File-Blocking objects']['total'] = $this->FileBlockingProfileStore->count();
         $stdoutarray['Decryption objects'] = array();
         $stdoutarray['Decryption objects']['total'] = $this->DecryptionProfileStore->count();
+
+        $stdoutarray['HipObject objects'] = array();
+        $stdoutarray['HipObject objects']['total'] = $this->HipObjectsProfileStore->count();
+        $stdoutarray['HipProfile objects'] = array();
+        $stdoutarray['HipProfile objects']['total'] = $this->HipProfilesProfileStore->count();
+
+        $stdoutarray['GTP objects'] = array();
+        $stdoutarray['GTP objects']['total'] = $this->GTPProfileStore->count();
+        $stdoutarray['SCEP objects'] = array();
+        $stdoutarray['SCEP objects']['total'] = $this->SCEPProfileStore->count();
+        $stdoutarray['PacketBroker objects'] = array();
+        $stdoutarray['PacketBroker objects']['total'] = $this->PacketBrokerProfileStore->count();
+
+        $stdoutarray['SDWanErrorCorrection objects'] = array();
+        $stdoutarray['SDWanErrorCorrection objects']['total'] = $this->SDWanErrorCorrectionProfileStore->count();
+        $stdoutarray['SDWanPathQuality objects'] = array();
+        $stdoutarray['SDWanPathQuality objects']['total'] = $this->SDWanPathQualityProfileStore->count();
+        $stdoutarray['SDWanSaasQuality objects'] = array();
+        $stdoutarray['SDWanSaasQuality objects']['total'] = $this->SDWanSaasQualityProfileStore->count();
+        $stdoutarray['SDWanTrafficDistribution objects'] = array();
+        $stdoutarray['SDWanTrafficDistribution objects']['total'] = $this->SDWanTrafficDistributionProfileStore->count();
+
+        $stdoutarray['DataObjects objects'] = array();
+        $stdoutarray['DataObjects objects']['total'] = $this->DataObjectsProfileStore->count();
 
         #$stdoutarray['zones'] = $this->zoneStore->count();
         #$stdoutarray['apps'] = $this->appStore->count();

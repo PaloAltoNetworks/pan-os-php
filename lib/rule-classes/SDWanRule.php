@@ -1,56 +1,35 @@
 <?php
+/**
+ * ISC License
+ *
+ * Copyright (c) 2014-2018, Palo Alto Networks Inc.
+ * Copyright (c) 2019, Palo Alto Networks Inc.
+ *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 
 
-class PbfRule extends RuleWithUserID
+class SDWanRule extends RuleWithUserID
 {
     use NegatableRule;
-    use RuleWithSchedule;
 
-    protected $schedule = null;
-
-    static public $templatexml = '<entry name="**temporarynamechangeme**"><from><zone></zone></from>
-<source><member>any</member></source><destination><member>any</member></destination></entry>';
-    static protected $templatexmlroot = null;
-
-    /** @var ZoneRuleContainer|InterfaceContainer */
-    public $from;
+    static public $templatexml = '<entry name="**temporarynamechangeme**"><from><member>any</member></from><to><member>any</member></to>
+<source><member>any</member></source><destination><member>any</member></destination><application></application></entry>';
 
 
-    protected $_zoneBased = TRUE;
 
-    /**
-     * For developer use only
-     */
-    protected function load_from()
-    {
-        $tmp1 = DH::findFirstElementOrCreate('from', $this->xmlroot);
-
-        $tmp = DH::firstChildElement($tmp1);
-        if( $tmp === null || $tmp === false )
-        {
-            mwarning("PBF rule has nothing inside <from> tag, please fix before going forward", $tmp1, TRUE, TRUE);
-            return;
-        }
-
-
-        if( $tmp->tagName == 'zone' )
-        {
-            $this->_zoneBased = TRUE;
-            $this->from = new ZoneRuleContainer($this);
-            $this->from->name = 'from';
-            $this->from->findParentCentralStore('zoneStore');
-            $this->from->load_from_domxml($tmp);
-        }
-        elseif( $tmp->tagName == 'interface' )
-        {
-            $this->_zoneBased = FALSE;
-            $this->from = new InterfaceContainer($this, $this->owner->_networkStore);
-            $this->from->name = 'from';
-            $this->from->load_from_domxml($tmp);
-        }
-        else
-            derr("PBF rule has unsupported <from> type '{$tmp->tagName}'");
-    }
+    /** @var AppRuleContainer */
+    public $apps;
 
     /**
      * @param RuleStore $owner
@@ -65,6 +44,14 @@ class PbfRule extends RuleWithUserID
 
         $this->tags = new TagRuleContainer($this);
 
+        $this->from = new ZoneRuleContainer($this);
+        $this->from->name = 'from';
+        $this->from->parentCentralStore = $owner->owner->zoneStore;
+
+        $this->to = new ZoneRuleContainer($this);
+        $this->to->name = 'to';
+        $this->to->parentCentralStore = $owner->owner->zoneStore;
+
         $this->source = new AddressRuleContainer($this);
         $this->source->name = 'source';
         $this->source->parentCentralStore = $this->parentAddressStore;
@@ -73,9 +60,8 @@ class PbfRule extends RuleWithUserID
         $this->destination->name = 'destination';
         $this->destination->parentCentralStore = $this->parentAddressStore;
 
-        $this->services = new ServiceRuleContainer($this);
-        $this->services->name = 'service';
-
+        $this->apps = new AppRuleContainer($this);
+        $this->apps->name = 'apps';
 
         if( $fromTemplateXML )
         {
@@ -85,10 +71,6 @@ class PbfRule extends RuleWithUserID
     }
 
 
-    /**
-     * @param DOMElement $xml
-     * @throws Exception
-     */
     public function load_from_domxml($xml)
     {
         $this->xmlroot = $xml;
@@ -97,29 +79,33 @@ class PbfRule extends RuleWithUserID
         if( $this->name === FALSE )
             derr("name not found\n");
 
+
         $this->load_common_from_domxml();
 
         $this->load_source();
         $this->load_destination();
         $this->load_from();
+        $this->load_to();
 
-        $this->userID_loadUsersFromXml();
         $this->_readNegationFromXml();
 
-        //										//
-        // Begin <service> extraction			//
-        //										//
-        $tmp = DH::findFirstElement('service', $xml);
-        if( $tmp !== FALSE )
-            $this->services->load_from_domxml($tmp);
-        // end of <service> zone extraction
+        //														//
+        // Begin <application> application extraction			//
+        //														//
+        $tmp = DH::findFirstElement('application', $xml);
+        if( $tmp === false )
+        {
+            $tmp = DH::findFirstElementOrCreate('application', $xml);
+            $tmp_member = DH::findFirstElementOrCreate('member', $tmp);
+            $tmp_member->textContent= 'any';
+        }
+        $this->apps->load_from_domxml($tmp);
+        // end of <application> application extraction
 
-        $this->schedule_loadFromXml();
+        $this->userID_loadUsersFromXml();
+
     }
 
-    /**
-     * Helper function to quickly print a function properties to CLI
-     */
     public function display($padding = 0)
     {
         $padding = str_pad('', $padding);
@@ -157,6 +143,7 @@ class PbfRule extends RuleWithUserID
             PH::$JSON_TMP['sub']['object'][$this->name()]['destinationnegated'] = "false";
 
 
+
         $text = $padding . "*Rule named '{$this->name}' $dis";
         if( $this->owner->version >= 70 )
         {
@@ -165,11 +152,11 @@ class PbfRule extends RuleWithUserID
         }
         PH::print_stdout( $text );
 
-        if( $this->from !== null )
-        {
-            PH::print_stdout( $padding . "  From: " . $this->from->toString_inline() );
-            PH::$JSON_TMP['sub']['object'][$this->name()]['from'] = $this->from->toString_inline();
-        }
+
+        PH::print_stdout( $padding . "  From: " . $this->from->toString_inline() . "  |  To:  " . $this->to->toString_inline() );
+        PH::$JSON_TMP['sub']['object'][$this->name()]['from'] = $this->from->toString_inline();
+        PH::$JSON_TMP['sub']['object'][$this->name()]['to'] = $this->to->toString_inline();
+
 
         PH::print_stdout( $padding . "  Source: $sourceNegated " . $this->source->toString_inline() );
         PH::$JSON_TMP['sub']['object'][$this->name()]['source'] = $this->source->toString_inline();
@@ -177,29 +164,13 @@ class PbfRule extends RuleWithUserID
         PH::print_stdout( $padding . "  Destination: $destinationNegated " . $this->destination->toString_inline() );
         PH::$JSON_TMP['sub']['object'][$this->name()]['destination'] = $this->destination->toString_inline();
 
-        PH::print_stdout( $padding . "  Service:  " . $this->services->toString_inline() );
-        PH::$JSON_TMP['sub']['object'][$this->name()]['service'] = $this->services->toString_inline();
+        foreach( $this->apps->getAll() as $app )
+            PH::$JSON_TMP['sub']['object'][$this->name()]['application'][] = $app->name();
+        if( $this->apps->isAny() )
+            PH::$JSON_TMP['sub']['object'][$this->name()]['application'][] = "any";
 
-        if( !$this->userID_IsCustom() )
-        {
-            PH::print_stdout( $padding . "  User: *" . $this->userID_type() . "*");
-            PH::$JSON_TMP['sub']['object'][$this->name()]['user'] = $this->userID_type();
-        }
-        else
-        {
-            $users = $this->userID_getUsers();
-            PH::print_stdout( $padding . " User:  " . PH::list_to_string($users) );
-            PH::$JSON_TMP['sub']['object'][$this->name()]['user'] = PH::list_to_string($users);
-        }
-        PH::print_stdout( $padding . "  Tags:  " . $this->tags->toString_inline() );
+        PH::print_stdout( $padding . "    Tags:  " . $this->tags->toString_inline() );
         PH::$JSON_TMP['sub']['object'][$this->name()]['tag'] = $this->tags->toString_inline();
-
-        if( $this->_targets !== null )
-        {
-            PH::print_stdout( $padding . "  Targets:  " . $this->targets_toString() );
-            PH::$JSON_TMP['sub']['object'][$this->name()]['target'] = $this->targets_toString();
-        }
-
 
         if( $this->_description !== null && strlen($this->_description) > 0 )
         {
@@ -207,57 +178,79 @@ class PbfRule extends RuleWithUserID
             PH::$JSON_TMP['sub']['object'][$this->name()]['description'] = $this->_description;
         }
 
-        if( $this->schedule !== null )
-        {
-            PH::print_stdout( $padding . "  Schedule:  " . $this->schedule->name() );
-            PH::$JSON_TMP['sub']['object'][$this->name()]['schedule'][] = $this->schedule->name();
-        }
 
         PH::print_stdout();
     }
 
+
+    public function application()
+    {
+        return $this->application();
+    }
+
+    /** @param App|null $app
+     * @return bool
+     */
+    public function setApplication($app)
+    {
+        if( $app === null )
+            derr("app cannot be null");
+
+        if( $this->_app !== $app )
+        {
+            if( $this->_app !== null )
+                $this->_app->removeReference($this);
+
+            $app->addReference($this);
+            $this->_app = $app;
+
+            $root = DH::findFirstElementOrCreate('application', $this->xmlroot);
+
+            DH::setDomNodeText($root, $app->name());
+
+            return TRUE;
+        }
+        return FALSE;
+    }
+
+
     public function cleanForDestruction()
     {
         $this->from->__destruct();
+        $this->to->__destruct();
         $this->source->__destruct();
         $this->destination->__destruct();
         $this->tags->__destruct();
-        $this->services->__destruct();
+
 
         $this->from = null;
+        $this->to = null;
         $this->source = null;
         $this->destination = null;
         $this->tags = null;
-        $this->services = null;
+
+        if( $this->_app !== null )
+        {
+            $this->_app->removeReference($this);
+            unset($this->_app);
+        }
 
         $this->owner = null;
     }
 
-    public function ruleNature()
-    {
-        return 'pbf';
-    }
-
-    public function isPbfRule()
+    public function isSDWanRule()
     {
         return TRUE;
     }
 
-    public function isZoneBased()
+    public function ruleNature()
     {
-        return $this->_zoneBased;
+        return 'sdwan';
     }
-
-    public function isInterfaceBased()
-    {
-        return !$this->_zoneBased;
-    }
-
 
     public function storeVariableName()
     {
-        return "pbfRules";
+        return "sdWanRules";
     }
-
 
 }

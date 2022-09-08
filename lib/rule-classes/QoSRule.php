@@ -22,6 +22,9 @@
 class QoSRule extends RuleWithUserID
 {
     use NegatableRule;
+    use RuleWithSchedule;
+
+    protected $schedule = null;
 
     static public $templatexml = '<entry name="**temporarynamechangeme**"><from><member>any</member></from><to><member>any</member></to>
 <source><member>any</member></source><destination><member>any</member></destination>
@@ -156,7 +159,7 @@ class QoSRule extends RuleWithUserID
         }
         // End of <rule-type>
 
-        $this->userID_loadUsersFromXml();
+        $this->schedule_loadFromXml();
     }
 
     public function action()
@@ -248,6 +251,12 @@ class QoSRule extends RuleWithUserID
         {
             PH::print_stdout( $padding . "  Desc:  " . $this->_description );
             PH::$JSON_TMP['sub']['object'][$this->name()]['description'] = $this->_description;
+        }
+
+        if( $this->schedule !== null )
+        {
+            PH::print_stdout( $padding . "  Schedule:  " . $this->schedule->name() );
+            PH::$JSON_TMP['sub']['object'][$this->name()]['schedule'][] = $this->schedule->name();
         }
 
         PH::print_stdout();

@@ -853,7 +853,9 @@ class AddressStore
                 if( $subGroup->owner !== $this )
                     continue;
 
-                $sortingArray[$group->name()][$subGroup->name()] = TRUE;
+                if( $group->name() !== $subGroup->name() )
+                    $sortingArray[$group->name()][$subGroup->name()] = TRUE;
+                #$sortingArray[$group->name()][$subGroup->name()] = TRUE;
             }
         }
 
@@ -873,24 +875,28 @@ class AddressStore
                             unset($tmpGroupDeps[$groupName]);
                     }
                 }
-                /*
-                elseif( count($groupDependencies) == 1 )
-                {
-                    unset($sortingArray[$groupName]);
-
-                    mwarning( "addressgroup: ".$groupName." is maybe not listed as it is involved in a loop usage", null, false );
-                    foreach( $sortingArray as &$tmpGroupDeps )
-                    {
-                        if( isset($tmpGroupDeps[$groupName]) )
-                            unset($tmpGroupDeps[$groupName]);
-                    }
-                }
-                */
             }
 
             $loopCount++;
+
             if( $loopCount > 40 )
-                derr("cannot determine groups dependencies after 40 loops iterations: is there too many nested groups?");
+            {
+                print_r( $sortingArray );
+                derr("cannot determine groups dependencies after 40 loops iterations: are there too many nested groups for '".get_class($this->owner)."': '".$this->owner->name()."' ?", NULL, FALSE);
+            }
+            /*
+            if( $loopCount > 40 )
+            {
+                print_r( $sortingArray );
+                foreach( $sortingArray as $groupName => &$groupDependencies )
+                {
+                    $result[] = $this->_addressGroups[$groupName];
+                }
+                #derr("cannot determine groups dependencies after 40 loops iterations: are there too many nested groups for '".get_class($this->owner)."': '".$this->owner->name()."' ?", NULL, FALSE);
+                mwarning("cannot determine groups dependencies after 40 loops iterations: are there too many nested groups for '".get_class($this->owner)."': '".$this->owner->name()."' ?", NULL, FALSE);
+                break;
+            }
+            */
         }
 
         return $result;

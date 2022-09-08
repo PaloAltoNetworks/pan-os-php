@@ -1932,8 +1932,10 @@ RQuery::$defaultFilters['rule']['secprof']['operators']['type.is.group'] = array
 RQuery::$defaultFilters['rule']['secprof']['operators']['group.is'] = array(
     'Function' => function (RuleRQueryContext $context) {
         $rule = $context->object;
-        return $rule->isSecurityRule()
-            && $rule->securityProfileType() == "group"
+        if( !$rule->isSecurityRule() && !$rule->isDefaultSecurityRule() )
+            return FALSE;
+
+        return $rule->securityProfileType() == "group"
             && $rule->securityProfileGroup() == $context->value;
     },
     'arg' => TRUE,
@@ -1945,7 +1947,7 @@ RQuery::$defaultFilters['rule']['secprof']['operators']['group.is'] = array(
 RQuery::$defaultFilters['rule']['secprof']['operators']['av-profile.is'] = array(
     'Function' => function (RuleRQueryContext $context) {
         $rule = $context->object;
-        if( !$rule->isSecurityRule() )
+        if( !$rule->isSecurityRule() && !$rule->isDefaultSecurityRule() )
             return FALSE;
 
         if( $rule->securityProfileIsBlank() )
@@ -1969,7 +1971,7 @@ RQuery::$defaultFilters['rule']['secprof']['operators']['av-profile.is'] = array
 RQuery::$defaultFilters['rule']['secprof']['operators']['as-profile.is'] = array(
     'Function' => function (RuleRQueryContext $context) {
         $rule = $context->object;
-        if( !$rule->isSecurityRule() )
+        if( !$rule->isSecurityRule() && !$rule->isDefaultSecurityRule() )
             return FALSE;
 
         if( $rule->securityProfileIsBlank() )
@@ -1993,7 +1995,7 @@ RQuery::$defaultFilters['rule']['secprof']['operators']['as-profile.is'] = array
 RQuery::$defaultFilters['rule']['secprof']['operators']['url-profile.is'] = array(
     'Function' => function (RuleRQueryContext $context) {
         $rule = $context->object;
-        if( !$rule->isSecurityRule() )
+        if( !$rule->isSecurityRule() && !$rule->isDefaultSecurityRule() )
             return FALSE;
 
         if( $rule->securityProfileIsBlank() )
@@ -2017,7 +2019,7 @@ RQuery::$defaultFilters['rule']['secprof']['operators']['url-profile.is'] = arra
 RQuery::$defaultFilters['rule']['secprof']['operators']['wf-profile.is'] = array(
     'Function' => function (RuleRQueryContext $context) {
         $rule = $context->object;
-        if( !$rule->isSecurityRule() )
+        if( !$rule->isSecurityRule() && !$rule->isDefaultSecurityRule() )
             return FALSE;
 
         if( $rule->securityProfileIsBlank() )
@@ -2041,7 +2043,7 @@ RQuery::$defaultFilters['rule']['secprof']['operators']['wf-profile.is'] = array
 RQuery::$defaultFilters['rule']['secprof']['operators']['vuln-profile.is'] = array(
     'Function' => function (RuleRQueryContext $context) {
         $rule = $context->object;
-        if( !$rule->isSecurityRule() )
+        if( !$rule->isSecurityRule() && !$rule->isDefaultSecurityRule() )
             return FALSE;
 
         if( $rule->securityProfileIsBlank() )
@@ -2065,7 +2067,7 @@ RQuery::$defaultFilters['rule']['secprof']['operators']['vuln-profile.is'] = arr
 RQuery::$defaultFilters['rule']['secprof']['operators']['file-profile.is'] = array(
     'Function' => function (RuleRQueryContext $context) {
         $rule = $context->object;
-        if( !$rule->isSecurityRule() )
+        if( !$rule->isSecurityRule() && !$rule->isDefaultSecurityRule() )
             return FALSE;
 
         if( $rule->securityProfileIsBlank() )
@@ -2089,7 +2091,7 @@ RQuery::$defaultFilters['rule']['secprof']['operators']['file-profile.is'] = arr
 RQuery::$defaultFilters['rule']['secprof']['operators']['data-profile.is'] = array(
     'Function' => function (RuleRQueryContext $context) {
         $rule = $context->object;
-        if( !$rule->isSecurityRule() )
+        if( !$rule->isSecurityRule() && !$rule->isDefaultSecurityRule() )
             return FALSE;
 
         if( $rule->securityProfileIsBlank() )
@@ -2113,7 +2115,7 @@ RQuery::$defaultFilters['rule']['secprof']['operators']['data-profile.is'] = arr
 RQuery::$defaultFilters['rule']['secprof']['operators']['av-profile.is.set'] = array(
     'Function' => function (RuleRQueryContext $context) {
         $rule = $context->object;
-        if( !$rule->isSecurityRule() )
+        if( !$rule->isSecurityRule() && !$rule->isDefaultSecurityRule() )
             return FALSE;
 
         if( $rule->securityProfileIsBlank() )
@@ -2135,7 +2137,7 @@ RQuery::$defaultFilters['rule']['secprof']['operators']['av-profile.is.set'] = a
 RQuery::$defaultFilters['rule']['secprof']['operators']['as-profile.is.set'] = array(
     'Function' => function (RuleRQueryContext $context) {
         $rule = $context->object;
-        if( !$rule->isSecurityRule() )
+        if( !$rule->isSecurityRule() && !$rule->isDefaultSecurityRule() )
             return FALSE;
 
         if( $rule->securityProfileIsBlank() )
@@ -2157,7 +2159,7 @@ RQuery::$defaultFilters['rule']['secprof']['operators']['as-profile.is.set'] = a
 RQuery::$defaultFilters['rule']['secprof']['operators']['url-profile.is.set'] = array(
     'Function' => function (RuleRQueryContext $context) {
         $rule = $context->object;
-        if( !$rule->isSecurityRule() )
+        if( !$rule->isSecurityRule() && !$rule->isDefaultSecurityRule() )
             return FALSE;
 
         if( $rule->securityProfileIsBlank() )
@@ -2179,7 +2181,7 @@ RQuery::$defaultFilters['rule']['secprof']['operators']['url-profile.is.set'] = 
 RQuery::$defaultFilters['rule']['secprof']['operators']['wf-profile.is.set'] = array(
     'Function' => function (RuleRQueryContext $context) {
         $rule = $context->object;
-        if( !$rule->isSecurityRule() )
+        if( !$rule->isSecurityRule() && !$rule->isDefaultSecurityRule() )
             return FALSE;
 
         if( $rule->securityProfileIsBlank() )
@@ -2201,7 +2203,7 @@ RQuery::$defaultFilters['rule']['secprof']['operators']['wf-profile.is.set'] = a
 RQuery::$defaultFilters['rule']['secprof']['operators']['vuln-profile.is.set'] = array(
     'Function' => function (RuleRQueryContext $context) {
         $rule = $context->object;
-        if( !$rule->isSecurityRule() )
+        if( !$rule->isSecurityRule() && !$rule->isDefaultSecurityRule() )
             return FALSE;
 
         if( $rule->securityProfileIsBlank() )
@@ -2223,7 +2225,7 @@ RQuery::$defaultFilters['rule']['secprof']['operators']['vuln-profile.is.set'] =
 RQuery::$defaultFilters['rule']['secprof']['operators']['file-profile.is.set'] = array(
     'Function' => function (RuleRQueryContext $context) {
         $rule = $context->object;
-        if( !$rule->isSecurityRule() )
+        if( !$rule->isSecurityRule() && !$rule->isDefaultSecurityRule() )
             return FALSE;
 
         if( $rule->securityProfileIsBlank() )
@@ -2245,7 +2247,7 @@ RQuery::$defaultFilters['rule']['secprof']['operators']['file-profile.is.set'] =
 RQuery::$defaultFilters['rule']['secprof']['operators']['data-profile.is.set'] = array(
     'Function' => function (RuleRQueryContext $context) {
         $rule = $context->object;
-        if( !$rule->isSecurityRule() )
+        if( !$rule->isSecurityRule() && !$rule->isDefaultSecurityRule() )
             return FALSE;
 
         if( $rule->securityProfileIsBlank() )
@@ -3335,7 +3337,7 @@ RQuery::$defaultFilters['rule']['app']['operators']['has.missing.dependencies'] 
 RQuery::$defaultFilters['rule']['schedule']['operators']['is'] = array(
     'Function' => function (RuleRQueryContext $context) {
         $rule = $context->object;
-        if( !$rule->isSecurityRule() )
+        if( !$rule->isSecurityRule() && !$rule->isDoSRule() &&  !$rule->isPbfRule() && !$rule->isQoSRule() )
             return FALSE;
 
         $schedule = $rule->schedule();
@@ -3358,7 +3360,7 @@ RQuery::$defaultFilters['rule']['schedule']['operators']['is'] = array(
 RQuery::$defaultFilters['rule']['schedule']['operators']['is.set'] = array(
     'Function' => function (RuleRQueryContext $context) {
         $rule = $context->object;
-        if( !$rule->isSecurityRule() )
+        if( !$rule->isSecurityRule() && !$rule->isDoSRule() &&  !$rule->isPbfRule() && !$rule->isQoSRule() )
             return FALSE;
 
         $schedule = $rule->schedule();
@@ -3380,7 +3382,7 @@ RQuery::$defaultFilters['rule']['schedule']['operators']['is.set'] = array(
 RQuery::$defaultFilters['rule']['schedule']['operators']['has.regex'] = array(
     'Function' => function (RuleRQueryContext $context) {
         $rule = $context->object;
-        if( !$rule->isSecurityRule() )
+        if( !$rule->isSecurityRule() && !$rule->isDoSRule() &&  !$rule->isPbfRule() && !$rule->isQoSRule() )
             return FALSE;
 
         $schedule = $rule->schedule();
@@ -3408,7 +3410,7 @@ RQuery::$defaultFilters['rule']['schedule']['operators']['has.regex'] = array(
 RQuery::$defaultFilters['rule']['schedule']['operators']['is.expired'] = array(
     'Function' => function (RuleRQueryContext $context) {
         $rule = $context->object;
-        if( !$rule->isSecurityRule() )
+        if( !$rule->isSecurityRule() && !$rule->isDoSRule() &&  !$rule->isPbfRule() && !$rule->isQoSRule() )
             return FALSE;
 
         $schedule = $rule->schedule();
@@ -3429,7 +3431,7 @@ RQuery::$defaultFilters['rule']['schedule']['operators']['is.expired'] = array(
 RQuery::$defaultFilters['rule']['schedule.expire.in.days']['operators']['>,<,=,!'] = array(
     'Function' => function (RuleRQueryContext $context) {
         $rule = $context->object;
-        if( !$rule->isSecurityRule() )
+        if( !$rule->isSecurityRule() && !$rule->isDoSRule() &&  !$rule->isPbfRule() && !$rule->isQoSRule() )
             return FALSE;
 
         /** @var Schedule $schedule */
