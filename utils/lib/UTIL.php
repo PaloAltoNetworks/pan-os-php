@@ -148,6 +148,8 @@ class UTIL
     public $diff_set = array();
     public $diff_delete = array();
 
+    public $cycleConnectedFirewalls = FALSE;
+
     function __construct($utilType, $argv, $argc, $PHP_FILE, $_supportedArguments = array(), $_usageMsg = "", $projectFolder = "")
     {
         PanAPIConnector::$projectfolder = $projectFolder;
@@ -790,6 +792,10 @@ class UTIL
                     $this->outputformatsetFile = $this->projectFolder."/".$this->outputformatsetFile;
             }
         }
+
+        if( isset(PH::$args['cycleconnectedfirewalls']) )
+            $this->cycleConnectedFirewalls = TRUE;
+
 
         $this->inputValidation();
 
@@ -1756,7 +1762,7 @@ class UTIL
                 }
             }
 
-            if( isset(PH::$args['cycleconnectedfirewalls']) && $this->configType == 'panorama' && $this->configInput['type'] == 'api' )
+            if( $this->cycleConnectedFirewalls && $this->configType == 'panorama' && $this->configInput['type'] == 'api' )
             {
                 $managedSerials = $pan->managedFirewallsSerialsModel;
                 foreach( $managedSerials as $serial => $fw )

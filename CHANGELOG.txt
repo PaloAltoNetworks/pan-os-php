@@ -1,6 +1,15 @@
 CHANGELOG
 
-2.0.58
+2.0.59
+UTIl:
+* type=html-merger | introduce argument exportcsv=filename.xslx
+
+BUGFIX:
+
+GENERAL:
+
+
+2.0.58 (20220908)
 UTIL:
 * type=rule - improve filters for CI/CD
 * type=rule ruletype=any | introduce all filter/actions related to schedule for DoS/Pbf/Qos Rules
