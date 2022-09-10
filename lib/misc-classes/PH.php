@@ -938,7 +938,8 @@ class PH
         "config-commit",
         "protocoll-number-download",
         "html-merger",
-        "dhcp"
+        "dhcp",
+        "tsf"
         );
 
 
@@ -966,7 +967,8 @@ class PH
         "spiffy",
         'config-commit',
         "protocoll-number-download",
-        "html-merger"
+        "html-merger",
+        "tsf"
     );
 
     public static function callPANOSPHP( $type, $argv, $argc, $PHP_FILE, $_supportedArguments = array(), $_usageMsg = "", $projectfolder = "" )
@@ -1083,6 +1085,9 @@ class PH
 
         elseif( $type == "html-merger" )
             $util = new HTMLmerger__( $argv, $argc);
+
+        elseif( $type == "tsf" )
+            $util = new TSF__( $argv, $argc);
 
         elseif( $type == 'address'
             || $type == 'service'

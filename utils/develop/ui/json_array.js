@@ -2488,7 +2488,7 @@ var subjectObject =
                     "stringFormula": {
                         "type": "string",
                         "default": "*nodefault*",
-                        "help": "This string is used to compose a name. You can use the following aliases :\n  - $$current.name$$ : current name of the object\n  - $$sequential.number$$ : sequential number - starting with 1\n"
+                        "help": "This string is used to compose a name. You can use the following aliases :\n  - $$current.name$$ : current name of the object\n  - $$sequential.number$$ : sequential number - starting with 1\n  - $$uuid$$ : rule uuid\n"
                     },
                     "accept63characters": {
                         "type": "bool",
@@ -3240,13 +3240,17 @@ var subjectObject =
                         "Function": {},
                         "arg": true,
                         "ci": {
-                            "fString": "(%PROP% evasive) ",
+                            "fString": "(%PROP% evasive)",
                             "input": "input\/panorama-8.0.xml"
                         }
                     },
                     "has.missing.dependencies": {
                         "Function": {},
-                        "arg": false
+                        "arg": false,
+                        "ci": {
+                            "fString": "(%PROP%)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
                     }
                 }
             },
@@ -3748,19 +3752,35 @@ var subjectObject =
                 "operators": {
                     "is": {
                         "Function": {},
-                        "arg": true
+                        "arg": true,
+                        "ci": {
+                            "fString": "(%PROP% demo)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
                     },
                     "is.set": {
                         "Function": {},
-                        "arg": false
+                        "arg": false,
+                        "ci": {
+                            "fString": "(%PROP%)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
                     },
                     "has.regex": {
                         "Function": {},
-                        "arg": true
+                        "arg": true,
+                        "ci": {
+                            "fString": "(%PROP% day)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
                     },
                     "is.expired": {
                         "Function": {},
-                        "arg": false
+                        "arg": false,
+                        "ci": {
+                            "fString": "(%PROP%)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
                     }
                 }
             },
@@ -3768,7 +3788,11 @@ var subjectObject =
                 "operators": {
                     ">,<,=,!": {
                         "Function": {},
-                        "arg": true
+                        "arg": true,
+                        "ci": {
+                            "fString": "(%PROP% 5 )",
+                            "input": "input\/panorama-8.0.xml"
+                        }
                     }
                 }
             },
@@ -4501,6 +4525,19 @@ var subjectObject =
                         "arg": true,
                         "ci": {
                             "fString": "(%PROP% 1)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    }
+                }
+            },
+            "uuid": {
+                "operators": {
+                    "eq": {
+                        "Function": {},
+                        "arg": true,
+                        "help": "returns TRUE if rule uuid matches the one specified in argument",
+                        "ci": {
+                            "fString": "(%PROP%  1234567890)",
                             "input": "input\/panorama-8.0.xml"
                         }
                     }
@@ -6794,6 +6831,11 @@ var subjectObject =
     },
     "traffic-log": {
         "name": "traffic-log",
+        "action": [],
+        "filter": []
+    },
+    "tsf": {
+        "name": "tsf",
         "action": [],
         "filter": []
     },
