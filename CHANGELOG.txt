@@ -5,6 +5,7 @@ UTIl:
 * type=html-merger | introduce argument exportcsv=filename.xslx
 
 BUGFIX:
+* type=xml-issue | bugfix to store output file also if pan-os API mode is used
 
 GENERAL:
 
