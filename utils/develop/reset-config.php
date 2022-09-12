@@ -158,6 +158,10 @@ $cleanup[] = "zone";
 $cleanup[] = "schedule";
 $cleanup[] = "reports";
 
+//
+$cleanup[] = "profiles";
+$cleanup[] = "import";
+
 
 if( $util->configType == 'panos' )
     $cleanup[] = "rulebase";
@@ -176,6 +180,7 @@ $cleanup_network = array();
 
 #$cleanup_network[] = "interface/ethernet";
 $cleanup_network[] = "interface";
+//vsys import part is missing!!!!
 $cleanup_network[] = "virtual-router";
 $cleanup_network[] = "profiles";
 $cleanup_network[] = "ike";
@@ -235,6 +240,11 @@ foreach( $cleanup_network as $entry )
     if( $util->configInput['type'] == 'api' )
         $response = $pan->connector->sendRequest($apiArgs);
 }
+
+//problems:
+//xml interface missing
+//device/system - customer service routing not reset
+
 
 
 

@@ -20,6 +20,7 @@
 class TSF__
 {
     private $projectfolder = null;
+    private $actions = "extract-running-config";
 
     function __construct( $argv, $argc )
     {
@@ -46,6 +47,18 @@ class TSF__
                 $this->projectfolder .= "/";
         }
 
+        $this->actions = 'extract-running-config';
+        if( isset(PH::$args['actions']) )
+        {
+            $actionsArray = explode( ",", $this->actions );
+            if( count($actionsArray) > 1 )
+                derr( "type=TSF actions= | is supporting only one argument: 'actions=running-config' or 'actions=candicate-config'" );
+
+            if( $actionsArray[0] === "extract-running-config")
+                $this->actions = 'extract-running-config';
+            elseif( $actionsArray[0] === "extract-candidate-config");
+                $this->actions = 'extract-candidate-config';
+        }
 
         $this->supportedArguments = Array();
         $this->supportedArguments['in'] = Array('niceName' => 'in', 'shortHelp' => 'specifiy the TechSupportFile', 'argDesc' => 'in=[TSF.tgz]');
@@ -73,12 +86,21 @@ class TSF__
         $output = array();
         $retValue = 0;
 
-
+        if( $this->actions == "extract-running-config" )
+        {
+            $ext_folder = "saved-configs";
+            $ext_filename = "running-config.xml";
+        }
+        elseif( $this->actions == "extract-candidate-config" )
+        {
+            $ext_folder = "devices/localhost.localdomain";
+            $ext_filename = "last-candidatecfg.xml";
+        }
 
         $cliArray = array();
         $cliArray[] = "cp ".$filename_path." ".$this->projectfolder.$filename;
-        $cliArray[] = "tar -xf ".$this->projectfolder."".$filename." --directory ".$this->projectfolder." opt/pancfg/mgmt/saved-configs/running-config.xml";
-        $cliArray[] = "cp ".$this->projectfolder."opt/pancfg/mgmt/saved-configs/running-config.xml ".$this->projectfolder."running-config.xml";
+        $cliArray[] = "tar -xf ".$this->projectfolder."".$filename." --directory ".$this->projectfolder." opt/pancfg/mgmt/".$ext_folder."/".$ext_filename;
+        $cliArray[] = "cp ".$this->projectfolder."opt/pancfg/mgmt/".$ext_folder."/".$ext_filename." ".$this->projectfolder.$ext_filename;
         $cliArray[] = "rm -r ".$this->projectfolder."opt";
         $cliArray[] = "rm -r ".$this->projectfolder."".$filename;
 
@@ -101,7 +123,7 @@ class TSF__
         }
 
         PH::print_stdout();
-        PH::print_stdout( "running-config.xml from TSF succesfully extracted to projectfolder" );
+        PH::print_stdout( $ext_filename." from TSF succesfully extracted to projectfolder" );
 
     }
 

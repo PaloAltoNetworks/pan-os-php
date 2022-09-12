@@ -4,6 +4,7 @@ CHANGELOG
 UTIl:
 * type=html-merger | introduce argument exportcsv=filename.xslx
 * type=tsf | introduce TechSupportFile - to extract running-config.xml from TSF
+* type=address - 'filter=(refobjectname is XYZ)' extend to support rule name
 
 BUGFIX:
 * type=xml-issue | bugfix to store output file also if pan-os API mode is used
