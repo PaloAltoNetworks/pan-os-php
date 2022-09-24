@@ -71,6 +71,7 @@ require_once dirname(__FILE__)."/IRONSKILLET_UPDATE__.php";
 require_once(dirname(__FILE__)."/PROTOCOLL_NUMBERS__.php");
 
 require_once(dirname(__FILE__)."/HTMLmerger__.php");
+require_once(dirname(__FILE__)."/TSF__.php");
 
 require_once dirname(__FILE__)."/../../phpseclib/Net/SSH2.php";
 require_once dirname(__FILE__)."/../../phpseclib/Crypt/RSA.php";
@@ -147,6 +148,8 @@ class UTIL
 
     public $diff_set = array();
     public $diff_delete = array();
+
+    public $cycleConnectedFirewalls = FALSE;
 
     function __construct($utilType, $argv, $argc, $PHP_FILE, $_supportedArguments = array(), $_usageMsg = "", $projectFolder = "")
     {
@@ -790,6 +793,10 @@ class UTIL
                     $this->outputformatsetFile = $this->projectFolder."/".$this->outputformatsetFile;
             }
         }
+
+        if( isset(PH::$args['cycleconnectedfirewalls']) )
+            $this->cycleConnectedFirewalls = TRUE;
+
 
         $this->inputValidation();
 
@@ -1748,7 +1755,11 @@ class UTIL
                     $processedLocations[$sub->name()] = TRUE;
 
                     if( isset(PH::$args['loadpanoramapushedconfig']) && get_class( $this->pan ) != 'PanoramaConf' )
-                        $sub->parentDeviceGroup->display_statistics();
+                    {
+                        if( $sub->parentDeviceGroup !== null )
+                            $sub->parentDeviceGroup->display_statistics();
+                    }
+
                     
                     $sub->display_statistics();
 
@@ -1756,7 +1767,7 @@ class UTIL
                 }
             }
 
-            if( isset(PH::$args['cycleconnectedfirewalls']) && $this->configType == 'panorama' && $this->configInput['type'] == 'api' )
+            if( $this->cycleConnectedFirewalls && $this->configType == 'panorama' && $this->configInput['type'] == 'api' )
             {
                 $managedSerials = $pan->managedFirewallsSerialsModel;
                 foreach( $managedSerials as $serial => $fw )

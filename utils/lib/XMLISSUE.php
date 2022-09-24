@@ -21,10 +21,6 @@ class XMLISSUE extends UTIL
 {
     public $region_array = array();
 
-
-
-    //Todo: optimisation needed to use class UTIL available parent methods
-
     public function utilStart()
     {
         $this->usageMsg = PH::boldText("USAGE: ") . "php " . basename(__FILE__) . " in=api://[MGMT-IP-Address] ";
@@ -36,6 +32,15 @@ class XMLISSUE extends UTIL
         PH::processCliArgs();
         $this->help(PH::$args);
         $this->init_arguments();
+
+        //special treatment as also API need to send output
+        if( isset(PH::$args['out']) )
+        {
+            $this->configOutput = PH::$args['out'];
+            if( !is_string($this->configOutput) || strlen($this->configOutput) < 1 )
+                $this->display_error_usage_exit('"out" argument is not a valid string');
+        }
+
         $this->load_config();
 
 
@@ -43,9 +48,6 @@ class XMLISSUE extends UTIL
 
 
         $this->save_our_work( true );
-
-
-        
     }
 
     public function main()
@@ -1659,6 +1661,7 @@ class XMLISSUE extends UTIL
 
         if( $this->configInput['type'] == 'api' )
             PH::print_stdout( "\n\nINPUT mode API detected: FIX is ONLY saved in offline file.");
+
     }
 
     public function supportedArguments()

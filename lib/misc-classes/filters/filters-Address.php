@@ -818,6 +818,8 @@ RQuery::$defaultFilters['address']['refobjectname']['operators']['is'] = array(
         {
             if( get_class( $refobject ) == "AddressGroup" && $refobject->name() == $context->value )
                 return TRUE;
+            elseif( get_class( $refobject ) == "AddressRuleContainer" && $refobject->owner->name() == $context->value )
+                return TRUE;
         }
 
 
@@ -840,12 +842,19 @@ RQuery::$defaultFilters['address']['refobjectname']['operators']['is.only'] = ar
         $return = FALSE;
         foreach( $reference_array as $refobject )
         {
-            if( get_class( $refobject ) != "AddressGroup" )
-                $return = FALSE;
-
             if( get_class( $refobject ) == "AddressGroup" && $refobject->name() == $context->value )
-                $return = TRUE;
+            {
+                if( $return )
+                    return FALSE;
+                else
+                    $return = TRUE;
+            }
 
+            elseif( get_class( $refobject ) == "AddressRuleContainer" && $refobject->owner->name() == $context->value )
+                if( $return )
+                    return FALSE;
+                else
+                    $return = TRUE;
         }
 
         return $return;

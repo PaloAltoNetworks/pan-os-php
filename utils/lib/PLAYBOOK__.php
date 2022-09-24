@@ -231,7 +231,8 @@ class PLAYBOOK__
             "maxmind-update",
             "util_get-action-filter",
             "protocoll-number-download",
-            "html-merger"
+            "html-merger",
+            "tsf"
         );
 
         if( isset($details['header-comment']) && !empty($details['header-comment']) )

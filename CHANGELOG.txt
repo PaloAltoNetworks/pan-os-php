@@ -1,6 +1,20 @@
 CHANGELOG
 
-2.0.58
+2.0.59
+UTIl:
+* type=html-merger | introduce argument exportcsv=filename.xslx
+* type=tsf | introduce TechSupportFile - to extract running-config.xml from TSF
+* type=address - 'filter=(refobjectname is XYZ)' extend to support rule name
+
+BUGFIX:
+* type=xml-issue | bugfix to store output file also if pan-os API mode is used
+* type=stats | bugfix for loadpanoramapushedconfig
+
+GENERAL:
+* introduce development script gcp
+
+
+2.0.58 (20220908)
 UTIL:
 * type=rule - improve filters for CI/CD
 * type=rule ruletype=any | introduce all filter/actions related to schedule for DoS/Pbf/Qos Rules
