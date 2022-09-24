@@ -8,8 +8,10 @@ UTIl:
 
 BUGFIX:
 * type=xml-issue | bugfix to store output file also if pan-os API mode is used
+* type=stats | bugfix for loadpanoramapushedconfig
 
 GENERAL:
+* introduce development script gcp
 
 
 2.0.58 (20220908)
