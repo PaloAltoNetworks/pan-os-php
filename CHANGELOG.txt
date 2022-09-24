@@ -1,6 +1,15 @@
 CHANGELOG
 
-2.0.59
+2.0.60
+UTIL:
+* devlop ssh-connector | introduce argument password
+
+BUGFIX:
+
+GENERAL:
+
+
+2.0.59 (20220924)
 UTIl:
 * type=html-merger | introduce argument exportcsv=filename.xslx
 * type=tsf | introduce TechSupportFile - to extract running-config.xml from TSF
