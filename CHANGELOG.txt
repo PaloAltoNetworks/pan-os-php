@@ -2,7 +2,7 @@ CHANGELOG
 
 2.0.60
 UTIL:
-* devlop ssh-connector | introduce argument password
+* develop ssh-connector | introduce argument password
 
 BUGFIX:
 

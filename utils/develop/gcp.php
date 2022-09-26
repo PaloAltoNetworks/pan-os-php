@@ -23,7 +23,16 @@ require_once dirname(__FILE__)."/../../lib/pan_php_framework.php";
 require_once dirname(__FILE__)."/../../utils/lib/UTIL.php";
 
 ########################################################################################################################
+//"docker pull google/cloud-sdk:latest"
 
+//"docker run -ti  google/cloud-sdk:latest gcloud version"
+
+//"docker run -ti --name gcloud-config google/cloud-sdk gcloud auth login"
+//"docker run --rm -ti --volumes-from gcloud-config google/cloud-sdk gcloud compute instances list --project ".$project
+//"docker run --rm -ti --volumes-from gcloud-config google/cloud-sdk gcloud container clusters get-credentials ".$cluster." --region ".$region." --project ".$project
+//"docker run --rm -ti --volumes-from gcloud-config google/cloud-sdk kubectl --insecure-skip-tls-verify=true exec -it ".$tenantID." -c ".substr($tenantID, 0, -2)." -- bash"
+
+########################################################################################################################
 PH::processCliArgs();
 
 
@@ -180,26 +189,33 @@ elseif( $action == "expedition-log" )
 
                 $test = explode($grepStringExpedition, $line);
                 $test = explode($grepStringExpedition2, $test[1]);
-                $test = explode(":", $test[1]);
-                $test = explode('"', $test[1]);
-
-                $tmpTenantid = trim($test[0]);
-
-                PH::print_stdout( $tmpTenantid );
-
-                $tenant_exec_array = createKubectl( $tmpTenantid );
-                if( $tenant_exec_array === null )
+                if( isset($test[1]) )
                 {
-                    PH::print_stdout( "Tenant: '".$tenantID."' not FOUND" );
-                }
+                    $test = explode(":", $test[1]);
+                    $test = explode('"', $test[1]);
 
-                foreach($tenant_exec_array as $tenant_exec)
-                {
-                    PH::print_stdout();
-                    PH::print_stdout( $tenant_exec );
-                    PH::print_stdout();
-                }
+                    $tmpTenantid = trim($test[0]);
 
+                    PH::print_stdout( $tmpTenantid );
+
+                    $tenant_exec_array = createKubectl( $tmpTenantid );
+                    if( $tenant_exec_array === null )
+                    {
+                        PH::print_stdout( "Tenant: '".$tmpTenantid."' not FOUND as a pod on cluster: ".$cluster );
+                        PH::print_stdout();
+                    }
+                    else
+                    {
+                        foreach($tenant_exec_array as $tenant_exec)
+                        {
+                            PH::print_stdout();
+                            PH::print_stdout( $tenant_exec );
+                            PH::print_stdout();
+                        }
+                    }
+                }
+                else
+                    PH::print_stdout( "Tenant: '".$tenantID."' not FOUND for successful migration" );
             }
         }
     }
