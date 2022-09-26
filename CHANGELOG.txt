@@ -1,13 +1,17 @@
 CHANGELOG
 
-2.0.60
+2.0.61
 UTIL:
-* develop ssh-connector | introduce argument password
-* type=rule actions=description-append | introduce $$current.name$$ a stringformular
 
 BUGFIX:
 
 GENERAL:
+
+
+2.0.60 (20220926)
+UTIL:
+* develop ssh-connector | introduce argument password
+* type=rule actions=description-append | introduce $$current.name$$ a stringformular
 
 
 2.0.59 (20220924)
