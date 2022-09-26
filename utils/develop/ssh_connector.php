@@ -56,6 +56,7 @@ $debug = FALSE;
 $output_string = "";
 $hiddenPW = TRUE;
 $RSAkey = null;
+$inputpassword = null;
 $timeout = 10;
 
 $setcommandMaxLine = 20;
@@ -94,6 +95,8 @@ else
 if( isset(PH::$args['key']) )
     $RSAkey = PH::$args['key'];
 
+if( isset(PH::$args['password']) )
+    $inputpassword = PH::$args['password'];
 
 if( isset(PH::$args['vendor']) )
 {
@@ -193,7 +196,11 @@ if( $user == "" )
 }
 
 
-if( $RSAkey == null )
+if( $inputpassword != null )
+{
+    $password = $inputpassword;
+}
+elseif( $RSAkey == null )
 {
     $password = PanAPIConnector::hiddenPWvalidation($user, $hiddenPW, $handle);
 }
