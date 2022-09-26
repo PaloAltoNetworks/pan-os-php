@@ -2756,7 +2756,17 @@ RuleCallContext::$supportedActions[] = array(
             $textToAppend = " ";
         if( $context->arguments['newline'] == 'yes' )
             $textToAppend = "\n";
-        $textToAppend .= $context->rawArguments['text'];
+
+        $newName = $context->arguments['stringFormula'];
+
+        if( strpos($newName, '$$current.name$$') !== FALSE )
+        {
+            $textToAppend .= str_replace('$$current.name$$', $rule->name(), $newName);
+        }
+        else
+        {
+            $textToAppend .= $newName;
+        }
 
         if( $context->object->owner->owner->version < 71 )
             $max_length = 253;
@@ -2778,7 +2788,14 @@ RuleCallContext::$supportedActions[] = array(
         else
             $rule->setDescription($description . $textToAppend);
     },
-    'args' => array('text' => array('type' => 'string', 'default' => '*nodefault*'), 'newline' => array('type' => 'bool', 'default' => 'no'))
+    'args' => array(
+        'stringFormula' => array(
+            'type' => 'string',
+            'default' => '*nodefault*',
+            'help' =>
+                "This string is used to compose a name. You can use the following aliases :\n" .
+                "  - \$\$current.name\$\$ : current name of the object\n"),
+        'newline' => array('type' => 'bool', 'default' => 'no'))
 );
 
 RuleCallContext::$supportedActions[] = array(
