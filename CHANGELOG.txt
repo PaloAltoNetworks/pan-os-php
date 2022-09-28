@@ -5,6 +5,7 @@ UTIL:
 * type=rule | introduce 'filter=(url.category.count ><=! NUMBER)'
 
 BUGFIX:
+* class Panorama/Pan/FawkesConf - save_to_file set indentingXmlIncreament to default without an encrease with +1
 
 GENERAL:
 
