@@ -3023,7 +3023,14 @@ RQuery::$defaultFilters['rule']['url.category']['operators']['has'] = array(
         'input' => 'input/panorama-8.0.xml'
     )
 );
-
+RQuery::$defaultFilters['rule']['url.category.count']['operators']['>,<,=,!'] = array(
+    'eval' => "\$object->isSecurityRule() && \$object->urlCategoriescount() !operator! !value!",
+    'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP% 1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 RQuery::$defaultFilters['rule']['target']['operators']['is.any'] = array(
     'Function' => function (RuleRQueryContext $context) {
         return $context->object->target_isAny();

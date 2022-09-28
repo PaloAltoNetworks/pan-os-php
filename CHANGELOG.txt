@@ -2,6 +2,7 @@ CHANGELOG
 
 2.0.61
 UTIL:
+* type=rule | introduce 'filter=(url.category.count ><=! NUMBER)'
 
 BUGFIX:
 
