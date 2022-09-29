@@ -3,6 +3,7 @@ CHANGELOG
 2.0.61
 UTIL:
 * type=rule | introduce 'filter=(url.category.count ><=! NUMBER)'
+* type=address | improve "help create-address" - improve also actions=display
 
 BUGFIX:
 * class Panorama/Pan/FawkesConf - save_to_file set indentingXmlIncreament to default without an encrease with +1

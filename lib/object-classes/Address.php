@@ -46,7 +46,8 @@ class Address
     const TypeIpWildcard = 5;
 
 
-    static public $AddressTypes = array(self::TypeTmp => 'tmp',
+    static public $AddressTypes = array(
+        self::TypeTmp => 'tmp',
         self::TypeIpNetmask => 'ip-netmask',
         self::TypeIpRange => 'ip-range',
         self::TypeFQDN => 'fqdn',
