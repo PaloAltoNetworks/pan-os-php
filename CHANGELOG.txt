@@ -10,6 +10,7 @@ BUGFIX:
 * type=device actions=sp_spg-create-bp:false | if no name argument is defined 'sp_spg-create-bp:[shared], sp-name' use predefined array
 
 GENERAL:
+* improve classes BuckbeackConf / FawkesConf - to avoid creating XML node if not needed
 
 
 2.0.60 (20220926)

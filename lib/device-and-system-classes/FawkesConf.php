@@ -217,11 +217,11 @@ class FawkesConf
         $this->devicecloudroot = DH::findFirstElementOrCreate('device', $this->localhostroot);
         $this->cloudroot = DH::findFirstElementOrCreate('cloud', $this->devicecloudroot);
 
-        $this->onpremroot = DH::findFirstElementOrCreate('on-prem', $this->devicecloudroot);
+        $this->onpremroot = DH::findFirstElement('on-prem', $this->devicecloudroot);
 
         $this->snippetroot = DH::findFirstElementOrCreate('snippet', $this->localhostroot);
 
-        $tmp = DH::findFirstElementOrCreate('managed-devices', $this->localhostroot);
+        $tmp = DH::findFirstElement('managed-devices', $this->localhostroot);
 
             //->devices/container
         //
@@ -413,14 +413,17 @@ class FawkesConf
         //
         // loading onpremss
         //
-        foreach( $this->onpremroot->childNodes as $node )
+        if( $this->onpremroot !== false )
         {
-            if( $node->nodeType != XML_ELEMENT_NODE ) continue;
+            foreach( $this->onpremroot->childNodes as $node )
+            {
+                if( $node->nodeType != XML_ELEMENT_NODE ) continue;
 
-            $ldv = new DeviceOnPrem( $this );
+                $ldv = new DeviceOnPrem( $this );
 
-            $ldv->load_from_domxml( $node );
-            $this->onprems[] = $ldv;
+                $ldv->load_from_domxml( $node );
+                $this->onprems[] = $ldv;
+            }
         }
         //
         // end of DeviceCloud
