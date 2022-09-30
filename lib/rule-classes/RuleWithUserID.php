@@ -121,6 +121,11 @@ class RuleWithUserID extends Rule
                 $this->_userIDType = self::__UserIDType_Known;
                 return;
             }
+            if( $content == 'known-user' )
+            {
+                $this->_userIDType = self::__UserIDType_Known;
+                return;
+            }
             if( $content == 'pre-logon' )
             {
                 $this->_userIDType = self::__UserIDType_PreLogon;
