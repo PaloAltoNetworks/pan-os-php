@@ -1,6 +1,15 @@
 CHANGELOG
 
-2.0.61
+2.0.62
+UTIL:
+* type=rule | introduce 'actions=user-replace:OLD-username,NEW-username' and 'actions=user-replace-from-file:FILE.txt'
+
+BUGFIX:
+
+GENERAL:
+
+
+2.0.61 (20221004)
 UTIL:
 * type=rule | introduce 'filter=(url.category.count ><=! NUMBER)'
 * type=address | improve "help create-address" - improve also actions=display
