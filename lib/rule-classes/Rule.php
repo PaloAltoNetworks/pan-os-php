@@ -53,6 +53,9 @@ class Rule
      */
     public $tags;
 
+    /** @var Tag */
+    public $grouptag = null;
+
     /**
      * @var ServiceRuleContainer
      */
@@ -177,6 +180,11 @@ class Rule
             else if( $node->nodeName == 'tag' )
             {
                 $this->tags->load_from_domxml($node);
+            }
+            else if( $node->nodeName == 'group-tag' )
+            {
+                $grouptagName = $node->textContent;
+                $this->grouptag = $this->owner->owner->tagStore->find( $grouptagName, $this);
             }
             else if( $node->nodeName == 'description' )
             {
@@ -1351,6 +1359,15 @@ class Rule
                     }
                 }
             }
+    }
+
+    public function grouptagIs( $value )
+    {
+        if( $this->grouptag === null )
+            return false;
+        if( $this->grouptag->name() === $value->name() )
+            return true;
+        return false;
     }
 
     public function isPreRule()
