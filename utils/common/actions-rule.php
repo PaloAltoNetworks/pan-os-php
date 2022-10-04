@@ -4533,6 +4533,117 @@ RuleCallContext::$supportedActions[] = Array(
     'args' => Array( 'userName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) )
 );
 RuleCallContext::$supportedActions[] = Array(
+    'name' => 'user-replace',
+    'MainFunction' =>  function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+        if( !$rule->isSecurityRule() )
+        {
+            $string = "this is not a Security rule";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+
+        $ruleUsers = $rule->userID_getUsers();
+
+        $oldUserName = $context->arguments['old-userName'];
+        $newUserName = $context->arguments['new-userName'];
+
+        if( in_array( $oldUserName, $ruleUsers ) )
+        {
+            if( $context->isAPI )
+            {
+                $rule->API_userID_addUser($newUserName);
+                $rule->API_userID_removeUser($oldUserName);
+            }
+            else
+            {
+                $rule->userID_addUser($newUserName);
+                $rule->userID_removeUser($oldUserName);
+            }
+        }
+    },
+    'args' => Array(
+        'old-userName' => Array( 'type' => 'string', 'default' => '*nodefault*' ),
+        'new-userName' => Array( 'type' => 'string', 'default' => '*nodefault*' )
+    )
+);
+RuleCallContext::$supportedActions[] = Array(
+    'name' => 'user-replace-from-file',
+    'MainFunction' =>  function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+        if( !$rule->isSecurityRule() )
+        {
+            $string = "this is not a Security rule";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+
+        if( !isset($context->cachedList) )
+        {
+            $text = file_get_contents( $context->arguments['file'] );
+
+            if( $text === false )
+                derr("cannot open file '{$context->arguments['file']}");
+
+            $lines = explode("\n", $text);
+            foreach( $lines as  $line)
+            {
+                $line = trim($line);
+                if(strlen($line) == 0)
+                    continue;
+                $list[$line] = true;
+            }
+
+            $context->cachedList = &$list;
+        }
+        else
+            $list = &$context->cachedList;
+
+        foreach( $list as $entry )
+        {
+            $ruleUsers = $rule->userID_getUsers();
+
+            $tmpUser = explode(",", $entry);
+            if( count( $tmpUser ) !== 2 )
+                derr( "file syntax: 'old-user-name,newusername'" );
+            $oldUserName = trim($tmpUser[0]);
+            $newUserName = trim($tmpUser[1]);
+
+            if( in_array( $oldUserName, $ruleUsers ) )
+            {
+                if( $context->isAPI )
+                {
+                    $rule->API_userID_addUser($newUserName);
+                    $rule->API_userID_removeUser($oldUserName);
+                }
+                else
+                {
+                    $rule->userID_addUser($newUserName);
+                    $rule->userID_removeUser($oldUserName);
+                }
+            }
+        }
+    },
+    'args' => Array(
+        'file' => Array( 'type' => 'string', 'default' => '*nodefault*' )
+    ),
+    'help' => "file syntax: 'old-user-name,newusername' ; each pair on a newline!"
+);
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'user-set-any',
     'MainFunction' =>  function(RuleCallContext $context)
     {
