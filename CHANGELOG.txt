@@ -1,13 +1,24 @@
 CHANGELOG
 
-2.0.60
+2.0.61
+UTIL:
+* type=rule | introduce 'filter=(url.category.count ><=! NUMBER)'
+* type=address | improve "help create-address" - improve also actions=display
+
+BUGFIX:
+* class Panorama/Pan/FawkesConf - save_to_file set indentingXmlIncreament to default without an encrease with +1
+* type=device actions=sp_spg-create-bp:false | if no name argument is defined 'sp_spg-create-bp:[shared], sp-name' use predefined array
+* class RulewithUserID - bugfix for known-user
+
+GENERAL:
+* improve classes BuckbeackConf / FawkesConf - to avoid creating XML node if not needed
+* extend class Container/DeviceCloud/DeviceOnPrem with DataFilteringProfileStore
+
+
+2.0.60 (20220926)
 UTIL:
 * develop ssh-connector | introduce argument password
 * type=rule actions=description-append | introduce $$current.name$$ a stringformular
-
-BUGFIX:
-
-GENERAL:
 
 
 2.0.59 (20220924)

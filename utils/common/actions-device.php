@@ -1702,7 +1702,7 @@ DeviceCallContext::$supportedActions['sp_spg-create-BP'] = array(
                 $ownerDocument = $sub->xmlroot->ownerDocument;
 
                 $force = false; // check about actions argument introduction
-                if( isset($context->arguments['sp-name']) )
+                if( isset($context->arguments['sp-name']) && $context->arguments['sp-name'] !== "*nodefault*" )
                     $nameArray = array("Outbound");
                 else
                     $nameArray = array("Alert-Only", "Outbound", "Inbound", "Internal", "Exception");
@@ -1713,7 +1713,8 @@ DeviceCallContext::$supportedActions['sp_spg-create-BP'] = array(
                     if( isset($context->arguments['sp-name']) )
                     {
                         $ironskilletName = $name;
-                        $name = $context->arguments['sp-name'];
+                        if( $context->arguments['sp-name'] !== "*nodefault*" )
+                            $name = $context->arguments['sp-name'];
                     }
                     else
                         $ironskilletName = $name;

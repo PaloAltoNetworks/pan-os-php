@@ -1812,8 +1812,8 @@ AddressCallContext::$supportedActions[] = array(
                 $tag_string = "tag: '".$toStringInline."'";
             }
 
-            PH::print_stdout( $context->padding . "* " . get_class($object) . " '{$object->name()}'  value: '{$object->value()}'  desc: '{$object->description()}' IPcount: '{$object->getIPcount()}' $tag_string" );
-            PH::$JSON_TMP['sub']['object'][$object->name()]['type'] = get_class($object);
+            PH::print_stdout( $context->padding . "* " . get_class($object) . " '{$object->name()}'  type: '{$object->type()}'  value: '{$object->value()}'  desc: '{$object->description()}' IPcount: '{$object->getIPcount()}' $tag_string" );
+            PH::$JSON_TMP['sub']['object'][$object->name()]['type'] = $object->type();
             PH::$JSON_TMP['sub']['object'][$object->name()]['value'] = $object->value();
             PH::$JSON_TMP['sub']['object'][$object->name()]['tag'] = $tag_string;
             PH::$JSON_TMP['sub']['object'][$object->name()]['description'] = $object->description();
@@ -2626,7 +2626,12 @@ AddressCallContext::$supportedActions['create-Address'] = array(
     'args' => array(
         'name' => array('type' => 'string', 'default' => '*nodefault*'),
         'value' => array('type' => 'string', 'default' => '*nodefault*'),
-        'type' => array('type' => 'string', 'default' => '*nodefault*')
+        'type' => array(
+            'type' => 'string',
+            'default' => '*nodefault*',
+            'help' =>
+                implode( ", ", Address::$AddressTypes )
+        )
     )
 );
 

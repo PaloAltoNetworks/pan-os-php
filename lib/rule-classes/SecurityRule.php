@@ -797,6 +797,11 @@ class SecurityRule extends RuleWithUserID
         return $this->_urlCategories;
     }
 
+    public function urlCategoriescount()
+    {
+        return count($this->_urlCategories);
+    }
+
     public function urlCategoryIsAny()
     {
         return count($this->_urlCategories) == 0;
