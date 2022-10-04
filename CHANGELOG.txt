@@ -1,6 +1,14 @@
 CHANGELOG
 
-2.0.61
+2.0.62
+UTIL:
+
+BUGFIX:
+
+GENERAL:
+
+
+2.0.61 (20221004)
 UTIL:
 * type=rule | introduce 'filter=(url.category.count ><=! NUMBER)'
 * type=address | improve "help create-address" - improve also actions=display
