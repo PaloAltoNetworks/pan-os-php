@@ -4613,13 +4613,16 @@ RuleCallContext::$supportedActions[] = Array(
         else
             $list = &$context->cachedList;
 
-        foreach( $list as $entry )
+        foreach( $list as $entry => $set )
         {
             $ruleUsers = $rule->userID_getUsers();
 
             $tmpUser = explode(",", $entry);
             if( count( $tmpUser ) !== 2 )
+            {
                 derr( "file syntax: 'old-user-name,newusername'" );
+            }
+
             $oldUserName = trim($tmpUser[0]);
             $newUserName = trim($tmpUser[1]);
 
