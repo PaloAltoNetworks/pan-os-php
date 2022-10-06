@@ -1433,6 +1433,7 @@ DeviceCallContext::$supportedActions['sp_spg-create-alert-only-BP'] = array(
             $url_xmlString_v8 = file_get_contents( $pathString."/panos_v8.1/templates/panorama/snippets/profiles_url_filtering.xml");
             $url_xmlString_v9 = file_get_contents( $pathString."/panos_v9.1/templates/panorama/snippets/profiles_url_filtering.xml");
             $url_xmlString_v10 = file_get_contents( $pathString."/panos_v10.0/templates/panorama/snippets/profiles_url_filtering.xml");
+            $url_xmlString_v102 = file_get_contents( $pathString."/panos_v10.2/templates/panorama/snippets/profiles_url_filtering.xml");
 
             $fb_xmlString = file_get_contents( $pathString."/panos_v10.0/templates/panorama/snippets/profiles_file_blocking.xml");
 
@@ -1564,8 +1565,11 @@ DeviceCallContext::$supportedActions['sp_spg-create-alert-only-BP'] = array(
                         $newdoc->loadXML($url_xmlString_v8);
                     elseif( $context->object->owner->version < 100 )
                         $newdoc->loadXML($url_xmlString_v9);
-                    else
+                    elseif( $context->object->owner->version >= 100 && $context->object->owner->version < 102 )
                         $newdoc->loadXML($url_xmlString_v10);
+                    elseif( $context->object->owner->version >= 102 )
+                        $newdoc->loadXML($url_xmlString_v102);
+
                     $node = $newdoc->importNode($newdoc->firstChild, TRUE);
                     $node = DH::findFirstElementByNameAttr("entry", $name . "-URL", $node);
                     $node = $newdoc->importNode($node, TRUE);
@@ -1635,7 +1639,6 @@ DeviceCallContext::$supportedActions['sp_spg-create-alert-only-BP'] = array(
                         $secprofgrp->API_sync();
                 }
 
-                
                 $context->first = false;
             }
         }
@@ -1684,6 +1687,7 @@ DeviceCallContext::$supportedActions['sp_spg-create-BP'] = array(
             $url_xmlString_v8 = file_get_contents( $pathString."/panos_v8.1/templates/panorama/snippets/profiles_url_filtering.xml");
             $url_xmlString_v9 = file_get_contents( $pathString."/panos_v9.1/templates/panorama/snippets/profiles_url_filtering.xml");
             $url_xmlString_v10 = file_get_contents( $pathString."/panos_v10.0/templates/panorama/snippets/profiles_url_filtering.xml");
+            $url_xmlString_v102 = file_get_contents( $pathString."/panos_v10.2/templates/panorama/snippets/profiles_url_filtering.xml");
 
             $fb_xmlString = file_get_contents( $pathString."/panos_v10.0/templates/panorama/snippets/profiles_file_blocking.xml");
 
@@ -1710,14 +1714,12 @@ DeviceCallContext::$supportedActions['sp_spg-create-BP'] = array(
 
                 foreach( $nameArray as $name)
                 {
+                    $ironskilletName = $name;
                     if( isset($context->arguments['sp-name']) )
                     {
-                        $ironskilletName = $name;
                         if( $context->arguments['sp-name'] !== "*nodefault*" )
                             $name = $context->arguments['sp-name'];
                     }
-                    else
-                        $ironskilletName = $name;
 
 
                     if( $context->object->owner->version < 90 )
@@ -1842,8 +1844,10 @@ DeviceCallContext::$supportedActions['sp_spg-create-BP'] = array(
                             $newdoc->loadXML($url_xmlString_v8);
                         elseif( $context->object->owner->version < 100 )
                             $newdoc->loadXML($url_xmlString_v9);
-                        else
+                        elseif( $context->object->owner->version >= 100 && $context->object->owner->version < 102 )
                             $newdoc->loadXML($url_xmlString_v10);
+                        elseif( $context->object->owner->version >= 102 )
+                            $newdoc->loadXML($url_xmlString_v102);
                         $node = $newdoc->importNode($newdoc->firstChild, TRUE);
                         $node = DH::findFirstElementByNameAttr("entry", $ironskilletName . "-URL", $node);
                         if( $node !== null && $node->hasChildNodes() )
@@ -1950,7 +1954,9 @@ DeviceCallContext::$supportedActions['sp_spg-create-BP'] = array(
                     }
                 }
 
-                $context->first = false;
+                #$location = PH::getLocationString($object);
+                #PH::print_stdout( "NAME: ".$location );
+                //$context->first = false;
             }
         }
     },
