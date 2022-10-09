@@ -5171,5 +5171,31 @@ RuleCallContext::$supportedActions[] = array(
 );
 /************************************ */
 
+//                                                 //
+//              Rule hit-count property Based Actions         //
+//                                                 //
+RuleCallContext::$supportedActions[] = array(
+    'name' => 'rule-hit-count-show',
+    'section' => 'action',
+    'MainFunction' => function (RuleCallContext $context) {
+        $rule = $context->object;
 
+        if( !$rule->isDisabled() )
+            $rule->API_showRuleHitCount();
+        else
+            PH::print_stdout( "    * rule is disabled" );
+
+    }
+);
+RuleCallContext::$supportedActions[] = array(
+    'name' => 'rule-hit-count-clear',
+    'section' => 'action',
+    'MainFunction' => function (RuleCallContext $context) {
+        $rule = $context->object;
+
+        if( !$rule->isDisabled() )
+            $rule->API_clearRuleHitCount();
+
+    }
+);
 

@@ -712,6 +712,183 @@ class Rule
         return null;
     }
 
+    public function prepareRuleHitCount( $apiType = "show")
+    {
+        $system = $this->owner->owner;
+
+        #print get_class($system)."\n";
+        if( $system->isPanorama() || $system->isDeviceGroup() )
+        {
+            $systemInfoStart = "<device-group>";
+            $systemInfoEnd = "</device-group>";
+
+            if( $system->isPanorama() )
+                $systemName = "<entry name='shared'>";
+            else
+                $systemName = "<entry name='".$system->name()."'>";
+            $systemNameEnd = "</entry>";
+
+            $prepost = "pre";
+            if( $this->isPostRule() )
+                $prepost = "post";
+
+            $rulebase = "<".$prepost."-rulebase>";
+            $rulebaseEnd = "</".$prepost."-rulebase>";
+
+            $rulename = "<rule-name><entry name='";
+            $rulenameEnd = "'/></rule-name>";
+        }
+        elseif( $system->isVirtualSystem() )
+        {
+            $systemInfoStart = "<vsys><vsys-name>";
+            $systemInfoEnd = "</vsys-name></vsys>";
+            //Firewall
+            $systemName = "<entry name='".$system->name()."'>";
+            $systemNameEnd = "</entry>";
+
+            $rulebase = "<rule-base>";
+            $rulebaseEnd = "</rule-base>";
+
+            $rulename = "<list><member>";
+            $rulenameEnd = "</member></list>";
+        }
+
+        //Type
+        $ruleType = $this->ruleNature();
+        $cmd = "<".$apiType."><rule-hit-count>".$systemInfoStart.$systemName;
+
+        $cmd .= $rulebase."<entry name='".$ruleType."'><rules>".$rulename.$this->name().$rulenameEnd;
+
+        $cmd .= "</rules></entry>".$rulebaseEnd;
+        $cmd .= $systemNameEnd.$systemInfoEnd."</rule-hit-count></".$apiType.">";
+
+        return $cmd;
+    }
+
+    public function API_clearRuleHitCount()
+    {
+        $con = findConnectorOrDie($this);
+
+        if( $con->info_PANOS_version_int >= 90 )
+        {
+            $system = $this->owner->owner;
+            $cmd = $this->prepareRuleHitCount('clear');
+
+            $res = $con->sendOpRequest($cmd, TRUE);
+            $res = DH::findFirstElement( "result", $res);
+            $padding = "    * ";
+            if( $res->textContent === "Succeeded to reset rule hit count for specified rules" )
+                PH::print_stdout( $padding." reset rule hit count successful." );
+            else
+                PH::print_stdout( $padding.$res->textContent );
+        }
+        else
+        {
+            PH::print_stdout( "  PAN-OS version must be 9.0 or higher" );
+        }
+
+        return null;
+    }
+
+    public function API_showRuleHitCount()
+    {
+        $con = findConnectorOrDie($this);
+
+        if( $con->info_PANOS_version_int >= 90 )
+        {
+            $system = $this->owner->owner;
+            $cmd = $this->prepareRuleHitCount('show');
+
+            $res = $con->sendOpRequest($cmd, TRUE);
+            $res = DH::findFirstElement( "result", $res);
+
+            if( $system->isDeviceGroup() || $system->isPanorama() )
+            {
+                #$res = DH::findFirstElement( "rule-hit-count", $res);
+                #if( !$res )
+                #    return;
+                DH::DEBUGprintDOMDocument($res);
+            }
+            elseif( $system->isVirtualSystem() )
+            {
+                $res = DH::findFirstElement( "rule-hit-count", $res);
+                if( !$res )
+                    return;
+
+                $res = DH::findFirstElement( "vsys", $res);
+                $res = DH::findFirstElement( "entry", $res);
+                $res = DH::findFirstElement( "rule-base", $res);
+                $res = DH::findFirstElement( "entry", $res);
+                $res = DH::findFirstElement( "rules", $res);
+                $res = DH::findFirstElement( "entry", $res);
+
+
+                $latest = DH::findFirstElement( "latest", $res);
+                $hit_count = DH::findFirstElement( "hit-count", $res);
+                $last_hit_timestamp = DH::findFirstElement( "last-hit-timestamp", $res);
+                $last_reset_timestamp = DH::findFirstElement( "last-reset-timestamp", $res);
+
+                $first_hit_timestamp = DH::findFirstElement( "first-hit-timestamp", $res);
+                $rule_creation_timestamp = DH::findFirstElement( "rule-creation-timestamp", $res);
+                $rule_modification_timestamp = DH::findFirstElement( "rule-modification-timestamp", $res);
+
+                //create Array and return
+                $padding = "    * ";
+                if( $latest )
+                    print $padding."latest: ".$latest->textContent."\n";
+                if( $hit_count)
+                    print $padding."hit-count: ".$hit_count->textContent."\n";
+                if( $last_hit_timestamp )
+                {
+                    $unixTimestamp = $last_hit_timestamp->textContent;
+                    if( $unixTimestamp === "0" )
+                        $result = "0";
+                    else
+                        $result = date( 'Y-m-d H:i:s', $unixTimestamp );
+                    print $padding."last-hit: ".$result."\n";
+                }
+
+                if( $last_reset_timestamp )
+                {
+                    $unixTimestamp = $last_reset_timestamp->textContent;
+                    if( $unixTimestamp === "0" )
+                        $result = "0";
+                    else
+                        $result = date( 'Y-m-d H:i:s', $unixTimestamp );
+                    print $padding."last-reset: ".$result."\n";
+                }
+
+                if( $first_hit_timestamp )
+                {
+                    $unixTimestamp = $first_hit_timestamp->textContent;
+                    if( $unixTimestamp === "0" )
+                        $result = "0";
+                    else
+                        $result = date( 'Y-m-d H:i:s', $unixTimestamp );
+                    print $padding."first-hit: ".$result."\n";
+                }
+
+                if( $rule_creation_timestamp )
+                {
+                    $unixTimestamp = $rule_creation_timestamp->textContent;
+                    $result = date( 'Y-m-d H:i:s', $unixTimestamp );
+                    print $padding."rule-creation: ".$result."\n";
+                }
+                if( $rule_modification_timestamp )
+                {
+                    $unixTimestamp = $rule_modification_timestamp->textContent;
+                    $result = date( 'Y-m-d H:i:s', $unixTimestamp );
+                    print $padding."rule-modification: ".$result."\n";
+                }
+            }
+        }
+        else
+        {
+            PH::print_stdout( "  PAN-OS version must be 9.0 or higher" );
+        }
+
+        return null;
+    }
 
     function zoneCalculation($fromOrTo, $mode = "append", $virtualRouter = "*autodetermine*", $template_name = "*notPanorama*", $vsys_name = "*notPanorama*", $isAPI = FALSE )
     {
