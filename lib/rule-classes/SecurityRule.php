@@ -1116,6 +1116,12 @@ class SecurityRule extends RuleWithUserID
         foreach( $this->tags->getAll() as $tag )
             PH::$JSON_TMP['sub']['object'][$this->name()]['tag'][] = $tag->name();
 
+        if( $this->grouptag !== null )
+        {
+            PH::print_stdout( $padding . "  GroupTag:  " . $this->grouptag->name() );
+            PH::$JSON_TMP['sub']['object'][$this->name()]['group-tag'] = $this->grouptag->name();
+        }
+
         if( $this->_targets !== null )
         {
             PH::print_stdout( $padding . "  Targets:  " . $this->targets_toString() );
@@ -1636,6 +1642,7 @@ class SecurityRule extends RuleWithUserID
         $this->source = null;
         $this->destination = null;
         $this->tags = null;
+        $this->grouptag = null;
         $this->services = null;
         $this->apps = null;
 

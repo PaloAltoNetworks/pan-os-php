@@ -368,10 +368,12 @@ class Schedule
             $d2 = DateTime::createFromFormat('Y/m/d@H:i', $member['end']);
             $timestamp = $d2->getTimestamp();
 
-            if( $operator === "<" && $futuredate !== 0 )
+            if( $operator === "<" && $futuredate !== 0 && $futuredate > 0 )
                 $operator_string = "(".$timestamp." ".$operator." ".$d.") && (".$timestamp." > ".$d_actual.")";
             else
                 $operator_string = $timestamp." ".$operator." ".$d;
+
+            #print "timestamp_schedule end: ".$timestamp." |operator: ".$operator."| calculated: ".$d."\n";
 
             if( eval("return $operator_string;" ) )
                 $expired = true;

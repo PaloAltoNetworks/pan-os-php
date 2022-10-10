@@ -1116,7 +1116,21 @@ RQuery::$defaultFilters['rule']['tag.count']['operators']['>,<,=,!'] = array(
         'input' => 'input/panorama-8.0.xml'
     )
 );
-
+//                                                //
+//                Group-Tag Based filters              //
+//                                              //
+RQuery::$defaultFilters['rule']['group-tag']['operators']['is'] = array(
+    'eval' => function ($object, &$nestedQueries, $value) {
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AuthenticationRule|PbfRule|QoSRule|DoSRule $object */
+        return $object->grouptagIs( $value ) === TRUE;
+    },
+    'arg' => TRUE,
+    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->tags->parentCentralStore->find('!value!');",
+    'ci' => array(
+        'fString' => '(%PROP% test.tag)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 
 //                                              //
 //          Application properties              //

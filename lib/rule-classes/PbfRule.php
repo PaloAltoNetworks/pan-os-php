@@ -228,6 +228,8 @@ class PbfRule extends RuleWithUserID
         $this->source = null;
         $this->destination = null;
         $this->tags = null;
+        $this->grouptag = null;
+
         $this->services = null;
 
         $this->owner = null;
