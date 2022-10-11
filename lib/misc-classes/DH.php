@@ -535,6 +535,8 @@ class DH
         $fullpath = str_replace($replace, "", $fullpath);
         $replace = "/devices/entry[@name='localhost.localdomain']";
         $fullpath = str_replace($replace, "", $fullpath);
+
+        //bug related to multi-vsys
         $replace = "/vsys/entry[@name='vsys1']";
         $fullpath = str_replace($replace, "", $fullpath);
         $fullpath = str_replace("/", " ", $fullpath);

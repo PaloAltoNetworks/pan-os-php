@@ -1452,7 +1452,15 @@ AddressCallContext::$supportedActions[] = array(
                 {
                     $skipped = TRUE;
                     //check if targetLocation is parent of reflocation
-                    $locations = $findSubSystem->childDeviceGroups(TRUE);
+                    if( $findSubSystem->owner->isPanorama() )
+                        $locations = $findSubSystem->childDeviceGroups(TRUE);
+                    elseif( $findSubSystem->owner->isFirewall() )
+                    {
+                        $locations = array();
+                        $skipped = TRUE;
+                    }
+
+
                     foreach( $locations as $childloc )
                     {
                         if( PH::getLocationString($ref) == $childloc->name() )
