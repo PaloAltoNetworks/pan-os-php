@@ -402,13 +402,12 @@ class DIFF extends UTIL
                 $text = '';
 
                 $tmp = DH::dom_to_xml($el1);
-                #$text .= '+' . str_replace("\n", "\n", $tmp);
-                $text .= '+' . $tmp;
-
-
-                $tmp = DH::dom_to_xml($el2);
                 #$text .= '-' . str_replace("\n", "\n", $tmp);
                 $text .= '-' . $tmp;
+
+                $tmp = DH::dom_to_xml($el2);
+                #$text .= '+' . str_replace("\n", "\n", $tmp);
+                $text .= '+' . $tmp;
 
 
                 //same xpath different content

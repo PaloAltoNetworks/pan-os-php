@@ -6,6 +6,7 @@ UTIL:
 
 BUGFIX:
 * type=address actions=move | bugfix for Firewall config type
+* type=diff | bugfix to display changes in same xingle XMLnode without child node correctly
 
 GENERAL
 
