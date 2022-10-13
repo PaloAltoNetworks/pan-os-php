@@ -2,6 +2,7 @@ CHANGELOG
 
 2.0.63
 UTIL:
+* type=securityprofile | introduce process of DataFilteringProfileStore
 
 BUGFIX:
 * type=address actions=move | bugfix for Firewall config type
