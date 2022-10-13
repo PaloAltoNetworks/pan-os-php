@@ -2843,8 +2843,8 @@ RuleCallContext::$supportedActions[] = array(
             $characterToreplace = str_replace('$$comma$$', ",", $characterToreplace);
         if( strpos($characterToreplace, '$$forwardslash$$') !== FALSE )
             $characterToreplace = str_replace('$$forwardslash$$', "/", $characterToreplace);
-        if( strpos($characterToreplace, '$$doublepoint$$') !== FALSE )
-            $characterToreplace = str_replace('$$doublepoint$$', ":", $characterToreplace);
+        if( strpos($characterToreplace, '$$colon$$') !== FALSE )
+            $characterToreplace = str_replace('$$colon$$', ":", $characterToreplace);
         if( strpos($characterToreplace, '$$pipe$$') !== FALSE )
             $characterToreplace = str_replace('$$pipe$$', "|", $characterToreplace);
         if( strpos($characterToreplace, '$$newline$$') !== FALSE )
@@ -2855,8 +2855,8 @@ RuleCallContext::$supportedActions[] = array(
             $characterForreplace = str_replace('$$comma$$', ",", $characterForreplace);
         if( strpos($characterForreplace, '$$forwardslash$$') !== FALSE )
             $characterForreplace = str_replace('$$forwardslash$$', "/", $characterForreplace);
-        if( strpos($characterForreplace, '$$doublepoint$$') !== FALSE )
-            $characterForreplace = str_replace('$$doublepoint$$', ":", $characterForreplace);
+        if( strpos($characterForreplace, '$$colon$$') !== FALSE )
+            $characterForreplace = str_replace('$$colon$$', ":", $characterForreplace);
         if( strpos($characterForreplace, '$$pipe$$') !== FALSE )
             $characterForreplace = str_replace('$$pipe$$', "|", $characterForreplace);
         if( strpos($characterForreplace, '$$newline$$') !== FALSE )
@@ -2889,7 +2889,7 @@ RuleCallContext::$supportedActions[] = array(
         'search' => array('type' => 'string', 'default' => '*nodefault*'),
         'replace' => array('type' => 'string', 'default' => '')
     ),
-    'help' => 'possible variable $$comma$$ or $$forwardslash$$ or $$doublepoint$$ or $$pipe$$ or $$newline$$; example "actions=description-Replace-Character:$$comma$$word1"'
+    'help' => 'possible variable $$comma$$ or $$forwardslash$$ or $$colon$$ or $$pipe$$ or $$newline$$; example "actions=description-Replace-Character:$$comma$$word1"'
 );
 
 //                                                   //
