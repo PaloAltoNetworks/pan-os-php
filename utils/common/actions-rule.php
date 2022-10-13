@@ -5177,14 +5177,18 @@ RuleCallContext::$supportedActions[] = array(
 RuleCallContext::$supportedActions[] = array(
     'name' => 'rule-hit-count-show',
     'section' => 'action',
+    'GlobalInitFunction' => function( RuleCallContext $context)
+    {
+        //Todo: swaschkut 20221009
+        //GlobalInitFunction read first via API rule-hit-count for ONE location -> VSYS / DG
+    },
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
 
         if( !$rule->isDisabled() )
-            $rule->API_showRuleHitCount();
+            $rule->API_showRuleHitCount( false );
         else
             PH::print_stdout( "    * rule is disabled" );
-
     }
 );
 RuleCallContext::$supportedActions[] = array(
@@ -5194,8 +5198,7 @@ RuleCallContext::$supportedActions[] = array(
         $rule = $context->object;
 
         if( !$rule->isDisabled() )
-            $rule->API_clearRuleHitCount();
-
+            $rule->API_clearRuleHitCount( false );
     }
 );
 
