@@ -3,10 +3,11 @@ CHANGELOG
 2.0.63
 UTIL:
 * type=securityprofile | introduce process of DataFilteringProfileStore
+* type=address/rule actions=description-Replace-Character | add varialbe $$forwardslash$$ and $$doublepoint$$
 
 BUGFIX:
 * type=address actions=move | bugfix for Firewall config type
-* type=diff | bugfix to display changes in same xingle XMLnode without child node correctly
+* type=diff | bugfix to display changes in same single XMLnode without child node correctly
 
 GENERAL
 
