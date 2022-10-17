@@ -4,6 +4,7 @@ CHANGELOG
 UTIL:
 * type=securityprofile | introduce process of DataFilteringProfileStore
 * type=address/rule actions=description-Replace-Character | add variable $$forwardslash$$ and $$colon$$
+* create_vwire.php | update to use JSON file
 
 BUGFIX:
 * type=address actions=move | bugfix for Firewall config type
