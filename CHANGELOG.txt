@@ -5,12 +5,14 @@ UTIL:
 * type=securityprofile | introduce process of DataFilteringProfileStore
 * type=address/rule actions=description-Replace-Character | add variable $$forwardslash$$ and $$colon$$
 * create_vwire.php | update to use JSON file
+* develop get_counter.php | fix to get newest information from website
 
 BUGFIX:
 * type=address actions=move | bugfix for Firewall config type
 * type=diff | bugfix to display changes in same single XMLnode without child node correctly
 
 GENERAL
+* update App-ID version: 8632-7647
 
 
 2.0.62 (20221010)
