@@ -1,6 +1,14 @@
 CHANGELOG
 
-2.0.63
+2.0.64
+UTIL:
+
+BUGFIX:
+
+GENERAL
+
+
+2.0.63 (20221024)
 UTIL:
 * type=securityprofile | introduce process of DataFilteringProfileStore
 * type=address/rule actions=description-Replace-Character | add variable $$forwardslash$$ and $$colon$$
