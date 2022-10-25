@@ -7,6 +7,7 @@ UTIL:
 * create_vwire.php | update to use JSON file
 * develop get_counter.php | fix to get newest information from website
 * util develop - extend display-xpath-for-node-filter.php with argument 'nameattribute=XYZ'
+* type=xml-issue | extend address check with ip-range; optimise if address value is /32; introduce same improvement for duplicate servicegroups as already in addressgroup
 
 BUGFIX:
 * type=address actions=move | bugfix for Firewall config type

@@ -549,6 +549,8 @@ class XMLISSUE extends UTIL
                 foreach( $objectNodes['regular'] as $objectNode )
                 {
                     $ip_netmaskNode = DH::findFirstElement('ip-netmask', $objectNode);
+                    if( $ip_netmaskNode === FALSE )
+                        $ip_netmaskNode = DH::findFirstElement('ip-range', $objectNode);
                     $ip_fqdnNode = DH::findFirstElement('fqdn', $objectNode);
                     if( $ip_netmaskNode !== FALSE )
                     {
@@ -558,9 +560,14 @@ class XMLISSUE extends UTIL
                         //Todo: check if address object value is same, then delete it
                         //TODO: VALIDATION needed if working as expected
 
-                        if( !isset($tmp_addr_array[$ip_netmaskNode->nodeValue]) )
+                        if( strpos( $ip_netmaskNode->nodeValue, "/32" ) !== FALSE )
+                            $tmp_ipvalue = str_replace( "/32", "", $ip_netmaskNode->nodeValue);
+                        else
+                            $tmp_ipvalue = $ip_netmaskNode->nodeValue;
+
+                        if( !isset($tmp_addr_array[$tmp_ipvalue]) )
                         {
-                            $tmp_addr_array[$ip_netmaskNode->nodeValue] = $ip_netmaskNode->nodeValue;
+                            $tmp_addr_array[$tmp_ipvalue] = $tmp_ipvalue;
                             $countDuplicateAddressObjects++;
                         }
                         else
@@ -864,6 +871,15 @@ class XMLISSUE extends UTIL
                     if( $protocolNode === FALSE )
                         continue;
 
+                    $txt = "";
+                    foreach( $protocolNode->childNodes as $member )
+                    {
+                        /** @var DOMElement $objectNode */
+                        if( $member->nodeType != XML_ELEMENT_NODE )
+                            continue;
+
+                        $txt .= $member->nodeValue;
+                    }
 
                     /** @var DOMElement $objectNode */
                     $text = "       - type 'ServiceGroup' at XML line #{$objectNode->getLineNo()}";
@@ -871,10 +887,17 @@ class XMLISSUE extends UTIL
                     //Todo: check if servicegroup object value is same, then delete it
                     //TODO: VALIDATION needed if working as expected
 
+                    /*
                     if( !isset($tmp_srv_array[$protocolNode->nodeValue]) )
                     {
                         $tmp_srv_array[$protocolNode->nodeValue] = $protocolNode->nodeValue;
                         $countDuplicateServiceObjects++;
+                    }
+                    */
+                    if( !isset($tmp_srv_array[$txt]) )
+                    {
+                        $tmp_srv_array[$txt] = $txt;
+                        $countDuplicateAddressObjects++;
                     }
                     else
                     {
