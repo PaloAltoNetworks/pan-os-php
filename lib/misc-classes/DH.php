@@ -281,7 +281,7 @@ class DH
             }
         }
 
-        derr(' xml element <' . $tagName . ' name="' . $value . '"> was not found');
+        #derr(' xml element <' . $tagName . ' name="' . $value . '"> was not found');
         return FALSE;
     }
 

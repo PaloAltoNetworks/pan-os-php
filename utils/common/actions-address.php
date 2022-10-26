@@ -1047,6 +1047,12 @@ AddressCallContext::$supportedActions[] = array(
             PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
+        if( $object->isRegion() )
+        {
+            $string = "not applicable to REGION objects";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
 
         $newName = $context->arguments['stringFormula'];
 
@@ -1058,6 +1064,7 @@ AddressCallContext::$supportedActions[] = array(
         {
             $newName = str_replace('$$value$$', $object->value(), $newName);
             $newName = str_replace(':', "_", $newName);
+            $newName = str_replace('/', "-", $newName);
         }
         if( strpos($newName, '$$value.no-netmask$$') !== FALSE )
         {
@@ -1068,6 +1075,7 @@ AddressCallContext::$supportedActions[] = array(
 
             $newName = str_replace('$$value.no-netmask$$', $replace, $newName);
             $newName = str_replace(':', "_", $newName);
+            $newName = str_replace('/', "-", $newName);
         }
         if( strpos($newName, '$$netmask$$') !== FALSE )
         {
