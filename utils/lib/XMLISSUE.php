@@ -152,6 +152,8 @@ class XMLISSUE extends UTIL
         $fixedReadOnlyTemplateobjects=0;
         $fixedReadOnlyTemplateStackobjects=0;
 
+        $totalApplicationGroupsFixed = 0;
+        $totalCustomUrlCategoryFixed = 0;
 
         $countRulesWithAppDefault = 0;
 
@@ -919,14 +921,12 @@ class XMLISSUE extends UTIL
             //
             $applicationGroups = array();
             $applicationIndex = array();
-            $totalApplicationGroupsFixed = 0;
             $this->checkRemoveDuplicateMembers( $locationNode, $locationName, 'application-group', $applicationGroups, $applicationIndex, $totalApplicationGroupsFixed );
 
             //
             //
             $customURLcategory = array();
             $customURLcategoryIndex = array();
-            $totalCustomUrlCategoryFixed = 0;
             $locationNode_profiles = DH::findFirstElement('profiles', $locationNode);
             if( $locationNode_profiles !== FALSE )
                 $this->checkRemoveDuplicateMembers( $locationNode_profiles, $locationName, 'custom-url-category', $customURLcategory, $customURLcategoryIndex, $totalCustomUrlCategoryFixed );

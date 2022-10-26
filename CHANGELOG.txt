@@ -2,6 +2,7 @@ CHANGELOG
 
 2.0.64
 UTIL:
+* type=xml-issue | improve counting for applicationgroup/customurl fixes
 
 BUGFIX:
 
