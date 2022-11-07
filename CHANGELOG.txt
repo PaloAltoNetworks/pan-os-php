@@ -1,6 +1,33 @@
 CHANGELOG
 
-2.0.62
+2.0.64
+UTIL:
+* type=xml-issue | improve counting for applicationgroup/customurl fixes
+* type=address | improvement for actions=name-rename
+
+BUGFIX:
+
+GENERAL
+
+
+2.0.63 (20221024)
+UTIL:
+* type=securityprofile | introduce process of DataFilteringProfileStore
+* type=address/rule actions=description-Replace-Character | add variable $$forwardslash$$ and $$colon$$
+* create_vwire.php | update to use JSON file
+* develop get_counter.php | fix to get newest information from website
+* util develop - extend display-xpath-for-node-filter.php with argument 'nameattribute=XYZ'
+* type=xml-issue | extend address check with ip-range; optimise if address value is /32; introduce same improvement for duplicate servicegroups as already in addressgroup
+
+BUGFIX:
+* type=address actions=move | bugfix for Firewall config type
+* type=diff | bugfix to display changes in same single XMLnode without child node correctly
+
+GENERAL
+* update App-ID version: 8632-7647
+
+
+2.0.62 (20221010)
 UTIL:
 * type=rule | introduce 'actions=user-replace:OLD-username,NEW-username' and 'actions=user-replace-from-file:FILE.txt'
 * type=rule | implement group-tag usage for actions=display / 'filter=grouptag is TAGNAME'

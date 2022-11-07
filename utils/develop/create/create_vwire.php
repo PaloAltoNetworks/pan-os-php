@@ -31,57 +31,75 @@ PH::print_stdout();
 
 PH::print_stdout( "PAN-OS-PHP version: ".PH::frameworkVersion() );
 
-//Todo: 2019016 on failure change back config;
-//uption: get candidate config first, if error, upload candidate config again
 
-//Todo: are subinterfaces needed please add
-//example: array(100,200) => ae5.100, ae5.200 and ae6.100, ae6.200
-$vlan_array = array( 100, 200,300,400,500);
-//no subinterfaces
-#$vlan_array = array();
+$filePath = dirname(__FILE__)."/create_vwire.json";
+if( file_exists( $filePath ) )
+{
+    $someJSON = file_get_contents( $filePath );
+    // Convert JSON string to Array
+    $vwireVariables = json_decode($someJSON, TRUE);
+}
+else
+{
+    $vwireVariables = array();
+    $vlan_array = array( 0 => "100", 1 => "200", 2 => "300", 3 => "400", 4 => "500" );
+    //no subinterfaces
+    //$vlan_array = array();
+
+    //AE can not be done on VM-Series
+    $ae_solution = "false";
+
+    $ae_solution_value = array();
+    //ethernet Interface for AE
+    //example: array("1/9","1/10") => ethernet1/9 and ethernet1/10
+    $ae_solution_value['int1_array'] = array( 0 => "1/9", 1 => "1/10");
+    $ae_solution_value['int2_array'] = array( 0 => "1/11", 1 => "1/11");
+    //example: array(5,6) => ae5 and ae6
+    #$ae_array = array( 5, 6 );
+    $ae_solution_value['ae_array'] = array( 0 => "5", 1 => "6");
+
+    $none_ae_solution_value = array();
+    #$int1_array = array('1/3','1/4');
+    #$int2_array = array();
+    #$ae_array = array( 0 );
+    $none_ae_solution_value['int1_array'] = array( 0 => "1/3", 1 => "1/4");
+    $none_ae_solution_value['int2_array'] = array();
+    $none_ae_solution_value['ae_array'] = array( 0 => "0");
+
+    $vwireVariables['vlan_array'] = $vlan_array;
+    $vwireVariables['ae_solution'] = $ae_solution;
+    $vwireVariables['ae_solution_value'] = $ae_solution_value;
+    $vwireVariables['none_ae_solution_value'] = $none_ae_solution_value;
+}
+
+$vlan_array = $vwireVariables['vlan_array'];
 
 
 ///////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////
-$ae_solution = false;    //set to yes if AE interfaces should be used
-//this can not be done on VM-Series
+$ae_solution = $vwireVariables['ae_solution'];
+if( $ae_solution === "false" )
+    $ae_solution = false;
+elseif( $ae_solution === "true" )
+    $ae_solution = true;
 
 if( $ae_solution )
 {
-//////////////////////////////
-//Todo: if AE is set to true; define Interfaces and AE
+    $int1_array = $vwireVariables['ae_solution_value']['int1_array'];
+    $int2_array = $vwireVariables['ae_solution_value']['int2_array'];
 
+    $ae_array = $vwireVariables['ae_solution_value']['ae_array'];
 
-///
-//Interface for AE
-//example: array(9,10) => ethernet1/9 and ethernet1/10
-    $int1_array = array('1/9','1/10');
-    $int2_array = array('1/11','1/12');
-
-//AE must be two
-//example: array(5,6) => ae5 and ae6
-    $ae_array = array( 5, 6 );
-
-
-
-    //DO NOT CHANGE
     $ae_interface_prefix = "ae";
     $tmp_int_type = "aggregate-group";
 }
 else
 {
-//////////////////////////////
-//Todo: if AE is set to false; define Interface in $int1_array
-//
-    $int1_array = array('1/8','1/9');
-    $int2_array = null;
-    $ae_array = array( 0 );
+    $int1_array = $vwireVariables['none_ae_solution_value']['int1_array'];
+    $int2_array = $vwireVariables['none_ae_solution_value']['int2_array'];
 
+    $ae_array = $vwireVariables['none_ae_solution_value']['ae_array'];
 
-
-
-
-    //DO NOT CHANGE
     $ae_interface_prefix = "ethernet";
     $tmp_int_type = "virtual-wire";
 }
@@ -110,8 +128,7 @@ $supportedArguments['help'] = Array('niceName' => 'help', 'shortHelp' => 'this m
 $supportedArguments['loadpanoramapushedconfig'] = Array('niceName' => 'loadPanoramaPushedConfig', 'shortHelp' => 'load Panorama pushed config from the firewall to take in account panorama objects and rules' );
 $supportedArguments['folder'] = Array('niceName' => 'folder', 'shortHelp' => 'specify the folder where the offline files should be saved');
 
-$usageMsg = PH::boldText("USAGE: ")."php ".basename(__FILE__)." in=inputfile.xml location=vsys1 " .
-    "actions=action1:arg1 ['filter=(type is.group) or (name contains datacenter-)']\n".
+$usageMsg = PH::boldText("USAGE: ")."php ".basename(__FILE__)." in=inputfile.xml location=vsys1 \n".
     "php ".basename(__FILE__)." help          : more help messages\n";
 
 ##############
@@ -131,7 +148,7 @@ $connector = $pan->connector;
 
 $sub = $pan->findVirtualSystem( $util->objectsLocation);
 
-
+$candidateConfig = $util->pan->xmldoc;
 ///////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////
 //CUSTOM variable validation
@@ -154,6 +171,7 @@ if( $ae_solution && $pan->connector->info_model == "PA-VM" )
 $util->useException();
 
 //trigger exception in a "try" block
+// missing stuff, hold candiate config in variable
 try
 {
 
@@ -379,13 +397,28 @@ try
     if( $util->configInput['type'] == 'api' )
     {
         $tmp_VirtualWireIf = $pan->network->virtualWireStore->API_newVirtualWire( $name );
+        if( count($vlan_array) === 0 )
+        {
+            #Todo: 20221017 swaschkut - missing method to API_setTagAllowed
+            PH::print_stdout();
+            PH::print_stdout("##############################################################");
+            PH::print_stdout( "please set vwire: ".$name." Tag Allowed manual to: '0-4094'" );
+            PH::print_stdout("##############################################################");
+            PH::print_stdout();
+        }
     }
     else
     {
         $tmp_VirtualWireIf = $pan->network->virtualWireStore->newVirtualWire( $name );
-        //Todo: add vlan / default - this is master virtual-wire
-        //is it needed?
-        //if nothing is set then default => default is equal to 0
+        if( count($vlan_array) === 0 )
+        {
+            #Todo: 20221017 swaschkut - missing method to setTagAllowed
+            PH::print_stdout();
+            PH::print_stdout("##############################################################");
+            PH::print_stdout( "please set vwire: ".$name." Tag Allowed manual to: '0-4094'" );
+            PH::print_stdout("##############################################################");
+            PH::print_stdout();
+        }
     }
     $cleanupArray['virtualwires'][] = $tmp_VirtualWireIf;
 
@@ -558,6 +591,9 @@ try
 //catch exception
 catch(Exception $e)
 {
+    //Todo: 2019016 on failure change back config;
+    //uption: get candidate config first, if error, upload candidate config again
+
     print "\n";
     print "Error Message: " .$e->getMessage()."\n";
 

@@ -1047,6 +1047,12 @@ AddressCallContext::$supportedActions[] = array(
             PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
+        if( $object->isRegion() )
+        {
+            $string = "not applicable to REGION objects";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
 
         $newName = $context->arguments['stringFormula'];
 
@@ -1058,6 +1064,7 @@ AddressCallContext::$supportedActions[] = array(
         {
             $newName = str_replace('$$value$$', $object->value(), $newName);
             $newName = str_replace(':', "_", $newName);
+            $newName = str_replace('/', "-", $newName);
         }
         if( strpos($newName, '$$value.no-netmask$$') !== FALSE )
         {
@@ -1068,6 +1075,7 @@ AddressCallContext::$supportedActions[] = array(
 
             $newName = str_replace('$$value.no-netmask$$', $replace, $newName);
             $newName = str_replace(':', "_", $newName);
+            $newName = str_replace('/', "-", $newName);
         }
         if( strpos($newName, '$$netmask$$') !== FALSE )
         {
@@ -1452,7 +1460,15 @@ AddressCallContext::$supportedActions[] = array(
                 {
                     $skipped = TRUE;
                     //check if targetLocation is parent of reflocation
-                    $locations = $findSubSystem->childDeviceGroups(TRUE);
+                    if( $findSubSystem->owner->isPanorama() )
+                        $locations = $findSubSystem->childDeviceGroups(TRUE);
+                    elseif( $findSubSystem->owner->isFirewall() )
+                    {
+                        $locations = array();
+                        $skipped = TRUE;
+                    }
+
+
                     foreach( $locations as $childloc )
                     {
                         if( PH::getLocationString($ref) == $childloc->name() )
@@ -1945,12 +1961,20 @@ AddressCallContext::$supportedActions[] = array(
         $characterToreplace = $context->arguments['search'];
         if( strpos($characterToreplace, '$$comma$$') !== FALSE )
             $characterToreplace = str_replace('$$comma$$', ",", $characterToreplace);
+        if( strpos($characterToreplace, '$$forwardslash$$') !== FALSE )
+            $characterToreplace = str_replace('$$forwardslash$$', "/", $characterToreplace);
+        if( strpos($characterToreplace, '$$colon$$') !== FALSE )
+            $characterToreplace = str_replace('$$colon$$', ":", $characterToreplace);
         if( strpos($characterToreplace, '$$pipe$$') !== FALSE )
             $characterToreplace = str_replace('$$pipe$$', "|", $characterToreplace);
 
         $characterForreplace = $context->arguments['replace'];
         if( strpos($characterForreplace, '$$comma$$') !== FALSE )
             $characterForreplace = str_replace('$$comma$$', ",", $characterForreplace);
+        if( strpos($characterForreplace, '$$forwardslash$$') !== FALSE )
+            $characterForreplace = str_replace('$$forwardslash$$', "/", $characterForreplace);
+        if( strpos($characterForreplace, '$$colon$$') !== FALSE )
+            $characterForreplace = str_replace('$$colon$$', ":", $characterForreplace);
         if( strpos($characterForreplace, '$$pipe$$') !== FALSE )
             $characterForreplace = str_replace('$$pipe$$', "|", $characterForreplace);
 
@@ -1981,7 +2005,7 @@ AddressCallContext::$supportedActions[] = array(
         'search' => array('type' => 'string', 'default' => '*nodefault*'),
         'replace' => array('type' => 'string', 'default' => '')
     ),
-    'help' => 'possible variable $$comma$$ or $$pipe$$; example "actions=description-Replace-Character:$$comma$$word1"'
+    'help' => 'possible variable $$comma$$ or $$forwardslash$$ or $$colon$$ or $$pipe$$; example "actions=description-Replace-Character:$$comma$$word1"'
 );
 AddressCallContext::$supportedActions[] = array(
     'name' => 'value-host-object-add-netmask-m32',

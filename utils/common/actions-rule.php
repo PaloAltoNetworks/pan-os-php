@@ -2841,6 +2841,10 @@ RuleCallContext::$supportedActions[] = array(
         $characterToreplace = $context->arguments['search'];
         if( strpos($characterToreplace, '$$comma$$') !== FALSE )
             $characterToreplace = str_replace('$$comma$$', ",", $characterToreplace);
+        if( strpos($characterToreplace, '$$forwardslash$$') !== FALSE )
+            $characterToreplace = str_replace('$$forwardslash$$', "/", $characterToreplace);
+        if( strpos($characterToreplace, '$$colon$$') !== FALSE )
+            $characterToreplace = str_replace('$$colon$$', ":", $characterToreplace);
         if( strpos($characterToreplace, '$$pipe$$') !== FALSE )
             $characterToreplace = str_replace('$$pipe$$', "|", $characterToreplace);
         if( strpos($characterToreplace, '$$newline$$') !== FALSE )
@@ -2849,6 +2853,10 @@ RuleCallContext::$supportedActions[] = array(
         $characterForreplace = $context->arguments['replace'];
         if( strpos($characterForreplace, '$$comma$$') !== FALSE )
             $characterForreplace = str_replace('$$comma$$', ",", $characterForreplace);
+        if( strpos($characterForreplace, '$$forwardslash$$') !== FALSE )
+            $characterForreplace = str_replace('$$forwardslash$$', "/", $characterForreplace);
+        if( strpos($characterForreplace, '$$colon$$') !== FALSE )
+            $characterForreplace = str_replace('$$colon$$', ":", $characterForreplace);
         if( strpos($characterForreplace, '$$pipe$$') !== FALSE )
             $characterForreplace = str_replace('$$pipe$$', "|", $characterForreplace);
         if( strpos($characterForreplace, '$$newline$$') !== FALSE )
@@ -2881,7 +2889,7 @@ RuleCallContext::$supportedActions[] = array(
         'search' => array('type' => 'string', 'default' => '*nodefault*'),
         'replace' => array('type' => 'string', 'default' => '')
     ),
-    'help' => 'possible variable $$comma$$ or $$pipe$$ or $$newline$$; example "actions=description-Replace-Character:$$comma$$word1"'
+    'help' => 'possible variable $$comma$$ or $$forwardslash$$ or $$colon$$ or $$pipe$$ or $$newline$$; example "actions=description-Replace-Character:$$comma$$word1"'
 );
 
 //                                                   //
@@ -5177,14 +5185,18 @@ RuleCallContext::$supportedActions[] = array(
 RuleCallContext::$supportedActions[] = array(
     'name' => 'rule-hit-count-show',
     'section' => 'action',
+    'GlobalInitFunction' => function( RuleCallContext $context)
+    {
+        //Todo: swaschkut 20221009
+        //GlobalInitFunction read first via API rule-hit-count for ONE location -> VSYS / DG
+    },
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
 
         if( !$rule->isDisabled() )
-            $rule->API_showRuleHitCount();
+            $rule->API_showRuleHitCount( false );
         else
             PH::print_stdout( "    * rule is disabled" );
-
     }
 );
 RuleCallContext::$supportedActions[] = array(
@@ -5194,8 +5206,7 @@ RuleCallContext::$supportedActions[] = array(
         $rule = $context->object;
 
         if( !$rule->isDisabled() )
-            $rule->API_clearRuleHitCount();
-
+            $rule->API_clearRuleHitCount( false );
     }
 );
 

@@ -29,6 +29,7 @@ $supportedArguments['nodefilter'] = Array('niceName' => 'nodefilter', 'shortHelp
 $supportedArguments['fullxpath'] = Array('niceName' => 'fullxpath', 'shortHelp' => 'display full xpath for templates');
 $supportedArguments['xpath'] = Array('niceName' => 'xpath', 'shortHelp' => 'specify the xpath to get the value defined on this config');
 $supportedArguments['display-xmlnode'] = Array('niceName' => 'display-xmlnode', 'shortHelp' => 'display XML node configuration');
+$supportedArguments['nameattribute'] = Array('niceName' => 'nameattribute', 'shortHelp' => 'specify the nameattribute to get only XMLnode where nameattribute match');
 
 $usageMsg = PH::boldText("USAGE: ")."php ".basename(__FILE__)." in=inputfile.xml ".
     "\"nodefilter=certificate\"\n".
@@ -53,8 +54,10 @@ $xmldoc = $util->pan->xmldoc;
 
 ########################################################################################################################
 
-if( !isset( PH::$args['nodefilter'] ) )
+if( !isset( PH::$args['nodefilter'] ) && !isset( PH::$args['nameattribute'] ) )
     $util->display_error_usage_exit('"nodefilter" argument is not set: example "certificate"');
+elseif( !isset( PH::$args['nodefilter'] ) && isset( PH::$args['nameattribute'] ) )
+    $qualifiedNodeName = "entry";
 else
     $qualifiedNodeName = PH::$args['nodefilter'];
 
@@ -67,6 +70,11 @@ if( isset( PH::$args['fullxpath'] ) )
 if( isset( PH::$args['display-xmlnode'] ) )
     $displayXMLnode = true;
 
+if( isset( PH::$args['nameattribute'] ) )
+    $nameattribute = PH::$args['nameattribute'];
+else
+    $nameattribute = null;
+
 ########################################################################################################################
 
 
@@ -76,6 +84,15 @@ $nodeArray = iterator_to_array($nodeList);
 $templateEntryArray = array();
 foreach( $nodeArray as $item )
 {
+    if( $nameattribute !== null )
+    {
+        $XMLnameAttribute = DH::findAttribute( "name", $item );
+        if( $XMLnameAttribute === FALSE )
+            continue;
+
+        if( $XMLnameAttribute !== $nameattribute )
+            continue;
+    }
     $text = DH::elementToPanXPath( $item );
     $replace_template = "/config/devices/entry[@name='localhost.localdomain']/template/";
 
