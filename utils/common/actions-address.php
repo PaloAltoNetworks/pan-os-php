@@ -2251,10 +2251,16 @@ AddressCallContext::$supportedActions[] = array(
         PH::ACTIONlog( $context, $text );
     },
     'args' => array(
-        'search' => array('type' => 'string', 'default' => '*nodefault*'),
-        'replace' => array('type' => 'string', 'default' => '*nodefault*')
+        'search' => array(
+            'type' => 'string',
+            'default' => '*nodefault*',
+            'help' => '1.1.1.'
+        ),
+        'replace' => array('type' => 'string', 'default' => '*nodefault*',
+            'help' => '2.2.2.'
+        )
     ),
-    'help' => 'search for a full or pariall value and replace; example "actions=value-replace:1.2.3,4.5.6" it is recommend to use additional filter: "filter=(value string.regex /^1.2.3/)"'
+    'help' => 'search for a full or pariall value and replace; example "actions=value-replace:1.1.1.,2.2.2." it is recommend to use additional filter: "filter=(value string.regex /^1.1.1./)"'
 );
 
 //starting with 7.0 PAN-OS support max. 2500 members per group, former 500
