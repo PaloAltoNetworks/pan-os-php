@@ -4,8 +4,10 @@ CHANGELOG
 UTIL:
 * type=xml-issue | improve counting for applicationgroup/customurl fixes
 * type=address | improvement for actions=name-rename
+* type=address | introduce new 'actions=value-replace:SEARCH,REPLACE'
 
 BUGFIX:
+* type=diff | bugfix for shadow-json - to display also diff information if xml node value only change
 
 GENERAL
 

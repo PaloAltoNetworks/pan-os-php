@@ -2169,6 +2169,99 @@ AddressCallContext::$supportedActions[] = array(
         PH::ACTIONlog( $context, $text );
     }
 );
+AddressCallContext::$supportedActions[] = array(
+    'name' => 'value-replace',
+    'MainFunction' => function (AddressCallContext $context) {
+        $address = $context->object;
+
+        if( $address->isGroup() )
+        {
+            $string = "object is of type GROUP";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+        elseif( $address->isRegion() )
+        {
+            $string = "object is of type Region";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+
+        if( !$address->isType_ipNetmask() )
+        {
+            $string = "object is not IP netmask";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+
+        $value = $address->value();
+        $regexValue = $context->arguments['search'];
+        $valueToreplace = $context->arguments['replace'];
+
+        if( strpos($regexValue, "*nodefault*") !== FALSE )
+        {
+            $string = "search value not set";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+        if( strpos($valueToreplace, "*nodefault*") !== FALSE )
+        {
+            $string = "replace value not set";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+
+
+        if( strpos($value, $regexValue) === FALSE )
+        {
+            $string = "object value does not contain: " . $regexValue;
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+
+        //todo: if $regexValue start with . or :
+        // - replace in between
+        // - if not replace at start
+        $new_value = str_replace( $regexValue, $valueToreplace, $value );
+
+        if( !filter_var($new_value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) && filter_var($new_value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) )
+        {
+            $string = "object value is not a valid IP: " . $new_value;
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+        elseif( filter_var($new_value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) )
+        {
+            //Todo: check if count of . is same on $regexValue and also on $valueToreplace
+        }
+        elseif( filter_var($new_value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) )
+        {
+            //Todo: check if count of : is same on $regexValue and also on $valueToreplace
+        }
+
+        $text = $context->padding . " - old value is: '" . $value . "'";
+        PH::ACTIONlog( $context, $text );
+
+        $text = $context->padding . " - new value will be: '" . $new_value . "'";
+        if( $context->isAPI )
+            $address->API_editValue($new_value);
+        else
+            $address->setValue($new_value);
+        $text .= "OK";
+        PH::ACTIONlog( $context, $text );
+    },
+    'args' => array(
+        'search' => array(
+            'type' => 'string',
+            'default' => '*nodefault*',
+            'help' => '1.1.1.'
+        ),
+        'replace' => array('type' => 'string', 'default' => '*nodefault*',
+            'help' => '2.2.2.'
+        )
+    ),
+    'help' => 'search for a full or pariall value and replace; example "actions=value-replace:1.1.1.,2.2.2." it is recommend to use additional filter: "filter=(value string.regex /^1.1.1./)"'
+);
 
 //starting with 7.0 PAN-OS support max. 2500 members per group, former 500
 AddressCallContext::$supportedActions[] = array(
