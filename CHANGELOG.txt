@@ -6,6 +6,7 @@ UTIL:
 * type=address | improvement for actions=name-rename
 
 BUGFIX:
+* type=diff | bugfix for shadow-json - to display also diff information if xml node value only change
 
 GENERAL
 
