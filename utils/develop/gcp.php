@@ -151,11 +151,12 @@ if( $action == "grep" )
 {
     $kubectlArray = createKubectl( $tenantID );
 
-    foreach( $kubectlArray as $kubectlString )
-    {
-        PH::print_stdout( $kubectlString );
-        PH::print_stdout();
-    }
+    if( $kubectlArray !== null )
+        foreach( $kubectlArray as $kubectlString )
+        {
+            PH::print_stdout( $kubectlString );
+            PH::print_stdout();
+        }
 
     #if( count( $kubectlArray ) == 1 )
     #    execCLI( $kubectlArray[0], $output, $retValue);
