@@ -57,7 +57,8 @@ var subjectObject =
                     },
                     "type": {
                         "type": "string",
-                        "default": "*nodefault*"
+                        "default": "*nodefault*",
+                        "help": "tmp, ip-netmask, ip-range, fqdn, dynamic, ip-wildcard"
                     }
                 }
             },
@@ -140,7 +141,7 @@ var subjectObject =
                         "default": ""
                     }
                 },
-                "help": "possible variable $$comma$$ or $$pipe$$; example \"actions=description-Replace-Character:$$comma$$word1\""
+                "help": "possible variable $$comma$$ or $$forwardslash$$ or $$colon$$ or $$pipe$$; example \"actions=description-Replace-Character:$$comma$$word1\""
             },
             "display": {
                 "name": "display",
@@ -382,6 +383,23 @@ var subjectObject =
             "value-host-object-add-netmask-m32": {
                 "name": "value-host-object-add-netmask-m32",
                 "MainFunction": {}
+            },
+            "value-replace": {
+                "name": "value-replace",
+                "MainFunction": {},
+                "args": {
+                    "search": {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "help": "1.1.1."
+                    },
+                    "replace": {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "help": "2.2.2."
+                    }
+                },
+                "help": "search for a full or partial value and replace; example \"actions=value-replace:1.1.1.,2.2.2.\" it is recommend to use additional filter: \"filter=(value string.regex \/^1.1.1.\/)\""
             },
             "value-set-ip-for-fqdn": {
                 "name": "value-set-ip-for-fqdn",
@@ -1936,9 +1954,10 @@ var subjectObject =
                 "name": "description-Append",
                 "MainFunction": {},
                 "args": {
-                    "text": {
+                    "stringFormula": {
                         "type": "string",
-                        "default": "*nodefault*"
+                        "default": "*nodefault*",
+                        "help": "This string is used to compose a name. You can use the following aliases :\n  - $$current.name$$ : current name of the object\n"
                     },
                     "newline": {
                         "type": "bool",
@@ -1973,7 +1992,7 @@ var subjectObject =
                         "default": ""
                     }
                 },
-                "help": "possible variable $$comma$$ or $$pipe$$ or $$newline$$; example \"actions=description-Replace-Character:$$comma$$word1\""
+                "help": "possible variable $$comma$$ or $$forwardslash$$ or $$colon$$ or $$pipe$$ or $$newline$$; example \"actions=description-Replace-Character:$$comma$$word1\""
             },
             "disabled-set": {
                 "name": "disabled-Set",
@@ -2562,6 +2581,17 @@ var subjectObject =
                     }
                 }
             },
+            "rule-hit-count-clear": {
+                "name": "rule-hit-count-clear",
+                "section": "action",
+                "MainFunction": {}
+            },
+            "rule-hit-count-show": {
+                "name": "rule-hit-count-show",
+                "section": "action",
+                "GlobalInitFunction": {},
+                "MainFunction": {}
+            },
             "ruletype-change": {
                 "name": "ruleType-Change",
                 "MainFunction": {},
@@ -3072,6 +3102,31 @@ var subjectObject =
                     }
                 }
             },
+            "user-replace": {
+                "name": "user-replace",
+                "MainFunction": {},
+                "args": {
+                    "old-userName": {
+                        "type": "string",
+                        "default": "*nodefault*"
+                    },
+                    "new-userName": {
+                        "type": "string",
+                        "default": "*nodefault*"
+                    }
+                }
+            },
+            "user-replace-from-file": {
+                "name": "user-replace-from-file",
+                "MainFunction": {},
+                "args": {
+                    "file": {
+                        "type": "string",
+                        "default": "*nodefault*"
+                    }
+                },
+                "help": "file syntax: 'old-user-name,newusername' ; each pair on a newline!"
+            },
             "user-set-any": {
                 "name": "user-set-any",
                 "MainFunction": {}
@@ -3526,6 +3581,19 @@ var subjectObject =
                         "arg": true,
                         "ci": {
                             "fString": "(%PROP% 1)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    }
+                }
+            },
+            "group-tag": {
+                "operators": {
+                    "is": {
+                        "eval": {},
+                        "arg": true,
+                        "argObjectFinder": "$objectFind=null;\n$objectFind=$object->tags->parentCentralStore->find('!value!');",
+                        "ci": {
+                            "fString": "(%PROP% test.tag)",
                             "input": "input\/panorama-8.0.xml"
                         }
                     }
@@ -4456,6 +4524,18 @@ var subjectObject =
                         "arg": true,
                         "ci": {
                             "fString": "(%PROP% adult)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    }
+                }
+            },
+            "url.category.count": {
+                "operators": {
+                    ">,<,=,!": {
+                        "eval": "$object->isSecurityRule() && $object->urlCategoriescount() !operator! !value!",
+                        "arg": true,
+                        "ci": {
+                            "fString": "(%PROP% 1)",
                             "input": "input\/panorama-8.0.xml"
                         }
                     }
