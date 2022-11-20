@@ -1047,6 +1047,12 @@ AddressCallContext::$supportedActions[] = array(
             PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
+        if( $object->isRegion() )
+        {
+            $string = "not applicable to REGION objects";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
 
         $newName = $context->arguments['stringFormula'];
 
@@ -1058,6 +1064,7 @@ AddressCallContext::$supportedActions[] = array(
         {
             $newName = str_replace('$$value$$', $object->value(), $newName);
             $newName = str_replace(':', "_", $newName);
+            $newName = str_replace('/', "-", $newName);
         }
         if( strpos($newName, '$$value.no-netmask$$') !== FALSE )
         {
@@ -1068,6 +1075,7 @@ AddressCallContext::$supportedActions[] = array(
 
             $newName = str_replace('$$value.no-netmask$$', $replace, $newName);
             $newName = str_replace(':', "_", $newName);
+            $newName = str_replace('/', "-", $newName);
         }
         if( strpos($newName, '$$netmask$$') !== FALSE )
         {
@@ -1452,7 +1460,15 @@ AddressCallContext::$supportedActions[] = array(
                 {
                     $skipped = TRUE;
                     //check if targetLocation is parent of reflocation
-                    $locations = $findSubSystem->childDeviceGroups(TRUE);
+                    if( $findSubSystem->owner->isPanorama() )
+                        $locations = $findSubSystem->childDeviceGroups(TRUE);
+                    elseif( $findSubSystem->owner->isFirewall() )
+                    {
+                        $locations = array();
+                        $skipped = TRUE;
+                    }
+
+
                     foreach( $locations as $childloc )
                     {
                         if( PH::getLocationString($ref) == $childloc->name() )
@@ -1812,8 +1828,8 @@ AddressCallContext::$supportedActions[] = array(
                 $tag_string = "tag: '".$toStringInline."'";
             }
 
-            PH::print_stdout( $context->padding . "* " . get_class($object) . " '{$object->name()}'  value: '{$object->value()}'  desc: '{$object->description()}' IPcount: '{$object->getIPcount()}' $tag_string" );
-            PH::$JSON_TMP['sub']['object'][$object->name()]['type'] = get_class($object);
+            PH::print_stdout( $context->padding . "* " . get_class($object) . " '{$object->name()}'  type: '{$object->type()}'  value: '{$object->value()}'  desc: '{$object->description()}' IPcount: '{$object->getIPcount()}' $tag_string" );
+            PH::$JSON_TMP['sub']['object'][$object->name()]['type'] = $object->type();
             PH::$JSON_TMP['sub']['object'][$object->name()]['value'] = $object->value();
             PH::$JSON_TMP['sub']['object'][$object->name()]['tag'] = $tag_string;
             PH::$JSON_TMP['sub']['object'][$object->name()]['description'] = $object->description();
@@ -1945,12 +1961,20 @@ AddressCallContext::$supportedActions[] = array(
         $characterToreplace = $context->arguments['search'];
         if( strpos($characterToreplace, '$$comma$$') !== FALSE )
             $characterToreplace = str_replace('$$comma$$', ",", $characterToreplace);
+        if( strpos($characterToreplace, '$$forwardslash$$') !== FALSE )
+            $characterToreplace = str_replace('$$forwardslash$$', "/", $characterToreplace);
+        if( strpos($characterToreplace, '$$colon$$') !== FALSE )
+            $characterToreplace = str_replace('$$colon$$', ":", $characterToreplace);
         if( strpos($characterToreplace, '$$pipe$$') !== FALSE )
             $characterToreplace = str_replace('$$pipe$$', "|", $characterToreplace);
 
         $characterForreplace = $context->arguments['replace'];
         if( strpos($characterForreplace, '$$comma$$') !== FALSE )
             $characterForreplace = str_replace('$$comma$$', ",", $characterForreplace);
+        if( strpos($characterForreplace, '$$forwardslash$$') !== FALSE )
+            $characterForreplace = str_replace('$$forwardslash$$', "/", $characterForreplace);
+        if( strpos($characterForreplace, '$$colon$$') !== FALSE )
+            $characterForreplace = str_replace('$$colon$$', ":", $characterForreplace);
         if( strpos($characterForreplace, '$$pipe$$') !== FALSE )
             $characterForreplace = str_replace('$$pipe$$', "|", $characterForreplace);
 
@@ -1981,7 +2005,7 @@ AddressCallContext::$supportedActions[] = array(
         'search' => array('type' => 'string', 'default' => '*nodefault*'),
         'replace' => array('type' => 'string', 'default' => '')
     ),
-    'help' => 'possible variable $$comma$$ or $$pipe$$; example "actions=description-Replace-Character:$$comma$$word1"'
+    'help' => 'possible variable $$comma$$ or $$forwardslash$$ or $$colon$$ or $$pipe$$; example "actions=description-Replace-Character:$$comma$$word1"'
 );
 AddressCallContext::$supportedActions[] = array(
     'name' => 'value-host-object-add-netmask-m32',
@@ -2144,6 +2168,99 @@ AddressCallContext::$supportedActions[] = array(
         $text .= "OK";
         PH::ACTIONlog( $context, $text );
     }
+);
+AddressCallContext::$supportedActions[] = array(
+    'name' => 'value-replace',
+    'MainFunction' => function (AddressCallContext $context) {
+        $address = $context->object;
+
+        if( $address->isGroup() )
+        {
+            $string = "object is of type GROUP";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+        elseif( $address->isRegion() )
+        {
+            $string = "object is of type Region";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+
+        if( !$address->isType_ipNetmask() )
+        {
+            $string = "object is not IP netmask";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+
+        $value = $address->value();
+        $regexValue = $context->arguments['search'];
+        $valueToreplace = $context->arguments['replace'];
+
+        if( strpos($regexValue, "*nodefault*") !== FALSE )
+        {
+            $string = "search value not set";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+        if( strpos($valueToreplace, "*nodefault*") !== FALSE )
+        {
+            $string = "replace value not set";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+
+
+        if( strpos($value, $regexValue) === FALSE )
+        {
+            $string = "object value does not contain: " . $regexValue;
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+
+        //todo: if $regexValue start with . or :
+        // - replace in between
+        // - if not replace at start
+        $new_value = str_replace( $regexValue, $valueToreplace, $value );
+
+        if( !filter_var($new_value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) && filter_var($new_value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) )
+        {
+            $string = "object value is not a valid IP: " . $new_value;
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+        elseif( filter_var($new_value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) )
+        {
+            //Todo: check if count of . is same on $regexValue and also on $valueToreplace
+        }
+        elseif( filter_var($new_value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) )
+        {
+            //Todo: check if count of : is same on $regexValue and also on $valueToreplace
+        }
+
+        $text = $context->padding . " - old value is: '" . $value . "'";
+        PH::ACTIONlog( $context, $text );
+
+        $text = $context->padding . " - new value will be: '" . $new_value . "'";
+        if( $context->isAPI )
+            $address->API_editValue($new_value);
+        else
+            $address->setValue($new_value);
+        $text .= "OK";
+        PH::ACTIONlog( $context, $text );
+    },
+    'args' => array(
+        'search' => array(
+            'type' => 'string',
+            'default' => '*nodefault*',
+            'help' => '1.1.1.'
+        ),
+        'replace' => array('type' => 'string', 'default' => '*nodefault*',
+            'help' => '2.2.2.'
+        )
+    ),
+    'help' => 'search for a full or partial value and replace; example "actions=value-replace:1.1.1.,2.2.2." it is recommend to use additional filter: "filter=(value string.regex /^1.1.1./)"'
 );
 
 //starting with 7.0 PAN-OS support max. 2500 members per group, former 500
@@ -2626,7 +2743,12 @@ AddressCallContext::$supportedActions['create-Address'] = array(
     'args' => array(
         'name' => array('type' => 'string', 'default' => '*nodefault*'),
         'value' => array('type' => 'string', 'default' => '*nodefault*'),
-        'type' => array('type' => 'string', 'default' => '*nodefault*')
+        'type' => array(
+            'type' => 'string',
+            'default' => '*nodefault*',
+            'help' =>
+                implode( ", ", Address::$AddressTypes )
+        )
     )
 );
 

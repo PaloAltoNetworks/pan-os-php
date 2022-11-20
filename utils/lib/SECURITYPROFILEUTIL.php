@@ -286,6 +286,10 @@ class SECURITYPROFILEUTIL extends UTIL
                         {
                             $this->objectsToProcess[] = array('store' => $sub->URLProfileStore, 'rules' => $sub->URLProfileStore->securityProfiles());
                         }
+                        if( array_search('any', $this->securityProfileTypes) !== FALSE || array_search('data-filtering', $this->securityProfileTypes) !== FALSE )
+                        {
+                            $this->objectsToProcess[] = array('store' => $sub->DataFilteringProfileStore, 'rules' => $sub->DataFilteringProfileStore->securityProfiles());
+                        }
 
                         //Panorama
                         if( $this->configType == 'fawkes' )
@@ -312,10 +316,6 @@ class SECURITYPROFILEUTIL extends UTIL
                             if( array_search('any', $this->securityProfileTypes) !== FALSE || array_search('wildfire-analysis', $this->securityProfileTypes) !== FALSE )
                             {
                                 $this->objectsToProcess[] = array('store' => $sub->WildfireProfileStore, 'rules' => $sub->WildfireProfileStore->securityProfiles());
-                            }
-                            if( array_search('any', $this->securityProfileTypes) !== FALSE || array_search('data-filtering', $this->securityProfileTypes) !== FALSE )
-                            {
-                                $this->objectsToProcess[] = array('store' => $sub->DataFilteringProfileStore, 'rules' => $sub->DataFilteringProfileStore->securityProfiles());
                             }
                         }
 

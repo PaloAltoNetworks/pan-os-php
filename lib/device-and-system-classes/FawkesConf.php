@@ -217,11 +217,11 @@ class FawkesConf
         $this->devicecloudroot = DH::findFirstElementOrCreate('device', $this->localhostroot);
         $this->cloudroot = DH::findFirstElementOrCreate('cloud', $this->devicecloudroot);
 
-        $this->onpremroot = DH::findFirstElementOrCreate('on-prem', $this->devicecloudroot);
+        $this->onpremroot = DH::findFirstElement('on-prem', $this->devicecloudroot);
 
         $this->snippetroot = DH::findFirstElementOrCreate('snippet', $this->localhostroot);
 
-        $tmp = DH::findFirstElementOrCreate('managed-devices', $this->localhostroot);
+        $tmp = DH::findFirstElement('managed-devices', $this->localhostroot);
 
             //->devices/container
         //
@@ -413,14 +413,17 @@ class FawkesConf
         //
         // loading onpremss
         //
-        foreach( $this->onpremroot->childNodes as $node )
+        if( $this->onpremroot !== false )
         {
-            if( $node->nodeType != XML_ELEMENT_NODE ) continue;
+            foreach( $this->onpremroot->childNodes as $node )
+            {
+                if( $node->nodeType != XML_ELEMENT_NODE ) continue;
 
-            $ldv = new DeviceOnPrem( $this );
+                $ldv = new DeviceOnPrem( $this );
 
-            $ldv->load_from_domxml( $node );
-            $this->onprems[] = $ldv;
+                $ldv->load_from_domxml( $node );
+                $this->onprems[] = $ldv;
+            }
         }
         //
         // end of DeviceCloud
@@ -521,7 +524,7 @@ class FawkesConf
 
         //Todo: swaschkut check
         //$indentingXmlIncreament was 2 per default for Panroama
-        $xml = &DH::dom_to_xml($this->xmlroot, $indentingXml, $lineReturn, -1, $indentingXmlIncreament + 1);
+        $xml = &DH::dom_to_xml($this->xmlroot, $indentingXml, $lineReturn, -1, $indentingXmlIncreament);
 
         $path_parts = pathinfo($fileName);
         if (!is_dir($path_parts['dirname']))

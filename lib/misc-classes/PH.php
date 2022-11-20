@@ -161,7 +161,7 @@ class PH
 
     private static $library_version_major = 2;
     private static $library_version_sub = 0;
-    private static $library_version_bugfix = 58;
+    private static $library_version_bugfix = 64;
 
     //BASIC AUTH PAN-OS 7.1
     public static $softwareupdate_key = "658d787f293e631196dac9fb29490f1cc1bb3827";
@@ -938,7 +938,8 @@ class PH
         "config-commit",
         "protocoll-number-download",
         "html-merger",
-        "dhcp"
+        "dhcp",
+        "tsf"
         );
 
 
@@ -966,7 +967,8 @@ class PH
         "spiffy",
         'config-commit',
         "protocoll-number-download",
-        "html-merger"
+        "html-merger",
+        "tsf"
     );
 
     public static function callPANOSPHP( $type, $argv, $argc, $PHP_FILE, $_supportedArguments = array(), $_usageMsg = "", $projectfolder = "" )
@@ -1083,6 +1085,9 @@ class PH
 
         elseif( $type == "html-merger" )
             $util = new HTMLmerger__( $argv, $argc);
+
+        elseif( $type == "tsf" )
+            $util = new TSF__( $argv, $argc);
 
         elseif( $type == 'address'
             || $type == 'service'

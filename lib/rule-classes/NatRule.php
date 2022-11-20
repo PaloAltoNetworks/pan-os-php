@@ -1064,6 +1064,7 @@ class NatRule extends Rule
         $this->source = null;
         $this->destination = null;
         $this->tags = null;
+        $this->grouptag = null;
 
         if( $this->service !== null )
         {

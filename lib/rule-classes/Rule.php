@@ -53,6 +53,9 @@ class Rule
      */
     public $tags;
 
+    /** @var Tag */
+    public $grouptag = null;
+
     /**
      * @var ServiceRuleContainer
      */
@@ -177,6 +180,11 @@ class Rule
             else if( $node->nodeName == 'tag' )
             {
                 $this->tags->load_from_domxml($node);
+            }
+            else if( $node->nodeName == 'group-tag' )
+            {
+                $grouptagName = $node->textContent;
+                $this->grouptag = $this->owner->owner->tagStore->find( $grouptagName, $this);
             }
             else if( $node->nodeName == 'description' )
             {
@@ -704,6 +712,245 @@ class Rule
         return null;
     }
 
+    public function prepareRuleHitCount( $apiType = "show", $all = false)
+    {
+        $system = $this->owner->owner;
+
+        #print get_class($system)."\n";
+        if( $system->isPanorama() )
+        {
+            $systemInfoStart = "";
+            $systemInfoEnd = "";
+
+            $systemName = "";
+            $systemNameEnd = "";
+
+            $prepost = "pre";
+            if( $this->isPostRule() )
+                $prepost = "post";
+
+            $rulebase = "<".$prepost."-rulebase>";
+            $rulebaseEnd = "</".$prepost."-rulebase>";
+
+            $rulename = "<rule-name><entry name='";
+            $rulenameEnd = "'/></rule-name>";
+
+            return null;
+        }
+        elseif( $system->isFirewall() )
+        {
+            return null;
+        }
+        elseif(  $system->isDeviceGroup() )
+        {
+            $systemInfoStart = "<device-group>";
+            $systemInfoEnd = "</device-group>";
+
+            $systemName = "<entry name='".$system->name()."'>";
+            $systemNameEnd = "</entry>";
+
+            $prepost = "pre";
+            if( $this->isPostRule() )
+                $prepost = "post";
+
+            $rulebase = "<".$prepost."-rulebase>";
+            $rulebaseEnd = "</".$prepost."-rulebase>";
+
+            $rulename = "<rule-name><entry name='";
+            $rulenameEnd = "'/></rule-name>";
+            //<rule-base><entry ...><rules><entry name="demo2-1"><device-vsys><entry name="child/1234567890/vsys1">
+        }
+        elseif( $system->isVirtualSystem() )
+        {
+            $systemInfoStart = "<vsys><vsys-name>";
+            $systemInfoEnd = "</vsys-name></vsys>";
+            //Firewall
+            $systemName = "<entry name='".$system->name()."'>";
+            $systemNameEnd = "</entry>";
+
+            $rulebase = "<rule-base>";
+            $rulebaseEnd = "</rule-base>";
+
+            $rulename = "<list><member>";
+            $rulenameEnd = "</member></list>";
+        }
+
+        //Type
+        $ruleType = $this->ruleNature();
+        $cmd = "<".$apiType."><rule-hit-count>".$systemInfoStart.$systemName;
+
+        if( $all )
+            $cmd .= $rulebase."<entry name='".$ruleType."'><rules><all/>";
+        else
+            $cmd .= $rulebase."<entry name='".$ruleType."'><rules>".$rulename.$this->name().$rulenameEnd;
+
+        $cmd .= "</rules></entry>".$rulebaseEnd;
+        $cmd .= $systemNameEnd.$systemInfoEnd."</rule-hit-count></".$apiType.">";
+
+        return $cmd;
+    }
+
+    public function API_clearRuleHitCount( $all )
+    {
+        $con = findConnectorOrDie($this);
+
+        if( $con->info_PANOS_version_int >= 90 )
+        {
+            $system = $this->owner->owner;
+            $cmd = $this->prepareRuleHitCount('clear', $all);
+            if( $cmd == null )
+            {
+                PH::print_stdout( "   * not working for Panorama/FW shared" );
+                return;
+            }
+
+            $res = $con->sendOpRequest($cmd, TRUE);
+            $res = DH::findFirstElement( "result", $res);
+            $padding = "    * ";
+            if( $res->textContent === "Succeeded to reset rule hit count for specified rules" )
+                PH::print_stdout( $padding." reset rule hit count successful." );
+            else
+                PH::print_stdout( $padding.$res->textContent );
+        }
+        else
+        {
+            PH::print_stdout( "  PAN-OS version must be 9.0 or higher" );
+        }
+
+        return null;
+    }
+
+    public function API_showRuleHitCount( $all = false )
+    {
+        $con = findConnectorOrDie($this);
+
+        if( $con->info_PANOS_version_int >= 90 )
+        {
+            $system = $this->owner->owner;
+            $cmd = $this->prepareRuleHitCount('show', $all);
+
+            if( $cmd == null )
+            {
+                PH::print_stdout( "   * not working for Panorama/FW shared" );
+                return;
+            }
+
+
+            $res = $con->sendOpRequest($cmd, TRUE);
+            $res = DH::findFirstElement( "result", $res);
+
+
+            $res = DH::findFirstElement( "rule-hit-count", $res);
+            if( !$res )
+                return;
+
+            if( $system->isPanorama() )
+            {
+                DH::DEBUGprintDOMDocument($res);
+            }
+            elseif( $system->isDeviceGroup() && $system->name() !== ""  )
+            {
+                #DH::DEBUGprintDOMDocument($res);
+                $res = DH::findFirstElement( "device-group", $res);
+            }
+
+            elseif( $system->isVirtualSystem() )
+                $res = DH::findFirstElement( "vsys", $res);
+
+            if( $system->isDeviceGroup() && $system->name() === ""  )
+            {
+                #$res = DH::findFirstElement( "entry", $res);
+                $res = $res;
+            }
+            else
+                $res = DH::findFirstElement( "entry", $res);
+
+            $res = DH::findFirstElement( "rule-base", $res);
+            $res = DH::findFirstElement( "entry", $res);
+            $res = DH::findFirstElement( "rules", $res);
+            $res = DH::findFirstElement( "entry", $res);
+
+
+            if( $system->isDeviceGroup()  )
+            {
+                DH::DEBUGprintDOMDocument($res);
+                //<rule-base><entry ...><rules><entry name="demo2-1"><device-vsys><entry name="child/1234567890/vsys1">
+                $res = DH::findFirstElement( "device-vsys", $res);
+                $res = DH::findFirstElement( "entry", $res);
+            }
+
+            $latest = DH::findFirstElement( "latest", $res);
+            $hit_count = DH::findFirstElement( "hit-count", $res);
+            $last_hit_timestamp = DH::findFirstElement( "last-hit-timestamp", $res);
+            $last_reset_timestamp = DH::findFirstElement( "last-reset-timestamp", $res);
+
+            $first_hit_timestamp = DH::findFirstElement( "first-hit-timestamp", $res);
+            $rule_creation_timestamp = DH::findFirstElement( "rule-creation-timestamp", $res);
+            $rule_modification_timestamp = DH::findFirstElement( "rule-modification-timestamp", $res);
+
+            //create Array and return
+            $padding = "    * ";
+            if( $latest )
+                print $padding."latest: ".$latest->textContent."\n";
+            if( $hit_count)
+                print $padding."hit-count: ".$hit_count->textContent."\n";
+            if( $last_hit_timestamp )
+            {
+                $unixTimestamp = $last_hit_timestamp->textContent;
+                if( $unixTimestamp === "0" || $unixTimestamp === "" )
+                    $result = "0";
+                else
+                    $result = date( 'Y-m-d H:i:s', $unixTimestamp );
+                print $padding."last-hit: ".$result."\n";
+            }
+
+            if( $last_reset_timestamp )
+            {
+                $unixTimestamp = $last_reset_timestamp->textContent;
+                if( $unixTimestamp === "0" || $unixTimestamp === "" )
+                    $result = "0";
+                else
+                    $result = date( 'Y-m-d H:i:s', $unixTimestamp );
+                print $padding."last-reset: ".$result."\n";
+            }
+
+            if( $first_hit_timestamp )
+            {
+                $unixTimestamp = $first_hit_timestamp->textContent;
+                if( $unixTimestamp === "0" || $unixTimestamp === "" )
+                    $result = "0";
+                else
+                    $result = date( 'Y-m-d H:i:s', $unixTimestamp );
+                print $padding."first-hit: ".$result."\n";
+            }
+
+            if( $rule_creation_timestamp )
+            {
+                $unixTimestamp = $rule_creation_timestamp->textContent;
+                if( $unixTimestamp === "" )
+                    $result = 0;
+                else
+                    $result = date( 'Y-m-d H:i:s', $unixTimestamp );
+                print $padding."rule-creation: ".$result."\n";
+            }
+            if( $rule_modification_timestamp )
+            {
+                $unixTimestamp = $rule_modification_timestamp->textContent;
+                if( $unixTimestamp === "" )
+                    $result = 0;
+                else
+                    $result = date( 'Y-m-d H:i:s', $unixTimestamp );
+                print $padding."rule-modification: ".$result."\n";
+            }
+
+        }
+        else
+        {
+            PH::print_stdout( "  PAN-OS version must be 9.0 or higher" );
+        }
+
+        return null;
+    }
 
     function zoneCalculation($fromOrTo, $mode = "append", $virtualRouter = "*autodetermine*", $template_name = "*notPanorama*", $vsys_name = "*notPanorama*", $isAPI = FALSE )
     {
@@ -1351,6 +1598,15 @@ class Rule
                     }
                 }
             }
+    }
+
+    public function grouptagIs( $value )
+    {
+        if( $this->grouptag === null )
+            return false;
+        if( $this->grouptag->name() === $value->name() )
+            return true;
+        return false;
     }
 
     public function isPreRule()

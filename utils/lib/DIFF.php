@@ -400,16 +400,24 @@ class DIFF extends UTIL
             if( $el1Trim != $el2Trim )
             {
                 $text = '';
+                PH::$JSON_TMP = array();
+                PH::$JSON_TMP['plus'] = array();
+                PH::$JSON_TMP['minus'] = array();
+                PH::$JSON_TMP['xpath'] = $xpath;
 
                 $tmp = DH::dom_to_xml($el1);
-                #$text .= '+' . str_replace("\n", "\n", $tmp);
-                $text .= '+' . $tmp;
-
-
-                $tmp = DH::dom_to_xml($el2);
                 #$text .= '-' . str_replace("\n", "\n", $tmp);
                 $text .= '-' . $tmp;
+                PH::$JSON_TMP['minus'][] = $tmp;
 
+                $tmp = DH::dom_to_xml($el2);
+                #$text .= '+' . str_replace("\n", "\n", $tmp);
+                $text .= '+' . $tmp;
+                PH::$JSON_TMP['plus'][] = $tmp;
+
+
+                PH::print_stdout( PH::$JSON_TMP, false, "diff" );
+                PH::$JSON_TMP = array();
 
                 //same xpath different content
                 //$this->displayDIFF( $xpath, $text, array( $el1 ), array($el2) );

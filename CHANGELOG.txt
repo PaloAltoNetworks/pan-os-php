@@ -1,6 +1,84 @@
 CHANGELOG
 
-2.0.58
+2.0.64
+UTIL:
+* type=xml-issue | improve counting for applicationgroup/customurl fixes
+* type=address | improvement for actions=name-rename
+* type=address | introduce new 'actions=value-replace:SEARCH,REPLACE'
+
+BUGFIX:
+* type=diff | bugfix for shadow-json - to display also diff information if xml node value only change
+
+GENERAL
+* pan-os-php-api - develop | improvements to use docker-compose with user DB
+
+
+2.0.63 (20221024)
+UTIL:
+* type=securityprofile | introduce process of DataFilteringProfileStore
+* type=address/rule actions=description-Replace-Character | add variable $$forwardslash$$ and $$colon$$
+* create_vwire.php | update to use JSON file
+* develop get_counter.php | fix to get newest information from website
+* util develop - extend display-xpath-for-node-filter.php with argument 'nameattribute=XYZ'
+* type=xml-issue | extend address check with ip-range; optimise if address value is /32; introduce same improvement for duplicate servicegroups as already in addressgroup
+
+BUGFIX:
+* type=address actions=move | bugfix for Firewall config type
+* type=diff | bugfix to display changes in same single XMLnode without child node correctly
+
+GENERAL
+* update App-ID version: 8632-7647
+
+
+2.0.62 (20221010)
+UTIL:
+* type=rule | introduce 'actions=user-replace:OLD-username,NEW-username' and 'actions=user-replace-from-file:FILE.txt'
+* type=rule | implement group-tag usage for actions=display / 'filter=grouptag is TAGNAME'
+* type=device  actions=sp_spg-create-alert-only-bp:true | ironskillet update for panos 10.2
+* type=rule | introduce actions=rule-hit-count-show / rule-hit-count-clear
+
+BUGFIX:
+* type=rule/schedule 'filter=(schedule.expire.in.days > -90) / (expire.in.days > -90) | bugfix for negative numbers
+
+GENERAL:
+
+
+2.0.61 (20221004)
+UTIL:
+* type=rule | introduce 'filter=(url.category.count ><=! NUMBER)'
+* type=address | improve "help create-address" - improve also actions=display
+
+BUGFIX:
+* class Panorama/Pan/FawkesConf - save_to_file set indentingXmlIncreament to default without an encrease with +1
+* type=device actions=sp_spg-create-bp:false | if no name argument is defined 'sp_spg-create-bp:[shared], sp-name' use predefined array
+* class RulewithUserID - bugfix for known-user
+
+GENERAL:
+* improve classes BuckbeackConf / FawkesConf - to avoid creating XML node if not needed
+* extend class Container/DeviceCloud/DeviceOnPrem with DataFilteringProfileStore
+
+
+2.0.60 (20220926)
+UTIL:
+* develop ssh-connector | introduce argument password
+* type=rule actions=description-append | introduce $$current.name$$ a stringformular
+
+
+2.0.59 (20220924)
+UTIl:
+* type=html-merger | introduce argument exportcsv=filename.xslx
+* type=tsf | introduce TechSupportFile - to extract running-config.xml from TSF
+* type=address - 'filter=(refobjectname is XYZ)' extend to support rule name
+
+BUGFIX:
+* type=xml-issue | bugfix to store output file also if pan-os API mode is used
+* type=stats | bugfix for loadpanoramapushedconfig
+
+GENERAL:
+* introduce development script gcp
+
+
+2.0.58 (20220908)
 UTIL:
 * type=rule - improve filters for CI/CD
 * type=rule ruletype=any | introduce all filter/actions related to schedule for DoS/Pbf/Qos Rules

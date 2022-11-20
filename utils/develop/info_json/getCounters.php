@@ -115,6 +115,7 @@ Traffic - 10/100/1000
 Traffic - 100/1000/10000
 Traffic - 1Gbps SFP
 Traffic - 10Gbps SFP+
+Traffic - 25Gbps SFP28
 Traffic - 40/100Gbps QSFP+/QSFP28
 802.1q tags per device
 802.1q tags per physical interface
@@ -240,52 +241,53 @@ $valueArray = array(
     '80-0-86-1_dfi' => 'Traffic - 100/1000/10000',
     '80-0-87-1_dfi' => 'Traffic - 1Gbps SFP',
     '80-0-88-1_dfi' => 'Traffic - 10Gbps SFP+',
-    '80-0-89-1_dfi' => 'Traffic - 40/100Gbps QSFP+/QSFP28',
-    '80-0-90-1_dfi' => '802.1q tags per device',
-    '80-0-91-1_dfi' => '802.1q tags per physical interface',
-    '80-0-92-1_dfi' => 'Max interfaces (logical and physical)',
-    '80-0-93-1_dfi' => 'Maximum aggregate interfaces',
-    '80-0-94-1_dfi' => 'Maximum SD-WAN virtual interfaces',
-    '96-0-97-1_dfi' => 'Virtual routers',
-    '99-0-100-1_dfi' => 'Virtual wires',
-    '102-0-103-1_dfi' => 'Base virtual systems',
-    '102-0-104-1_dfi' => 'Max virtual systems',
-    '106-0-107-1_dfi' => 'IPv4 forwarding table size',
-    '106-0-108-1_dfi' => 'IPv6 forwarding table size',
-    '106-0-109-1_dfi' => 'System total forwarding table size',
-    '106-0-110-1_dfi' => '32,000',
-    '106-0-111-1_dfi' => 'Max routing peers (protocol dependent)',
-    '106-0-112-1_dfi' => 'Static entries - DNS proxy',
-    '106-0-113-1_dfi' => 'Bidirectional Forwarding Detection (BFD) Sessions',
-    '115-0-116-1_dfi' => 'ARP table size per device',
-    '115-0-117-1_dfi' => 'IPv6 neighbor table size',
-    '115-0-118-1_dfi' => 'MAC table size per device',
-    '115-0-119-1_dfi' => 'Max ARP entries per broadcast domain',
-    '115-0-120-1_dfi' => 'Max MAC entries per broadcast domain',
-    '123-0-124-1_dfi' => 'Total NAT rule capacity',
-    '123-0-125-1_dfi' => 'Max NAT rules (static)',
-    '123-0-126-1_dfi' => 'Max NAT rules (DIP)',
-    '123-0-127-1_dfi' => 'Max NAT rules (DIPP)',
-    '123-0-128-1_dfi' => 'Max translated IPs (DIP)',
-    '123-0-129-1_dfi' => 'Max translated IPs (DIPP)',
-    '123-0-130-1_dfi' => 'Default DIPP pool oversubscription',
-    '132-0-133-1_dfi' => 'DHCP servers',
-    '132-0-134-1_dfi' => 'DHCP relays',
-    '132-0-135-1_dfi' => 'Max number of assigned addresses',
-    '137-0-138-1_dfi' => 'Devices supported',
-    '137-0-139-1_dfi' => 'Max virtual addresses',
-    '141-0-142-1_dfi' => 'Number of QoS policies',
-    '141-0-143-1_dfi' => 'Physical interfaces supporting QoS',
-    '141-0-144-1_dfi' => 'Clear text nodes per physical interface',
-    '141-0-145-1_dfi' => 'DSCP marking by policy',
-    '141-0-146-1_dfi' => 'Subinterfaces supported',
-    '148-0-149-1_dfi' => 'Max IKE Peers',
-    '148-0-150-1_dfi' => 'Site to site (with proxy id)',
-    '148-0-151-1_dfi' => 'SD-WAN IPSec tunnels',
-    '153-0-154-1_dfi' => 'Max tunnels (SSL, IPSec, and IKE with XAUTH)',
-    '156-0-157-1_dfi' => 'Max SSL tunnels',
-    '159-0-160-1_dfi' => 'Replication (egress interfaces)',
-    '159-0-161-1_dfi' => 'Routes',
+    '80-0-89-1_dfi' => 'Traffic - 25Gbps SFP28',
+    '80-0-90-1_dfi' => 'Traffic - 40/100Gbps QSFP+/QSFP28',
+    '80-0-91-1_dfi' => '802.1q tags per device',
+    '80-0-92-1_dfi' => '802.1q tags per physical interface',
+    '80-0-93-1_dfi' => 'Max interfaces (logical and physical)',
+    '80-0-94-1_dfi' => 'Maximum aggregate interfaces',
+    '80-0-95-1_dfi' => 'Maximum SD-WAN virtual interfaces',
+    '97-0-98-1_dfi' => 'Virtual routers',
+    '100-0-101-1_dfi' => 'Virtual wires',
+    '103-0-104-1_dfi' => 'Base virtual systems',
+    '103-0-105-1_dfi' => 'Max virtual systems',
+    '107-0-108-1_dfi' => 'IPv4 forwarding table size',
+    '107-0-109-1_dfi' => 'IPv6 forwarding table size',
+    '107-0-110-1_dfi' => 'System total forwarding table size',
+    '107-0-111-1_dfi' => 'Max route maps per virtual router',
+    '107-0-112-1_dfi' => 'Max routing peers (protocol dependent)',
+    '107-0-113-1_dfi' => 'Static entries - DNS proxy',
+    '107-0-114-1_dfi' => 'Bidirectional Forwarding Detection (BFD) Sessions',
+    '116-0-117-1_dfi' => 'ARP table size per device',
+    '116-0-118-1_dfi' => 'IPv6 neighbor table size',
+    '116-0-119-1_dfi' => 'MAC table size per device',
+    '116-0-120-1_dfi' => 'Max ARP entries per broadcast domain',
+    '116-0-121-1_dfi' => 'Max MAC entries per broadcast domain',
+    '124-0-125-1_dfi' => 'Total NAT rule capacity',
+    '124-0-126-1_dfi' => 'Max NAT rules (static)',
+    '124-0-127-1_dfi' => 'Max NAT rules (DIP)',
+    '124-0-128-1_dfi' => 'Max NAT rules (DIPP)',
+    '124-0-129-1_dfi' => 'Max translated IPs (DIP)',
+    '124-0-130-1_dfi' => 'Max translated IPs (DIPP)',
+    '124-0-131-1_dfi' => 'Default DIPP pool oversubscription',
+    '133-0-134-1_dfi' => 'DHCP servers',
+    '133-0-135-1_dfi' => 'DHCP relays',
+    '133-0-136-1_dfi' => 'Max number of assigned addresses',
+    '138-0-139-1_dfi' => 'Devices supported',
+    '138-0-140-1_dfi' => 'Max virtual addresses',
+    '142-0-143-1_dfi' => 'Number of QoS policies',
+    '142-0-144-1_dfi' => 'Physical interfaces supporting QoS',
+    '142-0-145-1_dfi' => 'Clear text nodes per physical interface',
+    '142-0-146-1_dfi' => 'DSCP marking by policy',
+    '142-0-147-1_dfi' => 'Subinterfaces supported',
+    '149-0-150-1_dfi' => 'Max IKE Peers',
+    '149-0-151-1_dfi' => 'Site to site (with proxy id)',
+    '149-0-152-1_dfi' => 'SD-WAN IPSec tunnels',
+    '154-0-155-1_dfi' => 'Max tunnels (SSL, IPSec, and IKE with XAUTH)',
+    '157-0-158-1_dfi' => 'Max SSL tunnels',
+    '160-0-161-1_dfi' => 'Replication (egress interfaces)',
+    '160-0-162-1_dfi' => 'Routes',
     '163-0-164-1_dfi' => 'End-of-sale',
     'position' => 'A',
     '_version_' => 'B'
@@ -366,7 +368,15 @@ $urlSite = $url."?".$url_var;
 
 print $urlSite."\n";
 
-$string =  file_get_contents($urlSite );
+$arrContextOptions=array(
+    "ssl"=>array(
+        "verify_peer"=>false,
+        "verify_peer_name"=>false,
+    ),
+);
+
+#$string =  file_get_contents($urlSite );
+$string =  file_get_contents($urlSite, false, stream_context_create($arrContextOptions));
 
 
 $string = find_string_between( $string, "({", "})" );
@@ -374,6 +384,8 @@ $your_json_string = "{".$string."}";
 $data = json_decode($your_json_string, TRUE);
 if( $data === null )
     derr( "invalid JSON file provided", null, FALSE );
+
+print_r( $data );
 
 $jsonString = "{\n";
 foreach( $data['response']['docs'] as $mainkey => $fw )
@@ -394,7 +406,11 @@ foreach( $data['response']['docs'] as $mainkey => $fw )
         if( isset($headerarray[$key1]) )
         {
             #$jsonString .=  '    "'.$headerarray[$key1].'":"'.$entries.'"';
-            $jsonString .=  '    "'.$valueArray[$key].'":"'.$entries.'"';
+            if( isset( $valueArray[$key] ) )
+                $jsonString .=  '    "'.$valueArray[$key].'":"'.$entries.'"';
+            else
+                #$jsonString .=  '    "'.$headerarray[$key1].'":"'.$entries.'"';
+                $jsonString .=  '    "---":"'.$entries.'"';
 
             if( isset($headerarray[$key1+1]) && $key1+1 < $countFW )
                 $jsonString .=  ",";

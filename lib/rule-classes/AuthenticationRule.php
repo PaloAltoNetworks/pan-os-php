@@ -262,6 +262,7 @@ class AuthenticationRule extends RuleWithUserID
         $this->source = null;
         $this->destination = null;
         $this->tags = null;
+        $this->grouptag = null;
 
         $this->owner = null;
     }

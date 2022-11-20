@@ -91,6 +91,7 @@
 				    <?php $i++; }?>
 				  </tbody>
 				</table>
+                //FR: delete user from DB</br>
 				<?php }?>
 			</div>
       	<?php }else { ?>

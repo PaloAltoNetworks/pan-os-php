@@ -84,7 +84,7 @@ For a quick start please use [WIKI docker](https://github.com/PaloAltoNetworks/p
 	cd [pan-os-php Root folder]
 	docker build -t pan-os-php -f docker/Dockerfile .
 	cd [go to the Folder you like to share with the Container]
-	docker run -v ${PWD}:/share -it pan-os-php
+	docker run --name panosphp --rm -v ${PWD}:/share -it pan-os-php
 	```
 
 * **WINDOWS** : [run on Windows terminal]
@@ -92,7 +92,7 @@ For a quick start please use [WIKI docker](https://github.com/PaloAltoNetworks/p
 	cd [pan-os-php Root folder]
 	docker build -t pan-os-php -f docker/Dockerfile .
 	cd [go to the Folder you like to share with the Container]
-	docker run -v "%CD%":/share -it pan-os-php
+	docker run --name panosphp --rm -v "%CD%":/share -it pan-os-php
 	```
 
 

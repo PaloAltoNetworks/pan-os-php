@@ -32,7 +32,11 @@ RQuery::$defaultFilters['schedule']['object']['operators']['expire.in.days'] = a
     'Function' => function (ScheduleRQueryContext $context) {
         $value = $context->object;
 
-        return $value->isExpired( $context->value );
+        $operator = $context->operator;
+        if( $operator == '=' )
+            $operator = '==';
+
+        return $value->isExpired( $context->value, $operator );
     },
     'arg' => true,
 );

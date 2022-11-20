@@ -2756,7 +2756,17 @@ RuleCallContext::$supportedActions[] = array(
             $textToAppend = " ";
         if( $context->arguments['newline'] == 'yes' )
             $textToAppend = "\n";
-        $textToAppend .= $context->rawArguments['text'];
+
+        $newName = $context->arguments['stringFormula'];
+
+        if( strpos($newName, '$$current.name$$') !== FALSE )
+        {
+            $textToAppend .= str_replace('$$current.name$$', $rule->name(), $newName);
+        }
+        else
+        {
+            $textToAppend .= $newName;
+        }
 
         if( $context->object->owner->owner->version < 71 )
             $max_length = 253;
@@ -2778,7 +2788,14 @@ RuleCallContext::$supportedActions[] = array(
         else
             $rule->setDescription($description . $textToAppend);
     },
-    'args' => array('text' => array('type' => 'string', 'default' => '*nodefault*'), 'newline' => array('type' => 'bool', 'default' => 'no'))
+    'args' => array(
+        'stringFormula' => array(
+            'type' => 'string',
+            'default' => '*nodefault*',
+            'help' =>
+                "This string is used to compose a name. You can use the following aliases :\n" .
+                "  - \$\$current.name\$\$ : current name of the object\n"),
+        'newline' => array('type' => 'bool', 'default' => 'no'))
 );
 
 RuleCallContext::$supportedActions[] = array(
@@ -2824,6 +2841,10 @@ RuleCallContext::$supportedActions[] = array(
         $characterToreplace = $context->arguments['search'];
         if( strpos($characterToreplace, '$$comma$$') !== FALSE )
             $characterToreplace = str_replace('$$comma$$', ",", $characterToreplace);
+        if( strpos($characterToreplace, '$$forwardslash$$') !== FALSE )
+            $characterToreplace = str_replace('$$forwardslash$$', "/", $characterToreplace);
+        if( strpos($characterToreplace, '$$colon$$') !== FALSE )
+            $characterToreplace = str_replace('$$colon$$', ":", $characterToreplace);
         if( strpos($characterToreplace, '$$pipe$$') !== FALSE )
             $characterToreplace = str_replace('$$pipe$$', "|", $characterToreplace);
         if( strpos($characterToreplace, '$$newline$$') !== FALSE )
@@ -2832,6 +2853,10 @@ RuleCallContext::$supportedActions[] = array(
         $characterForreplace = $context->arguments['replace'];
         if( strpos($characterForreplace, '$$comma$$') !== FALSE )
             $characterForreplace = str_replace('$$comma$$', ",", $characterForreplace);
+        if( strpos($characterForreplace, '$$forwardslash$$') !== FALSE )
+            $characterForreplace = str_replace('$$forwardslash$$', "/", $characterForreplace);
+        if( strpos($characterForreplace, '$$colon$$') !== FALSE )
+            $characterForreplace = str_replace('$$colon$$', ":", $characterForreplace);
         if( strpos($characterForreplace, '$$pipe$$') !== FALSE )
             $characterForreplace = str_replace('$$pipe$$', "|", $characterForreplace);
         if( strpos($characterForreplace, '$$newline$$') !== FALSE )
@@ -2864,7 +2889,7 @@ RuleCallContext::$supportedActions[] = array(
         'search' => array('type' => 'string', 'default' => '*nodefault*'),
         'replace' => array('type' => 'string', 'default' => '')
     ),
-    'help' => 'possible variable $$comma$$ or $$pipe$$ or $$newline$$; example "actions=description-Replace-Character:$$comma$$word1"'
+    'help' => 'possible variable $$comma$$ or $$forwardslash$$ or $$colon$$ or $$pipe$$ or $$newline$$; example "actions=description-Replace-Character:$$comma$$word1"'
 );
 
 //                                                   //
@@ -4516,6 +4541,120 @@ RuleCallContext::$supportedActions[] = Array(
     'args' => Array( 'userName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) )
 );
 RuleCallContext::$supportedActions[] = Array(
+    'name' => 'user-replace',
+    'MainFunction' =>  function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+        if( !$rule->isSecurityRule() )
+        {
+            $string = "this is not a Security rule";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+
+        $ruleUsers = $rule->userID_getUsers();
+
+        $oldUserName = $context->arguments['old-userName'];
+        $newUserName = $context->arguments['new-userName'];
+
+        if( in_array( $oldUserName, $ruleUsers ) )
+        {
+            if( $context->isAPI )
+            {
+                $rule->API_userID_addUser($newUserName);
+                $rule->API_userID_removeUser($oldUserName);
+            }
+            else
+            {
+                $rule->userID_addUser($newUserName);
+                $rule->userID_removeUser($oldUserName);
+            }
+        }
+    },
+    'args' => Array(
+        'old-userName' => Array( 'type' => 'string', 'default' => '*nodefault*' ),
+        'new-userName' => Array( 'type' => 'string', 'default' => '*nodefault*' )
+    )
+);
+RuleCallContext::$supportedActions[] = Array(
+    'name' => 'user-replace-from-file',
+    'MainFunction' =>  function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+        if( !$rule->isSecurityRule() )
+        {
+            $string = "this is not a Security rule";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+
+        if( !isset($context->cachedList) )
+        {
+            $text = file_get_contents( $context->arguments['file'] );
+
+            if( $text === false )
+                derr("cannot open file '{$context->arguments['file']}");
+
+            $lines = explode("\n", $text);
+            foreach( $lines as  $line)
+            {
+                $line = trim($line);
+                if(strlen($line) == 0)
+                    continue;
+                $list[$line] = true;
+            }
+
+            $context->cachedList = &$list;
+        }
+        else
+            $list = &$context->cachedList;
+
+        foreach( $list as $entry => $set )
+        {
+            $ruleUsers = $rule->userID_getUsers();
+
+            $tmpUser = explode(",", $entry);
+            if( count( $tmpUser ) !== 2 )
+            {
+                derr( "file syntax: 'old-user-name,newusername'" );
+            }
+
+            $oldUserName = trim($tmpUser[0]);
+            $newUserName = trim($tmpUser[1]);
+
+            if( in_array( $oldUserName, $ruleUsers ) )
+            {
+                if( $context->isAPI )
+                {
+                    $rule->API_userID_addUser($newUserName);
+                    $rule->API_userID_removeUser($oldUserName);
+                }
+                else
+                {
+                    $rule->userID_addUser($newUserName);
+                    $rule->userID_removeUser($oldUserName);
+                }
+            }
+        }
+    },
+    'args' => Array(
+        'file' => Array( 'type' => 'string', 'default' => '*nodefault*' )
+    ),
+    'help' => "file syntax: 'old-user-name,newusername' ; each pair on a newline!"
+);
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'user-set-any',
     'MainFunction' =>  function(RuleCallContext $context)
     {
@@ -5040,5 +5179,34 @@ RuleCallContext::$supportedActions[] = array(
 );
 /************************************ */
 
+//                                                 //
+//              Rule hit-count property Based Actions         //
+//                                                 //
+RuleCallContext::$supportedActions[] = array(
+    'name' => 'rule-hit-count-show',
+    'section' => 'action',
+    'GlobalInitFunction' => function( RuleCallContext $context)
+    {
+        //Todo: swaschkut 20221009
+        //GlobalInitFunction read first via API rule-hit-count for ONE location -> VSYS / DG
+    },
+    'MainFunction' => function (RuleCallContext $context) {
+        $rule = $context->object;
 
+        if( !$rule->isDisabled() )
+            $rule->API_showRuleHitCount( false );
+        else
+            PH::print_stdout( "    * rule is disabled" );
+    }
+);
+RuleCallContext::$supportedActions[] = array(
+    'name' => 'rule-hit-count-clear',
+    'section' => 'action',
+    'MainFunction' => function (RuleCallContext $context) {
+        $rule = $context->object;
+
+        if( !$rule->isDisabled() )
+            $rule->API_clearRuleHitCount( false );
+    }
+);
 

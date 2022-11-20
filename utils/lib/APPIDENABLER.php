@@ -19,7 +19,6 @@
 
 class APPIDENABLER extends UTIL
 {
-    public $cycleConnectedFirewalls = FALSE;
     public $actions = 'display';
 
     public function utilStart()
@@ -41,9 +40,6 @@ class APPIDENABLER extends UTIL
     {
         ##########################################
         ##########################################
-
-        if( isset(PH::$args['cycleconnectedfirewalls']) )
-            $this->cycleConnectedFirewalls = TRUE;
 
         if( !isset(PH::$args['actions']) || strtolower(PH::$args['actions']) == 'display' )
             $this->actions = 'display';

@@ -1116,7 +1116,21 @@ RQuery::$defaultFilters['rule']['tag.count']['operators']['>,<,=,!'] = array(
         'input' => 'input/panorama-8.0.xml'
     )
 );
-
+//                                                //
+//                Group-Tag Based filters              //
+//                                              //
+RQuery::$defaultFilters['rule']['group-tag']['operators']['is'] = array(
+    'eval' => function ($object, &$nestedQueries, $value) {
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AuthenticationRule|PbfRule|QoSRule|DoSRule $object */
+        return $object->grouptagIs( $value ) === TRUE;
+    },
+    'arg' => TRUE,
+    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->tags->parentCentralStore->find('!value!');",
+    'ci' => array(
+        'fString' => '(%PROP% test.tag)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 
 //                                              //
 //          Application properties              //
@@ -3023,7 +3037,14 @@ RQuery::$defaultFilters['rule']['url.category']['operators']['has'] = array(
         'input' => 'input/panorama-8.0.xml'
     )
 );
-
+RQuery::$defaultFilters['rule']['url.category.count']['operators']['>,<,=,!'] = array(
+    'eval' => "\$object->isSecurityRule() && \$object->urlCategoriescount() !operator! !value!",
+    'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP% 1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 RQuery::$defaultFilters['rule']['target']['operators']['is.any'] = array(
     'Function' => function (RuleRQueryContext $context) {
         return $context->object->target_isAny();

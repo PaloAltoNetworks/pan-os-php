@@ -44,6 +44,29 @@ class PLAYBOOK__
         $this->supportedArguments['debugapi'] = array('niceName' => 'DebugAPI', 'shortHelp' => 'prints API calls when they happen');
         $this->supportedArguments['outputformatset'] = array('niceName' => 'outputformatset', 'shortHelp' => 'get all PAN-OS set commands about the task the UTIL script is doing. outputformatset=FILENAME -> store set commands in file', 'argDesc' => 'outputformatset');
 
+
+        $in_exclude = array(
+            'ironskillet-update',
+            "maxmind-update",
+            "util_get-action-filter",
+            "protocoll-number-download",
+            "diff"
+        );
+
+        $out_exclude = array(
+            'stats',
+            'download-predefined',
+            'config-size',
+            "xml-op-json",
+            "bpa-generator",
+            "ironskillet-update",
+            "maxmind-update",
+            "util_get-action-filter",
+            "protocoll-number-download",
+            "html-merger",
+            "tsf",
+            "diff"
+        );
 ###############################################################################
 //PLAYBOOK
 ###############################################################################
@@ -141,12 +164,19 @@ class PLAYBOOK__
             if( !isset(PH::$args['in']) )
             {
                 if( !isset( $details['in'] ) )
-                    derr( "argument 'in=inputconfig.xml' missing", null, false );
+                {
+                    if( isset( $details['type'] ) && in_array( $details['type'], $in_exclude ) )
+                    {
+                        $input = null;
+                    }
+                    else
+                        derr( "argument 'in=inputconfig.xml' missing", null, false );
+                }
                 else
                     $input = $details['in'];
             }
 
-            if( !isset(PH::$args['out']) && !$this->isAPI )
+            if( !isset(PH::$args['out']) && !$this->isAPI && in_array( $details['type'], $out_exclude ) )
             {
                 if( isset( $details['out'] ) )
                     $output = $details['out'];
@@ -214,25 +244,6 @@ class PLAYBOOK__
         $out = "";
         $in = "";
 
-        $in_exclude = array(
-            'ironskillet-update',
-            "maxmind-update",
-            "util_get-action-filter",
-            "protocoll-number-download"
-        );
-
-        $out_exclude = array(
-            'stats',
-            'download-predefined',
-            'config-size',
-            "xml-op-json",
-            "bpa-generator",
-            "ironskillet-update",
-            "maxmind-update",
-            "util_get-action-filter",
-            "protocoll-number-download",
-            "html-merger"
-        );
 
         if( isset($details['header-comment']) && !empty($details['header-comment']) )
         {

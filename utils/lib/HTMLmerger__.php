@@ -50,7 +50,7 @@ class HTMLmerger__
         $this->supportedArguments = Array();
         $this->supportedArguments['projectfolder'] = Array('niceName' => 'projectFolder', 'shortHelp' => 'define the projectfolder', 'argDesc' => 'projectfolder=[DIRECTORY]');
         $this->supportedArguments['help'] = array('niceName' => 'help', 'shortHelp' => 'this message');
-
+        $this->supportedArguments[] = array('niceName' => 'exportCSV', 'shortHelp' => 'when this argument is specified, it instructs the script to display the kept and removed objects per value');
 
         $this->usageMsg = PH::boldText('USAGE: ')."php ".basename(__FILE__)." projectfolder=[DIRECTORY]";
 
@@ -60,7 +60,11 @@ class HTMLmerger__
 
     public function main( $argv, $argc )
     {
-        $excelfilename = "excel.xlsx";
+        if( isset(PH::$args['exportcsv'])  )
+            $excelfilename = PH::$args['exportcsv'];
+        else
+            $excelfilename = "excel.xlsx";
+
         $output = array();
         $retValue = 0;
 

@@ -797,6 +797,11 @@ class SecurityRule extends RuleWithUserID
         return $this->_urlCategories;
     }
 
+    public function urlCategoriescount()
+    {
+        return count($this->_urlCategories);
+    }
+
     public function urlCategoryIsAny()
     {
         return count($this->_urlCategories) == 0;
@@ -1110,6 +1115,12 @@ class SecurityRule extends RuleWithUserID
         PH::print_stdout( $padding . "  Tags:  " . $this->tags->toString_inline() );
         foreach( $this->tags->getAll() as $tag )
             PH::$JSON_TMP['sub']['object'][$this->name()]['tag'][] = $tag->name();
+
+        if( $this->grouptag !== null )
+        {
+            PH::print_stdout( $padding . "  GroupTag:  " . $this->grouptag->name() );
+            PH::$JSON_TMP['sub']['object'][$this->name()]['group-tag'] = $this->grouptag->name();
+        }
 
         if( $this->_targets !== null )
         {
@@ -1631,6 +1642,7 @@ class SecurityRule extends RuleWithUserID
         $this->source = null;
         $this->destination = null;
         $this->tags = null;
+        $this->grouptag = null;
         $this->services = null;
         $this->apps = null;
 

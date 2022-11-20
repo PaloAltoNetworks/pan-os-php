@@ -72,6 +72,9 @@ class Container
     public $FileBlockingProfileStore = null;
 
     /** @var SecurityProfileStore */
+    public $DataFilteringProfileStore = null;
+
+    /** @var SecurityProfileStore */
     #public $AntiVirusProfileStore = null;
 
     /** @var SecurityProfileStore */
@@ -259,6 +262,9 @@ class Container
 
         $this->FileBlockingProfileStore = new SecurityProfileStore($this, "FileBlockingProfile");
         $this->FileBlockingProfileStore->name = 'FileBlocking';
+
+        $this->DataFilteringProfileStore = new SecurityProfileStore($this, "DataFilteringProfile");
+        $this->DataFilteringProfileStore->name = 'DataFiltering';
 
         #$this->WildfireProfileStore = new SecurityProfileStore($this, "SecurityProfileWildFire");
         #$this->WildfireProfileStore->name = 'WildFire';
@@ -475,6 +481,13 @@ class Container
             {
                 $this->FileBlockingProfileStore->load_from_domxml($tmproot);
             }
+
+            //
+            // DataFiltering Profile extraction
+            //
+            $tmproot = DH::findFirstElement('data-filtering', $this->securityProfilebaseroot);
+            if( $tmproot !== FALSE )
+                $this->DataFilteringProfileStore->load_from_domxml($tmproot);
 
             //
             // vulnerability Profile extraction
@@ -1158,6 +1171,8 @@ class Container
         $stdoutarray['custom URL objects']['total'] = $this->customURLProfileStore->count();
         $stdoutarray['File-Blocking objects'] = array();
         $stdoutarray['File-Blocking objects']['total'] = $this->FileBlockingProfileStore->count();
+        $stdoutarray['Data-Filtering objects'] = array();
+        $stdoutarray['Data-Filtering objects']['total'] = $this->DataFilteringProfileStore->count();
         $stdoutarray['Decryption objects'] = array();
         $stdoutarray['Decryption objects']['total'] = $this->DecryptionProfileStore->count();
 
