@@ -38,13 +38,15 @@ else
 require_once dirname(__FILE__)."/../../../lib/pan_php_framework.php";
 require_once ( dirname(__FILE__)."/../../lib/UTIL.php");
 
-
-set_exception_handler(function ($e) {
-    $code = $e->getCode() ?: 400;
-    header("Content-Type: application/json", true, $code);
-    print json_encode(["error" => $e->getMessage()]);
-    exit;
-});
+if( !isset( $_GET['shadow-nojson'] ) )
+{
+    set_exception_handler(function ($e) {
+        $code = $e->getCode() ?: 400;
+        header("Content-Type: application/json", true, $code);
+        print json_encode(["error" => $e->getMessage()]);
+        exit;
+    });
+}
 
 
 
@@ -159,7 +161,7 @@ else{
     #$argv[] = "help";
 }
 
-if( !isset( $_GET['shadow-json'] ) && !isset( $_GET['shadow-nojson'] ) )
+if( isset( $_GET['shadow-json'] ) || (!isset( $_GET['shadow-json'] ) && !isset( $_GET['shadow-nojson'] )) )
 {
     $argv[] = "shadow-json";
 }
@@ -281,7 +283,7 @@ function UTILcaller( $url_pieces, $argv, $argc, $PHP_FILE )
                 {
                     unset( $argv[1] );
                     if( strpos( $get, "api" ) === false )
-                        $get = dirname($PHP_FILE).$projects_folder.$get;
+                        $get = $projects_folder."/".$get;
                     else
                     {
                         #throw new Exception( "PAN-OS XML API mode is NOT yet supported.", 404);
@@ -290,7 +292,7 @@ function UTILcaller( $url_pieces, $argv, $argc, $PHP_FILE )
                 }
                 elseif( $key == "out" )
                 {
-                    $get = dirname($PHP_FILE).$projects_folder.$get;
+                    $get = $projects_folder."/".$get;
                 }
 
                 if( !empty($get) )

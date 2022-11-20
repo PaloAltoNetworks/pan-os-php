@@ -10,6 +10,7 @@ BUGFIX:
 * type=diff | bugfix for shadow-json - to display also diff information if xml node value only change
 
 GENERAL
+* pan-os-php-api - develop | improvements to use docker-compose with user DB
 
 
 2.0.63 (20221024)
