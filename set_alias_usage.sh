@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 
 FOLDER_PATH="/tools/pan-os-php"
-FOLDER_PATH="$(cd "$(dirname -- "$1")" >/dev/null; pwd -P)/$(basename -- "$1")"
+
+file=$(realpath "$0")
+FOLDER_PATH="${file%/*}"
 
 USER_VAR=$(whoami)
-
 echo "USER: ${USER_VAR}"
 
 if [ "${USER_VAR}" != "root" ]; then
@@ -29,7 +30,7 @@ echo "START \"PAN-OS-PHP variables on UBUNTU\"" \
 && echo "" \
 && ln -s ${FOLDER_PATH}/utils/bash_autocompletion/pan-os-php.sh /usr/share/bash-completion/completions/pan-os-php \
 && echo "check if everything is successfully installed" \
-&& php -r "require('lib/pan_php_framework.php');print \"PAN-OS-PHP LIBRARY - OK INSTALL SUCCESSFUL\n\";" \
+&& php -r "require('${FOLDER_PATH}/lib/pan_php_framework.php');print \"PAN-OS-PHP LIBRARY - OK INSTALL SUCCESSFUL\n\";" \
 && echo "" \
 && echo "" \
 && echo "END script"
