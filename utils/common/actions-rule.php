@@ -3683,6 +3683,7 @@ RuleCallContext::$supportedActions[] = array(
         $addResolvedServiceSummary = FALSE;
         $addResolvedApplicationSummary = FALSE;
         $addResolvedScheduleSummary = FALSE;
+        $addResolvedServiceAppDefaultSummary = FALSE;
 
         $optionalFields = &$context->arguments['additionalFields'];
 
@@ -3690,6 +3691,8 @@ RuleCallContext::$supportedActions[] = array(
             $addResolvedAddressSummary = TRUE;
         if( isset($optionalFields['ResolveServiceSummary']) )
             $addResolvedServiceSummary = TRUE;
+        if( isset($optionalFields['ResolveServiceAppDefaultSummary']) )
+            $addResolvedServiceAppDefaultSummary = TRUE;
         if( isset($optionalFields['ResolveApplicationSummary']) )
             $addResolvedApplicationSummary = TRUE;
         if( isset($optionalFields['ResolveScheduleSummary']) )
@@ -3711,6 +3714,9 @@ RuleCallContext::$supportedActions[] = array(
             {
                 PH::$JSON_TMP['sub']['object'][$rule->name()]['srv_resolved_sum'] = $context->ServiceResolveSummary( $rule );
             }
+            if( $addResolvedServiceAppDefaultSummary )
+                PH::$JSON_TMP['sub']['object'][$rule->name()]['srv_appdefault_resolved_sum'] = $context->ServiceAppDefaultResolveSummary( $rule );
+
             PH::$JSON_TMP['sub']['object'][$rule->name()]['srv_count'] = $context->ServiceCount( $rule, "both" );
             PH::$JSON_TMP['sub']['object'][$rule->name()]['srv_count_tcp'] = $context->ServiceCount( $rule, "tcp" );
             PH::$JSON_TMP['sub']['object'][$rule->name()]['srv_count_udp'] = $context->ServiceCount( $rule, "udp" );
@@ -3730,10 +3736,11 @@ RuleCallContext::$supportedActions[] = array(
         array('type' => 'pipeSeparatedList',
             'subtype' => 'string',
             'default' => '*NONE*',
-            'choices' => array('ResolveAddressSummary', 'ResolveServiceSummary', 'ResolveApplicationSummary', 'ResolveScheduleSummary'),
+            'choices' => array('ResolveAddressSummary', 'ResolveServiceSummary', 'ResolveServiceAppDefaultSummary','ResolveApplicationSummary', 'ResolveScheduleSummary'),
             'help' => "pipe(|) separated list of additional field to include in the report. The following is available:\n" .
                 "  - ResolveAddressSummary : fields with address objects will be resolved to IP addressed and summarized in a new column)\n" .
                 "  - ResolveServiceSummary : fields with service objects will be resolved to their value and summarized in a new column)\n"  .
+                "  - ResolveServiceAppDefaultSummary : fields with application objects will be resolved to their service default value and summarized in a new column)\n"  .
                 "  - ResolveApplicationSummary : fields with application objects will be resolved to their category and risk)\n"  .
                 "  - ResolveScheduleSummary : fields with schedule objects will be resolved to their expire time)\n"
         )
@@ -4146,6 +4153,7 @@ RuleCallContext::$supportedActions[] = array(
         $addResolvedServiceSummary = FALSE;
         $addResolvedApplicationSummary = FALSE;
         $addResolvedScheduleSummary = FALSE;
+        $addResolvedServiceAppDefaultSummary = FALSE;
 
         $optionalFields = &$context->arguments['additionalFields'];
 
@@ -4153,6 +4161,8 @@ RuleCallContext::$supportedActions[] = array(
             $addResolvedAddressSummary = TRUE;
         if( isset($optionalFields['ResolveServiceSummary']) )
             $addResolvedServiceSummary = TRUE;
+        if( isset($optionalFields['ResolveServiceAppDefaultSummary']) )
+            $addResolvedServiceAppDefaultSummary = TRUE;
         if( isset($optionalFields['ResolveApplicationSummary']) )
             $addResolvedApplicationSummary = TRUE;
         if( isset($optionalFields['ResolveScheduleSummary']) )
@@ -4173,6 +4183,7 @@ RuleCallContext::$supportedActions[] = array(
             'dst_resolved_sum' => 'dst_resolved_sum',
             'service' => 'service',
             'service_resolved_sum' => 'service_resolved_sum',
+            'service_appdefault_resolved_sum' => 'service_appdefault_resolved_sum',
             'service_count' => 'service_count',
             'service_count_tcp' => 'service_count_tcp',
             'service_count_udp' => 'service_count_udp',
@@ -4218,6 +4229,7 @@ RuleCallContext::$supportedActions[] = array(
                                 $fieldName == 'dnat_host_resolved_sum' || $fieldName == 'snat_address_resolved_sum') && !$addResolvedAddressSummary) ||
                         (($fieldName == 'service_resolved_sum' ||
                                 $fieldName == 'service_count' || $fieldName == 'service_count_tcp' || $fieldName == 'service_count_udp') && !$addResolvedServiceSummary) ||
+                        (($fieldName == 'service_appdefault_resolved_sum') && !$addResolvedServiceAppDefaultSummary) ||
                         (($fieldName == 'application_resolved_sum') && !$addResolvedApplicationSummary) ||
                         (($fieldName == 'schedule_resolved_sum') && !$addResolvedScheduleSummary)
                     )
@@ -4239,6 +4251,7 @@ RuleCallContext::$supportedActions[] = array(
                         $fieldName == 'dnat_host_resolved_sum' || $fieldName == 'snat_address_resolved_sum') && !$addResolvedAddressSummary) ||
                 (($fieldName == 'service_resolved_sum' ||
                         $fieldName == 'service_count' || $fieldName == 'service_count_tcp' || $fieldName == 'service_count_udp') && !$addResolvedServiceSummary) ||
+                (($fieldName == 'service_appdefault_resolved_sum') && !$addResolvedServiceAppDefaultSummary) ||
                 (($fieldName == 'application_resolved_sum') && !$addResolvedApplicationSummary) ||
                 (($fieldName == 'schedule_resolved_sum') && !$addResolvedScheduleSummary)
             )
@@ -4267,10 +4280,11 @@ RuleCallContext::$supportedActions[] = array(
             array('type' => 'pipeSeparatedList',
                 'subtype' => 'string',
                 'default' => '*NONE*',
-                'choices' => array('ResolveAddressSummary', 'ResolveServiceSummary', 'ResolveApplicationSummary', 'ResolveScheduleSummary'),
+                'choices' => array('ResolveAddressSummary', 'ResolveServiceSummary', 'ResolveServiceAppDefaultSummary', 'ResolveApplicationSummary', 'ResolveScheduleSummary'),
                 'help' => "pipe(|) separated list of additional field to include in the report. The following is available:\n" .
                     "  - ResolveAddressSummary : fields with address objects will be resolved to IP addressed and summarized in a new column)\n" .
                     "  - ResolveServiceSummary : fields with service objects will be resolved to their value and summarized in a new column)\n"  .
+                    "  - ResolveServiceAppDefaultSummary : fields with application objects will be resolved to their service default value and summarized in a new column)\n"  .
                     "  - ResolveApplicationSummary : fields with application objects will be resolved to their category and risk)\n" .
                     "  - ResolveScheduleSummary : fields with schedule objects will be resolved to their expire time)\n"
             )

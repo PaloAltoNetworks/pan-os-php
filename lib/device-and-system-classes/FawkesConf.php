@@ -229,7 +229,7 @@ class FawkesConf
         //
 
 
-        $containerMetaDataNode = DH::findXPathSingleEntryOrDie('/config/readonly/devices/entry/container', $this->xmlroot);
+        $containerMetaDataNode = DH::findXPathSingleEntry('/config/readonly/devices/entry/container', $this->xmlroot);
 
         $containerToParent = array();
         $parentToDG = array();
