@@ -42,8 +42,12 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `role`, `username`, `password`, `name`, `folder`) VALUES
-(1, 'admin', 'sven', '81dc9bdb52d04dc20036dbd8313ed055', 'Sven Waschkut', 'null'),
+(1, 'admin', 'admin', '81dc9bdb52d04dc20036dbd8313ed055', 'Administrator', 'null'),
 (2, 'user', 'John', 'e2fc714c4727ee9395f324cd2e7f331f', 'John Doe', 'null');
+/*
+- admin : 1234
+- John : abcd
+ */
 
 --
 -- Indexes for dumped tables

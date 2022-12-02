@@ -37,6 +37,8 @@ PH::processCliArgs();
 
 
 $tenantID = null;
+$http_auth_IP = "10.181.137.2";
+$http_auth_IP = "10.181.244.2";
 $http_auth_IP = "10.181.244.66";
 $inputconfig = null;
 $outputfilename = null;
@@ -351,6 +353,7 @@ function grepAllPods( $tenantID )
 function MFAAuthenticationCheck()
 {
     global $http_auth;
+    global $http_auth_IP;
 
     $expectedResponse = '{
   "kind": "Status",
@@ -379,7 +382,14 @@ function MFAAuthenticationCheck()
 
     if( $expectedResponse !== $response )
     {
-        derr( "please open: ".$http_auth." in WebBrowser for MFA authentication. Then rerun this script", null, FALSE );
+        //execute:
+        $exec = "Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome https://".$http_auth_IP;
+        exec( $exec );
+        sleep(20);
+
+        $message = "please open: ".$http_auth." in WebBrowser for MFA authentication. Then rerun this script";
+        #derr( $message, null, FALSE );
+        mwarning( $message, null, FALSE );
     }
     else
     {

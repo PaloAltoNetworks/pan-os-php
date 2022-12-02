@@ -1568,6 +1568,7 @@ class UTIL
             foreach( $this->pan->getVirtualSystems() as $sub )
             {
                 PH::print_stdout( " - " . $sub->name() . " [".$sub->alternativeName()."]" );
+                PH::$JSON_OUT['error-location'][] = $sub->name();
             }
         }
         else
@@ -1588,6 +1589,7 @@ class UTIL
             foreach( $subGroups as $sub )
             {
                 PH::print_stdout( " - " . $sub->name() );
+                PH::$JSON_OUT['error-location'][] = $sub->name();
             }
         }
         PH::print_stdout();

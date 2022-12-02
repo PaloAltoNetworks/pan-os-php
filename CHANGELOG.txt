@@ -8,8 +8,11 @@ UTIL:
 
 BUGFIX:
 * type=diff | bugfix for shadow-json - to display also diff information if xml node value only change
+* type=xml-issue | fix counting for service objects with double spaces in name
 
 GENERAL
+* pan-os-php-api - develop | improvements to use docker-compose with user DB
+* set_alias_usage.sh | improvement to dyamically read correct full path where pan-os-php files are available
 
 
 2.0.63 (20221024)
