@@ -713,18 +713,12 @@ class RuleCallContext extends CallContext
         if( $rule->isDecryptionRule() )
             return array();
         if( $rule->isAppOverrideRule() )
-            return $rule->ports();
-
-
+            return array();
         if( $rule->isNatRule() )
-        {
-            if( $rule->service !== null )
-                return array($rule->service);
-            return array( 'tcp/0-65535', 'udp/0-65535' );
-        }
+            return array();
 
-        if( $rule->services->isAny() )
-            return array( 'tcp/0-65535', 'udp/0-65535' );
+        #if( $rule->apps->isAny() )
+        #    return array( 'tcp/0-65535', 'udp/0-65535' );
         //if( $rule->services->isApplicationDefault() ){
             if( $rule->apps->isAny() )
                 return array( 'application-default' );
