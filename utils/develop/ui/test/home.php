@@ -122,6 +122,7 @@
                 //FR: display file content</br>
                 //FR: delete existing files</br>
                 //FR: delete complete user, incl. projectfolder and all files</br>
+                //FR: change password</br>
                 //FR: type=upload in=api:// into projectfolder</br>
                 //FR: introduce creating project which is git driven</br>
                 //FR: display project git changes</br>

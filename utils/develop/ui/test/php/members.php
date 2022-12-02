@@ -1,4 +1,6 @@
-<?php  
+<?php
+$conn = null;
+include "../db_conn.php";
 
 if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
     

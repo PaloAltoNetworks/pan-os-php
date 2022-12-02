@@ -705,7 +705,7 @@ class XMLISSUE extends UTIL
             foreach( $service_name as $objectName => $node )
             {
                 PH::print_stdout( "    - service object '{$objectName}' from DG/VSYS {$locationName} has '  ' double Spaces in name, this causes problems by copy&past 'set commands' ... (*FIX_MANUALLY*) at XML line #{$node->getLineNo()}");
-                $countServiceObjectsWithNameappdefault++;
+                $countServiceObjectsWithDoubleSpaces++;
             }
 
             //
