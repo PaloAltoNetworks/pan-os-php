@@ -1364,6 +1364,34 @@ RQuery::$defaultFilters['rule']['service']['operators']['is.application-default'
         'input' => 'input/panorama-8.0.xml'
     )
 );
+RQuery::$defaultFilters['rule']['service']['operators']['no.app-default.ports'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule = $context->object;
+
+        if( $rule->services->isApplicationDefault())
+            return false;
+
+        if( $rule->services->isAny() && $rule->apps->isAny())
+            return false;
+
+        $service_ports = $rule->ServiceResolveSummary(  );
+        $service_ports_appdefault = $rule->ServiceAppDefaultResolveSummary(  );
+
+        foreach( $service_ports as $key => $service_port )
+        {
+            if( !array_key_exists( $key, $service_ports_appdefault ) )
+                return true;
+        }
+
+        return false;
+    },
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 RQuery::$defaultFilters['rule']['service']['operators']['has'] = array(
     'eval' => function ($object, &$nestedQueries, $value) {
         /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AuthenticationRule|PbfRule|QoSRule|DoSRule $object */

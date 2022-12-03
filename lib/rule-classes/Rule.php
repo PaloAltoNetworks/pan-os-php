@@ -1600,6 +1600,137 @@ class Rule
             }
     }
 
+    public function ServiceResolveSummary()
+    {
+        $port_mapping_text = array();
+
+        if( $this->isDecryptionRule() )
+            return array();
+        if( $this->isAppOverrideRule() )
+            return $this->ports();
+
+
+        if( $this->isNatRule() )
+        {
+            if( $this->service !== null )
+                return array($this->service);
+            return array('tcp/0-65535', 'udp/0-65535');
+        }
+
+        if( $this->services->isAny() )
+            return array('tcp/0-65535', 'udp/0-65535');
+        if( $this->services->isApplicationDefault() )
+        {
+            if( $this->apps->isAny() )
+                return array('application-default');
+            else
+            {
+                $app_array = array();
+                $port_mapping_text = array();
+
+                $applications = $this->apps->getAll();
+                foreach( $applications as $app )
+                {
+                    /** @var App $app */
+                    $app_array = array_merge($app_array, $app->getAppsRecursive());
+                }
+
+                foreach( $app_array as $app )
+                    $app->getAppServiceDefault(FALSE, $port_mapping_text);
+
+                return $port_mapping_text;
+            }
+        }
+
+
+        $objects = $this->services->getAll();
+
+        $array = array();
+        foreach( $objects as $object )
+        {
+            $port_mapping = $object->dstPortMapping();
+            $mapping_texts = $port_mapping->mappingToText();
+
+            //TODO: handle predefined service objects in a different way
+            if( $object->name() == 'service-http' )
+                $mapping_texts = 'tcp/80';
+            if( $object->name() == 'service-https' )
+                $mapping_texts = 'tcp/443';
+
+
+            if( strpos($mapping_texts, " ") !== FALSE )
+                $mapping_text_array = explode(" ", $mapping_texts);
+            else
+                $mapping_text_array[] = $mapping_texts;
+
+
+            $protocol = "tmp";
+            foreach( $mapping_text_array as $mapping_text )
+            {
+                if( strpos($mapping_text, "tcp/") !== FALSE )
+                    $protocol = "tcp/";
+                elseif( strpos($mapping_text, "udp/") !== FALSE )
+                    $protocol = "udp/";
+
+                $mapping_text = str_replace($protocol, "", $mapping_text);
+                $mapping_text = explode(",", $mapping_text);
+
+                foreach( $mapping_text as $mapping )
+                {
+
+                    if( !in_array($protocol . $mapping, $port_mapping_text) )
+                    {
+                        $port_mapping_text[$protocol . $mapping] = $protocol . $mapping;
+
+                        if( strpos($mapping, "-") !== FALSE )
+                        {
+                            $array[$protocol . $mapping] = $protocol . $mapping;
+                            $range = explode("-", $mapping);
+                            for( $i = $range[0]; $i <= $range[1]; $i++ )
+                                $array[$protocol . $i] = $protocol . $i;
+                        }
+                        else
+                            $array[$protocol . $mapping] = $protocol . $mapping;
+                    }
+                }
+            }
+        }
+
+        return $port_mapping_text;
+    }
+
+    public function ServiceAppDefaultResolveSummary()
+    {
+        $port_mapping_text = array();
+
+        if( $this->isDecryptionRule() )
+            return array();
+        if( $this->isAppOverrideRule() )
+            return array();
+        if( $this->isNatRule() )
+            return array();
+
+        if( $this->apps->isAny() )
+            return array( 'application-default' );
+        else
+        {
+            $app_array = array();
+            $port_mapping_text = array();
+
+            $applications = $this->apps->getAll();
+            foreach( $applications as $app )
+            {
+                /** @var App $app */
+                $app_array = array_merge( $app_array, $app->getAppsRecursive() );
+            }
+
+            foreach( $app_array as $app )
+                $app->getAppServiceDefault( false, $port_mapping_text );
+
+            return $port_mapping_text;
+        }
+    }
+
     public function grouptagIs( $value )
     {
         if( $this->grouptag === null )
