@@ -6,6 +6,7 @@ UTIL:
 BUGFIX:
 
 GENERAL
+* update to Palo Alto Networks content version 8648-7733
 
 
 2.0.64 (20221203)
