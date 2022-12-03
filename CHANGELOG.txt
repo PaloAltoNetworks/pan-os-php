@@ -1,6 +1,14 @@
 CHANGELOG
 
-2.0.64
+2.0.65
+UTIL:
+
+BUGFIX:
+
+GENERAL
+
+
+2.0.64 (20221203)
 UTIL:
 * type=xml-issue | improve counting for applicationgroup/customurl fixes
 * type=address | improvement for actions=name-rename
