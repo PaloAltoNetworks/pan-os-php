@@ -5,6 +5,7 @@ UTIL:
 
 BUGFIX:
 type=rule 'filter=(timestamp.last.hit = 0)' bugfix to avoid error out
+type=rule 'filter=(timestamp-last-hit.fast < 10/01/2021)' | bugfix to not show rules which are unused
 
 GENERAL
 * update to Palo Alto Networks content version 8648-7733
