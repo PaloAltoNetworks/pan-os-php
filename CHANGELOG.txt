@@ -4,6 +4,7 @@ CHANGELOG
 UTIL:
 
 BUGFIX:
+type=rule 'filter=(timestamp.last.hit = 0)' bugfix to avoid error out
 
 GENERAL
 * update to Palo Alto Networks content version 8648-7733

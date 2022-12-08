@@ -1579,7 +1579,10 @@ class Rule
                         elseif( $hitType == "last-hit-timestamp" || $hitType == "first-hit-timestamp" )
                         {
                             $timestamp_value = $node->textContent;
-                            $filter_timestamp = strtotime($context->value);
+                            if( $context->value == 0 )
+                                $filter_timestamp = $context->value;
+                            else
+                                $filter_timestamp = strtotime($context->value);
                             $operator = $context->operator;
                             if( $operator == '=' )
                                 $operator = '==';
