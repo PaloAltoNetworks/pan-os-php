@@ -1588,7 +1588,11 @@ class Rule
                                 $operator = '==';
                             
                             $operator_string = $timestamp_value." ".$operator." ".$filter_timestamp;
-                            if( $timestamp_value != 0 && eval("return $operator_string;" ) )
+                            if( $operator == '==' && $timestamp_value == 0 )
+                            {
+                                //match, no unset
+                            }
+                            elseif( $timestamp_value != 0 && eval("return $operator_string;" ) )
                             {
                                 //match, no unset
                             }
