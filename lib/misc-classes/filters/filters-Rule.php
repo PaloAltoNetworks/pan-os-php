@@ -2766,6 +2766,20 @@ RQuery::$defaultFilters['rule']['timestamp-first-hit.fast']['operators']['>,<,=,
     'arg' => TRUE,
     'help' => 'returns TRUE if rule name matches the specified timestamp MM/DD/YYYY [american] / DD-MM-YYYY [european] / 21 September 2021 / - 90 days',
 );
+RQuery::$defaultFilters['rule']['hit-count.fast']['operators']['>,<,=,!'] = array(
+#RQuery::$defaultFilters['rule']['rule']['operators']['last-hit-timestamp'] = array(
+    'Function' => function (RuleRQueryContext $context) {
+        $object = $context->object;
+
+        if( !$object->isSecurityRule() && !$object->isNatRule() )
+            derr("unsupported filter : rule type " . $object->ruleNature() . " is not supported yet. " . $object->toString());
+
+        return $object->ruleUsageFast( $context, 'hit-count' );
+    },
+    'arg' => TRUE,
+    'help' => 'returns TRUE if rule name matches the specified hit count value',
+);
+
 
 RQuery::$defaultFilters['rule']['name']['operators']['eq'] = array(
     'Function' => function (RuleRQueryContext $context) {
