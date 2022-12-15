@@ -383,13 +383,13 @@ function MFAAuthenticationCheck()
     if( $expectedResponse !== $response )
     {
         //execute:
-        $exec = "Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome https://".$http_auth_IP;
-        exec( $exec );
-        sleep(20);
+        #$exec = "Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome https://".$http_auth_IP;
+        #exec( $exec );
+        #sleep(20);
 
         $message = "please open: ".$http_auth." in WebBrowser for MFA authentication. Then rerun this script";
-        #derr( $message, null, FALSE );
-        mwarning( $message, null, FALSE );
+        derr( $message, null, FALSE );
+        #mwarning( $message, null, FALSE );
     }
     else
     {

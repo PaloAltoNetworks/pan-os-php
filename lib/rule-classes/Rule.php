@@ -1531,6 +1531,9 @@ class Rule
                     }
                 }
             }
+
+            #foreach($sub->apiCache[$unused_flag] as  $ruleName => $entry)
+            #    print $ruleName."\n";
         }
 
         if( isset($sub->apiCache[$unused_flag][$this->name()]) )
@@ -1566,26 +1569,56 @@ class Rule
                         if( $hitType == "hit-count" )
                         {
                             $hitcount_value = $node->textContent;
-                            if( $hitcount_value == 0 )
+                            $operator = $context->operator;
+                            $filter_hitcount = $context->value;
+                            if($operator == "is.unused.fast")
                             {
-                                //match, no unset
+                                if( $hitcount_value == 0 )
+                                {
+                                    //match, no unset
+                                }
+                                else
+                                {
+                                    if( isset($sub->apiCache[$unused_flag][$ruleName]) )
+                                        unset($sub->apiCache[$unused_flag][$ruleName]);
+                                }
                             }
                             else
                             {
-                                if( isset($sub->apiCache[$unused_flag][$ruleName]) )
-                                    unset($sub->apiCache[$unused_flag][$ruleName]);
+                                if( $operator == '=' )
+                                    $operator = '==';
+
+                                $operator_string = $hitcount_value." ".$operator." ".$filter_hitcount;
+                                #print $ruleName."|".$operator_string."\n";
+
+                                if( eval("return $operator_string;" ) )
+                                {
+                                    //match, no unset
+                                }
+                                else
+                                {
+                                    if( isset($sub->apiCache[$unused_flag][$ruleName]) )
+                                        unset($sub->apiCache[$unused_flag][$ruleName]);
+                                }
                             }
                         }
                         elseif( $hitType == "last-hit-timestamp" || $hitType == "first-hit-timestamp" )
                         {
                             $timestamp_value = $node->textContent;
-                            $filter_timestamp = strtotime($context->value);
+                            if( $context->value == 0 )
+                                $filter_timestamp = $context->value;
+                            else
+                                $filter_timestamp = strtotime($context->value);
                             $operator = $context->operator;
                             if( $operator == '=' )
                                 $operator = '==';
                             
                             $operator_string = $timestamp_value." ".$operator." ".$filter_timestamp;
-                            if( eval("return $operator_string;" ) )
+                            if( $operator == '==' && $timestamp_value == 0 )
+                            {
+                                //match, no unset
+                            }
+                            elseif( $timestamp_value != 0 && eval("return $operator_string;" ) )
                             {
                                 //match, no unset
                             }

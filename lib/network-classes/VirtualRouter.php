@@ -238,7 +238,7 @@ class VirtualRouter
 
 
         if( $cleanInMemory )
-            $s->xmlroot = null;
+            $staticRoute->xmlroot = null;
 
         return TRUE;
     }

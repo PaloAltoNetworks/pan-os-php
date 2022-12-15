@@ -1,6 +1,19 @@
 CHANGELOG
 
-2.0.64
+2.0.65
+UTIL:
+* type=rule | introduce 'filter=(hit-count.fast >,<,=,! VALUE)'
+* type=device | now support for Fawkes config snippet
+
+BUGFIX:
+type=rule 'filter=(timestamp.last-hit.fast = 0)' bugfix to avoid error out
+type=rule 'filter=(timestamp-last-hit.fast < 10/01/2021)' | bugfix to not show rules which are unused
+
+GENERAL
+* update to Palo Alto Networks content version 8648-7733
+
+
+2.0.64 (20221203)
 UTIL:
 * type=xml-issue | improve counting for applicationgroup/customurl fixes
 * type=address | improvement for actions=name-rename
