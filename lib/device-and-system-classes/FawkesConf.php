@@ -1268,6 +1268,14 @@ class FawkesConf
         return $this->onprems;
     }
 
+    /**
+     * @return Snippet[]
+     */
+    public function getSnippets()
+    {
+        return $this->snippets;
+    }
+
     public function isFawkes()
     {
         return TRUE;
