@@ -1,6 +1,14 @@
 CHANGELOG
 
-2.0.65
+2.0.66
+UTIL:
+
+BUGFIX:
+
+GENERAL
+
+
+2.0.65 (20221215)
 UTIL:
 * type=rule | introduce 'filter=(hit-count.fast >,<,=,! VALUE)'
 * type=device | now support for Fawkes config snippet
