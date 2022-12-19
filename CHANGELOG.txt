@@ -1,6 +1,15 @@
 CHANGELOG
 
-2.0.65
+2.0.66
+UTIL:
+
+BUGFIX:
+* type=rule-merger | bugfix if argument exportcsv=xyz projectfolder=xyz and rules are skipped - to create skipped output file correctly
+
+GENERAL
+
+
+2.0.65 (20221215)
 UTIL:
 * type=rule | introduce 'filter=(hit-count.fast >,<,=,! VALUE)'
 * type=device | now support for Fawkes config snippet
