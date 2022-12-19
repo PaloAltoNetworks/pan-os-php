@@ -1222,10 +1222,14 @@ class RULEMERGER extends UTIL
         if( PH::$shadow_json )
             PH::$JSON_OUT['exportcsv'] = $content;
 
-        if( !$skipped )
-            $filename = $this->exportcsvFile;
-        else
-            $filename = "skipped-".$this->exportcsvFile;
+        if( $skipped )
+        {
+            $this->exportcsvFile = "skipped-".PH::$args['exportcsv'];
+
+            if( $this->projectFolder !== null )
+                $this->exportcsvFile = $this->projectFolder."/".$this->exportcsvFile;
+        }
+        $filename = $this->exportcsvFile;
         file_put_contents($filename, $content);
     }
 }
