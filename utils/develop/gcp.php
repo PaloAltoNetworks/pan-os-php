@@ -38,12 +38,15 @@ PH::processCliArgs();
 
 $tenantID = null;
 $http_auth_IP = "10.181.137.2";
-$http_auth_IP = "10.181.244.2";
-$http_auth_IP = "10.181.244.66";
+#$http_auth_IP = "10.181.244.2";
+#$http_auth_IP = "10.181.244.66";
 $inputconfig = null;
 $outputfilename = null;
 $displayOutput = true;
 $configPath = "/opt/pancfg/mgmt/saved-configs/";
+#$configPath = "/opt/pancfg/mgmt/factory/";
+#$configPath = "/tmp/";
+
 $insecureValue = "--insecure-skip-tls-verify=true";
 
 
@@ -225,15 +228,23 @@ elseif( $action == "expedition-log" )
 }
 elseif( $action == "upload" )
 {
-    if( $outputfilename === null )
+    if( $inputconfig === null )
         derr( "argument 'in=/PATH/FILENAME' is not specified" );
     if( $outputfilename === null )
-        derr( "argument 'out=FILENAME' is not specified" );
+    {
+        #derr( "argument 'out=FILENAME' is not specified" );
+        $tmpArray = explode( "/", $inputconfig );
+        if( count( $tmpArray ) == 1 )
+            $outputfilename = $inputconfig;
+        elseif( count( $tmpArray ) > 1 )
+            $outputfilename = end($tmpArray);
+    }
     $tmpArray = explode( "/", $outputfilename );
     if( count( $tmpArray ) > 1 )
         derr( "argument 'out=FILENAME' is only with FILENAME not a PATH allowed" );
+    $container = substr($tenantID, 0, -2);
 
-    $cli = "kubectl ".$insecureValue." cp ".$inputconfig." ".$tenantID.":".$configPath.$outputfilename;
+    $cli = "kubectl ".$insecureValue." cp ".$inputconfig." -c ".$container." ".$tenantID.":".$configPath.$outputfilename;
     execCLIWithOutput( $cli );
 }
 elseif( $action == "download" )
