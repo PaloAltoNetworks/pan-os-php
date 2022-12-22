@@ -5,6 +5,7 @@ UTIL:
 
 BUGFIX:
 * type=rule-merger | bugfix if argument exportcsv=xyz projectfolder=xyz and rules are skipped - to create skipped output file correctly
+* class ReferenceableObject | bugfix for - type=rule 'filter=(reflocation is.only DGNAME)'
 
 GENERAL
 

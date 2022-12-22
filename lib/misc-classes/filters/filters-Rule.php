@@ -1369,6 +1369,9 @@ RQuery::$defaultFilters['rule']['service']['operators']['no.app-default.ports'] 
     {
         $rule = $context->object;
 
+        if( !$rule->isSecurityRule() )
+            return FALSE;
+
         if( $rule->services->isApplicationDefault())
             return false;
 
