@@ -717,13 +717,10 @@ RQuery::$defaultFilters['address']['reflocation']['operators']['is'] = array(
         foreach( $reflocation_array as $reflocation )
         {
             if( strtolower($reflocation) == strtolower($context->value) )
-                $return =  TRUE;
-            else
-                $return =  FALSE;
+                return TRUE;
         }
 
-
-        return $return;
+        return FALSE;
     },
     'arg' => TRUE,
     'help' => 'returns TRUE if object location (shared/device-group/vsys name) matches',
@@ -763,7 +760,7 @@ RQuery::$defaultFilters['address']['reflocation']['operators']['is.only'] = arra
             if( strtolower($reflocation) == strtolower($context->value) )
                 $return = TRUE;
             else
-                $return = FALSE;
+                return FALSE;
         }
 
         /*if( count($reflocation_array) == 1 && $return )
