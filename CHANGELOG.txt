@@ -2,6 +2,7 @@ CHANGELOG
 
 2.0.66
 UTIL:
+* type=address/service | introduce 'filter=(reflocationcount ><=! NUMBER)'
 
 BUGFIX:
 * type=rule-merger | bugfix if argument exportcsv=xyz projectfolder=xyz and rules are skipped - to create skipped output file correctly

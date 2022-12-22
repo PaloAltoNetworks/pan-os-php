@@ -10,6 +10,14 @@ RQuery::$defaultFilters['address']['refcount']['operators']['>,<,=,!'] = array(
         'input' => 'input/panorama-8.0.xml'
     )
 );
+RQuery::$defaultFilters['address']['reflocationcount']['operators']['>,<,=,!'] = array(
+    'eval' => '$object->countLocationReferences() !operator! !value!',
+    'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP% 1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 RQuery::$defaultFilters['address']['object']['operators']['is.unused'] = array(
     'Function' => function (AddressRQueryContext $context) {
         return $context->object->countReferences() == 0;
@@ -685,7 +693,6 @@ RQuery::$defaultFilters['address']['reflocation']['operators']['is'] = array(
         #print "NAME: ".$object->name()."\n";
         $reflocation_array = $object->getReferencesLocation();
         #print_r( $reflocation_array );
-
 
         if( strtolower($context->value) == 'shared' )
         {

@@ -129,6 +129,12 @@ trait ReferenceableObject
         return count($this->refrules);
     }
 
+    public function countLocationReferences()
+    {
+        $refLocationcounter = array();
+        $this->getReferencesLocation($refLocationcounter);
+        return count($refLocationcounter);
+    }
 
     public function display_references($indent = 0)
     {
