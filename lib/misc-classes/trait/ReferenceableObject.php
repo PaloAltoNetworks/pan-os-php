@@ -129,6 +129,12 @@ trait ReferenceableObject
         return count($this->refrules);
     }
 
+    public function countLocationReferences()
+    {
+        $refLocationcounter = array();
+        $this->getReferencesLocation($refLocationcounter);
+        return count($refLocationcounter);
+    }
 
     public function display_references($indent = 0)
     {
@@ -233,37 +239,70 @@ trait ReferenceableObject
         $location_array = array();
         foreach( $this->refrules as $cur )
         {
+            #print "--------------\n";
             #print get_class( $cur)."\n";
-            //Firewall
-            if( isset($cur->owner->owner) && $cur->owner->owner !== null && method_exists($cur->owner->owner,'name') && $cur->owner->owner->name() !== "")
+            #print $cur->name()."\n";
+            if( isset($cur->owner->owner->owner->owner) && get_class( $cur->owner->owner->owner->owner ) == "PanoramaConf" )
             {
-                #print $cur->owner->owner->name()."\n";
-                $location_array[$cur->owner->owner->name()] = $cur->owner->owner->name();
-                if( isset($counter_array[$cur->owner->owner->name()]))
-                    $counter_array[$cur->owner->owner->name()] += 1;
-                else
-                    $counter_array[$cur->owner->owner->name()] = 1;
+                //Panorama - Rule
+                if( isset($cur->owner->owner->owner) && $cur->owner->owner->owner !== null && method_exists($cur->owner->owner->owner,'name') && $cur->owner->owner->owner->name() !== "")
+                {
+                    #print "pan | ".$cur->owner->owner->owner->name()."\n";
+                    $location_array[$cur->owner->owner->owner->name()] = $cur->owner->owner->owner->name();
+                    if( isset($counter_array[$cur->owner->owner->owner->name()]))
+                        $counter_array[$cur->owner->owner->owner->name()] += 1;
+                    else
+                        $counter_array[$cur->owner->owner->owner->name()] = 1;
+                }
             }
-
-            //Panorama
-            if( isset($cur->owner->owner->owner) && $cur->owner->owner->owner !== null && method_exists($cur->owner->owner->owner,'name') && $cur->owner->owner->owner->name() !== "")
+            elseif( isset($cur->owner->owner->owner) && get_class( $cur->owner->owner->owner ) == "PanoramaConf" )
             {
-                #print $cur->owner->owner->owner->name()."\n";
-                $location_array[$cur->owner->owner->owner->name()] = $cur->owner->owner->owner->name();
-                if( isset($counter_array[$cur->owner->owner->owner->name()]))
-                    $counter_array[$cur->owner->owner->owner->name()] += 1;
-                else
-                    $counter_array[$cur->owner->owner->owner->name()] = 1;
+                #Panorama - AddressGroup
+                if( isset($cur->owner->owner) && $cur->owner->owner !== null && method_exists($cur->owner->owner,'name') && $cur->owner->owner->name() !== "")
+                {
+                    #print "pan-fw | ".$cur->owner->owner->name()."\n";
+                    $location_array[$cur->owner->owner->name()] = $cur->owner->owner->name();
+                    if( isset($counter_array[$cur->owner->owner->name()]))
+                        $counter_array[$cur->owner->owner->name()] += 1;
+                    else
+                        $counter_array[$cur->owner->owner->name()] = 1;
+                }
+            }
+            else
+            {
+                //possible to be on FW?????
+                if( isset($cur->owner->owner->owner) && $cur->owner->owner->owner !== null && method_exists($cur->owner->owner->owner,'name') && $cur->owner->owner->owner->name() !== "")
+                {
+                    #print "fw-pan | ".$cur->owner->owner->owner->name()."\n";
+                    $location_array[$cur->owner->owner->owner->name()] = $cur->owner->owner->owner->name();
+                    if( isset($counter_array[$cur->owner->owner->owner->name()]))
+                        $counter_array[$cur->owner->owner->owner->name()] += 1;
+                    else
+                        $counter_array[$cur->owner->owner->owner->name()] = 1;
+                }
+                //Firewall
+                elseif( isset($cur->owner->owner) && $cur->owner->owner !== null && method_exists($cur->owner->owner,'name') && $cur->owner->owner->name() !== "")
+                {
+                    #print "fw | ".$cur->owner->owner->name()."\n";
+                    $location_array[$cur->owner->owner->name()] = $cur->owner->owner->name();
+                    if( isset($counter_array[$cur->owner->owner->name()]))
+                        $counter_array[$cur->owner->owner->name()] += 1;
+                    else
+                        $counter_array[$cur->owner->owner->name()] = 1;
+                }
             }
 
 
             if( get_class( $cur ) == "AddressGroup" || get_class( $cur ) == "ServiceGroup"  )
             {
-                $recursive_loc_array = $cur->getReferencesLocation( );
-                $location_array = array_merge( $location_array, $recursive_loc_array );
+                //why is this needed
+                    ##print $cur->name()."\n";
+                #$recursive_loc_array = $cur->getReferencesLocation( );
+                    ##print_r( $recursive_loc_array );
+                #$location_array = array_merge( $location_array, $recursive_loc_array );
             }
         }
-
+        #print_r($location_array);
         return $location_array;
     }
     

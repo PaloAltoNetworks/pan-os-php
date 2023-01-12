@@ -10,6 +10,14 @@ RQuery::$defaultFilters['address']['refcount']['operators']['>,<,=,!'] = array(
         'input' => 'input/panorama-8.0.xml'
     )
 );
+RQuery::$defaultFilters['address']['reflocationcount']['operators']['>,<,=,!'] = array(
+    'eval' => '$object->countLocationReferences() !operator! !value!',
+    'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP% 1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 RQuery::$defaultFilters['address']['object']['operators']['is.unused'] = array(
     'Function' => function (AddressRQueryContext $context) {
         return $context->object->countReferences() == 0;
@@ -682,10 +690,9 @@ RQuery::$defaultFilters['address']['reflocation']['operators']['is'] = array(
         $object = $context->object;
         $owner = $context->object->owner->owner;
 
+        #print "NAME: ".$object->name()."\n";
         $reflocation_array = $object->getReferencesLocation();
-
         #print_r( $reflocation_array );
-
 
         if( strtolower($context->value) == 'shared' )
         {
@@ -706,13 +713,12 @@ RQuery::$defaultFilters['address']['reflocation']['operators']['is'] = array(
             }
         }
 
-
+        $return = FALSE;
         foreach( $reflocation_array as $reflocation )
         {
             if( strtolower($reflocation) == strtolower($context->value) )
                 return TRUE;
         }
-
 
         return FALSE;
     },
@@ -726,7 +732,9 @@ RQuery::$defaultFilters['address']['reflocation']['operators']['is'] = array(
 RQuery::$defaultFilters['address']['reflocation']['operators']['is.only'] = array(
     'Function' => function (AddressRQueryContext $context) {
         $owner = $context->object->owner->owner;
-        $reflocations = $context->object->getReferencesLocation();
+        $object = $context->object;
+
+        $reflocation_array = $object->getReferencesLocation();
 
         /*
                 $DG = $owner->findDeviceGroup( $context->value );
@@ -747,17 +755,20 @@ RQuery::$defaultFilters['address']['reflocation']['operators']['is.only'] = arra
         }
 
         $return = FALSE;
-        foreach( $reflocations as $reflocation )
+        foreach( $reflocation_array as $reflocation )
         {
             if( strtolower($reflocation) == strtolower($context->value) )
                 $return = TRUE;
+            else
+                return FALSE;
         }
 
-        if( count($reflocations) == 1 && $return )
+        /*if( count($reflocation_array) == 1 && $return )
             return TRUE;
         else
             return FALSE;
-
+        */
+        return $return;
     },
     'arg' => TRUE,
     'help' => 'returns TRUE if object location (shared/device-group/vsys name) matches',

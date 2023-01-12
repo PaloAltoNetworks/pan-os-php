@@ -10,6 +10,14 @@ RQuery::$defaultFilters['service']['refcount']['operators']['>,<,=,!'] = array(
         'input' => 'input/panorama-8.0.xml'
     )
 );
+RQuery::$defaultFilters['service']['reflocationcount']['operators']['>,<,=,!'] = array(
+    'eval' => '$object->countLocationReferences() !operator! !value!',
+    'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP% 1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 RQuery::$defaultFilters['service']['object']['operators']['is.unused'] = array(
     'Function' => function (ServiceRQueryContext $context) {
         return $context->object->countReferences() == 0;
