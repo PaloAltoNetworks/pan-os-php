@@ -939,7 +939,8 @@ class PH
         "protocoll-number-download",
         "html-merger",
         "dhcp",
-        "tsf"
+        "tsf",
+        "xpath"
         );
 
 
@@ -968,7 +969,8 @@ class PH
         'config-commit',
         "protocoll-number-download",
         "html-merger",
-        "tsf"
+        "tsf",
+        "xpath"
     );
 
     public static function callPANOSPHP( $type, $argv, $argc, $PHP_FILE, $_supportedArguments = array(), $_usageMsg = "", $projectfolder = "" )
@@ -1088,6 +1090,9 @@ class PH
 
         elseif( $type == "tsf" )
             $util = new TSF__( $argv, $argc);
+
+        elseif( $type == "xpath" )
+            $util = new XPATH($type, $argv, $argc,$PHP_FILE." type=".$type, $_supportedArguments, $_usageMsg, $projectfolder);
 
         elseif( $type == 'address'
             || $type == 'service'
