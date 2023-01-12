@@ -887,7 +887,7 @@ class DH
             $newdoc = new DOMDocument;
             $node = $newdoc->importNode($node, true);
             $newdoc->appendChild($node);
-            print $newdoc->saveXML();
+            print $newdoc->saveXML($newdoc->documentElement);
         }
 
     }
