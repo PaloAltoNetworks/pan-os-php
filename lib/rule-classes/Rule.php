@@ -184,7 +184,7 @@ class Rule
             else if( $node->nodeName == 'group-tag' )
             {
                 $grouptagName = $node->textContent;
-                $this->grouptag = $this->owner->owner->tagStore->find( $grouptagName, $this);
+                $this->grouptag = $this->owner->owner->tagStore->find( $grouptagName, $this->grouptag);
             }
             else if( $node->nodeName == 'description' )
             {
