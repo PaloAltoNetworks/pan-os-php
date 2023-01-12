@@ -25,6 +25,10 @@ class DIFF extends UTIL
     public $filters = array();
     public $excludes = array();
 
+    public $move = array();
+    public $added = array();
+    public $deleted = array();
+
     public $ruleorderCHECK = TRUE;
 
     //needed for CLI input of argument filter=...$$name$$...
@@ -47,6 +51,18 @@ class DIFF extends UTIL
     \"exclude\": [
     	\"/config/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='testDG']/service-group\",
     	\"/config/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='$\$name$$']/address\"
+    ],
+    \"move\": [
+        {
+            \"from\": \"/template/config/shared/ssl-decrypt\",
+            \"to\": \"/template/config/devices/entry[@name='localhost.localdomain']/vsys/entry[@name='vsys1']/ssl-decrypt\"
+        }
+    ],
+    \"added\": [
+    	\"/template/config/devices/entry[@name='localhost.localdomain']/network/routing-profile\"
+    ],
+    \"deleted\": [
+    	\"/template/config/shared/response-page\"
     ]
 }\n".
             "\n".
@@ -215,6 +231,35 @@ class DIFF extends UTIL
                 PH::print_stdout( "");
                 foreach( $this->filters as $filter )
                     PH::print_stdout( "FILTER is set to: '" . PH::boldText( $filter ) . "'");
+
+                if( isset( $array['added'] ) )
+                    $this->added = $array['added'];
+                if( isset( $array['deleted'] ) )
+                    $this->deleted = $array['deleted'];
+
+                if( isset( $array['move'] ) )
+                {
+                    $this->move = $array['move'];
+
+                    foreach( $this->move as $entry )
+                    {
+                        //check moved XML Nodes
+                        PH::print_stdout(PH::boldText("check moved XML node:") );
+                        PH::print_stdout( " - fromXpath: ".$entry['from'] );
+                        PH::print_stdout( " - toXpath:   ".$entry['to'] );
+                        $doc1Root = DH::findXPathSingleEntry($entry['from'], $doc1);
+                        $doc2Root = DH::findXPathSingleEntry($entry['to'], $doc2);
+
+                        if( $doc1Root !== False && $doc2Root !== False )
+                            $this->compareElements($doc1Root, $doc2Root);
+
+                        if( isset($entry['from']) )
+                            $this->excludes[] = $entry['from'];
+                        if( isset($entry['to']) )
+                            $this->excludes[] = $entry['to'];
+                    }
+                }
+
 
                 PH::print_stdout( "");
 
@@ -397,6 +442,26 @@ class DIFF extends UTIL
             $el1Trim = trim($el1->textContent);
             $el2Trim = trim($el2->textContent);
 
+            //Todo: swaschkut 20230110
+            // - issue seen in config; wihtspaces in public-key / additional space in not-valid-after
+            if( $el1Trim != $el2Trim && strpos($xpath, "/certificate/") !== FALSE )
+            {
+                $el1Trim = preg_replace('/\s+/', ' ', $el1Trim);
+                $el2Trim = preg_replace('/\s+/', ' ', $el2Trim);
+            }
+
+            //Todo: swaschkut 20230110 - should private-key be really skipped????
+
+            if( $el1Trim != $el2Trim && strpos($xpath, "/private-key") !== FALSE )
+                return null;
+            if( $el1Trim != $el2Trim && strpos($xpath, "/pre-shared-key/key") !== FALSE )
+                return null;
+            if( $el1Trim != $el2Trim && strpos($xpath, "/agent-user-override-key") !== FALSE )
+                return null;
+            if( $el1Trim != $el2Trim && strpos($xpath, "/agent-ui/uninstall-password") !== FALSE )
+                return null;
+
+
             if( $el1Trim != $el2Trim )
             {
                 $text = '';
@@ -433,8 +498,26 @@ class DIFF extends UTIL
         {
             if( !isset($el2Elements[$tagName]) )
             {
-                foreach( $nodeArray1 as $node )
-                    $minus[] = $node;
+                $fullXpathName = $xpath."/".$tagName;
+                #PH::print_stdout( $fullXpathName );
+
+                $continue = false;
+                $this->filter_exclude( $continue, $fullXpathName );
+                $this->filter_deleted( $continue, $fullXpathName );
+                if( !$continue )
+                    foreach( $nodeArray1 as $node )
+                    {
+                        $continue = false;
+                        $attribute = DH::findAttribute('name', $node);
+                        if( $attribute !== FALSE )
+                        {
+                            $this->filter_exclude( $continue, $fullXpathName."[@name='".$attribute."']" );
+                            $this->filter_deleted( $continue, $fullXpathName."[@name='".$attribute."']" );
+                        }
+
+                        if( !$continue )
+                            $minus[] = $node;
+                    }
                 unset($el1Elements[$tagName]);
             }
         }
@@ -442,8 +525,26 @@ class DIFF extends UTIL
         {
             if( !isset($el1Elements[$tagName]) )
             {
-                foreach( $nodeArray2 as $node )
-                    $plus[] = $node;
+                $fullXpathName = $xpath."/".$tagName;
+                #PH::print_stdout( $fullXpathName );
+
+                $continue = false;
+                $this->filter_exclude( $continue, $fullXpathName );
+                $this->filter_added( $continue, $fullXpathName );
+                if( !$continue )
+                    foreach( $nodeArray2 as $node )
+                    {
+                        $continue = false;
+                        $attribute = DH::findAttribute('name', $node);
+                        if( $attribute !== FALSE )
+                        {
+                            $this->filter_exclude( $continue, $fullXpathName."[@name='".$attribute."']" );
+                            $this->filter_added( $continue, $fullXpathName."[@name='".$attribute."']" );
+                        }
+
+                        if( !$continue )
+                            $plus[] = $node;
+                    }
                 unset($el2Elements[$tagName]);
             }
         }
@@ -887,7 +988,22 @@ class DIFF extends UTIL
 
     function filter_exclude( &$continue, $string )
     {
-        foreach( $this->excludes as $exclude )
+        $this->parsingFilter( $this->excludes, $continue, $string );
+    }
+
+    function filter_added( &$continue, $string )
+    {
+        $this->parsingFilter( $this->added, $continue, $string );
+    }
+
+    function filter_deleted( &$continue, $string )
+    {
+        $this->parsingFilter( $this->deleted, $continue, $string );
+    }
+
+    function parsingFilter( $typeArray, &$continue, $string )
+    {
+        foreach( $typeArray as $exclude )
         {
             if( strpos( $exclude, "\$\$name\$\$" ) !== FALSE )
             {
