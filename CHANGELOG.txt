@@ -5,6 +5,7 @@ UTIL:
 * type=address/service | introduce 'filter=(reflocationcount ><=! NUMBER)'
 * type=diff | introduce more options for 'filter=file.json' - 'added'/'deleted'/'moved' to not display xPath diff, if already accepted and known
 * type=xpath | newly introduced utility to search for XML xpath value by using node-filter / xpath-filter / nameattribute-filter | additional output display-xmlnode, display-nameattribute
+* type=diff | only avoid display of whitespaces in DIFF for xpath */certificate/ if flag is set
 
 BUGFIX:
 * type=rule-merger | bugfix if argument exportcsv=xyz projectfolder=xyz and rules are skipped - to create skipped output file correctly

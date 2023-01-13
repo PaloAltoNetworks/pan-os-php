@@ -30,6 +30,8 @@ class DIFF extends UTIL
     public $deleted = array();
 
     public $ruleorderCHECK = TRUE;
+    public $avoidDisplayWhitspaceDiffCertificate = false;
+
 
     //needed for CLI input of argument filter=...$$name$$...
     public $replace = "";
@@ -220,6 +222,7 @@ class DIFF extends UTIL
         {
             if( file_exists( PH::$args['filter'] ) )
             {
+                $this->avoidDisplayWhitspaceDiffCertificate = TRUE;
                 $strJsonFileContents = file_get_contents(PH::$args['filter']);
 
                 $array = json_decode($strJsonFileContents, true);
@@ -442,14 +445,16 @@ class DIFF extends UTIL
             $el1Trim = trim($el1->textContent);
             $el2Trim = trim($el2->textContent);
 
-            //Todo: swaschkut 20230110
-            // - issue seen in config; wihtspaces in public-key / additional space in not-valid-after
-            if( $el1Trim != $el2Trim && strpos($xpath, "/certificate/") !== FALSE )
+            if( $this->avoidDisplayWhitspaceDiffCertificate )
             {
-                $el1Trim = preg_replace('/\s+/', ' ', $el1Trim);
-                $el2Trim = preg_replace('/\s+/', ' ', $el2Trim);
+                if( $el1Trim != $el2Trim && strpos($xpath, "/certificate/") !== FALSE )
+                {
+                    $el1Trim = preg_replace('/\s+/', ' ', $el1Trim);
+                    $el2Trim = preg_replace('/\s+/', ' ', $el2Trim);
+                }
             }
 
+            /*
             //Todo: swaschkut 20230110 - should private-key be really skipped????
 
             if( $el1Trim != $el2Trim && strpos($xpath, "/private-key") !== FALSE )
@@ -460,6 +465,7 @@ class DIFF extends UTIL
                 return null;
             if( $el1Trim != $el2Trim && strpos($xpath, "/agent-ui/uninstall-password") !== FALSE )
                 return null;
+            */
 
 
             if( $el1Trim != $el2Trim )
