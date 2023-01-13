@@ -14,6 +14,7 @@ BUGFIX:
 * class RULE.php method load_common_from_domxml() | bugfix to NOT set reference for group-tag - fix problems with tag-merger
 
 GENERAL
+* update js and json file for bash_completion
 
 
 2.0.65 (20221215)
