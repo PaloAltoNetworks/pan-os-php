@@ -439,6 +439,12 @@ class DIFF extends UTIL
         }
 
 
+        //Todo:
+        // - search for xpath: */pre-rulebase
+        // - search for xpath: */post-rulebase
+        // if both only once available
+        //      get rules from pre + post file1 and file2 and check rule order
+
 
         if( count($el1Elements) == 0 && count($el2Elements) == 0 )
         {

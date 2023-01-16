@@ -503,11 +503,29 @@ class RULEMERGER extends UTIL
 
         foreach( $this->UTIL_denyRules as $index => $denyRule )
         {
+            /** @var SecurityRule $denyRule */
+
             //var_dump($rulesArrayIndex);
             $denyRulePosition = $this->UTIL_rulesArrayIndex[$denyRule->indexPosition];
             if( $rulePosition < $denyRulePosition )
             {
-                return $denyRule;
+                //Todo: swaschkut 20230116
+                // - check that rule XYZ is included in denyRule XZY
+                // - where XYZ can be
+                //     - from
+                //     - to
+
+                $srcBool = $denyRule->source->includesContainer( $rule->source );
+                $srcBoolreverse = $rule->source->includesContainer( $denyRule->source );
+
+                $dstBool = $denyRule->destination->includesContainer( $rule->destination );
+                $dstBoolreverse = $rule->destination->includesContainer( $denyRule->destination );
+
+                $srvBool = $denyRule->services->includesContainer( $rule->services );
+                $srvBoolreverse = $rule->services->includesContainer( $denyRule->services );
+
+                if( ($srcBool === TRUE || $srcBoolreverse === TRUE) && ($dstBool === TRUE || $dstBoolreverse === TRUE ) && ($srvBool === TRUE || $srvBoolreverse === TRUE) )
+                    return $denyRule;
             }
             else
                 unset($this->UTIL_denyRules[$index]);
@@ -605,7 +623,9 @@ class RULEMERGER extends UTIL
             {
                 $nextDenyRule = $this->UTIL_findNearestDenyRule($rule);
                 if( $nextDenyRule !== FALSE )
+                {
                     $nextDenyRulePosition = $this->UTIL_rulesArrayIndex[$nextDenyRule->indexPosition];
+                }
             }
 
             // ignore rules that are placed before this one
@@ -662,6 +682,14 @@ class RULEMERGER extends UTIL
 
                     #unset( $this->deletedObjects[$rule->name()] );
                     #$mergedRulesCount--;
+
+                    if( $nextDenyRule !== FALSE )
+                    {
+                        $line = "";
+                        foreach( $this->context->fields as $fieldName => $fieldID )
+                            $line .= $this->context->ruleFieldHtmlExport($nextDenyRule, $fieldID);
+                        $this->skippedObjects[$rule->name()]['skippedreason'][$nextDenyRule->name()] =  $line;
+                    }
                 }
 
             }
@@ -1204,6 +1232,25 @@ class RULEMERGER extends UTIL
                 $lines .= "</tr>\n";
             }
 
+
+            if( !isset($line['skippedreason']) )
+                continue;
+
+            foreach( $line['skippedreason'] as  $removed )
+            {
+                if( $color === false )
+                    $lines .= "<tr>\n";
+                else
+                    $lines .= "<tr bgcolor=\"#DDDDDD\">";
+
+                $lines .= $encloseFunction( "---" );
+                if( $skipped )
+                    $lines .= $encloseFunction( "reason" );
+
+                $lines .=  $removed ;
+
+                $lines .= "</tr>\n";
+            }
 
         }
 

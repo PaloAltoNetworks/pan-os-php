@@ -56,7 +56,7 @@ class XPATH extends UTIL
         $displayAttributeName = false;
 
         if( !isset( PH::$args['node-filter'] ) && !isset( PH::$args['nameattribute-filter'] ) && !isset( PH::$args['xpath-filter'] ) )
-            $this->display_error_usage_exit('"nodefilter" argument is not set: example "certificate"');
+            $this->display_error_usage_exit('"node-filter" argument is not set: example "certificate"');
         elseif( !isset( PH::$args['node-filter'] ) && isset( PH::$args['nameattribute-filter'] ) )
             $qualifiedNodeName = "entry";
         elseif( !isset( PH::$args['xpath-filter'] ) )
@@ -261,7 +261,7 @@ class XPATH extends UTIL
         $this->supportedArguments[] = Array('niceName' => 'DebugAPI', 'shortHelp' => 'prints API calls when they happen');
         $this->supportedArguments[] = Array('niceName' => 'help', 'shortHelp' => 'this message');
 
-        $this->supportedArguments[] = Array('niceName' => 'node-filter', 'shortHelp' => 'specify the nodefilter to get all xPath within this configuration file');
+        $this->supportedArguments[] = Array('niceName' => 'node-filter', 'shortHelp' => 'specify the node-filter to get all xPath within this configuration file');
         $this->supportedArguments[] = Array('niceName' => 'xpath-filter', 'shortHelp' => 'specify the xpath to get the value defined on this config');
         $this->supportedArguments[] = Array('niceName' => 'nameattribute-filter', 'shortHelp' => 'specify the nameattribute to get only XMLnode where nameattribute match');
 
