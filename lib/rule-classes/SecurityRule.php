@@ -251,8 +251,11 @@ class SecurityRule extends RuleWithUserID
             elseif( $node->nodeName == 'qos' )
             {
                 $tmp = DH::findFirstElement('marking', $node);
-                $node1 = $tmp->firstChild;
-                $this->qosMarking = array($node1->nodeName => $node1->textContent);
+                if( $tmp !== FALSE )
+                {
+                    $node1 = $tmp->firstChild;
+                    $this->qosMarking = array($node1->nodeName => $node1->textContent);
+                }
             }
         }
 

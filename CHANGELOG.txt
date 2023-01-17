@@ -13,6 +13,7 @@ BUGFIX:
 * class ReferenceableObject | bugfix for - type=rule 'filter=(reflocation is.only DGNAME)'
 * type=address | bugfix for 'filter=(reflocation is DGNAME)' if multiple reflocation are used
 * class RULE.php method load_common_from_domxml() | bugfix to NOT set reference for group-tag - fix problems with tag-merger
+* class SecurityRule | bugfix for qos -> marking
 
 GENERAL
 * update js and json file for bash_completion
