@@ -911,18 +911,23 @@ class UTIL
         $xpathResult = DH::findXPath('/config', $this->xmlDoc);
         $xpathResult = $xpathResult->item(0);
 
-        //BUCKBEAK
-        $buckbeak_config_version = DH::findAttribute('buckbeak', $xpathResult);
-
-        //FAWKES
-        $fawkes_config_version = DH::findAttribute('fawkes-config-version', $xpathResult);
-        if( $fawkes_config_version == null )
-            $fawkes_config_version = DH::findAttribute('fawkes-config', $xpathResult);
-
-        if( $fawkes_config_version != null )
+        $buckbeak_config_version = null;
+        $fawkes_config_version = null;
+        if( $xpathResult != null )
         {
-            PH::print_stdout( " - FAWKES-CONFIG-VERSION: ".$fawkes_config_version );
-            PH::print_stdout( array( $fawkes_config_version ), false, "fawkes-config-version" );
+            //BUCKBEAK
+            $buckbeak_config_version = DH::findAttribute('buckbeak', $xpathResult);
+
+            //FAWKES
+            $fawkes_config_version = DH::findAttribute('fawkes-config-version', $xpathResult);
+            if( $fawkes_config_version == null )
+                $fawkes_config_version = DH::findAttribute('fawkes-config', $xpathResult);
+
+            if( $fawkes_config_version != null )
+            {
+                PH::print_stdout( " - FAWKES-CONFIG-VERSION: ".$fawkes_config_version );
+                PH::print_stdout( array( $fawkes_config_version ), false, "fawkes-config-version" );
+            }
         }
 
 

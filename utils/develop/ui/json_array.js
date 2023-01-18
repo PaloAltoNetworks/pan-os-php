@@ -709,6 +709,18 @@ var subjectObject =
                     }
                 }
             },
+            "reflocationcount": {
+                "operators": {
+                    ">,<,=,!": {
+                        "eval": "$object->countLocationReferences() !operator! !value!",
+                        "arg": true,
+                        "ci": {
+                            "fString": "(%PROP% 1)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    }
+                }
+            },
             "refobjectname": {
                 "operators": {
                     "is": {
@@ -2026,10 +2038,11 @@ var subjectObject =
                         "choices": [
                             "ResolveAddressSummary",
                             "ResolveServiceSummary",
+                            "ResolveServiceAppDefaultSummary",
                             "ResolveApplicationSummary",
                             "ResolveScheduleSummary"
                         ],
-                        "help": "pipe(|) separated list of additional field to include in the report. The following is available:\n  - ResolveAddressSummary : fields with address objects will be resolved to IP addressed and summarized in a new column)\n  - ResolveServiceSummary : fields with service objects will be resolved to their value and summarized in a new column)\n  - ResolveApplicationSummary : fields with application objects will be resolved to their category and risk)\n  - ResolveScheduleSummary : fields with schedule objects will be resolved to their expire time)\n"
+                        "help": "pipe(|) separated list of additional field to include in the report. The following is available:\n  - ResolveAddressSummary : fields with address objects will be resolved to IP addressed and summarized in a new column)\n  - ResolveServiceSummary : fields with service objects will be resolved to their value and summarized in a new column)\n  - ResolveServiceAppDefaultSummary : fields with application objects will be resolved to their service default value and summarized in a new column)\n  - ResolveApplicationSummary : fields with application objects will be resolved to their category and risk)\n  - ResolveScheduleSummary : fields with schedule objects will be resolved to their expire time)\n"
                     }
                 }
             },
@@ -2186,10 +2199,11 @@ var subjectObject =
                         "choices": [
                             "ResolveAddressSummary",
                             "ResolveServiceSummary",
+                            "ResolveServiceAppDefaultSummary",
                             "ResolveApplicationSummary",
                             "ResolveScheduleSummary"
                         ],
-                        "help": "pipe(|) separated list of additional field to include in the report. The following is available:\n  - ResolveAddressSummary : fields with address objects will be resolved to IP addressed and summarized in a new column)\n  - ResolveServiceSummary : fields with service objects will be resolved to their value and summarized in a new column)\n  - ResolveApplicationSummary : fields with application objects will be resolved to their category and risk)\n  - ResolveScheduleSummary : fields with schedule objects will be resolved to their expire time)\n"
+                        "help": "pipe(|) separated list of additional field to include in the report. The following is available:\n  - ResolveAddressSummary : fields with address objects will be resolved to IP addressed and summarized in a new column)\n  - ResolveServiceSummary : fields with service objects will be resolved to their value and summarized in a new column)\n  - ResolveServiceAppDefaultSummary : fields with application objects will be resolved to their service default value and summarized in a new column)\n  - ResolveApplicationSummary : fields with application objects will be resolved to their category and risk)\n  - ResolveScheduleSummary : fields with schedule objects will be resolved to their expire time)\n"
                     }
                 }
             },
@@ -3599,6 +3613,15 @@ var subjectObject =
                     }
                 }
             },
+            "hit-count.fast": {
+                "operators": {
+                    ">,<,=,!": {
+                        "Function": {},
+                        "arg": true,
+                        "help": "returns TRUE if rule name matches the specified hit count value"
+                    }
+                }
+            },
             "location": {
                 "operators": {
                     "is": {
@@ -4058,6 +4081,14 @@ var subjectObject =
                         }
                     },
                     "is.application-default": {
+                        "Function": {},
+                        "arg": false,
+                        "ci": {
+                            "fString": "(%PROP%)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    },
+                    "no.app-default.ports": {
                         "Function": {},
                         "arg": false,
                         "ci": {
@@ -6200,6 +6231,18 @@ var subjectObject =
                     }
                 }
             },
+            "reflocationcount": {
+                "operators": {
+                    ">,<,=,!": {
+                        "eval": "$object->countLocationReferences() !operator! !value!",
+                        "arg": true,
+                        "ci": {
+                            "fString": "(%PROP% 1)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    }
+                }
+            },
             "refstore": {
                 "operators": {
                     "is": {
@@ -6964,6 +7007,11 @@ var subjectObject =
     },
     "xml-op-json": {
         "name": "xml-op-json",
+        "action": [],
+        "filter": []
+    },
+    "xpath": {
+        "name": "xpath",
         "action": [],
         "filter": []
     },
