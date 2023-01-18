@@ -29,9 +29,15 @@ class DIFF extends UTIL
     public $added = array();
     public $deleted = array();
 
+    public $failStatus_diff = false;
+
     public $ruleorderCHECK = TRUE;
     public $avoidDisplayWhitspaceDiffCertificate = false;
 
+    public $additionalruleOrderCHECK = FALSE;
+    public $additionalRuleOrderpreXpath = array();
+    public $additionalRuleOrderpostXpath = array();
+    public $failStatus_additionalruleorder = false;
 
     //needed for CLI input of argument filter=...$$name$$...
     public $replace = "";
@@ -65,6 +71,12 @@ class DIFF extends UTIL
     ],
     \"deleted\": [
     	\"/template/config/shared/response-page\"
+    ],
+    \"combinedruleordercheck\": [
+        {
+            \"pre\": \"/policy/panorama/pre-rulebase/security\",
+            \"post\": \"/policy/panorama/post-rulebase/security\"
+        }
     ]
 }\n".
             "\n".
@@ -263,6 +275,20 @@ class DIFF extends UTIL
                     }
                 }
 
+                if( isset( $array['combinedruleordercheck'] ) )
+                {
+                    $this->additionalruleOrderCHECK = TRUE;
+                    $this->additionalRuleOrderArray = $array['combinedruleordercheck'];
+
+                    foreach( $this->additionalRuleOrderArray as $key => $entry )
+                    {
+                        if( isset( $entry['pre'] ) && isset( $entry['post'] ) )
+                        {
+                            $this->additionalRuleOrderpreXpath[$key] = $entry['pre'];
+                            $this->additionalRuleOrderpostXpath[$key] = $entry['post'];
+                        }
+                    }
+                }
 
                 PH::print_stdout( "");
 
@@ -290,6 +316,76 @@ class DIFF extends UTIL
 
         PH::print_stdout( "*** NOW DISPLAY DIFF ***");
         $this->runDiff( $doc1, $doc2 );
+
+
+        if( $this->additionalruleOrderCHECK )
+        {
+            PH::print_stdout();
+            PH::print_stdout();
+            PH::print_stdout( "*** additional Rule order check ***");
+
+            foreach( $this->additionalRuleOrderpreXpath as $key => $entry)
+            {
+                PH::print_stdout( " - preXpath: ".$this->additionalRuleOrderpreXpath[$key]);
+                PH::print_stdout( " - postXpath: ".$this->additionalRuleOrderpostXpath[$key]);
+
+
+                $file1Element = $this->additionalRuleOrderCalculateXpathGetElement( $doc1, $this->additionalRuleOrderpreXpath[$key], $this->additionalRuleOrderpostXpath[$key] );
+                #DH::DEBUGprintDOMDocument( $file1Element );
+
+                $file2Element = $this->additionalRuleOrderCalculateXpathGetElement( $doc2, $this->additionalRuleOrderpreXpath[$key], $this->additionalRuleOrderpostXpath[$key] );
+                #DH::DEBUGprintDOMDocument( $file2Element );
+
+                ########################################################################################################################
+
+                if( $file1Element == null || $file2Element == null )
+                {
+                    mwarning( "this is not a DG config - or filter JSON 'combinedruleordercheck' xpath not found", null, FALSE );
+                    break;
+                }
+
+                $el1rulebase = array();
+                $el2rulebase = array();
+                $this->additionalCalculateRuleorder( $file1Element, $el1rulebase);
+                $this->additionalCalculateRuleorder( $file2Element, $el2rulebase);
+
+                //check Rules
+                if( isset( $el1rulebase['rules'] ) )
+                    $this->failStatus_additionalruleorder = $this->additionalCheckRuleOrder( $el1rulebase, $el2rulebase );
+                else
+                {
+                    foreach( $el1rulebase as $key => $entry )
+                        $this->failStatus_additionalruleorder = $this->additionalCheckRuleOrder( $el1rulebase, $el2rulebase, $key );
+                    foreach( $el2rulebase as $key => $entry )
+                        $this->failStatus_additionalruleorder = $this->additionalCheckRuleOrder( $el1rulebase, $el2rulebase, $key );
+                }
+            }
+        }
+
+        PH::print_stdout( "\n####################################################################\n");
+        PH::print_stdout( "- Final Result:" );
+
+        /*
+        if( !$this->failStatus_diff )
+            print "DIFF PASS\n";
+        else
+            print "DIFF FAIL\n";
+        if( !$this->failStatus_additionalruleorder )
+            print "combined rule order PASS\n";
+        else
+            print "combined rule order FAIL\n";
+        */
+
+        if( !$this->failStatus_diff && !$this->failStatus_additionalruleorder )
+        {
+            PH::print_stdout(  );
+            PH::print_stdout( "    PASS" );
+        }
+        else#if( $this->failStatus_diff || $this->failStatus_additionalruleorder )
+        {
+            PH::print_stdout();
+            PH::print_stdout("    FAIL");
+        }
     }
 
     public function runDiff( $doc1, $doc2 )
@@ -383,6 +479,7 @@ class DIFF extends UTIL
         {
             PH::print_stdout( "\nXPATH: $xpath");
             PH::print_stdout( "x different RULE position: file1: pos".$posFile1." / file2: pos".$posFile2 );
+            $this->failStatus_diff = TRUE;
         }
     }
 
@@ -499,6 +596,7 @@ class DIFF extends UTIL
                 //same xpath different content
                 //$this->displayDIFF( $xpath, $text, array( $el1 ), array($el2) );
                 $this->displayDIFF( $xpath, $text, array( $el2 ), array( $el1 ), array( $el1 ) );
+                $this->failStatus_diff = TRUE;
             }
             return;
         }
@@ -779,6 +877,7 @@ class DIFF extends UTIL
             PH::$JSON_TMP['plus'][] = $tmp;
 
             $text .= "\n+" . str_replace("\n", "\n+", $tmp);
+            $this->failStatus_diff = TRUE;
         }
 
         if( count($plus) > 0 && count( $minus ) > 0 )
@@ -792,6 +891,7 @@ class DIFF extends UTIL
             PH::$JSON_TMP['minus'][] = $tmp;
 
             $text .= "\n-" . str_replace("\n", "\n-", $tmp);
+            $this->failStatus_diff = TRUE;
         }
 
         if( count($plus) > 0 || count( $minus ) > 0 )
@@ -1035,5 +1135,224 @@ class DIFF extends UTIL
         }
     }
 
-}
+    function additionalRuleOrderCalculateXpathGetElement( $doc, $preXpath, $postXpath )
+    {
+        $preElement = false;
+        $postElement = false;
+        $preXpathArray = explode("/", $preXpath);
+        $postXpathArray = explode("/", $postXpath);
 
+        $root = $doc->documentElement;
+        $set = FALSE;
+        foreach( $preXpathArray as $key => $item )
+        {
+            if( $item === "" )
+                continue;
+            $demo = DH::findFirstElement($item, $root);
+            if( $demo !== FALSE )
+            {
+                if( array_key_last($preXpathArray) == $key )
+                    $set = TRUE;
+                $root = $demo;
+            }
+        }
+        if( $set )
+            $preElement = $root;
+        #DH::DEBUGprintDOMDocument($preElement);
+
+        $root = $doc->documentElement;
+        $set = FALSE;
+        foreach( $postXpathArray as $key => $item )
+        {
+            if( $item === "" )
+                continue;
+            $demo = DH::findFirstElement($item, $root);
+            if( $demo !== FALSE )
+            {
+                if( array_key_last($postXpathArray) == $key )
+                    $set = TRUE;
+                $root = $demo;
+            }
+        }
+        if( $set )
+            $postElement = $root;
+
+        #############
+        $finalDoc = new DOMDocument();
+        $nodeconfig = $finalDoc->createElement("config");
+        $finalDoc->appendChild($nodeconfig);
+
+        if( $preElement === false )
+            return false;
+
+        $preRules = DH::findFirstElement("rules", $preElement);
+        if( $preRules !== FALSE && $preElement->parentNode->nodeName == "pre-rulebase" )
+        {
+            foreach( $preElement->childNodes as $childNode )
+            {
+                /** @var null|DOMElement $childNode */
+                if( $childNode->nodeType != XML_ELEMENT_NODE )
+                    continue;
+
+                $node2 = $finalDoc->importNode($childNode, TRUE);
+                $nodeconfig->appendChild($node2);
+            }
+            if( $postElement !== false )
+            {
+                $preRules = DH::findFirstElement( "rules", $nodeconfig);
+
+                $postRules = DH::findFirstElement("rules", $postElement);
+                $node = $finalDoc->importNode($postRules, TRUE);
+                foreach( $node->childNodes as $childNode )
+                {
+                    /** @var null|DOMElement $childNode */
+                    if( $childNode->nodeType != XML_ELEMENT_NODE )
+                        continue;
+
+                    $preRules->appendChild($childNode);
+                }
+            }
+        }
+        elseif( $preElement->nodeName == "pre-rulebase" )
+        {
+            foreach( $preElement->childNodes as $childNode )
+            {
+                /** @var null|DOMElement $childNode */
+                if( $childNode->nodeType != XML_ELEMENT_NODE )
+                    continue;
+
+                $node2 = $finalDoc->importNode($childNode, TRUE);
+                $nodeconfig->appendChild($node2);
+            }
+
+            foreach( $nodeconfig->childNodes as $node )
+            {
+                /** @var null|DOMElement $node */
+                if( $node->nodeType != XML_ELEMENT_NODE )
+                    continue;
+
+                $content = $node->nodeName;
+                $preRules = DH::findFirstElement("rules", $node);
+
+                $ruletypepost = FALSE;
+                if( $postElement !== FALSE )
+                    $ruletypepost = DH::findFirstElement($content, $postElement);
+
+                if( $ruletypepost !== FALSE )
+                {
+                    $postRules = DH::findFirstElement("rules", $ruletypepost);
+                    $node = $finalDoc->importNode($postRules, TRUE);
+                    foreach( $node->childNodes as $childNode )
+                    {
+                        /** @var null|DOMElement $childNode */
+                        if( $childNode->nodeType != XML_ELEMENT_NODE )
+                            continue;
+
+                        $preRules->appendChild($childNode);
+                    }
+                }
+            }
+        }
+
+        return $nodeconfig;
+    }
+
+    function additionalCalculateRuleorder( $Elements, &$rulebase)
+    {
+        foreach( $Elements->childNodes as $childNode )
+        {
+            /** @var null|DOMElement $childNode*/
+            if( $childNode->nodeType != XML_ELEMENT_NODE )
+                continue;
+
+            $content = $childNode->nodeName;
+
+            if( $content !== "rules" )
+                $rules = DH::findFirstElement("rules", $childNode);
+            else
+                $rules = $childNode;
+
+            if( $rules != FALSE )
+                foreach( $rules->childNodes as $key => $rule )
+                {
+                    /** @var null|DOMElement $rule*/
+                    if( $rule->nodeType != XML_ELEMENT_NODE )
+                        continue;
+
+                    $uuid = $rule->getAttribute('uuid');
+                    $name = $rule->getAttribute('name');
+                    if( $content !== "config" )
+                        $rulebase[$content][$uuid] = $name;
+                    else
+                        $rulebase[$uuid] = $name;
+                }
+        }
+    }
+
+    function additionalCheckRuleOrder( $el1rulebase, $el2rulebase, $type = null )
+    {
+        $fail = false;
+
+        if( $type === null )
+        {
+            foreach( $el1rulebase['rules'] as $key => $rule )
+            {
+                $posFile1 = array_search($key, array_keys($el1rulebase['rules']));
+                $posFile2 = array_search($key, array_keys($el2rulebase['rules']));
+
+                if( $posFile1 !== $posFile2 )
+                {
+                    $fail = true;
+                    PH::print_stdout( "\n Rule: ". $rule. " | UUID: ".$key);
+                    PH::print_stdout( "x different RULE position: file1: pos".$posFile1." / file2: pos".$posFile2 );
+                }
+            }
+        }
+        elseif( $type !== null )
+        {
+            if( isset( $el1rulebase[$type] ) )
+                foreach( $el1rulebase[$type] as $key => $rule )
+                {
+                    if( isset( $el1rulebase[$type] ) )
+                        $posFile1 = array_search($key, array_keys($el1rulebase[$type]));
+                    else
+                        $posFile1 = "---";
+                    if( isset( $el2rulebase[$type] ) )
+                        $posFile2 = array_search($key, array_keys($el2rulebase[$type]));
+                    else
+                        $posFile2 = "---";
+
+                    if( $posFile1 !== $posFile2 )
+                    {
+                        $fail = true;
+                        PH::print_stdout( "\n ".$type." Rule: ". $rule. " | UUID: ".$key);
+                        PH::print_stdout( "x different RULE position: file1: pos".$posFile1." / file2: pos".$posFile2 );
+                    }
+                    if( isset( $el2rulebase[$type] ) )
+                        unset( $el2rulebase[$type] );
+                }
+
+            if( isset( $el2rulebase[$type] ) )
+                foreach( $el2rulebase[$type] as $key => $rule )
+                {
+                    if( isset( $el1rulebase[$type] ) )
+                        $posFile1 = array_search($key, array_keys($el1rulebase[$type]));
+                    else
+                        $posFile1 = "---";
+                    if( isset( $el2rulebase[$type] ) )
+                        $posFile2 = array_search($key, array_keys($el2rulebase[$type]));
+                    else
+                        $posFile2 = "---";
+
+                    if( $posFile1 !== $posFile2 )
+                    {
+                        $fail = true;
+                        PH::print_stdout( "\n ".$type." Rule: ". $rule. " | UUID: ".$key);
+                        PH::print_stdout( "x different RULE position: file1: pos".$posFile1." / file2: pos".$posFile2 );
+                    }
+                }
+        }
+
+        return $fail;
+    }
+}
