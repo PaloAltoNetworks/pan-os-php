@@ -7,6 +7,7 @@ UTIL:
 * type=xpath | newly introduced utility to search for XML xpath value by using node-filter / xpath-filter / nameattribute-filter | additional output display-xmlnode, display-nameattribute
 * type=diff | only avoid display of whitespaces in DIFF for xpath */certificate/ if flag is set
 * type=rule-merger | improvements if DENY rules are found between possible rule for merging
+* type=diff | introduce more options for 'filter=file.json' - 'combinedruleordercheck'
 
 BUGFIX:
 * type=rule-merger | bugfix if argument exportcsv=xyz projectfolder=xyz and rules are skipped - to create skipped output file correctly
