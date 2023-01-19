@@ -67,12 +67,15 @@ class PLAYBOOK__
             "tsf",
             "diff"
         );
+        $input = null;
+        $output = null;
 ###############################################################################
 //PLAYBOOK
 ###############################################################################
 //example of an JSON file syntax
         $visibility_pathString = dirname(__FILE__)."/../api/v1/playbook";
-        $JSONarray = file_get_contents( $visibility_pathString."/visibility.json");
+        $predefinedJSONfile = $visibility_pathString."/visibility.json";
+        $JSONarray = file_get_contents( $predefinedJSONfile );
 
         $tmp_ph = new PH($argv, $argc);
 
@@ -155,6 +158,7 @@ class PLAYBOOK__
         if( isset(PH::$args['json']) )
         {
             $jsonFile = PH::$args['json'];
+            PH::print_stdout("using JSON input file: ".$jsonFile);
             $filedata = file_get_contents($jsonFile);
             $details = json_decode( $filedata, true );
 
@@ -206,6 +210,7 @@ class PLAYBOOK__
         }
         else
         {
+            PH::print_stdout("using predefined JSON input file: ".$predefinedJSONfile);
             $details = json_decode($JSONarray, true);
 
             if( $details === null )
