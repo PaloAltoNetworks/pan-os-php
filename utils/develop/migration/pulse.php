@@ -24,10 +24,6 @@
 //Todo: possible to bring this in via argument
 //CUSTOM variables for the script
 
-//BOTH PROFILES MUST BE available if API
-$log_profile = "Logging to Panorama";
-$secprofgroup_name = "SecDev_Security Profile";
-
 
 
 ###################################################################################
@@ -158,6 +154,21 @@ foreach( $xml_acl->childNodes as $acl )
 
     $xml_acl_action = DH::findFirstElementOrCreate('action', $acl );
     $action = $xml_acl_action->nodeValue;
+
+    if( $action == "rules" )
+    {
+        $tmp = DH::findFirstElement( 'rules', $acl );
+        if( $tmp !== false )
+        {
+            $tmp = DH::findFirstElement( 'rule', $tmp );
+            if( $tmp !== false )
+            {
+                $tmp = DH::findFirstElement( 'action', $tmp );
+                if( $tmp !== false )
+                    $action = $tmp->nodeValue;
+            }
+        }
+    }
 
     $protocol = "";
     foreach( $acl->childNodes as $acl_entries )
