@@ -19,6 +19,7 @@ BUGFIX:
 
 GENERAL
 * update js and json file for bash_completion
+* type=rule | update filter description for 'filter=(timestamp-first-hit.fast/timestamp-last-hit.fast <,>,= VALUE)' as of a PHP v7 handling problem
 
 
 2.0.65 (20221215)
