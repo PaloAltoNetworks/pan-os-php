@@ -421,7 +421,9 @@ $configInput['filename'] = $util->configInput;
 
 //Todo: find alternative way to get rule_merging
 #CONVERTER::rule_merging( $v, $configInput, true, false, false, "tag", array( "1", "3" ) );
+##################################################################
 
+rule_merging( $v, $configInput, true, false, false, array("tag"), array( "1", "3" ) );
 
 print "\n\n\n";
 
@@ -430,3 +432,64 @@ $util->save_our_work();
 print "\n\n************ END OF PULSE UTILITY ************\n";
 print     "**************************************************\n";
 print "\n\n";
+
+function rule_merging( $sub, $configInput, $stopMergingIfDenySeen = true, $mergeAdjacentOnly = false, $mergeDenyRules = false, $additionalMatch = array(), $method_array = array() )
+{
+    $rulemerger = new RULEMERGER("custom", array(), array(),"fake-migration-parser");
+
+    $actionProperties = "exportToExcel";
+    $arguments = "";
+    $rulemerger->context = new RuleCallContext( $actionProperties, $arguments);
+
+    $rulemerger->action = "merge";
+
+    $rulemerger->UTIL_additionalMatch = $additionalMatch;
+
+    $rulemerger->configInput = $configInput;
+    $rulemerger->configOutput = null;
+
+    $rulemerger->UTIL_rulesToProcess = $sub->securityRules->rules();
+
+
+    $rulemerger->UTIL_stopMergingIfDenySeen = $stopMergingIfDenySeen;
+    $rulemerger->UTIL_mergeAdjacentOnly = $mergeAdjacentOnly;
+    $rulemerger->UTIL_mergeDenyRules = $mergeDenyRules;
+
+    $rulemerger->UTIL_filterQuery = null;
+
+    //1 matchFromToSrcDstApp
+    //2 matchToSrcDstSvcApp
+    //3 matchFromSrcDstSvcApp
+    /*
+    $supportedMethods_tmp = array(
+        'matchFromToSrcDstApp' => 1,
+        'matchFromToSrcDstSvc' => 2,
+        'matchFromToSrcSvcApp' => 3,
+        'matchFromToDstSvcApp' => 4,
+        'matchFromSrcDstSvcApp' => 5,
+        'matchToSrcDstSvcApp' => 6,
+        'matchToDstSvcApp' => 7,
+        'matchFromSrcSvcApp' => 8,
+        'identical' => 9,
+    );
+     */
+
+
+
+    foreach( $method_array as $method )
+    {
+        $rulemerger->UTIL_method = $method;
+        $rulemerger->UTIL_hashTable = array();
+        /** @var SecurityRule[] $denyRules */
+        $rulemerger->UTIL_denyRules = array();
+
+        $rulemerger->UTIL_calculate_rule_hash();
+
+
+
+        $rulemerger->UTIL_rule_merging( );
+
+        $rulemerger->UTIL_rulesToProcess = $sub->securityRules->rules();
+    }
+
+}
