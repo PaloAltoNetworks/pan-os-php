@@ -8,6 +8,7 @@ UTIL:
 * type=diff | only avoid display of whitespaces in DIFF for xpath */certificate/ if flag is set
 * type=rule-merger | improvements if DENY rules are found between possible rule for merging
 * type=diff | introduce more options for 'filter=file.json' - 'combinedruleordercheck'
+* type=diff | improve FinalResult output
 
 BUGFIX:
 * type=rule-merger | bugfix if argument exportcsv=xyz projectfolder=xyz and rules are skipped - to create skipped output file correctly

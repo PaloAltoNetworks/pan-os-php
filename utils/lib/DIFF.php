@@ -363,28 +363,15 @@ class DIFF extends UTIL
         }
 
         PH::print_stdout( "\n####################################################################\n");
-        PH::print_stdout( "- Final Result:" );
-
-        /*
-        if( !$this->failStatus_diff )
-            print "DIFF PASS\n";
-        else
-            print "DIFF FAIL\n";
-        if( !$this->failStatus_additionalruleorder )
-            print "combined rule order PASS\n";
-        else
-            print "combined rule order FAIL\n";
-        */
 
         if( !$this->failStatus_diff && !$this->failStatus_additionalruleorder )
         {
-            PH::print_stdout(  );
-            PH::print_stdout( "    PASS" );
+            //must be in this format as check is needed
+            PH::print_stdout( "- FinalResult:   PASS" );
         }
         else#if( $this->failStatus_diff || $this->failStatus_additionalruleorder )
         {
-            PH::print_stdout();
-            PH::print_stdout("    FAIL");
+            PH::print_stdout("- FinalResult:   FAIL");
         }
     }
 
