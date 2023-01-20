@@ -2744,7 +2744,7 @@ RQuery::$defaultFilters['rule']['timestamp-last-hit.fast']['operators']['>,<,=,!
         return $object->ruleUsageFast( $context, 'last-hit-timestamp' );
     },
     'arg' => TRUE,
-    'help' => 'returns TRUE if rule name matches the specified timestamp MM/DD/YYYY [american] / DD-MM-YYYY [european] / 21 September 2021 / - 90 days',
+    'help' => 'returns TRUE if rule name matches the specified timestamp MM/DD/YYYY [american] / DD-MM-YYYY [european] / 21 September 2021 / -90 days',
 );
 
 RQuery::$defaultFilters['rule']['timestamp-first-hit.fast']['operators']['>,<,=,!'] = array(
@@ -2767,7 +2767,7 @@ RQuery::$defaultFilters['rule']['timestamp-first-hit.fast']['operators']['>,<,=,
         return $object->ruleUsageFast( $context, 'first-hit-timestamp' );
     },
     'arg' => TRUE,
-    'help' => 'returns TRUE if rule name matches the specified timestamp MM/DD/YYYY [american] / DD-MM-YYYY [european] / 21 September 2021 / - 90 days',
+    'help' => 'returns TRUE if rule name matches the specified timestamp MM/DD/YYYY [american] / DD-MM-YYYY [european] / 21 September 2021 / -90 days',
 );
 RQuery::$defaultFilters['rule']['hit-count.fast']['operators']['>,<,=,!'] = array(
 #RQuery::$defaultFilters['rule']['rule']['operators']['last-hit-timestamp'] = array(
