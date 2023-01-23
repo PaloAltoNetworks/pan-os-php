@@ -130,7 +130,7 @@ $cliArray = array();
 $cliArray2 = array();
 
 ########################################################################################################################
-
+print $get_auth."\n";
 MFAAuthenticationCheck();
 
 
@@ -138,6 +138,7 @@ if( $displayOutput )
     PH::print_stdout();
 
 //Authentication on cluster
+
 execCLIWithOutput( $get_auth );
 //get correct tenantid
 if( isset(PH::$args['tenantid']) )
@@ -381,6 +382,16 @@ function MFAAuthenticationCheck()
   "code": 403
 }';
 
+    $expectedResponse = '{
+  "kind": "Status",
+  "apiVersion": "v1",
+  "metadata": {},
+  "status": "Failure",
+  "message": "forbidden: User \"system:anonymous\" cannot get path \"/\"",
+  "reason": "Forbidden",
+  "details": {},
+  "code": 403
+}';
 
     $curl = curl_init($http_auth);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
