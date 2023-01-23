@@ -18,6 +18,7 @@ BUGFIX:
 * class RULE.php method load_common_from_domxml() | bugfix to NOT set reference for group-tag - fix problems with tag-merger
 * class SecurityRule | bugfix for qos -> marking
 * type=playbook | bugfix for new php version - missing variable declaration
+* dockerfile add missing folder iron-skillet | fix for all iron-skillet relevant type=device action=....-create-bp parts
 
 GENERAL
 * update js and json file for bash_completion

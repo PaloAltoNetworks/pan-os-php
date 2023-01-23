@@ -33,6 +33,7 @@ COPY phpseclib ./phpseclib
 COPY git-php ./git-php
 COPY utils ./utils
 COPY tests ./tests
+COPY iron-skillet ./iron-skillet
 
 
 # PHP library of pan-os-php
