@@ -301,7 +301,17 @@ class DIFF extends UTIL
                 {
                     PH::print_stdout( "");
                     foreach( $this->excludes as $exclude )
+                    {
                         PH::print_stdout( "exclude is set to: '" . PH::boldText( $exclude ) . "'");
+
+                        $doc1Root = DH::findXPathSingleEntry($exclude, $doc1);
+                        if( $doc1Root )
+                            $doc1Root->parentNode->removeChild( $doc1Root );
+
+                        $doc2Root = DH::findXPathSingleEntry($exclude, $doc2);
+                        if( $doc2Root )
+                            $doc2Root->parentNode->removeChild( $doc2Root );
+                    }
 
                     PH::print_stdout( "");
                 }
@@ -525,13 +535,6 @@ class DIFF extends UTIL
         }
 
 
-        //Todo:
-        // - search for xpath: */pre-rulebase
-        // - search for xpath: */post-rulebase
-        // if both only once available
-        //      get rules from pre + post file1 and file2 and check rule order
-
-
         if( count($el1Elements) == 0 && count($el2Elements) == 0 )
         {
             $el1Trim = trim($el1->textContent);
@@ -545,19 +548,6 @@ class DIFF extends UTIL
                     $el2Trim = preg_replace('/\s+/', ' ', $el2Trim);
                 }
             }
-
-            /*
-            //Todo: swaschkut 20230110 - should private-key be really skipped????
-
-            if( $el1Trim != $el2Trim && strpos($xpath, "/private-key") !== FALSE )
-                return null;
-            if( $el1Trim != $el2Trim && strpos($xpath, "/pre-shared-key/key") !== FALSE )
-                return null;
-            if( $el1Trim != $el2Trim && strpos($xpath, "/agent-user-override-key") !== FALSE )
-                return null;
-            if( $el1Trim != $el2Trim && strpos($xpath, "/agent-ui/uninstall-password") !== FALSE )
-                return null;
-            */
 
 
             if( $el1Trim != $el2Trim )
@@ -839,7 +829,6 @@ class DIFF extends UTIL
 
                     $this->compareElements($node1, $node2);
                 }
-
             }
 
             unset($el1Elements[$tagName]);
@@ -861,6 +850,11 @@ class DIFF extends UTIL
         PH::$JSON_TMP['plus'] = array();
         foreach( $plus as $key => $node )
         {
+            //check if xpath should be ignored as added to JSON file
+            $continue = $this->ignoreAddDeleteXpath( $xpath, $node, $this->added );
+            if( $continue )
+                continue;
+
             $tmp = DH::dom_to_xml($node);
             $tmp = $this->str_lreplace( "\n", "", $tmp );
             PH::$JSON_TMP['plus'][] = $tmp;
@@ -875,6 +869,11 @@ class DIFF extends UTIL
         PH::$JSON_TMP['minus'] = array();
         foreach( $minus as $key => $node )
         {
+            //check if xpath should be ignored as added to JSON file
+            $continue = $this->ignoreAddDeleteXpath( $xpath, $node, $this->deleted );
+            if( $continue )
+                continue;
+
             $tmp = DH::dom_to_xml($node);
             $tmp = $this->str_lreplace( "\n", "", $tmp );
             PH::$JSON_TMP['minus'][] = $tmp;
@@ -1031,7 +1030,6 @@ class DIFF extends UTIL
                 else
                     $this->$type['misc'][] = $entry;
             }
-
         }
     }
 
@@ -1343,5 +1341,32 @@ class DIFF extends UTIL
         }
 
         return $fail;
+    }
+
+    function ignoreAddDeleteXpath( $xpath, $node, $typeArray )
+    {
+        $continue = false;
+        foreach( $this->added as $add )
+        {
+            $newXpath = str_replace( $xpath, "", $add );
+
+            $newdoc = new DOMDocument;
+            $node = $newdoc->importNode($node, true);
+            $newdoc->appendChild($node);
+
+            if( !empty( $newXpath ) && $xpath !== $newXpath )
+            {
+                $doc1Root = DH::findXPathSingleEntry($newXpath, $newdoc);
+                if( $doc1Root )
+                {
+                    $doc1Root->parentNode->removeChild( $doc1Root );
+                    continue;
+                }
+            }
+            elseif( empty( $newXpath ) )
+                $continue = true;
+        }
+
+        return $continue;
     }
 }
