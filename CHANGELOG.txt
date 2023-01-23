@@ -24,6 +24,7 @@ GENERAL
 * type=rule | update filter description for 'filter=(timestamp-first-hit.fast/timestamp-last-hit.fast <,>,= VALUE)' as of a PHP v7 handling problem
 * update license info | introduce new migration scripts for different vendors, under tag develop
 * develop | migration pulse - introduce rule-merging functionality only for pulse migration - should be general available
+* develop migrate bluecoat | introduce new argument 'loadxmlfromfile'
 
 
 2.0.65 (20221215)

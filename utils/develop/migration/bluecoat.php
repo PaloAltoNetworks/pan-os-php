@@ -47,6 +47,7 @@ $supportedArguments['debugapi'] = Array('niceName' => 'DebugAPI', 'shortHelp' =>
 $supportedArguments['help'] = Array('niceName' => 'help', 'shortHelp' => 'this message');
 $supportedArguments['file'] = Array('niceName' => 'FILE', 'shortHelp' => 'BlueCoat config file, export via CLI: ""');
 $supportedArguments['location'] = Array('niceName' => 'Location', 'shortHelp' => 'specify if you want to limit your query to a VSYS/DG. By default location=shared for Panorama, =vsys1 for PANOS. ie: location=any or location=vsys2,vsys1', 'argDesc' => '=sub1[,sub2]');
+$supportedArguments['loadxmlfromfile'] = Array('niceName' => 'loadxmlfromfile', 'shortHelp' => 'do not load from memory, load from newly generated XML file during execution');
 
 
 $usageMsg = PH::boldText('USAGE: ')."php ".basename(__FILE__)." in=[PAN-OS base config file] file=[PULSE xml config file] [out=]";
@@ -171,6 +172,7 @@ $pos_end = strpos_all($content, "</vpmapp>");
 
 $xml = substr( $content, $pos_begin[0], $pos_end[0]+9-$pos_begin[0] );
 $xml = utf8_encode( $xml );
+$xml = preg_replace("/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", "\n", $xml);
 file_put_contents($file."_BCorig1.xml", $xml);
 
 
@@ -199,9 +201,12 @@ file_put_contents($file."_BCorig1.xml", $xml);
     $xmlDoc = new DOMDocument;
     $xmlDoc->preserveWhiteSpace = FALSE;
     $xmlDoc->formatOutput = TRUE;
-    $xmlDoc->loadXML($xml);
-    #$xmlDoc->load( "pretty_after_clean.xml" );
 
+
+    if( isset(PH::$args['loadxmlfromfile'])  )
+        $xmlDoc->load( $file."_BCorig1.xml" );
+    else
+        $xmlDoc->loadXML($xml);
 
     $xmlString = $xmlDoc->saveXML();
     file_put_contents($file."_BCorig2.xml", $xmlString);
