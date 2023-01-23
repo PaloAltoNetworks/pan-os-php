@@ -292,8 +292,10 @@ class DIFF extends UTIL
 
                 PH::print_stdout( "");
 
-                if( isset( $array['exclude'] ) )
+                if( isset( $array['exclude'] ) and empty($this->excludes) )
                     $this->excludes = $array['exclude'];
+                elseif( isset( $array['exclude'] ) and !empty($this->excludes) )
+                    $this->excludes = array_merge( $this->excludes, $array['exclude'] );
 
                 if( !empty( $this->excludes ) )
                 {
@@ -1269,9 +1271,9 @@ class DIFF extends UTIL
                     $uuid = $rule->getAttribute('uuid');
                     $name = $rule->getAttribute('name');
                     if( $content !== "config" )
-                        $rulebase[$content][$uuid] = $name;
+                        $rulebase[$content][$name] = $name;
                     else
-                        $rulebase[$uuid] = $name;
+                        $rulebase[$name] = $name;
                 }
         }
     }
@@ -1290,7 +1292,7 @@ class DIFF extends UTIL
                 if( $posFile1 !== $posFile2 )
                 {
                     $fail = true;
-                    PH::print_stdout( "\n Rule: ". $rule. " | UUID: ".$key);
+                    PH::print_stdout( "\n Rule: ". $rule);
                     PH::print_stdout( "x different RULE position: file1: pos".$posFile1." / file2: pos".$posFile2 );
                 }
             }
@@ -1312,7 +1314,7 @@ class DIFF extends UTIL
                     if( $posFile1 !== $posFile2 )
                     {
                         $fail = true;
-                        PH::print_stdout( "\n ".$type." Rule: ". $rule. " | UUID: ".$key);
+                        PH::print_stdout( "\n ".$type." Rule: ". $rule);
                         PH::print_stdout( "x different RULE position: file1: pos".$posFile1." / file2: pos".$posFile2 );
                     }
                     if( isset( $el2rulebase[$type] ) )
@@ -1334,7 +1336,7 @@ class DIFF extends UTIL
                     if( $posFile1 !== $posFile2 )
                     {
                         $fail = true;
-                        PH::print_stdout( "\n ".$type." Rule: ". $rule. " | UUID: ".$key);
+                        PH::print_stdout( "\n ".$type." Rule: ". $rule);
                         PH::print_stdout( "x different RULE position: file1: pos".$posFile1." / file2: pos".$posFile2 );
                     }
                 }
