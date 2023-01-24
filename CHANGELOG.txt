@@ -20,7 +20,7 @@ BUGFIX:
 * class SecurityRule | bugfix for qos -> marking
 * type=playbook | bugfix for new php version - missing variable declaration
 * dockerfile add missing folder iron-skillet | fix for all iron-skillet relevant type=device action=....-create-bp parts
-* type=diff | filter JSON file - bugfix for 'added'/'deleted' to NOT show xpath
+* type=diff | filter JSON file 'added'/'deleted' - bugfix to get for each entry the correct diff output
 
 GENERAL
 * update js and json file for bash_completion
