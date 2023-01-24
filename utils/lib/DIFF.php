@@ -1343,16 +1343,18 @@ class DIFF extends UTIL
         return $fail;
     }
 
-    function ignoreAddDeleteXpath( $xpath, $node, $typeArray )
+    function ignoreAddDeleteXpath( $xpath, &$node, $typeArray )
     {
-        $continue = false;
-        foreach( $this->added as $add )
-        {
-            $newXpath = str_replace( $xpath, "", $add );
+        $newdoc = new DOMDocument;
+        $node = $newdoc->importNode($node, true);
+        $newdoc->appendChild($node);
 
-            $newdoc = new DOMDocument;
-            $node = $newdoc->importNode($node, true);
-            $newdoc->appendChild($node);
+        $continue = false;
+        foreach( $typeArray as $add )
+        {
+            #print "XPATH: ".$xpath."\n";
+            $newXpath = str_replace( $xpath, "", $add );
+            #print "NEWXPATH: ".$newXpath."\n";
 
             if( !empty( $newXpath ) && $xpath !== $newXpath )
             {
@@ -1366,6 +1368,10 @@ class DIFF extends UTIL
             elseif( empty( $newXpath ) )
                 $continue = true;
         }
+
+        $node = $newdoc->firstChild;
+        if( !DH::hasChild($node) )
+            $continue = true;
 
         return $continue;
     }
