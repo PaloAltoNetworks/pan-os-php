@@ -1000,8 +1000,11 @@ class DIFF extends UTIL
             }
             else
             {
-                PH::print_stdout("\nXPATH: $xpath");
-                PH::print_stdout("$text");
+                if( !empty( trim($text) ) )
+                {
+                    PH::print_stdout("\nXPATH: $xpath");
+                    PH::print_stdout("$text");
+                }
             }
         }
     }
@@ -1352,26 +1355,26 @@ class DIFF extends UTIL
         $continue = false;
         foreach( $typeArray as $add )
         {
-            #print "XPATH: ".$xpath."\n";
+            #print "\nXPATH: ".$xpath."\n";
             $newXpath = str_replace( $xpath, "", $add );
             #print "NEWXPATH: ".$newXpath."\n";
 
-            if( !empty( $newXpath ) && $xpath !== $newXpath )
+            if( empty( $newXpath ) )
+                $continue = true;
+            elseif( $newdoc->firstChild->nodeName == "entry" )
             {
+                $name = DH::findAttribute( "name", $newdoc->firstChild);
+                if( $newXpath == "/entry[@name='".$name."']" )
+                    $continue = true;
+            }
+            elseif( $xpath !== $newXpath )
+            {
+                //find newXpath within a node somewhere as a subnode, and remove this node
                 $doc1Root = DH::findXPathSingleEntry($newXpath, $newdoc);
                 if( $doc1Root )
-                {
                     $doc1Root->parentNode->removeChild( $doc1Root );
-                    continue;
-                }
             }
-            elseif( empty( $newXpath ) )
-                $continue = true;
         }
-
-        $node = $newdoc->firstChild;
-        if( !DH::hasChild($node) )
-            $continue = true;
 
         return $continue;
     }
