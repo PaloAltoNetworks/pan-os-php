@@ -28,6 +28,7 @@ class DIFF extends UTIL
     public $move = array();
     public $added = array();
     public $deleted = array();
+    public $empty = array();
 
     public $failStatus_diff = false;
 
@@ -71,6 +72,9 @@ class DIFF extends UTIL
     ],
     \"deleted\": [
     	\"/template/config/shared/response-page\"
+    ],
+    \"empty\": [
+    	\"/policy/post-rulebase/tunnel-inspect\"
     ],
     \"combinedruleordercheck\": [
         {
@@ -168,6 +172,10 @@ class DIFF extends UTIL
             if( $doc1->load($file1) === FALSE )
                 derr('Error while parsing xml:' . libxml_get_last_error()->message , null, false);
 
+            //second document needed for combinedRuleOrderCheck at the end of the diff
+            $origDoc1 = new DOMDocument();
+            $origDoc1->load($file1);
+
             $pattern = "/(.*)[0-9]{5}name[0-9]{5}(.*)/i";
             $matches = null;
             if( isset(PH::$args['filter']) and preg_match( $pattern, PH::$args['filter'], $matches  ) )
@@ -227,6 +235,10 @@ class DIFF extends UTIL
                 $doc2 = new DOMDocument();
                 if( $doc2->load($file2) === FALSE )
                     derr('Error while parsing xml:' . libxml_get_last_error()->message, null, false);
+
+                //second document needed for combinedRuleOrderCheck at the end of the diff
+                $origDoc2 = new DOMDocument();
+                $origDoc2->load($file2);
             }
         }
 
@@ -251,6 +263,8 @@ class DIFF extends UTIL
                     $this->added = $array['added'];
                 if( isset( $array['deleted'] ) )
                     $this->deleted = $array['deleted'];
+                if( isset( $array['empty'] ) )
+                    $this->empty = $array['empty'];
 
                 if( isset( $array['move'] ) )
                 {
@@ -329,7 +343,6 @@ class DIFF extends UTIL
         PH::print_stdout( "*** NOW DISPLAY DIFF ***");
         $this->runDiff( $doc1, $doc2 );
 
-
         if( $this->additionalruleOrderCHECK )
         {
             PH::print_stdout();
@@ -342,10 +355,10 @@ class DIFF extends UTIL
                 PH::print_stdout( " - postXpath: ".$this->additionalRuleOrderpostXpath[$key]);
 
 
-                $file1Element = $this->additionalRuleOrderCalculateXpathGetElement( $doc1, $this->additionalRuleOrderpreXpath[$key], $this->additionalRuleOrderpostXpath[$key] );
+                $file1Element = $this->additionalRuleOrderCalculateXpathGetElement( $origDoc1, $this->additionalRuleOrderpreXpath[$key], $this->additionalRuleOrderpostXpath[$key] );
                 #DH::DEBUGprintDOMDocument( $file1Element );
 
-                $file2Element = $this->additionalRuleOrderCalculateXpathGetElement( $doc2, $this->additionalRuleOrderpreXpath[$key], $this->additionalRuleOrderpostXpath[$key] );
+                $file2Element = $this->additionalRuleOrderCalculateXpathGetElement( $origDoc2, $this->additionalRuleOrderpreXpath[$key], $this->additionalRuleOrderpostXpath[$key] );
                 #DH::DEBUGprintDOMDocument( $file2Element );
 
                 ########################################################################################################################
@@ -360,6 +373,9 @@ class DIFF extends UTIL
                 $el2rulebase = array();
                 $this->additionalCalculateRuleorder( $file1Element, $el1rulebase);
                 $this->additionalCalculateRuleorder( $file2Element, $el2rulebase);
+
+                #print_r( $el1rulebase );
+                #print_r( $el2rulebase );
 
                 //check Rules
                 if( isset( $el1rulebase['rules'] ) )
@@ -1352,6 +1368,7 @@ class DIFF extends UTIL
         $node = $newdoc->importNode($node, true);
         $newdoc->appendChild($node);
 
+
         $continue = false;
         foreach( $typeArray as $add )
         {
@@ -1361,20 +1378,78 @@ class DIFF extends UTIL
 
             if( empty( $newXpath ) )
                 $continue = true;
-            elseif( $newdoc->firstChild->nodeName == "entry" )
+            elseif( $node->nodeName == "entry" )
             {
-                $name = DH::findAttribute( "name", $newdoc->firstChild);
+                $name = DH::findAttribute( "name", $node);
                 if( $newXpath == "/entry[@name='".$name."']" )
                     $continue = true;
             }
             elseif( $xpath !== $newXpath )
             {
                 //find newXpath within a node somewhere as a subnode, and remove this node
-                $doc1Root = DH::findXPathSingleEntry($newXpath, $newdoc);
+                $doc1Root = DH::findXPathSingleEntry($newXpath, $node);
                 if( $doc1Root )
-                    $doc1Root->parentNode->removeChild( $doc1Root );
+                    DH::removeChild( $doc1Root->parentNode, $doc1Root );
             }
         }
+
+        if( !empty( $this->empty ) )
+        {
+            ###
+            # this part is to check if pre-/post-rulebase subNodes which are removed above, now createing an empty parentNode
+            #if an empty node is available, it is comopare to JSON empty setting, and only if available it is ignored in DIFF output
+            $ruletypeArray = array(
+                "security", "application-override", "decryption", "authentication", "qos", "nat",
+                "pbf", "sdwan", "dos", "tunnel-inspect"
+            );
+
+            #workaround as next ->childnodes is not getting all childnodes, why??
+            foreach( $ruletypeArray as $type )
+            {
+                $test = DH::findFirstElement( $type, $node);
+                if( $test != false )
+                {
+                    $rulesNode = DH::findFirstElement( "rules", $test);
+                    if( !DH::hasChild($rulesNode) )
+                    {
+                        $fullXpath = $xpath."/".$node->nodeName."/".$type."/rules";
+                        if( in_array( $fullXpath, $this->empty ) )
+                            DH::removeChild($node, $test);
+                    }
+                }
+            }
+
+            foreach( $node->childNodes as $child )
+            {
+                /** @var DOMElement $node */
+                if( $child->nodeType != XML_ELEMENT_NODE )
+                    continue;
+
+                if( $child->nodeName == "rules" )
+                {
+                    if( !DH::hasChild($child) )
+                    {
+                        $fullXpath = $xpath."/".$node->nodeName."/rules";
+                        #print $fullXpath."\n";
+                        if( in_array( $fullXpath, $this->empty ) )
+                            return True;
+                    }
+                    else
+                        return false;
+                }
+            }
+
+            if( !DH::hasChild($node) )
+            {
+                $fullXpath = $xpath."/".$node->nodeName;
+                #print $fullXpath."\n";
+                if( in_array( $fullXpath, $this->empty ) )
+                    return True;
+            }
+        }
+
+
+
 
         return $continue;
     }
