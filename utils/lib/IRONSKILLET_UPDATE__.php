@@ -41,52 +41,52 @@ class IRONSKILLET_UPDATE__
 //https://github.com/PaloAltoNetworks/iron-skillet/blob/panos_v10.0/templates/panorama/snippets/profiles_spyware.xml
         $download_array['as']['81'] = "panos_v8.1/templates/panorama/snippets/profiles_spyware.xml";
         $download_array['as']['91'] = "panos_v9.1/templates/panorama/snippets/profiles_spyware.xml";
-        $download_array['as']['100'] = "panos_v10.0/templates/panorama/snippets/profiles_spyware.xml";
+        #$download_array['as']['100'] = "panos_v10.0/templates/panorama/snippets/profiles_spyware.xml";
 
 //AV
 //https://github.com/PaloAltoNetworks/iron-skillet/blob/panos_v9.1/templates/panorama/snippets/profiles_virus.xml
 //https://github.com/PaloAltoNetworks/iron-skillet/blob/panos_v10.0/templates/panorama/snippets/profiles_virus.xml
         $download_array['av']['81'] = "panos_v8.1/templates/panorama/snippets/profiles_virus.xml";
         $download_array['av']['91'] = "panos_v9.1/templates/panorama/snippets/profiles_virus.xml";
-        $download_array['av']['100'] = "panos_v10.0/templates/panorama/snippets/profiles_virus.xml";
+        #$download_array['av']['100'] = "panos_v10.0/templates/panorama/snippets/profiles_virus.xml";
 
 //URL
 //https://github.com/PaloAltoNetworks/iron-skillet/blob/panos_v9.1/templates/panorama/snippets/profiles_url_filtering.xml
 //https://github.com/PaloAltoNetworks/iron-skillet/blob/panos_v10.0/templates/panorama/snippets/profiles_url_filtering.xml
         $download_array['url']['81'] = "panos_v8.1/templates/panorama/snippets/profiles_url_filtering.xml";
         $download_array['url']['91'] = "panos_v9.1/templates/panorama/snippets/profiles_url_filtering.xml";
-        $download_array['url']['100'] = "panos_v10.0/templates/panorama/snippets/profiles_url_filtering.xml";
+        #$download_array['url']['100'] = "panos_v10.0/templates/panorama/snippets/profiles_url_filtering.xml";
 
 //FB
 //https://github.com/PaloAltoNetworks/iron-skillet/blob/panos_v10.0/templates/panorama/snippets/profiles_file_blocking.xml
-        $download_array['fb']['100'] = "panos_v10.0/templates/panorama/snippets/profiles_file_blocking.xml";
+        #$download_array['fb']['100'] = "panos_v10.0/templates/panorama/snippets/profiles_file_blocking.xml";
 
 //VB
 //https://github.com/PaloAltoNetworks/iron-skillet/blob/panos_v10.0/templates/panorama/snippets/profiles_vulnerability.xml
-        $download_array['vb']['100'] = "panos_v10.0/templates/panorama/snippets/profiles_vulnerability.xml";
+        #$download_array['vb']['100'] = "panos_v10.0/templates/panorama/snippets/profiles_vulnerability.xml";
 
 //WF
 //https://github.com/PaloAltoNetworks/iron-skillet/blob/panos_v10.0/templates/panorama/snippets/profiles_wildfire_analysis.xml
-        $download_array['wf']['100'] = "panos_v10.0/templates/panorama/snippets/profiles_wildfire_analysis.xml";
+        #$download_array['wf']['100'] = "panos_v10.0/templates/panorama/snippets/profiles_wildfire_analysis.xml";
 
 //customerURL
 //https://github.com/PaloAltoNetworks/iron-skillet/blob/panos_v8.1/templates/panorama/snippets/profiles_custom_url_category.xml
 //https://github.com/PaloAltoNetworks/iron-skillet/blob/panos_v10.0/templates/panorama/snippets/profiles_custom_url_category.xml
         $download_array['customURL']['81'] = "panos_v8.1/templates/panorama/snippets/profiles_custom_url_category.xml";
-        $download_array['customURL']['100'] = "panos_v10.0/templates/panorama/snippets/profiles_custom_url_category.xml";
+        #$download_array['customURL']['100'] = "panos_v10.0/templates/panorama/snippets/profiles_custom_url_category.xml";
 
 //SECgroup
 //https://github.com/PaloAltoNetworks/iron-skillet/blob/panos_v10.0/templates/panorama/snippets/profile_group.xml
-        $download_array['secgroup']['100'] = "panos_v10.0/templates/panorama/snippets/profile_group.xml";
+        #$download_array['secgroup']['100'] = "panos_v10.0/templates/panorama/snippets/profile_group.xml";
 
 
 //LFP
 //https://github.com/PaloAltoNetworks/iron-skillet/blob/panos_v10.0/templates/panorama/snippets/log_settings_profiles.xml
-        $download_array['lfp']['100'] = "panos_v10.0/templates/panorama/snippets/log_settings_profiles.xml";
+        #$download_array['lfp']['100'] = "panos_v10.0/templates/panorama/snippets/log_settings_profiles.xml";
 
 //ZPP
 //https://github.com/PaloAltoNetworks/iron-skillet/blob/panos_v10.0/templates/panorama/snippets/zone_protection_profile.xml
-        $download_array['zpp']['100'] = "panos_v10.0/templates/panorama/snippets/zone_protection_profile.xml";
+        #$download_array['zpp']['100'] = "panos_v10.0/templates/panorama/snippets/zone_protection_profile.xml";
 
 
 
@@ -170,112 +170,121 @@ class IRONSKILLET_UPDATE__
             //now go through YAML file
             $yamlcontent = file_get_contents( $this->ironskillet_pathString."/".$version);
 
-            $parsed = yaml_parse($yamlcontent);
-
-            /*
-            $xml = new SimpleXMLElement('<root/>');
-            array_walk_recursive($parsed, array ($xml, 'addChild'));
-            $filename = $this->ironskillet_pathString."/".$path."/ironskillet_full_yaml.xml";
-            file_put_contents( $filename, $xml->asXML());
-            //print $xml->asXML();
-            */
-
-            $ironskillet_name_finding = array();
-            $ironskillet_name_finding[] = "profiles_spyware";
-            $ironskillet_name_finding[] = "profiles_virus";
-            $ironskillet_name_finding[] = "profiles_url_filtering";
-            $ironskillet_name_finding[] = "profiles_file_blocking";
-            $ironskillet_name_finding[] = "profiles_vulnerability";
-            $ironskillet_name_finding[] = "profiles_wildfire_analysis";
-            $ironskillet_name_finding[] = "profiles_custom_url_category";
-            $ironskillet_name_finding[] = "profile_group";
-            $ironskillet_name_finding[] = "log_settings_profiles";
-            $ironskillet_name_finding[] = "zone_protection_profile";
-
-            foreach( $ironskillet_name_finding as $name )
+            //trigger exception in a "try" block
+            PH::enableExceptionSupport();
+            try
             {
-                $element = $this->find_ironskillet_entry_basedonname( $parsed['snippets'],$name );
-                if( $element !== null )
+                $parsed = yaml_parse($yamlcontent);
+
+                /*
+                $xml = new SimpleXMLElement('<root/>');
+                array_walk_recursive($parsed, array ($xml, 'addChild'));
+                $filename = $this->ironskillet_pathString."/".$path."/ironskillet_full_yaml.xml";
+                file_put_contents( $filename, $xml->asXML());
+                //print $xml->asXML();
+                */
+
+                $ironskillet_name_finding = array();
+                $ironskillet_name_finding[] = "profiles_spyware";
+                $ironskillet_name_finding[] = "profiles_virus";
+                $ironskillet_name_finding[] = "profiles_url_filtering";
+                $ironskillet_name_finding[] = "profiles_file_blocking";
+                $ironskillet_name_finding[] = "profiles_vulnerability";
+                $ironskillet_name_finding[] = "profiles_wildfire_analysis";
+                $ironskillet_name_finding[] = "profiles_custom_url_category";
+                $ironskillet_name_finding[] = "profile_group";
+                $ironskillet_name_finding[] = "log_settings_profiles";
+                $ironskillet_name_finding[] = "zone_protection_profile";
+
+                foreach( $ironskillet_name_finding as $name )
                 {
-                    if( isset($element['element']) )
+                    $element = $this->find_ironskillet_entry_basedonname($parsed['snippets'], $name);
+                    if( $element !== null )
                     {
-                        $xmlString = "<root>".$element['element']."</root>";
-
-                        $sinkholeIP = "sinkhole.paloaltonetworks.com";
-                        $xmlString = str_replace( "{{ SINKHOLE_IPV4 }}", $sinkholeIP, $xmlString);
-                        $xmlString = str_replace( "{{ SINKHOLE_IPV6 }}", "2600:5200::1", $xmlString);
-
-                        $filename = $this->ironskillet_pathString."/".$path."/".$name.".xml";
-                        if( !file_exists( $filename ) )
-                            file_put_contents( $filename, $xmlString);
-                        else
+                        if( isset($element['element']) )
                         {
-                            //read XML file
-                            $newdoc1 = new DOMDocument;
-                            $newdoc1->load( $filename );
+                            $xmlString = "<root>" . $element['element'] . "</root>";
 
-                            /** @var DOMElement $rootNode1 */
-                            $rootNode1 = $newdoc1->firstChild;
-                            #DH::DEBUGprintDOMDocument( $rootNode1 );
-                            #print "------------\n";
+                            $sinkholeIP = "sinkhole.paloaltonetworks.com";
+                            $xmlString = str_replace("{{ SINKHOLE_IPV4 }}", $sinkholeIP, $xmlString);
+                            $xmlString = str_replace("{{ SINKHOLE_IPV6 }}", "2600:5200::1", $xmlString);
 
-                            //read new XML string
-                            $newdoc2 = new DOMDocument;
-                            $newdoc2->loadXML( $xmlString );
-
-                            /** @var DOMElement $rootNode2 */
-                            $rootNode2 = $newdoc2->firstChild;
-                            #DH::DEBUGprintDOMDocument( $rootNode2 );
-                            #print "------------\n";
-
-                            $changed = false;
-                            foreach( $rootNode2->childNodes as $entry )
+                            $filename = $this->ironskillet_pathString . "/" . $path . "/" . $name . ".xml";
+                            if( !file_exists($filename) )
+                                file_put_contents($filename, $xmlString);
+                            else
                             {
-                                /** @var DOMElement $entry */
-                                if( $entry->nodeType != XML_ELEMENT_NODE )
-                                    continue;
+                                //read XML file
+                                $newdoc1 = new DOMDocument;
+                                $newdoc1->load($filename);
+
+                                /** @var DOMElement $rootNode1 */
+                                $rootNode1 = $newdoc1->firstChild;
+                                #DH::DEBUGprintDOMDocument( $rootNode1 );
+                                #print "------------\n";
+
+                                //read new XML string
+                                $newdoc2 = new DOMDocument;
+                                $newdoc2->loadXML($xmlString);
+
+                                /** @var DOMElement $rootNode2 */
+                                $rootNode2 = $newdoc2->firstChild;
+                                #DH::DEBUGprintDOMDocument( $rootNode2 );
+                                #print "------------\n";
+
+                                $changed = FALSE;
+                                foreach( $rootNode2->childNodes as $entry )
+                                {
+                                    /** @var DOMElement $entry */
+                                    if( $entry->nodeType != XML_ELEMENT_NODE )
+                                        continue;
 
 
-                                $name = DH::findAttribute("name", $entry);
-                                $existingNode = DH::findFirstElementByNameAttr( "entry", $name, $rootNode1 );
-                                if( $existingNode == null || $existingNode == false )
-                                {
-                                    PH::print_stdout( "new Node added - ".$name);
-                                    $entrynew = $newdoc1->importNode($entry, true);
-                                    $rootNode1->appendChild( $entrynew );
-                                    $changed = true;
-                                }
-                                else
-                                {
-                                    $string1 = $existingNode->textContent;
-                                    $string2 = $entry->textContent;
-                                    if( $string1 !== $string2 )
+                                    $name = DH::findAttribute("name", $entry);
+                                    $existingNode = DH::findFirstElementByNameAttr("entry", $name, $rootNode1);
+                                    if( $existingNode == null || $existingNode == FALSE )
                                     {
-                                        PH::print_stdout( "\nNode changed - ".$name);
-                                        #DH::DEBUGprintDOMDocument($existingNode);
-                                        #print "\n------------\n";
-                                        #DH::DEBUGprintDOMDocument($entry);
-                                        #print "\n------------\n";
+                                        PH::print_stdout("new Node added - " . $name);
+                                        $entrynew = $newdoc1->importNode($entry, TRUE);
+                                        $rootNode1->appendChild($entrynew);
+                                        $changed = TRUE;
+                                    }
+                                    else
+                                    {
+                                        $string1 = $existingNode->textContent;
+                                        $string2 = $entry->textContent;
+                                        if( $string1 !== $string2 )
+                                        {
+                                            PH::print_stdout("\nNode changed - " . $name);
+                                            #DH::DEBUGprintDOMDocument($existingNode);
+                                            #print "\n------------\n";
+                                            #DH::DEBUGprintDOMDocument($entry);
+                                            #print "\n------------\n";
 
-                                        $entrynew = $newdoc1->importNode($entry, true);
-                                        $rootNode1->removeChild( $existingNode );
-                                        $rootNode1->appendChild( $entrynew );
-                                        $changed = true;
+                                            $entrynew = $newdoc1->importNode($entry, TRUE);
+                                            $rootNode1->removeChild($existingNode);
+                                            $rootNode1->appendChild($entrynew);
+                                            $changed = TRUE;
+                                        }
                                     }
                                 }
-                            }
-                            if( $changed )
-                            {
-                                file_put_contents( $filename, $newdoc1->saveXML($newdoc1->documentElement) );
-                            }
+                                if( $changed )
+                                {
+                                    file_put_contents($filename, $newdoc1->saveXML($newdoc1->documentElement));
+                                }
 
+                            }
                         }
                     }
                 }
             }
-
-
-//print_r($parsed['snippets']);
+            //catch exception
+            catch(Error $e)
+            {
+                PH::disableExceptionSupport();
+                PH::print_stdout( " ***** an error occured : " . $e->getMessage() );
+                PH::print_stdout();
+            }
         }
 
     }

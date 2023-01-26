@@ -2109,6 +2109,8 @@ DeviceCallContext::$commonActionFunctions['zpp-create'] = array(
                 $newdoc->loadXML( $zpp_bp_xmlstring );
                 $node = $newdoc->importNode($newdoc->firstChild, TRUE);
                 $node = DH::findFirstElementByNameAttr( "entry", $entryProfileName, $node );
+                if( $node === false || $node === null )
+                    derr( "there is an error with the Iron-Skillet update - Profile: ".$entryProfileName." does not exist", null, false );
                 $node = $ownerDocument->importNode($node, TRUE);
 
 
