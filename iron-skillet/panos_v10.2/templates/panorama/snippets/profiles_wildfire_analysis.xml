@@ -1,0 +1,14 @@
+<root><entry name="Outbound-WF">
+  <rules>
+    <entry name="Forward-All">
+      <application>
+        <member>any</member>
+      </application>
+      <file-type>
+        <member>any</member>
+      </file-type>
+      <direction>both</direction>
+      <analysis>public-cloud</analysis>
+    </entry>
+  </rules>
+</entry></root>

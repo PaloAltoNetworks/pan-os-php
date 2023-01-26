@@ -1,0 +1,20 @@
+<root><entry name="Outbound">
+  <virus>
+    <member>Outbound-AV</member>
+  </virus>
+  <spyware>
+    <member>Outbound-AS</member>
+  </spyware>
+  <vulnerability>
+    <member>Outbound-VP</member>
+  </vulnerability>
+  <url-filtering>
+    <member>Outbound-URL</member>
+  </url-filtering>
+  <file-blocking>
+    <member>Outbound-FB</member>
+  </file-blocking>
+  <wildfire-analysis>
+    <member>Outbound-WF</member>
+  </wildfire-analysis>
+</entry></root>
