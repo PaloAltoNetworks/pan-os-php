@@ -160,7 +160,9 @@ class IRONSKILLET_UPDATE__
 
 
             $fullurl = $this->url.$version;
-            print "urL: ".$fullurl."\n";
+            PH::print_stdout("\n---------------------------------");
+            PH::print_stdout( "URL: ".$fullurl );
+            PH::print_stdout();
 
             $origFile = file_get_contents( $this->url.$version, false, stream_context_create($arrContextOptions));
             file_put_contents( $this->ironskillet_pathString."/".$version, $origFile);
@@ -169,6 +171,14 @@ class IRONSKILLET_UPDATE__
             $yamlcontent = file_get_contents( $this->ironskillet_pathString."/".$version);
 
             $parsed = yaml_parse($yamlcontent);
+
+            /*
+            $xml = new SimpleXMLElement('<root/>');
+            array_walk_recursive($parsed, array ($xml, 'addChild'));
+            $filename = $this->ironskillet_pathString."/".$path."/ironskillet_full_yaml.xml";
+            file_put_contents( $filename, $xml->asXML());
+            //print $xml->asXML();
+            */
 
             $ironskillet_name_finding = array();
             $ironskillet_name_finding[] = "profiles_spyware";
@@ -188,7 +198,79 @@ class IRONSKILLET_UPDATE__
                 if( $element !== null )
                 {
                     if( isset($element['element']) )
-                        print_r( $element['element'] );
+                    {
+                        $xmlString = "<root>".$element['element']."</root>";
+
+                        $sinkholeIP = "sinkhole.paloaltonetworks.com";
+                        $xmlString = str_replace( "{{ SINKHOLE_IPV4 }}", $sinkholeIP, $xmlString);
+                        $xmlString = str_replace( "{{ SINKHOLE_IPV6 }}", "2600:5200::1", $xmlString);
+
+                        $filename = $this->ironskillet_pathString."/".$path."/".$name.".xml";
+                        if( !file_exists( $filename ) )
+                            file_put_contents( $filename, $xmlString);
+                        else
+                        {
+                            //read XML file
+                            $newdoc1 = new DOMDocument;
+                            $newdoc1->load( $filename );
+
+                            /** @var DOMElement $rootNode1 */
+                            $rootNode1 = $newdoc1->firstChild;
+                            #DH::DEBUGprintDOMDocument( $rootNode1 );
+                            #print "------------\n";
+
+                            //read new XML string
+                            $newdoc2 = new DOMDocument;
+                            $newdoc2->loadXML( $xmlString );
+
+                            /** @var DOMElement $rootNode2 */
+                            $rootNode2 = $newdoc2->firstChild;
+                            #DH::DEBUGprintDOMDocument( $rootNode2 );
+                            #print "------------\n";
+
+                            $changed = false;
+                            foreach( $rootNode2->childNodes as $entry )
+                            {
+                                /** @var DOMElement $entry */
+                                if( $entry->nodeType != XML_ELEMENT_NODE )
+                                    continue;
+
+
+                                $name = DH::findAttribute("name", $entry);
+                                $existingNode = DH::findFirstElementByNameAttr( "entry", $name, $rootNode1 );
+                                if( $existingNode == null || $existingNode == false )
+                                {
+                                    PH::print_stdout( "new Node added - ".$name);
+                                    $entrynew = $newdoc1->importNode($entry, true);
+                                    $rootNode1->appendChild( $entrynew );
+                                    $changed = true;
+                                }
+                                else
+                                {
+                                    $string1 = $existingNode->textContent;
+                                    $string2 = $entry->textContent;
+                                    if( $string1 !== $string2 )
+                                    {
+                                        PH::print_stdout( "\nNode changed - ".$name);
+                                        #DH::DEBUGprintDOMDocument($existingNode);
+                                        #print "\n------------\n";
+                                        #DH::DEBUGprintDOMDocument($entry);
+                                        #print "\n------------\n";
+
+                                        $entrynew = $newdoc1->importNode($entry, true);
+                                        $rootNode1->removeChild( $existingNode );
+                                        $rootNode1->appendChild( $entrynew );
+                                        $changed = true;
+                                    }
+                                }
+                            }
+                            if( $changed )
+                            {
+                                file_put_contents( $filename, $newdoc1->saveXML($newdoc1->documentElement) );
+                            }
+
+                        }
+                    }
                 }
             }
 
