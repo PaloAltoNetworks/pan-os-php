@@ -31,7 +31,7 @@ class HTMLmerger__
 
         if( isset(PH::$args['help']) )
         {
-            $help_string = PH::boldText('USAGE: ')."php ".basename(__FILE__)." projectfolder=[DIRECTORY]";
+            $help_string = PH::boldText('USAGE: ')."php ".basename(__FILE__)." exportCSV=[spreadsheet.xls] projectfolder=[DIRECTORY]";
 
             PH::print_stdout( $help_string );
 
@@ -45,12 +45,14 @@ class HTMLmerger__
             if( substr("$this->projectfolder", -1) !== "/" )
                 $this->projectfolder .= "/";
         }
+        else
+            $this->projectfolder = "./";
 
 
         $this->supportedArguments = Array();
         $this->supportedArguments['projectfolder'] = Array('niceName' => 'projectFolder', 'shortHelp' => 'define the projectfolder', 'argDesc' => 'projectfolder=[DIRECTORY]');
         $this->supportedArguments['help'] = array('niceName' => 'help', 'shortHelp' => 'this message');
-        $this->supportedArguments[] = array('niceName' => 'exportCSV', 'shortHelp' => 'when this argument is specified, it instructs the script to display the kept and removed objects per value');
+        $this->supportedArguments['exportCSV'] = array('niceName' => 'exportCSV', 'shortHelp' => 'when this argument is specified, it instructs the script to display the kept and removed objects per value');
 
         $this->usageMsg = PH::boldText('USAGE: ')."php ".basename(__FILE__)." projectfolder=[DIRECTORY]";
 
@@ -74,20 +76,42 @@ class HTMLmerger__
         PH::print_stdout( "check projectfolder: ".$this->projectfolder." for files with ending '.html'" );
         PH::print_stdout( );
 
-        $cli = "python3 ".$filename." ".$this->projectfolder." ".$excelfilename;
-
-        exec($cli, $output, $retValue);
-
-        foreach( $output as $line )
+        /*
+        if( empty($excelfilename ) )
         {
-            $string = '   ##  ';
-            $string .= $line;
-            print $string."\n" ;
-        }
+            $help_string = PH::boldText('USAGE: ')."php ".basename(__FILE__)." exportCSV=[spreadsheet.xls] projectfolder=[DIRECTORY]";
 
-        PH::print_stdout( );
-        PH::print_stdout( "Excel file created: ".$this->projectfolder."".$excelfilename );
-        PH::print_stdout( );
+            PH::print_stdout( $help_string );
+
+            exit();
+        }
+        */
+
+        PH::enableExceptionSupport();
+        try
+        {
+            $cli = "python3 " . $filename . " " . $this->projectfolder . " " . $excelfilename;
+
+            exec($cli, $output, $retValue);
+
+            foreach( $output as $line )
+            {
+                $string = '   ##  ';
+                $string .= $line;
+                print $string . "\n";
+            }
+
+            PH::print_stdout();
+            PH::print_stdout("Excel file created: " . $this->projectfolder . "" . $excelfilename);
+            PH::print_stdout();
+        }
+        //catch exception
+        catch(Error $e)
+        {
+            PH::disableExceptionSupport();
+            PH::print_stdout( " ***** an error occured : " . $e->getMessage() );
+            PH::print_stdout();
+        }
     }
 
     function endOfScript()
