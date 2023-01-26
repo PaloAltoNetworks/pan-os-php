@@ -576,26 +576,20 @@ class DIFF extends UTIL
 
                 //todo:
                 //check if xpath should be ignored as added to JSON file
-                /*
                 $continue = $this->ignoreAddDeleteXpath( $xpath, $el1, $this->added );
                 if( $continue )
-                    print "continue added\n";
-                else
-                    print "NO continue\n";
-                */
+                    return;
+
                 $tmp = DH::dom_to_xml($el1);
                 #$text .= '-' . str_replace("\n", "\n", $tmp);
                 $text .= '-' . $tmp;
                 PH::$JSON_TMP['minus'][] = $tmp;
 
                 //check if xpath should be ignored as added to JSON file
-                /*
                 $continue = $this->ignoreAddDeleteXpath( $xpath, $el1, $this->deleted );
                 if( $continue )
-                    print "continue deleted\n";
-                else
-                    print "NO continue\n";
-                */
+                    return;
+
                 $tmp = DH::dom_to_xml($el2);
                 #$text .= '+' . str_replace("\n", "\n", $tmp);
                 $text .= '+' . $tmp;
@@ -1390,8 +1384,15 @@ class DIFF extends UTIL
         {
             #print "\nXPATH: ".$xpath."\n";
             $newXpath = str_replace( $xpath, "", $add );
-            #print "NEWXPATH: ".$newXpath."\n";
 
+            if( strpos( $newXpath, "[" ) === 0 )
+            {
+                $string_array = explode( "/", $xpath );
+                $lastkey = array_key_last($string_array);
+                $string = $string_array[$lastkey];
+                $newXpath = "/".$string.$newXpath;
+            }
+            #print "NEWXPATH: ".$newXpath."\n";
 
             //////textnode search
             $textNodeFound = FALSE;
