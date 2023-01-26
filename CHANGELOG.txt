@@ -15,6 +15,7 @@ UTIL:
 * type=ironskillet-update | download yaml file
 * type=ironskillet-update | introduce new iron-skillet yaml download and create XML snippets
 * type=device | introduce 'actions=zpp-create-alert-only-bp' / 'actions=zpp-create-bp'
+* type=diff | filter=jsonfile.json - introduction of ignoring diff output based on textnode for 'added'/'deleted'
 
 BUGFIX:
 * type=rule-merger | bugfix if argument exportcsv=xyz projectfolder=xyz and rules are skipped - to create skipped output file correctly

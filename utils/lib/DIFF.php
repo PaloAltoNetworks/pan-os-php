@@ -574,11 +574,28 @@ class DIFF extends UTIL
                 PH::$JSON_TMP['minus'] = array();
                 PH::$JSON_TMP['xpath'] = $xpath;
 
+                //todo:
+                //check if xpath should be ignored as added to JSON file
+                /*
+                $continue = $this->ignoreAddDeleteXpath( $xpath, $el1, $this->added );
+                if( $continue )
+                    print "continue added\n";
+                else
+                    print "NO continue\n";
+                */
                 $tmp = DH::dom_to_xml($el1);
                 #$text .= '-' . str_replace("\n", "\n", $tmp);
                 $text .= '-' . $tmp;
                 PH::$JSON_TMP['minus'][] = $tmp;
 
+                //check if xpath should be ignored as added to JSON file
+                /*
+                $continue = $this->ignoreAddDeleteXpath( $xpath, $el1, $this->deleted );
+                if( $continue )
+                    print "continue deleted\n";
+                else
+                    print "NO continue\n";
+                */
                 $tmp = DH::dom_to_xml($el2);
                 #$text .= '+' . str_replace("\n", "\n", $tmp);
                 $text .= '+' . $tmp;
@@ -589,7 +606,6 @@ class DIFF extends UTIL
                 PH::$JSON_TMP = array();
 
                 //same xpath different content
-                //$this->displayDIFF( $xpath, $text, array( $el1 ), array($el2) );
                 $this->displayDIFF( $xpath, $text, array( $el2 ), array( $el1 ), array( $el1 ) );
                 $this->failStatus_diff = TRUE;
             }
@@ -1376,7 +1392,28 @@ class DIFF extends UTIL
             $newXpath = str_replace( $xpath, "", $add );
             #print "NEWXPATH: ".$newXpath."\n";
 
-            if( empty( $newXpath ) )
+
+            //////textnode search
+            $textNodeFound = FALSE;
+            if( !empty($newXpath) )
+            {
+                $domXpath = new DOMXPath($newdoc);
+                foreach( $domXpath->query($newXpath) as $textNode )
+                {
+                    if( !DH::hasChild( $textNode ) )
+                    {
+                        $textNodeFound = TRUE;
+                        #print "something found in \n";
+                        #print $textNode->nodeValue."\n";
+                        ###print "path: ".$textNode->getNodePath()."\n";
+                    }
+                }
+            }
+
+
+            if( $textNodeFound )
+                $continue = true;
+            elseif( empty( $newXpath ) )
                 $continue = true;
             elseif( $node->nodeName == "entry" )
             {
