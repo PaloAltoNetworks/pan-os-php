@@ -1,6 +1,14 @@
 CHANGELOG
 
-2.0.66
+2.0.67
+UTIL:
+
+BUGFIX:
+
+GENERAL
+
+
+2.0.66 (20230126)
 UTIL:
 * type=address/service | introduce 'filter=(reflocationcount ><=! NUMBER)'
 * type=diff | introduce more options for 'filter=file.json' - 'added'/'deleted'/'moved' to not display xPath diff, if already accepted and known
