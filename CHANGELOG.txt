@@ -26,6 +26,7 @@ BUGFIX:
 * dockerfile add missing folder iron-skillet | fix for all iron-skillet relevant type=device action=....-create-bp parts
 * type=diff | filter JSON file 'added'/'deleted' - bugfix to get for each entry the correct diff output
 * type=html-merger | bugfix for missing projectfolder argument / introduce try and catch if pyhon is not installed
+* type=device 'actions=manageddevice-delete' | bugfix for offline config
 
 GENERAL
 * update js and json file for bash_completion

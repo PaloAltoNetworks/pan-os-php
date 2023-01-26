@@ -223,6 +223,7 @@ DeviceCallContext::$supportedActions['display'] = array(
         PH::print_stdout();
     },
 );
+
 DeviceCallContext::$supportedActions['displayreferences'] = array(
     'name' => 'displayReferences',
     'MainFunction' => function (DeviceCallContext $context) {
@@ -256,6 +257,7 @@ DeviceCallContext::$supportedActions['displayreferences'] = array(
 
     },
 );
+
 DeviceCallContext::$supportedActions['DeviceGroup-create'] = array(
     'name' => 'devicegroup-create',
     'MainFunction' => function (DeviceCallContext $context) {
@@ -304,6 +306,7 @@ DeviceCallContext::$supportedActions['DeviceGroup-create'] = array(
         'parentdg' => array('type' => 'string', 'default' => 'null'),
     ),
 );
+
 DeviceCallContext::$supportedActions['DeviceGroup-addSerial'] = array(
     'name' => 'devicegroup-addserial',
     'MainFunction' => function (DeviceCallContext $context) {
@@ -349,6 +352,7 @@ DeviceCallContext::$supportedActions['DeviceGroup-addSerial'] = array(
         'serial' => array('type' => 'string', 'default' => 'null'),
     ),
 );
+
 DeviceCallContext::$supportedActions['DeviceGroup-removeSerial'] = array(
     'name' => 'devicegroup-removeserial',
     'MainFunction' => function (DeviceCallContext $context) {
@@ -391,6 +395,7 @@ DeviceCallContext::$supportedActions['DeviceGroup-removeSerial'] = array(
         'serial' => array('type' => 'string', 'default' => 'null'),
     ),
 );
+
 DeviceCallContext::$supportedActions['DeviceGroup-delete'] = array(
     'name' => 'devicegroup-delete',
     'MainFunction' => function (DeviceCallContext $context) {
@@ -428,6 +433,7 @@ DeviceCallContext::$supportedActions['DeviceGroup-delete'] = array(
         }
     }
 );
+
 DeviceCallContext::$supportedActions['Template-create'] = array(
     'name' => 'template-create',
     'MainFunction' => function (DeviceCallContext $context) {
@@ -462,6 +468,7 @@ DeviceCallContext::$supportedActions['Template-create'] = array(
         'name' => array('type' => 'string', 'default' => 'false'),
     ),
 );
+
 DeviceCallContext::$supportedActions['Template-delete'] = array(
     'name' => 'template-delete',
     'MainFunction' => function (DeviceCallContext $context) {
@@ -512,6 +519,7 @@ DeviceCallContext::$supportedActions['Template-delete'] = array(
         }
     }
 );
+
 DeviceCallContext::$supportedActions['ManagedDevice-create'] = array(
     'name' => 'manageddevice-create',
     'MainFunction' => function (DeviceCallContext $context) {
@@ -551,6 +559,7 @@ DeviceCallContext::$supportedActions['ManagedDevice-create'] = array(
         'serial' => array('type' => 'string', 'default' => 'false'),
     ),
 );
+
 DeviceCallContext::$supportedActions['ManagedDevice-delete'] = array(
     'name' => 'manageddevice-delete',
     'MainFunction' => function (DeviceCallContext $context) {
@@ -620,7 +629,7 @@ DeviceCallContext::$supportedActions['ManagedDevice-delete'] = array(
             $con->sendDeleteRequest($xpath);
         }
         else
-            $pan->managedFirewallsStore->removeManagedDevice( $serialName );
+            $pan->managedFirewallsStore->removeManagedDevice( $tmp_manageddevice->name() );
 
     },
     'args' => array(
@@ -772,6 +781,7 @@ DeviceCallContext::$supportedActions['exportToExcel'] = array(
                     "  - UsedInLocation : list locations (vsys,dg,shared) where object is used\n")
     )
 );
+
 DeviceCallContext::$supportedActions['template-add'] = array(
     'name' => 'template-add',
     'MainFunction' => function (DeviceCallContext $context) {
@@ -811,6 +821,7 @@ DeviceCallContext::$supportedActions['template-add'] = array(
         'position' => array('type' => 'string', 'default' => 'bottom'),
     ),
 );
+
 DeviceCallContext::$supportedActions['AddressStore-rewrite'] = array(
     'name' => 'addressstore-rewrite',
     'GlobalInitFunction' => function (DeviceCallContext $context) {
@@ -841,6 +852,7 @@ DeviceCallContext::$supportedActions['AddressStore-rewrite'] = array(
     }
   //rewriteAddressStoreXML()
 );
+
 DeviceCallContext::$supportedActions['exportInventoryToExcel'] = array(
     'name' => 'exportInventoryToExcel',
     'GlobalInitFunction' => function (DeviceCallContext $context) {
@@ -929,6 +941,7 @@ DeviceCallContext::$supportedActions['exportInventoryToExcel'] = array(
         )
     )
 );
+
 DeviceCallContext::$supportedActions['exportLicenseToExcel'] = array(
     'name' => 'exportLicenseToExcel',
     'GlobalInitFunction' => function (DeviceCallContext $context) {
