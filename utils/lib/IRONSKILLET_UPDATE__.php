@@ -211,7 +211,10 @@ class IRONSKILLET_UPDATE__
 
                             $filename = $this->ironskillet_pathString . "/" . $path . "/" . $name . ".xml";
                             if( !file_exists($filename) )
+                            {
+                                PH::print_stdout( "new file: ".$filename );
                                 file_put_contents($filename, $xmlString);
+                            }
                             else
                             {
                                 //read XML file
@@ -271,6 +274,10 @@ class IRONSKILLET_UPDATE__
                                 if( $changed )
                                 {
                                     file_put_contents($filename, $newdoc1->saveXML($newdoc1->documentElement));
+                                }
+                                else
+                                {
+                                    PH::print_stdout( "nothing updated for : ".$name );
                                 }
 
                             }
