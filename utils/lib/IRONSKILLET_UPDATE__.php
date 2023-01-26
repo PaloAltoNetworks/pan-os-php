@@ -164,6 +164,36 @@ class IRONSKILLET_UPDATE__
 
             $origFile = file_get_contents( $this->url.$version, false, stream_context_create($arrContextOptions));
             file_put_contents( $this->ironskillet_pathString."/".$version, $origFile);
+
+            //now go through YAML file
+            $yamlcontent = file_get_contents( $this->ironskillet_pathString."/".$version);
+
+            $parsed = yaml_parse($yamlcontent);
+
+            $ironskillet_name_finding = array();
+            $ironskillet_name_finding[] = "profiles_spyware";
+            $ironskillet_name_finding[] = "profiles_virus";
+            $ironskillet_name_finding[] = "profiles_url_filtering";
+            $ironskillet_name_finding[] = "profiles_file_blocking";
+            $ironskillet_name_finding[] = "profiles_vulnerability";
+            $ironskillet_name_finding[] = "profiles_wildfire_analysis";
+            $ironskillet_name_finding[] = "profiles_custom_url_category";
+            $ironskillet_name_finding[] = "profile_group";
+            $ironskillet_name_finding[] = "log_settings_profiles";
+            $ironskillet_name_finding[] = "zone_protection_profile";
+
+            foreach( $ironskillet_name_finding as $name )
+            {
+                $element = $this->find_ironskillet_entry_basedonname( $parsed['snippets'],$name );
+                if( $element !== null )
+                {
+                    if( isset($element['element']) )
+                        print_r( $element['element'] );
+                }
+            }
+
+
+//print_r($parsed['snippets']);
         }
 
     }
@@ -195,5 +225,15 @@ class IRONSKILLET_UPDATE__
 
             $pathString = $pathString.$explodeArray[$i]."/";
         }
+    }
+
+    function find_ironskillet_entry_basedonname( $snippet, $name )
+    {
+        foreach( $snippet as $key => $entry )
+        {
+            if( strpos( $entry['name'], $name ) !== false )
+                return $entry;
+        }
+        return null;
     }
 }
