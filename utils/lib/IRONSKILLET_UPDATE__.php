@@ -21,10 +21,16 @@
 
 class IRONSKILLET_UPDATE__
 {
+    public $ironskillet_pathString;
+    public $url;
+
     function __construct()
     {
 
-        $url = "https://raw.githubusercontent.com/PaloAltoNetworks/iron-skillet/";
+        $this->url = "https://raw.githubusercontent.com/PaloAltoNetworks/iron-skillet/";
+        $this->ironskillet_pathString = dirname(__FILE__)."/../../iron-skillet";
+
+
 #$url = "https://github.com/PaloAltoNetworks/iron-skillet/blob/";
 
         $download_array = array();
@@ -87,34 +93,19 @@ class IRONSKILLET_UPDATE__
 
         foreach( $download_array as $type )
         {
-            $ironskillet_pathString = dirname(__FILE__)."/../../iron-skillet";
+
             foreach( $type as $key => $version )
             {
-                if (!is_dir($ironskillet_pathString )) {
-                    // dir doesn't exist, make it
-                    #print "FOLDER: ".$ironskillet_pathString."\n";
-                    mkdir($ironskillet_pathString);
-                }
+                $this->createIronSkilletMainFolder();
 
-                $filename = $ironskillet_pathString."/".$version;
+                $filename = $this->ironskillet_pathString."/".$version;
                 #print "storefile: ".$filename."\n";
 
-                $explodeArray = explode( "/", $version );
-
-                $pathString = $ironskillet_pathString."/";
-                for( $i = 0; $i < count( $explodeArray )-1; $i++ )
-                {
-                    if (!is_dir( $pathString.$explodeArray[$i] )) {
-                        // dir doesn't exist, make it
-                        mkdir($pathString.$explodeArray[$i] );
-                    }
-
-                    $pathString = $pathString.$explodeArray[$i]."/";
-                }
+                $this->createIronSkilletSubFolder( $version );
 
 
 
-                $fullurl = $url.$version;
+                $fullurl = $this->url.$version;
                 print "urL: ".$fullurl."\n";
 
                 $arrContextOptions=array(
@@ -125,7 +116,7 @@ class IRONSKILLET_UPDATE__
                 );
 
 
-                $origFile = file_get_contents( $url.$version, false, stream_context_create($arrContextOptions));
+                $origFile = file_get_contents( $this->url.$version, false, stream_context_create($arrContextOptions));
                 if( $key < 90 )
                     $sinkholeIP = "72.5.65.111";
                 else
@@ -137,12 +128,72 @@ class IRONSKILLET_UPDATE__
 
                 $origFile = "<root>".$origFile."</root>";
 
-                file_put_contents( $ironskillet_pathString."/".$version, $origFile);
+                file_put_contents( $this->ironskillet_pathString."/".$version, $origFile);
             }
         }
+
+
+        //new iron-skillet method yaml file
+        //download
+
+        $download_array = array();
+        //yaml file pointing to snippet xml so exclude it
+        //$download_array['80'] = "panos_v8.0/templates/panorama/snippets/.meta-cnc.yaml";
+        //$download_array['81'] = "panos_v8.1/templates/panorama/snippets/.meta-cnc.yaml";
+        //$download_array['90'] = "panos_v9.0/templates/panorama/snippets/.meta-cnc.yaml";
+        //$download_array['91'] = "panos_v9.1/templates/panorama/snippets/.meta-cnc.yaml";
+        $download_array['100'] = "panos_v10.0/templates/panorama/snippets/.meta-cnc.yaml";
+        $download_array['101'] = "panos_v10.1/templates/panorama/snippets/.meta-cnc.yaml";
+        $download_array['102'] = "panos_v10.2/templates/panorama/snippets/.meta-cnc.yaml";
+        $download_array['110'] = "panos_v11.0/templates/panorama/snippets/.meta-cnc.yaml";
+
+        //download all yaml files
+        foreach( $download_array as $key => $version )
+        {
+            $end = strrpos( $version, "/" );
+            $path = substr( $version, 0, $end);
+
+            $this->createIronSkilletMainFolder();
+
+            $this->createIronSkilletSubFolder( $version);
+
+
+
+            $fullurl = $this->url.$version;
+            print "urL: ".$fullurl."\n";
+
+            $origFile = file_get_contents( $this->url.$version, false, stream_context_create($arrContextOptions));
+            file_put_contents( $this->ironskillet_pathString."/".$version, $origFile);
+        }
+
     }
 
     function endOfScript()
     {
+    }
+
+    function createIronSkilletMainFolder()
+    {
+        if (!is_dir($this->ironskillet_pathString )) {
+            // dir doesn't exist, make it
+            #print "FOLDER: ".$this->ironskillet_pathString."\n";
+            mkdir($this->ironskillet_pathString);
+        }
+    }
+
+    function createIronSkilletSubFolder( $version)
+    {
+        $explodeArray = explode( "/", $version );
+
+        $pathString = $this->ironskillet_pathString."/";
+        for( $i = 0; $i < count( $explodeArray )-1; $i++ )
+        {
+            if (!is_dir( $pathString.$explodeArray[$i] )) {
+                // dir doesn't exist, make it
+                mkdir($pathString.$explodeArray[$i] );
+            }
+
+            $pathString = $pathString.$explodeArray[$i]."/";
+        }
     }
 }

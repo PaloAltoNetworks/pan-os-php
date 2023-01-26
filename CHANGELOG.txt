@@ -12,6 +12,7 @@ UTIL:
 * type=diff | filter JSON file with "combinedruleordercheck" - use Rule name and no longer UUID as unique key
 * type=diff | if filter JSON file is using 'added'/'deleted' - ignore DIFF output
 * type=diff | if filter JSON file is using 'empty' - ignore DIFF output of empty rules XMLnodes in DIFF output
+* type=ironskillet-update | download yaml file
 
 BUGFIX:
 * type=rule-merger | bugfix if argument exportcsv=xyz projectfolder=xyz and rules are skipped - to create skipped output file correctly
