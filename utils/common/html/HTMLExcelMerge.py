@@ -3,9 +3,23 @@
 # This script is intended to scan the output directories of autoreporter.sh and combine the HTML files into a single Excel workbook
 # with multiple tabs for ease of reading.
 
-import os, re
-import pandas as pd
-import sys
+try:
+    import os, re
+except ImportError:
+	print("python import failure: 'os, re' NOT found")
+	exit()
+
+try:
+    import pandas as pd
+except ImportError:
+	print("python import failure: 'pandas' NOT found")
+	exit()
+
+try:
+    import sys
+except ImportError:
+	print("python import failure: 'sys' NOT found")
+	exit()
 
 
 filepath = sys.argv[1]

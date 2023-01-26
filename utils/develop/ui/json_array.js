@@ -1629,6 +1629,16 @@ var subjectObject =
                 "name": "zoneprotectionprofile-create-bp",
                 "GlobalInitFunction": {},
                 "MainFunction": {}
+            },
+            "zpp-create-alert-only-bp": {
+                "name": "zpp-create-alert-only-bp",
+                "GlobalInitFunction": {},
+                "MainFunction": {}
+            },
+            "zpp-create-bp": {
+                "name": "zpp-create-bp",
+                "GlobalInitFunction": {},
+                "MainFunction": {}
             }
         },
         "filter": {
@@ -4475,7 +4485,7 @@ var subjectObject =
                     ">,<,=,!": {
                         "Function": {},
                         "arg": true,
-                        "help": "returns TRUE if rule name matches the specified timestamp MM\/DD\/YYYY [american] \/ DD-MM-YYYY [european] \/ 21 September 2021 \/ - 90 days"
+                        "help": "returns TRUE if rule name matches the specified timestamp MM\/DD\/YYYY [american] \/ DD-MM-YYYY [european] \/ 21 September 2021 \/ -90 days"
                     }
                 }
             },
@@ -4484,7 +4494,7 @@ var subjectObject =
                     ">,<,=,!": {
                         "Function": {},
                         "arg": true,
-                        "help": "returns TRUE if rule name matches the specified timestamp MM\/DD\/YYYY [american] \/ DD-MM-YYYY [european] \/ 21 September 2021 \/ - 90 days"
+                        "help": "returns TRUE if rule name matches the specified timestamp MM\/DD\/YYYY [american] \/ DD-MM-YYYY [european] \/ 21 September 2021 \/ -90 days"
                     }
                 }
             },

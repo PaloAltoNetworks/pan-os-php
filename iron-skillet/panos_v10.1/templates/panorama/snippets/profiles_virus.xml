@@ -1,0 +1,53 @@
+<root><entry name="Alert-Only-AV">
+  <decoder>
+    <entry name="ftp">
+      <action>alert</action>
+      <wildfire-action>alert</wildfire-action>
+      <mlav-action>alert</mlav-action>
+    </entry>
+    <entry name="http">
+      <action>alert</action>
+      <wildfire-action>alert</wildfire-action>
+      <mlav-action>alert</mlav-action>
+    </entry>
+    <entry name="http2">
+      <action>alert</action>
+      <wildfire-action>alert</wildfire-action>
+      <mlav-action>alert</mlav-action>
+    </entry>
+    <entry name="imap">
+      <action>alert</action>
+      <wildfire-action>alert</wildfire-action>
+      <mlav-action>alert</mlav-action>
+    </entry>
+    <entry name="pop3">
+      <action>alert</action>
+      <wildfire-action>alert</wildfire-action>
+      <mlav-action>alert</mlav-action>
+    </entry>
+    <entry name="smb">
+      <action>alert</action>
+      <wildfire-action>alert</wildfire-action>
+      <mlav-action>alert</mlav-action>
+    </entry>
+    <entry name="smtp">
+      <action>alert</action>
+      <wildfire-action>alert</wildfire-action>
+      <mlav-action>alert</mlav-action>
+    </entry>
+  </decoder>
+  <mlav-engine-filebased-enabled>
+    <entry name="Windows Executables">
+      <mlav-policy-action>enable(alert-only)</mlav-policy-action>
+    </entry>
+    <entry name="PowerShell Script 1">
+      <mlav-policy-action>enable(alert-only)</mlav-policy-action>
+    </entry>
+    <entry name="PowerShell Script 2">
+      <mlav-policy-action>enable(alert-only)</mlav-policy-action>
+    </entry>
+    <entry name="Executable Linked Format">
+      <mlav-policy-action>enable(alert-only)</mlav-policy-action>
+    </entry>
+  </mlav-engine-filebased-enabled>
+</entry></root>

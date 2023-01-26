@@ -12,6 +12,10 @@ UTIL:
 * type=diff | filter JSON file with "combinedruleordercheck" - use Rule name and no longer UUID as unique key
 * type=diff | if filter JSON file is using 'added'/'deleted' - ignore DIFF output
 * type=diff | if filter JSON file is using 'empty' - ignore DIFF output of empty rules XMLnodes in DIFF output
+* type=ironskillet-update | download yaml file
+* type=ironskillet-update | introduce new iron-skillet yaml download and create XML snippets
+* type=device | introduce 'actions=zpp-create-alert-only-bp' / 'actions=zpp-create-bp'
+* type=diff | filter=jsonfile.json - introduction of ignoring diff output based on textnode for 'added'/'deleted'
 
 BUGFIX:
 * type=rule-merger | bugfix if argument exportcsv=xyz projectfolder=xyz and rules are skipped - to create skipped output file correctly
@@ -22,6 +26,8 @@ BUGFIX:
 * type=playbook | bugfix for new php version - missing variable declaration
 * dockerfile add missing folder iron-skillet | fix for all iron-skillet relevant type=device action=....-create-bp parts
 * type=diff | filter JSON file 'added'/'deleted' - bugfix to get for each entry the correct diff output
+* type=html-merger | bugfix for missing projectfolder argument / introduce try and catch if pyhon is not installed
+* type=device 'actions=manageddevice-delete' | bugfix for offline config
 
 GENERAL
 * update js and json file for bash_completion
@@ -29,6 +35,7 @@ GENERAL
 * update license info | introduce new migration scripts for different vendors, under tag develop
 * develop | migration pulse - introduce rule-merging functionality only for pulse migration - should be general available
 * develop migrate bluecoat | introduce new argument 'loadxmlfromfile'
+* general - update dynamic to version 8668-7812
 
 
 2.0.65 (20221215)

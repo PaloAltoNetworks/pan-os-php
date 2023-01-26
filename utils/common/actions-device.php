@@ -223,6 +223,7 @@ DeviceCallContext::$supportedActions['display'] = array(
         PH::print_stdout();
     },
 );
+
 DeviceCallContext::$supportedActions['displayreferences'] = array(
     'name' => 'displayReferences',
     'MainFunction' => function (DeviceCallContext $context) {
@@ -256,6 +257,7 @@ DeviceCallContext::$supportedActions['displayreferences'] = array(
 
     },
 );
+
 DeviceCallContext::$supportedActions['DeviceGroup-create'] = array(
     'name' => 'devicegroup-create',
     'MainFunction' => function (DeviceCallContext $context) {
@@ -304,6 +306,7 @@ DeviceCallContext::$supportedActions['DeviceGroup-create'] = array(
         'parentdg' => array('type' => 'string', 'default' => 'null'),
     ),
 );
+
 DeviceCallContext::$supportedActions['DeviceGroup-addSerial'] = array(
     'name' => 'devicegroup-addserial',
     'MainFunction' => function (DeviceCallContext $context) {
@@ -349,6 +352,7 @@ DeviceCallContext::$supportedActions['DeviceGroup-addSerial'] = array(
         'serial' => array('type' => 'string', 'default' => 'null'),
     ),
 );
+
 DeviceCallContext::$supportedActions['DeviceGroup-removeSerial'] = array(
     'name' => 'devicegroup-removeserial',
     'MainFunction' => function (DeviceCallContext $context) {
@@ -391,6 +395,7 @@ DeviceCallContext::$supportedActions['DeviceGroup-removeSerial'] = array(
         'serial' => array('type' => 'string', 'default' => 'null'),
     ),
 );
+
 DeviceCallContext::$supportedActions['DeviceGroup-delete'] = array(
     'name' => 'devicegroup-delete',
     'MainFunction' => function (DeviceCallContext $context) {
@@ -428,6 +433,7 @@ DeviceCallContext::$supportedActions['DeviceGroup-delete'] = array(
         }
     }
 );
+
 DeviceCallContext::$supportedActions['Template-create'] = array(
     'name' => 'template-create',
     'MainFunction' => function (DeviceCallContext $context) {
@@ -462,6 +468,7 @@ DeviceCallContext::$supportedActions['Template-create'] = array(
         'name' => array('type' => 'string', 'default' => 'false'),
     ),
 );
+
 DeviceCallContext::$supportedActions['Template-delete'] = array(
     'name' => 'template-delete',
     'MainFunction' => function (DeviceCallContext $context) {
@@ -512,6 +519,7 @@ DeviceCallContext::$supportedActions['Template-delete'] = array(
         }
     }
 );
+
 DeviceCallContext::$supportedActions['ManagedDevice-create'] = array(
     'name' => 'manageddevice-create',
     'MainFunction' => function (DeviceCallContext $context) {
@@ -551,6 +559,7 @@ DeviceCallContext::$supportedActions['ManagedDevice-create'] = array(
         'serial' => array('type' => 'string', 'default' => 'false'),
     ),
 );
+
 DeviceCallContext::$supportedActions['ManagedDevice-delete'] = array(
     'name' => 'manageddevice-delete',
     'MainFunction' => function (DeviceCallContext $context) {
@@ -620,7 +629,7 @@ DeviceCallContext::$supportedActions['ManagedDevice-delete'] = array(
             $con->sendDeleteRequest($xpath);
         }
         else
-            $pan->managedFirewallsStore->removeManagedDevice( $serialName );
+            $pan->managedFirewallsStore->removeManagedDevice( $tmp_manageddevice->name() );
 
     },
     'args' => array(
@@ -772,6 +781,7 @@ DeviceCallContext::$supportedActions['exportToExcel'] = array(
                     "  - UsedInLocation : list locations (vsys,dg,shared) where object is used\n")
     )
 );
+
 DeviceCallContext::$supportedActions['template-add'] = array(
     'name' => 'template-add',
     'MainFunction' => function (DeviceCallContext $context) {
@@ -811,6 +821,7 @@ DeviceCallContext::$supportedActions['template-add'] = array(
         'position' => array('type' => 'string', 'default' => 'bottom'),
     ),
 );
+
 DeviceCallContext::$supportedActions['AddressStore-rewrite'] = array(
     'name' => 'addressstore-rewrite',
     'GlobalInitFunction' => function (DeviceCallContext $context) {
@@ -841,6 +852,7 @@ DeviceCallContext::$supportedActions['AddressStore-rewrite'] = array(
     }
   //rewriteAddressStoreXML()
 );
+
 DeviceCallContext::$supportedActions['exportInventoryToExcel'] = array(
     'name' => 'exportInventoryToExcel',
     'GlobalInitFunction' => function (DeviceCallContext $context) {
@@ -929,6 +941,7 @@ DeviceCallContext::$supportedActions['exportInventoryToExcel'] = array(
         )
     )
 );
+
 DeviceCallContext::$supportedActions['exportLicenseToExcel'] = array(
     'name' => 'exportLicenseToExcel',
     'GlobalInitFunction' => function (DeviceCallContext $context) {
@@ -2059,13 +2072,8 @@ DeviceCallContext::$supportedActions['LogForwardingProfile-create-BP'] = array(
     )
 );
 
-DeviceCallContext::$supportedActions['ZoneProtectionProfile-create-BP'] = array(
-    'name' => 'zoneprotectionprofile-create-bp',
-    'GlobalInitFunction' => function (DeviceCallContext $context) {
-        $context->first = true;
-    },
-    'MainFunction' => function (DeviceCallContext $context)
-    {
+DeviceCallContext::$commonActionFunctions['zpp-create'] = array(
+    'function' => function (DeviceCallContext $context, $entryProfileName) {
         $object = $context->object;
         $classtype = get_class($object);
 
@@ -2073,6 +2081,7 @@ DeviceCallContext::$supportedActions['ZoneProtectionProfile-create-BP'] = array(
         {
             $pathString = dirname(__FILE__)."/../../iron-skillet";
             $zpp_bp_xmlstring = file_get_contents( $pathString."/panos_v10.0/templates/panorama/snippets/zone_protection_profile.xml");
+            #$entryProfileName = "Recommended_Zone_Protection";
 
             if( $classtype == "VirtualSystem" || $classtype == "Template" )
             {
@@ -2112,14 +2121,16 @@ DeviceCallContext::$supportedActions['ZoneProtectionProfile-create-BP'] = array(
                 $newdoc = new DOMDocument;
                 $newdoc->loadXML( $zpp_bp_xmlstring );
                 $node = $newdoc->importNode($newdoc->firstChild, TRUE);
-                $node = DH::findFirstElementByNameAttr( "entry", "Recommended_Zone_Protection", $node );
+                $node = DH::findFirstElementByNameAttr( "entry", $entryProfileName, $node );
+                if( $node === false || $node === null )
+                    derr( "there is an error with the Iron-Skillet update - Profile: ".$entryProfileName." does not exist", null, false );
                 $node = $ownerDocument->importNode($node, TRUE);
 
 
                 $networkProfiles = DH::findFirstElementOrCreate('profiles', $xmlRoot);
                 $zppXMLroot = DH::findFirstElementOrCreate('zone-protection-profile', $networkProfiles);
 
-                $entryDefault = DH::findFirstElementByNameAttr( 'entry', 'Recommended_Zone_Protection', $zppXMLroot );
+                $entryDefault = DH::findFirstElementByNameAttr( 'entry', $entryProfileName, $zppXMLroot );
 
 
                 if( $entryDefault === null )
@@ -2128,7 +2139,7 @@ DeviceCallContext::$supportedActions['ZoneProtectionProfile-create-BP'] = array(
 
                     if( $context->isAPI )
                     {
-                        $entryDefault_xmlroot = DH::findFirstElementByNameAttr( 'entry', 'Recommended_Zone_Protection', $zppXMLroot );
+                        $entryDefault_xmlroot = DH::findFirstElementByNameAttr( 'entry', $entryProfileName, $zppXMLroot );
 
                         $xpath = DH::elementToPanXPath($zppXMLroot);
                         $con = findConnectorOrDie($object);
@@ -2140,7 +2151,7 @@ DeviceCallContext::$supportedActions['ZoneProtectionProfile-create-BP'] = array(
 
                 else
                 {
-                    $string = "ZoneProtectionProfile 'Recommended_Zone_Protection' already available. BestPractise ZoneProtectionProfile 'Recommended_Zone_Protection' not created";
+                    $string = "ZoneProtectionProfile '".$entryProfileName."' already available. BestPractise ZoneProtectionProfile '".$entryProfileName."' not created";
                     PH::ACTIONstatus( $context, "SKIPPED", $string );
                 }
 
@@ -2151,6 +2162,43 @@ DeviceCallContext::$supportedActions['ZoneProtectionProfile-create-BP'] = array(
         }
     }
 );
+
+DeviceCallContext::$supportedActions['ZoneProtectionProfile-create-BP'] = array(
+    'name' => 'zoneprotectionprofile-create-bp',
+    'GlobalInitFunction' => function (DeviceCallContext $context) {
+        $context->first = true;
+    },
+    'MainFunction' => function (DeviceCallContext $context)
+    {
+        $f = DeviceCallContext::$commonActionFunctions['zpp-create']['function'];
+        $f($context, 'Recommended_Zone_Protection');
+    }
+);
+
+DeviceCallContext::$supportedActions['ZPP-create-BP'] = array(
+    'name' => 'zpp-create-bp',
+    'GlobalInitFunction' => function (DeviceCallContext $context) {
+        $context->first = true;
+    },
+    'MainFunction' => function (DeviceCallContext $context)
+    {
+        $f = DeviceCallContext::$commonActionFunctions['zpp-create']['function'];
+        $f($context, 'Recommended_Zone_Protection');
+    }
+);
+
+DeviceCallContext::$supportedActions['ZPP-create-alert-only-BP'] = array(
+    'name' => 'zpp-create-alert-only-bp',
+    'GlobalInitFunction' => function (DeviceCallContext $context) {
+        $context->first = true;
+    },
+    'MainFunction' => function (DeviceCallContext $context)
+    {
+        $f = DeviceCallContext::$commonActionFunctions['zpp-create']['function'];
+        $f($context, 'Alert_Only_Zone_Protection');
+    }
+);
+
 
 DeviceCallContext::$supportedActions['CleanUpRule-create-BP'] = array(
     'name' => 'cleanuprule-create-bp',

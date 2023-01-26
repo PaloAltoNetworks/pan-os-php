@@ -21,6 +21,7 @@
       "ext-dom": "*",
       "ext-mbstring": "*",
       "ext-bcmath": "*",
-      "ext-mysqli": "*"
+      "ext-mysqli": "*",
+      "ext-yaml": "*"
     }
 }

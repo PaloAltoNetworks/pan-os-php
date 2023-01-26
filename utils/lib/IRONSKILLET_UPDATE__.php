@@ -21,10 +21,16 @@
 
 class IRONSKILLET_UPDATE__
 {
+    public $ironskillet_pathString;
+    public $url;
+
     function __construct()
     {
 
-        $url = "https://raw.githubusercontent.com/PaloAltoNetworks/iron-skillet/";
+        $this->url = "https://raw.githubusercontent.com/PaloAltoNetworks/iron-skillet/";
+        $this->ironskillet_pathString = dirname(__FILE__)."/../../iron-skillet";
+
+
 #$url = "https://github.com/PaloAltoNetworks/iron-skillet/blob/";
 
         $download_array = array();
@@ -35,86 +41,71 @@ class IRONSKILLET_UPDATE__
 //https://github.com/PaloAltoNetworks/iron-skillet/blob/panos_v10.0/templates/panorama/snippets/profiles_spyware.xml
         $download_array['as']['81'] = "panos_v8.1/templates/panorama/snippets/profiles_spyware.xml";
         $download_array['as']['91'] = "panos_v9.1/templates/panorama/snippets/profiles_spyware.xml";
-        $download_array['as']['100'] = "panos_v10.0/templates/panorama/snippets/profiles_spyware.xml";
+        #$download_array['as']['100'] = "panos_v10.0/templates/panorama/snippets/profiles_spyware.xml";
 
 //AV
 //https://github.com/PaloAltoNetworks/iron-skillet/blob/panos_v9.1/templates/panorama/snippets/profiles_virus.xml
 //https://github.com/PaloAltoNetworks/iron-skillet/blob/panos_v10.0/templates/panorama/snippets/profiles_virus.xml
         $download_array['av']['81'] = "panos_v8.1/templates/panorama/snippets/profiles_virus.xml";
         $download_array['av']['91'] = "panos_v9.1/templates/panorama/snippets/profiles_virus.xml";
-        $download_array['av']['100'] = "panos_v10.0/templates/panorama/snippets/profiles_virus.xml";
+        #$download_array['av']['100'] = "panos_v10.0/templates/panorama/snippets/profiles_virus.xml";
 
 //URL
 //https://github.com/PaloAltoNetworks/iron-skillet/blob/panos_v9.1/templates/panorama/snippets/profiles_url_filtering.xml
 //https://github.com/PaloAltoNetworks/iron-skillet/blob/panos_v10.0/templates/panorama/snippets/profiles_url_filtering.xml
         $download_array['url']['81'] = "panos_v8.1/templates/panorama/snippets/profiles_url_filtering.xml";
         $download_array['url']['91'] = "panos_v9.1/templates/panorama/snippets/profiles_url_filtering.xml";
-        $download_array['url']['100'] = "panos_v10.0/templates/panorama/snippets/profiles_url_filtering.xml";
+        #$download_array['url']['100'] = "panos_v10.0/templates/panorama/snippets/profiles_url_filtering.xml";
 
 //FB
 //https://github.com/PaloAltoNetworks/iron-skillet/blob/panos_v10.0/templates/panorama/snippets/profiles_file_blocking.xml
-        $download_array['fb']['100'] = "panos_v10.0/templates/panorama/snippets/profiles_file_blocking.xml";
+        #$download_array['fb']['100'] = "panos_v10.0/templates/panorama/snippets/profiles_file_blocking.xml";
 
 //VB
 //https://github.com/PaloAltoNetworks/iron-skillet/blob/panos_v10.0/templates/panorama/snippets/profiles_vulnerability.xml
-        $download_array['vb']['100'] = "panos_v10.0/templates/panorama/snippets/profiles_vulnerability.xml";
+        #$download_array['vb']['100'] = "panos_v10.0/templates/panorama/snippets/profiles_vulnerability.xml";
 
 //WF
 //https://github.com/PaloAltoNetworks/iron-skillet/blob/panos_v10.0/templates/panorama/snippets/profiles_wildfire_analysis.xml
-        $download_array['wf']['100'] = "panos_v10.0/templates/panorama/snippets/profiles_wildfire_analysis.xml";
+        #$download_array['wf']['100'] = "panos_v10.0/templates/panorama/snippets/profiles_wildfire_analysis.xml";
 
 //customerURL
 //https://github.com/PaloAltoNetworks/iron-skillet/blob/panos_v8.1/templates/panorama/snippets/profiles_custom_url_category.xml
 //https://github.com/PaloAltoNetworks/iron-skillet/blob/panos_v10.0/templates/panorama/snippets/profiles_custom_url_category.xml
         $download_array['customURL']['81'] = "panos_v8.1/templates/panorama/snippets/profiles_custom_url_category.xml";
-        $download_array['customURL']['100'] = "panos_v10.0/templates/panorama/snippets/profiles_custom_url_category.xml";
+        #$download_array['customURL']['100'] = "panos_v10.0/templates/panorama/snippets/profiles_custom_url_category.xml";
 
 //SECgroup
 //https://github.com/PaloAltoNetworks/iron-skillet/blob/panos_v10.0/templates/panorama/snippets/profile_group.xml
-        $download_array['secgroup']['100'] = "panos_v10.0/templates/panorama/snippets/profile_group.xml";
+        #$download_array['secgroup']['100'] = "panos_v10.0/templates/panorama/snippets/profile_group.xml";
 
 
 //LFP
 //https://github.com/PaloAltoNetworks/iron-skillet/blob/panos_v10.0/templates/panorama/snippets/log_settings_profiles.xml
-        $download_array['lfp']['100'] = "panos_v10.0/templates/panorama/snippets/log_settings_profiles.xml";
+        #$download_array['lfp']['100'] = "panos_v10.0/templates/panorama/snippets/log_settings_profiles.xml";
 
 //ZPP
 //https://github.com/PaloAltoNetworks/iron-skillet/blob/panos_v10.0/templates/panorama/snippets/zone_protection_profile.xml
-        $download_array['zpp']['100'] = "panos_v10.0/templates/panorama/snippets/zone_protection_profile.xml";
+        #$download_array['zpp']['100'] = "panos_v10.0/templates/panorama/snippets/zone_protection_profile.xml";
 
 
 
 
         foreach( $download_array as $type )
         {
-            $ironskillet_pathString = dirname(__FILE__)."/../../iron-skillet";
+
             foreach( $type as $key => $version )
             {
-                if (!is_dir($ironskillet_pathString )) {
-                    // dir doesn't exist, make it
-                    #print "FOLDER: ".$ironskillet_pathString."\n";
-                    mkdir($ironskillet_pathString);
-                }
+                $this->createIronSkilletMainFolder();
 
-                $filename = $ironskillet_pathString."/".$version;
+                $filename = $this->ironskillet_pathString."/".$version;
                 #print "storefile: ".$filename."\n";
 
-                $explodeArray = explode( "/", $version );
-
-                $pathString = $ironskillet_pathString."/";
-                for( $i = 0; $i < count( $explodeArray )-1; $i++ )
-                {
-                    if (!is_dir( $pathString.$explodeArray[$i] )) {
-                        // dir doesn't exist, make it
-                        mkdir($pathString.$explodeArray[$i] );
-                    }
-
-                    $pathString = $pathString.$explodeArray[$i]."/";
-                }
+                $this->createIronSkilletSubFolder( $version );
 
 
 
-                $fullurl = $url.$version;
+                $fullurl = $this->url.$version;
                 print "urL: ".$fullurl."\n";
 
                 $arrContextOptions=array(
@@ -125,7 +116,7 @@ class IRONSKILLET_UPDATE__
                 );
 
 
-                $origFile = file_get_contents( $url.$version, false, stream_context_create($arrContextOptions));
+                $origFile = file_get_contents( $this->url.$version, false, stream_context_create($arrContextOptions));
                 if( $key < 90 )
                     $sinkholeIP = "72.5.65.111";
                 else
@@ -137,12 +128,210 @@ class IRONSKILLET_UPDATE__
 
                 $origFile = "<root>".$origFile."</root>";
 
-                file_put_contents( $ironskillet_pathString."/".$version, $origFile);
+                file_put_contents( $this->ironskillet_pathString."/".$version, $origFile);
             }
         }
+
+
+        //new iron-skillet method yaml file
+        //download
+
+        $download_array = array();
+        //yaml file pointing to snippet xml so exclude it
+        //$download_array['80'] = "panos_v8.0/templates/panorama/snippets/.meta-cnc.yaml";
+        //$download_array['81'] = "panos_v8.1/templates/panorama/snippets/.meta-cnc.yaml";
+        //$download_array['90'] = "panos_v9.0/templates/panorama/snippets/.meta-cnc.yaml";
+        //$download_array['91'] = "panos_v9.1/templates/panorama/snippets/.meta-cnc.yaml";
+        $download_array['100'] = "panos_v10.0/templates/panorama/snippets/.meta-cnc.yaml";
+        $download_array['101'] = "panos_v10.1/templates/panorama/snippets/.meta-cnc.yaml";
+        $download_array['102'] = "panos_v10.2/templates/panorama/snippets/.meta-cnc.yaml";
+        $download_array['110'] = "panos_v11.0/templates/panorama/snippets/.meta-cnc.yaml";
+
+        //download all yaml files
+        foreach( $download_array as $key => $version )
+        {
+            $end = strrpos( $version, "/" );
+            $path = substr( $version, 0, $end);
+
+            $this->createIronSkilletMainFolder();
+
+            $this->createIronSkilletSubFolder( $version);
+
+
+
+            $fullurl = $this->url.$version;
+            PH::print_stdout("\n---------------------------------");
+            PH::print_stdout( "URL: ".$fullurl );
+            PH::print_stdout();
+
+            $origFile = file_get_contents( $this->url.$version, false, stream_context_create($arrContextOptions));
+            file_put_contents( $this->ironskillet_pathString."/".$version, $origFile);
+
+            //now go through YAML file
+            $yamlcontent = file_get_contents( $this->ironskillet_pathString."/".$version);
+
+            //trigger exception in a "try" block
+            PH::enableExceptionSupport();
+            try
+            {
+                $parsed = yaml_parse($yamlcontent);
+
+                /*
+                $xml = new SimpleXMLElement('<root/>');
+                array_walk_recursive($parsed, array ($xml, 'addChild'));
+                $filename = $this->ironskillet_pathString."/".$path."/ironskillet_full_yaml.xml";
+                file_put_contents( $filename, $xml->asXML());
+                //print $xml->asXML();
+                */
+
+                $ironskillet_name_finding = array();
+                $ironskillet_name_finding[] = "profiles_spyware";
+                $ironskillet_name_finding[] = "profiles_virus";
+                $ironskillet_name_finding[] = "profiles_url_filtering";
+                $ironskillet_name_finding[] = "profiles_file_blocking";
+                $ironskillet_name_finding[] = "profiles_vulnerability";
+                $ironskillet_name_finding[] = "profiles_wildfire_analysis";
+                $ironskillet_name_finding[] = "profiles_custom_url_category";
+                $ironskillet_name_finding[] = "profile_group";
+                $ironskillet_name_finding[] = "log_settings_profiles";
+                $ironskillet_name_finding[] = "zone_protection_profile";
+
+                foreach( $ironskillet_name_finding as $name )
+                {
+                    $element = $this->find_ironskillet_entry_basedonname($parsed['snippets'], $name);
+                    if( $element !== null )
+                    {
+                        if( isset($element['element']) )
+                        {
+                            $xmlString = "<root>" . $element['element'] . "</root>";
+
+                            $sinkholeIP = "sinkhole.paloaltonetworks.com";
+                            $xmlString = str_replace("{{ SINKHOLE_IPV4 }}", $sinkholeIP, $xmlString);
+                            $xmlString = str_replace("{{ SINKHOLE_IPV6 }}", "2600:5200::1", $xmlString);
+
+                            $filename = $this->ironskillet_pathString . "/" . $path . "/" . $name . ".xml";
+                            if( !file_exists($filename) )
+                            {
+                                PH::print_stdout( "new file: ".$filename );
+                                file_put_contents($filename, $xmlString);
+                            }
+                            else
+                            {
+                                //read XML file
+                                $newdoc1 = new DOMDocument;
+                                $newdoc1->load($filename);
+
+                                /** @var DOMElement $rootNode1 */
+                                $rootNode1 = $newdoc1->firstChild;
+                                #DH::DEBUGprintDOMDocument( $rootNode1 );
+                                #print "------------\n";
+
+                                //read new XML string
+                                $newdoc2 = new DOMDocument;
+                                $newdoc2->loadXML($xmlString);
+
+                                /** @var DOMElement $rootNode2 */
+                                $rootNode2 = $newdoc2->firstChild;
+                                #DH::DEBUGprintDOMDocument( $rootNode2 );
+                                #print "------------\n";
+
+                                $changed = FALSE;
+                                foreach( $rootNode2->childNodes as $entry )
+                                {
+                                    /** @var DOMElement $entry */
+                                    if( $entry->nodeType != XML_ELEMENT_NODE )
+                                        continue;
+
+
+                                    $name = DH::findAttribute("name", $entry);
+                                    $existingNode = DH::findFirstElementByNameAttr("entry", $name, $rootNode1);
+                                    if( $existingNode == null || $existingNode == FALSE )
+                                    {
+                                        PH::print_stdout("new Node added - " . $name);
+                                        $entrynew = $newdoc1->importNode($entry, TRUE);
+                                        $rootNode1->appendChild($entrynew);
+                                        $changed = TRUE;
+                                    }
+                                    else
+                                    {
+                                        $string1 = $existingNode->textContent;
+                                        $string2 = $entry->textContent;
+                                        if( $string1 !== $string2 )
+                                        {
+                                            PH::print_stdout("\nNode changed - " . $name);
+                                            #DH::DEBUGprintDOMDocument($existingNode);
+                                            #print "\n------------\n";
+                                            #DH::DEBUGprintDOMDocument($entry);
+                                            #print "\n------------\n";
+
+                                            $entrynew = $newdoc1->importNode($entry, TRUE);
+                                            $rootNode1->removeChild($existingNode);
+                                            $rootNode1->appendChild($entrynew);
+                                            $changed = TRUE;
+                                        }
+                                    }
+                                }
+                                if( $changed )
+                                {
+                                    file_put_contents($filename, $newdoc1->saveXML($newdoc1->documentElement));
+                                }
+                                else
+                                {
+                                    PH::print_stdout( "nothing updated for : ".$name );
+                                }
+
+                            }
+                        }
+                    }
+                }
+            }
+            //catch exception
+            catch(Error $e)
+            {
+                PH::disableExceptionSupport();
+                PH::print_stdout( " ***** an error occured : " . $e->getMessage() );
+                PH::print_stdout();
+            }
+        }
+
     }
 
     function endOfScript()
     {
+    }
+
+    function createIronSkilletMainFolder()
+    {
+        if (!is_dir($this->ironskillet_pathString )) {
+            // dir doesn't exist, make it
+            #print "FOLDER: ".$this->ironskillet_pathString."\n";
+            mkdir($this->ironskillet_pathString);
+        }
+    }
+
+    function createIronSkilletSubFolder( $version)
+    {
+        $explodeArray = explode( "/", $version );
+
+        $pathString = $this->ironskillet_pathString."/";
+        for( $i = 0; $i < count( $explodeArray )-1; $i++ )
+        {
+            if (!is_dir( $pathString.$explodeArray[$i] )) {
+                // dir doesn't exist, make it
+                mkdir($pathString.$explodeArray[$i] );
+            }
+
+            $pathString = $pathString.$explodeArray[$i]."/";
+        }
+    }
+
+    function find_ironskillet_entry_basedonname( $snippet, $name )
+    {
+        foreach( $snippet as $key => $entry )
+        {
+            if( strpos( $entry['name'], $name ) !== false )
+                return $entry;
+        }
+        return null;
     }
 }
