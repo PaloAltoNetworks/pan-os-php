@@ -341,6 +341,8 @@ class DIFF extends UTIL
         }
 
         PH::print_stdout( "*** NOW DISPLAY DIFF ***");
+        PH::print_stdout( array(), false, "diff" );
+
         $this->runDiff( $doc1, $doc2 );
 
         if( $this->additionalruleOrderCHECK )
@@ -396,10 +398,12 @@ class DIFF extends UTIL
         {
             //must be in this format as check is needed
             PH::print_stdout( "- FinalResult:   PASS" );
+            PH::print_stdout( array('PASS'), false, "finalresult" );
         }
         else#if( $this->failStatus_diff || $this->failStatus_additionalruleorder )
         {
             PH::print_stdout("- FinalResult:   FAIL");
+            PH::print_stdout( array('FAIL'), false, "finalresult" );
         }
     }
 
@@ -574,24 +578,20 @@ class DIFF extends UTIL
                 PH::$JSON_TMP['minus'] = array();
                 PH::$JSON_TMP['xpath'] = $xpath;
 
-                //todo:
-                //check if xpath should be ignored as added to JSON file
-                $continue = $this->ignoreAddDeleteXpath( $xpath, $el1, $this->added );
-                if( $continue )
-                    return;
-
-                $tmp = DH::dom_to_xml($el1);
-                #$text .= '-' . str_replace("\n", "\n", $tmp);
-                $text .= '-' . $tmp;
-                PH::$JSON_TMP['minus'][] = $tmp;
-
-                //check if xpath should be ignored as added to JSON file
                 $continue = $this->ignoreAddDeleteXpath( $xpath, $el1, $this->deleted );
                 if( $continue )
                     return;
 
+                $tmp = DH::dom_to_xml($el1);
+                $text .= '-' . $tmp;
+                PH::$JSON_TMP['minus'][] = $tmp;
+
+
+                $continue = $this->ignoreAddDeleteXpath( $xpath, $el1, $this->added );
+                if( $continue )
+                    return;
+
                 $tmp = DH::dom_to_xml($el2);
-                #$text .= '+' . str_replace("\n", "\n", $tmp);
                 $text .= '+' . $tmp;
                 PH::$JSON_TMP['plus'][] = $tmp;
 
@@ -870,8 +870,8 @@ class DIFF extends UTIL
         $text = '';
 
         PH::$JSON_TMP = array();
-        if( count($plus) > 0 || count( $minus ) > 0 )
-            PH::$JSON_TMP['xpath'] = $xpath;
+        #if( count($plus) > 0 || count( $minus ) > 0 )
+        #    PH::$JSON_TMP['xpath'] = $xpath;
 
         PH::$JSON_TMP['plus'] = array();
         foreach( $plus as $key => $node )
@@ -909,7 +909,16 @@ class DIFF extends UTIL
         }
 
         if( count($plus) > 0 || count( $minus ) > 0 )
-            PH::print_stdout( PH::$JSON_TMP, false, "diff" );
+        {
+            if( count(PH::$JSON_TMP['plus']) > 0 || count( PH::$JSON_TMP['minus'] ) > 0 )
+            {
+                PH::$JSON_TMP['xpath'] = $xpath;
+                PH::$JSON_TMP = array_merge(array('xpath' => $xpath), PH::$JSON_TMP);
+
+                PH::print_stdout( PH::$JSON_TMP, false, "diff" );
+            }
+        }
+
         PH::$JSON_TMP = array();
 
         $this->displayDIFF( $xpath, $text, $plus, $minus );
