@@ -2059,13 +2059,8 @@ DeviceCallContext::$supportedActions['LogForwardingProfile-create-BP'] = array(
     )
 );
 
-DeviceCallContext::$supportedActions['ZoneProtectionProfile-create-BP'] = array(
-    'name' => 'zoneprotectionprofile-create-bp',
-    'GlobalInitFunction' => function (DeviceCallContext $context) {
-        $context->first = true;
-    },
-    'MainFunction' => function (DeviceCallContext $context)
-    {
+DeviceCallContext::$commonActionFunctions['zpp-create'] = array(
+    'function' => function (DeviceCallContext $context, $entryProfileName) {
         $object = $context->object;
         $classtype = get_class($object);
 
@@ -2073,6 +2068,7 @@ DeviceCallContext::$supportedActions['ZoneProtectionProfile-create-BP'] = array(
         {
             $pathString = dirname(__FILE__)."/../../iron-skillet";
             $zpp_bp_xmlstring = file_get_contents( $pathString."/panos_v10.0/templates/panorama/snippets/zone_protection_profile.xml");
+            #$entryProfileName = "Recommended_Zone_Protection";
 
             if( $classtype == "VirtualSystem" || $classtype == "Template" )
             {
@@ -2112,14 +2108,14 @@ DeviceCallContext::$supportedActions['ZoneProtectionProfile-create-BP'] = array(
                 $newdoc = new DOMDocument;
                 $newdoc->loadXML( $zpp_bp_xmlstring );
                 $node = $newdoc->importNode($newdoc->firstChild, TRUE);
-                $node = DH::findFirstElementByNameAttr( "entry", "Recommended_Zone_Protection", $node );
+                $node = DH::findFirstElementByNameAttr( "entry", $entryProfileName, $node );
                 $node = $ownerDocument->importNode($node, TRUE);
 
 
                 $networkProfiles = DH::findFirstElementOrCreate('profiles', $xmlRoot);
                 $zppXMLroot = DH::findFirstElementOrCreate('zone-protection-profile', $networkProfiles);
 
-                $entryDefault = DH::findFirstElementByNameAttr( 'entry', 'Recommended_Zone_Protection', $zppXMLroot );
+                $entryDefault = DH::findFirstElementByNameAttr( 'entry', $entryProfileName, $zppXMLroot );
 
 
                 if( $entryDefault === null )
@@ -2128,7 +2124,7 @@ DeviceCallContext::$supportedActions['ZoneProtectionProfile-create-BP'] = array(
 
                     if( $context->isAPI )
                     {
-                        $entryDefault_xmlroot = DH::findFirstElementByNameAttr( 'entry', 'Recommended_Zone_Protection', $zppXMLroot );
+                        $entryDefault_xmlroot = DH::findFirstElementByNameAttr( 'entry', $entryProfileName, $zppXMLroot );
 
                         $xpath = DH::elementToPanXPath($zppXMLroot);
                         $con = findConnectorOrDie($object);
@@ -2140,7 +2136,7 @@ DeviceCallContext::$supportedActions['ZoneProtectionProfile-create-BP'] = array(
 
                 else
                 {
-                    $string = "ZoneProtectionProfile 'Recommended_Zone_Protection' already available. BestPractise ZoneProtectionProfile 'Recommended_Zone_Protection' not created";
+                    $string = "ZoneProtectionProfile '".$entryProfileName."' already available. BestPractise ZoneProtectionProfile '".$entryProfileName."' not created";
                     PH::ACTIONstatus( $context, "SKIPPED", $string );
                 }
 
@@ -2151,6 +2147,43 @@ DeviceCallContext::$supportedActions['ZoneProtectionProfile-create-BP'] = array(
         }
     }
 );
+
+DeviceCallContext::$supportedActions['ZoneProtectionProfile-create-BP'] = array(
+    'name' => 'zoneprotectionprofile-create-bp',
+    'GlobalInitFunction' => function (DeviceCallContext $context) {
+        $context->first = true;
+    },
+    'MainFunction' => function (DeviceCallContext $context)
+    {
+        $f = DeviceCallContext::$commonActionFunctions['zpp-create']['function'];
+        $f($context, 'Recommended_Zone_Protection');
+    }
+);
+
+DeviceCallContext::$supportedActions['ZPP-create-BP'] = array(
+    'name' => 'zpp-create-bp',
+    'GlobalInitFunction' => function (DeviceCallContext $context) {
+        $context->first = true;
+    },
+    'MainFunction' => function (DeviceCallContext $context)
+    {
+        $f = DeviceCallContext::$commonActionFunctions['zpp-create']['function'];
+        $f($context, 'Recommended_Zone_Protection');
+    }
+);
+
+DeviceCallContext::$supportedActions['ZPP-create-alert-only-BP'] = array(
+    'name' => 'zpp-create-alert-only-bp',
+    'GlobalInitFunction' => function (DeviceCallContext $context) {
+        $context->first = true;
+    },
+    'MainFunction' => function (DeviceCallContext $context)
+    {
+        $f = DeviceCallContext::$commonActionFunctions['zpp-create']['function'];
+        $f($context, 'Alert_Only_Zone_Protection');
+    }
+);
+
 
 DeviceCallContext::$supportedActions['CleanUpRule-create-BP'] = array(
     'name' => 'cleanuprule-create-bp',

@@ -14,6 +14,7 @@ UTIL:
 * type=diff | if filter JSON file is using 'empty' - ignore DIFF output of empty rules XMLnodes in DIFF output
 * type=ironskillet-update | download yaml file
 * type=ironskillet-update | introduce new iron-skillet yaml download and create XML snippets
+* type=device | introduce 'actions=zpp-create-alert-only-bp' / 'actions=zpp-create-bp'
 
 BUGFIX:
 * type=rule-merger | bugfix if argument exportcsv=xyz projectfolder=xyz and rules are skipped - to create skipped output file correctly
