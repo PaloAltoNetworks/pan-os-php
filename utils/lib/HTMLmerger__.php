@@ -87,6 +87,11 @@ class HTMLmerger__
         }
         */
 
+        if( file_exists($this->projectfolder . "" . $excelfilename) )
+            $excelFileWasThere = true;
+        else
+            $excelFileWasThere = false;
+
         PH::enableExceptionSupport();
         try
         {
@@ -101,11 +106,27 @@ class HTMLmerger__
                 print $string . "\n";
             }
 
-            PH::print_stdout();
-            PH::print_stdout("Excel file created: " . $this->projectfolder . "" . $excelfilename);
-            PH::print_stdout();
+            if( file_exists($this->projectfolder . "" . $excelfilename) && !$excelFileWasThere )
+            {
+                PH::print_stdout();
+                PH::print_stdout("Excel file created: " . $this->projectfolder . "" . $excelfilename);
+                PH::print_stdout();
+            }
+            elseif( file_exists($this->projectfolder . "" . $excelfilename) && $excelFileWasThere )
+            {
+                PH::print_stdout();
+                PH::print_stdout("Excel file updated: " . $this->projectfolder . "" . $excelfilename);
+                PH::print_stdout();
+            }
+
         }
         //catch exception
+        catch(Exception $e)
+        {
+            PH::disableExceptionSupport();
+            PH::print_stdout( " ***** an error occured : " . $e->getMessage() );
+            PH::print_stdout();
+        }
         catch(Error $e)
         {
             PH::disableExceptionSupport();
