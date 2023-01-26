@@ -5,10 +5,20 @@
 
 try:
     import os, re
+except ImportError:
+	print("python import failure: 'os, re' NOT found")
+	exit()
+
+try:
     import pandas as pd
+except ImportError:
+	print("python import failure: 'pandas' NOT found")
+	exit()
+
+try:
     import sys
 except ImportError:
-	print("python NOT installed correctly")
+	print("python import failure: 'sys' NOT found")
 	exit()
 
 
