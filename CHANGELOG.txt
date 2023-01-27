@@ -8,6 +8,7 @@ UTIL:
 * type=playbook | support reading argument projectfolder from JSON playbook file
 * type=zone | actions=exporttoexcel - extend information with ZoneProtectionProfile
 * type=rule actions=exporttoexcel:file.html - rename column 'security' to 'security-profile'
+* type=html-merger | introduce argument 'adddefaulthtml' - to give the possibility to add a Excel TAB with descriptions
 
 BUGFIX:
 * type=securityprofile | bugfix to delete also customURLProfile objects
