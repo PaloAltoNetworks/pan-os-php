@@ -10,6 +10,7 @@ UTIL:
 * type=rule actions=exporttoexcel:file.html - rename column 'security' to 'security-profile'
 
 BUGFIX:
+* type=securityprofile | bugfix to delete also customURLProfile objects
 
 GENERAL
 * update Dockerfiles related to ironskillet yaml usage
