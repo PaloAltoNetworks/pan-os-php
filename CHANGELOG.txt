@@ -5,6 +5,7 @@ UTIL:
 * type=playbook shadow-json | improved output
 * type=application | introduce actions=delete and actions=delete-force
 * type=html-merger | adjust helping information
+* type=playbook | support reading argument projectfolder from JSON playbook file
 
 BUGFIX:
 

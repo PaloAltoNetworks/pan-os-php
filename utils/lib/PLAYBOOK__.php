@@ -205,6 +205,14 @@ class PLAYBOOK__
 
             }
 
+            if( !isset(PH::$args['projectfolder']) && isset( $details['projectfolder'] ) )
+            {
+                $this->projectFolder = $details['projectfolder'];
+                if (!file_exists($this->projectFolder)) {
+                    mkdir($this->projectFolder, 0777, true);
+                }
+            }
+
 
             $command_array = $details['command'];
         }
