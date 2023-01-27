@@ -3,6 +3,7 @@ CHANGELOG
 2.0.67
 UTIL:
 * type=playbook shadow-json | improved output
+* type=application | introduce actions=delete and actions=delete-force
 
 BUGFIX:
 
