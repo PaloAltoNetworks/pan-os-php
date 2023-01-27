@@ -1394,19 +1394,42 @@ class DIFF extends UTIL
             #print "\nXPATH: ".$xpath."\n";
             if( strpos( $add, "'*'" ) !== FALSE )
             {
+                $textContainsremoved = false;
+                $string_Containsremoved = "";
+                if( strpos( $add, "[text()[contains(.,'") !== false )
+                {
+                    $string_array = explode( "/", $add );
+                    $lastkey = array_key_last($string_array);
+                    $string_Containsremoved = $string_array[$lastkey];
+                    $add = str_replace( "/".$string_Containsremoved, "", $add );
+                    #print "\nADD0: ".$add."\n";
+                    $textContainsremoved = true;
+                }
+
                 $search2 = preg_quote($add, '/');
                 $search2 = str_replace( "'\*'", "(.*?)", $search2);
 
                 $pattern = '/'.$search2.'/is';
                 if( preg_match($pattern, $xpath, $matches) )
+                {
+                    #print "\nXPATH1: ".$xpath."\n";
+                    #print "\nADD1: ".$add."\n";
                     //CASE2 - '*' somewhere in between
                     $newXpath = str_replace( $matches[0], "", $xpath );
+                    if( $textContainsremoved )
+                        $newXpath = $newXpath."/".$string_Containsremoved;
+                    #print "NEWXPATH1: ".$newXpath."\n";
+                }
+
                 else
                 {
                     //CASE1 - '*' at end, eg. "/PATH/entry[@name='*']"
-                    #print "\nXPATH: ".$xpath."\n";
-                    #print "\nADD: ".$add."\n";
+                    #print "\nXPATH2: ".$xpath."\n";
+                    #print "\nADD2: ".$add."\n";
                     $newXpath = str_replace( $xpath, "", $add );
+                    if( $textContainsremoved )
+                        $newXpath = $newXpath."/".$string_Containsremoved;
+                    #print "NEWXPATH2: ".$newXpath."\n";
                 }
             }
             else
@@ -1449,15 +1472,32 @@ class DIFF extends UTIL
                 $name = DH::findAttribute( "name", $node);
                 if( $newXpath == "/entry[@name='".$name."']" )
                     $continue = true;
-                elseif( strpos( $newXpath, "*" ) !== FALSE && $newXpath == "/entry[@name='*']" )
+                elseif( strpos( $newXpath, "'*'" ) !== FALSE && $newXpath == "/entry[@name='*']" )
                         $continue = true;
             }
             elseif( $xpath !== $newXpath )
             {
-                //find newXpath within a node somewhere as a subnode, and remove this node
-                $doc1Root = DH::findXPathSingleEntry($newXpath, $node);
-                if( $doc1Root )
-                    DH::removeChild( $doc1Root->parentNode, $doc1Root );
+                if( strpos( $newXpath, "'*'" ) !== FALSE )
+                {
+                    $string_array = explode( "/", $newXpath );
+                    if( $node->nodeName == $string_array[1] )
+                    {
+                        if( $string_array[2] == "entry[@name='*']" )
+                        {
+                            $nodeList = $node->getElementsByTagName("entry");
+                            $nodeArray = iterator_to_array($nodeList);
+                            foreach( $nodeArray as $entry )
+                                DH::removeChild( $node, $entry );
+                        }
+                    }
+                }
+                else
+                {
+                    //find newXpath within a node somewhere as a subnode, and remove this node
+                    $doc1Root = DH::findXPathSingleEntry($newXpath, $node);
+                    if( $doc1Root )
+                        DH::removeChild( $doc1Root->parentNode, $doc1Root );
+                }
             }
         }
 
@@ -1489,7 +1529,7 @@ class DIFF extends UTIL
 
             foreach( $node->childNodes as $child )
             {
-                /** @var DOMElement $node */
+                /** @var DOMElement $child */
                 if( $child->nodeType != XML_ELEMENT_NODE )
                     continue;
 
