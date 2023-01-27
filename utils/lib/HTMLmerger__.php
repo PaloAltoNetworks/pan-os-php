@@ -31,7 +31,7 @@ class HTMLmerger__
 
         if( isset(PH::$args['help']) )
         {
-            $help_string = PH::boldText('USAGE: ')."php ".basename(__FILE__)." exportCSV=[spreadsheet.xls] projectfolder=[DIRECTORY]";
+            $help_string = PH::boldText('USAGE: ')."php ".basename(__FILE__)." exportCSV=[spreadsheet.xlsx] projectfolder=[DIRECTORY]";
 
             PH::print_stdout( $help_string );
 
