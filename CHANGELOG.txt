@@ -2,10 +2,11 @@ CHANGELOG
 
 2.0.68
 UTIL:
+* type=diff | JSON filter - add also support for "/PATH/entry[@name='*']"
+* type=diff | JSON filter file - support now combination of '*' and [text()[contains(.,'TEXT')]]
 
 BUGFIX:
 * type=diff | bugfix - JSON filter file check not only * | check '*'
-* type=diff | JSON filter - add also support for "/PATH/entry[@name='*']"
 
 GENERAL
 
