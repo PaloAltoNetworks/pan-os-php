@@ -7,6 +7,7 @@ UTIL:
 * type=html-merger | adjust helping information
 * type=playbook | support reading argument projectfolder from JSON playbook file
 * type=zone | actions=exporttoexcel - extend information with ZoneProtectionProfile
+* type=rule actions=exporttoexcel:file.html - rename column 'security' to 'security-profile'
 
 BUGFIX:
 
