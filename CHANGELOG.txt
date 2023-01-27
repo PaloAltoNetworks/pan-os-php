@@ -11,6 +11,7 @@ UTIL:
 
 BUGFIX:
 * type=securityprofile | bugfix to delete also customURLProfile objects
+* type=device | bugfix panos >100 - for all actions=*-create-*-bp to use coorect iron-skillet snippet
 
 GENERAL
 * update Dockerfiles related to ironskillet yaml usage

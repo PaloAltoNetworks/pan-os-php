@@ -1410,10 +1410,56 @@ DeviceCallContext::$supportedActions['geoIP-check'] = array(
     )
 );
 
+DeviceCallContext::$commonActionFunctions['sp_spg-create'] = array(
+    'function_xmlfiles' => function (DeviceCallContext $context) {
+        $f = DeviceCallContext::$commonActionFunctions['sp_spg-create']['function_panVersion'];
+        $panVersion = $f($context);
+
+        $pathString = dirname(__FILE__)."/../../iron-skillet";
+
+        $context->vp_xmlString = file_get_contents( $pathString."/panos_v10.0/templates/panorama/snippets/profiles_vulnerability.xml");
+        $context->fb_xmlString = file_get_contents( $pathString."/panos_v10.0/templates/panorama/snippets/profiles_file_blocking.xml");
+        $context->wf_xmlString = file_get_contents( $pathString."/panos_v10.0/templates/panorama/snippets/profiles_wildfire_analysis.xml");
+
+        if( $context->object->owner->version < 90 )
+        {
+            $context->av_xmlString = file_get_contents( $pathString."/panos_v8.1/templates/panorama/snippets/profiles_virus.xml");
+            $context->as_xmlString = file_get_contents( $pathString."/panos_v8.1/templates/panorama/snippets/profiles_spyware.xml");
+            $context->url_xmlString = file_get_contents( $pathString."/panos_v8.1/templates/panorama/snippets/profiles_url_filtering.xml");
+        }
+        elseif( $context->object->owner->version < 100 )
+        {
+            $context->av_xmlString = file_get_contents( $pathString."/panos_v9.1/templates/panorama/snippets/profiles_virus.xml");
+            $context->as_xmlString = file_get_contents( $pathString."/panos_v9.1/templates/panorama/snippets/profiles_spyware.xml");
+            $context->url_xmlString = file_get_contents( $pathString."/panos_v9.1/templates/panorama/snippets/profiles_url_filtering.xml");
+        }
+        elseif( $context->object->owner->version >= 100 )
+        {
+            $context->av_xmlString = file_get_contents( $pathString."/panos_v".$panVersion."/templates/panorama/snippets/profiles_virus.xml");
+            $context->as_xmlString = file_get_contents( $pathString."/panos_v".$panVersion."/templates/panorama/snippets/profiles_spyware.xml");
+            $context->vp_xmlString = file_get_contents( $pathString."/panos_v".$panVersion."/templates/panorama/snippets/profiles_vulnerability.xml");
+            $context->url_xmlString = file_get_contents( $pathString."/panos_v".$panVersion."/templates/panorama/snippets/profiles_url_filtering.xml");
+            $context->fb_xmlString = file_get_contents( $pathString."/panos_v".$panVersion."/templates/panorama/snippets/profiles_file_blocking.xml");
+            $context->wf_xmlString = file_get_contents( $pathString."/panos_v".$panVersion."/templates/panorama/snippets/profiles_wildfire_analysis.xml");
+        }
+    },
+    'function_panVersion' => function (DeviceCallContext $context) {
+        $panVersion = substr_replace($context->object->owner->version, ".", -1, 0);
+        return $panVersion;
+    }
+);
+
 DeviceCallContext::$supportedActions['sp_spg-create-alert-only-BP'] = array(
     'name' => 'sp_spg-create-alert-only-bp',
     'GlobalInitFunction' => function (DeviceCallContext $context) {
         $context->first = true;
+
+        $context->av_xmlString = "";
+        $context->as_xmlString = "";
+        $context->vp_xmlString = "";
+        $context->url_xmlString = "";
+        $context->fb_xmlString = "";
+        $context->wf_xmlString = "";
 
         if( $context->subSystem->isPanorama() )
         {
@@ -1432,25 +1478,8 @@ DeviceCallContext::$supportedActions['sp_spg-create-alert-only-BP'] = array(
 
         if( $context->first )
         {
-            $pathString = dirname(__FILE__)."/../../iron-skillet";
-            $av_xmlString_v8 = file_get_contents( $pathString."/panos_v8.1/templates/panorama/snippets/profiles_virus.xml");
-            $av_xmlString_v9 = file_get_contents( $pathString."/panos_v9.1/templates/panorama/snippets/profiles_virus.xml");
-            $av_xmlString_v10 = file_get_contents( $pathString."/panos_v10.0/templates/panorama/snippets/profiles_virus.xml");
-
-            $as_xmlString_v8 = file_get_contents( $pathString."/panos_v8.1/templates/panorama/snippets/profiles_spyware.xml");
-            $as_xmlString_v9 = file_get_contents( $pathString."/panos_v9.1/templates/panorama/snippets/profiles_spyware.xml");
-            $as_xmlString_v10 = file_get_contents( $pathString."/panos_v10.0/templates/panorama/snippets/profiles_spyware.xml");
-
-            $vp_xmlString = file_get_contents( $pathString."/panos_v10.0/templates/panorama/snippets/profiles_vulnerability.xml");
-
-            $url_xmlString_v8 = file_get_contents( $pathString."/panos_v8.1/templates/panorama/snippets/profiles_url_filtering.xml");
-            $url_xmlString_v9 = file_get_contents( $pathString."/panos_v9.1/templates/panorama/snippets/profiles_url_filtering.xml");
-            $url_xmlString_v10 = file_get_contents( $pathString."/panos_v10.0/templates/panorama/snippets/profiles_url_filtering.xml");
-            $url_xmlString_v102 = file_get_contents( $pathString."/panos_v10.2/templates/panorama/snippets/profiles_url_filtering.xml");
-
-            $fb_xmlString = file_get_contents( $pathString."/panos_v10.0/templates/panorama/snippets/profiles_file_blocking.xml");
-
-            $wf_xmlString = file_get_contents( $pathString."/panos_v10.0/templates/panorama/snippets/profiles_wildfire_analysis.xml");
+            $f = DeviceCallContext::$commonActionFunctions['sp_spg-create']['function_xmlfiles'];
+            $f($context);
 
             if( $classtype == "VirtualSystem" || $classtype == "DeviceGroup" )
             {
@@ -1474,33 +1503,11 @@ DeviceCallContext::$supportedActions['sp_spg-create-alert-only-BP'] = array(
                     if( $block === null )
                     {
                         $block = $sharedStore->customURLProfileStore->newCustomSecurityProfileURL($entry);
+                        PH::print_stdout(" * CustomURLProfile create: '".$entry."'");
                         if( $context->isAPI )
                             $block->API_sync();
                     }
                 }
-                /*
-                $block = $sharedStore->customURLProfileStore->find("Block");
-                if( $block === null )
-                {
-                    $block = $sharedStore->customURLProfileStore->newCustomSecurityProfileURL("Block");
-                    if( $context->isAPI )
-                        $block->API_sync();
-                }
-                $allow = $sharedStore->customURLProfileStore->find("Allow");
-                if( $allow === null )
-                {
-                    $allow = $sharedStore->customURLProfileStore->newCustomSecurityProfileURL("Allow");
-                    if( $context->isAPI )
-                        $allow->API_sync();
-                }
-                $nodecrypt = $sharedStore->customURLProfileStore->find("Custom-No-Decrypt");
-                if( $nodecrypt === null )
-                {
-                    $nodecrypt = $sharedStore->customURLProfileStore->newCustomSecurityProfileURL("Custom-No-Decrypt");
-                    if( $context->isAPI )
-                        $nodecrypt->API_sync();
-                }*/
-
 
                 $av = $sharedStore->AntiVirusProfileStore->find($name . "-AV");
                 if( $av === null )
@@ -1508,18 +1515,14 @@ DeviceCallContext::$supportedActions['sp_spg-create-alert-only-BP'] = array(
                     $store = $sharedStore->AntiVirusProfileStore;
                     $av = new AntiVirusProfile($name . "-AV", $store);
                     $newdoc = new DOMDocument;
-                    if( $context->object->owner->version < 90 )
-                        $newdoc->loadXML($av_xmlString_v8);
-                    elseif( $context->object->owner->version < 100 )
-                        $newdoc->loadXML($av_xmlString_v9);
-                    else
-                        $newdoc->loadXML($av_xmlString_v10);
+                    $newdoc->loadXML($context->av_xmlString);
                     $node = $newdoc->importNode($newdoc->firstChild, TRUE);
                     $node = DH::findFirstElementByNameAttr("entry", $name . "-AV", $node);
                     $node = $ownerDocument->importNode($node, TRUE);
                     $av->load_from_domxml($node);
                     $av->owner = null;
                     $store->addSecurityProfile($av);
+                    PH::print_stdout(" * AntiVirusProfile create: '".$name."-AV'");
 
                     if( $context->isAPI )
                         $av->API_sync();
@@ -1531,12 +1534,7 @@ DeviceCallContext::$supportedActions['sp_spg-create-alert-only-BP'] = array(
                     $store = $sharedStore->AntiSpywareProfileStore;
                     $as = new AntiSpywareProfile($name . "-AS", $store);
                     $newdoc = new DOMDocument;
-                    if( $context->object->owner->version < 90 )
-                        $newdoc->loadXML($as_xmlString_v8);
-                    elseif( $context->object->owner->version < 100 )
-                        $newdoc->loadXML($as_xmlString_v9);
-                    else
-                        $newdoc->loadXML($as_xmlString_v10);
+                    $newdoc->loadXML($context->as_xmlString);
                     $node = $newdoc->importNode($newdoc->firstChild, TRUE);
                     $node = DH::findFirstElementByNameAttr("entry", $name . "-AS", $node);
                     $node = $newdoc->importNode($node, TRUE);
@@ -1544,6 +1542,7 @@ DeviceCallContext::$supportedActions['sp_spg-create-alert-only-BP'] = array(
                     $as->load_from_domxml($node);
                     $as->owner = null;
                     $store->addSecurityProfile($as);
+                    PH::print_stdout(" * AntiSpywareProfile create: '".$name."-AS'");
 
                     if( $context->isAPI )
                         $as->API_sync();
@@ -1555,7 +1554,7 @@ DeviceCallContext::$supportedActions['sp_spg-create-alert-only-BP'] = array(
                     $store = $sharedStore->VulnerabilityProfileStore;
                     $vp = new VulnerabilityProfile($name . "-VP", $store);
                     $newdoc = new DOMDocument;
-                    $newdoc->loadXML($vp_xmlString);
+                    $newdoc->loadXML($context->vp_xmlString);
                     $node = $newdoc->importNode($newdoc->firstChild, TRUE);
                     $node = DH::findFirstElementByNameAttr("entry", $name . "-VP", $node);
                     $node = $newdoc->importNode($node, TRUE);
@@ -1563,6 +1562,7 @@ DeviceCallContext::$supportedActions['sp_spg-create-alert-only-BP'] = array(
                     $vp->load_from_domxml($node);
                     $vp->owner = null;
                     $store->addSecurityProfile($vp);
+                    PH::print_stdout(" * VulnerabilityProfile create: '".$name."-VP'");
 
                     if( $context->isAPI )
                         $vp->API_sync();
@@ -1574,15 +1574,7 @@ DeviceCallContext::$supportedActions['sp_spg-create-alert-only-BP'] = array(
                     $store = $sharedStore->URLProfileStore;
                     $url = new URLProfile($name . "-URL", $store);
                     $newdoc = new DOMDocument;
-                    if( $context->object->owner->version < 90 )
-                        $newdoc->loadXML($url_xmlString_v8);
-                    elseif( $context->object->owner->version < 100 )
-                        $newdoc->loadXML($url_xmlString_v9);
-                    elseif( $context->object->owner->version >= 100 && $context->object->owner->version < 102 )
-                        $newdoc->loadXML($url_xmlString_v10);
-                    elseif( $context->object->owner->version >= 102 )
-                        $newdoc->loadXML($url_xmlString_v102);
-
+                    $newdoc->loadXML($context->url_xmlString);
                     $node = $newdoc->importNode($newdoc->firstChild, TRUE);
                     $node = DH::findFirstElementByNameAttr("entry", $name . "-URL", $node);
                     $node = $newdoc->importNode($node, TRUE);
@@ -1590,6 +1582,7 @@ DeviceCallContext::$supportedActions['sp_spg-create-alert-only-BP'] = array(
                     $url->load_from_domxml($node);
                     $url->owner = null;
                     $store->addSecurityProfile($url);
+                    PH::print_stdout(" * URLProfile create: '".$name."-URL'");
 
                     if( $context->isAPI )
                         $url->API_sync();
@@ -1601,7 +1594,7 @@ DeviceCallContext::$supportedActions['sp_spg-create-alert-only-BP'] = array(
                     $store = $sharedStore->FileBlockingProfileStore;
                     $fb = new FileBlockingProfile($name . "-FB", $store);
                     $newdoc = new DOMDocument;
-                    $newdoc->loadXML($fb_xmlString);
+                    $newdoc->loadXML($context->fb_xmlString);
                     $node = $newdoc->importNode($newdoc->firstChild, TRUE);
                     $node = DH::findFirstElementByNameAttr("entry", $name . "-FB", $node);
                     $node = $newdoc->importNode($node, TRUE);
@@ -1609,6 +1602,7 @@ DeviceCallContext::$supportedActions['sp_spg-create-alert-only-BP'] = array(
                     $fb->load_from_domxml($node);
                     $fb->owner = null;
                     $store->addSecurityProfile($fb);
+                    PH::print_stdout(" * FileBlockingProfile create: '".$name."-FB'");
 
                     if( $context->isAPI )
                         $fb->API_sync();
@@ -1620,7 +1614,7 @@ DeviceCallContext::$supportedActions['sp_spg-create-alert-only-BP'] = array(
                     $store = $sharedStore->WildfireProfileStore;
                     $wf = new WildfireProfile($name . "-WF", $store);
                     $newdoc = new DOMDocument;
-                    $newdoc->loadXML($wf_xmlString);
+                    $newdoc->loadXML($context->wf_xmlString);
                     $node = $newdoc->importNode($newdoc->firstChild, TRUE);
                     $node = DH::findFirstElementByNameAttr("entry", $name . "-WF", $node);
                     $node = $newdoc->importNode($node, TRUE);
@@ -1628,6 +1622,7 @@ DeviceCallContext::$supportedActions['sp_spg-create-alert-only-BP'] = array(
                     $wf->load_from_domxml($node);
                     $wf->owner = null;
                     $store->addSecurityProfile($wf);
+                    PH::print_stdout(" * WildfireProfile create: '".$name."-WF'");
 
                     if( $context->isAPI )
                         $wf->API_sync();
@@ -1636,13 +1631,25 @@ DeviceCallContext::$supportedActions['sp_spg-create-alert-only-BP'] = array(
                 $secprofgrp = $sharedStore->securityProfileGroupStore->find($name);
                 if( $secprofgrp === null )
                 {
+                    PH::print_stdout(" * SecurityProfileGroup create: '".$name."'");
                     $secprofgrp = new SecurityProfileGroup($name, $sharedStore->securityProfileGroupStore, TRUE);
 
+                    PH::print_stdout("   - add AV: '".$av->name()."'");
                     $secprofgrp->setSecProf_AV($av->name());
+
+                    PH::print_stdout("   - add AS: '".$as->name()."'");
                     $secprofgrp->setSecProf_Spyware($as->name());
+
+                    PH::print_stdout("   - add VP: '".$vp->name()."'");
                     $secprofgrp->setSecProf_Vuln($vp->name());
+
+                    PH::print_stdout("   - add URL: '".$url->name()."'");
                     $secprofgrp->setSecProf_URL($url->name());
+
+                    PH::print_stdout("   - add FB: '".$fb->name()."'");
                     $secprofgrp->setSecProf_FileBlock($fb->name());
+
+                    PH::print_stdout("   - add WF: '".$wf->name()."'");
                     $secprofgrp->setSecProf_Wildfire($wf->name());
 
 
@@ -1669,6 +1676,13 @@ DeviceCallContext::$supportedActions['sp_spg-create-BP'] = array(
     'GlobalInitFunction' => function (DeviceCallContext $context) {
         $context->first = true;
 
+        $context->av_xmlString = "";
+        $context->as_xmlString = "";
+        $context->vp_xmlString = "";
+        $context->url_xmlString = "";
+        $context->fb_xmlString = "";
+        $context->wf_xmlString = "";
+
         if( $context->subSystem->isPanorama() )
         {
             $countDG = count( $context->subSystem->getDeviceGroups() );
@@ -1686,25 +1700,8 @@ DeviceCallContext::$supportedActions['sp_spg-create-BP'] = array(
 
         if( $context->first )
         {
-            $pathString = dirname(__FILE__)."/../../iron-skillet";
-            $av_xmlString_v8 = file_get_contents( $pathString."/panos_v8.1/templates/panorama/snippets/profiles_virus.xml");
-            $av_xmlString_v9 = file_get_contents( $pathString."/panos_v9.1/templates/panorama/snippets/profiles_virus.xml");
-            $av_xmlString_v10 = file_get_contents( $pathString."/panos_v10.0/templates/panorama/snippets/profiles_virus.xml");
-
-            $as_xmlString_v8 = file_get_contents( $pathString."/panos_v8.1/templates/panorama/snippets/profiles_spyware.xml");
-            $as_xmlString_v9 = file_get_contents( $pathString."/panos_v9.1/templates/panorama/snippets/profiles_spyware.xml");
-            $as_xmlString_v10 = file_get_contents( $pathString."/panos_v10.0/templates/panorama/snippets/profiles_spyware.xml");
-
-            $vp_xmlString = file_get_contents( $pathString."/panos_v10.0/templates/panorama/snippets/profiles_vulnerability.xml");
-
-            $url_xmlString_v8 = file_get_contents( $pathString."/panos_v8.1/templates/panorama/snippets/profiles_url_filtering.xml");
-            $url_xmlString_v9 = file_get_contents( $pathString."/panos_v9.1/templates/panorama/snippets/profiles_url_filtering.xml");
-            $url_xmlString_v10 = file_get_contents( $pathString."/panos_v10.0/templates/panorama/snippets/profiles_url_filtering.xml");
-            $url_xmlString_v102 = file_get_contents( $pathString."/panos_v10.2/templates/panorama/snippets/profiles_url_filtering.xml");
-
-            $fb_xmlString = file_get_contents( $pathString."/panos_v10.0/templates/panorama/snippets/profiles_file_blocking.xml");
-
-            $wf_xmlString = file_get_contents( $pathString."/panos_v10.0/templates/panorama/snippets/profiles_wildfire_analysis.xml");
+            $f = DeviceCallContext::$commonActionFunctions['sp_spg-create']['function_xmlfiles'];
+            $f($context);
 
             if( $classtype == "VirtualSystem" || $classtype == "DeviceGroup" )
             {
@@ -1745,6 +1742,7 @@ DeviceCallContext::$supportedActions['sp_spg-create-BP'] = array(
                         if( $block === null )
                         {
                             $block = $sharedStore->customURLProfileStore->newCustomSecurityProfileURL($entry);
+                            PH::print_stdout(" * CustomURLProfile create: '".$entry."'");
                             if( $context->isAPI )
                                 $block->API_sync();
                         }
@@ -1757,12 +1755,7 @@ DeviceCallContext::$supportedActions['sp_spg-create-BP'] = array(
                         $store = $sharedStore->AntiVirusProfileStore;
                         $av = new AntiVirusProfile($name . "-AV", $store);
                         $newdoc = new DOMDocument;
-                        if( $context->object->owner->version < 90 )
-                            $newdoc->loadXML($av_xmlString_v8);
-                        elseif( $context->object->owner->version < 100 )
-                            $newdoc->loadXML($av_xmlString_v9);
-                        else
-                            $newdoc->loadXML($av_xmlString_v10);
+                        $newdoc->loadXML($context->av_xmlString);
                         $node = $newdoc->importNode($newdoc->firstChild, TRUE);
                         $node = DH::findFirstElementByNameAttr("entry", $ironskilletName . "-AV", $node);
                         if( $node !== null && $node->hasChildNodes() )
@@ -1773,6 +1766,7 @@ DeviceCallContext::$supportedActions['sp_spg-create-BP'] = array(
                             if( isset($context->arguments['sp-name']) )
                                 $av->setName( $name."-AV");
                             $store->addSecurityProfile($av);
+                            PH::print_stdout(" * AntiVirusProfile create: '".$name."-AV'");
 
                             if( $context->isAPI )
                                 $av->API_sync();
@@ -1790,12 +1784,7 @@ DeviceCallContext::$supportedActions['sp_spg-create-BP'] = array(
                         $store = $sharedStore->AntiSpywareProfileStore;
                         $as = new AntiSpywareProfile($name . "-AS", $store);
                         $newdoc = new DOMDocument;
-                        if( $context->object->owner->version < 90 )
-                            $newdoc->loadXML($as_xmlString_v8);
-                        elseif( $context->object->owner->version < 100 )
-                            $newdoc->loadXML($as_xmlString_v9);
-                        else
-                            $newdoc->loadXML($as_xmlString_v10);
+                        $newdoc->loadXML($context->as_xmlString);
                         $node = $newdoc->importNode($newdoc->firstChild, TRUE);
                         $node = DH::findFirstElementByNameAttr("entry", $ironskilletName . "-AS", $node);
                         if( $node !== null && $node->hasChildNodes() )
@@ -1807,6 +1796,7 @@ DeviceCallContext::$supportedActions['sp_spg-create-BP'] = array(
                             if( isset($context->arguments['sp-name']) )
                                 $as->setName( $name."-AS");
                             $store->addSecurityProfile($as);
+                            PH::print_stdout(" * AntiSpywareProfile create: '".$name."-AS'");
 
                             if( $context->isAPI )
                                 $as->API_sync();
@@ -1824,7 +1814,7 @@ DeviceCallContext::$supportedActions['sp_spg-create-BP'] = array(
                         $store = $sharedStore->VulnerabilityProfileStore;
                         $vp = new VulnerabilityProfile($name . "-VP", $store);
                         $newdoc = new DOMDocument;
-                        $newdoc->loadXML($vp_xmlString);
+                        $newdoc->loadXML($context->vp_xmlString);
                         $node = $newdoc->importNode($newdoc->firstChild, TRUE);
                         $node = DH::findFirstElementByNameAttr("entry", $ironskilletName . "-VP", $node);
                         if( $node !== null && $node->hasChildNodes() )
@@ -1836,6 +1826,7 @@ DeviceCallContext::$supportedActions['sp_spg-create-BP'] = array(
                             if( isset($context->arguments['sp-name']) )
                                 $vp->setName( $name."-VP");
                             $store->addSecurityProfile($vp);
+                            PH::print_stdout(" * VulnerabilityProfile create: '".$name."-VP'");
 
                             if( $context->isAPI )
                                 $vp->API_sync();
@@ -1853,14 +1844,7 @@ DeviceCallContext::$supportedActions['sp_spg-create-BP'] = array(
                         $store = $sharedStore->URLProfileStore;
                         $url = new URLProfile($name . "-URL", $store);
                         $newdoc = new DOMDocument;
-                        if( $context->object->owner->version < 90 )
-                            $newdoc->loadXML($url_xmlString_v8);
-                        elseif( $context->object->owner->version < 100 )
-                            $newdoc->loadXML($url_xmlString_v9);
-                        elseif( $context->object->owner->version >= 100 && $context->object->owner->version < 102 )
-                            $newdoc->loadXML($url_xmlString_v10);
-                        elseif( $context->object->owner->version >= 102 )
-                            $newdoc->loadXML($url_xmlString_v102);
+                        $newdoc->loadXML($context->url_xmlString);
                         $node = $newdoc->importNode($newdoc->firstChild, TRUE);
                         $node = DH::findFirstElementByNameAttr("entry", $ironskilletName . "-URL", $node);
                         if( $node !== null && $node->hasChildNodes() )
@@ -1872,6 +1856,7 @@ DeviceCallContext::$supportedActions['sp_spg-create-BP'] = array(
                             if( isset($context->arguments['sp-name']) )
                                 $url->setName( $name."-URL");
                             $store->addSecurityProfile($url);
+                            PH::print_stdout(" * URLProfile create: '".$name."-URL'");
 
                             if( $context->isAPI )
                                 $url->API_sync();
@@ -1889,7 +1874,7 @@ DeviceCallContext::$supportedActions['sp_spg-create-BP'] = array(
                         $store = $sharedStore->FileBlockingProfileStore;
                         $fb = new FileBlockingProfile($name . "-FB", $store);
                         $newdoc = new DOMDocument;
-                        $newdoc->loadXML($fb_xmlString);
+                        $newdoc->loadXML($context->fb_xmlString);
                         $node = $newdoc->importNode($newdoc->firstChild, TRUE);
                         $node = DH::findFirstElementByNameAttr("entry", $ironskilletName . "-FB", $node);
                         if( $node !== null && $node->hasChildNodes() )
@@ -1901,6 +1886,7 @@ DeviceCallContext::$supportedActions['sp_spg-create-BP'] = array(
                             if( isset($context->arguments['sp-name']) )
                                 $fb->setName( $name."-FB");
                             $store->addSecurityProfile($fb);
+                            PH::print_stdout(" * FileBlockingProfile create: '".$name."-FB'");
 
                             if( $context->isAPI )
                                 $fb->API_sync();
@@ -1918,7 +1904,7 @@ DeviceCallContext::$supportedActions['sp_spg-create-BP'] = array(
                         $store = $sharedStore->WildfireProfileStore;
                         $wf = new WildfireProfile($name . "-WF", $store);
                         $newdoc = new DOMDocument;
-                        $newdoc->loadXML($wf_xmlString);
+                        $newdoc->loadXML($context->wf_xmlString);
                         $node = $newdoc->importNode($newdoc->firstChild, TRUE);
                         $node = DH::findFirstElementByNameAttr("entry", $ironskilletName . "-WF", $node);
                         if( $node !== null && $node->hasChildNodes() )
@@ -1930,6 +1916,7 @@ DeviceCallContext::$supportedActions['sp_spg-create-BP'] = array(
                             if( isset($context->arguments['sp-name']) )
                                 $wf->setName( $name."-WF");
                             $store->addSecurityProfile($wf);
+                            PH::print_stdout(" * WildfireProfile create: '".$name."-WF'");
 
                             if( $context->isAPI )
                                 $wf->API_sync();
@@ -1944,20 +1931,40 @@ DeviceCallContext::$supportedActions['sp_spg-create-BP'] = array(
                     $secprofgrp = $sharedStore->securityProfileGroupStore->find($name);
                     if( $secprofgrp === null )
                     {
+                        PH::print_stdout(" * SecurityProfileGroup create: '".$name."'");
                         $secprofgrp = new SecurityProfileGroup($name, $sharedStore->securityProfileGroupStore, TRUE);
 
                         if( $av !== null )
+                        {
+                            PH::print_stdout("   - add AV: '".$av->name()."'");
                             $secprofgrp->setSecProf_AV($av->name());
+                        }
                         if( $as !== null )
+                        {
+                            PH::print_stdout("   - add AS: '".$as->name()."'");
                             $secprofgrp->setSecProf_Spyware($as->name());
+                        }
                         if( $vp !== null )
+                        {
+                            PH::print_stdout("   - add VP: '".$vp->name()."'");
                             $secprofgrp->setSecProf_Vuln($vp->name());
+                        }
                         if( $url !== null )
+                        {
+                            PH::print_stdout("   - add URL: '".$url->name()."'");
                             $secprofgrp->setSecProf_URL($url->name());
+                        }
                         if( $fb !== null )
+                        {
+                            PH::print_stdout("   - add FB: '".$fb->name()."'");
                             $secprofgrp->setSecProf_FileBlock($fb->name());
+                        }
                         if( $wf !== null )
+                        {
+                            PH::print_stdout("   - add WF: '".$wf->name()."'");
                             $secprofgrp->setSecProf_Wildfire($wf->name());
+                        }
+
 
 
                         $sharedStore->securityProfileGroupStore->addSecurityProfileGroup($secprofgrp);
@@ -2007,6 +2014,13 @@ DeviceCallContext::$supportedActions['LogForwardingProfile-create-BP'] = array(
         {
             $pathString = dirname(__FILE__)."/../../iron-skillet";
             $lfp_bp_xmlstring = file_get_contents( $pathString."/panos_v10.0/templates/panorama/snippets/log_settings_profiles.xml");
+            if( $context->util->pan->version >= 100 )
+            {
+                $f = DeviceCallContext::$commonActionFunctions['sp_spg-create']['function_panVersion'];
+                $panVersion = $f($context);
+
+                $lfp_bp_xmlstring = file_get_contents( $pathString."/panos_v".$panVersion."/templates/panorama/snippets/log_settings_profiles.xml");
+            }
 
             if( $classtype == "VirtualSystem" || $classtype == "DeviceGroup" )
             {
@@ -2079,9 +2093,14 @@ DeviceCallContext::$commonActionFunctions['zpp-create'] = array(
 
         if( $context->first )
         {
-            $pathString = dirname(__FILE__)."/../../iron-skillet";
-            $zpp_bp_xmlstring = file_get_contents( $pathString."/panos_v10.0/templates/panorama/snippets/zone_protection_profile.xml");
-            #$entryProfileName = "Recommended_Zone_Protection";
+            $pathString = dirname(__FILE__) . "/../../iron-skillet";
+            $zpp_bp_xmlstring = file_get_contents($pathString . "/panos_v10.0/templates/panorama/snippets/zone_protection_profile.xml");
+            if( $context->util->pan->version >= 100 )
+            {
+                $f = DeviceCallContext::$commonActionFunctions['sp_spg-create']['function_panVersion'];
+                $panVersion = $f($context);
+                $zpp_bp_xmlstring = file_get_contents($pathString . "/panos_v" . $panVersion . "/templates/panorama/snippets/zone_protection_profile.xml");
+            }
 
             if( $classtype == "VirtualSystem" || $classtype == "Template" )
             {
