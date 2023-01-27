@@ -6,6 +6,7 @@ UTIL:
 BUGFIX:
 
 GENERAL
+* update Dockerfiles related to ironskillet yaml usage
 
 
 2.0.66 (20230126)

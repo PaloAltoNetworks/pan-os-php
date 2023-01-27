@@ -33,6 +33,7 @@ RUN dnf -y install yum-utils
 
 # Install php (cli/fpm)
 RUN yum -y install \
+    	git \
         php \
         php-cli \
         php-fpm \
@@ -42,6 +43,7 @@ RUN yum -y install \
         php-dom \
         php-mbstring \
         php-bcmath \
+    	php-yaml \
         python3 \
         python3-pandas \
         python3-xlsxwriter \
@@ -59,6 +61,7 @@ COPY phpseclib ./phpseclib
 COPY git-php ./git-php
 COPY utils ./utils
 COPY tests ./tests
+COPY iron-skillet ./iron-skillet
 
 
 # PHP library of pan-os-php

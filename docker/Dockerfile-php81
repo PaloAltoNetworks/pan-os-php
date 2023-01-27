@@ -8,7 +8,7 @@ RUN apt-get update -y --fix-missing
 RUN apt-get install -y tzdata git
 
 # libraries for PHP
-RUN apt-get install -y libcurl3-openssl-dev libxml2-dev libonig-dev
+RUN apt-get install -y libcurl3-openssl-dev libxml2-dev libonig-dev libyaml-dev
 # PHP Extensions
 RUN docker-php-ext-install -j$(nproc) curl dom mbstring bcmath
 
@@ -20,6 +20,7 @@ COPY phpseclib /tools/pan-os-php/phpseclib
 COPY git-php /tools/pan-os-php/git-php
 COPY utils /tools/pan-os-php/utils
 COPY tests /tools/pan-os-php/tests
+COPY iron-skillet /tools/pan-os-php/iron-skillet
 
 
 # PHP library of pan-os-php
