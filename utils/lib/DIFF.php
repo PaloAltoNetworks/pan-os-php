@@ -1399,9 +1399,15 @@ class DIFF extends UTIL
 
                 $pattern = '/'.$search2.'/is';
                 if( preg_match($pattern, $xpath, $matches) )
+                    //CASE2 - '*' somewhere in between
                     $newXpath = str_replace( $matches[0], "", $xpath );
                 else
-                    $newXpath = $add;
+                {
+                    //CASE1 - '*' at end, eg. "/PATH/entry[@name='*']"
+                    #print "\nXPATH: ".$xpath."\n";
+                    #print "\nADD: ".$add."\n";
+                    $newXpath = str_replace( $xpath, "", $add );
+                }
             }
             else
                 $newXpath = str_replace( $xpath, "", $add );
@@ -1443,6 +1449,8 @@ class DIFF extends UTIL
                 $name = DH::findAttribute( "name", $node);
                 if( $newXpath == "/entry[@name='".$name."']" )
                     $continue = true;
+                elseif( strpos( $newXpath, "*" ) !== FALSE && $newXpath == "/entry[@name='*']" )
+                        $continue = true;
             }
             elseif( $xpath !== $newXpath )
             {
