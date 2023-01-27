@@ -1392,10 +1392,10 @@ class DIFF extends UTIL
         foreach( $typeArray as $add )
         {
             #print "\nXPATH: ".$xpath."\n";
-            if( strpos( $add, "*" ) !== FALSE )
+            if( strpos( $add, "'*'" ) !== FALSE )
             {
                 $search2 = preg_quote($add, '/');
-                $search2 = str_replace( "\*", "(.*?)", $search2);
+                $search2 = str_replace( "'\*'", "(.*?)", $search2);
 
                 $pattern = '/'.$search2.'/is';
                 if( preg_match($pattern, $xpath, $matches) )

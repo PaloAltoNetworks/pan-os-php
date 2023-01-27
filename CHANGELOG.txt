@@ -4,6 +4,7 @@ CHANGELOG
 UTIL:
 
 BUGFIX:
+* type=diff | bugfix - JSON filter file check not only * | check '*'
 
 GENERAL
 
