@@ -2,11 +2,13 @@ CHANGELOG
 
 2.0.67
 UTIL:
+* type=playbook shadow-json | improved output
 
 BUGFIX:
 
 GENERAL
 * update Dockerfiles related to ironskillet yaml usage
+* set sleeping time for deprecated scripts to 600sec
 
 
 2.0.66 (20230126)
