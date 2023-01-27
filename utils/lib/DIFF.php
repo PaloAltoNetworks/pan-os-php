@@ -1400,6 +1400,8 @@ class DIFF extends UTIL
                 $pattern = '/'.$search2.'/is';
                 if( preg_match($pattern, $xpath, $matches) )
                     $newXpath = str_replace( $matches[0], "", $xpath );
+                else
+                    $newXpath = $add;
             }
             else
                 $newXpath = str_replace( $xpath, "", $add );
