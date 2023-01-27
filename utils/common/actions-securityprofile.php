@@ -33,13 +33,13 @@ SecurityProfileCallContext::$supportedActions['delete'] = array(
 
         if( get_class($object) == "customURLProfile" )
         {
-            $string = "object of class customerURLProfile can not yet be checked if unused)";
-            PH::ACTIONstatus( $context, "SKIPPED", $string );
-            return;
+            #$string = "object of class customURLProfile can not yet be checked if unused";
+            #PH::ACTIONstatus( $context, "SKIPPED", $string );
+            #return;
         }
         elseif( get_class( $object ) === "PredefinedSecurityProfileURL" )
         {
-            $string = "object of class PredefinedSecurityProfileURL can not be deleted)";
+            $string = "object of class PredefinedSecurityProfileURL can not be deleted";
             PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
@@ -65,13 +65,13 @@ SecurityProfileCallContext::$supportedActions['deleteforce'] = array(
 
         if( get_class($object) == "customURLProfile" )
         {
-            $string = "object of class customerURLProfile can not yet be checked if unused)";
-            PH::ACTIONstatus( $context, "SKIPPED", $string );
-            return;
+            #$string = "object of class customURLProfile can not yet be checked if unused";
+            #PH::ACTIONstatus( $context, "SKIPPED", $string );
+            #return;
         }
         elseif( get_class( $object ) === "PredefinedSecurityProfileURL" )
         {
-            $string = "object of class PredefinedSecurityProfileURL can not be deleted)";
+            $string = "object of class PredefinedSecurityProfileURL can not be deleted";
             PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }

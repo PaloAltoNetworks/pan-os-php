@@ -34,7 +34,7 @@ ApplicationCallContext::$supportedActions['displayreferences'] = array(
 
 
 
-ApplicationCallContext::$supportedActions[] = array(
+ApplicationCallContext::$supportedActions['display'] = array(
     'name' => 'display',
     'GlobalInitFunction' => function (ApplicationCallContext $context)
     {
@@ -260,7 +260,7 @@ ApplicationCallContext::$supportedActions[] = array(
     }
 );
 
-ApplicationCallContext::$supportedActions[] = array(
+ApplicationCallContext::$supportedActions['move'] = array(
     'name' => 'move',
     'MainFunction' => function (ApplicationCallContext $context) {
         $object = $context->object;
@@ -446,4 +446,41 @@ ApplicationCallContext::$supportedActions[] = array(
         #'mode' => array('type' => 'string', 'default' => 'skipIfConflict', 'choices' => array('skipIfConflict', 'removeIfMatch'))
         'mode' => array('type' => 'string', 'default' => 'skipIfConflict', 'choices' => array('skipIfConflict'))
     ),
+);
+
+ApplicationCallContext::$supportedActions['delete'] = array(
+    'name' => 'delete',
+    'MainFunction' => function (ApplicationCallContext $context) {
+        $object = $context->object;
+
+        if( $object->countReferences() != 0 )
+        {
+            $string = "this object is used by other objects and cannot be deleted (use delete-Force to try anyway)";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+
+        if( $context->isAPI )
+            $object->owner->API_remove($object);
+        else
+            $object->owner->remove($object);
+    },
+);
+
+ApplicationCallContext::$supportedActions['delete-Force'] = array(
+    'name' => 'delete-Force',
+    'MainFunction' => function (ApplicationCallContext $context) {
+        $object = $context->object;
+
+        if( $object->countReferences() != 0 )
+        {
+            $string = "this object seems to be used so deletion may fail.";
+            PH::ACTIONstatus( $context, "WARNING", $string );
+        }
+
+        if( $context->isAPI )
+            $object->owner->API_remove($object);
+        else
+            $object->owner->remove($object);
+    },
 );

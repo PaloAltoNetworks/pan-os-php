@@ -884,6 +884,30 @@ class AppStore extends ObjStore
 
     }
 
+
+    /**
+     * @param App $s
+     * @param bool $cleanInMemory
+     * @return bool
+     */
+    public function API_remove($s, $cleanInMemory = FALSE)
+    {
+        $xpath = null;
+
+        if( !$s->isTmp() )
+            $xpath = $s->getXPath();
+
+        $ret = $this->remove($s, $cleanInMemory);
+
+        if( $ret && !$s->isTmp() )
+        {
+            $con = findConnectorOrDie($this);
+            $con->sendDeleteRequest($xpath);
+        }
+
+        return $ret;
+    }
+
     /**
      * @param App $Obj
      * @return bool if object was added. wrong if it was already there or another object with same name.
@@ -895,6 +919,7 @@ class AppStore extends ObjStore
         if( $Obj->isApplicationCustom() || $Obj->isApplicationFilter() || $Obj->isApplicationGroup() )
         {
             parent::remove( $Obj );
+            return True;
         }
         else
             return FALSE;

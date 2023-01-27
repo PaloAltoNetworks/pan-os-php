@@ -8,12 +8,12 @@ PHPINI="/etc/php/${PHP_VAR}/cli/php.ini"
 check="include_path = '${FOLDER_PATH}'"
 
 echo "START \"install PAN-OS-PHP on UBUNTU\"" \
-&& apt update -y \
+&& apt update -y --fix-missing\
 && echo "" \
 && echo "\"install tzdata\"" \
 && apt-get -y install tzdata bash-completion \
 && echo "" \
-&& apt install -y git php${PHP_VAR} vim php${PHP_VAR}-curl php${PHP_VAR}-dom php${PHP_VAR}-mbstring php${PHP_VAR}-bcmath \
+&& apt install -y git php${PHP_VAR} vim php${PHP_VAR}-curl php${PHP_VAR}-dom php${PHP_VAR}-mbstring php${PHP_VAR}-bcmath php${PHP_VAR}-yaml \
 && echo "" \
 && apt install -y python3 python3-pandas python3-xlsxwriter python3-netaddr python3-requests \
 && echo "" \
@@ -41,7 +41,7 @@ if grep -Fxq "$check" ${PHPINI}
   fi
 
 echo "" \
-&& ln -s ${FOLDER_PATH}/utils/bash_autocompletion/pan-os-php.sh /usr/share/bash-completion/completions/pan-os-php \
+&& ln -sf ${FOLDER_PATH}/utils/bash_autocompletion/pan-os-php.sh /usr/share/bash-completion/completions/pan-os-php \
 && echo "" \
 && cd ${FOLDER_PATH} \
 && GIT_SSL_NO_VERIFY=true git submodule init \

@@ -10,9 +10,10 @@ RUN apt-get update -y --fix-missing
 RUN apt-get install -y tzdata git
 
 # libraries for PHP
-RUN apt-get install -y libcurl3-openssl-dev libxml2-dev libonig-dev
+RUN apt-get install -y libcurl3-openssl-dev libxml2-dev libonig-dev libyaml-dev
 # PHP Extensions
 RUN docker-php-ext-install -j$(nproc) curl dom mbstring bcmath mysqli
+RUN docker-php-ext-enable curl dom mbstring bcmath mysqli
 
 
 COPY appid-toolbox /var/www/html/appid-toolbox
@@ -22,6 +23,7 @@ COPY git-php /var/www/html/git-php
 COPY utils /var/www/html/utils
 COPY tests /var/www/html/tests
 COPY log /var/www/html/log
+COPY iron-skillet /var/www/html/iron-skillet
 
 RUN chmod -R 777 /var/www/html/utils/api/v1/project
 RUN chmod -R 777 /var/www/html/log

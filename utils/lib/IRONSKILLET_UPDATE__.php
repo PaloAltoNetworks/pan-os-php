@@ -106,7 +106,7 @@ class IRONSKILLET_UPDATE__
 
 
                 $fullurl = $this->url.$version;
-                print "urL: ".$fullurl."\n";
+                PH::print_stdout( "URL: ".$fullurl );
 
                 $arrContextOptions=array(
                     "ssl"=>array(
@@ -298,6 +298,13 @@ class IRONSKILLET_UPDATE__
 
     function endOfScript()
     {
+        PH::$JSON_TMP = array();
+        if( PH::$shadow_json )
+        {
+            PH::$JSON_OUT['log'] = PH::$JSON_OUTlog;
+            print json_encode( PH::$JSON_OUT, JSON_PRETTY_PRINT );
+            #print json_encode( PH::$JSON_OUT, JSON_PRETTY_PRINT|JSON_FORCE_OBJECT );
+        }
     }
 
     function createIronSkilletMainFolder()

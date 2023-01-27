@@ -31,7 +31,7 @@ class HTMLmerger__
 
         if( isset(PH::$args['help']) )
         {
-            $help_string = PH::boldText('USAGE: ')."php ".basename(__FILE__)." exportCSV=[spreadsheet.xls] projectfolder=[DIRECTORY]";
+            $help_string = PH::boldText('USAGE: ')."php ".basename(__FILE__)." exportCSV=[spreadsheet.xlsx] projectfolder=[DIRECTORY]";
 
             PH::print_stdout( $help_string );
 
@@ -52,7 +52,8 @@ class HTMLmerger__
         $this->supportedArguments = Array();
         $this->supportedArguments['projectfolder'] = Array('niceName' => 'projectFolder', 'shortHelp' => 'define the projectfolder', 'argDesc' => 'projectfolder=[DIRECTORY]');
         $this->supportedArguments['help'] = array('niceName' => 'help', 'shortHelp' => 'this message');
-        $this->supportedArguments['exportCSV'] = array('niceName' => 'exportCSV', 'shortHelp' => 'when this argument is specified, it instructs the script to display the kept and removed objects per value');
+        $this->supportedArguments['exportcsv'] = array('niceName' => 'exportCSV', 'shortHelp' => 'when this argument is specified, it instructs the script to display the kept and removed objects per value');
+        $this->supportedArguments['adddefaulthtml'] = array('niceName' => 'addDefaultHTML', 'shortHelp' => 'adding default HTML as an explanation for the EXCEL file');
 
         $this->usageMsg = PH::boldText('USAGE: ')."php ".basename(__FILE__)." projectfolder=[DIRECTORY]";
 
@@ -75,6 +76,18 @@ class HTMLmerger__
         PH::print_stdout( );
         PH::print_stdout( "check projectfolder: ".$this->projectfolder." for files with ending '.html'" );
         PH::print_stdout( );
+
+        if( isset(PH::$args['adddefaulthtml']) )
+        {
+            if( empty(PH::$args['adddefaulthtml']) )
+                $defaultfilename = dirname(__FILE__) . '/../common/html/default.html';
+            else
+                $defaultfilename = PH::$args['adddefaulthtml'];
+            //copy default html file into projectfolder;
+
+            $projectdefaultfile = file_get_contents( $defaultfilename );
+            file_put_contents($this->projectfolder . "/00000_default.html", $projectdefaultfile);
+        }
 
         /*
         if( empty($excelfilename ) )

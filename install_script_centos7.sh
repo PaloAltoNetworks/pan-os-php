@@ -25,7 +25,7 @@ echo "" \
 && yum-config-manager --enable remi-php74 \
 && echo "" \
 && echo "" \
-&& yum -y install php php-cli php-fpm php-json php-intl php-curl php-dom php-mbstring php-bcmath && yum clean all \
+&& yum -y install php php-cli php-fpm php-json php-intl php-curl php-dom php-mbstring php-bcmath php-yaml && yum clean all \
 && php -v \
 && echo "" \
 && echo "" \

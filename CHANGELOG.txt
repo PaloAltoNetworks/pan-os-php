@@ -1,6 +1,26 @@
 CHANGELOG
 
-2.0.66
+2.0.67
+UTIL:
+* type=playbook shadow-json | improved output
+* type=application | introduce actions=delete and actions=delete-force
+* type=html-merger | adjust helping information
+* type=playbook | support reading argument projectfolder from JSON playbook file
+* type=zone | actions=exporttoexcel - extend information with ZoneProtectionProfile
+* type=rule actions=exporttoexcel:file.html - rename column 'security' to 'security-profile'
+* type=html-merger | introduce argument 'adddefaulthtml' - to give the possibility to add a Excel TAB with descriptions
+* type=diff | JSON filter file - allow * as wildcard
+
+BUGFIX:
+* type=securityprofile | bugfix to delete also customURLProfile objects
+* type=device | bugfix panos >100 - for all actions=*-create-*-bp to use coorect iron-skillet snippet
+
+GENERAL
+* update Dockerfiles related to ironskillet yaml usage
+* set sleeping time for deprecated scripts to 600sec
+
+
+2.0.66 (20230126)
 UTIL:
 * type=address/service | introduce 'filter=(reflocationcount ><=! NUMBER)'
 * type=diff | introduce more options for 'filter=file.json' - 'added'/'deleted'/'moved' to not display xPath diff, if already accepted and known
