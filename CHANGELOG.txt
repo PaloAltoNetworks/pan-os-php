@@ -9,6 +9,7 @@ UTIL:
 * type=zone | actions=exporttoexcel - extend information with ZoneProtectionProfile
 * type=rule actions=exporttoexcel:file.html - rename column 'security' to 'security-profile'
 * type=html-merger | introduce argument 'adddefaulthtml' - to give the possibility to add a Excel TAB with descriptions
+* type=diff | JSON filter file - allow * as wildcard
 
 BUGFIX:
 * type=securityprofile | bugfix to delete also customURLProfile objects
