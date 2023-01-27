@@ -1,6 +1,15 @@
 CHANGELOG
 
-2.0.67
+2.0.68
+UTIL:
+
+BUGFIX:
+* type=diff | bugfix - JSON filter file check not only * | check '*'
+
+GENERAL
+
+
+2.0.67 (20230127)
 UTIL:
 * type=playbook shadow-json | improved output
 * type=application | introduce actions=delete and actions=delete-force
