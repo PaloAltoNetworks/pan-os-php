@@ -668,7 +668,7 @@ ZoneCallContext::$supportedActions['exportToExcel'] = array(
         if( isset($optionalFields['NestedMembers']) )
             $addNestedMembers = TRUE;
 
-        $headers = '<th>template</th><th>location</th><th>name</th><th>type</th><th>interfaces</th><th>log-setting</th>';
+        $headers = '<th>template</th><th>location</th><th>name</th><th>type</th><th>interfaces</th><th>log-setting</th><th>zone-protection-profile</th>';
 
         if( $addWhereUsed )
             $headers .= '<th>where used</th>';
@@ -756,6 +756,11 @@ ZoneCallContext::$supportedActions['exportToExcel'] = array(
                             $tmpLogprof = $object->logsetting;
                         $lines .= $encloseFunction( $tmpLogprof );
 
+                        if( $object->zoneProtectionProfile == null )
+                            $tmpZPP = "";
+                        else
+                            $tmpZPP = $object->zoneProtectionProfile;
+                        $lines .= $encloseFunction( $tmpZPP );
                     }
 
                 if( $addWhereUsed )
