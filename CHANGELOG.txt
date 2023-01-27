@@ -5,6 +5,7 @@ UTIL:
 
 BUGFIX:
 * type=diff | bugfix - JSON filter file check not only * | check '*'
+* type=diff | JSON filter - add also support for "/PATH/entry[@name='*']"
 
 GENERAL
 
@@ -18,7 +19,7 @@ UTIL:
 * type=zone | actions=exporttoexcel - extend information with ZoneProtectionProfile
 * type=rule actions=exporttoexcel:file.html - rename column 'security' to 'security-profile'
 * type=html-merger | introduce argument 'adddefaulthtml' - to give the possibility to add a Excel TAB with descriptions
-* type=diff | JSON filter file - allow * as wildcard
+* type=diff | JSON filter file - allow * as wildcard | [was supporting only "/PATH1/entry[@name='*']/PATH2"]
 
 BUGFIX:
 * type=securityprofile | bugfix to delete also customURLProfile objects
