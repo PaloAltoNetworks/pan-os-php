@@ -4,6 +4,7 @@ CHANGELOG
 UTIL:
 * type=diff | JSON filter - add also support for "/PATH/entry[@name='*']"
 * type=diff | JSON filter file - support now combination of '*' and [text()[contains(.,'TEXT')]]
+* type=device | code improvements for actions=sp_spg-create-alert-only-bp/sp_spg-create-bp - reduce duplicate code
 
 BUGFIX:
 * type=diff | bugfix - JSON filter file check not only * | check '*'
