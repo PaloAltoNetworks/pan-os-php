@@ -9,6 +9,7 @@ BUGFIX:
 * type=diff | bugfix - JSON filter file check not only * | check '*'
 
 GENERAL
+* update default iron-skillet snippets
 
 
 2.0.67 (20230127)
