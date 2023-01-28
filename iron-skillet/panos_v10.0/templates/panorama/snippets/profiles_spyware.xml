@@ -1,4 +1,5 @@
-<root><entry name="Outbound-AS">
+<root>
+    <entry name="Outbound-AS">
   <botnet-domains>
     <lists>
       <entry name="default-paloalto-dns">
