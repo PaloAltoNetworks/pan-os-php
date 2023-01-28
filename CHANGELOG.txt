@@ -4,14 +4,11 @@ CHANGELOG
 UTIL:
 * type=diff | JSON filter - add also support for "/PATH/entry[@name='*']"
 * type=diff | JSON filter file - support now combination of '*' and [text()[contains(.,'TEXT')]]
-* type=device | code improvements for actions=sp_spg-create-alert-only-bp/sp_spg-create-bp - reduce duplicate code
 
 BUGFIX:
 * type=diff | bugfix - JSON filter file check not only * | check '*'
-* type=ironskillet-update | bugfix to download and store correct default iron-skillet snippets
 
 GENERAL
-* update default iron-skillet snippets
 
 
 2.0.67 (20230127)
