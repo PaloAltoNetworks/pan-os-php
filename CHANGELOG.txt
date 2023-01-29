@@ -5,10 +5,12 @@ UTIL:
 * type=diff | JSON filter - add also support for "/PATH/entry[@name='*']"
 * type=diff | JSON filter file - support now combination of '*' and [text()[contains(.,'TEXT')]]
 * type=device | code improvements for actions=sp_spg-create-alert-only-bp/sp_spg-create-bp - reduce duplicate code
+* type=rule | ruletype=defaultsecurity | enable more actions related to defaultsecurityRules
 
 BUGFIX:
 * type=diff | bugfix - JSON filter file check not only * | check '*'
 * type=ironskillet-update | bugfix to download and store correct default iron-skillet snippets
+* type=rule | ruletype=defaultsecurity | bugfix to display rules | enable more actions related to defaultsecurityRules
 
 GENERAL
 * update default iron-skillet snippets

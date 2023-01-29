@@ -993,7 +993,30 @@ class PanoramaConf
                 $tmpPost = DH::findFirstElement('rules', $tmpPost);
 
             if( $tmpPost === FALSE )
-                $tmpPost = null;
+            {
+                //$tmpPost = null;
+                $defaultSecurityRules_xml = "<default-security-rules>
+                    <rules>
+                      <entry name=\"intrazone-default\">
+                        <log-end>no</log-end>
+                      </entry>
+                      <entry name=\"interzone-default\">
+                        <log-end>no</log-end>
+                        <action>deny</action>
+                      </entry>
+                    </rules>
+                  </default-security-rules>";
+
+                $ownerDocument = $postrulebase->ownerDocument;
+
+                $newdoc = new DOMDocument;
+                $newdoc->loadXML( $defaultSecurityRules_xml );
+                $node = $newdoc->importNode($newdoc->firstChild, TRUE);
+                $node = $ownerDocument->importNode($node, TRUE);
+
+                $tmpPost = DH::findFirstElement('rules', $node);
+            }
+
         }
         $this->defaultSecurityRules->load_from_domxml($tmp, $tmpPost);
 
