@@ -910,7 +910,9 @@ class Container
                 $tmpPost = DH::findFirstElement('rules', $tmpPost);
 
             if( $tmpPost === FALSE )
+            {
                 $tmpPost = null;
+            }
         }
         $this->defaultSecurityRules->load_from_domxml($tmp, $tmpPost);
 

@@ -862,7 +862,9 @@ class DeviceGroup
                 $tmpPost = DH::findFirstElement('rules', $tmpPost);
 
             if( $tmpPost === FALSE )
+            {
                 $tmpPost = null;
+            }
         }
         $this->$var->load_from_domxml($tmp, $tmpPost);
 

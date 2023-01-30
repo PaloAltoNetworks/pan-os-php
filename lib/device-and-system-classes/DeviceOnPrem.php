@@ -909,6 +909,7 @@ class DeviceOnPrem
                     $this->defaultSecurityRules->load_from_domxml($tmprulesroot);
             }
 
+
             //
             // network-packet-broker Rules extraction
             //
