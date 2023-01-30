@@ -79,14 +79,14 @@ class HTMLmerger__
 
         if( isset(PH::$args['adddefaulthtml']) )
         {
-            if( empty(PH::$args['adddefaulthtml']) )
-                $defaultfilename = dirname(__FILE__) . '/../common/html/default.html';
+            if( empty(PH::$args['adddefaulthtml']) || PH::$args['adddefaulthtml'] == "adddefaulthtml" )
+                $defaultfilename = dirname(__FILE__) . '/../common/html/Introduction.html';
             else
                 $defaultfilename = PH::$args['adddefaulthtml'];
             //copy default html file into projectfolder;
 
             $projectdefaultfile = file_get_contents( $defaultfilename );
-            file_put_contents($this->projectfolder . "/00000_default.html", $projectdefaultfile);
+            file_put_contents($this->projectfolder . "/0_".$defaultfilename, $projectdefaultfile);
         }
 
         /*
