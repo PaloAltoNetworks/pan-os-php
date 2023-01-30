@@ -1427,7 +1427,7 @@ class DIFF extends UTIL
                 $domXpath = new DOMXPath($newdoc);
                 foreach( $domXpath->query($newXpath) as $textNode )
                 {
-                    if( !DH::hasChild( $textNode ) )
+                    if( $textNode !== False && !DH::hasChild( $textNode ) )
                     {
                         $textNodeFound = TRUE;
                         #print "something found in \n";
@@ -1493,7 +1493,7 @@ class DIFF extends UTIL
                 if( $test != false )
                 {
                     $rulesNode = DH::findFirstElement( "rules", $test);
-                    if( !DH::hasChild($rulesNode) )
+                    if( $rulesNode !== False && !DH::hasChild($rulesNode) )
                     {
                         $fullXpath = $xpath."/".$node->nodeName."/".$type."/rules";
                         if( in_array( $fullXpath, $this->empty ) )
@@ -1510,7 +1510,7 @@ class DIFF extends UTIL
 
                 if( $child->nodeName == "rules" )
                 {
-                    if( !DH::hasChild($child) )
+                    if( $child !== False && !DH::hasChild($child) )
                     {
                         $fullXpath = $xpath."/".$node->nodeName."/rules";
                         #print $fullXpath."\n";
@@ -1522,7 +1522,7 @@ class DIFF extends UTIL
                 }
             }
 
-            if( !DH::hasChild($node) )
+            if( $node !== False && !DH::hasChild($node) )
             {
                 $fullXpath = $xpath."/".$node->nodeName;
                 #print $fullXpath."\n";
