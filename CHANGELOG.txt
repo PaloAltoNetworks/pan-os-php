@@ -6,7 +6,12 @@ UTIL:
 * type=diff | JSON filter file - support now combination of '*' and [text()[contains(.,'TEXT')]]
 
 BUGFIX:
+* type=diff | JSON filter file - additional rule order check did not import post rules correctly
+* type=device | code improvements for actions=sp_spg-create-alert-only-bp/sp_spg-create-bp - reduce duplicate code
 * type=diff | bugfix - JSON filter file check not only * | check '*'
+* type=ironskillet-update | bugfix to download and store correct default iron-skillet snippets
+* type=rule | ruletype=defaultsecurity | bugfix to display rules | enable more actions related to defaultsecurityRules
+* type=html-merger | bugfix for using argument 'adddefaulthtml' if no filename is specified
 
 GENERAL
 

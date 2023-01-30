@@ -994,6 +994,7 @@ class PanoramaConf
                 $tmpPost = DH::findFirstElement('rules', $tmpPost);
 
             if( $tmpPost === FALSE )
+            {
                 $tmpPost = null;
             */
             $sub = new Sub();

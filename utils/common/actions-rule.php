@@ -2181,6 +2181,7 @@ RuleCallContext::$supportedActions[] = array(
 //                                                 //
 RuleCallContext::$supportedActions[] = array(
     'name' => 'logStart-Enable',
+    'name' => 'logStart-Enable',
     'section' => 'log',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
@@ -5152,7 +5153,7 @@ RuleCallContext::$supportedActions[] = array(
         //validate supported action
         $tmp_action = $context->arguments['action'];
 
-        if( !$rule->isSecurityRule() )
+        if( !$rule->isSecurityRule() && !$rule->isDefaultSecurityRule() )
         {
             $string = "Rule is not of type Security";
             PH::ACTIONstatus($context, "SKIPPED", $string);

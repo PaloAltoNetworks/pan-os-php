@@ -79,14 +79,24 @@ class HTMLmerger__
 
         if( isset(PH::$args['adddefaulthtml']) )
         {
-            if( empty(PH::$args['adddefaulthtml']) )
-                $defaultfilename = dirname(__FILE__) . '/../common/html/default.html';
+            if( empty(PH::$args['adddefaulthtml']) || PH::$args['adddefaulthtml'] == "adddefaulthtml" )
+            {
+                $defaultfile = dirname(__FILE__) . '/../common/html/Introduction.html';
+                $defaultfilenname = "0_Introduction.html";
+            }
             else
-                $defaultfilename = PH::$args['adddefaulthtml'];
-            //copy default html file into projectfolder;
+            {
+                //get own defaultfile from anywhere outside container/panosphp environment
+                $defaultfile = PH::$args['adddefaulthtml'];
+                $pathArray = explode("/", $defaultfile);
+                $tmpname = end( $pathArray );
+                $defaultfilenname = "0_".$tmpname;
+            }
 
-            $projectdefaultfile = file_get_contents( $defaultfilename );
-            file_put_contents($this->projectfolder . "/00000_default.html", $projectdefaultfile);
+            //copy default html file into projectfolder;
+            $projectdefaultfile = file_get_contents( $defaultfile );
+            #bug how to get only file name if $defaultfilename is specified
+            file_put_contents($this->projectfolder . "/".$defaultfilenname, $projectdefaultfile);
         }
 
         /*

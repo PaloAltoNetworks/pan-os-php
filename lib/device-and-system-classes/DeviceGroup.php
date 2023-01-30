@@ -863,13 +863,13 @@ class DeviceGroup
                 $tmpPost = DH::findFirstElement('rules', $tmpPost);
 
             if( $tmpPost === FALSE )
+            {
                 $tmpPost = null;
             */
             $sub = new Sub();
             $sub->rulebaseroot = $postrulebase;
             $sub->defaultSecurityRules = $this->defaultSecurityRules;
             $tmpPost = $sub->load_defaultSecurityRule( );
-
         }
         if( $tmpPost !== FALSE )
             $this->$var->load_from_domxml($tmp, $tmpPost);

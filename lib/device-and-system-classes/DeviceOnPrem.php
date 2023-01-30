@@ -917,6 +917,7 @@ class DeviceOnPrem
             if( $tmprulesroot !== FALSE )
                 $this->defaultSecurityRules->load_from_domxml($tmprulesroot);
 
+
             //
             // network-packet-broker Rules extraction
             //
