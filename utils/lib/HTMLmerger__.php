@@ -86,7 +86,8 @@ class HTMLmerger__
             //copy default html file into projectfolder;
 
             $projectdefaultfile = file_get_contents( $defaultfilename );
-            file_put_contents($this->projectfolder . "/0_".$defaultfilename, $projectdefaultfile);
+            #bug how to get only file name if $defaultfilename is specified
+            file_put_contents($this->projectfolder . "/0_Introduction.html", $projectdefaultfile);
         }
 
         /*
