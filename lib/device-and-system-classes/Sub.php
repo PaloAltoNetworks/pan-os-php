@@ -25,8 +25,6 @@ class Sub
 
     function load_defaultSecurityRule( )
     {
-        DH::DEBUGprintDOMDocument($this->rulebaseroot);
-
         $finalroot = FALSE;
         $tmproot = DH::findFirstElement('default-security-rules', $this->rulebaseroot);
         if( $tmproot !== FALSE )
@@ -66,6 +64,10 @@ class Sub
         $node = $newdoc->importNode($newdoc->firstChild, TRUE);
         $node = $ownerDocument->importNode($node, TRUE);
 
-        return DH::findFirstElement('rules', $node);
+        $node = $this->rulebaseroot->appendChild($node);
+
+        $ruleNode = DH::findFirstElement('rules', $node);
+
+        return $ruleNode;
     }
 }

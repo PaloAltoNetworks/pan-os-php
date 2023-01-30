@@ -823,7 +823,7 @@ class VirtualSystem
             $sub->defaultSecurityRules = $this->defaultSecurityRules;
             $tmprulesroot = $sub->load_defaultSecurityRule( );
             if( $tmprulesroot !== FALSE )
-                $this->defaultSecurityRules->load_from_domxml($tmprulesroot);
+                $this->defaultSecurityRules->load_from_domxml( $tmprulesroot);
 
             //
             // network-packet-broker Rules extraction

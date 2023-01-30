@@ -152,7 +152,7 @@ class RuleStore
                     mwarning("A rule entry with tag '{$node->tagName}' was found and ignored");
                     continue;
                 }
-                /** @var SecurityRule|NatRule|DecryptionRule|Rule $nr */
+                /** @var SecurityRule|NatRule|DecryptionRule|Rule|DefaultSecurityRule $nr */
                 $nr = new $this->type($this);
                 $nr->load_from_domxml($node);
                 if( PH::$enableXmlDuplicatesDeletion )
