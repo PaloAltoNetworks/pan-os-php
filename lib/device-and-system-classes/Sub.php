@@ -50,11 +50,14 @@ class Sub
         $defaultSecurityRules_xml = "<default-security-rules>
                     <rules>
                       <entry name=\"intrazone-default\">
+                        <action>allow</action>
+                        <log-start>no</log-start>
                         <log-end>no</log-end>
                       </entry>
                       <entry name=\"interzone-default\">
-                        <log-end>no</log-end>
                         <action>deny</action>
+                        <log-start>no</log-start>
+                        <log-end>no</log-end>
                       </entry>
                     </rules>
                   </default-security-rules>";
