@@ -358,10 +358,12 @@ class DIFF extends UTIL
 
 
                 $file1Element = $this->additionalRuleOrderCalculateXpathGetElement( $origDoc1, $this->additionalRuleOrderpreXpath[$key], $this->additionalRuleOrderpostXpath[$key] );
-                #DH::DEBUGprintDOMDocument( $file1Element );
+                if( $this->debugAPI )
+                    DH::DEBUGprintDOMDocument( $file1Element );
 
                 $file2Element = $this->additionalRuleOrderCalculateXpathGetElement( $origDoc2, $this->additionalRuleOrderpreXpath[$key], $this->additionalRuleOrderpostXpath[$key] );
-                #DH::DEBUGprintDOMDocument( $file2Element );
+                if( $this->debugAPI )
+                    DH::DEBUGprintDOMDocument( $file2Element );
 
                 ########################################################################################################################
 
@@ -376,8 +378,12 @@ class DIFF extends UTIL
                 $this->additionalCalculateRuleorder( $file1Element, $el1rulebase);
                 $this->additionalCalculateRuleorder( $file2Element, $el2rulebase);
 
-                #print_r( $el1rulebase );
-                #print_r( $el2rulebase );
+                if( $this->debugAPI )
+                {
+                    print_r( $el1rulebase );
+                    print_r( $el2rulebase );
+                }
+
 
                 //check Rules
                 if( isset( $el1rulebase['rules'] ) )
