@@ -157,7 +157,7 @@ class DefaultSecurityRule extends Rule
                 $actionFound = array_search($node->textContent, self::$RuleActions);
                 if( $actionFound === FALSE )
                 {
-                    mwarning("unsupported action '{$tmp->textContent}' found, allow assumed", $tmp);
+                    mwarning("unsupported action '{$node->textContent}' found, allow assumed", $node);
                 }
                 else
                 {

@@ -857,14 +857,22 @@ class DeviceGroup
             $tmpPost = null;
         else
         {
+            /*
             $tmpPost = DH::findFirstElement($xmlTagName, $postrulebase);
             if( $tmpPost !== FALSE )
                 $tmpPost = DH::findFirstElement('rules', $tmpPost);
 
             if( $tmpPost === FALSE )
+            {
                 $tmpPost = null;
+            */
+            $sub = new Sub();
+            $sub->rulebaseroot = $postrulebase;
+            $sub->defaultSecurityRules = $this->defaultSecurityRules;
+            $tmpPost = $sub->load_defaultSecurityRule( );
         }
-        $this->$var->load_from_domxml($tmp, $tmpPost);
+        if( $tmpPost !== FALSE )
+            $this->$var->load_from_domxml($tmp, $tmpPost);
 
         //network-packet-broker
         $xmlTagName = "network-packet-broker";

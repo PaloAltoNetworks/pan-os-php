@@ -2181,11 +2181,12 @@ RuleCallContext::$supportedActions[] = array(
 //                                                 //
 RuleCallContext::$supportedActions[] = array(
     'name' => 'logStart-Enable',
+    'name' => 'logStart-Enable',
     'section' => 'log',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
 
-        if( !$rule->isSecurityRule() )
+        if( !$rule->isSecurityRule() && !$rule->isDefaultSecurityRule() )
         {
             $string = "this is not a security rule";
             PH::ACTIONstatus( $context, "SKIPPED", $string );
@@ -2193,7 +2194,16 @@ RuleCallContext::$supportedActions[] = array(
         }
 
         if( $context->isAPI )
-            $rule->API_setLogStart(TRUE);
+        {
+            if( $rule->isDefaultSecurityRule() )
+            {
+                $rule->API_setAction( $rule->action() );
+                $rule->API_setLogEnd($rule->logEnd());
+                $rule->API_setLogStart(TRUE);
+            }
+            else
+                $rule->API_setLogStart(TRUE);
+        }
         else
             $rule->setLogStart(TRUE);
     },
@@ -2205,7 +2215,7 @@ RuleCallContext::$supportedActions[] = array(
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
 
-        if( !$rule->isSecurityRule() )
+        if( !$rule->isSecurityRule() && !$rule->isDefaultSecurityRule() )
         {
             $string = "this is not a security rule";
             PH::ACTIONstatus( $context, "SKIPPED", $string );
@@ -2213,7 +2223,16 @@ RuleCallContext::$supportedActions[] = array(
         }
 
         if( $context->isAPI )
-            $rule->API_setLogStart(FALSE);
+        {
+            if( $rule->isDefaultSecurityRule() )
+            {
+                $rule->API_setAction( $rule->action() );
+                $rule->API_setLogEnd($rule->logEnd());
+                $rule->API_setLogStart(FALSE);
+            }
+            else
+                $rule->API_setLogStart(FALSE);
+        }
         else
             $rule->setLogStart(FALSE);
     },
@@ -2225,6 +2244,8 @@ RuleCallContext::$supportedActions[] = array(
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
 
+        #supporting issue
+        #if( !$rule->isSecurityRule() && !$rule->isDefaultSecurityRule() )
         if( !$rule->isSecurityRule() )
         {
             $string = "this is not a security rule";
@@ -2258,6 +2279,8 @@ RuleCallContext::$supportedActions[] = array(
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
 
+        #supporting issue
+        #if( !$rule->isSecurityRule() && !$rule->isDefaultSecurityRule() )
         if( !$rule->isSecurityRule() )
         {
             $string = "this is not a security rule" ;
@@ -2292,7 +2315,7 @@ RuleCallContext::$supportedActions[] = array(
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
 
-        if( !$rule->isSecurityRule() )
+        if( !$rule->isSecurityRule() && !$rule->isDefaultSecurityRule() )
         {
             $string = "this is not a security rule" ;
             PH::ACTIONstatus( $context, "SKIPPED", $string );
@@ -2300,7 +2323,16 @@ RuleCallContext::$supportedActions[] = array(
         }
 
         if( $context->isAPI )
-            $rule->API_setLogEnd(TRUE);
+        {
+            if( $rule->isDefaultSecurityRule() )
+            {
+                $rule->API_setAction( $rule->action() );
+                $rule->API_setLogStart($rule->logStart());
+                $rule->API_setLogEnd(TRUE);
+            }
+            else
+                $rule->API_setLogEnd(TRUE);
+        }
         else
             $rule->setLogEnd(TRUE);
     },
@@ -2313,7 +2345,7 @@ RuleCallContext::$supportedActions[] = array(
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
 
-        if( !$rule->isSecurityRule() )
+        if( !$rule->isSecurityRule() && !$rule->isDefaultSecurityRule() )
         {
             $string = "this is not a security rule" ;
             PH::ACTIONstatus( $context, "SKIPPED", $string );
@@ -2321,7 +2353,16 @@ RuleCallContext::$supportedActions[] = array(
         }
 
         if( $context->isAPI )
-            $rule->API_setLogEnd(FALSE);
+        {
+            if( $rule->isDefaultSecurityRule() )
+            {
+                $rule->API_setAction( $rule->action() );
+                $rule->API_setLogStart($rule->logStart());
+                $rule->API_setLogEnd(FALSE);
+            }
+            else
+                $rule->API_setLogEnd(FALSE);
+        }
         else
             $rule->setLogEnd(FALSE);
     },
@@ -2333,6 +2374,8 @@ RuleCallContext::$supportedActions[] = array(
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
 
+        #supporting issue
+        #if( !$rule->isSecurityRule() && !$rule->isDefaultSecurityRule() )
         if( !$rule->isSecurityRule() )
         {
             $string = "this is not a security rule" ;
@@ -2365,6 +2408,8 @@ RuleCallContext::$supportedActions[] = array(
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
 
+        #supporting issue
+        #if( !$rule->isSecurityRule() && !$rule->isDefaultSecurityRule() )
         if( !$rule->isSecurityRule() )
         {
             $string = "this is not a security rule" ;
@@ -2397,7 +2442,7 @@ RuleCallContext::$supportedActions[] = array(
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
 
-        if( !$rule->isSecurityRule() )
+        if( !$rule->isSecurityRule() && !$rule->isDefaultSecurityRule() )
         {
             $string = "this is not a security rule" ;
             PH::ACTIONstatus( $context, "SKIPPED", $string );
@@ -2405,7 +2450,17 @@ RuleCallContext::$supportedActions[] = array(
         }
 
         if( $context->isAPI )
-            $rule->API_setLogSetting($context->arguments['profName']);
+        {
+            if( $rule->isDefaultSecurityRule() )
+            {
+                $rule->API_setAction( $rule->action() );
+                $rule->API_setLogStart($rule->logStart());
+                $rule->API_setLogEnd($rule->logEnd());
+                $rule->API_setLogSetting($context->arguments['profName']);
+            }
+            else
+                $rule->API_setLogSetting($context->arguments['profName']);
+        }
         else
             $rule->setLogSetting($context->arguments['profName']);
     },
@@ -2419,7 +2474,7 @@ RuleCallContext::$supportedActions[] = array(
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
 
-        if( !$rule->isSecurityRule() )
+        if( !$rule->isSecurityRule() && !$rule->isDefaultSecurityRule() )
         {
             $string = "this is not a security rule" ;
             PH::ACTIONstatus( $context, "SKIPPED", $string );
@@ -2453,7 +2508,7 @@ RuleCallContext::$supportedActions[] = array(
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
 
-        if( !$rule->isSecurityRule() )
+        if( !$rule->isSecurityRule() && !$rule->isDefaultSecurityRule() )
         {
             $string = "this is not a security rule" ;
             PH::ACTIONstatus( $context, "SKIPPED", $string );
@@ -2461,7 +2516,17 @@ RuleCallContext::$supportedActions[] = array(
         }
 
         if( $context->isAPI )
-            $rule->API_setLogSetting(null);
+        {
+            if( $rule->isDefaultSecurityRule() )
+            {
+                $rule->API_setAction( $rule->action() );
+                $rule->API_setLogStart($rule->logStart());
+                $rule->API_setLogEnd($rule->logEnd());
+                $rule->API_setLogSetting(null);
+            }
+            else
+                $rule->API_setLogSetting(null);
+        }
         else
             $rule->setLogSetting(null);
     },
@@ -2485,7 +2550,10 @@ RuleCallContext::$supportedActions[] = array(
         }
 
         if( $context->isAPI )
-            $rule->API_setSecurityProfileGroup($context->arguments['profName']);
+            if( $rule->isDefaultSecurityRule() )
+                $rule->API_sync();
+            else
+                $rule->API_setSecurityProfileGroup($context->arguments['profName']);
         else
             $rule->setSecurityProfileGroup($context->arguments['profName']);
     },
@@ -2514,7 +2582,10 @@ RuleCallContext::$supportedActions[] = array(
 
 
         if( $context->isAPI )
-            $rule->API_setSecurityProfileGroup($context->arguments['profName']);
+            if( $rule->isDefaultSecurityRule() )
+                $rule->API_sync();
+            else
+                $rule->API_setSecurityProfileGroup($context->arguments['profName']);
         else
             $rule->setSecurityProfileGroup($context->arguments['profName']);
     },
@@ -5082,7 +5153,7 @@ RuleCallContext::$supportedActions[] = array(
         //validate supported action
         $tmp_action = $context->arguments['action'];
 
-        if( !$rule->isSecurityRule() )
+        if( !$rule->isSecurityRule() && !$rule->isDefaultSecurityRule() )
         {
             $string = "Rule is not of type Security";
             PH::ACTIONstatus($context, "SKIPPED", $string);

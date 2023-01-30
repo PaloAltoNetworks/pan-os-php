@@ -48,7 +48,7 @@ class RuleCallContext extends CallContext
         $subSystem = $this->subSystem;
 
 
-        $classToType = array('SecurityRule' => 'security', 'NatRule' => 'nat',);
+        $classToType = array('SecurityRule' => 'security', 'NatRule' => 'nat', 'DefaultSecurityRule' => 'defaultsecurity');
         $type = $classToType[get_class($rule)];
 
         if( !$panoramaMode )

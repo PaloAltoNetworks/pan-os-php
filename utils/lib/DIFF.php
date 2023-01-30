@@ -358,10 +358,17 @@ class DIFF extends UTIL
 
 
                 $file1Element = $this->additionalRuleOrderCalculateXpathGetElement( $origDoc1, $this->additionalRuleOrderpreXpath[$key], $this->additionalRuleOrderpostXpath[$key] );
-                #DH::DEBUGprintDOMDocument( $file1Element );
+                if( $this->debugAPI )
+                {
+                    #DH::DEBUGprintDOMDocument( $file1Element );
+                }
+
 
                 $file2Element = $this->additionalRuleOrderCalculateXpathGetElement( $origDoc2, $this->additionalRuleOrderpreXpath[$key], $this->additionalRuleOrderpostXpath[$key] );
-                #DH::DEBUGprintDOMDocument( $file2Element );
+                if( $this->debugAPI )
+                {
+                    #DH::DEBUGprintDOMDocument( $file2Element );
+                }
 
                 ########################################################################################################################
 
@@ -376,8 +383,12 @@ class DIFF extends UTIL
                 $this->additionalCalculateRuleorder( $file1Element, $el1rulebase);
                 $this->additionalCalculateRuleorder( $file2Element, $el2rulebase);
 
-                #print_r( $el1rulebase );
-                #print_r( $el2rulebase );
+                if( $this->debugAPI )
+                {
+                    print_r( $el1rulebase );
+                    print_r( $el2rulebase );
+                }
+
 
                 //check Rules
                 if( isset( $el1rulebase['rules'] ) )
@@ -1201,14 +1212,14 @@ class DIFF extends UTIL
         }
         if( $set )
             $postElement = $root;
-
+        #DH::DEBUGprintDOMDocument($postElement);
         #############
         $finalDoc = new DOMDocument();
         $nodeconfig = $finalDoc->createElement("config");
         $finalDoc->appendChild($nodeconfig);
 
-        if( $preElement === false )
-            return false;
+        #if( $preElement === false )
+        #    return false;
 
         $preRules = DH::findFirstElement("rules", $preElement);
         if( $preRules !== FALSE && $preElement->parentNode->nodeName == "pre-rulebase" )
@@ -1222,60 +1233,24 @@ class DIFF extends UTIL
                 $node2 = $finalDoc->importNode($childNode, TRUE);
                 $nodeconfig->appendChild($node2);
             }
-            if( $postElement !== false )
-            {
-                $preRules = DH::findFirstElement( "rules", $nodeconfig);
-
-                $postRules = DH::findFirstElement("rules", $postElement);
-                $node = $finalDoc->importNode($postRules, TRUE);
-                foreach( $node->childNodes as $childNode )
-                {
-                    /** @var null|DOMElement $childNode */
-                    if( $childNode->nodeType != XML_ELEMENT_NODE )
-                        continue;
-
-                    $preRules->appendChild($childNode);
-                }
-            }
         }
-        elseif( $preElement->nodeName == "pre-rulebase" )
+
+        if( $postElement !== false )
         {
-            foreach( $preElement->childNodes as $childNode )
+            //rules element from new config file
+            $preRules = DH::findFirstElementOrCreate( "rules", $nodeconfig);
+
+            $postRules = DH::findFirstElement("rules", $postElement);
+
+            foreach( $postRules->childNodes as $childNode )
             {
                 /** @var null|DOMElement $childNode */
                 if( $childNode->nodeType != XML_ELEMENT_NODE )
                     continue;
 
-                $node2 = $finalDoc->importNode($childNode, TRUE);
-                $nodeconfig->appendChild($node2);
-            }
-
-            foreach( $nodeconfig->childNodes as $node )
-            {
-                /** @var null|DOMElement $node */
-                if( $node->nodeType != XML_ELEMENT_NODE )
-                    continue;
-
-                $content = $node->nodeName;
-                $preRules = DH::findFirstElement("rules", $node);
-
-                $ruletypepost = FALSE;
-                if( $postElement !== FALSE )
-                    $ruletypepost = DH::findFirstElement($content, $postElement);
-
-                if( $ruletypepost !== FALSE )
-                {
-                    $postRules = DH::findFirstElement("rules", $ruletypepost);
-                    $node = $finalDoc->importNode($postRules, TRUE);
-                    foreach( $node->childNodes as $childNode )
-                    {
-                        /** @var null|DOMElement $childNode */
-                        if( $childNode->nodeType != XML_ELEMENT_NODE )
-                            continue;
-
-                        $preRules->appendChild($childNode);
-                    }
-                }
+                $node = $finalDoc->importNode($childNode, TRUE);
+                $preRules->appendChild($node);
+                #DH::DEBUGprintDOMDocument($node);
             }
         }
 
