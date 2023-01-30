@@ -119,10 +119,12 @@ class RULEUTIL extends UTIL
                             {
                                 $this->objectsToProcess[] = array('store' => $sub->tunnelInspectionRules, 'rules' => $sub->tunnelInspectionRules->resultingRuleSet());
                             }
+
                             if( array_search('any', $this->ruleTypes) !== FALSE || array_search('defaultsecurity', $this->ruleTypes) !== FALSE )
                             {
                                 $this->objectsToProcess[] = array('store' => $sub->defaultSecurityRules, 'rules' => $sub->defaultSecurityRules->resultingRuleSet());
                             }
+
                             if( array_search('any', $this->ruleTypes) !== FALSE || array_search('networkpacketbroker', $this->ruleTypes) !== FALSE )
                             {
                                 $this->objectsToProcess[] = array('store' => $sub->networkPacketBrokerRules, 'rules' => $sub->networkPacketBrokerRules->resultingRuleSet());

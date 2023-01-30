@@ -911,10 +911,14 @@ class Container
 
             if( $tmpPost === FALSE )
             {
-                $tmpPost = null;
+                $sub = new Sub();
+                $sub->rulebaseroot = $postrulebase;
+                $sub->defaultSecurityRules = $this->defaultSecurityRules;
+                $tmpPost = $sub->load_defaultSecurityRule( );
             }
         }
-        $this->defaultSecurityRules->load_from_domxml($tmp, $tmpPost);
+        if( $tmpPost !== FALSE )
+            $this->defaultSecurityRules->load_from_domxml($tmp, $tmpPost);
 
         //network-packet-broker
         $xmlTagName = "network-packet-broker";

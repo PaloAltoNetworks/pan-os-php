@@ -25,67 +25,53 @@ class Sub
 
     function load_defaultSecurityRule( )
     {
+        $finalroot = FALSE;
         $tmproot = DH::findFirstElement('default-security-rules', $this->rulebaseroot);
         if( $tmproot !== FALSE )
         {
-            $tmprulesroot = DH::findFirstElement('rules', $tmproot);
-            if( $tmprulesroot !== FALSE )
+            $finalroot = DH::findFirstElement('rules', $tmproot);
+            if( $finalroot !== FALSE )
             {
-                if( DH::hasChild($tmprulesroot) )
-                    $this->defaultSecurityRules->load_from_domxml($tmprulesroot);
-                else
-                {
-                    $defaultSecurityRules_xml = "<default-security-rules>
-                    <rules>
-                      <entry name=\"intrazone-default\">
-                        <log-end>no</log-end>
-                      </entry>
-                      <entry name=\"interzone-default\">
-                        <log-end>no</log-end>
-                        <action>deny</action>
-                      </entry>
-                    </rules>
-                  </default-security-rules>";
-
-                    $ownerDocument = $this->rulebaseroot->ownerDocument;
-
-                    $newdoc = new DOMDocument;
-                    $newdoc->loadXML( $defaultSecurityRules_xml );
-                    $node = $newdoc->importNode($newdoc->firstChild, TRUE);
-                    $node = $ownerDocument->importNode($node, TRUE);
-
-
-                    $tmprulesroot = DH::findFirstElement('rules', $node);
-                    if( $tmprulesroot !== FALSE )
-                        $this->defaultSecurityRules->load_from_domxml($tmprulesroot);
-                }
+                if( !DH::hasChild($finalroot) )
+                    $finalroot = $this->createDefaultSecurityRule( );
             }
         }
-        else
-        {
-            $defaultSecurityRules_xml = "<default-security-rules>
+
+        if( $tmproot === FALSE )
+            $finalroot = $this->createDefaultSecurityRule( );
+
+        return $finalroot;
+    }
+
+    function createDefaultSecurityRule( )
+    {
+        $ownerDocument = $this->rulebaseroot->ownerDocument;
+
+        $defaultSecurityRules_xml = "<default-security-rules>
                     <rules>
                       <entry name=\"intrazone-default\">
+                        <action>allow</action>
+                        <log-start>no</log-start>
                         <log-end>no</log-end>
                       </entry>
                       <entry name=\"interzone-default\">
-                        <log-end>no</log-end>
                         <action>deny</action>
+                        <log-start>no</log-start>
+                        <log-end>no</log-end>
                       </entry>
                     </rules>
                   </default-security-rules>";
 
-            $ownerDocument = $this->rulebaseroot->ownerDocument;
+        $newdoc = new DOMDocument;
+        $newdoc->loadXML( $defaultSecurityRules_xml );
+        $node = $newdoc->importNode($newdoc->firstChild, TRUE);
+        $node = $ownerDocument->importNode($node, TRUE);
 
-            $newdoc = new DOMDocument;
-            $newdoc->loadXML( $defaultSecurityRules_xml );
-            $node = $newdoc->importNode($newdoc->firstChild, TRUE);
-            $node = $ownerDocument->importNode($node, TRUE);
+        $node = $this->rulebaseroot->appendChild($node);
 
+        $ruleNode = DH::findFirstElement('rules', $node);
 
-            $tmprulesroot = DH::findFirstElement('rules', $node);
-            if( $tmprulesroot !== FALSE )
-                $this->defaultSecurityRules->load_from_domxml($tmprulesroot);
-        }
+        return $ruleNode;
     }
 }
+
