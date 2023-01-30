@@ -808,10 +808,13 @@ class VirtualSystem
             //
             // defaultSecurity Rules extraction
             //
-            $sub = new Sub();
-            $sub->rulebaseroot = $this->rulebaseroot;
-            $sub->defaultSecurityRules = $this->defaultSecurityRules;
-            $sub->load_defaultSecurityRule( );
+            $tmproot = DH::findFirstElement('default-security-rules', $this->rulebaseroot);
+            if( $tmproot !== FALSE )
+            {
+                $tmprulesroot = DH::findFirstElement('rules', $tmproot);
+                if( $tmprulesroot !== FALSE )
+                    $this->defaultSecurityRules->load_from_domxml($tmprulesroot);
+            }
 
             //
             // network-packet-broker Rules extraction

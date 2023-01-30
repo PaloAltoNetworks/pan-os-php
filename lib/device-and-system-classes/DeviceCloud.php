@@ -897,7 +897,6 @@ class DeviceCloud
             //
             // defaultSecurity Rules extraction
             //
-            /*
             $tmproot = DH::findFirstElement('default-security-rules', $this->rulebaseroot);
             if( $tmproot !== FALSE )
             {
@@ -905,11 +904,6 @@ class DeviceCloud
                 if( $tmprulesroot !== FALSE )
                     $this->defaultSecurityRules->load_from_domxml($tmprulesroot);
             }
-            */
-            $sub = new Sub();
-            $sub->rulebaseroot = $this->rulebaseroot;
-            $sub->defaultSecurityRules = $this->defaultSecurityRules;
-            $sub->load_defaultSecurityRule( );
 
             //
             // network-packet-broker Rules extraction
