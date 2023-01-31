@@ -34,6 +34,11 @@ class Sub
             {
                 if( !DH::hasChild($finalroot) )
                     $finalroot = $this->createDefaultSecurityRule( );
+                else
+                {
+                    //Todo: check if both rules are available
+                    #Todo: what if already one rule is available, and the other one is still predefined!!!
+                }
             }
         }
 
