@@ -676,7 +676,7 @@ RQuery::$defaultFilters['rule']['dst']['operators']['is.any'] = array(
 );
 RQuery::$defaultFilters['rule']['src']['operators']['is.negated'] = array(
     'Function' => function (RuleRQueryContext $context) {
-        if( $context->object->isNatRule() )
+        if( $context->object->isNatRule() || $context->object->isDefaultSecurityRule() )
             return FALSE;
 
         return $context->object->sourceIsNegated();
@@ -689,7 +689,7 @@ RQuery::$defaultFilters['rule']['src']['operators']['is.negated'] = array(
 );
 RQuery::$defaultFilters['rule']['dst']['operators']['is.negated'] = array(
     'Function' => function (RuleRQueryContext $context) {
-        if( $context->object->isNatRule() )
+        if( $context->object->isNatRule() || $context->object->isDefaultSecurityRule() )
             return FALSE;
 
         return $context->object->destinationIsNegated();
@@ -2881,6 +2881,8 @@ RQuery::$defaultFilters['rule']['user']['operators']['is.any'] = array(
             return FALSE;
         if( $rule->isAppOverrideRule() )
             return FALSE;
+        if( $rule->isDefaultSecurityRule() )
+            return FALSE;
 
         return $rule->userID_IsAny();
     },
@@ -2898,6 +2900,8 @@ RQuery::$defaultFilters['rule']['user']['operators']['is.known'] = array(
         if( $rule->isNatRule() )
             return FALSE;
         if( $rule->isAppOverrideRule() )
+            return FALSE;
+        if( $rule->isDefaultSecurityRule() )
             return FALSE;
 
         return $rule->userID_IsKnown();
@@ -2917,6 +2921,8 @@ RQuery::$defaultFilters['rule']['user']['operators']['is.unknown'] = array(
             return FALSE;
         if( $rule->isAppOverrideRule() )
             return FALSE;
+        if( $rule->isDefaultSecurityRule() )
+            return FALSE;
 
         return $rule->userID_IsUnknown();
     },
@@ -2934,6 +2940,8 @@ RQuery::$defaultFilters['rule']['user']['operators']['is.prelogon'] = array(
         if( $rule->isNatRule() )
             return FALSE;
         if( $rule->isAppOverrideRule() )
+            return FALSE;
+        if( $rule->isDefaultSecurityRule() )
             return FALSE;
 
         return $rule->userID_IsPreLogon();
@@ -2953,6 +2961,8 @@ RQuery::$defaultFilters['rule']['user']['operators']['has'] = array(
         if( $rule->isNatRule() )
             return FALSE;
         if( $rule->isAppOverrideRule() )
+            return FALSE;
+        if( $rule->isDefaultSecurityRule() )
             return FALSE;
 
         $users = $rule->userID_getUsers();
@@ -2979,6 +2989,8 @@ RQuery::$defaultFilters['rule']['user']['operators']['has.regex'] = array(
             return FALSE;
         if( $rule->isAppOverrideRule() )
             return FALSE;
+        if( $rule->isDefaultSecurityRule() )
+            return FALSE;
 
         $users = $rule->userID_getUsers();
 
@@ -3004,6 +3016,14 @@ RQuery::$defaultFilters['rule']['user']['operators']['has.regex'] = array(
 RQuery::$defaultFilters['rule']['user']['operators']['is.in.file'] = array(
     'Function' => function (RuleRQueryContext $context) {
         $object = $context->object;
+        if( $object->isDecryptionRule() )
+            return FALSE;
+        if( $object->isNatRule() )
+            return FALSE;
+        if( $object->isAppOverrideRule() )
+            return FALSE;
+        if( $object->isDefaultSecurityRule() )
+            return FALSE;
 
         if( !isset($context->cachedList) )
         {

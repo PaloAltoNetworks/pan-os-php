@@ -5,6 +5,7 @@ UTIL:
 * type=device | code improvements for actions=sp_spg-create-alert-only-bp/sp_spg-create-bp - reduce duplicate code
 * type=rule | improve filters for ruletype=defaultsecurity
 * type=overridefinder | improvement of usage message
+* type=rule | extend validation for different rule actions and filters
 
 BUGFIX:
 * type=ironskillet-update | bugfix to download and store correct default iron-skillet snippets
