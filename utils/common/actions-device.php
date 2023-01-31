@@ -1446,6 +1446,70 @@ DeviceCallContext::$commonActionFunctions['sp_spg-create'] = array(
     'function_panVersion' => function (DeviceCallContext $context) {
         $panVersion = substr_replace($context->object->owner->version, ".", -1, 0);
         return $panVersion;
+    },
+    'function_createProfile-alert' => function (DeviceCallContext $context, $type, $type_name, $sharedStore, $name, $xmlString, $ownerDocument)
+    {
+        $profile = $sharedStore->$type->find($name . "-" . $type_name);
+        if( $profile === null )
+        {
+            $typeclass = str_replace( "Store", "", $type );
+            $store = $sharedStore->$type;
+            $profile = new $typeclass($name . "-" . $type_name, $store);
+            $newdoc = new DOMDocument;
+            $newdoc->loadXML($context->$xmlString);
+            $node = $newdoc->importNode($newdoc->firstChild, TRUE);
+            $node = DH::findFirstElementByNameAttr("entry", $name . "-" . $type_name, $node);
+
+            if( $node !== FALSE && $node !== null )
+            {
+                $node = $ownerDocument->importNode($node, TRUE);
+                $profile->load_from_domxml($node);
+                $profile->owner = null;
+                $store->addSecurityProfile($profile);
+                PH::print_stdout(" * " . $typeclass . " create: '" . $name . "-" . $type_name . "'");
+
+                if( $context->isAPI )
+                    $profile->API_sync();
+            }
+            else
+                PH::print_stdout(" * " . $typeclass . " not found in iron-skillet XML snippet: '" . $name . "-" . $type_name . "'");
+        }
+        return $profile;
+    },
+    'function_createProfile-bp' => function (DeviceCallContext $context, $type, $type_name, $sharedStore, $name, $xmlString, $ownerDocument) {
+        $profile = $sharedStore->$type->find($name . "-" . $type_name);
+        if( $profile === null )
+        {
+            $typeclass = str_replace("Store", "", $type);
+            $store = $sharedStore->$type;
+            $profile = new $typeclass($name . "-" . $type_name, $store);
+            $newdoc = new DOMDocument;
+            $newdoc->loadXML($context->$xmlString);
+            $node = $newdoc->importNode($newdoc->firstChild, TRUE);
+            $node = DH::findFirstElementByNameAttr("entry", $name . "-" . $type_name, $node);
+
+            if( $node !== FALSE && $node !== null && $node->hasChildNodes() )
+            {
+                $node = $ownerDocument->importNode($node, TRUE);
+                $profile->load_from_domxml($node);
+                $profile->owner = null;
+                if( isset($context->arguments['sp-name']) )
+                    $profile->setName($name . "-" . $type_name);
+                $store->addSecurityProfile($profile);
+                PH::print_stdout(" * " . $typeclass . " create: '" . $name . "-" . $type_name . "'");
+
+                if( $context->isAPI )
+                    $profile->API_sync();
+            }
+            else
+            {
+                PH::print_stdout(" * " . $typeclass . " not found in iron-skillet XML snippet: '" . $name . "-" . $type_name . "'");
+                $store->removeSecurityProfile($profile);
+                $profile = null;
+            }
+
+        }
+        return $profile;
     }
 );
 
@@ -1509,124 +1573,20 @@ DeviceCallContext::$supportedActions['sp_spg-create-alert-only-BP'] = array(
                     }
                 }
 
-                $av = $sharedStore->AntiVirusProfileStore->find($name . "-AV");
-                if( $av === null )
-                {
-                    $store = $sharedStore->AntiVirusProfileStore;
-                    $av = new AntiVirusProfile($name . "-AV", $store);
-                    $newdoc = new DOMDocument;
-                    $newdoc->loadXML($context->av_xmlString);
-                    $node = $newdoc->importNode($newdoc->firstChild, TRUE);
-                    $node = DH::findFirstElementByNameAttr("entry", $name . "-AV", $node);
-                    $node = $ownerDocument->importNode($node, TRUE);
-                    $av->load_from_domxml($node);
-                    $av->owner = null;
-                    $store->addSecurityProfile($av);
-                    PH::print_stdout(" * AntiVirusProfile create: '".$name."-AV'");
+                $f = DeviceCallContext::$commonActionFunctions['sp_spg-create']['function_createProfile-alert'];
 
-                    if( $context->isAPI )
-                        $av->API_sync();
-                }
+                $av = $f($context, 'AntiVirusProfileStore', 'AV', $sharedStore, $name, 'av_xmlString', $ownerDocument);
 
-                $as = $sharedStore->AntiSpywareProfileStore->find($name . "-AS");
-                if( $as === null )
-                {
-                    $store = $sharedStore->AntiSpywareProfileStore;
-                    $as = new AntiSpywareProfile($name . "-AS", $store);
-                    $newdoc = new DOMDocument;
-                    $newdoc->loadXML($context->as_xmlString);
-                    $node = $newdoc->importNode($newdoc->firstChild, TRUE);
-                    $node = DH::findFirstElementByNameAttr("entry", $name . "-AS", $node);
-                    $node = $newdoc->importNode($node, TRUE);
-                    $node = $ownerDocument->importNode($node, TRUE);
-                    $as->load_from_domxml($node);
-                    $as->owner = null;
-                    $store->addSecurityProfile($as);
-                    PH::print_stdout(" * AntiSpywareProfile create: '".$name."-AS'");
+                $as = $f($context, 'AntiSpywareProfileStore', 'AS', $sharedStore, $name, 'as_xmlString', $ownerDocument);
 
-                    if( $context->isAPI )
-                        $as->API_sync();
-                }
+                $vp = $f($context, 'VulnerabilityProfileStore', 'VP', $sharedStore, $name, 'vp_xmlString', $ownerDocument);
 
-                $vp = $sharedStore->VulnerabilityProfileStore->find($name . "-VP");
-                if( $vp === null )
-                {
-                    $store = $sharedStore->VulnerabilityProfileStore;
-                    $vp = new VulnerabilityProfile($name . "-VP", $store);
-                    $newdoc = new DOMDocument;
-                    $newdoc->loadXML($context->vp_xmlString);
-                    $node = $newdoc->importNode($newdoc->firstChild, TRUE);
-                    $node = DH::findFirstElementByNameAttr("entry", $name . "-VP", $node);
-                    $node = $newdoc->importNode($node, TRUE);
-                    $node = $ownerDocument->importNode($node, TRUE);
-                    $vp->load_from_domxml($node);
-                    $vp->owner = null;
-                    $store->addSecurityProfile($vp);
-                    PH::print_stdout(" * VulnerabilityProfile create: '".$name."-VP'");
+                $url = $f($context, 'URLProfileStore', 'URL', $sharedStore, $name, 'url_xmlString', $ownerDocument);
 
-                    if( $context->isAPI )
-                        $vp->API_sync();
-                }
+                $fb = $f($context, 'FileBlockingProfileStore', 'FB', $sharedStore, $name, 'fb_xmlString', $ownerDocument);
 
-                $url = $sharedStore->URLProfileStore->find($name . "-URL");
-                if( $url === null )
-                {
-                    $store = $sharedStore->URLProfileStore;
-                    $url = new URLProfile($name . "-URL", $store);
-                    $newdoc = new DOMDocument;
-                    $newdoc->loadXML($context->url_xmlString);
-                    $node = $newdoc->importNode($newdoc->firstChild, TRUE);
-                    $node = DH::findFirstElementByNameAttr("entry", $name . "-URL", $node);
-                    $node = $newdoc->importNode($node, TRUE);
-                    $node = $ownerDocument->importNode($node, TRUE);
-                    $url->load_from_domxml($node);
-                    $url->owner = null;
-                    $store->addSecurityProfile($url);
-                    PH::print_stdout(" * URLProfile create: '".$name."-URL'");
+                $wf = $f($context, 'WildfireProfileStore', 'WF', $sharedStore, $name, 'wf_xmlString', $ownerDocument);
 
-                    if( $context->isAPI )
-                        $url->API_sync();
-                }
-
-                $fb = $sharedStore->FileBlockingProfileStore->find($name . "-FB");
-                if( $fb === null )
-                {
-                    $store = $sharedStore->FileBlockingProfileStore;
-                    $fb = new FileBlockingProfile($name . "-FB", $store);
-                    $newdoc = new DOMDocument;
-                    $newdoc->loadXML($context->fb_xmlString);
-                    $node = $newdoc->importNode($newdoc->firstChild, TRUE);
-                    $node = DH::findFirstElementByNameAttr("entry", $name . "-FB", $node);
-                    $node = $newdoc->importNode($node, TRUE);
-                    $node = $ownerDocument->importNode($node, TRUE);
-                    $fb->load_from_domxml($node);
-                    $fb->owner = null;
-                    $store->addSecurityProfile($fb);
-                    PH::print_stdout(" * FileBlockingProfile create: '".$name."-FB'");
-
-                    if( $context->isAPI )
-                        $fb->API_sync();
-                }
-
-                $wf = $sharedStore->WildfireProfileStore->find($name . "-WF");
-                if( $wf === null )
-                {
-                    $store = $sharedStore->WildfireProfileStore;
-                    $wf = new WildfireProfile($name . "-WF", $store);
-                    $newdoc = new DOMDocument;
-                    $newdoc->loadXML($context->wf_xmlString);
-                    $node = $newdoc->importNode($newdoc->firstChild, TRUE);
-                    $node = DH::findFirstElementByNameAttr("entry", $name . "-WF", $node);
-                    $node = $newdoc->importNode($node, TRUE);
-                    $node = $ownerDocument->importNode($node, TRUE);
-                    $wf->load_from_domxml($node);
-                    $wf->owner = null;
-                    $store->addSecurityProfile($wf);
-                    PH::print_stdout(" * WildfireProfile create: '".$name."-WF'");
-
-                    if( $context->isAPI )
-                        $wf->API_sync();
-                }
 
                 $secprofgrp = $sharedStore->securityProfileGroupStore->find($name);
                 if( $secprofgrp === null )
@@ -1748,185 +1708,20 @@ DeviceCallContext::$supportedActions['sp_spg-create-BP'] = array(
                         }
                     }
 
+                    $f = DeviceCallContext::$commonActionFunctions['sp_spg-create']['function_createProfile-bp'];
 
-                    $av = $sharedStore->AntiVirusProfileStore->find($name . "-AV");
-                    if( $av === null )
-                    {
-                        $store = $sharedStore->AntiVirusProfileStore;
-                        $av = new AntiVirusProfile($name . "-AV", $store);
-                        $newdoc = new DOMDocument;
-                        $newdoc->loadXML($context->av_xmlString);
-                        $node = $newdoc->importNode($newdoc->firstChild, TRUE);
-                        $node = DH::findFirstElementByNameAttr("entry", $ironskilletName . "-AV", $node);
-                        if( $node !== null && $node->hasChildNodes() )
-                        {
-                            $node = $ownerDocument->importNode($node, TRUE);
-                            $av->load_from_domxml($node);
-                            $av->owner = null;
-                            if( isset($context->arguments['sp-name']) )
-                                $av->setName( $name."-AV");
-                            $store->addSecurityProfile($av);
-                            PH::print_stdout(" * AntiVirusProfile create: '".$name."-AV'");
+                    $av = $f($context, 'AntiVirusProfileStore', 'AV', $sharedStore, $name, 'av_xmlString', $ownerDocument);
 
-                            if( $context->isAPI )
-                                $av->API_sync();
-                        }
-                        else
-                        {
-                            $store->removeSecurityProfile( $av );
-                            $av = null;
-                        }
-                    }
+                    $as = $f($context, 'AntiSpywareProfileStore', 'AS', $sharedStore, $name, 'as_xmlString', $ownerDocument);
 
-                    $as = $sharedStore->AntiSpywareProfileStore->find($name . "-AS");
-                    if( $as === null )
-                    {
-                        $store = $sharedStore->AntiSpywareProfileStore;
-                        $as = new AntiSpywareProfile($name . "-AS", $store);
-                        $newdoc = new DOMDocument;
-                        $newdoc->loadXML($context->as_xmlString);
-                        $node = $newdoc->importNode($newdoc->firstChild, TRUE);
-                        $node = DH::findFirstElementByNameAttr("entry", $ironskilletName . "-AS", $node);
-                        if( $node !== null && $node->hasChildNodes() )
-                        {
-                            $node = $newdoc->importNode($node, TRUE);
-                            $node = $ownerDocument->importNode($node, TRUE);
-                            $as->load_from_domxml($node);
-                            $as->owner = null;
-                            if( isset($context->arguments['sp-name']) )
-                                $as->setName( $name."-AS");
-                            $store->addSecurityProfile($as);
-                            PH::print_stdout(" * AntiSpywareProfile create: '".$name."-AS'");
+                    $vp = $f($context, 'VulnerabilityProfileStore', 'VP', $sharedStore, $name, 'vp_xmlString', $ownerDocument);
 
-                            if( $context->isAPI )
-                                $as->API_sync();
-                        }
-                        else
-                        {
-                            $store->removeSecurityProfile( $as );
-                            $as = null;
-                        }
-                    }
+                    $url = $f($context, 'URLProfileStore', 'URL', $sharedStore, $name, 'url_xmlString', $ownerDocument);
 
-                    $vp = $sharedStore->VulnerabilityProfileStore->find($name . "-VP");
-                    if( $vp === null )
-                    {
-                        $store = $sharedStore->VulnerabilityProfileStore;
-                        $vp = new VulnerabilityProfile($name . "-VP", $store);
-                        $newdoc = new DOMDocument;
-                        $newdoc->loadXML($context->vp_xmlString);
-                        $node = $newdoc->importNode($newdoc->firstChild, TRUE);
-                        $node = DH::findFirstElementByNameAttr("entry", $ironskilletName . "-VP", $node);
-                        if( $node !== null && $node->hasChildNodes() )
-                        {
-                            $node = $newdoc->importNode($node, TRUE);
-                            $node = $ownerDocument->importNode($node, TRUE);
-                            $vp->load_from_domxml($node);
-                            $vp->owner = null;
-                            if( isset($context->arguments['sp-name']) )
-                                $vp->setName( $name."-VP");
-                            $store->addSecurityProfile($vp);
-                            PH::print_stdout(" * VulnerabilityProfile create: '".$name."-VP'");
+                    $fb = $f($context, 'FileBlockingProfileStore', 'FB', $sharedStore, $name, 'fb_xmlString', $ownerDocument);
 
-                            if( $context->isAPI )
-                                $vp->API_sync();
-                        }
-                        else
-                        {
-                            $store->removeSecurityProfile( $vp );
-                            $vp = null;
-                        }
-                    }
+                    $wf = $f($context, 'WildfireProfileStore', 'WF', $sharedStore, $name, 'wf_xmlString', $ownerDocument);
 
-                    $url = $sharedStore->URLProfileStore->find($name . "-URL");
-                    if( $url === null )
-                    {
-                        $store = $sharedStore->URLProfileStore;
-                        $url = new URLProfile($name . "-URL", $store);
-                        $newdoc = new DOMDocument;
-                        $newdoc->loadXML($context->url_xmlString);
-                        $node = $newdoc->importNode($newdoc->firstChild, TRUE);
-                        $node = DH::findFirstElementByNameAttr("entry", $ironskilletName . "-URL", $node);
-                        if( $node !== null && $node->hasChildNodes() )
-                        {
-                            $node = $newdoc->importNode($node, TRUE);
-                            $node = $ownerDocument->importNode($node, TRUE);
-                            $url->load_from_domxml($node);
-                            $url->owner = null;
-                            if( isset($context->arguments['sp-name']) )
-                                $url->setName( $name."-URL");
-                            $store->addSecurityProfile($url);
-                            PH::print_stdout(" * URLProfile create: '".$name."-URL'");
-
-                            if( $context->isAPI )
-                                $url->API_sync();
-                        }
-                        else
-                        {
-                            $store->removeSecurityProfile( $url );
-                            $url = null;
-                        }
-                    }
-
-                    $fb = $sharedStore->FileBlockingProfileStore->find($name . "-FB");
-                    if( $fb === null )
-                    {
-                        $store = $sharedStore->FileBlockingProfileStore;
-                        $fb = new FileBlockingProfile($name . "-FB", $store);
-                        $newdoc = new DOMDocument;
-                        $newdoc->loadXML($context->fb_xmlString);
-                        $node = $newdoc->importNode($newdoc->firstChild, TRUE);
-                        $node = DH::findFirstElementByNameAttr("entry", $ironskilletName . "-FB", $node);
-                        if( $node !== null && $node->hasChildNodes() )
-                        {
-                            $node = $newdoc->importNode($node, TRUE);
-                            $node = $ownerDocument->importNode($node, TRUE);
-                            $fb->load_from_domxml($node);
-                            $fb->owner = null;
-                            if( isset($context->arguments['sp-name']) )
-                                $fb->setName( $name."-FB");
-                            $store->addSecurityProfile($fb);
-                            PH::print_stdout(" * FileBlockingProfile create: '".$name."-FB'");
-
-                            if( $context->isAPI )
-                                $fb->API_sync();
-                        }
-                        else
-                        {
-                            $store->removeSecurityProfile( $fb );
-                            $fb = null;
-                        }
-                    }
-
-                    $wf = $sharedStore->WildfireProfileStore->find($name . "-WF");
-                    if( $wf === null )
-                    {
-                        $store = $sharedStore->WildfireProfileStore;
-                        $wf = new WildfireProfile($name . "-WF", $store);
-                        $newdoc = new DOMDocument;
-                        $newdoc->loadXML($context->wf_xmlString);
-                        $node = $newdoc->importNode($newdoc->firstChild, TRUE);
-                        $node = DH::findFirstElementByNameAttr("entry", $ironskilletName . "-WF", $node);
-                        if( $node !== null && $node->hasChildNodes() )
-                        {
-                            $node = $newdoc->importNode($node, TRUE);
-                            $node = $ownerDocument->importNode($node, TRUE);
-                            $wf->load_from_domxml($node);
-                            $wf->owner = null;
-                            if( isset($context->arguments['sp-name']) )
-                                $wf->setName( $name."-WF");
-                            $store->addSecurityProfile($wf);
-                            PH::print_stdout(" * WildfireProfile create: '".$name."-WF'");
-
-                            if( $context->isAPI )
-                                $wf->API_sync();
-                        }
-                        else
-                        {
-                            $store->removeSecurityProfile( $wf );
-                            $wf = null;
-                        }
-                    }
 
                     $secprofgrp = $sharedStore->securityProfileGroupStore->find($name);
                     if( $secprofgrp === null )
