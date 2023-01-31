@@ -2,201 +2,263 @@
 
 <div class="ritz grid-container" dir="ltr">
 
-    <table class="waffle" cellspacing="0" cellpadding="0">
+<table class="waffle" cellspacing="0" cellpadding="0">
 
-        <tbody>
-        <tr style="height: 16px">
-            <td class="s0" colspan="5">This sheet explains how to utilize this documentation. Below are the color codes defined for the task. Below listed table give a list of sheets, along with the explanation regarding the filters used &amp; the action needed to remediate the issue. We recommend to prioritize the tasks based on their criticality.</td>
-        </tr>
-        <tr style="height: 16px">
-            <td class="s1"></td>
-            <td class="s1"></td>
-            <td class="s2"></td>
-            <td class="s2"></td>
-            <td class="s2"></td>
-        </tr>
-        <tr style="height: 16px">
-            <td class="s1">Critical</td>
-            <td class="s3"></td>
-            <td class="s1"></td>
-            <td class="s1"></td>
-            <td class="s1"></td>
-        </tr>
-        <tr style="height: 16px">
-            <td class="s1">High</td>
-            <td class="s4"></td>
-            <td class="s1"></td>
-            <td class="s1"></td>
-            <td class="s1"></td>
-        </tr>
-        <tr style="height: 16px">
-            <td class="s1">Medium</td>
-            <td class="s5"></td>
-            <td class="s1"></td>
-            <td class="s1"></td>
-            <td class="s1"></td>
-        </tr>
-        <tr style="height: 16px">
-            <td class="s1">Low</td>
-            <td class="s6"></td>
-            <td class="s1"></td>
-            <td class="s1"></td>
-            <td class="s1"></td>
-        </tr>
-        <tr style="height: 16px">
-            <td class="s1">Informational</td>
-            <td class="s7"></td>
-            <td class="s1"></td>
-            <td class="s1"></td>
-            <td class="s1"></td>
-        </tr>
-        <tr style="height: 16px">
-            <td class="s1"></td>
-            <td class="s1"></td>
-            <td class="s1"></td>
-            <td class="s1"></td>
-            <td class="s1"></td>
-        </tr>
-        <tr style="height: 16px">
-            <td class="s1"></td>
-            <td class="s1"></td>
-            <td class="s1"></td>
-            <td class="s1"></td>
-            <td class="s1"></td>
-        </tr>
-        <tr style="height: 16px">
-            <td class="s8">Sheet Name</td>
-            <td class="s8">Number of Instances</td>
-            <td class="s8">Explanation</td>
-            <td class="s8">Action Needed</td>
-            <td class="s8">Criticality</td>
-        </tr>
-        <tr style="height: 16px">
-            <td class="s9">1a_NoZPP_UsedinZone.html</td>
-            <td class="s10"></td>
-            <td class="s11">These are the zones with no Zone Protection Profile applied to them. This reduces the visibility on the firewall. We recommend you to have a Zone Protection Profile attached to all Zones, Please review the Zones in the sheet &amp; apply the &#39;Alert_Only_Zone_Protection&#39; profile to them.  </td>
-            <td class="s11">Apply the &#39;Alert-Only_Zone_Protection_Profile&#39; ZPP to Zones mentioned.</td>
-            <td class="s3">Critical</td>
-        </tr>
-        <tr style="height: 16px">
-            <td class="s9">1b_NoLFP_UsedinZone.html</td>
-            <td class="s10"></td>
-            <td class="s11">These are the zones with no Log Forwarding Profile applied to them. This reduces the visibility on the firewall. We recommend you to have a Log Forwarding Profile attached to all Zones, Please review the Zones in the sheet &amp; apply the &#39;default&#39; Log Forwardign Profile to them.  </td>
-            <td class="s11">Apply the &#39;default&#39; Log Forwarding Profile to Zones mentioned.</td>
-            <td class="s3">Critical</td>
-        </tr>
-        <tr style="height: 16px">
-            <td class="s9">2_NoLFP_UsedinRule.html</td>
-            <td class="s10"></td>
-            <td class="s11">These are the rules with no log forwarding profile attached to them. This reduces the visibility on the firewall. We recommend you to have log forwarding profiles attached to all the security rules. Please review the Rules in the sheet &amp; attach required log forwarding profiles to them.</td>
-            <td class="s11">Apply the &#39;default&#39; Log Forwarding Profile to rules mentioned.</td>
-            <td class="s3">Critical</td>
-        </tr>
-        <tr style="height: 16px">
-            <td class="s9">3_NoSPG_in_AllowRule.html</td>
-            <td class="s10"></td>
-            <td class="s11">These are the allow rules which do not have either any Security Profile(s), or a Security Profile Group applied to them. This highly limits firewall threat prevention/detection capabilities. We recommend you to have the &#39;Alert-Only&#39; Security Profile Group applied to all rules mentioned.</td>
-            <td class="s11">Apply the &#39;Alert-Only&#39; Security Profile Group to rules mentioned.</td>
-            <td class="s3">Critical</td>
-        </tr>
-        <tr style="height: 16px">
-            <td class="s9">4a_NoVP_in_AllowRule.html</td>
-            <td class="s10"></td>
-            <td class="s11">These are the allow rules which have at least one Security Profile applied to them, but does not have a Vulnerability Protection Security Profile applied. This highly limits firewall threat prevention/detection capabilities. We recommend you to have the &#39;Alert-Only&#39; VP Security Profile applied to all rules mentioned.</td>
-            <td class="s11">Apply the &#39;Alert-Only&#39; VP Security Profile to rules mentioned.</td>
-            <td class="s3">Critical</td>
-        </tr>
-        <tr style="height: 16px">
-            <td class="s9">4b_NoAS_in_AllowRule.html</td>
-            <td class="s10"></td>
-            <td class="s11">These are the allow rules which have at least one Security Profile applied to them, but does not have a Anti-Spyware Security Profile applied. This highly limits firewall threat prevention/detection capabilities. We recommend you to have the &#39;Alert-Only&#39; AS Security Profile applied to all rules mentioned.</td>
-            <td class="s11">Apply the &#39;Alert-Only&#39; AS Security Profile to rules mentioned.</td>
-            <td class="s3">Critical</td>
-        </tr>
-        <tr style="height: 16px">
-            <td class="s9">4c_NoAV_in_AllowRule.html</td>
-            <td class="s10"></td>
-            <td class="s11">These are the allow rules which have at least one Security Profile applied to them, but does not have a Antivirus Security Profile applied. This highly limits firewall threat prevention/detection capabilities. We recommend you to have the &#39;Alert-Only&#39; AV Security Profile applied to all rules mentioned.</td>
-            <td class="s11">Apply the &#39;Alert-Only&#39; AV Security Profile to rules mentioned.</td>
-            <td class="s3">Critical</td>
-        </tr>
-        <tr style="height: 16px">
-            <td class="s9">4d_NoURL_in_AllowRule.html</td>
-            <td class="s10"></td>
-            <td class="s11">These are the allow rules which have at least one Security Profile applied to them, but does not have a URL Filtering Security Profile applied. This highly limits firewall threat prevention/detection capabilities. We recommend you to have the &#39;Alert-Only&#39; URL Security Profile applied to all rules mentioned.</td>
-            <td class="s11">Apply the &#39;Alert-Only&#39; URL Security Profile to rules mentioned.</td>
-            <td class="s3">Critical</td>
-        </tr>
-        <tr style="height: 16px">
-            <td class="s9">4e_NoFB_in_AllowRule.html</td>
-            <td class="s10"></td>
-            <td class="s11">These are the allow rules which have at least one Security Profile applied to them, but does not have a File Blocking Security Profile applied. This highly limits firewall threat prevention/detection capabilities. We recommend you to have the &#39;Alert-Only&#39; FB Security Profile applied to all rules mentioned.</td>
-            <td class="s11">Apply the &#39;Alert-Only&#39; FB Security Profile to rules mentioned.</td>
-            <td class="s3">Critical</td>
-        </tr>
-        <tr style="height: 16px">
-            <td class="s9">4f_NoWF_in_AllowRule.html</td>
-            <td class="s10"></td>
-            <td class="s11">These are the allow rules which have at least one Security Profile applied to them, but does not have a Wildfire Security Profile applied. This highly limits firewall threat prevention/detection capabilities. We recommend you to have the &#39;Alert-Only&#39; WF Security Profile applied to all rules mentioned.</td>
-            <td class="s11">Apply the &#39;Alert-Only&#39; WF Security Profile to rules mentioned.</td>
-            <td class="s3">Critical</td>
-        </tr>
-        <tr style="height: 16px">
-            <td class="s9">5a_NoAV_Exists_in_SPG.html</td>
-            <td class="s10"></td>
-            <td class="s11">These are Security Profile Groups that do not have an AV Security Profile applied. This highly limits firewall threat prevention/detection capabilities. We recommend you to have the &#39;Alert-Only&#39; AV Security Profile applied to all Security Profile Groups mentioned.</td>
-            <td class="s11">Add the &#39;Alert-Only&#39; AV Security Profile to the Security Profile Groups mentioned.</td>
-            <td class="s3">Critical</td>
-        </tr>
-        <tr style="height: 16px">
-            <td class="s9">5b_NoVP_Exists_in_SPG.html</td>
-            <td class="s1"></td>
-            <td class="s11">These are Security Profile Groups that do not have an VP Security Profile applied. This highly limits firewall threat prevention/detection capabilities. We recommend you to have the &#39;Alert-Only&#39; VP Security Profile applied to all Security Profile Groups mentioned.</td>
-            <td class="s11">Add the &#39;Alert-Only&#39; VP Security Profile to the Security Profile Groups mentioned.</td>
-            <td class="s3">Critical</td>
-        </tr>
-        <tr style="height: 16px">
-            <td class="s9">5c_NoURL_Exists_in_SPG.html</td>
-            <td class="s1"></td>
-            <td class="s11">These are Security Profile Groups that do not have an URL Security Profile applied. This highly limits firewall threat prevention/detection capabilities. We recommend you to have the &#39;Alert-Only&#39; URL Security Profile applied to all Security Profile Groups mentioned.</td>
-            <td class="s11">Add the &#39;Alert-Only&#39; URL Security Profile to the Security Profile Groups mentioned.</td>
-            <td class="s3">Critical</td>
-        </tr>
-        <tr style="height: 16px">
-            <td class="s9">5d_NoFB_Exists_in_SPG.html</td>
-            <td class="s1"></td>
-            <td class="s11">These are Security Profile Groups that do not have an FB Security Profile applied. This highly limits firewall threat prevention/detection capabilities. We recommend you to have the &#39;Alert-Only&#39; FB Security Profile applied to all Security Profile Groups mentioned.</td>
-            <td class="s11">Add the &#39;Alert-Only&#39; FB Security Profile to the Security Profile Groups mentioned.</td>
-            <td class="s3">Critical</td>
-        </tr>
-        <tr style="height: 16px">
-            <td class="s9">5e_NoAS_Exists_in_SPG.html</td>
-            <td class="s1"></td>
-            <td class="s11">These are Security Profile Groups that do not have an AS Security Profile applied. This highly limits firewall threat prevention/detection capabilities. We recommend you to have the &#39;Alert-Only&#39; AS Security Profile applied to all Security Profile Groups mentioned.</td>
-            <td class="s11">Add the &#39;Alert-Only&#39; AS Security Profile to the Security Profile Groups mentioned.</td>
-            <td class="s3">Critical</td>
-        </tr>
-        <tr style="height: 16px">
-            <td class="s9">5f_NoWF_Exists_in_SPG.html</td>
-            <td class="s1"></td>
-            <td class="s11">These are Security Profile Groups that do not have an WF Security Profile applied. This highly limits firewall threat prevention/detection capabilities. We recommend you to have the &#39;Alert-Only&#39; WF Security Profile applied to all Security Profile Groups mentioned.</td>
-            <td class="s11">Add the &#39;Alert-Only&#39; WF Security Profile to the Security Profile Groups mentioned.</td>
-            <td class="s3">Critical</td>
-        </tr>
-        <tr style="height: 16px">
-            <td class="s9">6_SPG_exists_in_DenyRule.html</td>
-            <td class="s1"></td>
-            <td class="s11">Security profiles are not needed on the deny rules. We recommend you to remove the groups from the policy mentioned in the list.</td>
-            <td class="s11">Remove the SPG or SP&#39;s from rules mentioned</td>
-            <td class="s3">Critical</td>
-        </tr>
-        <tr style="height: 16px">
-            <td class="s9">7_Log-at-End_Missing_inRule.html</td>
-            <td class="s1"></td>
-            <td class="s11">These rules are not being logged at session end. We recommend to have logging enabled at session end for visibility.</td>
-            <td class="s11">Enable &#39;Log at session end&#39; on all rules mentioned</td>
-            <td class="s3">Critical</td>
-        </tr>
-        </tbody>
-    </table>
+<tbody>
+
+<tr style="height: 16px">
+<td class="s0" colspan="5">This sheet explains how to utilize this documentation. Below are the color codes defined for the task. Below listed table give a list of sheets, along with the explanation regarding the filters used &amp; the action needed to remediate the issue. We recommend to prioritize the tasks based on their criticality.</td>
+</tr>
+
+<tr style="height: 16px">
+<td class="s1"></td>
+<td class="s1"></td>
+<td class="s2"></td>
+<td class="s2"></td>
+<td class="s2"></td>
+</tr>
+
+<tr style="height: 16px">
+<td class="s1">Critical</td>
+<td class="s3"></td>
+<td class="s1"></td>
+<td class="s1"></td>
+<td class="s1"></td>
+</tr>
+
+<tr style="height: 16px">
+<td class="s1">High</td>
+<td class="s4"></td>
+<td class="s1"></td>
+<td class="s1"></td>
+<td class="s1"></td>
+</tr>
+
+<tr style="height: 16px">
+<td class="s1">Medium</td>
+<td class="s5"></td>
+<td class="s1"></td>
+<td class="s1"></td>
+<td class="s1"></td>
+</tr>
+
+<tr style="height: 16px">
+<td class="s1">Low</td>
+<td class="s6"></td>
+<td class="s1"></td>
+<td class="s1"></td>
+<td class="s1"></td>
+</tr>
+
+<tr style="height: 16px">
+<td class="s1">Informational</td>
+<td class="s7"></td>
+<td class="s1"></td>
+<td class="s1"></td>
+<td class="s1"></td>
+</tr>
+
+<tr style="height: 16px">
+<td class="s1"></td>
+<td class="s1"></td>
+<td class="s1"></td>
+<td class="s1"></td>
+<td class="s1"></td>
+</tr>
+
+<tr style="height: 16px">
+<td class="s1"></td>
+<td class="s1"></td>
+<td class="s1"></td>
+<td class="s1"></td>
+<td class="s1"></td>
+</tr>
+
+<tr style="height: 16px">
+<td class="s8">Sheet Name</td>
+<td class="s8">Number of Instances</td>
+<td class="s8">Explanation</td>
+<td class="s8">Action Needed</td>
+<td class="s8">Criticality</td>
+</tr>
+
+<tr style="height: 16px">
+<td class="s9">1a_NoZPP_UsedinZone</td>
+<td class="s10"></td>
+<td class="s11">These are the zones with no Zone Protection Profile applied to them. This reduces the visibility on the firewall. We recommend you to have a Zone Protection Profile attached to all Zones, Please review the Zones in the sheet &amp; apply the &#39;Alert_Only_Zone_Protection&#39; profile to them.  </td>
+<td class="s11">Apply the &#39;Alert-Only_Zone_Protection_Profile&#39; ZPP to Zones mentioned.</td>
+<td class="s3">Critical</td>
+</tr>
+
+<tr style="height: 16px">
+<td class="s9">1b_NoLFP_UsedinZone</td>
+<td class="s10"></td>
+<td class="s11">These are the zones with no Log Forwarding Profile applied to them. This reduces the visibility on the firewall. We recommend you to have a Log Forwarding Profile attached to all Zones, Please review the Zones in the sheet &amp; apply the &#39;default&#39; Log Forwardign Profile to them.  </td>
+<td class="s11">Apply the &#39;default&#39; Log Forwarding Profile to Zones mentioned.</td>
+<td class="s3">Critical</td>
+</tr>
+
+<tr style="height: 16px">
+<td class="s9">2_NoLFP_UsedinRule</td>
+<td class="s10"></td>
+<td class="s11">These are the rules with no log forwarding profile attached to them. This reduces the visibility on the firewall. We recommend you to have log forwarding profiles attached to all the security rules. Please review the Rules in the sheet &amp; attach required log forwarding profiles to them.</td>
+<td class="s11">Apply the &#39;default&#39; Log Forwarding Profile to rules mentioned.</td>
+<td class="s3">Critical</td>
+</tr>
+
+<tr style="height: 16px">
+<td class="s9">3_NoSPG_in_AllowRule</td>
+<td class="s10"></td>
+<td class="s11">These are the allow rules which do not have either any Security Profile(s), or a Security Profile Group applied to them. This highly limits firewall threat prevention/detection capabilities. We recommend you to have the &#39;Alert-Only&#39; Security Profile Group applied to all rules mentioned.</td>
+<td class="s11">Apply the &#39;Alert-Only&#39; Security Profile Group to rules mentioned.</td>
+<td class="s3">Critical</td>
+</tr>
+
+<tr style="height: 16px">
+<td class="s9">4a_NoVP_in_AllowRule</td>
+<td class="s10"></td>
+<td class="s11">These are the allow rules which have at least one Security Profile applied to them, but does not have a Vulnerability Protection Security Profile applied. This highly limits firewall threat prevention/detection capabilities. We recommend you to have the &#39;Alert-Only&#39; VP Security Profile applied to all rules mentioned.</td>
+<td class="s11">Apply the &#39;Alert-Only&#39; VP Security Profile to rules mentioned.</td>
+<td class="s3">Critical</td>
+</tr>
+
+<tr style="height: 16px">
+<td class="s9">4b_NoAS_in_AllowRule</td>
+<td class="s10"></td>
+<td class="s11">These are the allow rules which have at least one Security Profile applied to them, but does not have a Anti-Spyware Security Profile applied. This highly limits firewall threat prevention/detection capabilities. We recommend you to have the &#39;Alert-Only&#39; AS Security Profile applied to all rules mentioned.</td>
+<td class="s11">Apply the &#39;Alert-Only&#39; AS Security Profile to rules mentioned.</td>
+<td class="s3">Critical</td>
+</tr>
+
+<tr style="height: 16px">
+<td class="s9">4c_NoAV_in_AllowRule</td>
+<td class="s10"></td>
+<td class="s11">These are the allow rules which have at least one Security Profile applied to them, but does not have a Antivirus Security Profile applied. This highly limits firewall threat prevention/detection capabilities. We recommend you to have the &#39;Alert-Only&#39; AV Security Profile applied to all rules mentioned.</td>
+<td class="s11">Apply the &#39;Alert-Only&#39; AV Security Profile to rules mentioned.</td>
+<td class="s3">Critical</td>
+</tr>
+
+<tr style="height: 16px">
+<td class="s9">4d_NoURL_in_AllowRule</td>
+<td class="s10"></td>
+<td class="s11">These are the allow rules which have at least one Security Profile applied to them, but does not have a URL Filtering Security Profile applied. This highly limits firewall threat prevention/detection capabilities. We recommend you to have the &#39;Alert-Only&#39; URL Security Profile applied to all rules mentioned.</td>
+<td class="s11">Apply the &#39;Alert-Only&#39; URL Security Profile to rules mentioned.</td>
+<td class="s3">Critical</td>
+</tr>
+
+<tr style="height: 16px">
+<td class="s9">4e_NoFB_in_AllowRule</td>
+<td class="s10"></td>
+<td class="s11">These are the allow rules which have at least one Security Profile applied to them, but does not have a File Blocking Security Profile applied. This highly limits firewall threat prevention/detection capabilities. We recommend you to have the &#39;Alert-Only&#39; FB Security Profile applied to all rules mentioned.</td>
+<td class="s11">Apply the &#39;Alert-Only&#39; FB Security Profile to rules mentioned.</td>
+<td class="s3">Critical</td>
+</tr>
+
+<tr style="height: 16px">
+<td class="s9">4f_NoWF_in_AllowRule</td>
+<td class="s10"></td>
+<td class="s11">These are the allow rules which have at least one Security Profile applied to them, but does not have a Wildfire Security Profile applied. This highly limits firewall threat prevention/detection capabilities. We recommend you to have the &#39;Alert-Only&#39; WF Security Profile applied to all rules mentioned.</td>
+<td class="s11">Apply the &#39;Alert-Only&#39; WF Security Profile to rules mentioned.</td>
+<td class="s3">Critical</td>
+</tr>
+
+<tr style="height: 16px">
+<td class="s9">5a_NoAV_Exists_in_SPG</td>
+<td class="s10"></td>
+<td class="s11">These are Security Profile Groups that do not have an AV Security Profile applied. This highly limits firewall threat prevention/detection capabilities. We recommend you to have the &#39;Alert-Only&#39; AV Security Profile applied to all Security Profile Groups mentioned.</td>
+<td class="s11">Add the &#39;Alert-Only&#39; AV Security Profile to the Security Profile Groups mentioned.</td>
+<td class="s3">Critical</td>
+</tr>
+
+<tr style="height: 16px">
+<td class="s9">5b_NoVP_Exists_in_SPG</td>
+<td class="s1"></td>
+<td class="s11">These are Security Profile Groups that do not have an VP Security Profile applied. This highly limits firewall threat prevention/detection capabilities. We recommend you to have the &#39;Alert-Only&#39; VP Security Profile applied to all Security Profile Groups mentioned.</td>
+<td class="s11">Add the &#39;Alert-Only&#39; VP Security Profile to the Security Profile Groups mentioned.</td>
+<td class="s3">Critical</td>
+</tr>
+
+<tr style="height: 16px">
+<td class="s9">5c_NoURL_Exists_in_SPG</td>
+<td class="s1"></td>
+<td class="s11">These are Security Profile Groups that do not have an URL Security Profile applied. This highly limits firewall threat prevention/detection capabilities. We recommend you to have the &#39;Alert-Only&#39; URL Security Profile applied to all Security Profile Groups mentioned.</td>
+<td class="s11">Add the &#39;Alert-Only&#39; URL Security Profile to the Security Profile Groups mentioned.</td>
+<td class="s3">Critical</td>
+</tr>
+
+<tr style="height: 16px">
+<td class="s9">5d_NoFB_Exists_in_SPG</td>
+<td class="s1"></td>
+<td class="s11">These are Security Profile Groups that do not have an FB Security Profile applied. This highly limits firewall threat prevention/detection capabilities. We recommend you to have the &#39;Alert-Only&#39; FB Security Profile applied to all Security Profile Groups mentioned.</td>
+<td class="s11">Add the &#39;Alert-Only&#39; FB Security Profile to the Security Profile Groups mentioned.</td>
+<td class="s3">Critical</td>
+</tr>
+
+<tr style="height: 16px">
+<td class="s9">5e_NoAS_Exists_in_SPG</td>
+<td class="s1"></td>
+<td class="s11">These are Security Profile Groups that do not have an AS Security Profile applied. This highly limits firewall threat prevention/detection capabilities. We recommend you to have the &#39;Alert-Only&#39; AS Security Profile applied to all Security Profile Groups mentioned.</td>
+<td class="s11">Add the &#39;Alert-Only&#39; AS Security Profile to the Security Profile Groups mentioned.</td>
+<td class="s3">Critical</td>
+</tr>
+
+<tr style="height: 16px">
+<td class="s9">5f_NoWF_Exists_in_SPG</td>
+<td class="s1"></td>
+<td class="s11">These are Security Profile Groups that do not have an WF Security Profile applied. This highly limits firewall threat prevention/detection capabilities. We recommend you to have the &#39;Alert-Only&#39; WF Security Profile applied to all Security Profile Groups mentioned.</td>
+<td class="s11">Add the &#39;Alert-Only&#39; WF Security Profile to the Security Profile Groups mentioned.</td>
+<td class="s3">Critical</td>
+</tr>
+
+<tr style="height: 16px">
+<td class="s9">6_SPG_exists_in_DenyRule</td>
+<td class="s1"></td>
+<td class="s11">Security profiles are not needed on the deny rules. We recommend you to remove the groups from the policy mentioned in the list.</td>
+<td class="s11">Remove the SPG or SP&#39;s from rules mentioned</td>
+<td class="s6">Low</td>
+</tr>
+
+<tr style="height: 16px">
+<td class="s9">7_Log-at-End_Missing_inRule</td>
+<td class="s1"></td>
+<td class="s11">These rules are not being logged at session end. We recommend to have logging enabled at session end for visibility.</td>
+<td class="s11">Enable &#39;Log at session end&#39; on all rules mentioned</td>
+<td class="s3">Critical</td>
+</tr>
+
+<tr style="height: 16px">
+<td class="s9">8a_DefaultSec_NoLog-at-End</td>
+<td class="s1"></td>
+<td class="s11">These default rules are not being logged at session end. We recommend to have logging enabled at session end for visibility.</td>
+<td class="s11">Enable &#39;Log at session end&#39; on all rules mentioned</td>
+<td class="s3">Critical</td>
+</tr>
+
+<tr style="height: 16px">
+<td class="s9">8b_DefaultSec_No_LFP</td>
+<td class="s1"></td>
+<td class="s11">These are the default rules without Log Forwarding Profile applied to them. This reduces the visibility on the firewall. We recommend you to have a Log Forwarding Profile attached to all Security Rules. Please review the default rules in the sheet &amp; apply the &#39;default&#39; Log Forwardign Profile to them.  </td>
+<td class="s11">Apply the &#39;default&#39; Log Forwarding Profile to rules mentioned.</td>
+<td class="s3">Critical</td>
+</tr>
+
+<tr style="height: 16px">
+<td class="s9">8c_DefaultSec_No_SPG-inAllow</td>
+<td class="s1"></td>
+<td class="s11">This is the default allow rule which does not have either any Security Profile(s), or a Security Profile Group applied to it. This highly limits firewall threat prevention/detection capabilities. We recommend you to have the &#39;Alert-Only&#39; Security Profile Group applied to the default allow rule.</td>
+<td class="s11">Apply the &#39;Alert-Only&#39; Security Profile Group to rules mentioned.</td>
+<td class="s3">Critical</td>
+</tr>
+
+<tr style="height: 16px">
+<td class="s9">8d_DefaultSec_SPG-inDen<span style="font-size:8pt;font-family:Montserrat,Arial;font-weight:normal;">y</span></td>
+<td class="s1"></td>
+<td class="s11">Security profiles are not needed on the default deny rule. We recommend you to remove the groups from the default deny rule.</td>
+<td class="s11">Remove the SPG or SP&#39;s from rules mentioned</td>
+<td class="s6">Low</td>
+
+</tr>
+
+</tbody>
+</table>
 </div>
