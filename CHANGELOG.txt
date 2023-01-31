@@ -7,9 +7,11 @@ UTIL:
 
 BUGFIX:
 * type=ironskillet-update | bugfix to download and store correct default iron-skillet snippets
+* type=rule ruletype=defaultsecurity | bugfix to also import defaultSecurityRules, if only one was overwritten
 
 GENERAL
 * update default iron-skillet snippets
+
 
 2.0.68 (20230130)
 UTIL:
