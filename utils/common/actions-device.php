@@ -1554,73 +1554,93 @@ DeviceCallContext::$supportedActions['sp_spg-create-alert-only-BP'] = array(
                 else
                     $sharedStore = $sub;
 
-                $name = "Alert-Only";
+
                 $ownerDocument = $sub->xmlroot->ownerDocument;
 
-                if( $context->object->owner->version < 90 )
-                    $customURLarray = array( "Black-List", "White-List", "Custom-No-Decrypt" );
-                else
-                    $customURLarray = array( "Block", "Allow", "Custom-No-Decrypt" );
-                foreach( $customURLarray as $entry )
+                $nameArray = array("Alert-Only");
+                #$name = "Alert-Only";
+
+                foreach( $nameArray as $name)
                 {
-                    $block = $sharedStore->customURLProfileStore->find($entry);
-                    if( $block === null )
+                    if( $context->object->owner->version < 90 )
+                        $customURLarray = array("Black-List", "White-List", "Custom-No-Decrypt");
+                    else
+                        $customURLarray = array("Block", "Allow", "Custom-No-Decrypt");
+                    foreach( $customURLarray as $entry )
                     {
-                        $block = $sharedStore->customURLProfileStore->newCustomSecurityProfileURL($entry);
-                        PH::print_stdout(" * CustomURLProfile create: '".$entry."'");
-                        if( $context->isAPI )
-                            $block->API_sync();
+                        $block = $sharedStore->customURLProfileStore->find($entry);
+                        if( $block === null )
+                        {
+                            $block = $sharedStore->customURLProfileStore->newCustomSecurityProfileURL($entry);
+                            PH::print_stdout(" * CustomURLProfile create: '" . $entry . "'");
+                            if( $context->isAPI )
+                                $block->API_sync();
+                        }
                     }
+
+                    $f = DeviceCallContext::$commonActionFunctions['sp_spg-create']['function_createProfile-alert'];
+
+                    $av = $f($context, 'AntiVirusProfileStore', 'AV', $sharedStore, $name, 'av_xmlString', $ownerDocument);
+
+                    $as = $f($context, 'AntiSpywareProfileStore', 'AS', $sharedStore, $name, 'as_xmlString', $ownerDocument);
+
+                    $vp = $f($context, 'VulnerabilityProfileStore', 'VP', $sharedStore, $name, 'vp_xmlString', $ownerDocument);
+
+                    $url = $f($context, 'URLProfileStore', 'URL', $sharedStore, $name, 'url_xmlString', $ownerDocument);
+
+                    $fb = $f($context, 'FileBlockingProfileStore', 'FB', $sharedStore, $name, 'fb_xmlString', $ownerDocument);
+
+                    $wf = $f($context, 'WildfireProfileStore', 'WF', $sharedStore, $name, 'wf_xmlString', $ownerDocument);
+
+
+                    $secprofgrp = $sharedStore->securityProfileGroupStore->find($name);
+                    if( $secprofgrp === null )
+                    {
+                        PH::print_stdout(" * SecurityProfileGroup create: '" . $name . "'");
+                        $secprofgrp = new SecurityProfileGroup($name, $sharedStore->securityProfileGroupStore, TRUE);
+
+                        if( $av !== null )
+                        {
+                            PH::print_stdout("   - add AV: '".$av->name()."'");
+                            $secprofgrp->setSecProf_AV($av->name());
+                        }
+                        if( $as !== null )
+                        {
+                            PH::print_stdout("   - add AS: '".$as->name()."'");
+                            $secprofgrp->setSecProf_Spyware($as->name());
+                        }
+                        if( $vp !== null )
+                        {
+                            PH::print_stdout("   - add VP: '".$vp->name()."'");
+                            $secprofgrp->setSecProf_Vuln($vp->name());
+                        }
+                        if( $url !== null )
+                        {
+                            PH::print_stdout("   - add URL: '".$url->name()."'");
+                            $secprofgrp->setSecProf_URL($url->name());
+                        }
+                        if( $fb !== null )
+                        {
+                            PH::print_stdout("   - add FB: '".$fb->name()."'");
+                            $secprofgrp->setSecProf_FileBlock($fb->name());
+                        }
+                        if( $wf !== null )
+                        {
+                            PH::print_stdout("   - add WF: '".$wf->name()."'");
+                            $secprofgrp->setSecProf_Wildfire($wf->name());
+                        }
+
+
+                        $sharedStore->securityProfileGroupStore->addSecurityProfileGroup($secprofgrp);
+
+                        if( $context->isAPI )
+                            $secprofgrp->API_sync();
+                    }
+
                 }
-
-                $f = DeviceCallContext::$commonActionFunctions['sp_spg-create']['function_createProfile-alert'];
-
-                $av = $f($context, 'AntiVirusProfileStore', 'AV', $sharedStore, $name, 'av_xmlString', $ownerDocument);
-
-                $as = $f($context, 'AntiSpywareProfileStore', 'AS', $sharedStore, $name, 'as_xmlString', $ownerDocument);
-
-                $vp = $f($context, 'VulnerabilityProfileStore', 'VP', $sharedStore, $name, 'vp_xmlString', $ownerDocument);
-
-                $url = $f($context, 'URLProfileStore', 'URL', $sharedStore, $name, 'url_xmlString', $ownerDocument);
-
-                $fb = $f($context, 'FileBlockingProfileStore', 'FB', $sharedStore, $name, 'fb_xmlString', $ownerDocument);
-
-                $wf = $f($context, 'WildfireProfileStore', 'WF', $sharedStore, $name, 'wf_xmlString', $ownerDocument);
-
-
-                $secprofgrp = $sharedStore->securityProfileGroupStore->find($name);
-                if( $secprofgrp === null )
-                {
-                    PH::print_stdout(" * SecurityProfileGroup create: '".$name."'");
-                    $secprofgrp = new SecurityProfileGroup($name, $sharedStore->securityProfileGroupStore, TRUE);
-
-                    PH::print_stdout("   - add AV: '".$av->name()."'");
-                    $secprofgrp->setSecProf_AV($av->name());
-
-                    PH::print_stdout("   - add AS: '".$as->name()."'");
-                    $secprofgrp->setSecProf_Spyware($as->name());
-
-                    PH::print_stdout("   - add VP: '".$vp->name()."'");
-                    $secprofgrp->setSecProf_Vuln($vp->name());
-
-                    PH::print_stdout("   - add URL: '".$url->name()."'");
-                    $secprofgrp->setSecProf_URL($url->name());
-
-                    PH::print_stdout("   - add FB: '".$fb->name()."'");
-                    $secprofgrp->setSecProf_FileBlock($fb->name());
-
-                    PH::print_stdout("   - add WF: '".$wf->name()."'");
-                    $secprofgrp->setSecProf_Wildfire($wf->name());
-
-
-                    $sharedStore->securityProfileGroupStore->addSecurityProfileGroup($secprofgrp);
-
-                    if( $context->isAPI )
-                        $secprofgrp->API_sync();
-                }
-
-                $context->first = false;
             }
+
+            $context->first = FALSE;
         }
     },
     'args' => array(
