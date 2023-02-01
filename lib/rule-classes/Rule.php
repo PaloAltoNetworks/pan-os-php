@@ -1442,6 +1442,8 @@ class Rule
 
         if( !isset($sub->apiCache) )
             $sub->apiCache = array();
+        if( !isset($sub->apiChecked) )
+            $sub->apiChecked = array();
 
         // caching results for speed improvements
         if( !isset($sub->apiCache[$unused_flag]) )
@@ -1594,10 +1596,11 @@ class Rule
                                 if( eval("return $operator_string;" ) )
                                 {
                                     //match, no unset
+                                    $sub->apiChecked[$unused_flag][$ruleName] = $ruleName;
                                 }
                                 else
                                 {
-                                    if( isset($sub->apiCache[$unused_flag][$ruleName]) )
+                                    if( !isset($sub->apiChecked[$unused_flag][$ruleName]) && isset($sub->apiCache[$unused_flag][$ruleName]) )
                                         unset($sub->apiCache[$unused_flag][$ruleName]);
                                 }
                             }
@@ -1617,14 +1620,16 @@ class Rule
                             if( $operator == '==' && $timestamp_value == 0 )
                             {
                                 //match, no unset
+                                $sub->apiChecked[$unused_flag][$ruleName] = $ruleName;
                             }
                             elseif( $timestamp_value != 0 && eval("return $operator_string;" ) )
                             {
                                 //match, no unset
+                                $sub->apiChecked[$unused_flag][$ruleName] = $ruleName;
                             }
                             else
                             {
-                                if( isset($sub->apiCache[$unused_flag][$ruleName]) )
+                                if( !isset($sub->apiChecked[$unused_flag][$ruleName]) && isset($sub->apiCache[$unused_flag][$ruleName]) )
                                     unset($sub->apiCache[$unused_flag][$ruleName]);
                             }
                         }

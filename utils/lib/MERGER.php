@@ -1293,15 +1293,8 @@ class MERGER extends UTIL
                     }
                     elseif( $tmp_address->isAddress() && $pickedObject->isAddress() && $tmp_address->getNetworkValue() == $pickedObject->getNetworkValue() )
                     {
-                        if( $tmp_address->isType_ipNetmask() && strpos($tmp_address->value(), '/32') !== FALSE )
-                            $value = substr($tmp_address->value(), 0, strlen($tmp_address->value()) - 3);
-                        else
-                            $value = $tmp_address->value();
-
-                        if( $pickedObject->isType_ipNetmask() && strpos($pickedObject->value(), '/32') !== FALSE )
-                            $value2 = substr($pickedObject->value(), 0, strlen($pickedObject->value()) - 3);
-                        else
-                            $value2 = $pickedObject->value();
+                        $value = $this->address_get_value_string($tmp_address);
+                        $value2 = $this->address_get_value_string($pickedObject);
 
                         if( $value === $value2 )
                             PH::print_stdout("   * keeping object '{$tmp_address->_PANC_shortName()}'");
@@ -1403,7 +1396,7 @@ class MERGER extends UTIL
                         {
                             if( $object->getIP4Mapping()->equals($ancestor->getIP4Mapping()) || ($object->isType_FQDN() && $ancestor->isType_FQDN()) && ($object->value() == $ancestor->value())  )
                             {
-                                if( $pickedObject->value() != $ancestor->value() )
+                                if( $this->address_get_value_string($pickedObject) != $this->address_get_value_string($ancestor) )
                                 {
                                     PH::print_stdout("    - SKIP: object name '{$ancestor->_PANC_shortName()}' [with value '{$ancestor->value()}'] is not matching to object name from upperlevel '{$pickedObject->_PANC_shortName()}' [with value '{$pickedObject->value()}'] ");
                                     $this->skippedObject( $index, $pickedObject, $ancestor);

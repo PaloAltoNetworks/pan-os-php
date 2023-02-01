@@ -450,7 +450,21 @@ class DIFF extends UTIL
                     $filter_array = explode("/", $filter);
                     $item = end($filter_array);
 
-                    $element = $xmlDoc1->createElement($item);
+
+                    if( strpos( $item, "[@name='" ) !== False )
+                    {
+                        $orig = $item;
+
+                        $pos = strpos($item, "[@name='");
+                        $item = substr( $item, 0 , $pos);
+                        $element = $xmlDoc1->createElement($item);
+
+                        $nameattribute = substr( $orig, $pos+8,strpos($orig, "']"));
+                        $nameattribute = str_replace( "']", "", $nameattribute );
+                        $element->setAttribute( "name", $nameattribute);
+                    }
+                    else
+                        $element = $xmlDoc1->createElement($item);
                     $config = $xmlDoc1->appendChild($element);
                 }
                 if( $doc1Root == FALSE )

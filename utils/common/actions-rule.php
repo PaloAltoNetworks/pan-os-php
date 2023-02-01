@@ -5274,6 +5274,13 @@ RuleCallContext::$supportedActions[] = array(
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
 
+        if( !$context->isAPI )
+        {
+            $string = "only API mode is supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+
         if( !$rule->isDisabled() )
             $rule->API_showRuleHitCount( false );
         else
@@ -5285,6 +5292,13 @@ RuleCallContext::$supportedActions[] = array(
     'section' => 'action',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
+
+        if( !$context->isAPI )
+        {
+            $string = "only API mode is supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
 
         if( !$rule->isDisabled() )
             $rule->API_clearRuleHitCount( false );

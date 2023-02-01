@@ -46,6 +46,9 @@ class OVERRIDEFINDER extends UTIL
 
     public function main()
     {
+        if( $this->configInput['type'] !== 'api' )
+            derr( "only API mode is supported", null, False );
+
         if( $this->cycleConnectedFirewalls )
         {
             $firewallSerials = $this->pan->connector->panorama_getConnectedFirewallsSerials();
@@ -220,7 +223,7 @@ class OVERRIDEFINDER extends UTIL
     //duplicate code check UTIL::
     function display_usage_and_exit($shortMessage = FALSE, $warningString = "")
     {
-        PH::print_stdout( PH::boldText("USAGE: ") . "php " . basename(__FILE__) . " in=file.xml|api://... [more arguments]" );
+        PH::print_stdout( PH::boldText("USAGE: ") . "php " . basename(__FILE__) . " in=api://... [more arguments]" );
         PH::print_stdout( "php " . basename(__FILE__) . " help          : more help messages" );
         PH::print_stdout( PH::boldText("Examples:") );
         PH::print_stdout( " - php " . basename(__FILE__) . " in=api://192.169.50.10 cycleConnectedFirewalls'" );

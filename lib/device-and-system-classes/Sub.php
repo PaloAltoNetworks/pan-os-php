@@ -23,31 +23,7 @@ class Sub
     public $rulebaseroot;
     public $defaultSecurityRules;
 
-    function load_defaultSecurityRule( )
-    {
-        $finalroot = FALSE;
-        $tmproot = DH::findFirstElement('default-security-rules', $this->rulebaseroot);
-        if( $tmproot !== FALSE )
-        {
-            $finalroot = DH::findFirstElement('rules', $tmproot);
-            if( $finalroot !== FALSE )
-            {
-                if( !DH::hasChild($finalroot) )
-                    $finalroot = $this->createDefaultSecurityRule( );
-            }
-        }
-
-        if( $tmproot === FALSE )
-            $finalroot = $this->createDefaultSecurityRule( );
-
-        return $finalroot;
-    }
-
-    function createDefaultSecurityRule( )
-    {
-        $ownerDocument = $this->rulebaseroot->ownerDocument;
-
-        $defaultSecurityRules_xml = "<default-security-rules>
+    private  $defaultSecurityRules_xml = "<default-security-rules>
                     <rules>
                       <entry name=\"intrazone-default\">
                         <action>allow</action>
@@ -62,8 +38,34 @@ class Sub
                     </rules>
                   </default-security-rules>";
 
+    function load_defaultSecurityRule( )
+    {
+        $finalroot = FALSE;
+        $tmproot = DH::findFirstElement('default-security-rules', $this->rulebaseroot);
+        if( $tmproot !== FALSE )
+        {
+            $finalroot = DH::findFirstElement('rules', $tmproot);
+            if( $finalroot !== FALSE )
+            {
+                if( !DH::hasChild($finalroot) )
+                    $finalroot = $this->createDefaultSecurityRule( );
+                else
+                    $finalroot = $this->createPartialDefaultSecurityRule( $finalroot );
+            }
+        }
+
+        if( $tmproot === FALSE )
+            $finalroot = $this->createDefaultSecurityRule( );
+
+        return $finalroot;
+    }
+
+    function createDefaultSecurityRule( )
+    {
+        $ownerDocument = $this->rulebaseroot->ownerDocument;
+
         $newdoc = new DOMDocument;
-        $newdoc->loadXML( $defaultSecurityRules_xml );
+        $newdoc->loadXML( $this->defaultSecurityRules_xml );
         $node = $newdoc->importNode($newdoc->firstChild, TRUE);
         $node = $ownerDocument->importNode($node, TRUE);
 
@@ -72,6 +74,32 @@ class Sub
         $ruleNode = DH::findFirstElement('rules', $node);
 
         return $ruleNode;
+    }
+
+    function createPartialDefaultSecurityRule( $originalRuleNode )
+    {
+        $ownerDocument = $this->rulebaseroot->ownerDocument;
+
+        $newdoc = new DOMDocument;
+        $newdoc->loadXML( $this->defaultSecurityRules_xml );
+        $node = $newdoc->importNode($newdoc->firstChild, TRUE);
+        $ruleNode = DH::findFirstElement('rules', $node);
+
+        foreach( $ruleNode->childNodes as $defaultRule )
+        {
+            /** @var DOMElement $defaultRule */
+            if( $defaultRule->nodeType != XML_ELEMENT_NODE )
+                continue;
+
+            $newName = DH::findAttribute( 'name', $defaultRule);
+            $origName = DH::findFirstElementByNameAttr( "entry", $newName, $originalRuleNode);
+            if( $origName === FALSE || $origName === null )
+            {
+                $node = $ownerDocument->importNode($defaultRule, TRUE);
+                $originalRuleNode->appendChild($node);
+            }
+        }
+        return $originalRuleNode;
     }
 }
 
