@@ -10,6 +10,7 @@ UTIL:
 BUGFIX:
 * type=ironskillet-update | bugfix to download and store correct default iron-skillet snippets
 * type=rule ruletype=defaultsecurity | bugfix to also import defaultSecurityRules, if only one was overwritten
+* type=rule | bugfix for 'filter=(hit-count.fast <>!= XYZ)' via Panorama on multiple DG - but different content from FW
 
 GENERAL
 * update default iron-skillet snippets
