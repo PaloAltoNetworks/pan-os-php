@@ -508,7 +508,7 @@ class MERGER extends UTIL
         }
         elseif( $this->utilType == "addressgroup-merger" )
         {
-            if( $this->dupAlg != 'samemembers' && $this->dupAlg != 'sameip4mapping' && $this->dupAlg != 'identical' && $this->dupAlg != 'whereused' )
+            if( $this->dupAlg != 'samemembers' && $this->dupAlg != 'sameip4mapping' && $this->dupAlg != 'identical' && $this->dupAlg != 'whereused' && $this->dupAlg != 'samename' )
                 $display_error = true;
 
             if( isset(PH::$args['allowaddingmissingobjects']) )
@@ -640,6 +640,15 @@ class MERGER extends UTIL
 
                     return $value;
                 };
+            elseif( $this->dupAlg == 'samename' )
+                $hashGenerator = function ($object) {
+                    /** @var AddressGroup $object */
+                    $value = '';
+
+                    $name = $object->name();
+
+                    return $name;
+                };
             else
                 derr("unsupported dupAlgorithm");
 
@@ -767,11 +776,38 @@ class MERGER extends UTIL
 
                     $skip = false;
                     foreach( $pickedObject->members() as $memberObject )
+                        /** @var Address|AddressGroup $memberObject */
                         if( $store->find($memberObject->name()) === null )
                         {
-                            PH::print_stdout(  "   * SKIPPED : this group has an object named '{$memberObject->name()} that does not exist in target location '{$tmp_DG_name}'" );
-                            $skip = true;
-                            break;
+                            if( $this->addMissingObjects )
+                            {
+                                //Todo: Swaschkut
+                                PH::print_stdout( "      - object: ".$memberObject->name()." from DG: '".$memberObject->owner->owner->name(). "' move to: '".$tmp_DG_name."'" );
+                                if( $this->action === "merge" )
+                                {
+                                    /** @var AddressStore $store */
+                                    if( $this->apiMode )
+                                    {
+                                        $oldXpath = $memberObject->getXPath();
+                                        $memberObject->owner->remove($memberObject);
+                                        $store->add($memberObject);
+                                        $memberObject->API_sync();
+                                        $this->pan->connector->sendDeleteRequest($oldXpath);
+                                    }
+                                    else
+                                    {
+                                        $memberObject->owner->remove($memberObject);
+                                        $store->add($memberObject);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                PH::print_stdout(  "   * SKIPPED : this group has an object named '{$memberObject->name()} that does not exist in target location '{$tmp_DG_name}'" );
+                                $skip = true;
+                                break;
+                            }
+
                         }
                     if( $skip )
                         continue;
@@ -805,8 +841,8 @@ class MERGER extends UTIL
                 {
                     if( !$tmp_address->isGroup() )
                     {
-                        PH::print_stdout( "    - SKIP: object name '{$pickedObject->_PANC_shortName()}' of type AddressGroup can not be merged with object name: '{$tmp_address->_PANC_shortName()}' of type Address" );
-                        $this->skippedObject( $index, $pickedObject, $tmp_address);
+                        PH::print_stdout( "    - SKIP: object name '{$pickedObject->_PANC_shortName()}' of type ".get_class($pickedObject)." can not be merged with object name: '{$tmp_address->_PANC_shortName()}' of type ".get_class($tmp_address). " value: ".$tmp_address->value() );
+                        $this->skippedObject( $index, $pickedObject, $tmp_address, get_class($pickedObject)." can not be merged with ".get_class($tmp_address));
                         continue;
                     }
 
@@ -819,9 +855,17 @@ class MERGER extends UTIL
                     }
                     else
                     {
-                        PH::print_stdout( "    - SKIP: object name '{$pickedObject->_PANC_shortName()}' [with value '{$pickedObject_value}'] is not IDENTICAL to object name: '{$tmp_address->_PANC_shortName()}' [with value '{$tmp_address_value}']" );
-                        $this->skippedObject( $index, $pickedObject, $tmp_address);
-                        continue;
+                        if( $this->addMissingObjects )
+                        {
+                            $this->addressgroupGetValueDiff( $pickedObject, $tmp_address, true );
+                        }
+                        else
+                        {
+                            PH::print_stdout( "    - SKIP: object name '{$pickedObject->_PANC_shortName()}' [with value '{$pickedObject_value}'] is not IDENTICAL to object name: '{$tmp_address->_PANC_shortName()}' [with value '{$tmp_address_value}']" );
+                            $this->skippedObject( $index, $pickedObject, $tmp_address, 'value is not IDENTICAL');
+                            continue;
+                        }
+
                     }
                 }
 
@@ -836,7 +880,7 @@ class MERGER extends UTIL
                         if( $object->name() != $tmp_address->name() )
                         {
                             PH::print_stdout("    - SKIP: object name '{$object->_PANC_shortName()}' is not IDENTICAL to object name from upperlevel '{$tmp_address->_PANC_shortName()}'");
-                            $this->skippedObject( $index, $tmp_address, $object);
+                            $this->skippedObject( $index, $tmp_address, $object, 'name is not IDENTICAL');
                             continue;
                         }
 
@@ -888,8 +932,8 @@ class MERGER extends UTIL
 
                         if( !$ancestor->isGroup() )
                         {
-                            PH::print_stdout("    - SKIP: object name '{$object->_PANC_shortName()}' as one ancestor is of type addressgroup");
-                            $this->skippedObject( $index, $object, $ancestor);
+                            PH::print_stdout("    - SKIP: object name '{$object->_PANC_shortName()}' as one ancestor is of type: ". get_class( $ancestor )." '{$ancestor->_PANC_shortName()}' value: ".$ancestor->value());
+                            $this->skippedObject( $index, $object, $ancestor, 'ancesotr of type: '.get_class( $ancestor ));
                             continue;
                         }
 
@@ -900,54 +944,18 @@ class MERGER extends UTIL
                                 if( $object->name() != $ancestor->name() )
                                 {
                                     PH::print_stdout("    - SKIP: object name '{$ancestor->_PANC_shortName()}' is not IDENTICAL to object name from upperlevel '{$object->_PANC_shortName()}'");
-                                    $this->skippedObject( $index, $object, $ancestor);
+                                    $this->skippedObject( $index, $object, $ancestor, 'name is not IDENTICAL');
                                     continue;
                                 }
 
                             if( $hashGenerator($object) != $hashGenerator($ancestor) )
-                            {
-                                $ancestor->displayValueDiff($object, 7);
-
-                                if( $this->addMissingObjects )
-                                {
-                                    $diff = $ancestor->getValueDiff($object);
-
-                                    if( count($diff['minus']) != 0 )
-                                        foreach( $diff['minus'] as $d )
-                                        {
-                                            /** @var Address|AddressGroup $d */
-
-                                            if( $ancestor->owner->find($d->name()) !== null )
-                                            {
-                                                $text = "      - adding objects to group: ";
-                                                $text .= $d->name();
-                                                PH::print_stdout($text);
-                                                if( $this->action === "merge" )
-                                                {
-                                                    if( $this->apiMode )
-                                                        $ancestor->API_addMember($d);
-                                                    else
-                                                        $ancestor->addMember($d);
-                                                }
-                                            }
-                                            else
-                                            {
-                                                PH::print_stdout("      - object not found: " . $d->name() . "");
-                                            }
-                                        }
-
-                                    if( count($diff['plus']) != 0 )
-                                        foreach( $diff['plus'] as $d )
-                                        {
-                                            /** @var Address|AddressGroup $d */
-                                            //TMP usage to clean DG level ADDRESSgroup up
-                                            $object->addMember($d);
-                                        }
-                                }
-                            }
+                                $this->addressgroupGetValueDiff($ancestor, $object, true);
 
                             if( $hashGenerator($object) == $hashGenerator($ancestor) )
                             {
+                                if( $this->dupAlg == 'samename' )
+                                    $this->addressgroupGetValueDiff($ancestor, $object);
+
                                 $tmp_ancestor_DGname = $ancestor->owner->owner->name();
                                 if( $tmp_ancestor_DGname === "" )
                                     $tmp_ancestor_DGname = "shared";
@@ -980,10 +988,15 @@ class MERGER extends UTIL
                         $tmp_ancestor_DGname = $ancestor->owner->owner->name();
                         if( $tmp_ancestor_DGname === "" )
                             $tmp_ancestor_DGname = "shared";
-                        PH::print_stdout("    - group '{$object->name()}' cannot be merged because it has an ancestor at DG: ".$tmp_ancestor_DGname );
-                        PH::print_stdout( "    - ancestor type: ".get_class( $ancestor ) );
-                        $this->skippedObject( $index, $object, $ancestor);
-                        continue;
+
+                        if( !$this->addMissingObjects )
+                        {
+                            PH::print_stdout("    - group '{$object->name()}' cannot be merged because it has an ancestor at DG: ".$tmp_ancestor_DGname );
+                            PH::print_stdout( "    - ancestor type: ".get_class( $ancestor ) );
+                            $this->skippedObject( $index, $object, $ancestor, 'ancestor at DG: '.$tmp_ancestor_DGname);
+                            continue;
+                        }
+
                     }
 
                     if( $object === $pickedObject )
@@ -1039,7 +1052,7 @@ class MERGER extends UTIL
                             if( $object->name() != $pickedObject->name() )
                             {
                                 PH::print_stdout("    - SKIP: object name '{$pickedObject->_PANC_shortName()}' is not IDENTICAL to object name from upperlevel '{$object->_PANC_shortName()}'");
-                                $this->skippedObject( $index, $object, $pickedObject);
+                                $this->skippedObject( $index, $object, $pickedObject, 'object name not IDENTICAL');
                                 continue;
                             }
 
@@ -1077,6 +1090,71 @@ class MERGER extends UTIL
             PH::print_stdout( "\n\nDuplicates removal is now done. Number of objects after cleanup: '{$store->countAddressGroups()}' (removed {$countRemoved} groups)\n" );
 
         }    
+    }
+
+    function addressgroupGetValueDiff( $ancestor, $object, $display = false)
+    {
+        if( $display )
+            $ancestor->displayValueDiff($object, 7);
+
+        if( $this->addMissingObjects )
+        {
+            $diff = $ancestor->getValueDiff($object);
+            $store = $ancestor->owner;
+            if( count($diff['minus']) != 0 )
+                foreach( $diff['minus'] as $d )
+                {
+                    /** @var Address|AddressGroup $d */
+
+                    if( $store->find($d->name()) !== null )
+                    {
+                        $text = "      - adding objects to group: ";
+                        $text .= $d->name();
+                        PH::print_stdout($text);
+                        if( $this->action === "merge" )
+                        {
+                            if( $this->apiMode )
+                                $ancestor->API_addMember($d);
+                            else
+                                $ancestor->addMember($d);
+                        }
+                    }
+                    else
+                    {
+                        #PH::print_stdout("      - object not found: " . $d->name() . "");
+                        $text = "      - adding object: ";
+                        $text .= $d->name();
+                        $text .= " from DG '".$d->owner->owner->_PANC_shortName()."' to '".$store->owner->_PANC_shortName()."'";
+                        $text .= " to group";
+                        PH::print_stdout($text);
+                        if( $this->action === "merge" )
+                        {
+                            /** @var AddressStore $store */
+                            if( $this->apiMode )
+                            {
+                                $oldXpath = $d->getXPath();
+                                $d->owner->remove($d);
+                                $store->add($d);
+                                $d->API_sync();
+                                $this->pan->connector->sendDeleteRequest($d);
+                            }
+                            else
+                            {
+                                $d->owner->remove($d);
+                                $store->add($d);
+                            }
+                        }
+                    }
+                }
+
+            if( count($diff['plus']) != 0 )
+                foreach( $diff['plus'] as $d )
+                {
+                    /** @var Address|AddressGroup $d */
+                    //TMP usage to clean DG level ADDRESSgroup up
+                    $object->addMember($d);
+                }
+        }
     }
 
     function address_merging()
@@ -1866,7 +1944,7 @@ class MERGER extends UTIL
                 {
                     if( !$tmp_service->isGroup() )
                     {
-                        PH::print_stdout( "    - SKIP: object name '{$pickedObject->_PANC_shortName()}' of type AddressGroup can not be merged with object name: '{$tmp_service->_PANC_shortName()}' of type Address" );
+                        PH::print_stdout( "    - SKIP: object name '{$pickedObject->_PANC_shortName()}' of type ".get_class($pickedObject)." can not be merged with object name: '{$tmp_service->_PANC_shortName()}' of type ".get_class($tmp_service) );
                         $this->skippedObject( $index, $pickedObject, $tmp_service);
                         continue;
                     }
@@ -3213,7 +3291,7 @@ class MERGER extends UTIL
         }
     }
 
-    private function skippedObject( $index, $keptOBJ, $removedOBJ)
+    private function skippedObject( $index, $keptOBJ, $removedOBJ, $reason = "")
     {
         if( is_object( $keptOBJ ) )
         {
