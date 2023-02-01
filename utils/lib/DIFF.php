@@ -355,19 +355,26 @@ class DIFF extends UTIL
             {
                 PH::print_stdout( " - preXpath: ".$this->additionalRuleOrderpreXpath[$key]);
                 PH::print_stdout( " - postXpath: ".$this->additionalRuleOrderpostXpath[$key]);
+                PH::print_stdout();
 
-
-                $file1Element = $this->additionalRuleOrderCalculateXpathGetElement( $origDoc1, $this->additionalRuleOrderpreXpath[$key], $this->additionalRuleOrderpostXpath[$key] );
+                $combinedArray1 = array();
+                $file1Element = $this->additionalRuleOrderCalculateXpathGetElement( "file1", $origDoc1, $this->additionalRuleOrderpreXpath[$key], $this->additionalRuleOrderpostXpath[$key], $combinedArray1 );
                 if( $this->debugAPI )
                 {
+                    #print "PRE\n";
                     #DH::DEBUGprintDOMDocument( $file1Element );
+                    print "FILE1\n";
+                    print_r($combinedArray1);
                 }
 
-
-                $file2Element = $this->additionalRuleOrderCalculateXpathGetElement( $origDoc2, $this->additionalRuleOrderpreXpath[$key], $this->additionalRuleOrderpostXpath[$key] );
+                $combinedArray2 = array();
+                $file2Element = $this->additionalRuleOrderCalculateXpathGetElement( "file2", $origDoc2, $this->additionalRuleOrderpreXpath[$key], $this->additionalRuleOrderpostXpath[$key], $combinedArray2 );
                 if( $this->debugAPI )
                 {
+                    #print "POST\n";
                     #DH::DEBUGprintDOMDocument( $file2Element );
+                    print "FILE2\n";
+                    print_r($combinedArray2);
                 }
 
                 ########################################################################################################################
@@ -378,6 +385,9 @@ class DIFF extends UTIL
                     break;
                 }
 
+                $combinedArray = array_merge_recursive($combinedArray1, $combinedArray2);
+
+
                 $el1rulebase = array();
                 $el2rulebase = array();
                 $this->additionalCalculateRuleorder( $file1Element, $el1rulebase);
@@ -385,12 +395,15 @@ class DIFF extends UTIL
 
                 if( $this->debugAPI )
                 {
-                    print_r( $el1rulebase );
-                    print_r( $el2rulebase );
+                    #print_r( $combinedArray );
                 }
 
+                $this->failStatus_additionalruleorder = $this->checkAdditionalRuleOrderArray( $combinedArray );
+
+                $this->additionalruleorderOUTPUT( $combinedArray );
 
                 //check Rules
+                /*
                 if( isset( $el1rulebase['rules'] ) )
                     $this->failStatus_additionalruleorder = $this->additionalCheckRuleOrder( $el1rulebase, $el2rulebase );
                 else
@@ -400,6 +413,7 @@ class DIFF extends UTIL
                     foreach( $el2rulebase as $key => $entry )
                         $this->failStatus_additionalruleorder = $this->additionalCheckRuleOrder( $el1rulebase, $el2rulebase, $key );
                 }
+                */
             }
         }
 
@@ -417,6 +431,9 @@ class DIFF extends UTIL
             PH::print_stdout( array('FAIL'), false, "finalresult" );
         }
     }
+
+
+
 
     public function runDiff( $doc1, $doc2 )
     {
@@ -1185,7 +1202,7 @@ class DIFF extends UTIL
         }
     }
 
-    function additionalRuleOrderCalculateXpathGetElement( $doc, $preXpath, $postXpath )
+    function additionalRuleOrderCalculateXpathGetElement( $tmp, $doc, $preXpath, $postXpath, &$combinedArray )
     {
         $preElement = false;
         $postElement = false;
@@ -1210,6 +1227,7 @@ class DIFF extends UTIL
             $preElement = $root;
         #DH::DEBUGprintDOMDocument($preElement);
 
+
         $root = $doc->documentElement;
         $set = FALSE;
         foreach( $postXpathArray as $key => $item )
@@ -1227,6 +1245,7 @@ class DIFF extends UTIL
         if( $set )
             $postElement = $root;
         #DH::DEBUGprintDOMDocument($postElement);
+
         #############
         $finalDoc = new DOMDocument();
         $nodeconfig = $finalDoc->createElement("config");
@@ -1235,20 +1254,30 @@ class DIFF extends UTIL
         #if( $preElement === false )
         #    return false;
 
+        $preArray = array();
         $preRules = DH::findFirstElement("rules", $preElement);
+        $i=1;
         if( $preRules !== FALSE && $preElement->parentNode->nodeName == "pre-rulebase" )
         {
-            foreach( $preElement->childNodes as $childNode )
+
+            foreach( $preRules->childNodes as $childNode )
             {
                 /** @var null|DOMElement $childNode */
                 if( $childNode->nodeType != XML_ELEMENT_NODE )
                     continue;
 
+                $childNode->setAttribute( "ruletype", "pre" );
+                $name = DH::findAttribute("name", $childNode);
+                $preArray[$name] = $tmp."-pre-".$i;
                 $node2 = $finalDoc->importNode($childNode, TRUE);
+                /** @var DOMElement $node2 */
+
                 $nodeconfig->appendChild($node2);
+                $i++;
             }
         }
 
+        $postArray = array();
         if( $postElement !== false )
         {
             //rules element from new config file
@@ -1262,11 +1291,18 @@ class DIFF extends UTIL
                 if( $childNode->nodeType != XML_ELEMENT_NODE )
                     continue;
 
+                $childNode->setAttribute( "ruletype", "post" );
+                $name = DH::findAttribute("name", $childNode);
+                $postArray[$name] = $tmp."-post-".$i;
                 $node = $finalDoc->importNode($childNode, TRUE);
+
                 $preRules->appendChild($node);
                 #DH::DEBUGprintDOMDocument($node);
+                $i++;
             }
         }
+
+        $combinedArray = array_merge($preArray, $postArray);
 
         return $nodeconfig;
     }
@@ -1368,6 +1404,111 @@ class DIFF extends UTIL
         }
 
         return $fail;
+    }
+
+    function checkAdditionalRuleOrderArray( $array )
+    {
+        foreach( $array as $entry )
+        {
+            if( !is_array($entry) )
+                return false;
+        }
+        return true;
+    }
+
+    function moveElement(&$array, $a, $b) {
+        $out = array_splice($array, $a, 1);
+        array_splice($array, $b, 0, $out);
+    }
+
+    function additionalruleorderOUTPUT($combinedArray)
+    {
+        $finalArray = array();
+        foreach( $combinedArray as $key => $entry )
+        {
+            if( !is_array($entry) )
+            {
+                $info = explode( "-", $entry );
+                $file = $info[0];
+                $prepost = $info[1];
+                if( $file == "file1" )
+                {
+                    $pos1 = $info[2];
+                    $pos2 = "-";
+                }
+                else
+                {
+                    $pos1 = "-";
+                    $pos2 = $info[2];
+                }
+
+                $rulename = str_pad($key,  60, " ");
+                $type = str_pad($prepost,  10, " ");
+                #PH::print_stdout( " - ".$rulename." | ".$file." |".$type."|".$pos );
+                $tmpArray = array( "rule"=>$rulename, "file"=>$file, "type"=>$type, "pos1"=>$pos1, "pos2"=>$pos2, "check"=>"" );
+            }
+            else
+            {
+                #print_r($entry);
+                $info = "";
+                $file1 = "";
+                $file2 = "";
+                $prepost1 = "";
+                $prepost2 = "";
+                $pos1 = "";
+                $pos2 = "";
+                foreach( $entry as $key2 => $item )
+                {
+                    if( $key2 == 0 )
+                    {
+                        $info = explode( "-", $item );
+                        $file1 = $info[0];
+                        $prepost1 = $info[1];
+                        $pos1 = $info[2];
+                    }
+                    else
+                    {
+                        $info = explode( "-", $item );
+                        $file2 = $info[0];
+                        $prepost2 = $info[1];
+                        $pos2 = $info[2];
+                    }
+                }
+                $rulename = str_pad($key,  60, " ");
+                $type = str_pad($prepost1."/".$prepost2,  10, " ");
+                #PH::print_stdout( " - ".$rulename." |       |".$type."|".$pos1."/".$pos2 );
+                $tmpArray = array( "rule"=>$rulename, "file"=>"", "type"=>$type, "pos1"=>$pos1, "pos2"=>$pos2, "check"=>"" );
+            }
+            $finalArray[] = $tmpArray;
+        }
+
+        #print_r($finalArray);
+        $move = array();
+        foreach( $finalArray as $key => $item )
+        {
+            if( $item['file'] == "file2" )
+            {
+                $finalArray[$key]['check'] = "<<<<<<<<<<";
+                $move[] = array( $key, $item['pos2']+1 );
+            }
+
+        }
+        foreach( $move as $item )
+        {
+            $this->moveElement($finalArray, $item[0], $item[1]);
+        }
+        #print_r($finalArray);
+        foreach( $finalArray as $entry )
+        {
+            $char = " ";
+            if( strpos( $entry['check'], "<" ) !== false )
+                $char = "<";
+            $rulename = str_pad($entry['rule'],  70, $char);
+            $file = str_pad($entry['file'],  5, " ");
+            $type = $entry['type'];
+            $pos = str_pad($entry['pos1']."/".$entry['pos2'],  10, " ");
+            PH::print_stdout( "   - ".$rulename." | ".$file." |".$type."|".$pos."|".$entry['check'] );
+        }
     }
 
     function ignoreAddDeleteXpath( $xpath, &$node, $typeArray )
