@@ -12,6 +12,7 @@ BUGFIX:
 * type=rule ruletype=defaultsecurity | bugfix to also import defaultSecurityRules, if only one was overwritten
 * type=rule | bugfix for 'filter=(hit-count.fast <>!= XYZ)' via Panorama on multiple DG - but different content from FW
 * type=diff filter=jsonfile.json | bugfix if include/exclude is not available at file to compare
+* type=address-merger | bugfix if object from upperlevel value has /32 but DG object has only IP
 
 GENERAL
 * update default iron-skillet snippets
