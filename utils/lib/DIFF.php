@@ -320,13 +320,28 @@ class DIFF extends UTIL
                     {
                         PH::print_stdout( "exclude is set to: '" . PH::boldText( $exclude ) . "'");
 
-                        $doc1Root = DH::findXPathSingleEntry($exclude, $doc1);
-                        if( $doc1Root )
-                            $doc1Root->parentNode->removeChild( $doc1Root );
+                        if( strpos( $exclude, "*" ) !== FALSE )
+                        {
+                            $excludeXpath = $exclude;
+                            $excludeXpath = str_replace( "entry[@name='*']/", "entry/", $excludeXpath );
 
-                        $doc2Root = DH::findXPathSingleEntry($exclude, $doc2);
-                        if( $doc2Root )
-                            $doc2Root->parentNode->removeChild( $doc2Root );
+                            $domXpath1 = new DOMXPath($doc1);
+                            foreach( $domXpath1->query($excludeXpath) as $node )
+                                $node->parentNode->removeChild( $node );
+                            $domXpath2 = new DOMXPath($doc2);
+                            foreach( $domXpath2->query($excludeXpath) as $node )
+                                $node->parentNode->removeChild( $node );
+                        }
+                        else
+                        {
+                            $doc1Root = DH::findXPathSingleEntry($exclude, $doc1);
+                            if( $doc1Root )
+                                $doc1Root->parentNode->removeChild( $doc1Root );
+
+                            $doc2Root = DH::findXPathSingleEntry($exclude, $doc2);
+                            if( $doc2Root )
+                                $doc2Root->parentNode->removeChild( $doc2Root );
+                        }
                     }
 
                     PH::print_stdout( "");
@@ -1615,14 +1630,10 @@ class DIFF extends UTIL
             }
             ###########################
             ###########################
-            elseif( strpos( $add, "[text()[contains(.,'") !== false )
-            {
-                $newXpath = str_replace( $xpath, "", $add );
-            }
             else
-            {
                 $newXpath = str_replace( $xpath, "", $add );
-            }
+
+
 
             if( strpos( $newXpath, "[" ) === 0 )
             {
@@ -1638,31 +1649,43 @@ class DIFF extends UTIL
 
             //////textnode search
             $textNodeFound = FALSE;
-
             if( !empty($newXpath) )
             {
                 $domXpath = new DOMXPath($newdoc);
                 foreach( $domXpath->query($newXpath) as $textNode )
                 {
+                    #print "something found in \n";
+                    #print $textNode->nodeValue."\n";
+                    #DH::DEBUGprintDOMDocument($textNode);
+                    ###print "path: ".$textNode->getNodePath()."\n";
                     if( $textContainsremoved )
                     {
                         if( $textNode !== FALSE && !DH::hasChild($textNode) )
-                        {
                             $textNodeFound = TRUE;
-                            #print "something found in \n";
-                            #print $textNode->nodeValue."\n";
-                            ###print "path: ".$textNode->getNodePath()."\n";
+                    }
+                    else
+                    {
+                        if( $textNode !== FALSE )
+                            $textNodeFound = TRUE;
+                    }
+                    /*
+                      if( $textContainsremoved )
+                    {
+                        if( $textNode !== FALSE && !DH::hasChild($textNode) )
+                        {
+                            DH::removeChild( $textNode->parentNode, $textNode );
+                            #$textNodeFound = TRUE;
                         }
                     }
                     else
                     {
-                        #print "something found in \n";
-                        #print $textNode->nodeValue."\n";
-                        #DH::DEBUGprintDOMDocument($textNode);
                         if( $textNode !== FALSE )
-                            $textNodeFound = TRUE;
+                        {
+                            DH::removeChild( $textNode->parentNode, $textNode );
+                            #$textNodeFound = TRUE;
+                        }
                     }
-
+                     */
                 }
             }
 
@@ -1716,7 +1739,6 @@ class DIFF extends UTIL
             }
         }
 
-        unset($typeArray);
 
         if( !empty( $this->empty ) )
         {
