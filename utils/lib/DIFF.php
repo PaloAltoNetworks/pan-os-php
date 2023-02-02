@@ -327,20 +327,25 @@ class DIFF extends UTIL
 
                             $domXpath1 = new DOMXPath($doc1);
                             foreach( $domXpath1->query($excludeXpath) as $node )
-                                $node->parentNode->removeChild( $node );
+                                $this->deleteNodeReverseAlsoParent($node);
+                                #$node->parentNode->removeChild( $node );
                             $domXpath2 = new DOMXPath($doc2);
                             foreach( $domXpath2->query($excludeXpath) as $node )
-                                $node->parentNode->removeChild( $node );
+                                #$node->parentNode->removeChild( $node );
+                                $this->deleteNodeReverseAlsoParent($node);
                         }
                         else
                         {
                             $doc1Root = DH::findXPathSingleEntry($exclude, $doc1);
                             if( $doc1Root )
-                                $doc1Root->parentNode->removeChild( $doc1Root );
+                                #$doc1Root->parentNode->removeChild( $doc1Root );
+                                $this->deleteNodeReverseAlsoParent($node);
 
                             $doc2Root = DH::findXPathSingleEntry($exclude, $doc2);
                             if( $doc2Root )
-                                $doc2Root->parentNode->removeChild( $doc2Root );
+                                #$doc2Root->parentNode->removeChild( $doc2Root );
+                                $this->deleteNodeReverseAlsoParent($node);
+
                         }
                     }
 
@@ -1654,38 +1659,27 @@ class DIFF extends UTIL
                 $domXpath = new DOMXPath($newdoc);
                 foreach( $domXpath->query($newXpath) as $textNode )
                 {
-                    #print "something found in \n";
-                    #print $textNode->nodeValue."\n";
-                    #DH::DEBUGprintDOMDocument($textNode);
-                    ###print "path: ".$textNode->getNodePath()."\n";
+                    #$this->deleteNodeReverseAlsoParent($textNode);
+
                     if( $textContainsremoved )
                     {
                         if( $textNode !== FALSE && !DH::hasChild($textNode) )
-                            $textNodeFound = TRUE;
-                    }
-                    else
-                    {
-                        if( $textNode !== FALSE )
-                            $textNodeFound = TRUE;
-                    }
-                    /*
-                      if( $textContainsremoved )
-                    {
-                        if( $textNode !== FALSE && !DH::hasChild($textNode) )
                         {
-                            DH::removeChild( $textNode->parentNode, $textNode );
-                            #$textNodeFound = TRUE;
+                            #$this->deleteNodeReverseAlsoParent($textNode);
+                            $textNodeFound = TRUE;
                         }
+
                     }
                     else
                     {
                         if( $textNode !== FALSE )
                         {
-                            DH::removeChild( $textNode->parentNode, $textNode );
-                            #$textNodeFound = TRUE;
+                            #$this->deleteNodeReverseAlsoParent($textNode);
+                            $textNodeFound = TRUE;
                         }
+
                     }
-                     */
+
                 }
             }
 
@@ -1742,134 +1736,51 @@ class DIFF extends UTIL
 
         if( !empty( $this->empty ) )
         {
-            ##NEW
-            /*
             foreach( $this->empty as $empty )
             {
-
                 $xpath = $origXpath;
-
-                if( strpos( $empty, "entry[@name='*']" ) !== FALSE )
+                #print "ORIGXPATH: ".$xpath."\n";
+                #print "ORIGEMPTY: ".$empty."\n";
+                if(strpos( $empty, "entry[@name='*']" ) !== FALSE )
                 {
-                    /*
-                    print "------------\n";
-                    print "XPATH: ".$origXpath."\n";
-                    print "EMPTY: ".$empty."\n";
-                    print "------------\n";
-                    */
-            /*
+                    $xpath = substr( $xpath, 0, strpos( $empty, "entry[@name='*']" )-1 );
+                    #print "2XPATH: ".$empty."\n";
                 }
-                else
+
+                $empty = str_replace( $xpath, "", $empty );
+                #print "2EMPTY: ".$empty."\n";
+
+                $excludeXpath = $empty;
+                $excludeXpath = str_replace( "entry[@name='*']/", "entry/", $excludeXpath );
+                if( $excludeXpath !== "" )
                 {
-                    $newXpath = str_replace( $xpath, "", $empty );
-                    print "------------\n";
-                    print "XPATH: ".$origXpath."\n";
-                    print "NEWXPATH: ".$newXpath."\n";
-                    #DH::DEBUGprintDOMDocument($node);
-                    print "\n------------\n";
-                    $tmpNode = $node;
-                    $parentNode = $node;
-                    $nodefound = false;
-                    DH::DEBUGprintDOMDocument($node);
-                    $newxpathArray = explode( "/", $newXpath, );
-                    foreach( $newxpathArray as $key => $entry )
+                    $domXpath1 = new DOMXPath($newdoc);
+                    #print "excludeXPATH: ".$excludeXpath."\n";
+                    foreach( $domXpath1->query($excludeXpath) as $node )
                     {
-                        if( $key == 0 )
-                            continue;
-                        print "check: ".$entry."\n";
-                        $parentNode = $tmpNode;
-                        if( $tmpNode !== false )
-                        {
-                            $tmpNode = DH::findFirstElement( $entry, $tmpNode );
-                            if( $tmpNode === false )
-                            {
-                                $nodefound = false;
-                                break;
-                            }
-                            else
-                            {
-                                print "NODE: \n";
-                                DH::DEBUGprintDOMDocument($tmpNode);
-                                $nodefound = true;
-                            }
-                        }
-                        else
-                        {
-                            $nodefound = false;
-                            break;
-                        }
-
-                    }
-                    if( $nodefound && $tmpNode !== false )
-                    {
-                        print "REMOvE:\n";
-                        DH::DEBUGprintDOMDocument($parentNode);
-
-                        DH::removeChild($parentNode, $tmpNode);
-                    }
-                }
-            }*/
-
-
-            ###
-            # this part is to check if pre-/post-rulebase subNodes which are removed above, now createing an empty parentNode
-            #if an empty node is available, it is comopare to JSON empty setting, and only if available it is ignored in DIFF output
-            $ruletypeArray = array(
-                "security", "application-override", "decryption", "authentication", "qos", "nat",
-                "pbf", "sdwan", "dos", "tunnel-inspect"
-            );
-
-            #workaround as next ->childnodes is not getting all childnodes, why??
-            foreach( $ruletypeArray as $type )
-            {
-                $test = DH::findFirstElement( $type, $node);
-                if( $test != false )
-                {
-                    $rulesNode = DH::findFirstElement( "rules", $test);
-                    if( $rulesNode !== False && !DH::hasChild($rulesNode) )
-                    {
-                        $fullXpath = $xpath."/".$node->nodeName."/".$type."/rules";
-                        if( in_array( $fullXpath, $this->empty ) )
-                            DH::removeChild($node, $test);
+                        #DH::DEBUGprintDOMDocument($node);
+                        if( !DH::hasChild($node) )
+                            $this->deleteNodeReverseAlsoParent($node);
                     }
                 }
             }
-
-            foreach( $node->childNodes as $child )
-            {
-                /** @var DOMElement $child */
-
-                if( $child->nodeType != XML_ELEMENT_NODE )
-                    continue;
-
-                if( $child->nodeName == "rules" )
-                {
-                    if( $child !== False && !DH::hasChild($child) )
-                    {
-                        $fullXpath = $xpath."/".$node->nodeName."/rules";
-                        #print $fullXpath."\n";
-                        if( in_array( $fullXpath, $this->empty ) )
-                            return True;
-                    }
-                    else
-                        return false;
-                }
-            }
-
-            if( $node !== False && !DH::hasChild($node) )
-            {
-                $fullXpath = $xpath."/".$node->nodeName;
-                #print $fullXpath."\n";
-                if( in_array( $fullXpath, $this->empty ) )
-                    return True;
-            }
-
         }
 
 
-
-
         return $continue;
+    }
+
+    function deleteNodeReverseAlsoParent( &$node )
+    {
+        if( $node !== FALSE && $node !== null )
+        {
+            $parent = $node->parentNode;
+            if( $parent === False || $parent === null )
+                return;
+            $parent->removeChild( $node );
+            if( !DH::hasChild($parent) )
+                $this->deleteNodeReverseAlsoParent($parent);
+        }
     }
 
     function OLD_asterisksearch( $add, $xpath, &$node)
