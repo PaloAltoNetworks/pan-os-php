@@ -294,6 +294,8 @@ class DIFF extends UTIL
                     $this->additionalruleOrderCHECK = TRUE;
                     $this->additionalRuleOrderArray = $array['combinedruleordercheck'];
 
+
+
                     foreach( $this->additionalRuleOrderArray as $key => $entry )
                     {
                         if( isset( $entry['pre'] ) && isset( $entry['post'] ) )
@@ -1517,54 +1519,110 @@ class DIFF extends UTIL
         $node = $newdoc->importNode($node, true);
         $newdoc->appendChild($node);
 
+        $origXpath = $xpath;
 
         $continue = false;
         foreach( $typeArray as $add )
         {
-            #print "\nXPATH: ".$xpath."\n";
+            $xpath = $origXpath;
+            $newXpath = "";
+            $textContainsremoved = false;
+            $string_Containsremoved = "";
+            ###########################
+            ###########################
+            //new approach
             if( strpos( $add, "'*'" ) !== FALSE )
             {
-                $textContainsremoved = false;
-                $string_Containsremoved = "";
-                if( strpos( $add, "[text()[contains(.,'") !== false )
+                if($this->debugAPI)
                 {
-                    $string_array = explode( "/", $add );
-                    $lastkey = array_key_last($string_array);
-                    $string_Containsremoved = $string_array[$lastkey];
-                    $add = str_replace( "/".$string_Containsremoved, "", $add );
-                    #print "\nADD0: ".$add."\n";
-                    $textContainsremoved = true;
+                    print "---------------------\n";
+                    print "ORIGXPATH: ".$origXpath."\n";
+                    print "ORIGADD: ".$add."\n";
                 }
 
-                $search2 = preg_quote($add, '/');
-                $search2 = str_replace( "'\*'", "(.*?)", $search2);
-
-                $pattern = '/'.$search2.'/is';
-                if( preg_match($pattern, $xpath, $matches) )
+                if( strpos( $add, "entry[@name='*']" ) !== FALSE )
                 {
-                    #print "\nXPATH1: ".$xpath."\n";
-                    #print "\nADD1: ".$add."\n";
-                    //CASE2 - '*' somewhere in between
-                    $newXpath = str_replace( $matches[0], "", $xpath );
+                    if( strpos( $add, "[text()[contains(.,'") !== false )
+                    {
+                        $string_array = explode( "/", $add );
+                        $lastkey = array_key_last($string_array);
+                        $string_Containsremoved = $string_array[$lastkey];
+                        $add = str_replace( "/".$string_Containsremoved, "", $add );
+
+                        if($this->debugAPI)
+                        {
+                            print "removed: ".$string_Containsremoved."\n";
+                            print "ADD0: ".$add."\n";
+                        }
+
+                        $textContainsremoved = true;
+                    }
+
+                    $searchEntry = "entry[@name='";
+
+                    $subXpath = substr( $xpath, 0, strpos( $xpath, $searchEntry ) );
+                    $subAddXpath = substr( $add, 0, strpos( $add, $searchEntry ) );
+                    if( $subXpath === $subAddXpath )
+                    {
+                        $xpath = str_replace( $subXpath, "", $xpath );
+                        $add = str_replace( $subAddXpath, "", $add );
+                    }
+                    else
+                        continue;
+
+
+                    $xpath_array = explode( "/", $xpath );
+                    $addXpath_array = explode( "/", $add );
+                    if( isset($xpath_array[1]) && isset( $addXpath_array[1] ) && ($xpath_array[1] === $addXpath_array[1]) )
+                    {
+                        $xpath = str_replace($xpath_array[0] . "/" . $xpath_array[1], "", $xpath);
+                        $add = str_replace($addXpath_array[0] . "/" . $addXpath_array[1], "", $add);
+
+                        do
+                        {
+                            $xpath_array = explode("/", $xpath);
+                            $addXpath_array = explode("/", $add);
+                            unset($xpath_array[0]);
+                            unset($addXpath_array[0]);
+
+                            #print_r($xpath_array);
+                            #print_r($addXpath_array);
+                            //why does while loop not exist with statement at end?
+                            if( empty($xpath_array) || empty($addXpath_array) )
+                                break;
+
+                            $xpath = str_replace("/" . $xpath_array[1], "", $xpath);
+                            $add = str_replace("/" . $addXpath_array[1], "", $add);
+                        } while( empty($xpath_array) || empty($addXpath_array) );
+                    }
+
                     if( $textContainsremoved )
-                        $newXpath = $newXpath."/".$string_Containsremoved;
-                    #print "NEWXPATH1: ".$newXpath."\n";
+                    {
+                        #print "---------------------\n";
+                        #print "2XPATH: ".$xpath."\n";
+                        #print "2ADD: ".$add."\n";
+                        $newXpath = $add."/".$string_Containsremoved;
+                    }
+                    else
+                        $newXpath = str_replace($xpath, "", $add);
+
+
                 }
-
-                else
+                elseif( strpos( $add, "[text()[contains(.,'") !== false )
                 {
-                    //CASE1 - '*' at end, eg. "/PATH/entry[@name='*']"
-                    #print "\nXPATH2: ".$xpath."\n";
-                    #print "\nADD2: ".$add."\n";
-                    $newXpath = str_replace( $xpath, "", $add );
-                    if( $textContainsremoved )
-                        $newXpath = $newXpath."/".$string_Containsremoved;
-                    #print "NEWXPATH2: ".$newXpath."\n";
+                    print "text contains only found - no entry *\n";
                 }
             }
-            else
+            ###########################
+            ###########################
+            elseif( strpos( $add, "[text()[contains(.,'") !== false )
+            {
                 $newXpath = str_replace( $xpath, "", $add );
-
+            }
+            else
+            {
+                $newXpath = str_replace( $xpath, "", $add );
+            }
 
             if( strpos( $newXpath, "[" ) === 0 )
             {
@@ -1573,22 +1631,38 @@ class DIFF extends UTIL
                 $string = $string_array[$lastkey];
                 $newXpath = "/".$string.$newXpath;
             }
-            #print "NEWXPATH: ".$newXpath."\n";
+
+            if( $this->debugAPI )
+                print "NEWXPATH: ".$newXpath."\n";
+
 
             //////textnode search
             $textNodeFound = FALSE;
+
             if( !empty($newXpath) )
             {
                 $domXpath = new DOMXPath($newdoc);
                 foreach( $domXpath->query($newXpath) as $textNode )
                 {
-                    if( $textNode !== False && !DH::hasChild( $textNode ) )
+                    if( $textContainsremoved )
                     {
-                        $textNodeFound = TRUE;
+                        if( $textNode !== FALSE && !DH::hasChild($textNode) )
+                        {
+                            $textNodeFound = TRUE;
+                            #print "something found in \n";
+                            #print $textNode->nodeValue."\n";
+                            ###print "path: ".$textNode->getNodePath()."\n";
+                        }
+                    }
+                    else
+                    {
                         #print "something found in \n";
                         #print $textNode->nodeValue."\n";
-                        ###print "path: ".$textNode->getNodePath()."\n";
+                        #DH::DEBUGprintDOMDocument($textNode);
+                        if( $textNode !== FALSE )
+                            $textNodeFound = TRUE;
                     }
+
                 }
             }
 
@@ -1607,32 +1681,114 @@ class DIFF extends UTIL
             }
             elseif( $xpath !== $newXpath )
             {
+                #print "XPATH: ".$xpath."\n";
+                #print "NEWXPATH: ".$newXpath."\n";
+
                 if( strpos( $newXpath, "'*'" ) !== FALSE )
                 {
+                    /*
                     $string_array = explode( "/", $newXpath );
-                    if( $node->nodeName == $string_array[1] )
+                    if( isset( $string_array[1] ) )
                     {
-                        if( $string_array[2] == "entry[@name='*']" )
+
+                        if( $node->nodeName == $string_array[1] )
                         {
-                            $nodeList = $node->getElementsByTagName("entry");
-                            $nodeArray = iterator_to_array($nodeList);
-                            foreach( $nodeArray as $entry )
-                                DH::removeChild( $node, $entry );
+                            if( $string_array[2] == "entry[@name='*']" )
+                            {
+                                $nodeList = $node->getElementsByTagName("entry");
+                                $nodeArray = iterator_to_array($nodeList);
+                                foreach( $nodeArray as $entry )
+                                    DH::removeChild( $node, $entry );
+                            }
                         }
                     }
+                    */
                 }
                 else
                 {
+                    /*
                     //find newXpath within a node somewhere as a subnode, and remove this node
                     $doc1Root = DH::findXPathSingleEntry($newXpath, $node);
                     if( $doc1Root )
                         DH::removeChild( $doc1Root->parentNode, $doc1Root );
+                    */
                 }
             }
         }
 
+        unset($typeArray);
+
         if( !empty( $this->empty ) )
         {
+            ##NEW
+            /*
+            foreach( $this->empty as $empty )
+            {
+
+                $xpath = $origXpath;
+
+                if( strpos( $empty, "entry[@name='*']" ) !== FALSE )
+                {
+                    /*
+                    print "------------\n";
+                    print "XPATH: ".$origXpath."\n";
+                    print "EMPTY: ".$empty."\n";
+                    print "------------\n";
+                    */
+            /*
+                }
+                else
+                {
+                    $newXpath = str_replace( $xpath, "", $empty );
+                    print "------------\n";
+                    print "XPATH: ".$origXpath."\n";
+                    print "NEWXPATH: ".$newXpath."\n";
+                    #DH::DEBUGprintDOMDocument($node);
+                    print "\n------------\n";
+                    $tmpNode = $node;
+                    $parentNode = $node;
+                    $nodefound = false;
+                    DH::DEBUGprintDOMDocument($node);
+                    $newxpathArray = explode( "/", $newXpath, );
+                    foreach( $newxpathArray as $key => $entry )
+                    {
+                        if( $key == 0 )
+                            continue;
+                        print "check: ".$entry."\n";
+                        $parentNode = $tmpNode;
+                        if( $tmpNode !== false )
+                        {
+                            $tmpNode = DH::findFirstElement( $entry, $tmpNode );
+                            if( $tmpNode === false )
+                            {
+                                $nodefound = false;
+                                break;
+                            }
+                            else
+                            {
+                                print "NODE: \n";
+                                DH::DEBUGprintDOMDocument($tmpNode);
+                                $nodefound = true;
+                            }
+                        }
+                        else
+                        {
+                            $nodefound = false;
+                            break;
+                        }
+
+                    }
+                    if( $nodefound && $tmpNode !== false )
+                    {
+                        print "REMOvE:\n";
+                        DH::DEBUGprintDOMDocument($parentNode);
+
+                        DH::removeChild($parentNode, $tmpNode);
+                    }
+                }
+            }*/
+
+
             ###
             # this part is to check if pre-/post-rulebase subNodes which are removed above, now createing an empty parentNode
             #if an empty node is available, it is comopare to JSON empty setting, and only if available it is ignored in DIFF output
@@ -1660,6 +1816,7 @@ class DIFF extends UTIL
             foreach( $node->childNodes as $child )
             {
                 /** @var DOMElement $child */
+
                 if( $child->nodeType != XML_ELEMENT_NODE )
                     continue;
 
@@ -1684,11 +1841,95 @@ class DIFF extends UTIL
                 if( in_array( $fullXpath, $this->empty ) )
                     return True;
             }
+
         }
 
 
 
 
         return $continue;
+    }
+
+    function OLD_asterisksearch( $add, $xpath, &$node)
+    {
+        if( strpos( $add, "'*'" ) !== FALSE )
+        {
+            $textContainsremoved = false;
+            $string_Containsremoved = "";
+            if( strpos( $add, "[text()[contains(.,'") !== false )
+            {
+                $string_array = explode( "/", $add );
+                $lastkey = array_key_last($string_array);
+                $string_Containsremoved = $string_array[$lastkey];
+                #print "removed: ".$string_Containsremoved."\n";
+                $add = str_replace( "/".$string_Containsremoved, "", $add );
+                #print "\nADD0: ".$add."\n";
+                $textContainsremoved = true;
+            }
+
+            ###############################################################
+            //if $add xpath is longer then $xpath
+            $count1 = substr_count($xpath, '/');
+            $count2 = substr_count($add, '/');
+            if( $this->debugAPI )
+            {
+                #print "\nMAINXPATH: ".$xpath."\n";
+                #print "\nADD0: ".$add."\n";
+                #print "count1: ".$count1."\n";
+                #print "count2: ".$count2."\n";
+            }
+
+
+            $substring = "'*']";
+            $length = strlen($substring);
+            $endwithstring = false;
+            if ( substr_compare($add, $substring, -$length) === 0 )
+            {
+                #$endwithstring=true;
+            }
+
+
+
+            if( $count2-1 > $count1 )#&& !$endwithstring )
+            {
+                print "manipulation of xpath\n";
+                #Todo: validation needed!!!!!!!!!!
+                # newly added for specific part
+                $xpath .= $node->getNodePath();
+                $xpathsearchmanipulation = true;
+            }
+            ###############################################################
+
+            $search2 = preg_quote($add, '/');
+            $search2 = str_replace( "'\*'", "(.*?)", $search2);
+            if( $this->debugAPI )
+                print "searchstring: ".$search2."\n";
+
+            $pattern = '/'.$search2.'/is';
+            if( preg_match($pattern, $xpath, $matches) )
+            {
+                if( $this->debugAPI )
+                    print_r($matches);
+                #print "\nXPATH1: ".$xpath."\n";
+                #print "\nADD1: ".$add."\n";
+                //CASE2 - '*' somewhere in between
+                $newXpath = str_replace( $matches[0], "", $xpath );
+                if( $textContainsremoved )
+                    $newXpath = $newXpath."/".$string_Containsremoved;
+                #print "NEWXPATH1: ".$newXpath."\n";
+            }
+
+            else
+            {
+                //CASE1 - '*' at end, eg. "/PATH/entry[@name='*']"
+                #print "\nXPATH2: ".$xpath."\n";
+                #print "\nADD2: ".$add."\n";
+                $newXpath = str_replace( $xpath, "", $add );
+                if( $textContainsremoved )
+                    $newXpath = $newXpath."/".$string_Containsremoved;
+                #print "NEWXPATH2: ".$newXpath."\n";
+            }
+        }
+        #else
     }
 }
