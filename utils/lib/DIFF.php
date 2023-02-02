@@ -328,24 +328,19 @@ class DIFF extends UTIL
                             $domXpath1 = new DOMXPath($doc1);
                             foreach( $domXpath1->query($excludeXpath) as $node )
                                 $this->deleteNodeReverseAlsoParent($node);
-                                #$node->parentNode->removeChild( $node );
                             $domXpath2 = new DOMXPath($doc2);
                             foreach( $domXpath2->query($excludeXpath) as $node )
-                                #$node->parentNode->removeChild( $node );
                                 $this->deleteNodeReverseAlsoParent($node);
                         }
                         else
                         {
                             $doc1Root = DH::findXPathSingleEntry($exclude, $doc1);
                             if( $doc1Root )
-                                #$doc1Root->parentNode->removeChild( $doc1Root );
-                                $this->deleteNodeReverseAlsoParent($node);
+                                $this->deleteNodeReverseAlsoParent($doc1Root);
 
                             $doc2Root = DH::findXPathSingleEntry($exclude, $doc2);
                             if( $doc2Root )
-                                #$doc2Root->parentNode->removeChild( $doc2Root );
-                                $this->deleteNodeReverseAlsoParent($node);
-
+                                $this->deleteNodeReverseAlsoParent($doc2Root);
                         }
                     }
 
