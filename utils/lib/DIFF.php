@@ -1530,10 +1530,11 @@ class DIFF extends UTIL
 
                     //1 -> new
                     //2 -> old (working)
-                    $test = 1;
+                    $test = 2;
 
                     if( $test == 1 )
                     {
+                        //not working for zone and credential-enforcement
                         $xpath_array = explode( "/", $xpath );
                         $addXpath_array = explode( "/", $add );
                         #print_r( $xpath_array );
