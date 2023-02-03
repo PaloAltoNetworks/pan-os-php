@@ -423,15 +423,17 @@ class DIFF extends UTIL
 
         PH::print_stdout( "\n####################################################################\n");
 
+        /*
         if( $this->failStatus_diff )
             print "diff true\n";
         else
-            print "diff true\n";
+            print "diff false\n";
 
         if( $this->failStatus_additionalruleorder )
             print "ordercheck true\n";
         else
-            print "ordercheck true\n";
+            print "ordercheck false\n";
+        */
 
         if( !$this->failStatus_diff && !$this->failStatus_additionalruleorder )
         {
@@ -1358,9 +1360,9 @@ class DIFF extends UTIL
         foreach( $array as $entry )
         {
             if( !is_array($entry) )
-                return false;
+                return true;
         }
-        return true;
+        return false;
     }
 
     function moveElement(&$array, $a, $b) {
@@ -1531,7 +1533,19 @@ class DIFF extends UTIL
                         $xpath = "";
                         $add = "";
                     }
-
+                    elseif( count($xpath_array) == 1 )
+                    {
+                        $xpath = "";
+                        foreach( $addXpath_array as $key => $item )
+                        {
+                            if( $key == 0 && $item == "entry[@name='*']")
+                            {
+                                $add = "";
+                                continue;
+                            }
+                            $add .= "/".$item;
+                        }
+                    }
                     if( isset($xpath_array[1]) && isset( $addXpath_array[1] ) && ($xpath_array[1] === $addXpath_array[1]) )
                     {
                         $xpath = str_replace($xpath_array[0] . "/" . $xpath_array[1], "", $xpath);
@@ -1554,6 +1568,9 @@ class DIFF extends UTIL
                             $add = str_replace("/" . $addXpath_array[1], "", $add);
                         } while( empty($xpath_array) || empty($addXpath_array) );
                     }
+
+                    #print "2XPATH: ".$xpath."\n";
+                    #print "2ADD: ".$add."\n";
 
                     if( $textContainsremoved )
                     {
