@@ -1586,6 +1586,19 @@ class DIFF extends UTIL
                         }
 
                         $add = str_replace( $xpath, "", $add );
+                        /*
+                        if( strpos( $add, $xpath) !== false )
+                        {
+                            $add = str_replace( $xpath, "", $add );
+                            $xpath = "";
+                        }
+
+                        if( strpos( $xpath, $add) !== false )
+                        {
+                            $xpath = str_replace( $add, "", $xpath );
+                            $add = "";
+                        }
+                        */
                     }
                     else
                     {
