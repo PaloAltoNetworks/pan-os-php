@@ -564,7 +564,7 @@ class AddressGroup
             return TRUE;
         }
         elseif( !$this->isDynamic() )
-                mwarning("object is not part of this group: " . $old->toString(), null, false);
+                mwarning("object: ".$old->toString()." is not part of this group: " . $this->_PANC_shortName(), null, false);
 
 
 

@@ -6,6 +6,9 @@ UTIL:
 * type=rule | improve filters for ruletype=defaultsecurity
 * type=overridefinder | improvement of usage message
 * type=rule | extend validation for different rule actions and filters
+* type=addressgroup-merger allowaddingmissingobjects allowmergingwithupperlevel | improve functionality to add / move missing objects
+* type=diff filter=jsonfile.json | improved if combinedruleordercheck is set in JSON
+* type=diff | filter=jsonfile.json - for exclude - introduce wildcard
 
 BUGFIX:
 * type=ironskillet-update | bugfix to download and store correct default iron-skillet snippets
