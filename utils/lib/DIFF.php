@@ -1486,8 +1486,8 @@ class DIFF extends UTIL
                 if($this->debugAPI)
                 {
                     print "---------------------\n";
-                    print "ORIGXPATH: ".$origXpath."\n";
-                    print "ORIGADD: ".$add."\n";
+                    print "O-ORIGXPATH: ".$origXpath."\n";
+                    print "O-ORIGADD: ".$add."\n";
                 }
 
                 if( strpos( $add, "entry[@name='*']" ) !== FALSE )
@@ -1501,8 +1501,9 @@ class DIFF extends UTIL
 
                         if($this->debugAPI)
                         {
-                            print "removed: ".$string_Containsremoved."\n";
-                            print "ADD0: ".$add."\n";
+                            print "------------------------\n";
+                            print "0-removed: ".$string_Containsremoved."\n";
+                            print "0-ADD: ".$add."\n";
                         }
 
                         $textContainsremoved = true;
@@ -1520,64 +1521,139 @@ class DIFF extends UTIL
                     else
                         continue;
 
-                    #print "1XPATH: ".$xpath."\n";
-                    #print "1ADD: ".$add."\n";
-
-                    $xpath_array = explode( "/", $xpath );
-                    $addXpath_array = explode( "/", $add );
-                    #print_r( $xpath_array );
-                    #print_r( $addXpath_array );
-
-                    if( count($xpath_array) == 1 && count($addXpath_array) == 1 && $addXpath_array[0] == "entry[@name='*']" )
+                    if($this->debugAPI)
                     {
-                        $xpath = "";
-                        $add = "";
+                        print "------------------------\n";
+                        print "1-XPATH: " . $xpath . "\n";
+                        print "1-ADD: " . $add . "\n";
                     }
-                    elseif( count($xpath_array) == 1 )
+
+                    //1 -> new
+                    //2 -> old (working)
+                    $test = 1;
+
+                    if( $test == 1 )
                     {
-                        $xpath = "";
-                        foreach( $addXpath_array as $key => $item )
+                        $xpath_array = explode( "/", $xpath );
+                        $addXpath_array = explode( "/", $add );
+                        #print_r( $xpath_array );
+                        #print_r( $addXpath_array );
+                        if( count($xpath_array) == 1 && count($addXpath_array) == 1 && $addXpath_array[0] == "entry[@name='*']" )
                         {
-                            if( $key == 0 && $item == "entry[@name='*']")
+                            //onboarding-type[text()[contains(.,'classic')]]
+                            $xpath = "";
+                            $add = "";
+                        }
+                        elseif( count($xpath_array) == 1 )
+                        {
+                            //mlav-engine-urlbased-enabled
+                            $xpath = "";
+                            foreach( $addXpath_array as $key => $item )
                             {
-                                $add = "";
-                                continue;
+                                if( $key == 0 && $item == "entry[@name='*']")
+                                {
+                                    $add = "";
+                                    continue;
+                                }
+                                $add .= "/".$item;
                             }
-                            $add .= "/".$item;
+                        }
+                        elseif( count($addXpath_array) == 1 )
+                        {
+                            //????
+                            $add = "";
+                            foreach( $xpath_array as $key => $item )
+                            {
+                                if( $key == 0)
+                                {
+                                    $xpath = "";
+                                    continue;
+                                }
+                                $xpath .= "/".$item;
+                            }
+                            $xpath = preg_replace('/^\\//', '', $xpath);
+                        }
+                        elseif( isset($xpath_array[1]) && isset( $addXpath_array[1] ) && ($xpath_array[1] === $addXpath_array[1]) )
+                        {
+                            $xpath = str_replace( "entry[@name='", "", $xpath );
+                            $pos = strpos( $xpath, "']" );
+                            $xpath = substr( $xpath, $pos+2, strlen($xpath)-$pos);
+                            $add = str_replace( "entry[@name='*']", "", $add );
+
+                            $xpath = preg_replace('/^\\//', '', $xpath);
+                            $add = preg_replace('/^\\//', '', $add);
+                        }
+
+                        $add = str_replace( $xpath, "", $add );
+                    }
+                    else
+                    {
+                        $xpath_array = explode( "/", $xpath );
+                        $addXpath_array = explode( "/", $add );
+                        #print_r( $xpath_array );
+                        #print_r( $addXpath_array );
+                        if( count($xpath_array) == 1 && count($addXpath_array) == 1 && $addXpath_array[0] == "entry[@name='*']" )
+                        {
+                            //onboarding-type[text()[contains(.,'classic')]]
+                            $xpath = "";
+                            $add = "";
+                        }
+                        elseif( count($xpath_array) == 1 )
+                        {
+                            //mlav-engine-urlbased-enabled
+                            $xpath = "";
+                            foreach( $addXpath_array as $key => $item )
+                            {
+                                if( $key == 0 && $item == "entry[@name='*']")
+                                {
+                                    $add = "";
+                                    continue;
+                                }
+                                $add .= "/".$item;
+                            }
+                        }
+                        if( isset($xpath_array[1]) && isset( $addXpath_array[1] ) && ($xpath_array[1] === $addXpath_array[1]) )
+                        {
+                            $xpath = str_replace($xpath_array[0] . "/" . $xpath_array[1], "", $xpath);
+                            $add = str_replace($addXpath_array[0] . "/" . $addXpath_array[1], "", $add);
+
+                            do
+                            {
+                                $xpath_array = explode("/", $xpath);
+                                $addXpath_array = explode("/", $add);
+                                unset($xpath_array[0]);
+                                unset($addXpath_array[0]);
+
+                                #print_r($xpath_array);
+                                #print_r($addXpath_array);
+                                //why does while loop not exist with statement at end?
+                                if( empty($xpath_array) || empty($addXpath_array) )
+                                    break;
+
+                                $xpath = str_replace("/" . $xpath_array[1], "", $xpath);
+                                $add = str_replace("/" . $addXpath_array[1], "", $add);
+                            } while( empty($xpath_array) || empty($addXpath_array) );
                         }
                     }
-                    if( isset($xpath_array[1]) && isset( $addXpath_array[1] ) && ($xpath_array[1] === $addXpath_array[1]) )
+
+                    if($this->debugAPI)
                     {
-                        $xpath = str_replace($xpath_array[0] . "/" . $xpath_array[1], "", $xpath);
-                        $add = str_replace($addXpath_array[0] . "/" . $addXpath_array[1], "", $add);
-
-                        do
-                        {
-                            $xpath_array = explode("/", $xpath);
-                            $addXpath_array = explode("/", $add);
-                            unset($xpath_array[0]);
-                            unset($addXpath_array[0]);
-
-                            #print_r($xpath_array);
-                            #print_r($addXpath_array);
-                            //why does while loop not exist with statement at end?
-                            if( empty($xpath_array) || empty($addXpath_array) )
-                                break;
-
-                            $xpath = str_replace("/" . $xpath_array[1], "", $xpath);
-                            $add = str_replace("/" . $addXpath_array[1], "", $add);
-                        } while( empty($xpath_array) || empty($addXpath_array) );
+                        print "---------------------\n";
+                        print "2-XPATH: ".$xpath."\n";
+                        print "2-ADD: ".$add."\n";
                     }
-
-                    #print "2XPATH: ".$xpath."\n";
-                    #print "2ADD: ".$add."\n";
 
                     if( $textContainsremoved )
                     {
-                        #print "---------------------\n";
-                        #print "2XPATH: ".$xpath."\n";
-                        #print "2ADD: ".$add."\n";
                         $newXpath = $add."/".$string_Containsremoved;
+
+                        if($this->debugAPI)
+                        {
+                            print "---------------------\n";
+                            print "3-XPATH: ".$xpath."\n";
+                            print "3-NEWXPATH: " . $newXpath . "\n";
+                            print "---------------------\n";
+                        }
                     }
                     else
                         $newXpath = str_replace($xpath, "", $add);
@@ -1605,7 +1681,11 @@ class DIFF extends UTIL
             }
 
             if( $this->debugAPI )
-                print "NEWXPATH: ".$newXpath."\n";
+            {
+                print "---------------------\n";
+                print "5-NEWXPATH: ".$newXpath."\n";
+            }
+
 
 
             //////textnode search
