@@ -418,23 +418,20 @@ class DIFF extends UTIL
                 $this->failStatus_additionalruleorder = $this->checkAdditionalRuleOrderArray( $combinedArray );
 
                 $this->additionalruleorderOUTPUT( $combinedArray );
-
-                //check Rules
-                /*
-                if( isset( $el1rulebase['rules'] ) )
-                    $this->failStatus_additionalruleorder = $this->additionalCheckRuleOrder( $el1rulebase, $el2rulebase );
-                else
-                {
-                    foreach( $el1rulebase as $key => $entry )
-                        $this->failStatus_additionalruleorder = $this->additionalCheckRuleOrder( $el1rulebase, $el2rulebase, $key );
-                    foreach( $el2rulebase as $key => $entry )
-                        $this->failStatus_additionalruleorder = $this->additionalCheckRuleOrder( $el1rulebase, $el2rulebase, $key );
-                }
-                */
             }
         }
 
         PH::print_stdout( "\n####################################################################\n");
+
+        if( $this->failStatus_diff )
+            print "diff true\n";
+        else
+            print "diff true\n";
+
+        if( $this->failStatus_additionalruleorder )
+            print "ordercheck true\n";
+        else
+            print "ordercheck true\n";
 
         if( !$this->failStatus_diff && !$this->failStatus_additionalruleorder )
         {
@@ -1356,73 +1353,6 @@ class DIFF extends UTIL
         }
     }
 
-    function additionalCheckRuleOrder( $el1rulebase, $el2rulebase, $type = null )
-    {
-        $fail = false;
-
-        if( $type === null )
-        {
-            foreach( $el1rulebase['rules'] as $key => $rule )
-            {
-                $posFile1 = array_search($key, array_keys($el1rulebase['rules']));
-                $posFile2 = array_search($key, array_keys($el2rulebase['rules']));
-
-                if( $posFile1 !== $posFile2 )
-                {
-                    $fail = true;
-                    PH::print_stdout( "\n Rule: ". $rule);
-                    PH::print_stdout( "x different RULE position: file1: pos".$posFile1." / file2: pos".$posFile2 );
-                }
-            }
-        }
-        elseif( $type !== null )
-        {
-            if( isset( $el1rulebase[$type] ) )
-                foreach( $el1rulebase[$type] as $key => $rule )
-                {
-                    if( isset( $el1rulebase[$type] ) )
-                        $posFile1 = array_search($key, array_keys($el1rulebase[$type]));
-                    else
-                        $posFile1 = "---";
-                    if( isset( $el2rulebase[$type] ) )
-                        $posFile2 = array_search($key, array_keys($el2rulebase[$type]));
-                    else
-                        $posFile2 = "---";
-
-                    if( $posFile1 !== $posFile2 )
-                    {
-                        $fail = true;
-                        PH::print_stdout( "\n ".$type." Rule: ". $rule);
-                        PH::print_stdout( "x different RULE position: file1: pos".$posFile1." / file2: pos".$posFile2 );
-                    }
-                    if( isset( $el2rulebase[$type] ) )
-                        unset( $el2rulebase[$type] );
-                }
-
-            if( isset( $el2rulebase[$type] ) )
-                foreach( $el2rulebase[$type] as $key => $rule )
-                {
-                    if( isset( $el1rulebase[$type] ) )
-                        $posFile1 = array_search($key, array_keys($el1rulebase[$type]));
-                    else
-                        $posFile1 = "---";
-                    if( isset( $el2rulebase[$type] ) )
-                        $posFile2 = array_search($key, array_keys($el2rulebase[$type]));
-                    else
-                        $posFile2 = "---";
-
-                    if( $posFile1 !== $posFile2 )
-                    {
-                        $fail = true;
-                        PH::print_stdout( "\n ".$type." Rule: ". $rule);
-                        PH::print_stdout( "x different RULE position: file1: pos".$posFile1." / file2: pos".$posFile2 );
-                    }
-                }
-        }
-
-        return $fail;
-    }
-
     function checkAdditionalRuleOrderArray( $array )
     {
         foreach( $array as $entry )
@@ -1546,6 +1476,9 @@ class DIFF extends UTIL
             ###########################
             ###########################
             //new approach
+
+            $xpath = $origXpath;
+
             if( strpos( $add, "'*'" ) !== FALSE )
             {
                 if($this->debugAPI)
@@ -1585,9 +1518,20 @@ class DIFF extends UTIL
                     else
                         continue;
 
+                    #print "1XPATH: ".$xpath."\n";
+                    #print "1ADD: ".$add."\n";
 
                     $xpath_array = explode( "/", $xpath );
                     $addXpath_array = explode( "/", $add );
+                    #print_r( $xpath_array );
+                    #print_r( $addXpath_array );
+
+                    if( count($xpath_array) == 1 && count($addXpath_array) == 1 && $addXpath_array[0] == "entry[@name='*']" )
+                    {
+                        $xpath = "";
+                        $add = "";
+                    }
+
                     if( isset($xpath_array[1]) && isset( $addXpath_array[1] ) && ($xpath_array[1] === $addXpath_array[1]) )
                     {
                         $xpath = str_replace($xpath_array[0] . "/" . $xpath_array[1], "", $xpath);
@@ -1663,7 +1607,6 @@ class DIFF extends UTIL
                             #$this->deleteNodeReverseAlsoParent($textNode);
                             $textNodeFound = TRUE;
                         }
-
                     }
                     else
                     {
@@ -1672,9 +1615,7 @@ class DIFF extends UTIL
                             #$this->deleteNodeReverseAlsoParent($textNode);
                             $textNodeFound = TRUE;
                         }
-
                     }
-
                 }
             }
 
@@ -1691,41 +1632,6 @@ class DIFF extends UTIL
                 elseif( strpos( $newXpath, "'*'" ) !== FALSE && $newXpath == "/entry[@name='*']" )
                         $continue = true;
             }
-            elseif( $xpath !== $newXpath )
-            {
-                #print "XPATH: ".$xpath."\n";
-                #print "NEWXPATH: ".$newXpath."\n";
-
-                if( strpos( $newXpath, "'*'" ) !== FALSE )
-                {
-                    /*
-                    $string_array = explode( "/", $newXpath );
-                    if( isset( $string_array[1] ) )
-                    {
-
-                        if( $node->nodeName == $string_array[1] )
-                        {
-                            if( $string_array[2] == "entry[@name='*']" )
-                            {
-                                $nodeList = $node->getElementsByTagName("entry");
-                                $nodeArray = iterator_to_array($nodeList);
-                                foreach( $nodeArray as $entry )
-                                    DH::removeChild( $node, $entry );
-                            }
-                        }
-                    }
-                    */
-                }
-                else
-                {
-                    /*
-                    //find newXpath within a node somewhere as a subnode, and remove this node
-                    $doc1Root = DH::findXPathSingleEntry($newXpath, $node);
-                    if( $doc1Root )
-                        DH::removeChild( $doc1Root->parentNode, $doc1Root );
-                    */
-                }
-            }
         }
 
 
@@ -1734,33 +1640,30 @@ class DIFF extends UTIL
             foreach( $this->empty as $empty )
             {
                 $xpath = $origXpath;
-                #print "ORIGXPATH: ".$xpath."\n";
-                #print "ORIGEMPTY: ".$empty."\n";
                 if(strpos( $empty, "entry[@name='*']" ) !== FALSE )
-                {
-                    $xpath = substr( $xpath, 0, strpos( $empty, "entry[@name='*']" )-1 );
-                    #print "2XPATH: ".$empty."\n";
-                }
+                    $xpath = substr( $xpath, 0, strpos( $empty, "entry[@name='*']" ) );
 
                 $empty = str_replace( $xpath, "", $empty );
-                #print "2EMPTY: ".$empty."\n";
 
                 $excludeXpath = $empty;
-                $excludeXpath = str_replace( "entry[@name='*']/", "entry/", $excludeXpath );
+                $excludeXpath = str_replace( "entry[@name='*']/", "", $excludeXpath );
                 if( $excludeXpath !== "" )
                 {
+                    if( $node->nodeName == $excludeXpath )
+                        $continue = true;
+
                     $domXpath1 = new DOMXPath($newdoc);
-                    #print "excludeXPATH: ".$excludeXpath."\n";
                     foreach( $domXpath1->query($excludeXpath) as $node )
                     {
-                        #DH::DEBUGprintDOMDocument($node);
                         if( !DH::hasChild($node) )
                             $this->deleteNodeReverseAlsoParent($node);
                     }
+
+                    if( $node->childNodes->length === 0 )
+                        $continue = true;
                 }
             }
         }
-
 
         return $continue;
     }
@@ -1776,88 +1679,5 @@ class DIFF extends UTIL
             if( !DH::hasChild($parent) )
                 $this->deleteNodeReverseAlsoParent($parent);
         }
-    }
-
-    function OLD_asterisksearch( $add, $xpath, &$node)
-    {
-        if( strpos( $add, "'*'" ) !== FALSE )
-        {
-            $textContainsremoved = false;
-            $string_Containsremoved = "";
-            if( strpos( $add, "[text()[contains(.,'") !== false )
-            {
-                $string_array = explode( "/", $add );
-                $lastkey = array_key_last($string_array);
-                $string_Containsremoved = $string_array[$lastkey];
-                #print "removed: ".$string_Containsremoved."\n";
-                $add = str_replace( "/".$string_Containsremoved, "", $add );
-                #print "\nADD0: ".$add."\n";
-                $textContainsremoved = true;
-            }
-
-            ###############################################################
-            //if $add xpath is longer then $xpath
-            $count1 = substr_count($xpath, '/');
-            $count2 = substr_count($add, '/');
-            if( $this->debugAPI )
-            {
-                #print "\nMAINXPATH: ".$xpath."\n";
-                #print "\nADD0: ".$add."\n";
-                #print "count1: ".$count1."\n";
-                #print "count2: ".$count2."\n";
-            }
-
-
-            $substring = "'*']";
-            $length = strlen($substring);
-            $endwithstring = false;
-            if ( substr_compare($add, $substring, -$length) === 0 )
-            {
-                #$endwithstring=true;
-            }
-
-
-
-            if( $count2-1 > $count1 )#&& !$endwithstring )
-            {
-                print "manipulation of xpath\n";
-                #Todo: validation needed!!!!!!!!!!
-                # newly added for specific part
-                $xpath .= $node->getNodePath();
-                $xpathsearchmanipulation = true;
-            }
-            ###############################################################
-
-            $search2 = preg_quote($add, '/');
-            $search2 = str_replace( "'\*'", "(.*?)", $search2);
-            if( $this->debugAPI )
-                print "searchstring: ".$search2."\n";
-
-            $pattern = '/'.$search2.'/is';
-            if( preg_match($pattern, $xpath, $matches) )
-            {
-                if( $this->debugAPI )
-                    print_r($matches);
-                #print "\nXPATH1: ".$xpath."\n";
-                #print "\nADD1: ".$add."\n";
-                //CASE2 - '*' somewhere in between
-                $newXpath = str_replace( $matches[0], "", $xpath );
-                if( $textContainsremoved )
-                    $newXpath = $newXpath."/".$string_Containsremoved;
-                #print "NEWXPATH1: ".$newXpath."\n";
-            }
-
-            else
-            {
-                //CASE1 - '*' at end, eg. "/PATH/entry[@name='*']"
-                #print "\nXPATH2: ".$xpath."\n";
-                #print "\nADD2: ".$add."\n";
-                $newXpath = str_replace( $xpath, "", $add );
-                if( $textContainsremoved )
-                    $newXpath = $newXpath."/".$string_Containsremoved;
-                #print "NEWXPATH2: ".$newXpath."\n";
-            }
-        }
-        #else
     }
 }
