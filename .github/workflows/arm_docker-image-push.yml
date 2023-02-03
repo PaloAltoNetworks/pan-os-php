@@ -33,4 +33,4 @@ jobs:
           context: .
           file: docker/Dockerfile_arm64v8
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/pan-os-php-arm:${{ secrets.DOCKER_HUB_TAG }}
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/pan-os-php-arm:test${{ secrets.DOCKER_HUB_TAG }}
