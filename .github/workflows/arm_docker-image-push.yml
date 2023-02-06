@@ -36,12 +36,12 @@ jobs:
           platforms: linux/arm64
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/pan-os-php-arm:test${{ secrets.DOCKER_HUB_TAG }}
-      #-
-      #  name: Build and push pan-os-php-arm
-      #  uses: docker/build-push-action@v2
-      #  with:
-      #    context: .
-      #    file: docker/Dockerfile_arm64v8_full
-      #    platforms: linux/arm64
-      #    push: true
-      #    tags: ${{ secrets.DOCKER_HUB_USERNAME }}/pan-os-php-arm:testfull${{ secrets.DOCKER_HUB_TAG }}
+      -
+        name: Build and push pan-os-php-arm
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: docker/Dockerfile_arm64v8_full
+          platforms: linux/arm64
+          push: true
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/pan-os-php-arm:testfull${{ secrets.DOCKER_HUB_TAG }}
