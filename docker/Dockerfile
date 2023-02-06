@@ -8,27 +8,25 @@ SHELL ["/bin/bash", "-c"]
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update --fix-missing
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get install --yes --fix-missing \
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
     tzdata \
     git \
     bash-completion
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get install --yes --fix-missing \
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
     php$php_var \
     php$php_var-curl \
     php$php_var-dom \
     php$php_var-mbstring \
     php$php_var-bcmath \
-    php$php_var-yaml
-
-RUN DEBIAN_FRONTEND=noninteractive apt-get install --yes --fix-missing \
+    php$php_var-yaml \
     python3 \
     python3-pandas \
     python3-xlsxwriter \
     python3-netaddr \
     python3-requests
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get install --yes --fix-missing jq
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y jq
 
 WORKDIR /tools/pan-os-php
 

@@ -6,11 +6,11 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 ENV PHP_MEMORY_LIMIT=128M
 
-RUN apt-get update --yes --fix-missing
-RUN apt-get install --yes tzdata git
+RUN apt-get update -y --fix-missing
+RUN apt-get install -y tzdata git
 
 # libraries for PHP
-RUN apt-get install --yes libcurl3-openssl-dev libxml2-dev libonig-dev libyaml-dev
+RUN apt-get install -y libcurl3-openssl-dev libxml2-dev libonig-dev libyaml-dev
 # PHP Extensions
 RUN docker-php-ext-install -j$(nproc) curl dom mbstring bcmath mysqli
 RUN docker-php-ext-enable curl dom mbstring bcmath mysqli
