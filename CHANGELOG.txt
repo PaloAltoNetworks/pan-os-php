@@ -1,8 +1,8 @@
 CHANGELOG
 
-
 2.0.70
 UTIL:
+* type=diff | redesign filter JSON "combinedruleordercheck" feature
 
 BUGFIX:
 * type=diff - JSON filter file - regression bug for "empty"
