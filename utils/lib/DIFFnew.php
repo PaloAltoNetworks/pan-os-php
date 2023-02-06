@@ -1602,6 +1602,8 @@ class DIFF extends UTIL
                     }
                     else
                     {
+                        $this->getSearchXpath($xpath, $add);
+                        /*
                         $xpath_array = explode( "/", $xpath );
                         $addXpath_array = explode( "/", $add );
                         #print_r( $xpath_array );
@@ -1648,6 +1650,7 @@ class DIFF extends UTIL
                                 $add = str_replace("/" . $addXpath_array[1], "", $add);
                             } while( empty($xpath_array) || empty($addXpath_array) );
                         }
+                        */
                     }
 
                     if($this->debugAPI)
@@ -1715,16 +1718,16 @@ class DIFF extends UTIL
                     {
                         if( $textNode !== FALSE && !DH::hasChild($textNode) )
                         {
-                            #$this->deleteNodeReverseAlsoParent($textNode);
-                            $textNodeFound = TRUE;
+                            $this->deleteNodeReverseAlsoParent($textNode);
+                            #$textNodeFound = TRUE;
                         }
                     }
                     else
                     {
                         if( $textNode !== FALSE )
                         {
-                            #$this->deleteNodeReverseAlsoParent($textNode);
-                            $textNodeFound = TRUE;
+                            $this->deleteNodeReverseAlsoParent($textNode);
+                            #$textNodeFound = TRUE;
                         }
                     }
                 }
@@ -1750,24 +1753,70 @@ class DIFF extends UTIL
         {
             foreach( $this->empty as $empty )
             {
+                #if( $this->debugAPI )
+                #    print "EMPTY1: ".$empty."\n";
+
                 $xpath = $origXpath;
                 if(strpos( $empty, "entry[@name='*']" ) !== FALSE )
                     $xpath = substr( $xpath, 0, strpos( $empty, "entry[@name='*']" ) );
 
                 $empty = str_replace( $xpath, "", $empty );
 
+                if( $this->debugAPI )
+                    print " * EMPTY2: ".$empty."\n";
+
                 $excludeXpath = $empty;
                 $excludeXpath = str_replace( "entry[@name='*']/", "", $excludeXpath );
                 if( $excludeXpath !== "" )
                 {
+                    if( $this->debugAPI )
+                    {
+                        print " - excludepath: ".$excludeXpath."\n";
+                    }
+
+
                     if( $node->nodeName == $excludeXpath )
                         $continue = true;
 
                     $domXpath1 = new DOMXPath($newdoc);
                     foreach( $domXpath1->query($excludeXpath) as $node )
                     {
+                        if( $this->debugAPI )
+                        {
+                            print "1------------------------------------------------------------------------------\n";
+                            DH::DEBUGprintDOMDocument($node);
+                        }
+
+                        $nodePath = $node->getNodePath();
+
+                        if( $this->debugAPI )
+                        {
+                            print " - nodename1   : ".$node->nodeName."\n";
+                            print " - nodepath1   : ".$nodePath."\n";
+                            print "2------------------------------------------------------------------------------\n";
+                        }
+
+                        if( $excludeXpath === $nodePath )
+                        {
+                            if( DH::hasChild($node) )
+                            {
+                                $tmpNode = $this->getLastChild($node);
+                                $this->deleteNodeReverseAlsoParent($tmpNode);
+                            }
+                        }
+
+
                         if( !DH::hasChild($node) )
+                        {
+                            if( $this->debugAPI )
+                            {
+                                print "removed3\n";
+                                print " - nodepath3   : ".$node->getNodePath()."\n";
+                                print "3------------------------------------------------------------------------------\n";
+                            }
+
                             $this->deleteNodeReverseAlsoParent($node);
+                        }
                     }
 
                     /*
@@ -1792,9 +1841,99 @@ class DIFF extends UTIL
             $parent = $node->parentNode;
             if( $parent === False || $parent === null )
                 return;
+            if( $this->debugAPI )
+            {
+                print "node removed: ".$node->nodeName."\n";
+            }
+
             $parent->removeChild( $node );
             if( !DH::hasChild($parent) )
+            {
+                if( $this->debugAPI )
+                    print "node check parent\n";
                 $this->deleteNodeReverseAlsoParent($parent);
+            }
+            else
+            {
+                if( $this->debugAPI )
+                    print "child found check from there\n";
+                foreach( $node->childNodes as $child )
+                {
+                    /** @var null|DOMElement $child*/
+                    if( $child->nodeType != XML_ELEMENT_NODE )
+                        continue;
+
+                    $this->deleteNodeReverseAlsoParent($child);
+                }
+            }
+
+        }
+    }
+
+    function getLastChild($node)
+    {
+        $returnChild = null;
+        foreach( $node->childNodes as $child )
+        {
+            /** @var null|DOMElement $child*/
+            if( $child->nodeType != XML_ELEMENT_NODE )
+                continue;
+
+            if( DH::hasChild($child) )
+                $returnChild = $this->getLastChild($child);
+            else
+                $returnChild = $child;
+        }
+        return $returnChild;
+    }
+
+    function getSearchXpath(&$xpath, &$add)
+    {
+        $xpath_array = explode( "/", $xpath );
+        $addXpath_array = explode( "/", $add );
+        #print_r( $xpath_array );
+        #print_r( $addXpath_array );
+        if( count($xpath_array) == 1 && count($addXpath_array) == 1 && $addXpath_array[0] == "entry[@name='*']" )
+        {
+            //onboarding-type[text()[contains(.,'classic')]]
+            $xpath = "";
+            $add = "";
+        }
+        elseif( count($xpath_array) == 1 )
+        {
+            //mlav-engine-urlbased-enabled
+            $xpath = "";
+            foreach( $addXpath_array as $key => $item )
+            {
+                if( $key == 0 && $item == "entry[@name='*']")
+                {
+                    $add = "";
+                    continue;
+                }
+                $add .= "/".$item;
+            }
+        }
+        if( isset($xpath_array[1]) && isset( $addXpath_array[1] ) && ($xpath_array[1] === $addXpath_array[1]) )
+        {
+            $xpath = str_replace($xpath_array[0] . "/" . $xpath_array[1], "", $xpath);
+            $add = str_replace($addXpath_array[0] . "/" . $addXpath_array[1], "", $add);
+
+            do
+            {
+                $xpath_array = explode("/", $xpath);
+                $addXpath_array = explode("/", $add);
+                unset($xpath_array[0]);
+                unset($addXpath_array[0]);
+
+                #print_r($xpath_array);
+                #print_r($addXpath_array);
+                //why does while loop not exist with statement at end?
+                if( empty($xpath_array) || empty($addXpath_array) )
+                    break;
+
+                $xpath = str_replace("/" . $xpath_array[1], "", $xpath);
+                $add = str_replace("/" . $addXpath_array[1], "", $add);
+            } while( empty($xpath_array) || empty($addXpath_array) );
         }
     }
 }

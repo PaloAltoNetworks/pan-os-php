@@ -1,6 +1,16 @@
 CHANGELOG
 
-2.0.69
+
+2.0.70
+UTIL:
+
+BUGFIX:
+* type=diff - JSON filter file - regression bug for "empty"
+
+GENERAL
+
+
+2.0.69 (20230203)
 UTIL:
 * type=device | code improvements for actions=sp_spg-create-alert-only-bp/sp_spg-create-bp - reduce duplicate code
 * type=rule | improve filters for ruletype=defaultsecurity
