@@ -8,6 +8,7 @@ BUGFIX:
 * type=diff - JSON filter file - regression bug for "empty"
 
 GENERAL
+* update dockerfiles to adjust for github actions
 
 
 2.0.69 (20230203)
