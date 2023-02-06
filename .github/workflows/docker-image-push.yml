@@ -31,7 +31,6 @@ jobs:
         with:
           context: .
           file: docker/Dockerfile
-          platforms: linux/amd64
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/pan-os-php:${{ secrets.DOCKER_HUB_TAG }}
       -
@@ -40,7 +39,6 @@ jobs:
         with:
           context: .
           file: docker/Dockerfile
-          platforms: linux/amd64
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/pan-os-php-amd:${{ secrets.DOCKER_HUB_TAG }}
       -
@@ -49,7 +47,6 @@ jobs:
         with:
           context: .
           file: docker/Dockerfile-php
-          platforms: linux/amd64
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/pan-os-php-cli:${{ secrets.DOCKER_HUB_TAG }}
       -
@@ -58,6 +55,5 @@ jobs:
         with:
           context: .
           file: docker/Dockerfile-API
-          platforms: linux/amd64
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/pan-os-php-api:${{ secrets.DOCKER_HUB_TAG }}
