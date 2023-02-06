@@ -5,6 +5,7 @@ CHANGELOG
 UTIL:
 
 BUGFIX:
+* type=diff - JSON filter file - regression bug for "empty"
 
 GENERAL
 
