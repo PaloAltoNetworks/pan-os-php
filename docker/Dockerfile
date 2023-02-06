@@ -8,12 +8,12 @@ SHELL ["/bin/bash", "-c"]
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update --fix-missing
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get install --fix-missing -y \
+RUN DEBIAN_FRONTEND=noninteractive apt-get install --yes --fix-missing \
     tzdata \
     git \
     bash-completion
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get install --fix-missing -y \
+RUN DEBIAN_FRONTEND=noninteractive apt-get install --yes --fix-missing \
     php$php_var \
     php$php_var-curl \
     php$php_var-dom \
@@ -21,14 +21,14 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install --fix-missing -y \
     php$php_var-bcmath \
     php$php_var-yaml
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get install --fix-missing -y \
+RUN DEBIAN_FRONTEND=noninteractive apt-get install --yes --fix-missing \
     python3 \
     python3-pandas \
     python3-xlsxwriter \
     python3-netaddr \
     python3-requests
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get install --fix-missing -y jq
+RUN DEBIAN_FRONTEND=noninteractive apt-get install --yes --fix-missing jq
 
 WORKDIR /tools/pan-os-php
 
