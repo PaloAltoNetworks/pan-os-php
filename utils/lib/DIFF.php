@@ -383,7 +383,8 @@ class DIFF extends UTIL
                     #print "---------------------------------------------\n";
                     #DH::DEBUGprintDOMDocument( $file1Element );
                     #print "FILE1\n";
-                    print_r($combinedArray1);
+                    if( !empty($combinedArray1) )
+                        print_r($combinedArray1);
                 }
 
                 $combinedArray2 = array();
@@ -393,7 +394,8 @@ class DIFF extends UTIL
                     #print "---------------------------------------------\n";
                     #DH::DEBUGprintDOMDocument( $file2Element );
                     #print "FILE2\n";
-                    print_r($combinedArray2);
+                    if( !empty($combinedArray2) )
+                        print_r($combinedArray2);
                 }
 
                 ########################################################################################################################
@@ -1690,18 +1692,38 @@ class DIFF extends UTIL
                             {
                                 $xpath_array = explode("/", $xpath);
                                 $addXpath_array = explode("/", $add);
-                                unset($xpath_array[0]);
-                                unset($addXpath_array[0]);
 
-                                #print_r($xpath_array);
-                                #print_r($addXpath_array);
-                                //why does while loop not exist with statement at end?
+                                if( $xpath_array[0] === $addXpath_array[0] || ($addXpath_array[0] === "entry[@name='*']") )
+                                {
+                                    unset($xpath_array[0]);
+                                    unset($addXpath_array[0]);
+                                    $xpath_array = array_values($xpath_array);
+                                    $addXpath_array = array_values($addXpath_array);
+                                }
+                                else
+                                    break;
+
+
+                                if($this->debugAPI)
+                                {
+                                    print_r($xpath_array);
+                                    print_r($addXpath_array);
+                                }
+
                                 if( empty($xpath_array) || empty($addXpath_array) )
                                     break;
 
-                                $xpath = str_replace("/" . $xpath_array[1], "", $xpath);
-                                $add = str_replace("/" . $addXpath_array[1], "", $add);
-                            } while( empty($xpath_array) || empty($addXpath_array) );
+                                //[0] - as reindexed above with array_values()
+                                if( $xpath_array[0] === $addXpath_array[0] || ($addXpath_array[0] === "entry[@name='*']") )
+                                {
+                                    $xpath = str_replace("/" . $xpath_array[0], "", $xpath);
+                                    $add = str_replace("/" . $addXpath_array[0], "", $add);
+                                }
+                                else
+                                    break;
+
+
+                            } while( !empty($xpath_array) && !empty($addXpath_array) );
                         }
                     }
 

@@ -6,6 +6,7 @@ UTIL:
 
 BUGFIX:
 * type=diff - JSON filter file - regression bug for "empty"
+* type=diff | bugfix for filter=jsonfile.json | not handling xpath split correctly
 
 GENERAL
 * update dockerfiles to adjust for github actions
