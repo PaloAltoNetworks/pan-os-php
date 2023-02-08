@@ -1753,7 +1753,8 @@ class DIFF extends UTIL
                 }
                 elseif( strpos( $add, "[text()[contains(.,'") !== false )
                 {
-                    print "text contains only found - no entry *\n";
+                    if( $this->debugAPI )
+                        print "text contains only found - no entry *\n";
                 }
             }
             ###########################
