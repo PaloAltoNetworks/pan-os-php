@@ -1659,6 +1659,8 @@ class DIFF extends UTIL
                     }
                     else
                     {
+                        //working feature solution
+
                         $xpath_array = explode( "/", $xpath );
                         $addXpath_array = explode( "/", $add );
                         #print_r( $xpath_array );
@@ -1828,18 +1830,53 @@ class DIFF extends UTIL
         {
             foreach( $this->empty as $empty )
             {
+                if( $this->debugAPI )
+                {
+                    PH::print_stdout( "-------------------" );
+                    PH::print_stdout( "0-ORIGxpath: ".$origXpath);
+                    PH::print_stdout( "0-EMPTYxpath: ".$empty );
+                }
+
                 $xpath = $origXpath;
                 if(strpos( $empty, "entry[@name='*']" ) !== FALSE )
                     $xpath = substr( $xpath, 0, strpos( $empty, "entry[@name='*']" ) );
 
                 $empty = str_replace( $xpath, "", $empty );
 
+                //fix empty string if leading '/' available
+                $prefix = '/';
+                if (substr($empty, 0, strlen($prefix)) == $prefix) {
+                    $empty = substr($empty, strlen($prefix));
+                }
+
+                if( $this->debugAPI )
+                {
+                    PH::print_stdout( "1-Xpath: ".$origXpath);
+                    PH::print_stdout( "1-EMPTYxpath: ".$empty );
+                }
+
                 $excludeXpath = $empty;
                 $excludeXpath = str_replace( "entry[@name='*']/", "", $excludeXpath );
+                if( $this->debugAPI )
+                {
+                    PH::print_stdout( "2-Xpath: ".$origXpath);
+                    PH::print_stdout( "2-EMPTYxpath: ".$empty );
+                }
+
                 if( $excludeXpath !== "" )
                 {
-                    if( $node->nodeName == $excludeXpath )
-                        $continue = true;
+                    $tmpNodeName = $node->nodeName;
+                    if( $this->debugAPI )
+                    {
+                        PH::print_stdout( "3-nodeName: ".$tmpNodeName);
+                        PH::print_stdout( "3-EXCLUDExpath: ".$excludeXpath );
+                    }
+
+                    if( $tmpNodeName == $excludeXpath )
+                    {
+                        if( !DH::hasChild($node) )
+                            $continue = true;
+                    }
 
                     $domXpath1 = new DOMXPath($newdoc);
                     foreach( $domXpath1->query($excludeXpath) as $node )
