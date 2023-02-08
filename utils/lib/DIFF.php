@@ -1495,7 +1495,7 @@ class DIFF extends UTIL
             if( $item['file'] == "file2" )
             {
                 $finalArray[$key]['check'] = "<<<<<<<<<<";
-                $move[] = array( $key, $item['pos2']+1 );
+                $move[] = array( $key, $item['pos2']-1 );
             }
 
         }
@@ -1884,15 +1884,6 @@ class DIFF extends UTIL
                         if( !DH::hasChild($node) )
                             $this->deleteNodeReverseAlsoParent($node);
                     }
-
-                    /*
-                     * problem
-                    if( $node->childNodes->length === 0 )
-                    {
-                        print "2\n";
-                        $continue = true;
-                    }
-                    */
                 }
             }
         }

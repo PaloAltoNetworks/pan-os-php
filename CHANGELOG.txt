@@ -8,6 +8,7 @@ BUGFIX:
 * type=diff - JSON filter file - regression bug for "empty"
 * type=diff | bugfix for filter=jsonfile.json | not handling xpath split correctly
 * type=diff | bugfix filter JSON file "EMPTY" part
+* type=diff | JSON filter file - fix ruleorder display for "combinedruleordercheck"
 
 GENERAL
 * update dockerfiles to adjust for github actions
