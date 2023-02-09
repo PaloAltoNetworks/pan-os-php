@@ -12,6 +12,7 @@ BUGFIX:
 
 GENERAL
 * update dockerfiles to adjust for github actions
+* pan-os-php version shadow-json | remove second duplicate output
 
 
 2.0.69 (20230203)
