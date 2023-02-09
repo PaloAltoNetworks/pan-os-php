@@ -1,13 +1,18 @@
 CHANGELOG
 
-
 2.0.70
 UTIL:
+* type=diff | redesign filter JSON "combinedruleordercheck" feature
 
 BUGFIX:
 * type=diff - JSON filter file - regression bug for "empty"
+* type=diff | bugfix for filter=jsonfile.json | not handling xpath split correctly
+* type=diff | bugfix filter JSON file "EMPTY" part
+* type=diff | JSON filter file - fix ruleorder display for "combinedruleordercheck"
 
 GENERAL
+* update dockerfiles to adjust for github actions
+* pan-os-php version shadow-json | remove second duplicate output
 
 
 2.0.69 (20230203)

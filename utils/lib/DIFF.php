@@ -295,13 +295,17 @@ class DIFF extends UTIL
                     $this->additionalRuleOrderArray = $array['combinedruleordercheck'];
 
 
-
                     foreach( $this->additionalRuleOrderArray as $key => $entry )
                     {
                         if( isset( $entry['pre'] ) && isset( $entry['post'] ) )
                         {
                             $this->additionalRuleOrderpreXpath[$key] = $entry['pre'];
                             $this->additionalRuleOrderpostXpath[$key] = $entry['post'];
+
+                            if( isset($entry['pre']) )
+                                $this->excludes[] = $entry['pre'];
+                            if( isset($entry['post']) )
+                                $this->excludes[] = $entry['post'];
                         }
                     }
                 }
@@ -370,28 +374,28 @@ class DIFF extends UTIL
 
             foreach( $this->additionalRuleOrderpreXpath as $key => $entry)
             {
-                PH::print_stdout( " - preXpath: ".$this->additionalRuleOrderpreXpath[$key]);
-                PH::print_stdout( " - postXpath: ".$this->additionalRuleOrderpostXpath[$key]);
-                PH::print_stdout();
+
 
                 $combinedArray1 = array();
                 $file1Element = $this->additionalRuleOrderCalculateXpathGetElement( "file1", $origDoc1, $this->additionalRuleOrderpreXpath[$key], $this->additionalRuleOrderpostXpath[$key], $combinedArray1 );
                 if( $this->debugAPI )
                 {
-                    #print "PRE\n";
+                    #print "---------------------------------------------\n";
                     #DH::DEBUGprintDOMDocument( $file1Element );
-                    print "FILE1\n";
-                    print_r($combinedArray1);
+                    #print "FILE1\n";
+                    if( !empty($combinedArray1) )
+                        print_r($combinedArray1);
                 }
 
                 $combinedArray2 = array();
                 $file2Element = $this->additionalRuleOrderCalculateXpathGetElement( "file2", $origDoc2, $this->additionalRuleOrderpreXpath[$key], $this->additionalRuleOrderpostXpath[$key], $combinedArray2 );
                 if( $this->debugAPI )
                 {
-                    #print "POST\n";
+                    #print "---------------------------------------------\n";
                     #DH::DEBUGprintDOMDocument( $file2Element );
-                    print "FILE2\n";
-                    print_r($combinedArray2);
+                    #print "FILE2\n";
+                    if( !empty($combinedArray2) )
+                        print_r($combinedArray2);
                 }
 
                 ########################################################################################################################
@@ -401,6 +405,32 @@ class DIFF extends UTIL
                     mwarning( "this is not a DG config - or filter JSON 'combinedruleordercheck' xpath not found", null, FALSE );
                     break;
                 }
+
+                if( count($combinedArray1) > 0 )
+                {
+                    PH::print_stdout();
+                    PH::print_stdout( "--------------------------------------");
+                    PH::print_stdout();
+
+                    PH::print_stdout( " - preXpath: ".$this->additionalRuleOrderpreXpath[$key]);
+                    PH::print_stdout( " - postXpath: ".$this->additionalRuleOrderpostXpath[$key]);
+                    PH::print_stdout();
+                }
+
+                ########################################################################################################################
+                //comparing ruletype based on combinedruleordercheck
+
+                if( $file1Element !== False && $file2Element !== False )
+                    $this->compareElements($file1Element, $file2Element);
+
+                if( count($combinedArray1) > 0 )
+                {
+                    PH::print_stdout();
+                    PH::print_stdout( "-----");
+                    PH::print_stdout();
+                }
+
+                ########################################################################################################################
 
                 $combinedArray = array_merge_recursive($combinedArray1, $combinedArray2);
 
@@ -418,6 +448,13 @@ class DIFF extends UTIL
                 $this->failStatus_additionalruleorder = $this->checkAdditionalRuleOrderArray( $combinedArray );
 
                 $this->additionalruleorderOUTPUT( $combinedArray );
+
+                if( count($combinedArray1) > 0 )
+                {
+                    PH::print_stdout();
+                    PH::print_stdout();
+                }
+
             }
         }
 
@@ -1225,6 +1262,8 @@ class DIFF extends UTIL
         $preXpathArray = explode("/", $preXpath);
         $postXpathArray = explode("/", $postXpath);
 
+        $newNodename = "dummy";
+
         $root = $doc->documentElement;
         $set = FALSE;
         foreach( $preXpathArray as $key => $item )
@@ -1235,7 +1274,11 @@ class DIFF extends UTIL
             if( $demo !== FALSE )
             {
                 if( array_key_last($preXpathArray) == $key )
+                {
+                    $newNodename = $preXpathArray[$key];
                     $set = TRUE;
+                }
+
                 $root = $demo;
             }
         }
@@ -1264,57 +1307,71 @@ class DIFF extends UTIL
 
         #############
         $finalDoc = new DOMDocument();
-        $nodeconfig = $finalDoc->createElement("config");
-        $finalDoc->appendChild($nodeconfig);
+        ///policy/panorama/pre-rulebase/
+        $nodePolicy = $finalDoc->createElement("policy");
+        $finalDoc->appendChild($nodePolicy);
+        $nodePanorama = $finalDoc->createElement("panorama");
+        $nodePolicy->appendChild($nodePanorama);
+        $nodeRulebase = $finalDoc->createElement("pre-rulebase");
+        $nodePanorama->appendChild($nodeRulebase);
+        //newNodename => expected to be a ruletype
+        $nodeconfig1 = $finalDoc->createElement($newNodename);
+        $nodeRulebase->appendChild($nodeconfig1);
+        $nodeconfig = $finalDoc->createElement("rules");
+        $nodeconfig1->appendChild($nodeconfig);
 
-        #if( $preElement === false )
-        #    return false;
+
 
         $preArray = array();
-        $preRules = DH::findFirstElement("rules", $preElement);
         $i=1;
-        if( $preRules !== FALSE && $preElement->parentNode->nodeName == "pre-rulebase" )
+        if( $preElement !== false && $preElement !== null )
         {
-
-            foreach( $preRules->childNodes as $childNode )
+            $preRules = DH::findFirstElement("rules", $preElement);
+            if( $preRules !== false )
             {
-                /** @var null|DOMElement $childNode */
-                if( $childNode->nodeType != XML_ELEMENT_NODE )
-                    continue;
+                if( $preRules !== FALSE && $preElement->parentNode->nodeName == "pre-rulebase" )
+                {
+                    foreach( $preRules->childNodes as $childNode )
+                    {
+                        /** @var null|DOMElement $childNode */
+                        if( $childNode->nodeType != XML_ELEMENT_NODE )
+                            continue;
 
-                $childNode->setAttribute( "ruletype", "pre" );
-                $name = DH::findAttribute("name", $childNode);
-                $preArray[$name] = $tmp."-pre-".$i;
-                $node2 = $finalDoc->importNode($childNode, TRUE);
-                /** @var DOMElement $node2 */
+                        $childNode->setAttribute( "ruletype", "pre" );
+                        $name = DH::findAttribute("name", $childNode);
+                        $preArray[$name] = $tmp."-pre-".$i;
+                        $node2 = $finalDoc->importNode($childNode, TRUE);
+                        /** @var DOMElement $node2 */
 
-                $nodeconfig->appendChild($node2);
-                $i++;
+                        $nodeconfig->appendChild($node2);
+                        $i++;
+                    }
+                }
             }
         }
+
 
         $postArray = array();
         if( $postElement !== false )
         {
-            //rules element from new config file
-            $preRules = DH::findFirstElementOrCreate( "rules", $nodeconfig);
-
             $postRules = DH::findFirstElement("rules", $postElement);
-
-            foreach( $postRules->childNodes as $childNode )
+            if( $postRules !== false )
             {
-                /** @var null|DOMElement $childNode */
-                if( $childNode->nodeType != XML_ELEMENT_NODE )
-                    continue;
+                foreach( $postRules->childNodes as $childNode )
+                {
+                    /** @var null|DOMElement $childNode */
+                    if( $childNode->nodeType != XML_ELEMENT_NODE )
+                        continue;
 
-                $childNode->setAttribute( "ruletype", "post" );
-                $name = DH::findAttribute("name", $childNode);
-                $postArray[$name] = $tmp."-post-".$i;
-                $node = $finalDoc->importNode($childNode, TRUE);
+                    $childNode->setAttribute( "ruletype", "post" );
+                    $name = DH::findAttribute("name", $childNode);
+                    $postArray[$name] = $tmp."-post-".$i;
+                    $node = $finalDoc->importNode($childNode, TRUE);
 
-                $preRules->appendChild($node);
-                #DH::DEBUGprintDOMDocument($node);
-                $i++;
+                    $nodeconfig->appendChild($node);
+
+                    $i++;
+                }
             }
         }
 
@@ -1438,7 +1495,7 @@ class DIFF extends UTIL
             if( $item['file'] == "file2" )
             {
                 $finalArray[$key]['check'] = "<<<<<<<<<<";
-                $move[] = array( $key, $item['pos2']+1 );
+                $move[] = array( $key, $item['pos2']-1 );
             }
 
         }
@@ -1602,6 +1659,8 @@ class DIFF extends UTIL
                     }
                     else
                     {
+                        //working feature solution
+
                         $xpath_array = explode( "/", $xpath );
                         $addXpath_array = explode( "/", $add );
                         #print_r( $xpath_array );
@@ -1635,18 +1694,38 @@ class DIFF extends UTIL
                             {
                                 $xpath_array = explode("/", $xpath);
                                 $addXpath_array = explode("/", $add);
-                                unset($xpath_array[0]);
-                                unset($addXpath_array[0]);
 
-                                #print_r($xpath_array);
-                                #print_r($addXpath_array);
-                                //why does while loop not exist with statement at end?
+                                if( $xpath_array[0] === $addXpath_array[0] || ($addXpath_array[0] === "entry[@name='*']") )
+                                {
+                                    unset($xpath_array[0]);
+                                    unset($addXpath_array[0]);
+                                    $xpath_array = array_values($xpath_array);
+                                    $addXpath_array = array_values($addXpath_array);
+                                }
+                                else
+                                    break;
+
+
+                                if($this->debugAPI)
+                                {
+                                    print_r($xpath_array);
+                                    print_r($addXpath_array);
+                                }
+
                                 if( empty($xpath_array) || empty($addXpath_array) )
                                     break;
 
-                                $xpath = str_replace("/" . $xpath_array[1], "", $xpath);
-                                $add = str_replace("/" . $addXpath_array[1], "", $add);
-                            } while( empty($xpath_array) || empty($addXpath_array) );
+                                //[0] - as reindexed above with array_values()
+                                if( $xpath_array[0] === $addXpath_array[0] || ($addXpath_array[0] === "entry[@name='*']") )
+                                {
+                                    $xpath = str_replace("/" . $xpath_array[0], "", $xpath);
+                                    $add = str_replace("/" . $addXpath_array[0], "", $add);
+                                }
+                                else
+                                    break;
+
+
+                            } while( !empty($xpath_array) && !empty($addXpath_array) );
                         }
                     }
 
@@ -1676,7 +1755,8 @@ class DIFF extends UTIL
                 }
                 elseif( strpos( $add, "[text()[contains(.,'") !== false )
                 {
-                    print "text contains only found - no entry *\n";
+                    if( $this->debugAPI )
+                        print "text contains only found - no entry *\n";
                 }
             }
             ###########################
@@ -1750,18 +1830,53 @@ class DIFF extends UTIL
         {
             foreach( $this->empty as $empty )
             {
+                if( $this->debugAPI )
+                {
+                    PH::print_stdout( "-------------------" );
+                    PH::print_stdout( "0-ORIGxpath: ".$origXpath);
+                    PH::print_stdout( "0-EMPTYxpath: ".$empty );
+                }
+
                 $xpath = $origXpath;
                 if(strpos( $empty, "entry[@name='*']" ) !== FALSE )
                     $xpath = substr( $xpath, 0, strpos( $empty, "entry[@name='*']" ) );
 
                 $empty = str_replace( $xpath, "", $empty );
 
+                //fix empty string if leading '/' available
+                $prefix = '/';
+                if (substr($empty, 0, strlen($prefix)) == $prefix) {
+                    $empty = substr($empty, strlen($prefix));
+                }
+
+                if( $this->debugAPI )
+                {
+                    PH::print_stdout( "1-Xpath: ".$origXpath);
+                    PH::print_stdout( "1-EMPTYxpath: ".$empty );
+                }
+
                 $excludeXpath = $empty;
                 $excludeXpath = str_replace( "entry[@name='*']/", "", $excludeXpath );
+                if( $this->debugAPI )
+                {
+                    PH::print_stdout( "2-Xpath: ".$origXpath);
+                    PH::print_stdout( "2-EMPTYxpath: ".$empty );
+                }
+
                 if( $excludeXpath !== "" )
                 {
-                    if( $node->nodeName == $excludeXpath )
-                        $continue = true;
+                    $tmpNodeName = $node->nodeName;
+                    if( $this->debugAPI )
+                    {
+                        PH::print_stdout( "3-nodeName: ".$tmpNodeName);
+                        PH::print_stdout( "3-EXCLUDExpath: ".$excludeXpath );
+                    }
+
+                    if( $tmpNodeName == $excludeXpath )
+                    {
+                        if( !DH::hasChild($node) )
+                            $continue = true;
+                    }
 
                     $domXpath1 = new DOMXPath($newdoc);
                     foreach( $domXpath1->query($excludeXpath) as $node )
@@ -1769,15 +1884,6 @@ class DIFF extends UTIL
                         if( !DH::hasChild($node) )
                             $this->deleteNodeReverseAlsoParent($node);
                     }
-
-                    /*
-                     * problem
-                    if( $node->childNodes->length === 0 )
-                    {
-                        print "2\n";
-                        $continue = true;
-                    }
-                    */
                 }
             }
         }

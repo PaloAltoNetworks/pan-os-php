@@ -6,7 +6,7 @@ ARG user_var="root"
 
 SHELL ["/bin/bash", "-c"]
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get update
+RUN DEBIAN_FRONTEND=noninteractive apt-get update --fix-missing
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
     tzdata \
@@ -19,9 +19,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
     php$php_var-dom \
     php$php_var-mbstring \
     php$php_var-bcmath \
-    php$php_var-yaml
-
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    php$php_var-yaml \
     python3 \
     python3-pandas \
     python3-xlsxwriter \
