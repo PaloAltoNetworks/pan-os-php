@@ -4,11 +4,11 @@ FROM php:8.0-cli
 SHELL ["/bin/bash", "-c"]
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update -y --fix-missing
-RUN apt-get install -y tzdata git
+RUN apt update -y --fix-missing
+RUN apt install -y tzdata git
 
 # libraries for PHP
-RUN apt-get install -y libcurl3-openssl-dev libxml2-dev libonig-dev libyaml-dev
+RUN apt install -y libcurl3-openssl-dev libxml2-dev libonig-dev libyaml-dev
 # PHP Extensions
 RUN docker-php-ext-install -j$(nproc) curl dom mbstring bcmath
 
