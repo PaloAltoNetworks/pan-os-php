@@ -1,0 +1,45 @@
+ARG IMAGE=arm64v8/php:8.0-apache
+FROM ${IMAGE}
+
+
+SHELL ["/bin/bash", "-c"]
+ENV DEBIAN_FRONTEND=noninteractive
+
+ENV PHP_MEMORY_LIMIT=128M
+
+RUN apt update -y --fix-missing
+RUN apt install -y tzdata git
+
+# libraries for PHP
+RUN apt install -y libcurl3-openssl-dev libxml2-dev libonig-dev libyaml-dev
+# PHP Extensions
+RUN docker-php-ext-install -j$(nproc) curl dom mbstring bcmath mysqli
+RUN docker-php-ext-enable curl dom mbstring bcmath mysqli
+
+
+COPY appid-toolbox /var/www/html/appid-toolbox
+COPY lib /var/www/html/lib
+COPY phpseclib /var/www/html/phpseclib
+COPY git-php /var/www/html/git-php
+COPY utils /var/www/html/utils
+COPY tests /var/www/html/tests
+COPY log /var/www/html/log
+COPY iron-skillet /var/www/html/iron-skillet
+
+RUN chmod -R 777 /var/www/html/utils/api/v1/project
+RUN chmod -R 777 /var/www/html/log
+
+# PHP library of pan-os-php
+RUN echo 'include_path = "/usr/local/lib/php:/var/www/html"' >> /usr/local/etc/php/php.ini
+
+RUN git config --global user.email=test@test.com user.name=test
+
+#upload
+RUN touch /usr/local/etc/php/conf.d/uploads.ini \
+    && echo "file_uploads = On;" >> /usr/local/etc/php/conf.d/uploads.ini \
+    && echo "memory_limit = 500M;" >> /usr/local/etc/php/conf.d/uploads.ini \
+    && echo "upload_max_filesize = 500M;" >> /usr/local/etc/php/conf.d/uploads.ini \
+    && echo "post_max_size = 500M;" >> /usr/local/etc/php/conf.d/uploads.ini \
+    && echo "max_execution_time = 600;" >> /usr/local/etc/php/conf.d/uploads.ini
+
+EXPOSE 80

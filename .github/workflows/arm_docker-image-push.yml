@@ -32,7 +32,27 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: docker/Dockerfile_arm64v8
+          file: docker/Dockerfile-main_arm64v8
           platforms: linux/arm64
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/pan-os-php-arm:${{ secrets.DOCKER_HUB_TAG }}
+
+      -
+        name: Build and push pan-os-php-cli
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: docker/Dockerfile-php_arm64v8
+          platforms: linux/arm64
+          push: true
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/pan-os-php-cli-arm:${{ secrets.DOCKER_HUB_TAG }}
+
+      -
+        name: Build and push pan-os-php-api
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: docker/Dockerfile-API_arm64v8
+          platforms: linux/arm64
+          push: true
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/pan-os-php-api-arm:${{ secrets.DOCKER_HUB_TAG }}
