@@ -34,6 +34,9 @@ class Template
 
     protected $FirewallsSerials = array();
 
+    /** @var CertificateStore */
+    public $certificateStore = null;
+
     /**
      * Template constructor.
      * @param string $name
@@ -44,6 +47,9 @@ class Template
         $this->name = $name;
         $this->owner = $owner;
         $this->deviceConfiguration = new PANConf(null, null, $this);
+
+        $this->certificateStore = new CertificateStore($this);
+        $this->certificateStore->setName('certificateStore');
     }
 
     public function load_from_domxml(DOMElement $xml)
@@ -75,6 +81,20 @@ class Template
 
                 }
             }
+        }
+
+        $shared = DH::findFirstElement('shared', $tmp);
+        if( $shared !== false )
+        {
+            //
+            // Extract Certificate objects
+            //
+            $tmp = DH::findFirstElement('certificate', $shared);
+            if( $tmp !== FALSE )
+            {
+                $this->certificateStore->load_from_domxml($tmp);
+            }
+            // End of Certificate objects extraction
         }
     }
 

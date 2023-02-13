@@ -163,6 +163,9 @@ class VirtualSystem
     /** @var ZoneStore */
     public $zoneStore = null;
 
+    /** @var CertificateStore */
+    public $certificateStore = null;
+
     /** @var InterfaceContainer */
     public $importedInterfaces;
 
@@ -198,6 +201,9 @@ class VirtualSystem
 
         $this->zoneStore = new ZoneStore($this);
         $this->zoneStore->setName('zoneStore');
+
+        $this->certificateStore = new CertificateStore($this);
+        $this->certificateStore->setName('certificateStore');
 
 
         $this->serviceStore = new ServiceStore($this);
@@ -851,6 +857,16 @@ class VirtualSystem
                     $this->$var->load_from_domxml($tmprulesroot);
             }
         }
+
+        //
+        // Extract Certificate objects
+        //
+        $tmp = DH::findFirstElement('certificate', $xml);
+        if( $tmp !== FALSE )
+        {
+            $this->certificateStore->load_from_domxml($tmp);
+        }
+        // End of Certificate objects extraction
     }
 
     public function &getXPath()

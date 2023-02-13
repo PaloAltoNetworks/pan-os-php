@@ -133,6 +133,9 @@ class PANConf
     /** @var ScheduleStore */
     public $scheduleStore = null;
 
+    /** @var CertificateStore */
+    public $certificateStore = null;
+
     public $_public_cloud_server = null;
 
     public $_auditComment = false;
@@ -213,6 +216,9 @@ class PANConf
 
         $this->scheduleStore = new ScheduleStore($this);
         $this->scheduleStore->setName('scheduleStore');
+
+        $this->certificateStore = new CertificateStore($this);
+        $this->certificateStore->setName('certificateStore');
 
         $this->network = new NetworkPropertiesContainer($this);
     }
@@ -526,6 +532,16 @@ class PANConf
                 $this->scheduleStore->load_from_domxml($tmp);
             // End of address groups extraction
 
+
+            //
+            // Extract Certificate objects
+            //
+            $tmp = DH::findFirstElement('certificate', $this->sharedroot);
+            if( $tmp !== FALSE )
+            {
+                $this->certificateStore->load_from_domxml($tmp);
+            }
+            // End of Certificate objects extraction
         }
 
 

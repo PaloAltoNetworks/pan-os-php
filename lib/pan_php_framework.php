@@ -317,6 +317,9 @@ require_once $basedir . '/network-classes/TunnelInterface.php';
 require_once $basedir . '/network-classes/VirtualWire.php';
 require_once $basedir . '/network-classes/VirtualWireStore.php';
 
+require_once $basedir . '/network-classes/Certificate.php';
+require_once $basedir . '/network-classes/CertificateStore.php';
+
 
 require_once $basedir . '/rule-classes/RuleStore.php';
 require_once $basedir . '/rule-classes/Rule.php';

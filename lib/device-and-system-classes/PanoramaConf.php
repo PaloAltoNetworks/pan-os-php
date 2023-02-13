@@ -202,6 +202,9 @@ class PanoramaConf
     /** @var ZoneStore */
     public $zoneStore = null;
 
+    /** @var CertificateStore */
+    public $certificateStore = null;
+
     /** @var PANConf[] */
     public $managedFirewalls = array();
 
@@ -245,6 +248,9 @@ class PanoramaConf
 
         $this->zoneStore = new ZoneStore($this);
         $this->zoneStore->setName('zoneStore');
+
+        $this->certificateStore = new CertificateStore($this);
+        $this->certificateStore->setName('certificateStore');
 
         $this->appStore = AppStore::getPredefinedStore( $this );
 

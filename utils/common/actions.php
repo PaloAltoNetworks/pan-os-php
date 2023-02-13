@@ -92,3 +92,7 @@ DeviceCallContext::prepareSupportedActions();
 require_once ( "DHCPCallContext.php");
 require_once  "actions-dhcp.php";
 DHCPCallContext::prepareSupportedActions();
+
+require_once ( "CertificateCallContext.php");
+require_once  "actions-certificate.php";
+CertificateCallContext::prepareSupportedActions();
