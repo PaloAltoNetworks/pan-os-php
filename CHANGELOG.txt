@@ -4,6 +4,7 @@ CHANGELOG
 UTIL:
 * type=diff | redesign filter JSON "combinedruleordercheck" feature
 * type=certificate | introduction of new utility script
+* type=certificate | extend actions=display
 
 BUGFIX:
 * type=diff - JSON filter file - regression bug for "empty"

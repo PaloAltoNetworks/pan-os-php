@@ -41,6 +41,8 @@ class Certificate
 
     public $publicKey = null;
     public $publicKeyLen = null;
+    public $notValidbefore = null;
+    public $notValidafter = null;
 
     /**
      * @param string $name
@@ -121,6 +123,18 @@ class Certificate
         {
             if( $algorithm->textContent !== "" )
                 $this->algorithm = $algorithm->textContent;
+        }
+        $notValidbefore = DH::findFirstElement('not-valid-before', $xml);
+        if( $notValidbefore !== FALSE )
+        {
+            if( $notValidbefore->textContent !== "" )
+                $this->notValidbefore = $notValidbefore->textContent;
+        }
+        $notValidafter = DH::findFirstElement('not-valid-after', $xml);
+        if( $notValidafter !== FALSE )
+        {
+            if( $notValidafter->textContent !== "" )
+                $this->notValidafter = $notValidafter->textContent;
         }
 
         $commonName = DH::findFirstElement('common-name', $xml);

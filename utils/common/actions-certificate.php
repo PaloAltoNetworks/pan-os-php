@@ -35,11 +35,15 @@ CertificateCallContext::$supportedActions['display'] = Array(
         if( $object->algorithm != null )
             $algorithm = "Algorithm: ".$object->algorithm;
 
-        /*
+        if( $object->notValidbefore != null )
+            $notValidbefore = " | not Valid before: ".$object->notValidbefore;
+        if( $object->notValidafter != null )
+            $notValidafter = "after: ".$object->notValidafter;
+
         if( $object->privateKey != null )
         {
             $privateKey = $object->privateKey;
-            $privateKeyLen = " | privateKey length: ".$object->privateKeyLen;
+            $privateKeyLen = "       - "."privateKey length: ".$object->privateKeyLen;
         }
 
         if( $object->privateKey != null )
@@ -47,9 +51,11 @@ CertificateCallContext::$supportedActions['display'] = Array(
             $publicKey = $object->publicKey;
             $publicKeyLen = " | publicKey length: ".$object->publicKeyLen;
         }
-        */
+        //not-valid-before
+        //not-valid-after
 
-        PH::print_stdout( "       - ".$algorithm.$privateKeyLen.$publicKeyLen );
+        PH::print_stdout( "       - ".$algorithm.$notValidbefore." - ".$notValidafter );
+        PH::print_stdout( $privateKeyLen.$publicKeyLen );
     },
 
     //Todo: display routes to zone / Interface IP
