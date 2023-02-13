@@ -901,6 +901,14 @@ var subjectObject =
     "application": {
         "name": "application",
         "action": {
+            "delete": {
+                "name": "delete",
+                "MainFunction": {}
+            },
+            "delete-force": {
+                "name": "delete-Force",
+                "MainFunction": {}
+            },
             "display": {
                 "name": "display",
                 "GlobalInitFunction": {},
@@ -1227,6 +1235,16 @@ var subjectObject =
     "bpa-generator": {
         "name": "bpa-generator",
         "action": [],
+        "filter": []
+    },
+    "certificate": {
+        "name": "certificate",
+        "action": {
+            "display": {
+                "name": "display",
+                "MainFunction": {}
+            }
+        },
         "filter": []
     },
     "config-commit": {
