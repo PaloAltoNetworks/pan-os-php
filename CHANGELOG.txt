@@ -12,6 +12,7 @@ BUGFIX:
 * type=diff | bugfix for filter=jsonfile.json | not handling xpath split correctly
 * type=diff | bugfix filter JSON file "EMPTY" part
 * type=diff | JSON filter file - fix ruleorder display for "combinedruleordercheck"
+* type=playbook | bugfix for missing validation of available array_key
 
 GENERAL
 * update dockerfiles to adjust for github actions
