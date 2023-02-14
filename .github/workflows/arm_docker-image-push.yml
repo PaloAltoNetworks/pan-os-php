@@ -38,7 +38,7 @@ jobs:
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/pan-os-php-arm:${{ secrets.DOCKER_HUB_TAG }}
 
       -
-        name: Build and push pan-os-php-cli
+        name: Build and push pan-os-php-cli-arm
         uses: docker/build-push-action@v2
         with:
           context: .
@@ -48,7 +48,7 @@ jobs:
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/pan-os-php-cli-arm:${{ secrets.DOCKER_HUB_TAG }}
 
       -
-        name: Build and push pan-os-php-api
+        name: Build and push pan-os-php-api-arm
         uses: docker/build-push-action@v2
         with:
           context: .

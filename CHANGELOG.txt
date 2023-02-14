@@ -5,6 +5,7 @@ UTIL:
 * type=diff | redesign filter JSON "combinedruleordercheck" feature
 * type=certificate | introduction of new utility script
 * type=certificate | extend actions=display
+* type=device | actions=display-shadowrule - extend with argument exportToexcel | actions=display-shadowrule:filename.html
 
 BUGFIX:
 * type=diff - JSON filter file - regression bug for "empty"
