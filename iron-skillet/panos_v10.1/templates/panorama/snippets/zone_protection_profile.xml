@@ -69,4 +69,47 @@
   <remove-tcp-timestamp>yes</remove-tcp-timestamp>
   <strip-tcp-fast-open-and-data>no</strip-tcp-fast-open-and-data>
   <strip-mptcp-option>global</strip-mptcp-option>
-</entry></root>
+</entry>
+    <entry name="Alert_Only_Zone_Protection">
+        <flood>
+            <tcp-syn>
+                <enable>no</enable>
+            </tcp-syn>
+            <udp>
+                <enable>no</enable>
+            </udp>
+            <icmp>
+                <enable>no</enable>
+            </icmp>
+            <icmpv6>
+                <enable>no</enable>
+            </icmpv6>
+            <other-ip>
+                <enable>no</enable>
+            </other-ip>
+        </flood>
+        <scan>
+            <entry name="8001">
+                <action>
+                    <alert/>
+                </action>
+                <interval>2</interval>
+                <threshold>100</threshold>
+            </entry>
+            <entry name="8002">
+                <action>
+                    <alert/>
+                </action>
+                <interval>10</interval>
+                <threshold>100</threshold>
+            </entry>
+            <entry name="8003">
+                <action>
+                    <alert/>
+                </action>
+                <interval>2</interval>
+                <threshold>100</threshold>
+            </entry>
+        </scan>
+    </entry>
+</root>

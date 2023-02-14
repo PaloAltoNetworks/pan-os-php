@@ -13,6 +13,7 @@ BUGFIX:
 * type=diff | bugfix filter JSON file "EMPTY" part
 * type=diff | JSON filter file - fix ruleorder display for "combinedruleordercheck"
 * type=playbook | bugfix for missing validation of available array_key
+* type=ironskilled-update | bugfix as ironskillet zpp has nothing for Alert_Only_Zone_Protection
 
 GENERAL
 * update dockerfiles to adjust for github actions
