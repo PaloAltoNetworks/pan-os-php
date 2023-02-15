@@ -901,6 +901,14 @@ var subjectObject =
     "application": {
         "name": "application",
         "action": {
+            "delete": {
+                "name": "delete",
+                "MainFunction": {}
+            },
+            "delete-force": {
+                "name": "delete-Force",
+                "MainFunction": {}
+            },
             "display": {
                 "name": "display",
                 "GlobalInitFunction": {},
@@ -1229,6 +1237,16 @@ var subjectObject =
         "action": [],
         "filter": []
     },
+    "certificate": {
+        "name": "certificate",
+        "action": {
+            "display": {
+                "name": "display",
+                "MainFunction": {}
+            }
+        },
+        "filter": []
+    },
     "config-commit": {
         "name": "config-commit",
         "action": [],
@@ -1410,7 +1428,15 @@ var subjectObject =
             "display-shadowrule": {
                 "name": "display-shadowrule",
                 "GlobalInitFunction": {},
-                "MainFunction": {}
+                "MainFunction": {},
+                "GlobalFinishFunction": {},
+                "args": {
+                    "exportToExcel": {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "help": "define an argument with filename to also store shadow rule to an excel\/html speardsheet file"
+                    }
+                }
             },
             "displayreferences": {
                 "name": "displayReferences",

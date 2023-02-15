@@ -393,6 +393,8 @@ class UTIL
             $tmp_array = &InterfaceCallContext::$supportedActions;
         elseif( $this->utilType == 'dhcp' )
             $tmp_array = &DHCPCallContext::$supportedActions;
+        elseif( $this->utilType == 'certificate' )
+            $tmp_array = &CertificateCallContext::$supportedActions;
 
         return $tmp_array;
     }
@@ -1099,6 +1101,8 @@ class UTIL
                 $context = new InterfaceCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries, $this);
             elseif( $this->utilType == 'dhcp' )
                 $context = new DHCPCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries, $this);
+            elseif( $this->utilType == 'certificate' )
+                $context = new CertificateCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries, $this);
 
             $context->baseObject = $this->pan;
             if( isset($this->configInput['type']) && $this->configInput['type'] == 'api' )

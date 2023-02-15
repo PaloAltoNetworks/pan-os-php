@@ -1098,6 +1098,8 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
 
         if( !$context->isAPI )
             derr( "API mode needed for actions=display-shadowrule" );
+
+        $context->jsonArray = array();
     },
     'MainFunction' => function (DeviceCallContext $context)
     {
@@ -1292,7 +1294,97 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
         }
 
         PH::$JSON_TMP['sub'] = $jsonArray;
-    }
+        $context->jsonArray = $jsonArray;
+    },
+    'GlobalFinishFunction' => function (DeviceCallContext $context) {
+            $filename = $context->arguments['exportToExcel'];
+            if( $filename !== "*nodefault*" )
+            {
+                if( isset( $_SERVER['REQUEST_METHOD'] ) )
+                    $filename = "project/html/".$filename;
+
+                $lines = '';
+                $encloseFunction = function ($value, $nowrap = TRUE) {
+                    if( is_string($value) )
+                        $output = htmlspecialchars($value);
+                    elseif( is_array($value) )
+                    {
+                        $output = '';
+                        $first = TRUE;
+                        foreach( $value as $subValue )
+                        {
+                            if( !$first )
+                            {
+                                $output .= '<br />';
+                            }
+                            else
+                                $first = FALSE;
+
+                            if( is_string($subValue) )
+                                $output .= htmlspecialchars($subValue);
+                            else
+                                $output .= htmlspecialchars($subValue->name());
+                        }
+                    }
+                    else
+                        derr('unsupported');
+
+                    if( $nowrap )
+                        return '<td style="white-space: nowrap">' . $output . '</td>';
+
+                    return '<td>' . $output . '</td>';
+                };
+
+
+                $headers = '<th>ruletype</th><th>rule</th><th>shadow rule</th>';
+
+                $count = 0;
+
+                    foreach( $context->jsonArray as $keyruletype => $ruletype )
+                    {
+                        foreach( $ruletype as $keyrule => $rule )
+                        {
+                            foreach( $rule as $ruleItem )
+                            {
+                                $count++;
+
+                                /** @var Tag $object */
+                                if( $count % 2 == 1 )
+                                    $lines .= "<tr>\n";
+                                else
+                                    $lines .= "<tr bgcolor=\"#DDDDDD\">";
+
+                                #$lines .= $encloseFunction(PH::getLocationString($object));
+
+                                $lines .= $encloseFunction($keyruletype);
+                                $lines .= $encloseFunction($keyrule);
+                                $lines .= $encloseFunction($ruleItem);
+
+                                $lines .= "</tr>\n";
+                            }
+                        }
+                    }
+
+
+                $content = file_get_contents(dirname(__FILE__) . '/html/export-template.html');
+                $content = str_replace('%TableHeaders%', $headers, $content);
+
+                $content = str_replace('%lines%', $lines, $content);
+
+                $jscontent = file_get_contents(dirname(__FILE__) . '/html/jquery.min.js');
+                $jscontent .= "\n";
+                $jscontent .= file_get_contents(dirname(__FILE__) . '/html/jquery.stickytableheaders.min.js');
+                $jscontent .= "\n\$('table').stickyTableHeaders();\n";
+
+                $content = str_replace('%JSCONTENT%', $jscontent, $content);
+
+                file_put_contents($filename, $content);
+            }
+    },
+    'args' => array(
+        'exportToExcel' => array('type' => 'string', 'default' => '*nodefault*', 'help' => "define an argument with filename to also store shadow rule to an excel/html speardsheet file",
+    )
+)
 );
 
 DeviceCallContext::$supportedActions['geoIP-check'] = array(

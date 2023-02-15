@@ -26,27 +26,30 @@ jobs:
       -
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
+
       -
         name: Build and push pan-os-php-amd
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: docker/Dockerfile
+          file: docker/Dockerfile-main_amd
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/pan-os-php-amd:${{ secrets.DOCKER_HUB_TAG }}
+
       -
-        name: Build and push pan-os-php-cli
+        name: Build and push pan-os-php-cli-amd
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: docker/Dockerfile-php
+          file: docker/Dockerfile-php_amd
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/pan-os-php-cli:${{ secrets.DOCKER_HUB_TAG }}
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/pan-os-php-cli-amd:${{ secrets.DOCKER_HUB_TAG }}
+
       -
-        name: Build and push pan-os-php-api
+        name: Build and push pan-os-php-api-amd
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: docker/Dockerfile-API
+          file: docker/Dockerfile-API_amd
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/pan-os-php-api:${{ secrets.DOCKER_HUB_TAG }}
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/pan-os-php-api-amd:${{ secrets.DOCKER_HUB_TAG }}

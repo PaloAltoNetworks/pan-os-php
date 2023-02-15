@@ -3,16 +3,24 @@ CHANGELOG
 2.0.70
 UTIL:
 * type=diff | redesign filter JSON "combinedruleordercheck" feature
+* type=certificate | introduction of new utility script
+* type=certificate | extend actions=display
+* type=device | actions=display-shadowrule - extend with argument exportToexcel | actions=display-shadowrule:filename.html
 
 BUGFIX:
 * type=diff - JSON filter file - regression bug for "empty"
 * type=diff | bugfix for filter=jsonfile.json | not handling xpath split correctly
 * type=diff | bugfix filter JSON file "EMPTY" part
 * type=diff | JSON filter file - fix ruleorder display for "combinedruleordercheck"
+* type=playbook | bugfix for missing validation of available array_key
+* type=ironskilled-update | bugfix as ironskillet zpp has nothing for Alert_Only_Zone_Protection
+* type=address-merger | bugfix class Address.php - not handled null validation
 
 GENERAL
 * update dockerfiles to adjust for github actions
 * pan-os-php version shadow-json | remove second duplicate output
+* general - update UTIL actions/filter
+* update Dockerfiles | split correctly between amd/arm
 
 
 2.0.69 (20230203)

@@ -180,7 +180,7 @@ class PLAYBOOK__
                     $input = $details['in'];
             }
 
-            if( !isset(PH::$args['out']) && !$this->isAPI && in_array( $details['type'], $out_exclude ) )
+            if( !isset(PH::$args['out']) && !$this->isAPI && isset( $details['type'] ) && in_array( $details['type'], $out_exclude ) )
             {
                 if( isset( $details['out'] ) )
                     $output = $details['out'];

@@ -79,6 +79,11 @@ class NETWORKUTIL extends UTIL
                     {
                         //zone store only in vsys available
                     }
+                    elseif( $this->utilType == 'certificate' )
+                    {
+                        $this->objectsToProcess[] = Array('store' => $this->pan->certificateStore, 'objects' => $this->pan->certificateStore->getAll());
+                    }
+
 
                     $locationFound = TRUE;
                 }
@@ -101,6 +106,8 @@ class NETWORKUTIL extends UTIL
                             {}
                             elseif( $this->utilType == 'dhcp' )
                             {}
+                            elseif( $this->utilType == 'certificate' )
+                            {}
 
                             $locationFound = TRUE;
                         }
@@ -119,6 +126,8 @@ class NETWORKUTIL extends UTIL
                                 $this->objectsToProcess[] = array('store' => $sub->zoneStore, 'objects' => $sub->zoneStore->getall());
                             elseif( $this->utilType == 'dhcp' )
                             {}
+                            elseif( $this->utilType == 'certificate' )
+                                $this->objectsToProcess[] = Array('store' => $sub->certificateStore, 'objects' => $sub->certificateStore->getAll());
 
                             $locationFound = TRUE;
                         }
@@ -162,6 +171,11 @@ class NETWORKUTIL extends UTIL
                                 }
                                 elseif( $this->utilType == 'dhcp' )
                                     $this->objectsToProcess[] = Array('store' => $template->deviceConfiguration->network->dhcpStore, 'objects' => $template->deviceConfiguration->network->dhcpStore->getAll());
+                                elseif( $this->utilType == 'certificate' )
+                                {
+                                    $this->objectsToProcess[] = Array('store' => $template->certificateStore, 'objects' => $template->certificateStore->getAll());
+                                }
+
 
                                 $locationFound = true;
                             }
@@ -180,6 +194,8 @@ class NETWORKUTIL extends UTIL
                                         $this->objectsToProcess[] = array('store' => $sub->zoneStore, 'objects' => $sub->zoneStore->getall());
                                     elseif( $this->utilType == 'dhcp' )
                                     {}
+                                    elseif( $this->utilType == 'certificate' )
+                                        $this->objectsToProcess[] = Array('store' => $sub->certificateStore, 'objects' => $sub->certificateStore->getAll());
 
                                     $locationFound = TRUE;
                                 }

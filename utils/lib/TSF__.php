@@ -52,7 +52,7 @@ class TSF__
         {
             $actionsArray = explode( ",", $this->actions );
             if( count($actionsArray) > 1 )
-                derr( "type=TSF actions= | is supporting only one argument: 'actions=running-config' or 'actions=candicate-config'" );
+                derr( "type=TSF actions= | is supporting only one argument: 'actions=extract-running-config' or 'actions=extract-candicate-config'" );
 
             if( $actionsArray[0] === "extract-running-config")
                 $this->actions = 'extract-running-config';
