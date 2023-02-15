@@ -648,7 +648,8 @@ class Address
                     if( $tag !== $newTag)
                     {
                         $tag->replaceMeGlobally($newTag);
-                        $tag->owner->removeTag($tag);
+                        if( $tag->owner !== null )
+                            $tag->owner->removeTag($tag);
                     }
                 }
             }

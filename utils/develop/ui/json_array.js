@@ -1428,7 +1428,15 @@ var subjectObject =
             "display-shadowrule": {
                 "name": "display-shadowrule",
                 "GlobalInitFunction": {},
-                "MainFunction": {}
+                "MainFunction": {},
+                "GlobalFinishFunction": {},
+                "args": {
+                    "exportToExcel": {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "help": "define an argument with filename to also store shadow rule to an excel\/html speardsheet file"
+                    }
+                }
             },
             "displayreferences": {
                 "name": "displayReferences",

@@ -14,6 +14,7 @@ BUGFIX:
 * type=diff | JSON filter file - fix ruleorder display for "combinedruleordercheck"
 * type=playbook | bugfix for missing validation of available array_key
 * type=ironskilled-update | bugfix as ironskillet zpp has nothing for Alert_Only_Zone_Protection
+* type=address-merger | bugfix class Address.php - not handled null validation
 
 GENERAL
 * update dockerfiles to adjust for github actions
