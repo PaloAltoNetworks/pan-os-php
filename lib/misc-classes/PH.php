@@ -1108,4 +1108,19 @@ class PH
 
         return $util;
     }
+
+    public static function find_string_between($line, $needle1, $needle2 = "--END--")
+    {
+        $needle_length = strlen($needle1);
+        $pos1 = strpos($line, $needle1);
+
+        if( $needle2 !== "--END--" )
+            $pos2 = strpos($line, $needle2);
+        else
+            $pos2 = strlen($line);
+
+        $finding = substr($line, $pos1 + $needle_length, $pos2 - ($pos1 + $needle_length));
+
+        return $finding;
+    }
 }

@@ -3,6 +3,7 @@ CHANGELOG
 2.0.72
 UTIL:
 * type=upload | improvement if in=api:// is used but no out= is defined
+* type=device | actions=display-shadowrule:file.html - improvement to store full rule informtaion into html
 
 BUGFIX:
 * type=device | bugfix actions=display-shadowrule:file.html - to export correctly for all DG/vsys
