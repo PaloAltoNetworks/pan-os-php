@@ -1294,7 +1294,7 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
         }
 
         PH::$JSON_TMP['sub'] = $jsonArray;
-        $context->jsonArray = $jsonArray;
+        $context->jsonArray[$type_name] = $jsonArray;
     },
     'GlobalFinishFunction' => function (DeviceCallContext $context) {
             $filename = $context->arguments['exportToExcel'];
@@ -1336,31 +1336,35 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
                 };
 
 
-                $headers = '<th>ruletype</th><th>rule</th><th>shadow rule</th>';
+                $headers = '<th>sub</th><th>ruletype</th><th>rule</th><th>shadow rule</th>';
 
                 $count = 0;
 
-                    foreach( $context->jsonArray as $keyruletype => $ruletype )
+                    foreach( $context->jsonArray as $subtype => $sub )
                     {
-                        foreach( $ruletype as $keyrule => $rule )
+                        foreach( $sub as $keyruletype => $ruletype )
                         {
-                            foreach( $rule as $ruleItem )
+                            foreach( $ruletype as $keyrule => $rule )
                             {
-                                $count++;
+                                foreach( $rule as $ruleItem )
+                                {
+                                    $count++;
 
-                                /** @var Tag $object */
-                                if( $count % 2 == 1 )
-                                    $lines .= "<tr>\n";
-                                else
-                                    $lines .= "<tr bgcolor=\"#DDDDDD\">";
+                                    /** @var Tag $object */
+                                    if( $count % 2 == 1 )
+                                        $lines .= "<tr>\n";
+                                    else
+                                        $lines .= "<tr bgcolor=\"#DDDDDD\">";
 
-                                #$lines .= $encloseFunction(PH::getLocationString($object));
+                                    #$lines .= $encloseFunction(PH::getLocationString($object));
 
-                                $lines .= $encloseFunction($keyruletype);
-                                $lines .= $encloseFunction($keyrule);
-                                $lines .= $encloseFunction($ruleItem);
+                                    $lines .= $encloseFunction($subtype);
+                                    $lines .= $encloseFunction($keyruletype);
+                                    $lines .= $encloseFunction($keyrule);
+                                    $lines .= $encloseFunction($ruleItem);
 
-                                $lines .= "</tr>\n";
+                                    $lines .= "</tr>\n";
+                                }
                             }
                         }
                     }
