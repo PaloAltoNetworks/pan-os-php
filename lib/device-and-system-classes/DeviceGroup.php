@@ -854,23 +854,17 @@ class DeviceGroup
         else
             $tmp = null;
         if( $postrulebase === FALSE )
-            $tmpPost = null;
-        else
         {
-            /*
-            $tmpPost = DH::findFirstElement($xmlTagName, $postrulebase);
-            if( $tmpPost !== FALSE )
-                $tmpPost = DH::findFirstElement('rules', $tmpPost);
+            #$tmpPost = null;
+            $postrulebase = DH::findFirstElementOrCreate('post-rulebase', $xml);
+        }
 
-            if( $tmpPost === FALSE )
-            {
-                $tmpPost = null;
-            */
+        #else{
             $sub = new Sub();
             $sub->rulebaseroot = $postrulebase;
             $sub->defaultSecurityRules = $this->defaultSecurityRules;
             $tmpPost = $sub->load_defaultSecurityRule( );
-        }
+        #}
         if( $tmpPost !== FALSE )
             $this->$var->load_from_domxml($tmp, $tmpPost);
 
