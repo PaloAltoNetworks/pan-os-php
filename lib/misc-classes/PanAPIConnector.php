@@ -2115,7 +2115,7 @@ class PanAPIConnector
         return $password;
     }
 
-    public function getShadowInfo( $countInfo, $panorama = false, $devicegroupname = "" )
+    public function getShadowInfo( $countInfo, $panorama = false, $devicegroupname = "", $manageddevice = false )
     {
         $cmd = "<show><shadow-warning><count>".$countInfo."</count></shadow-warning></show>";
         $response = $this->sendOpRequest( $cmd );
@@ -2137,7 +2137,7 @@ class PanAPIConnector
             if( $panorama )
             {
                 $name = $entry->getAttribute("dg");
-                if( $devicegroupname !== $name )
+                if( !$manageddevice && $devicegroupname !== $name )
                     continue;
 
                 $devicegroup = "<device-group>" . $name . "</device-group>";
