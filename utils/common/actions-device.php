@@ -1195,10 +1195,13 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
 
 
         $jsonArray = array();
+        $orig_sub_name = $sub_name;
         foreach( $shadowArray as $name => $array )
         {
             foreach( $array as $ruletype => $entries )
             {
+                $sub_name = $orig_sub_name;
+
                 if( $ruletype == 'security'  || $ruletype == "security-rule" )
                     $ruletype = "securityRules";
                 elseif( $ruletype == 'nat'  || $ruletype == "nat-rule" )
@@ -1216,12 +1219,14 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
                 {
                     $subName = "DG";
                     PH::print_stdout( "     ** ".$subName.": " . $name );
+                    $sub_name .= "-".$name;
                 }
 
                 foreach( $entries as $key => $item  )
                 {
                     $rule = null;
 
+                    $origName = $name;
                     //uid: $key -> search rule name for uid
                     if( $classtype == "ManagedDevice" )
                     {
@@ -1327,6 +1332,7 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
 
                         if( $classtype == "ManagedDevice" )
                         {
+                            $sub = $pan->findDeviceGroup($ownerDG);
                             $shadowedRuleObj = $sub->$ruletype->find( $shadow2 );
                             while( $shadowedRuleObj === null )
                             {
@@ -1334,12 +1340,10 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
                                 if( $sub !== null )
                                 {
                                     $shadowedRuleObj = $sub->$ruletype->find( $shadow2 );
-                                    $ownerDG = $sub->name();
                                 }
                                 else
                                 {
                                     $shadowedRuleObj = $pan->$ruletype->find( $shadow2 );
-                                    $ownerDG = "shared";
                                     if( $shadowedRuleObj === null )
                                         break;
                                 }
@@ -1347,6 +1351,7 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
                         }
                         elseif( $classtype == "VirtualSystem" )
                         {
+                            $sub = $pan->findVirtualSystem( $ownerDG );
                             $shadowedRuleObj = $sub->$ruletype->find( $shadow2 );
                             if( $shadowedRuleObj === null )
                             {
@@ -1363,6 +1368,7 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
                         {
                             /** @var PanoramaConf $pan */
                             $pan = $object->owner;
+                            $sub = $object;
 
                             $shadowedRuleObj = $sub->$ruletype->find( $shadow2 );
                             while( $shadowedRuleObj === null )
@@ -1392,11 +1398,21 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
                         }
                     }
                 }
+
+                if( $classtype == "ManagedDevice" )
+                {
+                    PH::$JSON_TMP['sub'] = $jsonArray;
+                    $context->jsonArray[$sub_name] = $jsonArray;
+                }
             }
         }
 
-        PH::$JSON_TMP['sub'] = $jsonArray;
-        $context->jsonArray[$sub_name] = $jsonArray;
+        if( $classtype !== "ManagedDevice" )
+        {
+            PH::$JSON_TMP['sub'] = $jsonArray;
+            $context->jsonArray[$sub_name] = $jsonArray;
+        }
+
     },
     'GlobalFinishFunction' => function (DeviceCallContext $context) {
             $filename = $context->arguments['exportToExcel'];

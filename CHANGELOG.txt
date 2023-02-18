@@ -9,6 +9,7 @@ BUGFIX:
 * type=device | bugfix actions=display-shadowrule:file.html - to export correctly for all DG/vsys
 * type=rule ruletype=defaultsecurity | bugfix to read predefined default-security-rules also if xpath post-rulebase is not set
 * type=device actions=display-shadowrule | bugfix for multi-vsys
+* type=device | actions=display-shadowrule devicetype=manageddevice - bugfix for html export to display correct serial/DG
 
 GENERAL
 
