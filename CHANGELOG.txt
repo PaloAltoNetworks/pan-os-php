@@ -12,6 +12,7 @@ BUGFIX:
 * type=device | actions=display-shadowrule devicetype=manageddevice - bugfix for html export to display correct serial/DG
 
 GENERAL
+* class Rule | improvement for type=rule 'filter=(hit-count.fast, timestamp-last-hit.fast and timestamp-first-hit.fast
 
 
 2.0.71 (20230215)

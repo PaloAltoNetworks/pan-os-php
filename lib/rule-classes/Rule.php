@@ -1442,8 +1442,6 @@ class Rule
 
         if( !isset($sub->apiCache) )
             $sub->apiCache = array();
-        if( !isset($sub->apiChecked) )
-            $sub->apiChecked = array();
 
         // caching results for speed improvements
         if( !isset($sub->apiCache[$unused_flag]) )
@@ -1522,10 +1520,14 @@ class Rule
 
                         if( !$firstLoop )
                         {
-                            foreach( $sub->apiCache[$unused_flag] as $unusedEntry )
+                            $operator = $context->operator;
+                            if($operator == "is.unused.fast")
                             {
-                                if( !isset($tmpCache[$unusedEntry]) )
-                                    unset($sub->apiCache[$unused_flag][$unusedEntry]);
+                                foreach( $sub->apiCache[$unused_flag] as $unusedEntry )
+                                {
+                                    if( !isset($tmpCache[$unusedEntry]) )
+                                        unset($sub->apiCache[$unused_flag][$unusedEntry]);
+                                }
                             }
                         }
 
@@ -1596,11 +1598,12 @@ class Rule
                                 if( eval("return $operator_string;" ) )
                                 {
                                     //match, no unset
-                                    $sub->apiChecked[$unused_flag][$ruleName] = $ruleName;
+                                    if( !isset($sub->apiCache[$unused_flag][$ruleName]) )
+                                        $sub->apiCache[$unused_flag][$ruleName] = $ruleName;
                                 }
                                 else
                                 {
-                                    if( !isset($sub->apiChecked[$unused_flag][$ruleName]) && isset($sub->apiCache[$unused_flag][$ruleName]) )
+                                    if( isset($sub->apiCache[$unused_flag][$ruleName]) )
                                         unset($sub->apiCache[$unused_flag][$ruleName]);
                                 }
                             }
@@ -1620,16 +1623,18 @@ class Rule
                             if( $operator == '==' && $timestamp_value == 0 )
                             {
                                 //match, no unset
-                                $sub->apiChecked[$unused_flag][$ruleName] = $ruleName;
+                                if( !isset($sub->apiCache[$unused_flag][$ruleName]) )
+                                    $sub->apiCache[$unused_flag][$ruleName] = $ruleName;
                             }
                             elseif( $timestamp_value != 0 && eval("return $operator_string;" ) )
                             {
                                 //match, no unset
-                                $sub->apiChecked[$unused_flag][$ruleName] = $ruleName;
+                                if( !isset($sub->apiCache[$unused_flag][$ruleName]) )
+                                    $sub->apiCache[$unused_flag][$ruleName] = $ruleName;
                             }
                             else
                             {
-                                if( !isset($sub->apiChecked[$unused_flag][$ruleName]) && isset($sub->apiCache[$unused_flag][$ruleName]) )
+                                if( isset($sub->apiCache[$unused_flag][$ruleName]) )
                                     unset($sub->apiCache[$unused_flag][$ruleName]);
                             }
                         }

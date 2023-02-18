@@ -2002,8 +2002,10 @@ class PanAPIConnector
 
         $fakePanorama->load_from_xmlstring($panoramaString);
 
+        $firewall = new PANConf($fakePanorama);
+        #$firewall->connector = $this;
 
-        return new PANConf($fakePanorama);
+        return $firewall;
     }
 
     /**
