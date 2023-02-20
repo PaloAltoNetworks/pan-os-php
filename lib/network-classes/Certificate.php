@@ -254,6 +254,14 @@ class Certificate
         $this->setName($newname);
     }
 
+    public function hasPublicKey()
+    {
+        if( $this->publicKey !== null )
+            return true;
+
+        return false;
+    }
+
     public function getPkeyAlgorithm()
     {
         return $this->publicKeyAlgorithm;
