@@ -5,6 +5,7 @@ UTIL:
 * type=upload | improvement if in=api:// is used but no out= is defined
 * type=device | actions=display-shadowrule:file.html - improvement to store full rule informtaion into html
 * type=certificate | introduce 'filter=(publickey-algorithm is.rsa/is.ec) - publickey-hash is.sha1/is.sha256/is.sha384/is.sha512 - publickey-length <>!= VALUE
+* type=certificate | introduce 'filter=(publickey-hash < sha256)'
 
 BUGFIX:
 * type=device | bugfix actions=display-shadowrule:file.html - to export correctly for all DG/vsys
