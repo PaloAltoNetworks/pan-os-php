@@ -38,9 +38,14 @@ class Certificate
     public $commonName = null;
     public $privateKey = null;
     public $privateKeyLen = null;
+    public $privateKeyAlgorithm = null;
+    public $privateKeyHash = null;
 
     public $publicKey = null;
     public $publicKeyLen = null;
+    public $publicKeyAlgorithm = null;
+    public $publicKeyHash = null;
+
     public $notValidbefore = null;
     public $notValidafter = null;
 
@@ -150,7 +155,38 @@ class Certificate
             if( $privatekey->textContent !== "" )
             {
                 $this->privateKey = $privatekey->textContent;
-                $this->privateKeyLen = strlen($this->privateKey);
+                #$this->privateKeyLen = strlen($this->privateKey);
+
+                /*
+                //openssl x509 -in "cert.pem" -text -noout
+                file_put_contents("/tmp/cert.pem", $this->privateKey);
+                exec('openssl x509 -in "/tmp/cert.pem" -text -noout', $output);
+
+                $string = implode( "\n", $output );
+
+                $pattern = "/Public Key Algorithm: (.*)\n/im";
+                if( preg_match($pattern, $string, $matches) )
+                {
+                    $str = str_replace( "Encryption", "", $matches[1] );
+                    $this->privateKeyAlgorithm = $str;
+                }
+
+                $pattern = "/Public-Key: (.*)\n/im";
+                if( preg_match($pattern, $string, $matches) )
+                {
+                    $str = str_replace( "(", "", $matches[1] );
+                    $str = str_replace( " bit)", "", $str );
+                    $this->privateKeyLen = $str;
+                }
+
+
+                $pattern = "/Signature Algorithm: (.*)\n/im";
+                if( preg_match($pattern, $string, $matches) )
+                {
+                    $str_Array = explode( "With", $matches[1] );
+                    $this->privateKeyHash = $str_Array[0];
+                }
+                */
             }
         }
 
@@ -160,7 +196,42 @@ class Certificate
             if( $publickey->textContent !== "" )
             {
                 $this->publicKey = $publickey->textContent;
-                $this->publicKeyLen = strlen($this->publicKey);
+
+                ###########################################################################
+
+                $pkey_obj = openssl_pkey_get_public( $this->publicKey );
+                $cert_details = openssl_pkey_get_details( $pkey_obj );
+                #print_r( $cert_details );
+
+                //publicKey Algorithm
+                if( isset( $cert_details['rsa'] ) )
+                    $this->publicKeyAlgorithm = 'rsa';
+                elseif( isset( $cert_details['dsa'] ) )
+                    $this->publicKeyAlgorithm = 'dsa';
+                elseif( isset( $cert_details['dh'] ) )
+                    $this->publicKeyAlgorithm = 'dh';
+                elseif( isset( $cert_details['ec'] ) )
+                    $this->publicKeyAlgorithm = 'ec';
+
+                //publicKey Bits
+                if( isset( $cert_details['bits'] ) )
+                    $this->publicKeyLen = $cert_details['bits'];
+
+
+                //this does not container the bits
+                $cert = openssl_x509_read( $this->publicKey );
+                $cert_obj = openssl_x509_parse( $cert );
+                #print_r( $cert_obj );
+
+                //publicKey Signature Algorithm
+                if( isset( $cert_obj['signatureTypeLN'] ) )
+                {
+                    //[signatureTypeSN] => RSA-SHA256
+                    //    [signatureTypeLN] => sha256WithRSAEncryption
+
+                    $str_Array = explode( "With", $cert_obj['signatureTypeLN'] );
+                    $this->publicKeyHash = $str_Array[0];
+                }
             }
         }
     }
@@ -183,6 +254,20 @@ class Certificate
         $this->setName($newname);
     }
 
+    public function getPkeyAlgorithm()
+    {
+        return $this->publicKeyAlgorithm;
+    }
+
+    public function getPkeyBits()
+    {
+        return $this->publicKeyLen;
+    }
+
+    public function getPkeyHash()
+    {
+        return $this->publicKeyHash;
+    }
 
     public function &getXPath()
     {

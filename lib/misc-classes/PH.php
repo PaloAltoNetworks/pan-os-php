@@ -939,7 +939,8 @@ class PH
         "protocoll-number-download",
         "html-merger",
         "tsf",
-        "xpath"
+        "xpath",
+        "certificate"
         );
 
 
