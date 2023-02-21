@@ -161,7 +161,7 @@ class PH
 
     private static $library_version_major = 2;
     private static $library_version_sub = 0;
-    private static $library_version_bugfix = 71;
+    private static $library_version_bugfix = 72;
 
     //BASIC AUTH PAN-OS 7.1
     public static $softwareupdate_key = "658d787f293e631196dac9fb29490f1cc1bb3827";
@@ -939,7 +939,8 @@ class PH
         "protocoll-number-download",
         "html-merger",
         "tsf",
-        "xpath"
+        "xpath",
+        "certificate"
         );
 
 
@@ -1107,5 +1108,20 @@ class PH
         $util->endOfScript();
 
         return $util;
+    }
+
+    public static function find_string_between($line, $needle1, $needle2 = "--END--")
+    {
+        $needle_length = strlen($needle1);
+        $pos1 = strpos($line, $needle1);
+
+        if( $needle2 !== "--END--" )
+            $pos2 = strpos($line, $needle2);
+        else
+            $pos2 = strlen($line);
+
+        $finding = substr($line, $pos1 + $needle_length, $pos2 - ($pos1 + $needle_length));
+
+        return $finding;
     }
 }

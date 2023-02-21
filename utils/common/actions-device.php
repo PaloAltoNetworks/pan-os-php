@@ -1100,18 +1100,53 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
             derr( "API mode needed for actions=display-shadowrule" );
 
         $context->jsonArray = array();
+
+        $context->fields = array(
+            'location' => 'location',
+            'rulebase' => 'rulebase',
+            'type' => 'type',
+            'name' => 'name',
+            'tag' => 'tags',
+            'from' => 'from',
+            'to' => 'to',
+            'src_negated' => 'source_negated',
+            'src' => 'source',
+            'dst_negated' => 'destination_negated',
+            'dst' => 'destination',
+            'service' => 'service',
+            'application' => 'application',
+            'action' => 'action',
+            'security' => 'security-profile',
+            'disabled' => 'disabled',
+            'src user' => 'src-user',
+            'log start' => 'log_start',
+            'log end' => 'log_end',
+            'log prof' => 'log_profile',
+            'log prof name' => 'log_profile_name',
+            'snat type' => 'snat_type',
+            'snat_address' => 'snat_address',
+            'dnat_host' => 'dnat_host',
+            'description' => 'description',
+            'schedule' => 'schedule',
+            'target' => 'target'
+        );
+
+        $actionProperties = "exportToExcel";
+        $arguments = "";
+        $context->ruleContext = new RuleCallContext( $actionProperties, $arguments);
     },
     'MainFunction' => function (DeviceCallContext $context)
     {
         $object = $context->object;
         $classtype = get_class($object);
 
-        if( $context->object->version < 91 )
-            derr( "PAN-OS >= 9.1 is needed for display-shadowrule", null, false );
-
+        $sub_name = $object->name();
         $shadowArray = array();
         if( $classtype == "VirtualSystem" )
         {
+            if( $context->object->version < 91 )
+                derr( "PAN-OS >= 9.1 is needed for display-shadowrule", null, false );
+
             $type = "vsys";
             $type_name = $object->name();
             $countInfo = "<" . $type . ">" . $type_name . "</" . $type . ">";
@@ -1122,15 +1157,21 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
         {
             if( $object->isConnected )
             {
+                #if( $context->object->version < 91 )
+                #    derr( "PAN-OS >= 9.1 is needed for display-shadowrule", null, false );
+
                 $type = "device-serial";
                 $type_name = $object->name();
                 $countInfo = "<" . $type . ">" . $type_name . "</" . $type . ">";
 
-                $shadowArray = $context->connector->getShadowInfo($countInfo, true);
+                $shadowArray = $context->connector->getShadowInfo($countInfo, true, "", true);
             }
         }
         elseif( $classtype == "DeviceGroup" )
         {
+            if( $context->object->version < 91 )
+                derr( "PAN-OS >= 9.1 is needed for display-shadowrule", null, false );
+
             /** @var DeviceGroup $object */
             $devices = $object->getDevicesInGroup();
 
@@ -1142,6 +1183,7 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
                 {
                     $type = "device-serial";
                     $type_name = $managedDevice->name();
+                    $sub_name .= "-".$type_name;
                     $countInfo = "<" . $type . ">" . $type_name . "</" . $type . ">";
 
                     $shadowArray2 = $context->connector->getShadowInfo($countInfo, true, $object->name() );
@@ -1153,10 +1195,13 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
 
 
         $jsonArray = array();
+        $orig_sub_name = $sub_name;
         foreach( $shadowArray as $name => $array )
         {
             foreach( $array as $ruletype => $entries )
             {
+                $sub_name = $orig_sub_name;
+
                 if( $ruletype == 'security'  || $ruletype == "security-rule" )
                     $ruletype = "securityRules";
                 elseif( $ruletype == 'nat'  || $ruletype == "nat-rule" )
@@ -1174,13 +1219,14 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
                 {
                     $subName = "DG";
                     PH::print_stdout( "     ** ".$subName.": " . $name );
+                    $sub_name .= "-".$name;
                 }
 
                 foreach( $entries as $key => $item  )
                 {
                     $rule = null;
-                    $replace =  null;
 
+                    $origName = $name;
                     //uid: $key -> search rule name for uid
                     if( $classtype == "ManagedDevice" )
                     {
@@ -1232,9 +1278,6 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
                                 }
                             }
                         }
-
-                        if( $rule !== null )
-                            $replace = "Rule '".$rule->name()."'";
                     }
                     elseif( $classtype == "DeviceGroup" )
                     {
@@ -1268,33 +1311,108 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
                     {
                         PH::print_stdout( "        * RULE of type ".$ruletype.": '" . $rule->name(). "' owner: '".$ownerDG."' shadows rule: " );
                         $tmpName = $rule->name();
+                        $jsonArray[$ruletype][$tmpName]['rule'] = $rule;
                     }
 
                     else
                     {
                         PH::print_stdout( "        * RULE of type ".$ruletype.": '" . $key."'" );
                         $tmpName = $key;
+                        $jsonArray[$ruletype][$tmpName]['rule'] = $key;
                     }
 
 
                     foreach( $item as $shadow )
                     {
-                        if( $replace !== null )
-                            $shadow = str_replace( $replace, "", $shadow );
+                        if( $classtype == "VirtualSystem" )
+                            $shadow2 = PH::find_string_between( $shadow, " shadows rule '", "'.");
+                        else
+                            $shadow2 = PH::find_string_between( $shadow, " shadows '", "'.");
 
-                        $shadow = str_replace( " shadows rule ", "", $shadow );
-                        $shadow = str_replace( "shadows ", "", $shadow );
-                        $shadow = str_replace( ".", "", $shadow );
-                        $shadow = str_replace( "'", "", $shadow );
-                        PH::print_stdout( "          - '" . $shadow."'" );
-                        $jsonArray[$ruletype][$tmpName][] = $shadow;
+
+                        if( $classtype == "ManagedDevice" )
+                        {
+                            $sub = $pan->findDeviceGroup($ownerDG);
+                            $shadowedRuleObj = $sub->$ruletype->find( $shadow2 );
+                            while( $shadowedRuleObj === null )
+                            {
+                                $sub = $sub->parentDeviceGroup;
+                                if( $sub !== null )
+                                {
+                                    $shadowedRuleObj = $sub->$ruletype->find( $shadow2 );
+                                }
+                                else
+                                {
+                                    $shadowedRuleObj = $pan->$ruletype->find( $shadow2 );
+                                    if( $shadowedRuleObj === null )
+                                        break;
+                                }
+                            }
+                        }
+                        elseif( $classtype == "VirtualSystem" )
+                        {
+                            $sub = $pan->findVirtualSystem( $ownerDG );
+                            $shadowedRuleObj = $sub->$ruletype->find( $shadow2 );
+                            if( $shadowedRuleObj === null )
+                            {
+                                $ruleArray = $sub->$ruletype->resultingRuleSet();
+                                foreach( $ruleArray as $ruleSingle )
+                                {
+                                    /** @var SecurityRule $ruleSingle */
+                                    if( $ruleSingle->name() === $shadow2 )
+                                        $shadowedRuleObj = $ruleSingle;
+                                }
+                            }
+                        }
+                        elseif( $classtype == "DeviceGroup" )
+                        {
+                            /** @var PanoramaConf $pan */
+                            $pan = $object->owner;
+                            $sub = $object;
+
+                            $shadowedRuleObj = $sub->$ruletype->find( $shadow2 );
+                            while( $shadowedRuleObj === null )
+                            {
+                                $sub = $sub->parentDeviceGroup;
+                                if( $sub !== null )
+                                    $shadowedRuleObj = $sub->$ruletype->find( $shadow2 );
+                                else
+                                {
+                                    $shadowedRuleObj = $pan->$ruletype->find( $shadow2 );
+                                    if( $shadowedRuleObj === null )
+                                        break;
+                                }
+                            }
+                        }
+
+
+                        if( $shadowedRuleObj !== null )
+                        {
+                            $jsonArray[$ruletype][$tmpName]['shadow'][] = $shadowedRuleObj;
+                            PH::print_stdout( "          - '" . $shadowedRuleObj->name()."'" );
+                        }
+                        else
+                        {
+                            $jsonArray[$ruletype][$tmpName]['shadow'][] = $shadow2;
+                            PH::print_stdout( "          - '" . $shadow2."'" );
+                        }
                     }
+                }
+
+                if( $classtype == "ManagedDevice" )
+                {
+                    PH::$JSON_TMP['sub'] = $jsonArray;
+                    $context->jsonArray[$sub_name] = $jsonArray;
                 }
             }
         }
 
-        PH::$JSON_TMP['sub'] = $jsonArray;
-        $context->jsonArray = $jsonArray;
+        if( $classtype !== "ManagedDevice" )
+        {
+            PH::$JSON_TMP['sub'] = $jsonArray;
+            $context->jsonArray[$sub_name] = $jsonArray;
+        }
+
     },
     'GlobalFinishFunction' => function (DeviceCallContext $context) {
             $filename = $context->arguments['exportToExcel'];
@@ -1327,7 +1445,11 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
                         }
                     }
                     else
-                        derr('unsupported');
+                    {
+                        #derr('unsupported');
+                        $output = 'unsupported value/type';
+                    }
+
 
                     if( $nowrap )
                         return '<td style="white-space: nowrap">' . $output . '</td>';
@@ -1336,15 +1458,17 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
                 };
 
 
-                $headers = '<th>ruletype</th><th>rule</th><th>shadow rule</th>';
+                $headers = '<th>sub</th><th>ruletype</th>';
+                foreach( $context->fields as $fieldName => $fieldID )
+                    $headers .= '<th>'.$fieldID.'</th>';
 
                 $count = 0;
 
-                    foreach( $context->jsonArray as $keyruletype => $ruletype )
+                    foreach( $context->jsonArray as $subtype => $sub )
                     {
-                        foreach( $ruletype as $keyrule => $rule )
+                        foreach( $sub as $keyruletype => $ruletype )
                         {
-                            foreach( $rule as $ruleItem )
+                            foreach( $ruletype as $keyrule => $rule )
                             {
                                 $count++;
 
@@ -1356,11 +1480,57 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
 
                                 #$lines .= $encloseFunction(PH::getLocationString($object));
 
-                                $lines .= $encloseFunction($keyruletype);
-                                $lines .= $encloseFunction($keyrule);
-                                $lines .= $encloseFunction($ruleItem);
+                                $lines .= $encloseFunction( strval($subtype) );
+                                $lines .= $encloseFunction( strval($keyruletype) ) ;
+
+
+                                if( is_object( $rule['rule'] ) )
+                                {
+                                    $line = "";
+                                    foreach( $context->fields as $fieldName => $fieldID )
+                                        $line .= $context->ruleContext->ruleFieldHtmlExport($rule['rule'], $fieldID);
+                                    #$lines .= $encloseFunction( $line );
+                                    $lines .= $line;
+
+                                    #$lines .= $encloseFunction( $rule['rule']->name() );
+                                }
+                                else
+                                    $lines .= $encloseFunction( $rule['rule'] );
 
                                 $lines .= "</tr>\n";
+
+                                $shadowRuleString = array();
+                                foreach( $rule['shadow'] as $keyl => $ruleItem )
+                                {
+                                    if( $count % 2 == 1 )
+                                        $lines .= "<tr>\n";
+                                    else
+                                        $lines .= "<tr bgcolor=\"#DDDDDD\">";
+
+                                    $lines .= $encloseFunction( "---" );
+                                    $lines .= $encloseFunction( "shadowed" ) ;
+
+
+
+                                    if( is_object( $ruleItem ) )
+                                    {
+                                        $line = "";
+                                        foreach( $context->fields as $fieldName => $fieldID )
+                                            $line .= $context->ruleContext->ruleFieldHtmlExport($ruleItem, $fieldID);
+                                        #$lines .= $encloseFunction( $line );
+                                        $lines .= $line;
+
+                                        #$lines .= $encloseFunction( $ruleItem->name() );
+                                    }
+
+                                    else
+                                        $lines .= $encloseFunction( strval($ruleItem) );
+
+                                    $lines .= "</tr>\n";
+                                }
+
+
+
                             }
                         }
                     }

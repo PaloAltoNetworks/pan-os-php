@@ -37,6 +37,13 @@ class UPLOAD extends UTIL
         $this->help(PH::$args);
         $this->arg_validation();
 
+        if( isset(PH::$args['in']) )
+        {
+            if( strpos( PH::$args['in'], "api://") !== false && !isset(PH::$args['out']) )
+            {
+                $this->display_error_usage_exit('"out" argument is missing');
+            }
+        }
 
         //from init_arguments - which is triggered by utilInit
         $this->inDebugapiArgument();

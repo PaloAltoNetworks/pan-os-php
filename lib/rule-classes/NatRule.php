@@ -308,7 +308,7 @@ class NatRule extends Rule
                         }
                         else
                         {
-                            mwarning("Unknown dynamic SNAT type on rule '" . $this->name . " don't mess too much with this rule or face unpredictable results", null, FALSE);
+                            mwarning("Unknown dynamic SNAT type on rule '" . $this->name . "' owner: ".$this->owner->owner->_PANC_shortName()." don't mess too much with this rule or face unpredictable results", null, FALSE);
                         }
                     }
 

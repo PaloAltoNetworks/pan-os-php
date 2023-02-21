@@ -31,7 +31,15 @@ CertificateCallContext::$supportedActions['display'] = Array(
         $algorithm = "";
         $privateKey = "";
         $privateKeyLen = "";
+
+
+        $notValidbefore = "";
+        $notValidafter = "";
+
         $publicKeyLen = "";
+        $publicKeyAlgorithm = "";
+        $publicKeyHash = "";
+
         if( $object->algorithm != null )
             $algorithm = "Algorithm: ".$object->algorithm;
 
@@ -44,20 +52,24 @@ CertificateCallContext::$supportedActions['display'] = Array(
         {
             $privateKey = $object->privateKey;
             $privateKeyLen = "       - "."privateKey length: ".$object->privateKeyLen;
+            #$privateKeyAlgorithm = " | algorithm: ".$object->privateKeyAlgorithm;
+            #$prviateKeyHash = " |  hash: ".$object->privateKeyHash;
         }
 
-        if( $object->privateKey != null )
+        if( $object->publicKey != null )
         {
             $publicKey = $object->publicKey;
-            $publicKeyLen = " | publicKey length: ".$object->publicKeyLen;
+            $publicKeyLen = "       - "."publicKey length: ".$object->publicKeyLen;
+            $publicKeyAlgorithm = " | algorithm: ".$object->publicKeyAlgorithm;
+            $publicKeyHash = " |  hash: ".$object->publicKeyHash;
         }
         //not-valid-before
         //not-valid-after
 
         PH::print_stdout( "       - ".$algorithm.$notValidbefore." - ".$notValidafter );
-        PH::print_stdout( $privateKeyLen.$publicKeyLen );
+        PH::print_stdout( $privateKeyLen);
+        #PH::print_stdout( $privateKeyLen.$privateKeyAlgorithm.$prviateKeyHash );
+        PH::print_stdout( $publicKeyLen.$publicKeyAlgorithm.$publicKeyHash );
     },
-
-    //Todo: display routes to zone / Interface IP
 );
 

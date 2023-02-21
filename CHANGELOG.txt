@@ -1,6 +1,23 @@
 CHANGELOG
 
-2.0.71
+2.0.72
+UTIL:
+* type=upload | improvement if in=api:// is used but no out= is defined
+* type=device | actions=display-shadowrule:file.html - improvement to store full rule informtaion into html
+* type=certificate | introduce 'filter=(publickey-algorithm is.rsa/is.ec) - publickey-hash is.sha1/is.sha256/is.sha384/is.sha512 - publickey-length <>!= VALUE
+* type=certificate | introduce 'filter=(publickey-hash < sha256)'
+
+BUGFIX:
+* type=device | bugfix actions=display-shadowrule:file.html - to export correctly for all DG/vsys
+* type=rule ruletype=defaultsecurity | bugfix to read predefined default-security-rules also if xpath post-rulebase is not set
+* type=device actions=display-shadowrule | bugfix for multi-vsys
+* type=device | actions=display-shadowrule devicetype=manageddevice - bugfix for html export to display correct serial/DG
+
+GENERAL
+* class Rule | improvement for type=rule 'filter=(hit-count.fast, timestamp-last-hit.fast and timestamp-first-hit.fast
+
+
+2.0.71 (20230215)
 UTIL:
 * type=certificate | introduction of new utility script
 * type=certificate | extend actions=display
@@ -16,25 +33,16 @@ GENERAL
 * update Dockerfiles | split correctly between amd/arm
 
 
-2.0.70
+2.0.70 (20230208)
 UTIL:
 * type=diff | redesign filter JSON "combinedruleordercheck" feature
-* type=certificate | introduction of new utility script
-* type=certificate | extend actions=display
-* type=device | actions=display-shadowrule - extend with argument exportToexcel | actions=display-shadowrule:filename.html
 
 BUGFIX:
-* type=diff - JSON filter file - regression bug for "empty"
-* type=diff | bugfix for filter=jsonfile.json | not handling xpath split correctly
-* type=diff | bugfix filter JSON file "EMPTY" part
-* type=diff | JSON filter file - fix ruleorder display for "combinedruleordercheck"
 * type=playbook | bugfix for missing validation of available array_key
 * type=ironskilled-update | bugfix as ironskillet zpp has nothing for Alert_Only_Zone_Protection
 * type=address-merger | bugfix class Address.php - not handled null validation
 
 GENERAL
-* update dockerfiles to adjust for github actions
-* pan-os-php version shadow-json | remove second duplicate output
 * general - update UTIL actions/filter
 * update Dockerfiles | split correctly between amd/arm
 

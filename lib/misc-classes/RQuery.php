@@ -103,6 +103,8 @@ class RQuery
             $this->contextObject = new InterfaceRQueryContext($this);
         elseif( $this->objectType == 'dhcp' )
             $this->contextObject = new DHCPRQueryContext($this);
+        elseif( $this->objectType == 'certificate' )
+            $this->contextObject = new CertificateRQueryContext($this);
         else
             derr("unsupported object type '$objectType'");
     }
@@ -688,5 +690,6 @@ require_once 'filters/filters-SecurityProfileGroup.php';
 require_once 'filters/filters-Schedule.php';
 require_once 'filters/filters-Device.php';
 require_once 'filters/filters-DHCP.php';
+require_once 'filters/filters-Certificate.php';
 
 
