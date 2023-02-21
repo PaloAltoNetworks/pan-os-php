@@ -31,10 +31,18 @@ class SSH_CONNECTOR__ extends UTIL
             "  - pan-os-php type=ssh-connector in=[USER@MGMT-IP] out=TEXTFILEconfig.txt vendor=[paloalto/ciscoasa/netscreen/srx/sonicwall/fortinet]\n".
             "\n".
             "  - send CLI commands to Palo Alto Networks PAN-OS, possible to store output in txt file\n".
-            "  - pan-os-php type=ssh-connector in=[USER@MGMT-IP] out=TEXTFILE.txt command=[show system info/show date]\n".
+            "  - multiple commands must be separate with '/' \n".
+            "  - pan-os-php type=ssh-connector in=[USER@MGMT-IP] out=TEXTFILE.txt command=[show system info/show session info]\n".
             "\n".
             "  - load Palo Alto Networks PAN-OS set commands from file\n".
-            "  - pan-os-php type=ssh-connector in=[USER@MGMT-IP] setcommand-file=FILE.txt setcommand-maxlinecount=20\n";
+            "  - pan-os-php type=ssh-connector in=[USER@MGMT-IP] setcommand-file=FILE.txt setcommand-maxlinecount=20\n".
+            "\n".
+            "  possible additional arguments:\n".
+            "  password=PW\n".
+            "  timeout=10\n".
+            "  nohiddenpw\n".
+            "  debug\n";
+
 
         PH::processCliArgs();
 
@@ -140,6 +148,7 @@ class SSH_CONNECTOR__ extends UTIL
         {
             $commands = PH::$args['command'];
             $commands = explode("/", $commands);
+            array_unshift($commands , 'set cli pager off');
 
             if( isset(PH::$args['out']) )
             {
