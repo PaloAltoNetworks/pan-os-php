@@ -5,6 +5,7 @@ UTIL:
 * type=ssh-connector | introduction of new utility script
 
 BUGFIX:
+* type=certificate | bugfix for reading hash for ec certificates
 
 GENERAL:
 

@@ -229,8 +229,17 @@ class Certificate
                     //[signatureTypeSN] => RSA-SHA256
                     //    [signatureTypeLN] => sha256WithRSAEncryption
 
-                    $str_Array = explode( "With", $cert_obj['signatureTypeLN'] );
-                    $this->publicKeyHash = $str_Array[0];
+                    if( strpos( $cert_obj['signatureTypeLN'], 'ecdsa' ) !== False   )
+                    {
+                        $str_Array = explode( "ecdsa-with-", $cert_obj['signatureTypeLN'] );
+                        $string = strtolower($str_Array[1]);
+                        $this->publicKeyHash = $string;
+                    }
+                    else
+                    {
+                        $str_Array = explode( "With", $cert_obj['signatureTypeLN'] );
+                        $this->publicKeyHash = $str_Array[0];
+                    }
                 }
             }
         }
