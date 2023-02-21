@@ -77,6 +77,7 @@ require_once(dirname(__FILE__)."/XPATH.php");
 require_once dirname(__FILE__)."/../../phpseclib/Net/SSH2.php";
 require_once dirname(__FILE__)."/../../phpseclib/Crypt/RSA.php";
 
+require_once(dirname(__FILE__)."/SSH_CONNECTOR__.php");
 
 
 class UTIL
