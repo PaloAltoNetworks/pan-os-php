@@ -218,7 +218,7 @@ class Certificate
                     $this->publicKeyLen = $cert_details['bits'];
 
 
-                //this does not container the bits
+                //this does not contain the bits
                 $cert = openssl_x509_read( $this->publicKey );
                 $cert_obj = openssl_x509_parse( $cert );
                 #print_r( $cert_obj );

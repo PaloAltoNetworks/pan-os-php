@@ -729,6 +729,108 @@ RQuery::$defaultFilters['address']['reflocation']['operators']['is'] = array(
         'input' => 'input/panorama-8.0.xml'
     )
 );
+RQuery::$defaultFilters['address']['reflocationtype']['operators']['is.template'] = array(
+    'Function' => function (AddressRQueryContext $context) {
+        $object = $context->object;
+        $owner = $context->object->owner->owner;
+
+        #print "NAME: ".$object->name()."\n";
+        $reflocation_array = $object->getReferencesLocationType();
+        #print_r( $reflocation_array );
+
+        $return = FALSE;
+        foreach( $reflocation_array as $reflocation )
+        {
+            if( $reflocation == "Template" || $reflocation == "TemplateStack" )
+                return TRUE;
+        }
+
+        return FALSE;
+    },
+    'arg' => FALSE,
+    'help' => 'returns TRUE if object locationtype is Template or TemplateStack',
+    'ci' => array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['address']['reflocationtype']['operators']['is.only.template'] = array(
+    'Function' => function (AddressRQueryContext $context) {
+        $object = $context->object;
+        $owner = $context->object->owner->owner;
+
+        #print "NAME: ".$object->name()."\n";
+        $reflocation_array = $object->getReferencesLocationType();
+        #print_r( $reflocation_array );
+
+        $return = FALSE;
+        foreach( $reflocation_array as $reflocation )
+        {
+            if( $reflocation == "Template" || $reflocation == "TemplateStack" )
+                $return = TRUE;
+            else
+                return FALSe;
+        }
+
+        return $return;
+    },
+    'arg' => FALSE,
+    'help' => 'returns TRUE if object locationtype is Template or TemplateStack',
+    'ci' => array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['address']['reflocationtype']['operators']['is.devicegroup'] = array(
+    'Function' => function (AddressRQueryContext $context) {
+        $object = $context->object;
+        $owner = $context->object->owner->owner;
+
+        $reflocation_array = $object->getReferencesLocationType();
+        #print_r( $reflocation_array );
+
+        $return = FALSE;
+        foreach( $reflocation_array as $reflocation )
+        {
+            if( $reflocation == "DeviceGroup" )
+                return TRUE;
+        }
+
+        return FALSE;
+    },
+    'arg' => FALSE,
+    'help' => 'returns TRUE if object locationtype is Template or TemplateStack',
+    'ci' => array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['address']['reflocationtype']['operators']['is.only.devicegroup'] = array(
+    'Function' => function (AddressRQueryContext $context) {
+        $object = $context->object;
+        $owner = $context->object->owner->owner;
+
+        $reflocation_array = $object->getReferencesLocationType();
+        #print_r( $reflocation_array );
+
+        $return = FALSE;
+        foreach( $reflocation_array as $reflocation )
+        {
+            if( $reflocation == "DeviceGroup" )
+                $return = TRUE;
+            else
+                return FALSE;
+        }
+
+        return $return;
+    },
+    'arg' => FALSE,
+    'help' => 'returns TRUE if object locationtype is Template or TemplateStack',
+    'ci' => array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 RQuery::$defaultFilters['address']['reflocation']['operators']['is.only'] = array(
     'Function' => function (AddressRQueryContext $context) {
         $owner = $context->object->owner->owner;
