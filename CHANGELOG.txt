@@ -6,6 +6,7 @@ UTIL:
 BUGFIX:
 
 GENERAL:
+* bugfixes for PHP version 8.2 - 'PHP Deprecated:  Creation of dynamic property'
 
 
 2.0.73
