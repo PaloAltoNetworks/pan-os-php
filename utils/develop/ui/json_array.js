@@ -1299,13 +1299,22 @@ var subjectObject =
                             "fString": "(%PROP%)",
                             "input": "input\/panorama-8.0.xml"
                         }
+                    },
+                    ">,<,=,!": {
+                        "Function": {},
+                        "arg": true,
+                        "help": "returns TRUE if object hash value matches \"publickey-hash >= 256\" || \"publickey-hash < sha256\"",
+                        "ci": {
+                            "fString": "(%PROP% 5)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
                     }
                 }
             },
             "publickey-length": {
                 "operators": {
                     ">,<,=,!": {
-                        "eval": "$object->getPkeyBits() !operator! !value!",
+                        "eval": "$object->hasPublicKey() && $object->getPkeyBits() !operator! !value!",
                         "arg": true,
                         "ci": {
                             "fString": "(%PROP% 1)",
@@ -6574,6 +6583,11 @@ var subjectObject =
     },
     "spiffy": {
         "name": "spiffy",
+        "action": [],
+        "filter": []
+    },
+    "ssh-connector": {
+        "name": "ssh-connector",
         "action": [],
         "filter": []
     },

@@ -1,6 +1,18 @@
 CHANGELOG
 
-2.0.72
+2.0.73
+UTIL:
+* type=ssh-connector | introduction of new utility script
+* type=address | introduce new 'filter=(reflocationtype is.template/is.only.template/is.devicegroup/is.only.devicegroup )'
+
+BUGFIX:
+* type=certificate | bugfix for reading hash for ec certificates
+
+GENERAL:
+* introduce PHP version validation - PHP 8.2 is NOT yet supported
+
+
+2.0.72 (20230220)
 UTIL:
 * type=upload | improvement if in=api:// is used but no out= is defined
 * type=device | actions=display-shadowrule:file.html - improvement to store full rule informtaion into html

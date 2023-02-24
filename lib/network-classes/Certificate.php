@@ -218,7 +218,7 @@ class Certificate
                     $this->publicKeyLen = $cert_details['bits'];
 
 
-                //this does not container the bits
+                //this does not contain the bits
                 $cert = openssl_x509_read( $this->publicKey );
                 $cert_obj = openssl_x509_parse( $cert );
                 #print_r( $cert_obj );
@@ -229,8 +229,17 @@ class Certificate
                     //[signatureTypeSN] => RSA-SHA256
                     //    [signatureTypeLN] => sha256WithRSAEncryption
 
-                    $str_Array = explode( "With", $cert_obj['signatureTypeLN'] );
-                    $this->publicKeyHash = $str_Array[0];
+                    if( strpos( $cert_obj['signatureTypeLN'], 'ecdsa' ) !== False   )
+                    {
+                        $str_Array = explode( "ecdsa-with-", $cert_obj['signatureTypeLN'] );
+                        $string = strtolower($str_Array[1]);
+                        $this->publicKeyHash = $string;
+                    }
+                    else
+                    {
+                        $str_Array = explode( "With", $cert_obj['signatureTypeLN'] );
+                        $this->publicKeyHash = $str_Array[0];
+                    }
                 }
             }
         }

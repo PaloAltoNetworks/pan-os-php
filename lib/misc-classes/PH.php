@@ -161,7 +161,7 @@ class PH
 
     private static $library_version_major = 2;
     private static $library_version_sub = 0;
-    private static $library_version_bugfix = 72;
+    private static $library_version_bugfix = 73;
 
     //BASIC AUTH PAN-OS 7.1
     public static $softwareupdate_key = "658d787f293e631196dac9fb29490f1cc1bb3827";
@@ -940,7 +940,8 @@ class PH
         "html-merger",
         "tsf",
         "xpath",
-        "certificate"
+        "certificate",
+        "ssh-connector"
         );
 
 
@@ -1094,6 +1095,9 @@ class PH
 
         elseif( $type == "xpath" )
             $util = new XPATH($type, $argv, $argc,$PHP_FILE." type=".$type, $_supportedArguments, $_usageMsg, $projectfolder);
+
+        elseif( $type == "ssh-connector" )
+            $util = new SSH_CONNECTOR__( $type, $argv, $argc, $PHP_FILE." type=".$type, $_supportedArguments, $_usageMsg, $projectfolder);
 
         elseif( $type == 'address'
             || $type == 'service'

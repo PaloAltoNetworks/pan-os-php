@@ -124,7 +124,28 @@ class EthernetInterface
                     if( $l3ipNode->nodeType != XML_ELEMENT_NODE )
                         continue;
 
-                    $this->l3ipv4Addresses[] = $l3ipNode->getAttribute('name');
+                    $tmpIP = $l3ipNode->getAttribute('name');
+                    $this->l3ipv4Addresses[] = $tmpIP;
+
+                    //Todo - reference adding is missing, search object name if no IP
+                    /*
+                    if( strpos($tmpIP, "/") === FALSE )
+                    {
+                        $tmp_vsys = $this->owner->owner->network->findVsysInterfaceOwner($this->name());
+                        if( is_object($tmp_vsys) )
+                        {
+                            $object = $tmp_vsys->addressStore->find($tmpIP);
+                            #$object = $tmp_vsys->addressStore->findOrCreate($ip);
+                        }
+                        else
+                            derr("vsys for interface: " . $this->name() . " not found. \n", $this);
+
+                        if( is_object($object) )
+                            $object->addReference($this);
+                        else
+                            derr("objectname: " . $tmpIP . " not found. Can not be added to interface.\n", $this);
+                    }
+                    */
                 }
             }
 
@@ -140,7 +161,27 @@ class EthernetInterface
                         if( $l3ipNode->nodeType != XML_ELEMENT_NODE )
                             continue;
 
-                        $this->l3ipv6Addresses[] = $l3ipNode->getAttribute('name');
+                        $tmpIP = $l3ipNode->getAttribute('name');
+                        $this->l3ipv6Addresses[] = $tmpIP;
+
+                        //Todo - reference adding is missing, search object name if no IP
+                        /*if( strpos($tmpIP, "/") === FALSE )
+                        {
+                            $tmp_vsys = $this->owner->owner->network->findVsysInterfaceOwner($this->name());
+                            if( is_object($tmp_vsys) )
+                            {
+                                $object = $tmp_vsys->addressStore->find($tmpIP);
+                                #$object = $tmp_vsys->addressStore->findOrCreate($ip);
+                            }
+                            else
+                                derr("vsys for interface: " . $this->name() . " not found. \n", $this);
+
+                            if( is_object($object) )
+                                $object->addReference($this);
+                            else
+                                derr("objectname: " . $tmpIP . " not found. Can not be added to interface.\n", $this);
+                        }
+                        */
                     }
                 }
             }
