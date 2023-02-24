@@ -9,6 +9,7 @@ BUGFIX:
 * type=certificate | bugfix for reading hash for ec certificates
 
 GENERAL:
+* introduce PHP version validation - PHP 8.2 is NOT yet supported
 
 
 2.0.72 (20230220)
