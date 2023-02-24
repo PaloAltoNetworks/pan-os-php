@@ -24,6 +24,8 @@
  */
 class LoopbackIfStore extends ObjStore
 {
+    public $owner;
+
     public static $childn = 'LoopbackInterface';
 
     protected $fastMemToIndex = null;

@@ -67,6 +67,8 @@ class DefaultSecurityRule extends Rule
 
     protected $ruleType = self::TypeUniversal;
 
+    public $urlCategories;
+    public $apps;
 
     /**
      * @param RuleStore $owner

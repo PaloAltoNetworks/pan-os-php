@@ -153,6 +153,9 @@ class UTIL
 
     public $cycleConnectedFirewalls = FALSE;
 
+    public $loadEndTime;
+    public $loadEndMem;
+
     function __construct($utilType, $argv, $argc, $PHP_FILE, $_supportedArguments = array(), $_usageMsg = "", $projectFolder = "")
     {
         PanAPIConnector::$projectfolder = $projectFolder;

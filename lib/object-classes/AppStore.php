@@ -21,6 +21,8 @@
 
 class AppStore extends ObjStore
 {
+    public $name;
+
     /** @var array|App[] */
     public $apps = array();
 

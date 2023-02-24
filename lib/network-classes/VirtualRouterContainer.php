@@ -29,6 +29,8 @@ class VirtualRouterContainer extends ObjRuleContainer
     /** @var  NetworkPropertiesContainer */
     public $parentCentralStore;
 
+    public $owner;
+
     /**
      * @param VirtualSystem|DeviceCloud $owner
      * @param NetworkPropertiesContainer $centralStore

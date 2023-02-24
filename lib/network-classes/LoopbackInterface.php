@@ -30,6 +30,8 @@ class LoopbackInterface
     /** @var string */
     public $type = 'loopback';
 
+    public $owner;
+
     function __construct($name, $owner)
     {
         $this->name = $name;

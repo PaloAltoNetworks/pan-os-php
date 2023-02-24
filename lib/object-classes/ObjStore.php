@@ -38,6 +38,7 @@ class ObjStore
 
     protected $skipEmptyXmlObjects = FALSE;
 
+    public $type = 'tmp';
 
     public function count()
     {

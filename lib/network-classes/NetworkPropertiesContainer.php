@@ -35,6 +35,12 @@ class NetworkPropertiesContainer
     /** @var ikeGatewayStore */
     public $ikeGatewayStore;
 
+    /** @var greTunnelStore */
+    public $greTunnelStore;
+
+    /** @var dhcpStore */
+    public $dhcpStore;
+
     /** @var vlanIfStore */
     public $vlanIfStore;
 

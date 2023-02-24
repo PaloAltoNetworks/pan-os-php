@@ -26,6 +26,8 @@ class TmpInterfaceStore extends ObjStore
 {
     public static $childn = 'EthernetInterface';
 
+    public $owner;
+
     /**
      * @param PANConf $owner
      */

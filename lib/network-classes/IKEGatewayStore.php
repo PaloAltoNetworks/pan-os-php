@@ -26,6 +26,8 @@
  */
 class IKEGatewayStore extends ObjStore
 {
+    public $owner;
+
     public static $childn = 'IKEGateway';
 
     protected $fastMemToIndex = null;

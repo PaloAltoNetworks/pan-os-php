@@ -49,6 +49,8 @@ class PanoramaConf
     public $devicesroot;
     public $localhostlocaldomain;
 
+    public $deviceconfigroot;
+
     /** @var DOMElement */
     public $localhostroot;
 

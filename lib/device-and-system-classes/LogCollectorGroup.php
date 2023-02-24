@@ -40,6 +40,8 @@ class LogCollectorGroup
     /** @var Array */
     private $devices = array();
 
+    private $logfwdRoot;
+
     public static $templatexml = '<entry name="**Need a Name**"><monitor-setting></monitor-setting><logfwd-setting></logfwd-setting><general-setting></general-setting>
 									</entry>';
 
@@ -47,7 +49,7 @@ class LogCollectorGroup
     {
         $this->owner = $owner;
 
-        $this->device = array();
+        $this->devices = array();
     }
 
     public function load_from_templateXml()

@@ -67,6 +67,8 @@ class RQuery
 
     public $text = '';
 
+    public $padded;
+    public $contextObject;
 
     public function __construct($objectType, $level = 0)
     {

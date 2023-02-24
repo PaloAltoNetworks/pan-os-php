@@ -26,6 +26,10 @@ class App
     use ReferenceableObject;
     use PathableName;
 
+    /** @var AppStore|null */
+    public $owner;
+    public $xmlroot;
+
     public $type = 'tmp';
 
     public $tcp = null;
@@ -80,8 +84,14 @@ class App
 
     /** @var null|array */
     public $explicitUse = array();
+    public $implicitUse = array();
+
     public $tunnelApp = array();
     public $decoder = array();
+
+    public $obsolete = array();
+    public $subapps = array();
+
 
     //Todo: new dynamic content contains SAAS appid-saas-risk-fields
     static public $_supportedCharacteristics = array(
@@ -128,7 +138,7 @@ class App
 
     public function isContainer()
     {
-        if( isset($this->subapps) )
+        if( isset($this->subapps) && !empty($this->subapps) )
             return TRUE;
 
         return FALSE;
@@ -383,12 +393,12 @@ class App
     {
         $ret = array();
 
-        if( isset($this->explicitUse) )
+        if( isset($this->explicitUse) && !empty( $this->explicitUse ) )
             $plus = $this->explicitUse;
         else
             $plus = array();
 
-        if( !isset($this->implicitUse) )
+        if( !isset($this->implicitUse) || empty($this->implicitUse ) )
             return $plus;
 
         foreach( $plus as $plusApp )
@@ -480,7 +490,7 @@ class App
         $subarray[$this->name()]['name'] = $this->name();
 
 
-        if( isset($this->obsolete) )
+        if( isset($this->obsolete) and $this->obsolete !== null )
         {
             $text .= $padding_above . "  - (obsolete) ";
             $subarray[$this->name()]['obsolete'] = "true";
@@ -546,7 +556,7 @@ class App
         if( !empty($text))
             PH::print_stdout($text);
 
-        if( isset( $this->explicitUse ) && $print_explicit )
+        if( isset( $this->explicitUse ) && !empty( $this->explicitUse ) && $print_explicit )
         {
             foreach( $this->explicitUse as $app1 )
             {
@@ -554,11 +564,11 @@ class App
 
                 $tmparray = array();
                 $app1->print_appdetails( $padding_above, true, $tmparray );
-                $subarray['implicit'][] = $tmparray;
+                $subarray['explicit'][] = $tmparray;
             }
         }
 
-        if( isset( $this->implicitUse ) && $print_implicit )
+        if( isset( $this->implicitUse ) && !empty( $this->implicitUse )  && $print_implicit )
         {
             foreach( $this->implicitUse as $app2 )
             {

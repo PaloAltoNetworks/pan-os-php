@@ -26,6 +26,8 @@
  */
 class GreTunnelStore extends ObjStore
 {
+    public $owner;
+
     protected $_tunnels = array();
 
     public static $childn = 'GreTunnel';
