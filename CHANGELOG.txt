@@ -2,6 +2,7 @@ CHANGELOG
 
 2.0.74
 UTIL:
+* type=securityprofile 'actions=custom-url-category-add-ending-token:/*' - add support for token '/*
 
 BUGFIX:
 

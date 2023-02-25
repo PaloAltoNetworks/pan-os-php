@@ -647,7 +647,21 @@ SecurityProfileCallContext::$supportedActions['custom-url-category-add-ending-to
             elseif( strpos( $member, $newToken ) !== FALSE )
                 PH::print_stdout(  "skipped! endingToken already available: '".$member."'" );
             elseif( in_array( $lastChar, $skiptokenArray ) )
-                PH::print_stdout(  "skipped! following token available at lastChar: '".$lastChar."'" );
+            {
+                $lasttwoChar = substr($member, -2);
+                if( $lasttwoChar == "/*" )
+                    PH::print_stdout(  "skipped! following token available at lastChar: '".$lasttwoChar."'" );
+                else
+                {
+                    PH::print_stdout(  "something needs to be done before: '".$lastChar."'" );
+                    $member2 = str_replace( "*", "/*", $member );
+                    $object->addMember( $member2 );
+                    $object->deleteMember( $member );
+
+                    if( $context->isAPI )
+                        $object->API_sync();
+                }
+            }
             else
             {
                 $object->addMember( $member.$newToken );
@@ -661,7 +675,7 @@ SecurityProfileCallContext::$supportedActions['custom-url-category-add-ending-to
     'args' => array('endingtoken' =>
         array('type' => 'string', 'default' => '/',
             'help' =>
-                "supported ending token: '.', '/', '?', '&', '=', ';', '+'\n\n".
+                "supported ending token: '.', '/', '?', '&', '=', ';', '+', '/*'\n\n".
                 "'actions=custom-url-category-add-ending-token:/' is the default value, it can NOT be run directly\n".
                 "please use: 'actions=custom-url-category-add-ending-token' to avoid problems like: '**ERROR** unsupported Action:\"\"'"
 
