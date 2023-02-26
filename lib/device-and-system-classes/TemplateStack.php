@@ -32,7 +32,7 @@ class TemplateStack
 
     protected $templateRoot = null;
 
-    protected $xmlroot = null;
+    public $xmlroot = null;
 
     public $FirewallsSerials = array();
 

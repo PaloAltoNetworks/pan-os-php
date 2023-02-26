@@ -26,6 +26,7 @@ class Region
     use PathableName;
     use XmlConvertible;
 
+    public $owner;
 
     /**
      * you should not need this one for normal use

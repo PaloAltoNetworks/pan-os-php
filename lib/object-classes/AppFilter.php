@@ -61,7 +61,7 @@ class AppFilter extends App
     use XmlConvertible;
 
     public $category;
-    public $subCategory;
+    public $subcategory;
     public $technology;
     public $tagging;
     public $risk;
