@@ -1,4 +1,4 @@
-v<?php
+<?php
 /**
  * ISC License
  *
