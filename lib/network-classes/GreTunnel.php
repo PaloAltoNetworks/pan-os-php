@@ -32,6 +32,9 @@ class GreTunnel
 
     public $owner;
 
+    public $localInterface;
+    public $tunnelInterface;
+
     /** @var null|string[]|DOMElement */
     public $typeRoot = null;
     /** @var null|string[]|DOMElement */

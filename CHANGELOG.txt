@@ -13,7 +13,7 @@ GENERAL:
 * remove deprecated utilities scripts
 
 
-2.0.73
+2.0.73 (20230224)
 UTIL:
 * type=ssh-connector | introduction of new utility script
 * type=address | introduce new 'filter=(reflocationtype is.template/is.only.template/is.devicegroup/is.only.devicegroup )'
