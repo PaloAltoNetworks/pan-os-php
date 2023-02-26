@@ -626,7 +626,11 @@ SecurityProfileCallContext::$supportedActions['custom-url-category-add-ending-to
             return null;
 
         $newToken = $context->arguments['endingtoken'];
-        $tokenArray = array( '.', '/', '?', '&', '=', ';', '+' );
+
+        if( strpos( $newToken, "$$" ) !== FALSE )
+            $newToken = str_replace( "$$", "/", $newToken );
+
+        $tokenArray = array( '.', '/', '?', '&', '=', ';', '+', '/*' );
 
         if( !in_array( $newToken, $tokenArray ) )
         {
@@ -675,7 +679,7 @@ SecurityProfileCallContext::$supportedActions['custom-url-category-add-ending-to
     'args' => array('endingtoken' =>
         array('type' => 'string', 'default' => '/',
             'help' =>
-                "supported ending token: '.', '/', '?', '&', '=', ';', '+', '/*'\n\n".
+                "supported ending token: '.', '/', '?', '&', '=', ';', '+', '/*' - please be aware for '/*' please use '$$*'\n\n".
                 "'actions=custom-url-category-add-ending-token:/' is the default value, it can NOT be run directly\n".
                 "please use: 'actions=custom-url-category-add-ending-token' to avoid problems like: '**ERROR** unsupported Action:\"\"'"
 
