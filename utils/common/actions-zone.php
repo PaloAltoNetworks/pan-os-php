@@ -413,7 +413,7 @@ ZoneCallContext::$supportedActions['display'] = array(
     'MainFunction' => function (ZoneCallContext $context) {
         /** @var Zone $object */
         $object = $context->object;
-        $tmp_txt = "     * " . get_class($object) . " '{$object->name()}'   ( type: " . $object->_type . " )";
+        $tmp_txt = "     * " . get_class($object) . " '{$object->name()}'   ( type: " . $object->type . " )";
         if( $object->zoneProtectionProfile !== null )
             $tmp_txt .= ", ZPP: " . $object->zoneProtectionProfile;
         if( $object->logsetting !== null )

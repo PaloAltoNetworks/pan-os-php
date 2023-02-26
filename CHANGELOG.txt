@@ -6,6 +6,7 @@ UTIL:
 * type=securityprofile | introduce actions=custom-url-category-remove-ending-token - 'custom-url-category-remove-ending-token:*' - '*' can only be added if '/' is last char
 
 BUGFIX:
+* type=zone | actions=display bugfix
 
 GENERAL:
 * bugfixes for PHP version 8.2 - 'PHP Deprecated:  Creation of dynamic property'
