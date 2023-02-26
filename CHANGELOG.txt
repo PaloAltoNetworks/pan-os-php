@@ -10,6 +10,7 @@ BUGFIX:
 GENERAL:
 * bugfixes for PHP version 8.2 - 'PHP Deprecated:  Creation of dynamic property'
 * class AppFilter / CallContext - improvement for PHP 8.2
+* remove deprecated utilities scripts
 
 
 2.0.73
