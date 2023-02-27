@@ -1103,7 +1103,7 @@ class SecurityRule extends RuleWithUserID
         if( !$this->userID_IsCustom() )
         {
             $text .= $padding . "  User: *" . $this->userID_type() . "*";
-            PH::$JSON_TMP['sub']['object'][$this->name()]['user'] = $this->userID_type();
+            PH::$JSON_TMP['sub']['object'][$this->name()]['user'][] = $this->userID_type();
         }
         else
         {
