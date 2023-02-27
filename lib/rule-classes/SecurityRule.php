@@ -1066,21 +1066,25 @@ class SecurityRule extends RuleWithUserID
         PH::print_stdout( $padding . "  From: " . $this->from->toString_inline() . "  |  To:  " . $this->to->toString_inline() );
         foreach( $this->from->zones() as $from )
             PH::$JSON_TMP['sub']['object'][$this->name()]['from'][] = $from->name();
-        if( count( $this->from->zones() ) == 0 )
+        if( $this->from->isAny() )
             PH::$JSON_TMP['sub']['object'][$this->name()]['from'][] = "any";
 
         foreach( $this->to->zones() as $to )
             PH::$JSON_TMP['sub']['object'][$this->name()]['to'][] = $to->name();
-        if( count( $this->to->zones() ) == 0 )
+        if( $this->to->isAny() )
             PH::$JSON_TMP['sub']['object'][$this->name()]['to'][] = "any";
 
         PH::print_stdout( $padding . "  Source: $sourceNegated " . $this->source->toString_inline() );
         foreach( $this->source->getAll() as $src )
             PH::$JSON_TMP['sub']['object'][$this->name()]['source'][] = $src->name();
+        if( $this->source->isAny()  )
+            PH::$JSON_TMP['sub']['object'][$this->name()]['source'][] = "any";
 
         PH::print_stdout( $padding . "  Destination: $destinationNegated " . $this->destination->toString_inline() );
         foreach( $this->destination->getAll() as $dst )
             PH::$JSON_TMP['sub']['object'][$this->name()]['destination'][] = $dst->name();
+        if( $this->destination->isAny() )
+            PH::$JSON_TMP['sub']['object'][$this->name()]['destination'][] = "any";
 
         PH::print_stdout( $padding . "  Service:  " . $this->services->toString_inline() . "    Apps:  " . $this->apps->toString_inline() );
         foreach( $this->services->getAll() as $srv )
