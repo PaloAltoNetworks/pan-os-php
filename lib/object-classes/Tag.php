@@ -144,8 +144,9 @@ class Tag
      * @param string $name
      * @param TagStore|null $owner
      * @param bool $fromXmlTemplate
+     * @throws Exception
      */
-    public function __construct($name, $owner, $fromXmlTemplate = FALSE)
+    public function __construct(string $name, ?TagStore $owner, bool $fromXmlTemplate = FALSE)
     {
         $this->replaceNamewith( $name );
         $this->name = $name;
@@ -183,8 +184,9 @@ class Tag
     /**
      * @param string $newName
      * @return bool
+     * @throws Exception
      */
-    public function setName($newName)
+    public function setName(string $newName): bool
     {
         $this->replaceNamewith( $newName );
         $ret = $this->setRefName($newName);
@@ -199,8 +201,9 @@ class Tag
 
     /**
      * @param string $newName
+     * @throws Exception
      */
-    public function API_setName($newName)
+    public function API_setName(string $newName)
     {
         $c = findConnectorOrDie($this);
         $xpath = $this->getXPath();
@@ -213,11 +216,10 @@ class Tag
      * @param string $newColor
      * @param bool $rewriteXml
      * @return bool
+     * @throws Exception
      */
-    public function setColor($newColor, $rewriteXml = TRUE)
+    public function setColor(string $newColor, bool $rewriteXml = TRUE): bool
     {
-        if( !is_string($newColor) )
-            derr('value can be text only');
 
         if( !isset(self::$TagColors[$newColor]) )
         {
@@ -229,7 +231,7 @@ class Tag
 
         if( !isset(self::$TagColors[$newColor]) )
         {
-            $tmp_newColor = array_search($newColor, self::$TagColors);
+            $tmp_newColor = in_array($newColor, self::$TagColors);
 
             if( $tmp_newColor === FALSE )
                 derr("color '" . $newColor . "' not available");
@@ -274,8 +276,9 @@ class Tag
     /**
      * @param string $newColor
      * @return bool
+     * @throws Exception
      */
-    public function API_setColor($newColor)
+    public function API_setColor(string $newColor): bool
     {
         if( !$this->setColor($newColor) )
             return FALSE;
@@ -301,17 +304,15 @@ class Tag
     /**
      * @return array
      */
-    public function availableColors()
+    public function availableColors(): array
     {
-        $ret = array_keys(self::$TagColors);
-
-        return $ret;
+        return array_keys(self::$TagColors);
     }
 
     /**
      * @return string
      */
-    public function &getXPath()
+    public function &getXPath(): string
     {
         $str = $this->owner->getTagStoreXPath() . "/entry[@name='" . $this->name . "']";
 
@@ -319,7 +320,7 @@ class Tag
     }
 
 
-    public function isTmp()
+    public function isTmp(): bool
     {
         if( $this->xmlroot === null )
             return TRUE;
@@ -327,6 +328,9 @@ class Tag
     }
 
 
+    /**
+     * @throws Exception
+     */
     public function load_from_domxml(DOMElement $xml)
     {
         $this->xmlroot = $xml;
@@ -346,7 +350,7 @@ class Tag
         if( $colorRoot !== FALSE )
             $this->color = $colorRoot->textContent;
 
-        if( $this->color === FALSE || $this->color == '' )
+        if( $this->color == '' )
             $this->color = 'none';
 
         if( strlen($this->color) < 1 )
@@ -357,14 +361,14 @@ class Tag
         if( $commentsRoot !== FALSE )
             $this->comments = $commentsRoot->textContent;
 
-        if( $this->comments === FALSE || $this->comments == '' )
+        if( $this->comments == '' )
             $this->comments = '';
     }
 
     /**
      * @return string
      */
-    public function getColor()
+    public function getColor(): ?string
     {
         $ret = $this->color;
 
@@ -380,11 +384,9 @@ class Tag
     /**
      * @return string
      */
-    public function getComments()
+    public function getComments(): ?string
     {
-        $ret = $this->comments;
-
-        return $ret;
+        return $this->comments;
     }
 
     /**
@@ -392,7 +394,7 @@ class Tag
      * * @param bool $rewriteXml
      * @return bool
      */
-    public function addComments($newComment, $rewriteXml = TRUE)
+    public function addComments(string $newComment, bool $rewriteXml = TRUE): bool
     {
         $oldComment = $this->comments;
         $newComment = $oldComment . $newComment;
@@ -422,7 +424,7 @@ class Tag
      * @param string $newComment
      * @return bool
      */
-    public function API_addComments($newComment)
+    public function API_addComments(string $newComment): bool
     {
         if( !$this->addComments($newComment) )
             return FALSE;
@@ -440,7 +442,7 @@ class Tag
     /**
      * @return bool
      */
-    public function deleteComments()
+    public function deleteComments(): bool
     {
         if( $this->xmlroot === null )
             return FALSE;
@@ -459,7 +461,7 @@ class Tag
     /**
      * @return bool
      */
-    public function API_deleteComments()
+    public function API_deleteComments(): bool
     {
         if( !$this->deleteComments() )
             return FALSE;
@@ -474,7 +476,7 @@ class Tag
 
     static public $templatexml = '<entry name="**temporarynamechangeme**"></entry>';
 
-    public function isTag()
+    public function isTag(): bool
     {
         return TRUE;
     }
@@ -483,7 +485,7 @@ class Tag
      * @param $otherObject Tag
      * @return bool
      */
-    public function equals($otherObject)
+    public function equals($otherObject): bool
     {
         if( !$otherObject->isTag() )
             return FALSE;

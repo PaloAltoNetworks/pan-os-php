@@ -13,6 +13,7 @@ GENERAL:
 * class AppFilter / CallContext - improvement for PHP 8.2
 * remove deprecated utilities scripts
 * update util actions/filter files
+* class TAG - improve PHPdoc - methods/varible declaration
 
 
 2.0.73 (20230224)
