@@ -941,7 +941,8 @@ class PH
         "tsf",
         "xpath",
         "certificate",
-        "ssh-connector"
+        "ssh-connector",
+        "custom-report"
         );
 
 
@@ -1063,6 +1064,9 @@ class PH
 
         elseif( $type == "system-log" )
             $util = new SYSTEMLOG($type, $argv, $argc,$PHP_FILE." type=".$type, $_supportedArguments, $_usageMsg, $projectfolder);
+
+        elseif( $type == "custom-report" )
+            $util = new CUSTOMREPORT($type, $argv, $argc,$PHP_FILE." type=".$type, $_supportedArguments, $_usageMsg, $projectfolder);
 
         elseif( $type == "gratuitous-arp" )
             $util = new GARPSEND($type, $argv, $argc,$PHP_FILE." type=".$type, $_supportedArguments, $_usageMsg, $projectfolder);

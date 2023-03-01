@@ -55,6 +55,8 @@ require_once(dirname(__FILE__)."/TRAFFICLOG.php");
 require_once(dirname(__FILE__)."/SYSTEMLOG.php");
 require_once(dirname(__FILE__)."/GARPSEND.php");
 
+require_once(dirname(__FILE__)."/CUSTOMREPORT.php");
+
 require_once(dirname(__FILE__)."/SOFTWARE_DOWNLOAD.php");
 require_once(dirname(__FILE__)."/SOFTWARE_PREPARATION__.php");
 require_once(dirname(__FILE__)."/LICENSE__.php");

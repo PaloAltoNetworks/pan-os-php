@@ -5,6 +5,7 @@ UTIL:
 * type=securityprofile 'actions=custom-url-category-add-ending-token:/*' - add support for token '/*
 * type=securityprofile | introduce actions=custom-url-category-remove-ending-token - 'custom-url-category-remove-ending-token:*' - '*' can only be added if '/' is last char
 * type=rule actions=display shadow-json - improve output if source/destination isAny()
+* type=custom-report | introduce new utility
 
 BUGFIX:
 * type=zone | actions=display bugfix
