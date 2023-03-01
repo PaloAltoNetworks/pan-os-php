@@ -8,6 +8,7 @@ UTIL:
 
 BUGFIX:
 * type=zone | actions=display bugfix
+* type=securityprofile securityprofiletype=custom-url-category 'actions=custom-url-category-add-ending-token:*'  - fix for token '*' to not skip
 
 GENERAL:
 * bugfixes for PHP version 8.2 - 'PHP Deprecated:  Creation of dynamic property'

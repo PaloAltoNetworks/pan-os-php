@@ -646,18 +646,18 @@ SecurityProfileCallContext::$supportedActions['custom-url-category-add-ending-to
             $skiptokenArray = array( '*' );
 
             $lastChar = substr($member, -1);
-            if( in_array( $lastChar, $tokenArray ) )
-                PH::print_stdout(  "skipped! endingToken already available: '".$lastChar."'" );
-            elseif( strpos( $member, $newToken ) !== FALSE )
-                PH::print_stdout(  "skipped! endingToken already available: '".$member."'" );
+            $lasttwoChar = substr($member, -2);
+            if( in_array( $lastChar, $tokenArray ) && $newToken != "*" )
+                PH::print_stdout(  $context->padding."skipped! endingToken already available: '".$lastChar."'" );
+            elseif( $lastChar == $newToken || $lasttwoChar == $newToken )
+                PH::print_stdout(  $context->padding."skipped! endingToken already available: '".$member."'" );
             elseif( in_array( $lastChar, $skiptokenArray ) )
             {
-                $lasttwoChar = substr($member, -2);
                 if( $lasttwoChar == "/*" )
-                    PH::print_stdout(  "skipped! following token available at lastChar: '".$lasttwoChar."'" );
+                    PH::print_stdout(  $context->padding."skipped! following token available at lastChar: '".$lasttwoChar."'" );
                 else
                 {
-                    PH::print_stdout(  "something needs to be done before: '".$lastChar."'" );
+                    PH::print_stdout(  $context->padding."something needs to be done before: '".$lastChar."'" );
                     $member2 = str_replace( "*", "/*", $member );
                     $object->addMember( $member2 );
                     $object->deleteMember( $member );
@@ -670,7 +670,7 @@ SecurityProfileCallContext::$supportedActions['custom-url-category-add-ending-to
             {
                 if( $newToken == "*" and $lastChar !== "/" )
                 {
-                    PH::print_stdout(  "skipped! lastchar must be '/' - but this is available: '".$lastChar."'" );
+                    PH::print_stdout(  $context->padding."skipped! as token: '".$newToken."' - lastchar must be '/' - but this is available: '".$lastChar."'" );
                     continue;
                 }
 
