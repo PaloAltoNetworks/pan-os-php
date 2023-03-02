@@ -169,12 +169,12 @@ class DIFF extends UTIL
 
             PH::print_stdout( "Opening ORIGINAL '{$file1}' XML file... ");
             $doc1 = new DOMDocument();
-            if( $doc1->load($file1) === FALSE )
+            if( $doc1->load($file1, XML_PARSE_BIG_LINES) === FALSE )
                 derr('Error while parsing xml:' . libxml_get_last_error()->message , null, false);
 
             //second document needed for combinedRuleOrderCheck at the end of the diff
             $origDoc1 = new DOMDocument();
-            $origDoc1->load($file1);
+            $origDoc1->load($file1, XML_PARSE_BIG_LINES);
 
             $pattern = "/(.*)[0-9]{5}name[0-9]{5}(.*)/i";
             $matches = null;
@@ -187,7 +187,7 @@ class DIFF extends UTIL
 
 
                 $doc2 = new DOMDocument();
-                if( $doc2->load($file1) === FALSE )
+                if( $doc2->load($file1, XML_PARSE_BIG_LINES) === FALSE )
                     derr('Error while parsing xml:' . libxml_get_last_error()->message , null, false);
 
                 $filterArgument = PH::$args['filter'];
@@ -233,12 +233,12 @@ class DIFF extends UTIL
 
                 PH::print_stdout( "Opening COMPARE '{$file2}' XML file... ");
                 $doc2 = new DOMDocument();
-                if( $doc2->load($file2) === FALSE )
+                if( $doc2->load($file2, XML_PARSE_BIG_LINES) === FALSE )
                     derr('Error while parsing xml:' . libxml_get_last_error()->message, null, false);
 
                 //second document needed for combinedRuleOrderCheck at the end of the diff
                 $origDoc2 = new DOMDocument();
-                $origDoc2->load($file2);
+                $origDoc2->load($file2, XML_PARSE_BIG_LINES);
             }
         }
 
