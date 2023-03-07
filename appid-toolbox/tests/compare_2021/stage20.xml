@@ -242,6 +242,9 @@
     <technology/>
    </application-type>
   </content-preview>
+  <address/>
+  <address-group/>
+  <application-filter/>
  </shared>
  <devices>
   <entry name="localhost.localdomain">
@@ -2717,6 +2720,58 @@ K3hWNASBk4UAUVw4iq5ystEtD0sLQUI3bu3qf//Z
           <member>any</member>
          </category>
          <application>
+          <member>ssl</member>
+          <member>stun</member>
+          <member>google-base</member>
+          <member>ms-lync</member>
+          <member>windows-azure</member>
+          <member>ms-update</member>
+          <member>linkedin</member>
+         </application>
+         <service>
+          <member>any</member>
+         </service>
+         <hip-profiles>
+          <member>any</member>
+         </hip-profiles>
+         <action>allow</action>
+         <disabled>no</disabled>
+         <rule-type>universal</rule-type>
+         <description> appRID#1</description>
+         <tag>
+          <member>appid#clonedRule</member>
+          <member>appid#activated#20210502</member>
+         </tag>
+        </entry>
+        <entry name="appRID-1-29732">
+         <profile-setting>
+          <group>
+           <member>default-default</member>
+          </group>
+         </profile-setting>
+         <to>
+          <member>untrust</member>
+         </to>
+         <from>
+          <member>DMZ</member>
+          <member>guest_wlan</member>
+          <member>trust</member>
+          <member>tv</member>
+          <member>vpn</member>
+         </from>
+         <source>
+          <member>any</member>
+         </source>
+         <destination>
+          <member>any</member>
+         </destination>
+         <source-user>
+          <member>any</member>
+         </source-user>
+         <category>
+          <member>any</member>
+         </category>
+         <application>
           <member>any</member>
          </application>
          <service>
@@ -2729,6 +2784,11 @@ K3hWNASBk4UAUVw4iq5ystEtD0sLQUI3bu3qf//Z
          <disabled>no</disabled>
          <rule-type>universal</rule-type>
          <description> appRID#1</description>
+         <tag>
+          <member>appid#converted</member>
+          <member>appid#activated#20210502</member>
+         </tag>
+         <log-start>yes</log-start>
         </entry>
         <entry name="ntp">
          <profile-setting>
@@ -3018,6 +3078,9 @@ K3hWNASBk4UAUVw4iq5ystEtD0sLQUI3bu3qf//Z
          <action>allow</action>
          <disabled>no</disabled>
          <description> appRID#2</description>
+         <tag>
+          <member>appid#unused</member>
+         </tag>
         </entry>
         <entry name="test.wlan.public">
          <to>
@@ -3089,6 +3152,9 @@ K3hWNASBk4UAUVw4iq5ystEtD0sLQUI3bu3qf//Z
          </profile-setting>
          <disabled>no</disabled>
          <description> appRID#3</description>
+         <tag>
+          <member>appid#unused</member>
+         </tag>
         </entry>
         <entry name="entrust.untrust.sip-1-1-1">
          <from>
@@ -3127,8 +3193,57 @@ K3hWNASBk4UAUVw4iq5ystEtD0sLQUI3bu3qf//Z
          </profile-setting>
          <disabled>no</disabled>
          <description> appRID#4</description>
+         <tag>
+          <member>appid#unused</member>
+         </tag>
         </entry>
         <entry name="gp_portal_internal">
+         <profile-setting>
+          <group>
+           <member>default-default</member>
+          </group>
+         </profile-setting>
+         <to>
+          <member>guest_wlan</member>
+         </to>
+         <from>
+          <member>guest_wlan</member>
+          <member>trust</member>
+         </from>
+         <source>
+          <member>g_PRIVATE</member>
+         </source>
+         <destination>
+          <member>H-192.168.120.254</member>
+         </destination>
+         <source-user>
+          <member>any</member>
+         </source-user>
+         <category>
+          <member>any</member>
+         </category>
+         <application>
+          <member>dhcp</member>
+          <member>ping</member>
+          <member>ssl</member>
+          <member>apple-airport</member>
+          <member>ssh</member>
+         </application>
+         <service>
+          <member>any</member>
+         </service>
+         <hip-profiles>
+          <member>any</member>
+         </hip-profiles>
+         <action>allow</action>
+         <description> appRID#5</description>
+         <disabled>no</disabled>
+         <tag>
+          <member>appid#clonedRule</member>
+          <member>appid#activated#20210502</member>
+         </tag>
+        </entry>
+        <entry name="appRID-5-72483">
          <profile-setting>
           <group>
            <member>default-default</member>
@@ -3164,6 +3279,11 @@ K3hWNASBk4UAUVw4iq5ystEtD0sLQUI3bu3qf//Z
          </hip-profiles>
          <action>allow</action>
          <description> appRID#5</description>
+         <tag>
+          <member>appid#converted</member>
+          <member>appid#activated#20210502</member>
+         </tag>
+         <log-start>yes</log-start>
         </entry>
         <entry name="gp_portal_internal-1">
          <profile-setting>
@@ -3201,6 +3321,9 @@ K3hWNASBk4UAUVw4iq5ystEtD0sLQUI3bu3qf//Z
          </hip-profiles>
          <action>allow</action>
          <description> appRID#6</description>
+         <tag>
+          <member>appid#unused</member>
+         </tag>
         </entry>
         <entry name="gp_portal">
          <to>
@@ -3386,7 +3509,8 @@ K3hWNASBk4UAUVw4iq5ystEtD0sLQUI3bu3qf//Z
           <member>any</member>
          </category>
          <application>
-          <member>any</member>
+          <member>http-proxy</member>
+          <member>web-browsing</member>
          </application>
          <service>
           <member>noip</member>
@@ -3401,8 +3525,107 @@ K3hWNASBk4UAUVw4iq5ystEtD0sLQUI3bu3qf//Z
          <negate-destination>no</negate-destination>
          <disabled>no</disabled>
          <description> appRID#7</description>
+         <tag>
+          <member>appid#clonedRule</member>
+          <member>appid#activated#20210502</member>
+         </tag>
+        </entry>
+        <entry name="appRID-7-15857">
+         <option>
+          <disable-server-response-inspection>no</disable-server-response-inspection>
+         </option>
+         <from>
+          <member>trust</member>
+         </from>
+         <to>
+          <member>untrust</member>
+         </to>
+         <source>
+          <member>H-192.168.200.25_raspberry</member>
+          <member>H-192.168.200.29_raspberry-nic2</member>
+         </source>
+         <destination>
+          <member>H-8.23.224.120_noip</member>
+         </destination>
+         <source-user>
+          <member>any</member>
+         </source-user>
+         <category>
+          <member>any</member>
+         </category>
+         <application>
+          <member>any</member>
+         </application>
+         <service>
+          <member>noip</member>
+         </service>
+         <hip-profiles>
+          <member>any</member>
+         </hip-profiles>
+         <action>allow</action>
+         <log-start>yes</log-start>
+         <log-end>yes</log-end>
+         <negate-source>no</negate-source>
+         <negate-destination>no</negate-destination>
+         <disabled>no</disabled>
+         <description> appRID#7</description>
+         <tag>
+          <member>appid#converted</member>
+          <member>appid#activated#20210502</member>
+         </tag>
         </entry>
         <entry name="trust.untrust.server">
+         <option>
+          <disable-server-response-inspection>no</disable-server-response-inspection>
+         </option>
+         <from>
+          <member>guest_wlan</member>
+          <member>trust</member>
+          <member>vpn</member>
+         </from>
+         <to>
+          <member>untrust</member>
+         </to>
+         <source>
+          <member>g_PRIVATE</member>
+         </source>
+         <destination>
+          <member>H-89.110.149.3_server_neu</member>
+          <member>H-89.110.150.202_server</member>
+         </destination>
+         <source-user>
+          <member>any</member>
+         </source-user>
+         <category>
+          <member>any</member>
+         </category>
+         <application>
+          <member>ssl</member>
+         </application>
+         <service>
+          <member>any</member>
+         </service>
+         <hip-profiles>
+          <member>any</member>
+         </hip-profiles>
+         <action>allow</action>
+         <log-start>no</log-start>
+         <log-end>yes</log-end>
+         <negate-source>no</negate-source>
+         <negate-destination>no</negate-destination>
+         <disabled>no</disabled>
+         <profile-setting>
+          <group>
+           <member>default-default</member>
+          </group>
+         </profile-setting>
+         <description> appRID#8</description>
+         <tag>
+          <member>appid#clonedRule</member>
+          <member>appid#activated#20210502</member>
+         </tag>
+        </entry>
+        <entry name="appRID-8-41725">
          <option>
           <disable-server-response-inspection>no</disable-server-response-inspection>
          </option>
@@ -3437,7 +3660,7 @@ K3hWNASBk4UAUVw4iq5ystEtD0sLQUI3bu3qf//Z
           <member>any</member>
          </hip-profiles>
          <action>allow</action>
-         <log-start>no</log-start>
+         <log-start>yes</log-start>
          <log-end>yes</log-end>
          <negate-source>no</negate-source>
          <negate-destination>no</negate-destination>
@@ -3448,6 +3671,10 @@ K3hWNASBk4UAUVw4iq5ystEtD0sLQUI3bu3qf//Z
           </group>
          </profile-setting>
          <description> appRID#8</description>
+         <tag>
+          <member>appid#converted</member>
+          <member>appid#activated#20210502</member>
+         </tag>
         </entry>
         <entry name="trust.untrust.dns">
          <option>
@@ -3571,7 +3798,7 @@ K3hWNASBk4UAUVw4iq5ystEtD0sLQUI3bu3qf//Z
           <member>any</member>
          </category>
          <application>
-          <member>any</member>
+          <member>sip</member>
          </application>
          <service>
           <member>any</member>
@@ -3591,8 +3818,112 @@ K3hWNASBk4UAUVw4iq5ystEtD0sLQUI3bu3qf//Z
           </group>
          </profile-setting>
          <description> appRID#9</description>
+         <tag>
+          <member>appid#clonedRule</member>
+          <member>appid#activated#20210502</member>
+         </tag>
+        </entry>
+        <entry name="appRID-9-66523">
+         <option>
+          <disable-server-response-inspection>no</disable-server-response-inspection>
+         </option>
+         <from>
+          <member>DMZ</member>
+         </from>
+         <to>
+          <member>guest_wlan</member>
+          <member>trust</member>
+          <member>vpn</member>
+          <member>vpn_ipsec</member>
+         </to>
+         <source>
+          <member>g_PRIVATE</member>
+         </source>
+         <destination>
+          <member>g_PRIVATE</member>
+         </destination>
+         <source-user>
+          <member>any</member>
+         </source-user>
+         <category>
+          <member>any</member>
+         </category>
+         <application>
+          <member>any</member>
+         </application>
+         <service>
+          <member>any</member>
+         </service>
+         <hip-profiles>
+          <member>any</member>
+         </hip-profiles>
+         <action>allow</action>
+         <log-start>yes</log-start>
+         <log-end>yes</log-end>
+         <negate-source>no</negate-source>
+         <negate-destination>no</negate-destination>
+         <disabled>no</disabled>
+         <profile-setting>
+          <group>
+           <member>default-default</member>
+          </group>
+         </profile-setting>
+         <description> appRID#9</description>
+         <tag>
+          <member>appid#converted</member>
+          <member>appid#activated#20210502</member>
+         </tag>
         </entry>
         <entry name="dmz.untrust.allow">
+         <option>
+          <disable-server-response-inspection>no</disable-server-response-inspection>
+         </option>
+         <from>
+          <member>DMZ</member>
+         </from>
+         <to>
+          <member>untrust</member>
+         </to>
+         <source>
+          <member>any</member>
+         </source>
+         <destination>
+          <member>g_PRIVATE</member>
+         </destination>
+         <source-user>
+          <member>any</member>
+         </source-user>
+         <category>
+          <member>any</member>
+         </category>
+         <application>
+          <member>sip</member>
+          <member>stun</member>
+         </application>
+         <service>
+          <member>any</member>
+         </service>
+         <hip-profiles>
+          <member>any</member>
+         </hip-profiles>
+         <action>allow</action>
+         <log-start>yes</log-start>
+         <log-end>yes</log-end>
+         <negate-source>no</negate-source>
+         <negate-destination>yes</negate-destination>
+         <disabled>no</disabled>
+         <profile-setting>
+          <group>
+           <member>default-default</member>
+          </group>
+         </profile-setting>
+         <description> appRID#10</description>
+         <tag>
+          <member>appid#clonedRule</member>
+          <member>appid#activated#20210502</member>
+         </tag>
+        </entry>
+        <entry name="appRID-10-27379">
          <option>
           <disable-server-response-inspection>no</disable-server-response-inspection>
          </option>
@@ -3635,6 +3966,10 @@ K3hWNASBk4UAUVw4iq5ystEtD0sLQUI3bu3qf//Z
           </group>
          </profile-setting>
          <description> appRID#10</description>
+         <tag>
+          <member>appid#converted</member>
+          <member>appid#activated#20210502</member>
+         </tag>
         </entry>
         <entry name="trust.untrust.advancedonline">
          <option>
@@ -3806,6 +4141,9 @@ K3hWNASBk4UAUVw4iq5ystEtD0sLQUI3bu3qf//Z
           </group>
          </profile-setting>
          <description> appRID#11</description>
+         <tag>
+          <member>appid#unused</member>
+         </tag>
         </entry>
         <entry name="guest.untrust.block-unknown">
          <from>
@@ -3847,6 +4185,77 @@ K3hWNASBk4UAUVw4iq5ystEtD0sLQUI3bu3qf//Z
           </group>
          </profile-setting>
         </entry>
+        <entry name="guest.untrust.allow-mac-app">
+         <from>
+          <member>guest_wlan</member>
+         </from>
+         <to>
+          <member>untrust</member>
+         </to>
+         <source>
+          <member>H-192.168.120.9_me_Macbook</member>
+          <member>H-192.168.120.16_me_macbook2</member>
+         </source>
+         <destination>
+          <member>g_PRIVATE</member>
+         </destination>
+         <source-user>
+          <member>any</member>
+         </source-user>
+         <category>
+          <member>any</member>
+         </category>
+         <application>
+          <member>ssl</member>
+          <member>web-browsing</member>
+          <member>quic</member>
+          <member>google-base</member>
+          <member>salesforce</member>
+          <member>ms-office365</member>
+          <member>pan-db-cloud</member>
+          <member>twitter</member>
+          <member>zoom</member>
+          <member>facebook</member>
+          <member>facetime</member>
+          <member>apple-push-notifications</member>
+          <member>google-analytics</member>
+          <member>dns</member>
+          <member>icloud</member>
+          <member>tanium</member>
+          <member>apple-update</member>
+          <member>apple-maps</member>
+          <member>ocsp</member>
+          <member>slack</member>
+          <member>crashplan</member>
+          <member>clarizen</member>
+          <member>meetup</member>
+          <member>ichat-av</member>
+          <member>sip</member>
+          <member>stun</member>
+          <member>soap</member>
+          <member>apple-appstore</member>
+          <member>itunes-base</member>
+         </application>
+         <service>
+          <member>any</member>
+         </service>
+         <hip-profiles>
+          <member>any</member>
+         </hip-profiles>
+         <action>allow</action>
+         <profile-setting>
+          <group>
+           <member>default-default</member>
+          </group>
+         </profile-setting>
+         <negate-destination>yes</negate-destination>
+         <description> appRID#12</description>
+         <disabled>yes</disabled>
+         <tag>
+          <member>appid#clonedRule</member>
+          <member>appid#NTBR#tooManyApps</member>
+         </tag>
+        </entry>
         <entry name="guest.untrust.allow-mac">
          <from>
           <member>guest_wlan</member>
@@ -3884,6 +4293,9 @@ K3hWNASBk4UAUVw4iq5ystEtD0sLQUI3bu3qf//Z
          </profile-setting>
          <negate-destination>yes</negate-destination>
          <description> appRID#12</description>
+         <tag>
+          <member>appid#converted</member>
+         </tag>
         </entry>
         <entry name="trust.untrust.www.allow">
          <option>
@@ -4067,6 +4479,64 @@ K3hWNASBk4UAUVw4iq5ystEtD0sLQUI3bu3qf//Z
           <member>any</member>
          </category>
          <application>
+          <member>google-base</member>
+          <member>ocsp</member>
+          <member>itunes</member>
+          <member>apple-maps</member>
+          <member>salesforce</member>
+          <member>nintendo-wfc</member>
+          <member>zoom</member>
+          <member>samsung-updates</member>
+          <member>web-browsing</member>
+         </application>
+         <service>
+          <member>service-http</member>
+          <member>service-https</member>
+         </service>
+         <hip-profiles>
+          <member>any</member>
+         </hip-profiles>
+         <action>allow</action>
+         <profile-setting>
+          <group>
+           <member>default-default</member>
+          </group>
+         </profile-setting>
+         <negate-destination>yes</negate-destination>
+         <description> appRID#13</description>
+         <disabled>no</disabled>
+         <tag>
+          <member>appid#clonedRule</member>
+          <member>appid#activated#20210502</member>
+         </tag>
+        </entry>
+        <entry name="appRID-13-79296">
+         <from>
+          <member>guest_wlan</member>
+          <member>trust</member>
+          <member>vpn</member>
+         </from>
+         <to>
+          <member>untrust</member>
+         </to>
+         <source>
+          <member>N-172.30.252.0s24_vpn-extern</member>
+          <member>N-172.30.253.0s24_vpn-intern</member>
+          <member>N-192.168.20.0s24_trust</member>
+          <member>N-192.168.120.0s24_guest-wlan</member>
+          <member>N-192.168.200.0s24_trust2</member>
+          <member>N-192.168.220.0s24_trust3</member>
+         </source>
+         <destination>
+          <member>g_PRIVATE</member>
+         </destination>
+         <source-user>
+          <member>any</member>
+         </source-user>
+         <category>
+          <member>any</member>
+         </category>
+         <application>
           <member>any</member>
          </application>
          <service>
@@ -4084,6 +4554,11 @@ K3hWNASBk4UAUVw4iq5ystEtD0sLQUI3bu3qf//Z
          </profile-setting>
          <negate-destination>yes</negate-destination>
          <description> appRID#13</description>
+         <tag>
+          <member>appid#converted</member>
+          <member>appid#activated#20210502</member>
+         </tag>
+         <log-start>yes</log-start>
         </entry>
         <entry name="guest.untrust.games">
          <from>
@@ -4130,6 +4605,9 @@ K3hWNASBk4UAUVw4iq5ystEtD0sLQUI3bu3qf//Z
          <description>clash of clanes 9339
 Paradise Bay 4234 + 9050
 Lego Mini figures 7100 appRID#14</description>
+         <tag>
+          <member>appid#unused</member>
+         </tag>
         </entry>
         <entry name="guest.untrust.games-1">
          <from>
@@ -4171,6 +4649,9 @@ Lego Mini figures 7100 appRID#14</description>
          <negate-destination>no</negate-destination>
          <rule-type>universal</rule-type>
          <description>skylanders lost islands appRID#15</description>
+         <tag>
+          <member>appid#unused</member>
+         </tag>
         </entry>
         <entry name="guest.untrust.games-castle-clas">
          <from>
@@ -4216,6 +4697,9 @@ Lego Mini figures 7100 appRID#14</description>
          <negate-destination>no</negate-destination>
          <rule-type>universal</rule-type>
          <description>skylanders lost islands appRID#16</description>
+         <tag>
+          <member>appid#unused</member>
+         </tag>
         </entry>
         <entry name="guest.untrust.games-pokemon-1">
          <from>
@@ -4355,6 +4839,9 @@ Lego Mini figures 7100 appRID#14</description>
           </group>
          </profile-setting>
          <description> appRID#17</description>
+         <tag>
+          <member>appid#unused</member>
+         </tag>
         </entry>
         <entry name="vpn.untrust.ping">
          <option>
@@ -4443,6 +4930,9 @@ Lego Mini figures 7100 appRID#14</description>
           </group>
          </profile-setting>
          <description> appRID#18</description>
+         <tag>
+          <member>appid#unused</member>
+         </tag>
         </entry>
         <entry name="vpn.untrust.fritzbox-1">
          <profile-setting>
@@ -4482,8 +4972,55 @@ Lego Mini figures 7100 appRID#14</description>
          </hip-profiles>
          <action>allow</action>
          <description> appRID#19</description>
+         <tag>
+          <member>appid#unused</member>
+         </tag>
         </entry>
         <entry name="vpn.trustl3_vlan">
+         <profile-setting>
+          <group>
+           <member>default-default</member>
+          </group>
+         </profile-setting>
+         <from>
+          <member>vpn</member>
+         </from>
+         <to>
+          <member>trust</member>
+          <member>mgmt</member>
+          <member>DMZ</member>
+         </to>
+         <source>
+          <member>any</member>
+         </source>
+         <destination>
+          <member>any</member>
+         </destination>
+         <source-user>
+          <member>wsv</member>
+          <member>sdefault</member>
+         </source-user>
+         <category>
+          <member>any</member>
+         </category>
+         <application>
+          <member>ssl</member>
+         </application>
+         <service>
+          <member>any</member>
+         </service>
+         <hip-profiles>
+          <member>any</member>
+         </hip-profiles>
+         <action>allow</action>
+         <description> appRID#20</description>
+         <disabled>no</disabled>
+         <tag>
+          <member>appid#clonedRule</member>
+          <member>appid#activated#20210502</member>
+         </tag>
+        </entry>
+        <entry name="appRID-20-82276">
          <profile-setting>
           <group>
            <member>default-default</member>
@@ -4521,8 +5058,60 @@ Lego Mini figures 7100 appRID#14</description>
          </hip-profiles>
          <action>allow</action>
          <description> appRID#20</description>
+         <tag>
+          <member>appid#converted</member>
+          <member>appid#activated#20210502</member>
+         </tag>
+         <log-start>yes</log-start>
         </entry>
         <entry name="mgmt.dmz.bgp.trust_allow">
+         <to>
+          <member>bgp</member>
+          <member>DMZ</member>
+          <member>guest_wlan</member>
+          <member>mgmt</member>
+          <member>trust</member>
+          <member>tv</member>
+         </to>
+         <from>
+          <member>bgp</member>
+          <member>DMZ</member>
+          <member>guest_wlan</member>
+          <member>mgmt</member>
+          <member>trust</member>
+          <member>tv</member>
+         </from>
+         <source>
+          <member>any</member>
+         </source>
+         <destination>
+          <member>any</member>
+         </destination>
+         <source-user>
+          <member>any</member>
+         </source-user>
+         <category>
+          <member>any</member>
+         </category>
+         <application>
+          <member>dhcp</member>
+         </application>
+         <service>
+          <member>any</member>
+         </service>
+         <hip-profiles>
+          <member>any</member>
+         </hip-profiles>
+         <action>allow</action>
+         <rule-type>intrazone</rule-type>
+         <description> appRID#21</description>
+         <disabled>no</disabled>
+         <tag>
+          <member>appid#clonedRule</member>
+          <member>appid#activated#20210502</member>
+         </tag>
+        </entry>
+        <entry name="appRID-21-98291">
          <to>
           <member>bgp</member>
           <member>DMZ</member>
@@ -4563,6 +5152,11 @@ Lego Mini figures 7100 appRID#14</description>
          <action>allow</action>
          <rule-type>intrazone</rule-type>
          <description> appRID#21</description>
+         <tag>
+          <member>appid#converted</member>
+          <member>appid#activated#20210502</member>
+         </tag>
+         <log-start>yes</log-start>
         </entry>
         <entry name="vpn_allow">
          <to>
@@ -4595,8 +5189,53 @@ Lego Mini figures 7100 appRID#14</description>
          <action>allow</action>
          <rule-type>intrazone</rule-type>
          <description> appRID#22</description>
+         <tag>
+          <member>appid#unused</member>
+         </tag>
         </entry>
         <entry name="trust.mgmt.allow">
+         <from>
+          <member>trust</member>
+         </from>
+         <to>
+          <member>mgmt</member>
+         </to>
+         <source>
+          <member>any</member>
+         </source>
+         <destination>
+          <member>any</member>
+         </destination>
+         <source-user>
+          <member>any</member>
+         </source-user>
+         <category>
+          <member>any</member>
+         </category>
+         <application>
+          <member>ssl</member>
+          <member>ping</member>
+         </application>
+         <service>
+          <member>any</member>
+         </service>
+         <hip-profiles>
+          <member>any</member>
+         </hip-profiles>
+         <action>allow</action>
+         <profile-setting>
+          <group>
+           <member>default-default</member>
+          </group>
+         </profile-setting>
+         <description> appRID#23</description>
+         <disabled>no</disabled>
+         <tag>
+          <member>appid#clonedRule</member>
+          <member>appid#activated#20210502</member>
+         </tag>
+        </entry>
+        <entry name="appRID-23-64911">
          <from>
           <member>trust</member>
          </from>
@@ -4631,8 +5270,54 @@ Lego Mini figures 7100 appRID#14</description>
           </group>
          </profile-setting>
          <description> appRID#23</description>
+         <tag>
+          <member>appid#converted</member>
+          <member>appid#activated#20210502</member>
+         </tag>
+         <log-start>yes</log-start>
         </entry>
         <entry name="trust.dmz.any">
+         <profile-setting>
+          <group>
+           <member>default-default</member>
+          </group>
+         </profile-setting>
+         <from>
+          <member>trust</member>
+         </from>
+         <to>
+          <member>DMZ</member>
+         </to>
+         <source>
+          <member>N-192.168.200.0s24_trust2</member>
+         </source>
+         <destination>
+          <member>any</member>
+         </destination>
+         <source-user>
+          <member>any</member>
+         </source-user>
+         <category>
+          <member>any</member>
+         </category>
+         <application>
+          <member>sip</member>
+         </application>
+         <service>
+          <member>any</member>
+         </service>
+         <hip-profiles>
+          <member>any</member>
+         </hip-profiles>
+         <action>allow</action>
+         <disabled>no</disabled>
+         <description> appRID#24</description>
+         <tag>
+          <member>appid#clonedRule</member>
+          <member>appid#activated#20210502</member>
+         </tag>
+        </entry>
+        <entry name="appRID-24-98922">
          <profile-setting>
           <group>
            <member>default-default</member>
@@ -4668,6 +5353,11 @@ Lego Mini figures 7100 appRID#14</description>
          <action>allow</action>
          <disabled>no</disabled>
          <description> appRID#24</description>
+         <tag>
+          <member>appid#converted</member>
+          <member>appid#activated#20210502</member>
+         </tag>
+         <log-start>yes</log-start>
         </entry>
         <entry name="trust.trust.allow">
          <from>
@@ -4777,6 +5467,50 @@ Lego Mini figures 7100 appRID#14</description>
          </profile-setting>
          <disabled>yes</disabled>
         </entry>
+        <entry name="guest.guest.allow-1-app">
+         <from>
+          <member>guest_wlan</member>
+          <member>vpn</member>
+         </from>
+         <to>
+          <member>tv</member>
+         </to>
+         <source>
+          <member>N-172.30.253.0s24_vpn-intern</member>
+          <member>N-192.168.120.0s24_guest-wlan</member>
+         </source>
+         <destination>
+          <member>any</member>
+         </destination>
+         <source-user>
+          <member>any</member>
+         </source-user>
+         <category>
+          <member>any</member>
+         </category>
+         <application>
+          <member>web-browsing</member>
+          <member>unknown-udp</member>
+         </application>
+         <service>
+          <member>any</member>
+         </service>
+         <hip-profiles>
+          <member>any</member>
+         </hip-profiles>
+         <action>allow</action>
+         <profile-setting>
+          <group>
+           <member>default-default</member>
+          </group>
+         </profile-setting>
+         <disabled>yes</disabled>
+         <description> appRID#25</description>
+         <tag>
+          <member>appid#clonedRule</member>
+          <member>appid#NTBR#hasUnknownApps</member>
+         </tag>
+        </entry>
         <entry name="guest.guest.allow-1">
          <from>
           <member>guest_wlan</member>
@@ -4815,6 +5549,9 @@ Lego Mini figures 7100 appRID#14</description>
          </profile-setting>
          <disabled>no</disabled>
          <description> appRID#25</description>
+         <tag>
+          <member>appid#converted</member>
+         </tag>
         </entry>
         <entry name="mgmt.untrust.paloalto">
          <from>
@@ -4873,6 +5610,49 @@ Lego Mini figures 7100 appRID#14</description>
           <member>any</member>
          </category>
          <application>
+          <member>pan-db-cloud</member>
+          <member>ntp</member>
+         </application>
+         <service>
+          <member>any</member>
+         </service>
+         <hip-profiles>
+          <member>any</member>
+         </hip-profiles>
+         <action>allow</action>
+         <profile-setting>
+          <group>
+           <member>pan-updates</member>
+          </group>
+         </profile-setting>
+         <negate-destination>yes</negate-destination>
+         <description> appRID#26</description>
+         <disabled>no</disabled>
+         <tag>
+          <member>appid#clonedRule</member>
+          <member>appid#activated#20210502</member>
+         </tag>
+        </entry>
+        <entry name="appRID-26-97320">
+         <from>
+          <member>mgmt</member>
+         </from>
+         <to>
+          <member>untrust</member>
+         </to>
+         <source>
+          <member>any</member>
+         </source>
+         <destination>
+          <member>g_PRIVATE</member>
+         </destination>
+         <source-user>
+          <member>any</member>
+         </source-user>
+         <category>
+          <member>any</member>
+         </category>
+         <application>
           <member>any</member>
          </application>
          <service>
@@ -4889,6 +5669,11 @@ Lego Mini figures 7100 appRID#14</description>
          </profile-setting>
          <negate-destination>yes</negate-destination>
          <description> appRID#26</description>
+         <tag>
+          <member>appid#converted</member>
+          <member>appid#activated#20210502</member>
+         </tag>
+         <log-start>yes</log-start>
         </entry>
         <entry name="bgp.bgp">
          <to>
@@ -5370,20 +6155,6 @@ Lego Mini figures 7100 appRID#14</description>
       <authentication>
        <rules/>
       </authentication>
-      <default-security-rules>
-       <rules>
-        <entry name="intrazone-default">
-         <action>allow</action>
-         <log-start>no</log-start>
-         <log-end>no</log-end>
-        </entry>
-        <entry name="interzone-default">
-         <action>deny</action>
-         <log-start>no</log-start>
-         <log-end>no</log-end>
-        </entry>
-       </rules>
-      </default-security-rules>
      </rulebase>
      <global-protect>
       <global-protect-gateway/>
@@ -5414,6 +6185,7 @@ Lego Mini figures 7100 appRID#14</description>
         <member>tunnel.11</member>
         <member>tunnel.21</member>
        </interface>
+       <virtual-router/>
       </network>
      </import>
      <profile-group>
@@ -6512,6 +7284,7 @@ Lego Mini figures 7100 appRID#14</description>
       <entry name="appid#clonedRule"/>
       <entry name="appid#converted"/>
       <entry name="appid#unused"/>
+      <entry name="appid#activated#20210502"/>
      </tag>
     </entry>
    </vsys>
