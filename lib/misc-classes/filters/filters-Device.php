@@ -90,6 +90,57 @@ RQuery::$defaultFilters['device']['name']['operators']['is.in.file'] = array(
     },
     'arg' => TRUE
 );
+
+RQuery::$defaultFilters['device']['name']['operators']['is.child.of'] = array(
+    'Function' => function (DeviceRQueryContext $context) {
+
+        $object = $context->object;
+        $value = $context->value;
+
+        $sub = $context->object->owner;
+        while( get_class($sub) == "RuleStore" || get_class($sub) == "DeviceGroup" || get_class($sub) == "VirtualSystem" )
+            $sub = $sub->owner;
+
+        if( get_class($sub) !== "PanoramaConf" )
+            derr("filter location is.child.of is only working against a panorama configuration");
+
+        if( strtolower($context->value) == 'shared' )
+            return TRUE;
+
+        $DG = $sub->findDeviceGroup($context->value);
+        if( $DG == null )
+        {
+            PH::print_stdout( "ERROR: location '$context->value' was not found. Here is a list of available ones:" );
+            PH::print_stdout( " - shared" );
+            foreach( $sub->getDeviceGroups() as $sub1 )
+            {
+                PH::print_stdout( " - " . $sub1->name()  );
+            }
+            PH::print_stdout();
+            exit(1);
+        }
+
+        $childDeviceGroups = $DG->childDeviceGroups(TRUE);
+
+        if( strtolower($context->value) == strtolower($object->name()) )
+            return TRUE;
+
+        foreach( $childDeviceGroups as $childDeviceGroup )
+        {
+            if( $childDeviceGroup->name() == $object->name() )
+                return TRUE;
+        }
+
+        return FALSE;
+    },
+    'arg' => TRUE,
+    'help' => 'returns TRUE if object location (shared/device-group/vsys name) matches / is child the one specified in argument',
+    'ci' => array(
+        'fString' => '(%PROP%  Datacenter-Firewalls)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
 RQuery::$defaultFilters['device']['templatestack']['operators']['has.member'] = array(
     'Function' => function (DeviceRQueryContext $context) {
 
@@ -135,5 +186,7 @@ RQuery::$defaultFilters['device']['manageddevice']['operators']['with-no-dg'] = 
         'input' => 'input/panorama-8.0.xml'
     )
 );
+
+
 
 // </editor-fold>

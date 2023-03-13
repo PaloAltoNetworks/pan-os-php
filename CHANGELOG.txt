@@ -6,6 +6,7 @@ UTIL:
 * type=securityprofile | introduce actions=custom-url-category-remove-ending-token - 'custom-url-category-remove-ending-token:*' - '*' can only be added if '/' is last char
 * type=rule actions=display shadow-json - improve output if source/destination isAny()
 * type=custom-report | introduce new utility
+* type=device | introduce 'filter=(name is.child.of DGNAME)'
 
 BUGFIX:
 * type=zone | actions=display bugfix
