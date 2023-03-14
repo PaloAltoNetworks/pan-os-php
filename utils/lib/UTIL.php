@@ -320,13 +320,24 @@ class UTIL
     {
         if( isset(PH::$args['listfilters']) )
         {
-            ksort(RQuery::$defaultFilters[$this->utilType]);
+            $tmp_utilType = $this->utilType;
+            if( $tmp_utilType == "address-merger" || $tmp_utilType == "addressgroup-merger"  )
+                $tmp_utilType = "address";
+            elseif( $tmp_utilType == "service-merger" || $tmp_utilType == "servicegroup-merger"  )
+                $tmp_utilType = "service";
+            elseif( $tmp_utilType == "tag-merger" )
+                $tmp_utilType = "tag";
+            elseif( $tmp_utilType == "rule-merger" )
+                $tmp_utilType = "rule";
+
+
+            ksort(RQuery::$defaultFilters[$tmp_utilType]);
 
             PH::print_stdout( "Listing of supported filters:" );
             PH::print_stdout();
             PH::print_stdout();
 
-            foreach( RQuery::$defaultFilters[$this->utilType] as $index => &$filter )
+            foreach( RQuery::$defaultFilters[$tmp_utilType] as $index => &$filter )
             {
                 PH::print_stdout( "* " . $index . "" );
                 PH::$JSON_TMP[$index]['name'] = $index;

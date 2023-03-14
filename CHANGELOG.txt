@@ -7,6 +7,7 @@ UTIL:
 * type=rule actions=display shadow-json - improve output if source/destination isAny()
 * type=custom-report | introduce new utility
 * type=device | introduce 'filter=(name is.child.of DGNAME)'
+* type=UTIL_merger scripts | extend with argument listfilters
 
 BUGFIX:
 * type=zone | actions=display bugfix

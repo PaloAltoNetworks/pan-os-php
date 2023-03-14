@@ -66,6 +66,9 @@ class RULEMERGER extends UTIL
         PH::processCliArgs();
 
         $this->arg_validation();
+
+        $this->listfilters();
+
         $this->help(PH::$args);
         $this->inDebugapiArgument();
         $this->inputValidation();
