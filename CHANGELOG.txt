@@ -8,6 +8,7 @@ UTIL:
 * type=custom-report | introduce new utility
 * type=device | introduce 'filter=(name is.child.of DGNAME)'
 * type=UTIL_merger scripts | extend with argument listfilters
+* type=securityprofile actions=url-filtering-action-set:alert,CUSTOMURL - support customURL and not only predefined URL
 
 BUGFIX:
 * type=zone | actions=display bugfix

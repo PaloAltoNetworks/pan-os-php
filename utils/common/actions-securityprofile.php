@@ -778,7 +778,8 @@ SecurityProfileCallContext::$supportedActions['url-filtering-action-set'] = arra
             return null;
 
         $category = $context->arguments['url-category'];
-        if( !in_array( $category, $object->predefined ) )
+        $custom = $object->owner->owner->customURLProfileStore->find( $category );
+        if( !in_array( $category, $object->predefined ) and $custom == null )
         {
             mwarning( "url-filtering category: ".$category. " not supported", null, false );
             return false;
