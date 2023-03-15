@@ -1,6 +1,14 @@
 CHANGELOG
 
-2.0.74
+2.0.75
+UTIL:
+
+BUGFIX:
+
+GENERAL:
+
+
+2.0.74 (20230315)
 UTIL:
 * type=securityprofile 'actions=custom-url-category-add-ending-token:/*' - add support for token '/*
 * type=securityprofile | introduce actions=custom-url-category-remove-ending-token - 'custom-url-category-remove-ending-token:*' - '*' can only be added if '/' is last char
