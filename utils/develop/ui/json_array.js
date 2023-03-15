@@ -1380,6 +1380,11 @@ var subjectObject =
         "action": [],
         "filter": []
     },
+    "custom-report": {
+        "name": "custom-report",
+        "action": [],
+        "filter": []
+    },
     "device": {
         "name": "device",
         "action": {
@@ -1819,6 +1824,15 @@ var subjectObject =
                     "is.in.file": {
                         "Function": {},
                         "arg": true
+                    },
+                    "is.child.of": {
+                        "Function": {},
+                        "arg": true,
+                        "help": "returns TRUE if object location (shared\/device-group\/vsys name) matches \/ is child the one specified in argument",
+                        "ci": {
+                            "fString": "(%PROP%  Datacenter-Firewalls)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
                     }
                 }
             },

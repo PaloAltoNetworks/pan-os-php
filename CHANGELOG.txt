@@ -21,7 +21,7 @@ GENERAL:
 * update util actions/filter files
 * class TAG - improve PHPdoc - methods/variable declaration
 * general - use 'XML_PARSE_BIG_LINES' on all classes where XMLfile is load
-* update predefined to 8684-7912
+* update predefined to 8685-7918
 
 
 2.0.73 (20230224)
