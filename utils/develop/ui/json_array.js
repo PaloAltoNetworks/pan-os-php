@@ -721,6 +721,46 @@ var subjectObject =
                     }
                 }
             },
+            "reflocationtype": {
+                "operators": {
+                    "is.template": {
+                        "Function": {},
+                        "arg": false,
+                        "help": "returns TRUE if object locationtype is Template or TemplateStack",
+                        "ci": {
+                            "fString": "(%PROP%)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    },
+                    "is.only.template": {
+                        "Function": {},
+                        "arg": false,
+                        "help": "returns TRUE if object locationtype is Template or TemplateStack",
+                        "ci": {
+                            "fString": "(%PROP%)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    },
+                    "is.devicegroup": {
+                        "Function": {},
+                        "arg": false,
+                        "help": "returns TRUE if object locationtype is Template or TemplateStack",
+                        "ci": {
+                            "fString": "(%PROP%)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    },
+                    "is.only.devicegroup": {
+                        "Function": {},
+                        "arg": false,
+                        "help": "returns TRUE if object locationtype is Template or TemplateStack",
+                        "ci": {
+                            "fString": "(%PROP%)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    }
+                }
+            },
             "refobjectname": {
                 "operators": {
                     "is": {
@@ -1340,6 +1380,11 @@ var subjectObject =
         "action": [],
         "filter": []
     },
+    "custom-report": {
+        "name": "custom-report",
+        "action": [],
+        "filter": []
+    },
     "device": {
         "name": "device",
         "action": {
@@ -1779,6 +1824,15 @@ var subjectObject =
                     "is.in.file": {
                         "Function": {},
                         "arg": true
+                    },
+                    "is.child.of": {
+                        "Function": {},
+                        "arg": true,
+                        "help": "returns TRUE if object location (shared\/device-group\/vsys name) matches \/ is child the one specified in argument",
+                        "ci": {
+                            "fString": "(%PROP%  Datacenter-Firewalls)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
                     }
                 }
             },
@@ -5056,13 +5110,24 @@ var subjectObject =
                     "endingtoken": {
                         "type": "string",
                         "default": "\/",
-                        "help": "supported ending token: '.', '\/', '?', '&', '=', ';', '+'\n\n'actions=custom-url-category-add-ending-token:\/' is the default value, it can NOT be run directly\nplease use: 'actions=custom-url-category-add-ending-token' to avoid problems like: '**ERROR** unsupported Action:\"\"'"
+                        "help": "supported ending token: '.', '\/', '?', '&', '=', ';', '+', '*', '\/*' - please be aware for '\/*' please use '$$*'\n\n'actions=custom-url-category-add-ending-token:\/' is the default value, it can NOT be run directly\nplease use: 'actions=custom-url-category-add-ending-token' to avoid problems like: '**ERROR** unsupported Action:\"\"'"
                     }
                 }
             },
             "custom-url-category-fix-leading-dot": {
                 "name": "custom-url-category-fix-leading-dot",
                 "MainFunction": {}
+            },
+            "custom-url-category-remove-ending-token": {
+                "name": "custom-url-category-remove-ending-token",
+                "MainFunction": {},
+                "args": {
+                    "endingtoken": {
+                        "type": "string",
+                        "default": "\/",
+                        "help": "supported ending token: '.', '\/', '?', '&', '=', ';', '+', '*', '\/*' - please be aware for '\/*' please use '$$*'\n\n'actions=custom-url-category-add-ending-token:\/' is the default value, it can NOT be run directly\nplease use: 'actions=custom-url-category-add-ending-token' to avoid problems like: '**ERROR** unsupported Action:\"\"'"
+                    }
+                }
             },
             "delete": {
                 "name": "delete",

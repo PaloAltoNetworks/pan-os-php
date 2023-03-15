@@ -29,6 +29,8 @@ class InterfaceContainer extends ObjRuleContainer
     /** @var  NetworkPropertiesContainer */
     public $parentCentralStore;
 
+    public $owner;
+
     /**
      * @param VirtualSystem|DeviceCloud|Zone|VirtualRouter|PbfRule|DoSRule|DHCP $owner
      * @param NetworkPropertiesContainer $centralStore

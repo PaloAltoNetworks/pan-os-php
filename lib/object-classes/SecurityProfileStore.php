@@ -8,7 +8,7 @@ class SecurityProfileStore extends ObjStore
     public $owner;
     public $name = 'temporaryname';
 
-    protected $type = '**needsomethinghere**';
+    public $type = '**needsomethinghere**';
 
     protected $fastMemToIndex = null;
     protected $fastNameToIndex = null;

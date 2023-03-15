@@ -26,6 +26,8 @@
  */
 class IPSecCryptoProfileStore extends ObjStore
 {
+    public $owner;
+
     public static $childn = 'IPSecCryptoProfil';
 
     /** @var Service[]|ServiceGroup[] */

@@ -24,6 +24,8 @@
  */
 class TunnelIfStore extends ObjStore
 {
+    public $owner;
+
     public static $childn = 'TunnelInterface';
 
     protected $fastMemToIndex = null;

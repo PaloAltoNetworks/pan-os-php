@@ -38,6 +38,8 @@ class CallContext
     /** @var  $subSystem VirtualSystem|PANConf|PanoramaConf|DeviceGroup */
     public $subSystem;
 
+    public $store;
+
     /** @var  $ruletype array */
     public $ruletype;
 

@@ -53,6 +53,8 @@ class PANConf
     /** @var DOMElement */
     public $localhostroot;
 
+    public $deviceconfigroot;
+
     /** @var DOMElement|null */
     public $vsyssroot;
 
@@ -65,6 +67,8 @@ class PANConf
     public $serviceStore = null;
 
     public $version = null;
+
+    public $timezone = null;
 
     /** @var VirtualSystem[] */
     public $virtualSystems = array();

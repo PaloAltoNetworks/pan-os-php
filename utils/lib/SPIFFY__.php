@@ -50,7 +50,7 @@ class SPIFFY__
         $filename = str_replace( "in=", "", $m_array[1]);
 
         $newdoc = new DOMDocument;
-        $newdoc->load( $filename );
+        $newdoc->load( $filename, XML_PARSE_BIG_LINES);
         $cursor = DH::findXPathSingleEntryOrDie('/spiffy-cfg', $newdoc);
         $cursor = DH::findFirstElement('config', $cursor);
 

@@ -27,6 +27,8 @@ class AddressStore
     /** @var VirtualSystem|DeviceGroup|PanoramaConf|PANConf|null */
     public $owner;
 
+    public $name;
+
     /** @var null|AddressStore */
     public $parentCentralStore = null;
 

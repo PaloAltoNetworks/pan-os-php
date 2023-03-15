@@ -60,6 +60,12 @@ class AppFilter extends App
 {
     use XmlConvertible;
 
+    public $category;
+    public $subcategory;
+    public $technology;
+    public $tagging;
+    public $risk;
+
     /**
      * @return string
      */

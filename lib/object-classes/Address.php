@@ -57,6 +57,7 @@ class Address
 
     protected $type = self::TypeTmp;
 
+    public $_ip4Map = null;
 
     /**
      * you should not need this one for normal use

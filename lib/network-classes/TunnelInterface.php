@@ -30,6 +30,8 @@ class TunnelInterface
     /** @var string */
     public $type = 'tunnel';
 
+    public $owner;
+
     function __construct($name, $owner)
     {
         $this->name = $name;

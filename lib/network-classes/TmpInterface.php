@@ -27,6 +27,8 @@ class TmpInterface
 
     /** @property $owner TmpInterfaceStore */
 
+    public $owner;
+
     /**
      * @param $name string
      * @param TmpInterfaceStore $owner

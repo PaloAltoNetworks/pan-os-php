@@ -33,6 +33,8 @@ class AddressRuleContainer extends ObjRuleContainer
     /** @var null|AddressStore */
     public $parentCentralStore = null;
 
+    public $fasthashcomp;
+
     // TODO implement 'multicast' support
 
     public function __construct($owner)

@@ -26,6 +26,8 @@
  */
 class IkeCryptoProfileStore extends ObjStore
 {
+    public $owner;
+
     public static $childn = 'IkeCryptoProfil';
 
     protected $fastMemToIndex = null;

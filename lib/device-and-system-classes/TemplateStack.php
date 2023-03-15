@@ -32,6 +32,8 @@ class TemplateStack
 
     protected $templateRoot = null;
 
+    public $xmlroot = null;
+
     public $FirewallsSerials = array();
 
     /** @var  PANConf */

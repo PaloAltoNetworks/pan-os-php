@@ -626,7 +626,11 @@ SecurityProfileCallContext::$supportedActions['custom-url-category-add-ending-to
             return null;
 
         $newToken = $context->arguments['endingtoken'];
-        $tokenArray = array( '.', '/', '?', '&', '=', ';', '+' );
+
+        if( strpos( $newToken, "$$" ) !== FALSE )
+            $newToken = str_replace( "$$", "/", $newToken );
+
+        $tokenArray = array( '.', '/', '?', '&', '=', ';', '+', '*', '/*' );
 
         if( !in_array( $newToken, $tokenArray ) )
         {
@@ -642,14 +646,34 @@ SecurityProfileCallContext::$supportedActions['custom-url-category-add-ending-to
             $skiptokenArray = array( '*' );
 
             $lastChar = substr($member, -1);
-            if( in_array( $lastChar, $tokenArray ) )
-                PH::print_stdout(  "skipped! endingToken already available: '".$lastChar."'" );
-            elseif( strpos( $member, $newToken ) !== FALSE )
-                PH::print_stdout(  "skipped! endingToken already available: '".$member."'" );
+            $lasttwoChar = substr($member, -2);
+            if( in_array( $lastChar, $tokenArray ) && $newToken != "*" )
+                PH::print_stdout(  $context->padding."skipped! endingToken already available: '".$lastChar."'" );
+            elseif( $lastChar == $newToken || $lasttwoChar == $newToken )
+                PH::print_stdout(  $context->padding."skipped! endingToken already available: '".$member."'" );
             elseif( in_array( $lastChar, $skiptokenArray ) )
-                PH::print_stdout(  "skipped! following token available at lastChar: '".$lastChar."'" );
+            {
+                if( $lasttwoChar == "/*" )
+                    PH::print_stdout(  $context->padding."skipped! following token available at lastChar: '".$lasttwoChar."'" );
+                else
+                {
+                    PH::print_stdout(  $context->padding."something needs to be done before: '".$lastChar."'" );
+                    $member2 = str_replace( "*", "/*", $member );
+                    $object->addMember( $member2 );
+                    $object->deleteMember( $member );
+
+                    if( $context->isAPI )
+                        $object->API_sync();
+                }
+            }
             else
             {
+                if( $newToken == "*" and $lastChar !== "/" )
+                {
+                    PH::print_stdout(  $context->padding."skipped! as token: '".$newToken."' - lastchar must be '/' - but this is available: '".$lastChar."'" );
+                    continue;
+                }
+
                 $object->addMember( $member.$newToken );
                 $object->deleteMember( $member );
 
@@ -661,13 +685,63 @@ SecurityProfileCallContext::$supportedActions['custom-url-category-add-ending-to
     'args' => array('endingtoken' =>
         array('type' => 'string', 'default' => '/',
             'help' =>
-                "supported ending token: '.', '/', '?', '&', '=', ';', '+'\n\n".
+                "supported ending token: '.', '/', '?', '&', '=', ';', '+', '*', '/*' - please be aware for '/*' please use '$$*'\n\n".
                 "'actions=custom-url-category-add-ending-token:/' is the default value, it can NOT be run directly\n".
                 "please use: 'actions=custom-url-category-add-ending-token' to avoid problems like: '**ERROR** unsupported Action:\"\"'"
 
         )
     )
 );
+
+SecurityProfileCallContext::$supportedActions['custom-url-category-remove-ending-token'] = array(
+    'name' => 'custom-url-category-remove-ending-token',
+    'MainFunction' => function (SecurityProfileCallContext $context) {
+        $object = $context->object;
+
+        if( get_class( $object) !== "customURLProfile")
+            return null;
+
+        $newToken = $context->arguments['endingtoken'];
+
+        if( strpos( $newToken, "$$" ) !== FALSE )
+            $newToken = str_replace( "$$", "/", $newToken );
+
+        $tokenArray = array( '.', '/', '?', '&', '=', ';', '+', '*', '/*' );
+
+        if( !in_array( $newToken, $tokenArray ) )
+        {
+            PH::print_stdout(  "skipped! Token: ".$newToken." is not supported. supported endingTokens: ".implode( ",",$tokenArray) );
+            return null;
+        }
+
+        foreach( $object->getmembers() as $member )
+        {
+            PH::print_stdout(  "        - " . $member );
+            PH::$JSON_TMP['sub']['object'][$object->name()]['members'][] = $member;
+
+            $lastChar = substr($member, -1);
+            if( in_array( $lastChar, $tokenArray ) )
+            {
+                $tmp = rtrim($member, $lastChar);
+                $object->addMember( $tmp );
+                $object->deleteMember( $member );
+
+                if( $context->isAPI )
+                    $object->API_sync();
+            }
+        }
+    },
+    'args' => array('endingtoken' =>
+        array('type' => 'string', 'default' => '/',
+            'help' =>
+                "supported ending token: '.', '/', '?', '&', '=', ';', '+', '*', '/*' - please be aware for '/*' please use '$$*'\n\n".
+                "'actions=custom-url-category-add-ending-token:/' is the default value, it can NOT be run directly\n".
+                "please use: 'actions=custom-url-category-add-ending-token' to avoid problems like: '**ERROR** unsupported Action:\"\"'"
+
+        )
+    )
+);
+
 SecurityProfileCallContext::$supportedActions['custom-url-category-fix-leading-dot'] = array(
     'name' => 'custom-url-category-fix-leading-dot',
     'MainFunction' => function (SecurityProfileCallContext $context) {
@@ -704,7 +778,8 @@ SecurityProfileCallContext::$supportedActions['url-filtering-action-set'] = arra
             return null;
 
         $category = $context->arguments['url-category'];
-        if( !in_array( $category, $object->predefined ) )
+        $custom = $object->owner->owner->customURLProfileStore->find( $category );
+        if( !in_array( $category, $object->predefined ) and $custom == null )
         {
             mwarning( "url-filtering category: ".$category. " not supported", null, false );
             return false;

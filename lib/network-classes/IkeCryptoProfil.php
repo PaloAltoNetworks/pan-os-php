@@ -30,6 +30,8 @@ class IkeCryptoProfil
     use PathableName;
     use ReferenceableObject;
 
+    public $owner;
+
     /** @var null|string[]|DOMElement */
     public $typeRoot = null;
 

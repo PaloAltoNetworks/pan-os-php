@@ -187,15 +187,15 @@ class UPLOAD extends UTIL
                 {
                     PH::print_stdout( " - strpos|".strpos( $toXpath, "/config/devices/entry/vsys" )."|");
                     if( strpos( $toXpath, "/vsys/entry[" ) !== false )
-                        $doc2->Load( dirname(__FILE__) . "/../parser/panos_baseconfig.xml", XML_PARSE_BIG_LINES);
+                        $doc2->load( dirname(__FILE__) . "/../parser/panos_baseconfig.xml", XML_PARSE_BIG_LINES);
                     else
-                        $doc2->Load( dirname(__FILE__) . "/../parser/panorama_baseconfig.xml", XML_PARSE_BIG_LINES);
+                        $doc2->load( dirname(__FILE__) . "/../parser/panorama_baseconfig.xml", XML_PARSE_BIG_LINES);
                 }
                 elseif( file_exists( $this->configOutput['filename'] ) )
                 {
                     PH::print_stdout( " - {$this->configOutput['filename']} ... ");
                     $doc2 = new DOMDocument();
-                    $doc2->Load($this->configOutput['filename'], XML_PARSE_BIG_LINES);
+                    $doc2->load($this->configOutput['filename'], XML_PARSE_BIG_LINES);
                 }
 
                 PH::print_stdout( " * toXPath is specified with value '" . $toXpath . "'");

@@ -30,6 +30,8 @@ class VlanInterface
     /** @var string */
     public $type = 'vlan';
 
+    public $owner;
+
     function __construct($name, $owner)
     {
         $this->name = $name;

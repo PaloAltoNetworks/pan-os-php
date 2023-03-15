@@ -48,6 +48,9 @@ class NatRule extends Rule
     /** @var null|DOMElement */
     public $snatroot = null;
 
+    public $subdnatTAroot = null;
+    public $subdnatTProot = null;
+
     /**  @var null|DOMElement
      * @ignore
      */

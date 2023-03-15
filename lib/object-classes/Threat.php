@@ -33,6 +33,10 @@ class Threat
     public $engine_version = null;
     public $default_action = 'allow';
 
+    /** @var ThreatStore|null */
+    public $owner;
+    public $xmlroot;
+
     public function __construct($name, $owner)
     {
         $this->owner = $owner;

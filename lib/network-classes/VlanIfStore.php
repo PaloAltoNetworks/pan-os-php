@@ -29,6 +29,8 @@ class VlanIfStore extends ObjStore
     protected $fastMemToIndex = null;
     protected $fastNameToIndex = null;
 
+    public $owner;
+
     /**
      * @param $name string
      * @param $owner PANConf

@@ -27,6 +27,8 @@ class ServiceStore
     /** @var PanoramaConf|PANConf|VirtualSystem|DeviceGroup */
     public $owner;
 
+    public $name;
+
     /** @var null|ServiceStore */
     public $parentCentralStore = null;
 

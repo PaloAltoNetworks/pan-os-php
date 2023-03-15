@@ -33,7 +33,7 @@ class Zone
 
     public $externalVsys = array();
 
-    public $_type = 'tmp';
+    public $type = 'tmp';
 
 
     /** @var InterfaceContainer */
@@ -135,7 +135,7 @@ class Zone
 
     public function type()
     {
-        return $this->_type;
+        return $this->type;
     }
 
 
@@ -170,13 +170,13 @@ class Zone
 
             if( $node->tagName == 'layer3' || $node->tagName == 'virtual-wire' )
             {
-                $this->_type = $node->tagName;
+                $this->type = $node->tagName;
 
                 $this->attachedInterfaces->load_from_domxml($node);
             }
             else if( $node->tagName == 'external' )
             {
-                $this->_type = 'external';
+                $this->type = 'external';
                 foreach( $node->childNodes as $memberNode )
                 {
                     if( $memberNode->nodeType != XML_ELEMENT_NODE )
@@ -188,15 +188,15 @@ class Zone
             }
             elseif( $node->tagName == 'tap' )
             {
-                $this->_type = $node->tagName;
+                $this->type = $node->tagName;
             }
             elseif( $node->tagName == 'tunnel' )
             {
-                $this->_type = $node->tagName;
+                $this->type = $node->tagName;
             }
             elseif( $node->tagName == 'layer2' )
             {
-                $this->_type = $node->tagName;
+                $this->type = $node->tagName;
             }
 
 

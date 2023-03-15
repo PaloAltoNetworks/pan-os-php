@@ -198,48 +198,61 @@ class Certificate
                 $this->publicKey = $publickey->textContent;
 
                 ###########################################################################
-
-                $pkey_obj = openssl_pkey_get_public( $this->publicKey );
-                $cert_details = openssl_pkey_get_details( $pkey_obj );
-                #print_r( $cert_details );
-
-                //publicKey Algorithm
-                if( isset( $cert_details['rsa'] ) )
-                    $this->publicKeyAlgorithm = 'rsa';
-                elseif( isset( $cert_details['dsa'] ) )
-                    $this->publicKeyAlgorithm = 'dsa';
-                elseif( isset( $cert_details['dh'] ) )
-                    $this->publicKeyAlgorithm = 'dh';
-                elseif( isset( $cert_details['ec'] ) )
-                    $this->publicKeyAlgorithm = 'ec';
-
-                //publicKey Bits
-                if( isset( $cert_details['bits'] ) )
-                    $this->publicKeyLen = $cert_details['bits'];
-
-
-                //this does not contain the bits
-                $cert = openssl_x509_read( $this->publicKey );
-                $cert_obj = openssl_x509_parse( $cert );
-                #print_r( $cert_obj );
-
-                //publicKey Signature Algorithm
-                if( isset( $cert_obj['signatureTypeLN'] ) )
+                if( function_exists('openssl_pkey_get_public') and
+                    function_exists('openssl_pkey_get_details') and
+                    function_exists('openssl_x509_read') and
+                    function_exists('openssl_x509_parse') )
                 {
-                    //[signatureTypeSN] => RSA-SHA256
-                    //    [signatureTypeLN] => sha256WithRSAEncryption
+                    $pkey_obj = openssl_pkey_get_public($this->publicKey);
+                    if( $pkey_obj !== FALSE )
+                    {
+                        $cert_details = openssl_pkey_get_details($pkey_obj);
+                        #print_r( $cert_details );
 
-                    if( strpos( $cert_obj['signatureTypeLN'], 'ecdsa' ) !== False   )
-                    {
-                        $str_Array = explode( "ecdsa-with-", $cert_obj['signatureTypeLN'] );
-                        $string = strtolower($str_Array[1]);
-                        $this->publicKeyHash = $string;
+                        //publicKey Algorithm
+                        if( isset($cert_details['rsa']) )
+                            $this->publicKeyAlgorithm = 'rsa';
+                        elseif( isset($cert_details['dsa']) )
+                            $this->publicKeyAlgorithm = 'dsa';
+                        elseif( isset($cert_details['dh']) )
+                            $this->publicKeyAlgorithm = 'dh';
+                        elseif( isset($cert_details['ec']) )
+                            $this->publicKeyAlgorithm = 'ec';
+
+                        //publicKey Bits
+                        if( isset($cert_details['bits']) )
+                            $this->publicKeyLen = $cert_details['bits'];
+
+
+                        //this does not contain the bits
+                        $cert = openssl_x509_read($this->publicKey);
+                        if( $cert !== FALSE )
+                            $cert_obj = openssl_x509_parse($cert);
+                        #print_r( $cert_obj );
+
+                        //publicKey Signature Algorithm
+                        if( isset($cert_obj['signatureTypeLN']) )
+                        {
+                            //[signatureTypeSN] => RSA-SHA256
+                            //    [signatureTypeLN] => sha256WithRSAEncryption
+
+                            if( strpos($cert_obj['signatureTypeLN'], 'ecdsa') !== FALSE )
+                            {
+                                $str_Array = explode("ecdsa-with-", $cert_obj['signatureTypeLN']);
+                                $string = strtolower($str_Array[1]);
+                                $this->publicKeyHash = $string;
+                            }
+                            else
+                            {
+                                $str_Array = explode("With", $cert_obj['signatureTypeLN']);
+                                $this->publicKeyHash = $str_Array[0];
+                            }
+                        }
                     }
-                    else
-                    {
-                        $str_Array = explode( "With", $cert_obj['signatureTypeLN'] );
-                        $this->publicKeyHash = $str_Array[0];
-                    }
+                }
+                else
+                {
+                    mwarning( "your PHP installation does not contain support for openssl - libraries missing" );
                 }
             }
         }

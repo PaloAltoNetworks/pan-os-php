@@ -9,12 +9,12 @@ SHELL ["/bin/bash", "-c"]
 RUN DEBIAN_FRONTEND=noninteractive apt update --fix-missing
 
 
-RUN DEBIAN_FRONTEND=noninteractive apt install -y \
+RUN DEBIAN_FRONTEND=noninteractive apt install -y --fix-missing \
     tzdata \
 	bash-completion \
 	git
 
-RUN DEBIAN_FRONTEND=noninteractive apt install -y \
+RUN DEBIAN_FRONTEND=noninteractive apt install -y --fix-missing \
     php$php_var \
     php$php_var-curl \
     php$php_var-dom \

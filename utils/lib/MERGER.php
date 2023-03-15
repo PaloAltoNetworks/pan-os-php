@@ -52,6 +52,8 @@ class MERGER extends UTIL
 
         $this->arg_validation();
 
+        $this->listfilters();
+
         if( isset(PH::$args['actions']) )
         {
             $this->action = PH::$args['actions'];

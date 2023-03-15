@@ -23,7 +23,7 @@ Old detailed information
 **Homepage** : latest sources on [GitHub](https://github.com/PaloAltoNetworks/pan-os-php).
 
 **Requirements** :
- - PHP 7.4 with curl module [ tested with PHP 5.5 / 5.6 / 7.3 / 7.4 / 8.0 / 8.1 ]
+ - PHP 8.1 with curl module [ tested with PHP 5.5 / 5.6 / 7.3 / 7.4 / 8.0 / 8.1 / 8.2 ]
  - php-curl php-dom php-mbstring php-bcmath
 
 **Usage**: include the file lib/pan_php_framework.php in your own script to load the necessary classes.
