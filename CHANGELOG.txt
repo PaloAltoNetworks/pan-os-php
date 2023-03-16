@@ -2,6 +2,7 @@ CHANGELOG
 
 2.0.75
 UTIL:
+* type=securityprofilegroup | introduce 'filter=(secprof is XYZ)' - inspecific to search all securityprofilegroups for secprof which are set to 'default'/'strict'
 
 BUGFIX:
 
