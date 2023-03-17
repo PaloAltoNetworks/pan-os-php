@@ -59,7 +59,8 @@ class DIFF extends UTIL
     ],
     \"exclude\": [
     	\"/config/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='testDG']/service-group\",
-    	\"/config/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='$\$name$$']/address\"
+    	\"/config/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='$\$name$$']/address\",
+    	\"/cloud_services/mobile-users/onboarding/entry[@name='*']/dns-servers/entry[@name='*']\"
     ],
     \"move\": [
         {
@@ -68,7 +69,10 @@ class DIFF extends UTIL
         }
     ],
     \"added\": [
-    	\"/template/config/devices/entry[@name='localhost.localdomain']/network/routing-profile\"
+    	\"/template/config/devices/entry[@name='localhost.localdomain']/network/routing-profile\",
+    	\"/template/config/shared/non-file-based-dlp-settings/max-latency[text()[contains(.,'15')]]\",
+    	\"/policy/panorama/pre-rulebase/security/rules/entry[@name='*']/from/member[text()[contains(.,'any')]]\",
+    	\"/policy/panorama/profiles/spyware/entry[@name='*']/botnet-domains/dns-security-categories/entry[@name='*']/action[text()[contains(.,'sinkhole')]]\",
     ],
     \"deleted\": [
     	\"/template/config/shared/response-page\"
