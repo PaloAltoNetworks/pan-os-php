@@ -157,7 +157,19 @@ DeviceCallContext::$supportedActions['display'] = array(
         }
         elseif( get_class($object) == "Template" )
         {
+            /** @var Template $object */
+
+            $padding = "       ";
             //Todo: PH::print_stdout( where this template is used // full templateStack hierarchy
+
+            $vsyses = $object->deviceConfiguration->getVirtualSystems();
+            foreach( $vsyses as $vsys )
+                PH::print_stdout( $padding."  - ".get_class($vsys).": name: ".$vsys->name());
+
+            PH::print_stdout( $padding."----------");
+            $references = $object->getReferences();
+            foreach( $references as $ref )
+                PH::print_stdout( $padding."  - ".get_class($ref).": name: ".$ref->name());
         }
         elseif( get_class($object) == "Container" )
         {

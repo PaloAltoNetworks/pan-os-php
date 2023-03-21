@@ -4,6 +4,7 @@ CHANGELOG
 UTIL:
 * type=securityprofilegroup | introduce 'filter=(secprof is XYZ)' - inspecific to search all securityprofilegroups for secprof which are set to 'default'/'strict'
 * type=diff | extend help information about usage
+* type=device | introduce 'filter=(template has-multi-vsys)'
 
 BUGFIX:
 

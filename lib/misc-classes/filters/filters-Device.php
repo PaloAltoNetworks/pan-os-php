@@ -165,6 +165,28 @@ RQuery::$defaultFilters['device']['templatestack']['operators']['has.member'] = 
     )
 );
 
+RQuery::$defaultFilters['device']['template']['operators']['has-multi-vsys'] = array(
+    'Function' => function (DeviceRQueryContext $context) {
+        /** @var Template $object */
+        $object = $context->object;
+
+        $class = get_class( $object );
+        if( $class !== "Template" )
+            return false;
+
+        $vsyses = $object->deviceConfiguration->getVirtualSystems();
+        if( count($vsyses) > 1 )
+            return TRUE;
+
+        return false;
+    },
+    'arg' => false,
+    'ci' => array(
+        'fString' => '(%PROP% grp)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
 RQuery::$defaultFilters['device']['manageddevice']['operators']['with-no-dg'] = array(
     'Function' => function (DeviceRQueryContext $context) {
         /** @var ManagedDevice $object */
