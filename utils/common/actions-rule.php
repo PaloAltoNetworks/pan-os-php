@@ -5040,6 +5040,60 @@ RuleCallContext::$supportedActions[] = array(
 
 
 //                                                   //
+//                GROUP-TAG Based Actions     //
+//                                                   //
+RuleCallContext::$supportedActions[] = array(
+    'name' => 'group-tag-Set',
+    'MainFunction' => function (RuleCallContext $context) {
+        $rule = $context->object;
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+        #if( !$rule->isSecurityRule() && !$rule->isDoSRule() &&  !$rule->isPbfRule() && !$rule->isQoSRule() )
+        #{
+        #    $string = "this rule type is not supported! ";
+        #    PH::ACTIONstatus( $context, "SKIPPED", $string );
+        #    return;
+        #}
+
+        if( $context->isAPI )
+            $rule->API_setGroupTag($context->arguments['Group-Tag']);
+        else
+            $rule->setGroupTag($context->arguments['Group-Tag']);
+    },
+    'args' => array('Group-Tag' => array('type' => 'string', 'default' => '*nodefault*'))
+);
+
+RuleCallContext::$supportedActions[] = array(
+    'name' => 'group-tag-Remove',
+    'MainFunction' => function (RuleCallContext $context) {
+        $rule = $context->object;
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+        #if( !$rule->isSecurityRule() && !$rule->isDoSRule() &&  !$rule->isPbfRule() && !$rule->isQoSRule() )
+        #{
+        #    $string = "this rule type is not supported! ";
+        #    PH::ACTIONstatus( $context, "SKIPPED", $string );
+        #    return;
+        #}
+
+        if( $context->isAPI )
+            $rule->API_removeGroupTag();
+        else
+            $rule->removeGroupTag();
+    },
+);
+
+// </editor-fold>
+
+//                                                   //
 //                QoSmarking Based Actions     //
 //
 //                                                   //

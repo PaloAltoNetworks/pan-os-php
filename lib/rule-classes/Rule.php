@@ -26,6 +26,7 @@ class Rule
     use centralServiceStoreUser;
     use centralAddressStoreUser;
     use ObjectWithDescription;
+    use RuleWithGroupTag;
     use XmlConvertible;
 
     protected $name = 'temporaryname';
@@ -54,7 +55,7 @@ class Rule
     public $tags;
 
     /** @var Tag */
-    public $grouptag = null;
+    #public $grouptag = null;
 
     /**
      * @var ServiceRuleContainer
@@ -756,8 +757,10 @@ class Rule
             $rulebase = "<".$prepost."-rulebase>";
             $rulebaseEnd = "</".$prepost."-rulebase>";
 
-            $rulename = "<rule-name><entry name='";
-            $rulenameEnd = "'/></rule-name>";
+            #$rulename = "<rule-name><entry name='";
+            $rulename = "<rule-name>";
+            #$rulenameEnd = "'/></rule-name>";
+            $rulenameEnd = "</rule-name>";
             //<rule-base><entry ...><rules><entry name="demo2-1"><device-vsys><entry name="child/1234567890/vsys1">
         }
         elseif( $system->isVirtualSystem() )
@@ -780,11 +783,11 @@ class Rule
         $cmd = "<".$apiType."><rule-hit-count>".$systemInfoStart.$systemName;
 
         if( $all )
-            $cmd .= $rulebase."<entry name='".$ruleType."'><rules><all/>";
+            $cmd .= $rulebase."<".$ruleType."><rules><all/>";
         else
-            $cmd .= $rulebase."<entry name='".$ruleType."'><rules>".$rulename.$this->name().$rulenameEnd;
+            $cmd .= $rulebase."<".$ruleType."><rules>".$rulename.$this->name().$rulenameEnd;
 
-        $cmd .= "</rules></entry>".$rulebaseEnd;
+        $cmd .= "</rules></".$ruleType.">".$rulebaseEnd;
         $cmd .= $systemNameEnd.$systemInfoEnd."</rule-hit-count></".$apiType.">";
 
         return $cmd;
@@ -1774,14 +1777,7 @@ class Rule
         }
     }
 
-    public function grouptagIs( $value )
-    {
-        if( $this->grouptag === null )
-            return false;
-        if( $this->grouptag->name() === $value->name() )
-            return true;
-        return false;
-    }
+
 
     public function isPreRule()
     {
