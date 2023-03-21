@@ -1132,6 +1132,27 @@ RQuery::$defaultFilters['rule']['group-tag']['operators']['is'] = array(
     )
 );
 
+RQuery::$defaultFilters['rule']['group-tag']['operators']['is.set'] = array(
+    'Function' => function (RuleRQueryContext $context) {
+        $rule = $context->object;
+        if( !$rule->isSecurityRule() && !$rule->isDoSRule() &&  !$rule->isPbfRule() && !$rule->isQoSRule() )
+            return FALSE;
+
+        $grouptag = $rule->groupTag();
+
+        if( is_object( $grouptag ) )
+        {
+            return TRUE;
+        }
+
+        return FALSE;
+    },
+    'arg' => false,
+    'ci' => array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 //                                              //
 //          Application properties              //
 //                                              //

@@ -6,6 +6,7 @@ UTIL:
 * type=diff | extend help information about usage
 * type=device | introduce 'filter=(template has-multi-vsys)'
 * type=rule | extend with actions=group-tag-remove | group-tag-set:GROUPTAGNAME
+* type=rule | introduce 'filter=(group-tag is.set)'
 
 BUGFIX:
 
