@@ -12,7 +12,7 @@ BUGFIX:
 
 GENERAL:
 * cleanup alias.sh - remove deprecated util scripts which are directly supported with alias "pan-os-php type=XYZ"
-* general - dynamic content update to version 8689-7938
+* general update dynamic content version to 8690-7941
 
 
 2.0.74 (20230315)
