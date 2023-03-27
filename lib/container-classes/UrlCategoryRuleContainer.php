@@ -30,7 +30,6 @@ class UrlCategoryRuleContainer extends ObjRuleContainer
     /** @var null|SecurityProfileStore */
     public $parentCentralStore = null;
 
-    private $appDef = FALSE;
 
 
     public function __construct($owner)
@@ -75,11 +74,6 @@ class UrlCategoryRuleContainer extends ObjRuleContainer
         }
 
         return FALSE;
-    }
-
-    public function isApplicationDefault()
-    {
-        return $this->appDef;
     }
 
 
@@ -224,12 +218,6 @@ class UrlCategoryRuleContainer extends ObjRuleContainer
     {
         $this->fasthashcomp = null;
 
-        if( $this->appDef && !$other->appDef || !$this->appDef && $other->appDef )
-            derr("You cannot merge 'application-default' type service stores with app-default ones");
-
-        if( $this->appDef && $other->appDef )
-            return;
-
         if( $this->isAny() )
             return;
 
@@ -351,8 +339,6 @@ class UrlCategoryRuleContainer extends ObjRuleContainer
         {
             if( $o === $object )
                 return TRUE;
-            if( $o->isGroup() )
-                if( $o->hasObjectRecursive($object) ) return TRUE;
         }
 
         return FALSE;
@@ -368,8 +354,6 @@ class UrlCategoryRuleContainer extends ObjRuleContainer
         {
             if( $o->name() === $objectName )
                 return TRUE;
-            if( $o->isGroup() )
-                if( $o->hasNamedObjectRecursive($objectName) ) return TRUE;
         }
 
         return FALSE;
@@ -401,29 +385,15 @@ class UrlCategoryRuleContainer extends ObjRuleContainer
         $A = array();
 
         foreach( $this->o as $object )
-        {
-            if( $object->isGroup() )
-            {
-                $flat = $object->expand();
-                $localA = array_merge($localA, $flat);
-            }
-            else
-                $localA[] = $object;
-        }
+            $localA[] = $object;
+
         $localA = array_unique_no_cast($localA);
 
         $otherAll = $other->all();
 
         foreach( $otherAll as $object )
-        {
-            if( $object->isGroup() )
-            {
-                $flat = $object->expand();
-                $A = array_merge($A, $flat);
-            }
-            else
-                $A[] = $object;
-        }
+            $A[] = $object;
+
         $A = array_unique_no_cast($A);
 
         $diff = array_diff_no_cast($A, $localA);
@@ -451,15 +421,7 @@ class UrlCategoryRuleContainer extends ObjRuleContainer
 
         foreach( $this->o as $member )
         {
-            if( $member->isGroup() )
-            {
-                $flat = $member->expand($keepGroupsInList);
-                $localA = array_merge($localA, $flat);
-                if( $keepGroupsInList )
-                    $localA[] = $member;
-            }
-            else
-                $localA[] = $member;
+            $localA[] = $member;
         }
 
         $localA = array_unique_no_cast($localA);
@@ -524,60 +486,6 @@ class UrlCategoryRuleContainer extends ObjRuleContainer
 
     }
 
-    /**
-     * @param string $value
-     * @param array $objects
-     * @param bool $check_recursive
-     * @return bool
-     */
-    function hasValue($value, $check_recursive = FALSE)
-    {
-        $objects = $this->o;
-        foreach( $objects as $object )
-        {
-            if( !$check_recursive )
-                if( $object->isGroup() )
-                    continue;
-
-            if( !$object->isGroup() )
-                if( $value == $object->getDestPort() )
-                    return TRUE;
-
-            $port_mapping = $object->dstPortMapping();
-            $port_mapping_text = $port_mapping->mappingToText();
-
-            if( strpos($port_mapping_text, " ") !== FALSE )
-                $port_mapping_array = explode(" ", $port_mapping_text);
-            else
-                $port_mapping_array[0] = $port_mapping_text;
-
-            foreach( $port_mapping_array as $port_mapping_text )
-            {
-                $text_replace = array('tcp/', 'udp/');
-                $port_mapping_text = str_replace($text_replace, "", $port_mapping_text);
-
-                if( strpos($port_mapping_text, "-") !== FALSE )
-                {
-                    $port_mapping_range = explode("-", $port_mapping_text);
-                    if( intval($port_mapping_range[0]) <= intval($value) && intval($port_mapping_range[1]) >= intval($value) )
-                        return TRUE;
-                }
-                elseif( strpos($port_mapping_text, ",") !== FALSE )
-                {
-                    $port_mapping_list = explode(",", $port_mapping_text);
-                    foreach( $port_mapping_list as $list_object )
-                    {
-                        if( $value == $list_object )
-                            return TRUE;
-                    }
-                }
-                elseif( $value == $port_mapping_text )
-                    return TRUE;
-            }
-        }
-
-        return FALSE;
-    }
 }
 
 

@@ -10,6 +10,7 @@ UTIL:
 
 BUGFIX:
 * type=rule ruletype=decryption | introduce category reading
+* class SecurityRule | bugfix to correctly cleanup XML node 'profile-setting', if no SecurityProfile/SecurityProfileGroup is set
 
 GENERAL:
 * cleanup alias.sh - remove deprecated util scripts which are directly supported with alias "pan-os-php type=XYZ"

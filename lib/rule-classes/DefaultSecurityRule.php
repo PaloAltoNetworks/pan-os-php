@@ -440,7 +440,7 @@ class DefaultSecurityRule extends Rule
 
     public function setSecProf_AV($newAVprof)
     {
-        $this->secproftype = 'profiles';
+        $this->secproftype = 'profile';
         $this->secprofgroup = null;
         if( $newAVprof == "null" )
             unset($this->secprofProfiles['virus']);
@@ -454,7 +454,7 @@ class DefaultSecurityRule extends Rule
 
     public function setSecProf_Vuln($newAVprof)
     {
-        $this->secproftype = 'profiles';
+        $this->secproftype = 'profile';
         $this->secprofgroup = null;
         if( $newAVprof == "null" )
             unset($this->secprofProfiles['vulnerability']);
@@ -468,7 +468,7 @@ class DefaultSecurityRule extends Rule
 
     public function setSecProf_URL($newAVprof)
     {
-        $this->secproftype = 'profiles';
+        $this->secproftype = 'profile';
         $this->secprofgroup = null;
         if( $newAVprof == "null" )
             unset($this->secprofProfiles['url-filtering']);
@@ -482,7 +482,7 @@ class DefaultSecurityRule extends Rule
 
     public function setSecProf_DataFilt($newAVprof)
     {
-        $this->secproftype = 'profiles';
+        $this->secproftype = 'profile';
         $this->secprofgroup = null;
         if( $newAVprof == "null" )
             unset($this->secprofProfiles['data-filtering']);
@@ -496,7 +496,7 @@ class DefaultSecurityRule extends Rule
 
     public function setSecProf_FileBlock($newAVprof)
     {
-        $this->secproftype = 'profiles';
+        $this->secproftype = 'profile';
         $this->secprofgroup = null;
 
         if( $newAVprof == "null" )
@@ -511,7 +511,7 @@ class DefaultSecurityRule extends Rule
 
     public function setSecProf_Spyware($newAVprof)
     {
-        $this->secproftype = 'profiles';
+        $this->secproftype = 'profile';
         $this->secprofgroup = null;
         if( $newAVprof == "null" )
             unset($this->secprofProfiles['spyware']);
@@ -525,7 +525,7 @@ class DefaultSecurityRule extends Rule
 
     public function setSecProf_Wildfire($newAVprof)
     {
-        $this->secproftype = 'profiles';
+        $this->secproftype = 'profile';
         $this->secprofgroup = null;
         if( $newAVprof == "null" )
             unset($this->secprofProfiles['wildfire-analysis']);
@@ -554,7 +554,7 @@ class DefaultSecurityRule extends Rule
             $tmp = $tmp->appendChild($this->secprofroot->ownerDocument->createElement('member'));
             $tmp->appendChild($this->secprofroot->ownerDocument->createTextNode($this->secprofgroup));
         }
-        else if( $this->secproftype == 'profiles' )
+        else if( $this->secproftype == 'profile' )
         {
             if( $this->secprofroot === null || $this->secprofroot === FALSE )
                 $this->secprofroot = DH::createElement($this->xmlroot, 'profile-setting');
