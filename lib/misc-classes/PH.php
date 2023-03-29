@@ -942,7 +942,8 @@ class PH
         "xpath",
         "certificate",
         "ssh-connector",
-        "custom-report"
+        "custom-report",
+        "gcp"
         );
 
 
@@ -950,7 +951,8 @@ class PH
         'ironskillet-update',
         "maxmind-update",
         "util_get-action-filter",
-        "protocoll-number-download"
+        "protocoll-number-download",
+        "gcp"
     );
 
     public static $out_exclude = array(
@@ -972,7 +974,8 @@ class PH
         "protocoll-number-download",
         "html-merger",
         "tsf",
-        "xpath"
+        "xpath",
+        "gcp"
     );
 
     public static function callPANOSPHP( $type, $argv, $argc, $PHP_FILE, $_supportedArguments = array(), $_usageMsg = "", $projectfolder = "" )
@@ -1102,6 +1105,9 @@ class PH
 
         elseif( $type == "ssh-connector" )
             $util = new SSH_CONNECTOR__( $type, $argv, $argc, $PHP_FILE." type=".$type, $_supportedArguments, $_usageMsg, $projectfolder);
+
+        elseif( $type == "gcp" )
+            $util = new GCP($type, $argv, $argc,$PHP_FILE." type=".$type, $_supportedArguments, $_usageMsg, $projectfolder);
 
         elseif( $type == 'address'
             || $type == 'service'

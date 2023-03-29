@@ -7,6 +7,7 @@ UTIL:
 * type=device | introduce 'filter=(template has-multi-vsys)'
 * type=rule | extend with actions=group-tag-remove | group-tag-set:GROUPTAGNAME
 * type=rule | introduce 'filter=(group-tag is.set)'
+* type=gcp | introduction of GCP helper tools
 
 BUGFIX:
 * type=rule ruletype=decryption | introduce category reading

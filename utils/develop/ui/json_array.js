@@ -1836,6 +1836,18 @@ var subjectObject =
                     }
                 }
             },
+            "template": {
+                "operators": {
+                    "has-multi-vsys": {
+                        "Function": {},
+                        "arg": false,
+                        "ci": {
+                            "fString": "(%PROP% grp)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    }
+                }
+            },
             "templatestack": {
                 "operators": {
                     "has.member": {
@@ -1880,6 +1892,11 @@ var subjectObject =
     },
     "download-predefined": {
         "name": "download-predefined",
+        "action": [],
+        "filter": []
+    },
+    "gcp": {
+        "name": "gcp",
         "action": [],
         "filter": []
     },
@@ -2478,6 +2495,20 @@ var subjectObject =
                 "name": "from-Set-Any",
                 "section": "zone",
                 "MainFunction": {}
+            },
+            "group-tag-remove": {
+                "name": "group-tag-Remove",
+                "MainFunction": {}
+            },
+            "group-tag-set": {
+                "name": "group-tag-Set",
+                "MainFunction": {},
+                "args": {
+                    "Group-Tag": {
+                        "type": "string",
+                        "default": "*nodefault*"
+                    }
+                }
             },
             "hip-set": {
                 "name": "hip-Set",
@@ -3776,6 +3807,14 @@ var subjectObject =
                         "argObjectFinder": "$objectFind=null;\n$objectFind=$object->tags->parentCentralStore->find('!value!');",
                         "ci": {
                             "fString": "(%PROP% test.tag)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    },
+                    "is.set": {
+                        "Function": {},
+                        "arg": false,
+                        "ci": {
+                            "fString": "(%PROP%)",
                             "input": "input\/panorama-8.0.xml"
                         }
                     }
@@ -5757,6 +5796,14 @@ var subjectObject =
                         "arg": true,
                         "ci": {
                             "fString": "(%PROP% vuln-production)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    },
+                    "is": {
+                        "Function": {},
+                        "arg": true,
+                        "ci": {
+                            "fString": "(%PROP% av-production)",
                             "input": "input\/panorama-8.0.xml"
                         }
                     },
