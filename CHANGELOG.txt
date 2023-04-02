@@ -9,6 +9,7 @@ UTIL:
 * type=rule | introduce 'filter=(group-tag is.set)'
 * type=gcp | introduction of GCP helper tools
 * type=config-size - extend for snippet
+* class Interfacecontainer - extend warning with XML object information - relevant for CloudManagement object-variable validation
 
 BUGFIX:
 * type=rule ruletype=decryption | introduce category reading
