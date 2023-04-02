@@ -179,7 +179,7 @@ class CONFIGSIZE extends UTIL
                 || $length2 > $this->minKiloByte
                 || ( ( $previousNode == "device-group" || $previousNode == "template" || $previousNode == "template-stack"
                         || $previousNode == "container" || $previousNode == "snippet" || $previousNode == "cloud" || $previousNode == "on-prem" )
-                    && $this->showalldg )
+                && $this->showalldg )
             )
             {
                 #PH::print_stdout( "");
@@ -205,7 +205,7 @@ class CONFIGSIZE extends UTIL
                     */
                 }
 
-                $entryArray = array( "device-group", "template", "template-stack", "container", "cloud", "on-prem", "rules", "address", "address-group", "service", "service-group");
+                $entryArray = array( "device-group", "template", "template-stack", "container", "snippet", "cloud", "on-prem", "rules", "address", "address-group", "service", "service-group");
                 $countString = "";
                 if( in_array( $nodeName, $entryArray ) )
                 {

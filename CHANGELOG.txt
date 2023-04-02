@@ -8,6 +8,7 @@ UTIL:
 * type=rule | extend with actions=group-tag-remove | group-tag-set:GROUPTAGNAME
 * type=rule | introduce 'filter=(group-tag is.set)'
 * type=gcp | introduction of GCP helper tools
+* type=config-size - extend for snippet
 
 BUGFIX:
 * type=rule ruletype=decryption | introduce category reading
