@@ -955,6 +955,63 @@ class Rule
         return null;
     }
 
+    public function API_apps_seen()
+    {
+        $rule_array = array();
+
+        $rule_uuid = $this->uuid();
+        $cmd = "<show><policy-app-details><rules><member>".$rule_uuid."</member></rules>
+<resultfields><member>apps-seen</member><member>last-app-seen-since-count</member><member>days-no-new-app-count</member></resultfields><trafficTimeframe>30</trafficTimeframe><appsSeenTimeframe>any</appsSeenTimeframe><vsysName>vsys1</vsysName><type>security</type><position>main</position><summary>no</summary></policy-app-details></show>";
+
+        $connector = findConnectorOrDie($this);
+        $res = $connector->sendOpRequest($cmd, );
+        $res = DH::findFirstElement( "result", $res);
+        $res = DH::findFirstElement( "rules", $res);
+        $rule = DH::findFirstElementByNameAttr( "entry", $this->name(), $res );
+
+        if( $rule !== null && $rule !== false )
+        {
+            $apps_seen = DH::findFirstElement( "apps-seen", $rule);
+            $app_array = array();
+            foreach( $apps_seen->childNodes as $app )
+            {
+                /** @var DOMElement $app */
+                if( $app->nodeType != XML_ELEMENT_NODE )
+                    continue;
+
+                $application = DH::findFirstElement( "application", $app);
+                $bytes = DH::findFirstElement( "bytes", $app);
+                $first_seen = DH::findFirstElement( "first-seen", $app);
+                $last_seen = DH::findFirstElement( "last-seen", $app);
+
+                $app_array[$application->textContent] = array(
+                    "name" => $application->textContent,
+                    "bytes" => $bytes->textContent,
+                    "first_seen" => $first_seen->textContent,
+                    "last_seen" => $last_seen->textContent,
+                );
+                #print "APP: ".$application->textContent."\n";
+                #DH::DEBUGprintDOMDocument( $app );
+            }
+
+            #print_r($app_array);
+            $apps = array_keys($app_array);
+
+            $apps_allowed_count = DH::findFirstElement( "apps-allowed-count", $rule);
+            $days_no_new_app_count = DH::findFirstElement( "days-no-new-app-count", $rule);
+            $last_app_seen_since_count = DH::findFirstElement( "last-app-seen-since-count", $rule);
+
+            $rule_array = array( "apps-seen-count" =>  count($app_array),
+                "apps-seen" => $app_array,
+                "apps-allowed-count" => $apps_allowed_count->textContent,
+                "days-no-new-app-count" => $days_no_new_app_count->textContent,
+                "last-app-seen-since-count" => $last_app_seen_since_count->textContent,
+            );
+        }
+
+        return $rule_array;
+    }
+
     function zoneCalculation($fromOrTo, $mode = "append", $virtualRouter = "*autodetermine*", $template_name = "*notPanorama*", $vsys_name = "*notPanorama*", $isAPI = FALSE )
     {
         //DEFAULT settings:

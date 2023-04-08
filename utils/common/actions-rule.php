@@ -3814,6 +3814,28 @@ RuleCallContext::$supportedActions[] = array(
     )
 );
 RuleCallContext::$supportedActions[] = array(
+    'name' => 'display-app-seen',
+    'MainFunction' => function (RuleCallContext $context) {
+
+        /** @var SecurityRule $rule */
+        $rule = $context->object;
+
+        $rule_array = $rule->API_apps_seen();
+
+        if( !empty($rule_array ) )
+        {
+            PH::print_stdout("apps: ".implode(", ", array_keys( $rule_array['apps-seen'])) );
+
+            PH::print_stdout("apps-seen-count: ".$rule_array['apps-seen-count']);
+            PH::print_stdout( "apps allowed count: ". $rule_array['apps-allowed-count'] );
+            PH::print_stdout( "days_no_new_app_count: ". $rule_array['days-no-new-app-count'] );
+            PH::print_stdout( "last_app_seen_since_count: ". $rule_array['last-app-seen-since-count'] );
+        }
+
+    }
+);
+
+RuleCallContext::$supportedActions[] = array(
     'name' => 'invertPreAndPost',
     'MainFunction' => function (RuleCallContext $context) {
         if( $context->object->isDefaultSecurityRule() )
