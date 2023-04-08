@@ -209,6 +209,42 @@ RQuery::$defaultFilters['device']['manageddevice']['operators']['with-no-dg'] = 
     )
 );
 
+RQuery::$defaultFilters['device']['devicegroup']['operators']['has.vsys'] = array(
+    'Function' => function (DeviceRQueryContext $context) {
+        /** @var DeviceGroup $object */
+        $object = $context->object;
+
+        $class = get_class( $object );
+        if( $class !== "DeviceGroup" )
+            return false;
+
+        $DGdevices = $object->getDevicesInGroup();
+        foreach( $DGdevices as $key => $device )
+        {
+            if( isset($device['vsyslist']) )
+            {
+                if( isset( $device['vsyslist'][$context->value] ) )
+                    return TRUE;
+                else
+                    return FALSE;
+            }
+            else
+            {
+                if( $context->value == "vsys1")
+                    return TRUE;
+                else
+                    return FALSE;
+            }
+        }
+
+        return null;
+    },
+    'arg' => True,
+    'ci' => array(
+        'fString' => '(%PROP% grp)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 
 
 // </editor-fold>

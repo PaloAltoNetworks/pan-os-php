@@ -10,6 +10,7 @@ UTIL:
 * type=gcp | introduction of GCP helper tools
 * type=config-size - extend for snippet
 * class Interfacecontainer - extend warning with XML object information - relevant for CloudManagement object-variable validation
+* type=device | introduce 'filter=(devicegroup has.vsys XYZ)' - extend output for actions=display
 
 BUGFIX:
 * type=rule ruletype=decryption | introduce category reading
