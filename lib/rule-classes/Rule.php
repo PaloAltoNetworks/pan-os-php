@@ -717,6 +717,9 @@ class Rule
     {
         $system = $this->owner->owner;
 
+        $ruleType = $this->ruleNature();
+        $ruleTypeEND = "";
+
         #print get_class($system)."\n";
         if( $system->isPanorama() )
         {
@@ -762,6 +765,9 @@ class Rule
             #$rulenameEnd = "'/></rule-name>";
             $rulenameEnd = "</rule-name>";
             //<rule-base><entry ...><rules><entry name="demo2-1"><device-vsys><entry name="child/1234567890/vsys1">
+
+            $ruleType = $ruleType;
+            $ruleTypeEND = "</".$ruleType.">";
         }
         elseif( $system->isVirtualSystem() )
         {
@@ -776,18 +782,21 @@ class Rule
 
             $rulename = "<list><member>";
             $rulenameEnd = "</member></list>";
+
+            $ruleType = "<entry name='".$ruleType."'>";
+            $ruleTypeEND = "</entry>";
         }
 
         //Type
-        $ruleType = $this->ruleNature();
+
         $cmd = "<".$apiType."><rule-hit-count>".$systemInfoStart.$systemName;
 
         if( $all )
-            $cmd .= $rulebase."<".$ruleType."><rules><all/>";
+            $cmd .= $rulebase.$ruleType."<rules><all/>";
         else
-            $cmd .= $rulebase."<".$ruleType."><rules>".$rulename.$this->name().$rulenameEnd;
+            $cmd .= $rulebase.$ruleType."<rules>".$rulename.$this->name().$rulenameEnd;
 
-        $cmd .= "</rules></".$ruleType.">".$rulebaseEnd;
+        $cmd .= "</rules>".$ruleTypeEND.$rulebaseEnd;
         $cmd .= $systemNameEnd.$systemInfoEnd."</rule-hit-count></".$apiType.">";
 
         return $cmd;
@@ -823,9 +832,11 @@ class Rule
         return null;
     }
 
-    public function API_showRuleHitCount( $all = false )
+    public function API_showRuleHitCount( $all = false, $print = TRUE )
     {
         $con = findConnectorOrDie($this);
+
+        $rule_hitcount_array = array();
 
         if( $con->info_PANOS_version_int >= 90 )
         {
@@ -894,9 +905,19 @@ class Rule
             //create Array and return
             $padding = "    * ";
             if( $latest )
-                print $padding."latest: ".$latest->textContent."\n";
+            {
+                if( $print )
+                    PH::print_stdout( $padding."latest: ".$latest->textContent );
+                $rule_hitcount_array['latest'] = $latest->textContent;
+            }
+
             if( $hit_count)
-                print $padding."hit-count: ".$hit_count->textContent."\n";
+            {
+                if( $print )
+                    PH::print_stdout( $padding."hit-count: ".$hit_count->textContent );
+                $rule_hitcount_array['hit-count'] = $hit_count->textContent;
+            }
+
             if( $last_hit_timestamp )
             {
                 $unixTimestamp = $last_hit_timestamp->textContent;
@@ -904,7 +925,9 @@ class Rule
                     $result = "0";
                 else
                     $result = date( 'Y-m-d H:i:s', $unixTimestamp );
-                print $padding."last-hit: ".$result."\n";
+                if( $print )
+                    PH::print_stdout( $padding."last-hit: ".$result );
+                $rule_hitcount_array['last-hit'] = $result;
             }
 
             if( $last_reset_timestamp )
@@ -914,7 +937,9 @@ class Rule
                     $result = "0";
                 else
                     $result = date( 'Y-m-d H:i:s', $unixTimestamp );
-                print $padding."last-reset: ".$result."\n";
+                if( $print )
+                    PH::print_stdout( $padding."last-reset: ".$result );
+                $rule_hitcount_array['last-reset'] = $result;
             }
 
             if( $first_hit_timestamp )
@@ -924,7 +949,9 @@ class Rule
                     $result = "0";
                 else
                     $result = date( 'Y-m-d H:i:s', $unixTimestamp );
-                print $padding."first-hit: ".$result."\n";
+                if( $print )
+                    PH::print_stdout( $padding."first-hit: ".$result );
+                $rule_hitcount_array['first-hit'] = $result;
             }
 
             if( $rule_creation_timestamp )
@@ -934,7 +961,9 @@ class Rule
                     $result = 0;
                 else
                     $result = date( 'Y-m-d H:i:s', $unixTimestamp );
-                print $padding."rule-creation: ".$result."\n";
+                if( $print )
+                    PH::print_stdout( $padding."rule-creation: ".$result );
+                $rule_hitcount_array['rule-creation'] = $result;
             }
             if( $rule_modification_timestamp )
             {
@@ -943,16 +972,19 @@ class Rule
                     $result = 0;
                 else
                     $result = date( 'Y-m-d H:i:s', $unixTimestamp );
-                print $padding."rule-modification: ".$result."\n";
+                if( $print )
+                    PH::print_stdout( $padding."rule-modification: ".$result );
+                $rule_hitcount_array['rule-modification'] = $result;
             }
 
         }
         else
         {
-            PH::print_stdout( "  PAN-OS version must be 9.0 or higher" );
+            if( $print )
+                PH::print_stdout( "  PAN-OS version must be 9.0 or higher" );
         }
 
-        return null;
+        return $rule_hitcount_array;
     }
 
     public function API_apps_seen()

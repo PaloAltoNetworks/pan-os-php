@@ -13,10 +13,12 @@ UTIL:
 * type=device | introduce 'filter=(devicegroup has.vsys XYZ)' - extend output for actions=display
 * type=rule | introduce 'actions=display-app-seen'
 * type=gcp | improve actions=upload/download
+* type=rule actions=exporttoexcel:file.html,RuleHit | exporttoexcel:file.html,ApplicationSeen
 
 BUGFIX:
 * type=rule ruletype=decryption | introduce category reading
 * class SecurityRule | bugfix to correctly cleanup XML node 'profile-setting', if no SecurityProfile/SecurityProfileGroup is set
+* type=rule | bugfix for API_showRuleHitCount
 
 GENERAL:
 * cleanup alias.sh - remove deprecated util scripts which are directly supported with alias "pan-os-php type=XYZ"
