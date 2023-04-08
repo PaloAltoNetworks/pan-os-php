@@ -12,6 +12,7 @@ UTIL:
 * class Interfacecontainer - extend warning with XML object information - relevant for CloudManagement object-variable validation
 * type=device | introduce 'filter=(devicegroup has.vsys XYZ)' - extend output for actions=display
 * type=rule | introduce 'actions=display-app-seen'
+* type=gcp | improve actions=upload/download
 
 BUGFIX:
 * type=rule ruletype=decryption | introduce category reading

@@ -31,8 +31,8 @@ class GCP extends UTIL
     private $outputfilename = null;
     private $displayOutput = true;
     private $configPath = "/opt/pancfg/mgmt/saved-configs/";
-    #$configPath = "/opt/pancfg/mgmt/factory/";
-    #$configPath = "/tmp/";
+    private $configPath_factory = "/opt/pancfg/mgmt/factory/";
+    private $configPath_tmp = "/tmp/";
 
     private $insecureValue = "--insecure-skip-tls-verify=true";
 
@@ -97,6 +97,8 @@ class GCP extends UTIL
 
         if( isset(PH::$args['out']) )
             $outputfilename = PH::$args['out'];
+        elseif( isset(PH::$args['in']) )
+            $outputfilename = $inputconfig;
 
         if( isset(PH::$args['actions']) )
         {
@@ -249,7 +251,13 @@ class GCP extends UTIL
             $tmpArray = explode( "/", $outputfilename );
             if( count( $tmpArray ) > 1 )
                 derr( "argument 'out=FILENAME' is only with FILENAME not a PATH allowed" );
-            $container = substr($tenantID, 0, -2);
+            if( strpos( $tenantID, "expedition" ) !== False )
+            {
+                $container = "expedition";
+                $this->configPath = "/tmp/";
+            }
+            else
+                $container = substr($tenantID, 0, -2);
 
             $cli = "kubectl ".$this->insecureValue." cp ".$inputconfig." -c ".$container." ".$tenantID.":".$this->configPath.$outputfilename;
             $this->execCLIWithOutput( $cli );
@@ -264,8 +272,15 @@ class GCP extends UTIL
             if( count( $tmpArray ) > 1 )
                 derr( "argument 'in=FILENAME' is only with FILENAME not a PATH allowed" );
 
+            if( strpos( $tenantID, "expedition" ) !== False )
+            {
+                $container = "expedition";
+                $this->configPath = "/tmp/";
+            }
+            else
+                $container = substr($tenantID, 0, -2);
 
-            $cli = "kubectl ".$this->insecureValue." exec ".$tenantID." -c ".substr($tenantID, 0, -2)." -- cat ".$this->configPath.$inputconfig." > ".$outputfilename;
+            $cli = "kubectl ".$this->insecureValue." exec ".$tenantID." -c ".$container." -- cat ".$this->configPath.$inputconfig." > ".$outputfilename;
             $this->execCLIWithOutput( $cli );
         }
         elseif( $action == "onboard" )
