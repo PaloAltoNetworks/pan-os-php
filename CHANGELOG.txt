@@ -19,6 +19,7 @@ BUGFIX:
 * type=rule ruletype=decryption | introduce category reading
 * class SecurityRule | bugfix to correctly cleanup XML node 'profile-setting', if no SecurityProfile/SecurityProfileGroup is set
 * type=rule | bugfix for API_showRuleHitCount
+* type=rule | bugfix for actions=rule-hit-count-show / -clear
 
 GENERAL:
 * cleanup alias.sh - remove deprecated util scripts which are directly supported with alias "pan-os-php type=XYZ"

@@ -5373,8 +5373,8 @@ RuleCallContext::$supportedActions[] = array(
             PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
-        $con = findConnectorOrDie($this);
-        if( $con->info_PANOS_version_int >= 90 )
+        $con = findConnectorOrDie($rule);
+        if( $con->info_PANOS_version_int < 90 )
         {
             PH::print_stdout( "  PAN-OS version must be 9.0 or higher" );
             return null;
@@ -5400,7 +5400,21 @@ RuleCallContext::$supportedActions[] = array(
         }
 
         if( !$rule->isDisabled() )
-            $rule->API_clearRuleHitCount( false );
+        {
+            PH::$useExceptions = TRUE;
+
+            try
+            {
+                $rule->API_clearRuleHitCount( false );
+            }
+            catch(Exception $e)
+            {
+                PH::disableExceptionSupport();
+                PH::print_stdout( " ***** an error occured : " . $e->getMessage() );
+                PH::print_stdout();
+                return;
+            }
+        }
     }
 );
 

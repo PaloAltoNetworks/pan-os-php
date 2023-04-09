@@ -713,12 +713,14 @@ class Rule
         return null;
     }
 
-    public function prepareRuleHitCount( $apiType = "show", $all = false)
+    public function prepareRuleHitCount( $apiType = "show", $all = false, $serial = "", $vsyslist = array())
     {
         $system = $this->owner->owner;
 
         $ruleType = $this->ruleNature();
         $ruleTypeEND = "";
+
+        $realRuleName = $this->name();
 
         #print get_class($system)."\n";
         if( $system->isPanorama() )
@@ -763,11 +765,40 @@ class Rule
             #$rulename = "<rule-name><entry name='";
             $rulename = "<rule-name>";
             #$rulenameEnd = "'/></rule-name>";
-            $rulenameEnd = "</rule-name>";
+            if( $apiType == "show")
+            {
+                $realRuleName = "<entry name='".$realRuleName."'/>";
+                $rulenameEnd = "</rule-name>";
+
+                #$ruleTypeStart = "<".$ruleType.">";
+                #$ruleTypeEND = "</".$ruleType.">";
+                $ruleTypeStart = "<entry name='".$ruleType."'>";
+                $ruleTypeEND = "</entry>";
+            }
+
+            if( $apiType == "clear")
+            {
+                $rulebase = "<rulebase>";
+                $rulebaseEnd = "</rulebase>";
+
+                $rulename = "<rule-name><entry name='".$realRuleName."'>";
+                $realRuleName = "";
+
+                $tmp_string = "<device><entry name='".$serial."'><vsys><list>";
+                foreach( $vsyslist as $vsys )
+                    $tmp_string .= "<member>".$vsys."</member>";
+                if( count($vsyslist) == 0 )
+                    $tmp_string .= "<member>vsys1</member>";
+                $tmp_string .= "</list></vsys></entry></device></entry>";
+                $rulenameEnd = $tmp_string."</rule-name>";
+
+                $ruleTypeStart = "<entry name='".$ruleType."'>";
+                $ruleTypeEND = "</entry>";
+            }
+
             //<rule-base><entry ...><rules><entry name="demo2-1"><device-vsys><entry name="child/1234567890/vsys1">
 
-            $ruleType = $ruleType;
-            $ruleTypeEND = "</".$ruleType.">";
+
         }
         elseif( $system->isVirtualSystem() )
         {
@@ -783,7 +814,7 @@ class Rule
             $rulename = "<list><member>";
             $rulenameEnd = "</member></list>";
 
-            $ruleType = "<entry name='".$ruleType."'>";
+            $ruleTypeStart = "<entry name='".$ruleType."'>";
             $ruleTypeEND = "</entry>";
         }
 
@@ -792,9 +823,9 @@ class Rule
         $cmd = "<".$apiType."><rule-hit-count>".$systemInfoStart.$systemName;
 
         if( $all )
-            $cmd .= $rulebase.$ruleType."<rules><all/>";
+            $cmd .= $rulebase.$ruleTypeStart."<rules><all/>";
         else
-            $cmd .= $rulebase.$ruleType."<rules>".$rulename.$this->name().$rulenameEnd;
+            $cmd .= $rulebase.$ruleTypeStart."<rules>".$rulename.$realRuleName.$rulenameEnd;
 
         $cmd .= "</rules>".$ruleTypeEND.$rulebaseEnd;
         $cmd .= $systemNameEnd.$systemInfoEnd."</rule-hit-count></".$apiType.">";
@@ -809,20 +840,50 @@ class Rule
         if( $con->info_PANOS_version_int >= 90 )
         {
             $system = $this->owner->owner;
-            $cmd = $this->prepareRuleHitCount('clear', $all);
-            if( $cmd == null )
+            if( get_class($system) === "DeviceGroup" )
             {
-                PH::print_stdout( "   * not working for Panorama/FW shared" );
-                return;
-            }
+                $devices = $system->getDevicesInGroup();
+                foreach( $devices as $device )
+                {
+                    $this->clearRuleHitCount( $all, $con, $device);
+                    /*
+                    $cmd = $this->prepareRuleHitCount('clear', $all, $device['serial'], $device['vsyslist']);
+                    if( $cmd == null )
+                    {
+                        PH::print_stdout( "   * not working for Panorama/FW shared" );
+                        return;
+                    }
 
-            $res = $con->sendOpRequest($cmd, TRUE);
-            $res = DH::findFirstElement( "result", $res);
-            $padding = "    * ";
-            if( $res->textContent === "Succeeded to reset rule hit count for specified rules" )
-                PH::print_stdout( $padding." reset rule hit count successful." );
+                    $res = $con->sendOpRequest($cmd, TRUE);
+                    $res = DH::findFirstElement( "result", $res);
+                    $padding = "    * ";
+                    if( $res->textContent === "Succeeded to reset rule hit count for specified rules" )
+                        PH::print_stdout( $padding." reset rule hit count successful." );
+                    else
+                        PH::print_stdout( $padding.$res->textContent );
+                    */
+                }
+            }
             else
-                PH::print_stdout( $padding.$res->textContent );
+            {
+                $this->clearRuleHitCount( $all, $con);
+                /*
+                $cmd = $this->prepareRuleHitCount('clear', $all);
+                if( $cmd == null )
+                {
+                    PH::print_stdout( "   * not working for Panorama/FW shared" );
+                    return;
+                }
+
+                $res = $con->sendOpRequest($cmd, TRUE);
+                $res = DH::findFirstElement( "result", $res);
+                $padding = "    * ";
+                if( $res->textContent === "Succeeded to reset rule hit count for specified rules" )
+                    PH::print_stdout( $padding." reset rule hit count successful." );
+                else
+                    PH::print_stdout( $padding.$res->textContent );
+                */
+            }
         }
         else
         {
@@ -830,6 +891,28 @@ class Rule
         }
 
         return null;
+    }
+
+    private function clearRuleHitCount( $all, $con, $device = array() )
+    {
+        if( empty($device) )
+            $cmd = $this->prepareRuleHitCount('clear', $all );
+        else
+            $cmd = $this->prepareRuleHitCount('clear', $all, $device['serial'], $device['vsyslist']);
+
+        if( $cmd == null )
+        {
+            PH::print_stdout( "   * not working for Panorama/FW shared" );
+            return;
+        }
+
+        $res = $con->sendOpRequest($cmd, TRUE);
+        $res = DH::findFirstElement( "result", $res);
+        $padding = "    * ";
+        if( $res->textContent === "Succeeded to reset rule hit count for specified rules" )
+            PH::print_stdout( $padding." reset rule hit count successful." );
+        else
+            PH::print_stdout( $padding.$res->textContent );
     }
 
     public function API_showRuleHitCount( $all = false, $print = TRUE )
