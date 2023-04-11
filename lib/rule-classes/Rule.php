@@ -846,43 +846,11 @@ class Rule
                 foreach( $devices as $device )
                 {
                     $this->clearRuleHitCount( $all, $con, $device);
-                    /*
-                    $cmd = $this->prepareRuleHitCount('clear', $all, $device['serial'], $device['vsyslist']);
-                    if( $cmd == null )
-                    {
-                        PH::print_stdout( "   * not working for Panorama/FW shared" );
-                        return;
-                    }
-
-                    $res = $con->sendOpRequest($cmd, TRUE);
-                    $res = DH::findFirstElement( "result", $res);
-                    $padding = "    * ";
-                    if( $res->textContent === "Succeeded to reset rule hit count for specified rules" )
-                        PH::print_stdout( $padding." reset rule hit count successful." );
-                    else
-                        PH::print_stdout( $padding.$res->textContent );
-                    */
                 }
             }
             else
             {
                 $this->clearRuleHitCount( $all, $con);
-                /*
-                $cmd = $this->prepareRuleHitCount('clear', $all);
-                if( $cmd == null )
-                {
-                    PH::print_stdout( "   * not working for Panorama/FW shared" );
-                    return;
-                }
-
-                $res = $con->sendOpRequest($cmd, TRUE);
-                $res = DH::findFirstElement( "result", $res);
-                $padding = "    * ";
-                if( $res->textContent === "Succeeded to reset rule hit count for specified rules" )
-                    PH::print_stdout( $padding." reset rule hit count successful." );
-                else
-                    PH::print_stdout( $padding.$res->textContent );
-                */
             }
         }
         else

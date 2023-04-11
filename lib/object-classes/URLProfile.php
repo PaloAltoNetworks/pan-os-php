@@ -131,9 +131,11 @@ class URLProfile
         if( $withOwner )
         {
             if(  get_class($this->owner->owner) == "PanoramaConf" || get_class($this->owner->owner) == "PANConf" || get_class($this->owner->owner) == "FawkesConf" )
-                $predefined_urls = $this->owner->owner->urlStore->securityProfiles();
+                $predefined_url_store = $this->owner->owner->urlStore;
             else
-                $predefined_urls = $this->owner->owner->owner->urlStore->securityProfiles();
+                $predefined_url_store = $this->owner->owner->owner->urlStore;
+            $predefined_urls = $predefined_url_store->securityProfiles();
+
             foreach( $predefined_urls as $predefined_url )
                 $this->allow[$predefined_url->name()] = $predefined_url->name();
             $this->predefined = $this->allow;
@@ -141,6 +143,7 @@ class URLProfile
         else
         {
             $this->allow = array();
+            $this->predefined = $this->allow;
         }
 
 
@@ -172,6 +175,21 @@ class URLProfile
                             $this->override[ $url_category ] = $url_category;
 
                         unset($this->allow[ $url_category ]);
+                    }
+
+                    // add references
+                    if( isset( $this->predefined[$url_category] ) )
+                    {
+                        $tmp_obj = $predefined_url_store->find($url_category);
+                        if( $tmp_obj !== null )
+                            $tmp_obj->addReference($this);
+                    }
+                    else
+                    {
+                        # add references to custom url category
+                        $tmp_obj = $this->owner->owner->customURLProfileStore->find( $url_category );
+                        if( $tmp_obj !== null )
+                            $tmp_obj->addReference($this);
                     }
                 }
             }
