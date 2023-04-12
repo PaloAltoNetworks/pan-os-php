@@ -1,6 +1,15 @@
 CHANGELOG
 
-2.0.75
+2.0.76
+UTIL:
+
+BUGFIX:
+
+GENERAL:
+* dockerfile update to ubuntu22 and php8.1
+
+
+2.0.75 (20230412)
 UTIL:
 * type=securityprofilegroup | introduce 'filter=(secprof is XYZ)' - inspecific to search all securityprofilegroups for secprof which are set to 'default'/'strict'
 * type=diff | extend help information about usage

@@ -1,7 +1,7 @@
-ARG IMAGE=ubuntu:20.04
+ARG IMAGE=ubuntu:22.04
 FROM ${IMAGE}
 
-ARG php_var="7.4"
+ARG php_var="8.1"
 ARG user_var="root"
 
 SHELL ["/bin/bash", "-c"]

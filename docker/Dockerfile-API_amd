@@ -1,4 +1,4 @@
-ARG IMAGE=php:8.0-apache
+ARG IMAGE=php:8.1-apache
 FROM ${IMAGE}
 
 
