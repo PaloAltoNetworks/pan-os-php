@@ -242,7 +242,7 @@ class RuleCallContext extends CallContext
      * @param $fieldName
      * @return string
      */
-    public function ruleFieldHtmlExport($rule, $fieldName, $wrap = TRUE)
+    public function ruleFieldHtmlExport($rule, $fieldName, $wrap = TRUE, $rule_hitcount_array = array())
     {
         if( $fieldName == 'location' )
         {
@@ -412,6 +412,27 @@ class RuleCallContext extends CallContext
             return self::enclose($port_mapping_text);
         }
 
+        if( $fieldName == 'application_seen' )
+        {
+            print "application_seen\n";
+            $app_seen_text = "";
+            $rule_array = $rule->API_apps_seen();
+            if( !empty($rule_array ) )
+            {
+                #PH::print_stdout("apps: ".implode(", ", array_keys( $rule_array['apps-seen'])) );
+
+                #$app_seen_text = implode("\n", array_keys( $rule_array['apps-seen']));
+
+                #PH::print_stdout("apps-seen-count: ".$rule_array['apps-seen-count']);
+                #PH::print_stdout( "apps allowed count: ". $rule_array['apps-allowed-count'] );
+                #PH::print_stdout( "days_no_new_app_count: ". $rule_array['days-no-new-app-count'] );
+                #PH::print_stdout( "last_app_seen_since_count: ". $rule_array['last-app-seen-since-count'] );
+
+                return self::enclose(array_keys( $rule_array['apps-seen']));
+            }
+            return self::enclose( $app_seen_text );
+        }
+
         if( $fieldName == 'security-profile' )
         {
             if( !$rule->isSecurityRule() && !$rule->isDefaultSecurityRule() )
@@ -560,6 +581,28 @@ class RuleCallContext extends CallContext
             return self::enclose($strMapping);
         }
 
+        if( $fieldName == 'first-hit' )
+        {
+            if( isset($rule_hitcount_array[$fieldName]) )
+                return self::enclose( $rule_hitcount_array[$fieldName] );
+            else
+                return self::enclose( "" );
+        }
+
+        if( $fieldName == 'last-hit' )
+        {
+            if( isset($rule_hitcount_array[$fieldName]) )
+                return self::enclose( $rule_hitcount_array[$fieldName] );
+            else
+                return self::enclose( "" );
+        }
+        if( $fieldName == 'hit-count' )
+        {
+            if( isset($rule_hitcount_array[$fieldName]) )
+                return self::enclose( $rule_hitcount_array[$fieldName] );
+            else
+                return self::enclose( "" );
+        }
         return self::enclose('unsupported');
 
     }

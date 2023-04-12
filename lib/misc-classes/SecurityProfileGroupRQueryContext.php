@@ -2,7 +2,7 @@
 
 /**
  * Class SecurityProfileGroupRQueryContext
- * @property SecurityProfileGroupStore $object
+ * @property SecurityProfileGroup $object
  * @ignore
  */
 class SecurityProfileGroupRQueryContext extends RQueryContext

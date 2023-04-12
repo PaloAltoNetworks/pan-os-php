@@ -69,7 +69,10 @@ class InterfaceContainer extends ObjRuleContainer
                     print "Snippet interface variable: ".$interfaceString."\n";
                 }
                 else
-                    mwarning( "not a correct Snippet interface variable", null, false );
+                {
+                    mwarning( "not a correct Snippet interface variable", $xml, false );
+                }
+
             }
             else
             {

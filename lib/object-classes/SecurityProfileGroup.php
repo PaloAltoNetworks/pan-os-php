@@ -476,7 +476,7 @@ class SecurityProfileGroup
             $tmp = $tmp->appendChild($this->secprofroot->ownerDocument->createElement('member'));
             $tmp->appendChild($this->secprofroot->ownerDocument->createTextNode($this->secprofgroup));
         }
-        else if( $this->secproftype == 'profiles' )
+        else if( $this->secproftype == 'profile' )
         {
             if( $this->secprofroot === null || $this->secprofroot === FALSE )
                 $this->secprofroot = DH::createElement($this->xmlroot, 'profile-setting');

@@ -3814,6 +3814,28 @@ RuleCallContext::$supportedActions[] = array(
     )
 );
 RuleCallContext::$supportedActions[] = array(
+    'name' => 'display-app-seen',
+    'MainFunction' => function (RuleCallContext $context) {
+
+        /** @var SecurityRule $rule */
+        $rule = $context->object;
+
+        $rule_array = $rule->API_apps_seen();
+
+        if( !empty($rule_array ) )
+        {
+            PH::print_stdout("apps: ".implode(", ", array_keys( $rule_array['apps-seen'])) );
+
+            PH::print_stdout("apps-seen-count: ".$rule_array['apps-seen-count']);
+            PH::print_stdout( "apps allowed count: ". $rule_array['apps-allowed-count'] );
+            PH::print_stdout( "days_no_new_app_count: ". $rule_array['days-no-new-app-count'] );
+            PH::print_stdout( "last_app_seen_since_count: ". $rule_array['last-app-seen-since-count'] );
+        }
+
+    }
+);
+
+RuleCallContext::$supportedActions[] = array(
     'name' => 'invertPreAndPost',
     'MainFunction' => function (RuleCallContext $context) {
         if( $context->object->isDefaultSecurityRule() )
@@ -4221,6 +4243,8 @@ RuleCallContext::$supportedActions[] = array(
         $addResolvedApplicationSummary = FALSE;
         $addResolvedScheduleSummary = FALSE;
         $addResolvedServiceAppDefaultSummary = FALSE;
+        $addAppSeenSummary = FALSE;
+        $addHitCountSummary = FALSE;
 
         $optionalFields = &$context->arguments['additionalFields'];
 
@@ -4234,6 +4258,10 @@ RuleCallContext::$supportedActions[] = array(
             $addResolvedApplicationSummary = TRUE;
         if( isset($optionalFields['ResolveScheduleSummary']) )
             $addResolvedScheduleSummary = TRUE;
+        if( isset($optionalFields['ApplicationSeen']) )
+            $addAppSeenSummary = TRUE;
+        if( isset($optionalFields['HitCount']) )
+            $addHitCountSummary = TRUE;
         $fields = array(
             'location' => 'location',
             'rulebase' => 'rulebase',
@@ -4256,6 +4284,7 @@ RuleCallContext::$supportedActions[] = array(
             'service_count_udp' => 'service_count_udp',
             'application' => 'application',
             'application_resolved_sum' => 'application_resolved_sum',
+            'application_seen' => 'application_seen',
             'action' => 'action',
             'security-profile' => 'security-profile',
             'disabled' => 'disabled',
@@ -4272,7 +4301,10 @@ RuleCallContext::$supportedActions[] = array(
             'description' => 'description',
             'schedule' => 'schedule',
             'schedule_resolved_sum' => 'schedule_resolved_sum',
-            'target' => 'target'
+            'target' => 'target',
+            'first-hit' => 'first-hit',
+            'last-hit' => 'last-hit',
+            'hit-count' => 'hit-count'
         );
 
         $lines = '';
@@ -4298,10 +4330,15 @@ RuleCallContext::$supportedActions[] = array(
                                 $fieldName == 'service_count' || $fieldName == 'service_count_tcp' || $fieldName == 'service_count_udp') && !$addResolvedServiceSummary) ||
                         (($fieldName == 'service_appdefault_resolved_sum') && !$addResolvedServiceAppDefaultSummary) ||
                         (($fieldName == 'application_resolved_sum') && !$addResolvedApplicationSummary) ||
-                        (($fieldName == 'schedule_resolved_sum') && !$addResolvedScheduleSummary)
+                        (($fieldName == 'schedule_resolved_sum') && !$addResolvedScheduleSummary) ||
+                        (($fieldName == 'application_seen') && (!$addAppSeenSummary || !$context->isAPI) ) ||
+                        (($fieldName == 'first-hit' || $fieldName == 'last-hit' || $fieldName == 'hit-count') && (!$addHitCountSummary || !$context->isAPI) )
                     )
                         continue;
-                    $lines .= $context->ruleFieldHtmlExport($rule, $fieldID);
+                    $rule_hitcount_array = array();
+                    if(($fieldName == 'first-hit' || $fieldName == 'last-hit' || $fieldName == 'hit-count') && $addHitCountSummary && $context->isAPI )
+                        $rule_hitcount_array = $rule->API_showRuleHitCount( false, false );
+                    $lines .= $context->ruleFieldHtmlExport($rule, $fieldID, TRUE, $rule_hitcount_array);
                 }
 
 
@@ -4320,7 +4357,9 @@ RuleCallContext::$supportedActions[] = array(
                         $fieldName == 'service_count' || $fieldName == 'service_count_tcp' || $fieldName == 'service_count_udp') && !$addResolvedServiceSummary) ||
                 (($fieldName == 'service_appdefault_resolved_sum') && !$addResolvedServiceAppDefaultSummary) ||
                 (($fieldName == 'application_resolved_sum') && !$addResolvedApplicationSummary) ||
-                (($fieldName == 'schedule_resolved_sum') && !$addResolvedScheduleSummary)
+                (($fieldName == 'schedule_resolved_sum') && !$addResolvedScheduleSummary) ||
+                (($fieldName == 'application_seen') && (!$addAppSeenSummary || !$context->isAPI) ) ||
+                (($fieldName == 'first-hit' || $fieldName == 'last-hit' || $fieldName == 'hit-count') && (!$addHitCountSummary || !$context->isAPI) )
             )
                 continue;
             $tableHeaders .= "<th>{$fieldName}</th>\n";
@@ -4347,7 +4386,7 @@ RuleCallContext::$supportedActions[] = array(
             array('type' => 'pipeSeparatedList',
                 'subtype' => 'string',
                 'default' => '*NONE*',
-                'choices' => array('ResolveAddressSummary', 'ResolveServiceSummary', 'ResolveServiceAppDefaultSummary', 'ResolveApplicationSummary', 'ResolveScheduleSummary'),
+                'choices' => array('ResolveAddressSummary', 'ResolveServiceSummary', 'ResolveServiceAppDefaultSummary', 'ResolveApplicationSummary', 'ResolveScheduleSummary', 'ApplicationSeen', 'HitCount'),
                 'help' => "pipe(|) separated list of additional field to include in the report. The following is available:\n" .
                     "  - ResolveAddressSummary : fields with address objects will be resolved to IP addressed and summarized in a new column)\n" .
                     "  - ResolveServiceSummary : fields with service objects will be resolved to their value and summarized in a new column)\n"  .
@@ -5040,6 +5079,60 @@ RuleCallContext::$supportedActions[] = array(
 
 
 //                                                   //
+//                GROUP-TAG Based Actions     //
+//                                                   //
+RuleCallContext::$supportedActions[] = array(
+    'name' => 'group-tag-Set',
+    'MainFunction' => function (RuleCallContext $context) {
+        $rule = $context->object;
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+        #if( !$rule->isSecurityRule() && !$rule->isDoSRule() &&  !$rule->isPbfRule() && !$rule->isQoSRule() )
+        #{
+        #    $string = "this rule type is not supported! ";
+        #    PH::ACTIONstatus( $context, "SKIPPED", $string );
+        #    return;
+        #}
+
+        if( $context->isAPI )
+            $rule->API_setGroupTag($context->arguments['Group-Tag']);
+        else
+            $rule->setGroupTag($context->arguments['Group-Tag']);
+    },
+    'args' => array('Group-Tag' => array('type' => 'string', 'default' => '*nodefault*'))
+);
+
+RuleCallContext::$supportedActions[] = array(
+    'name' => 'group-tag-Remove',
+    'MainFunction' => function (RuleCallContext $context) {
+        $rule = $context->object;
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+        #if( !$rule->isSecurityRule() && !$rule->isDoSRule() &&  !$rule->isPbfRule() && !$rule->isQoSRule() )
+        #{
+        #    $string = "this rule type is not supported! ";
+        #    PH::ACTIONstatus( $context, "SKIPPED", $string );
+        #    return;
+        #}
+
+        if( $context->isAPI )
+            $rule->API_removeGroupTag();
+        else
+            $rule->removeGroupTag();
+    },
+);
+
+// </editor-fold>
+
+//                                                   //
 //                QoSmarking Based Actions     //
 //
 //                                                   //
@@ -5280,9 +5373,15 @@ RuleCallContext::$supportedActions[] = array(
             PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
+        $con = findConnectorOrDie($rule);
+        if( $con->info_PANOS_version_int < 90 )
+        {
+            PH::print_stdout( "  PAN-OS version must be 9.0 or higher" );
+            return null;
+        }
 
         if( !$rule->isDisabled() )
-            $rule->API_showRuleHitCount( false );
+            $rule_hitcount_array = $rule->API_showRuleHitCount( false );
         else
             PH::print_stdout( "    * rule is disabled" );
     }
@@ -5301,7 +5400,21 @@ RuleCallContext::$supportedActions[] = array(
         }
 
         if( !$rule->isDisabled() )
-            $rule->API_clearRuleHitCount( false );
+        {
+            PH::$useExceptions = TRUE;
+
+            try
+            {
+                $rule->API_clearRuleHitCount( false );
+            }
+            catch(Exception $e)
+            {
+                PH::disableExceptionSupport();
+                PH::print_stdout( " ***** an error occured : " . $e->getMessage() );
+                PH::print_stdout();
+                return;
+            }
+        }
     }
 );
 

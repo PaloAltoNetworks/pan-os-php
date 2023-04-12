@@ -460,6 +460,15 @@ class VirtualSystem
 
             if( $this->owner->owner === null && $this->securityProfilebaseroot !== null )
             {
+//
+                // custom URL category extraction
+                //
+                $tmproot = DH::findFirstElement('custom-url-category', $this->securityProfilebaseroot);
+                if( $tmproot !== FALSE )
+                {
+                    $this->customURLProfileStore->load_from_domxml($tmproot);
+                }
+
                 //
                 // URL Profile extraction
                 //
@@ -469,14 +478,6 @@ class VirtualSystem
                     $this->URLProfileStore->load_from_domxml($tmproot);
                 }
 
-                //
-                // Nat Rules extraction
-                //
-                $tmproot = DH::findFirstElement('custom-url-category', $this->securityProfilebaseroot);
-                if( $tmproot !== FALSE )
-                {
-                    $this->customURLProfileStore->load_from_domxml($tmproot);
-                }
 
                 //
                 // AntiVirus Profile extraction

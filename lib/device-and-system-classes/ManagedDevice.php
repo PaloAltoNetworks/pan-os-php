@@ -28,6 +28,7 @@ class ManagedDevice
     /** @var  ManagedDeviceStore */
     public $owner;
 
+    # Todo: that does not reflect multi-vsys for managed-device
     public $devicegroup;
     public $template;
     public $template_stack;

@@ -1,6 +1,34 @@
 CHANGELOG
 
-2.0.74
+2.0.75
+UTIL:
+* type=securityprofilegroup | introduce 'filter=(secprof is XYZ)' - inspecific to search all securityprofilegroups for secprof which are set to 'default'/'strict'
+* type=diff | extend help information about usage
+* type=device | introduce 'filter=(template has-multi-vsys)'
+* type=rule | extend with actions=group-tag-remove | group-tag-set:GROUPTAGNAME
+* type=rule | introduce 'filter=(group-tag is.set)'
+* type=gcp | introduction of GCP helper tools
+* type=config-size - extend for snippet
+* class Interfacecontainer - extend warning with XML object information - relevant for CloudManagement object-variable validation
+* type=device | introduce 'filter=(devicegroup has.vsys XYZ)' - extend output for actions=display
+* type=rule | introduce 'actions=display-app-seen'
+* type=gcp | improve actions=upload/download
+* type=rule actions=exporttoexcel:file.html,RuleHit | exporttoexcel:file.html,ApplicationSeen
+* type=securityprofile 'filter=(object is.unused)' - skip predefined objects
+
+BUGFIX:
+* type=rule ruletype=decryption | introduce category reading
+* class SecurityRule | bugfix to correctly cleanup XML node 'profile-setting', if no SecurityProfile/SecurityProfileGroup is set
+* type=rule | bugfix for API_showRuleHitCount
+* type=rule | bugfix for actions=rule-hit-count-show / -clear
+* type=securityprofile securityprofiletype=custom-url-category 'filter=(object is.unused)' - bugfix to add reference
+
+GENERAL:
+* cleanup alias.sh - remove deprecated util scripts which are directly supported with alias "pan-os-php type=XYZ"
+* general update dynamic content version to 8690-7941
+
+
+2.0.74 (20230315)
 UTIL:
 * type=securityprofile 'actions=custom-url-category-add-ending-token:/*' - add support for token '/*
 * type=securityprofile | introduce actions=custom-url-category-remove-ending-token - 'custom-url-category-remove-ending-token:*' - '*' can only be added if '/' is last char

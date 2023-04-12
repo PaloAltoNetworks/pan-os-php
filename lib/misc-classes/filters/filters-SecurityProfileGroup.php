@@ -496,6 +496,24 @@ RQuery::$defaultFilters['securityprofilegroup']['secprof']['operators']['data-pr
         'input' => 'input/panorama-8.0.xml'
     )
 );
+RQuery::$defaultFilters['securityprofilegroup']['secprof']['operators']['is'] = array(
+    'Function' => function (SecurityprofilegroupRQueryContext $context) {
+        $secprofgroup = $context->object;
+
+        $profiles = $secprofgroup->securityProfiles();
+        foreach( $secprofgroup->owner->secprof_array as $secproftype )
+        {
+            if( $profiles[$secproftype] == $context->value )
+                return TRUE;
+        }
+        return FALSE;
+    },
+    'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP% av-production)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 
 RQuery::$defaultFilters['securityprofilegroup']['secprof']['operators']['av-profile.is.set'] = array(
     'Function' => function (SecurityprofilegroupRQueryContext $context) {

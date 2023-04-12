@@ -417,18 +417,19 @@ class DeviceGroup
         if( $this->securityProfilebaseroot !== null )
         {
             //
+            // custom URL category extraction
+            //
+            $tmproot = DH::findFirstElement('custom-url-category', $this->securityProfilebaseroot);
+            if( $tmproot !== FALSE )
+                $this->customURLProfileStore->load_from_domxml($tmproot);
+
+
+            //
             // URL Profile extraction
             //
             $tmproot = DH::findFirstElement('url-filtering', $this->securityProfilebaseroot);
             if( $tmproot !== FALSE )
                 $this->URLProfileStore->load_from_domxml($tmproot);
-
-            //
-            // Nat Rules extraction
-            //
-            $tmproot = DH::findFirstElement('custom-url-category', $this->securityProfilebaseroot);
-            if( $tmproot !== FALSE )
-                $this->customURLProfileStore->load_from_domxml($tmproot);
 
             //
             // AntiVirus Profile extraction

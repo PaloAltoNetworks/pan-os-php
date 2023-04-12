@@ -38,6 +38,17 @@ DeviceCallContext::$supportedActions['display'] = array(
 
         if( get_class($object) == "TemplateStack" )
         {
+            /** @var TemplateStack $object */
+
+            $padding = "       ";
+            //Todo: PH::print_stdout( where this template is used // full templateStack hierarchy
+
+            $vsyses = $object->deviceConfiguration->getVirtualSystems();
+            foreach( $vsyses as $vsys )
+                PH::print_stdout( $padding."  - ".get_class($vsys).": name: ".$vsys->name());
+
+            PH::print_stdout( $padding."----------");
+
             $used_templates = $object->templates;
             foreach( $used_templates as $template )
             {
@@ -77,6 +88,11 @@ DeviceCallContext::$supportedActions['display'] = array(
                 $managedFirewall = $object->owner->managedFirewallsStore->find($key);
                 if( $managedFirewall !== null )
                     PH::print_stdout( $context->padding." - serial: ".$key." - Template-Stack: ".$managedFirewall->template_stack);
+
+                if( isset($device['vsyslist']) )
+                    PH::print_stdout($context->padding."  - virtualsystem: '".array_keys($device['vsyslist'])[0]."'");
+                else
+                    PH::print_stdout($context->padding."   - virtualsystem: 'vsys1'");
 
                 PH::$JSON_TMP['sub']['object'][$object->name()]['devices'][] = $key;
             }
@@ -157,7 +173,19 @@ DeviceCallContext::$supportedActions['display'] = array(
         }
         elseif( get_class($object) == "Template" )
         {
+            /** @var Template $object */
+
+            $padding = "       ";
             //Todo: PH::print_stdout( where this template is used // full templateStack hierarchy
+
+            $vsyses = $object->deviceConfiguration->getVirtualSystems();
+            foreach( $vsyses as $vsys )
+                PH::print_stdout( $padding."  - ".get_class($vsys).": name: ".$vsys->name());
+
+            PH::print_stdout( $padding."----------");
+            $references = $object->getReferences();
+            foreach( $references as $ref )
+                PH::print_stdout( $padding."  - ".get_class($ref).": name: ".$ref->name());
         }
         elseif( get_class($object) == "Container" )
         {

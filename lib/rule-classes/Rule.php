@@ -26,6 +26,7 @@ class Rule
     use centralServiceStoreUser;
     use centralAddressStoreUser;
     use ObjectWithDescription;
+    use RuleWithGroupTag;
     use XmlConvertible;
 
     protected $name = 'temporaryname';
@@ -54,7 +55,7 @@ class Rule
     public $tags;
 
     /** @var Tag */
-    public $grouptag = null;
+    #public $grouptag = null;
 
     /**
      * @var ServiceRuleContainer
@@ -712,9 +713,14 @@ class Rule
         return null;
     }
 
-    public function prepareRuleHitCount( $apiType = "show", $all = false)
+    public function prepareRuleHitCount( $apiType = "show", $all = false, $serial = "", $vsyslist = array())
     {
         $system = $this->owner->owner;
+
+        $ruleType = $this->ruleNature();
+        $ruleTypeEND = "";
+
+        $realRuleName = $this->name();
 
         #print get_class($system)."\n";
         if( $system->isPanorama() )
@@ -756,9 +762,43 @@ class Rule
             $rulebase = "<".$prepost."-rulebase>";
             $rulebaseEnd = "</".$prepost."-rulebase>";
 
-            $rulename = "<rule-name><entry name='";
-            $rulenameEnd = "'/></rule-name>";
+            #$rulename = "<rule-name><entry name='";
+            $rulename = "<rule-name>";
+            #$rulenameEnd = "'/></rule-name>";
+            if( $apiType == "show")
+            {
+                $realRuleName = "<entry name='".$realRuleName."'/>";
+                $rulenameEnd = "</rule-name>";
+
+                #$ruleTypeStart = "<".$ruleType.">";
+                #$ruleTypeEND = "</".$ruleType.">";
+                $ruleTypeStart = "<entry name='".$ruleType."'>";
+                $ruleTypeEND = "</entry>";
+            }
+
+            if( $apiType == "clear")
+            {
+                $rulebase = "<rulebase>";
+                $rulebaseEnd = "</rulebase>";
+
+                $rulename = "<rule-name><entry name='".$realRuleName."'>";
+                $realRuleName = "";
+
+                $tmp_string = "<device><entry name='".$serial."'><vsys><list>";
+                foreach( $vsyslist as $vsys )
+                    $tmp_string .= "<member>".$vsys."</member>";
+                if( count($vsyslist) == 0 )
+                    $tmp_string .= "<member>vsys1</member>";
+                $tmp_string .= "</list></vsys></entry></device></entry>";
+                $rulenameEnd = $tmp_string."</rule-name>";
+
+                $ruleTypeStart = "<entry name='".$ruleType."'>";
+                $ruleTypeEND = "</entry>";
+            }
+
             //<rule-base><entry ...><rules><entry name="demo2-1"><device-vsys><entry name="child/1234567890/vsys1">
+
+
         }
         elseif( $system->isVirtualSystem() )
         {
@@ -773,18 +813,21 @@ class Rule
 
             $rulename = "<list><member>";
             $rulenameEnd = "</member></list>";
+
+            $ruleTypeStart = "<entry name='".$ruleType."'>";
+            $ruleTypeEND = "</entry>";
         }
 
         //Type
-        $ruleType = $this->ruleNature();
+
         $cmd = "<".$apiType."><rule-hit-count>".$systemInfoStart.$systemName;
 
         if( $all )
-            $cmd .= $rulebase."<entry name='".$ruleType."'><rules><all/>";
+            $cmd .= $rulebase.$ruleTypeStart."<rules><all/>";
         else
-            $cmd .= $rulebase."<entry name='".$ruleType."'><rules>".$rulename.$this->name().$rulenameEnd;
+            $cmd .= $rulebase.$ruleTypeStart."<rules>".$rulename.$realRuleName.$rulenameEnd;
 
-        $cmd .= "</rules></entry>".$rulebaseEnd;
+        $cmd .= "</rules>".$ruleTypeEND.$rulebaseEnd;
         $cmd .= $systemNameEnd.$systemInfoEnd."</rule-hit-count></".$apiType.">";
 
         return $cmd;
@@ -797,20 +840,18 @@ class Rule
         if( $con->info_PANOS_version_int >= 90 )
         {
             $system = $this->owner->owner;
-            $cmd = $this->prepareRuleHitCount('clear', $all);
-            if( $cmd == null )
+            if( get_class($system) === "DeviceGroup" )
             {
-                PH::print_stdout( "   * not working for Panorama/FW shared" );
-                return;
+                $devices = $system->getDevicesInGroup();
+                foreach( $devices as $device )
+                {
+                    $this->clearRuleHitCount( $all, $con, $device);
+                }
             }
-
-            $res = $con->sendOpRequest($cmd, TRUE);
-            $res = DH::findFirstElement( "result", $res);
-            $padding = "    * ";
-            if( $res->textContent === "Succeeded to reset rule hit count for specified rules" )
-                PH::print_stdout( $padding." reset rule hit count successful." );
             else
-                PH::print_stdout( $padding.$res->textContent );
+            {
+                $this->clearRuleHitCount( $all, $con);
+            }
         }
         else
         {
@@ -820,9 +861,33 @@ class Rule
         return null;
     }
 
-    public function API_showRuleHitCount( $all = false )
+    private function clearRuleHitCount( $all, $con, $device = array() )
+    {
+        if( empty($device) )
+            $cmd = $this->prepareRuleHitCount('clear', $all );
+        else
+            $cmd = $this->prepareRuleHitCount('clear', $all, $device['serial'], $device['vsyslist']);
+
+        if( $cmd == null )
+        {
+            PH::print_stdout( "   * not working for Panorama/FW shared" );
+            return;
+        }
+
+        $res = $con->sendOpRequest($cmd, TRUE);
+        $res = DH::findFirstElement( "result", $res);
+        $padding = "    * ";
+        if( $res->textContent === "Succeeded to reset rule hit count for specified rules" )
+            PH::print_stdout( $padding." reset rule hit count successful." );
+        else
+            PH::print_stdout( $padding.$res->textContent );
+    }
+
+    public function API_showRuleHitCount( $all = false, $print = TRUE )
     {
         $con = findConnectorOrDie($this);
+
+        $rule_hitcount_array = array();
 
         if( $con->info_PANOS_version_int >= 90 )
         {
@@ -891,9 +956,19 @@ class Rule
             //create Array and return
             $padding = "    * ";
             if( $latest )
-                print $padding."latest: ".$latest->textContent."\n";
+            {
+                if( $print )
+                    PH::print_stdout( $padding."latest: ".$latest->textContent );
+                $rule_hitcount_array['latest'] = $latest->textContent;
+            }
+
             if( $hit_count)
-                print $padding."hit-count: ".$hit_count->textContent."\n";
+            {
+                if( $print )
+                    PH::print_stdout( $padding."hit-count: ".$hit_count->textContent );
+                $rule_hitcount_array['hit-count'] = $hit_count->textContent;
+            }
+
             if( $last_hit_timestamp )
             {
                 $unixTimestamp = $last_hit_timestamp->textContent;
@@ -901,7 +976,9 @@ class Rule
                     $result = "0";
                 else
                     $result = date( 'Y-m-d H:i:s', $unixTimestamp );
-                print $padding."last-hit: ".$result."\n";
+                if( $print )
+                    PH::print_stdout( $padding."last-hit: ".$result );
+                $rule_hitcount_array['last-hit'] = $result;
             }
 
             if( $last_reset_timestamp )
@@ -911,7 +988,9 @@ class Rule
                     $result = "0";
                 else
                     $result = date( 'Y-m-d H:i:s', $unixTimestamp );
-                print $padding."last-reset: ".$result."\n";
+                if( $print )
+                    PH::print_stdout( $padding."last-reset: ".$result );
+                $rule_hitcount_array['last-reset'] = $result;
             }
 
             if( $first_hit_timestamp )
@@ -921,7 +1000,9 @@ class Rule
                     $result = "0";
                 else
                     $result = date( 'Y-m-d H:i:s', $unixTimestamp );
-                print $padding."first-hit: ".$result."\n";
+                if( $print )
+                    PH::print_stdout( $padding."first-hit: ".$result );
+                $rule_hitcount_array['first-hit'] = $result;
             }
 
             if( $rule_creation_timestamp )
@@ -931,7 +1012,9 @@ class Rule
                     $result = 0;
                 else
                     $result = date( 'Y-m-d H:i:s', $unixTimestamp );
-                print $padding."rule-creation: ".$result."\n";
+                if( $print )
+                    PH::print_stdout( $padding."rule-creation: ".$result );
+                $rule_hitcount_array['rule-creation'] = $result;
             }
             if( $rule_modification_timestamp )
             {
@@ -940,16 +1023,76 @@ class Rule
                     $result = 0;
                 else
                     $result = date( 'Y-m-d H:i:s', $unixTimestamp );
-                print $padding."rule-modification: ".$result."\n";
+                if( $print )
+                    PH::print_stdout( $padding."rule-modification: ".$result );
+                $rule_hitcount_array['rule-modification'] = $result;
             }
 
         }
         else
         {
-            PH::print_stdout( "  PAN-OS version must be 9.0 or higher" );
+            if( $print )
+                PH::print_stdout( "  PAN-OS version must be 9.0 or higher" );
         }
 
-        return null;
+        return $rule_hitcount_array;
+    }
+
+    public function API_apps_seen()
+    {
+        $rule_array = array();
+
+        $rule_uuid = $this->uuid();
+        $cmd = "<show><policy-app-details><rules><member>".$rule_uuid."</member></rules>
+<resultfields><member>apps-seen</member><member>last-app-seen-since-count</member><member>days-no-new-app-count</member></resultfields><trafficTimeframe>30</trafficTimeframe><appsSeenTimeframe>any</appsSeenTimeframe><vsysName>vsys1</vsysName><type>security</type><position>main</position><summary>no</summary></policy-app-details></show>";
+
+        $connector = findConnectorOrDie($this);
+        $res = $connector->sendOpRequest($cmd, );
+        $res = DH::findFirstElement( "result", $res);
+        $res = DH::findFirstElement( "rules", $res);
+        $rule = DH::findFirstElementByNameAttr( "entry", $this->name(), $res );
+
+        if( $rule !== null && $rule !== false )
+        {
+            $apps_seen = DH::findFirstElement( "apps-seen", $rule);
+            $app_array = array();
+            foreach( $apps_seen->childNodes as $app )
+            {
+                /** @var DOMElement $app */
+                if( $app->nodeType != XML_ELEMENT_NODE )
+                    continue;
+
+                $application = DH::findFirstElement( "application", $app);
+                $bytes = DH::findFirstElement( "bytes", $app);
+                $first_seen = DH::findFirstElement( "first-seen", $app);
+                $last_seen = DH::findFirstElement( "last-seen", $app);
+
+                $app_array[$application->textContent] = array(
+                    "name" => $application->textContent,
+                    "bytes" => $bytes->textContent,
+                    "first_seen" => $first_seen->textContent,
+                    "last_seen" => $last_seen->textContent,
+                );
+                #print "APP: ".$application->textContent."\n";
+                #DH::DEBUGprintDOMDocument( $app );
+            }
+
+            #print_r($app_array);
+            $apps = array_keys($app_array);
+
+            $apps_allowed_count = DH::findFirstElement( "apps-allowed-count", $rule);
+            $days_no_new_app_count = DH::findFirstElement( "days-no-new-app-count", $rule);
+            $last_app_seen_since_count = DH::findFirstElement( "last-app-seen-since-count", $rule);
+
+            $rule_array = array( "apps-seen-count" =>  count($app_array),
+                "apps-seen" => $app_array,
+                "apps-allowed-count" => $apps_allowed_count->textContent,
+                "days-no-new-app-count" => $days_no_new_app_count->textContent,
+                "last-app-seen-since-count" => $last_app_seen_since_count->textContent,
+            );
+        }
+
+        return $rule_array;
     }
 
     function zoneCalculation($fromOrTo, $mode = "append", $virtualRouter = "*autodetermine*", $template_name = "*notPanorama*", $vsys_name = "*notPanorama*", $isAPI = FALSE )
@@ -1774,14 +1917,7 @@ class Rule
         }
     }
 
-    public function grouptagIs( $value )
-    {
-        if( $this->grouptag === null )
-            return false;
-        if( $this->grouptag->name() === $value->name() )
-            return true;
-        return false;
-    }
+
 
     public function isPreRule()
     {

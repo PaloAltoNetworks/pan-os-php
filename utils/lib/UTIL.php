@@ -81,6 +81,7 @@ require_once dirname(__FILE__)."/../../phpseclib/Crypt/RSA.php";
 
 require_once(dirname(__FILE__)."/SSH_CONNECTOR__.php");
 
+require_once(dirname(__FILE__)."/GCP.php");
 
 class UTIL
 {
