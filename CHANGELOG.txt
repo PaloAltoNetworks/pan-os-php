@@ -14,6 +14,7 @@ UTIL:
 * type=rule | introduce 'actions=display-app-seen'
 * type=gcp | improve actions=upload/download
 * type=rule actions=exporttoexcel:file.html,RuleHit | exporttoexcel:file.html,ApplicationSeen
+* type=securityprofile 'filter=(object is.unused)' - skip predefined objects
 
 BUGFIX:
 * type=rule ruletype=decryption | introduce category reading
