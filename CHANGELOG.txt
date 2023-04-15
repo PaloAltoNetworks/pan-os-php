@@ -2,6 +2,7 @@ CHANGELOG
 
 2.0.76
 UTIL:
+* type=vendor-migration | introduce 3rd party Firewall configuration migration to PANOS XML config file
 
 BUGFIX:
 

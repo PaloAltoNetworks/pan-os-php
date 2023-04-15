@@ -1,0 +1,186 @@
+(
+	:rule-base ("##Standard"
+		:AdminInfo (
+			:chkpf_uid ("{4920B064-EFBA-4A61-B778-9689B3606B22}")
+			:ClassName (firewall_policy)
+			:table (fw_policies)
+			:LastModified (
+				:Time ("Thu Mar  3 06:35:42 2016")
+				:last_modified_utc (1456986942)
+				:By ("Check Point Security Management Server Update Process")
+				:From (localhost)
+			)
+			:icon ("Applications/application_fw1")
+		)
+		:queries ()
+		:queries_adtr ()
+		:collection (ReferenceObject
+			:Name (Standard)
+			:Table (policies_collections)
+			:Uid ("{06234DE9-FB43-4D46-B36C-052A85788F9E}")
+		)
+		:default (0)
+		:globally_enforced (true)
+		:use_VPN_communities (true)
+	)
+	:rule-base ("##Global_Rules_Container"
+		:AdminInfo (
+			:chkpf_uid ("{6BF621F9-A0E2-49BB-A86B-3DE4750954F4}")
+			:ClassName (firewall_policy)
+			:table (fw_policies)
+			:LastModified (
+				:Time ("Thu Mar  3 06:35:42 2016")
+				:last_modified_utc (1456986942)
+				:By ("Check Point Security Management Server Update Process")
+				:From (localhost)
+			)
+			:icon ("Applications/application_fw1")
+			:Deleteable (false)
+			:Hidden (false)
+		)
+		:queries ()
+		:queries_adtr ()
+		:collection ()
+		:default (0)
+		:globally_enforced (true)
+		:use_VPN_communities (true)
+	)
+	:rule-base ("##roc-rcn-terni"
+		:AdminInfo (
+			:chkpf_uid ("{695AC4AC-4252-44B5-AB9E-E5F364E35E75}")
+			:ClassName (firewall_policy)
+			:table (fw_policies)
+			:LastModified (
+				:Time ("Thu Mar  3 06:35:42 2016")
+				:last_modified_utc (1456986942)
+				:By ("Check Point Security Management Server Update Process")
+				:From (localhost)
+			)
+			:icon ("Applications/application_fw1")
+		)
+		:queries ()
+		:queries_adtr ()
+		:collection (ReferenceObject
+			:Name (roc-rcn-terni)
+			:Table (policies_collections)
+			:Uid ("{AB376917-1A9A-4016-BB43-D99E28F95B35}")
+		)
+		:default (0)
+		:globally_enforced (true)
+		:rule (
+			:AdminInfo (
+				:chkpf_uid ("{B7C1C377-9077-4572-8747-65422CE45B8B}")
+				:ClassName (security_header_rule)
+			)
+			:action (
+				: (drop
+					:AdminInfo (
+						:chkpf_uid ("{56ADAF06-1C16-4590-8E46-9687EE85F0A6}")
+						:ClassName (drop_action)
+						:NewObject (true)
+						:table (setup)
+					)
+					:action ()
+					:identity_settings (
+						:AdminInfo (
+							:chkpf_uid ("{BB6DFC3A-2FCE-4D9A-A3B7-721BFD9A0F0D}")
+							:ClassName (identity_action_settings)
+						)
+						:allow_ad_query (true)
+						:allow_captive_portal (true)
+						:allow_identity_agent (true)
+						:allowed_sources ("All Sources")
+						:redirect_to_captive_portal (false)
+						:require_packet_tagging (false)
+						:type (identity_action_settings)
+					)
+					:macro ()
+					:type (drop)
+				)
+			)
+			:time (
+				: (ReferenceObject
+					:Name (Any)
+					:Table (globals)
+					:Uid ("{97AEB369-9AEA-11D5-BD16-0090272CCB30}")
+				)
+			)
+			:track (
+				: (ReferenceObject
+					:Name (None)
+					:Table (tracks)
+					:Uid ("{97AEB47D-9AEA-11D5-BD16-0090272CCB30}")
+				)
+			)
+			:comments ()
+			:disabled (true)
+			:dst (
+				:AdminInfo (
+					:chkpf_uid ("{22A395F8-6FD8-4E62-82D8-C109591B7AA8}")
+					:ClassName (rule_destination)
+				)
+				:compound ()
+				: (ReferenceObject
+					:Name (Any)
+					:Table (globals)
+					:Uid ("{97AEB369-9AEA-11D5-BD16-0090272CCB30}")
+				)
+				:op ()
+			)
+			:global_location (middle)
+			:header_text ("Corporate Network - Global Rules")
+			:install (
+				:AdminInfo (
+					:chkpf_uid ("{01BCC276-9454-4569-983C-CB98A4CF3004}")
+					:ClassName (rule_install)
+				)
+				:compound ()
+				: (ReferenceObject
+					:Name (Any)
+					:Table (globals)
+					:Uid ("{97AEB369-9AEA-11D5-BD16-0090272CCB30}")
+				)
+			)
+			:name ()
+			:services (
+				:AdminInfo (
+					:chkpf_uid ("{26A45D46-6B4F-4319-BC1A-B79FFCB195AD}")
+					:ClassName (rule_services)
+				)
+				:compound ()
+				: (ReferenceObject
+					:Name (Any)
+					:Table (globals)
+					:Uid ("{97AEB369-9AEA-11D5-BD16-0090272CCB30}")
+				)
+				:op ()
+			)
+			:src (
+				:AdminInfo (
+					:chkpf_uid ("{63803839-31F8-4EBA-BEB2-66BA04BFF41B}")
+					:ClassName (rule_source)
+				)
+				:compound ()
+				: (ReferenceObject
+					:Name (Any)
+					:Table (globals)
+					:Uid ("{97AEB369-9AEA-11D5-BD16-0090272CCB30}")
+				)
+				:op ()
+			)
+			:state (collapsed)
+			:through (
+				:AdminInfo (
+					:chkpf_uid ("{9A8DFB07-E81D-4FD3-82DC-387DAB523F2A}")
+					:ClassName (rule_vpn)
+				)
+				:compound ()
+				: (ReferenceObject
+					:Name (Any)
+					:Table (globals)
+					:Uid ("{97AEB369-9AEA-11D5-BD16-0090272CCB30}")
+				)
+			)
+		)
+	)
+)

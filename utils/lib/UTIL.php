@@ -83,6 +83,10 @@ require_once(dirname(__FILE__)."/SSH_CONNECTOR__.php");
 
 require_once(dirname(__FILE__)."/GCP.php");
 
+require_once dirname(__FILE__)."/../../migration/parser/lib/CONVERTER.php";
+require_once dirname(__FILE__)."/../../migration/parser/lib/PARSER.php";
+require_once dirname(__FILE__)."/../../migration/parser/lib/SHAREDNEW.php";
+
 class UTIL
 {
     public $argv = null;

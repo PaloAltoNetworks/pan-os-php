@@ -1,0 +1,3077 @@
+{
+    "service_predefined": {
+        "cisco": [
+            {
+                "name": "echo",
+                "protocol": "",
+                "dport": "7"
+            },
+            {
+                "name": "discard",
+                "protocol": "",
+                "dport": "9"
+            },
+            {
+                "name": "tacacs_tcp",
+                "protocol": "tcp",
+                "dport": "49",
+                "memberOfGroup": "tacacs"
+            },
+            {
+                "name": "tacacs_udp",
+                "protocol": "udp",
+                "dport": "49",
+                "memberOfGroup": "tacacs"
+            },
+            {
+                "name": "domain",
+                "protocol": "udp",
+                "dport": "53"
+            },
+            {
+                "name": "sunrpc_tcp",
+                "protocol": "tcp",
+                "dport": "111",
+                "memberOfGroup": "sunrpc"
+            },
+            {
+                "name": "sunrpc_udp",
+                "protocol": "udp",
+                "dport": "111",
+                "memberOfGroup": "sunrpc"
+            },
+            {
+                "name": "pim-auto-rp_tcp",
+                "protocol": "tcp",
+                "dport": "496",
+                "memberOfGroup": "pim-auto-rp"
+            },
+            {
+                "name": "pim-auto-rp_udp",
+                "protocol": "udp",
+                "dport": "496",
+                "memberOfGroup": "pim-auto-rp"
+            },
+            {
+                "name": "talk_tcp",
+                "protocol": "tcp",
+                "dport": "517",
+                "memberOfGroup": "talk"
+            },
+            {
+                "name": "talk_udp",
+                "protocol": "udp",
+                "dport": "517",
+                "memberOfGroup": "talk"
+            },
+            {
+                "name": "kerberos_tcp",
+                "protocol": "tcp",
+                "dport": "750",
+                "memberOfGroup": "kerberos"
+            },
+            {
+                "name": "kerberos_udp",
+                "protocol": "udp",
+                "dport": "750",
+                "memberOfGroup": "kerberos"
+            },
+            {
+                "name": "nfs_tcp",
+                "protocol": "tcp",
+                "dport": "2049",
+                "memberOfGroup": "nfs"
+            },
+            {
+                "name": "nfs_udp",
+                "protocol": "udp",
+                "dport": "2049",
+                "memberOfGroup": "nfs"
+            },
+            {
+                "name": "sip_tcp",
+                "protocol": "tcp",
+                "dport": "5060",
+                "memberOfGroup": "sip"
+            },
+            {
+                "name": "sip_udp",
+                "protocol": "udp",
+                "dport": "5060",
+                "memberOfGroup": "sip"
+            },
+            {
+                "name": "daytime",
+                "protocol": "tcp",
+                "dport": "13"
+            },
+            {
+                "name": "chargen",
+                "protocol": "tcp",
+                "dport": "19"
+            },
+            {
+                "name": "ftp-data",
+                "protocol": "tcp",
+                "dport": "20"
+            },
+            {
+                "name": "ftp",
+                "protocol": "tcp",
+                "dport": "21"
+            },
+            {
+                "name": "ssh",
+                "protocol": "tcp",
+                "dport": "22"
+            },
+            {
+                "name": "telnet",
+                "protocol": "tcp",
+                "dport": "23"
+            },
+            {
+                "name": "smtp",
+                "protocol": "tcp",
+                "dport": "25"
+            },
+            {
+                "name": "whois",
+                "protocol": "tcp",
+                "dport": "43"
+            },
+            {
+                "name": "gopher",
+                "protocol": "tcp",
+                "dport": "70"
+            },
+            {
+                "name": "finger",
+                "protocol": "tcp",
+                "dport": "79"
+            },
+            {
+                "name": "www",
+                "protocol": "tcp",
+                "dport": "80"
+            },
+            {
+                "name": "hostname",
+                "protocol": "tcp",
+                "dport": "101"
+            },
+            {
+                "name": "pop2",
+                "protocol": "tcp",
+                "dport": "109"
+            },
+            {
+                "name": "pop3",
+                "protocol": "tcp",
+                "dport": "110"
+            },
+            {
+                "name": "ident",
+                "protocol": "tcp",
+                "dport": "113"
+            },
+            {
+                "name": "nntp",
+                "protocol": "tcp",
+                "dport": "119"
+            },
+            {
+                "name": "netbios-ssn",
+                "protocol": "tcp",
+                "dport": "139"
+            },
+            {
+                "name": "imap4",
+                "protocol": "tcp",
+                "dport": "143"
+            },
+            {
+                "name": "bgp",
+                "protocol": "tcp",
+                "dport": "179"
+            },
+            {
+                "name": "irc",
+                "protocol": "tcp",
+                "dport": "194"
+            },
+            {
+                "name": "ldap",
+                "protocol": "tcp",
+                "dport": "389"
+            },
+            {
+                "name": "https",
+                "protocol": "tcp",
+                "dport": "443"
+            },
+            {
+                "name": "exec",
+                "protocol": "tcp",
+                "dport": "512"
+            },
+            {
+                "name": "login",
+                "protocol": "tcp",
+                "dport": "513"
+            },
+            {
+                "name": "cmd",
+                "protocol": "tcp",
+                "dport": "514"
+            },
+            {
+                "name": "rsh",
+                "protocol": "tcp",
+                "dport": "514"
+            },
+            {
+                "name": "lpd",
+                "protocol": "tcp",
+                "dport": "515"
+            },
+            {
+                "name": "uucp",
+                "protocol": "tcp",
+                "dport": "540"
+            },
+            {
+                "name": "klogin",
+                "protocol": "tcp",
+                "dport": "543"
+            },
+            {
+                "name": "kshell",
+                "protocol": "tcp",
+                "dport": "544"
+            },
+            {
+                "name": "rtsp",
+                "protocol": "tcp",
+                "dport": "554"
+            },
+            {
+                "name": "ldaps",
+                "protocol": "tcp",
+                "dport": "636"
+            },
+            {
+                "name": "lotusnotes",
+                "protocol": "tcp",
+                "dport": "1352"
+            },
+            {
+                "name": "citrix-ica",
+                "protocol": "tcp",
+                "dport": "1494"
+            },
+            {
+                "name": "sqlnet",
+                "protocol": "tcp",
+                "dport": "1521"
+            },
+            {
+                "name": "h323",
+                "protocol": "tcp",
+                "dport": "1720"
+            },
+            {
+                "name": "pptp",
+                "protocol": "tcp",
+                "dport": "1723"
+            },
+            {
+                "name": "ctiqbe",
+                "protocol": "tcp",
+                "dport": "2748"
+            },
+            {
+                "name": "cifs",
+                "protocol": "tcp",
+                "dport": "3020"
+            },
+            {
+                "name": "aol",
+                "protocol": "tcp",
+                "dport": "5190"
+            },
+            {
+                "name": "pcanywhere-data",
+                "protocol": "tcp",
+                "dport": "5631"
+            },
+            {
+                "name": "time",
+                "protocol": "udp",
+                "dport": "37"
+            },
+            {
+                "name": "nameserver",
+                "protocol": "udp",
+                "dport": "42"
+            },
+            {
+                "name": "bootps",
+                "protocol": "udp",
+                "dport": "67"
+            },
+            {
+                "name": "bootpc",
+                "protocol": "udp",
+                "dport": "68"
+            },
+            {
+                "name": "tftp",
+                "protocol": "udp",
+                "dport": "69"
+            },
+            {
+                "name": "ntp",
+                "protocol": "udp",
+                "dport": "123"
+            },
+            {
+                "name": "netbios-ns",
+                "protocol": "udp",
+                "dport": "137"
+            },
+            {
+                "name": "netbios-dgm",
+                "protocol": "udp",
+                "dport": "138"
+            },
+            {
+                "name": "netbios-ss",
+                "protocol": "udp",
+                "dport": "139"
+            },
+            {
+                "name": "snmp",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "snmptrap",
+                "protocol": "udp",
+                "dport": "162"
+            },
+            {
+                "name": "xdmcp",
+                "protocol": "udp",
+                "dport": "177"
+            },
+            {
+                "name": "dnsix",
+                "protocol": "udp",
+                "dport": "195"
+            },
+            {
+                "name": "mobile-ip",
+                "protocol": "udp",
+                "dport": "434"
+            },
+            {
+                "name": "isakmp",
+                "protocol": "udp",
+                "dport": "500"
+            },
+            {
+                "name": "biff",
+                "protocol": "udp",
+                "dport": "512"
+            },
+            {
+                "name": "who",
+                "protocol": "udp",
+                "dport": "513"
+            },
+            {
+                "name": "syslog",
+                "protocol": "udp",
+                "dport": "514"
+            },
+            {
+                "name": "rip",
+                "protocol": "udp",
+                "dport": "520"
+            },
+            {
+                "name": "radius",
+                "protocol": "udp",
+                "dport": "1645"
+            },
+            {
+                "name": "radius-acct",
+                "protocol": "udp",
+                "dport": "1646"
+            },
+            {
+                "name": "secureid-udp",
+                "protocol": "udp",
+                "dport": "5510"
+            },
+            {
+                "name": "pcanywhere-status",
+                "protocol": "udp",
+                "dport": "5632"
+            }
+        ],
+        "fortinet": [
+            {
+                "name": "FTP",
+                "protocol": "tcp",
+                "dport": "21"
+            },
+            {
+                "name": "FTP_Get",
+                "protocol": "tcp",
+                "dport": "21"
+            },
+            {
+                "name": "FTP_Put",
+                "protocol": "tcp",
+                "dport": "21"
+            },
+            {
+                "name": "SSH",
+                "protocol": "tcp",
+                "dport": "22"
+            },
+            {
+                "name": "TELNET",
+                "protocol": "tcp",
+                "dport": "23"
+            },
+            {
+                "name": "MAIL",
+                "protocol": "tcp",
+                "dport": "25"
+            },
+            {
+                "name": "IMAP",
+                "protocol": "tcp",
+                "dport": "143"
+            },
+            {
+                "name": "IMAPS",
+                "protocol": "tcp",
+                "dport": "993"
+            },
+            {
+                "name": "SMTP",
+                "protocol": "tcp",
+                "dport": "25"
+            },
+            {
+                "name": "WHOIS",
+                "protocol": "tcp",
+                "dport": "43"
+            },
+            {
+                "name": "GOPHER",
+                "protocol": "tcp",
+                "dport": "70"
+            },
+            {
+                "name": "FINGER",
+                "protocol": "tcp",
+                "dport": "79"
+            },
+            {
+                "name": "HTTP",
+                "protocol": "tcp",
+                "dport": "80"
+            },
+            {
+                "name": "POP3",
+                "protocol": "tcp",
+                "dport": "110"
+            },
+            {
+                "name": "IDENT",
+                "protocol": "tcp",
+                "dport": "113"
+            },
+            {
+                "name": "NNTP",
+                "protocol": "tcp",
+                "dport": "119"
+            },
+            {
+                "name": "SMB",
+                "protocol": "tcp",
+                "dport": "445"
+            },
+            {
+                "name": "BGP",
+                "protocol": "tcp",
+                "dport": "179"
+            },
+            {
+                "name": "WAIS",
+                "protocol": "tcp",
+                "dport": "210"
+            },
+            {
+                "name": "Internet Locator Service",
+                "protocol": "tcp",
+                "dport": "389"
+            },
+            {
+                "name": "LDAP",
+                "protocol": "tcp",
+                "dport": "389"
+            },
+            {
+                "name": "HTTPS",
+                "protocol": "tcp",
+                "dport": "443"
+            },
+            {
+                "name": "REXEC",
+                "protocol": "tcp",
+                "dport": "512"
+            },
+            {
+                "name": "RLOGIN",
+                "protocol": "tcp",
+                "dport": "513"
+            },
+            {
+                "name": "RSH",
+                "protocol": "tcp",
+                "dport": "514"
+            },
+            {
+                "name": "LPR",
+                "protocol": "tcp",
+                "dport": "515"
+            },
+            {
+                "name": "MS-SQL",
+                "protocol": "tcp",
+                "dport": "1433,1434"
+            },
+            {
+                "name": "MYSQL",
+                "protocol": "tcp",
+                "dport": "3306"
+            },
+            {
+                "name": "WINFRAME",
+                "protocol": "tcp",
+                "dport": "1494"
+            },
+            {
+                "name": "SQL Net V2",
+                "protocol": "tcp",
+                "dport": "1521"
+            },
+            {
+                "name": "SQL Net V1",
+                "protocol": "tcp",
+                "dport": "1525"
+            },
+            {
+                "name": "H.323",
+                "protocol": "tcp",
+                "dport": "1720"
+            },
+            {
+                "name": "NetMeeting",
+                "protocol": "tcp",
+                "dport": "1720"
+            },
+            {
+                "name": "MSN",
+                "protocol": "tcp",
+                "dport": "1863"
+            },
+            {
+                "name": "SCCP",
+                "protocol": "tcp",
+                "dport": "2000"
+            },
+            {
+                "name": "YMSG",
+                "protocol": "tcp",
+                "dport": "5050"
+            },
+            {
+                "name": "VNC",
+                "protocol": "tcp",
+                "dport": "5900"
+            },
+            {
+                "name": "VNC_XH",
+                "protocol": "tcp",
+                "dport": "5901"
+            },
+            {
+                "name": "VNC_guest",
+                "protocol": "tcp",
+                "dport": "5902"
+            },
+            {
+                "name": "HTTP-EXT",
+                "protocol": "tcp",
+                "dport": "7001"
+            },
+            {
+                "name": "Real Media",
+                "protocol": "tcp",
+                "dport": "7070"
+            },
+            {
+                "name": "NS Global",
+                "protocol": "tcp",
+                "dport": "15397"
+            },
+            {
+                "name": "NS Global PRO",
+                "protocol": "tcp",
+                "dport": "15397"
+            },
+            {
+                "name": "ECHO",
+                "protocol": "udp",
+                "dport": "7"
+            },
+            {
+                "name": "DISCARD",
+                "protocol": "udp",
+                "dport": "9"
+            },
+            {
+                "name": "CHARGEN",
+                "protocol": "udp",
+                "dport": "19"
+            },
+            {
+                "name": "DHCP-Relay",
+                "protocol": "udp",
+                "dport": "67"
+            },
+            {
+                "name": "DHCP",
+                "protocol": "udp",
+                "dport": "67-68"
+            },
+            {
+                "name": "NSM",
+                "protocol": "udp",
+                "dport": "69"
+            },
+            {
+                "name": "TFTP",
+                "protocol": "udp",
+                "dport": "69"
+            },
+            {
+                "name": "SUN-RPC-PORTMAPPER",
+                "protocol": "udp",
+                "dport": "111"
+            },
+            {
+                "name": "MS-RPC-EPM",
+                "protocol": "udp",
+                "dport": "135"
+            },
+            {
+                "name": "NBNAME",
+                "protocol": "udp",
+                "dport": "137"
+            },
+            {
+                "name": "NBDS",
+                "protocol": "udp",
+                "dport": "138"
+            },
+            {
+                "name": "IKE",
+                "protocol": "udp",
+                "dport": "500,4500"
+            },
+            {
+                "name": "IKE-NAT",
+                "protocol": "udp",
+                "dport": "500"
+            },
+            {
+                "name": "SYSLOG",
+                "protocol": "udp",
+                "dport": "514"
+            },
+            {
+                "name": "RIP",
+                "protocol": "udp",
+                "dport": "520"
+            },
+            {
+                "name": "UUCP",
+                "protocol": "udp",
+                "dport": "540"
+            },
+            {
+                "name": "SQL Monitor",
+                "protocol": "udp",
+                "dport": "1434"
+            },
+            {
+                "name": "GTP",
+                "protocol": "udp",
+                "dport": "2123"
+            },
+            {
+                "name": "MGCP-UA",
+                "protocol": "udp",
+                "dport": "2427"
+            },
+            {
+                "name": "MGCP-CA",
+                "protocol": "udp",
+                "dport": "2727"
+            },
+            {
+                "name": "X-WINDOWS",
+                "protocol": "tcp",
+                "dport": "6000-6063"
+            },
+            {
+                "name": "MSRPC",
+                "protocol": "tcp",
+                "dport": "135"
+            },
+            {
+                "name": "SQL",
+                "protocol": "tcp",
+                "dport": "1521"
+            },
+            {
+                "name": "XING",
+                "protocol": "udp",
+                "dport": "1558"
+            },
+            {
+                "name": "RADIUS",
+                "protocol": "udp",
+                "dport": "1812-1813"
+            },
+            {
+                "name": "SQUID",
+                "protocol": "tcp",
+                "dport": "3128"
+            },
+            {
+                "name": "RDP",
+                "protocol": "tcp",
+                "dport": "3389"
+            },
+            {
+                "name": "SAMBA",
+                "protocol": "tcp",
+                "dport": "139"
+            },
+            {
+                "name": "SAMBA_UDP",
+                "protocol": "udp",
+                "dport": "139"
+            },
+            {
+                "name": "RTSP_UDP",
+                "protocol": "udp",
+                "dport": "554",
+                "memberOfGroup": "RTSP"
+            },
+            {
+                "name": "RTSP_TCP",
+                "protocol": "tcp",
+                "dport": "554,7070,8554",
+                "memberOfGroup": "RTSP"
+            },
+            {
+                "name": "DNS_UDP",
+                "protocol": "udp",
+                "dport": "53",
+                "memberOfGroup": "DNS"
+            },
+            {
+                "name": "DNS_TCP",
+                "protocol": "tcp",
+                "dport": "53",
+                "memberOfGroup": "DNS"
+            },
+            {
+                "name": "SNMP_UDP",
+                "protocol": "udp",
+                "dport": "161-162",
+                "memberOfGroup": "SNMP"
+            },
+            {
+                "name": "SNMP_TCP",
+                "protocol": "tcp",
+                "dport": "161-162",
+                "memberOfGroup": "SNMP"
+            },
+            {
+                "name": "DCE-RPC_UDP",
+                "protocol": "udp",
+                "dport": "135",
+                "memberOfGroup": "DCE-RPC"
+            },
+            {
+                "name": "DCE-RPC_TCP",
+                "protocol": "tcp",
+                "dport": "135",
+                "memberOfGroup": "DCE-RPC"
+            },
+            {
+                "name": "Kerberos_UDP",
+                "protocol": "udp",
+                "dport": "88",
+                "memberOfGroup": "Kerberos"
+            },
+            {
+                "name": "Kerberos_TCP",
+                "protocol": "tcp",
+                "dport": "88",
+                "memberOfGroup": "Kerberos"
+            },
+            {
+                "name": "NTP_UDP",
+                "protocol": "udp",
+                "dport": "123",
+                "memberOfGroup": "NTP"
+            },
+            {
+                "name": "NTP_TCP",
+                "protocol": "tcp",
+                "dport": "123",
+                "memberOfGroup": "NTP"
+            },
+            {
+                "name": "H323_TCP",
+                "protocol": "tcp",
+                "dport": "1720,1503",
+                "memberOfGroup": "H323"
+            },
+            {
+                "name": "H323_UDP",
+                "protocol": "udp",
+                "dport": "1719",
+                "memberOfGroup": "H323"
+            },
+            {
+                "name": "SIP_UDP",
+                "protocol": "udp",
+                "dport": "5060",
+                "memberOfGroup": "SIP"
+            },
+            {
+                "name": "SIP_TCP",
+                "protocol": "tcp",
+                "dport": "5060",
+                "memberOfGroup": "SIP"
+            },
+            {
+                "name": "L2TP_UDP",
+                "protocol": "udp",
+                "dport": "1701",
+                "memberOfGroup": "L2TP"
+            },
+            {
+                "name": "L2TP_TCP",
+                "protocol": "tcp",
+                "dport": "1701",
+                "memberOfGroup": "L2TP"
+            },
+            {
+                "name": "NFS_UDP",
+                "protocol": "udp",
+                "dport": "111,2049",
+                "memberOfGroup": "NFS"
+            },
+            {
+                "name": "NFS_TCP",
+                "protocol": "tcp",
+                "dport": "111,2049",
+                "memberOfGroup": "NFS"
+            },
+            {
+                "name": "PC-Anywhere_UDP",
+                "protocol": "udp",
+                "dport": "5632",
+                "memberOfGroup": "PC-Anywhere"
+            },
+            {
+                "name": "PC-Anywhere_TCP",
+                "protocol": "tcp",
+                "dport": "5631",
+                "memberOfGroup": "PC-Anywhere"
+            }
+        ],
+        "huawei": [
+            {
+                "name": "tcp",
+                "protocol": "tcp",
+                "dport": "0-65535"
+            },
+            {
+                "name": "udp",
+                "protocol": "udp",
+                "dport": "0-65535"
+            },
+            {
+                "name": "ssh",
+                "protocol": "tcp",
+                "dport": "22"
+            },
+            {
+                "name": "https",
+                "protocol": "tcp",
+                "dport": "443"
+            },
+            {
+                "name": "http",
+                "protocol": "tcp",
+                "dport": "80"
+            },
+            {
+                "name": "dns",
+                "protocol": "udp",
+                "dport": "53"
+            },
+            {
+                "name": "ntp",
+                "protocol": "udp",
+                "dport": "123"
+            },
+            {
+                "name": "dns-tcp",
+                "protocol": "tcp",
+                "dport": "53"
+            },
+            {
+                "name": "dnsix",
+                "protocol": "udp",
+                "dport": "90"
+            },
+            {
+                "name": "smtp",
+                "protocol": "tcp",
+                "dport": "25"
+            }
+        ],
+        "screenos": [
+            {
+                "name": "FTP",
+                "protocol": "tcp",
+                "dport": "21"
+            },
+            {
+                "name": "SSH",
+                "protocol": "tcp",
+                "dport": "22"
+            },
+            {
+                "name": "TELNET",
+                "protocol": "tcp",
+                "dport": "23"
+            },
+            {
+                "name": "MAIL",
+                "protocol": "tcp",
+                "dport": "25"
+            },
+            {
+                "name": "SMTP",
+                "protocol": "tcp",
+                "dport": "25"
+            },
+            {
+                "name": "WHOIS",
+                "protocol": "tcp",
+                "dport": "43"
+            },
+            {
+                "name": "GOPHER",
+                "protocol": "tcp",
+                "dport": "70"
+            },
+            {
+                "name": "FINGER",
+                "protocol": "tcp",
+                "dport": "79"
+            },
+            {
+                "name": "POP3",
+                "protocol": "tcp",
+                "dport": "110"
+            },
+            {
+                "name": "IDENT",
+                "protocol": "tcp",
+                "dport": "113"
+            },
+            {
+                "name": "NNTP",
+                "protocol": "tcp",
+                "dport": "119"
+            },
+            {
+                "name": "SMB",
+                "protocol": "tcp",
+                "dport": "139"
+            },
+            {
+                "name": "IMAP",
+                "protocol": "tcp",
+                "dport": "143"
+            },
+            {
+                "name": "BGP",
+                "protocol": "tcp",
+                "dport": "179"
+            },
+            {
+                "name": "WAIS",
+                "protocol": "tcp",
+                "dport": "210"
+            },
+            {
+                "name": "LDAP",
+                "protocol": "tcp",
+                "dport": "389"
+            },
+            {
+                "name": "REXEC",
+                "protocol": "tcp",
+                "dport": "512"
+            },
+            {
+                "name": "RLOGIN",
+                "protocol": "tcp",
+                "dport": "513"
+            },
+            {
+                "name": "RSH",
+                "protocol": "tcp",
+                "dport": "514"
+            },
+            {
+                "name": "LPR",
+                "protocol": "tcp",
+                "dport": "515"
+            },
+            {
+                "name": "RTSP",
+                "protocol": "tcp",
+                "dport": "554"
+            },
+            {
+                "name": "MS-SQL",
+                "protocol": "tcp",
+                "dport": "1433"
+            },
+            {
+                "name": "WINFRAME",
+                "protocol": "tcp",
+                "dport": "1494"
+            },
+            {
+                "name": "SQLNet V2",
+                "protocol": "tcp",
+                "dport": "1521"
+            },
+            {
+                "name": "SQLNet V1",
+                "protocol": "tcp",
+                "dport": "1525"
+            },
+            {
+                "name": "H.323",
+                "protocol": "tcp",
+                "dport": "1720"
+            },
+            {
+                "name": "NetMeeting",
+                "protocol": "tcp",
+                "dport": "1720"
+            },
+            {
+                "name": "MSN",
+                "protocol": "tcp",
+                "dport": "1863"
+            },
+            {
+                "name": "SCCP",
+                "protocol": "tcp",
+                "dport": "2000"
+            },
+            {
+                "name": "YMSG",
+                "protocol": "tcp",
+                "dport": "5050"
+            },
+            {
+                "name": "VNC",
+                "protocol": "tcp",
+                "dport": "5800"
+            },
+            {
+                "name": "HTTP-EXT",
+                "protocol": "tcp",
+                "dport": "7001"
+            },
+            {
+                "name": "Real Media",
+                "protocol": "tcp",
+                "dport": "7070"
+            },
+            {
+                "name": "NS Global",
+                "protocol": "tcp",
+                "dport": "15397"
+            },
+            {
+                "name": "NS Global PRO",
+                "protocol": "tcp",
+                "dport": "15397"
+            },
+            {
+                "name": "ECHO",
+                "protocol": "udp",
+                "dport": "7"
+            },
+            {
+                "name": "DISCARD",
+                "protocol": "udp",
+                "dport": "9"
+            },
+            {
+                "name": "CHARGEN",
+                "protocol": "udp",
+                "dport": "19"
+            },
+            {
+                "name": "DNS",
+                "protocol": "udp",
+                "dport": "53"
+            },
+            {
+                "name": "DHCP-Relay",
+                "protocol": "udp",
+                "dport": "67"
+            },
+            {
+                "name": "NSM",
+                "protocol": "udp",
+                "dport": "69"
+            },
+            {
+                "name": "TFTP",
+                "protocol": "udp",
+                "dport": "69"
+            },
+            {
+                "name": "NFS",
+                "protocol": "udp",
+                "dport": "111"
+            },
+            {
+                "name": "SUN-RPC-PORTMAPPER",
+                "protocol": "udp",
+                "dport": "111"
+            },
+            {
+                "name": "NTP",
+                "protocol": "udp",
+                "dport": "123"
+            },
+            {
+                "name": "MS-RPC-EPM",
+                "protocol": "udp",
+                "dport": "135"
+            },
+            {
+                "name": "NBNAME",
+                "protocol": "udp",
+                "dport": "137"
+            },
+            {
+                "name": "NBDS",
+                "protocol": "udp",
+                "dport": "138"
+            },
+            {
+                "name": "IKE",
+                "protocol": "udp",
+                "dport": "500"
+            },
+            {
+                "name": "IKE-NAT",
+                "protocol": "udp",
+                "dport": "500"
+            },
+            {
+                "name": "SYSLOG",
+                "protocol": "udp",
+                "dport": "514"
+            },
+            {
+                "name": "RIP",
+                "protocol": "udp",
+                "dport": "520"
+            },
+            {
+                "name": "UUCP",
+                "protocol": "udp",
+                "dport": "540"
+            },
+            {
+                "name": "SQL Monitor",
+                "protocol": "udp",
+                "dport": "1434"
+            },
+            {
+                "name": "L2TP",
+                "protocol": "udp",
+                "dport": "1701"
+            },
+            {
+                "name": "GTP",
+                "protocol": "udp",
+                "dport": "2123"
+            },
+            {
+                "name": "MGCP-UA",
+                "protocol": "udp",
+                "dport": "2427"
+            },
+            {
+                "name": "MGCP-CA",
+                "protocol": "udp",
+                "dport": "2727"
+            },
+            {
+                "name": "SIP",
+                "protocol": "udp",
+                "dport": "5060"
+            },
+            {
+                "name": "PC-Anywhere",
+                "protocol": "udp",
+                "dport": "5632"
+            },
+            {
+                "name": "X-WINDOWS",
+                "protocol": "tcp",
+                "dport": "6000-6063"
+            },
+            {
+                "name": "SNMP",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "AOL",
+                "protocol": "tcp",
+                "dport": "5190-5194"
+            },
+            {
+                "name": "APPLE-ICHAT-SNATMAP",
+                "protocol": "udp",
+                "dport": "5678"
+            },
+            {
+                "name": "GNUTELLA",
+                "protocol": "udp",
+                "dport": "6346-6347"
+            },
+            {
+                "name": "IRC",
+                "protocol": "tcp",
+                "dport": "6660-6669"
+            },
+            {
+                "name": "PPTP",
+                "protocol": "tcp",
+                "dport": "1723"
+            },
+            {
+                "name": "RADIUS",
+                "protocol": "udp",
+                "dport": "1812-1813"
+            },
+            {
+                "name": "TALK",
+                "protocol": "udp",
+                "dport": "517-518"
+            },
+            {
+                "name": "VDO Live",
+                "protocol": "tcp",
+                "dport": "7000-7010"
+            },
+            {
+                "name": "UDP-ANY",
+                "protocol": "udp",
+                "dport": "0-65535"
+            },
+            {
+                "name": "TCP-ANY",
+                "protocol": "tcp",
+                "dport": "0-65535"
+            },
+            {
+                "name": "Internet Locator Service",
+                "protocol": "tcp",
+                "dport": "389"
+            },
+            {
+                "name": "FTP-Get",
+                "protocol": "tcp",
+                "dport": "21"
+            },
+            {
+                "name": "FTP-Put",
+                "protocol": "tcp",
+                "dport": "21"
+            },
+            {
+                "name": "HTTP",
+                "protocol": "tcp",
+                "dport": "80"
+            },
+            {
+                "name": "HTTPS",
+                "protocol": "tcp",
+                "dport": "443"
+            },
+            {
+                "name": "VNC_XH",
+                "protocol": "tcp",
+                "dport": "5901"
+            },
+            {
+                "name": "VNC_guest",
+                "protocol": "tcp",
+                "dport": "5902"
+            },
+            {
+                "name": "UDP-SNMP",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "TCP-SNMP",
+                "protocol": "tcp",
+                "dport": "161"
+            },
+            {
+                "name": "MSRPC",
+                "protocol": "tcp",
+                "dport": "135"
+            },
+            {
+                "name": "SQL",
+                "protocol": "tcp",
+                "dport": "1521"
+            },
+            {
+                "name": "XING",
+                "protocol": "udp",
+                "dport": "1558"
+            },
+            {
+                "name": "MS-RPC-ANY",
+                "protocol": "",
+                "dport": ""
+            },
+            {
+                "name": "PING",
+                "protocol": "icmp",
+                "dport": ""
+            },
+            {
+                "name": "TRACEROUTE",
+                "protocol": "icmp",
+                "dport": ""
+            },
+            {
+                "name": "ICMP-ANY",
+                "protocol": "icmp",
+                "dport": ""
+            },
+            {
+                "name": "ICMP-INFO",
+                "protocol": "icmp",
+                "dport": ""
+            },
+            {
+                "name": "ICMP-TIMESTAMP",
+                "protocol": "icmp",
+                "dport": ""
+            },
+            {
+                "name": "ICMP Address Mask",
+                "protocol": "icmp",
+                "dport": ""
+            }
+        ],
+        "junos": [
+            {
+                "name": "junos-ftp",
+                "protocol": "tcp",
+                "dport": "21"
+            },
+            {
+                "name": "junos-tftp",
+                "protocol": "udp",
+                "dport": "69"
+            },
+            {
+                "name": "junos-rtsp",
+                "protocol": "tcp",
+                "dport": "554"
+            },
+            {
+                "name": "junos-netbios-session",
+                "protocol": "tcp",
+                "dport": "139"
+            },
+            {
+                "name": "junos-ssh",
+                "protocol": "tcp",
+                "dport": "22"
+            },
+            {
+                "name": "junos-telnet",
+                "protocol": "tcp",
+                "dport": "23"
+            },
+            {
+                "name": "junos-smtp",
+                "protocol": "tcp",
+                "dport": "25"
+            },
+            {
+                "name": "junos-tacacs",
+                "protocol": "tcp",
+                "dport": "49"
+            },
+            {
+                "name": "junos-tacacs-ds",
+                "protocol": "tcp",
+                "dport": "65"
+            },
+            {
+                "name": "junos-dhcp-client",
+                "protocol": "udp",
+                "dport": "68"
+            },
+            {
+                "name": "junos-dhcp-server",
+                "protocol": "udp",
+                "dport": "67"
+            },
+            {
+                "name": "junos-bootpc",
+                "protocol": "udp",
+                "dport": "68"
+            },
+            {
+                "name": "junos-bootps",
+                "protocol": "udp",
+                "dport": "67"
+            },
+            {
+                "name": "junos-finger",
+                "protocol": "tcp",
+                "dport": "79"
+            },
+            {
+                "name": "junos-http",
+                "protocol": "tcp",
+                "dport": "80"
+            },
+            {
+                "name": "junos-https",
+                "protocol": "tcp",
+                "dport": "443"
+            },
+            {
+                "name": "junos-pop3",
+                "protocol": "tcp",
+                "dport": "110"
+            },
+            {
+                "name": "junos-ident",
+                "protocol": "tcp",
+                "dport": "113"
+            },
+            {
+                "name": "junos-nntp",
+                "protocol": "tcp",
+                "dport": "119"
+            },
+            {
+                "name": "junos-ntp",
+                "protocol": "udp",
+                "dport": "123"
+            },
+            {
+                "name": "junos-imap",
+                "protocol": "tcp",
+                "dport": "143"
+            },
+            {
+                "name": "junos-imaps",
+                "protocol": "tcp",
+                "dport": "993"
+            },
+            {
+                "name": "junos-bgp",
+                "protocol": "tcp",
+                "dport": "179"
+            },
+            {
+                "name": "junos-ldap",
+                "protocol": "tcp",
+                "dport": "389"
+            },
+            {
+                "name": "junos-snpp",
+                "protocol": "tcp",
+                "dport": "444"
+            },
+            {
+                "name": "junos-biff",
+                "protocol": "udp",
+                "dport": "512"
+            },
+            {
+                "name": "junos-who",
+                "protocol": "udp",
+                "dport": "513"
+            },
+            {
+                "name": "junos-syslog",
+                "protocol": "udp",
+                "dport": "514"
+            },
+            {
+                "name": "junos-printer",
+                "protocol": "tcp",
+                "dport": "515"
+            },
+            {
+                "name": "junos-rip",
+                "protocol": "udp",
+                "dport": "520"
+            },
+            {
+                "name": "junos-radius",
+                "protocol": "udp",
+                "dport": "1812"
+            },
+            {
+                "name": "junos-radacct",
+                "protocol": "udp",
+                "dport": "1813"
+            },
+            {
+                "name": "junos-nfsd-tcp",
+                "protocol": "tcp",
+                "dport": "2049"
+            },
+            {
+                "name": "junos-nfsd-udp",
+                "protocol": "udp",
+                "dport": "2049"
+            },
+            {
+                "name": "junos-cvspserver",
+                "protocol": "tcp",
+                "dport": "2401"
+            },
+            {
+                "name": "junos-ldp-tcp",
+                "protocol": "tcp",
+                "dport": "646"
+            },
+            {
+                "name": "junos-ldp-udp",
+                "protocol": "udp",
+                "dport": "646"
+            },
+            {
+                "name": "junos-xnm-ssl",
+                "protocol": "tcp",
+                "dport": "3220"
+            },
+            {
+                "name": "junos-xnm-clear-text",
+                "protocol": "tcp",
+                "dport": "3221"
+            },
+            {
+                "name": "junos-ike",
+                "protocol": "udp",
+                "dport": "500"
+            },
+            {
+                "name": "junos-aol",
+                "protocol": "tcp",
+                "dport": "5190-5193"
+            },
+            {
+                "name": "junos-chargen",
+                "protocol": "udp",
+                "dport": "19"
+            },
+            {
+                "name": "junos-dhcp-relay",
+                "protocol": "udp",
+                "dport": "67"
+            },
+            {
+                "name": "junos-discard",
+                "protocol": "udp",
+                "dport": "9"
+            },
+            {
+                "name": "junos-dns-udp",
+                "protocol": "udp",
+                "dport": "53"
+            },
+            {
+                "name": "junos-dns-tcp",
+                "protocol": "tcp",
+                "dport": "53"
+            },
+            {
+                "name": "junos-echo",
+                "protocol": "udp",
+                "dport": "7"
+            },
+            {
+                "name": "junos-gopher",
+                "protocol": "tcp",
+                "dport": "70"
+            },
+            {
+                "name": "junos-gtp",
+                "protocol": "udp",
+                "dport": "2123"
+            },
+            {
+                "name": "junos-gnutella",
+                "protocol": "udp",
+                "dport": "6346-6347"
+            },
+            {
+                "name": "junos-http-ext",
+                "protocol": "tcp",
+                "dport": "7001"
+            },
+            {
+                "name": "junos-internet-locator-service",
+                "protocol": "tcp",
+                "dport": "389"
+            },
+            {
+                "name": "junos-ike-nat",
+                "protocol": "udp",
+                "dport": "4500"
+            },
+            {
+                "name": "junos-irc",
+                "protocol": "tcp",
+                "dport": "6660-6669"
+            },
+            {
+                "name": "junos-l2tp",
+                "protocol": "udp",
+                "dport": "1701"
+            },
+            {
+                "name": "junos-lpr",
+                "protocol": "tcp",
+                "dport": "515"
+            },
+            {
+                "name": "junos-mail",
+                "protocol": "tcp",
+                "dport": "25"
+            },
+            {
+                "name": "junos-h323",
+                "protocol": "tcp",
+                "dport": "1720"
+            },
+            {
+                "name": "junos-mgcp-ua",
+                "protocol": "udp",
+                "dport": "2427"
+            },
+            {
+                "name": "junos-mgcp-ca",
+                "protocol": "udp",
+                "dport": "2727"
+            },
+            {
+                "name": "junos-msn",
+                "protocol": "tcp",
+                "dport": "1863"
+            },
+            {
+                "name": "junos-ms-rpc-tcp",
+                "protocol": "tcp",
+                "dport": "135"
+            },
+            {
+                "name": "junos-ms-rpc-udp",
+                "protocol": "udp",
+                "dport": "135"
+            },
+            {
+                "name": "junos-ms-sql",
+                "protocol": "tcp",
+                "dport": "1433"
+            },
+            {
+                "name": "junos-nbname",
+                "protocol": "udp",
+                "dport": "137"
+            },
+            {
+                "name": "junos-nbds",
+                "protocol": "udp",
+                "dport": "138"
+            },
+            {
+                "name": "junos-nfs",
+                "protocol": "udp",
+                "dport": "111"
+            },
+            {
+                "name": "junos-ns-global",
+                "protocol": "tcp",
+                "dport": "15397"
+            },
+            {
+                "name": "junos-ns-global-pro",
+                "protocol": "tcp",
+                "dport": "15397"
+            },
+            {
+                "name": "junos-nsm",
+                "protocol": "udp",
+                "dport": "69"
+            },
+            {
+                "name": "junos-pc-anywhere",
+                "protocol": "udp",
+                "dport": "5632"
+            },
+            {
+                "name": "junos-pptp",
+                "protocol": "tcp",
+                "dport": "1723"
+            },
+            {
+                "name": "junos-realaudio",
+                "protocol": "tcp",
+                "dport": "554"
+            },
+            {
+                "name": "junos-sccp",
+                "protocol": "tcp",
+                "dport": "2000"
+            },
+            {
+                "name": "junos-sip",
+                "protocol": "udp",
+                "dport": "5060"
+            },
+            {
+                "name": "junos-rsh",
+                "protocol": "tcp",
+                "dport": "514"
+            },
+            {
+                "name": "junos-smb",
+                "protocol": "tcp",
+                "dport": "139"
+            },
+            {
+                "name": "junos-sql-monitor",
+                "protocol": "udp",
+                "dport": "1434"
+            },
+            {
+                "name": "junos-sqlnet-v1",
+                "protocol": "tcp",
+                "dport": "1525"
+            },
+            {
+                "name": "junos-sqlnet-v2",
+                "protocol": "tcp",
+                "dport": "1521"
+            },
+            {
+                "name": "junos-sun-rpc-tcp",
+                "protocol": "tcp",
+                "dport": "111"
+            },
+            {
+                "name": "junos-sun-rpc-udp",
+                "protocol": "udp",
+                "dport": "111"
+            },
+            {
+                "name": "junos-talk",
+                "protocol": "udp",
+                "dport": "517"
+            },
+            {
+                "name": "junos-ntalk",
+                "protocol": "udp",
+                "dport": "518"
+            },
+            {
+                "name": "junos-r2cp",
+                "protocol": "udp",
+                "dport": "28672"
+            },
+            {
+                "name": "junos-uucp",
+                "protocol": "udp",
+                "dport": "540"
+            },
+            {
+                "name": "junos-vdo-live",
+                "protocol": "udp",
+                "dport": "7000-7010"
+            },
+            {
+                "name": "junos-vnc",
+                "protocol": "tcp",
+                "dport": "5800"
+            },
+            {
+                "name": "junos-wais",
+                "protocol": "tcp",
+                "dport": "210"
+            },
+            {
+                "name": "junos-whois",
+                "protocol": "tcp",
+                "dport": "43"
+            },
+            {
+                "name": "junos-winframe",
+                "protocol": "tcp",
+                "dport": "1494"
+            },
+            {
+                "name": "junos-x-windows",
+                "protocol": "tcp",
+                "dport": "6000-6063"
+            },
+            {
+                "name": "junos-ymsg",
+                "protocol": "tcp",
+                "dport": "5050"
+            },
+            {
+                "name": "junos-wxcontrol",
+                "protocol": "tcp",
+                "dport": "3578"
+            },
+            {
+                "name": "junos-snmp-agentx",
+                "protocol": "tcp",
+                "dport": "705"
+            },
+            {
+                "name": "junos-stun",
+                "protocol": "udp",
+                "dport": "3478-3479"
+            },
+            {
+                "name": "junos-tcp-any",
+                "protocol": "tcp",
+                "dport": "1-65535"
+            },
+            {
+                "name": "junos-udp-any",
+                "protocol": "udp",
+                "dport": "1-65535"
+            },
+            {
+                "name": "tmp-junos-persistent-nat",
+                "protocol": "tcp",
+                "dport": "65535"
+            },
+            {
+                "name": "tmp-junos-icmp-ping",
+                "protocol": "tcp",
+                "dport": "65535"
+            },
+            {
+                "name": "tmp-junos-icmp-all",
+                "protocol": "tcp",
+                "dport": "65535"
+            },
+            {
+                "name": "tmp-junos-gre",
+                "protocol": "tcp",
+                "dport": "65535"
+            },
+            {
+                "name": "tmp-junos-ping",
+                "protocol": "tcp",
+                "dport": "65535"
+            },
+            {
+                "name": "tmp-junos-smb-session",
+                "protocol": "tcp",
+                "dport": "65535"
+            },
+            {
+                "name": "tmp-junos-ms-rpc-wmic",
+                "protocol": "tcp",
+                "dport": "65535"
+            },
+            {
+                "name": "tmp-junos-ms-rpc",
+                "protocol": "tcp",
+                "dport": "65535"
+            },
+            {
+                "name": "tmp-junos-ms-rpc-epm",
+                "protocol": "tcp",
+                "dport": "65535"
+            },
+            {
+                "name": "tmp-junos-cifs",
+                "protocol": "tcp",
+                "dport": "65535"
+            },
+            {
+                "name": "tmp-junos-sun-rpc-rquotad-tcp",
+                "protocol": "tcp",
+                "dport": "65535"
+            },
+            {
+                "name": "tmp-junos-sun-rpc-rquotad-udp",
+                "protocol": "udp",
+                "dport": "65535"
+            },
+            {
+                "name": "tmp-junos-sun-rpc-nlockmgr-tcp",
+                "protocol": "tcp",
+                "dport": "65535"
+            },
+            {
+                "name": "tmp-junos-sun-rpc-nlockmgr-udp",
+                "protocol": "udp",
+                "dport": "65535"
+            },
+            {
+                "name": "tmp-junos-sun-rpc-portmap-tcp",
+                "protocol": "tcp",
+                "dport": "65535"
+            },
+            {
+                "name": "junos-sun-rpc-portmap-udp",
+                "protocol": "udp",
+                "dport": "65535"
+            },
+            {
+                "name": "tmp-junos-sun-rpc-nfs-udp",
+                "protocol": "udp",
+                "dport": "65535"
+            },
+            {
+                "name": "tmp-junos-sun-rpc-mountd-tcp",
+                "protocol": "tcp",
+                "dport": "65535"
+            },
+            {
+                "name": "tmp-junos-sun-rpc-mountd-udp",
+                "protocol": "udp",
+                "dport": "65535"
+            },
+            {
+                "name": "tmp-junos-sun-rpc-ypbind-tcp",
+                "protocol": "tcp",
+                "dport": "65535"
+            },
+            {
+                "name": "tmp-junos-sun-rpc-ypbind-udp",
+                "protocol": "udp",
+                "dport": "65535"
+            },
+            {
+                "name": "tmp-junos-sun-rpc-status-tcp",
+                "protocol": "tcp",
+                "dport": "65535"
+            },
+            {
+                "name": "tmp-junos-sun-rpc-status-udp",
+                "protocol": "udp",
+                "dport": "65535"
+            }
+        ],
+        "stonesoft": [
+            {
+                "name": "DHCP (TCP)",
+                "protocol": "tcp",
+                "dport": "67"
+            },
+            {
+                "name": "DHCP (UDP)",
+                "protocol": "udp",
+                "dport": "67"
+            },
+            {
+                "name": "FTP (Data)",
+                "protocol": "tcp",
+                "dport": "20"
+            },
+            {
+                "name": "FTP",
+                "protocol": "tcp",
+                "dport": "21"
+            },
+            {
+                "name": "SSH",
+                "protocol": "tcp",
+                "dport": "22"
+            },
+            {
+                "name": "Telnet",
+                "protocol": "tcp",
+                "dport": "23"
+            },
+            {
+                "name": "SMTP",
+                "protocol": "tcp",
+                "dport": "25"
+            },
+            {
+                "name": "TACACS (TCP)",
+                "protocol": "tcp",
+                "dport": "49"
+            },
+            {
+                "name": "TACACS (UDP)",
+                "protocol": "udp",
+                "dport": "49"
+            },
+            {
+                "name": "DNS (TCP)",
+                "protocol": "tcp",
+                "dport": "53",
+                "memberOfGroup": "DNS"
+            },
+            {
+                "name": "DNS (UDP)",
+                "protocol": "udp",
+                "dport": "53",
+                "memberOfGroup": "DNS"
+            },
+            {
+                "name": "HTTP",
+                "protocol": "tcp",
+                "dport": "80"
+            },
+            {
+                "name": "HTTP (with URL Logging)",
+                "protocol": "tcp",
+                "dport": "80"
+            },
+            {
+                "name": "POP3",
+                "protocol": "tcp",
+                "dport": "110"
+            },
+            {
+                "name": "NNTP",
+                "protocol": "tcp",
+                "dport": "119"
+            },
+            {
+                "name": "NTP (UDP)",
+                "protocol": "udp",
+                "dport": "123"
+            },
+            {
+                "name": "NTP (TCP)",
+                "protocol": "tcp",
+                "dport": "123"
+            },
+            {
+                "name": "MSRPC Endpoint Mapper (TCP)",
+                "protocol": "tcp",
+                "dport": "135"
+            },
+            {
+                "name": "NetBIOS-NS (TCP)",
+                "protocol": "tcp",
+                "dport": "137",
+                "memberOfGroup": "NetBIOS"
+            },
+            {
+                "name": "NetBIOS-NS (UDP)",
+                "protocol": "udp",
+                "dport": "137",
+                "memberOfGroup": "NetBIOS"
+            },
+            {
+                "name": "NetBIOS Datagram",
+                "protocol": "udp",
+                "dport": "138",
+                "memberOfGroup": "NetBIOS"
+            },
+            {
+                "name": "NetBIOS-SSN",
+                "protocol": "tcp",
+                "dport": "139",
+                "memberOfGroup": "NetBIOS"
+            },
+            {
+                "name": "IMAP",
+                "protocol": "tcp",
+                "dport": "143"
+            },
+            {
+                "name": "SNMP (UDP)",
+                "protocol": "udp",
+                "dport": "161",
+                "memberOfGroup": "SNMP"
+            },
+            {
+                "name": "SNMP (TCP)",
+                "protocol": "tcp",
+                "dport": "161",
+                "memberOfGroup": "SNMP"
+            },
+            {
+                "name": "SNMP Trap (UDP)",
+                "protocol": "udp",
+                "dport": "162",
+                "memberOfGroup": "SNMP"
+            },
+            {
+                "name": "LDAP (TCP)",
+                "protocol": "tcp",
+                "dport": "389",
+                "memberOfGroup": "LDAP"
+            },
+            {
+                "name": "LDAP (UDP)",
+                "protocol": "udp",
+                "dport": "389",
+                "memberOfGroup": "LDAP"
+            },
+            {
+                "name": "HTTPS",
+                "protocol": "tcp",
+                "dport": "443"
+            },
+            {
+                "name": "Microsoft-DS",
+                "protocol": "tcp",
+                "dport": "445"
+            },
+            {
+                "name": "ISAKMP (UDP)",
+                "protocol": "udp",
+                "dport": "500"
+            },
+            {
+                "name": "Exec",
+                "protocol": "tcp",
+                "dport": "512"
+            },
+            {
+                "name": "Rlogin",
+                "protocol": "tcp",
+                "dport": "513"
+            },
+            {
+                "name": "Shell (cmd)",
+                "protocol": "tcp",
+                "dport": "514"
+            },
+            {
+                "name": "Syslog (UDP)",
+                "protocol": "udp",
+                "dport": "514"
+            },
+            {
+                "name": "Syslog (TCP)",
+                "protocol": "tcp",
+                "dport": "514"
+            },
+            {
+                "name": "LDAPS (TCP)",
+                "protocol": "tcp",
+                "dport": "636",
+                "memberOfGroup": "LDAPS"
+            },
+            {
+                "name": "LDAPS (UDP)",
+                "protocol": "udp",
+                "dport": "636",
+                "memberOfGroup": "LDAPS"
+            },
+            {
+                "name": "Kerberos-88 (TCP)",
+                "protocol": "tcp",
+                "dport": "88",
+                "memberOfGroup": "Kerberos"
+            },
+            {
+                "name": "Kerberos-88 (UDP)",
+                "protocol": "udp",
+                "dport": "88",
+                "memberOfGroup": "Kerberos"
+            },
+            {
+                "name": "Kerberos-464 (TCP)",
+                "protocol": "tcp",
+                "dport": "464",
+                "memberOfGroup": "Kerberos"
+            },
+            {
+                "name": "Kerberos-464 (UDP)",
+                "protocol": "udp",
+                "dport": "464",
+                "memberOfGroup": "Kerberos"
+            },
+            {
+                "name": "Kerberos-749 (TCP)",
+                "protocol": "tcp",
+                "dport": "749",
+                "memberOfGroup": "Kerberos"
+            },
+            {
+                "name": "Kerberos-749 (UDP)",
+                "protocol": "udp",
+                "dport": "749",
+                "memberOfGroup": "Kerberos"
+            },
+            {
+                "name": "Kerberos-750 (TCP)",
+                "protocol": "tcp",
+                "dport": "750",
+                "memberOfGroup": "Kerberos"
+            },
+            {
+                "name": "Kerberos-750 (UDP)",
+                "protocol": "udp",
+                "dport": "750",
+                "memberOfGroup": "Kerberos"
+            },
+            {
+                "name": "IMAPS",
+                "protocol": "tcp",
+                "dport": "993"
+            },
+            {
+                "name": "MSSQL (TCP)",
+                "protocol": "tcp",
+                "dport": "1433"
+            },
+            {
+                "name": "MSSQL (UDP)",
+                "protocol": "udp",
+                "dport": "1433"
+            },
+            {
+                "name": "T.120 (TCP)",
+                "protocol": "tcp",
+                "dport": "1503",
+                "memberOfGroup": "T.120"
+            },
+            {
+                "name": "T.120 (UDP)",
+                "protocol": "udp",
+                "dport": "1503",
+                "memberOfGroup": "T.120"
+            },
+            {
+                "name": "Oracle TNS",
+                "protocol": "tcp",
+                "dport": "1521"
+            },
+            {
+                "name": "H.323 (Call Signaling)",
+                "protocol": "tcp",
+                "dport": "1720"
+            },
+            {
+                "name": "MySQL",
+                "protocol": "tcp",
+                "dport": "3306"
+            },
+            {
+                "name": "RDP",
+                "protocol": "tcp",
+                "dport": "3389"
+            },
+            {
+                "name": "NAT-T (Destination)",
+                "protocol": "udp",
+                "dport": "4500"
+            },
+            {
+                "name": "Any TCP Service",
+                "protocol": "tcp",
+                "dport": "1-65535"
+            },
+            {
+                "name": "Ping",
+                "protocol": "icmp",
+                "dport": "0"
+            },
+            {
+                "name": "Echo Request (No Code)",
+                "protocol": "icmp",
+                "dport": "0"
+            },
+            {
+                "name": "Echo Request (Any Code)",
+                "protocol": "icmp",
+                "dport": "0"
+            },
+            {
+                "name": "ICMP",
+                "protocol": "icmp",
+                "dport": "0"
+            },
+            {
+                "name": "HTTP proxy",
+                "protocol": "tcp",
+                "dport": "8080"
+            },
+            {
+                "name": "Squid HTTP proxy",
+                "protocol": "tcp",
+                "dport": "3128",
+                "memberOfGroup": "predefined"
+            },
+            {
+                "name": "MS-Streaming (ms-streaming) (TCP)\"",
+                "protocol": "tcp",
+                "dport": "1755",
+                "memberOfGroup": "MS-Streaming (ms-streaming)"
+            },
+            {
+                "name": "MS-Streaming (ms-streaming) (UDP)",
+                "protocol": "udp",
+                "dport": "1755",
+                "memberOfGroup": "MS-Streaming (ms-streaming)"
+            },
+            {
+                "name": "SIP (TCP)",
+                "protocol": "tcp",
+                "dport": "5060",
+                "memberOfGroup": "SIP"
+            },
+            {
+                "name": "SIP (UDP)",
+                "protocol": "udp",
+                "dport": "5060",
+                "memberOfGroup": "SIP"
+            },
+            {
+                "name": "FTPS (Control) (TCP)",
+                "protocol": "tcp",
+                "dport": "990",
+                "memberOfGroup": "FTPS (Control)"
+            },
+            {
+                "name": "FTPS (Control) (UDP)",
+                "protocol": "udp",
+                "dport": "990",
+                "memberOfGroup": "FTPS (Control)"
+            },
+            {
+                "name": "MSRPC (TCP)",
+                "protocol": "tcp",
+                "dport": "65535",
+                "memberOfGroup": "MSRPC"
+            },
+            {
+                "name": "MSRPC (UDP)",
+                "protocol": "udp",
+                "dport": "65535",
+                "memberOfGroup": "MSRPC"
+            },
+            {
+                "name": "SIP Control (TCP)",
+                "protocol": "tcp",
+                "dport": "0",
+                "memberOfGroup": "SIP Control"
+            },
+            {
+                "name": "SIP Control (UDP)",
+                "protocol": "udp",
+                "dport": "0",
+                "memberOfGroup": "SIP Control"
+            },
+            {
+                "name": "Remote Desktop (TCP)",
+                "protocol": "tcp",
+                "dport": "3389",
+                "memberOfGroup": "Remote Desktop"
+            },
+            {
+                "name": "Remote Desktop (UDP)",
+                "protocol": "udp",
+                "dport": "3389",
+                "memberOfGroup": "Remote Desktop"
+            },
+            {
+                "name": "SG Log",
+                "protocol": "tcp",
+                "dport": "3020"
+            },
+            {
+                "name": "SG Log to Log Server",
+                "protocol": "tcp",
+                "dport": "3020"
+            },
+            {
+                "name": "SG SOHO Firewall to Log",
+                "protocol": "tcp",
+                "dport": "3020"
+            },
+            {
+                "name": "SG Web Portal Server to Log",
+                "protocol": "tcp",
+                "dport": "3020"
+            },
+            {
+                "name": "SG Engine to Engine",
+                "protocol": "tcp",
+                "dport": "8902-8913",
+                "memberOfGroup": "SG Engine to Log"
+            },
+            {
+                "name": "SG Engine to Log1",
+                "protocol": "tcp",
+                "dport": "8916-8917",
+                "memberOfGroup": "SG Engine to Log"
+            },
+            {
+                "name": "SG Initial Contact",
+                "protocol": "tcp",
+                "dport": "3021"
+            },
+            {
+                "name": "SG Web Portal Server to Management",
+                "protocol": "tcp",
+                "dport": "3021"
+            },
+            {
+                "name": "SG Client to Management",
+                "protocol": "tcp",
+                "dport": "8902-8913"
+            },
+            {
+                "name": "SG Management to Management",
+                "protocol": "tcp",
+                "dport": "8902-8913"
+            },
+            {
+                "name": "SG SOHO Firewall to Management",
+                "protocol": "tcp",
+                "dport": "3021"
+            },
+            {
+                "name": "SG Reverse Monitoring",
+                "protocol": "tcp",
+                "dport": "3023"
+            },
+            {
+                "name": "SG Dynamic Control Firewall to Management",
+                "protocol": "tcp",
+                "dport": "8906"
+            },
+            {
+                "name": "SG Dynamic Firewall to Management",
+                "protocol": "tcp",
+                "dport": "8906"
+            },
+            {
+                "name": "SG Dynamic Control",
+                "protocol": "tcp",
+                "dport": "8906"
+            },
+            {
+                "name": "SG Engine to Management",
+                "protocol": "tcp",
+                "dport": "8902-8913"
+            },
+            {
+                "name": "SG Log to Management",
+                "protocol": "tcp",
+                "dport": "8902-8913"
+            },
+            {
+                "name": "SG Client to Log",
+                "protocol": "tcp",
+                "dport": "8914-8918"
+            },
+            {
+                "name": "SG Management to Log",
+                "protocol": "tcp",
+                "dport": "8914-8918"
+            },
+            {
+                "name": "SG Management to Stonesoft",
+                "protocol": "tcp",
+                "dport": "443"
+            },
+            {
+                "name": "SG Management to Firewall",
+                "protocol": "tcp",
+                "dport": "636"
+            },
+            {
+                "name": "SG Firewall to Server Pool",
+                "protocol": "udp",
+                "dport": "7777"
+            },
+            {
+                "name": "SG Analyzer to Engine",
+                "protocol": "tcp",
+                "dport": "15000"
+            },
+            {
+                "name": "SG Log to Log1",
+                "protocol": "udp",
+                "dport": "514",
+                "memberOfGroup": "SG Log to Log"
+            },
+            {
+                "name": "SG Log to Log2",
+                "protocol": "udp",
+                "dport": "5514",
+                "memberOfGroup": "SG Log to Log"
+            },
+            {
+                "name": "SG Management to Sensor1",
+                "protocol": "tcp",
+                "dport": "4950",
+                "memberOfGroup": "SG Management to Sensor"
+            },
+            {
+                "name": "SG Management to Sensor2",
+                "protocol": "tcp",
+                "dport": "18888",
+                "memberOfGroup": "SG Management to Sensor"
+            },
+            {
+                "name": "SG Management to Sensor3",
+                "protocol": "tcp",
+                "dport": "15000",
+                "memberOfGroup": "SG Management to Sensor"
+            },
+            {
+                "name": "SG Management to Analyzer1",
+                "protocol": "tcp",
+                "dport": "4950",
+                "memberOfGroup": "SG Management to Analyzer"
+            },
+            {
+                "name": "SG Management to Analyzer2",
+                "protocol": "tcp",
+                "dport": "18889",
+                "memberOfGroup": "SG Management to Analyzer"
+            },
+            {
+                "name": "SG Sensor to Analyzer",
+                "protocol": "tcp",
+                "dport": "18890"
+            },
+            {
+                "name": "SG VPN Client to Firewall",
+                "protocol": "udp",
+                "dport": "500"
+            },
+            {
+                "name": "SG Monitoring Client to Monitoring Server",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "IMAP3",
+                "protocol": "tcp",
+                "dport": "143"
+            },
+            {
+                "name": "POP3S",
+                "protocol": "tcp",
+                "dport": "995"
+            },
+            {
+                "name": "TFTP",
+                "protocol": "udp",
+                "dport": "69"
+            },
+            {
+                "name": "Kerberos",
+                "protocol": "udp",
+                "dport": "88"
+            },
+            {
+                "name": "GRE",
+                "protocol": "gre",
+                "dport": "161"
+            },
+            {
+                "name": "ESP",
+                "protocol": "esp",
+                "dport": "4500"
+            },
+            {
+                "name": "SKIP",
+                "protocol": "skip",
+                "dport": "161"
+            },
+            {
+                "name": "AH",
+                "protocol": "ah",
+                "dport": "161"
+            },
+            {
+                "name": "BOOTPS (TCP)",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "BOOTPS (UDP)",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "BOOTPC (TCP)",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "BOOTPC (UDP)",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "Dest. Unreachable (Any Code)",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "Dest. Unreachable (Port Unreachable)",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "Discard Protocol (UDP)",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "Echo (UDP)",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "Echo Reply (No Code)",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "Echo Reply (Any Code)",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "IRC-default",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "ISAKMP",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "IPP (TCP)",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "IPP (UDP)",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "IPComp",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "Kpasswd",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "Mountd",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "MSRPC EPM (Exchange)",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "Microsoft Global Catalog LDAP (TCP)",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "NetFlow (UDP)",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "Nlockmgr",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "NFS (RPC)",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "NFS (TCP)",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "NFS (UDP)",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "Pcnfsd",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "Printer Spooler (TCP)",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "Printer Spooler (UDP)",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "RADIUS (Accounting)",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "RADIUS (Authentication)",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "RTSP",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "SMTP Submission Service",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "SNMP Trap (TCP)",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "SCCP",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "SG Server Pool Monitoring",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "Traceroute Status (No Route)",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "TLISRV",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "Traceroute Status (Successfully Forwarded)",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "Who",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "WINS Replication",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "XDMCP",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "SAP",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "Lotus Notes",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "X11",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "RFB TCP",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "POP3S with decryption",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "Time Exceeded Any Code",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "Microsoft Global Catalog LDAPS TCP",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "FTPS Data",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "Portmapper",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "Sun RPC TCP",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "Sun RPC UDP",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "NFS with Portmapper",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "Compaq WBEM",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "NFS",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "CreativeServer",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "Compaq Peer",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "UDP",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "SG Control",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "SG Data Browsing",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "SDRP",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "OSPFIGP",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "Redirect Any Code",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "PPTP TCP",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "Rsync",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "HIP",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "IMAPS with decryption",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "SurveyMonkey",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "Google",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "Google-Hosted-Libraries",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "PANDA",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "Firebase",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "Google Analitic _ Notificaciones",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "MatchExpression_1593527790174_1",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "Estimote Cloud - BEACONS",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "NAT-T Source",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "SCPS",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "Sun-RPC SNMP",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "Gopher",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "none",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "INGRES-NET",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "Zabbix",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "SG Engine to User Agent",
+                "protocol": "udp",
+                "dport": "161"
+            },
+            {
+                "name": "Tipos 3_ 4_ 8_ 11 ANY CODE",
+                "protocol": "udp",
+                "dport": "161"
+            }
+        ]
+    }
+}

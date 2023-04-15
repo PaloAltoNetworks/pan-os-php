@@ -943,7 +943,8 @@ class PH
         "certificate",
         "ssh-connector",
         "custom-report",
-        "gcp"
+        "gcp",
+        "vendor-migration"
         );
 
 
@@ -1118,6 +1119,9 @@ class PH
             || $type == 'threat'
         )
             $util = new UTIL($type, $argv, $argc,$PHP_FILE." type=".$type, $_supportedArguments, $_usageMsg, $projectfolder);
+
+        elseif( $type == "vendor-migration" )
+            $util = new CONVERTER($type, $argv, $argc,$PHP_FILE." type=".$type, $_supportedArguments, $_usageMsg, $projectfolder);
 
         $util->endOfScript();
 

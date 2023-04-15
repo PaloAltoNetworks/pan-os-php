@@ -1,0 +1,31 @@
+1) Download this jar file to your Management Platform. https://github.com/CheckPointSW/ShowPolicyPackage/releases/download/v2.0.4/web_api_show_package-jar-with-dependencies.jar
+2) Upload the jar file to your Checkpoint Management Server via SSH (scp/winscp)
+3) Run it from Checkpoint Management Server as Expert with: java -jar web_api_show_package-jar-with-dependencies.jar -v
+4) Last command will show up the list of Packages available. Pick the name of the package you want to export
+5) Run the following command from the Management Server as Expert: java -jar web_api_show_package-jar-with-dependencies.jar -k <PACKAGE NAME> -d <DOMAIN NAME>
+
+
+
+
+
+
+
+Below is the steps I have done in the lab:
+1.	Download the v2.0.4 script from github
+2.	Backup the current script in the MDS server:
+[Expert@ustcna800:0]# cd $MDS_FWDIR/api/samples/lib/
+[Expert@ustcna800:0]# mv web_api_show_package-jar-with-dependencies.jar backup_web_api_show_package-jar-with-dependencies.jar
+3.	Copy the new script to this location:
+$MDS_FWDIR/api/samples/lib/
+[Expert@ustcna800:0]# Chmod 770 $MDS_FWDIR/api/samples/lib/web_api_show_package-jar-with-dependencies.jar
+4.	Run following command to start:
+[Expert@ustcna800:0]# $MDS_FWDIR/scripts/web_api_show_package.sh -k US_Internet_new -d Internet --show-membership false
+·        -k US_Internet_new – Name of the policy
+·        -d Internet – Name of the domain
+·        --show-membership false – We used this flag for better performance results. It is MUST flag for this script.
+
+
+
+
+
+mgmt_cli show packages limit 50 offset 0 details-level "standard" --version 1.1 --format json
