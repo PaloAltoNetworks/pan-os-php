@@ -1546,6 +1546,9 @@ class UTIL
 
                     $subGroups2 = $this->pan->getDeviceOnPrems();
                     $subGroups = array_merge( $subGroups, $subGroups2 );
+
+                    $subGroups2 = $this->pan->getSnippets();
+                    $subGroups = array_merge( $subGroups, $subGroups2 );
                 }
 
 
@@ -1616,6 +1619,9 @@ class UTIL
                 $subGroups = array_merge( $subGroups, $subGroups2 );
 
                 $subGroups2 = $this->pan->getDeviceOnPrems();
+                $subGroups = array_merge( $subGroups, $subGroups2 );
+
+                $subGroups2 = $this->pan->getSnippets();
                 $subGroups = array_merge( $subGroups, $subGroups2 );
             }
 
@@ -1737,7 +1743,7 @@ class UTIL
             elseif( $this->pan->isFirewall() )
                 $typeString = "Vsys";
             elseif( $this->pan->isFawkes() || $this->pan->isBuckbeak() )
-                $typeString = "Container/DeviceCloud/DeviceOnPrem";
+                $typeString = "Container/DeviceCloud/DeviceOnPrem/Snippet";
             PH::print_stdout( "* objects processed in ".$typeString." '{$tmp_name}' : $subObjectsProcessed" );
             PH::print_stdout();
             PH::$JSON_TMP['sub']['summary']['processed'] = $subObjectsProcessed;

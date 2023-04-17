@@ -14,6 +14,7 @@ BUGFIX:
 GENERAL:
 * dockerfile update to ubuntu22 and php8.1
 * general | introduce argument 'shadow-displayxmlnode'
+* general | extend utilities for Fawkes/Buckbeak Snippets
 
 
 2.0.75 (20230412)

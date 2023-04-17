@@ -55,6 +55,12 @@ SecurityProfileGroupCallContext::$supportedActions[] = array(
             }
         }
 
+        if( PH::$shadow_displayxmlnode )
+        {
+            PH::print_stdout(  "" );
+            DH::DEBUGprintDOMDocument($context->object->xmlroot);
+        }
+
         PH::print_stdout(  "" );
     },
 );

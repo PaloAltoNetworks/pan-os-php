@@ -1288,6 +1288,8 @@ class FawkesConf
             $return = $this->findDeviceCloud($location);
         if( $return == null )
             $return = $this->findDeviceOnPrem($location);
+        if( $return == null )
+            $return = $this->findSnippet($location);
         return $return;
     }
 
