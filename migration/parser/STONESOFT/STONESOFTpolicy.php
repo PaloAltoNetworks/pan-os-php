@@ -27,6 +27,8 @@ trait STONESOFTpolicy
                 continue;
 
             $name = DH::findAttribute('name', $fw_sub_policy);
+            $name = $this->subRule_name($name);
+
             $comment = DH::findAttribute('comment', $fw_sub_policy);
 
 
@@ -209,6 +211,8 @@ trait STONESOFTpolicy
                     $subrule_class_id = DH::findAttribute('subrule_class_id', $access_rule_action);
                     $subrule_ref = DH::findAttribute('subrule_ref', $access_rule_action);
 
+                    $subrule_ref = $this->subRule_name($subrule_ref);
+
 
                     print "\n\nSUBRULE TAG: " . $subrule_ref . "\n";
 
@@ -216,6 +220,14 @@ trait STONESOFTpolicy
 
                     if( $tag_search != null )
                     {
+                        if( strpos( $subrule_ref, "(" ) !== False || strpos( $subrule_ref, "(" ) )
+                        {
+                            PH::print_stdout();
+                            PH::print_stdout("----------------------------------------------");
+                            PH::print_stdout("please change in name the following characters '(' and ')' with e.g.: '_': ".$subrule_ref);
+                            derr("'(' or ')' are not allowed in the rule tag query, please replace in original configuration file", null, False);
+                        }
+
                         $query = '(tag has fw_sub_policy) and (tag has ' . $subrule_ref . ')';
                         PH::print_stdout( "- query: ".$query);
                         $subrules_array = $this->sub->securityRules->rules( $query);
@@ -475,6 +487,13 @@ trait STONESOFTpolicy
         #}
 
 
+    }
+
+    function subRule_name( $subRuleName)
+    {
+        $subRuleName = str_replace("(", "_", $subRuleName);
+        $subRuleName = str_replace(")", "_", $subRuleName);
+        return $subRuleName;
     }
 
     function match_condition( $access_rule, $tmprule)

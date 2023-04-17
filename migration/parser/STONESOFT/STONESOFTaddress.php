@@ -734,8 +734,12 @@ trait STONESOFTaddress
                     TAG::revertreplaceNamewith( $toStringInline );
                     $tag_string = "tag: '".$toStringInline."'";
                 }
+
+                PH::print_stdout();
+                PH::print_stdout("-------------------------------------------------------------");
+                PH::print_stdout(" - please check the following address object and rename it in original configuration file");
                 PH::print_stdout( "   * " . get_class($object) . " '{$object->name()}'  value: '{$object->value()}'  desc: '{$object->description()}' IPcount: '{$object->getIPcount()}' $tag_string" );
-                derr( "object: ".$tmpaddressgroup->name()." is not an addressGroup" );
+                derr( "object: ".$tmpaddressgroup->name()." is not an addressGroup", null, FALSE );
             }
 
 
