@@ -7,7 +7,7 @@ ARG user_var="root"
 SHELL ["/bin/bash", "-c"]
 
 RUN DEBIAN_FRONTEND=noninteractive apt update --fix-missing
-RUN DEBIAN_FRONTEND=noninteractive apt install -y \
+RUN DEBIAN_FRONTEND=noninteractive apt install -y --fix-missing \
     tzdata \
     git \
     bash-completion \

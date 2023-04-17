@@ -8,6 +8,7 @@ UTIL:
 * type=rule | actions=exporttoexcel - extend help information for applicationsee and hitcount
 
 BUGFIX:
+* class Snippet | bugfix add DataFilteringProfileStore
 
 GENERAL:
 * dockerfile update to ubuntu22 and php8.1

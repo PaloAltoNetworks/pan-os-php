@@ -132,7 +132,7 @@ class AuthenticationRule extends RuleWithUserID
         }
         else
         {
-            mwarning("'<action> not found, assuming 'no-captive-portal'", $xml);
+            mwarning("Authentication Rule '<action>' not found, assuming 'no-captive-portal'", $xml, FALSE, TRUE);
         }
         // End of <rule-type>
 

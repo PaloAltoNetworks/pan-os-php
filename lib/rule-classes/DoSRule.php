@@ -63,7 +63,7 @@ class DoSRule extends RuleWithUserID
         $tmp = DH::firstChildElement($tmp1);
         if( $tmp === null || $tmp === false )
         {
-            mwarning("DOS rule has nothing inside <from> tag, please fix before going forward", $tmp1);
+            mwarning("DOS rule has nothing inside <from> tag, please fix before going forward", $tmp1, FALSE, TRUE);
             return;
         }
 
@@ -98,7 +98,7 @@ class DoSRule extends RuleWithUserID
         $tmp = DH::firstChildElement($tmp1);
         if( $tmp === null || $tmp === false )
         {
-            mwarning("DOS rule has nothing inside <to> tag, please fix before going forward", $tmp1);
+            mwarning("DOS rule has nothing inside <to> tag, please fix before going forward", $tmp1, FALSE, TRUE);
             return;
         }
 
@@ -187,7 +187,7 @@ class DoSRule extends RuleWithUserID
         $tmp = DH::findFirstElement('action', $xml);
         if( $tmp === null || $tmp === false )
         {
-            mwarning("DOS rule has nothing inside <action> tag, please fix before going forward", $xml);
+            mwarning("DOS rule has nothing inside <action> tag, please fix before going forward", $xml, FALSE, TRUE);
             return;
         }
 
@@ -206,7 +206,7 @@ class DoSRule extends RuleWithUserID
         }
         else
         {
-            mwarning("'<action> not found, assuming 'Deny'", $xml);
+            mwarning("DOS Rule '<action>' not found, assuming 'Deny'", $xml, FALSE, TRUE);
         }
         // End of <rule-type>
 

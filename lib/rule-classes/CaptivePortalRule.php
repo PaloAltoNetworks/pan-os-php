@@ -125,7 +125,7 @@ class CaptivePortalRule extends Rule
         }
         else
         {
-            mwarning("'<action> not found, assuming 'no-captive-portal'", $xml);
+            mwarning("CaptivePortal Rule '<action>' not found, assuming 'no-captive-portal'", $xml, FALSE, TRUE);
         }
         // End of <rule-type>
 

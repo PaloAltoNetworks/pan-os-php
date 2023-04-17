@@ -28,7 +28,7 @@ class PbfRule extends RuleWithUserID
         $tmp = DH::firstChildElement($tmp1);
         if( $tmp === null || $tmp === false )
         {
-            mwarning("PBF rule has nothing inside <from> tag, please fix before going forward", $tmp1, TRUE, TRUE);
+            mwarning("PBF rule has nothing inside <from> tag, please fix before going forward", $tmp1, FALSE, TRUE);
             return;
         }
 

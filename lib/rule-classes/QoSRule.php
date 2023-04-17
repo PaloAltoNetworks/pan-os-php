@@ -155,7 +155,7 @@ class QoSRule extends RuleWithUserID
         }
         else
         {
-            mwarning("'<action> not found, assuming class '1'", $xml);
+            mwarning("QOS Rule '<action>' not found, assuming class '1'", $xml, FALSE, TRUE);
         }
         // End of <rule-type>
 
