@@ -526,8 +526,26 @@ trait AddressCommon
                     $tmp_store = $objectRef->owner->owner->addressStore;
                 elseif( (get_class($objectRef) == "AddressRuleContainer") )
                     $tmp_store = $objectRef->owner->owner->owner->addressStore;
+                elseif( (get_class($objectRef) == "TunnelInterface") or (get_class($objectRef) == "EthernetInterface") )
+                {
+                    PH::print_stdout( "- SKIP: not yet possible on ".get_class($objectRef) );
+                    $success = false;
+                    continue;
+                }
                 else
-                    $tmp_store = $objectRef->owner->owner->owner->addressStore;
+                {
+                    if( isset($objectRef->owner->owner->owner->addressStore) )
+                        $tmp_store = $objectRef->owner->owner->owner->addressStore;
+                    else
+                    {
+                        PH::print_stdout( "- SKIP: not yet possible on ".get_class($objectRef) );
+                        $success = false;
+                        exit();
+                        continue;
+                    }
+                }
+
+                #template <tunnel><units><entry name="tunnel.1"><ip>
 
                 $tmp_addr = $tmp_store->find( $withObject->name() );
                 if( $tmp_addr === null )

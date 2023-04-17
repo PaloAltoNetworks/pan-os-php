@@ -9,6 +9,7 @@ UTIL:
 
 BUGFIX:
 * class Snippet | bugfix add DataFilteringProfileStore
+* type=address-merger | avoid error out on not yet supported classes Ethernet/TunnelInterface
 
 GENERAL:
 * dockerfile update to ubuntu22 and php8.1
