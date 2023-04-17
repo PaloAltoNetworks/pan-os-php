@@ -12,6 +12,7 @@ BUGFIX:
 
 GENERAL:
 * dockerfile update to ubuntu22 and php8.1
+* general | introduce argument 'shadow-displayxmlnode'
 
 
 2.0.75 (20230412)

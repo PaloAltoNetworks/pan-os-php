@@ -887,7 +887,13 @@ class DH
             $newdoc = new DOMDocument;
             $node = $newdoc->importNode($node, true);
             $newdoc->appendChild($node);
-            print $newdoc->saveXML($newdoc->documentElement);
+
+            $lineReturn = TRUE;
+            $indentingXmlIncreament = 1;
+            $indentingXml = 0;
+            $xml = &DH::dom_to_xml($newdoc->documentElement, $indentingXml, $lineReturn, -1, $indentingXmlIncreament);
+            print $xml;
+            #print $newdoc->saveXML($newdoc->documentElement);
         }
 
     }

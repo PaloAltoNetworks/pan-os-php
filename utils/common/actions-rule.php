@@ -3749,6 +3749,12 @@ RuleCallContext::$supportedActions[] = array(
         $rule = $context->object;
         $context->object->display(7);
 
+        if( PH::$shadow_displayxmlnode )
+        {
+            PH::print_stdout(  "" );
+            DH::DEBUGprintDOMDocument($context->object->xmlroot);
+        }
+
 
         $addResolvedAddressSummary = FALSE;
         $addResolvedServiceSummary = FALSE;
