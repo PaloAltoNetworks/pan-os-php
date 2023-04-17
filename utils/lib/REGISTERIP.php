@@ -54,6 +54,7 @@ class REGISTERIP extends UTIL
 
 
         $action = strtolower(PH::$args['actions']);
+        $isPanorama = false;
 
         if( $action == 'display' || $action == 'unregister-unused' )
         {
@@ -67,18 +68,11 @@ class REGISTERIP extends UTIL
             if( $this->configType == 'panos' )
                 $virtualsystems = $this->pan->getVirtualSystems();
             elseif( $this->configType == 'panorama' )
-                $virtualsystems = $this->pan->getDeviceGroups();
-
-
-
-            foreach( $virtualsystems as $sub )
             {
-                $unregister_array[$sub->name()] = array();
+                $virtualsystems = $this->pan->getDeviceGroups();
+                $isPanorama = True;
 
-                PH::print_stdout( "##################################" );
-                PH::print_stdout( PH::boldText(" - " . $sub->name() ) );
-
-                $register_ip_array = $this->pan->connector->register_getIp($sub->name());
+                $register_ip_array = $this->pan->connector->register_getIp("dummy", $isPanorama);
                 PH::print_stdout( "     - registered-ips: [" . count($register_ip_array) . "]");
 
                 foreach( $register_ip_array as $ip => $reg )
@@ -86,7 +80,30 @@ class REGISTERIP extends UTIL
                     $first_value = reset($reg); // First Element's Value
                     $first_key = key($reg); // First Element's Key
 
-                    PH::print_stdout( "          " . $ip . " - " . $first_key );
+                    PH::print_stdout("          " . $ip . " - " . $first_key);
+                }
+            }
+
+
+            foreach( $virtualsystems as $sub )
+            {
+                $unregister_array[$sub->name()] = array();
+
+                PH::print_stdout("##################################");
+                PH::print_stdout(PH::boldText(" - " . $sub->name()));
+
+                if( $this->configType == 'panos' )
+                {
+                    $register_ip_array = $this->pan->connector->register_getIp($sub->name(), $isPanorama);
+                    PH::print_stdout("     - registered-ips: [" . count($register_ip_array) . "]");
+
+                    foreach( $register_ip_array as $ip => $reg )
+                    {
+                        $first_value = reset($reg); // First Element's Value
+                        $first_key = key($reg); // First Element's Key
+
+                        PH::print_stdout("          " . $ip . " - " . $first_key);
+                    }
                 }
 
                 if( $this->configType == 'panos' )
