@@ -1047,7 +1047,7 @@ class Rule
 <resultfields><member>apps-seen</member><member>last-app-seen-since-count</member><member>days-no-new-app-count</member></resultfields><trafficTimeframe>30</trafficTimeframe><appsSeenTimeframe>any</appsSeenTimeframe><vsysName>vsys1</vsysName><type>security</type><position>main</position><summary>no</summary></policy-app-details></show>";
 
         $connector = findConnectorOrDie($this);
-        $res = $connector->sendOpRequest($cmd, );
+        $res = $connector->sendOpRequest($cmd);
         $res = DH::findFirstElement( "result", $res);
         $res = DH::findFirstElement( "rules", $res);
         $rule = DH::findFirstElementByNameAttr( "entry", $this->name(), $res );

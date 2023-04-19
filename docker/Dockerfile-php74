@@ -21,6 +21,7 @@ COPY git-php /tools/pan-os-php/git-php
 COPY utils /tools/pan-os-php/utils
 COPY tests /tools/pan-os-php/tests
 COPY iron-skillet /tools/pan-os-php/iron-skillet
+COPY migration /tools/pan-os-php/migration
 
 
 # PHP library of pan-os-php

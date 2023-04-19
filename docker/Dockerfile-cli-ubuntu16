@@ -1,26 +1,21 @@
-ARG IMAGE=arm64v8/ubuntu:22.04
+ARG IMAGE=ubuntu:16.04
 FROM ${IMAGE}
 
-
-ARG php_var="8.1"
+ARG php_var="7.0"
 ARG user_var="root"
 
 SHELL ["/bin/bash", "-c"]
 
 RUN DEBIAN_FRONTEND=noninteractive apt update --fix-missing
-
 RUN DEBIAN_FRONTEND=noninteractive apt install -y \
     tzdata \
     git \
-    bash-completion
-
-RUN DEBIAN_FRONTEND=noninteractive apt install -y \
+    bash-completion \
     php$php_var \
     php$php_var-curl \
     php$php_var-dom \
     php$php_var-mbstring \
     php$php_var-bcmath \
-    php$php_var-yaml \
     python3 \
     python3-pandas \
     python3-xlsxwriter \
@@ -39,6 +34,7 @@ COPY utils ./utils
 COPY tests ./tests
 COPY iron-skillet ./iron-skillet
 COPY migration ./migration
+COPY migration ./migration
 
 
 # PHP library of pan-os-php
@@ -50,7 +46,7 @@ RUN cat /tools/pan-os-php/utils/alias.sh >> /$user_var/.bashrc
 RUN cat /tools/pan-os-php/utils/bash_autocompletion/enable_bash.txt >> /$user_var/.bashrc
 
 
-RUN ln -sf /tools/pan-os-php/utils/bash_autocompletion/pan-os-php.sh /usr/share/bash-completion/completions/pan-os-php
+RUN ln -s /tools/pan-os-php/utils/bash_autocompletion/pan-os-php.sh /usr/share/bash-completion/completions/pan-os-php
 
 RUN git config --global user.email=test@test.com user.name=test
 
