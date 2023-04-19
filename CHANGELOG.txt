@@ -1,6 +1,6 @@
 CHANGELOG
 
-2.0.76
+2.1.0
 UTIL:
 * type=vendor-migration | introduce 3rd party Firewall configuration migration to PANOS XML config file
 * type=vendor-migration | vendor=stonesoft - extend validation output
@@ -10,6 +10,7 @@ UTIL:
 BUGFIX:
 * class Snippet | bugfix add DataFilteringProfileStore
 * type=address-merger | avoid error out on not yet supported classes Ethernet/TunnelInterface
+* class Tag.php | bugfix for PHP 7
 
 GENERAL:
 * dockerfile update to ubuntu22 and php8.1
