@@ -125,7 +125,9 @@ class CaptivePortalRule extends Rule
         }
         else
         {
-            mwarning("CaptivePortal Rule '<action>' not found, assuming 'no-captive-portal'", $xml, FALSE, TRUE);
+            $skip_validate =  DH::findAttribute("skip-validate", $xml);
+            if( $skip_validate == False || ($skip_validate !== False && $skip_validate !== "yes" ) )
+                mwarning("CaptivePortal Rule '<action>' not found, assuming 'no-captive-portal'", $xml, FALSE, TRUE);
         }
         // End of <rule-type>
 

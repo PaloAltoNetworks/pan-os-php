@@ -66,6 +66,7 @@ class InterfaceContainer extends ObjRuleContainer
                     //Todo: 20220801 swaschkut
                     // - Buckbeak snippet issue with loading config as now network part was defined
                     #DH::DEBUGprintDOMDocument($node);
+                    print get_class( $this->owner->owner->owner ).": ".$this->owner->owner->owner->name()." | ";
                     print "Snippet interface variable: ".$interfaceString."\n";
                 }
                 else
@@ -95,7 +96,7 @@ class InterfaceContainer extends ObjRuleContainer
     }
 
     /**
-     * @return EthernetInterface[]|AggregateEthernetInterface[]|LoopbackInterface[]||IPsecTunnel[]|TunnelInterface[]|VlanInterface[]
+     * @return EthernetInterface[]|AggregateEthernetInterface[]|LoopbackInterface[]|IPsecTunnel[]|TunnelInterface[]|VlanInterface[]
      */
     public function interfaces()
     {

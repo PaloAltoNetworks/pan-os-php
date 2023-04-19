@@ -155,7 +155,9 @@ class QoSRule extends RuleWithUserID
         }
         else
         {
-            mwarning("QOS Rule '<action>' not found, assuming class '1'", $xml, FALSE, TRUE);
+            $skip_validate =  DH::findAttribute("skip-validate", $xml);
+            if( $skip_validate == False || ($skip_validate !== False && $skip_validate !== "yes" ) )
+                mwarning("QOS Rule '<action>' not found, assuming class '1'", $xml, FALSE, TRUE);
         }
         // End of <rule-type>
 

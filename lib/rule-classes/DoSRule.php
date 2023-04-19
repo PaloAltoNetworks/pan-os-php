@@ -63,7 +63,10 @@ class DoSRule extends RuleWithUserID
         $tmp = DH::firstChildElement($tmp1);
         if( $tmp === null || $tmp === false )
         {
-            mwarning("DOS rule has nothing inside <from> tag, please fix before going forward", $tmp1, FALSE, TRUE);
+            $skip_validate =  DH::findAttribute("skip-validate", $this->xmlroot);
+            if( $skip_validate == False || ($skip_validate !== False && $skip_validate !== "yes" ) )
+                mwarning("DOS rule has nothing inside <from> tag, please fix before going forward", $tmp1, FALSE, TRUE);
+
             return;
         }
 
@@ -98,7 +101,10 @@ class DoSRule extends RuleWithUserID
         $tmp = DH::firstChildElement($tmp1);
         if( $tmp === null || $tmp === false )
         {
-            mwarning("DOS rule has nothing inside <to> tag, please fix before going forward", $tmp1, FALSE, TRUE);
+            $skip_validate = DH::findAttribute("skip-validate", $this->xmlroot);
+            if( $skip_validate == FALSE || ($skip_validate !== FALSE && $skip_validate !== "yes") )
+                mwarning("DOS rule has nothing inside <to> tag, please fix before going forward", $tmp1, FALSE, TRUE);
+
             return;
         }
 
@@ -187,7 +193,10 @@ class DoSRule extends RuleWithUserID
         $tmp = DH::findFirstElement('action', $xml);
         if( $tmp === null || $tmp === false )
         {
-            mwarning("DOS rule has nothing inside <action> tag, please fix before going forward", $xml, FALSE, TRUE);
+            $skip_validate =  DH::findAttribute("skip-validate", $xml);
+            if( $skip_validate == False || ($skip_validate !== False && $skip_validate !== "yes" ) )
+                mwarning("DOS rule has nothing inside <action> tag, please fix before going forward", $xml, FALSE, TRUE);
+
             return;
         }
 
@@ -206,7 +215,9 @@ class DoSRule extends RuleWithUserID
         }
         else
         {
-            mwarning("DOS Rule '<action>' not found, assuming 'Deny'", $xml, FALSE, TRUE);
+            $skip_validate =  DH::findAttribute("skip-validate", $xml);
+            if( $skip_validate == False || ($skip_validate !== False && $skip_validate !== "yes" ) )
+                mwarning("DOS Rule '<action>' not found, assuming 'Deny'", $xml, FALSE, TRUE);
         }
         // End of <rule-type>
 

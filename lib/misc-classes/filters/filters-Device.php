@@ -148,7 +148,7 @@ RQuery::$defaultFilters['device']['templatestack']['operators']['has.member'] = 
 
         $class = get_class( $object );
         if( $class !== "TemplateStack" )
-            return false;
+            return null;
 
         $used_templates = $context->object->templates;
         foreach( $used_templates as $template )
@@ -171,8 +171,8 @@ RQuery::$defaultFilters['device']['template']['operators']['has-multi-vsys'] = a
         $object = $context->object;
 
         $class = get_class( $object );
-        if( $class !== "Template" )
-            return false;
+        if( $class !== "Template" && $class !== "TemplateStack" )
+            return null;
 
         $vsyses = $object->deviceConfiguration->getVirtualSystems();
         if( count($vsyses) > 1 )
@@ -216,7 +216,7 @@ RQuery::$defaultFilters['device']['devicegroup']['operators']['has.vsys'] = arra
 
         $class = get_class( $object );
         if( $class !== "DeviceGroup" )
-            return false;
+            return null;
 
         $DGdevices = $object->getDevicesInGroup();
         foreach( $DGdevices as $key => $device )
