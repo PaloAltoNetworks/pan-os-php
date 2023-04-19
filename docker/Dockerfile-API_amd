@@ -25,6 +25,7 @@ COPY utils /var/www/html/utils
 COPY tests /var/www/html/tests
 COPY log /var/www/html/log
 COPY iron-skillet /var/www/html/iron-skillet
+COPY migration /var/www/html/migration
 
 RUN chmod -R 777 /var/www/html/utils/api/v1/project
 RUN chmod -R 777 /var/www/html/log
