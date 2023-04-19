@@ -5,6 +5,7 @@ UTIL:
 
 BUGFIX:
 * Dockerfile update to get everything working with new type=vendor-migration
+* class Rule.php - fix for PHP7
 
 GENERAL:
 
