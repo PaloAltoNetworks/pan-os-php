@@ -368,7 +368,7 @@ class Tag
     /**
      * @return string
      */
-    public function getColor(): ?string
+    public function getColor(): string
     {
         $ret = $this->color;
 
@@ -384,7 +384,7 @@ class Tag
     /**
      * @return string
      */
-    public function getComments(): ?string
+    public function getComments(): string
     {
         return $this->comments;
     }
