@@ -181,8 +181,12 @@ class DEVICEUTIL extends UTIL
             }
 
             PH::print_stdout();
-            #PH::print_stdout( "* processing deviceset '" . $store->toString() . "' that holds " . count($objects) . " rules" );
-            $string = "* processing deviceset '" . $store->name()."'";
+            #PH::print_stdout( "* processing deviceset '" . $store->toString() . "' that holds " . count($objects) );
+            if( isset($objects[0]) )
+                $name = get_class($objects[0]);
+            else
+                $name = "";
+            $string = "* processing deviceset '" . $name."'";
             PH::print_stdout( $string );
 
             PH::$JSON_TMP = array();
