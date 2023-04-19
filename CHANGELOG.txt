@@ -6,6 +6,7 @@ UTIL:
 * type=vendor-migration | vendor=stonesoft - extend validation output
 * type=register-ip | extend usage for Panorama registered-ip
 * type=rule | actions=exporttoexcel - extend help information for applicationsee and hitcount
+* type=xpath | introduce argument display-xmlLineNo
 
 BUGFIX:
 * class Snippet | bugfix add DataFilteringProfileStore
