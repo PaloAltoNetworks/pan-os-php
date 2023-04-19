@@ -1,8 +1,16 @@
 CHANGELOG
 
-2.1.1
+2.1.2
 UTIL:
 * type=rule-merger | introduce additionalmatch=logprof - to also check that only rules with same logging profile are merged
+
+BUGFIX:
+
+GENERAL:
+
+
+2.1.1 (20230419)
+UTIL:
 
 BUGFIX:
 * Dockerfile update to get everything working with new type=vendor-migration
