@@ -158,7 +158,15 @@ class DEVICEUTIL extends UTIL
             $store = $rulesRecord['store'];
             $objects = &$rulesRecord['objects'];
             $subObjectsProcessed = 0;
-            #$this->totalObjectsOfSelectedStores += $store->count();
+            if( get_class($objects[0]) == "DeviceGroup" )
+                $counter = count($store->getDeviceGroups());
+            elseif( get_class($objects[0]) == "Template" )
+                $counter= count($store->getTemplates());
+            elseif( get_class($objects[0]) == "TemplateStack" )
+                $counter = count($store->getTemplatesStacks());
+            elseif( get_class($objects[0]) == "ManagedDevice" )
+                $counter = count($store->getAll());
+            $this->totalObjectsOfSelectedStores += $counter;
 
             foreach( $this->doActions as $doAction )
             {
@@ -208,10 +216,9 @@ class DEVICEUTIL extends UTIL
                 $tmp_platform = get_class( $store );
 
             //what todo for devicetype???
-            #PH::print_stdout( "* objects processed in DG/Vsys '{$store->owner->name()}' : $subObjectsProcessed filtered over {$store->count()} available" );
-            #PH::print_stdout( "* objects processed in DG/Vsys/Template/TemplateStack/Container/ " );
-            #PH::$JSON_TMP['sub']['summary']['processed'] = $subObjectsProcessed;
-            #PH::$JSON_TMP['sub']['summary']['available'] = $store->count();
+            PH::print_stdout( "* objects processed  : $subObjectsProcessed filtered over {$counter} available" );
+            PH::$JSON_TMP['sub']['summary']['processed'] = $subObjectsProcessed;
+            PH::$JSON_TMP['sub']['summary']['available'] = $counter;
 
             PH::print_stdout( PH::$JSON_TMP, false, $tmp_platform );
             PH::$JSON_TMP = array();

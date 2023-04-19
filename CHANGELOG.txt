@@ -6,6 +6,7 @@ UTIL:
 
 BUGFIX:
 * Dockerfiles | update
+* type=device | fix object count for utilities
 
 GENERAL:
 
