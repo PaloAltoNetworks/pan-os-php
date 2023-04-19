@@ -1,0 +1,12 @@
+{
+  "migration_feature": {
+  },
+  "migration_improvement_feature": {
+    "interface-renaming": "true",
+    "zone-calculation": "true",
+    "appid-migration": "true",
+    "cleanup-unused-predefined-services": "true",
+    "validate-address-object-name-region-object": "true",
+    "validate-nat-bidir": "true"
+  }
+}

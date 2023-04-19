@@ -115,6 +115,14 @@ class PH
                     $argc--;
                 continue;
             }
+            elseif( $arg == 'shadow-displayxmlnode' )
+            {
+                PH::$shadow_displayxmlnode = TRUE;
+                unset(PH::$argv[$argIndex]);
+                if( !isset( $_SERVER['REQUEST_METHOD'] ) )
+                    $argc--;
+                continue;
+            }
         }
         unset($argIndex);
         unset($arg);
@@ -151,6 +159,9 @@ class PH
     public static $shadow_reducexml = FALSE;
 
     public static $shadow_json = FALSE;
+
+    public static $shadow_displayxmlnode = FALSE;
+
     public static $JSON_OUT = array();
     public static $JSON_TMP = array();
     public static $JSON_OUTlog = "";
@@ -161,7 +172,7 @@ class PH
 
     private static $library_version_major = 2;
     private static $library_version_sub = 0;
-    private static $library_version_bugfix = 75;
+    private static $library_version_bugfix = 76;
 
     //BASIC AUTH PAN-OS 7.1
     public static $softwareupdate_key = "658d787f293e631196dac9fb29490f1cc1bb3827";
@@ -943,7 +954,8 @@ class PH
         "certificate",
         "ssh-connector",
         "custom-report",
-        "gcp"
+        "gcp",
+        "vendor-migration"
         );
 
 
@@ -1118,6 +1130,9 @@ class PH
             || $type == 'threat'
         )
             $util = new UTIL($type, $argv, $argc,$PHP_FILE." type=".$type, $_supportedArguments, $_usageMsg, $projectfolder);
+
+        elseif( $type == "vendor-migration" )
+            $util = new CONVERTER($type, $argv, $argc,$PHP_FILE." type=".$type, $_supportedArguments, $_usageMsg, $projectfolder);
 
         $util->endOfScript();
 

@@ -146,7 +146,7 @@ class Tag
      * @param bool $fromXmlTemplate
      * @throws Exception
      */
-    public function __construct(string $name, ?TagStore $owner, bool $fromXmlTemplate = FALSE)
+    public function __construct(string $name, TagStore $owner, bool $fromXmlTemplate = FALSE)
     {
         $this->replaceNamewith( $name );
         $this->name = $name;

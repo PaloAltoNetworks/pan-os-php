@@ -83,6 +83,10 @@ require_once(dirname(__FILE__)."/SSH_CONNECTOR__.php");
 
 require_once(dirname(__FILE__)."/GCP.php");
 
+require_once dirname(__FILE__)."/../../migration/parser/lib/CONVERTER.php";
+require_once dirname(__FILE__)."/../../migration/parser/lib/PARSER.php";
+require_once dirname(__FILE__)."/../../migration/parser/lib/SHAREDNEW.php";
+
 class UTIL
 {
     public $argv = null;
@@ -284,6 +288,7 @@ class UTIL
         $this->supportedArguments['shadow-reducexml']= array('niceName' => 'shadow-reducexml', 'shortHelp' => 'store reduced XML, without newline and remove blank characters in offline mode');
         $this->supportedArguments['shadow-json']= array('niceName' => 'shadow-json', 'shortHelp' => 'BETA command to display output on stdout not in text but in JSON format');
         $this->supportedArguments['shadow-nojson']= array('niceName' => 'shadow-nojson', 'shortHelp' => 'BETA command to display output on stdout in text format');
+        $this->supportedArguments['shadow-displayxmlnode']= array('niceName' => 'shadow-displayxmlnode', 'shortHelp' => 'command to display XML node in addition to for actions=display');
 
     }
 
@@ -1541,6 +1546,9 @@ class UTIL
 
                     $subGroups2 = $this->pan->getDeviceOnPrems();
                     $subGroups = array_merge( $subGroups, $subGroups2 );
+
+                    $subGroups2 = $this->pan->getSnippets();
+                    $subGroups = array_merge( $subGroups, $subGroups2 );
                 }
 
 
@@ -1611,6 +1619,9 @@ class UTIL
                 $subGroups = array_merge( $subGroups, $subGroups2 );
 
                 $subGroups2 = $this->pan->getDeviceOnPrems();
+                $subGroups = array_merge( $subGroups, $subGroups2 );
+
+                $subGroups2 = $this->pan->getSnippets();
                 $subGroups = array_merge( $subGroups, $subGroups2 );
             }
 
@@ -1732,7 +1743,7 @@ class UTIL
             elseif( $this->pan->isFirewall() )
                 $typeString = "Vsys";
             elseif( $this->pan->isFawkes() || $this->pan->isBuckbeak() )
-                $typeString = "Container/DeviceCloud/DeviceOnPrem";
+                $typeString = "Container/DeviceCloud/DeviceOnPrem/Snippet";
             PH::print_stdout( "* objects processed in ".$typeString." '{$tmp_name}' : $subObjectsProcessed" );
             PH::print_stdout();
             PH::$JSON_TMP['sub']['summary']['processed'] = $subObjectsProcessed;

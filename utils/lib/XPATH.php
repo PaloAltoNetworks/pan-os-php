@@ -28,6 +28,7 @@ class XPATH extends UTIL
             "        \"[xpath=/config/devices/entry[@name='localhost.localdomain']/deviceconfig/system/update-server]\"\n".
             "        \"[display-fullxpath]\"\n".
             "        \"[display-xmlnode]\"\n".
+            "        \"[display-xmllineno]\"\n".
             "        \"[display-attributename]\"\n".
             "php ".basename(__FILE__)." help          : more help messages\n";
 
@@ -53,6 +54,7 @@ class XPATH extends UTIL
         $fullxpath = false;
         $xpath = null;
         $displayXMLnode = false;
+        $displayXMLlineno = false;
         $displayAttributeName = false;
 
         if( !isset( PH::$args['node-filter'] ) && !isset( PH::$args['nameattribute-filter'] ) && !isset( PH::$args['xpath-filter'] ) )
@@ -70,6 +72,9 @@ class XPATH extends UTIL
 
         if( isset( PH::$args['display-xmlnode'] ) )
             $displayXMLnode = true;
+
+        if( isset( PH::$args['display-xmllineno'] ) )
+            $displayXMLlineno = true;
 
         if( isset( PH::$args['nameattribute-filter'] ) )
             $nameattribute = PH::$args['nameattribute-filter'];
@@ -120,6 +125,7 @@ class XPATH extends UTIL
 
                     $tmpArray['text'] = $text;
                     $tmpArray['node'] = $item;
+                    $tmpArray['line'] = $item->getLineNo();
 
                     $templateEntryArray['template'][$templateName][] = $tmpArray;
 
@@ -128,6 +134,7 @@ class XPATH extends UTIL
                 {
                     $tmpArray['text'] = $text;
                     $tmpArray['node'] = $item;
+                    $tmpArray['line'] = $item->getLineNo();
 
                     $templateEntryArray['misc'][] = $tmpArray;
                 }
@@ -147,6 +154,9 @@ class XPATH extends UTIL
                         PH::print_stdout("---------");
                         if( !$displayXMLnode && !$displayAttributeName )
                             PH::print_stdout( "   * XPATH: ".$item['text'] );
+
+                        if( $displayXMLlineno )
+                            PH::print_stdout( "   * line: ".$item['line'] );
 
                         if( $fullxpath )
                             PH::print_stdout("     |" . $item['xpath'] . "|");
@@ -171,6 +181,9 @@ class XPATH extends UTIL
 
                     if( !$displayXMLnode && !$displayAttributeName )
                         PH::print_stdout( "   * XPATH: ".$xpath );
+
+                    if( $displayXMLlineno )
+                        PH::print_stdout( "   * line: ".$miscEntry['line'] );
 
                     if( $displayXMLnode )
                         $this->getXpathDisplay( $xpath, "");
@@ -287,8 +300,14 @@ class XPATH extends UTIL
 
             if( $entry === false )
             {
-                PH::print_stdout( "   * VALUE: ".$newdoc->saveXML( $newdoc->documentElement ) );
-                PH::$JSON_TMP[$serial]['value'] = $newdoc->saveXML( $newdoc->documentElement );
+                $lineReturn = TRUE;
+                $indentingXmlIncreament = 3;
+                $indentingXml = 0;
+                $xml = &DH::dom_to_xml($newdoc->documentElement, $indentingXml, $lineReturn, -1, $indentingXmlIncreament);
+
+                PH::print_stdout( "   * VALUE: " );
+                PH::print_stdout( $xml );
+                PH::$JSON_TMP[$serial]['value'] = $xml;
             }
             else
             {

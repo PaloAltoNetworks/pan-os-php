@@ -28,7 +28,9 @@ class PbfRule extends RuleWithUserID
         $tmp = DH::firstChildElement($tmp1);
         if( $tmp === null || $tmp === false )
         {
-            mwarning("PBF rule has nothing inside <from> tag, please fix before going forward", $tmp1, TRUE, TRUE);
+            $skip_validate =  DH::findAttribute("skip-validate", $this->xmlroot);
+            if( $skip_validate == False || ($skip_validate !== False && $skip_validate !== "yes" ) )
+                mwarning("PBF rule has nothing inside <from> tag, please fix before going forward", $tmp1, FALSE, TRUE);
             return;
         }
 

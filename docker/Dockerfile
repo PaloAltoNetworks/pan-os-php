@@ -1,20 +1,16 @@
-ARG IMAGE=ubuntu:20.04
+ARG IMAGE=ubuntu:22.04
 FROM ${IMAGE}
 
-ARG php_var="7.4"
+ARG php_var="8.1"
 ARG user_var="root"
 
 SHELL ["/bin/bash", "-c"]
 
 RUN DEBIAN_FRONTEND=noninteractive apt update --fix-missing
-
-
 RUN DEBIAN_FRONTEND=noninteractive apt install -y --fix-missing \
     tzdata \
-	bash-completion \
-	git
-
-RUN DEBIAN_FRONTEND=noninteractive apt install -y --fix-missing \
+    git \
+    bash-completion \
     php$php_var \
     php$php_var-curl \
     php$php_var-dom \
@@ -49,7 +45,7 @@ RUN cat /tools/pan-os-php/utils/alias.sh >> /$user_var/.bashrc
 RUN cat /tools/pan-os-php/utils/bash_autocompletion/enable_bash.txt >> /$user_var/.bashrc
 
 
-RUN ln -sf /tools/pan-os-php/utils/bash_autocompletion/pan-os-php.sh /usr/share/bash-completion/completions/pan-os-php
+RUN ln -s /tools/pan-os-php/utils/bash_autocompletion/pan-os-php.sh /usr/share/bash-completion/completions/pan-os-php
 
 RUN git config --global user.email=test@test.com user.name=test
 

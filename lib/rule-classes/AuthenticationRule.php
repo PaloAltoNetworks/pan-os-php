@@ -132,7 +132,9 @@ class AuthenticationRule extends RuleWithUserID
         }
         else
         {
-            mwarning("'<action> not found, assuming 'no-captive-portal'", $xml);
+            $skip_validate =  DH::findAttribute("skip-validate", $xml);
+            if( $skip_validate == False || ($skip_validate !== False && $skip_validate !== "yes" ) )
+                mwarning("Authentication Rule '<action>' not found, assuming 'no-captive-portal'", $xml, FALSE, TRUE);
         }
         // End of <rule-type>
 

@@ -149,6 +149,9 @@ class NETWORKUTIL extends UTIL
 
                     $subGroups2 = $this->pan->getDeviceOnPrems();
                     $subGroups = array_merge( $subGroups, $subGroups2 );
+
+                    $subGroups2 = $this->pan->getSnippets();
+                    $subGroups = array_merge( $subGroups, $subGroups2 );
                 }
 
                 if( $this->configType == 'panorama' )

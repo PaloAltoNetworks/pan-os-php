@@ -869,7 +869,7 @@ class PanAPIConnector
      * @param string $vsys
      * @return string[][] $registered ie: Array( '1.1.1.1' => Array('tag1', 'tag3'), '2.3.4.5' => Array('tag7') )
      */
-    public function register_getIp($vsys = 'vsys1')
+    public function register_getIp($vsys = 'vsys1', $panorama = false)
     {
         $counter = 0;
 
@@ -877,7 +877,8 @@ class PanAPIConnector
 
         $params = array();
         $params['type'] = 'op';
-        $params['vsys'] = $vsys;
+        if( !$panorama )
+            $params['vsys'] = $vsys;
         $params['cmd'] = &$cmd;
 
 
@@ -917,7 +918,8 @@ class PanAPIConnector
         {
             $params = array();
             $params['type'] = 'op';
-            $params['vsys'] = $vsys;
+            if( !$panorama )
+                $params['vsys'] = $vsys;
             $params['cmd'] = &$cmd;
 
             $r = $this->sendRequest($params, TRUE);

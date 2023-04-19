@@ -1,0 +1,458 @@
+{
+    "appid_migration": {
+        "PPTP-Data-GRE": {
+            "toApp": [
+                "ipsec-esp"
+            ]
+        },
+        "IPSec-ESP": {
+            "toApp": [
+                "ipsec-esp"
+            ]
+        },
+        "IPSec-AH": {
+            "toApp": [
+                "ipsec-ah"
+            ]
+        },
+        "____app-icmp": {
+            "toApp": [
+                "icmp",
+                "ping",
+                "traceroute"
+            ]
+        },
+        "tmp-icmp": {
+            "toApp": [
+                "icmp",
+                "ping",
+                "traceroute"
+            ]
+        },
+        "tmp-icmp_8_0": {
+            "toApp": [
+                "icmp_echo"
+            ]
+        },
+        "tmp-icmp_3_*": {
+            "toApp": [
+                "icmp_destination_unreachable"
+            ]
+        },
+        "tmp-icmp_*_*": {
+            "toApp": [
+                "icmp",
+                "ping",
+                "traceroute"
+            ]
+        },
+        "tmp-icmp_0_0": {
+            "toApp": [
+                "icmp_echo_reply"
+            ]
+        },
+        "tmp-icmp-alternate-address": {
+            "toApp": [
+                "icmp_alternate_address"
+            ]
+        },
+        "tmp-icmp-conversion-error": {
+            "toApp": [
+                "icmp_conversion_error"
+            ]
+        },
+        "tmp-icmp-echo": {
+            "toApp": [
+                "icmp_echo"
+            ]
+        },
+        "tmp-icmp-echo-reply": {
+            "toApp": [
+                "icmp_echo_reply"
+            ]
+        },
+        "tmp-icmp-information-reply": {
+            "toApp": [
+                "icmp_information_reply"
+            ]
+        },
+        "tmp-icmp-information-request": {
+            "toApp": [
+                "icmp_information_request"
+            ]
+        },
+        "tmp-icmp-mask-reply": {
+            "toApp": [
+                "icmp_mask_reply"
+            ]
+        },
+        "tmp-icmp-mask-request": {
+            "toApp": [
+                "icmp_mask_request"
+            ]
+        },
+        "tmp-icmp-mobile-redirect": {
+            "toApp": [
+                "icmp_mobile_redirect"
+            ]
+        },
+        "tmp-icmp-parameter-problem": {
+            "toApp": [
+                "icmp_parameter_problem"
+            ]
+        },
+        "tmp-icmp-redirect": {
+            "toApp": [
+                "icmp_redirect"
+            ]
+        },
+        "tmp-icmp-router-advertisement": {
+            "toApp": [
+                "icmp_router_advertisement"
+            ]
+        },
+        "tmp-icmp-router-solicitation": {
+            "toApp": [
+                "icmp_router_solicitation"
+            ]
+        },
+        "tmp-icmp-source-quench": {
+            "toApp": [
+                "icmp_source_quench"
+            ]
+        },
+        "tmp-icmp-time-exceeded": {
+            "toApp": [
+                "icmp_time_exceeded"
+            ]
+        },
+        "tmp-icmp-timestamp-reply": {
+            "toApp": [
+                "icmp_timestamp_reply"
+            ]
+        },
+        "tmp-icmp-timestamp-request": {
+            "toApp": [
+                "icmp_timestamp_request"
+            ]
+        },
+        "tmp-icmp-traceroute": {
+            "toApp": [
+                "ping"
+            ]
+        },
+        "tmp-icmp-unreachable": {
+            "toApp": [
+                "icmp_destination_unreachable"
+            ]
+        },
+        "tmp-icmp6-echo": {
+            "toApp": [
+                "ipv6-icmp_echo-request"
+            ]
+        },
+        "tmp-icmp6-echo-reply": {
+            "toApp": [
+                "ipv6-icmp_echo-reply"
+            ]
+        },
+        "tmp-icmp6-packet-too-big": {
+            "toApp": [
+                "ipv6-icmp_pkt_toobig"
+            ]
+        },
+        "tmp-icmp6-parameter-problem": {
+            "toApp": [
+                "ipv6-icmp_param_problem_c1",
+                "ipv6-icmp_param_problem_c2"
+            ]
+        },
+        "tmp-icmp6-time-exceeded": {
+            "toApp": [
+                "ipv6-icmp_time-exceeded"
+            ]
+        },
+        "tmp-icmp6-unreachable": {
+            "toApp": [
+                "ipv6-icmp_dest-unreachable"
+            ]
+        },
+        "tmp-gtraceroute": {
+            "toApp": [
+                "icmp",
+                "ping",
+                "traceroute"
+            ]
+        },
+        "tmp-GS_gtraceroute": {
+            "toApp": [
+                "icmp",
+                "ping",
+                "traceroute"
+            ]
+        },
+        "tmp-ICMP_ANY": {
+            "toApp": [
+                "icmp",
+                "ping",
+                "traceroute"
+            ]
+        },
+        "tmp-PING": {
+            "toApp": [
+                "icmp",
+                "ping",
+                "traceroute"
+            ]
+        },
+        "tmp-TRACEROUTE": {
+            "toApp": [
+                "icmp",
+                "ping",
+                "traceroute"
+            ]
+        },
+        "tmp-junos-icmp-ping": {
+            "toApp": [
+                "icmp",
+                "ping",
+                "traceroute"
+            ]
+        },
+        "tmp-junos-icmp-all": {
+            "toApp": [
+                "icmp",
+                "ping",
+                "traceroute"
+            ]
+        },
+        "tmp-junos-gre": {
+            "toApp": [
+                "gre"
+            ]
+        },
+        "tmp-junos-ping": {
+            "toApp": [
+                "icmp",
+                "ping",
+                "traceroute"
+            ]
+        },
+        "tmp-junos-ms-rpc-epm": {
+          "toApp": [
+            "msrpc"
+          ]
+        },
+        "tmp-junos-ms-rpc-tcp": {
+          "toApp": [
+            "msrpc"
+          ]
+        },
+        "tmp-junos-ms-rpc-udp": {
+          "toApp": [
+            "msrpc"
+          ]
+        },
+        "tmp-junos-ms-rpc-iis-com-1": {
+          "toApp": [
+            "msrpc"
+          ]
+        },
+        "tmp-junos-ms-rpc-iis-com-adminbase": {
+          "toApp": [
+            "msrpc"
+          ]
+        },
+        "tmp-junos-ms-rpc-msexchange-directory-nsp": {
+          "toApp": [
+            "msrpc"
+          ]
+        },
+        "tmp-junos-ms-rpc-msexchange-directory-rfr": {
+          "toApp": [
+            "msrpc"
+          ]
+        },
+        "tmp-junos-ms-rpc-msexchange-info-store": {
+          "toApp": [
+            "msrpc"
+          ]
+        },
+        "tmp-junos-ms-rpc-uuid-any-tcp": {
+          "toApp": [
+            "msrpc"
+          ]
+        },
+        "tmp-junos-ms-rpc-uuid-any-udp": {
+          "toApp": [
+            "msrpc"
+          ]
+        },
+        "tmp-junos-ms-rpc-wmic-admin": {
+          "toApp": [
+            "msrpc"
+          ]
+        },
+        "tmp-junos-ms-rpc-wmic-admin2": {
+          "toApp": [
+            "msrpc"
+          ]
+        },
+        "tmp-junos-ms-rpc-wmic-mgmt": {
+          "toApp": [
+            "msrpc"
+          ]
+        },
+        "tmp-junos-ms-rpc-wmic-webm-callresult": {
+          "toApp": [
+            "msrpc"
+          ]
+        },
+        "tmp-junos-ms-rpc-wmic-webm-classobject": {
+          "toApp": [
+            "msrpc"
+          ]
+        },
+        "tmp-junos-ms-rpc-wmic-webm-level1login": {
+          "toApp": [
+            "msrpc"
+          ]
+        },
+        "tmp-junos-ms-rpc-wmic-webm-login-clientid": {
+          "toApp": [
+            "msrpc"
+          ]
+        },
+        "tmp-junos-ms-rpc-wmic-webm-login-helper": {
+          "toApp": [
+            "msrpc"
+          ]
+        },
+
+        "tmp-junos-ms-rpc-wmic-webm-objectsink": {
+          "toApp": [
+            "msrpc"
+          ]
+        },
+        "tmp-junos-ms-rpc-wmic-webm-refreshing-services": {
+          "toApp": [
+            "msrpc"
+          ]
+        },
+        "tmp-junos-ms-rpc-wmic-webm-remote-refresher": {
+          "toApp": [
+            "msrpc"
+          ]
+        },
+        "tmp-junos-ms-rpc-wmic-webm-services": {
+          "toApp": [
+            "msrpc"
+          ]
+        },
+        "tmp-junos-ms-rpc-wmic-webm-shutdown": {
+          "toApp": [
+            "msrpc"
+          ]
+        },
+        "tmp-junos-ms-rpc": {
+            "toApp": [
+                "msrpc"
+            ]
+        },
+        "tmp-junos-ms-rpc-any": {
+            "toApp": [
+                "msrpc"
+            ]
+        },
+        "tmp-junos-ms-rpc-iis-com": {
+            "toApp": [
+                "msrpc"
+            ]
+        },
+        "tmp-junos-ms-rpc-msexchange": {
+          "toApp": [
+            "msrpc"
+          ]
+        },
+        "tmp-junos-ms-rpc-wmic": {
+          "toApp": [
+            "msrpc"
+          ]
+        },
+        "tmp-junos-cifs": {
+            "toApp": [
+                "msrpc"
+            ]
+        },
+        "tmp-junos-sun-rpc-rquotad-tcp": {
+            "toApp": [
+                "rpc"
+            ]
+        },
+        "tmp-junos-sun-rpc-rquotad-udp": {
+            "toApp": [
+                "rpc"
+            ]
+        },
+        "tmp-junos-sun-rpc-nlockmgr-tcp": {
+            "toApp": [
+                "rpc"
+            ]
+        },
+        "tmp-junos-sun-rpc-nlockmgr-udp": {
+            "toApp": [
+                "rpc"
+            ]
+        },
+        "tmp-junos-sun-rpc-portmap-tcp": {
+            "toApp": [
+                "rpc"
+            ]
+        },
+        "tmp-junos-sun-rpc-nfs-udp": {
+            "toApp": [
+                "rpc"
+            ]
+        },
+        "tmp-junos-sun-rpc-mountd-tcp": {
+            "toApp": [
+                "rpc"
+            ]
+        },
+        "tmp-junos-sun-rpc-mountd-udp": {
+            "toApp": [
+                "rpc"
+            ]
+        },
+        "tmp-junos-sun-rpc-ypbind-udp": {
+            "toApp": [
+                "rpc"
+            ]
+        },
+        "tmp-junos-sun-rpc-ypbind-tcp": {
+            "toApp": [
+                "rpc"
+            ]
+        },
+        "tmp-junos-sun-rpc-status-tcp": {
+            "toApp": [
+                "rpc"
+            ]
+        },
+        "tmp-junos-sun-rpc-status-udp": {
+            "toApp": [
+                "rpc"
+            ]
+        },
+        "tmp-junos-smb-session": {
+            "toApp": [
+                "ms-ds-smb"
+            ]
+        },
+        "tmp-gre": {
+          "toApp": [
+            "gre"
+          ]
+        }
+    }
+}

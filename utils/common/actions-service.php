@@ -1181,6 +1181,12 @@ ServiceCallContext::$supportedActions[] = array(
 
             PH::print_stdout( $tmp_txt );
         }
+
+        if( PH::$shadow_displayxmlnode )
+        {
+            PH::print_stdout(  "" );
+            DH::DEBUGprintDOMDocument($context->object->xmlroot);
+        }
     },
 );
 

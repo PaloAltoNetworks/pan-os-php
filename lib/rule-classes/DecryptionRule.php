@@ -300,7 +300,7 @@ class DecryptionRule extends RuleWithUserID
         {
             if( count($this->_urlCategories) != 1 )
                 mwarning('This security rule has URL category = ANY but it also have categories defined. ' .
-                    'Please check your configuration file (corrupted?). *ANY* will be assumed by this framework', $xml);
+                    'Please check your configuration file (corrupted?). *ANY* will be assumed by this framework', $xml, False);
             $this->_urlCategories = array();
         }
 

@@ -3749,6 +3749,12 @@ RuleCallContext::$supportedActions[] = array(
         $rule = $context->object;
         $context->object->display(7);
 
+        if( PH::$shadow_displayxmlnode )
+        {
+            PH::print_stdout(  "" );
+            DH::DEBUGprintDOMDocument($context->object->xmlroot);
+        }
+
 
         $addResolvedAddressSummary = FALSE;
         $addResolvedServiceSummary = FALSE;
@@ -4388,11 +4394,13 @@ RuleCallContext::$supportedActions[] = array(
                 'default' => '*NONE*',
                 'choices' => array('ResolveAddressSummary', 'ResolveServiceSummary', 'ResolveServiceAppDefaultSummary', 'ResolveApplicationSummary', 'ResolveScheduleSummary', 'ApplicationSeen', 'HitCount'),
                 'help' => "pipe(|) separated list of additional field to include in the report. The following is available:\n" .
-                    "  - ResolveAddressSummary : fields with address objects will be resolved to IP addressed and summarized in a new column)\n" .
-                    "  - ResolveServiceSummary : fields with service objects will be resolved to their value and summarized in a new column)\n"  .
-                    "  - ResolveServiceAppDefaultSummary : fields with application objects will be resolved to their service default value and summarized in a new column)\n"  .
-                    "  - ResolveApplicationSummary : fields with application objects will be resolved to their category and risk)\n" .
-                    "  - ResolveScheduleSummary : fields with schedule objects will be resolved to their expire time)\n"
+                    "  - ResolveAddressSummary : fields with address objects will be resolved to IP addressed and summarized in a new column\n" .
+                    "  - ResolveServiceSummary : fields with service objects will be resolved to their value and summarized in a new column\n"  .
+                    "  - ResolveServiceAppDefaultSummary : fields with application objects will be resolved to their service default value and summarized in a new column\n"  .
+                    "  - ResolveApplicationSummary : fields with application objects will be resolved to their category and risk\n" .
+                    "  - ResolveScheduleSummary : fields with schedule objects will be resolved to their expire time\n" .
+                    "  - ApplicationSeen : all App-ID seen on the Device SecurityRule will be listed\n" .
+                    "  - HitCount : Rule - 'first-hit' - 'last-hit' - 'hit-count' will be listed\n"
             )
     )
 );
