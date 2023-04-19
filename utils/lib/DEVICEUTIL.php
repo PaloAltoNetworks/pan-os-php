@@ -158,14 +158,20 @@ class DEVICEUTIL extends UTIL
             $store = $rulesRecord['store'];
             $objects = &$rulesRecord['objects'];
             $subObjectsProcessed = 0;
-            if( get_class($objects[0]) == "DeviceGroup" )
-                $counter = count($store->getDeviceGroups());
-            elseif( get_class($objects[0]) == "Template" )
-                $counter= count($store->getTemplates());
-            elseif( get_class($objects[0]) == "TemplateStack" )
-                $counter = count($store->getTemplatesStacks());
-            elseif( get_class($objects[0]) == "ManagedDevice" )
-                $counter = count($store->getAll());
+            if( isset($objects[0]) )
+            {
+                if( get_class($objects[0]) == "DeviceGroup" )
+                    $counter = count($store->getDeviceGroups());
+                elseif( get_class($objects[0]) == "Template" )
+                    $counter= count($store->getTemplates());
+                elseif( get_class($objects[0]) == "TemplateStack" )
+                    $counter = count($store->getTemplatesStacks());
+                elseif( get_class($objects[0]) == "ManagedDevice" )
+                    $counter = count($store->getAll());
+            }
+            else
+                $counter = 0;
+
             $this->totalObjectsOfSelectedStores += $counter;
 
             foreach( $this->doActions as $doAction )
