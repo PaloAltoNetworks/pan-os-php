@@ -6,6 +6,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 ENV PHP_MEMORY_LIMIT=128M
 
+RUN apt-get update -y --fix-missing
 RUN apt update -y --fix-missing
 RUN apt install -y tzdata git
 

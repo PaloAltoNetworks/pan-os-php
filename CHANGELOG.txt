@@ -5,6 +5,7 @@ UTIL:
 * type=rule-merger | introduce additionalmatch=logprof - to also check that only rules with same logging profile are merged
 
 BUGFIX:
+* Dockerfiles | update
 
 GENERAL:
 
