@@ -107,7 +107,7 @@ class CISCOASA extends PARSER
         {
             //Todo: validation if GLOBAL rule
             echo PH::boldText("Zone Calculation for Security and NAT policy");
-            Converter::calculate_zones($this->template, $this->sub, "append");
+            #Converter::calculate_zones($this->template, $this->sub, "append");
         }
 
 
