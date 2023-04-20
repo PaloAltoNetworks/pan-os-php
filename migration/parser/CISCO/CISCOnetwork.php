@@ -553,7 +553,7 @@ trait CISCOnetwork
         if( count($addInterface) > 0 )
         {
 
-            print_r( $addInterface );
+            #print_r( $addInterface );
 
             foreach( $addInterface as $int )
             {
