@@ -54,6 +54,8 @@ __pan-os-php_scripts()
 		declare -a actions
 		declare -a filters
 
+		declare -a vendor
+
 
 		arguments=('type=' 'in=' 'out=' 'actions=' 'filter=' 'location=' 'loadpanoramapushedconfig' 'loadplugin=' 'help'
 		 'listactions' 'listfilters' 'debugapi' 'apitimeout='
@@ -61,6 +63,10 @@ __pan-os-php_scripts()
 		 'shadow-ignoreinvalidaddressobjects' 'shadow-json' 'shadow-reducexml'
 		 'outputformatset='
 		 'stats' 'template=' 'version' )
+
+    arguments_migration=('type=' 'in=' 'out=' 'file=' 'help' 'vendor=' 'routetable=' 'mapping=' )
+
+		vendor=('ciscoasa' 'netscreen' 'sonicwall' 'sophos' 'ciscoswitch' 'ciscoisr' 'fortinet' 'srx' 'cp-r80' 'cp' 'cp-beta' 'huawei' 'stonesoft' 'sidewinder')
 
     DIR="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
     jsonFILE=$DIR"/../lib/util_action_filter.json"
@@ -125,6 +131,11 @@ __pan-os-php_scripts()
 			  ]] ; then
 
 			    compopt +o nospace
+			elif [[ "${prev}" = "vendor" || "${prev2}" = "vendor" \
+      			  ]] ; then
+
+      				compopt +o nospace
+      				COMPREPLY=($(compgen -W '${vendor[*]}' -- "${cur2}"))
 			elif [[ "${checkArray[*]}" =~ ${prev}  || "${checkArray[*]}" =~ ${prev2} ]] ; then
 
 				local IFS=$'\n'
@@ -143,6 +154,7 @@ __pan-os-php_scripts()
           case ${prevstring} in
             type*)
               unset 'arguments[0]'
+              unset 'arguments_migration[0]'
               ;;
             in*)
               unset 'arguments[1]'
@@ -167,6 +179,15 @@ __pan-os-php_scripts()
               ;;
            template*)
               unset 'arguments[22]'
+              ;;
+            vendor*)
+              unset 'arguments_migration[5]'
+              ;;
+            routetable*)
+              unset 'arguments_migration[6]'
+              ;;
+            mapping*)
+              unset 'arguments_migration[7]'
               ;;
           esac
         else
@@ -222,7 +243,16 @@ __pan-os-php_scripts()
 
 
 			local arg compreply=""
-			COMPREPLY=($(compgen -W '${arguments[*]}' -- "${COMP_WORDS[COMP_CWORD]}"))
+			for KEY in "${!COMP_WORDS[@]}"; do
+        if [[ "${COMP_WORDS[$KEY]}" == "type" ]] ; then
+          typeargument=${COMP_WORDS[$KEY+2]}
+        fi
+      done
+      if [[ "${typeargument}" == "vendor-migration" ]] ; then
+        COMPREPLY=($(compgen -W '${arguments_migration[*]}' -- "${COMP_WORDS[COMP_CWORD]}"))
+      else
+			  COMPREPLY=($(compgen -W '${arguments[*]}' -- "${COMP_WORDS[COMP_CWORD]}"))
+      fi
 
 			if [[ ${#COMPREPLY[*]} == 1 ]] && [[ ${COMPREPLY[0]} =~ "=" ]] ; then
 				compopt -o nospace
