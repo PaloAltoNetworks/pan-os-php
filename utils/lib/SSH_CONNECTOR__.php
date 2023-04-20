@@ -305,7 +305,7 @@ class SSH_CONNECTOR__ extends UTIL
         if( isset(PH::$args['command']) || isset(PH::$args['setcommand-file']) )
         {
             PH::print_stdout("write output into file: " . $outfile);
-            file_put_contents($outfile, $output_string);
+            file_put_contents($outfile, $output_string, FILE_APPEND);
         }
         else
         {

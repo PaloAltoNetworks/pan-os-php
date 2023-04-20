@@ -31,6 +31,7 @@ PH::print_stdout();
 
 $supportedArguments = Array();
 $supportedArguments['in'] = Array('niceName' => 'in', 'shortHelp' => 'input file or api. ie: in=config.xml  or in=api://192.168.1.1 or in=api://0018CAEC3@panorama.company.com', 'argDesc' => '[filename]|[api://IP]|[api://serial@IP]');
+$supportedArguments['out'] = array('niceName' => 'out', 'shortHelp' => 'output file to save config after changes. Only required when input is a file. ie: out=save-config.xml', 'argDesc' => '[filename]');
 $supportedArguments['debugapi'] = Array('niceName' => 'DebugAPI', 'shortHelp' => 'prints API calls when they happen');
 $supportedArguments['help'] = Array('niceName' => 'help', 'shortHelp' => 'this message');
 $supportedArguments['command'] = Array('niceName' => 'test', 'shortHelp' => 'cli command');
@@ -88,6 +89,11 @@ if( isset(PH::$args['command']) )
 else
     derr( "argument 'command' missing" );
 
+if( isset(PH::$args['out']) )
+    $outputfile = PH::$args['out'];
+else
+    derr( "argument 'out' missing" );
+
 if( isset(PH::$args['user']) )
     $user = PH::$args['user'];
 else
@@ -107,7 +113,7 @@ if( $cycleConnectedFirewalls && $util->pan->isPanorama() )
 
     foreach( $firewallSerials as $fw )
     {
-        ssh_connector($fw, $user, $password);
+        ssh_connector($fw, $user, $password, $outputfile);
     }
 }
 elseif( $util->pan->isFirewall() )
@@ -134,7 +140,7 @@ else
 }
 
 
-function ssh_connector($fw, $user, $password)
+function ssh_connector($fw, $user, $password, $outputfile)
 {
     $argv = array();
     $argc = array();
@@ -144,7 +150,7 @@ function ssh_connector($fw, $user, $password)
 
     $argv[0] = "test";
     $argv[] = "in=".$user."@".$fw['ip-address'];
-    $argv[] = "out=TEXTFILE.txt";
+    $argv[] = "out=".$outputfile;
     $argv[] = "command=show system info";
     $argv[] = "password=".$password;
     $argv[] = "timeout=10";

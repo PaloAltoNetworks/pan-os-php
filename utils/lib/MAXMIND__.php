@@ -133,6 +133,8 @@ class MAXMIND__
             $JSONstring = json_encode( $csv, JSON_PRETTY_PRINT );
             #$JSONstring = json_encode( $csv, JSON_PRETTY_PRINT|JSON_FORCE_OBJECT );
 
+            #print $JSONstring;
+
             file_put_contents( $filepath."/data/".$filename, $JSONstring);
         }
 
@@ -200,10 +202,11 @@ class MAXMIND__
                 $value = $ipStart."-".$ipEnd;
 
                 #print "check: ".$array[1]." value: ".$value."\n";
+                #print_r($array);
 
                 if( !empty($array[1]) )
                     $countryArray[ $this->countryNumbers[ $array[1] ] ][] =  $value;
-                else
+                elseif( !empty($array[2]) )
                     $countryArray[ $this->countryNumbers[ $array[2] ] ][] =  $value;
             }
 

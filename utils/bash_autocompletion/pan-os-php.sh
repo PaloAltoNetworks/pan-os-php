@@ -255,6 +255,7 @@ __pan-os-php_scripts()
 
 
 			local arg compreply=""
+			local arg typeargument='None'
 			for KEY in "${!COMP_WORDS[@]}"; do
         if [[ "${COMP_WORDS[$KEY]}" == "type" ]] ; then
           typeargument=${COMP_WORDS[$KEY+2]}
