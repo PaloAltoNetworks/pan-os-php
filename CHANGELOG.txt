@@ -8,6 +8,7 @@ UTIL:
 BUGFIX:
 * Dockerfiles | update
 * type=device | fix object count for utilities
+* type=vendor-migration vendor=ciscoasa | bugfix during original config storing
 
 GENERAL:
 * class ServiceStore | loop detection - reduce mwarning output to a single finding per $groupName
