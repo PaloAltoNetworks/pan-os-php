@@ -10,6 +10,7 @@ BUGFIX:
 * type=device | fix object count for utilities
 
 GENERAL:
+* class ServiceStore | loop detection - reduce mwarning output to a single finding per $groupName
 
 
 2.1.1 (20230419)

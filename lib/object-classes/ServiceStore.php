@@ -186,6 +186,7 @@ class ServiceStore
         }
 
         $loopCount = 0;
+        $listed_loop_group = array();
         while( count($sortingArray) > 0 )
         {
             foreach( $sortingArray as $groupName => &$groupDependencies )
@@ -207,7 +208,12 @@ class ServiceStore
 
                     foreach( $sortingArray as &$tmpGroupDeps )
                     {
-                        mwarning( "servicegroup: ".$groupName." is maybe not listed as it is involved in a loop usage", null, false );
+                        if(!isset($listed_loop_group[$groupName]))
+                        {
+                            $listed_loop_group[$groupName] = $groupName;
+                            mwarning( "servicegroup: ".$groupName." is maybe not listed as it is involved in a loop usage", null, false );
+                        }
+
                         if( isset($tmpGroupDeps[$groupName]) )
                             unset($tmpGroupDeps[$groupName]);
                     }
