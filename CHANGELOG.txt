@@ -14,6 +14,7 @@ BUGFIX:
 GENERAL:
 * class ServiceStore | loop detection - reduce mwarning output to a single finding per $groupName
 * update bash_autocompletion/pan-os-php.sh
+* introduce develop script cyclePanroama_ssh.php
 
 
 2.1.1 (20230419)

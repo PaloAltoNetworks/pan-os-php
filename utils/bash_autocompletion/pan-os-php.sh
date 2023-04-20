@@ -65,6 +65,7 @@ __pan-os-php_scripts()
 		 'stats' 'template=' 'version' )
 
     arguments_migration=('type=' 'in=' 'out=' 'file=' 'help' 'vendor=' 'routetable=' 'mapping=' )
+    arguments_diff=('type=' 'in=' 'help' 'file1=' 'file2=')
 
 		vendor=('ciscoasa' 'netscreen' 'sonicwall' 'sophos' 'ciscoswitch' 'ciscoisr' 'fortinet' 'srx' 'cp-r80' 'cp' 'cp-beta' 'huawei' 'stonesoft' 'sidewinder')
 
@@ -155,9 +156,12 @@ __pan-os-php_scripts()
             type*)
               unset 'arguments[0]'
               unset 'arguments_migration[0]'
+              unset 'arguments_diff[0]'
               ;;
             in*)
               unset 'arguments[1]'
+              unset 'arguments_migration[1]'
+              unset 'arguments_diff[1]'
               ;;
             out*)
               unset 'arguments[2]'
@@ -189,6 +193,12 @@ __pan-os-php_scripts()
             mapping*)
               unset 'arguments_migration[7]'
               ;;
+            file1*)
+              unset 'arguments_diff[3]'
+              ;;
+            file2*)
+              unset 'arguments_diff[4]'
+              ;;
           esac
         else
           #arguments=( "${arguments[@]/$word}" )
@@ -198,6 +208,8 @@ __pan-os-php_scripts()
               ;;
             help )
               unset 'arguments[8]'
+              unset 'arguments_migration[4]'
+              unset 'arguments_diff[2]'
               ;;
             listactions )
               unset 'arguments[9]'
@@ -250,6 +262,8 @@ __pan-os-php_scripts()
       done
       if [[ "${typeargument}" == "vendor-migration" ]] ; then
         COMPREPLY=($(compgen -W '${arguments_migration[*]}' -- "${COMP_WORDS[COMP_CWORD]}"))
+      elif [[ "${typeargument}" == "diff" ]] ; then
+        COMPREPLY=($(compgen -W '${arguments_diff[*]}' -- "${COMP_WORDS[COMP_CWORD]}"))
       else
 			  COMPREPLY=($(compgen -W '${arguments[*]}' -- "${COMP_WORDS[COMP_CWORD]}"))
       fi
