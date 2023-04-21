@@ -207,6 +207,20 @@ class NETWORKUTIL extends UTIL
 
                     }
                 }
+                else
+                {
+                    foreach( $subGroups as $sub )
+                    {
+                        #if( ($location == 'any' || $location == 'all' || $location == $sub->name()) && !isset($ruleStoresToProcess[$sub->name() . '%pre']) )
+                        if( ($location == 'any' || $location == $sub->name()) && !isset($ruleStoresToProcess[$sub->name() . '%pre']) )
+                        {
+                            #if( $this->utilType == 'interface' )
+                            #    $this->objectsToProcess[] = Array('store' => $sub->deviceConfiguration->network, 'objects' => $sub->deviceConfiguration->network->getAllInterfaces());
+                        }
+                    }
+                }
+
+
             }
 
             #if( !$locationFound )

@@ -4,6 +4,7 @@ CHANGELOG
 UTIL:
 * type=rule-merger | introduce additionalmatch=logprof - to also check that only rules with same logging profile are merged
 * type=device | introduce 'filter=(devicegroup with-no-serial)'
+* type=gcp | introduce actions=offboard | extend authentication with automatically open Google Chrome
 
 BUGFIX:
 * Dockerfiles | update
