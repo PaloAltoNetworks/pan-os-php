@@ -17,6 +17,7 @@ GENERAL:
 * update bash_autocompletion/pan-os-php.sh
 * introduce develop script cyclePanroama_ssh.php
 * bash_autocompletion | class MAXMIND | class SSH_CONNECTOR - small adjustments
+* develop start sonicwall.php EXP exported config migration
 
 
 2.1.1 (20230419)
