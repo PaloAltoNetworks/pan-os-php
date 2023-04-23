@@ -38,7 +38,7 @@ function display_usage_and_exit()
 }
 */
 
-function ruleActivation_Phase4_init()
+function ruleActivation_Phase5_init()
 {
     if( isset(PH::$args['help']) )
         display_usage_and_exit();
@@ -99,11 +99,11 @@ function ruleActivation_Phase4_init()
     //
     // REAL JOB STARTS HERE
     //
-    ruleActivation_Phase4_main($subSystem, $configInput, $pan, $inputConnector, $configOutput, $dryRun );
+    ruleActivation_Phase5_main($subSystem, $configInput, $pan, $inputConnector, $configOutput, $dryRun );
 
 }
 
-function ruleActivation_Phase4_main( $subSystem, $configInput, $pan, $inputConnector, $configOutput, $dryRun )
+function ruleActivation_Phase5_main( $subSystem, $configInput, $pan, $inputConnector, $configOutput, $dryRun )
 {
 
     $ridTagLibrary = new RuleIDTagLibrary();

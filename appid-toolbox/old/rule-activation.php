@@ -22,13 +22,13 @@
 
 require_once dirname(__FILE__) . "/../lib/common.php";
 
-require_once dirname(__FILE__) . "/../lib/old/lib_4_rule-activation.php";
+require_once dirname(__FILE__) . "/../lib/old/lib_5_rule-activation.php";
 
 
 PH::print_stdout( "************* START OF SCRIPT ".basename(__FILE__)." ************" );
 PH::print_stdout( " - PAN-OS-PHP version: ".PH::frameworkVersion() . " [".PH::frameworkInstalledOS()."]" );
 PH::processCliArgs();
 
-ruleActivation_Phase4_init();
+ruleActivation_Phase5_init();
 
 PH::print_stdout( "************* END OF SCRIPT ".basename(__FILE__)." ************" );

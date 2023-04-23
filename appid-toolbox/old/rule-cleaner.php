@@ -22,12 +22,12 @@
 
 require_once dirname(__FILE__) . "/../lib/common.php";
 
-require_once dirname(__FILE__) . "/../lib/old/lib_5_rule-cleaner.php";
+require_once dirname(__FILE__) . "/../lib/old/lib_6_rule-cleaner.php";
 
 PH::print_stdout( "\n************* START OF SCRIPT ".basename(__FILE__)." ************" );
 PH::print_stdout( " - PAN-OS-PHP version: ".PH::frameworkVersion() . " [".PH::frameworkInstalledOS()."]" );
 PH::processCliArgs();
 
-ruleCleaner_Phase5_init();
+ruleCleaner_Phase6_init();
 
 PH::print_stdout( "************* END OF SCRIPT ".basename(__FILE__)." ************" );

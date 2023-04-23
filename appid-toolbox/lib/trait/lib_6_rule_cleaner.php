@@ -21,7 +21,7 @@
 
 #####################################
 
-trait lib_5_rule_cleaner
+trait lib_6_rule_cleaner
 {
     function display_usage_and_exit_p5()
     {
@@ -40,7 +40,7 @@ trait lib_5_rule_cleaner
     }
 
 
-    function ruleCleaner_Phase5_init()
+    function ruleCleaner_Phase6_init()
     {
         if( isset(PH::$args['help']) )
             $this->display_usage_and_exit_p5();
@@ -119,10 +119,10 @@ trait lib_5_rule_cleaner
         //
         // REAL JOB STARTS HERE
         //
-        $this->ruleCleaner_Phase5_main($subSystem, $configInput, $pan, $inputConnector, $configOutput, $ruleStats, $skipIfLastReportIsMoreThanX_DaysOld, $dryRun);
+        $this->ruleCleaner_Phase6_main($subSystem, $configInput, $pan, $inputConnector, $configOutput, $ruleStats, $skipIfLastReportIsMoreThanX_DaysOld, $dryRun);
     }
 
-    function ruleCleaner_Phase5_main($subSystem, $configInput, $pan, $inputConnector, $configOutput, $ruleStats, $skipIfLastReportIsMoreThanX_DaysOld, $dryRun)
+    function ruleCleaner_Phase6_main($subSystem, $configInput, $pan, $inputConnector, $configOutput, $ruleStats, $skipIfLastReportIsMoreThanX_DaysOld, $dryRun)
     {
 
 

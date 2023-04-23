@@ -67,6 +67,9 @@ __pan-os-php_scripts()
     arguments_migration=('type=' 'in=' 'out=' 'file=' 'help' 'vendor=' 'routetable=' 'mapping=' )
     arguments_diff=('type=' 'in=' 'help' 'file1=' 'file2=')
 
+    arguments_appidtoolbox=('type=' 'in=' 'out=' 'help' 'phase=' )
+    arguments_appidtoolbox_phase=('phase1' 'rule-marker' 'phase2' 'report-generator' 'phase3' 'rule-cloner' 'phase4' 'rule-activation' 'phase5' 'rule-cleaner' )
+
 		vendor=('ciscoasa' 'netscreen' 'sonicwall' 'sophos' 'ciscoswitch' 'ciscoisr' 'fortinet' 'srx' 'cp-r80' 'cp' 'cp-beta' 'huawei' 'stonesoft' 'sidewinder')
 
     DIR="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
@@ -137,6 +140,11 @@ __pan-os-php_scripts()
 
       				compopt +o nospace
       				COMPREPLY=($(compgen -W '${vendor[*]}' -- "${cur2}"))
+      elif [[ "${prev}" = "phase" || "${prev2}" = "phase" \
+            			  ]] ; then
+
+            				compopt +o nospace
+            				COMPREPLY=($(compgen -W '${arguments_appidtoolbox_phase[*]}' -- "${cur2}"))
 			elif [[ "${checkArray[*]}" =~ ${prev}  || "${checkArray[*]}" =~ ${prev2} ]] ; then
 
 				local IFS=$'\n'
@@ -157,14 +165,17 @@ __pan-os-php_scripts()
               unset 'arguments[0]'
               unset 'arguments_migration[0]'
               unset 'arguments_diff[0]'
+              unset 'arguments_appidtoolbox[0]'
               ;;
             in*)
               unset 'arguments[1]'
               unset 'arguments_migration[1]'
               unset 'arguments_diff[1]'
+              unset 'arguments_appidtoolbox[1]'
               ;;
             out*)
               unset 'arguments[2]'
+              unset 'arguments_appidtoolbox[2]'
               ;;
             actions*)
               unset 'arguments[3]'
@@ -265,6 +276,8 @@ __pan-os-php_scripts()
         COMPREPLY=($(compgen -W '${arguments_migration[*]}' -- "${COMP_WORDS[COMP_CWORD]}"))
       elif [[ "${typeargument}" == "diff" ]] ; then
         COMPREPLY=($(compgen -W '${arguments_diff[*]}' -- "${COMP_WORDS[COMP_CWORD]}"))
+      elif [[ "${typeargument}" == "appid-toolbox" ]] ; then
+              COMPREPLY=($(compgen -W '${arguments_appidtoolbox[*]}' -- "${COMP_WORDS[COMP_CWORD]}"))
       else
 			  COMPREPLY=($(compgen -W '${arguments[*]}' -- "${COMP_WORDS[COMP_CWORD]}"))
       fi

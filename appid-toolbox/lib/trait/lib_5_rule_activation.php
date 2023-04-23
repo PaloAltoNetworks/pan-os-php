@@ -21,7 +21,7 @@
 
 #####################################
 
-trait lib_4_rule_activation
+trait lib_5_rule_activation
 {
     function display_usage_and_exit_p4()
     {
@@ -40,7 +40,7 @@ trait lib_4_rule_activation
     }
 
 
-    function ruleActivation_Phase4_init()
+    function ruleActivation_Phase5_init()
     {
         if( isset(PH::$args['help']) )
             $this->display_usage_and_exit_p4();
@@ -85,11 +85,11 @@ trait lib_4_rule_activation
         //
         // REAL JOB STARTS HERE
         //
-        $this->ruleActivation_Phase4_main($subSystem, $configInput, $pan, $inputConnector, $configOutput, $dryRun);
+        $this->ruleActivation_Phase5_main($subSystem, $configInput, $pan, $inputConnector, $configOutput, $dryRun);
 
     }
 
-    function ruleActivation_Phase4_main($subSystem, $configInput, $pan, $inputConnector, $configOutput, $dryRun)
+    function ruleActivation_Phase5_main($subSystem, $configInput, $pan, $inputConnector, $configOutput, $dryRun)
     {
 
         $ridTagLibrary = new RuleIDTagLibrary();

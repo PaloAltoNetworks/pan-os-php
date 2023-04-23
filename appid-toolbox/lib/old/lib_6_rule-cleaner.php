@@ -38,7 +38,7 @@ function display_usage_and_exit()
 }
 */
 
-function ruleCleaner_Phase5_init()
+function ruleCleaner_Phase6_init()
 {
     if( isset(PH::$args['help']) )
         display_usage_and_exit();
@@ -117,10 +117,10 @@ function ruleCleaner_Phase5_init()
     //
     // REAL JOB STARTS HERE
     //
-    ruleCleaner_Phase5_main($subSystem, $configInput, $pan, $inputConnector, $configOutput, $ruleStats, $skipIfLastReportIsMoreThanX_DaysOld, $dryRun );
+    ruleCleaner_Phase6_main($subSystem, $configInput, $pan, $inputConnector, $configOutput, $ruleStats, $skipIfLastReportIsMoreThanX_DaysOld, $dryRun );
 }
 
-function ruleCleaner_Phase5_main($subSystem, $configInput, $pan, $inputConnector, $configOutput, $ruleStats, $skipIfLastReportIsMoreThanX_DaysOld, $dryRun )
+function ruleCleaner_Phase6_main($subSystem, $configInput, $pan, $inputConnector, $configOutput, $ruleStats, $skipIfLastReportIsMoreThanX_DaysOld, $dryRun )
 {
 
 
