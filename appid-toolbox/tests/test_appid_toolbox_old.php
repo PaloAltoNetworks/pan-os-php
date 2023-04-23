@@ -76,12 +76,12 @@ $serial = '0123456789';
 
 $dirname = dirname(__FILE__);
 
-$cli_array[] = "php ".$dirname."/../rule-marker.php     in=orig/stage00.xml  out=input/stage05.xml location={$location}";
-$cli_array[] = "php ".$dirname."/../rule-cloner.php     in=input/stage05.xml out=input/stage10.xml location={$location} serial={$serial}";
-$cli_array[] = "php ".$dirname."/../rule-activation.php in=input/stage10.xml out={$output}         location={$location}";
-$cli_array[] = "php ".$dirname."/../rule-activation.php in=input/stage10.xml out=input/stage15.xml location={$location} confirm";
-$cli_array[] = "php ".$dirname."/../rule-cleaner.php    in=input/stage15.xml out={$output}         location={$location} serial={$serial}";
-$cli_array[] = "php ".$dirname."/../rule-cleaner.php    in=input/stage15.xml out=input/stage20.xml location={$location} serial={$serial} confirm";
+$cli_array[] = "php ".$dirname."/../old/rule-marker.php     in=orig/stage00.xml  out=input/stage05.xml location={$location}";
+$cli_array[] = "php ".$dirname."/../old/rule-cloner.php     in=input/stage05.xml out=input/stage10.xml location={$location} serial={$serial}";
+$cli_array[] = "php ".$dirname."/../old/rule-activation.php in=input/stage10.xml out={$output}         location={$location}";
+$cli_array[] = "php ".$dirname."/../old/rule-activation.php in=input/stage10.xml out=input/stage15.xml location={$location} confirm";
+$cli_array[] = "php ".$dirname."/../old/rule-cleaner.php    in=input/stage15.xml out={$output}         location={$location} serial={$serial}";
+$cli_array[] = "php ".$dirname."/../old/rule-cleaner.php    in=input/stage15.xml out=input/stage20.xml location={$location} serial={$serial} confirm";
 
 
 

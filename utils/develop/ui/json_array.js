@@ -938,6 +938,11 @@ var subjectObject =
         "action": [],
         "filter": []
     },
+    "appid-toolbox": {
+        "name": "appid-toolbox",
+        "action": [],
+        "filter": []
+    },
     "application": {
         "name": "application",
         "action": {
@@ -1796,6 +1801,14 @@ var subjectObject =
                     "has.vsys": {
                         "Function": {},
                         "arg": true,
+                        "ci": {
+                            "fString": "(%PROP% grp)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    },
+                    "with-no-serial": {
+                        "Function": {},
+                        "arg": false,
                         "ci": {
                             "fString": "(%PROP% grp)",
                             "input": "input\/panorama-8.0.xml"

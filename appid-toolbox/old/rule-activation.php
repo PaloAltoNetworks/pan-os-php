@@ -20,9 +20,15 @@
  */
 
 
-set_include_path(dirname(__FILE__) . '/../' . PATH_SEPARATOR . get_include_path());
-require_once dirname(__FILE__) . "/../lib/pan_php_framework.php";
-require_once dirname(__FILE__) . "/../utils/lib/UTIL.php";
+require_once dirname(__FILE__) . "/../lib/common.php";
 
-$argv[] = "phase=rule-activation";
-PH::UTILdeprecated("appid-toolbox", $argv, $argc, __FILE__);
+require_once dirname(__FILE__) . "/../lib/old/lib_4_rule-activation.php";
+
+
+PH::print_stdout( "************* START OF SCRIPT ".basename(__FILE__)." ************" );
+PH::print_stdout( " - PAN-OS-PHP version: ".PH::frameworkVersion() . " [".PH::frameworkInstalledOS()."]" );
+PH::processCliArgs();
+
+ruleActivation_Phase4_init();
+
+PH::print_stdout( "************* END OF SCRIPT ".basename(__FILE__)." ************" );

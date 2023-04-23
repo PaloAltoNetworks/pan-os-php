@@ -5,6 +5,7 @@ UTIL:
 * type=rule-merger | introduce additionalmatch=logprof - to also check that only rules with same logging profile are merged
 * type=device | introduce 'filter=(devicegroup with-no-serial)'
 * type=gcp | introduce actions=offboard | extend authentication with automatically open Google Chrome
+* type=appid-toolbox | introduction of new type | integrate appid migration run directly by using pan-os-php alias
 
 BUGFIX:
 * Dockerfiles | update
