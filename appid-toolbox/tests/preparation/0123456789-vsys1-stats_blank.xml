@@ -1,5 +1,5 @@
 <records>
-  <entry name="free-internet" timestamp="1682253954" Htimestamp="23-April-2023 12:45">
+  <entry name="free-internet" timestamp="{unix-timestamp}" Htimestamp="{date}">
     <app name="ssl" count="594"/>
     <app name="stun" count="22"/>
     <app name="google-base" count="32"/>
@@ -8,37 +8,37 @@
     <app name="ms-update" count="356"/>
     <app name="linkedin" count="6"/>
   </entry>
-  <entry name="mgmt_guest-1" timestamp="1682253954" Htimestamp="23-April-2023 12:45">
+  <entry name="mgmt_guest-1" timestamp="{unix-timestamp}" Htimestamp="{date}">
   </entry>
-  <entry name="entrust.untrust.sip-1-1" timestamp="1682253954" Htimestamp="23-April-2023 12:45">
+  <entry name="entrust.untrust.sip-1-1" timestamp="{unix-timestamp}" Htimestamp="{date}">
   </entry>
-  <entry name="entrust.untrust.sip-1-1-1" timestamp="1682253954" Htimestamp="23-April-2023 12:45">
+  <entry name="entrust.untrust.sip-1-1-1" timestamp="{unix-timestamp}" Htimestamp="{date}">
   </entry>
-  <entry name="gp_portal_internal" timestamp="1682253954" Htimestamp="23-April-2023 12:45">
+  <entry name="gp_portal_internal" timestamp="{unix-timestamp}" Htimestamp="{date}">
     <app name="dhcp" count="87"/>
     <app name="ping" count="7192"/>
     <app name="ssl" count="551"/>
     <app name="apple-airport" count="60"/>
     <app name="ssh" count="3"/>
   </entry>
-  <entry name="gp_portal_internal-1" timestamp="1682253954" Htimestamp="23-April-2023 12:45">
+  <entry name="gp_portal_internal-1" timestamp="{unix-timestamp}" Htimestamp="{date}">
   </entry>
-  <entry name="trust.untrust.noip" timestamp="1682253954" Htimestamp="23-April-2023 12:45">
+  <entry name="trust.untrust.noip" timestamp="{unix-timestamp}" Htimestamp="{date}">
     <app name="http-proxy" count="4"/>
   </entry>
-  <entry name="trust.untrust.server" timestamp="1682253954" Htimestamp="23-April-2023 12:45">
+  <entry name="trust.untrust.server" timestamp="{unix-timestamp}" Htimestamp="{date}">
     <app name="ssl" count="1"/>
   </entry>
-  <entry name="dmz.private.sip" timestamp="1682253954" Htimestamp="23-April-2023 12:45">
+  <entry name="dmz.private.sip" timestamp="{unix-timestamp}" Htimestamp="{date}">
     <app name="sip" count="16"/>
   </entry>
-  <entry name="dmz.untrust.allow" timestamp="1682253954" Htimestamp="23-April-2023 12:45">
+  <entry name="dmz.untrust.allow" timestamp="{unix-timestamp}" Htimestamp="{date}">
     <app name="sip" count="3"/>
     <app name="stun" count="1"/>
   </entry>
-  <entry name="trust.untrust.sipgate" timestamp="1682253954" Htimestamp="23-April-2023 12:45">
+  <entry name="trust.untrust.sipgate" timestamp="{unix-timestamp}" Htimestamp="{date}">
   </entry>
-  <entry name="guest.untrust.allow-mac" timestamp="1682253954" Htimestamp="23-April-2023 12:45">
+  <entry name="guest.untrust.allow-mac" timestamp="{unix-timestamp}" Htimestamp="{date}">
     <app name="ssl" count="298"/>
     <app name="web-browsing" count="122"/>
     <app name="quic" count="77"/>
@@ -63,7 +63,7 @@
     <app name="clarizen" count="1"/>
     <app name="meetup" count="1"/>
   </entry>
-  <entry name="guest.untrust.allow" timestamp="1682253954" Htimestamp="23-April-2023 12:45">
+  <entry name="guest.untrust.allow" timestamp="{unix-timestamp}" Htimestamp="{date}">
     <app name="google-base" count="38"/>
     <app name="ocsp" count="4"/>
     <app name="itunes" count="3"/>
@@ -73,39 +73,39 @@
     <app name="zoom" count="2"/>
     <app name="samsung-updates" count="2"/>
   </entry>
-  <entry name="guest.untrust.games" timestamp="1682253954" Htimestamp="23-April-2023 12:45">
+  <entry name="guest.untrust.games" timestamp="{unix-timestamp}" Htimestamp="{date}">
   </entry>
-  <entry name="guest.untrust.games-1" timestamp="1682253954" Htimestamp="23-April-2023 12:45">
+  <entry name="guest.untrust.games-1" timestamp="{unix-timestamp}" Htimestamp="{date}">
   </entry>
-  <entry name="guest.untrust.games-castle-clas" timestamp="1682253954" Htimestamp="23-April-2023 12:45">
+  <entry name="guest.untrust.games-castle-clas" timestamp="{unix-timestamp}" Htimestamp="{date}">
   </entry>
-  <entry name="vpn.untrust.www" timestamp="1682253954" Htimestamp="23-April-2023 12:45">
+  <entry name="vpn.untrust.www" timestamp="{unix-timestamp}" Htimestamp="{date}">
   </entry>
-  <entry name="vpn.untrust.voip" timestamp="1682253954" Htimestamp="23-April-2023 12:45">
+  <entry name="vpn.untrust.voip" timestamp="{unix-timestamp}" Htimestamp="{date}">
   </entry>
-  <entry name="vpn.untrust.fritzbox-1" timestamp="1682253954" Htimestamp="23-April-2023 12:45">
+  <entry name="vpn.untrust.fritzbox-1" timestamp="{unix-timestamp}" Htimestamp="{date}">
   </entry>
-  <entry name="vpn.trustl3_vlan" timestamp="1682253954" Htimestamp="23-April-2023 12:45">
+  <entry name="vpn.trustl3_vlan" timestamp="{unix-timestamp}" Htimestamp="{date}">
     <app name="ssl" count="151"/>
   </entry>
-  <entry name="mgmt.dmz.bgp.trust_allow" timestamp="1682253954" Htimestamp="23-April-2023 12:45">
+  <entry name="mgmt.dmz.bgp.trust_allow" timestamp="{unix-timestamp}" Htimestamp="{date}">
     <app name="dhcp" count="505"/>
   </entry>
-  <entry name="vpn_allow" timestamp="1682253954" Htimestamp="23-April-2023 12:45">
+  <entry name="vpn_allow" timestamp="{unix-timestamp}" Htimestamp="{date}">
   </entry>
-  <entry name="trust.mgmt.allow" timestamp="1682253954" Htimestamp="23-April-2023 12:45">
+  <entry name="trust.mgmt.allow" timestamp="{unix-timestamp}" Htimestamp="{date}">
     <app name="ssl" count="1372"/>
     <app name="ping" count="384"/>
   </entry>
-  <entry name="trust.dmz.any" timestamp="1682253954" Htimestamp="23-April-2023 12:45">
+  <entry name="trust.dmz.any" timestamp="{unix-timestamp}" Htimestamp="{date}">
     <app name="sip" count="11"/>
   </entry>
-  <entry name="guest.guest.allow-1" timestamp="1682253954" Htimestamp="23-April-2023 12:45">
+  <entry name="guest.guest.allow-1" timestamp="{unix-timestamp}" Htimestamp="{date}">
     <app name="web-browsing" count="14"/>
     <app name="unknown-udp" count="3"/>
     <app name="insufficient-data" count="3"/>
   </entry>
-  <entry name="mgmt.untrust.cleanup" timestamp="1682253954" Htimestamp="23-April-2023 12:45">
+  <entry name="mgmt.untrust.cleanup" timestamp="{unix-timestamp}" Htimestamp="{date}">
     <app name="pan-db-cloud" count="164"/>
     <app name="ntp" count="1318"/>
   </entry>
