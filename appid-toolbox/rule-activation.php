@@ -46,14 +46,6 @@ function display_usage_and_exit()
     exit(1);
 }
 
-function display_error_usage_exit($msg)
-{
-    if( PH::$shadow_json )
-        PH::$JSON_OUT['error'] = $msg;
-    else
-        fwrite(STDERR, PH::boldText("**ERROR** ").$msg."");
-    display_usage_and_exit();
-}
 
 function ruleActivation_Phase5()
 {

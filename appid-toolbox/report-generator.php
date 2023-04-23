@@ -51,18 +51,12 @@ function display_usage_and_exit()
     exit(1);
 }
 
-function display_error_usage_exit($msg)
-{
-    if( PH::$shadow_json )
-        PH::$JSON_OUT['error'] = $msg;
-    else
-        fwrite(STDERR, PH::boldText("\n**ERROR** ").$msg."\n\n");
-    display_usage_and_exit();
-}
-
 
 function logAnalysis_Phase2()
 {
+    if( isset(PH::$args['help']) )
+        display_usage_and_exit();
+
     $supportedOptions = Array( 'debugapi', 'in', 'location', 'loghistory', 'resetpreviousdata', 'updatepreviousdata', 'updateonlyunusedtagrules', 'updateonlyactivatedrules', 'skipiflastreportlessthanxdays' );
     $supportedOptions = array_flip($supportedOptions);
 
