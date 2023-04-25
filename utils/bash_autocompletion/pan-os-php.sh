@@ -68,14 +68,19 @@ __pan-os-php_scripts()
     arguments_diff=('type=' 'in=' 'help' 'file1=' 'file2=')
 
     arguments_appidtoolbox=('type=' 'in=' 'out=' 'help' 'phase=' )
-    arguments_appidtoolbox_phase=('phase1' 'rule-marker' 'phase2' 'report-generator' 'phase3' 'rule-cloner' 'phase4' 'rule-activation' 'phase5' 'rule-cleaner' )
+    arguments_appidtoolbox_phase=('p1-marker' 'rule-marker' 'p2-generator' 'report-generator' 'p3-cloner' 'rule-cloner' 'p5-activation' 'rule-activation' 'p5-cleaner' 'rule-cleaner' )
 
 		vendor=('ciscoasa' 'netscreen' 'sonicwall' 'sophos' 'ciscoswitch' 'ciscoisr' 'fortinet' 'srx' 'cp-r80' 'cp' 'cp-beta' 'huawei' 'stonesoft' 'sidewinder')
+
+    arguments_gcp=('type=' 'in=' 'out=' 'cluster=' 'project=' 'tenantid=' 'actions=' )
+    arguments_gcp_actions=('grep' 'upload' 'download' 'onboard' 'offboard' )
+
+    arguments_xpath=('type=' 'in=' 'filter-nameattribute=' 'filter-node=' 'filter-xpath=' 'display-fullxpath' 'display-nameattribute' 'display-xmlnode' 'display-xmllineno' )
+
 
     DIR="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
     jsonFILE=$DIR"/../lib/util_action_filter.json"
     type=$(jq -r 'keys[]' $jsonFILE)
-
 
 		checkArray=('in' 'out' 'actions' 'filter' 'location')
 
@@ -277,7 +282,11 @@ __pan-os-php_scripts()
       elif [[ "${typeargument}" == "diff" ]] ; then
         COMPREPLY=($(compgen -W '${arguments_diff[*]}' -- "${COMP_WORDS[COMP_CWORD]}"))
       elif [[ "${typeargument}" == "appid-toolbox" ]] ; then
-              COMPREPLY=($(compgen -W '${arguments_appidtoolbox[*]}' -- "${COMP_WORDS[COMP_CWORD]}"))
+        COMPREPLY=($(compgen -W '${arguments_appidtoolbox[*]}' -- "${COMP_WORDS[COMP_CWORD]}"))
+      elif [[ "${typeargument}" == "gcp" ]] ; then
+        COMPREPLY=($(compgen -W '${arguments_gcp[*]}' -- "${COMP_WORDS[COMP_CWORD]}"))
+      elif [[ "${typeargument}" == "xpath" ]] ; then
+        COMPREPLY=($(compgen -W '${arguments_xpath[*]}' -- "${COMP_WORDS[COMP_CWORD]}"))
       else
 			  COMPREPLY=($(compgen -W '${arguments[*]}' -- "${COMP_WORDS[COMP_CWORD]}"))
       fi

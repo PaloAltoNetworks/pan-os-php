@@ -57,12 +57,12 @@ class APPIDTOOLBOX extends UTIL
             "more details are documented here:\n" .
             "https://github.com/PaloAltoNetworks/pan-os-php/blob/main/appid-toolbox/doc/AppID%20Toolbox%20-%20PAN-OS-PHP.pdf \n" .
             "\n" .
-            "   - phase=phase1 [phase=rule-marker] \n" .
-            "   - phase=phase2 [phase=report-generator] \n" .
-            "   - phase=phase3 [phase=rule-cloner] \n" .
-            "   - phase=phase4 -- not available; manual review task \n" .
-            "   - phase=phase5 [phase=rule-activiation] \n" .
-            "   - phase=phase6 [phase=rule-cleaner] \n" .
+            "   - phase=p1-marker     [phase=phase1] [phase=rule-marker] \n" .
+            "   - phase=p2-generator  [phase=phase2] [phase=report-generator] \n" .
+            "   - phase=p3-cloner  [phase=phase3] [phase=rule-cloner] \n" .
+            "   - [phase=phase4] -- no script available; manual review task \n" .
+            "   - phase=p5-activation [phase=phase5] [phase=rule-activiation] \n" .
+            "   - phase=p6-cleaner    [phase=phase6] [phase=rule-cleaner] \n" .
             "";
 
 
@@ -87,17 +87,17 @@ class APPIDTOOLBOX extends UTIL
 
             $phase = PH::$args['phase'];
 
-            if( $phase == "rule-marker" || $phase == "phase1" )
+            if( $phase == "rule-marker" || $phase == "phase1" || $phase == "p1-marker" )
                 $this->ruleMarker_Phase1_init();
-            elseif( $phase == "report-generator" || $phase == "phase2" )
+            elseif( $phase == "report-generator" || $phase == "phase2" || $phase == "p2-generator" )
                 $this->logAnalysis_Phase2();
-            elseif( $phase == "rule-cloner" || $phase == "phase3" )
+            elseif( $phase == "rule-cloner" || $phase == "phase3" || $phase == "p3-cloner" )
                 $this->ruleCloner_Phase3_init();
-            elseif( $phase == "phase4" )
+            elseif( $phase == "phase4" || $phase == "p4" )
                 derr( "appid-toolboox phase4 - AppID Rules Review - manual task. \n\n - please check: \n\nhttps://github.com/PaloAltoNetworks/pan-os-php/blob/main/appid-toolbox/doc/AppID%20Toolbox%20-%20PAN-OS-PHP.pdf \n\n", null, False );
-            elseif( $phase == "rule-activation" || $phase == "phase5" )
+            elseif( $phase == "rule-activation" || $phase == "phase5" || $phase == "p5-activation" )
                 $this->ruleActivation_Phase5_init();
-            elseif( $phase == "rule-cleaner" || $phase == "phase6" )
+            elseif( $phase == "rule-cleaner" || $phase == "phase6" || $phase == "p6-cleaner" )
                 $this->ruleCleaner_Phase6_init();
         }
         elseif( isset(PH::$args['help']) )
