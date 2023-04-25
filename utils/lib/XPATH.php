@@ -23,9 +23,9 @@ class XPATH extends UTIL
     public function utilStart()
     {
         $this->usageMsg = PH::boldText("USAGE: ")."php ".basename(__FILE__)." in=inputfile.xml ".
-            "        \"node-filter=certificate\"\n".
-            "        \"[nameattribute-filter=address_object_name]\"\n".
-            "        \"[xpath=/config/devices/entry[@name='localhost.localdomain']/deviceconfig/system/update-server]\"\n".
+            "        \"filter-node=certificate\"\n".
+            "        \"[filter-nameattribute=address_object_name]\"\n".
+            "        \"[filter-xpath=/config/devices/entry[@name='localhost.localdomain']/deviceconfig/system/update-server]\"\n".
             "        \"[display-fullxpath]\"\n".
             "        \"[display-xmlnode]\"\n".
             "        \"[display-xmllineno]\"\n".
@@ -57,15 +57,15 @@ class XPATH extends UTIL
         $displayXMLlineno = false;
         $displayAttributeName = false;
 
-        if( !isset( PH::$args['node-filter'] ) && !isset( PH::$args['nameattribute-filter'] ) && !isset( PH::$args['xpath-filter'] ) )
-            $this->display_error_usage_exit('"node-filter" argument is not set: example "certificate"');
-        elseif( !isset( PH::$args['node-filter'] ) && isset( PH::$args['nameattribute-filter'] ) )
+        if( !isset( PH::$args['filter-node'] ) && !isset( PH::$args['filter-nameattribute'] ) && !isset( PH::$args['filter-xpath'] ) )
+            $this->display_error_usage_exit('"filter-node" argument is not set: example "certificate"');
+        elseif( !isset( PH::$args['filter-node'] ) && isset( PH::$args['filter-nameattribute'] ) )
             $qualifiedNodeName = "entry";
-        elseif( !isset( PH::$args['xpath-filter'] ) )
-            $qualifiedNodeName = PH::$args['node-filter'];
+        elseif( !isset( PH::$args['filter-xpath'] ) )
+            $qualifiedNodeName = PH::$args['filter-node'];
 
-        if( isset( PH::$args['xpath-filter'] ) )
-            $xpath = PH::$args['xpath-filter'];
+        if( isset( PH::$args['filter-xpath'] ) )
+            $xpath = PH::$args['filter-xpath'];
 
         if( isset( PH::$args['display-fullxpath'] ) )
             $fullxpath = true;
@@ -76,8 +76,8 @@ class XPATH extends UTIL
         if( isset( PH::$args['display-xmllineno'] ) )
             $displayXMLlineno = true;
 
-        if( isset( PH::$args['nameattribute-filter'] ) )
-            $nameattribute = PH::$args['nameattribute-filter'];
+        if( isset( PH::$args['filter-nameattribute'] ) )
+            $nameattribute = PH::$args['filter-nameattribute'];
         else
             $nameattribute = null;
 
@@ -85,7 +85,7 @@ class XPATH extends UTIL
             $displayAttributeName = true;
         ########################################################################################################################
 
-        if( !isset( PH::$args['xpath-filter'] ) )
+        if( !isset( PH::$args['filter-xpath'] ) )
         {
             //todo: missing connector support
             $nodeList = $this->xmlDoc->getElementsByTagName($qualifiedNodeName);
@@ -274,13 +274,14 @@ class XPATH extends UTIL
         $this->supportedArguments[] = Array('niceName' => 'DebugAPI', 'shortHelp' => 'prints API calls when they happen');
         $this->supportedArguments[] = Array('niceName' => 'help', 'shortHelp' => 'this message');
 
-        $this->supportedArguments[] = Array('niceName' => 'node-filter', 'shortHelp' => 'specify the node-filter to get all xPath within this configuration file');
-        $this->supportedArguments[] = Array('niceName' => 'xpath-filter', 'shortHelp' => 'specify the xpath to get the value defined on this config');
-        $this->supportedArguments[] = Array('niceName' => 'nameattribute-filter', 'shortHelp' => 'specify the nameattribute to get only XMLnode where nameattribute match');
+        $this->supportedArguments[] = Array('niceName' => 'filter-node', 'shortHelp' => 'specify the filter-node to get all xPath within this configuration file');
+        $this->supportedArguments[] = Array('niceName' => 'filter-xpath', 'shortHelp' => 'specify the xpath to get the value defined on this config');
+        $this->supportedArguments[] = Array('niceName' => 'filter-nameattribute', 'shortHelp' => 'specify the nameattribute to get only XMLnode where nameattribute match');
 
         $this->supportedArguments[] = Array('niceName' => 'display-fullxpath', 'shortHelp' => 'display full xpath for templates');
         $this->supportedArguments[] = Array('niceName' => 'display-NameAttribute', 'shortHelp' => 'display not full Xpath content, only attribute name');
         $this->supportedArguments[] = Array('niceName' => 'display-xmlnode', 'shortHelp' => 'display XML node configuration');
+        $this->supportedArguments[] = Array('niceName' => 'display-xmlLineNo', 'shortHelp' => 'display LineNo of XML node ');
         
     }
     

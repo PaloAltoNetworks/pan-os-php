@@ -6,6 +6,7 @@ UTIL:
 * type=device | introduce 'filter=(devicegroup with-no-serial)'
 * type=gcp | introduce actions=offboard | extend authentication with automatically open Google Chrome
 * type=appid-toolbox | introduction of new type | integrate appid migration run directly by using pan-os-php alias
+* type=xpath | change all filter argument to start with "filter-"
 
 BUGFIX:
 * Dockerfiles | update
