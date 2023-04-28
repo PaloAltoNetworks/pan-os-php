@@ -468,6 +468,9 @@ class GCP extends UTIL
             $counter = 0;
             do
             {
+                PH::print_stdout( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                PH::print_stdout( "AUTHENTICATION NEEDED - please check new CHROME window");
+                PH::print_stdout( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                 //execute:
                 $exec = 'open -a "Google Chrome" '.$this->http_auth;
                 exec( $exec );

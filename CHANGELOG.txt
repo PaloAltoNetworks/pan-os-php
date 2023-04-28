@@ -8,6 +8,7 @@ UTIL:
 * type=appid-toolbox | introduction of new type | integrate appid migration run directly by using pan-os-php alias
 * type=xpath | change all filter argument to start with "filter-"
 * type=appid-toolbox | introduce additional arguments to better use in bash autocompletion script |p1-marker|p2-generator|p3-cloner|p5-activation|p6-cleaner
+* type=rule ruletype=nat | introduce new 'filter=(snatinterface has.regex /VALUE/)'
 
 BUGFIX:
 * Dockerfiles | update

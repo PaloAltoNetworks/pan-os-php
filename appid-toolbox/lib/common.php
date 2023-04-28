@@ -52,7 +52,7 @@ date_default_timezone_set( $timezone_name );
 
 
 #date_default_timezone_set("GMT");
-PH::print_stdout(  " - TIMEZONE is set to: ".date_default_timezone_get() );
+#PH::print_stdout(  " - TIMEZONE is set to: ".date_default_timezone_get() );
 
 class DeviceGroupRuleAppUsage
 {
