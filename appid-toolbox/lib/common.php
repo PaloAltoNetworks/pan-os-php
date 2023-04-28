@@ -23,7 +23,7 @@
 require_once("lib/pan_php_framework.php");
 
 $minimumVersion = "1.5.13";
-$maximumVersion = "2.1.0";
+$maximumVersion = "2.2.0";
 
 // Check version of PAN-OS-PHP for compatibility
 if( ! PH::frameworkVersion_isGreaterThan($minimumVersion) || PH::frameworkVersion_isGreaterThan($maximumVersion) )
@@ -52,7 +52,7 @@ date_default_timezone_set( $timezone_name );
 
 
 #date_default_timezone_set("GMT");
-PH::print_stdout(  " - TIMEZONE is set to: ".date_default_timezone_get() );
+#PH::print_stdout(  " - TIMEZONE is set to: ".date_default_timezone_get() );
 
 class DeviceGroupRuleAppUsage
 {
@@ -514,5 +514,158 @@ function timestamp_to_date($t1)
 }
 
 
+class AppIDToolbox_common
+{
+    static function determineConfig( $xmlDoc, $configInput, $inputConnector, $location)
+    {
+        //
+        // Determine if PANOS or Panorama
+        //
+        $xpathResult = DH::findXPath('/config/devices/entry/vsys', $xmlDoc);
+        if( $xpathResult === FALSE )
+            derr('XPath error happened');
+        if( $xpathResult->length < 1 )
+            $configType = 'panorama';
+        else
+            $configType = 'panos';
+        unset($xpathResult);
 
 
+        if( $configType == 'panos' )
+            $pan = new PANConf();
+        else
+            $pan = new PanoramaConf();
+
+        PH::print_stdout(" - Detected platform type is '{$configType}'");
+
+        if( $configInput['type'] == 'api' )
+            $pan->connector = $inputConnector;
+
+//
+// load the config
+//
+        PH::print_stdout(" - Loading configuration through PAN-OS-PHP library... ");
+        $loadStartMem = memory_get_usage(TRUE);
+        $loadStartTime = microtime(TRUE);
+        $pan->load_from_domxml($xmlDoc);
+        $loadEndTime = microtime(TRUE);
+        $loadEndMem = memory_get_usage(TRUE);
+        $loadElapsedTime = number_format(($loadEndTime - $loadStartTime), 2, '.', '');
+        $loadUsedMem = convert($loadEndMem - $loadStartMem);
+        PH::print_stdout("($loadElapsedTime seconds, $loadUsedMem memory)");
+// --------------------
+
+        $subSystem = $pan->findSubSystemByName($location);
+
+        if( $subSystem === null )
+            derr("cannot find vsys/dg named '$location', available locations list is : ");
+
+
+        $return = array();
+        $return['subSystem'] = $subSystem;
+        $return['pan'] = $pan;
+
+        return $return;
+    }
+
+    static function location()
+    {
+        if( !isset(PH::$args['location']) )
+            display_error_usage_exit("missing argument 'location'");
+
+        $location = PH::$args['location'];
+
+        if( strlen($location) < 0 || !is_string($location) )
+            display_error_usage_exit("'location' argument must be a valid string");
+
+        if( !isset(PH::$args['in']) )
+            display_error_usage_exit('"in" is missing from arguments');
+        $configInput = PH::$args['in'];
+        if( !is_string($configInput) || strlen($configInput) < 1 )
+            display_error_usage_exit('"in" argument is not a valid string');
+
+        $configInput = PH::processIOMethod($configInput, TRUE);
+        if( $configInput['status'] != 'ok' )
+        {
+            derr($configInput['msg']);
+        }
+
+        if( $configInput['type'] == 'file' )
+        {
+            #derr("file type input is not supported, only API");
+        }
+        elseif( $configInput['type'] == 'api' )
+        {
+            #continue;
+        }
+        elseif( $configInput['type'] != 'api' )
+            derr('unsupported yet');
+
+        $return = array();
+        $return['configInput'] = $configInput;
+        $return['location'] = $location;
+
+        return $return;
+    }
+
+    static function getConfig( $configInput, $debugAPI, $serial = false)
+    {
+        /** @var $inputConnector PanAPIConnector */
+        $inputConnector = null;
+
+        if( $configInput['type'] == 'file' )
+        {
+            if( isset(PH::$args['out']) )
+            {
+                $configOutput = PH::$args['out'];
+                if( !is_string($configOutput) || strlen($configOutput) < 1 )
+                    display_error_usage_exit('"out" argument is not a valid string');
+            }
+            else
+                display_error_usage_exit('"out" is missing from arguments');
+
+            if( !file_exists($configInput['filename']) )
+                derr("file '{$configInput['filename']}' not found");
+
+            if( $serial )
+            {       if( !isset(PH::$args['serial']) )
+                display_error_usage_exit('"serial" is missing from arguments');
+            }
+
+            $xmlDoc = new DOMDocument();
+            if( !$xmlDoc->load($configInput['filename']) )
+                derr("error while reading xml config file");
+
+        }
+        elseif( $configInput['type'] == 'api' )
+        {
+            $inputConnector = $configInput['connector'];
+            if( $debugAPI )
+                $inputConnector->setShowApiCalls(TRUE);
+            PH::print_stdout(" - Downloading config from API... ");
+            $xmlDoc = $inputConnector->getCandidateConfig();
+
+        }
+        else
+            derr('not supported yet');
+
+        $return = array();
+        $return['xmlDoc'] = $xmlDoc;
+        $return['configOutput'] = $configOutput;
+        $return['inputConnector'] = $inputConnector;
+
+        return $return;
+    }
+
+}
+
+
+
+function display_error_usage_exit($msg)
+{
+    if( PH::$shadow_json )
+        PH::$JSON_OUT['error'] = $msg;
+    else
+        fwrite(STDERR, PH::boldText("\n**ERROR** ").$msg."\n\n");
+    display_usage_and_exit();
+}

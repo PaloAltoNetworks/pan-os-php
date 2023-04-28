@@ -1,3 +1,9 @@
+April 23, 2023
+- prepare appid migration scripts for general implementation into "pan-os-php type="
+- update test files
+- max. supported pan-php-framework version changed to 2.2.0
+
+
 March 5, 2021
 - no change, but validation to run against PAN-OS 10.0
 

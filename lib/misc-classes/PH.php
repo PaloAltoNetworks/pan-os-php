@@ -172,7 +172,7 @@ class PH
 
     private static $library_version_major = 2;
     private static $library_version_sub = 1;
-    private static $library_version_bugfix = 1;
+    private static $library_version_bugfix = 2;
 
     //BASIC AUTH PAN-OS 7.1
     public static $softwareupdate_key = "658d787f293e631196dac9fb29490f1cc1bb3827";
@@ -905,7 +905,7 @@ class PH
         PH::print_stdout( PH::boldText("pan-os-php".$argString) );
 
         PH::print_stdout( PH::boldText("sleeping now 600 seconds") );
-        sleep(600);
+        #sleep(600);
 
         PH::callPANOSPHP( $type, $argv, $argc, $PHP_FILE );
 
@@ -955,7 +955,8 @@ class PH
         "ssh-connector",
         "custom-report",
         "gcp",
-        "vendor-migration"
+        "vendor-migration",
+        "appid-toolbox"
         );
 
 
@@ -1133,6 +1134,9 @@ class PH
 
         elseif( $type == "vendor-migration" )
             $util = new CONVERTER($type, $argv, $argc,$PHP_FILE." type=".$type, $_supportedArguments, $_usageMsg, $projectfolder);
+
+        elseif( $type == "appid-toolbox" )
+            $util = new AppIDToolbox($type, $argv, $argc,$PHP_FILE." type=".$type, $_supportedArguments, $_usageMsg, $projectfolder);
 
         $util->endOfScript();
 

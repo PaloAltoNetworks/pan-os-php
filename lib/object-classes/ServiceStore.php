@@ -186,6 +186,7 @@ class ServiceStore
         }
 
         $loopCount = 0;
+        $listed_loop_group = array();
         while( count($sortingArray) > 0 )
         {
             foreach( $sortingArray as $groupName => &$groupDependencies )
@@ -207,7 +208,12 @@ class ServiceStore
 
                     foreach( $sortingArray as &$tmpGroupDeps )
                     {
-                        mwarning( "servicegroup: ".$groupName." is maybe not listed as it is involved in a loop usage", null, false );
+                        if(!isset($listed_loop_group[$groupName]))
+                        {
+                            $listed_loop_group[$groupName] = $groupName;
+                            mwarning( "servicegroup: ".$groupName." is maybe not listed as it is involved in a loop usage", null, false );
+                        }
+
                         if( isset($tmpGroupDeps[$groupName]) )
                             unset($tmpGroupDeps[$groupName]);
                     }
@@ -216,7 +222,11 @@ class ServiceStore
 
             $loopCount++;
             if( $loopCount > 40 )
-                derr("cannot determine groups dependencies after 40 loops iterations: is there too many nested groups?");
+            {
+                PH::print_stdout("ServiceGroup LOOP detected | please manual manipulate your configuration file, check the output above!!");
+                derr("cannot determine groups dependencies after 40 loops iterations: is there too many nested groups?", null, False);
+            }
+
         }
 
         return $result;

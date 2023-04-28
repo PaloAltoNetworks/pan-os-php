@@ -193,12 +193,16 @@ trait CISCOsecurityrules
         $tmp_counter = 1;
         foreach( $this->data as $line => $names_line )
         {
+            if( $this->debug )
+                PH::print_stdout( $names_line );
+
             $skip_acl = FALSE;
             $IPv6 = FALSE;
             $names_line = trim($names_line);
             if( preg_match("/^access-list /i", $names_line) || preg_match("/^ipv6 access-list /i", $names_line) )
             {
-//                echo "$names_line".PHP_EOL;
+                if( $this->debug )
+                    PH::print_stdout( $names_line );
 
                 if( preg_match("/^ipv6 access-list /i", $names_line) )
                 {
@@ -1809,8 +1813,8 @@ trait CISCOsecurityrules
         $result = $projectdb->query($query);
         if( $result->num_rows > 0 )
         {
-            $this->data = $result->fetch_assoc();
-            $initiGlobalPosition = is_null($this->data['max']) ? 0 : $this->data['max'];
+            $tmp = $result->fetch_assoc();
+            $initiGlobalPosition = is_null($tmp['max']) ? 0 : $tmp['max'];
         }
         else
         {

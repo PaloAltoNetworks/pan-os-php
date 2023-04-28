@@ -1,10 +1,35 @@
 CHANGELOG
 
-2.1.1
+2.1.2
+UTIL:
+* type=rule-merger | introduce additionalmatch=logprof - to also check that only rules with same logging profile are merged
+* type=device | introduce 'filter=(devicegroup with-no-serial)'
+* type=gcp | introduce actions=offboard | extend authentication with automatically open Google Chrome
+* type=appid-toolbox | introduction of new type | integrate appid migration run directly by using pan-os-php alias
+* type=xpath | change all filter argument to start with "filter-"
+* type=appid-toolbox | introduce additional arguments to better use in bash autocompletion script |p1-marker|p2-generator|p3-cloner|p5-activation|p6-cleaner
+* type=rule ruletype=nat | introduce new 'filter=(snatinterface has.regex /VALUE/)'
+
+BUGFIX:
+* Dockerfiles | update
+* type=device | fix object count for utilities
+* type=vendor-migration vendor=ciscoasa | bugfix during original config storing
+* class CONVERTER.php | bugfix for bidirNAT adjustment
+
+GENERAL:
+* class ServiceStore | loop detection - reduce mwarning output to a single finding per $groupName
+* update bash_autocompletion/pan-os-php.sh
+* introduce develop script cyclePanroama_ssh.php
+* bash_autocompletion | class MAXMIND | class SSH_CONNECTOR - small adjustments
+* develop start sonicwall.php EXP exported config migration
+
+
+2.1.1 (20230419)
 UTIL:
 
 BUGFIX:
 * Dockerfile update to get everything working with new type=vendor-migration
+* class Rule.php - fix for PHP7
 
 GENERAL:
 

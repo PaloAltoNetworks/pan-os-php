@@ -155,7 +155,7 @@ foreach( $stage_array as $item )
 
     //$counter == 11 - if exactly no diff
     //$counter == 14 - one diff example rule-activation new tag - <entry name="appid#activated#20180216"/>
-    if( $counter > 15 )
+    if( $counter > 16 )
         derr("DIFF available for file '{$item}.xml' ");
 
     if( $retValue != 0 )

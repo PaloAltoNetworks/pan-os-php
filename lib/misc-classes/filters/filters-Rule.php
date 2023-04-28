@@ -272,6 +272,25 @@ RQuery::$defaultFilters['rule']['to']['operators']['has.same.from.zone'] = array
 //                                              //
 //                NAT Dst/Src Based Actions     //
 //                                              //
+RQuery::$defaultFilters['rule']['snatinterface']['operators']['has.regex'] = array(
+    'Function' => function (RuleRQueryContext $context) {
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AuthenticationRule|PbfRule|QoSRule|DoSRule $object */
+        if( !$context->object->isNatRule() )
+            return FALSE;
+
+        if( $context->object->snatinterface === null )
+            return FALSE;
+
+        $matching = preg_match($context->value, $context->object->snatinterface );
+        if( $matching === FALSE )
+            derr("regular expression error on '{$context->value}'");
+        if( $matching === 1 )
+            return TRUE;
+        else
+            return FALSE;
+    },
+    'arg' => TRUE
+);
 RQuery::$defaultFilters['rule']['snathost']['operators']['has'] = array(
     'eval' => function ($object, &$nestedQueries, $value) {
         /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AuthenticationRule|PbfRule|QoSRule|DoSRule $object */

@@ -6,12 +6,12 @@ ARG user_var="root"
 
 SHELL ["/bin/bash", "-c"]
 
+RUN DEBIAN_FRONTEND=noninteractive apt-get update --fix-missing
 RUN DEBIAN_FRONTEND=noninteractive apt update --fix-missing
 
 RUN DEBIAN_FRONTEND=noninteractive apt -y install software-properties-common ca-certificates lsb-release apt-transport-https
 RUN DEBIAN_FRONTEND=noninteractive add-apt-repository ppa:ondrej/php
 
-RUN DEBIAN_FRONTEND=noninteractive apt update --fix-missing
 RUN DEBIAN_FRONTEND=noninteractive apt install -y \
     tzdata \
     git \
@@ -26,9 +26,8 @@ RUN DEBIAN_FRONTEND=noninteractive apt install -y \
     python3-pandas \
     python3-xlsxwriter \
     python3-netaddr \
-    python3-requests
-
-RUN DEBIAN_FRONTEND=noninteractive apt install -y jq
+    python3-requests \
+	jq
 
 WORKDIR /tools/pan-os-php
 

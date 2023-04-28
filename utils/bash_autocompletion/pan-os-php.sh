@@ -54,6 +54,8 @@ __pan-os-php_scripts()
 		declare -a actions
 		declare -a filters
 
+		declare -a vendor
+
 
 		arguments=('type=' 'in=' 'out=' 'actions=' 'filter=' 'location=' 'loadpanoramapushedconfig' 'loadplugin=' 'help'
 		 'listactions' 'listfilters' 'debugapi' 'apitimeout='
@@ -62,10 +64,23 @@ __pan-os-php_scripts()
 		 'outputformatset='
 		 'stats' 'template=' 'version' )
 
+    arguments_migration=('type=' 'in=' 'out=' 'file=' 'help' 'vendor=' 'routetable=' 'mapping=' )
+    arguments_diff=('type=' 'in=' 'help' 'file1=' 'file2=')
+
+    arguments_appidtoolbox=('type=' 'in=' 'out=' 'help' 'phase=' )
+    arguments_appidtoolbox_phase=('p1-marker' 'rule-marker' 'p2-generator' 'report-generator' 'p3-cloner' 'rule-cloner' 'p5-activation' 'rule-activation' 'p5-cleaner' 'rule-cleaner' )
+
+		vendor=('ciscoasa' 'netscreen' 'sonicwall' 'sophos' 'ciscoswitch' 'ciscoisr' 'fortinet' 'srx' 'cp-r80' 'cp' 'cp-beta' 'huawei' 'stonesoft' 'sidewinder')
+
+    arguments_gcp=('type=' 'in=' 'out=' 'cluster=' 'project=' 'tenantid=' 'actions=' )
+    arguments_gcp_actions=('grep' 'upload' 'download' 'onboard' 'offboard' )
+
+    arguments_xpath=('type=' 'in=' 'filter-nameattribute=' 'filter-node=' 'filter-xpath=' 'display-fullxpath' 'display-nameattribute' 'display-xmlnode' 'display-xmllineno' )
+
+
     DIR="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
     jsonFILE=$DIR"/../lib/util_action_filter.json"
     type=$(jq -r 'keys[]' $jsonFILE)
-
 
 		checkArray=('in' 'out' 'actions' 'filter' 'location')
 
@@ -125,6 +140,16 @@ __pan-os-php_scripts()
 			  ]] ; then
 
 			    compopt +o nospace
+			elif [[ "${prev}" = "vendor" || "${prev2}" = "vendor" \
+      			  ]] ; then
+
+      				compopt +o nospace
+      				COMPREPLY=($(compgen -W '${vendor[*]}' -- "${cur2}"))
+      elif [[ "${prev}" = "phase" || "${prev2}" = "phase" \
+            			  ]] ; then
+
+            				compopt +o nospace
+            				COMPREPLY=($(compgen -W '${arguments_appidtoolbox_phase[*]}' -- "${cur2}"))
 			elif [[ "${checkArray[*]}" =~ ${prev}  || "${checkArray[*]}" =~ ${prev2} ]] ; then
 
 				local IFS=$'\n'
@@ -143,12 +168,19 @@ __pan-os-php_scripts()
           case ${prevstring} in
             type*)
               unset 'arguments[0]'
+              unset 'arguments_migration[0]'
+              unset 'arguments_diff[0]'
+              unset 'arguments_appidtoolbox[0]'
               ;;
             in*)
               unset 'arguments[1]'
+              unset 'arguments_migration[1]'
+              unset 'arguments_diff[1]'
+              unset 'arguments_appidtoolbox[1]'
               ;;
             out*)
               unset 'arguments[2]'
+              unset 'arguments_appidtoolbox[2]'
               ;;
             actions*)
               unset 'arguments[3]'
@@ -168,6 +200,21 @@ __pan-os-php_scripts()
            template*)
               unset 'arguments[22]'
               ;;
+            vendor*)
+              unset 'arguments_migration[5]'
+              ;;
+            routetable*)
+              unset 'arguments_migration[6]'
+              ;;
+            mapping*)
+              unset 'arguments_migration[7]'
+              ;;
+            file1*)
+              unset 'arguments_diff[3]'
+              ;;
+            file2*)
+              unset 'arguments_diff[4]'
+              ;;
           esac
         else
           #arguments=( "${arguments[@]/$word}" )
@@ -177,6 +224,8 @@ __pan-os-php_scripts()
               ;;
             help )
               unset 'arguments[8]'
+              unset 'arguments_migration[4]'
+              unset 'arguments_diff[2]'
               ;;
             listactions )
               unset 'arguments[9]'
@@ -222,7 +271,25 @@ __pan-os-php_scripts()
 
 
 			local arg compreply=""
-			COMPREPLY=($(compgen -W '${arguments[*]}' -- "${COMP_WORDS[COMP_CWORD]}"))
+			local arg typeargument='None'
+			for KEY in "${!COMP_WORDS[@]}"; do
+        if [[ "${COMP_WORDS[$KEY]}" == "type" ]] ; then
+          typeargument=${COMP_WORDS[$KEY+2]}
+        fi
+      done
+      if [[ "${typeargument}" == "vendor-migration" ]] ; then
+        COMPREPLY=($(compgen -W '${arguments_migration[*]}' -- "${COMP_WORDS[COMP_CWORD]}"))
+      elif [[ "${typeargument}" == "diff" ]] ; then
+        COMPREPLY=($(compgen -W '${arguments_diff[*]}' -- "${COMP_WORDS[COMP_CWORD]}"))
+      elif [[ "${typeargument}" == "appid-toolbox" ]] ; then
+        COMPREPLY=($(compgen -W '${arguments_appidtoolbox[*]}' -- "${COMP_WORDS[COMP_CWORD]}"))
+      elif [[ "${typeargument}" == "gcp" ]] ; then
+        COMPREPLY=($(compgen -W '${arguments_gcp[*]}' -- "${COMP_WORDS[COMP_CWORD]}"))
+      elif [[ "${typeargument}" == "xpath" ]] ; then
+        COMPREPLY=($(compgen -W '${arguments_xpath[*]}' -- "${COMP_WORDS[COMP_CWORD]}"))
+      else
+			  COMPREPLY=($(compgen -W '${arguments[*]}' -- "${COMP_WORDS[COMP_CWORD]}"))
+      fi
 
 			if [[ ${#COMPREPLY[*]} == 1 ]] && [[ ${COMPREPLY[0]} =~ "=" ]] ; then
 				compopt -o nospace

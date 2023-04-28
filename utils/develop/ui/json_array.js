@@ -938,6 +938,11 @@ var subjectObject =
         "action": [],
         "filter": []
     },
+    "appid-toolbox": {
+        "name": "appid-toolbox",
+        "action": [],
+        "filter": []
+    },
     "application": {
         "name": "application",
         "action": {
@@ -1791,6 +1796,26 @@ var subjectObject =
             }
         },
         "filter": {
+            "devicegroup": {
+                "operators": {
+                    "has.vsys": {
+                        "Function": {},
+                        "arg": true,
+                        "ci": {
+                            "fString": "(%PROP% grp)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    },
+                    "with-no-serial": {
+                        "Function": {},
+                        "arg": false,
+                        "ci": {
+                            "fString": "(%PROP% grp)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    }
+                }
+            },
             "manageddevice": {
                 "operators": {
                     "with-no-dg": {
@@ -2231,6 +2256,10 @@ var subjectObject =
                     }
                 }
             },
+            "display-app-seen": {
+                "name": "display-app-seen",
+                "MainFunction": {}
+            },
             "dnat-set": {
                 "name": "DNat-set",
                 "MainFunction": {},
@@ -2386,9 +2415,11 @@ var subjectObject =
                             "ResolveServiceSummary",
                             "ResolveServiceAppDefaultSummary",
                             "ResolveApplicationSummary",
-                            "ResolveScheduleSummary"
+                            "ResolveScheduleSummary",
+                            "ApplicationSeen",
+                            "HitCount"
                         ],
-                        "help": "pipe(|) separated list of additional field to include in the report. The following is available:\n  - ResolveAddressSummary : fields with address objects will be resolved to IP addressed and summarized in a new column)\n  - ResolveServiceSummary : fields with service objects will be resolved to their value and summarized in a new column)\n  - ResolveServiceAppDefaultSummary : fields with application objects will be resolved to their service default value and summarized in a new column)\n  - ResolveApplicationSummary : fields with application objects will be resolved to their category and risk)\n  - ResolveScheduleSummary : fields with schedule objects will be resolved to their expire time)\n"
+                        "help": "pipe(|) separated list of additional field to include in the report. The following is available:\n  - ResolveAddressSummary : fields with address objects will be resolved to IP addressed and summarized in a new column\n  - ResolveServiceSummary : fields with service objects will be resolved to their value and summarized in a new column\n  - ResolveServiceAppDefaultSummary : fields with application objects will be resolved to their service default value and summarized in a new column\n  - ResolveApplicationSummary : fields with application objects will be resolved to their category and risk\n  - ResolveScheduleSummary : fields with schedule objects will be resolved to their expire time\n  - ApplicationSeen : all App-ID seen on the Device SecurityRule will be listed\n  - HitCount : Rule - 'first-hit' - 'last-hit' - 'hit-count' will be listed\n"
                     }
                 }
             },
@@ -7205,6 +7236,11 @@ var subjectObject =
     },
     "util_get-action-filter": {
         "name": "util_get-action-filter",
+        "action": [],
+        "filter": []
+    },
+    "vendor-migration": {
+        "name": "vendor-migration",
         "action": [],
         "filter": []
     },

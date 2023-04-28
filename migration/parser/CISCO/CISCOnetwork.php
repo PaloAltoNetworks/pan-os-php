@@ -414,8 +414,8 @@ trait CISCOnetwork
                 }
                 elseif( preg_match("/ vlan /", $names_line) )
                 {
-                    $this->data = explode(" ", $names_line);
-                    $unittag = $this->data[2];
+                    $tmp = explode(" ", $names_line);
+                    $unittag = $tmp[2];
                 }
                 elseif( preg_match("/^!/i", $names_line) )
                 {
@@ -553,7 +553,7 @@ trait CISCOnetwork
         if( count($addInterface) > 0 )
         {
 
-            print_r( $addInterface );
+            #print_r( $addInterface );
 
             foreach( $addInterface as $int )
             {

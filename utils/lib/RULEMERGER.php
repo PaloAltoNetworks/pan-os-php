@@ -88,14 +88,12 @@ class RULEMERGER extends UTIL
             $tmp_additionalmatch = strtolower( PH::$args['additionalmatch'] );
             $this->UTIL_additionalMatch = explode( ",", $tmp_additionalmatch );
 
-            $supportedAdditionalmatch = array( 'tag', 'secprof', 'user', 'urlcategory', 'target' );
+            $supportedAdditionalmatch = array( 'tag', 'secprof', 'user', 'urlcategory', 'target', 'logprof' );
             foreach( $this->UTIL_additionalMatch as $value )
             {
                 if( !in_array( $value, $supportedAdditionalmatch ) )
                     derr( "additionalMatch argument support until now ONLY: ".implode(", ", $supportedAdditionalmatch) );
             }
-            #if( $this->UTIL_additionalMatch != "tag" )
-            #    derr( "additionalMatch argument support until now ONLY 'tag'" );
         }
 
         $errorMessage = '';
@@ -301,7 +299,8 @@ class RULEMERGER extends UTIL
             $additional_match .= $rule->urlCategories->getFastHashComp();
         if( in_array( 'target', $this->UTIL_additionalMatch ) )
             $additional_match .= $rule->target_Hash();
-
+        if( in_array( 'logprof', $this->UTIL_additionalMatch ) )
+            $additional_match .= $rule->logProfilHash();
 
         if( $this->UTIL_method == 1 )
             $rule->mergeHash = md5('action:' . $rule->action() . '.*/' . $rule->from->getFastHashComp() . $rule->to->getFastHashComp() .
@@ -820,7 +819,7 @@ class RULEMERGER extends UTIL
         $this->supportedArguments[] = array('niceName' => 'stopMergingIfDenySeen', 'shortHelp' => 'deny rules wont be merged', 'argDesc' => '[yes|no|true|false]');
         $this->supportedArguments[] = array('niceName' => 'mergeAdjacentOnly', 'shortHelp' => 'merge only rules that are adjacent to each other', 'argDesc' => '[yes|no|true|false]');
         $this->supportedArguments[] = array('niceName' => 'filter', 'shortHelp' => 'filter rules that can be converted');
-        $this->supportedArguments[] = array('niceName' => 'additionalMatch', 'shortHelp' => 'add additional matching criterial', 'argDesc' => '[tag,secprof,user,urlcategory,target]');
+        $this->supportedArguments[] = array('niceName' => 'additionalMatch', 'shortHelp' => 'add additional matching criterial', 'argDesc' => '[tag,secprof,user,urlcategory,target,logprof]');
         $this->supportedArguments[] = array('niceName' => 'DebugAPI', 'shortHelp' => 'prints API calls when they happen');
         $this->supportedArguments[] = array('niceName' => 'exportCSV', 'shortHelp' => 'when this argument is specified, it instructs the script to display the kept and removed objects per value');
     }

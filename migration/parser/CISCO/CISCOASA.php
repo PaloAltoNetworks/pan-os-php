@@ -107,7 +107,7 @@ class CISCOASA extends PARSER
         {
             //Todo: validation if GLOBAL rule
             echo PH::boldText("Zone Calculation for Security and NAT policy");
-            Converter::calculate_zones($this->template, $this->sub, "append");
+            #Converter::calculate_zones($this->template, $this->sub, "append");
         }
 
 
@@ -761,19 +761,19 @@ class CISCOASA extends PARSER
         //Seconds
         if( $output_value > 65535 )
         {
-            $output_value = $output_value / 60;
+            $output_value = (int)$output_value / 60;
             $output_unit++;
         }
         //Minutes
         if( $output_value > 65535 )
         {
-            $output_value = $output_value / 60;
+            $output_value = (int)$output_value / 60;
             $output_unit++;
         }
         //Hours
         if( $output_value > 65535 )
         {
-            $output_value = $output_value / 24;
+            $output_value = (int)$output_value / 24;
             $output_unit++;
         }
         //Days

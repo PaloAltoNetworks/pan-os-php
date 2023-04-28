@@ -107,6 +107,13 @@ trait RulewithLogging
         return TRUE;
     }
 
+    public function logProfilHash()
+    {
+        $string = "";
+        if( $this->logSetting !== False )
+            $string = $this->logSetting;
 
+        return md5( $string );
+    }
 
 }

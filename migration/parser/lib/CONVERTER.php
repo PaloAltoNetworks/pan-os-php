@@ -1034,7 +1034,7 @@ class CONVERTER extends UTIL
 
         $vsyss = $template->virtualSystems;
 
-        foreach( $vsyss as $v )
+        foreach( $vsyss as $sub )
         {
             foreach( $sub->natRules->rules() as $rule )
             {

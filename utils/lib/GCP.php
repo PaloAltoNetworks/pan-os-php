@@ -32,6 +32,7 @@ class GCP extends UTIL
     private $displayOutput = true;
     private $configPath = "/opt/pancfg/mgmt/saved-configs/";
     private $configPath_factory = "/opt/pancfg/mgmt/factory/";
+    #private $configPath = "/opt/pancfg/mgmt/factory/";
     private $configPath_tmp = "/tmp/";
 
     private $insecureValue = "--insecure-skip-tls-verify=true";
@@ -110,6 +111,7 @@ class GCP extends UTIL
             $actionArray[] = "upload";
             $actionArray[] = "download";
             $actionArray[] = "onboard";
+            $actionArray[] = "offboard";
             if( $this->strposARRAY( strtolower($action), $actionArray  ) == FALSE )
                 derr( "not supported ACTION - ".implode(",", $actionArray) );
         }
@@ -122,6 +124,7 @@ class GCP extends UTIL
             PH::print_stdout( "   - actions=upload tenantid=FULL");
             PH::print_stdout( "   - actions=download tenantid=FULL");
             PH::print_stdout( "   - actions=onboard tenantid=XYZ");
+            PH::print_stdout( "   - actions=offboard tenantid=XYZ");
             PH::print_stdout();
             derr( "argument actions= is missing", null, false );
         }
@@ -306,6 +309,32 @@ class GCP extends UTIL
             $onbard_string = 'curl -X POST http://127.0.0.1:8085/api/v1/src/mgmtsvc/customer/onboard -d \'{"id":"'.$tenantID.'","aid":"'.$tenantID.'","c":"'.$cluster.'", "b":"{\"tenant_id\":\"'.$tenantID.'\",\"associations\":[{\"app_id\":\"Logging Service\",\"tenant_id\":\"'.$tenantID.'\",\"region\":\"'.$region_location.'\"}]}"}\'';
             $this->execCLIWithOutput( $mgmtsvc.$onbard_string );
         }
+        elseif( $action == "offboard" )
+        {
+            $get_auth = "gcloud container clusters get-credentials admin --region ".$region." --project ".$project;
+            $this->execCLIWithOutput( $get_auth );
+
+            $mgmtsvc_tenantID = $this->grepAllPods( "mgmtsvc" );
+            $mgmtsvc = "kubectl exec -it ".$mgmtsvc_tenantID[0]." -c mgmtsvc --insecure-skip-tls-verify=true -- ";
+
+            $offboard_string = 'curl --header "Content-Type: application/json; charset=UTF-8" --request POST --data \'{"id":"'.$tenantID.'", "r":"false", "mig":"false"}\' http://127.0.0.1:8085/api/v1/src/mgmtsvc/customer/offboard';
+            $this->execCLIWithOutput( $mgmtsvc.$offboard_string );
+
+            /*
+            Clean up database for that tenant
+            //mysqladmin -h[hostname/localhost] -u[username] -p[password] drop [database]
+            adi@mgmtsvc-5ddbbc7fbd-t7r4s:~$ mysql --host 127.0.0.1 --port  3310 -u USER -p PASSWORD
+
+            mysql> drop database `DATABASE`;
+             */
+            $username = "paloalto";
+            $password = "PASSWORD";
+            derr("adjustment needed, correct PW in cleartext not stored in sourcecode!");
+            #$database = substr($tenantID, 0, -2);
+            $database = $tenantID;
+            $drop_database_string = 'mysql -h 127.0.0.1 -P 3310 -u '.$username.' -p'.$password.' drop `'.$database.'`';
+            $this->execCLIWithOutput( $mgmtsvc.$drop_database_string );
+        }
     }
 
 
@@ -436,20 +465,35 @@ class GCP extends UTIL
 
         if( $expectedResponse !== $response )
         {
-            //execute:
-            #$exec = "Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome https://".$http_auth_IP;
-            #exec( $exec );
-            #sleep(20);
+            $counter = 0;
+            do
+            {
+                PH::print_stdout( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                PH::print_stdout( "AUTHENTICATION NEEDED - please check new CHROME window");
+                PH::print_stdout( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                //execute:
+                $exec = 'open -a "Google Chrome" '.$this->http_auth;
+                exec( $exec );
+                sleep(20);
 
-            $message = "please open: ".$this->http_auth." in WebBrowser for MFA authentication. Then rerun this script";
-            derr( $message, null, FALSE );
-            #mwarning( $message, null, FALSE );
+                $response = curl_exec($curl);
+                curl_close($curl);
+
+                $counter++;
+            }
+            while( $expectedResponse !== $response && $counter < 2 );
         }
-        else
+
+        if( $expectedResponse === $response )
         {
             PH::print_stdout( "##############################");
             PH::print_stdout( "MFA authentication checked with: ".$this->http_auth );
             PH::print_stdout( "##############################");
+        }
+        else
+        {
+            $message = "please open: ".$this->http_auth." in WebBrowser for MFA authentication. Then rerun this script";
+            derr( $message, null, FALSE );
         }
     }
 
