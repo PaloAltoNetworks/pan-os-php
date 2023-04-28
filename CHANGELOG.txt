@@ -1,6 +1,14 @@
 CHANGELOG
 
-2.1.2
+2.1.3
+UTIL:
+
+BUGFIX:
+
+GENERAL:
+
+
+2.1.2 (20230428)
 UTIL:
 * type=rule-merger | introduce additionalmatch=logprof - to also check that only rules with same logging profile are merged
 * type=device | introduce 'filter=(devicegroup with-no-serial)'
