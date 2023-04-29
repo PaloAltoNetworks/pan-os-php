@@ -61,6 +61,10 @@ class NatRule extends Rule
     /** @var null|EthernetInterface|AggregateEthernetInterface|IPsecTunnel|LoopbackInterface|TmpInterface */
     protected $_destinationInterface = null;
 
+    protected $natruletype = null;
+    protected $natruletyperoot = null;
+    protected $natRuleTypeArray = array('ipv4', 'nat64', 'nptv6');
+
     static public $templatexml = '<entry name="**temporarynamechangeme**"><from><member>any</member></from><to><member>any</member></to>
 <source><member>any</member></source><destination><member>any</member></destination><service>any</service><disabled>no</disabled></entry>';
     static protected $templatexmlroot = null;
@@ -348,7 +352,15 @@ class NatRule extends Rule
         }
         // End of <service> extraction 	//
 
-
+        //						                    //
+        // natruletype properties Extraction	//
+        //						                    //
+        $this->natruletyperoot = DH::findFirstElement('nat-type', $xml);
+        if( $this->natruletyperoot !== FALSE )
+            $this->natruletype = $this->natruletyperoot->textContent;
+        else
+            $this->natruletype = 'ipv4';
+        // End of <nat-type> extraction 	//
     }
 
 
@@ -986,6 +998,12 @@ class NatRule extends Rule
             PH::$JSON_TMP['sub']['object'][$this->name()]['description'] = "";
         }
 
+        if( $this->natruletype !== null)
+        {
+            PH::print_stdout( $padding . "  NAT Rule Type:  " . $this->natruletype );
+            PH::$JSON_TMP['sub']['object'][$this->name()]['natruletype'] = $this->natruletype;
+        }
+
         PH::print_stdout();
     }
 
@@ -1047,6 +1065,28 @@ class NatRule extends Rule
             return FALSE;
 
         return TRUE;
+    }
+
+    public function getNatRuleTypeArray()
+    {
+        return $this->natRuleTypeArray;
+    }
+
+    public function getNatRuleType()
+    {
+        return $this->natruletype;
+    }
+
+    public function setNatRuleType( $natRuleType)
+    {
+        if( !in_array( $natRuleType, $this->natRuleTypeArray ) )
+        {
+            mwarning( "Nat Rule Type: ". $natRuleType ." is not suppoerted. Please pick a supported one: ".implode(",", $this->natRuleTypeArray) );
+            return False;
+        }
+
+        $this->natruletype = $natRuleType;
+        return True;
     }
 
     public function isNatRule()

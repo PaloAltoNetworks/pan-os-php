@@ -270,7 +270,30 @@ RQuery::$defaultFilters['rule']['to']['operators']['has.same.from.zone'] = array
     )
 );
 //                                              //
-//                NAT Dst/Src Based Actions     //
+//                NAT Based Filters     //
+//
+RQuery::$defaultFilters['rule']['natruletype']['operators']['is'] = array(
+    'Function' => function (RuleRQueryContext $context) {
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AuthenticationRule|PbfRule|QoSRule|DoSRule $object */
+        if( !$context->object->isNatRule() )
+            return FALSE;
+
+        if( !in_array( $context->value, $context->object->getNatRuleTypeArray() ) )
+        {
+            mwarning( "Nat Rule Type: ". $context->value ." is not suppoerted. Please pick a supported one: ".implode(",", $context->object->getNatRuleTypeArray()) );
+            return False;
+        }
+
+        if( $context->object->getNatRuleType() == $context->value )
+            return True;
+
+        return FALSE;
+    },
+    'arg' => TRUE,
+    'help' => 'example: \'filter=(snathost has.from.query subquery1)\' \'ipv4\', \'nat64\', \'ptv6\'',
+);
+//                                              //
+//                NAT Dst/Src Based Filters     //
 //                                              //
 RQuery::$defaultFilters['rule']['snatinterface']['operators']['has.regex'] = array(
     'Function' => function (RuleRQueryContext $context) {
