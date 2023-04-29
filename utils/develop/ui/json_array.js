@@ -3984,6 +3984,15 @@ var subjectObject =
                     }
                 }
             },
+            "natruletype": {
+                "operators": {
+                    "is": {
+                        "Function": {},
+                        "arg": true,
+                        "help": "supported filter: 'ipv4', 'nat64', 'ptv6'"
+                    }
+                }
+            },
             "rule": {
                 "operators": {
                     "is.prerule": {
@@ -4533,6 +4542,18 @@ var subjectObject =
                             "fString": "(%PROP% 1)",
                             "input": "input\/panorama-8.0.xml"
                         }
+                    }
+                }
+            },
+            "snatinterface": {
+                "operators": {
+                    "has.regex": {
+                        "Function": {},
+                        "arg": true
+                    },
+                    "is.set": {
+                        "Function": {},
+                        "arg": false
                     }
                 }
             },

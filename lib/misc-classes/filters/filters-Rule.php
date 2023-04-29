@@ -290,7 +290,7 @@ RQuery::$defaultFilters['rule']['natruletype']['operators']['is'] = array(
         return FALSE;
     },
     'arg' => TRUE,
-    'help' => 'example: \'filter=(snathost has.from.query subquery1)\' \'ipv4\', \'nat64\', \'ptv6\'',
+    'help' => 'supported filter: \'ipv4\', \'nat64\', \'ptv6\'',
 );
 //                                              //
 //                NAT Dst/Src Based Filters     //
@@ -313,6 +313,19 @@ RQuery::$defaultFilters['rule']['snatinterface']['operators']['has.regex'] = arr
             return FALSE;
     },
     'arg' => TRUE
+);
+RQuery::$defaultFilters['rule']['snatinterface']['operators']['is.set'] = array(
+    'Function' => function (RuleRQueryContext $context) {
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AuthenticationRule|PbfRule|QoSRule|DoSRule $object */
+        if( !$context->object->isNatRule() )
+            return FALSE;
+
+        if( $context->object->snatinterface === null )
+            return FALSE;
+
+        return TRUE;
+    },
+    'arg' => FALSe
 );
 RQuery::$defaultFilters['rule']['snathost']['operators']['has'] = array(
     'eval' => function ($object, &$nestedQueries, $value) {
