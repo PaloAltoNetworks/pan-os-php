@@ -4,6 +4,7 @@ CHANGELOG
 UTIL:
 * type=rule ruletype=nat | introduce 'filter=(natruletype is XYZ)' - 'ipv4', 'nat64', 'nptv6'
 * type=rule ruletype=nat | introduce 'filter=(snatinterface is.set)'
+* type=rule ruletype=nat 'actions=exporttoexcel:test-export-service.html' | introduce nat_rule_type
 
 BUGFIX:
 * type=rule ruletype=nat 'actions=exporttoexcel:test-export-service.html,ResolveServiceSummary' | bugfix for service count

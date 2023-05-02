@@ -4272,6 +4272,7 @@ RuleCallContext::$supportedActions[] = array(
             'location' => 'location',
             'rulebase' => 'rulebase',
             'type' => 'type',
+            'nat_rule_type' => 'nat_rule_type',
             'name' => 'name',
             'tag' => 'tags',
             'from' => 'from',
@@ -4338,7 +4339,8 @@ RuleCallContext::$supportedActions[] = array(
                         (($fieldName == 'application_resolved_sum') && !$addResolvedApplicationSummary) ||
                         (($fieldName == 'schedule_resolved_sum') && !$addResolvedScheduleSummary) ||
                         (($fieldName == 'application_seen') && (!$addAppSeenSummary || !$context->isAPI) ) ||
-                        (($fieldName == 'first-hit' || $fieldName == 'last-hit' || $fieldName == 'hit-count') && (!$addHitCountSummary || !$context->isAPI) )
+                        (($fieldName == 'first-hit' || $fieldName == 'last-hit' || $fieldName == 'hit-count') && (!$addHitCountSummary || !$context->isAPI) ) ||
+                        (($fieldName == 'nat_rule_type') && get_class($rule) !== "NatRule")
                     )
                         continue;
                     $rule_hitcount_array = array();
