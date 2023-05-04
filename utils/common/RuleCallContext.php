@@ -524,6 +524,8 @@ class RuleCallContext extends CallContext
         {
             if( !$rule->isNatRule() )
                 return self::enclose('');
+            if( $rule->dnathost === null )
+                return self::enclose('');
             return self::enclose($rule->dnattype, $wrap);
         }
         if( $fieldName == 'dnat_host' )

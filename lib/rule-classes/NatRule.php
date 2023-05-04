@@ -157,7 +157,8 @@ class NatRule extends Rule
         if( $this->dnatroot === FALSE )
         {
             $this->dnatroot = DH::findFirstElement('dynamic-destination-translation', $xml);
-            $this->dnattype = 'dynamic';
+            if( $this->dnatroot !== FALSE )
+                $this->dnattype = 'dynamic';
         }
         else
             $this->dnattype = 'static';
@@ -192,7 +193,10 @@ class NatRule extends Rule
                         mwarning( "NatRule: ".$this->name()." has 'dynamic-destination-translation/distribution' with: ".$this->dnatdistribution." configured, which is not supported! supported fields: ".implode(",", $this->dnatdistributionArray) );
                 }
                 else
-                    $this->dnatdistribution = "round-robin";
+                {
+                    if( $this->dnattype == "dynamic" )
+                        $this->dnatdistribution = "round-robin";
+                }
             }
         }
         // end of destination translation extraction
@@ -651,7 +655,7 @@ class NatRule extends Rule
      * @return bool
      * @throws Exception
      */
-    public function setDNAT($host, $ports = null, $type = 'static')
+    public function setDNAT($host, $ports = null, $type = 'static', $distribution = "round-robin")
     {
         if( $host === null )
             derr(" Host cannot be NULL");
@@ -675,6 +679,7 @@ class NatRule extends Rule
             derr( "DNAT type support only static, dynamic or none. send: '".$type."'" );
 
         $this->dnattype = $type;
+        $this->dnatdistribution = $distribution;
 
         $this->dnathost = $host;
         $host->addReference($this);
@@ -721,6 +726,7 @@ class NatRule extends Rule
         $host = $this->dnathost;
         $ports = $this->dnatports;
         $type = $this->dnattype;
+        $distribution = $this->dnatdistribution;
 
         if( $this->dnattype == "dynamic" )
         {
@@ -746,6 +752,7 @@ class NatRule extends Rule
         $this->dnathost->addReference($this);
         $this->dnatports = $ports;
         $this->dnattype = $type;
+        $this->dnatdistribution = $distribution;
 
 
         if( $ports === null )

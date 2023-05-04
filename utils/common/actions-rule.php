@@ -4295,15 +4295,15 @@ RuleCallContext::$supportedActions[] = array(
             'action' => 'action',
             'security-profile' => 'security-profile',
             'disabled' => 'disabled',
-            'src user' => 'src-user',
-            'log start' => 'log_start',
-            'log end' => 'log_end',
-            'log prof' => 'log_profile',
-            'log prof name' => 'log_profile_name',
-            'snat type' => 'snat_type',
+            'src_user' => 'src-user',
+            'log_start' => 'log_start',
+            'log_end' => 'log_end',
+            'log_prof' => 'log_profile',
+            'log_prof_name' => 'log_profile_name',
+            'snat_type' => 'snat_type',
             'snat_address' => 'snat_address',
             'snat_address_resolved_sum' => 'snat_address_resolved_sum',
-            'dnat type' => 'dnat_type',
+            'dnat_type' => 'dnat_type',
             'dnat_host' => 'dnat_host',
             'dnat_host_resolved_sum' => 'dnat_host_resolved_sum',
             'dnat_port' => 'dnat_port',
@@ -4343,7 +4343,9 @@ RuleCallContext::$supportedActions[] = array(
                         (($fieldName == 'schedule_resolved_sum') && !$addResolvedScheduleSummary) ||
                         (($fieldName == 'application_seen') && (!$addAppSeenSummary || !$context->isAPI) ) ||
                         (($fieldName == 'first-hit' || $fieldName == 'last-hit' || $fieldName == 'hit-count') && (!$addHitCountSummary || !$context->isAPI) ) ||
-                        (($fieldName == 'nat_rule_type') && get_class($rule) !== "NatRule")
+                        (($fieldName == 'nat_rule_type' || $fieldName == 'snat_type' || $fieldName == 'snat_address' ||
+                                $fieldName == 'snat_address_resovled_sum' || $fieldName == "dnat_type" || $fieldName == 'dnat_host' ||
+                                $fieldName == 'dnat_host_resovled_sum' || $fieldName == 'dnat_port' || $fieldName == 'dnat_distribution' )  && get_class($rule) !== "NatRule")
                     )
                         continue;
                     $rule_hitcount_array = array();
@@ -4370,7 +4372,10 @@ RuleCallContext::$supportedActions[] = array(
                 (($fieldName == 'application_resolved_sum') && !$addResolvedApplicationSummary) ||
                 (($fieldName == 'schedule_resolved_sum') && !$addResolvedScheduleSummary) ||
                 (($fieldName == 'application_seen') && (!$addAppSeenSummary || !$context->isAPI) ) ||
-                (($fieldName == 'first-hit' || $fieldName == 'last-hit' || $fieldName == 'hit-count') && (!$addHitCountSummary || !$context->isAPI) )
+                (($fieldName == 'first-hit' || $fieldName == 'last-hit' || $fieldName == 'hit-count') && (!$addHitCountSummary || !$context->isAPI) ) ||
+                (($fieldName == 'nat_rule_type' || $fieldName == 'snat_type' || $fieldName == 'snat_address' ||
+                        $fieldName == 'snat_address_resovled_sum' || $fieldName == "dnat_type" || $fieldName == 'dnat_host' ||
+                        $fieldName == 'dnat_host_resovled_sum' || $fieldName == 'dnat_port' || $fieldName == 'dnat_distribution' )  && get_class($rule) !== "NatRule")
             )
                 continue;
             $tableHeaders .= "<th>{$fieldName}</th>\n";
