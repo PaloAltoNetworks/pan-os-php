@@ -468,6 +468,95 @@ RQuery::$defaultFilters['rule']['dnathost']['operators']['includes.full.or.parti
     )
 );
 
+
+RQuery::$defaultFilters['rule']['dnatport']['operators']['has'] = array(
+    'eval' => function ($object, &$nestedQueries, $value) {
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AuthenticationRule|PbfRule|QoSRule|DoSRule $object */
+        if( !$object->isNatRule() ) return FALSE;
+        if( $object->dnatports === null ) return FALSE;
+
+        return $object->dnatports === $value;
+    },
+    'arg' => TRUE,
+    'argDesc' => 'service object name ie: tcp-80, t-443',
+    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->owner->owner->serviceStore->find('!value!');"
+);
+
+
+RQuery::$defaultFilters['rule']['dnattype']['operators']['is.static'] = array(
+    'Function' => function (RuleRQueryContext $context) {
+        if( !$context->object->isNatRule() ) return null;
+        if( $context->object->dnathost === null ) return null;
+        if( $context->object->dnattype == 'static' )
+            return TRUE;
+
+        return FALSE;
+    },
+    'arg' => FALSE
+);
+RQuery::$defaultFilters['rule']['dnattype']['operators']['is.dynamic'] = array(
+    'Function' => function (RuleRQueryContext $context) {
+        if( !$context->object->isNatRule() ) return null;
+        if( $context->object->dnathost === null ) return null;
+        if( $context->object->dnattype == 'dynamic' )
+            return TRUE;
+
+        return FALSE;
+    },
+    'arg' => FALSE
+);
+
+
+RQuery::$defaultFilters['rule']['dnatdistribution']['operators']['is.round-robin'] = array(
+    'eval' => function ($object, &$nestedQueries, $value) {
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AuthenticationRule|PbfRule|QoSRule|DoSRule $object */
+        if( !$object->isNatRule() ) return FALSE;
+        if( $object->dnattype !== "dynamic" ) return FALSE;
+
+        return $object->dnatdistribution === "round-robin";
+    },
+    'arg' => FALSE
+);
+RQuery::$defaultFilters['rule']['dnatdistribution']['operators']['is.source-ip-hash'] = array(
+    'eval' => function ($object, &$nestedQueries, $value) {
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AuthenticationRule|PbfRule|QoSRule|DoSRule $object */
+        if( !$object->isNatRule() ) return FALSE;
+        if( $object->dnattype !== "dynamic" ) return FALSE;
+
+        return $object->dnatdistribution === "source-ip-hash";
+    },
+    'arg' => FALSE
+);
+RQuery::$defaultFilters['rule']['dnatdistribution']['operators']['is.ip-modulo'] = array(
+    'eval' => function ($object, &$nestedQueries, $value) {
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AuthenticationRule|PbfRule|QoSRule|DoSRule $object */
+        if( !$object->isNatRule() ) return FALSE;
+        if( $object->dnattype !== "dynamic" ) return FALSE;
+
+        return $object->dnatdistribution === "ip-modulo";
+    },
+    'arg' => FALSE
+);
+RQuery::$defaultFilters['rule']['dnatdistribution']['operators']['is.ip-hash'] = array(
+    'eval' => function ($object, &$nestedQueries, $value) {
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AuthenticationRule|PbfRule|QoSRule|DoSRule $object */
+        if( !$object->isNatRule() ) return FALSE;
+        if( $object->dnattype !== "dynamic" ) return FALSE;
+
+        return $object->dnatdistribution === "ip-hash";
+    },
+    'arg' => FALSE
+);
+RQuery::$defaultFilters['rule']['dnatdistribution']['operators']['is.least-sessions'] = array(
+    'eval' => function ($object, &$nestedQueries, $value) {
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AuthenticationRule|PbfRule|QoSRule|DoSRule $object */
+        if( !$object->isNatRule() ) return FALSE;
+        if( $object->dnattype !== "dynamic" ) return FALSE;
+
+        return $object->dnatdistribution === "least-sessions";
+    },
+    'arg' => FALSE
+);
 //                                              //
 //                SNAT Based Actions            //
 //                                              //
