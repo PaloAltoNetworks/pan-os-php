@@ -45,11 +45,16 @@ class NatRule extends Rule
     /** @var null|string */
     public $dnatports = null;
 
+    /** @var null|string */
+    public $dnatdistribution = null;
+    protected $dnatdistributionArray = array('round-robin', 'source-ip-hash', 'ip-modulo', 'ip-hash', 'least-sessions');
+
     /** @var null|DOMElement */
     public $snatroot = null;
 
     public $subdnatTAroot = null;
     public $subdnatTProot = null;
+    public $subdnatDistroot = null;
 
     /**  @var null|DOMElement
      * @ignore
@@ -178,6 +183,16 @@ class NatRule extends Rule
                             $this->dnatports = null;
                     }
                 }
+
+                $this->subdnatDistroot = DH::findFirstElement('distribution', $this->dnatroot);
+                if( $this->subdnatDistroot !== FALSE )
+                {
+                    $this->dnatdistribution = $this->subdnatDistroot->textContent;
+                    if( !in_array( $this->dnatdistribution, $this->dnatdistributionArray ) )
+                        mwarning( "NatRule: ".$this->name()." has 'dynamic-destination-translation/distribution' with: ".$this->dnatdistribution." configured, which is not supported! supported fields: ".implode(",", $this->dnatdistributionArray) );
+                }
+                else
+                    $this->dnatdistribution = "round-robin";
             }
         }
         // end of destination translation extraction
@@ -962,6 +977,9 @@ class NatRule extends Rule
             }
         }
 
+
+
+
         if( $this->dnathost === null )
         {
             PH::print_stdout( $padding . "  DNAT: none" );
@@ -969,13 +987,26 @@ class NatRule extends Rule
         }
         else
         {
+            PH::print_stdout( $padding . "  DNAT Type: ".$this->dnattype );
+            PH::$JSON_TMP['sub']['object'][$this->name()]['dnat']['type'] = $this->dnattype;
+
             $text = $padding . "  DNAT: " . $this->dnathost->name();
             if( $this->dnatports != "" )
                 $text .= " dport: " . $this->dnatports;
             PH::print_stdout( $text );
             PH::$JSON_TMP['sub']['object'][$this->name()]['dnat']['host'] = $this->dnathost->name();
             PH::$JSON_TMP['sub']['object'][$this->name()]['dnat']['dport'] = $this->dnatports;
+
+            if( $this->dnattype == "dynamic" && $this->dnatdistribution !== null )
+            {
+                PH::print_stdout( $padding . "  DNAT distribution: " . $this->dnatdistribution );
+                PH::$JSON_TMP['sub']['object'][$this->name()]['dnat']['distribution'] = $this->dnatdistribution;
+            }
+            else
+                PH::$JSON_TMP['sub']['object'][$this->name()]['dnat']['distribution'] = "none";
         }
+
+
 
 
         PH::print_stdout( $padding . "  Tags:  " . $this->tags->toString_inline() );

@@ -656,9 +656,24 @@ class RuleCallContext extends CallContext
     public function ServiceCount( $rule, $type = "both" )
     {
         $calculatedCounter = "";
-        if( get_class($rule) === "SecurityRule" )
+        if( get_class($rule) === "NatRule" )
         {
-            /** @var SecurityRule $rule */
+            /** @var NatRule $rule */
+            if( is_object($rule->service ) )
+                $calculatedCounter = 1;
+            else
+            {
+                $maxPortcount = 65536;
+                if( $type === "both" )
+                    $calculatedCounter = ($maxPortcount * 2);
+                elseif( $type === "tcp" || $type === "udp" )
+                    $calculatedCounter = $maxPortcount;
+            }
+        }
+        #if( get_class($rule) === "SecurityRule" )
+        else
+        {
+            /** @var SecurityRule|Rule $rule */
             $objects = $rule->services->o;
 
 
@@ -686,20 +701,7 @@ class RuleCallContext extends CallContext
                     $calculatedCounter = $maxPortcount;
             }
         }
-        elseif( get_class($rule) === "NatRule" )
-        {
-            /** @var NatRule $rule */
-            if( is_object($rule->service ) )
-                $calculatedCounter = 1;
-            else
-            {
-                $maxPortcount = 65536;
-                if( $type === "both" )
-                    $calculatedCounter = ($maxPortcount * 2);
-                elseif( $type === "tcp" || $type === "udp" )
-                    $calculatedCounter = $maxPortcount;
-            }
-        }
+
 
         return $calculatedCounter;
     }
