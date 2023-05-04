@@ -520,6 +520,12 @@ class RuleCallContext extends CallContext
                 return self::enclose('');
             return self::enclose($rule->snathosts->getAll(), $wrap);
         }
+        if( $fieldName == 'dnat_type' )
+        {
+            if( !$rule->isNatRule() )
+                return self::enclose('');
+            return self::enclose($rule->dnattype, $wrap);
+        }
         if( $fieldName == 'dnat_host' )
         {
             if( !$rule->isNatRule() )
@@ -527,6 +533,22 @@ class RuleCallContext extends CallContext
             if( $rule->dnathost === null )
                 return self::enclose('');
             return self::enclose(array($rule->dnathost), $wrap);
+        }
+        if( $fieldName == 'dnat_port' )
+        {
+            if( !$rule->isNatRule() )
+                return self::enclose('');
+            if( $rule->dnatports === null )
+                return self::enclose('');
+            return self::enclose(array($rule->dnatports), $wrap);
+        }
+        if( $fieldName == 'dnat_distribution' )
+        {
+            if( !$rule->isNatRule() )
+                return self::enclose('');
+            if( $rule->dnatdistribution === null )
+                return self::enclose('');
+            return self::enclose($rule->dnatdistribution, $wrap);
         }
 
         if( $fieldName == 'disabled' )

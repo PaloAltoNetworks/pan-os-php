@@ -7,6 +7,7 @@ UTIL:
 * type=rule ruletype=nat 'actions=exporttoexcel:test-export-service.html' | introduce nat_rule_type
 * type=rule ruletype=nat | actions=display - introduce dnattype, dnatdistribution
 * type=rule ruletype=nat | introduce 'filter=( dnattype is.dynamic )  | (dnattype is.static) | (dnatport has SERIVCEobjNAME) | (dnatdistribution is.round-robin / is.source-ip-hash / is.ip-modulo / is.ip-hash / is.least-session)
+* type=rule actions=exporttoexcel:file.html | extend with dnat_type, dnat_port, dnat_distribution field
 
 BUGFIX:
 * type=rule ruletype=nat 'actions=exporttoexcel:test-export-service.html,ResolveServiceSummary' | bugfix for service count
