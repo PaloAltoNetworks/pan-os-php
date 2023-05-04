@@ -395,6 +395,8 @@ class GCP extends UTIL
             {
                 if( strpos( $tenantID, "expedition" ) !== FALSE )
                     $tenant_exec = "kubectl ".$this->insecureValue." exec -it " . $tenantID . " -c expedition";
+                elseif( strpos( $tenantID, "mgmtsvc" ) !== FALSE )
+                    $tenant_exec = "kubectl ".$this->insecureValue." exec -it " . $tenantID . " -c mgmtsvc";
                 else
                     $tenant_exec = "kubectl ".$this->insecureValue." exec -it " . $tenantID . " -c ".substr($tenantID, 0, -2);
 
