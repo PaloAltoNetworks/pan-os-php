@@ -4282,6 +4282,7 @@ RuleCallContext::$supportedActions[] = array(
             'src_resolved_sum' => 'src_resolved_sum',
             'dst_negated' => 'destination_negated',
             'dst' => 'destination',
+            'dst_interface' => 'dst_interface',
             'dst_resolved_sum' => 'dst_resolved_sum',
             'service' => 'service',
             'service_resolved_sum' => 'service_resolved_sum',
@@ -4303,6 +4304,7 @@ RuleCallContext::$supportedActions[] = array(
             'snat_type' => 'snat_type',
             'snat_address' => 'snat_address',
             'snat_address_resolved_sum' => 'snat_address_resolved_sum',
+            'snat_interface' => 'snat_interface',
             'dnat_type' => 'dnat_type',
             'dnat_host' => 'dnat_host',
             'dnat_host_resolved_sum' => 'dnat_host_resolved_sum',
@@ -4345,7 +4347,8 @@ RuleCallContext::$supportedActions[] = array(
                         (($fieldName == 'first-hit' || $fieldName == 'last-hit' || $fieldName == 'hit-count') && (!$addHitCountSummary || !$context->isAPI) ) ||
                         (($fieldName == 'nat_rule_type' || $fieldName == 'snat_type' || $fieldName == 'snat_address' ||
                                 $fieldName == 'snat_address_resovled_sum' || $fieldName == "dnat_type" || $fieldName == 'dnat_host' ||
-                                $fieldName == 'dnat_host_resovled_sum' || $fieldName == 'dnat_port' || $fieldName == 'dnat_distribution' )  && get_class($rule) !== "NatRule")
+                                $fieldName == 'dnat_host_resovled_sum' || $fieldName == 'dnat_port' || $fieldName == 'dnat_distribution' ||
+                                $fieldName == "dst_interface" || $fieldName == "snat_interface" )  && get_class($rule) !== "NatRule")
                     )
                         continue;
                     $rule_hitcount_array = array();
@@ -4375,7 +4378,8 @@ RuleCallContext::$supportedActions[] = array(
                 (($fieldName == 'first-hit' || $fieldName == 'last-hit' || $fieldName == 'hit-count') && (!$addHitCountSummary || !$context->isAPI) ) ||
                 (($fieldName == 'nat_rule_type' || $fieldName == 'snat_type' || $fieldName == 'snat_address' ||
                         $fieldName == 'snat_address_resovled_sum' || $fieldName == "dnat_type" || $fieldName == 'dnat_host' ||
-                        $fieldName == 'dnat_host_resovled_sum' || $fieldName == 'dnat_port' || $fieldName == 'dnat_distribution' )  && get_class($rule) !== "NatRule")
+                        $fieldName == 'dnat_host_resovled_sum' || $fieldName == 'dnat_port' || $fieldName == 'dnat_distribution'  ||
+                        $fieldName == "dst_interface" || $fieldName == "snat_interface" )  && $rule !== null && get_class($rule) !== "NatRule")
             )
                 continue;
             $tableHeaders .= "<th>{$fieldName}</th>\n";

@@ -349,6 +349,13 @@ class RuleCallContext extends CallContext
             return self::enclose($rule->destination->getAll(), $wrap);
         }
 
+        if( $fieldName == 'dst_interface' )
+        {
+            if( $rule->destinationInterface() == null )
+                return self::enclose('');
+            return self::enclose($rule->destinationInterface());
+        }
+
         if( $fieldName == 'service' )
         {
             if( $rule->isDecryptionRule() )
@@ -520,6 +527,13 @@ class RuleCallContext extends CallContext
                 return self::enclose('');
             return self::enclose($rule->snathosts->getAll(), $wrap);
         }
+        if( $fieldName == 'snat_interface' )
+        {
+            if( $rule->snatinterface == null )
+                return self::enclose('');
+            return self::enclose($rule->snatinterface);
+        }
+
         if( $fieldName == 'dnat_type' )
         {
             if( !$rule->isNatRule() )

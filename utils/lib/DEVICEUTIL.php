@@ -168,6 +168,8 @@ class DEVICEUTIL extends UTIL
                     $counter = count($store->getTemplatesStacks());
                 elseif( get_class($objects[0]) == "ManagedDevice" )
                     $counter = count($store->getAll());
+                else
+                    $counter = 0;
             }
             else
                 $counter = 0;

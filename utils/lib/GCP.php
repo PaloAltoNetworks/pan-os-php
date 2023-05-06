@@ -348,10 +348,17 @@ class GCP extends UTIL
     private function execCLIWithOutput( $cli )
     {
         $this->execCLI($cli, $output, $retValue);
+
+        if( strpos( $cli, "get-credentials" ) != False && $retValue == 1 )
+            derr( "permission denied on resource: ".$cli, null, False );
+
         foreach( $output as $line )
         {
             $string = '   ##  ';
             $string .= $line;
+
+
+
             if( $this->displayOutput )
             {
                 PH::print_stdout($string);
