@@ -3597,6 +3597,30 @@ var subjectObject =
                     }
                 }
             },
+            "dnatdistribution": {
+                "operators": {
+                    "is.round-robin": {
+                        "eval": {},
+                        "arg": false
+                    },
+                    "is.source-ip-hash": {
+                        "eval": {},
+                        "arg": false
+                    },
+                    "is.ip-modulo": {
+                        "eval": {},
+                        "arg": false
+                    },
+                    "is.ip-hash": {
+                        "eval": {},
+                        "arg": false
+                    },
+                    "is.least-sessions": {
+                        "eval": {},
+                        "arg": false
+                    }
+                }
+            },
             "dnathost": {
                 "operators": {
                     "has": {
@@ -3652,6 +3676,31 @@ var subjectObject =
                             "fString": "(%PROP% 1.1.1.1)",
                             "input": "input\/panorama-8.0.xml"
                         }
+                    }
+                }
+            },
+            "dnatport": {
+                "operators": {
+                    "eq": {
+                        "eval": {},
+                        "arg": true,
+                        "argDesc": "service port e.g. 80"
+                    },
+                    "is.set": {
+                        "eval": {},
+                        "arg": false
+                    }
+                }
+            },
+            "dnattype": {
+                "operators": {
+                    "is.static": {
+                        "Function": {},
+                        "arg": false
+                    },
+                    "is.dynamic": {
+                        "Function": {},
+                        "arg": false
                     }
                 }
             },

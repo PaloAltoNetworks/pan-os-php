@@ -18,6 +18,7 @@ BUGFIX:
 
 GENERAL:
 * remove alias | pa_migraiton-parser, pa_appidtoolbox-* - as now covered with alias 'pan-os-php type='
+* update utility information about actions / filter
 
 
 2.1.2 (20230428)
