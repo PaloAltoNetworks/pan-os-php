@@ -6,7 +6,7 @@ UTIL:
 * type=rule ruletype=nat | introduce 'filter=(snatinterface is.set)'
 * type=rule ruletype=nat 'actions=exporttoexcel:test-export-service.html' | introduce nat_rule_type
 * type=rule ruletype=nat | actions=display - introduce dnattype, dnatdistribution
-* type=rule ruletype=nat | introduce 'filter=( dnattype is.dynamic )  | (dnattype is.static) | (dnatport has SERIVCEobjNAME) | (dnatdistribution is.round-robin / is.source-ip-hash / is.ip-modulo / is.ip-hash / is.least-session)
+* type=rule ruletype=nat | introduce 'filter=( dnattype is.dynamic )  | (dnattype is.static) | (dnatport eq SERIVCEport) | (dnatdistribution is.round-robin / is.source-ip-hash / is.ip-modulo / is.ip-hash / is.least-session)
 * type=rule actions=exporttoexcel:file.html | extend with dnat_type, dnat_port, dnat_distribution field
 * type=rule ruletype=nat | introduce 'filter=(dnatport is.set)' - improvements to handle dnat fields
 * type=gcp | improve helper tool for specific mgmtsvc tenant
@@ -14,6 +14,7 @@ UTIL:
 
 BUGFIX:
 * type=rule ruletype=nat 'actions=exporttoexcel:test-export-service.html,ResolveServiceSummary' | bugfix for service count
+* type=rule ruletype=nat | bugfix for 'filter=(dnatport eq 22)' - (dnatport has xxx) delete as missleading information
 
 GENERAL:
 * remove alias | pa_migraiton-parser, pa_appidtoolbox-* - as now covered with alias 'pan-os-php type='

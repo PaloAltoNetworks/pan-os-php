@@ -469,7 +469,7 @@ RQuery::$defaultFilters['rule']['dnathost']['operators']['includes.full.or.parti
 );
 
 
-RQuery::$defaultFilters['rule']['dnatport']['operators']['has'] = array(
+RQuery::$defaultFilters['rule']['dnatport']['operators']['eq'] = array(
     'eval' => function ($object, &$nestedQueries, $value) {
         /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AuthenticationRule|PbfRule|QoSRule|DoSRule $object */
         if( !$object->isNatRule() ) return FALSE;
@@ -478,8 +478,7 @@ RQuery::$defaultFilters['rule']['dnatport']['operators']['has'] = array(
         return $object->dnatports === $value;
     },
     'arg' => TRUE,
-    'argDesc' => 'service object name ie: tcp-80, t-443',
-    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->owner->owner->serviceStore->find('!value!');"
+    'argDesc' => 'service port e.g. 80'
 );
 RQuery::$defaultFilters['rule']['dnatport']['operators']['is.set'] = array(
     'eval' => function ($object, &$nestedQueries, $value) {
