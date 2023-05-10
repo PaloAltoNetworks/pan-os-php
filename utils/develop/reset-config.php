@@ -38,7 +38,10 @@ PH::print_stdout( "PAN-OS-PHP version: ".PH::frameworkVersion() );
 $supportedArguments = Array();
 $supportedArguments['in'] = Array('niceName' => 'in', 'shortHelp' => 'input file or api. ie: in=config.xml  or in=api://192.168.1.1 or in=api://0018CAEC3@panorama.company.com', 'argDesc' => '[filename]|[api://IP]|[api://serial@IP]');
 $supportedArguments['out'] = Array('niceName' => 'out', 'shortHelp' => 'output file to save config after changes. Only required when input is a file. ie: out=save-config.xml', 'argDesc' => '[filename]');
-$supportedArguments['location'] = Array('niceName' => 'location', 'shortHelp' => 'specify if you want to limit your query to a VSYS. By default location=vsys1 for PANOS. ie: location=any or location=vsys2,vsys1', 'argDesc' => '=sub1[,sub2]');
+$supportedArguments['location'] = Array('niceName' => 'location', 'shortHelp' => 'specify if you want to limit your query to a VSYS. By default location=vsys1 for PANOS. ie: location=any or location=vsys1', 'argDesc' => '=sub1');
+$supportedArguments['template'] = Array('niceName' => 'template', 'shortHelp' => 'specify if you want to limit your query to a template. only needed if Panorama By default location=vsys1 for PANOS. ie: template=any or template=tmp1', 'argDesc' => '=sub1');
+$supportedArguments['template-stack'] = Array('niceName' => 'template-stack', 'shortHelp' => 'specify if you want to limit your query to a template-stack. only needed if Panorama By default location=vsys1 for PANOS. ie: template-stack=any or template-stack=tmp1', 'argDesc' => '=sub1');
+$supportedArguments['xpath'] = Array('niceName' => 'xpath', 'shortHelp' => 'specify if you want to limit to a specific config part, based on if location= , template/template-stack= is used', 'argDesc' => '=sub1');
 $supportedArguments['debugapi'] = Array('niceName' => 'DebugAPI', 'shortHelp' => 'prints API calls when they happen');
 $supportedArguments['help'] = Array('niceName' => 'help', 'shortHelp' => 'this message');
 $supportedArguments['folder'] = Array('niceName' => 'folder', 'shortHelp' => 'specify the folder where the offline files should be saved');
@@ -65,6 +68,8 @@ $util->load_config();
 $pan = $util->pan;
 $connector = $pan->connector;
 
+$template = null;
+$xpath_filter = null;
 
 ///////////////////////////////////////////////////////
 ///
@@ -103,12 +108,28 @@ else
         $element = "<entry name='".$util->objectsLocation."'>";
         #element="<entry name='".$objectsLoation."'><devices><entry name='".$fw_test_serial."'/></devices>";
 
-        $xpath_network = "/config/devices/entry[@name='localhost.localdomain']/network";
-        $xpath_network = "";
+
+    }
+
+    if( isset(PH::$args['template']) )
+    {
+        $template = PH::$args['template'];
+
+        $xpath_network = "/config/devices/entry[@name='localhost.localdomain']/template/entry[@name='".$template."']/network";
+    }
+    elseif( isset(PH::$args['template-stack']) )
+    {
+        $template = PH::$args['template-stack'];
+
+        $xpath_network = "/config/devices/entry[@name='localhost.localdomain']/template-stack/entry[@name='".$template."']/network";
     }
 
 }
 
+if( isset(PH::$args['xpath']) )
+{
+    $xpath_filter = PH::$args['xpath'];
+}
 
 /*
  * #former config
@@ -163,16 +184,28 @@ $cleanup[] = "profiles";
 $cleanup[] = "import";
 
 
+$supportedRuleTypes = array( 'security', 'nat', 'decryption', 'appoverride', 'captiveportal', 'authentication', 'pbf', 'qos', 'dos', 'tunnelinspection', 'defaultsecurity', 'networkpacketbroker', 'sdwan');
+
 if( $util->configType == 'panos' )
-    $cleanup[] = "rulebase";
+{
+    foreach( $supportedRuleTypes as $ruleType )
+        $cleanup[] = "rulebase/".$ruleType;
+}
 else
 {
     if( $util->objectsLocation != 'shared' )
     {
-        $cleanup[] = "pre-rulebase";
-        $cleanup[] = "post-rulebase";
+        foreach( $supportedRuleTypes as $ruleType )
+        {
+            if( $ruleType == "defaultsecurity" )
+                $cleanup[] = "post-rulebase/".$ruleType;
+            else
+            {
+                $cleanup[] = "pre-rulebase/".$ruleType;
+                $cleanup[] = "post-rulebase/".$ruleType;
+            }
+        }
     }
-
 }
 
 
@@ -201,46 +234,76 @@ foreach( $cleanup as $entry )
 
 $element .= "</entry>";
 
-
-foreach( $cleanup as $entry )
+print "TEST\n";
+if( $template === null )
 {
-    $tmp_xpath = $xpath;
+    foreach( $cleanup as $entry )
+    {
+        if( $xpath_filter !== null )
+        {
+            #if( strpos( $xpath_filter, $entry ) === False )
+            if( strpos( $entry, $xpath_filter ) === False )
+                continue;
+        }
 
-    $tmp_xpath .= "/".$entry;
-    #$element = "<address>";
+        $tmp_xpath = $xpath;
 
-    $apiArgs = Array();
-    $apiArgs['type'] = 'config';
-    $apiArgs['action'] = 'delete';
-    $apiArgs['xpath'] = &$tmp_xpath;
-    #$apiArgs['element'] = &$element;
+        $tmp_xpath .= "/".$entry;
+        #$element = "<address>";
 
-    print "     "."*** delete each member from ".$entry." \n";
+        $apiArgs = Array();
+        $apiArgs['type'] = 'config';
+        $apiArgs['action'] = 'delete';
+        $apiArgs['xpath'] = &$tmp_xpath;
+        #$apiArgs['element'] = &$element;
 
-    if( $util->configInput['type'] == 'api' )
-        $response = $pan->connector->sendRequest($apiArgs);
+        print "     "."*** delete each member from ".$entry." \n";
+
+        if( $util->configInput['type'] == 'api' )
+            $response = $pan->connector->sendRequest($apiArgs);
+    }
+}
+else
+{
+    print "TEST2\n";
+    print "|".$template."|\n";
+    print "TEST3\n";
 }
 
 
-foreach( $cleanup_network as $entry )
+if( $util->configType == 'panos' || $template !== null )
 {
-    $tmp_xpath = $xpath_network;
+    if( isset(PH::$args['template']) )
+        print "   - cleanup Template: ".$template.":\n";
+    elseif( isset(PH::$args['template-stack']) )
+        print "   - cleanup TemplateStack: ".$template.":\n";
 
-    $tmp_xpath .= "/".$entry;
-    #$element = "<address>";
+    foreach( $cleanup_network as $entry )
+    {
+        if( $xpath_filter !== null )
+        {
+            #if( strpos( $xpath_filter, $entry ) === False )
+            if( strpos( $entry, $xpath_filter ) === False )
+                continue;
+        }
 
-    $apiArgs = Array();
-    $apiArgs['type'] = 'config';
-    $apiArgs['action'] = 'delete';
-    $apiArgs['xpath'] = &$tmp_xpath;
-    #$apiArgs['element'] = &$element;
+        $tmp_xpath = $xpath_network;
 
-    print "     "."*** delete each member from ".$entry." \n";
+        $tmp_xpath .= "/" . $entry;
+        #$element = "<address>";
 
-    if( $util->configInput['type'] == 'api' )
-        $response = $pan->connector->sendRequest($apiArgs);
+        $apiArgs = array();
+        $apiArgs['type'] = 'config';
+        $apiArgs['action'] = 'delete';
+        $apiArgs['xpath'] = &$tmp_xpath;
+        #$apiArgs['element'] = &$element;
+
+        print "     " . "*** delete each member from " . $entry . " \n";
+
+        if( $util->configInput['type'] == 'api' )
+            $response = $pan->connector->sendRequest($apiArgs);
+    }
 }
-
 //problems:
 //xml interface missing
 //device/system - customer service routing not reset

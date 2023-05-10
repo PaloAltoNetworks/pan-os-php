@@ -348,10 +348,17 @@ class GCP extends UTIL
     private function execCLIWithOutput( $cli )
     {
         $this->execCLI($cli, $output, $retValue);
+
+        if( strpos( $cli, "get-credentials" ) != False && $retValue == 1 )
+            derr( "permission denied on resource: ".$cli, null, False );
+
         foreach( $output as $line )
         {
             $string = '   ##  ';
             $string .= $line;
+
+
+
             if( $this->displayOutput )
             {
                 PH::print_stdout($string);
@@ -395,6 +402,8 @@ class GCP extends UTIL
             {
                 if( strpos( $tenantID, "expedition" ) !== FALSE )
                     $tenant_exec = "kubectl ".$this->insecureValue." exec -it " . $tenantID . " -c expedition";
+                elseif( strpos( $tenantID, "mgmtsvc" ) !== FALSE )
+                    $tenant_exec = "kubectl ".$this->insecureValue." exec -it " . $tenantID . " -c mgmtsvc";
                 else
                     $tenant_exec = "kubectl ".$this->insecureValue." exec -it " . $tenantID . " -c ".substr($tenantID, 0, -2);
 

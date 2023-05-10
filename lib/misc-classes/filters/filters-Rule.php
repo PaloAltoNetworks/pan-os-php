@@ -270,7 +270,30 @@ RQuery::$defaultFilters['rule']['to']['operators']['has.same.from.zone'] = array
     )
 );
 //                                              //
-//                NAT Dst/Src Based Actions     //
+//                NAT Based Filters     //
+//
+RQuery::$defaultFilters['rule']['natruletype']['operators']['is'] = array(
+    'Function' => function (RuleRQueryContext $context) {
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AuthenticationRule|PbfRule|QoSRule|DoSRule $object */
+        if( !$context->object->isNatRule() )
+            return FALSE;
+
+        if( !in_array( $context->value, $context->object->getNatRuleTypeArray() ) )
+        {
+            mwarning( "Nat Rule Type: ". $context->value ." is not suppoerted. Please pick a supported one: ".implode(",", $context->object->getNatRuleTypeArray()) );
+            return False;
+        }
+
+        if( $context->object->getNatRuleType() == $context->value )
+            return True;
+
+        return FALSE;
+    },
+    'arg' => TRUE,
+    'help' => 'supported filter: \'ipv4\', \'nat64\', \'ptv6\'',
+);
+//                                              //
+//                NAT Dst/Src Based Filters     //
 //                                              //
 RQuery::$defaultFilters['rule']['snatinterface']['operators']['has.regex'] = array(
     'Function' => function (RuleRQueryContext $context) {
@@ -290,6 +313,19 @@ RQuery::$defaultFilters['rule']['snatinterface']['operators']['has.regex'] = arr
             return FALSE;
     },
     'arg' => TRUE
+);
+RQuery::$defaultFilters['rule']['snatinterface']['operators']['is.set'] = array(
+    'Function' => function (RuleRQueryContext $context) {
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AuthenticationRule|PbfRule|QoSRule|DoSRule $object */
+        if( !$context->object->isNatRule() )
+            return FALSE;
+
+        if( $context->object->snatinterface === null )
+            return FALSE;
+
+        return TRUE;
+    },
+    'arg' => FALSe
 );
 RQuery::$defaultFilters['rule']['snathost']['operators']['has'] = array(
     'eval' => function ($object, &$nestedQueries, $value) {
@@ -432,6 +468,104 @@ RQuery::$defaultFilters['rule']['dnathost']['operators']['includes.full.or.parti
     )
 );
 
+
+RQuery::$defaultFilters['rule']['dnatport']['operators']['eq'] = array(
+    'eval' => function ($object, &$nestedQueries, $value) {
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AuthenticationRule|PbfRule|QoSRule|DoSRule $object */
+        if( !$object->isNatRule() ) return FALSE;
+        if( $object->dnatports === null ) return FALSE;
+
+        return $object->dnatports === $value;
+    },
+    'arg' => TRUE,
+    'argDesc' => 'service port e.g. 80'
+);
+RQuery::$defaultFilters['rule']['dnatport']['operators']['is.set'] = array(
+    'eval' => function ($object, &$nestedQueries, $value) {
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AuthenticationRule|PbfRule|QoSRule|DoSRule $object */
+        if( !$object->isNatRule() ) return FALSE;
+        if( $object->dnatports === null ) return FALSE;
+
+        return TRUE;
+    },
+    'arg' => FALSE,
+);
+
+
+RQuery::$defaultFilters['rule']['dnattype']['operators']['is.static'] = array(
+    'Function' => function (RuleRQueryContext $context) {
+        if( !$context->object->isNatRule() ) return null;
+        if( $context->object->dnathost === null ) return null;
+        if( $context->object->dnattype == 'static' )
+            return TRUE;
+
+        return FALSE;
+    },
+    'arg' => FALSE
+);
+RQuery::$defaultFilters['rule']['dnattype']['operators']['is.dynamic'] = array(
+    'Function' => function (RuleRQueryContext $context) {
+        if( !$context->object->isNatRule() ) return null;
+        if( $context->object->dnathost === null ) return null;
+        if( $context->object->dnattype == 'dynamic' )
+            return TRUE;
+
+        return FALSE;
+    },
+    'arg' => FALSE
+);
+
+
+RQuery::$defaultFilters['rule']['dnatdistribution']['operators']['is.round-robin'] = array(
+    'eval' => function ($object, &$nestedQueries, $value) {
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AuthenticationRule|PbfRule|QoSRule|DoSRule $object */
+        if( !$object->isNatRule() ) return FALSE;
+        if( $object->dnattype !== "dynamic" ) return FALSE;
+
+        return $object->dnatdistribution === "round-robin";
+    },
+    'arg' => FALSE
+);
+RQuery::$defaultFilters['rule']['dnatdistribution']['operators']['is.source-ip-hash'] = array(
+    'eval' => function ($object, &$nestedQueries, $value) {
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AuthenticationRule|PbfRule|QoSRule|DoSRule $object */
+        if( !$object->isNatRule() ) return FALSE;
+        if( $object->dnattype !== "dynamic" ) return FALSE;
+
+        return $object->dnatdistribution === "source-ip-hash";
+    },
+    'arg' => FALSE
+);
+RQuery::$defaultFilters['rule']['dnatdistribution']['operators']['is.ip-modulo'] = array(
+    'eval' => function ($object, &$nestedQueries, $value) {
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AuthenticationRule|PbfRule|QoSRule|DoSRule $object */
+        if( !$object->isNatRule() ) return FALSE;
+        if( $object->dnattype !== "dynamic" ) return FALSE;
+
+        return $object->dnatdistribution === "ip-modulo";
+    },
+    'arg' => FALSE
+);
+RQuery::$defaultFilters['rule']['dnatdistribution']['operators']['is.ip-hash'] = array(
+    'eval' => function ($object, &$nestedQueries, $value) {
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AuthenticationRule|PbfRule|QoSRule|DoSRule $object */
+        if( !$object->isNatRule() ) return FALSE;
+        if( $object->dnattype !== "dynamic" ) return FALSE;
+
+        return $object->dnatdistribution === "ip-hash";
+    },
+    'arg' => FALSE
+);
+RQuery::$defaultFilters['rule']['dnatdistribution']['operators']['is.least-sessions'] = array(
+    'eval' => function ($object, &$nestedQueries, $value) {
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AuthenticationRule|PbfRule|QoSRule|DoSRule $object */
+        if( !$object->isNatRule() ) return FALSE;
+        if( $object->dnattype !== "dynamic" ) return FALSE;
+
+        return $object->dnatdistribution === "least-sessions";
+    },
+    'arg' => FALSE
+);
 //                                              //
 //                SNAT Based Actions            //
 //                                              //

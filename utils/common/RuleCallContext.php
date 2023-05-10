@@ -292,8 +292,11 @@ class RuleCallContext extends CallContext
         if( $fieldName == 'tags' )
             return self::enclose($rule->tags->getAll(), $wrap);
 
-        if( $fieldName == 'type' )
+        if( $fieldName == 'rule_type' )
             return self::enclose($rule->ruleNature(), $wrap);
+
+        if( $fieldName == 'nat_rule_type' )
+            return self::enclose($rule->getNatRuleType(), $wrap);
 
         if( $fieldName == 'from' )
         {
@@ -344,6 +347,13 @@ class RuleCallContext extends CallContext
             if( $rule->destination->isAny() )
                 return self::enclose('any');
             return self::enclose($rule->destination->getAll(), $wrap);
+        }
+
+        if( $fieldName == 'dst_interface' )
+        {
+            if( $rule->destinationInterface() == null )
+                return self::enclose('');
+            return self::enclose($rule->destinationInterface());
         }
 
         if( $fieldName == 'service' )
@@ -517,6 +527,21 @@ class RuleCallContext extends CallContext
                 return self::enclose('');
             return self::enclose($rule->snathosts->getAll(), $wrap);
         }
+        if( $fieldName == 'snat_interface' )
+        {
+            if( $rule->snatinterface == null )
+                return self::enclose('');
+            return self::enclose($rule->snatinterface);
+        }
+
+        if( $fieldName == 'dnat_type' )
+        {
+            if( !$rule->isNatRule() )
+                return self::enclose('');
+            if( $rule->dnathost === null )
+                return self::enclose('');
+            return self::enclose($rule->dnattype, $wrap);
+        }
         if( $fieldName == 'dnat_host' )
         {
             if( !$rule->isNatRule() )
@@ -524,6 +549,22 @@ class RuleCallContext extends CallContext
             if( $rule->dnathost === null )
                 return self::enclose('');
             return self::enclose(array($rule->dnathost), $wrap);
+        }
+        if( $fieldName == 'dnat_port' )
+        {
+            if( !$rule->isNatRule() )
+                return self::enclose('');
+            if( $rule->dnatports === null )
+                return self::enclose('');
+            return self::enclose(array($rule->dnatports), $wrap);
+        }
+        if( $fieldName == 'dnat_distribution' )
+        {
+            if( !$rule->isNatRule() )
+                return self::enclose('');
+            if( $rule->dnatdistribution === null )
+                return self::enclose('');
+            return self::enclose($rule->dnatdistribution, $wrap);
         }
 
         if( $fieldName == 'disabled' )
@@ -652,31 +693,53 @@ class RuleCallContext extends CallContext
 
     public function ServiceCount( $rule, $type = "both" )
     {
-        $objects = $rule->services->o;
-
-        if( count($objects  ) > 0 )
+        $calculatedCounter = "";
+        if( get_class($rule) === "NatRule" )
         {
-            $dst_port_mapping = new ServiceDstPortMapping();
-            $dst_port_mapping->mergeWithArrayOfServiceObjects( $objects);
-
-            $dst_port_mapping->countPortmapping();
-            if( $type === "both" )
-                $calculatedCounter = $dst_port_mapping->PortCounter;
-            elseif( $type === "tcp" )
-                $calculatedCounter = $dst_port_mapping->tcpPortCounter;
-            elseif( $type === "udp" )
-                $calculatedCounter = $dst_port_mapping->udpPortCounter;
+            /** @var NatRule $rule */
+            if( is_object($rule->service ) )
+                $calculatedCounter = 1;
+            else
+            {
+                $maxPortcount = 65536;
+                if( $type === "both" )
+                    $calculatedCounter = ($maxPortcount * 2);
+                elseif( $type === "tcp" || $type === "udp" )
+                    $calculatedCounter = $maxPortcount;
+            }
         }
-        elseif( $rule->services->isApplicationDefault() )
-            $calculatedCounter = "";
+        #if( get_class($rule) === "SecurityRule" )
         else
         {
-            $maxPortcount = 65536;
-            if( $type === "both" )
-                $calculatedCounter = ($maxPortcount * 2);
-            elseif( $type === "tcp" || $type === "udp" )
-                $calculatedCounter = $maxPortcount;
+            /** @var SecurityRule|Rule $rule */
+            $objects = $rule->services->o;
+
+
+            if( count($objects  ) > 0 )
+            {
+                $dst_port_mapping = new ServiceDstPortMapping();
+                $dst_port_mapping->mergeWithArrayOfServiceObjects( $objects);
+
+                $dst_port_mapping->countPortmapping();
+                if( $type === "both" )
+                    $calculatedCounter = $dst_port_mapping->PortCounter;
+                elseif( $type === "tcp" )
+                    $calculatedCounter = $dst_port_mapping->tcpPortCounter;
+                elseif( $type === "udp" )
+                    $calculatedCounter = $dst_port_mapping->udpPortCounter;
+            }
+            elseif( $rule->services->isApplicationDefault() )
+                $calculatedCounter = "";
+            else
+            {
+                $maxPortcount = 65536;
+                if( $type === "both" )
+                    $calculatedCounter = ($maxPortcount * 2);
+                elseif( $type === "tcp" || $type === "udp" )
+                    $calculatedCounter = $maxPortcount;
+            }
         }
+
 
         return $calculatedCounter;
     }

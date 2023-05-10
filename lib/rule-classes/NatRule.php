@@ -45,11 +45,16 @@ class NatRule extends Rule
     /** @var null|string */
     public $dnatports = null;
 
+    /** @var null|string */
+    public $dnatdistribution = null;
+    protected $dnatdistributionArray = array('round-robin', 'source-ip-hash', 'ip-modulo', 'ip-hash', 'least-sessions');
+
     /** @var null|DOMElement */
     public $snatroot = null;
 
     public $subdnatTAroot = null;
     public $subdnatTProot = null;
+    public $subdnatDistroot = null;
 
     /**  @var null|DOMElement
      * @ignore
@@ -60,6 +65,10 @@ class NatRule extends Rule
 
     /** @var null|EthernetInterface|AggregateEthernetInterface|IPsecTunnel|LoopbackInterface|TmpInterface */
     protected $_destinationInterface = null;
+
+    protected $natruletype = null;
+    protected $natruletyperoot = null;
+    protected $natRuleTypeArray = array('ipv4', 'nat64', 'nptv6');
 
     static public $templatexml = '<entry name="**temporarynamechangeme**"><from><member>any</member></from><to><member>any</member></to>
 <source><member>any</member></source><destination><member>any</member></destination><service>any</service><disabled>no</disabled></entry>';
@@ -148,7 +157,8 @@ class NatRule extends Rule
         if( $this->dnatroot === FALSE )
         {
             $this->dnatroot = DH::findFirstElement('dynamic-destination-translation', $xml);
-            $this->dnattype = 'dynamic';
+            if( $this->dnatroot !== FALSE )
+                $this->dnattype = 'dynamic';
         }
         else
             $this->dnattype = 'static';
@@ -173,6 +183,19 @@ class NatRule extends Rule
                         if( strlen($this->dnatports) < 0 )
                             $this->dnatports = null;
                     }
+                }
+
+                $this->subdnatDistroot = DH::findFirstElement('distribution', $this->dnatroot);
+                if( $this->subdnatDistroot !== FALSE )
+                {
+                    $this->dnatdistribution = $this->subdnatDistroot->textContent;
+                    if( !in_array( $this->dnatdistribution, $this->dnatdistributionArray ) )
+                        mwarning( "NatRule: ".$this->name()." has 'dynamic-destination-translation/distribution' with: ".$this->dnatdistribution." configured, which is not supported! supported fields: ".implode(",", $this->dnatdistributionArray) );
+                }
+                else
+                {
+                    if( $this->dnattype == "dynamic" )
+                        $this->dnatdistribution = "round-robin";
                 }
             }
         }
@@ -348,7 +371,15 @@ class NatRule extends Rule
         }
         // End of <service> extraction 	//
 
-
+        //						                    //
+        // natruletype properties Extraction	//
+        //						                    //
+        $this->natruletyperoot = DH::findFirstElement('nat-type', $xml);
+        if( $this->natruletyperoot !== FALSE )
+            $this->natruletype = $this->natruletyperoot->textContent;
+        else
+            $this->natruletype = 'ipv4';
+        // End of <nat-type> extraction 	//
     }
 
 
@@ -624,7 +655,7 @@ class NatRule extends Rule
      * @return bool
      * @throws Exception
      */
-    public function setDNAT($host, $ports = null, $type = 'static')
+    public function setDNAT($host, $ports = null, $type = 'static', $distribution = "round-robin")
     {
         if( $host === null )
             derr(" Host cannot be NULL");
@@ -648,6 +679,7 @@ class NatRule extends Rule
             derr( "DNAT type support only static, dynamic or none. send: '".$type."'" );
 
         $this->dnattype = $type;
+        $this->dnatdistribution = $distribution;
 
         $this->dnathost = $host;
         $host->addReference($this);
@@ -694,6 +726,7 @@ class NatRule extends Rule
         $host = $this->dnathost;
         $ports = $this->dnatports;
         $type = $this->dnattype;
+        $distribution = $this->dnatdistribution;
 
         if( $this->dnattype == "dynamic" )
         {
@@ -719,6 +752,7 @@ class NatRule extends Rule
         $this->dnathost->addReference($this);
         $this->dnatports = $ports;
         $this->dnattype = $type;
+        $this->dnatdistribution = $distribution;
 
 
         if( $ports === null )
@@ -950,6 +984,9 @@ class NatRule extends Rule
             }
         }
 
+
+
+
         if( $this->dnathost === null )
         {
             PH::print_stdout( $padding . "  DNAT: none" );
@@ -957,13 +994,26 @@ class NatRule extends Rule
         }
         else
         {
+            PH::print_stdout( $padding . "  DNAT Type: ".$this->dnattype );
+            PH::$JSON_TMP['sub']['object'][$this->name()]['dnat']['type'] = $this->dnattype;
+
             $text = $padding . "  DNAT: " . $this->dnathost->name();
             if( $this->dnatports != "" )
                 $text .= " dport: " . $this->dnatports;
             PH::print_stdout( $text );
             PH::$JSON_TMP['sub']['object'][$this->name()]['dnat']['host'] = $this->dnathost->name();
             PH::$JSON_TMP['sub']['object'][$this->name()]['dnat']['dport'] = $this->dnatports;
+
+            if( $this->dnattype == "dynamic" && $this->dnatdistribution !== null )
+            {
+                PH::print_stdout( $padding . "  DNAT distribution: " . $this->dnatdistribution );
+                PH::$JSON_TMP['sub']['object'][$this->name()]['dnat']['distribution'] = $this->dnatdistribution;
+            }
+            else
+                PH::$JSON_TMP['sub']['object'][$this->name()]['dnat']['distribution'] = "none";
         }
+
+
 
 
         PH::print_stdout( $padding . "  Tags:  " . $this->tags->toString_inline() );
@@ -984,6 +1034,12 @@ class NatRule extends Rule
         {
             PH::print_stdout( $padding . "  Desc:  ");
             PH::$JSON_TMP['sub']['object'][$this->name()]['description'] = "";
+        }
+
+        if( $this->natruletype !== null)
+        {
+            PH::print_stdout( $padding . "  NAT Rule Type:  " . $this->natruletype );
+            PH::$JSON_TMP['sub']['object'][$this->name()]['natruletype'] = $this->natruletype;
         }
 
         PH::print_stdout();
@@ -1047,6 +1103,28 @@ class NatRule extends Rule
             return FALSE;
 
         return TRUE;
+    }
+
+    public function getNatRuleTypeArray()
+    {
+        return $this->natRuleTypeArray;
+    }
+
+    public function getNatRuleType()
+    {
+        return $this->natruletype;
+    }
+
+    public function setNatRuleType( $natRuleType)
+    {
+        if( !in_array( $natRuleType, $this->natRuleTypeArray ) )
+        {
+            mwarning( "Nat Rule Type: ". $natRuleType ." is not suppoerted. Please pick a supported one: ".implode(",", $this->natRuleTypeArray) );
+            return False;
+        }
+
+        $this->natruletype = $natRuleType;
+        return True;
     }
 
     public function isNatRule()
