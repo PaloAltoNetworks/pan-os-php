@@ -11,6 +11,7 @@ UTIL:
 * type=rule ruletype=nat | introduce 'filter=(dnatport is.set)' - improvements to handle dnat fields
 * type=gcp | improve helper tool for specific mgmtsvc tenant
 * type=rule ruletype=nat actions=exporttoexcel:file.html | extend NAT rule information with dst_interface and snat_interface
+* type=rule actions=exporttoexcel:file.html - rename column 'type' to 'rule_type'
 
 BUGFIX:
 * type=rule ruletype=nat 'actions=exporttoexcel:test-export-service.html,ResolveServiceSummary' | bugfix for service count

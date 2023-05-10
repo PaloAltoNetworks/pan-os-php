@@ -292,7 +292,7 @@ class RuleCallContext extends CallContext
         if( $fieldName == 'tags' )
             return self::enclose($rule->tags->getAll(), $wrap);
 
-        if( $fieldName == 'type' )
+        if( $fieldName == 'rule_type' )
             return self::enclose($rule->ruleNature(), $wrap);
 
         if( $fieldName == 'nat_rule_type' )
