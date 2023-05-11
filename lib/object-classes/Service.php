@@ -35,7 +35,7 @@ class Service
     protected $_timewait_timeout;
 
     public $migrated;
-
+    public $ancestor;
 
     /** @var null|DOMElement */
     public $protocolRoot = null;

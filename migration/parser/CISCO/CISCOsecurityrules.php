@@ -1011,9 +1011,13 @@ trait CISCOsecurityrules
                                             $tmp_service = $this->sub->serviceStore->find($tmp_protocol . "-" . $value);
                                             if( $tmp_service === null )
                                             {
-                                                if( $print )
-                                                    print "     * create service: " . $tmp_protocol . "-" . $value . "\n";
-                                                $tmp_service = $this->sub->serviceStore->newService($tmp_protocol . "-" . $value, $tmp_protocol, $value);
+                                                $tmp_service = $this->sub->serviceStore->find($value . "_" . $tmp_protocol);
+                                                if( $tmp_service === null )
+                                                {
+                                                    if( $print )
+                                                        print "     * create service: " . $tmp_protocol . "-" . $value . "\n";
+                                                    $tmp_service = $this->sub->serviceStore->newService($tmp_protocol . "-" . $value, $tmp_protocol, $value);
+                                                }
                                             }
                                         }
                                         if( $tmp_service !== null )
@@ -1035,9 +1039,13 @@ trait CISCOsecurityrules
                                                 #mwarning( "servicgroup found and protocol is: ".$tmp_protocol );
                                                 if( $tmp_service === null )
                                                 {
-                                                    if( $print )
-                                                        print "     * create service: " . $tmp_protocol . "-" . $value . "\n";
-                                                    $tmp_service = $this->sub->serviceStore->newService($tmp_protocol . "-" . $value, $tmp_protocol, $value);
+                                                    $tmp_service = $this->sub->serviceStore->find($value . "_" . $tmp_protocol);
+                                                    if( $tmp_service === null )
+                                                    {
+                                                        if( $print )
+                                                            print "     * create service: " . $tmp_protocol . "-" . $value . "\n";
+                                                        $tmp_service = $this->sub->serviceStore->newService($tmp_protocol . "-" . $value, $tmp_protocol, $value);
+                                                    }
                                                 }
                                             }
                                             elseif( $tmp_service === null )
@@ -1222,9 +1230,13 @@ trait CISCOsecurityrules
                                             $tmp_service = $this->sub->serviceStore->find($tmp_protocol . "-" . $value);
                                             if( $tmp_service === null )
                                             {
-                                                if( $print )
-                                                    print "   * create service " . $tmp_protocol . "-" . $value . "\n";
-                                                $tmp_service = $this->sub->serviceStore->newService($tmp_protocol . "-" . $value, $tmp_protocol, $value);
+                                                $tmp_service = $this->sub->serviceStore->find($value . "_" . $tmp_protocol);
+                                                if( $tmp_service === null )
+                                                {
+                                                    if( $print )
+                                                        print "     * create service: " . $tmp_protocol . "-" . $value . "\n";
+                                                    $tmp_service = $this->sub->serviceStore->newService($tmp_protocol . "-" . $value, $tmp_protocol, $value);
+                                                }
                                             }
                                             if( $print )
                                                 print "   * add service: " . $tmp_service->name() . "\n";

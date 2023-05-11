@@ -5,6 +5,7 @@ UTIL:
 
 BUGFIX:
 * type=vendor-migration vendor=ciscoasa | fix to avoid none object to read isGroup()
+* type=vendor-migration vendor=ciscoasa | bugfix for creating service - to not add e.g. tacacs as service port
 
 GENERAL:
 - update dynamic content to Device App-ID version: 8708-8036

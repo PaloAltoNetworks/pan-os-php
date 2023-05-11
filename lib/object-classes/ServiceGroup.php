@@ -35,6 +35,7 @@ class ServiceGroup
     /** @var TagRuleContainer */
     public $tags;
 
+    public $ancestor;
 
     public function __construct($name, $owner = null, $fromTemplateXml = FALSE)
     {
