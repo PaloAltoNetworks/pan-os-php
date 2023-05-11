@@ -1,6 +1,15 @@
 CHANGELOG
 
-2.1.3
+2.1.4
+UTIL:
+
+BUGFIX:
+
+GENERAL:
+- update dynamic content to Device App-ID version: 8708-8036
+
+
+2.1.3 (20230511)
 UTIL:
 * type=rule ruletype=nat | introduce 'filter=(natruletype is XYZ)' - 'ipv4', 'nat64', 'nptv6'
 * type=rule ruletype=nat | introduce 'filter=(snatinterface is.set)'
