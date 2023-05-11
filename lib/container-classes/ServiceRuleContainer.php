@@ -36,6 +36,7 @@ class ServiceRuleContainer extends ObjRuleContainer
     private $appDef = FALSE;
     private $wrongService = FALSE;
 
+    protected $fasthashcomp;
 
     public function __construct($owner)
     {

@@ -25,6 +25,10 @@ trait XmlConvertible
     /** @var DOMElement|null $xmlroot */
     public $xmlroot = null;
 
+    protected $warning;
+    protected $error;
+    protected $info;
+
     function &getXmlText_inline()
     {
         return DH::dom_to_xml($this->xmlroot, -1, FALSE);

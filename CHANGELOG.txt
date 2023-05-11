@@ -4,9 +4,11 @@ CHANGELOG
 UTIL:
 
 BUGFIX:
+* type=vendor-migration vendor=ciscoasa | fix to avoid none object to read isGroup()
 
 GENERAL:
 - update dynamic content to Device App-ID version: 8708-8036
+- improvements for PHP8.2 - deprecated variable declaration | function utf8_encode()
 
 
 2.1.3 (20230511)

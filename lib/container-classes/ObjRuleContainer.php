@@ -34,6 +34,8 @@ class ObjRuleContainer
 
     public $o = array();
 
+    protected $fasthashcomp;
+
     public function count()
     {
         return count($this->o);

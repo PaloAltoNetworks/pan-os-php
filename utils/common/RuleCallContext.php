@@ -25,6 +25,8 @@ class RuleCallContext extends CallContext
     public static $commonActionFunctions = array();
     public static $supportedActions = array();
 
+    public $fields;
+
     static public function prepareSupportedActions()
     {
         $tmpArgs = array();

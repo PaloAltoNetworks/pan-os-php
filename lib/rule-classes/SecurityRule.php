@@ -38,6 +38,18 @@ class SecurityRule extends RuleWithUserID
     /** @var string[] */
     protected $_urlCategories = array();
 
+
+    public $appsToAdd;
+    public $appConvertedRule;
+
+    public $alreadyMerged;
+
+    public $indexPosition;
+    public $mergeHash;
+    public $serial;
+
+
+
     /**
      * @var UrlCategoryRuleContainer
      */

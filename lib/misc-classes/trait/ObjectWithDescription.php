@@ -58,7 +58,8 @@ trait ObjectWithDescription
         }
         else
         {
-            $newDescription = utf8_encode($newDescription);
+            #$newDescription = utf8_encode($newDescription);
+            $newDescription = mb_convert_encoding($newDescription, 'UTF-8', 'ISO-8859-1');
             if( $this->_description == $newDescription )
                 return FALSE;
             $this->_description = $newDescription;

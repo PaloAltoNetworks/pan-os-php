@@ -97,7 +97,8 @@ trait RuleWithSchedule
         }
         else
         {
-            $newSchedule = utf8_encode($newSchedule);
+            #$newSchedule = utf8_encode($newSchedule);
+            $newSchedule = mb_convert_encoding($newSchedule, 'UTF-8', 'ISO-8859-1');
             if( is_object( $this->schedule ) && $this->schedule->name() == $newSchedule )
                 return FALSE;
 

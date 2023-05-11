@@ -47,6 +47,11 @@ class RULEMERGER extends UTIL
     public $exportcsv = FALSE;
     public $exportcsvFile = null;
 
+
+    public $context;
+    public $action;
+
+
     public function utilStart()
     {
         $this->usageMsg = PH::boldText("USAGE: ") . "php " . basename(__FILE__) . " in=inputfile.xml|api://... location=shared|sub [out=outputfile.xml]" .

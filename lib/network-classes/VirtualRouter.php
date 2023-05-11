@@ -35,6 +35,9 @@ class VirtualRouter
 
     protected $xmlroot_protocol = false;
 
+    protected $fastMemToIndex;
+    protected $fastNameToIndex;
+
     /**
      * @param $name string
      * @param $owner VirtualRouterStore

@@ -43,6 +43,8 @@ class logWriter
 
     protected $util = null;
 
+    protected $params;
+
     /**
      * Class constructor
      * @param string $log_file - path and filename of log

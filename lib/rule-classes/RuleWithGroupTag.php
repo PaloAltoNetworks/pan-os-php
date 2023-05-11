@@ -109,7 +109,8 @@ trait RuleWithGroupTag
         }
         else
         {
-            $newGroupTag = utf8_encode($newGroupTag);
+            #$newGroupTag = utf8_encode($newGroupTag);
+            $newGroupTag = mb_convert_encoding($newGroupTag, 'UTF-8', 'ISO-8859-1');
             if( is_object( $this->grouptag ) && $this->grouptag->name() == $newGroupTag )
                 return FALSE;
 
