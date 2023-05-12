@@ -290,8 +290,8 @@ trait CISCOnetwork
             if( preg_match("/^interface /i", $names_line) )
             {
                 $isInterface = TRUE;
-                $this->dataI = preg_split('/\s/', $names_line, 0, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
-                $interfaceName = $this->dataI[1];
+                $dataI = preg_split('/\s/', $names_line, 0, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+                $interfaceName = $dataI[1];
 
                 /*
                 if( preg_match("/^Management/i", $interfaceName) )

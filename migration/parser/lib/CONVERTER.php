@@ -713,11 +713,11 @@ class CONVERTER extends UTIL
         #$this->vendor = $_vendor;
 
         if( empty($this->configInput) )
-            derr("variable: 'IN=' is not set!");
+            derr("argument: 'IN=' is not set!", null, False);
         elseif( empty($this->configOutput) )
-            derr("variable: 'OUT=' is not set!");
+            derr("argument: 'OUT=' is not set!", null, False);
         elseif( empty($this->configFile) )
-            derr("variable: 'FILE=' is not set!");
+            derr("argument: 'FILE=' is not set!", null, False);
 
 
         self::global_start();

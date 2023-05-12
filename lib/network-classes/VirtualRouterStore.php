@@ -31,6 +31,10 @@ class VirtualRouterStore extends ObjStore
 
     public static $childn = 'VirtualRouter';
 
+    protected $fastMemToIndex;
+    protected $fastNameToIndex;
+
+
     public function __construct($name, $owner)
     {
         $this->name = $name;

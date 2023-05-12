@@ -143,7 +143,8 @@ class RuleWithUserID extends Rule
     {
         $tmpRoot = DH::findFirstElementOrCreate('source-user', $this->xmlroot);
 
-        $newUser = utf8_encode($newUser);
+        #$newUser = utf8_encode($newUser);
+        $newUser = mb_convert_encoding($newUser, 'UTF-8', 'ISO-8859-1');
         if( in_array($newUser, $this->_users, TRUE) )
             return FALSE;
 
@@ -158,7 +159,8 @@ class RuleWithUserID extends Rule
     {
         $tmpRoot = DH::findFirstElementOrCreate('source-user', $this->xmlroot);
 
-        $newUser = utf8_encode($newUser);
+        #$newUser = utf8_encode($newUser);
+        $newUser = mb_convert_encoding($newUser, 'UTF-8', 'ISO-8859-1');
         if (($key = array_search($newUser, $this->_users)) !== FALSE) {
             unset($this->_users[$key]);
         }

@@ -43,16 +43,17 @@ function display_usage_and_exit($shortMessage = FALSE)
         global $supportedArguments;
 
         ksort($supportedArguments);
-        $text = "";
+
         foreach( $supportedArguments as &$arg )
         {
+            $text = "";
             $text .= " - " . PH::boldText($arg['niceName']);
             if( isset($arg['argDesc']) )
                 $text .= '=' . $arg['argDesc'];
             //."=";
             if( isset($arg['shortHelp']) )
                 $text .= "\n     " . $arg['shortHelp'];
-            PH::print_stdout( $text);
+            PH::print_stdout( $text."\n");
         }
 
         PH::print_stdout();

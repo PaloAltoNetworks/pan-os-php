@@ -1,6 +1,19 @@
 CHANGELOG
 
-2.1.3
+2.1.4
+UTIL:
+* type=vendor-migration | improve output if arguments are missing
+
+BUGFIX:
+* type=vendor-migration vendor=ciscoasa | fix to avoid none object to read isGroup()
+* type=vendor-migration vendor=ciscoasa | bugfix for creating service - to not add e.g. tacacs as service port
+
+GENERAL:
+- update dynamic content to Device App-ID version: 8708-8036
+- improvements for PHP8.2 - deprecated variable declaration | function utf8_encode()
+
+
+2.1.3 (20230511)
 UTIL:
 * type=rule ruletype=nat | introduce 'filter=(natruletype is XYZ)' - 'ipv4', 'nat64', 'nptv6'
 * type=rule ruletype=nat | introduce 'filter=(snatinterface is.set)'

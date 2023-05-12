@@ -34,6 +34,9 @@ class Service
     protected $_halfclose_timeout;
     protected $_timewait_timeout;
 
+    public $migrated;
+    public $ancestor;
+
     /** @var null|DOMElement */
     public $protocolRoot = null;
 

@@ -59,6 +59,9 @@ class Address
 
     public $_ip4Map = null;
 
+    public $ancestor;
+
+
     /**
      * you should not need this one for normal use
      * @param string $name
