@@ -41,7 +41,7 @@ class PROTOCOLL_NUMBERS__
         // Initialize a file URL to the variable
         $url = "https://www.iana.org/assignments/protocol-numbers/protocol-numbers-1.csv";
 
-        $predefined_path = __DIR__ . '/../../lib/object-classes/';
+        $predefined_path = __DIR__ . '/../../lib/resources/ip_protocol/';
 
         // Use basename() function to return the base name of file
         $file_name = $predefined_path.basename($url);

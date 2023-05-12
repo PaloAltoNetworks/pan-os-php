@@ -6,6 +6,7 @@ UTIL:
 BUGFIX:
 
 GENERAL:
+* extend resources folder for ip_Protocol and Region IPv4/v6 files
 
 
 2.1.4 (20230512)
