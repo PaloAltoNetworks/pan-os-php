@@ -2,6 +2,7 @@ CHANGELOG
 
 2.1.4
 UTIL:
+* type=vendor-migration | improve output if arguments are missing
 
 BUGFIX:
 * type=vendor-migration vendor=ciscoasa | fix to avoid none object to read isGroup()
