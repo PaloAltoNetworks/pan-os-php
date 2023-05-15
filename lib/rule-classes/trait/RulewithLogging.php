@@ -107,7 +107,7 @@ trait RulewithLogging
         return TRUE;
     }
 
-    public function logProfilHash()
+    public function logSettingHash()
     {
         $string = "";
         if( $this->logSetting !== False )
