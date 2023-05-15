@@ -27,7 +27,7 @@ class Region
     use XmlConvertible;
 
     public $owner;
-
+    public $_ip4Map;
     /**
      * you should not need this one for normal use
      * @param string $name
@@ -133,6 +133,11 @@ class Region
 
 
         return $this->_ip4Map;
+    }
+
+    public function value()
+    {
+        return "region";
     }
 
 

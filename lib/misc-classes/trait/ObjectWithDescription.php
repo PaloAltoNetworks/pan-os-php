@@ -63,8 +63,14 @@ trait ObjectWithDescription
             if( $this->_description == $newDescription )
                 return FALSE;
             $this->_description = $newDescription;
-            $tmpRoot = DH::findFirstElementOrCreate($tagName, $this->xmlroot);
-            DH::setDomNodeText($tmpRoot, $this->_description);
+            if( $this->xmlroot !== NULL )
+            {
+                $tmpRoot = DH::findFirstElementOrCreate($tagName, $this->xmlroot);
+                DH::setDomNodeText($tmpRoot, $this->_description);
+            }
+            else
+                mwarning("object: ".$this->name()." - description could not be merged to: ". $newDescription, null, False);
+
         }
 
         return TRUE;

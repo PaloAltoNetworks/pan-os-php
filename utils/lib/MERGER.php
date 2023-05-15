@@ -1563,6 +1563,9 @@ class MERGER extends UTIL
 
                     if( $this->dupAlg != 'identical' )
                     {
+                        if( $pickedObject->isType_TMP() )
+                            continue;
+
                         PH::print_stdout("    - replacing '{$object->_PANC_shortName()}' ...");
 
                         PH::print_stdout("    - deleting '{$object->_PANC_shortName()}'");
@@ -1570,6 +1573,17 @@ class MERGER extends UTIL
 
                         if( $this->action === "merge" )
                         {
+                            if( $pickedObject->isType_TMP() )
+                            {
+                                /*
+                                $context = null;
+                                $context->padding = "   ";
+                                $context->object = $pickedObject;
+                                $pickedObject->replaceIPbyObject( $context );
+                                */
+                                continue;
+                            }
+
                             $success = $object->__replaceWhereIamUsed($this->apiMode, $pickedObject, TRUE, 5);
 
                             $object->merge_tag_description_to($pickedObject, $this->apiMode);

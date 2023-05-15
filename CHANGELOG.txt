@@ -12,6 +12,7 @@ BUGFIX:
 * type=address | bugfix for filter=(value string.XYZ ) if Object of type Region is hit
 * type=rule-merger | bugfix if panoramapostrules and no rule are set for exportcsv
 * class UrlCategoryRuleContainer | bugfix for PHP 8.1 - variable not set
+* type=address-merger | picketObject from upperlevel of type TMP is not possible - to not merge
 
 GENERAL:
 * extend resources folder for ip_Protocol and Region IPv4/v6 files
