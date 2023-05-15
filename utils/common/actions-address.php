@@ -1837,9 +1837,13 @@ AddressCallContext::$supportedActions[] = array(
         }
         elseif( $object->isRegion() )
         {
-            PH::print_stdout( $context->padding . "* " . get_class($object) . " '{$object->name()}'  " );
+            PH::print_stdout( $context->padding . "* " . get_class($object) . " '{$object->name()}' " );
             PH::$JSON_TMP['sub']['object'][$object->name()]['type'] = get_class($object);
-            #PH::$JSON_TMP['sub']['object'][$object->name()]['value'] = $object->value();
+            foreach( $object->members() as $member )
+            {
+                PH::$JSON_TMP['sub']['object'][$object->name()][$member]['value'] = $member;
+                PH::print_stdout( "          - '{$member}'" );
+            }
 
         }
 

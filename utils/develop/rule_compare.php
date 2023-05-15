@@ -85,7 +85,7 @@ $json_file2_name = "/tmp/".$path2_parts['filename'].".json";
 
 ############################################################
 $shadow_json = "shadow-json";
-$cli1 = "php ".dirname(__FILE__)."/../../utils/pan-os-php.php type=rule 'actions=display:ResolveAddressSummary|ResolveServiceSummary' location=any in=".$file1_name." ".$shadow_json." | tee ".$json_file1_name;
+$cli1 = "php ".dirname(__FILE__)."/../../utils/pan-os-php.php type=rule 'actions=display:ResolveAddressSummary|ResolveServiceSummary' location=any in=".$file1_name." ".$shadow_json." shadow-ignoreinvalidaddressobjects | tee ".$json_file1_name;
 PH::print_stdout( "run command: '".$cli1."'" );
 PH::print_stdout();
 PH::print_stdout("running this command will take some time");
@@ -105,7 +105,7 @@ PH::print_stdout();
 
 ############################################################
 $shadow_json = "shadow-json";
-$cli2 = "php ".dirname(__FILE__)."/../../utils/pan-os-php.php type=rule 'actions=display:ResolveAddressSummary|ResolveServiceSummary' location=any in=".$file2_name." ".$shadow_json." | tee ".$json_file2_name;
+$cli2 = "php ".dirname(__FILE__)."/../../utils/pan-os-php.php type=rule 'actions=display:ResolveAddressSummary|ResolveServiceSummary' location=any in=".$file2_name." ".$shadow_json." shadow-ignoreinvalidaddressobjects | tee ".$json_file2_name;
 PH::print_stdout( "run command: '".$cli2."'" );
 PH::print_stdout();
 PH::print_stdout("running this command will take some time");

@@ -1764,6 +1764,16 @@ var subjectObject =
                     }
                 }
             },
+            "template-clone": {
+                "name": "template-clone",
+                "MainFunction": {},
+                "args": {
+                    "newname": {
+                        "type": "string",
+                        "default": "false"
+                    }
+                }
+            },
             "template-create": {
                 "name": "template-create",
                 "MainFunction": {},

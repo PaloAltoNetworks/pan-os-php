@@ -7,6 +7,7 @@ UTIL:
 * type=rule actions=exporttoexcel:file.html,ResolveAddressSummary | extend with resolveValue field
 * class RulewithUserID - read user information always as lower case - no case sensitive needed
 * type=rule-merger | argument additionalmatch - change supported argument from 'logprof' to 'logsetting'
+* type=address 'filter=(object is.region)' - extend display with custom region value information
 
 BUGFIX:
 * type=address | bugfix for filter=(value string.XYZ ) if Object of type Region is hit
