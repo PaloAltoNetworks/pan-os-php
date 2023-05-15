@@ -457,19 +457,28 @@ class Address
                 $this->_ip4Map = IP4Map::mapFromText($this->name);
         }
         elseif( $this->type != self::TypeIpRange && $this->type != self::TypeIpNetmask )
+        #elseif( $this->type != self::TypeIpRange && $this->type != self::TypeIpNetmask && $this->type != self::TypeIpWildcard )
         {
             $this->_ip4Map = new IP4Map();
             $this->_ip4Map->unresolved[$this->name] = $this;
         }
         elseif( $this->type == self::TypeIpNetmask || $this->type == self::TypeIpRange )
+        #elseif( $this->type == self::TypeIpNetmask || $this->type == self::TypeIpRange || $this->type == self::TypeIpWildcard )
         {
+            /*
+            if( $this->type == self::TypeIpWildcard )
+            {
+                print $this->value."\n";
+                derr( "wildcard" );
+            }
+            */
             $this->_ip4Map = IP4Map::mapFromText($this->value);
             if( $this->_ip4Map->count() == 0 )
                 $this->_ip4Map->unresolved[$this->name] = $this;
         }
         else
         {
-            derr("unexpected type");
+            derr("unexpected type: ".$this->type() );
         }
 
         return $this->_ip4Map;

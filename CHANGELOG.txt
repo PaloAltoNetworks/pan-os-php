@@ -4,6 +4,7 @@ CHANGELOG
 UTIL:
 * develop utility | introduce rule_compare_src_dst_srv_summary
 * type=device | introduce actions=template-clone:NEWtemplateNAME 'filter=(name eq OLDtemplateNAME'
+* type=rule actions=exporttoexcel:file.html,ResolveAddressSummary | extend with resolveValue field
 
 BUGFIX:
 
