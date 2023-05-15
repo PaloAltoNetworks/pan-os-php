@@ -7,6 +7,7 @@ UTIL:
 * type=rule actions=exporttoexcel:file.html,ResolveAddressSummary | extend with resolveValue field
 
 BUGFIX:
+* type=address | bugfix for filter=(value string.XYZ ) if Object of type Region is hit
 
 GENERAL:
 * extend resources folder for ip_Protocol and Region IPv4/v6 files
