@@ -341,6 +341,15 @@ class DeviceGroup
 
 
         //
+        // Extract region objects
+        //
+        $tmp = DH::findFirstElement('region', $xml);
+        if( $tmp !== FALSE )
+            $this->addressStore->load_regions_from_domxml($tmp);
+        //print "VSYS '".$this->name."' address objectsloaded\n" ;
+        // End of address objects extraction
+
+        //
         // Extract address objects
         //
         $tmp = DH::findFirstElement('address', $xml);
@@ -357,14 +366,7 @@ class DeviceGroup
             $this->addressStore->load_addressgroups_from_domxml($tmp);
         // End of address groups extraction
 
-        //
-        // Extract region objects
-        //
-        $tmp = DH::findFirstElement('region', $xml);
-        if( $tmp !== FALSE )
-            $this->addressStore->load_regions_from_domxml($tmp);
-        //print "VSYS '".$this->name."' address objectsloaded\n" ;
-        // End of address objects extraction
+
 
         //												//
         // Extract service objects in this VirtualSystem			//

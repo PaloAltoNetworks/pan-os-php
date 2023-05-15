@@ -379,6 +379,15 @@ class VirtualSystem
 
 
             //
+            // Extract region objects
+            //
+            $tmp = DH::findFirstElement('region', $xml);
+            if( $tmp !== false )
+                $this->addressStore->load_regions_from_domxml($tmp);
+            //print "VSYS '".$this->name."' address objectsloaded\n" ;
+            // End of address objects extraction
+
+            //
             // Extract address objects
             //
             $tmp = DH::findFirstElement('address', $xml);
@@ -396,16 +405,6 @@ class VirtualSystem
                 $this->addressStore->load_addressgroups_from_domxml($tmp);
             //print "VSYS '".$this->name."' address groups loaded\n" ;
             // End of address groups extraction
-
-
-            //
-            // Extract region objects
-            //
-            $tmp = DH::findFirstElement('region', $xml);
-            if( $tmp !== false )
-                $this->addressStore->load_regions_from_domxml($tmp);
-            //print "VSYS '".$this->name."' address objectsloaded\n" ;
-            // End of address objects extraction
 
 
             //												//

@@ -331,6 +331,15 @@ class PANConf
 
 
             //
+            // Extract region objects
+            //
+            $tmp = DH::findFirstElement('region', $xml);
+            if( $tmp !== false )
+                $this->addressStore->load_regions_from_domxml($tmp);
+            //print "VSYS '".$this->name."' address objectsloaded\n" ;
+            // End of address objects extraction
+
+            //
             // Shared address objects extraction
             //
             $tmp = DH::findFirstElement('address', $this->sharedroot);
@@ -345,15 +354,6 @@ class PANConf
             if( $tmp !== FALSE )
                 $this->addressStore->load_addressgroups_from_domxml($tmp);
             // End of address groups extraction
-
-            //
-            // Extract region objects
-            //
-            $tmp = DH::findFirstElement('region', $xml);
-            if( $tmp !== false )
-                $this->addressStore->load_regions_from_domxml($tmp);
-            //print "VSYS '".$this->name."' address objectsloaded\n" ;
-            // End of address objects extraction
 
             //
             // Extract services

@@ -11,7 +11,6 @@ RUN DEBIAN_FRONTEND=noninteractive apt update --fix-missing
 RUN DEBIAN_FRONTEND=noninteractive apt install -y --fix-missing \
     tzdata \
     git \
-    vim \
     bash-completion \
     php$php_var \
     php$php_var-curl \
