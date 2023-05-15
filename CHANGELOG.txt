@@ -5,6 +5,7 @@ UTIL:
 * develop utility | introduce rule_compare_src_dst_srv_summary
 * type=device | introduce actions=template-clone:NEWtemplateNAME 'filter=(name eq OLDtemplateNAME'
 * type=rule actions=exporttoexcel:file.html,ResolveAddressSummary | extend with resolveValue field
+* class RulewithUserID - read user information always as lower case - no case sensitive needed
 
 BUGFIX:
 * type=address | bugfix for filter=(value string.XYZ ) if Object of type Region is hit
