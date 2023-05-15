@@ -1097,6 +1097,9 @@ class RULEMERGER extends UTIL
         else
             $headers = '<th>ID</th><th>rule name</th>';
 
+        if( !isset($this->context->fields) )
+            return;
+
         foreach( $this->context->fields as $tmpfield )
             $headers .= '<th>'.$tmpfield.'</th>';
 
