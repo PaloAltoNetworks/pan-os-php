@@ -1009,6 +1009,9 @@ RQuery::$defaultFilters['address']['value']['operators']['string.eq'] = array(
         if( $object->isGroup() )
             return null;
 
+        if( $object->isRegion() )
+            return null;
+
         if( $object->isAddress() )
         {
             if( $object->type() == 'ip-range' || $object->type() == 'ip-netmask' || $object->isType_TMP() )
@@ -1206,6 +1209,9 @@ RQuery::$defaultFilters['address']['value']['operators']['string.regex'] = array
         if( $object->isGroup() )
             return null;
 
+        if( $object->isRegion() )
+            return null;
+
         if( $object->isAddress() )
         {
             if( $object->isTmpAddr() && $object->value() == "" )
@@ -1323,6 +1329,9 @@ RQuery::$defaultFilters['address']['value']['operators']['has.wrong.network'] = 
         $object = $context->object;
 
         if( $object->isGroup() )
+            return null;
+
+        if( $object->isRegion() )
             return null;
 
         if( !$object->isType_ipNetmask() )

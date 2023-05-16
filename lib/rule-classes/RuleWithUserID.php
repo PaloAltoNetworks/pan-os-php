@@ -105,7 +105,7 @@ class RuleWithUserID extends Rule
             if( $node->nodeType != XML_ELEMENT_NODE )
                 continue;
 
-            $content = $node->textContent;
+            $content = strtolower($node->textContent);
             if( strlen($content) == 0 )
                 derr('empty username in rule', $node);
 

@@ -459,6 +459,14 @@ class PanoramaConf
 
 
         //
+        // Extract region objects
+        //
+        $tmp = DH::findFirstElement('region', $this->sharedroot);
+        if( $tmp !== false )
+            $this->addressStore->load_regions_from_domxml($tmp);
+        // End of region objects extraction
+
+        //
         // Shared address objects extraction
         //
         $tmp = DH::findFirstElement('address', $this->sharedroot);
@@ -474,13 +482,6 @@ class PanoramaConf
             $this->addressStore->load_addressgroups_from_domxml($tmp);
         // End of address groups extraction
 
-        //
-        // Extract region objects
-        //
-        $tmp = DH::findFirstElement('region', $this->sharedroot);
-        if( $tmp !== false )
-            $this->addressStore->load_regions_from_domxml($tmp);
-        // End of region objects extraction
 
         //
         // Extract services

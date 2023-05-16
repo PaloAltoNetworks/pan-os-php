@@ -29,9 +29,11 @@ RoutingCallContext::$supportedActions['display'] = Array(
         PH::$JSON_TMP['sub']['object'][$object->name()]['name'] = $object->name();
         PH::$JSON_TMP['sub']['object'][$object->name()]['type'] = get_class($object);
 
-        $text = "";
+
         foreach( $object->staticRoutes() as $staticRoute )
         {
+            PH::print_stdout();
+            $text = "";
             $text .= "       - NAME: " . str_pad($staticRoute->name(), 20);
             PH::$JSON_TMP['sub']['object'][$object->name()]['staticroute'][$staticRoute->name()]['name'] = $staticRoute->name();
 
@@ -53,7 +55,7 @@ RoutingCallContext::$supportedActions['display'] = Array(
             PH::print_stdout( $text );
         }
 
-        PH::print_stdout();
+
         PH::print_stdout( "- - - - - - - - - - - - - - - -" );
         PH::print_stdout();
         PH::print_stdout();

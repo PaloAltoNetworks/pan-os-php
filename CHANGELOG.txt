@@ -1,6 +1,29 @@
 CHANGELOG
 
-2.1.4
+2.1.5
+UTIL:
+* develop utility | introduce rule_compare_src_dst_srv_summary
+* type=device | introduce actions=template-clone:NEWtemplateNAME 'filter=(name eq OLDtemplateNAME'
+* type=rule actions=exporttoexcel:file.html,ResolveAddressSummary | extend with resolveValue field
+* class RulewithUserID - read user information always as lower case - no case sensitive needed
+* type=rule-merger | argument additionalmatch - change supported argument from 'logprof' to 'logsetting'
+* type=address 'filter=(object is.region)' - extend display with custom region value information
+* type=rule-compare | introduce new utility - to compare rule SRC/DST/SRV of two files
+
+BUGFIX:
+* type=address | bugfix for filter=(value string.XYZ ) if Object of type Region is hit
+* type=rule-merger | bugfix if panoramapostrules and no rule are set for exportcsv
+* class UrlCategoryRuleContainer | bugfix for PHP 8.1 - variable not set
+* type=address-merger | picketObject from upperlevel of type TMP is not possible - to not merge
+* general - different classes - reordering reading of region objects - as these are taking precedence compare to address-group and address
+* type=service-merger | bugfix to not delete object if merge is not possible - rare condition related to object overwritten at lower level
+* type=address-/service-merger | bugfix to NOT replace an overwritten object with different value with an object from upper level
+
+GENERAL:
+* extend resources folder for ip_Protocol and Region IPv4/v6 files
+
+
+2.1.4 (20230512)
 UTIL:
 * type=vendor-migration | improve output if arguments are missing
 

@@ -44,6 +44,9 @@ class ServiceDstPortMapping
 
         foreach( $commaExplode as &$comma )
         {
+            if( $comma == "any" )
+                $comma = "0-65535";
+
             $dashExplode = explode('-', $comma);
             if( count($dashExplode) == 1 )
             {

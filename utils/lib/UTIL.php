@@ -89,6 +89,8 @@ require_once dirname(__FILE__)."/../../migration/parser/lib/SHAREDNEW.php";
 
 require_once dirname(__FILE__)."/APPIDTOOLBOX.php";
 
+require_once dirname(__FILE__)."/RULE_COMPARE.php";
+
 
 class UTIL
 {

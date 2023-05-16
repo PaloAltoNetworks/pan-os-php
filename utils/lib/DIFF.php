@@ -40,6 +40,8 @@ class DIFF extends UTIL
     public $additionalRuleOrderpostXpath = array();
     public $failStatus_additionalruleorder = false;
 
+    public $outputFormatSet;
+
     //needed for CLI input of argument filter=...$$name$$...
     public $replace = "";
 

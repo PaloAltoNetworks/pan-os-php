@@ -226,8 +226,10 @@ class RuleCallContext extends CallContext
 
                 if( is_string($subValue) )
                     $output .= htmlspecialchars($subValue);
-                else
+                elseif( is_object($subValue) )
                     $output .= htmlspecialchars($subValue->name());
+                else
+                    $output .= "";
             }
         }
         else
@@ -574,6 +576,13 @@ class RuleCallContext extends CallContext
             return self::enclose(boolYesNo($rule->isDisabled()));
         }
 
+        if( $fieldName == 'src_resolved_value' )
+        {
+            $unresolvedArray = array();
+            $resolve = $this->AddressResolveValueSummary($rule, "source", $unresolvedArray );
+
+            return self::enclose($resolve);
+        }
         if( $fieldName == 'src_resolved_sum' )
         {
             $unresolvedArray = array();
@@ -586,6 +595,13 @@ class RuleCallContext extends CallContext
             //must NOT be done on addressresolvesummary; must be done on real objects
         }
 
+        if( $fieldName == 'dst_resolved_value' )
+        {
+            $unresolvedArray = array();
+            $resolve = $this->AddressResolveValueSummary($rule, "destination", $unresolvedArray );
+
+            return self::enclose($resolve);
+        }
         if( $fieldName == 'dst_resolved_sum' )
         {
             $unresolvedArray = array();
@@ -663,6 +679,38 @@ class RuleCallContext extends CallContext
             #$strMapping[] = $unresolved;
             $unresolvedArray[] = $unresolved;
         }
+
+        if( count( $strMapping) === 1 && empty( $strMapping[0] ) )
+            $strMapping = array();
+
+        return $strMapping;
+    }
+    public function AddressResolveValueSummary( $rule, $typeSrcDst, &$unresolvedArray = array() )
+    {
+        if( $rule->$typeSrcDst->isAny() )
+            return array( '0.0.0.0-255.255.255.255', '::0-ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff');
+
+        /*
+        $mapping = $rule->$typeSrcDst->getIP4Mapping();
+        $strMapping = explode(',', $mapping->dumpToString());
+
+        foreach( array_keys($mapping->unresolved) as $unresolved )
+        {
+            #$strMapping[] = $unresolved;
+            $unresolvedArray[] = $unresolved;
+        }
+        */
+
+        $allMembers = $rule->$typeSrcDst->getAll();
+        $strMapping = array();
+        foreach($allMembers as $member)
+        {
+            if( $member->isGroup() )
+                $strMapping[] = "group";
+            else
+                $strMapping[] = $member->value();
+        }
+
 
         if( count( $strMapping) === 1 && empty( $strMapping[0] ) )
             $strMapping = array();

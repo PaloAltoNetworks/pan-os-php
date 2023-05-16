@@ -464,6 +464,14 @@ class DeviceOnPrem
 
 
             //
+            // Extract region objects
+            //
+            $tmp = DH::findFirstElement('region', $xml);
+            if( $tmp !== FALSE )
+                $this->addressStore->load_regions_from_domxml($tmp);
+            // End of region objects extraction
+
+            //
             // Extract address objects
             //
             $tmp = DH::findFirstElement('address', $xml);
@@ -480,13 +488,6 @@ class DeviceOnPrem
                 $this->addressStore->load_addressgroups_from_domxml($tmp);
             // End of address groups extraction
 
-            //
-            // Extract region objects
-            //
-            $tmp = DH::findFirstElement('region', $xml);
-            if( $tmp !== FALSE )
-                $this->addressStore->load_regions_from_domxml($tmp);
-            // End of region objects extraction
 
             //												//
             // Extract service objects in this VSYS			//

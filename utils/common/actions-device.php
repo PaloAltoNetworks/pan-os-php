@@ -548,6 +548,41 @@ DeviceCallContext::$supportedActions['Template-delete'] = array(
     }
 );
 
+DeviceCallContext::$supportedActions['Template-clone '] = array(
+    'name' => 'template-clone',
+    'MainFunction' => function (DeviceCallContext $context) {
+
+        $object = $context->object;
+        $name = $object->name();
+
+        $newName = $context->arguments['newname'];
+
+        $pan = $context->subSystem;
+        if( !$pan->isPanorama() )
+            derr( "only supported on Panorama config" );
+
+        if( get_class($object) == "Template" )
+        {
+            $string ="     * clone Template: " . $name." to: ".$newName;
+            PH::ACTIONlog( $context, $string );
+
+            $tmp = $pan->createTemplate($newName);
+            $test = $object->xmlroot->cloneNode();
+            $tmp->xmlroot = $test;
+            $tmp->setName( $newName );
+
+            if( $context->isAPI )
+            {
+                if( $context->isAPI )
+                    $tmp->API_sync();
+            }
+        }
+    },
+    'args' => array(
+        'newname' => array('type' => 'string', 'default' => 'false'),
+    ),
+);
+
 DeviceCallContext::$supportedActions['ManagedDevice-create'] = array(
     'name' => 'manageddevice-create',
     'MainFunction' => function (DeviceCallContext $context) {

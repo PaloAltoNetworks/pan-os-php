@@ -93,7 +93,7 @@ class RULEMERGER extends UTIL
             $tmp_additionalmatch = strtolower( PH::$args['additionalmatch'] );
             $this->UTIL_additionalMatch = explode( ",", $tmp_additionalmatch );
 
-            $supportedAdditionalmatch = array( 'tag', 'secprof', 'user', 'urlcategory', 'target', 'logprof' );
+            $supportedAdditionalmatch = array( 'tag', 'secprof', 'user', 'urlcategory', 'target', 'logsetting', 'logprof' );
             foreach( $this->UTIL_additionalMatch as $value )
             {
                 if( !in_array( $value, $supportedAdditionalmatch ) )
@@ -305,7 +305,9 @@ class RULEMERGER extends UTIL
         if( in_array( 'target', $this->UTIL_additionalMatch ) )
             $additional_match .= $rule->target_Hash();
         if( in_array( 'logprof', $this->UTIL_additionalMatch ) )
-            $additional_match .= $rule->logProfilHash();
+            $additional_match .= $rule->logSettingHash();
+        if( in_array( 'logsetting', $this->UTIL_additionalMatch ) )
+            $additional_match .= $rule->logSettingHash();
 
         if( $this->UTIL_method == 1 )
             $rule->mergeHash = md5('action:' . $rule->action() . '.*/' . $rule->from->getFastHashComp() . $rule->to->getFastHashComp() .
@@ -824,7 +826,7 @@ class RULEMERGER extends UTIL
         $this->supportedArguments[] = array('niceName' => 'stopMergingIfDenySeen', 'shortHelp' => 'deny rules wont be merged', 'argDesc' => '[yes|no|true|false]');
         $this->supportedArguments[] = array('niceName' => 'mergeAdjacentOnly', 'shortHelp' => 'merge only rules that are adjacent to each other', 'argDesc' => '[yes|no|true|false]');
         $this->supportedArguments[] = array('niceName' => 'filter', 'shortHelp' => 'filter rules that can be converted');
-        $this->supportedArguments[] = array('niceName' => 'additionalMatch', 'shortHelp' => 'add additional matching criterial', 'argDesc' => '[tag,secprof,user,urlcategory,target,logprof]');
+        $this->supportedArguments[] = array('niceName' => 'additionalMatch', 'shortHelp' => 'add additional matching criterial', 'argDesc' => '[tag,secprof,user,urlcategory,target,logsetting]');
         $this->supportedArguments[] = array('niceName' => 'DebugAPI', 'shortHelp' => 'prints API calls when they happen');
         $this->supportedArguments[] = array('niceName' => 'exportCSV', 'shortHelp' => 'when this argument is specified, it instructs the script to display the kept and removed objects per value');
     }
@@ -1096,6 +1098,9 @@ class RULEMERGER extends UTIL
             $headers = '<th>ID</th><th>rule name</th>';
         else
             $headers = '<th>ID</th><th>rule name</th>';
+
+        if( !isset($this->context->fields) )
+            return;
 
         foreach( $this->context->fields as $tmpfield )
             $headers .= '<th>'.$tmpfield.'</th>';

@@ -30,7 +30,7 @@ class UrlCategoryRuleContainer extends ObjRuleContainer
     /** @var null|SecurityProfileStore */
     public $parentCentralStore = null;
 
-
+    public $appDef;
 
     public function __construct($owner)
     {

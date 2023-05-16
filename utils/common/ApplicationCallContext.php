@@ -23,6 +23,20 @@ class ApplicationCallContext extends CallContext
     /** @var  App */
     public $object;
 
+    public $counter_containers;
+    public $tmpcounter;
+    public $counter_predefined;
+    public $counter_dependencies;
+    public $counter_custom_app;
+    public $counter_app_filter;
+    public $counter_app_group;
+    public $counter_decoder;
+    public $tmp_decoder;
+    public $print_container;
+    public $print_dependencies;
+    public $print_explicit;
+    public $print_implicit;
+
 
     public static $commonActionFunctions = array();
     public static $supportedActions = array();

@@ -1764,6 +1764,16 @@ var subjectObject =
                     }
                 }
             },
+            "template-clone": {
+                "name": "template-clone",
+                "MainFunction": {},
+                "args": {
+                    "newname": {
+                        "type": "string",
+                        "default": "false"
+                    }
+                }
+            },
             "template-create": {
                 "name": "template-create",
                 "MainFunction": {},
@@ -4963,6 +4973,11 @@ var subjectObject =
                 }
             }
         }
+    },
+    "rule-compare": {
+        "name": "rule-compare",
+        "action": [],
+        "filter": []
     },
     "rule-merger": {
         "name": "rule-merger",

@@ -172,7 +172,7 @@ class PH
 
     private static $library_version_major = 2;
     private static $library_version_sub = 1;
-    private static $library_version_bugfix = 4;
+    private static $library_version_bugfix = 5;
 
     //BASIC AUTH PAN-OS 7.1
     public static $softwareupdate_key = "658d787f293e631196dac9fb29490f1cc1bb3827";
@@ -956,7 +956,8 @@ class PH
         "custom-report",
         "gcp",
         "vendor-migration",
-        "appid-toolbox"
+        "appid-toolbox",
+        "rule-compare"
         );
 
 
@@ -1137,6 +1138,9 @@ class PH
 
         elseif( $type == "appid-toolbox" )
             $util = new AppIDToolbox($type, $argv, $argc,$PHP_FILE." type=".$type, $_supportedArguments, $_usageMsg, $projectfolder);
+
+        elseif( $type == "rule-compare" )
+            $util = new RULE_COMPARE($type, $argv, $argc,$PHP_FILE." type=".$type, $_supportedArguments, $_usageMsg, $projectfolder);
 
         $util->endOfScript();
 

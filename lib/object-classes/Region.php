@@ -27,6 +27,13 @@ class Region
     use XmlConvertible;
 
     public $owner;
+    public $_ip4Map;
+
+
+    private $members = array();
+
+    /** @var DOMElement */
+    private $membersRoot = null;
 
     /**
      * you should not need this one for normal use
@@ -74,6 +81,29 @@ class Region
         if( $this->name === FALSE )
             derr("region name not found\n");
 
+        $this->membersRoot = DH::findFirstElement('address', $xml);
+
+        if( $this->membersRoot !== FALSE )
+        {
+            foreach( $this->membersRoot->childNodes as $member )
+            {
+                if( $member->nodeType != 1 ) continue;
+
+                $this->members[] = $member->textContent;
+            }
+        }
+
+        /*
+      <entry name="NAME">
+        <geo-location>
+          <latitude>59.335</latitude>
+          <longitude>18.063</longitude>
+        </geo-location>
+        <address>
+          <member>10.2.0.0/16</member>
+        </address>
+      </entry>
+         */
 
         return TRUE;
     }
@@ -135,6 +165,16 @@ class Region
         return $this->_ip4Map;
     }
 
+    public function value()
+    {
+        $string = implode( ", ", $this->members);
+        return $string;
+    }
+
+    public function members()
+    {
+        return $this->members;
+    }
 
     static protected $templatexml = '<entry name="**temporarynamechangeme**"><address><member>tempvaluechangeme</member></entry>';
 }
