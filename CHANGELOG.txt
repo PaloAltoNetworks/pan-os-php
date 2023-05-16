@@ -1,6 +1,14 @@
 CHANGELOG
 
-2.1.5
+2.1.6
+UTIL:
+
+BUGFIX:
+
+GENERAL:
+
+
+2.1.5 (20230516)
 UTIL:
 * develop utility | introduce rule_compare_src_dst_srv_summary
 * type=device | introduce actions=template-clone:NEWtemplateNAME 'filter=(name eq OLDtemplateNAME'
