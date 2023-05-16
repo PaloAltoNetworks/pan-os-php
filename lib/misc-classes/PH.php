@@ -956,7 +956,8 @@ class PH
         "custom-report",
         "gcp",
         "vendor-migration",
-        "appid-toolbox"
+        "appid-toolbox",
+        "rule-compare"
         );
 
 
@@ -1137,6 +1138,9 @@ class PH
 
         elseif( $type == "appid-toolbox" )
             $util = new AppIDToolbox($type, $argv, $argc,$PHP_FILE." type=".$type, $_supportedArguments, $_usageMsg, $projectfolder);
+
+        elseif( $type == "rule-compare" )
+            $util = new RULE_COMPARE($type, $argv, $argc,$PHP_FILE." type=".$type, $_supportedArguments, $_usageMsg, $projectfolder);
 
         $util->endOfScript();
 

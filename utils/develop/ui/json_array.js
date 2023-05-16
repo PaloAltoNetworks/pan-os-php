@@ -4974,6 +4974,11 @@ var subjectObject =
             }
         }
     },
+    "rule-compare": {
+        "name": "rule-compare",
+        "action": [],
+        "filter": []
+    },
     "rule-merger": {
         "name": "rule-merger",
         "action": [],

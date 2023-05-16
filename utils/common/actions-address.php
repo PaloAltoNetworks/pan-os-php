@@ -812,8 +812,10 @@ AddressCallContext::$supportedActions[] = array(
 
                     if( is_string($subValue) )
                         $output .= htmlspecialchars($subValue);
-                    else
+                    elseif( is_object($subValue) )
                         $output .= htmlspecialchars($subValue->name());
+                    else
+                        $output .= htmlspecialchars("-null-");
                 }
             }
             else

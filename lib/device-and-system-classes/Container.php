@@ -203,6 +203,8 @@ class Container
     /** @var Array */
     private $devices = array();
 
+    public $device;
+
     /** @var NetworkPropertiesContainer */
     public $_fakeNetworkProperties;
 
