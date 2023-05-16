@@ -1366,6 +1366,7 @@ class MERGER extends UTIL
                 }
                 else
                 {
+                    $skip = false;
                     /** @var Address $tmp_address */
                     if( $tmp_address->isAddress() && $pickedObject->isAddress() && $tmp_address->type() === $pickedObject->type() && $tmp_address->value() === $pickedObject->value() )
                     {
@@ -1378,8 +1379,13 @@ class MERGER extends UTIL
 
                         if( $value === $value2 )
                             PH::print_stdout("   * keeping object '{$tmp_address->_PANC_shortName()}'");
+                        else
+                            $skip = true;
                     }
                     else
+                        $skip = true;
+
+                    if( $skip )
                     {
                         $string = "    - SKIP: object name '{$pickedObject->_PANC_shortName()}'";
 

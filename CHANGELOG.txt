@@ -17,6 +17,7 @@ BUGFIX:
 * type=address-merger | picketObject from upperlevel of type TMP is not possible - to not merge
 * general - different classes - reordering reading of region objects - as these are taking precedence compare to address-group and address
 * type=service-merger | bugfix to not delete object if merge is not possible - rare condition related to object overwritten at lower level
+* type=address-/service-merger | bugfix to NOT replace an overwritten object with different value with an object from upper level
 
 GENERAL:
 * extend resources folder for ip_Protocol and Region IPv4/v6 files
