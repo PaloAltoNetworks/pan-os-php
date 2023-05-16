@@ -2396,9 +2396,11 @@ class MERGER extends UTIL
                             $exitObject = null;
                             foreach( $child_NamehashMap[ $pickedObject->name() ] as $obj )
                             {
+                                /** @var Service $obj */
                                 if( !$obj->dstPortMapping()->equals($pickedObject->dstPortMapping())
                                     || !$obj->srcPortMapping()->equals($pickedObject->srcPortMapping())
                                     || $obj->getOverride() != $pickedObject->getOverride()
+                                    || $obj->protocol() != $pickedObject->protocol()
                                 )
                                 {
                                     $exit = true;
@@ -2773,8 +2775,19 @@ class MERGER extends UTIL
 
     function servicePickedObjectValidation( $index, $object, $pickedObject )
     {
+        /** @var Service $object */
+        /** @var Service $pickedObject */
+
         $skipped = false;
-        if( !$object->srcPortMapping()->equals($pickedObject->srcPortMapping()) && $this->dupAlg == 'samedstsrcports' )
+        if( $object->protocol() != $pickedObject->protocol() )
+        {
+            $text = "    - object '{$object->name()}' cannot be merged because of different service protocol";
+            $text .="  object protocol value: " . $object->protocol() . " | pickedObject protocol value: " . $pickedObject->protocol();
+            PH::print_stdout( $text );
+            $this->skippedObject( $index, $object, $pickedObject);
+            $skipped = true;
+        }
+        elseif( !$object->srcPortMapping()->equals($pickedObject->srcPortMapping()) && $this->dupAlg == 'samedstsrcports' )
         {
             $text = "    - object '{$object->name()}' cannot be merged because of different SRC port information";
             $text .= "  object value: " . $object->srcPortMapping()->mappingToText() . " | pickedObject value: " . $pickedObject->srcPortMapping()->mappingToText();
@@ -2790,6 +2803,7 @@ class MERGER extends UTIL
             $this->skippedObject( $index, $object, $pickedObject);
             $skipped = true;
         }
+
         return $skipped;
     }
 

@@ -4,6 +4,7 @@ CHANGELOG
 UTIL:
 
 BUGFIX:
+* type=service-merger | bugfix for merging objects which are overwritten but with different protocol
 
 GENERAL:
 

@@ -335,9 +335,10 @@ trait ServiceCommon
 
             if( ($this->isService() && $withObject->isService()) )
             {
-                if( $this->type !== $withObject->type )
+                if( $this->protocol() !== $withObject->protocol() )
                 {
                     PH::print_stdout("- SKIP: not possible due to different object type");
+                    $success = false;
                     continue;
                 }
 
@@ -362,10 +363,10 @@ trait ServiceCommon
                     continue;
                 }
 
-                if( $withObject->getDestPort() !== $tmp_addr->getDestPort() || $withObject->getSourcePort() !== $tmp_addr->getSourcePort()  )
+                if( $withObject->getDestPort() !== $tmp_addr->getDestPort() || $withObject->getSourcePort() !== $tmp_addr->getSourcePort() || $withObject->protocol() !== $tmp_addr->protocol()  )
                 {
                     PH::print_stdout( "- SKIP: not possible to replace due to different value: {$objectRef->toString()}" );
-                    PH::print_stdout( " - '".$withObject->getDestPort()."[".$withObject->getSourcePort()."]"."' | '".$tmp_addr->getDestPort()."[".$tmp_addr->getSourcePort()."]"."'" );
+                    PH::print_stdout( " - '".$withObject->protocol()."-".$withObject->getDestPort()."[".$withObject->getSourcePort()."]"."' | '".$tmp_addr->protocol()."-".$tmp_addr->getDestPort()."[".$tmp_addr->getSourcePort()."]"."'" );
                     $success = false;
                     continue;
                 }
