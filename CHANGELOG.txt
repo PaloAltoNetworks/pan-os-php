@@ -2,6 +2,7 @@ CHANGELOG
 
 2.1.6
 UTIL:
+* type=rule-compare | improve output to also fit for argument 'shadow-json'
 
 BUGFIX:
 * type=service-merger | bugfix for merging objects which are overwritten but with different protocol
