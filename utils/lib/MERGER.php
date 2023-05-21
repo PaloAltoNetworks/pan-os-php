@@ -779,7 +779,8 @@ class MERGER extends UTIL
                     $skip = false;
                     foreach( $pickedObject->members() as $memberObject )
                         /** @var Address|AddressGroup $memberObject */
-                        if( $store->find($memberObject->name()) === null )
+                        $memberFound = $store->find($memberObject->name());
+                        if( $memberFound === null )
                         {
                             if( $this->addMissingObjects )
                             {
@@ -806,6 +807,30 @@ class MERGER extends UTIL
                             else
                             {
                                 PH::print_stdout(  "   * SKIPPED : this group has an object named '{$memberObject->name()} that does not exist in target location '{$tmp_DG_name}'" );
+                                $skip = true;
+                                break;
+                            }
+
+                        }
+                        else
+                        {
+                            /** @var Address|AddressGroup $memberFound*/
+                            if( $memberFound->isAddress() && $memberObject->isAddress() )
+                            {
+                                if( $memberFound->value() !== $memberObject->value() )
+                                {
+                                    PH::print_stdout(  "   * SKIPPED : this group has an object named '{$memberObject->name()} that does exist in target location '{$tmp_DG_name}' with different value" );
+                                    $skip = true;
+                                    break;
+                                }
+                            }
+                            elseif( $memberFound->isGroup() && $memberObject->isGroup() )
+                            {
+                                //todo 20230518 check deeper if this group group part must be validate more
+                            }
+                            else
+                            {
+                                PH::print_stdout(  "   * SKIPPED : this group has an object named '{$memberObject->name()} that does exist in target location '{$tmp_DG_name}' with different object type" );
                                 $skip = true;
                                 break;
                             }
@@ -908,7 +933,7 @@ class MERGER extends UTIL
                     }
                 }
             }
-            if( count( $child_hashMap ) >0 )
+            if( count( $child_hashMap ) > 0 )
                 PH::print_stdout( "\n\nDuplicates ChildDG removal is now done. Number of objects after cleanup: '{$store->countAddressGroups()}' (removed/created {$countChildRemoved}/{$countChildCreated} addressgroups)\n" );
 
 
@@ -1928,16 +1953,72 @@ class MERGER extends UTIL
                 $tmp_service = $store->find( $pickedObject->name() );
                 if( $tmp_service == null && $this->dupAlg != "identical" )
                 {
-                    PH::print_stdout( "   * move object to DG: '".$tmp_DG_name."' : '".$pickedObject->name()."'" );
+                    PH::print_stdout("   * move object to DG: '" . $tmp_DG_name . "' : '" . $pickedObject->name() . "' from DG: '".$pickedObject->owner->owner->name()."'");
 
-                    $skip = false;
-                    foreach( $pickedObject->members() as $memberObject )
-                        if( $store->find($memberObject->name()) === null )
+                    $skip = FALSE;
+                    //validate parent DG hierarchy if object with same name is available but not $tmp_DG_name
+                    /** @var DeviceGroup $pickedObject_DG */
+                    $pickedObject_DG = $pickedObject->owner->owner;
+                    if( $pickedObject_DG->parentDeviceGroup !== null )
+                    {
+                        $nextFindObject = $pickedObject_DG->parentDeviceGroup->serviceStore->find( $pickedObject->name(), null, True );
+                        if( $nextFindObject !== null )
                         {
-                            PH::print_stdout(  "   * SKIPPED : this group has an object named '{$memberObject->name()} that does not exist in target location '{$tmp_DG_name}'" );
-                            $skip = true;
+                            /** @var Service|ServiceGroup $memberFound */
+                            if( $pickedObject->isService() && $nextFindObject->isService() )
+                            {
+                                if( $pickedObject->getDestPort() !== $nextFindObject->getDestPort() || $pickedObject->getSourcePort() !== $nextFindObject->getSourcePort() || $pickedObject->protocol() !== $nextFindObject->protocol() )
+                                {
+                                    PH::print_stdout("   * SKIPPED : this group has an object named '{$pickedObject->name()} that does exist in target location '{$tmp_DG_name}' with different value or protocol");
+                                    $skip = TRUE;
+                                }
+                            }
+                            elseif( $pickedObject->isGroup() && $nextFindObject->isGroup() )
+                            {
+                                //todo 20230518 check deeper if this group group part must be validate more
+                            }
+                            else
+                            {
+                                PH::print_stdout("   * SKIPPED : this group has an object named '{$pickedObject->name()} that does exist in target location '{$tmp_DG_name}' with different object type");
+                                $skip = TRUE;
+                            }
+                        }
+                    }
+
+                    foreach( $pickedObject->members() as $memberObject )
+                    {
+                        $memberFound = $store->find($memberObject->name());
+                        if( $memberFound === null )
+                        {
+                            PH::print_stdout("   * SKIPPED : this group has an object named '{$memberObject->name()} that does not exist in target location '{$tmp_DG_name}'");
+                            $skip = TRUE;
                             break;
                         }
+                        else
+                        {
+                            /** @var Service|ServiceGroup $memberFound */
+                            if( $memberFound->isService() && $memberObject->isService() )
+                            {
+                                if( $memberFound->getDestPort() !== $memberObject->getDestPort() || $memberFound->getSourcePort() !== $memberObject->getSourcePort() || $memberFound->protocol() !== $memberObject->protocol() )
+                                {
+                                    PH::print_stdout("   * SKIPPED : this group has an object named '{$memberObject->name()} that does exist in target location '{$tmp_DG_name}' with different value or protocol");
+                                    $skip = TRUE;
+                                    break;
+                                }
+                            }
+                            elseif( $memberFound->isGroup() && $memberObject->isGroup() )
+                            {
+                                //todo 20230518 check deeper if this group group part must be validate more
+                            }
+                            else
+                            {
+                                PH::print_stdout("   * SKIPPED : this group has an object named '{$memberObject->name()} that does exist in target location '{$tmp_DG_name}' with different object type");
+                                $skip = TRUE;
+                                break;
+                            }
+
+                        }
+                    }
                     if( $skip )
                         continue;
 
