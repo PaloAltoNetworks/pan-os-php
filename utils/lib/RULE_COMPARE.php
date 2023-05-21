@@ -227,10 +227,16 @@ class RULE_COMPARE extends UTIL
             PH::print_stdout();
             $text = "NO Rule diff for SOURCE / DESTINATION / SERVICE";
             PH::print_stdout( PH::boldText($text) );
-            $finalArray[] = $text;
+            $finalArray['info'] = $text;
             PH::print_stdout();
             PH::print_stdout();
         }
+        else
+        {
+            $text = "Rule diff available | check details";
+            $finalArray['info'] = $text;
+        }
+
 
 
         PH::$JSON_TMP = array();
@@ -307,7 +313,8 @@ class RULE_COMPARE extends UTIL
                 PH::print_stdout("    - ".$entry);
                 $compareArray['file1'][] = $entry;
             }
-
+            if( empty($tmp1) )
+                $compareArray['file1'] = array();
         }
 
         if( !empty($tmp2) || !empty($tmp1) )
@@ -319,12 +326,15 @@ class RULE_COMPARE extends UTIL
                 PH::print_stdout("    - ".$entry);
                 $compareArray['file2'][] = $entry;
             }
-
+            if( empty($tmp2) )
+                $compareArray['file2'] = array();
         }
 
         if( empty($tmp1) && empty($tmp2) )
         {
             PH::print_stdout("   only the order of information was different");
+            $compareArray['file1'] = array();
+            $compareArray['file2'] = array();
         }
     }
 }
