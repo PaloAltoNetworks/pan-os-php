@@ -337,7 +337,7 @@ trait ServiceCommon
             {
                 if( $this->protocol() !== $withObject->protocol() )
                 {
-                    PH::print_stdout("- SKIP: not possible due to different object type");
+                    PH::print_stdout("- SKIP: not possible due to different object type: '".$this->name()." - ".$this->protocol()."' <=> '".$withObject->name()." - ".$withObject->protocol()."'" );
                     $success = false;
                     continue;
                 }
@@ -358,7 +358,7 @@ trait ServiceCommon
 
                 if( !$tmp_addr->isService() )
                 {
-                    PH::print_stdout( "- SKIP: not possible due to different object type" );
+                    PH::print_stdout( "- SKIP: not possible due to different object type. object is not Service" );
                     $success = false;
                     continue;
                 }
