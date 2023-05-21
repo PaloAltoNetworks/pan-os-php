@@ -4,6 +4,7 @@ CHANGELOG
 UTIL:
 * type=rule-compare | improve output to also fit for argument 'shadow-json'
 * class Address/ServiceCommon | improve text output for type=address-/service-merger
+* type=upload | extend to copy XML node from argument in= to argument out= - first version focus on Device-Group
 
 BUGFIX:
 * type=service-merger | bugfix for merging objects which are overwritten but with different protocol

@@ -180,39 +180,72 @@ class UPLOAD extends UTIL
         {
             if( isset($toXpath) )
             {
-                derr("toXpath options was used, it's incompatible with a file output. Make a feature request !!!  ;)");
+                mwarning( "this is BETA code - please carefull handling", null, FALSE );
+                sleep(5);
+                #derr("toXpath options was used, it's incompatible with a file output. Make a feature request !!!  ;)");
 
-                $doc2 = new DOMDocument();
+                $argv2 = array();
+                $argc2 = array();
+                PH::$args = array();
+                PH::$argv = array();
+                $argv2[0] = "test";
+
                 if( !file_exists( $this->configOutput['filename'] ) )
                 {
                     PH::print_stdout( " - strpos|".strpos( $toXpath, "/config/devices/entry/vsys" )."|");
                     if( strpos( $toXpath, "/vsys/entry[" ) !== false )
-                        $doc2->load( dirname(__FILE__) . "/../parser/panos_baseconfig.xml", XML_PARSE_BIG_LINES);
+                    {
+                        #$doc2->load( dirname(__FILE__) . "/../parser/panos_baseconfig.xml", XML_PARSE_BIG_LINES);
+                        $filename_load = dirname(__FILE__) . "/../../migration/parser/panos_baseconfig.xml";
+                        $argv2[] = "in=".$filename_load;
+                    }
                     else
-                        $doc2->load( dirname(__FILE__) . "/../parser/panorama_baseconfig.xml", XML_PARSE_BIG_LINES);
+                    {
+                        #$doc2->load( dirname(__FILE__) . "/../parser/panorama_baseconfig.xml", XML_PARSE_BIG_LINES);
+                        $filename_load = dirname(__FILE__) . "/../../migration/parser/panorama_baseconfig.xml";
+                        $argv2[] = "in=".$filename_load;
+                    }
+
                 }
                 elseif( file_exists( $this->configOutput['filename'] ) )
                 {
                     PH::print_stdout( " - {$this->configOutput['filename']} ... ");
-                    $doc2 = new DOMDocument();
-                    $doc2->load($this->configOutput['filename'], XML_PARSE_BIG_LINES);
+
+                    $argv2[] = "in=".$this->configOutput['filename'];
                 }
+                $util2 = new UTIL("custom", $argv2, $argc2, __FILE__, $this->supportedArguments, $this->usageMsg);
+                $util2->utilInit();
+                $util2->load_config();
 
                 PH::print_stdout( " * toXPath is specified with value '" . $toXpath . "'");
                 PH::print_stdout( " - toXpath from above");
-                $foundOutputXpathList = DH::findXPath($toXpath, $doc2);
+
+                $foundOutputXpathList = DH::findXPath($toXpath, $util2->xmlDoc);
 
                 if( $foundOutputXpathList === FALSE )
                     derr("invalid xpath syntax");
 
                 if( $foundOutputXpathList->length == 0 )
                 {
-                    $foundOutputXpathList = $this->recursive_XML( $doc2, $toXpath );
+                    #$foundOutputXpathList = $this->recursive_XML( $util2->xmlDoc, $toXpath );
                 }
 
 
                 if( strpos( $toXpath, "/device-group/entry[" ) != false )
                 {
+                    $dg_name = str_replace( "/config/devices/entry/device-group/entry[@name='", "", $toXpath );
+                    $dg_name_tmp = explode( "']", $dg_name );
+                    #$dg_name = str_replace("']", "", $dg_name);
+                    $dg_name = $dg_name_tmp[0];
+                    print "DG: ".$dg_name."\n";
+                    sleep(2);
+
+                    //validate if DGname already exist
+                    $newDG = $util2->pan->findDeviceGroup($dg_name);
+                    if( $newDG !== null )
+                        derr( "this tool only support XML node move to a newly created Device-Group based on toXpath" );
+                    $newDG = $util2->pan->createDeviceGroup( $dg_name );
+
                     $explode = explode( "/", $toXpath );
 
                     $string = "";
@@ -234,30 +267,53 @@ class UPLOAD extends UTIL
                     //how to update -> /config/readonly/max-internal-id - handle different PAN-OS
                     //how to create -> /config/readonly/devices/entry/device-group/XYZ
 
-                    mwarning( "Panorama used, but readonly section is not yet supported for update" );
+                    #mwarning( "Panorama used, but readonly section is not yet supported for update" );
                 }
 
                 if( $foundOutputXpathList->length != 1 )
-                    derr("toXpath returned too many results");
+                    #derr("toXpath returned too many results");
 
-                PH::print_stdout( "    * found " . $foundOutputXpathList->length . " results from Xpath:");
+                #PH::print_stdout( "    * found " . $foundOutputXpathList->length . " results from Xpath:");
 
                 foreach( $foundOutputXpathList as $xpath )
-                    PH::print_stdout( "       - " . DH::elementToPanXPath($xpath) );
+                {
+#                    PH::print_stdout("       - " . DH::elementToPanXPath($xpath));
+                }
+                foreach( $foundInputXpathList as $xpath )
+                {
+                    $tmpArray = explode( "/", DH::elementToPanXPath($xpath) );
+                    $variable = end($tmpArray);
+
+                    #PH::print_stdout("       import");
+                    PH::print_stdout("       - import: '" . DH::elementToPanXPath($xpath))."'";
+
+                    #DH::DEBUGprintDOMDocument($xpath);
+                    $node = $util2->xmlDoc->importNode($xpath, TRUE);
+                    #PH::print_stdout("       append");
+
+                    $mainNode = DH::findFirstElement($variable, $newDG->xmlroot);
+                    if( $mainNode !== false )
+                        $newDG->xmlroot->removeChild($mainNode);
+
+                    $newDG->xmlroot->appendChild($node);
+                }
+
 
 
                 /** @var DOMElement $entryNode */
+                /*
                 $entryNode = $foundOutputXpathList[0];
 
                 //Todo: what happen if xpath is already available; e.g. import of objects into DG/address; actual it creates another DG/address(objects), address(objects)
-                #PH::print_stdout( "import" );
+                PH::print_stdout( "import" );
                 $node = $doc2->importNode($foundInputXpathList[0], true);
-                #PH::print_stdout( "append" );
+                PH::print_stdout( "append" );
                 $entryNode->appendChild( $node );
+                */
 
                 PH::print_stdout( " - Now saving configuration to ");
                 PH::print_stdout( " - {$this->configOutput['filename']}... " );
-                $doc2->save($this->configOutput['filename']);
+                $util2->xmlDoc->save($this->configOutput['filename']);
             }
             else
             {
