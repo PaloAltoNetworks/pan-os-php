@@ -288,45 +288,55 @@ DeviceCallContext::$supportedActions['displayreferences'] = array(
 
 DeviceCallContext::$supportedActions['DeviceGroup-create'] = array(
     'name' => 'devicegroup-create',
+    'GlobalInitFunction' => function (DeviceCallContext $context) {
+        $context->first = true;
+    },
     'MainFunction' => function (DeviceCallContext $context) {
     },
     'GlobalFinishFunction' => function (DeviceCallContext $context) {
-        $dgName = $context->arguments['name'];
-        $parentDG = $context->arguments['parentdg'];
-
-        $pan = $context->subSystem;
-
-        if( !$pan->isPanorama() )
-            derr("only supported on Panorama config");
-
-        if( $parentDG != 'null' )
+        if( $context->first )
         {
-            $tmp_parentdg = $pan->findDeviceGroup($parentDG);
-            if( $tmp_parentdg === null )
+
+
+            $dgName = $context->arguments['name'];
+            $parentDG = $context->arguments['parentdg'];
+
+            $pan = $context->subSystem;
+
+            if( !$pan->isPanorama() )
+                derr("only supported on Panorama config");
+
+            if( $parentDG != 'null' )
             {
-                $string = "parentDG set with '" . $parentDG . "' but not found on this config";
-                PH::ACTIONstatus($context, "SKIPPED", $string);
-                $parentDG = null;
+                $tmp_parentdg = $pan->findDeviceGroup($parentDG);
+                if( $tmp_parentdg === null )
+                {
+                    $string = "parentDG set with '" . $parentDG . "' but not found on this config";
+                    PH::ACTIONstatus($context, "SKIPPED", $string);
+                    $parentDG = null;
+                }
             }
-        }
 
-        $tmp_dg = $pan->findDeviceGroup($dgName);
-        if( $tmp_dg === null )
-        {
-            $string = "create DeviceGroup: " . $dgName;
-            #PH::ACTIONlog($context, $string);
-            if( $parentDG === 'null' )
-                $parentDG = null;
+            $tmp_dg = $pan->findDeviceGroup($dgName);
+            if( $tmp_dg === null )
+            {
+                $string = "create DeviceGroup: " . $dgName;
+                #PH::ACTIONlog($context, $string);
+                if( $parentDG === 'null' )
+                    $parentDG = null;
 
-            $dg = $pan->createDeviceGroup($dgName, $parentDG);
+                $dg = $pan->createDeviceGroup($dgName, $parentDG);
 
-            if( $context->isAPI )
-                $dg->API_sync();
-        }
-        else
-        {
-            $string = "DeviceGroup with name: " . $dgName . " already available!";
-            PH::ACTIONlog( $context, $string );
+                if( $context->isAPI )
+                    $dg->API_sync();
+            }
+            else
+            {
+                $string = "DeviceGroup with name: " . $dgName . " already available!";
+                PH::ACTIONlog($context, $string);
+            }
+
+            $context->first = false;
         }
     },
     'args' => array(
