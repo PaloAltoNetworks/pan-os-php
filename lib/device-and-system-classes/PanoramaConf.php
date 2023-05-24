@@ -2092,10 +2092,19 @@ class PanoramaConf
             else
                 $dgMetaDataNode = DH::findXPathSingleEntryOrDie('/config/readonly/dg-meta-data/dg-info', $this->xmlroot);
 
+            $parentXMLnode = "";
+            if( $parentDGname !== null )
+            {
+                $parentDG = $this->findDeviceGroup( $parentDGname );
+                if( $parentDG === null )
+                    mwarning("DeviceGroup '$name' has DeviceGroup '{$parentDGname}' listed as parent but it cannot be found in XML");
+                else
+                    $parentXMLnode = "<parent-dg>".$parentDGname."</parent-dg>";
+            }
             if( $this->version >= 80 )
-                $newXmlNode = DH::importXmlStringOrDie($this->xmldoc, "<entry name=\"{$name}\"><id>{$dgMaxID}</id></entry>");
+                $newXmlNode = DH::importXmlStringOrDie($this->xmldoc, "<entry name=\"{$name}\"><id>{$dgMaxID}</id>".$parentXMLnode."</entry>");
             else
-                $newXmlNode = DH::importXmlStringOrDie($this->xmldoc, "<entry name=\"{$name}\"><dg-id>{$dgMaxID}</dg-id></entry>");
+                $newXmlNode = DH::importXmlStringOrDie($this->xmldoc, "<entry name=\"{$name}\"><dg-id>{$dgMaxID}</dg-id>".$parentXMLnode."</entry>");
 
             $dgMetaDataNode->appendChild($newXmlNode);
         }
