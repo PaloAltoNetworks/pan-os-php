@@ -301,7 +301,12 @@ foreach ($file_content as $line => $names_line) {
                 $description=$desc[1];
             }
 
-            $tmp_servicegroup->setDescription( $description );
+            if( $tmp_servicegroup->isGroup() )
+            {
+                mwarning("PANOS does not support description on ServiceGroup!!!");
+            }
+            else
+                $tmp_servicegroup->setDescription( $description );
             continue(1);
         }
         if ($objectService){
