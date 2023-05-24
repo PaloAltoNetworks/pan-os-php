@@ -10,6 +10,7 @@ BUGFIX:
 * type=service-merger | bugfix for merging objects which are overwritten but with different protocol
 * type=address/service-merger | bugfix - extend validation if objects can be merged
 * class PanoramaConf | bugfix for type=device actions=devicegroup-create:NAME,parent - parentDG was not set correctly
+* type=address/service actions=move:DG | bugfix - add additional validation for move to upper/lower level DG - if another object with same name will change behaviour
 
 GENERAL:
 
