@@ -12,6 +12,7 @@ BUGFIX:
 * class PanoramaConf | bugfix for type=device actions=devicegroup-create:NAME,parent - parentDG was not set correctly
 * type=address/service actions=move:DG | bugfix - add additional validation for move to upper/lower level DG - if another object with same name will change behaviour
 * f5_bigIP | bugfix for ServiceGroup which can not handle Description based on PAN-OS
+* type=addressgroup-/servicegroup-merger | bugfix - extend validation to not merge/move objects if not same members
 
 GENERAL:
 
