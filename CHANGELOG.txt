@@ -6,6 +6,7 @@ UTIL:
 BUGFIX:
 
 GENERAL:
+* develop f5_bigip.php | improvement - PANOS do not support ServiceGroup description
 
 
 2.1.7 (20230525)
