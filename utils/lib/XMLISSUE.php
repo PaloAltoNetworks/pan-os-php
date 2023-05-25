@@ -149,6 +149,7 @@ class XMLISSUE extends UTIL
         $service_app_default_available = false;
         $countMissconfiguredSecRuleServiceAppDefaultObjects = 0;
 
+        $fixedReadOnlyDeviceGroupobjects=0;
         $fixedReadOnlyTemplateobjects=0;
         $fixedReadOnlyTemplateStackobjects=0;
 
@@ -1530,6 +1531,49 @@ class XMLISSUE extends UTIL
         }
 
         ////////////////////////////////////////////////////////////
+        ///config/readonly/devices/entry[@name='localhost.localdomain']/device-group
+
+        PH::print_stdout( " - Scanning for config/readonly/devices/entry[@name='localhost.localdomain'] for duplicate devicegroup ...");
+        $tmpReadOnly = DH::findXPath("/config/readonly/devices/entry[@name='localhost.localdomain']", $this->xmlDoc);
+        $readOnly = array();
+
+        foreach( $tmpReadOnly as $node )
+            $readOnly[] = $node;
+
+        $readonlyDeviceGroupsArray = array();
+
+        if( isset( $readOnly[0] ) )
+        {
+            $readonlyDeviceGroups = DH::findFirstElement('device-group', $readOnly[0]);
+            if( $readonlyDeviceGroups !== false )
+                $demo = iterator_to_array($readonlyDeviceGroups->childNodes);
+            else
+                $demo = array();
+        }
+        else
+            $demo = array();
+
+        foreach( $demo as $objectDeviceGroup )
+        {
+            /** @var DOMElement $objectDeviceGroup */
+            if( $objectDeviceGroup->nodeType != XML_ELEMENT_NODE )
+                continue;
+
+            $objectDeviceGroupName = $objectDeviceGroup->getAttribute('name');
+            if( isset($readonlyDeviceGroupsArray[$objectDeviceGroupName]) )
+            {
+                $text = "     - readOnly /config/readonly/devices/entry[@name='localhost.localdomain']/device-group has same DeviceGroup defined twice: ".$objectDeviceGroupName;
+                $readonlyDeviceGroups->removeChild($objectDeviceGroup);
+                $text .=PH::boldText(" (removed)");
+                PH::print_stdout($text);
+                $fixedReadOnlyDeviceGroupobjects++;
+            }
+            else
+                $readonlyDeviceGroupsArray[$objectDeviceGroupName] = $objectDeviceGroup;
+        }
+
+
+        ////////////////////////////////////////////////////////////
         ///config/readonly/devices/entry[@name='localhost.localdomain']/template
 
         PH::print_stdout( " - Scanning for config/readonly/devices/entry[@name='localhost.localdomain'] for duplicate template ...");
@@ -1639,6 +1683,7 @@ class XMLISSUE extends UTIL
         PH::print_stdout( " - FIXED: SecRule with duplicate service members: {$fixedSecRuleServiceObjects}");
         PH::print_stdout( " - FIXED: SecRule with duplicate application members: {$fixedSecRuleApplicationObjects}");
 
+        PH::print_stdout( "\n - FIXED: ReadOnly duplicate DeviceGroup : {$fixedReadOnlyDeviceGroupobjects}");
         PH::print_stdout( "\n - FIXED: ReadOnly duplicate Template : {$fixedReadOnlyTemplateobjects}");
         PH::print_stdout( " - FIXED: ReadOnly duplicate TemplateStack : {$fixedReadOnlyTemplateStackobjects}");
 

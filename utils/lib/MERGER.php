@@ -1035,8 +1035,13 @@ class MERGER extends UTIL
                                 if( $this->dupAlg == 'samename' )
                                     $this->addressgroupGetValueDiff($ancestor, $object);
 
-                                $tmp_ancestor_DGname = $ancestor->owner->owner->name();
-                                if( $tmp_ancestor_DGname === "" )
+                                if( isset($ancestor->owner) )
+                                {
+                                    $tmp_ancestor_DGname = $ancestor->owner->owner->name();
+                                    if( $tmp_ancestor_DGname === "" )
+                                        $tmp_ancestor_DGname = "shared";
+                                }
+                                else
                                     $tmp_ancestor_DGname = "shared";
 
                                 $text = "    - group '{$object->name()} DG: '" . $object->owner->owner->name() . "' merged with its ancestor at DG: '" . $tmp_ancestor_DGname . "', deleting: " . $object->_PANC_shortName();
@@ -1064,9 +1069,16 @@ class MERGER extends UTIL
                                 continue;
                             }
                         }
-                        $tmp_ancestor_DGname = $ancestor->owner->owner->name();
-                        if( $tmp_ancestor_DGname === "" )
+
+                        if( isset($ancestor->owner) )
+                        {
+                            $tmp_ancestor_DGname = $ancestor->owner->owner->name();
+                            if( $tmp_ancestor_DGname === "" )
+                                $tmp_ancestor_DGname = "shared";
+                        }
+                        else
                             $tmp_ancestor_DGname = "shared";
+
 
                         if( !$this->addMissingObjects )
                         {
@@ -1410,11 +1422,35 @@ class MERGER extends UTIL
                                 $exit = TRUE;
                                 $exitObject = $obj;
                             }
+
+                            if( isset($obj->owner->parentCentralStore) )
+                            {
+                                $tmpParentStore = $obj->owner->parentCentralStore;
+                                $tmp_obj = $tmpParentStore->find( $pickedObject->name(), null, true );
+                                if( $tmp_obj !== null )
+                                {
+                                    if( (!$tmp_obj->isType_FQDN() && !$pickedObject->isType_FQDN()) && $tmp_obj->getNetworkMask() == '32' && $pickedObject->getNetworkMask() == '32' )
+                                    {
+                                        if( ($tmp_obj->getNetworkMask() == $pickedObject->getNetworkMask()) && $tmp_obj->getNetworkValue() == $pickedObject->getNetworkValue() )
+                                            $exit = FALSE;
+                                        else
+                                        {
+                                            $exit = TRUE;
+                                            $exitObject = $tmp_obj;
+                                        }
+                                    }
+                                    elseif( $tmp_obj->value() !== $pickedObject->value() )
+                                    {
+                                        $exit = TRUE;
+                                        $exitObject = $tmp_obj;
+                                    }
+                                }
+                            }
                         }
 
                         if( $exit )
                         {
-                            PH::print_stdout("   * SKIP: no creation of object in DG: '" . $tmp_DG_name . "' as object with same name '{$exitObject->name()}' and different value '{$exitObject->value()}' exist at childDG level");
+                            PH::print_stdout("   * SKIP: no creation of object in DG: '" . $tmp_DG_name . "' as object with same name '{$exitObject->name()}' and different value '{$exitObject->value()}' exist at childDG/parentDG level");
                             $this->skippedObject( $index, $pickedObject, $exitObject);
                             continue;
                         }
@@ -1582,9 +1618,14 @@ class MERGER extends UTIL
                                 if( $this->action === "merge" )
                                     $object->merge_tag_description_to($ancestor, $this->apiMode);
 
-                                $tmp_ancestor_DGname = $ancestor->owner->owner->name();
-                                if( $tmp_ancestor_DGname === "" )
-                                    $tmp_ancestor_DGname = "'shared'";
+                                if( isset($ancestor->owner) )
+                                {
+                                    $tmp_ancestor_DGname = $ancestor->owner->owner->name();
+                                    if( $tmp_ancestor_DGname === "" )
+                                        $tmp_ancestor_DGname = "shared";
+                                }
+                                else
+                                    $tmp_ancestor_DGname = "shared";
 
                                 $text = "    - object '{$object->name()}' DG: '" . $object->owner->owner->name() . "' merged with its ancestor at DG: '" . $tmp_ancestor_DGname . "', deleting: " . $object->_PANC_shortName();
                                 self::deletedObject($index, $ancestor, $object);
@@ -2259,8 +2300,13 @@ class MERGER extends UTIL
 
                             if( $hashGenerator($object) == $hashGenerator($ancestor) )
                             {
-                                $tmp_ancestor_DGname = $ancestor->owner->owner->name();
-                                if( $tmp_ancestor_DGname === "" )
+                                if( isset($ancestor->owner) )
+                                {
+                                    $tmp_ancestor_DGname = $ancestor->owner->owner->name();
+                                    if( $tmp_ancestor_DGname === "" )
+                                        $tmp_ancestor_DGname = "shared";
+                                }
+                                else
                                     $tmp_ancestor_DGname = "shared";
                                 $text = "    - group '{$object->name()}' DG: '" . $object->owner->owner->name() . "' merged with its ancestor at DG: '" . $tmp_ancestor_DGname . "', deleting: " . $object->_PANC_shortName();
                                 self::deletedObject($index, $pickedObject, $object);
@@ -2287,8 +2333,13 @@ class MERGER extends UTIL
                                 continue;
                             }
                         }
-                        $tmp_ancestor_DGname = $ancestor->owner->owner->name();
-                        if( $tmp_ancestor_DGname === "" )
+                        if( isset($ancestor->owner) )
+                        {
+                            $tmp_ancestor_DGname = $ancestor->owner->owner->name();
+                            if( $tmp_ancestor_DGname === "" )
+                                $tmp_ancestor_DGname = "shared";
+                        }
+                        else
                             $tmp_ancestor_DGname = "shared";
                         PH::print_stdout("    - group '{$object->name()}' cannot be merged because it has an ancestor at DG: ".$tmp_ancestor_DGname );
                         PH::print_stdout( "    - ancestor type: ".get_class( $ancestor ) );
@@ -2549,6 +2600,25 @@ class MERGER extends UTIL
                                 {
                                     $exit = true;
                                     $exitObject = $obj;
+                                }
+
+                                if( isset($obj->owner->parentCentralStore) )
+                                {
+                                    $tmpParentStore = $obj->owner->parentCentralStore;
+                                    $tmp_obj = $tmpParentStore->find( $pickedObject->name(), null, true );
+                                    if( $tmp_obj !== null )
+                                    {
+                                        /** @var Service $tmp_obj */
+                                        if( !$tmp_obj->dstPortMapping()->equals($pickedObject->dstPortMapping())
+                                            || !$tmp_obj->srcPortMapping()->equals($pickedObject->srcPortMapping())
+                                            || $tmp_obj->getOverride() != $pickedObject->getOverride()
+                                            || $tmp_obj->protocol() != $pickedObject->protocol()
+                                        )
+                                        {
+                                            $exit = true;
+                                            $exitObject = $tmp_obj;
+                                        }
+                                    }
                                 }
                             }
 
@@ -3103,7 +3173,8 @@ class MERGER extends UTIL
                         $exitObject = null;
                         foreach( $child_NamehashMap[ $pickedObject->name() ] as $obj )
                         {
-                            if( $obj->sameValue($pickedObject) ) //same color
+                            //Todo: validate if this is correct; expectation is not same color swaschkut 20230525
+                            if( !$obj->sameValue($pickedObject) ) //true if same color, false if different color
                             {
                                 $exit = true;
                                 $exitObject = $obj;
@@ -3475,7 +3546,7 @@ class MERGER extends UTIL
                         $exitObject = null;
                         foreach( $child_NamehashMap[ $pickedObject->name() ] as $obj )
                         {
-                            if( $obj->sameValue($pickedObject) ) //same color
+                            if( !$obj->sameValue($pickedObject) ) //same color
                             {
                                 $exit = true;
                                 $exitObject = $obj;
