@@ -1,6 +1,14 @@
 CHANGELOG
 
-2.1.7
+2.1.8
+UTIL:
+
+BUGFIX:
+
+GENERAL:
+
+
+2.1.7 (20230525)
 UTIL:
 * type=xml-issue | extend for duplicate search on readonly device-group
 
