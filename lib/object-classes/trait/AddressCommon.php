@@ -547,11 +547,11 @@ trait AddressCommon
 
                 #template <tunnel><units><entry name="tunnel.1"><ip>
 
-                PH::print_stdout("search object: ".$withObject->name()." in store: ".$tmp_store->storeName());
+                #PH::print_stdout("search object: ".$withObject->name()." in store: ".$tmp_store->storeName());
                 $tmp_addr = $tmp_store->find( $withObject->name() );
                 if( $tmp_addr === null )
                 {
-                    PH::print_stdout("search object: ".$withObject->name()." in store: ".$tmp_store->storeName()." parentStore");
+                    #PH::print_stdout("search object: ".$withObject->name()." in store: ".$tmp_store->storeName()." parentStore");
                     $tmp_addr = $tmp_store->parentCentralStore->find( $withObject->name() );
                 }
 
