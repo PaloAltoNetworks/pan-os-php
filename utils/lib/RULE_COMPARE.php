@@ -69,6 +69,13 @@ class RULE_COMPARE extends UTIL
         $json_file2_name = "/tmp/" . $path2_parts['filename'] . ".json";
 
         ############################################################
+        //check if file exists
+        if( !file_exists($file1_name) )
+            derr("cannot read configuration file '{$file1_name}''", null, FALSE);
+        if( !file_exists($file2_name) )
+            derr("cannot read configuration file '{$file2_name}''", null, FALSE);
+
+        ############################################################
         $shadow_json = "shadow-json";
         $cli1 = "php " . dirname(__FILE__) . "/../../utils/pan-os-php.php type=rule 'actions=display:ResolveAddressSummary|ResolveServiceSummary' location=any in=" . $file1_name . " " . $shadow_json . " shadow-ignoreinvalidaddressobjects | tee " . $json_file1_name;
         PH::print_stdout(" - run command: '" . $cli1 . "'");
