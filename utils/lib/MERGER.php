@@ -3174,7 +3174,7 @@ class MERGER extends UTIL
                         foreach( $child_NamehashMap[ $pickedObject->name() ] as $obj )
                         {
                             //Todo: validate if this is correct; expectation is not same color swaschkut 20230525
-                            if( $obj->sameValue($pickedObject) ) //same color
+                            if( !$obj->sameValue($pickedObject) ) //true if same color, false if different color
                             {
                                 $exit = true;
                                 $exitObject = $obj;
@@ -3546,7 +3546,7 @@ class MERGER extends UTIL
                         $exitObject = null;
                         foreach( $child_NamehashMap[ $pickedObject->name() ] as $obj )
                         {
-                            if( $obj->sameValue($pickedObject) ) //same color
+                            if( !$obj->sameValue($pickedObject) ) //same color
                             {
                                 $exit = true;
                                 $exitObject = $obj;

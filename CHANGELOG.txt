@@ -2,9 +2,11 @@ CHANGELOG
 
 2.1.7
 UTIL:
+* type=xml-issue | extend for duplicate search on readonly device-group
 
 BUGFIX:
 * type=address-/service-merger | bugfix if two childDGs are having same object name and value - but somewhere in parentDG hierarchy below the target location DG planned for creating merged object - object with different value is available
+* type=tag-merger | bugfix to exclude only these tag with different value (different color) - and merge with same value
 
 GENERAL:
 

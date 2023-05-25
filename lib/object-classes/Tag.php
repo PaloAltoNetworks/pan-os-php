@@ -140,6 +140,8 @@ class Tag
     static public $replacewith1 = "/{";
     static public $replacewith2 = "/}";
 
+    public $ancestor;
+
     /**
      * @param string $name
      * @param TagStore|null $owner
