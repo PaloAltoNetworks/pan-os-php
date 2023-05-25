@@ -1,6 +1,14 @@
 CHANGELOG
 
-2.1.6
+2.1.7
+UTIL:
+
+BUGFIX:
+
+GENERAL:
+
+
+2.1.6 (20230525)
 UTIL:
 * type=rule-compare | improve output to also fit for argument 'shadow-json'
 * class Address/ServiceCommon | improve text output for type=address-/service-merger
