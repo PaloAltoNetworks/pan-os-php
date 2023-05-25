@@ -135,7 +135,7 @@ class RULE_COMPARE extends UTIL
                 derr("problems");
         }
 
-
+        $finalArray = array();
         foreach( $array1[$confType] as $key1 => $tmpArray )
         {
             if( !isset($tmpArray['sub']) )
@@ -190,26 +190,33 @@ class RULE_COMPARE extends UTIL
                     $ruleDiff = TRUE;
 
                     PH::print_stdout("--------------------------------------------------");
-                    PH::print_stdout("SUB: '" . $subName . "' | Rule diff found: " . $key);
+                    PH::print_stdout("SUB: '" . $subName . "' | Rule diff found: '" . PH::boldText($key)."'");
+                    $finalArray[$subName][$key] = array();
                     if( !empty($diff_src) )
                     {
-                        PH::print_stdout( PH::boldText(" - source") );
-                        PH::print_stdout();
-                        $this->printArray($src1, $src2);
+                        $keyword = "source";
+                        $compareArray = array();
+                        PH::print_stdout( PH::boldText("  ".$keyword) );
+                        $this->printArray($src1, $src2, $compareArray);
+                        $finalArray[$subName][$key][$keyword] = $compareArray;
                     }
 
                     if( !empty($diff_dst) )
                     {
-                        PH::print_stdout( PH::boldText(" - destination") );
-                        PH::print_stdout();
-                        $this->printArray($dst1, $dst2);
+                        $keyword = "destination";
+                        $compareArray = array();
+                        PH::print_stdout( PH::boldText("  ".$keyword) );
+                        $this->printArray($dst1, $dst2, $compareArray);
+                        $finalArray[$subName][$key][$keyword] = $compareArray;
                     }
 
                     if( !empty($diff_srv) )
                     {
-                        PH::print_stdout( PH::boldText(" - service") );
-                        PH::print_stdout();
-                        $this->printArray($srv1, $srv2);
+                        $keyword = "service";
+                        $compareArray = array();
+                        PH::print_stdout( PH::boldText("  ".$keyword) );
+                        $this->printArray($srv1, $srv2, $compareArray);
+                        $finalArray[$subName][$key][$keyword] = $compareArray;
                     }
                 }
             }
@@ -218,11 +225,23 @@ class RULE_COMPARE extends UTIL
         {
             PH::print_stdout();
             PH::print_stdout();
-            PH::print_stdout("NO Rule diff for SOURCE / DESTINATION / SERVICE");
+            $text = "NO Rule diff for SOURCE / DESTINATION / SERVICE";
+            PH::print_stdout( PH::boldText($text) );
+            $finalArray['info'] = $text;
             PH::print_stdout();
             PH::print_stdout();
         }
+        else
+        {
+            $text = "Rule diff available | check details";
+            $finalArray['info'] = $text;
+        }
 
+
+
+        PH::$JSON_TMP = array();
+        if( PH::$shadow_json )
+            PH::$JSON_OUT['rule-compare'] = $finalArray;
 
         //cleanup
         unlink($json_file1_name);
@@ -273,22 +292,49 @@ class RULE_COMPARE extends UTIL
     {
         foreach( $array1 as $key => $entry )
         {
-            if( isset( $array2[$key] ) )
+            if( in_array($entry, $array2) )
                 unset($array1[$key]);
         }
 
         return $array1;
     }
 
-    function printArray($array1, $array2)
+    function printArray($array1, $array2, &$compareArray)
     {
-        PH::print_stdout("  - file1");
         $tmp1 = $this->checkArrayClean($array1, $array2);
-        print_r($tmp1);
-
-
-        PH::print_stdout("   - file2");
         $tmp2 = $this->checkArrayClean($array2, $array1);
-        print_r($tmp2);
+
+        if( !empty($tmp1) || !empty($tmp2))
+        {
+            PH::print_stdout("  * file1");
+            #print_r($tmp1);
+            foreach( $tmp1 as $entry )
+            {
+                PH::print_stdout("    - ".$entry);
+                $compareArray['file1'][] = $entry;
+            }
+            if( empty($tmp1) )
+                $compareArray['file1'] = array();
+        }
+
+        if( !empty($tmp2) || !empty($tmp1) )
+        {
+            PH::print_stdout("   * file2");
+            #print_r($tmp2);
+            foreach( $tmp2 as $entry )
+            {
+                PH::print_stdout("    - ".$entry);
+                $compareArray['file2'][] = $entry;
+            }
+            if( empty($tmp2) )
+                $compareArray['file2'] = array();
+        }
+
+        if( empty($tmp1) && empty($tmp2) )
+        {
+            PH::print_stdout("   only the order of information was different");
+            $compareArray['file1'] = array();
+            $compareArray['file2'] = array();
+        }
     }
 }

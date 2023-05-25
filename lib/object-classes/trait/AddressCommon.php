@@ -514,7 +514,7 @@ trait AddressCommon
                     }
                     else
                     {
-                        PH::print_stdout( "- SKIP: not possible due to different object type" );
+                        PH::print_stdout( "- SKIP: not possible due to different object type: '".$this->name()."-".$this->type()."' <=> '".$withObject->name()."-".$withObject->type()."'" );
                         continue;
                     }
                 }
@@ -547,13 +547,18 @@ trait AddressCommon
 
                 #template <tunnel><units><entry name="tunnel.1"><ip>
 
+                #PH::print_stdout("search object: ".$withObject->name()." in store: ".$tmp_store->storeName());
                 $tmp_addr = $tmp_store->find( $withObject->name() );
                 if( $tmp_addr === null )
+                {
+                    #PH::print_stdout("search object: ".$withObject->name()." in store: ".$tmp_store->storeName()." parentStore");
                     $tmp_addr = $tmp_store->parentCentralStore->find( $withObject->name() );
+                }
+
 
                 if( !$tmp_addr->isAddress() )
                 {
-                    PH::print_stdout( "- SKIP: not possible due to different object type" );
+                    PH::print_stdout( "- SKIP: not possible due to different object type. object is AddressGroup" );
                     $success = false;
                     continue;
                 }

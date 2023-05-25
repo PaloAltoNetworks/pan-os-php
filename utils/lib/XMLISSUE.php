@@ -1049,7 +1049,7 @@ class XMLISSUE extends UTIL
                                         if( isset($secRuleApplication[$objectApplicationName]) )
                                         {
                                             $text = "     - Secrule: ".$objectName." has same application defined twice: ".$objectApplicationName;
-                                            $objectNode_applications->removeChild($objectNode_applications);
+                                            $objectNode_applications->removeChild($objectApplication);
                                             $text .=PH::boldText(" (removed)")."\n";
                                             PH::print_stdout( $text );
                                             $fixedSecRuleApplicationObjects++;

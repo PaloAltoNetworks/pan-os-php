@@ -1517,6 +1517,7 @@ var subjectObject =
             },
             "devicegroup-create": {
                 "name": "devicegroup-create",
+                "GlobalInitFunction": {},
                 "MainFunction": {},
                 "GlobalFinishFunction": {},
                 "args": {

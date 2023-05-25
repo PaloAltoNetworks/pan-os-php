@@ -500,6 +500,10 @@ ServiceCallContext::$supportedActions[] = array(
 
         if( $targetLocation == 'shared' )
         {
+            $findSubSystem = $rootObject->findSubSystemByName($targetLocation);
+            if( $findSubSystem === null )
+                derr("cannot find VSYS/DG named '$targetLocation'");
+
             $targetStore = $rootObject->serviceStore;
         }
         else
@@ -583,6 +587,65 @@ ServiceCallContext::$supportedActions[] = array(
                         return;
                     }
             }
+
+            //validation if upper/lower level is not changed
+            $tmplocalSub = $rootObject->findSubSystemByName($localLocation);
+            if( $tmplocalSub->isPanorama() )
+            {
+                /** @var PanoramaConf $tmplocalSub */
+                $tmpChildSubs = $tmplocalSub->deviceGroups;
+            }
+            else
+                $tmpChildSubs = $tmplocalSub->childDeviceGroups();
+            $lowerLevelMove = false;
+            foreach( $tmpChildSubs as $childDG )
+            {
+                if( $targetLocation == $childDG->name() )
+                    $lowerLevelMove = true;
+            }
+
+            if( !$lowerLevelMove )
+            {
+                $startLocation = $tmplocalSub;
+                $endLocation = $findSubSystem;
+            }
+            else
+            {
+                $endLocation = $tmplocalSub;
+                $startLocation = $findSubSystem;
+            }
+            $skipped = FALSE;
+            do
+            {
+                if( !isset($startLocation->parentDeviceGroup->serviceStore) )
+                    break;
+
+                $tmpObject = $startLocation->parentDeviceGroup->serviceStore->find($object->name(), null, FALSE);
+                if( $tmpObject != null )
+                {
+                    if( ($object->isGroup() and !$tmpObject->isGroup()) || (!$object->isGroup() and $tmpObject->isGroup()) )
+                        $skipped = TRUE;
+                    elseif( $object->protocol() != $tmpObject->protocol() )
+                        $skipped = TRUE;
+                    elseif( $object->getDestPort() != $tmpObject->getDestPort() || $object->getSourcePort() != $tmpObject->getSourcePort() )
+                        $skipped = TRUE;
+                }
+
+                if( !$skipped )
+                    $startLocation = $startLocation->parentDeviceGroup;
+                else
+                {
+                    if( !$lowerLevelMove )
+                        $string = "moving to upper level DG is not possible because of object available at lower DG level with same name but different object type or value";
+                    else
+                        $string = "moving to lower level DG is not possible because of object available at upper DG level with same name but different object type or value";
+                    PH::ACTIONstatus($context, "SKIPPED", $string);
+                    return;
+                }
+            } while( $startLocation != $endLocation );
+
+            ///////////////////////////////
+
 
             $string =  "   * moved, no conflict";
             PH::ACTIONlog( $context, $string );
@@ -1551,7 +1614,7 @@ ServiceCallContext::$supportedActions[] = array(
             return;
         }
 
-        if( $serviceStore->find( $newName ) === null )
+        if( $serviceStore->find( $newName, null, false ) === null )
         {
             $string = "create Service object : '" . $newName . "'";
             PH::ACTIONlog( $context, $string );
