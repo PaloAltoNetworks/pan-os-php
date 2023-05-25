@@ -16,6 +16,7 @@ BUGFIX:
 * type=xml-issue | bugfix - wrong XML node variable used for application Node deletion
 
 GENERAL:
+* dynamic content updated to version: 8713-8071
 
 
 2.1.5 (20230516)
@@ -32,7 +33,7 @@ BUGFIX:
 * type=address | bugfix for filter=(value string.XYZ ) if Object of type Region is hit
 * type=rule-merger | bugfix if panoramapostrules and no rule are set for exportcsv
 * class UrlCategoryRuleContainer | bugfix for PHP 8.1 - variable not set
-* type=address-merger | picketObject from upperlevel of type TMP is not possible - to not merge
+* type=address-merger | picketObject from upperlevel of type TMP is not possible - do not merge
 * general - different classes - reordering reading of region objects - as these are taking precedence compare to address-group and address
 * type=service-merger | bugfix to not delete object if merge is not possible - rare condition related to object overwritten at lower level
 * type=address-/service-merger | bugfix to NOT replace an overwritten object with different value with an object from upper level
