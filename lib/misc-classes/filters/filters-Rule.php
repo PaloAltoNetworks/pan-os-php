@@ -1114,7 +1114,8 @@ RQuery::$defaultFilters['rule']['dst']['operators']['has.recursive.from.query'] 
         else
             $rQuery = $context->cachedSubRQuery;
 
-        foreach( $context->object->destination->all() as $member )
+        #foreach( $context->object->destination->all() as $member )
+        foreach( $context->object->destination->membersExpanded() as $member )
         {
             if( $rQuery->matchSingleObject(array('object' => $member, 'nestedQueries' => &$context->nestedQueries)) )
                 return TRUE;

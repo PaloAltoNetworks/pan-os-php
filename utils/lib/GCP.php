@@ -49,7 +49,7 @@ class GCP extends UTIL
         #$supportedArguments['debugapi'] = Array('niceName' => 'DebugAPI', 'shortHelp' => 'prints API calls when they happen');
         $this->supportedArguments['help'] = Array('niceName' => 'help', 'shortHelp' => 'this message');
         $this->supportedArguments['cluster'] = Array('niceName' => 'Cluster', 'shortHelp' => 'specify the cluster you like to connect | default: cluster=paas-fw1', 'argDesc' => '=paas-f1');
-        $this->supportedArguments['region'] = Array('niceName' => 'Region', 'shortHelp' => 'specify the region | default: region=us-central1', 'argDesc' => '=us-central1');
+        $this->supportedArguments['region'] = Array('niceName' => 'Region', 'shortHelp' => 'specify the region | default: region=us-central1 | region=europe-west3', 'argDesc' => '=us-central1');
         $this->supportedArguments['project'] = Array('niceName' => 'Project', 'shortHelp' => 'specify the project | default: project=ngfw-dev', 'argDesc' => '=ngfw-dev');
         $this->supportedArguments['tenantid'] = Array('niceName' => 'TenantID', 'shortHelp' => 'TenantID you like to use. also possible to bring in a part script will do grep', 'argDesc' => '=123456789');
         $this->supportedArguments['actions'] = Array('niceName' => 'actions', 'shortHelp' => 'specify the action the script should trigger', 'argDesc' => 'actions=grep');
