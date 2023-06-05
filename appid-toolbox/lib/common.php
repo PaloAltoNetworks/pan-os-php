@@ -639,6 +639,7 @@ class AppIDToolbox_common
         }
         elseif( $configInput['type'] == 'api' )
         {
+            $configOutput = "";
             $inputConnector = $configInput['connector'];
             if( $debugAPI )
                 $inputConnector->setShowApiCalls(TRUE);
@@ -667,5 +668,6 @@ function display_error_usage_exit($msg)
         PH::$JSON_OUT['error'] = $msg;
     else
         fwrite(STDERR, PH::boldText("\n**ERROR** ").$msg."\n\n");
-    display_usage_and_exit();
+    #APPIDTOOLBOX::display_usage_and_exit();
+    exit();
 }

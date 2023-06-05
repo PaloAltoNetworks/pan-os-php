@@ -4,6 +4,7 @@ CHANGELOG
 UTIL:
 
 BUGFIX:
+* type=appid-toolbox | bugfix for none declared variable php 8.1
 
 GENERAL:
 * develop f5_bigip.php | improvement - PANOS do not support ServiceGroup description

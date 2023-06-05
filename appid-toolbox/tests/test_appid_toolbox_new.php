@@ -140,10 +140,10 @@ foreach( $stage_array as $item )
     if( getenv("CI") !== false )
     {
         #$cli = 'php -r "require( \'pan-diff.php file1='.$compare_folder.'/'.$item.'.xml file2='.$output_folder.'/'.$item.'.xml\' );"';
-        $cli = "php ../../utils/pan-os-php.php type=diff file1=${compare_folder}/${item}.xml file2=${output_folder}/${item}.xml";
+        $cli = "php ../../utils/pan-os-php.php type=diff file1={$compare_folder}/{$item}.xml file2={$output_folder}/{$item}.xml";
     }
     else
-        $cli = "php ../../utils/pan-os-php.php type=diff file1=${compare_folder}/${item}.xml file2=${output_folder}/${item}.xml";
+        $cli = "php ../../utils/pan-os-php.php type=diff file1={$compare_folder}/{$item}.xml file2={$output_folder}/{$item}.xml";
 
     $cli .= "  2>&1";
 
