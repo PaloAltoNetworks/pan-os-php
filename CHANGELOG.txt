@@ -2,10 +2,12 @@ CHANGELOG
 
 2.1.8
 UTIL:
+* type=addressgroup-/servicegroup-merger - add additional output reason if groups can not be merged
 
 BUGFIX:
 * type=appid-toolbox | bugfix for none declared variable php 8.1
 * type=rule | bugfix 'filter=(dst has.recursive.from.query subquer1)' - adjust behaviour as for 'src has.recursive.from.query'
+* type=address actions=move:shared | bugfix - add validation if address object has tag, that this tag must be available at target DeviceGroup
 
 GENERAL:
 * develop f5_bigip.php | improvement - PANOS do not support ServiceGroup description

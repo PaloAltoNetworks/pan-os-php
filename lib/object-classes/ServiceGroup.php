@@ -538,10 +538,12 @@ class ServiceGroup
 
         $indent = str_pad(' ', $indent);
 
-        if( !$toString )
-            PH::print_stdout(  $indent . "Diff between " . $this->_PANC_shortName() . " vs " . $otherObject->_PANC_shortName() );
-        else
-            $retString .= $indent . "Diff for between " . $this->_PANC_shortName() . " vs " . $otherObject->_PANC_shortName() ."\n" ;
+
+        $retString .= $indent . "Diff for between " . $this->_PANC_shortName() . " vs " . $otherObject->_PANC_shortName() ."\n" ;
+        $retString .= $indent . "  ' - ' means missing member \n";
+        $retString .= $indent . "  ' + ' means additional member \n";
+        $retString .= $indent . "       in ".$this->_PANC_shortName()."\n";
+
 
         $lO = array();
         $oO = array();
@@ -583,6 +585,8 @@ class ServiceGroup
 
         if( $toString )
             return $retString;
+
+        PH::print_stdout( $retString );
     }
 
 
