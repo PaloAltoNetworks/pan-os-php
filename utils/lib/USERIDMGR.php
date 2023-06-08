@@ -175,9 +175,9 @@ class USERIDMGR extends UTIL
 
             PH::print_stdout( " - now sending records to API ... ");
             if( $action == 'register' )
-                $this->pan->connector->userIDLogin(array_keys($records), $records, $this->location);
+                $this->pan->connector->userIDLogin(array_keys($records), $records, $this->objectsLocation);
             else
-                $this->pan->connector->userIDLogout(array_keys($records), $records, $this->location);
+                $this->pan->connector->userIDLogout(array_keys($records), $records, $this->objectsLocation);
         }
         elseif( $action == 'fakeregister' )
         {
