@@ -3227,6 +3227,49 @@ RuleCallContext::$supportedActions[] = array(
 );
 
 RuleCallContext::$supportedActions[] = array(
+    'name' => 'SNat-set-interface',
+    'MainFunction' => function (RuleCallContext $context) {
+        $rule = $context->object;
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+        if( !$rule->isNatRule() )
+        {
+            $string = "it's not a NAT rule" ;
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+        /** @var NatRule $rule */
+
+        if( $rule->isBiDirectional() )
+        {
+            //Todo: validation if something is needed
+            //$string = "because NAT rule is bi-directional" );
+        }
+
+        $newSNATInterface = $context->arguments['SNATInterface'];
+
+        $newSNATInterface = str_replace( "$$", "/", $newSNATInterface);
+
+        //check if FW -> is interface available?
+        if( $context->isAPI )
+        {
+            #mwarning( "SNATInterface set for API call is not yet implemented" );
+            $rule->API_setSNATInterface( $newSNATInterface );
+        }
+        else
+            $rule->setSNATInterface( $newSNATInterface );
+
+    },
+    'args' => array(
+        'SNATInterface' => array('type' => 'string', 'default' => '*nodefault*')
+    )
+);
+
+RuleCallContext::$supportedActions[] = array(
     'name' => 'name-Prepend',
     'MainFunction' => function (RuleCallContext $context) {
         $rule = $context->object;
