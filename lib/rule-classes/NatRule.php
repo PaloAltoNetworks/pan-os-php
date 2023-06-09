@@ -834,6 +834,7 @@ class NatRule extends Rule
 
 
         //rewrite SNAT needed
+        $this->rewriteSNAT_XML();
 
         return TRUE;
     }
