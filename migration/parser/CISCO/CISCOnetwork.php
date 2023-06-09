@@ -189,7 +189,24 @@ trait CISCOnetwork
                     if( count($tmp_array) == 2 )
                     {
                         $cidr = $tmp_array[1];
-                        $route_network = $ip_network;
+                        if( !is_int( $cidr ) )
+                        {
+                            $cidr_array = explode(".", $cidr);
+                            $tmp_hostCidr = "";
+                            foreach( $cidr_array as $key => &$entry )
+                            {
+                                $final_entry = 255 - (int)$entry;
+                                if( $key == 0 )
+                                    $tmp_hostCidr .= $final_entry;
+                                else
+                                    $tmp_hostCidr .= "." . $final_entry;
+                            }
+
+                            $cidr = cidr::netmask2cidr($tmp_hostCidr);
+                            $route_network = $tmp_array[1]."/".$cidr;
+                        }
+                        else
+                            $route_network = $ip_network;
                     }
                     else
                     {
