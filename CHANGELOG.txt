@@ -5,6 +5,7 @@ UTIL:
 * type=addressgroup-/servicegroup-merger - add additional output reason if groups can not be merged
 * type=userid-mgr | correct usage of objectsLocation variable
 * type=rule ruletype=nat | introduce 'actions=SNAT-set-interface:INTERFACE-NAME'
+* type=dhcp | introduce 'actions=dhcp-server-reservation-create:IP,mac'
 
 BUGFIX:
 * type=appid-toolbox | bugfix for none declared variable php 8.1
