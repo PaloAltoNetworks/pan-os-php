@@ -71,10 +71,14 @@ class DHCP
 
                     $tmp_IP = DH::findAttribute('name', $entry);
                     $tmp_mac_xml = DH::findFirstElement("mac", $entry);
-                    $tmp_mac = $tmp_mac_xml->textContent;
+                    if( $tmp_mac_xml !== False )
+                    {
+                        $tmp_mac = $tmp_mac_xml->textContent;
 
-                    $this->server_leases[] = array( 'ip' => $tmp_IP, 'mac' => $tmp_mac );
-                    #PH::print_stdout("   * "."IP: ".$tmp_IP." | mac: ".$tmp_mac);
+                        $this->server_leases[] = array( 'ip' => $tmp_IP, 'mac' => $tmp_mac );
+                        #PH::print_stdout("   * "."IP: ".$tmp_IP." | mac: ".$tmp_mac);
+                    }
+
                 }
             }
         }
