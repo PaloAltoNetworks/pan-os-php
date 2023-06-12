@@ -6,6 +6,8 @@ UTIL:
 * type=userid-mgr | correct usage of objectsLocation variable
 * type=rule ruletype=nat | introduce 'actions=SNAT-set-interface:INTERFACE-NAME'
 * type=dhcp | introduce 'actions=dhcp-server-reservation-create:IP,mac'
+* type=service actions=name-charachter-replace:SEARCH,REPLACE - new default REPLACE value is ''
+* type=service 'filter=(name regex /ARGUMENTS/) - introduce variables same way as type=address 'filter=(name regex //)-  'possible variables to bring in as argument: $$current.name$$ / $$protocol$$ / $$destinationport$$ / $$soruceport$$ / $$timeout$$'
 
 BUGFIX:
 * type=appid-toolbox | bugfix for none declared variable php 8.1

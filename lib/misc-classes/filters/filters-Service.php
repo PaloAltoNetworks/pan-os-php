@@ -221,6 +221,32 @@ RQuery::$defaultFilters['service']['name']['operators']['regex'] = array(
             $value = $context->nestedQueries[$value];
         }
 
+        if( strpos($value, '$$current.name$$') !== FALSE )
+        {
+            $replace = $object->name();
+            $value = str_replace('$$current.name$$', $replace, $value);
+        }
+        if( strpos($value, '$$protocol$$') !== FALSE )
+        {
+            $replace = $object->protocol();
+            $value = str_replace('$$protocol$$', $replace, $value);
+        }
+        if( strpos($value, '$$destinationport$$') !== FALSE )
+        {
+            $replace = $object->getDestPort();
+            $value = str_replace('$$destinationport$$', $replace, $value);
+        }
+        if( strpos($value, '$$sourceport$$') !== FALSE )
+        {
+            $replace = $object->getSourcePort();
+            $value = str_replace('$$sourceport$$', $replace, $value);
+        }
+        if( strpos($value, '$$timeout$$') !== FALSE )
+        {
+            $replace = $object->getTimeout();
+            $value = str_replace('$$timeout$$', $replace, $value);
+        }
+
         $matching = preg_match($value, $object->name());
         if( $matching === FALSE )
             derr("regular expression error on '{$value}'");
@@ -229,6 +255,7 @@ RQuery::$defaultFilters['service']['name']['operators']['regex'] = array(
         return FALSE;
     },
     'arg' => TRUE,
+    'help' => 'possible variables to bring in as argument: $$current.name$$ / $$protocol$$ / $$destinationport$$ / $$soruceport$$ / $$timeout$$',
     'ci' => array(
         'fString' => '(%PROP% /tcp/)',
         'input' => 'input/panorama-8.0.xml'

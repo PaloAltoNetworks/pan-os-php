@@ -1016,11 +1016,6 @@ ServiceCallContext::$supportedActions[] = array(
         {
             $newName = str_replace('$$current.name$$', $object->name(), $newName);
         }
-        if( strpos($newName, '$$value$$') !== FALSE )
-        {
-            $newName = str_replace('$$value$$', $object->value(), $newName);
-        }
-
 
         if( strpos($newName, '$$protocol$$') !== FALSE )
         {
@@ -1146,7 +1141,7 @@ ServiceCallContext::$supportedActions[] = array(
         'default' => '*nodefault*'),
         'replace' => array(
             'type' => 'string',
-            'default' => '*nodefault*')
+            'default' => '')
     ),
     'help' => ''
 );
