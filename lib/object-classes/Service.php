@@ -293,6 +293,9 @@ class Service
         if( $newTimeout == 3600 )
             return FALSE;
 
+        if( $newTimeout > 604800 )
+            return FALSE;
+
         $this->_timeout = $newTimeout;
         $tmp = DH::findFirstElementOrCreate('override', $this->tcpOrUdpRoot);
         $tmpno = DH::findFirstElement('no', $tmp);
@@ -336,6 +339,9 @@ class Service
         if( $newHalfCloseTimeout == 3600 )
             return FALSE;
 
+        if( $newHalfCloseTimeout > 604800 )
+            return FALSE;
+
         $this->_halfclose_timeout = $newHalfCloseTimeout;
         $tmp = DH::findFirstElementOrCreate('override', $this->tcpOrUdpRoot);
         $tmpno = DH::findFirstElement('no', $tmp);
@@ -377,6 +383,9 @@ class Service
             return FALSE;
 
         if( $newTimeWaitTimeout == 3600 )
+            return FALSE;
+
+        if( $newTimeWaitTimeout > 600 )
             return FALSE;
 
         $this->_timewait_timeout = $newTimeWaitTimeout;
