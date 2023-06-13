@@ -342,7 +342,7 @@ class Service
         if( $tmpno !== false )
             $tmp->removeChild( $tmpno );
         $tmp = DH::findFirstElementOrCreate('yes', $tmp);
-        $tmp = DH::findFirstElementOrCreate('halfclose-', $tmp, $this->_halfclose_timeout);
+        $tmp = DH::findFirstElementOrCreate('halfclose-timeout', $tmp, $this->_halfclose_timeout);
         DH::setDomNodeText($tmp, $newHalfCloseTimeout);
 
         return TRUE;
@@ -385,7 +385,7 @@ class Service
         if( $tmpno !== false )
             $tmp->removeChild( $tmpno );
         $tmp = DH::findFirstElementOrCreate('yes', $tmp);
-        $tmp = DH::findFirstElementOrCreate('timewait-', $tmp, $this->_timewait_timeout);
+        $tmp = DH::findFirstElementOrCreate('timewait-timeout', $tmp, $this->_timewait_timeout);
         DH::setDomNodeText($tmp, $newTimeWaitTimeout);
 
         return TRUE;
