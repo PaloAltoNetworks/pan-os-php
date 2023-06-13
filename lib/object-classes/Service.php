@@ -322,6 +322,93 @@ class Service
     }
 
     /**
+     * @param string $newHalfCloseTimeout
+     * @return bool
+     */
+    public function setHalfCloseTimeout($newHalfCloseTimeout)
+    {
+        if( strlen($newHalfCloseTimeout) == 0 )
+            derr("invalid blank value for newHalfCloseTimeouts");
+
+        if( $newHalfCloseTimeout == $this->_halfclose_timeout )
+            return FALSE;
+
+        if( $newHalfCloseTimeout == 3600 )
+            return FALSE;
+
+        $this->_halfclose_timeout = $newHalfCloseTimeout;
+        $tmp = DH::findFirstElementOrCreate('override', $this->tcpOrUdpRoot);
+        $tmpno = DH::findFirstElement('no', $tmp);
+        if( $tmpno !== false )
+            $tmp->removeChild( $tmpno );
+        $tmp = DH::findFirstElementOrCreate('yes', $tmp);
+        $tmp = DH::findFirstElementOrCreate('halfclose-', $tmp, $this->_halfclose_timeout);
+        DH::setDomNodeText($tmp, $newHalfCloseTimeout);
+
+        return TRUE;
+    }
+
+    /**
+     * @param string $newHalfCloseTimeout
+     * @return bool
+     */
+    public function API_setHalfCloseTimeout($newHalfCloseTimeout)
+    {
+        $ret = $this->setHalfCloseTimeout($newHalfCloseTimeout);
+        if( $ret )
+        {
+            $connector = findConnectorOrDie($this);
+            $this->API_sync();
+        }
+
+        return $ret;
+    }
+
+    /**
+     * @param string $newTimeWaitTimeout
+     * @return bool
+     */
+    public function setTimeWaitTimeout($newTimeWaitTimeout)
+    {
+        if( strlen($newTimeWaitTimeout) == 0 )
+            derr("invalid blank value for newTimeWaitTimeouts");
+
+        if( $newTimeWaitTimeout == $this->_timewait_timeout )
+            return FALSE;
+
+        if( $newTimeWaitTimeout == 3600 )
+            return FALSE;
+
+        $this->_timewait_timeout = $newTimeWaitTimeout;
+        $tmp = DH::findFirstElementOrCreate('override', $this->tcpOrUdpRoot);
+        $tmpno = DH::findFirstElement('no', $tmp);
+        if( $tmpno !== false )
+            $tmp->removeChild( $tmpno );
+        $tmp = DH::findFirstElementOrCreate('yes', $tmp);
+        $tmp = DH::findFirstElementOrCreate('timewait-', $tmp, $this->_timewait_timeout);
+        DH::setDomNodeText($tmp, $newTimeWaitTimeout);
+
+        return TRUE;
+    }
+
+    /**
+     * @param string $newTimeWaitTimeout
+     * @return bool
+     */
+    public function API_setTimeWaitTimeout($newTimeWaitTimeout)
+    {
+        $ret = $this->setTimeWaitTimeout($newTimeWaitTimeout);
+        if( $ret )
+        {
+            $connector = findConnectorOrDie($this);
+            $this->API_sync();
+        }
+
+        return $ret;
+    }
+
+
+    /**
      * @param string $newPorts
      * @return bool
      */

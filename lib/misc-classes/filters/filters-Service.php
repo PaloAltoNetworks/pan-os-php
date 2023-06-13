@@ -939,6 +939,55 @@ RQuery::$defaultFilters['service']['timeout.value']['operators']['>,<,=,!'] = ar
         'input' => 'input/panorama-8.0.xml'
     )
 );
+RQuery::$defaultFilters['service']['timeout-halfclose']['operators']['is.set'] = array(
+    'Function' => function (ServiceRQueryContext $context) {
+        $object = $context->object;
+        $value = $context->value;
+
+        if( !$object->isService() )
+            return null;
+
+
+        if( $object->getHalfcloseTimeout() != '' )
+            return TRUE;
+
+        return FALSE;
+    },
+    'arg' => FALSE
+);
+RQuery::$defaultFilters['service']['timeout-halfclose.value']['operators']['>,<,=,!'] = array(
+    'eval' => '!$object->isGroup() && $object->getHalfcloseTimeout() !operator! !value!',
+    'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP% 1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['service']['timeout-timewait']['operators']['is.set'] = array(
+    'Function' => function (ServiceRQueryContext $context) {
+        $object = $context->object;
+        $value = $context->value;
+
+        if( !$object->isService() )
+            return null;
+
+
+        if( $object->getTimewaitTimeout() != '' )
+            return TRUE;
+
+        return FALSE;
+    },
+    'arg' => FALSE
+);
+RQuery::$defaultFilters['service']['timeout-timewait.value']['operators']['>,<,=,!'] = array(
+    'eval' => '!$object->isGroup() && $object->getTimewaitTimeout() !operator! !value!',
+    'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP% 1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
 
 RQuery::$defaultFilters['service']['port.count']['operators']['>,<,=,!'] = array(
     'Function' => function (ServiceRQueryContext $context) {

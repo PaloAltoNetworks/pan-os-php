@@ -1471,6 +1471,60 @@ ServiceCallContext::$supportedActions[] = array(
     'args' => array('timeoutValue' => array('type' => 'string', 'default' => '*nodefault*')),
 );
 ServiceCallContext::$supportedActions[] = array(
+    'name' => 'timeout-halfclose-set',
+    'MainFunction' => function (ServiceCallContext $context) {
+        $object = $context->object;
+        $newTimeout = $context->arguments['timeoutValue'];
+        $newTimeout = intval($newTimeout);
+
+        $class = get_class($object);
+        if( $class === 'ServiceGroup' )
+        {
+            $string = "because object is ServiceGroup";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return null;
+        }
+
+        $tmp_timeout = $object->getTimeout();
+
+        if( $tmp_timeout != $newTimeout )
+        {
+            if( $context->isAPI )
+                $object->API_setHalfCloseTimeout($newTimeout);
+            else
+                $object->setHalfCloseTimeout($newTimeout);
+        }
+    },
+    'args' => array('timeoutValue' => array('type' => 'string', 'default' => '*nodefault*')),
+);
+ServiceCallContext::$supportedActions[] = array(
+    'name' => 'timeout-timewait-set',
+    'MainFunction' => function (ServiceCallContext $context) {
+        $object = $context->object;
+        $newTimeout = $context->arguments['timeoutValue'];
+        $newTimeout = intval($newTimeout);
+
+        $class = get_class($object);
+        if( $class === 'ServiceGroup' )
+        {
+            $string = "because object is ServiceGroup";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return null;
+        }
+
+        $tmp_timeout = $object->getTimeout();
+
+        if( $tmp_timeout != $newTimeout )
+        {
+            if( $context->isAPI )
+                $object->API_setTimeWaitTimeout($newTimeout);
+            else
+                $object->setTimeWaitTimeout($newTimeout);
+        }
+    },
+    'args' => array('timeoutValue' => array('type' => 'string', 'default' => '*nodefault*')),
+);
+ServiceCallContext::$supportedActions[] = array(
     'name' => 'timeout-inherit',
     'MainFunction' => function (ServiceCallContext $context) {
         $object = $context->object;
