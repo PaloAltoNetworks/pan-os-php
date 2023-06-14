@@ -569,8 +569,6 @@ class Address
             else
                 return 32;
         }
-
-
         else
             return intval($explode[1]);
     }

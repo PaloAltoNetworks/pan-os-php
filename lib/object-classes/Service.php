@@ -31,8 +31,8 @@ class Service
     protected $_dport = '';
     protected $_sport = '';
     protected $_timeout = '';
-    protected $_halfclose_timeout;
-    protected $_timewait_timeout;
+    protected $_halfclose_timeout = '';
+    protected $_timewait_timeout = '';
 
     public $migrated;
     public $ancestor;
@@ -277,6 +277,110 @@ class Service
             DH::createElement($this->tcpOrUdpRoot, 'source-port', $this->_dport);
     }
 
+    /**
+     * @param string $newTimeout
+     * @return bool
+     */
+    public function setTimeoutGeneral($type, $newTimeout)
+    {
+        if( strlen($newTimeout) == 0 )
+            derr("invalid blank value for newTimeout setting");
+
+        $clear = false;
+        if( $type == "timeout" )
+        {
+            if( $newTimeout == $this->_timeout )
+                return FALSE;
+            if( $newTimeout > 604800 )
+            {
+                derr( "timewait value must between 1-604800", null, False );
+                return FALSE;
+            }
+            if( $newTimeout == 3600 )
+            {
+                //default value - clear existing value
+                #return FALSE;
+                $clear = true;
+                $this->_timeout = "";
+            }
+            else
+                $this->_timeout = $newTimeout;
+        }
+        elseif( $type == "halfclose" )
+        {
+            if( !$this->isTcp() )
+                return FALSE;
+            if( $newTimeout == $this->_halfclose_timeout )
+            {
+                return FALSE;
+            }
+            if( $newTimeout > 604800 )
+            {
+                derr( "timewait value must between 1-604800", null, False );
+                return FALSE;
+            }
+            if( $newTimeout == 120 )
+            {
+                //default value - clear existing value
+                #return FALSE;
+                $clear = true;
+                $this->_halfclose_timeout = "";
+            }
+            else
+                $this->_halfclose_timeout = $newTimeout;
+        }
+        elseif( $type == "timewait" )
+        {
+            if( !$this->isTcp() )
+                return FALSE;
+            if( $newTimeout == $this->_timewait_timeout )
+                return FALSE;
+
+            if( $newTimeout > 600 )
+            {
+                derr( "timewait value must between 1-600", null, False );
+                return FALSE;
+            }
+            if( $newTimeout == 15 )
+            {
+                //default value - clear existing value
+                #return FALSE;
+                $clear = true;
+                $this->_timewait_timeout = "";
+            }
+            else
+                $this->_timewait_timeout = $newTimeout;
+        }
+
+
+        $tmp_override = DH::findFirstElementOrCreate('override', $this->tcpOrUdpRoot);
+        $tmpno = DH::findFirstElement('no', $tmp_override);
+        if( $tmpno !== false )
+            $tmp_override->removeChild( $tmpno );
+        $tmpyes = DH::findFirstElementOrCreate('yes', $tmp_override);
+
+        if( $type == "timeout" )
+            $tmp_timeout = DH::findFirstElementOrCreate('timeout', $tmpyes, $this->_timeout);
+        elseif( $type == "halfclose" )
+            $tmp_timeout = DH::findFirstElementOrCreate('halfclose-timeout', $tmpyes, $this->_halfclose_timeout);
+        elseif( $type == "timewait" )
+            $tmp_timeout = DH::findFirstElementOrCreate('timewait-timeout', $tmpyes, $this->_timewait_timeout);
+
+        if( $clear )
+        {
+            $tmpyes->removeChild( $tmp_timeout );
+            if( empty($this->_timeout) and empty($this->_halfclose_timeout) and empty($this->_timewait_timeout) )
+            {
+                $tmp_override->removeChild( $tmpyes );
+                $tmpno = DH::findFirstElementOrCreate('no', $tmp_override);
+            }
+        }
+        else
+            DH::setDomNodeText($tmp_timeout, $newTimeout);
+
+        return TRUE;
+    }
+
 
     /**
      * @param string $newPorts
@@ -284,28 +388,7 @@ class Service
      */
     public function setTimeout($newTimeout)
     {
-        if( strlen($newTimeout) == 0 )
-            derr("invalid blank value for newTimeouts");
-
-        if( $newTimeout == $this->_timeout )
-            return FALSE;
-
-        if( $newTimeout == 3600 )
-            return FALSE;
-
-        if( $newTimeout > 604800 )
-            return FALSE;
-
-        $this->_timeout = $newTimeout;
-        $tmp = DH::findFirstElementOrCreate('override', $this->tcpOrUdpRoot);
-        $tmpno = DH::findFirstElement('no', $tmp);
-        if( $tmpno !== false )
-            $tmp->removeChild( $tmpno );
-        $tmp = DH::findFirstElementOrCreate('yes', $tmp);
-        $tmp = DH::findFirstElementOrCreate('timeout', $tmp, $this->_timeout);
-        DH::setDomNodeText($tmp, $newTimeout);
-
-        return TRUE;
+        return $this->setTimeoutGeneral("timeout", $newTimeout);
     }
 
     /**
@@ -330,28 +413,9 @@ class Service
      */
     public function setHalfCloseTimeout($newHalfCloseTimeout)
     {
-        if( strlen($newHalfCloseTimeout) == 0 )
-            derr("invalid blank value for newHalfCloseTimeouts");
-
-        if( $newHalfCloseTimeout == $this->_halfclose_timeout )
+        if( !$this->isTcp() )
             return FALSE;
-
-        if( $newHalfCloseTimeout == 3600 )
-            return FALSE;
-
-        if( $newHalfCloseTimeout > 604800 )
-            return FALSE;
-
-        $this->_halfclose_timeout = $newHalfCloseTimeout;
-        $tmp = DH::findFirstElementOrCreate('override', $this->tcpOrUdpRoot);
-        $tmpno = DH::findFirstElement('no', $tmp);
-        if( $tmpno !== false )
-            $tmp->removeChild( $tmpno );
-        $tmp = DH::findFirstElementOrCreate('yes', $tmp);
-        $tmp = DH::findFirstElementOrCreate('halfclose-timeout', $tmp, $this->_halfclose_timeout);
-        DH::setDomNodeText($tmp, $newHalfCloseTimeout);
-
-        return TRUE;
+        return $this->setTimeoutGeneral("halfclose", $newHalfCloseTimeout);
     }
 
     /**
@@ -376,28 +440,9 @@ class Service
      */
     public function setTimeWaitTimeout($newTimeWaitTimeout)
     {
-        if( strlen($newTimeWaitTimeout) == 0 )
-            derr("invalid blank value for newTimeWaitTimeouts");
-
-        if( $newTimeWaitTimeout == $this->_timewait_timeout )
+        if( !$this->isTcp() )
             return FALSE;
-
-        if( $newTimeWaitTimeout == 3600 )
-            return FALSE;
-
-        if( $newTimeWaitTimeout > 600 )
-            return FALSE;
-
-        $this->_timewait_timeout = $newTimeWaitTimeout;
-        $tmp = DH::findFirstElementOrCreate('override', $this->tcpOrUdpRoot);
-        $tmpno = DH::findFirstElement('no', $tmp);
-        if( $tmpno !== false )
-            $tmp->removeChild( $tmpno );
-        $tmp = DH::findFirstElementOrCreate('yes', $tmp);
-        $tmp = DH::findFirstElementOrCreate('timewait-timeout', $tmp, $this->_timewait_timeout);
-        DH::setDomNodeText($tmp, $newTimeWaitTimeout);
-
-        return TRUE;
+        return $this->setTimeoutGeneral("timewait", $newTimeWaitTimeout);
     }
 
     /**
