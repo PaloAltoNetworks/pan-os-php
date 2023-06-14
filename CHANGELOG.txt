@@ -1,6 +1,14 @@
 CHANGELOG
 
-2.1.8
+2.1.9
+UTIL:
+
+BUGFIX:
+
+GENERAL:
+
+
+2.1.8 (20230614)
 UTIL:
 * type=addressgroup-/servicegroup-merger - add additional output reason if groups can not be merged
 * type=userid-mgr | correct usage of objectsLocation variable
