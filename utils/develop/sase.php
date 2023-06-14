@@ -8,18 +8,11 @@ require_once ( "utils/lib/UTIL.php" );
 
 $supportedArguments = array();
 //PREDEFINED arguments:
-$supportedArguments['in'] = array('niceName' => 'in', 'shortHelp' => 'in=filename.xml | api. ie: in=api://192.168.1.1 or in=api://0018CAEC3@panorama.company.com', 'argDesc' => '[filename]|[api://IP]|[api://serial@IP]');
+$supportedArguments['in'] = array('niceName' => 'in', 'shortHelp' => 'in=sase-api://tsg_id', 'argDesc' => '[sase-api://tsg_id]');
 $supportedArguments['out'] = array('niceName' => 'out', 'shortHelp' => 'output file to save config after changes. Only required when input is a file. ie: out=save-config.xml', 'argDesc' => '[filename]');
 
-$supportedArguments['client_id'] = array('client_id' => 'client_id', 'shortHelp' => 'user name');
-$supportedArguments['client_secret'] = array('client_secret' => 'client_secret', 'shortHelp' => 'user secret');
-$supportedArguments['scope'] = array('scope' => 'scope', 'shortHelp' => 'tenante scope');
 
-
-
-#$argv[] = "panorama-2fawkes.php";
-$argv[] = "in=".dirname(__FILE__)."/fawkes_baseconfig.xml";
-#$argv[] = "out=/tmp/sase.xml";
+$fawkes_filename = dirname(__FILE__)."/fawkes_baseconfig.xml";
 
 
 $usageMsg = PH::boldText('USAGE: ') . "php " . basename(__FILE__) . " in=FAWKES_baseconfig.xml out=output.xml client_id={{USER}} client_secret={{SECRET}} scope={{tsg_id:TSGID}}";
@@ -29,25 +22,63 @@ $usageMsg = PH::boldText('USAGE: ') . "php " . basename(__FILE__) . " in=FAWKES_
 $util_fawkes = new UTIL("custom", $argv, $argc, __FILE__, $supportedArguments, $usageMsg);
 $util_fawkes->utilInit();
 
-$util_fawkes->load_config();
 
-#if( !isset(PH::$args['in']) )
+$util_fawkes->configType = 'fawkes';
+$util_fawkes->pan = new FawkesConf();
 
-if( !isset(PH::$args['client_id']) )
-    derr( "argument: 'client_id' is missing")  ;
-else
-    $client_id = PH::$args['client_id'];
+$util_fawkes->xmlDoc = new DOMDocument();
+PH::print_stdout( " - Reading XML file from disk... ".$fawkes_filename );
+if( !$util_fawkes->xmlDoc->load($fawkes_filename, XML_PARSE_BIG_LINES) )
+    derr("error while reading xml config file");
 
-if( !isset(PH::$args['client_secret']) )
-    derr( "argument: 'client_secret' is missing")  ;
-else
-    $client_secret = PH::$args['client_secret'];
+$util_fawkes->pan->load_from_domxml($util_fawkes->xmlDoc, XML_PARSE_BIG_LINES);
 
-if( !isset(PH::$args['scope']) )
-    derr( "argument: 'scope' is missing")  ;
-else
-    #$scope = "tsg_id:".PH::$args['scope'];
-    $scope = PH::$args['scope'];
+##########################################
+PanAPIConnector::loadConnectorsFromUserHome();
+$host = str_replace( "tsg_id:", "", $util_fawkes->scope);
+
+#$connector = PanAPIConnector::findOrCreateConnectorFromHost("tsg_id".$host);
+foreach( PanAPIConnector::$savedConnectors as $connector )
+{
+    if( strpos($connector->apihost, $host) !== FALSE )
+    {
+        $key = $connector->apikey;
+        $test = explode( "%", $key );
+        $client_id = $test[0];
+        $client_secret = $test[1];
+        break;
+    }
+    else
+        $connector = null;
+}
+if( $connector === null )
+{
+    $tsg_id = $host;
+
+    PH::print_stdout( " ** Please enter client_id" );
+    $handle = fopen("php://stdin", "r");
+    $line = fgets($handle);
+    $client_id = trim($line);
+
+    PH::print_stdout( " ** Please enter client_secret" );
+    $handle = fopen("php://stdin", "r");
+    $line = fgets($handle);
+    $client_secret = trim($line);
+
+    $addHost = "tsg_id".$tsg_id;
+    $key = $client_id."%".$client_secret;
+
+    foreach( PanAPIConnector::$savedConnectors as $cIndex => $connector )
+    {
+        if( $connector->apihost == $addHost )
+            unset(PanAPIConnector::$savedConnectors[$cIndex]);
+    }
+
+    PanAPIConnector::$savedConnectors[] = new PanAPIConnector($addHost, $key);
+    PanAPIConnector::saveConnectorsToUserHome();
+}
+
+
 ##########################################
 ##########################################
 

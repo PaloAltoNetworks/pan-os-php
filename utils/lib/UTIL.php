@@ -168,6 +168,8 @@ class UTIL
     public $loadEndTime;
     public $loadEndMem;
 
+    public $scope = null;
+
     function __construct($utilType, $argv, $argc, $PHP_FILE, $_supportedArguments = array(), $_usageMsg = "", $projectFolder = "")
     {
         PanAPIConnector::$projectfolder = $projectFolder;
@@ -927,10 +929,14 @@ class UTIL
             else
                 $this->xmlDoc = $this->configInput['connector']->getSavedConfig($this->configInput['filename']);
         }
+        elseif( $this->configInput['type'] == 'sase-api')
+        {
+            $this->scope = $this->configInput['connector'];
+        }
         else
             derr('not supported yet');
-
-        $this->determineConfigType();
+        if( $this->configInput['type'] !== 'sase-api')
+            $this->determineConfigType();
     }
 
     public function determineConfigType()

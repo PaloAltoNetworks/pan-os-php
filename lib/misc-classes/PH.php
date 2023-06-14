@@ -440,9 +440,9 @@ class PH
             {
                 PanAPIConnector::loadConnectorsFromUserHome();
                 $host = substr($str, strlen('sase-api://'));
-
-                $connector = PanAPIConnector::findOrCreateConnectorFromHost("tsg_id".$host);
-                #$connector->setType($connector->info_deviceType);
+                $ret['status'] = 'ok';
+                $ret['type'] = 'sase-api';
+                $ret['connector'] = $host;
             }
             else
             {

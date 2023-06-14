@@ -444,9 +444,6 @@ class PanAPIConnector
         }
         elseif( $promptForKey )
         {
-            if(strpos( $host, "tsg_id" ) !== FALSE)
-                derr( "sase-api://{{tsg_id}} not yet fully implemented ", null, false );
-
             if( $wrongLogin )
                 PH::print_stdout( " ** Request API access to host '$host' but invalid credentials were detected'" );
             else
@@ -516,7 +513,7 @@ class PanAPIConnector
                 $connector = new PanAPIConnector($host, $apiKey, 'panos', null, $port);
         }
 
-        if( $host == "bpa-apikey" || $host == "license-apikey" || $host == "ldap-password" || $host == "maxmind-licensekey" )
+        if( $host == "bpa-apikey" || $host == "license-apikey" || $host == "ldap-password" || $host == "maxmind-licensekey" || strpos($host, "tsg_id") !== FALSE )
         {
             $checkConnectivity = false;
             self::$savedConnectors[] = $connector;

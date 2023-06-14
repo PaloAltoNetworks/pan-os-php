@@ -9,6 +9,7 @@ BUGFIX:
 GENERAL:
 * develop - start sase.php _ first version to use sase-api
 * develop sase.xml | check also post rulebase
+* introduce in=sase-api://TSG_ID - different classes
 
 
 2.1.8 (20230614)

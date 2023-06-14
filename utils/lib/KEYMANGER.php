@@ -138,23 +138,32 @@ class KEYMANGER extends UTIL
                     //get tsg_id
                     //get client_id
                     //get client_secret
-                    PH::print_stdout( " ** Please enter scope:  {{TSGID}} | without leading 'tsg_id:" );
-                    $handle = fopen("php://stdin", "r");
-                    $line = fgets($handle);
-                    $tsg_id = trim($line);
+                    if( !isset(PH::$args['apikey']) )
+                    {
+                        PH::print_stdout( " ** Please enter scope:  {{TSGID}} | without leading 'tsg_id:" );
+                        $handle = fopen("php://stdin", "r");
+                        $line = fgets($handle);
+                        $tsg_id = trim($line);
 
-                    PH::print_stdout( " ** Please enter client_id" );
-                    $handle = fopen("php://stdin", "r");
-                    $line = fgets($handle);
-                    $client_id = trim($line);
+                        PH::print_stdout( " ** Please enter client_id" );
+                        $handle = fopen("php://stdin", "r");
+                        $line = fgets($handle);
+                        $client_id = trim($line);
 
-                    PH::print_stdout( " ** Please enter client_secret" );
-                    $handle = fopen("php://stdin", "r");
-                    $line = fgets($handle);
-                    $client_secret = trim($line);
+                        PH::print_stdout( " ** Please enter client_secret" );
+                        $handle = fopen("php://stdin", "r");
+                        $line = fgets($handle);
+                        $client_secret = trim($line);
 
-                    $addHost = "tsg_id".$tsg_id;
-                    $key = $client_id."%".$client_secret;
+                        $addHost = "tsg_id".$tsg_id;
+                        $key = $client_id."%".$client_secret;
+                    }
+                    else
+                    {
+                        #$addHost = "tsg_id".$tsg_id;
+                        $key = PH::$args['apikey'];
+                    }
+
 
                     foreach( PanAPIConnector::$savedConnectors as $cIndex => $connector )
                     {
@@ -244,7 +253,7 @@ class KEYMANGER extends UTIL
                 PH::print_stdout( " - requested to test Host/IP '{$checkHost}'");
                 PH::$JSON_TMP[$checkHost]['name'] = $checkHost;
 
-                if( $checkHost == "bpa-apikey" || $checkHost == "license-apikey" || $checkHost == "ldap-password" || $checkHost == "maxmind-licensekey" )
+                if( $checkHost == "bpa-apikey" || $checkHost == "license-apikey" || $checkHost == "ldap-password" || $checkHost == "maxmind-licensekey" || strpos($checkHost, "tsg_id") !== FALSE )
                 {
                     PH::$JSON_TMP[$checkHost]['status'] = "skipped can not be tested";
                 }
