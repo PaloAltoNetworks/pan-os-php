@@ -131,18 +131,53 @@ class KEYMANGER extends UTIL
             PH::$JSON_TMP['header'] = $string;
             PH::$JSON_TMP[$addHost]['name'] = $addHost;
 
-            if( $addHost == "bpa-apikey" || $addHost == "license-apikey" || $addHost == "ldap-password" || $addHost == "maxmind-licensekey" )
+            if( $addHost == "bpa-apikey" || $addHost == "license-apikey" || $addHost == "ldap-password" || $addHost == "maxmind-licensekey" || $addHost == "tsg_id" )
             {
-                if( !isset(PH::$args['apikey']) )
-                    derr( "argument apikey - must be set to add BPA-/License-APIkey" );
-
-                foreach( PanAPIConnector::$savedConnectors as $cIndex => $connector )
+                if($addHost == "tsg_id")
                 {
-                    if( $connector->apihost == $addHost )
-                        unset(PanAPIConnector::$savedConnectors[$cIndex]);
+                    //get tsg_id
+                    //get client_id
+                    //get client_secret
+                    PH::print_stdout( " ** Please enter scope:  {{TSGID}} | without leading 'tsg_id:" );
+                    $handle = fopen("php://stdin", "r");
+                    $line = fgets($handle);
+                    $tsg_id = trim($line);
+
+                    PH::print_stdout( " ** Please enter client_id" );
+                    $handle = fopen("php://stdin", "r");
+                    $line = fgets($handle);
+                    $client_id = trim($line);
+
+                    PH::print_stdout( " ** Please enter client_secret" );
+                    $handle = fopen("php://stdin", "r");
+                    $line = fgets($handle);
+                    $client_secret = trim($line);
+
+                    $addHost = "tsg_id".$tsg_id;
+                    $key = $client_id."%".$client_secret;
+
+                    foreach( PanAPIConnector::$savedConnectors as $cIndex => $connector )
+                    {
+                        if( $connector->apihost == $addHost )
+                            unset(PanAPIConnector::$savedConnectors[$cIndex]);
+                    }
+
+                    PanAPIConnector::$savedConnectors[] = new PanAPIConnector($addHost, $key);
+                }
+                else
+                {
+                    if( !isset(PH::$args['apikey']) )
+                        derr( "argument apikey - must be set to add BPA-/License-APIkey" );
+
+                    foreach( PanAPIConnector::$savedConnectors as $cIndex => $connector )
+                    {
+                        if( $connector->apihost == $addHost )
+                            unset(PanAPIConnector::$savedConnectors[$cIndex]);
+                    }
+
+                    PanAPIConnector::$savedConnectors[] = new PanAPIConnector($addHost, PH::$args['apikey']);
                 }
 
-                PanAPIConnector::$savedConnectors[] = new PanAPIConnector($addHost, PH::$args['apikey']);
                 PanAPIConnector::saveConnectorsToUserHome();
             }
             else

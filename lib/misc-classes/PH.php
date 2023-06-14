@@ -432,40 +432,52 @@ class PH
         $ret = array('status' => 'fail');
         $ret['filename'] = null;
 
+        $pos_sase = strpos($str, 'sase-api://');
         $pos = strpos($str, 'api://');
         if( $pos !== FALSE )
         {
-            PanAPIConnector::loadConnectorsFromUserHome();
-            $host = substr($str, strlen('api://'));
-            $hostExplode = explode('@', $host);
-            if( count($hostExplode) == 1 )
+            if( $pos_sase !== FALSE )
             {
-                $fileExplode = explode('/', $host);
-                if( count($fileExplode) == 2 )
-                {
-                    $ret['filename'] = $fileExplode[1];
-                    $host = $fileExplode[0];
-                }
-                $connector = PanAPIConnector::findOrCreateConnectorFromHost($host);
-                $connector->setType($connector->info_deviceType);
+                PanAPIConnector::loadConnectorsFromUserHome();
+                $host = substr($str, strlen('sase-api://'));
+
+                $connector = PanAPIConnector::findOrCreateConnectorFromHost("tsg_id".$host);
+                #$connector->setType($connector->info_deviceType);
             }
             else
             {
-                $fileExplode = explode('/', $hostExplode[1]);
-                if( count($fileExplode) == 2 )
+                PanAPIConnector::loadConnectorsFromUserHome();
+                $host = substr($str, strlen('api://'));
+                $hostExplode = explode('@', $host);
+                if( count($hostExplode) == 1 )
                 {
-                    $ret['filename'] = $fileExplode[1];
-                    $hostExplode[1] = $fileExplode[0];
+                    $fileExplode = explode('/', $host);
+                    if( count($fileExplode) == 2 )
+                    {
+                        $ret['filename'] = $fileExplode[1];
+                        $host = $fileExplode[0];
+                    }
+                    $connector = PanAPIConnector::findOrCreateConnectorFromHost($host);
+                    $connector->setType($connector->info_deviceType);
+                }
+                else
+                {
+                    $fileExplode = explode('/', $hostExplode[1]);
+                    if( count($fileExplode) == 2 )
+                    {
+                        $ret['filename'] = $fileExplode[1];
+                        $hostExplode[1] = $fileExplode[0];
+                    }
+
+                    $connector = PanAPIConnector::findOrCreateConnectorFromHost($hostExplode[1]);
+                    $connector->setType('panos-via-panorama', $hostExplode[0]);
                 }
 
-                $connector = PanAPIConnector::findOrCreateConnectorFromHost($hostExplode[1]);
-                $connector->setType('panos-via-panorama', $hostExplode[0]);
+
+                $ret['status'] = 'ok';
+                $ret['type'] = 'api';
+                $ret['connector'] = $connector;
             }
-
-
-            $ret['status'] = 'ok';
-            $ret['type'] = 'api';
-            $ret['connector'] = $connector;
         }
         else
         {

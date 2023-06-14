@@ -407,7 +407,8 @@ class PanAPIConnector
                 try
                 {
                     $connector->getSoftwareVersion();
-                } catch(Exception $e)
+                }
+                catch(Exception $e)
                 {
                     PH::$useExceptions = $exceptionUse;
 
@@ -443,6 +444,9 @@ class PanAPIConnector
         }
         elseif( $promptForKey )
         {
+            if(strpos( $host, "tsg_id" ) !== FALSE)
+                derr( "sase-api://{{tsg_id}} not yet fully implemented ", null, false );
+
             if( $wrongLogin )
                 PH::print_stdout( " ** Request API access to host '$host' but invalid credentials were detected'" );
             else

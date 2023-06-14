@@ -195,7 +195,6 @@ foreach( $folderArray as $folder )
     {
         $resource = getResource($access_token, $type, $folder, $global_limit);
 
-
         if( $resource !== NULL )
         {
             PH::print_stdout( "|".$folder. " - ".$type);
@@ -213,6 +212,23 @@ foreach( $folderArray as $folder )
 
         $json_string = json_encode($resource, JSON_PRETTY_PRINT);
         #print $json_string."\n";
+
+        if( strpos( $type, '-rules' ) !== false )
+        {
+            $resource = getResource($access_token, $type, $folder, $global_limit, 'post');
+
+            if( $resource !== NULL )
+            {
+                PH::print_stdout( "|".$folder. " - ".$type);
+                print_r( $resource );
+
+                importConfig( $sub, $folder, $type, $resource );
+
+                PH::print_stdout( "------------------------------");
+            }
+
+            $json_string = json_encode($resource, JSON_PRETTY_PRINT);
+        }
     }
 }
 $util_fawkes->save_our_work();
