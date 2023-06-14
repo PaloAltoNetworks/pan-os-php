@@ -6,6 +6,7 @@ UTIL:
 BUGFIX:
 
 GENERAL:
+* develop - start sase.php _ first version to use sase-api
 
 
 2.1.8 (20230614)

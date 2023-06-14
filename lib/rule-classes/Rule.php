@@ -94,6 +94,16 @@ class Rule
     }
 
     /**
+     * Returns uuid of this rule
+     * @return bool
+     */
+    public function setUUID( $uuid)
+    {
+        $this->uuid = $uuid;
+        return true;
+    }
+
+    /**
      *
      * @return bool
      */
