@@ -4,6 +4,7 @@ CHANGELOG
 UTIL:
 
 BUGFIX:
+* class Zone.php | bugfix to create XML node "zone" if not yet available during creating of a new Zone
 
 GENERAL:
 * develop - start sase.php _ first version to use sase-api
