@@ -834,8 +834,47 @@ class NatRule extends Rule
 
 
         //rewrite SNAT needed
+        $this->rewriteSNAT_XML();
 
         return TRUE;
+    }
+
+    public function API_setSNATInterface($newSNATInterface)
+    {
+        $ret = $this->setSNATInterface($newSNATInterface);
+        if( $ret )
+        {
+            $connector = findConnectorOrDie($this);
+            $sourceNatType = $this->SourceNat_Type();
+
+            /*
+             * return $this->snattype == 'none';
+            return $this->snattype == 'dynamic-ip';
+            return $this->snattype == 'dynamic-ip-and-port';
+            return $this->snattype == 'static-ip';
+             */
+            if( $sourceNatType == "none" )
+            {
+                return FALSE;
+            }
+            elseif( $sourceNatType == "dynamic-ip" )
+            {
+                return FALSE;
+            }
+            elseif( $sourceNatType == "dynamic-ip-and-port" )
+            {
+                //only this is possible to set
+                $xpath = $this->getXPath() . '/source-translation/'.$sourceNatType."/interface-address";
+                $connector->sendSetRequest($xpath, "<interface>".$newSNATInterface."</interface>");
+            }
+            elseif( $sourceNatType == "static-ip" )
+            {
+                return FALSE;
+            }
+        }
+
+        return $ret;
+
     }
 
     /**

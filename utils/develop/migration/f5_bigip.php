@@ -303,7 +303,7 @@ foreach ($file_content as $line => $names_line) {
 
             if( $tmp_servicegroup->isGroup() )
             {
-                mwarning("PANOS does not support description on ServiceGroup!!!");
+                mwarning("PANOS does not support description on ServiceGroup!!!", null, False);
             }
             else
                 $tmp_servicegroup->setDescription( $description );
@@ -440,6 +440,7 @@ foreach ($file_content as $line => $names_line) {
         continue(1);
     }
 
+    $readRules=false;
     if ($isPolicy){
         if ($names_line_original=="}"){
             $isPolicy=false;

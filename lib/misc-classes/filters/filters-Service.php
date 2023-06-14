@@ -221,6 +221,32 @@ RQuery::$defaultFilters['service']['name']['operators']['regex'] = array(
             $value = $context->nestedQueries[$value];
         }
 
+        if( strpos($value, '$$current.name$$') !== FALSE )
+        {
+            $replace = $object->name();
+            $value = str_replace('$$current.name$$', $replace, $value);
+        }
+        if( strpos($value, '$$protocol$$') !== FALSE )
+        {
+            $replace = $object->protocol();
+            $value = str_replace('$$protocol$$', $replace, $value);
+        }
+        if( strpos($value, '$$destinationport$$') !== FALSE )
+        {
+            $replace = $object->getDestPort();
+            $value = str_replace('$$destinationport$$', $replace, $value);
+        }
+        if( strpos($value, '$$sourceport$$') !== FALSE )
+        {
+            $replace = $object->getSourcePort();
+            $value = str_replace('$$sourceport$$', $replace, $value);
+        }
+        if( strpos($value, '$$timeout$$') !== FALSE )
+        {
+            $replace = $object->getTimeout();
+            $value = str_replace('$$timeout$$', $replace, $value);
+        }
+
         $matching = preg_match($value, $object->name());
         if( $matching === FALSE )
             derr("regular expression error on '{$value}'");
@@ -229,6 +255,7 @@ RQuery::$defaultFilters['service']['name']['operators']['regex'] = array(
         return FALSE;
     },
     'arg' => TRUE,
+    'help' => 'possible variables to bring in as argument: $$current.name$$ / $$protocol$$ / $$destinationport$$ / $$soruceport$$ / $$timeout$$',
     'ci' => array(
         'fString' => '(%PROP% /tcp/)',
         'input' => 'input/panorama-8.0.xml'
@@ -912,6 +939,55 @@ RQuery::$defaultFilters['service']['timeout.value']['operators']['>,<,=,!'] = ar
         'input' => 'input/panorama-8.0.xml'
     )
 );
+RQuery::$defaultFilters['service']['timeout-halfclose']['operators']['is.set'] = array(
+    'Function' => function (ServiceRQueryContext $context) {
+        $object = $context->object;
+        $value = $context->value;
+
+        if( !$object->isService() )
+            return null;
+
+
+        if( $object->getHalfcloseTimeout() != '' )
+            return TRUE;
+
+        return FALSE;
+    },
+    'arg' => FALSE
+);
+RQuery::$defaultFilters['service']['timeout-halfclose.value']['operators']['>,<,=,!'] = array(
+    'eval' => '!$object->isGroup() && $object->getHalfcloseTimeout() !operator! !value!',
+    'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP% 1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['service']['timeout-timewait']['operators']['is.set'] = array(
+    'Function' => function (ServiceRQueryContext $context) {
+        $object = $context->object;
+        $value = $context->value;
+
+        if( !$object->isService() )
+            return null;
+
+
+        if( $object->getTimewaitTimeout() != '' )
+            return TRUE;
+
+        return FALSE;
+    },
+    'arg' => FALSE
+);
+RQuery::$defaultFilters['service']['timeout-timewait.value']['operators']['>,<,=,!'] = array(
+    'eval' => '!$object->isGroup() && $object->getTimewaitTimeout() !operator! !value!',
+    'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP% 1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
 
 RQuery::$defaultFilters['service']['port.count']['operators']['>,<,=,!'] = array(
     'Function' => function (ServiceRQueryContext $context) {

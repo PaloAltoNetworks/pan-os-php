@@ -159,7 +159,11 @@ class RULE_COMPARE extends UTIL
                 if( isset($tmp2[$key]) )
                     $rule2 = $tmp2[$key];
                 else
-                    derr("SUB: '" . $subName . "' | RULE in jsonfile2 not found: " . $key);
+                {
+                    mwarning("SUB: '" . $subName . "' | RULE in jsonfile2 not found: " . $key, null, false);
+                    continue;
+                }
+
 
 
                 $diff_src = array();

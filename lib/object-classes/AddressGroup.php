@@ -772,6 +772,9 @@ class AddressGroup
 
 
         $retString .= $indent . "Diff for between " . $this->toString() . " vs " . $otherObject->toString() . "\n";
+        $retString .= $indent . "  ' - ' means missing member \n";
+        $retString .= $indent . "  ' + ' means additional member \n";
+        $retString .= $indent . "       in ".$this->_PANC_shortName()."\n";
 
         $diff = $this->getValueDiff($otherObject);
 

@@ -20,7 +20,7 @@
 class SOFTWAREREMOVE extends UTIL
 {
     public $utilType = null;
-
+    public $actions = "display";
 
     public function utilStart()
     {
@@ -57,22 +57,20 @@ class SOFTWAREREMOVE extends UTIL
     
         if( isset(PH::$args['actions']) )
         {
-            $actions = PH::$args['actions'];
-            if( $actions !== "display" && $actions !== "delete" )
+            $this->actions = PH::$args['actions'];
+            if( $this->actions !== "display" && $this->actions !== "delete" )
             {
                 $this->display_error_usage_exit('"actions" argument only support "display" or "delete" ');
             }
         }
-        else
-            $actions = 'display';
     
     
         ########################################################################################################################
     
         $queries['software'] = '&type=op&action=complete&xpath=/operations/request/system/software/install/version';
-        $queries['wildfire'] = '&type=op&action=complete&xpath=/operations/request/wildfire/upgrade/install/file';
         $queries['anti-virus'] = '&type=op&action=complete&xpath=/operations/request/anti-virus/upgrade/install/file';
         $queries['content'] = '&type=op&action=complete&xpath=/operations/request/content/upgrade/install/file';
+        #$queries['wildfire'] = '&type=op&action=complete&xpath=/operations/request/wildfire/upgrade/install/file';
     
         ########################################################################################################################
         $connector->refreshSystemInfos();
@@ -147,8 +145,6 @@ class SOFTWAREREMOVE extends UTIL
 
     public function checkInstallation($connector, $queries)
     {
-        global $actions;
-
         foreach( $queries as $key => $query )
         {
             PH::print_stdout();
@@ -200,7 +196,8 @@ class SOFTWAREREMOVE extends UTIL
                         $version_array = explode(".", $version);
                         $mainSWversion = $version_array[0] . "." . $version_array[1] . ".0";
                     }
-                    if( $actions === 'delete' && strpos($value, $version) === FALSE && ($mainSWversion === "" || strpos($value, $mainSWversion) === FALSE) )
+
+                    if( $this->actions === 'delete' && strpos($value, $version) === FALSE && ($mainSWversion === "" || strpos($value, $mainSWversion) === FALSE) )
                     {
                         PH::enableExceptionSupport();
                         try
@@ -218,6 +215,9 @@ class SOFTWAREREMOVE extends UTIL
                             PH::print_stdout("          ***** API Error occured : " . $e->getMessage());
                         }
                     }
+                    #else
+                        #PH::print_stdout("     * do not delete, why");
+
                 }
             }
         }

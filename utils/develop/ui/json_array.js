@@ -918,6 +918,10 @@ var subjectObject =
                     "has.wrong.network": {
                         "Function": {},
                         "arg": false
+                    },
+                    "netmask.blank32": {
+                        "Function": {},
+                        "arg": false
                     }
                 }
             }
@@ -1901,6 +1905,20 @@ var subjectObject =
     "dhcp": {
         "name": "dhcp",
         "action": {
+            "dhcp-server-reservation": {
+                "name": "dhcp-server-reservation",
+                "MainFunction": {},
+                "args": {
+                    "ip": {
+                        "type": "string",
+                        "default": "false"
+                    },
+                    "mac": {
+                        "type": "string",
+                        "default": "false"
+                    }
+                }
+            },
             "display": {
                 "name": "display",
                 "MainFunction": {}
@@ -3013,6 +3031,16 @@ var subjectObject =
                 "name": "service-Set-AppDefault",
                 "section": "service",
                 "MainFunction": {}
+            },
+            "snat-set-interface": {
+                "name": "SNat-set-interface",
+                "MainFunction": {},
+                "args": {
+                    "SNATInterface": {
+                        "type": "string",
+                        "default": "*nodefault*"
+                    }
+                }
             },
             "src-add": {
                 "name": "src-Add",
@@ -6177,7 +6205,7 @@ var subjectObject =
                     },
                     "replace": {
                         "type": "string",
-                        "default": "*nodefault*"
+                        "default": ""
                     }
                 },
                 "help": ""
@@ -6292,12 +6320,32 @@ var subjectObject =
                     }
                 }
             },
+            "timeout-halfclose-set": {
+                "name": "timeout-halfclose-set",
+                "MainFunction": {},
+                "args": {
+                    "timeoutValue": {
+                        "type": "string",
+                        "default": "*nodefault*"
+                    }
+                }
+            },
             "timeout-inherit": {
                 "name": "timeout-inherit",
                 "MainFunction": {}
             },
             "timeout-set": {
                 "name": "timeout-set",
+                "MainFunction": {},
+                "args": {
+                    "timeoutValue": {
+                        "type": "string",
+                        "default": "*nodefault*"
+                    }
+                }
+            },
+            "timeout-timewait-set": {
+                "name": "timeout-timewait-set",
                 "MainFunction": {},
                 "args": {
                     "timeoutValue": {
@@ -6411,6 +6459,7 @@ var subjectObject =
                     "regex": {
                         "Function": {},
                         "arg": true,
+                        "help": "possible variables to bring in as argument: $$current.name$$ \/ $$protocol$$ \/ $$destinationport$$ \/ $$soruceport$$ \/ $$timeout$$",
                         "ci": {
                             "fString": "(%PROP% \/tcp\/)",
                             "input": "input\/panorama-8.0.xml"
@@ -6704,6 +6753,46 @@ var subjectObject =
                     "is.set": {
                         "Function": {},
                         "arg": false
+                    }
+                }
+            },
+            "timeout-halfclose": {
+                "operators": {
+                    "is.set": {
+                        "Function": {},
+                        "arg": false
+                    }
+                }
+            },
+            "timeout-halfclose.value": {
+                "operators": {
+                    ">,<,=,!": {
+                        "eval": "!$object->isGroup() && $object->getHalfcloseTimeout() !operator! !value!",
+                        "arg": true,
+                        "ci": {
+                            "fString": "(%PROP% 1)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    }
+                }
+            },
+            "timeout-timewait": {
+                "operators": {
+                    "is.set": {
+                        "Function": {},
+                        "arg": false
+                    }
+                }
+            },
+            "timeout-timewait.value": {
+                "operators": {
+                    ">,<,=,!": {
+                        "eval": "!$object->isGroup() && $object->getTimewaitTimeout() !operator! !value!",
+                        "arg": true,
+                        "ci": {
+                            "fString": "(%PROP% 1)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
                     }
                 }
             },

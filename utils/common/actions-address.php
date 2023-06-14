@@ -1539,6 +1539,18 @@ AddressCallContext::$supportedActions[] = array(
                     }
                 }
             }
+            elseif( $object->isAddress() && !$object->isType_TMP() && !!$object->isRegion() )
+            {
+                foreach( $object->tags->getAll() as $tag )
+                {
+                    if( $targetStore->find($tag->name(), null, true ) === null )
+                    {
+                        $string = "this address object has a tag named '{$tag->name()} that does not exist in target location '{$targetLocation}'";
+                        PH::ACTIONstatus( $context, "SKIPPED", $string );
+                        return;
+                    }
+                }
+            }
 
             //validation if upper/lower level is not changed
             $tmplocalSub = $rootObject->findSubSystemByName($localLocation);

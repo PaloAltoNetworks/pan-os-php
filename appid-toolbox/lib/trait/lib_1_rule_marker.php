@@ -33,10 +33,6 @@ trait lib_1_rule_marker
         PH::print_stdout("Listing optional arguments:");
         PH::print_stdout();
 
-
-
-
-
         exit(1);
     }
 

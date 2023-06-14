@@ -72,7 +72,7 @@ __pan-os-php_scripts()
 
 		vendor=('ciscoasa' 'netscreen' 'sonicwall' 'sophos' 'ciscoswitch' 'ciscoisr' 'fortinet' 'srx' 'cp-r80' 'cp' 'cp-beta' 'huawei' 'stonesoft' 'sidewinder')
 
-    arguments_gcp=('type=' 'in=' 'out=' 'cluster=' 'project=' 'tenantid=' 'actions=' )
+    arguments_gcp=('type=' 'in=' 'out=' 'cluster=' 'project=' 'tenantid=' 'actions=' 'region=' )
     arguments_gcp_actions=('grep' 'upload' 'download' 'onboard' 'offboard' )
 
     arguments_xpath=('type=' 'in=' 'filter-nameattribute=' 'filter-node=' 'filter-xpath=' 'display-fullxpath' 'display-nameattribute' 'display-xmlnode' 'display-xmllineno' )

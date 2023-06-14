@@ -863,16 +863,23 @@ class AppStore extends ObjStore
         if( $Obj->isApplicationCustom() )
         {
             $this->apps_custom[$objectName] = $Obj;
+            if( $this->appCustomRoot === null )
+                $this->appCustomRoot = DH::findFirstElementOrCreate("application", $this->owner->xmlroot);
             $this->appCustomRoot->appendChild($Obj->xmlroot);
         }
         elseif( $Obj->isApplicationFilter() )
         {
             $this->app_filters[$objectName] = $Obj;
+            if( $this->appFilterRoot === null )
+                $this->appFilterRoot = DH::findFirstElementOrCreate("application-filter", $this->owner->xmlroot);
             $this->appFilterRoot->appendChild($Obj->xmlroot);
         }
         elseif( $Obj->isApplicationGroup() )
         {
             $this->app_groups[$objectName] = $Obj;
+            if( $this->appGroupRoot === null )
+                $this->appGroupRoot = DH::findFirstElementOrCreate("application-group", $this->owner->xmlroot);
+
             $this->appGroupRoot->appendChild($Obj->xmlroot);
         }
         else

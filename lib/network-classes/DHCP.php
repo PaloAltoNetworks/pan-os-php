@@ -26,7 +26,7 @@ class DHCP
 
     /** @var DHCPStore */
     public $owner;
-
+    public $server_leases = array();
 
     /**
      * @param $name string
@@ -57,6 +57,31 @@ class DHCP
             mwarning( "interface with name: ".$this->name." can not be found for DHCP: ".$this->name." | ".$this->owner->owner->_PANC_shortName(), null, FALSE );
 
         ///todo: update interface list - to correctly show all interfaces
+
+        $tmp_server = DH::findFirstElement("server", $xml);
+        if( $tmp_server !== false )
+        {
+            $tmp_reserved = DH::findFirstElement("reserved", $tmp_server);
+            if( $tmp_reserved !== false )
+            {
+                foreach( $tmp_reserved->childNodes as $entry )
+                {
+                    if( $entry->nodeType != XML_ELEMENT_NODE )
+                        continue;
+
+                    $tmp_IP = DH::findAttribute('name', $entry);
+                    $tmp_mac_xml = DH::findFirstElement("mac", $entry);
+                    if( $tmp_mac_xml !== False )
+                    {
+                        $tmp_mac = $tmp_mac_xml->textContent;
+
+                        $this->server_leases[] = array( 'ip' => $tmp_IP, 'mac' => $tmp_mac );
+                        #PH::print_stdout("   * "."IP: ".$tmp_IP." | mac: ".$tmp_mac);
+                    }
+
+                }
+            }
+        }
     }
 
     /**

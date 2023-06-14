@@ -1352,6 +1352,30 @@ RQuery::$defaultFilters['address']['value']['operators']['has.wrong.network'] = 
     },
     'arg' => false
 );
+RQuery::$defaultFilters['address']['value']['operators']['netmask.blank32'] = Array(
+    'Function' => function(AddressRQueryContext $context )
+    {
+        $object = $context->object;
+
+        if( $object->isGroup() )
+            return null;
+
+        if( $object->isRegion() )
+            return null;
+
+        if( !$object->isType_ipNetmask() )
+            return null;
+
+        $value = $object->getNetworkValue();
+        $netmask = $object->getNetworkMask();
+
+        if( $netmask == '32' )
+            return true;
+
+        return null;
+    },
+    'arg' => false
+);
 
 RQuery::$defaultFilters['address']['description']['operators']['regex'] = array(
     'Function' => function (AddressRQueryContext $context) {
