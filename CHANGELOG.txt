@@ -22,6 +22,7 @@ BUGFIX:
 
 GENERAL:
 * develop f5_bigip.php | improvement - PANOS do not support ServiceGroup description
+* general | dynamic content update to version 8721-8111
 
 
 2.1.7 (20230525)
