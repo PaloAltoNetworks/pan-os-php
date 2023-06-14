@@ -18,6 +18,7 @@ BUGFIX:
 * type=vendor-migration vendor=ciscoasa - bugfix if staticroute destination is using wildcard netmask
 * type=rule ruletype=nat 'actions=snat-set-interface:ethernet1$$2' | bugfix to change config also in offline config mode
 * type=application 'actions=move:DGname' | bugfix if XMLnode for TargetDG is not yet available
+* type=software-remove - bugfix - skip wildfire remove - fix for PHP 8.1
 
 GENERAL:
 * develop f5_bigip.php | improvement - PANOS do not support ServiceGroup description

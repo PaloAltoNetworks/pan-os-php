@@ -189,9 +189,8 @@ class Service
     public function API_setDestPort($newPorts)
     {
         $ret = $this->setDestPort($newPorts);
-        $connector = findConnectorOrDie($this);
-
-        $this->API_sync();
+        if( $ret )
+            $this->API_sync();
 
         return $ret;
     }
@@ -231,9 +230,8 @@ class Service
     public function API_setSourcePort($newPorts)
     {
         $ret = $this->setSourcePort($newPorts);
-        $connector = findConnectorOrDie($this);
-
-        $this->API_sync();
+        if( $ret )
+            $this->API_sync();
 
         return $ret;
     }
@@ -298,8 +296,6 @@ class Service
             }
             if( $newTimeout == 3600 )
             {
-                //default value - clear existing value
-                #return FALSE;
                 $clear = true;
                 $this->_timeout = "";
             }
@@ -321,8 +317,6 @@ class Service
             }
             if( $newTimeout == 120 )
             {
-                //default value - clear existing value
-                #return FALSE;
                 $clear = true;
                 $this->_halfclose_timeout = "";
             }
@@ -343,8 +337,6 @@ class Service
             }
             if( $newTimeout == 15 )
             {
-                //default value - clear existing value
-                #return FALSE;
                 $clear = true;
                 $this->_timewait_timeout = "";
             }
@@ -399,10 +391,7 @@ class Service
     {
         $ret = $this->setTimeout($newTimeout);
         if( $ret )
-        {
-            $connector = findConnectorOrDie($this);
             $this->API_sync();
-        }
 
         return $ret;
     }
@@ -426,10 +415,7 @@ class Service
     {
         $ret = $this->setHalfCloseTimeout($newHalfCloseTimeout);
         if( $ret )
-        {
-            $connector = findConnectorOrDie($this);
             $this->API_sync();
-        }
 
         return $ret;
     }
@@ -453,10 +439,7 @@ class Service
     {
         $ret = $this->setTimeWaitTimeout($newTimeWaitTimeout);
         if( $ret )
-        {
-            $connector = findConnectorOrDie($this);
             $this->API_sync();
-        }
 
         return $ret;
     }
@@ -495,10 +478,7 @@ class Service
     {
         $ret = $this->removeTimeout();
         if( $ret )
-        {
-            $connector = findConnectorOrDie($this);
             $this->API_sync();
-        }
 
         return $ret;
     }
