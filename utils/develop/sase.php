@@ -10,7 +10,8 @@ $supportedArguments = array();
 //PREDEFINED arguments:
 $supportedArguments['in'] = array('niceName' => 'in', 'shortHelp' => 'in=sase-api://tsg_id', 'argDesc' => '[sase-api://tsg_id]');
 $supportedArguments['out'] = array('niceName' => 'out', 'shortHelp' => 'output file to save config after changes. Only required when input is a file. ie: out=save-config.xml', 'argDesc' => '[filename]');
-
+$supportedArguments['filter'] = array('niceName' => 'Filter', 'shortHelp' => "filters objects based on a query. ie: 'filter=((from has external) or (source has privateNet1) and (to has external))'", 'argDesc' => '(field operator [value])');
+$supportedArguments['debugapi'] = array('niceName' => 'DebugAPI', 'shortHelp' => 'prints API calls when they happen');
 
 $fawkes_filename = dirname(__FILE__)."/fawkes_baseconfig.xml";
 
@@ -33,6 +34,16 @@ if( !$util_fawkes->xmlDoc->load($fawkes_filename, XML_PARSE_BIG_LINES) )
 
 $util_fawkes->pan->load_from_domxml($util_fawkes->xmlDoc, XML_PARSE_BIG_LINES);
 
+$filter = "";
+if( isset(PH::$args['filter']) )
+    $filter = PH::$args['filter'];
+$actions = "";
+if( isset(PH::$args['actions']) )
+    $actions = PH::$args['actions'];
+if( isset(PH::$args['debugapi']) )
+{
+    $util_fawkes->debugAPI = TRUE;
+}
 ##########################################
 PanAPIConnector::loadConnectorsFromUserHome();
 $host = str_replace( "tsg_id:", "", $util_fawkes->scope);
@@ -163,9 +174,16 @@ $typeArray = array(
 
 $typeArray = array(
 
+    #"services",
+    #"service-groups"
+
+    "addresses",
+    "address-groups"
+#,
+#    "regions"
 
     //RULES
-    "security-rules"
+    #"security-rules"
 );
 
 /*
@@ -205,6 +223,13 @@ $typeArray = array(
 );
 */
 
+
+#getConfig( $access_token, "candidate" );
+#getConfig( $access_token, "running" );
+#exit();
+
+
+
 foreach( $folderArray as $folder )
 {
     if( $folder === "Shared" )
@@ -228,21 +253,29 @@ foreach( $folderArray as $folder )
 
         if( $resource !== NULL )
         {
-            PH::print_stdout( "|".$folder. " - ".$type);
-            print_r( $resource );
+            if($util_fawkes->debugAPI)
+            {
+                PH::print_stdout( "|".$folder. " - ".$type);
+                print_r( $resource );
+            }
 
             importConfig( $sub, $folder, $type, $resource );
 
-            PH::print_stdout( "------------------------------");
+            if($util_fawkes->debugAPI)
+                PH::print_stdout( "------------------------------");
         }
         else
         {
-            #PH::print_stdout( "|".$folder. " - ".$type ."| empty");
-            #PH::print_stdout( "------------------------------");
+            if($util_fawkes->debugAPI)
+            {
+                PH::print_stdout( "|".$folder. " - ".$type ."| empty");
+                PH::print_stdout( "------------------------------");
+            }
         }
 
         $json_string = json_encode($resource, JSON_PRETTY_PRINT);
-        #print $json_string."\n";
+        if($util_fawkes->debugAPI)
+            print $json_string."\n";
 
         if( strpos( $type, '-rules' ) !== false )
         {
@@ -250,28 +283,93 @@ foreach( $folderArray as $folder )
 
             if( $resource !== NULL )
             {
-                PH::print_stdout( "|".$folder. " - ".$type);
-                print_r( $resource );
+                if($util_fawkes->debugAPI)
+                {
+                    PH::print_stdout( "|".$folder. " - ".$type);
+                    print_r( $resource );
+                }
+
 
                 importConfig( $sub, $folder, $type, $resource );
 
-                PH::print_stdout( "------------------------------");
+                if($util_fawkes->debugAPI)
+                    PH::print_stdout( "------------------------------");
             }
 
             $json_string = json_encode($resource, JSON_PRETTY_PRINT);
         }
     }
 }
+
+
+$util_fawkes->configOutput = "/tmp/test.xml";
+
 $util_fawkes->save_our_work();
 
-
+run_action($util_fawkes, $type, $util_fawkes->configOutput, $actions, $filter );
 
 ####################################################################################
 ####################################################################################
 ####################################################################################
 ####################################################################################
 
+function run_action($config, $type, $inputFile, $actions, $filter)
+{
+    PH::$args = array();
+    PH::$argv = array();
 
+    if( strpos( $type, '-rules' ) !== false )
+    {
+        $type2 = "rule";
+        $argv = array();
+        $argc = array();
+        $PHP_FILE = __FILE__;
+        $argv[] = "blank";
+        $argv[] = "ruletype=security";
+        $argv[] = "location=any";
+        $argv[] = "in=".$inputFile;
+        if( $actions !== "" )
+            $argv[] = "actions=".$actions;
+        if( $filter !== "" )
+            $argv[] = "filter=".$filter;
+
+        $util = new RULEUTIL($type2, $argv, $argc,$PHP_FILE." type=".$type2);
+    }
+
+    if( strpos( $type, 'address' ) !== false )
+    {
+        $type2 = "address";
+        $argv = array();
+        $argc = array();
+        $PHP_FILE = __FILE__;
+        $argv[] = "blank";
+        $argv[] = "location=any";
+        $argv[] = "in=".$inputFile;
+        if( $actions !== "" )
+            $argv[] = "actions=".$actions;
+        if( $filter !== "" )
+            $argv[] = "filter=".$filter;
+
+        $util = new UTIL($type2, $argv, $argc,$PHP_FILE." type=".$type2);
+    }
+
+    if( strpos( $type, 'service' ) !== false )
+    {
+        $type2 = "service";
+        $argv = array();
+        $argc = array();
+        $PHP_FILE = __FILE__;
+        $argv[] = "blank";
+        $argv[] = "location=any";
+        $argv[] = "in=".$inputFile;
+        if( $actions !== "" )
+            $argv[] = "actions=".$actions;
+        if( $filter !== "" )
+            $argv[] = "filter=".$filter;
+
+        $util = new UTIL($type2, $argv, $argc,$PHP_FILE." type=".$type2);
+    }
+}
 
 
 //	step A, B - single call with client credentials as the basic auth header
@@ -313,6 +411,55 @@ curl -d "grant_type=client_credentials&scope=tsg_id:<tsg_id>" \
     return $jsonArray['access_token'];
 }
 
+
+function getConfig($access_token, $configType = "candidate")
+{
+    global $test_api_url;
+
+    $url = $test_api_url;
+    #$url .= "/sse/config/v1/".$type."?folder=".$folder;
+    $url .= "/sse/config/v1/config-versions/".$configType;
+
+
+    $url = str_replace(' ', '%20', $url);
+
+    #if($util_fawkes->debugAPI)
+    #    PH::print_stdout( $url );
+
+    $header = array("Authorization: Bearer {$access_token}");
+
+    $curl = curl_init();
+    curl_setopt_array($curl, array(
+        CURLOPT_URL => $url,
+        CURLOPT_HTTPHEADER => $header,
+        CURLOPT_SSL_VERIFYPEER => false,
+        CURLOPT_RETURNTRANSFER => true
+    ));
+    $response = curl_exec($curl);
+    curl_close($curl);
+
+    $jsonArray = json_decode($response, true);
+
+
+    /*
+    if( $jsonArray !== null
+        && isset( $jsonArray['total'] )
+        && $jsonArray['total'] > ($global_limit - 1)
+        && $jsonArray['total'] > ($runtime * $global_limit)
+    )
+    {
+        $offset = $global_limit * $runtime ;
+        $runtime++;
+        $resource = getResource($access_token, $type, $folder, $global_limit, $prePost, $offset, $runtime);
+
+        foreach( $resource['data'] as $data )
+            $jsonArray['data'][] = $data;
+    }
+    */
+
+    print_r( $jsonArray );
+}
+
 //	step B - with the returned access_token we can make as many calls as we want
 function getResource($access_token, $type = "address", $folder = "Shared", $limit = 200, $prePost = "pre", $offset = 0, $runtime = 1) {
     global $test_api_url;
@@ -330,7 +477,10 @@ function getResource($access_token, $type = "address", $folder = "Shared", $limi
         $url .= "&position=".$prePost;
 
     $url = str_replace(' ', '%20', $url);
-    PH::print_stdout( $url );
+
+    #if($util_fawkes->debugAPI)
+    #    PH::print_stdout( $url );
+
     $header = array("Authorization: Bearer {$access_token}");
 
     $curl = curl_init();
@@ -518,26 +668,32 @@ function importConfig( $sub, $folder, $type, $jsonArray )
         elseif( $type === "application-groups" )
         {
             //pan-os-php has no newApplicationGroup method
+            PH::print_stdout( $type." - not implemented yet" );
         }
         elseif( $type === "application-filters" )
         {
             //pan-os-php has no newApplicationFilters method
+            PH::print_stdout( $type." - not implemented yet" );
         }
         elseif( $type === "regions" )
         {
             //pan-os-php has no newRegion method
+            PH::print_stdout( $type." - not implemented yet" );
         }
         elseif( $type === "applications" )
         {
             //pan-os-php has no newApplication method
+            PH::print_stdout( $type." - not implemented yet" );
         }
         elseif( $type === "hip-objects" )
         {
             //pan-os-php has no newhip-objects method
+            PH::print_stdout( $type." - not implemented yet" );
         }
         elseif( $type === "hip-profiles" )
         {
             //pan-os-php has no newhip-profiles method
+            PH::print_stdout( $type." - not implemented yet" );
         }
         elseif( $type === "security-rules" )
         {
@@ -610,10 +766,6 @@ function importConfig( $sub, $folder, $type, $jsonArray )
                     $tmp_obj = $sub->appStore->findorCreate($obj);
                     $tmp_rule->apps->addApp($tmp_obj);
                 }
-            //log-setting
-            //tag
-            //description
-            //category
             if( isset($object['log-setting']) )
                 $tmp_rule->setLogSetting($object['log-setting']);
             if( isset($object['tag']) )
@@ -631,6 +783,40 @@ function importConfig( $sub, $folder, $type, $jsonArray )
                         continue;
                     $tmp_rule->setUrlCategories($obj);
                 }
+            if( isset($object['disabled']) )
+                if( $object['disabled'] == "true" )
+                    $tmp_rule->setDisabled( true );
+            if( isset($object['source_hip']) )
+                foreach($object['source_hip'] as $obj)
+                {
+                    if( $obj === "any" )
+                        continue;
+                    #$tmp_rule->setHipProfile($obj);
+                }
+            if( isset($object['destination_hip']) )
+                foreach($object['destination_hip'] as $obj)
+                {
+                    if( $obj === "any" )
+                        continue;
+                    //destination-hip not implemented in pan-os-php
+                    #$tmp_rule->setHipProfile($obj);
+                }
+            if( isset($object['profile_setting']['group']) )
+            {
+                foreach( $object['profile_setting']['group'] as $entry )
+                    $tmp_rule->setSecurityProfileGroup( $entry );
+            }
+                    /*
+                    "profile_setting": {
+                        "group": [
+                            "best-practice"
+                        ]
+                    },
+                     */
+        }
+        else
+        {
+            PH::print_stdout( $type." - 2 not implemented yet" );
         }
     }
 }

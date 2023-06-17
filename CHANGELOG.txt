@@ -2,6 +2,8 @@ CHANGELOG
 
 2.1.9
 UTIL:
+* type=key-manager - extend support for new connection method "in=sase-api://"
+* type=address/service/rule/tag/schedule | enable support for actions=display with method "in=sase-api://"
 
 BUGFIX:
 * class Zone.php | bugfix to create XML node "zone" if not yet available during creating of a new Zone
@@ -9,7 +11,7 @@ BUGFIX:
 GENERAL:
 * develop - start sase.php _ first version to use sase-api
 * develop sase.xml | check also post rulebase
-* introduce in=sase-api://TSG_ID - different classes
+* introduce a new connection method "in=sase-api://"
 
 
 2.1.8 (20230614)

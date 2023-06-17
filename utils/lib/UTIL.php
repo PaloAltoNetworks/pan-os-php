@@ -932,9 +932,61 @@ class UTIL
         elseif( $this->configInput['type'] == 'sase-api')
         {
             $this->scope = $this->configInput['connector'];
+
+            if( isset(PH::$args['out']) )
+            {
+                $this->configOutput = PH::$args['out'];
+                if( !is_string($this->configOutput) || strlen($this->configOutput) < 1 )
+                    $this->display_error_usage_exit('"out" argument is not a valid string');
+            }
+
+            ##############################################
+            //- load fawkes base config into $this->xmldoc
+            $fawkes_filename = dirname(__FILE__)."/../develop/fawkes_baseconfig.xml";
+            $this->configType = 'fawkes';
+            $this->pan = new FawkesConf();
+
+            $this->xmlDoc = new DOMDocument();
+            PH::print_stdout( " - Reading XML file from disk... ".$fawkes_filename );
+            if( !$this->xmlDoc->load($fawkes_filename, XML_PARSE_BIG_LINES) )
+                derr("error while reading xml config file");
+
+            PH::print_stdout( " - Loading configuration through PAN-OS-PHP library... " );
+
+            $this->pan->load_from_domxml($this->xmlDoc, XML_PARSE_BIG_LINES);
+
+            ##############################################
+            PanAPIConnector::loadConnectorsFromUserHome();
+            $TSGid = str_replace( "tsg_id:", "", $this->scope);
+
+            $sase_connector =  new PanSaseAPIConnector($TSGid);
+            if( $this->debugAPI )
+                $sase_connector->showApiCalls = TRUE;
+            $sase_connector->findOrCreateConnectorFromHost($TSGid);
+            $sase_connector->getAccessToken();
+
+            $folderArray = PanSaseAPIConnector::$folderArray;
+            foreach( $folderArray as $folder )
+            {
+                if( $folder === "Shared" )
+                    $sub = $this->pan->findContainer( "Prisma Access");
+                else
+                {
+                    $sub = $this->pan->findContainer( $folder);
+                    if( $sub === null )
+                    {
+                        $sub = $this->pan->findDeviceCloud( $folder);
+                        if( $sub === null )
+                            $sub = $this->pan->createDeviceCloud( $folder, "Prisma Access" );
+                    }
+                }
+
+                $sase_connector->loadSaseConfig($folder, $sub, $this->utilType);
+            }
         }
         else
             derr('not supported yet');
+
         if( $this->configInput['type'] !== 'sase-api')
             $this->determineConfigType();
     }
@@ -1188,11 +1240,13 @@ class UTIL
         //
         // load the config
         //
-        PH::print_stdout( " - Loading configuration through PAN-OS-PHP library... " );
+        if( $this->configInput['type'] !== "sase-api" )
+            PH::print_stdout( " - Loading configuration through PAN-OS-PHP library... " );
 
         $this->loadStart();
 
-        $this->pan->load_from_domxml($this->xmlDoc, XML_PARSE_BIG_LINES);
+        if( $this->configInput['type'] !== "sase-api" )
+            $this->pan->load_from_domxml($this->xmlDoc, XML_PARSE_BIG_LINES);
 
         if( isset(PH::$args['outputformatset']) )
         {
