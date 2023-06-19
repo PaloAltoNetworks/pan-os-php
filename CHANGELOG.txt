@@ -5,6 +5,7 @@ UTIL:
 * type=key-manager - extend support for new connection method "in=sase-api://"
 * type=address/service/rule/tag/schedule | enable support for actions=display with method "in=sase-api://"
 * type=rule | introduce 'filter=(group-tag is.regex /VALUE/)'
+* type=tag-merger | extend output why it can not be merged
 
 BUGFIX:
 * class Zone.php | bugfix to create XML node "zone" if not yet available during creating of a new Zone

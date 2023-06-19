@@ -3333,7 +3333,7 @@ class MERGER extends UTIL
                         PH::print_stdout($text);
 
                         if( $this->upperLevelSearch )
-                            $tmpstring = "|->ERROR ancestor: '" . $object->_PANC_shortName() . "' cannot be merged. | ".$text;
+                            $tmpstring = "|->ERROR ancestor: '" . $object->_PANC_shortName() . "  color: '{$object->getColor()}' "."' cannot be merged. | ".$text;
                         else
                             $tmpstring = "|-> ancestor: '" . $object->_PANC_shortName() . "' you did not allow to merged";
                         self::deletedObjectSetRemoved( $index, $tmpstring );
@@ -3705,7 +3705,7 @@ class MERGER extends UTIL
                         PH::print_stdout($text);
 
                         if( $this->upperLevelSearch )
-                            $tmpstring = "|->ERROR ancestor: '" . $object->_PANC_shortName() . "' cannot be merged. | ".$text;
+                            $tmpstring = "|->ERROR ancestor: '" . $object->_PANC_shortName() . "  color: '{$object->getColor()}' "."' cannot be merged. | ".$text;
                         else
                             $tmpstring = "|-> ancestor: '" . $object->_PANC_shortName() . "' you did not allow to merged";
                         self::deletedObjectSetRemoved( $index, $tmpstring );
