@@ -142,10 +142,13 @@ class Region
             mwarning('renaming of TMP object in API is not possible, it was ignored');
             return;
         }
+        $this->setName($newName);
+
         $c = findConnectorOrDie($this);
         $xpath = $this->getXPath();
-        $c->sendRenameRequest($xpath, $newName);
-        $this->setName($newName);
+
+        if( $c->isAPI() )
+            $c->sendRenameRequest($xpath, $newName);
     }
 
     /**

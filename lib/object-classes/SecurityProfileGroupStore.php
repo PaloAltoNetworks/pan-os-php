@@ -271,7 +271,9 @@ class SecurityProfileGroupStore extends ObjStore
         $xpath = $this->getXPath();
         $con = findConnectorOrDie($this);
         $element = $newSecurityProfileGroup->getXmlText_inline();
-        $con->sendSetRequest($xpath, $element);
+
+        if( $con->isAPI() )
+            $con->sendSetRequest($xpath, $element);
 
         return $newSecurityProfileGroup;
     }
@@ -309,7 +311,8 @@ class SecurityProfileGroupStore extends ObjStore
         if( $ret )
         {
             $con = findConnectorOrDie($this);
-            $con->sendDeleteRequest($xpath);
+            if( $con->isAPI() )
+                $con->sendDeleteRequest($xpath);
         }
 
         return $ret;

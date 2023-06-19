@@ -172,7 +172,8 @@ class RuleCallContext extends CallContext
         if( $setString !== null )
         {
             $text = $this->padding . ' - sending API call for SHARED... ';
-            $this->connector->sendSetRequest('/config/shared', $setString);
+            if( $this->connector->isAPI() )
+                $this->connector->sendSetRequest('/config/shared', $setString);
 
             PH::print_stdout( $text );
         }
@@ -180,7 +181,8 @@ class RuleCallContext extends CallContext
         if( $setString !== null )
         {
             $text = $this->padding . ' - sending API call for Device-Groups/VSYS... ';
-            $this->connector->sendSetRequest("/config/devices/entry[@name='localhost.localdomain']", $setString);
+            if( $this->connector->isAPI() )
+                $this->connector->sendSetRequest("/config/devices/entry[@name='localhost.localdomain']", $setString);
 
             PH::print_stdout( $text );
         }
@@ -196,7 +198,8 @@ class RuleCallContext extends CallContext
                 $cmd .= '<ruleuuid>' . $uuid . '</ruleuuid>';
             }
             $cmd .= '</policy-app-usage-data></clear>';
-            $res = $this->connector->sendOpRequest($cmd, TRUE);
+            if( $this->connector->isAPI() )
+                $res = $this->connector->sendOpRequest($cmd, TRUE);
             ///api/?type=op&cmd=<clear><policy-app-usage-data><ruleuuid></ruleuuid></policy-app-usage-data></clear>
         }
         else

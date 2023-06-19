@@ -170,8 +170,8 @@ class TemplateStack
         {
             $con = findConnector($this);
             $xpath = $this->getXPath();
-
-            $con->sendSetRequest($xpath."/templates", "<member>{$newObject->name()}</member>");
+            if( $con->isAPI() )
+                $con->sendSetRequest($xpath."/templates", "<member>{$newObject->name()}</member>");
         }
 
         return $ret;

@@ -820,7 +820,7 @@ function findConnector($object)
 
 /**
  * @param $object
- * @return PanAPIConnector|null
+ * @return PanAPIConnector|PanSaseAPIConnector|null
  */
 function findConnectorOrDie($object)
 {

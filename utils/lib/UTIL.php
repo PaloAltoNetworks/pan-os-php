@@ -931,7 +931,15 @@ class UTIL
         }
         elseif( $this->configInput['type'] == 'sase-api')
         {
-            $this->scope = $this->configInput['connector'];
+            if( $this->debugAPI )
+                $this->configInput['connector']->setShowApiCalls(TRUE);
+            $this->apiMode = TRUE;
+/*
+            $this->configInput['connector']->setUTILtype( $this->utilType );
+            if( !empty(PH::$args['actions']) )
+                $this->configInput['connector']->setUTILaction( PH::$args['actions'] );
+*/
+            $this->scope = $this->configInput['connector']->scope;
 
             if( isset(PH::$args['out']) )
             {
@@ -963,7 +971,6 @@ class UTIL
             if( $this->debugAPI )
                 $sase_connector->showApiCalls = TRUE;
             $sase_connector->findOrCreateConnectorFromHost($TSGid);
-            $sase_connector->getAccessToken();
 
             $folderArray = PanSaseAPIConnector::$folderArray;
             foreach( $folderArray as $folder )
@@ -987,8 +994,7 @@ class UTIL
         else
             derr('not supported yet');
 
-        if( $this->configInput['type'] !== 'sase-api')
-            $this->determineConfigType();
+        $this->determineConfigType();
     }
 
     public function determineConfigType()
@@ -1037,31 +1043,34 @@ class UTIL
         unset($xpathResult);
 
 
-        if( $this->configType == 'panos' )
+        if( $this->configInput['type'] !== 'sase-api')
         {
-            if( isset(PH::$args['loadpanoramapushedconfig']) )
+            if( $this->configType == 'panos' )
             {
-                $inputConnector = $this->configInput['connector'];
+                if( isset(PH::$args['loadpanoramapushedconfig']) )
+                {
+                    $inputConnector = $this->configInput['connector'];
 
-                PH::print_stdout( " - 'loadPanoramaPushedConfig' was requested, downloading it through API..." );
-                $this->pan = $inputConnector->loadPanoramaPushdedConfig( $this->apiTimeoutValue );
+                    PH::print_stdout( " - 'loadPanoramaPushedConfig' was requested, downloading it through API..." );
+                    $this->pan = $inputConnector->loadPanoramaPushdedConfig( $this->apiTimeoutValue );
+                }
+                else
+                    $this->pan = new PANConf();
             }
+            elseif( $this->configType == 'panorama' )
+                $this->pan = new PanoramaConf();
+            elseif( $this->configType == 'fawkes' )
+                $this->pan = new FawkesConf();
+            elseif( $this->configType == 'buckbeak' )
+                $this->pan = new BuckbeakConf();
             else
-                $this->pan = new PANConf();
+                derr( "configType: ".$this->configType." not supported." );
         }
-        elseif( $this->configType == 'panorama' )
-            $this->pan = new PanoramaConf();
-        elseif( $this->configType == 'fawkes' )
-            $this->pan = new FawkesConf();
-        elseif( $this->configType == 'buckbeak' )
-            $this->pan = new BuckbeakConf();
-        else
-            derr( "configType: ".$this->configType." not supported." );
 
         PH::print_stdout( " - Detected platform type is '{$this->configType}'" );
         PH::print_stdout( array( get_class( $this->pan ) ), false, "platform" );
 
-        if( isset($this->configInput['type']) && $this->configInput['type'] == 'api' )
+        if( isset($this->configInput['type']) && ( $this->configInput['type'] == 'api' || $this->configInput['type'] == 'sase-api' ) )
             $this->pan->connector = $this->configInput['connector'];
         // </editor-fold>
     }
@@ -1191,9 +1200,17 @@ class UTIL
                 $context = new CertificateCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries, $this);
 
             $context->baseObject = $this->pan;
-            if( isset($this->configInput['type']) && $this->configInput['type'] == 'api' )
+            if( isset($this->configInput['type'])  )
             {
-                $context->isAPI = TRUE;
+                if( $this->configInput['type'] == 'api' )
+                    $context->isAPI = TRUE;
+                elseif( $this->configInput['type'] == 'sase-api' )
+                {
+                    $context->isAPI = TRUE;
+                    $context->isSaseAPI = TRUE;
+                }
+
+
                 $context->connector = $this->pan->connector;
             }
 
@@ -1615,7 +1632,6 @@ class UTIL
                     $subGroups2 = $this->pan->getSnippets();
                     $subGroups = array_merge( $subGroups, $subGroups2 );
                 }
-
 
                 foreach( $subGroups as $sub )
                 {

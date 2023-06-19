@@ -298,7 +298,8 @@ class Rule
         if( $ret )
         {
             $con = findConnectorOrDie($this);
-            $con->sendDeleteRequest($this->getXPath() . '/target/devices');
+            if( $con->isAPI() )
+                $con->sendDeleteRequest($this->getXPath() . '/target/devices');
         }
 
         return $ret;

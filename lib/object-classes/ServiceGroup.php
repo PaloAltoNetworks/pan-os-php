@@ -185,10 +185,13 @@ class ServiceGroup
      */
     public function API_setName($newName)
     {
+        $this->setName($newName);
+
         $c = findConnectorOrDie($this);
         $xpath = $this->getXPath();
-        $c->sendRenameRequest($xpath, $newName);
-        $this->setName($newName);
+
+        if( $c->isAPI())
+            $c->sendRenameRequest($xpath, $newName);
     }
 
     /**
@@ -244,7 +247,8 @@ class ServiceGroup
             if( $this->owner->owner->version >= 60 )
                 $xpath .= '/members';
 
-            $con->sendDeleteRequest($xpath . "/member[text()='{$objectToRemove->name()}']");
+            if( $con->isAPI())
+                $con->sendDeleteRequest($xpath . "/member[text()='{$objectToRemove->name()}']");
 
             return $ret;
         }
@@ -270,7 +274,8 @@ class ServiceGroup
             if( $this->owner->owner->version >= 60 )
                 $xpath .= '/members';
 
-            $con->sendSetRequest($xpath, "<member>{$newObject->name()}</member>");
+            if( $con->isAPI())
+                $con->sendSetRequest($xpath, "<member>{$newObject->name()}</member>");
         }
 
         return $ret;

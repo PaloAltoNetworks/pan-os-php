@@ -361,7 +361,8 @@ class AddressGroup
             if( $this->owner->owner->version >= 60 )
                 $xpath .= '/static';
 
-            $con->sendSetRequest($xpath, "<member>{$newObject->name()}</member>");
+            if( $con->isAPI() )
+                $con->sendSetRequest($xpath, "<member>{$newObject->name()}</member>");
         }
 
         return $ret;
@@ -412,7 +413,8 @@ class AddressGroup
             if( $this->owner->owner->version >= 60 )
                 $xpath .= '/static';
 
-            $con->sendDeleteRequest($xpath . "/member[text()='{$objectToRemove->name()}']");
+            if( $con->isAPI() )
+                $con->sendDeleteRequest($xpath . "/member[text()='{$objectToRemove->name()}']");
 
             return $ret;
         }
@@ -668,10 +670,13 @@ class AddressGroup
      */
     public function API_setName($newName)
     {
+        $this->setName($newName);
+
         $c = findConnectorOrDie($this);
         $xpath = $this->getXPath();
-        $c->sendRenameRequest($xpath, $newName);
-        $this->setName($newName);
+
+        if( $c->isAPI() )
+            $c->sendRenameRequest($xpath, $newName);
     }
 
     /**

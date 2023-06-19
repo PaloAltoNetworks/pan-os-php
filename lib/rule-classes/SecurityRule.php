@@ -385,7 +385,8 @@ class SecurityRule extends RuleWithUserID
             $xpath = $this->getXPath() . '/rule-type';
             $con = findConnectorOrDie($this);
 
-            $con->sendEditRequest($xpath, "<rule-type>{$this->type()}</rule-type>");
+            if( $con->isAPI() )
+                $con->sendEditRequest($xpath, "<rule-type>{$this->type()}</rule-type>");
         }
 
         return $ret;
@@ -592,7 +593,8 @@ class SecurityRule extends RuleWithUserID
             $xpath = $this->getXPath() . '/profile-setting';
             $con = findConnectorOrDie($this);
 
-            $con->sendDeleteRequest($xpath);
+            if( $con->isAPI() )
+                $con->sendDeleteRequest($xpath);
         }
 
         return $ret;
@@ -619,7 +621,8 @@ class SecurityRule extends RuleWithUserID
             $xpath = $this->getXPath() . '/profile-setting';
             $con = findConnectorOrDie($this);
 
-            $con->sendEditRequest($xpath, '<profile-setting><group><member>' . $newgroup . '</member></group></profile-setting>');
+            if( $con->isAPI() )
+                $con->sendEditRequest($xpath, '<profile-setting><group><member>' . $newgroup . '</member></group></profile-setting>');
         }
 
         return $ret;
@@ -923,7 +926,9 @@ class SecurityRule extends RuleWithUserID
 
         $domNode = DH::findFirstElementOrDie('action', $this->xmlroot);
         $connector = findConnectorOrDie($this);
-        $connector->sendSetRequest($this->getXPath(), '<action>'.$domNode->textContent.'</action>');
+
+        if( $con->isAPI() )
+            $connector->sendSetRequest($this->getXPath(), '<action>'.$domNode->textContent.'</action>');
     }
 
 
@@ -994,7 +999,9 @@ class SecurityRule extends RuleWithUserID
             return FALSE;
 
         $con = findConnectorOrDie($this);
-        $con->sendSetRequest($this->getXPath(), "<log-end>" . boolYesNo($yes) . "</log-end>");
+
+        if( $con->isAPI() )
+            $con->sendSetRequest($this->getXPath(), "<log-end>" . boolYesNo($yes) . "</log-end>");
 
         return TRUE;
     }
@@ -1010,7 +1017,9 @@ class SecurityRule extends RuleWithUserID
             return FALSE;
 
         $con = findConnectorOrDie($this);
-        $con->sendSetRequest($this->getXPath(), "<log-start>" . boolYesNo($yes) . "</log-start>");
+
+        if( $con->isAPI() )
+            $con->sendSetRequest($this->getXPath(), "<log-start>" . boolYesNo($yes) . "</log-start>");
 
         return TRUE;
     }
@@ -1744,9 +1753,11 @@ class SecurityRule extends RuleWithUserID
             $xpath = $this->getXPath() . '/option/disable-server-response-inspection';
             $con = findConnectorOrDie($this);
             if( $this->dsri )
-                $con->sendEditRequest($xpath, '<disable-server-response-inspection>yes</disable-server-response-inspection>');
+                if( $con->isAPI() )
+                    $con->sendEditRequest($xpath, '<disable-server-response-inspection>yes</disable-server-response-inspection>');
             else
-                $con->sendEditRequest($xpath, '<disable-server-response-inspection>no</disable-server-response-inspection>');
+                if( $con->isAPI() )
+                    $con->sendEditRequest($xpath, '<disable-server-response-inspection>no</disable-server-response-inspection>');
         }
 
         return $ret;
@@ -1797,7 +1808,8 @@ class SecurityRule extends RuleWithUserID
             $xpath = $this->getXPath() . '/'.$hipprofilevariable;
             $con = findConnectorOrDie($this);
 
-            $con->sendEditRequest($xpath, '<'.$hipprofilevariable.'><member>' . $hipProfile . '</member></'.$hipprofilevariable.'>');
+            if( $con->isAPI() )
+                $con->sendEditRequest($xpath, '<'.$hipprofilevariable.'><member>' . $hipProfile . '</member></'.$hipprofilevariable.'>');
         }
 
         return $ret;
@@ -1884,9 +1896,11 @@ class SecurityRule extends RuleWithUserID
             $con = findConnectorOrDie($this);
 
             if( empty($this->qosMarking) )
-                $con->sendDeleteRequest($xpath);
+                if( $con->isAPI() )
+                    $con->sendDeleteRequest($xpath);
             else
-                $con->sendSetRequest($this->getXPath(), '<qos><marking><' . $arg1 . '>' . $arg2 . '</' . $arg1 . '></marking></qos>');
+                if( $con->isAPI() )
+                    $con->sendSetRequest($this->getXPath(), '<qos><marking><' . $arg1 . '>' . $arg2 . '</' . $arg1 . '></marking></qos>');
 
         }
 
@@ -1924,7 +1938,8 @@ class SecurityRule extends RuleWithUserID
             $xpath = $this->getXPath() . '/qos';
             $con = findConnectorOrDie($this);
 
-            $con->sendDeleteRequest($xpath);
+            if( $con->isAPI() )
+                $con->sendDeleteRequest($xpath);
         }
 
         return $ret;

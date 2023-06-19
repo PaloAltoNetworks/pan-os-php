@@ -1163,6 +1163,16 @@ ServiceCallContext::$supportedActions[] = array(
         PH::$JSON_TMP['sub']['object'][$object->name()]['name'] = $object->name();
         PH::$JSON_TMP['sub']['object'][$object->name()]['type'] = get_class($object);
 
+        if( $object->saseID !== null )
+        {
+            PH::$JSON_TMP['sub']['object'][$object->name()]['id'] = $object->getSaseID();
+            $saseID = "Sase-ID: '" . $object->getSaseID()."'";
+            PH::print_stdout( $context->padding . "* ".$saseID );
+
+        }
+        else
+            $saseID = "";
+
         if( $object->isGroup() )
         {
             PH::print_stdout( "     * " . get_class($object) . " '{$object->name()}'" );

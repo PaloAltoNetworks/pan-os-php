@@ -186,7 +186,10 @@ class TagStore extends ObjStore
             $xpath = $this->getXPath();
             $con = findConnectorOrDie($this);
             $element = $newTag->getXmlText_inline();
-            $con->sendSetRequest($xpath, $element);
+            if( $con->isAPI())
+                $con->sendSetRequest($xpath, $element);
+            elseif( $con->isSaseAPI() )
+                $con->sendCreateRequest($newTag);
         }
 
         return $newTag;
@@ -229,7 +232,10 @@ class TagStore extends ObjStore
         if( $ret && !$tag->isTmp() )
         {
             $con = findConnectorOrDie($this);
-            $con->sendDeleteRequest($xpath);
+            if( $con->isAPI())
+                $con->sendDeleteRequest($xpath);
+            elseif( $con->isSaseAPI())
+                $con->sendDELETERequest($tag);
         }
 
         return $ret;

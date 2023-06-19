@@ -97,11 +97,13 @@ trait RulewithLogging
 
         if( $this->logSetting === FALSE )
         {
-            $con->sendDeleteRequest($this->getXPath() . '/log-setting');
+            if( $con->isAPI() )
+                $con->sendDeleteRequest($this->getXPath() . '/log-setting');
         }
         else
         {
-            $con->sendSetRequest($this->getXPath(), "<log-setting>$newLogSetting</log-setting>");
+            if( $con->isAPI() )
+                $con->sendSetRequest($this->getXPath(), "<log-setting>$newLogSetting</log-setting>");
         }
 
         return TRUE;

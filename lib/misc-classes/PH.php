@@ -442,7 +442,10 @@ class PH
                 $host = substr($str, strlen('sase-api://'));
                 $ret['status'] = 'ok';
                 $ret['type'] = 'sase-api';
-                $ret['connector'] = $host;
+
+                $connector = new PanSaseAPIConnector($host);
+                $connector->findOrCreateConnectorFromHost($host);
+                $ret['connector'] = $connector;
             }
             else
             {
@@ -782,7 +785,7 @@ class PH
         while( TRUE )
         {
             $class = get_class($panConfObject);
-            if( $class == 'PANConf' || $class == 'PanoramaConf' )
+            if( $class == 'PANConf' || $class == 'PanoramaConf' || $class == "FawkesConf" || $class == "BuckbeakConf" )
                 return $panConfObject;
 
             if( isset($panConfObject->owner) && is_object($panConfObject->owner) )
@@ -792,7 +795,7 @@ class PH
 
         }
 
-        derr("cannot find PanoramaConf or PANConf object");
+        derr("cannot find PanoramaConf or PANConf | Fawkesconf or BuckbeackConf object");
     }
 
     /**

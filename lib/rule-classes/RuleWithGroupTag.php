@@ -143,10 +143,11 @@ trait RuleWithGroupTag
             $con = findConnectorOrDie($this);
 
             if( !is_object( $this->grouptag )  )
-                $con->sendDeleteRequest($xpath);
+                if( $con->isAPI() )
+                    $con->sendDeleteRequest($xpath);
             else
-                $con->sendSetRequest($this->getXPath(), '<group-tag>' . htmlspecialchars($this->grouptag->name()) . '</group-tag>');
-
+                if( $con->isAPI() )
+                    $con->sendSetRequest($this->getXPath(), '<group-tag>' . htmlspecialchars($this->grouptag->name()) . '</group-tag>');
         }
 
         return $ret;
@@ -184,7 +185,8 @@ trait RuleWithGroupTag
             $xpath = $this->getXPath() . '/group-tag';
             $con = findConnectorOrDie($this);
 
-            $con->sendDeleteRequest($xpath);
+            if( $con->isAPI() )
+                $con->sendDeleteRequest($xpath);
         }
 
         return $ret;

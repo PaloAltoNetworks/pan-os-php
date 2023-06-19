@@ -94,7 +94,8 @@ class AddressRuleContainer extends ObjRuleContainer
             {
                 $xpath = $this->owner->getXPath() . '/source-translation';
                 $sourceNatRoot = DH::findFirstElementOrDie('source-translation', $this->owner->xmlroot);
-                $con->sendEditRequest($xpath, DH::dom_to_xml($sourceNatRoot, -1, FALSE));
+                if( $con->isAPI() )
+                    $con->sendEditRequest($xpath, DH::dom_to_xml($sourceNatRoot, -1, FALSE));
             }
             else
             {
@@ -102,10 +103,12 @@ class AddressRuleContainer extends ObjRuleContainer
 
                 if( count($this->o) == 1 )
                 {
-                    $con->sendEditRequest($xpath, $this->getXmlText_inline());
+                    if( $con->isAPI() )
+                        $con->sendEditRequest($xpath, $this->getXmlText_inline());
                 }
                 else
-                    $con->sendSetRequest($xpath, "<member>{$Obj->name()}</member>");
+                    if( $con->isAPI() )
+                        $con->sendSetRequest($xpath, "<member>{$Obj->name()}</member>");
             }
 
             return TRUE;
@@ -160,7 +163,8 @@ class AddressRuleContainer extends ObjRuleContainer
             {
                 $xpath = $this->owner->getXPath() . '/source-translation';
                 $sourceNatRoot = DH::findFirstElementOrDie('source-translation', $this->owner->xmlroot);
-                $con->sendEditRequest($xpath, DH::dom_to_xml($sourceNatRoot, -1, FALSE));
+                if( $con->isAPI() )
+                    $con->sendEditRequest($xpath, DH::dom_to_xml($sourceNatRoot, -1, FALSE));
             }
             else
             {
@@ -168,12 +172,14 @@ class AddressRuleContainer extends ObjRuleContainer
 
                 if( count($this->o) == 0 )
                 {
-                    $con->sendEditRequest($xpath, $this->getXmlText_inline());
+                    if( $con->isAPI() )
+                        $con->sendEditRequest($xpath, $this->getXmlText_inline());
                     return TRUE;
                 }
 
                 $xpath = $xpath . "/member[text()='" . $Obj->name() . "']";
-                $con->sendDeleteRequest($xpath);
+                if( $con->isAPI() )
+                    $con->sendDeleteRequest($xpath);
             }
 
             return TRUE;
@@ -187,19 +193,24 @@ class AddressRuleContainer extends ObjRuleContainer
     {
         $con = findConnectorOrDie($this);
 
-        if( $this->name == 'snathosts' )
+        if( $con->isAPI() )
         {
-            $xpath = $this->owner->getXPath() . '/source-translation';
-            $sourceNatRoot = DH::findFirstElementOrDie('source-translation', $this->owner->xmlroot);
-            $con->sendEditRequest($xpath, DH::dom_to_xml($sourceNatRoot, -1, FALSE));
+            if( $this->name == 'snathosts' )
+            {
+                $xpath = $this->owner->getXPath() . '/source-translation';
+                $sourceNatRoot = DH::findFirstElementOrDie('source-translation', $this->owner->xmlroot);
+                if( $con->isAPI() )
+                    $con->sendEditRequest($xpath, DH::dom_to_xml($sourceNatRoot, -1, FALSE));
+            }
+            else
+            {
+                $xpath = &$this->getXPath();
+                if( $con->isAPI() )
+                    $con->sendEditRequest($xpath, $this->getXmlText_inline());
+            }
         }
-        else
-        {
-            $xpath = &$this->getXPath();
-            $con->sendEditRequest($xpath, $this->getXmlText_inline());
-        }
-
-
+        elseif( $con->isSaseAPI() )
+            $con->sendPUTRequest($this);
     }
 
     public function setAny()
@@ -465,8 +476,11 @@ class AddressRuleContainer extends ObjRuleContainer
         $xpath = &$this->getXPath();
         $con = findConnectorOrDie($this);
 
-        $con->sendDeleteRequest($xpath);
-        $con->sendSetRequest($xpath, '<member>any</member>');
+        if( $con->isAPI() )
+        {
+            $con->sendDeleteRequest($xpath);
+            $con->sendSetRequest($xpath, '<member>any</member>');
+        }
     }
 
 

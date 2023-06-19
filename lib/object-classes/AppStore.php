@@ -911,7 +911,8 @@ class AppStore extends ObjStore
         if( $ret && !$s->isTmp() )
         {
             $con = findConnectorOrDie($this);
-            $con->sendDeleteRequest($xpath);
+            if( $con->isAPI() )
+                $con->sendDeleteRequest($xpath);
         }
 
         return $ret;

@@ -558,7 +558,8 @@ class SecurityProfileStore extends ObjStore
         if( $ret )
         {
             $con = findConnectorOrDie($this);
-            $con->sendDeleteRequest($xpath);
+            if( $con->isAPI() )
+                $con->sendDeleteRequest($xpath);
         }
 
         return $ret;

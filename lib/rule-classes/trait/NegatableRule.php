@@ -131,7 +131,8 @@ trait NegatableRule
         if( $ret )
         {
             $con = findConnectorOrDie($this);
-            $con->sendSetRequest($this->getXPath(), '<negate-source>' . boolYesNo($yes) . '</negate-source>');
+            if( $con->isAPI() )
+                $con->sendSetRequest($this->getXPath(), '<negate-source>' . boolYesNo($yes) . '</negate-source>');
         }
 
         return $ret;
@@ -148,7 +149,8 @@ trait NegatableRule
         if( $ret )
         {
             $con = findConnectorOrDie($this);
-            $con->sendSetRequest($this->getXPath(), '<negate-destination>' . boolYesNo($yes) . '</negate-destination>');
+            if( $con->isAPI() )
+                $con->sendSetRequest($this->getXPath(), '<negate-destination>' . boolYesNo($yes) . '</negate-destination>');
         }
 
         return $ret;

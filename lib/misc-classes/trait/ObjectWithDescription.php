@@ -89,10 +89,19 @@ trait ObjectWithDescription
             $xpath = $this->getXPath() . '/' . $tagName;
             $con = findConnectorOrDie($this);
 
-            if( strlen($this->_description) < 1 )
-                $con->sendDeleteRequest($xpath);
-            else
-                $con->sendSetRequest($this->getXPath(), '<' . $tagName . '>' . htmlspecialchars($this->_description) . '</' . $tagName . '>');
+            if( $con->isAPI() )
+            {
+                /** @var PanAPIConnector $con */
+                if( strlen($this->_description) < 1 )
+                        $con->sendDeleteRequest($xpath);
+                else
+                    $con->sendSetRequest($this->getXPath(), '<' . $tagName . '>' . htmlspecialchars($this->_description) . '</' . $tagName . '>');
+            }
+            elseif( $con->isSaseAPI() )
+            {
+                /** @var PanSaseAPIConnector $con */
+                $con->sendPUTRequest($this);
+            }
 
         }
 

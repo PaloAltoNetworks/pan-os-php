@@ -104,6 +104,16 @@ class PanAPIConnector
     private $auditComment = null;
 
 
+    public function isSaseAPI()
+    {
+        return TRUE;
+    }
+
+    public function isAPI()
+    {
+        return FALSE;
+    }
+
     /**
      * @param bool $force Force refresh instead of using cache
      * @throws Exception

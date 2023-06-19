@@ -30,6 +30,7 @@ class CallContext
     public $actionRef;
 
     public $isAPI = FALSE;
+    public $isSaseAPI = FALSE;
     public $projectFolder = null;
 
     /** @var  $baseObject PANConf|PanoramaConf */
@@ -76,8 +77,14 @@ class CallContext
         $this->object = $object;
 
         $name = $object->name();
-
-        $tmp_txt = "   - object '" . PH::boldText($name) . "' passing through Action='{$this->actionRef['name']}'";
+        $saseID = "";
+        if( $object->getSaseID() !== null )
+        #if( $object->saseID !== null )
+        {
+            PH::$JSON_TMP['sub']['object'][$object->name()]['id'] = $object->getSaseID();
+            $saseID = "Sase-ID: '" . $object->getSaseID()."'";
+        }
+        $tmp_txt = "   - object '" . PH::boldText($name) . "' ".$saseID." passing through Action='{$this->actionRef['name']}'";
 
         PH::$JSON_TMP['sub']['object'][$name]['name'] = $name;
         PH::$JSON_TMP['sub']['object'][$name]['actions'][$this->actionRef['name']]['name'] = $this->actionRef['name'];
