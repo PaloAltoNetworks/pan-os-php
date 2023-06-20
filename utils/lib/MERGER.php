@@ -189,7 +189,7 @@ class MERGER extends UTIL
                         $parentStore = $findLocation->parentDeviceGroup->addressStore;
                     elseif( ($pan->isFawkes() || $pan->isBuckbeak()) && isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
                         $parentStore = $findLocation->parentContainer->addressStore;
-                    else
+                    elseif( (!$pan->isFawkes() && !$pan->isBuckbeak()) )
                         $parentStore = $findLocation->owner->addressStore;
                 }
                 elseif( $this->utilType == "service-merger" || $this->utilType == "servicegroup-merger" )
@@ -200,7 +200,7 @@ class MERGER extends UTIL
                         $parentStore = $findLocation->parentDeviceGroup->serviceStore;
                     elseif( ($pan->isFawkes() || $pan->isBuckbeak()) && isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
                         $parentStore = $findLocation->parentContainer->serviceStore;
-                    else
+                    elseif( (!$pan->isFawkes() && !$pan->isBuckbeak()) )
                         $parentStore = $findLocation->owner->serviceStore;
                 }
                 elseif( $this->utilType == "tag-merger" )
@@ -211,11 +211,11 @@ class MERGER extends UTIL
                         $parentStore = $findLocation->parentDeviceGroup->tagStore;
                     elseif( ($pan->isFawkes() || $pan->isBuckbeak()) && isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
                         $parentStore = $findLocation->parentContainer->tagStore;
-                    else
+                    elseif( (!$pan->isFawkes() && !$pan->isBuckbeak()) )
                         $parentStore = $findLocation->owner->tagStore;
                 }
 
-                if( get_class( $findLocation->owner ) == "FawkesConf" )
+                if( get_class( $findLocation->owner ) == "FawkesConf" || get_class( $findLocation->owner ) == "BuckbeakConf" )
                     $parentStore = null;
                 
 

@@ -219,10 +219,36 @@ class PanSaseAPIConnector
             $this->typeArray[] = "address-groups";
             $this->typeArray[] = "regions";
         }
+        elseif( $utilType == "address-merger" )
+        {
+            $this->typeArray[] = "addresses";
+            $this->typeArray[] = "address-groups";
+            $this->typeArray[] = "regions";
+            $this->typeArray[] = "security-rules";
+        }
+        elseif( $utilType == "addressgroup-merger" )
+        {
+            $this->typeArray[] = "addresses";
+            $this->typeArray[] = "address-groups";
+            $this->typeArray[] = "regions";
+            $this->typeArray[] = "security-rules";
+        }
         elseif( $utilType == "service" )
         {
             $this->typeArray[] = "services";
             $this->typeArray[] = "service-groups";
+        }
+        elseif( $utilType == "service-merger" )
+        {
+            $this->typeArray[] = "services";
+            $this->typeArray[] = "service-groups";
+            $this->typeArray[] = "security-rules";
+        }
+        elseif( $utilType == "servicegroup-merger" )
+        {
+            $this->typeArray[] = "services";
+            $this->typeArray[] = "service-groups";
+            $this->typeArray[] = "security-rules";
         }
         elseif( $utilType == "rule" )
         {
@@ -235,6 +261,17 @@ class PanSaseAPIConnector
         elseif( $utilType == "tag" )
         {
             $this->typeArray[] = "tags";
+        }
+        elseif( $utilType == "tag-merger" )
+        {
+            $this->typeArray[] = "tags";
+            $this->typeArray[] = "addresses";
+            $this->typeArray[] = "address-groups";
+            $this->typeArray[] = "regions";
+            $this->typeArray[] = "security-rules";
+            $this->typeArray[] = "services";
+            $this->typeArray[] = "service-groups";
+            $this->typeArray[] = "security-rules";
         }
         elseif( $utilType == "schedule" )
         {
