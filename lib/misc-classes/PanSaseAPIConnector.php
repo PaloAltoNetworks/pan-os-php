@@ -215,12 +215,15 @@ class PanSaseAPIConnector
         $this->typeArray = array();
         if( $utilType == "address" )
         {
+            $this->typeArray[] = "tags";
             $this->typeArray[] = "addresses";
             $this->typeArray[] = "address-groups";
             $this->typeArray[] = "regions";
+            $this->typeArray[] = "security-rules";
         }
         elseif( $utilType == "address-merger" )
         {
+            $this->typeArray[] = "tags";
             $this->typeArray[] = "addresses";
             $this->typeArray[] = "address-groups";
             $this->typeArray[] = "regions";
@@ -228,6 +231,7 @@ class PanSaseAPIConnector
         }
         elseif( $utilType == "addressgroup-merger" )
         {
+            $this->typeArray[] = "tags";
             $this->typeArray[] = "addresses";
             $this->typeArray[] = "address-groups";
             $this->typeArray[] = "regions";
@@ -235,23 +239,34 @@ class PanSaseAPIConnector
         }
         elseif( $utilType == "service" )
         {
+            $this->typeArray[] = "tags";
             $this->typeArray[] = "services";
             $this->typeArray[] = "service-groups";
+            $this->typeArray[] = "security-rules";
         }
         elseif( $utilType == "service-merger" )
         {
+            $this->typeArray[] = "tags";
             $this->typeArray[] = "services";
             $this->typeArray[] = "service-groups";
             $this->typeArray[] = "security-rules";
         }
         elseif( $utilType == "servicegroup-merger" )
         {
+            $this->typeArray[] = "tags";
             $this->typeArray[] = "services";
             $this->typeArray[] = "service-groups";
             $this->typeArray[] = "security-rules";
         }
         elseif( $utilType == "rule" )
         {
+            $this->typeArray[] = "tags";
+            $this->typeArray[] = "addresses";
+            $this->typeArray[] = "address-groups";
+            $this->typeArray[] = "regions";
+
+            $this->typeArray[] = "services";
+            $this->typeArray[] = "service-groups";
             $this->typeArray[] = "security-rules";
             #$this->typeArray[] = "authentication-rules"; //problems reading config also in Shared
             #$this->typeArray[] = "qos-policy-rules"; // Access denied
@@ -261,6 +276,13 @@ class PanSaseAPIConnector
         elseif( $utilType == "tag" )
         {
             $this->typeArray[] = "tags";
+            $this->typeArray[] = "addresses";
+            $this->typeArray[] = "address-groups";
+            $this->typeArray[] = "regions";
+
+            $this->typeArray[] = "services";
+            $this->typeArray[] = "service-groups";
+            $this->typeArray[] = "security-rules";
         }
         elseif( $utilType == "tag-merger" )
         {
@@ -268,7 +290,7 @@ class PanSaseAPIConnector
             $this->typeArray[] = "addresses";
             $this->typeArray[] = "address-groups";
             $this->typeArray[] = "regions";
-            $this->typeArray[] = "security-rules";
+
             $this->typeArray[] = "services";
             $this->typeArray[] = "service-groups";
             $this->typeArray[] = "security-rules";
