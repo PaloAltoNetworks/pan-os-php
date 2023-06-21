@@ -11,6 +11,7 @@ UTIL:
 
 BUGFIX:
 * class Zone.php | bugfix to create XML node "zone" if not yet available during creating of a new Zone
+* type=address-merger | bugfix if overwritten object has not same value
 
 GENERAL:
 * develop - start sase.php _ first version to use sase-api
