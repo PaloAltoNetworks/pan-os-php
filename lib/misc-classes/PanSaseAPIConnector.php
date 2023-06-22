@@ -43,7 +43,7 @@ class PanSaseAPIConnector
     public $url_api = "https://api.sase.paloaltonetworks.com";
 
     static public $folderArray = array(
-        #"All",
+        "All",
         "Shared",
         "Mobile Users",
         "Remote Networks",
@@ -74,6 +74,11 @@ class PanSaseAPIConnector
             $test = explode("%", $key);
             $this->client_id = $test[0];
             $this->client_secret = $test[1];
+        }
+        if( PH::$saseQAapi )
+        {
+            $this->url_token = "https://auth.qa.appsvc.paloaltonetworks.com/am/oauth2/access_token";
+            $this->url_api = "https://qa.api.sase.paloaltonetworks.com";
         }
     }
 
@@ -190,6 +195,8 @@ class PanSaseAPIConnector
         {
             if( PH::$displayCurlRequest )
             {
+                print $this->url_token."?".$content."\n";
+                print "content: '".$content."'\n";
                 curl_setopt($this->_curl_handle, CURLOPT_FOLLOWLOCATION, TRUE);
                 curl_setopt($this->_curl_handle, CURLOPT_VERBOSE, TRUE);
             }
@@ -205,7 +212,11 @@ class PanSaseAPIConnector
 
         $jsonArray = json_decode($response, TRUE);
         if( !isset($jsonArray['access_token']) )
+        {
+            print_r($jsonArray);
             derr( "problem with SASE API connection - not possible to get 'access_token'", null, FALSE );
+        }
+
 
         $this->access_token = $jsonArray['access_token'];
     }
@@ -689,8 +700,8 @@ class PanSaseAPIConnector
             elseif( $type === "security-rules" )
             {
                 $tmp_rule = null;
-                $position = $object['position'];
-                if( $position === "post" )
+
+                if( isset($object['position']) && $object['position'] === "post" )
                     $tmp_rule = $sub->securityRules->newSecurityRule($object['name'], TRUE);
                 else
                     $tmp_rule = $sub->securityRules->newSecurityRule($object['name']);
@@ -805,7 +816,8 @@ class PanSaseAPIConnector
                 },
                  */
 
-                $tmp_rule->setSaseID( $object['id'] );
+                if( isset($object['id']) )
+                    $tmp_rule->setSaseID( $object['id'] );
             }
             else
             {

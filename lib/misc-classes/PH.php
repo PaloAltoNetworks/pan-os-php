@@ -123,6 +123,14 @@ class PH
                     $argc--;
                 continue;
             }
+            elseif( $arg == 'shadow-saseapiqa' )
+            {
+                PH::$saseQAapi = TRUE;
+                unset(PH::$argv[$argIndex]);
+                if( !isset( $_SERVER['REQUEST_METHOD'] ) )
+                    $argc--;
+                continue;
+            }
         }
         unset($argIndex);
         unset($arg);
@@ -155,6 +163,8 @@ class PH
     public static $saveAPIkey = TRUE;
 
     public static $displayCurlRequest = FALSE;
+
+    public static $saseQAapi = FALSE;
 
     public static $shadow_reducexml = FALSE;
 

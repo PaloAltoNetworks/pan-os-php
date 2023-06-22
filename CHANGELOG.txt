@@ -19,6 +19,7 @@ GENERAL:
 * develop - start sase.php _ first version to use sase-api
 * develop sase.xml | check also post rulebase
 * introduce a new connection method "in=sase-api://"
+* general | introduce argument shadow-saseapiqa for in=sase-api://
 
 
 2.1.8 (20230614)
