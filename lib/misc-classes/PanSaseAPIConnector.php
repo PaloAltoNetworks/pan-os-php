@@ -207,13 +207,19 @@ class PanSaseAPIConnector
         $response = curl_exec($this->_curl_handle);
 
         if( empty($response) )
-            derr("something wwent wrong - check internet connection", null, FALSE);
+            derr("something went wrong - check internet connection", null, FALSE);
 
 
         $jsonArray = json_decode($response, TRUE);
         if( !isset($jsonArray['access_token']) )
         {
-            print_r($jsonArray);
+            if( isset($jsonArray['error']) )
+            {
+                PH::print_stdout( );
+                PH::print_stdout( PH::boldText("ERROR: " .$jsonArray['error'] ) );
+                PH::print_stdout( "if your tenant: ".$this->scope." is NOT running in production environment this is expected | for QA environment use additioal argument 'shadow-saseapiqa'" );
+            }
+
             derr( "problem with SASE API connection - not possible to get 'access_token'", null, FALSE );
         }
 
@@ -842,7 +848,7 @@ class PanSaseAPIConnector
 
     public function getDataFromObject( $object )
     {
-        print get_class($object);
+        #print get_class($object);
         $bodyArray = array();
         if( get_class( $object ) == "Address" )
         {
@@ -887,6 +893,12 @@ class PanSaseAPIConnector
             $bodyArray['comments'] = $object->getComments();
             $bodyArray['name'] = $object->name();
             $bodyArray['folder'] = $object->owner->owner->name();
+
+            $color = $object->getColor();
+            $color = ucwords($color);
+            if( $color === "dark green" )
+               $color = "Olive";
+            $bodyArray['color'] = $color;
 
             return $bodyArray;
         }

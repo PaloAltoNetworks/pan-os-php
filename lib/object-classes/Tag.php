@@ -35,23 +35,23 @@ class Tag
     public $comments = "";
 
     const NONE = 'none';
-    const color1 = 'red';
-    const color2 = 'green';
-    const color3 = 'blue';
-    const color4 = 'yellow';
-    const color5 = 'copper';
-    const color6 = 'orange';
-    const color7 = 'purple';
-    const color8 = 'gray';
-    const color9 = 'light green';
+    const color1 = 'red';//Red
+    const color2 = 'green';//Green
+    const color3 = 'blue';//Blue
+    const color4 = 'yellow';//Yellow
+    const color5 = 'copper';//Copper
+    const color6 = 'orange';//Orange
+    const color7 = 'purple';//Purple
+    const color8 = 'gray';//Gray
+    const color9 = 'light green';//Light Green
 
-    const color10 = 'cyan';
-    const color11 = 'light gray';
-    const color12 = 'blue gray';
-    const color13 = 'lime';
-    const color14 = 'black';
-    const color15 = 'gold';
-    const color16 = 'brown';
+    const color10 = 'cyan';//Cyan
+    const color11 = 'light gray';//Light Gray
+    const color12 = 'blue gray';//Blue Gray
+    const color13 = 'lime';//Lime
+    const color14 = 'black';//Black
+    const color15 = 'gold';//Gold
+    const color16 = 'brown';//Brown
     //all above have first character capital in Fawkes
     const color17 = 'dark green'; //Olive in Fawkes
     //color18 not defined in PAN-OS

@@ -3931,7 +3931,7 @@ RuleCallContext::$supportedActions[] = array(
         }
         $args = &$context->arguments;
         $location = $args['location'];
-        $pan = PH::findRootObjectOrDie($rule);;
+        $pan = PH::findRootObjectOrDie($rule);
 
         if( $args['preORpost'] == "post" )
             $preORpost = TRUE;
