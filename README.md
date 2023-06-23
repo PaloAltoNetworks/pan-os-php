@@ -13,7 +13,7 @@ INSTALLATION
 The recommended installation of PAN-OS-PHP is via Docker.
 Please install Docker Desktop if needed.
 
-[README docker](/READMEdocker.md)
+[README docker](https://github.com/PaloAltoNetworks/pan-os-php/READMEdocker.md)
 
 [WIKI docker](https://github.com/PaloAltoNetworks/pan-os-php/wiki/docker)
 
@@ -33,7 +33,7 @@ Old detailed information
 
 File tree:
 * **/lib/** contains library files source code
-* **/utils/** contains ready to run scripts, more information in [utils/README](/utils/README.md)
+* **/utils/** contains ready to run scripts, more information in [utils/README](https://github.com/PaloAltoNetworks/pan-os-php/utils/README.md)
 * **/doc/index.html**  has all classes documentations
 * **/example-xxx.php** are examples about using this library
 
@@ -49,7 +49,7 @@ Usage (create custom Scripts)
 
 With less than 20 lines of code, you should be able to solve most of your needs. Brief overview:
 
-[README customScripting](/READMEcustomScripting.md)
+[README customScripting](https://github.com/PaloAltoNetworks/pan-os-php/READMEcustomScripting.md)
 
 
 UTIL (predefined Scripts)
@@ -59,7 +59,7 @@ UTIL (predefined Scripts)
 
 Use around 50 different predefined entry parts [e.g. address / service / tag / rule / ...] with 100 of actions and filters to easily improve your Palo Alto Networks Firewall and Panorama configuration
 
-[README util](/READMEutil.md)
+[README util](https://github.com/PaloAltoNetworks/pan-os-php/READMEutil.md)
  
 
 
@@ -68,6 +68,6 @@ Docker build
 
 There are Dockerfiles available with OS: Ubuntu20/22 and CentOS 7/8
 
-[README docker](/READMEdocker.md)
+[README docker](https://github.com/PaloAltoNetworks/pan-os-php/READMEdocker.md)
 
 [WIKI docker](https://github.com/PaloAltoNetworks/pan-os-php/wiki/docker)
