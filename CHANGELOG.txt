@@ -9,6 +9,7 @@ UTIL:
 * different object classes | introduction of sase-api connection - update / separation between XML API and SaseAPI
 * type=address-/addressgroup-/service-/servicegroup-/tag-merger | extend with in=sase-api:// support
 * in=sase-api:// - Strate Cloud Manager | extend reading objects based on type=
+* type=rule | actions=display/exporttoexcel - extend additional argument ResolveAddressSummary with name/ip value from nested members
 
 BUGFIX:
 * class Zone.php | bugfix to create XML node "zone" if not yet available during creating of a new Zone
