@@ -62,7 +62,7 @@ __pan-os-php_scripts()
 		 'shadow-apikeyhidden' 'shadow-apikeynohidden' 'shadow-apikeynosave' 'shadow-disableoutputformatting' 'shadow-displaycurlrequest' 'shadow-enablexmlduplicatesdeletion'
 		 'shadow-ignoreinvalidaddressobjects' 'shadow-json' 'shadow-reducexml'
 		 'outputformatset='
-		 'stats' 'template=' 'version' )
+		 'stats' 'template=' 'version' 'in=api://' 'in=sase-api://' )
 
     arguments_migration=('type=' 'in=' 'out=' 'file=' 'help' 'vendor=' 'routetable=' 'mapping=' )
     arguments_diff=('type=' 'in=' 'help' 'file1=' 'file2=')
@@ -81,6 +81,29 @@ __pan-os-php_scripts()
     DIR="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
     jsonFILE=$DIR"/../lib/util_action_filter.json"
     type=$(jq -r 'keys[]' $jsonFILE)
+
+    IFSold=$IFS
+    ##search for
+    authFILE=$HOME"/.panconfkeystore"
+    autharr=()
+    while IFS= read -r line; do
+       autharr+=("$line")
+    done < $authFILE
+
+
+    for API in "${autharr[@]}"; do
+      ## Set comma as delimiter
+      IFS=':'
+      ##Read the split words into an array based on comma delimiter
+      read -a strarr <<< "$API"
+      if [[ "${strarr[0]}" == "bpa-apikey" || "${strarr[0]}" == "ldap-password" || "${strarr[0]}" == "maxmind-licensekey" || "${strarr[0]}" == "license-apikey" ]] ; then
+        autharr=("${autharr[@]/$API}")
+      ##else
+        ##echo "${strarr[0]}"
+      fi
+    done
+
+    IFS=$IFSold
 
 		checkArray=('in' 'out' 'actions' 'filter' 'location')
 
@@ -171,6 +194,12 @@ __pan-os-php_scripts()
               unset 'arguments_migration[0]'
               unset 'arguments_diff[0]'
               unset 'arguments_appidtoolbox[0]'
+              ;;
+            in=api://*)
+              unset 'arguments[24]'
+              ;;
+            in=sase-api://*)
+              unset 'arguments[25]'
               ;;
             in*)
               unset 'arguments[1]'
@@ -384,20 +413,26 @@ __pan-os-php_scripts()
 					out=*)
 						unset 'arguments[2]'
 						;;
+				  in=api://*)
+            unset 'arguments[4]'
+            ;;
+				  in=sase-api://*)
+            unset 'arguments[5]'
+            ;;
 					in=*)
 						unset 'arguments[3]'
 						;;
 					print )
-						unset 'arguments[4]'
-						;;
-					debug )
-						unset 'arguments[5]'
-						;;
-					help )
 						unset 'arguments[6]'
 						;;
-					reducexml )
+					debug )
 						unset 'arguments[7]'
+						;;
+					help )
+						unset 'arguments[8]'
+						;;
+					reducexml )
+						unset 'arguments[9]'
 						;;
 				esac
 			done

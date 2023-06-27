@@ -593,10 +593,25 @@ class RuleCallContext extends CallContext
             $strMapping = array_merge( $strMapping, $unresolvedArray );
             return self::enclose($strMapping);
         }
+        if( $fieldName == 'src_resolved_nested_name' )
+        {
+            $unresolvedArray = array();
+            $strMapping = $this->AddressResolveNameNestedSummary( $rule, "source", $unresolvedArray );
+            $strMapping = array_merge( $strMapping, $unresolvedArray );
+            return self::enclose($strMapping);
+        }
+        if( $fieldName == 'src_resolved_nested_value' )
+        {
+            $unresolvedArray = array();
+            $strMapping = $this->AddressResolveValueNestedSummary( $rule, "source", $unresolvedArray );
+            $strMapping = array_merge( $strMapping, $unresolvedArray );
+            return self::enclose($strMapping);
+        }
         if( $fieldName == 'src_ip_count' )
         {
             //must NOT be done on addressresolvesummary; must be done on real objects
         }
+
 
         if( $fieldName == 'dst_resolved_value' )
         {
@@ -609,6 +624,20 @@ class RuleCallContext extends CallContext
         {
             $unresolvedArray = array();
             $strMapping = $this->AddressResolveSummary( $rule, "destination", $unresolvedArray );
+            $strMapping = array_merge( $strMapping, $unresolvedArray );
+            return self::enclose($strMapping);
+        }
+        if( $fieldName == 'dst_resolved_nested_name' )
+        {
+            $unresolvedArray = array();
+            $strMapping = $this->AddressResolveNameNestedSummary( $rule, "destination", $unresolvedArray );
+            $strMapping = array_merge( $strMapping, $unresolvedArray );
+            return self::enclose($strMapping);
+        }
+        if( $fieldName == 'dst_resolved_nested_value' )
+        {
+            $unresolvedArray = array();
+            $strMapping = $this->AddressResolveValueNestedSummary( $rule, "destination", $unresolvedArray );
             $strMapping = array_merge( $strMapping, $unresolvedArray );
             return self::enclose($strMapping);
         }
@@ -712,6 +741,64 @@ class RuleCallContext extends CallContext
                 $strMapping[] = "group";
             else
                 $strMapping[] = $member->value();
+        }
+
+
+        if( count( $strMapping) === 1 && empty( $strMapping[0] ) )
+            $strMapping = array();
+
+        return $strMapping;
+    }
+
+    public function AddressResolveValueNestedSummary( $rule, $typeSrcDst, &$unresolvedArray = array() )
+    {
+        if( $rule->$typeSrcDst->isAny() )
+            return array( '0.0.0.0/24', '::0-ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff');
+
+        $allMembers = $rule->$typeSrcDst->getAll();
+        $strMapping = array();
+        foreach($allMembers as $member)
+        {
+            if( $member->isGroup() )
+            {
+                $members = $member->expand(FALSE);
+                foreach( $members as $member )
+                {
+                    $strMapping[] = $member->value();
+                    #$strMapping[] = "group";
+                }
+            }
+
+            else
+                $strMapping[] = $member->value();
+        }
+
+
+        if( count( $strMapping) === 1 && empty( $strMapping[0] ) )
+            $strMapping = array();
+
+        return $strMapping;
+    }
+    public function AddressResolveNameNestedSummary( $rule, $typeSrcDst, &$unresolvedArray = array() )
+    {
+        if( $rule->$typeSrcDst->isAny() )
+            return array( '0.0.0.0/24', '::0-ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff');
+
+        $allMembers = $rule->$typeSrcDst->getAll();
+        $strMapping = array();
+        foreach($allMembers as $member)
+        {
+            if( $member->isGroup() )
+            {
+                $members = $member->expand(FALSE);
+                foreach( $members as $member )
+                {
+                    $strMapping[] = $member->name();
+                }
+            }
+
+            else
+                $strMapping[] = $member->name();
         }
 
 

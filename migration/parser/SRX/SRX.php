@@ -19,13 +19,9 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-//Todo: SonicOS >= 6.5.0 implementation
-
-//Todo: EXP support
-//https://www.sonicwall.com/support/knowledge-base/how-to-get-the-configurations-of-the-firewall-based-on-the-exporting-exp-file/170503330364045/
 
 
-require_once("pan-os-php/lib/pan_php_framework.php");
+require_once("lib/pan_php_framework.php");
 
 require_once('SRXinterfaces.php');
 require_once('SRXvsys.php');
