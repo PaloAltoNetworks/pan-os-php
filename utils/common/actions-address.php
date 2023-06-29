@@ -1524,7 +1524,7 @@ AddressCallContext::$supportedActions[] = array(
             }
         }
 
-        $conflictObject = $targetStore->find($object->name(), null, FALSE);
+        $conflictObject = $targetStore->find($object->name(), null, TRUE);
         if( $conflictObject === null )
         {
             if( $object->isGroup() && !$object->isDynamic() )

@@ -111,6 +111,7 @@ class PanSaseAPIConnector
     {
         //$host must be "tsg_id".TSG_ID
         $host = "tsg_id" . $TSGid;
+        $connector = null;
 
         foreach( PanAPIConnector::$savedConnectors as $connector )
         {
