@@ -218,7 +218,7 @@ class PanSaseAPIConnector
             {
                 PH::print_stdout( );
                 PH::print_stdout( PH::boldText("ERROR: " .$jsonArray['error'] ) );
-                PH::print_stdout( "if your tenant: ".$this->scope." is NOT running in production environment this is expected | for QA environment use additioal argument 'shadow-saseapiqa'" );
+                PH::print_stdout( "if your tenant: ".$this->scope." is NOT running in production environment this is expected | for QA environment use additional argument 'shadow-saseapiqa'" );
             }
 
             derr( "problem with SASE API connection - not possible to get 'access_token'", null, FALSE );

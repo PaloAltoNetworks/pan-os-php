@@ -17,6 +17,7 @@ BUGFIX:
 * type=vendor-migration | bugfix for wildcard 0.0.0.0 - do not replace leading 0
 * type=tag in=sase-api:// | bugfix to handle tag color information correctly
 * type=address actions=move:DGNAME | bugfix if same object name is available on upperlevel
+* type=rule actions=exporttoexcel:FILE.html,resolveAddresssummary | bugfix correction of 0.0.0.0/24 to 0.0.0.0/0
 
 GENERAL:
 * develop - start sase.php _ first version to use sase-api

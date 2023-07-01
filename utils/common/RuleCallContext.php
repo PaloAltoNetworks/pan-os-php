@@ -754,7 +754,7 @@ class RuleCallContext extends CallContext
     public function AddressResolveValueNestedSummary( $rule, $typeSrcDst, &$unresolvedArray = array() )
     {
         if( $rule->$typeSrcDst->isAny() )
-            return array( '0.0.0.0/24', '::0-ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff');
+            return array( '0.0.0.0/0', '::0-ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff');
 
         $allMembers = $rule->$typeSrcDst->getAll();
         $strMapping = array();
@@ -783,7 +783,7 @@ class RuleCallContext extends CallContext
     public function AddressResolveNameNestedSummary( $rule, $typeSrcDst, &$unresolvedArray = array() )
     {
         if( $rule->$typeSrcDst->isAny() )
-            return array( '0.0.0.0/24', '::0-ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff');
+            return array( '0.0.0.0/0', '::0-ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff');
 
         $allMembers = $rule->$typeSrcDst->getAll();
         $strMapping = array();
