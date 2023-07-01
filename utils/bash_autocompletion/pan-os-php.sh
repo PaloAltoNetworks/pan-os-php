@@ -82,13 +82,13 @@ __pan-os-php_scripts()
     jsonFILE=$DIR"/../lib/util_action_filter.json"
     type=$(jq -r 'keys[]' $jsonFILE)
 
-    IFSold=$IFS
+    #IFSold=$IFS
     ##search for
-    authFILE=$HOME"/.panconfkeystore"
-    autharr=()
-    while IFS= read -r line; do
-       autharr+=("$line")
-    done < $authFILE
+    #authFILE=$HOME"/.panconfkeystore"
+    #autharr=()
+    #while IFS= read -r line; do
+    #   autharr+=("$line")
+    #done < $authFILE
 
 
     for API in "${autharr[@]}"; do
