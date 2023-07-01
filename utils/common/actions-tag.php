@@ -364,15 +364,7 @@ TagCallContext::$supportedActions['display'] = array(
         $tmpName = $object->name();
         TAG::replaceNamewith( $tmpName );
 
-        if( $object->saseID !== null )
-        {
-            PH::$JSON_TMP['sub']['object'][$object->name()]['id'] = $object->getSaseID();
-            $saseID = "Sase-ID: '" . $object->getSaseID()."'";
-            PH::print_stdout( $context->padding . "* ".$saseID );
 
-        }
-        else
-            $saseID = "";
         PH::print_stdout( "     * " . get_class($object) . " '{$tmpName}'  color: '{$object->getColor()}'  comments: '{$object->getComments()}'" );
 
         PH::$JSON_TMP['sub']['object'][$object->name()]['name'] = $tmpName;

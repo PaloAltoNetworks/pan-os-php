@@ -79,7 +79,6 @@ class CallContext
         $name = $object->name();
         $saseID = "";
         if( $object->getSaseID() !== null )
-        #if( $object->saseID !== null )
         {
             PH::$JSON_TMP['sub']['object'][$object->name()]['id'] = $object->getSaseID();
             $saseID = "Sase-ID: '" . $object->getSaseID()."'";

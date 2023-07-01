@@ -62,7 +62,8 @@ __pan-os-php_scripts()
 		 'shadow-apikeyhidden' 'shadow-apikeynohidden' 'shadow-apikeynosave' 'shadow-disableoutputformatting' 'shadow-displaycurlrequest' 'shadow-enablexmlduplicatesdeletion'
 		 'shadow-ignoreinvalidaddressobjects' 'shadow-json' 'shadow-reducexml'
 		 'outputformatset='
-		 'stats' 'template=' 'version' 'in=api://' 'in=sase-api://' )
+		 'stats' 'template=' 'version' )
+		 #'in=api://' 'in=sase-api://' )
 
     arguments_migration=('type=' 'in=' 'out=' 'file=' 'help' 'vendor=' 'routetable=' 'mapping=' )
     arguments_diff=('type=' 'in=' 'help' 'file1=' 'file2=')
@@ -103,7 +104,7 @@ __pan-os-php_scripts()
     #  fi
     #done
 
-    IFS=$IFSold
+    #IFS=$IFSold
 
 		checkArray=('in' 'out' 'actions' 'filter' 'location')
 
@@ -195,12 +196,12 @@ __pan-os-php_scripts()
               unset 'arguments_diff[0]'
               unset 'arguments_appidtoolbox[0]'
               ;;
-            in=api://*)
-              unset 'arguments[24]'
-              ;;
-            in=sase-api://*)
-              unset 'arguments[25]'
-              ;;
+            #in=api://*)
+            #  unset 'arguments[24]'
+            #  ;;
+            #in=sase-api://*)
+            #  unset 'arguments[25]'
+            #  ;;
             in*)
               unset 'arguments[1]'
               unset 'arguments_migration[1]'
@@ -413,12 +414,12 @@ __pan-os-php_scripts()
 					out=*)
 						unset 'arguments[2]'
 						;;
-				  in=api://*)
-            unset 'arguments[4]'
-            ;;
-				  in=sase-api://*)
-            unset 'arguments[5]'
-            ;;
+				  #in=api://*)
+          #  unset 'arguments[4]'
+          #  ;;
+				  #in=sase-api://*)
+          #  unset 'arguments[5]'
+          #;;
 					in=*)
 						unset 'arguments[3]'
 						;;
