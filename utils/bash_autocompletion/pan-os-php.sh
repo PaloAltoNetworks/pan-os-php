@@ -91,17 +91,17 @@ __pan-os-php_scripts()
     #done < $authFILE
 
 
-    for API in "${autharr[@]}"; do
+    #for API in "${autharr[@]}"; do
       ## Set comma as delimiter
-      IFS=':'
+    #  IFS=':'
       ##Read the split words into an array based on comma delimiter
-      read -a strarr <<< "$API"
-      if [[ "${strarr[0]}" == "bpa-apikey" || "${strarr[0]}" == "ldap-password" || "${strarr[0]}" == "maxmind-licensekey" || "${strarr[0]}" == "license-apikey" ]] ; then
-        autharr=("${autharr[@]/$API}")
+    #  read -a strarr <<< "$API"
+    #  if [[ "${strarr[0]}" == "bpa-apikey" || "${strarr[0]}" == "ldap-password" || "${strarr[0]}" == "maxmind-licensekey" || "${strarr[0]}" == "license-apikey" ]] ; then
+    #    autharr=("${autharr[@]/$API}")
       ##else
         ##echo "${strarr[0]}"
-      fi
-    done
+    #  fi
+    #done
 
     IFS=$IFSold
 
