@@ -184,7 +184,9 @@ class AddressGroup
 
                                 $tag = $this->owner->owner->tagStore->find($replaceTXT);
                                 if( $tag !== null )
+                                {
                                     $tag->addReference($this);
+                                }
                                 else
                                 {
                                     #Todo: what if TAG is in parent tagStore?
@@ -208,6 +210,34 @@ class AddressGroup
                         $this->filter = $tagFilter;
 
                         $tmp_found_addresses = $this->owner->all($tagFilter);
+
+                        //Todo: problem as higher address objects are not found
+                        $tmpParentStore = $this->owner->parentCentralStore;
+                        #print "DG1: ".$this->owner->owner->name()."\n";
+                        #print "counter1: ".count( $tmp_found_addresses )."\n";
+                        while(true)
+                        {
+                            if( $tmpParentStore !== null )
+                            {
+                                /*
+                                $tmp_name = $tmpParentStore->owner->name();
+                                if( empty($tmp_name) )
+                                    print "DG2: shared\n";
+                                else
+                                    print "DG2: |".$tmp_name."|\n";
+                                */
+                                $tmp_found_addresses2 = $tmpParentStore->all($tagFilter);
+                                $tmp_found_addresses = array_merge( $tmp_found_addresses, $tmp_found_addresses2 );
+                                #print "counter2: ".count( $tmp_found_addresses )."\n";
+                                if( $tmpParentStore->parentCentralStore != null )
+                                    $tmpParentStore = $tmpParentStore->parentCentralStore;
+                                else
+                                    break;
+                            }
+                            else
+                                break;
+                        }
+
                         foreach( $tmp_found_addresses as $address )
                         {
                             if( $this->name() == $address->name() )
