@@ -593,12 +593,18 @@ class AddressRuleContainer extends ObjRuleContainer
     /**
      * @return IP4Map
      */
-    public function getIP4Mapping()
+    public function getIP4Mapping( $RuleReferenceLocation = null )
     {
         if( $this->isAny() )
             return IP4Map::mapFromText('0.0.0.0/0');
 
         $mapObject = new IP4Map();
+
+        if( $RuleReferenceLocation !== null )
+        {
+            foreach( $this->o as $key => $member )
+                $this->o[$key] = $RuleReferenceLocation->addressStore->find($member->name());
+        }
 
         foreach( $this->o as $member )
         {
@@ -620,7 +626,7 @@ class AddressRuleContainer extends ObjRuleContainer
                     $mapObject->unresolved[$member->name()] = $member;
                 else
                 {
-                    $localMap = $member->getIP4Mapping();
+                    $localMap = $member->getIP4Mapping( $RuleReferenceLocation );
                     $mapObject->addMap($localMap, TRUE);
                 }
             }

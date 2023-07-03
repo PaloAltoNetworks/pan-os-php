@@ -608,6 +608,13 @@ class RuleCallContext extends CallContext
             $strMapping = array_merge( $strMapping, $unresolvedArray );
             return self::enclose($strMapping);
         }
+        if( $fieldName == 'src_resolved_nested_location' )
+        {
+            $unresolvedArray = array();
+            $strMapping = $this->AddressResolveLocationNestedSummary( $rule, "source", $unresolvedArray );
+            $strMapping = array_merge( $strMapping, $unresolvedArray );
+            return self::enclose($strMapping);
+        }
         if( $fieldName == 'src_ip_count' )
         {
             //must NOT be done on addressresolvesummary; must be done on real objects
@@ -639,6 +646,13 @@ class RuleCallContext extends CallContext
         {
             $unresolvedArray = array();
             $strMapping = $this->AddressResolveValueNestedSummary( $rule, "destination", $unresolvedArray );
+            $strMapping = array_merge( $strMapping, $unresolvedArray );
+            return self::enclose($strMapping);
+        }
+        if( $fieldName == 'dst_resolved_nested_location' )
+        {
+            $unresolvedArray = array();
+            $strMapping = $this->AddressResolveLocationNestedSummary( $rule, "destination", $unresolvedArray );
             $strMapping = array_merge( $strMapping, $unresolvedArray );
             return self::enclose($strMapping);
         }
@@ -704,7 +718,7 @@ class RuleCallContext extends CallContext
         if( $rule->$typeSrcDst->isAny() )
             return array( '0.0.0.0-255.255.255.255', '::0-ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff');
 
-        $mapping = $rule->$typeSrcDst->getIP4Mapping();
+        $mapping = $rule->$typeSrcDst->getIP4Mapping( $rule->owner->owner );
         $strMapping = explode(',', $mapping->dumpToString());
 
         foreach( array_keys($mapping->unresolved) as $unresolved )
@@ -762,16 +776,22 @@ class RuleCallContext extends CallContext
         {
             if( $member->isGroup() )
             {
-                $members = $member->expand(FALSE);
+                $tmp_array = array();
+                $members = $member->expand(FALSE, $tmp_array, $rule->owner->owner);
                 foreach( $members as $member )
                 {
-                    $strMapping[] = $member->value();
+                    $tmp_member = $rule->owner->owner->addressStore->find($member->name());
+                    $strMapping[] = $tmp_member->value();
                     #$strMapping[] = "group";
                 }
             }
 
             else
-                $strMapping[] = $member->value();
+            {
+                $tmp_member = $rule->owner->owner->addressStore->find($member->name());
+                $strMapping[] = $tmp_member->value();
+            }
+
         }
 
 
@@ -791,7 +811,8 @@ class RuleCallContext extends CallContext
         {
             if( $member->isGroup() )
             {
-                $members = $member->expand(FALSE);
+                $tmp_array = array();
+                $members = $member->expand(FALSE, $tmp_array, $rule->owner->owner);
                 foreach( $members as $member )
                 {
                     $strMapping[] = $member->name();
@@ -800,6 +821,45 @@ class RuleCallContext extends CallContext
 
             else
                 $strMapping[] = $member->name();
+        }
+
+
+        if( count( $strMapping) === 1 && empty( $strMapping[0] ) )
+            $strMapping = array();
+
+        return $strMapping;
+    }
+
+    public function AddressResolveLocationNestedSummary( $rule, $typeSrcDst, &$unresolvedArray = array() )
+    {
+        if( $rule->$typeSrcDst->isAny() )
+            return array( '0.0.0.0/0', '::0-ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff');
+
+        $allMembers = $rule->$typeSrcDst->getAll();
+        $strMapping = array();
+        foreach($allMembers as $member)
+        {
+            if( $member->isGroup() )
+            {
+                $tmp_array = array();
+                $members = $member->expand(FALSE, $tmp_array, $rule->owner->owner);
+                foreach( $members as $member )
+                {
+                    $tmp_name = $member->owner->owner->name();
+                    if( empty($tmp_name) )
+                        $tmp_name = "shared";
+
+                    $strMapping[] = $tmp_name;
+                }
+            }
+            else
+            {
+                $tmp_name = $member->owner->owner->name();
+                if( empty($tmp_name) )
+                    $tmp_name = "shared";
+
+                $strMapping[] = $tmp_name;
+            }
         }
 
 

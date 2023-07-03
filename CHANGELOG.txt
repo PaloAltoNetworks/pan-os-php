@@ -20,6 +20,7 @@ BUGFIX:
 * type=address actions=move:DGNAME | bugfix if same object name is available on upperlevel
 * type=rule actions=exporttoexcel:FILE.html,resolveAddresssummary | bugfix correction of 0.0.0.0/24 to 0.0.0.0/0
 * type=address | bugfix for dynamic address-groups which are using address objects with tag filter from upper level
+* type=rule-compare | bugfix for correct address-group member IP resolution calculation based on rule DG membership
 
 GENERAL:
 * develop - start sase.php _ first version to use sase-api

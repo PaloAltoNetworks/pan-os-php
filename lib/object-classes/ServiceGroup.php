@@ -598,13 +598,22 @@ class ServiceGroup
     /**
      * @return ServiceDstPortMapping
      */
-    public function dstPortMapping( $memberArray = array())
+    public function dstPortMapping( $memberArray = array(), $RuleReferenceLocation = null)
     {
         $mapping = new ServiceDstPortMapping();
 
         if( !array_key_exists( $this->name(), $memberArray ) )
         {
             $memberArray[ $this->name() ] = $this->name();
+
+            if( $RuleReferenceLocation !== null )
+            {
+                foreach( $this->members as $key => $member )
+                {
+                    $this->members[$key] = $RuleReferenceLocation->serviceStore->find($member->name());
+                }
+            }
+
             foreach( $this->members as $member )
             {
                 if( $member->isTmpSrv() && $this->name() != 'service-http' && $this->name() != 'service-https' )

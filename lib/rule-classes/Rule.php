@@ -1845,7 +1845,8 @@ class Rule
         $array = array();
         foreach( $objects as $object )
         {
-            $port_mapping = $object->dstPortMapping();
+            #$port_mapping = $object->dstPortMapping();
+            $port_mapping = $object->dstPortMapping( array(), $this->owner->owner );
             $mapping_texts = $port_mapping->mappingToText();
 
             //TODO: handle predefined service objects in a different way

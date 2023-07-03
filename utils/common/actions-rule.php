@@ -4339,6 +4339,7 @@ RuleCallContext::$supportedActions[] = array(
             'src_resolved_sum' => 'src_resolved_sum',
             'src_resolved_nested_name' => 'src_resolved_nested_name',
             'src_resolved_nested_value' => 'src_resolved_nested_value',
+            'src_resolved_nested_location' => 'src_resolved_nested_location',
             'dst_negated' => 'destination_negated',
             'dst' => 'destination',
             'dst_interface' => 'dst_interface',
@@ -4346,6 +4347,7 @@ RuleCallContext::$supportedActions[] = array(
             'dst_resolved_sum' => 'dst_resolved_sum',
             'dst_resolved_nested_name' => 'dst_resolved_nested_name',
             'dst_resolved_nested_value' => 'dst_resolved_nested_value',
+            'dst_resolved_nested_location' => 'dst_resolved_nested_location',
             'service' => 'service',
             'service_resolved_sum' => 'service_resolved_sum',
             'service_appdefault_resolved_sum' => 'service_appdefault_resolved_sum',
@@ -4400,9 +4402,9 @@ RuleCallContext::$supportedActions[] = array(
                 {
                         if( ((
                             $fieldName == 'src_resolved_sum' || $fieldName == 'src_resolved_value' ||
-                            $fieldName == 'src_resolved_nested_name' || $fieldName == 'src_resolved_nested_value' ||
+                            $fieldName == 'src_resolved_nested_name' || $fieldName == 'src_resolved_nested_value' || $fieldName == 'src_resolved_nested_location' ||
                             $fieldName == 'dst_resolved_sum' || $fieldName == 'dst_resolved_value' ||
-                            $fieldName == 'dst_resolved_nested_name' || $fieldName == 'dst_resolved_nested_value' ||
+                            $fieldName == 'dst_resolved_nested_name' || $fieldName == 'dst_resolved_nested_value' || $fieldName == 'dst_resolved_nested_location' ||
                             $fieldName == 'dnat_host_resolved_sum' ||
                             $fieldName == 'snat_address_resolved_sum')
                             && !$addResolvedAddressSummary) ||
@@ -4437,9 +4439,9 @@ RuleCallContext::$supportedActions[] = array(
         {
             if( ((
                         $fieldName == 'src_resolved_sum' || $fieldName == 'src_resolved_value' ||
-                        $fieldName == 'src_resolved_nested_name' || $fieldName == 'src_resolved_nested_value' ||
+                        $fieldName == 'src_resolved_nested_name' || $fieldName == 'src_resolved_nested_value' || $fieldName == 'src_resolved_nested_location' ||
                         $fieldName == 'dst_resolved_sum' || $fieldName == 'dst_resolved_value' ||
-                        $fieldName == 'dst_resolved_nested_name' || $fieldName == 'dst_resolved_nested_value' ||
+                        $fieldName == 'dst_resolved_nested_name' || $fieldName == 'dst_resolved_nested_value' || $fieldName == 'dst_resolved_nested_location' ||
                         $fieldName == 'dnat_host_resolved_sum' ||
                         $fieldName == 'snat_address_resolved_sum')
                     && !$addResolvedAddressSummary) ||

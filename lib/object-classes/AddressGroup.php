@@ -211,24 +211,14 @@ class AddressGroup
 
                         $tmp_found_addresses = $this->owner->all($tagFilter);
 
-                        //Todo: problem as higher address objects are not found
                         $tmpParentStore = $this->owner->parentCentralStore;
-                        #print "DG1: ".$this->owner->owner->name()."\n";
-                        #print "counter1: ".count( $tmp_found_addresses )."\n";
                         while(true)
                         {
                             if( $tmpParentStore !== null )
                             {
-                                /*
-                                $tmp_name = $tmpParentStore->owner->name();
-                                if( empty($tmp_name) )
-                                    print "DG2: shared\n";
-                                else
-                                    print "DG2: |".$tmp_name."|\n";
-                                */
                                 $tmp_found_addresses2 = $tmpParentStore->all($tagFilter);
                                 $tmp_found_addresses = array_merge( $tmp_found_addresses, $tmp_found_addresses2 );
-                                #print "counter2: ".count( $tmp_found_addresses )."\n";
+
                                 if( $tmpParentStore->parentCentralStore != null )
                                     $tmpParentStore = $tmpParentStore->parentCentralStore;
                                 else
@@ -836,11 +826,17 @@ class AddressGroup
      * @param bool $keepGroupsInList keep groups in the the list on top of just expanding them
      * @return Address[]|AddressGroup[] list of all member objects, if some of them are groups, they are exploded and their members inserted
      */
-    public function & expand($keepGroupsInList = FALSE, &$grpArray=array() )
+    public function & expand($keepGroupsInList = FALSE, &$grpArray=array(), $RuleReferenceLocation = null )
     {
         $ret = array();
 
         $grpArray[$this->name()] = $this;
+
+        if( $RuleReferenceLocation !== null )
+        {
+            foreach( $this->members as $key => $member )
+                $this->members[$key] = $RuleReferenceLocation->addressStore->find($member->name());
+        }
 
         foreach( $this->members as $object )
         {
@@ -1013,7 +1009,7 @@ class AddressGroup
     /**
      * @return IP4Map
      */
-    public function getIP4Mapping()
+    public function getIP4Mapping( $RuleReferenceLocation = null )
     {
         $mapObject = new IP4Map();
 
@@ -1024,6 +1020,12 @@ class AddressGroup
             return $mapObject;
         }
         */
+
+        if( $RuleReferenceLocation !== null )
+        {
+            foreach( $this->members as $key => $member )
+                $this->members[$key] = $RuleReferenceLocation->addressStore->find($member->name());
+        }
 
         foreach( $this->members as $member )
         {
