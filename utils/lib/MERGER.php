@@ -140,6 +140,10 @@ class MERGER extends UTIL
             $this->servicegroup_merging();
         elseif( $this->utilType == "tag-merger" )
             $this->tag_merging();
+        elseif( $this->utilType == "custom-url-category-merger" )
+        {
+            $this->custom_url_category_merging();
+        }
         #elseif( $this->utilType == "object-merger" )
         #    $this->object_merging( "Application" );
 
@@ -214,6 +218,17 @@ class MERGER extends UTIL
                     elseif( (!$pan->isFawkes() && !$pan->isBuckbeak()) )
                         $parentStore = $findLocation->owner->tagStore;
                 }
+                elseif( $this->utilType == "custom-url-category-merger" )
+                {
+                    $store = $findLocation->customURLProfileStore;
+
+                    if( $pan->isPanorama() && isset($findLocation->parentDeviceGroup) && $findLocation->parentDeviceGroup !== null )
+                        $parentStore = $findLocation->parentDeviceGroup->customURLProfileStore;
+                    elseif( ($pan->isFawkes() || $pan->isBuckbeak()) && isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
+                        $parentStore = $findLocation->parentContainer->customURLProfileStore;
+                    else
+                        $parentStore = $findLocation->owner->customURLProfileStore;
+                }
 
                 if( get_class( $findLocation->owner ) == "FawkesConf" || get_class( $findLocation->owner ) == "BuckbeakConf" )
                     $parentStore = null;
@@ -249,6 +264,8 @@ class MERGER extends UTIL
                     $location_array[$key + 1]['store'] = $pan->serviceStore;
                 elseif( $this->utilType == "tag-merger" )
                     $location_array[$key + 1]['store'] = $pan->tagStore;
+                elseif( $this->utilType == "custom-url-category-merger" )
+                    $location_array[$key + 1]['store'] = $pan->customURLProfileStore;
 
                 $location_array[$key + 1]['parentStore'] = null;
                 $location_array[$key + 1]['childDeviceGroups'] = $alldevicegroup;
@@ -259,6 +276,7 @@ class MERGER extends UTIL
             if( !$pan->isFawkes() && !$pan->isBuckbeak() )
             {
                 $objectsLocations = $objectsLocation;
+                print "location count: ".count($objectsLocations);
                 foreach( $objectsLocations as $key => $objectsLocation )
                 {
                     if( $objectsLocation == "shared" )
@@ -269,6 +287,8 @@ class MERGER extends UTIL
                             $store = $pan->serviceStore;
                         elseif( $this->utilType == "tag-merger" )
                             $store = $pan->tagStore;
+                        elseif( $this->utilType == "custom-url-category-merger" )
+                            $store = $pan->customURLProfileStore;
 
                         $parentStore = null;
                         $location_array[$key]['findLocation'] = $objectsLocation;
@@ -313,6 +333,17 @@ class MERGER extends UTIL
                                 $parentStore = $findLocation->parentContainer->tagStore;
                             else
                                 $parentStore = $findLocation->owner->tagStore;
+                        }
+                        elseif( $this->utilType == "custom-url-category-merger" )
+                        {
+                            $store = $findLocation->customURLProfileStore;
+
+                            if( $pan->isPanorama() && isset($findLocation->parentDeviceGroup) && $findLocation->parentDeviceGroup !== null )
+                                $parentStore = $findLocation->parentDeviceGroup->customURLProfileStore;
+                            elseif( ($pan->isFawkes() || $pan->isBuckbeak()) && isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
+                                $parentStore = $findLocation->parentContainer->customURLProfileStore;
+                            else
+                                $parentStore = $findLocation->owner->customURLProfileStore;
                         }
                         if( get_class($findLocation->owner) == "FawkesConf" )
                             $parentStore = null;
@@ -364,6 +395,8 @@ class MERGER extends UTIL
             $type = 'service';
         elseif( $this->utilType == "tag-merger" )
             $type = 'tag';
+        elseif( $this->utilType == "custom-url-category-merger" )
+            $type = 'customUrlProfile';
 
         if( isset(PH::$args['pickfilter']) )
         {
@@ -480,6 +513,16 @@ class MERGER extends UTIL
                     "  - SameName: objects with same Name\n",
                 'argDesc' => 'SameColor|Identical|WhereUsed|SameName');
         }
+        elseif( $this->utilType == "custom-url-category-merger" )
+        {
+            $this->supportedArguments[] = array(
+                'niceName' => 'DupAlgorithm',
+                'shortHelp' => "Specifies how to detect duplicates:\n" .
+                    "  - SameValue: objects with same URL will be replaced by the one picked (default)\n" .
+                    "  - Identical: objects with same TAG-color and same name will be replaced by the one picked\n" .
+                    "  - SameName: objects with same Name\n",
+                'argDesc' => 'SameValue|Identical|SameName');
+        }
 
         $this->supportedArguments[] = array('niceName' => 'excludeFilter', 'shortHelp' => 'specify a filter to exclude objects from merging process entirely', 'argDesc' => '(name regex /^g/)');
         $this->supportedArguments[] = array('niceName' => 'allowMergingWithUpperLevel', 'shortHelp' => 'when this argument is specified, it instructs the script to also look for duplicates in upper level');
@@ -543,6 +586,13 @@ class MERGER extends UTIL
                 $display_error = true;
 
             $defaultDupAlg = 'identical';
+        }
+        elseif( $this->utilType == "custom-url-category-merger" )
+        {
+            if( $this->dupAlg != 'samevalue' && $this->dupAlg != 'identical' && $this->dupAlg != 'samename' )
+                $display_error = true;
+
+            $defaultDupAlg = 'samevalue';
         }
         /*
         elseif( $this->utilType == "object-merger" )
@@ -3228,7 +3278,7 @@ class MERGER extends UTIL
                     PH::print_stdout("    - replacing '{$object->_PANC_shortName()}' ...");
                     #$object->__replaceWhereIamUsed($this->apiMode, $tmp_tag, TRUE, 5);
                     if( $this->action === "merge" )
-                        $object->replaceMeGlobally($tmp_tag);
+                        $object->replaceMeGlobally($tmp_tag, $this->apiMode);
                     #$object->merge_tag_description_to($tmp_tag, $this->apiMode);
 
                     PH::print_stdout("    - deleting '{$object->_PANC_shortName()}'");
@@ -3291,7 +3341,7 @@ class MERGER extends UTIL
 
                                 if( $this->action === "merge" )
                                 {
-                                    $object->replaceMeGlobally($ancestor);
+                                    $object->replaceMeGlobally($ancestor, $this->apiMode);
                                     if( $this->apiMode )
                                         $object->owner->API_removeTag($object);
                                     else
@@ -3350,9 +3400,14 @@ class MERGER extends UTIL
                     if( $this->dupAlg != 'identical' )
                     {
                         PH::print_stdout("    - replacing '{$object->_PANC_shortName()}' ...");
-                        mwarning("implementation needed for TAG");
-                        //Todo;SWASCHKUT
-                        #$object->__replaceWhereIamUsed($this->apiMode, $pickedObject, TRUE, 5);
+                        if( $this->action === "merge" )
+                        {
+                            #mwarning("implementation needed for TAG");
+                            //Todo;SWASCHKUT
+                            #$object->__replaceWhereIamUsed($this->apiMode, $pickedObject, TRUE, 5);
+                            $object->replaceMeGlobally($pickedObject, $this->apiMode);
+                        }
+
 
                         PH::print_stdout("    - deleting '{$object->_PANC_shortName()}'");
                         self::deletedObject( $index, $pickedObject, $object);
@@ -3380,6 +3435,399 @@ class MERGER extends UTIL
             }
 
             PH::print_stdout( "\n\nDuplicates removal is now done. Number of objects after cleanup: '{$store->count()}' (removed {$countRemoved} tags)\n" );
+
+        }
+    }
+
+    function custom_url_category_merging()
+    {
+        $objectType = "Custom-Url-Category";
+
+        foreach( $this->location_array as $tmp_location )
+        {
+            $store = null;
+            $findLocation = null;
+            $parentStore = null;
+            $childDeviceGroups = null;
+            $this->locationSettings( $tmp_location, $objectType, $store,$findLocation,$parentStore,$childDeviceGroups);
+
+
+            //
+            // Building a hash table of all tag objects with same value
+            //
+            /** @var SecurityProfileStore $store */
+            if( $this->upperLevelSearch )
+                $objectsToSearchThrough = $store->nestedPointOfView();
+            else
+            {
+                $objectsToSearchThrough = $store->getAll();
+            }
+
+
+            $hashMap = array();
+            $child_hashMap = array();
+            $child_NamehashMap = array();
+            $upperHashMap = array();
+            if( $this->dupAlg == 'samevalue' || $this->dupAlg == 'identical' || $this->dupAlg == 'samename' )
+            {
+                //todo: childDG/childDG to parentDG merge is always done; should it not combined to upperLevelSearch value?
+                foreach( $childDeviceGroups as $dg )
+                {
+                    /** @var DeviceGroup $dg */
+                    foreach( $dg->customURLProfileStore->securityProfiles() as $object )
+                    {
+                        /** @var customURLProfile $object */
+
+
+                        #if( !$object->isCustomURL() )
+                        if( get_class($object) !== "customURLProfile" )
+                            continue;
+                        /*
+                        if( $object->isTmp() )
+                            continue;
+                        */
+
+                        if( $this->excludeFilter !== null && $this->excludeFilter->matchSingleObject(array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
+                            continue;
+
+                        $value = '';
+                        $members = $object->getmembers();
+                        foreach( $members as $member )
+                            $value .= './.' . $member;
+
+                        #PH::print_stdout( "add objNAME: " . $object->name() . " DG: " . $object->owner->owner->name() . "" );
+                        $child_hashMap[$value][] = $object;
+                        $child_NamehashMap[$object->name()][] = $object;
+                    }
+                }
+
+                foreach( $objectsToSearchThrough as $object )
+                {
+
+
+                    #if( !$object->isCustomURL() )
+                    if( get_class($object) !== "customURLProfile" )
+                        continue;
+                    /*
+                    if( $object->isTmp() )
+                        continue;
+                    */
+
+                    if( $this->excludeFilter !== null && $this->excludeFilter->matchSingleObject(array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
+                        continue;
+
+                    $skipThisOne = FALSE;
+
+                    // Object with descendants in lower device groups should be excluded
+                    if( $this->pan->isPanorama() && $object->owner === $store )
+                    {
+                        //do something
+                    }
+                    elseif( $this->pan->isPanorama() && $object->owner === $store )
+                    {
+                        //do something
+                    }
+
+
+                    $value = '';
+                    $members = $object->getmembers();
+                    foreach( $members as $member )
+                        $value .= './.' . $member;
+
+                    if( $object->owner === $store )
+                    {
+                        $hashMap[$value][] = $object;
+                        if( $parentStore !== null )
+                            $object->ancestor = self::findAncestor( $parentStore, $object, "customURLProfileStore");
+                    }
+                    else
+                        $upperHashMap[$value][] = $object;
+                }
+            }
+            elseif( $this->dupAlg == 'whereused' )
+                foreach( $objectsToSearchThrough as $object )
+                {
+                    if( !$object->isTag() )
+                        continue;
+                    if( $object->isTmp() )
+                        continue;
+
+                    if( $object->countReferences() == 0 )
+                        continue;
+
+                    if( $this->excludeFilter !== null && $this->excludeFilter->matchSingleObject(array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
+                        continue;
+
+                    #$value = $object->getRefHashComp() . $object->getNetworkValue();
+                    $value = $object->getRefHashComp() . $object->name();
+                    if( $object->owner === $store )
+                    {
+                        $hashMap[$value][] = $object;
+                        if( $parentStore !== null )
+                            $object->ancestor = self::findAncestor( $parentStore, $object, "customURLProfileStore");
+                    }
+                    else
+                        $upperHashMap[$value][] = $object;
+                }
+            else derr("unsupported use case");
+
+            //
+            // Hashes with single entries have no duplicate, let's remove them
+            //
+            $countConcernedObjects = 0;
+            self::removeSingleEntries( $hashMap, $child_hashMap, $upperHashMap, $countConcernedObjects);
+
+            $countConcernedChildObjects = 0;
+            self::removeSingleEntries( $child_hashMap, $hashMap, $upperHashMap, $countConcernedChildObjects);
+
+
+            PH::print_stdout( " - found " . count($hashMap) . " duplicates values totalling {$countConcernedObjects} custom-url-category objects which are duplicate" );
+
+            PH::print_stdout( " - found " . count($child_hashMap) . " duplicates childDG values totalling {$countConcernedChildObjects} custom-url-category objects which are duplicate" );
+
+
+            PH::print_stdout( "\n\nNow going after each duplicates for a replacement" );
+
+            $countChildRemoved = 0;
+            $countChildCreated = 0;
+
+
+            foreach( $child_hashMap as $index => &$hash )
+            {
+                PH::print_stdout();
+                PH::print_stdout( " - value '{$index}'" );
+
+
+                $pickedObject = $this->PickObject( $hash);
+
+
+                $tmp_DG_name = $store->owner->name();
+                if( $tmp_DG_name == "" )
+                    $tmp_DG_name = 'shared';
+
+                $tmp_tag = $store->find( $pickedObject->name() );
+                if( $tmp_tag == null )
+                {
+                    if( isset( $child_NamehashMap[ $pickedObject->name() ] ) )
+                    {
+                        $exit = false;
+                        $exitObject = null;
+                        foreach( $child_NamehashMap[ $pickedObject->name() ] as $obj )
+                        {
+                            if( !$obj->sameValue($pickedObject) ) //same color
+                            {
+                                $exit = true;
+                                $exitObject = $obj;
+                            }
+                        }
+
+                        if( $exit )
+                        {
+                            PH::print_stdout( "   * SKIP: no creation of object in DG: '".$tmp_DG_name."' as object with same name '{$exitObject->name()}' and different value exist at childDG level" );
+                            $this->skippedObject( $index, $pickedObject, $exitObject);
+                            continue;
+                        }
+                    }
+                    PH::print_stdout( "   * create object in DG: '".$tmp_DG_name."' : '".$pickedObject->name()."'" );
+
+                    if( $this->action === "merge" )
+                    {
+                        $tmp_tag = $store->newCustomSecurityProfileURL($pickedObject->name() );
+                        foreach( $pickedObject->getmembers() as $member )
+                            $tmp_tag->addMember( $member );
+
+                        if( $this->apiMode )
+                            $tmp_tag->API_sync();
+
+                        $value = $tmp_tag->name();
+                        $hashMap[$value][] = $tmp_tag;
+                    }
+                    else
+                        $tmp_tag = "[".$tmp_DG_name."] - ".$pickedObject->name()." {new}";
+
+                    $countChildCreated++;
+                }
+                else
+                {
+                    if( $tmp_tag->equals( $pickedObject ) )
+                    {
+                        PH::print_stdout( "   * keeping object '{$tmp_tag->_PANC_shortName()}'" );
+                    }
+                    else
+                    {
+                        PH::print_stdout( "    - SKIP: object name '{$pickedObject->_PANC_shortName()}' [with value '".implode("./.",$pickedObject->getmembers())."'] is not IDENTICAL to object name: '{$tmp_tag->_PANC_shortName()}' [with value '".implode("./.",$tmp_tag->getmembers())."'] " );
+                        $this->skippedObject( $index, $pickedObject, $tmp_tag);
+                        continue;
+                    }
+                }
+
+
+                // Merging loop finally!
+                foreach( $hash as $objectIndex => $object )
+                {
+                    PH::print_stdout("    - replacing '{$object->_PANC_shortName()}' ...");
+
+                    if( $this->action === "merge" )
+                    {
+                        #$object->__replaceWhereIamUsed($this->apiMode, $tmp_tag, TRUE, 5);
+                        $object->replaceMeGlobally($tmp_tag, $this->apiMode);
+                        /*
+                         * - SecurityProfileStore:URL / URLProfile:
+                         *
+                         * //replace it the same way:
+                         * - RuleStore:Security / SecurityRule:XYZ / UrlCategoryRuleContainer:ABC
+                         * - RuleStore:Decryption / DecryptionRule:XYZ / UrlCategoryRuleContainer:ABC
+                         */
+                    }
+
+                    PH::print_stdout("    - deleting '{$object->_PANC_shortName()}'");
+                    self::deletedObject( $index, $tmp_tag, $object);
+
+                    if( $this->action === "merge" )
+                    {
+                        if( $this->apiMode )
+                            $object->owner->API_removeSecurityProfile($object);
+                        else
+                            $object->owner->removeSecurityProfile($object);
+                    }
+                    $countChildRemoved++;
+                }
+            }
+
+            if( count( $child_hashMap ) >0 )
+                PH::print_stdout( "\n\nDuplicates ChildDG removal is now done. Number of objects after cleanup: '{$store->count()}' (removed/created {$countChildRemoved}/{$countChildCreated} customURLcategory)\n" );
+
+            $countRemoved = 0;
+            foreach( $hashMap as $index => &$hash )
+            {
+                PH::print_stdout();
+                PH::print_stdout( " - name '{$index}'" );
+
+
+                $pickedObject = $this->hashMapPickfilter( $upperHashMap, $index, $hash );
+
+
+                // Merging loop finally!
+                foreach( $hash as $objectIndex => $object )
+                {
+                    /** @var customURLProfile $object */
+                    if( isset($object->ancestor) )
+                    {
+                        $ancestor = $object->ancestor;
+                        $ancestor_different_color = "";
+
+                        if( get_class($ancestor) !== "customURLProfile" )
+                        {
+                            PH::print_stdout("    - SKIP: object name '{$object->_PANC_shortName()}' has one ancestor which is not customURLProfile object");
+                            continue;
+                        }
+
+                        /** @var customURLProfile $ancestor */
+                        if( $this->upperLevelSearch &&    get_class($ancestor) !== "customURLProfile" )
+                        {
+                            if( $object->sameValue($ancestor) || $this->dupAlg == 'samename' ) //same color
+                            {
+                                if( $this->dupAlg == 'identical' )
+                                    if( $pickedObject->name() != $ancestor->name() )
+                                    {
+                                        PH::print_stdout("    - SKIP: object name '{$object->_PANC_shortName()}' is not IDENTICAL to object name from upperlevel '{$pickedObject->_PANC_shortName()}' ");
+                                        continue;
+                                    }
+
+                                $text = "    - object '{$object->name()}' merged with its ancestor, deleting: " . $object->_PANC_shortName();
+                                self::deletedObject( $index, $ancestor, $object);
+
+                                if( $this->action === "merge" )
+                                {
+                                    $object->replaceMeGlobally($ancestor, $this->apiMode);
+                                    if( $this->apiMode )
+                                        $object->owner->API_removeSecurityProfile($object);
+                                    else
+                                        $object->owner->removeSecurityProfile($object);
+                                }
+
+                                PH::print_stdout($text);
+
+                                $text = "         ancestor name: '{$ancestor->name()}' DG: ";
+                                if( $ancestor->owner->owner->name() == "" ) $text .= "'shared'";
+                                else $text .= "'{$ancestor->owner->owner->name()}'";
+                                $text .= "  Value: '{".implode("./.",$ancestor->getmembers())."'}' ";
+                                PH::print_stdout($text);
+
+                                if( $pickedObject === $object )
+                                    $pickedObject = $ancestor;
+
+                                $countRemoved++;
+
+                                if( $this->mergeCountLimit !== FALSE && $countRemoved >= $this->mergeCountLimit )
+                                {
+                                    PH::print_stdout("\n *** STOPPING MERGE OPERATIONS NOW SINCE WE REACHED mergeCountLimit ({$this->mergeCountLimit})");
+                                    break 2;
+                                }
+
+                                continue;
+                            }
+                            else
+                                $ancestor_different_color = "with different value";
+
+
+                        }
+                        PH::print_stdout("    - object '{$object->name()}' cannot be merged because it has an ancestor " . $ancestor_different_color . "");
+
+                        $text = "         ancestor name: '{$ancestor->name()}' DG: ";
+                        if( $ancestor->owner->owner->name() == "" ) $text .= "'shared'";
+                        else $text .= "'{$ancestor->owner->owner->name()}'";
+                        $text .= "  Value: '{".implode("./.",$ancestor->getmembers())."'}' ";
+                        PH::print_stdout($text);
+
+                        if( $this->upperLevelSearch )
+                            $tmpstring = "|->ERROR ancestor: '" . $object->_PANC_shortName() . "  value: '".implode("./.",$ancestor->getmembers())."' "."' cannot be merged. | ".$text;
+                        else
+                            $tmpstring = "|-> ancestor: '" . $object->_PANC_shortName() . "' you did not allow to merged";
+                        self::deletedObjectSetRemoved( $index, $tmpstring );
+
+                        continue;
+                    }
+
+                    if( $object === $pickedObject )
+                    {
+                        #PH::print_stdout("    - SKIPPED: '{$object->name()}' === '{$pickedObject->name()}': ");
+                        continue;
+                    }
+
+                    if( $this->dupAlg != 'identical' )
+                    {
+                        PH::print_stdout("    - replacing '{$object->_PANC_shortName()}' ...");
+                        #$object->__replaceWhereIamUsed($this->apiMode, $pickedObject, TRUE, 5);
+                        if( $this->action === "merge" )
+                            $object->replaceMeGlobally($pickedObject, $this->apiMode);
+
+                        PH::print_stdout("    - deleting '{$object->_PANC_shortName()}'");
+                        self::deletedObject( $index, $pickedObject, $object);
+
+                        if( $this->action === "merge" )
+                        {
+                            if( $this->apiMode )
+                                $object->owner->API_removeSecurityProfile($object);
+                            else
+                                $object->owner->removeSecurityProfile($object);
+                        }
+
+                        $countRemoved++;
+
+                        if( $this->mergeCountLimit !== FALSE && $countRemoved >= $this->mergeCountLimit )
+                        {
+                            PH::print_stdout("\n *** STOPPING MERGE OPERATIONS NOW SINCE WE REACHED mergeCountLimit ({$this->mergeCountLimit})");
+                            break 2;
+                        }
+                    }
+                    else
+                        PH::print_stdout("    - SKIP: object name '{$object->_PANC_shortName()}' is not IDENTICAL");
+                }
+
+            }
+
+            PH::print_stdout( "\n\nDuplicates removal is now done. Number of objects after cleanup: '{$store->count()}' (removed {$countRemoved} customURLcategory)\n" );
 
         }
     }
@@ -3722,7 +4170,7 @@ class MERGER extends UTIL
                     if( $this->dupAlg != 'identical' )
                     {
                         PH::print_stdout("    - replacing '{$object->_PANC_shortName()}' ...");
-                        mwarning("implementation needed for TAG");
+                        mwarning("implementation needed for OBJECT");
                         //Todo;SWASCHKUT
                         #$object->__replaceWhereIamUsed($this->apiMode, $pickedObject, TRUE, 5);
 

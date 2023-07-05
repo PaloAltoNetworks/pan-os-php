@@ -37,6 +37,8 @@ class customURLProfile
 
     public $secprof_type;
 
+    public $ancestor;
+
     /**
      * @param SecurityProfileStore|null $owner
      * @param bool $fromXmlTemplate
@@ -248,6 +250,64 @@ class customURLProfile
         PH::print_stdout(  "" );
     }
 
+    public function count()
+    {
+        return count( $this->members );
+    }
+
+    /**
+     * Return true if other object is also a group and has same object name
+     *  ( value in not taken in account, only object name !! )
+     * @param AddressGroup $otherObject
+     * @return bool
+     */
+    public function sameValue(customURLProfile $otherObject)
+    {
+        #if( $this->isTmpAddr() && !$otherObject->isTmpAddr() )
+        #    return FALSE;
+
+        #if( $otherObject->isTmpAddr() && !$this->isTmpAddr() )
+        #    return FALSE;
+
+        if( $otherObject->count() != $this->count() )
+            return FALSE;
+
+        $diff = $this->getValueDiff($otherObject);
+
+        if( count($diff['plus']) + count($diff['minus']) != 0 )
+            return FALSE;
+
+        return TRUE;
+    }
+
+
+    public function &getValueDiff(customURLProfile $otherObject)
+    {
+        $result = array('minus' => array(), 'plus' => array());
+
+        $localObjects = $this->members;
+        $otherObjects = $otherObject->members;
+
+        usort($localObjects, '__CmpObjName');
+        usort($otherObjects, '__CmpObjName');
+
+        $diff = array_udiff($otherObjects, $localObjects, '__CmpObjName');
+        if( count($diff) != 0 )
+            foreach( $diff as $d )
+            {
+                $result['minus'][] = $d;
+            }
+
+        $diff = array_udiff($localObjects, $otherObjects, '__CmpObjName');
+        if( count($diff) != 0 )
+            foreach( $diff as $d )
+            {
+                $result['plus'][] = $d;
+            }
+
+        return $result;
+    }
+
     static public $templatexml = '<entry name="**temporarynamechangeme**"></entry>';
     static public $templatexml_v9 = '<entry name="**temporarynamechangeme**"><type>URL List</type></entry>';
 
@@ -260,10 +320,11 @@ class customURLProfile
      * @param $otherObject Tag
      * @return bool
      */
-    /*
+
     public function equals( $otherObject )
     {
-        if( ! $otherObject->isTag() )
+        #if( ! $otherObject->isTag() )
+        if( get_class($otherObject) !== "customURLProfile" )
             return false;
 
         if( $otherObject->name != $this->name )
@@ -272,19 +333,6 @@ class customURLProfile
         return $this->sameValue( $otherObject);
     }
 
-    public function sameValue( Tag $otherObject)
-    {
-        if( $this->isTmp() && !$otherObject->isTmp() )
-            return false;
 
-        if( $otherObject->isTmp() && !$this->isTmp() )
-            return false;
-
-        if( $otherObject->color !== $this->color )
-            return false;
-
-        return true;
-    }
-    */
 }
 

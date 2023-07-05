@@ -538,7 +538,10 @@ function &cloneArray(&$old)
 
 function __CmpObjName($objA, $objB)
 {
-    return strcmp($objA->name(), $objB->name());
+    if( method_exists($objA,'name') && method_exists($objB,'name') )
+        return strcmp($objA->name(), $objB->name());
+    else
+        return strcmp($objA, $objB);
 }
 
 function __CmpObjMemID($objA, $objB)

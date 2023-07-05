@@ -93,11 +93,14 @@ trait ReferenceableObject
         }
     }
 
-    public function replaceMeGlobally($newobject)
+    public function replaceMeGlobally($newobject, $apimode=false)
     {
         foreach( $this->refrules as $o )
         {
-            $o->replaceReferencedObject($this, $newobject);
+            if( $apimode )
+                $o->API_replaceReferencedObject($this, $newobject);
+            else
+                $o->replaceReferencedObject($this, $newobject);
         }
     }
 
@@ -430,7 +433,10 @@ trait ReferenceableObject
         {
             if( isset($cur->owner) && $cur->owner !== null )
             {
-                $class = get_class($cur->owner);
+                if( get_class($cur) == "URLProfile" )
+                    $class = get_class($cur);
+                else
+                    $class = get_class($cur->owner);
                 $class = strtolower($class);
                 $type_array[$class] = $class;
             }
@@ -451,7 +457,6 @@ trait ReferenceableObject
         $type_array['servicegroup'] = FALSE;
         $type_array['securityrule'] = FALSE;
         $type_array['natrule'] = FALSE;
-        $type_array['natrule'] = FALSE;
         $type_array['decryptionrule'] = FALSE;
         $type_array['appoverriderule'] = FALSE;
         $type_array['captiveportalrule'] = FALSE;
@@ -459,6 +464,8 @@ trait ReferenceableObject
         $type_array['pbfrule'] = FALSE;
         $type_array['qosrule'] = FALSE;
         $type_array['dosrule'] = FALSE;
+
+        $type_array['urlprofile'] = FALSE;
 
         if( !array_key_exists($value, $type_array) )
         {

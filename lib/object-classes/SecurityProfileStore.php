@@ -523,7 +523,7 @@ class SecurityProfileStore extends ObjStore
 
 
     /**
-     * @param SecurityProfile| URLProfile | AntiSpywareProfile | AntiVirusProfile | VulnerabilityProfile | FileBlockingProfile | WildfireProfile $tag
+     * @param SecurityProfile| URLProfile | AntiSpywareProfile | AntiVirusProfile | VulnerabilityProfile | FileBlockingProfile | WildfireProfile | customURLProfile $tag
      *
      * @return bool  True if Zone was found and removed. False if not found.
      */
@@ -541,7 +541,7 @@ class SecurityProfileStore extends ObjStore
     }
 
     /**
-     * @param SecurityProfile| URLProfile | AntiSpywareProfile | AntiVirusProfile | VulnerabilityProfile | FileBlockingProfile | WildfireProfile $securityProfile
+     * @param SecurityProfile| URLProfile | AntiSpywareProfile | AntiVirusProfile | VulnerabilityProfile | FileBlockingProfile | WildfireProfile | customURLProfile $securityProfile
      * @return bool
      */
     public function API_removeSecurityProfile( $securityProfile)
@@ -600,6 +600,55 @@ class SecurityProfileStore extends ObjStore
     {
         $path = $this->getBaseXPath();
         return $path;
+    }
+
+    /**
+     * @return * @param SecurityProfile| URLProfile | AntiSpywareProfile | AntiVirusProfile | VulnerabilityProfile | FileBlockingProfile | WildfireProfile | customURLProfile []
+     */
+    public function nestedPointOfView()
+    {
+        $current = $this;
+
+        $objects = array();
+
+        while( TRUE )
+        {
+            if( get_class( $current->owner ) == "PanoramaConf" )
+                $location = "shared";
+            else
+                $location = $current->owner->name();
+
+            foreach( $current->o as $o )
+            {
+                if( !isset($objects[$o->name()]) )
+                    $objects[$o->name()] = $o;
+                else
+                {
+                    $tmp_o = &$objects[ $o->name() ];
+                    $tmp_ref_count = $tmp_o->countReferences();
+
+                    if( $tmp_ref_count == 0 )
+                    {
+                        //Todo: check if object value is same; if same to not add ref
+                        if( $location != "shared" )
+                            foreach( $o->refrules as $ref )
+                                $tmp_o->addReference( $ref );
+                    }
+                }
+            }
+
+            $storeType = "customURLProfileStore";
+            if( isset($current->owner->parentDeviceGroup) && $current->owner->parentDeviceGroup !== null )
+                $current = $current->owner->parentDeviceGroup->$storeType;
+            elseif( isset($current->owner->parentContainer) && $current->owner->parentContainer !== null )
+                $current = $current->owner->parentContainer->$storeType;
+            elseif( isset($current->owner->owner) && $current->owner->owner !== null && !$current->owner->owner->isFawkes() && !$current->owner->owner->isBuckbeak() )
+                $current = $current->owner->owner->$storeType;
+            else
+                break;
+        }
+
+        return $objects;
     }
 
     public function rewriteXML()

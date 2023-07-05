@@ -130,6 +130,12 @@ foreach( $test_merger as $merger )
         $dupalgorithm_array[] = 'Identical';
         $dupalgorithm_array[] = 'WhereUsed';
         $dupalgorithm_array[] = 'SameName';
+    }elseif( $merger == 'customurlprofile' )
+    {
+        $util = '../utils/pan-os-php.php type=custom-url-category-merger';
+        $dupalgorithm_array[] = 'SameValue';
+        $dupalgorithm_array[] = 'Identical';
+        $dupalgorithm_array[] = 'SameName';
     }
 
     else

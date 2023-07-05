@@ -106,12 +106,12 @@ class PanAPIConnector
 
     public function isSaseAPI()
     {
-        return TRUE;
+        return FALSE;
     }
 
     public function isAPI()
     {
-        return FALSE;
+        return TRUE;
     }
 
     /**

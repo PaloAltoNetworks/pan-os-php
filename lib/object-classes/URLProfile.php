@@ -312,6 +312,7 @@ class URLProfile
         if( !in_array($newMember, $this->$type, TRUE) )
         {
             $this->$type[] = $newMember;
+            $this->_all[$newMember] = $type;
             if( $rewriteXml && $this->owner !== null )
             {
                 #$tmp = DH::findFirstElementOrCreate("credential-enforcement", $this->xmlroot);
@@ -345,12 +346,13 @@ class URLProfile
         {
             $key = array_search($newMember, $this->$type);
             unset($this->$type[$key]);
+            unset($this->_all[$key]);
 
             if( $rewriteXml && $this->owner !== null )
             {
-                #$tmp = DH::findFirstElementOrCreate("credential-enforcement", $this->xmlroot);
-                #$array = array( $this->xmlroot, $tmp );
-                $array = array( $this->xmlroot );
+                $tmp = DH::findFirstElementOrCreate("credential-enforcement", $this->xmlroot);
+                $array = array( $this->xmlroot, $tmp );
+                #$array = array( $this->xmlroot );
                 foreach( $array as $xmlNode )
                 {
                     $actionXMLnode = DH::findFirstElementOrCreate($type, $xmlNode);
@@ -444,6 +446,55 @@ class URLProfile
 
     }
 
+    /**
+     * @param customURLProfile $old
+     * @param customURLProfile|null $new
+     * @return bool
+     */
+    public function replaceReferencedObject($old, $new)
+    {
+        if( $old === null )
+            derr("\$old cannot be null");
+
+        if( isset( $this->_all[$old->name()] ) )
+        {
+            $old_type = $this->_all[$old->name()];
+
+            #if( $new !== null && !$this->has( $new->name() ) )
+            if( $new !== null && !isset( $this->_all[$new->name()] ) )
+            {
+                $this->deleteMember($old->name(), $old_type);
+                $this->addMember( $new->name(), $old_type );
+                $new->addReference($this);
+            }
+            else
+            {
+                $this->deleteMember($old->name(), $old_type);
+                $this->deleteMember($new->name(), $this->_all[$new->name()]);
+                $this->addMember( $new->name(), $old_type );
+            }
+            $old->removeReference($this);
+
+            #if( $new === null || $new->name() != $old->name() )
+            #    $this->rewriteXML();
+
+            return TRUE;
+        }
+
+        return FALSE;
+    }
+
+    public function API_replaceReferencedObject($old, $new)
+    {
+        $ret = $this->replaceReferencedObject($old, $new);
+
+        if( $ret )
+        {
+            $this->API_sync();
+        }
+
+        return $ret;
+    }
 
     static $templatexml = '<entry name="**temporarynamechangeme**"></entry>';
 

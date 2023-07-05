@@ -451,7 +451,7 @@ class PH
                 PanAPIConnector::loadConnectorsFromUserHome();
                 $host = substr($str, strlen('sase-api://'));
                 $ret['status'] = 'ok';
-                $ret['type'] = 'sase-api';
+                #$ret['type'] = 'sase-api';
 
                 $connector = new PanSaseAPIConnector($host);
                 $connector->findOrCreateConnectorFromHost($host);
@@ -982,7 +982,8 @@ class PH
         "gcp",
         "vendor-migration",
         "appid-toolbox",
-        "rule-compare"
+        "rule-compare",
+        "custom-url-category-merger"
         );
 
 
@@ -1048,6 +1049,7 @@ class PH
             || $type == "service-merger"
             || $type == "servicegroup-merger"
             || $type == "tag-merger"
+            || $type == "custom-url-category-merger"
         )
             $util = new MERGER($type, $argv, $argc,$PHP_FILE." type=".$type, $_supportedArguments, $_usageMsg, $projectfolder);
 
