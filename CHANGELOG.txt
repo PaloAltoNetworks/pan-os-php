@@ -11,6 +11,7 @@ UTIL:
 * in=sase-api:// - Strate Cloud Manager | extend reading objects based on type=
 * type=rule | actions=display/exporttoexcel - extend additional argument ResolveAddressSummary with name/ip value from nested members
 * type=xml-issue  | extend check with secRule category field for ANY + other category configured
+* type=custom-url-catgory-merger | introduction of new merger utiliy
 
 BUGFIX:
 * class Zone.php | bugfix to create XML node "zone" if not yet available during creating of a new Zone
