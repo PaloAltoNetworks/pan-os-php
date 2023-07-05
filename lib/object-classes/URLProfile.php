@@ -315,9 +315,9 @@ class URLProfile
             $this->_all[$newMember] = $type;
             if( $rewriteXml && $this->owner !== null )
             {
-                #$tmp = DH::findFirstElementOrCreate("credential-enforcement", $this->xmlroot);
-                #$array = array( $this->xmlroot, $tmp );
-                $array = array( $this->xmlroot );
+                $tmp = DH::findFirstElementOrCreate("credential-enforcement", $this->xmlroot);
+                $array = array( $this->xmlroot, $tmp );
+                #$array = array( $this->xmlroot );
                 foreach( $array as $xmlNode )
                 {
                     $tmp = DH::findFirstElementOrCreate($type, $xmlNode);
@@ -460,6 +460,9 @@ class URLProfile
         {
             $old_type = $this->_all[$old->name()];
 
+            if( $new === null || $new->name() == $old->name() )
+                return False;
+
             #if( $new !== null && !$this->has( $new->name() ) )
             if( $new !== null && !isset( $this->_all[$new->name()] ) )
             {
@@ -470,7 +473,8 @@ class URLProfile
             else
             {
                 $this->deleteMember($old->name(), $old_type);
-                $this->deleteMember($new->name(), $this->_all[$new->name()]);
+                if( isset($this->_all[$new->name()]) )
+                    $this->deleteMember($new->name(), $this->_all[$new->name()]);
                 $this->addMember( $new->name(), $old_type );
             }
             $old->removeReference($this);
