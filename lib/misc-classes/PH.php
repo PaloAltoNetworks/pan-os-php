@@ -451,7 +451,7 @@ class PH
                 PanAPIConnector::loadConnectorsFromUserHome();
                 $host = substr($str, strlen('sase-api://'));
                 $ret['status'] = 'ok';
-                #$ret['type'] = 'sase-api';
+                $ret['type'] = 'sase-api';
 
                 $connector = new PanSaseAPIConnector($host);
                 $connector->findOrCreateConnectorFromHost($host);
