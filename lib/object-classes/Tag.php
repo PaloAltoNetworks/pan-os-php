@@ -233,7 +233,7 @@ class Tag
             if( $newColor === "Olive" )
                 $newColor = "dark green";
             elseif( !isset( TAG::$TagColors[ $newColor ] ) )
-                $newColor = lcfirst( $newColor );
+                $newColor = strtolower( $newColor );
         }
 
         if( !isset(self::$TagColors[$newColor]) )

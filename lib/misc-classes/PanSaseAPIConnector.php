@@ -383,7 +383,7 @@ class PanSaseAPIConnector
         elseif( get_class($object) == "Service" )
             return "services";
         elseif( get_class($object) == "ServiceGroup" )
-            return "services-groups";
+            return "service-groups";
         elseif( get_class($object) == "SecurityRule" )
             return "security-rules";
         elseif( get_class($object) == "AuthenticationRule" )
@@ -577,8 +577,18 @@ class PanSaseAPIConnector
                         $tmp_address = $sub->addressStore->newAddress($object['name'], 'ip-netmask', $object['ip_netmask']);
                     elseif( isset($object['fqdn']) )
                         $tmp_address = $sub->addressStore->newAddress($object['name'], 'fqdn', $object['fqdn']);
+                    elseif( isset($object['ip_range']) )
+                        $tmp_address = $sub->addressStore->newAddress($object['name'], 'ip-range', $object['ip_range']);
+                    elseif( isset($object['ip_wildcard']) )
+                        $tmp_address = $sub->addressStore->newAddress($object['name'], 'ip-wildcard', $object['ip_wildcard']);
+                    else
+                    {
+                        print_r( $object );
+                        mwarning( "type: not supported", null, FALSE );
+                        continue;
+                    }
 
-                    if( isset($object['description']) )
+                    if( isset($object['description']) and $tmp_address !== null)
                     {
                         if( is_string($object['description']) )
                             $tmp_address->setDescription($object['description']);
@@ -624,7 +634,8 @@ class PanSaseAPIConnector
                         foreach( $object['static'] as $member )
                         {
                             $tmp_address = $sub->addressStore->find($member);
-                            $tmp_addressgroup->addMember($tmp_address);
+                            if( $tmp_address !== null )
+                                $tmp_addressgroup->addMember($tmp_address);
                         }
 
                         $tmp_addressgroup->setSaseID( $object['id'] );
@@ -644,6 +655,30 @@ class PanSaseAPIConnector
                         if( is_string($object['description']) )
                             $tmp_service->setDescription($object['description']);
                     $tmp_service->setSaseID( $object['id'] );
+                }
+            }
+            elseif( $type === "service-groups" )
+            {
+                if( isset( $object['id'] ) )
+                {
+                    $tmp_servicegroup = $sub->serviceStore->newServiceGroup($object['name']);
+                    foreach( $object['members'] as $member )
+                    {
+                        $tmp_service = $sub->serviceStore->find($member);
+                        if( $tmp_service !== null )
+                            $tmp_servicegroup->addMember($tmp_service);
+                    }
+
+                    if( isset($object['tag']) )
+                    {
+                        foreach( $object['tag'] as $tag )
+                        {
+                            $tmp_tag = $sub->tagStore->findOrCreate($tag);
+                            $tmp_servicegroup->tags->addTag($tmp_tag);
+                        }
+                    }
+
+                    $tmp_servicegroup->setSaseID( $object['id'] );
                 }
             }
             elseif( $type === "schedules" )

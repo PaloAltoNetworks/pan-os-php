@@ -3695,7 +3695,7 @@ RQuery::$defaultFilters['rule']['schedule']['operators']['has.regex'] = array(
     },
     'arg' => TRUE,
     'ci' => array(
-        'fString' => '(%PROP% day)',
+        'fString' => '(%PROP% /day/)',
         'input' => 'input/panorama-8.0.xml'
     )
 );
