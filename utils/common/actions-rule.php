@@ -4300,6 +4300,37 @@ RuleCallContext::$supportedActions[] = array(
         if( isset( $_SERVER['REQUEST_METHOD'] ) )
             $filename = "project/html/".$filename;
 
+        $encloseFunction = function ($value, $nowrap = TRUE) {
+            if( is_string($value) )
+                $output = htmlspecialchars($value);
+            elseif( is_array($value) )
+            {
+                $output = '';
+                $first = TRUE;
+                foreach( $value as $subValue )
+                {
+                    if( !$first )
+                    {
+                        $output .= '<br />';
+                    }
+                    else
+                        $first = FALSE;
+
+                    if( is_string($subValue) )
+                        $output .= htmlspecialchars($subValue);
+                    else
+                        $output .= htmlspecialchars($subValue->name());
+                }
+            }
+            else
+                derr('unsupported');
+
+            if( $nowrap )
+                return '<td style="white-space: nowrap">' . $output . '</td>';
+
+            return '<td>' . $output . '</td>';
+        };
+
         $addResolvedAddressSummary = FALSE;
         $addResolvedServiceSummary = FALSE;
         $addResolvedApplicationSummary = FALSE;
@@ -4325,6 +4356,7 @@ RuleCallContext::$supportedActions[] = array(
         if( isset($optionalFields['HitCount']) )
             $addHitCountSummary = TRUE;
         $fields = array(
+            'ID' => 'ID',
             'location' => 'location',
             'rulebase' => 'rulebase',
             'rule_type' => 'rule_type',
@@ -4397,6 +4429,8 @@ RuleCallContext::$supportedActions[] = array(
                     $lines .= "<tr>\n";
                 else
                     $lines .= "<tr bgcolor=\"#DDDDDD\">";
+
+                $lines .= $encloseFunction( (string)$count );
 
                 foreach( $fields as $fieldName => $fieldID )
                 {

@@ -775,7 +775,7 @@ DeviceCallContext::$supportedActions['exportToExcel'] = array(
 
 
         #$headers = '<th>location</th><th>name</th><th>template</th>';
-        $headers = '<th>name</th><th>template</th>';
+        $headers = '<th>ID</th><th>name</th><th>template</th>';
 
         if( $addWhereUsed )
             $headers .= '<th>where used</th>';
@@ -794,6 +794,8 @@ DeviceCallContext::$supportedActions['exportToExcel'] = array(
                     $lines .= "<tr>\n";
                 else
                     $lines .= "<tr bgcolor=\"#DDDDDD\">";
+
+                $lines .= $encloseFunction( (string)$count );
 
                 #$lines .= $encloseFunction(PH::getLocationString($object));
 

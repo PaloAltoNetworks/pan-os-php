@@ -625,7 +625,7 @@ TagCallContext::$supportedActions[] = array(
             $addUsedInLocation = TRUE;
 
 
-        $headers = '<th>location</th><th>name</th><th>color</th><th>description</th>';
+        $headers = '<th>ID</th><th>location</th><th>name</th><th>color</th><th>description</th>';
 
         if( $addWhereUsed )
             $headers .= '<th>where used</th>';
@@ -644,6 +644,8 @@ TagCallContext::$supportedActions[] = array(
                     $lines .= "<tr>\n";
                 else
                     $lines .= "<tr bgcolor=\"#DDDDDD\">";
+
+                $lines .= $encloseFunction( (string)$count );
 
                 $lines .= $encloseFunction(PH::getLocationString($object));
 

@@ -459,7 +459,7 @@ SecurityProfileCallContext::$supportedActions[] = array(
 
 
         #$headers = '<th>location</th><th>name</th><th>type</th><th>value</th><th>description</th><th>tags</th>';
-        $headers = '<th>location</th><th>name</th><th>store</th><th>type</th><th>exception</th><th>members</th>';
+        $headers = '<th>ID</th><th>location</th><th>name</th><th>store</th><th>type</th><th>exception</th><th>members</th>';
 
 
         if( $addWhereUsed )
@@ -512,6 +512,8 @@ SecurityProfileCallContext::$supportedActions[] = array(
                     $lines .= "<tr>\n";
                 else
                     $lines .= "<tr bgcolor=\"#DDDDDD\">";
+
+                $lines .= $encloseFunction( (string)$count );
 
                 if( $object->owner->owner === null )
                 {

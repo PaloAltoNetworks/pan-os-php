@@ -279,7 +279,7 @@ SecurityProfileGroupCallContext::$supportedActions[] = array(
             $addUsedInLocation = TRUE;
 
 
-        $headers = '<th>location</th><th>name</th><th>used in location</th><th>location use</th><th>total use</th><th>Antivirus</th><th>Anti-Spyware</th><th>Vulnerability</th><th>URL Filtering</th><th>File Blocking</th><th>Data Filtering</th><th>WildFire Analysis</th>';
+        $headers = '<th>ID</th><th>location</th><th>name</th><th>used in location</th><th>location use</th><th>total use</th><th>Antivirus</th><th>Anti-Spyware</th><th>Vulnerability</th><th>URL Filtering</th><th>File Blocking</th><th>Data Filtering</th><th>WildFire Analysis</th>';
 
         if( $addWhereUsed )
             $headers .= '<th>where used</th>';
@@ -298,6 +298,8 @@ SecurityProfileGroupCallContext::$supportedActions[] = array(
                     $lines .= "<tr>\n";
                 else
                     $lines .= "<tr bgcolor=\"#DDDDDD\">";
+
+                $lines .= $encloseFunction( (string)$count );
 
                 $lines .= $encloseFunction(PH::getLocationString($object));
 

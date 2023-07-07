@@ -778,7 +778,7 @@ AddressCallContext::$supportedActions[] = array(
         }
 
 
-        $headers = '<th>location</th><th>name</th><th>type</th><th>value</th><th>description</th><th>Memberscount</th><th>IPcount</th><th>tags</th>';
+        $headers = '<th>ID</th><th>location</th><th>name</th><th>type</th><th>value</th><th>description</th><th>Memberscount</th><th>IPcount</th><th>tags</th>';
 
         if( $addWhereUsed )
             $headers .= '<th>where used</th>';
@@ -839,6 +839,8 @@ AddressCallContext::$supportedActions[] = array(
                     $lines .= "<tr>\n";
                 else
                     $lines .= "<tr bgcolor=\"#DDDDDD\">";
+
+                $lines .= $encloseFunction( (string)$count );
 
                 if( $object->owner->owner->isPanorama() || $object->owner->owner->isFirewall() )
                     $lines .= $encloseFunction('shared');

@@ -4237,9 +4237,9 @@ class MERGER extends UTIL
     function exportCSVToHtml( $skipped = FALSE)
     {
         if( !$skipped )
-            $headers = '<th>ID</th><th>value</th><th>kept (create)</th><th>removed</th>';
+            $headers = '<th>ID</th><th>hash</th><th>kept (create)</th><th>removed</th>';
         else
-            $headers = '<th>ID</th><th>value</th><th>kept</th><th>not merged with</th>';
+            $headers = '<th>ID</th><th>hash</th><th>kept</th><th>not merged with</th>';
 
 
         $lines = '';
@@ -4302,7 +4302,9 @@ class MERGER extends UTIL
 
                 $lines .= $encloseFunction( (string)$count );
 
-                $lines .= $encloseFunction( (string)$index );
+                $tmp_array = explode( "./.", $index );
+                $lines .= $encloseFunction( $tmp_array );
+                #$lines .= $encloseFunction( (string)$index );
 
                 if( isset( $line['kept'] ) )
                     $lines .= $encloseFunction( $line['kept'] );
