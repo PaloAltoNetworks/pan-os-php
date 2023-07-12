@@ -576,10 +576,22 @@ trait AddressCommon
                 }
             }
 
+            if( get_class($objectRef) == "AddressGroup" )
+            {
+                if( $objectRef->name() === $withObject->name() )
+                {
+                    PH::print_stdout( "- SKIP: not possible to replace due to same name (will cause LOOP) from member and AddressGroup: '{$objectRef->name()}' and {$withObject->name()}" );
+                    $success = false;
+                    $success2 = false;
+                    continue;
+                }
+            }
+
+
             if( $success2 )
             {
                 if( $displayOutput )
-                    PH::print_stdout( $outputPadding . "- replacing2 in {$objectRef->toString()}" );
+                    PH::print_stdout( $outputPadding . "- replacing in {$objectRef->toString()}" );
                 if( $apiMode )
                     $objectRef->API_replaceReferencedObject($this, $withObject);
                 else
