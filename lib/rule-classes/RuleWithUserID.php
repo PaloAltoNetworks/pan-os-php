@@ -194,7 +194,8 @@ class RuleWithUserID extends Rule
             $con = findConnectorOrDie($this);
 
             //$con->sendEditRequest($xpath, '<source-user><member>' . $newUser . '</member></source-user>');
-            $con->sendSetRequest($xpath, "<member>$newUser</member>");
+            if( $con->isAPI() )
+                $con->sendSetRequest($xpath, "<member>$newUser</member>");
         }
 
         return $ret;
@@ -214,13 +215,15 @@ class RuleWithUserID extends Rule
             if( $this->userID_count() < 1 )
             {
                 #$con->sendEditRequest($xpath, $this->getXmlText_inline());
-                $con->sendEditRequest($xpath, '<source-user><member>any</member></source-user>');
+                if( $con->isAPI() )
+                    $con->sendEditRequest($xpath, '<source-user><member>any</member></source-user>');
                 return TRUE;
             }
 
 
             $xpath = $xpath . "/member[text()='" . $newUser . "']";
-            $con->sendDeleteRequest($xpath);
+            if( $con->isAPI() )
+                $con->sendDeleteRequest($xpath);
         }
     }
 
@@ -233,7 +236,8 @@ class RuleWithUserID extends Rule
             $xpath = $this->getXPath() . '/source-user';
             $con = findConnectorOrDie($this);
 
-            $con->sendEditRequest($xpath, '<source-user><member>any</member></source-user>');
+            if( $con->isAPI() )
+                $con->sendEditRequest($xpath, '<source-user><member>any</member></source-user>');
         }
 
         return $ret;

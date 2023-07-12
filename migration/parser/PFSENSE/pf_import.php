@@ -19,7 +19,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-require_once("pan-os-php/lib/pan_php_framework.php");
+require_once("lib/pan_php_framework.php");
 
 
 function display_error_usage_exit($msg)

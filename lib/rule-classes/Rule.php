@@ -94,6 +94,16 @@ class Rule
     }
 
     /**
+     * Returns uuid of this rule
+     * @return bool
+     */
+    public function setUUID( $uuid)
+    {
+        $this->uuid = $uuid;
+        return true;
+    }
+
+    /**
      *
      * @return bool
      */
@@ -288,7 +298,8 @@ class Rule
         if( $ret )
         {
             $con = findConnectorOrDie($this);
-            $con->sendDeleteRequest($this->getXPath() . '/target/devices');
+            if( $con->isAPI() )
+                $con->sendDeleteRequest($this->getXPath() . '/target/devices');
         }
 
         return $ret;
@@ -1834,7 +1845,8 @@ class Rule
         $array = array();
         foreach( $objects as $object )
         {
-            $port_mapping = $object->dstPortMapping();
+            #$port_mapping = $object->dstPortMapping();
+            $port_mapping = $object->dstPortMapping( array(), $this->owner->owner );
             $mapping_texts = $port_mapping->mappingToText();
 
             //TODO: handle predefined service objects in a different way

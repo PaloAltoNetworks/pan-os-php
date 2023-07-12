@@ -332,6 +332,7 @@ trait ServiceCommon
 
         foreach( $this->refrules as $objectRef )
         {
+            $success2 = true;
 
             if( ($this->isService() && $withObject->isService()) )
             {
@@ -339,6 +340,7 @@ trait ServiceCommon
                 {
                     PH::print_stdout("- SKIP: not possible due to different object type: '".$this->name()." - ".$this->protocol()."' <=> '".$withObject->name()." - ".$withObject->protocol()."'" );
                     $success = false;
+                    $success2 = false;
                     continue;
                 }
 
@@ -360,6 +362,7 @@ trait ServiceCommon
                 {
                     PH::print_stdout( "- SKIP: not possible due to different object type. object is not Service" );
                     $success = false;
+                    $success2 = false;
                     continue;
                 }
 
@@ -368,17 +371,32 @@ trait ServiceCommon
                     PH::print_stdout( "- SKIP: not possible to replace due to different value: {$objectRef->toString()}" );
                     PH::print_stdout( " - '".$withObject->protocol()."-".$withObject->getDestPort()."[".$withObject->getSourcePort()."]"."' | '".$tmp_addr->protocol()."-".$tmp_addr->getDestPort()."[".$tmp_addr->getSourcePort()."]"."'" );
                     $success = false;
+                    $success2 = false;
                     continue;
                 }
 
             }
 
-            if( $displayOutput )
-                PH::print_stdout( $outputPadding . "- replacing in {$objectRef->toString()}" );
-            if( $apiMode )
-                $objectRef->API_replaceReferencedObject($this, $withObject);
-            else
-                $objectRef->replaceReferencedObject($this, $withObject);
+            if( get_class($objectRef) == "ServiceGroup" )
+            {
+                if( $objectRef->name() === $withObject->name() )
+                {
+                    PH::print_stdout( "- SKIP: not possible to replace due to same name (will cause LOOP) from member and ServiceGroup: '{$objectRef->name()}' and {$withObject->name()}" );
+                    $success = false;
+                    $success2 = false;
+                    continue;
+                }
+            }
+
+            if( $success2 )
+            {
+                if( $displayOutput )
+                    PH::print_stdout($outputPadding . "- replacing in {$objectRef->toString()}");
+                if( $apiMode )
+                    $objectRef->API_replaceReferencedObject($this, $withObject);
+                else
+                    $objectRef->replaceReferencedObject($this, $withObject);
+            }
         }
 
         return $success;

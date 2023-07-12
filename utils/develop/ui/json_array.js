@@ -1394,6 +1394,11 @@ var subjectObject =
         "action": [],
         "filter": []
     },
+    "custom-url-category-merger": {
+        "name": "custom-url-category-merger",
+        "action": [],
+        "filter": []
+    },
     "device": {
         "name": "device",
         "action": {
@@ -3934,6 +3939,14 @@ var subjectObject =
                         "arg": false,
                         "ci": {
                             "fString": "(%PROP%)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    },
+                    "is.regex": {
+                        "Function": {},
+                        "arg": true,
+                        "ci": {
+                            "fString": "(%PROP% \/test-\/)",
                             "input": "input\/panorama-8.0.xml"
                         }
                     }

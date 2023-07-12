@@ -22,9 +22,11 @@
  * Class PathableName
  * @property AppStore|AddressStore|ServiceStore|RuleStore|Rule|PanoramaConf|PANConf|DeviceGroup|VirtualSystem $owner
  * @property string $name
+ * @property string $saseID
  */
 trait PathableName
 {
+    public $saseID = null;
     /**
      *
      * @return String
@@ -85,5 +87,15 @@ trait PathableName
     {
         $obj = PH::findLocationObjectOrDie($this);
         return PH::getLocationString($obj);
+    }
+
+    public function setSaseID( $saseID )
+    {
+        $this->saseID = $saseID;
+    }
+
+    public function getSaseID()
+    {
+        return $this->saseID;
     }
 }

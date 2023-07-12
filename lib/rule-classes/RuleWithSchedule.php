@@ -131,9 +131,11 @@ trait RuleWithSchedule
             $con = findConnectorOrDie($this);
 
             if( !is_object( $this->schedule )  )
-                $con->sendDeleteRequest($xpath);
+                if( $con->isAPI() )
+                    $con->sendDeleteRequest($xpath);
             else
-                $con->sendSetRequest($this->getXPath(), '<schedule>' . htmlspecialchars($this->schedule->name()) . '</schedule>');
+                if( $con->isAPI() )
+                    $con->sendSetRequest($this->getXPath(), '<schedule>' . htmlspecialchars($this->schedule->name()) . '</schedule>');
 
         }
 
@@ -172,7 +174,8 @@ trait RuleWithSchedule
             $xpath = $this->getXPath() . '/schedule';
             $con = findConnectorOrDie($this);
 
-            $con->sendDeleteRequest($xpath);
+            if( $con->isAPI() )
+                $con->sendDeleteRequest($xpath);
         }
 
         return $ret;

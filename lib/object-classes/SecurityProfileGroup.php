@@ -115,10 +115,13 @@ class SecurityProfileGroup
      */
     public function API_setName($newName)
     {
+        $this->setName($newName);
+
         $c = findConnectorOrDie($this);
         $xpath = $this->getXPath();
-        $c->sendRenameRequest($xpath, $newName);
-        $this->setName($newName);
+
+        if( $c->isAPI() )
+            $c->sendRenameRequest($xpath, $newName);
     }
 
 
@@ -251,8 +254,9 @@ class SecurityProfileGroup
         $xpath = $this->getXPath();
 
         $commentsRoot = DH::findFirstElement('comments', $this->xmlroot);
-        $c->sendEditRequest($xpath . "/comments", DH::dom_to_xml($commentsRoot, -1, FALSE));
-        $this->addComments($newComment);
+
+        if( $c->isAPI() )
+            $c->sendEditRequest($xpath . "/comments", DH::dom_to_xml($commentsRoot, -1, FALSE));
 
         return TRUE;
     }
@@ -287,7 +291,8 @@ class SecurityProfileGroup
         $c = findConnectorOrDie($this);
         $xpath = $this->getXPath();
 
-        $c->sendEditRequest($xpath, DH::dom_to_xml($this->xmlroot, -1, FALSE));
+        if( $c->isAPI() )
+            $c->sendEditRequest($xpath, DH::dom_to_xml($this->xmlroot, -1, FALSE));
 
         return TRUE;
     }
@@ -310,7 +315,8 @@ class SecurityProfileGroup
             $xpath = $this->getXPath();
             $con = findConnectorOrDie($this);
 
-            $con->sendDeleteRequest($xpath);
+            if( $con->isAPI() )
+                $con->sendDeleteRequest($xpath);
         }
 
         return $ret;

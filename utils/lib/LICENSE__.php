@@ -17,6 +17,12 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*
+ * Todo: swaschkut 20230626
+ * - /api/?type=op&cmd=<request><license><fetch></fetch></license></request>
+ * connect to Panorama
+ * run command against all connected FW through Panorama
+ */
 class LICENSE__
 {
     public $utilType = null;

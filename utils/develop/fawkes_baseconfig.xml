@@ -1,0 +1,1073 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config fawkes-config-version="3" urldb="paloaltonetworks.com" version="10.0.0">
+  <mgt-config>
+    <users>
+      <entry name="admin" uuid="00000000-0000-0000-0000-000000000000">
+        <phash>*</phash>
+        <permissions>
+          <role-based>
+            <superuser>yes</superuser>
+          </role-based>
+        </permissions>
+      </entry>
+    </users>
+    <password-complexity>
+      <password-change/>
+    </password-complexity>
+    <access-domain/>
+  </mgt-config>
+  <devices>
+    <entry name="localhost.localdomain">
+      <deviceconfig>
+        <system>
+          <ip-address>192.168.1.1</ip-address>
+          <netmask>255.255.255.0</netmask>
+          <update-server>pansupport.paloaltonetworks.com</update-server>
+          <timezone>US/Pacific</timezone>
+          <service>
+            <disable-telnet>yes</disable-telnet>
+            <disable-http>yes</disable-http>
+          </service>
+        </system>
+        <setting>
+          <management>
+            <storage-partition>
+              <internal/>
+            </storage-partition>
+            <hostname-type-in-syslog>FQDN</hostname-type-in-syslog>
+          </management>
+        </setting>
+      </deviceconfig>
+      <snippet>
+        <entry name="predefined-snippet"/>
+      </snippet>
+      <container>
+        <entry name="All">
+          <snippets>
+            <member>predefined-snippet</member>
+          </snippets>
+          <devices>
+            <entry name="localhost.localdomain">
+              <network>
+                <ike>
+                  <crypto-profiles>
+                    <ike-crypto-profiles>
+                      <entry name="PaloAlto-Networks-IKE-Crypto">
+                        <hash>
+                          <member>sha1</member>
+                        </hash>
+                        <dh-group>
+                          <member>group2</member>
+                        </dh-group>
+                        <encryption>
+                          <member>aes-128-cbc</member>
+                          <member>3des</member>
+                        </encryption>
+                        <lifetime>
+                          <hours>8</hours>
+                        </lifetime>
+                      </entry>
+                    </ike-crypto-profiles>
+                    <ipsec-crypto-profiles>
+                      <entry name="PaloAlto-Networks-IPSec-Crypto">
+                        <esp>
+                          <authentication>
+                            <member>sha1</member>
+                          </authentication>
+                          <encryption>
+                            <member>aes-128-cbc</member>
+                            <member>3des</member>
+                          </encryption>
+                        </esp>
+                        <lifetime>
+                          <hours>1</hours>
+                        </lifetime>
+                        <dh-group>group2</dh-group>
+                      </entry>
+                    </ipsec-crypto-profiles>
+                  </crypto-profiles>
+                </ike>
+              </network>
+            </entry>
+          </devices>
+        </entry>
+        <entry name="Prisma Access">
+          <parent>All</parent>
+          <log-settings>
+            <profiles>
+              <entry name="Cortex Data Lake">
+                <match-list>
+                  <entry name="traffic-enhanced-app-logging">
+                    <log-type>traffic</log-type>
+                    <filter>All Logs</filter>
+                    <send-to-panorama>yes</send-to-panorama>
+                  </entry>
+                  <entry name="threat-enhanced-app-logging">
+                    <log-type>threat</log-type>
+                    <filter>All Logs</filter>
+                    <send-to-panorama>yes</send-to-panorama>
+                  </entry>
+                  <entry name="wildfire-enhanced-app-logging">
+                    <log-type>wildfire</log-type>
+                    <filter>All Logs</filter>
+                    <send-to-panorama>yes</send-to-panorama>
+                  </entry>
+                  <entry name="url-enhanced-app-logging">
+                    <log-type>url</log-type>
+                    <filter>All Logs</filter>
+                    <send-to-panorama>yes</send-to-panorama>
+                  </entry>
+                  <entry name="data-enhanced-app-logging">
+                    <log-type>data</log-type>
+                    <filter>All Logs</filter>
+                    <send-to-panorama>yes</send-to-panorama>
+                  </entry>
+                  <entry name="tunnel-enhanced-app-logging">
+                    <log-type>tunnel</log-type>
+                    <filter>All Logs</filter>
+                    <send-to-panorama>yes</send-to-panorama>
+                  </entry>
+                  <entry name="auth-enhanced-app-logging">
+                    <log-type>auth</log-type>
+                    <filter>All Logs</filter>
+                    <send-to-panorama>yes</send-to-panorama>
+                  </entry>
+                </match-list>
+                <enhanced-application-logging>yes</enhanced-application-logging>
+              </entry>
+            </profiles>
+          </log-settings>
+          <pre-rulebase>
+            <decryption>
+              <rules>
+                <entry name="best-practice-no-decryption">
+                  <category>
+                    <member>financial-services</member>
+                    <member>government</member>
+                    <member>health-and-medicine</member>
+                    <member>shopping</member>
+                  </category>
+                  <service>
+                    <member>any</member>
+                  </service>
+                  <type>
+                    <ssl-forward-proxy/>
+                  </type>
+                  <from>
+                    <member>trust</member>
+                  </from>
+                  <to>
+                    <member>untrust</member>
+                  </to>
+                  <source>
+                    <member>any</member>
+                  </source>
+                  <destination>
+                    <member>any</member>
+                  </destination>
+                  <source-user>
+                    <member>any</member>
+                  </source-user>
+                  <action>no-decrypt</action>
+                  <disabled>yes</disabled>
+                  <profile>best-practice-no-decryption</profile>
+                  <description>Best practice no decryption policy</description>
+                </entry>
+                <entry name="best-practice-decryption">
+                  <category>
+                    <member>parked</member>
+                    <member>questionable</member>
+                    <member>unknown</member>
+                    <member>web-based-email</member>
+                    <member>web-hosting</member>
+                  </category>
+                  <service>
+                    <member>any</member>
+                  </service>
+                  <type>
+                    <ssl-forward-proxy/>
+                  </type>
+                  <from>
+                    <member>trust</member>
+                  </from>
+                  <to>
+                    <member>untrust</member>
+                  </to>
+                  <source>
+                    <member>any</member>
+                  </source>
+                  <destination>
+                    <member>any</member>
+                  </destination>
+                  <source-user>
+                    <member>any</member>
+                  </source-user>
+                  <action>decrypt</action>
+                  <profile>best-practice-ssl-decryption</profile>
+                  <disabled>yes</disabled>
+                  <description>Best practice decryption policy</description>
+                </entry>
+              </rules>
+            </decryption>
+          </pre-rulebase> 
+        </entry>
+        <entry name="Mobile Users Container">
+          <parent>Prisma Access</parent>
+        </entry>
+      </container>
+      <device>
+        <cloud>
+          <entry name="Service Connections">
+            <parent>Prisma Access</parent>
+            <devices>
+              <entry name="localhost.localdomain">
+                <log-settings>
+                  <system>
+                    <match-list>
+                      <entry name="system-gpcs-default">
+                        <filter>All Logs</filter>
+                        <send-to-panorama>yes</send-to-panorama>
+                       </entry>
+                     </match-list>
+                  </system>
+                  <iptag>
+                    <match-list>
+                      <entry name="ip-tag-gpcs-default">
+                        <filter>All Logs</filter>
+                        <send-to-panorama>yes</send-to-panorama>
+                      </entry>
+                    </match-list>
+                  </iptag>
+                  <userid>
+                    <match-list>
+                      <entry name="user-id-gpcs-default">
+                        <filter>All Logs</filter>
+                        <send-to-panorama>yes</send-to-panorama>
+                      </entry>
+                    </match-list>
+                  </userid>
+                </log-settings>
+                <network>
+                  <interface>
+                    <ethernet/>
+                  </interface>
+                  <ike>
+                    <crypto-profiles>
+                      <ike-crypto-profiles>
+                        <entry name="CloudGenix-IKE-Crypto-Default">
+                          <hash>
+                            <member>sha512</member>
+                          </hash>
+                          <dh-group>
+                            <member>group5</member>
+                          </dh-group>
+                          <encryption>
+                            <member>aes-256-cbc</member>
+                          </encryption>
+                          <lifetime>
+                            <hours>8</hours>
+                          </lifetime>
+                        </entry>
+                        <entry name="Citrix-IKE-Crypto-Default">
+                          <hash>
+                            <member>sha256</member>
+                          </hash>
+                          <dh-group>
+                            <member>group20</member>
+                          </dh-group>
+                          <encryption>
+                            <member>aes-256-cbc</member>
+                          </encryption>
+                          <lifetime>
+                            <hours>8</hours>
+                          </lifetime>
+                        </entry>
+                        <entry name="Riverbed-IKE-Crypto-Default">
+                          <hash>
+                            <member>sha512</member>
+                          </hash>
+                          <dh-group>
+                            <member>group2</member>
+                          </dh-group>
+                          <encryption>
+                            <member>aes-256-cbc</member>
+                          </encryption>
+                          <lifetime>
+                            <hours>8</hours>
+                          </lifetime>
+                        </entry>
+                        <entry name="SilverPeak-IKE-Crypto-Default">
+                          <hash>
+                            <member>sha512</member>
+                          </hash>
+                          <dh-group>
+                            <member>group14</member>
+                          </dh-group>
+                          <encryption>
+                            <member>aes-256-cbc</member>
+                          </encryption>
+                          <lifetime>
+                            <hours>8</hours>
+                          </lifetime>
+                        </entry>
+                        <entry name="CiscoISR-IKE-Crypto-Default">
+                          <hash>
+                            <member>sha512</member>
+                            <member>sha384</member>
+                            <member>sha256</member>
+                            <member>sha1</member>
+                          </hash>
+                          <dh-group>
+                            <member>group5</member>
+                            <member>group2</member>
+                          </dh-group>
+                          <encryption>
+                            <member>aes-256-cbc</member>
+                            <member>aes-192-cbc</member>
+                            <member>aes-128-cbc</member>
+                          </encryption>
+                          <lifetime>
+                            <hours>8</hours>
+                          </lifetime>
+                        </entry>
+                        <entry name="CiscoASA-IKE-Crypto-Default">
+                          <hash>
+                            <member>sha512</member>
+                            <member>sha384</member>
+                            <member>sha256</member>
+                            <member>sha1</member>
+                            <member>md5</member>
+                          </hash>
+                          <dh-group>
+                            <member>group5</member>
+                            <member>group2</member>
+                            <member>group1</member>
+                          </dh-group>
+                          <encryption>
+                            <member>aes-256-cbc</member>
+                            <member>3des</member>
+                            <member>des</member>
+                          </encryption>
+                          <lifetime>
+                            <hours>8</hours>
+                          </lifetime>
+                        </entry>
+                        <entry name="PaloAlto-Networks-IKE-Crypto">
+                          <hash>
+                            <member>sha1</member>
+                          </hash>
+                          <dh-group>
+                            <member>group2</member>
+                          </dh-group>
+                          <encryption>
+                            <member>aes-128-cbc</member>
+                            <member>3des</member>
+                          </encryption>
+                          <lifetime>
+                            <hours>8</hours>
+                          </lifetime>
+                        </entry>
+                        <entry name="Others-IKE-Crypto-Default">
+                          <hash>
+                            <member>sha512</member>
+                            <member>sha384</member>
+                            <member>sha256</member>
+                            <member>sha1</member>
+                            <member>md5</member>
+                          </hash>
+                          <dh-group>
+                            <member>group20</member>
+                            <member>group19</member>
+                            <member>group14</member>
+                            <member>group5</member>
+                            <member>group2</member>
+                            <member>group1</member>
+                          </dh-group>
+                          <encryption>
+                            <member>aes-256-cbc</member>
+                            <member>aes-192-cbc</member>
+                            <member>aes-128-cbc</member>
+                            <member>3des</member>
+                            <member>des</member>
+                          </encryption>
+                          <lifetime>
+                            <hours>8</hours>
+                          </lifetime>
+                        </entry>
+                      </ike-crypto-profiles>
+                      <ipsec-crypto-profiles>
+                        <entry name="CloudGenix-IPSec-Crypto-Default">
+                          <esp>
+                            <authentication>
+                              <member>sha512</member>
+                            </authentication>
+                            <encryption>
+                              <member>aes-256-cbc</member>
+                            </encryption>
+                          </esp>
+                          <lifetime>
+                            <hours>1</hours>
+                          </lifetime>
+                          <dh-group>group20</dh-group>
+                        </entry>
+                        <entry name="Citrix-IPSec-Crypto-Default">
+                          <esp>
+                            <authentication>
+                              <member>sha256</member>
+                            </authentication>
+                            <encryption>
+                              <member>aes-256-cbc</member>
+                            </encryption>
+                          </esp>
+                          <lifetime>
+                            <hours>1</hours>
+                          </lifetime>
+                          <dh-group>group2</dh-group>
+                        </entry>
+                        <entry name="Riverbed-IPSec-Crypto-Default">
+                          <esp>
+                            <authentication>
+                              <member>sha512</member>
+                            </authentication>
+                            <encryption>
+                              <member>aes-256-cbc</member>
+                            </encryption>
+                          </esp>
+                          <lifetime>
+                            <hours>1</hours>
+                          </lifetime>
+                          <dh-group>group2</dh-group>
+                        </entry>
+                        <entry name="SilverPeak-IPSec-Crypto-Default">
+                          <esp>
+                            <authentication>
+                              <member>sha512</member>
+                            </authentication>
+                            <encryption>
+                              <member>aes-256-cbc</member>
+                            </encryption>
+                          </esp>
+                          <lifetime>
+                            <hours>1</hours>
+                          </lifetime>
+                          <dh-group>group14</dh-group>
+                        </entry>
+                        <entry name="CiscoISR-IPSec-Crypto-Default">
+                          <esp>
+                            <authentication>
+                              <member>sha1</member>
+                            </authentication>
+                            <encryption>
+                              <member>aes-128-cbc</member>
+                            </encryption>
+                          </esp>
+                          <lifetime>
+                            <hours>1</hours>
+                          </lifetime>
+                          <dh-group>group5</dh-group>
+                        </entry>
+                        <entry name="CiscoASA-IPSec-Crypto-Default">
+                          <esp>
+                            <authentication>
+                              <member>sha512</member>
+                              <member>sha384</member>
+                              <member>sha256</member>
+                              <member>sha1</member>
+                              <member>md5</member>
+                            </authentication>
+                            <encryption>
+                              <member>aes-256-gcm</member>
+                              <member>aes-128-gcm</member>
+                              <member>aes-256-cbc</member>
+                              <member>aes-192-cbc</member>
+                              <member>3des</member>
+                              <member>des</member>
+                            </encryption>
+                          </esp>
+                          <lifetime>
+                            <hours>1</hours>
+                          </lifetime>
+                          <dh-group>group2</dh-group>
+                        </entry>
+                        <entry name="PaloAlto-Networks-IPSec-Crypto">
+                          <esp>
+                            <authentication>
+                              <member>sha1</member>
+                            </authentication>
+                            <encryption>
+                              <member>aes-128-cbc</member>
+                              <member>3des</member>
+                            </encryption>
+                          </esp>
+                          <lifetime>
+                            <hours>1</hours>
+                          </lifetime>
+                          <dh-group>group2</dh-group>
+                        </entry>
+                        <entry name="Others-IPSec-Crypto-Default">
+                          <esp>
+                            <authentication>
+                              <member>sha512</member>
+                              <member>sha384</member>
+                              <member>sha256</member>
+                              <member>sha1</member>
+                              <member>md5</member>
+                            </authentication>
+                            <encryption>
+                              <member>aes-256-gcm</member>
+                              <member>aes-128-gcm</member>
+                              <member>aes-256-cbc</member>
+                              <member>aes-192-cbc</member>
+                              <member>aes-128-cbc</member>
+                              <member>3des</member>
+                              <member>des</member>
+                            </encryption>
+                          </esp>
+                          <lifetime>
+                            <hours>1</hours>
+                          </lifetime>
+                          <dh-group>group2</dh-group>
+                        </entry>
+                      </ipsec-crypto-profiles>
+                    </crypto-profiles>
+                  </ike>
+                </network>
+              </entry>
+            </devices>
+          </entry>
+          <entry name="Remote Networks">
+            <parent>Prisma Access</parent>
+            <devices>
+              <entry name="localhost.localdomain">
+                <log-settings>
+                  <system>
+                    <match-list>
+                      <entry name="system-gpcs-default">
+                        <filter>All Logs</filter>
+                        <send-to-panorama>yes</send-to-panorama>
+                      </entry>
+                    </match-list>
+                  </system>
+                  <userid>
+                    <match-list>
+                      <entry name="userid-gpcs-default">
+                        <filter>All Logs</filter>
+                        <send-to-panorama>yes</send-to-panorama>
+                      </entry>
+                    </match-list>
+                  </userid>
+                  <iptag>
+                    <match-list>
+                      <entry name="ip-tag-gpcs-default">
+                        <filter>All Logs</filter>
+                        <send-to-panorama>yes</send-to-panorama>
+                      </entry>
+                    </match-list>
+                  </iptag>
+                  <hipmatch>
+                    <match-list>
+                      <entry name="hip-match-gpcs-default">
+                        <filter>All Logs</filter>
+                        <send-to-panorama>yes</send-to-panorama>
+                      </entry>
+                    </match-list>
+                  </hipmatch>
+                </log-settings>
+                <deviceconfig>
+                  <setting>
+                    <http2>
+                      <connection-logging>yes</connection-logging>
+                    </http2>
+                  </setting>
+                </deviceconfig>
+                <network>
+                  <interface>
+                    <ethernet/>
+                  </interface>
+                  <ike>
+                    <crypto-profiles>
+                      <ike-crypto-profiles>
+                        <entry name="CloudGenix-IKE-Crypto-Default">
+                          <hash>
+                            <member>sha512</member>
+                          </hash>
+                          <dh-group>
+                            <member>group5</member>
+                          </dh-group>
+                          <encryption>
+                            <member>aes-256-cbc</member>
+                          </encryption>
+                          <lifetime>
+                            <hours>8</hours>
+                          </lifetime>
+                        </entry>
+                        <entry name="Citrix-IKE-Crypto-Default">
+                          <hash>
+                            <member>sha256</member>
+                          </hash>
+                          <dh-group>
+                            <member>group20</member>
+                          </dh-group>
+                          <encryption>
+                            <member>aes-256-cbc</member>
+                          </encryption>
+                          <lifetime>
+                            <hours>8</hours>
+                          </lifetime>
+                        </entry>
+                        <entry name="Riverbed-IKE-Crypto-Default">
+                          <hash>
+                            <member>sha512</member>
+                          </hash>
+                          <dh-group>
+                            <member>group2</member>
+                          </dh-group>
+                          <encryption>
+                            <member>aes-256-cbc</member>
+                          </encryption>
+                          <lifetime>
+                            <hours>8</hours>
+                          </lifetime>
+                        </entry>
+                        <entry name="SilverPeak-IKE-Crypto-Default">
+                          <hash>
+                            <member>sha512</member>
+                          </hash>
+                          <dh-group>
+                            <member>group14</member>
+                          </dh-group>
+                          <encryption>
+                            <member>aes-256-cbc</member>
+                          </encryption>
+                          <lifetime>
+                            <hours>8</hours>
+                          </lifetime>
+                        </entry>
+                        <entry name="CiscoISR-IKE-Crypto-Default">
+                          <hash>
+                            <member>sha512</member>
+                            <member>sha384</member>
+                            <member>sha256</member>
+                            <member>sha1</member>
+                          </hash>
+                          <dh-group>
+                            <member>group5</member>
+                            <member>group2</member>
+                          </dh-group>
+                          <encryption>
+                            <member>aes-256-cbc</member>
+                            <member>aes-192-cbc</member>
+                            <member>aes-128-cbc</member>
+                          </encryption>
+                          <lifetime>
+                            <hours>8</hours>
+                          </lifetime>
+                        </entry>
+                        <entry name="CiscoASA-IKE-Crypto-Default">
+                          <hash>
+                            <member>sha512</member>
+                            <member>sha384</member>
+                            <member>sha256</member>
+                            <member>sha1</member>
+                            <member>md5</member>
+                          </hash>
+                          <dh-group>
+                            <member>group5</member>
+                            <member>group2</member>
+                            <member>group1</member>
+                          </dh-group>
+                          <encryption>
+                            <member>aes-256-cbc</member>
+                            <member>3des</member>
+                            <member>des</member>
+                          </encryption>
+                          <lifetime>
+                            <hours>8</hours>
+                          </lifetime>
+                        </entry>
+                        <entry name="PaloAlto-Networks-IKE-Crypto">
+                          <hash>
+                            <member>sha1</member>
+                          </hash>
+                          <dh-group>
+                            <member>group2</member>
+                          </dh-group>
+                          <encryption>
+                            <member>aes-128-cbc</member>
+                            <member>3des</member>
+                          </encryption>
+                          <lifetime>
+                            <hours>8</hours>
+                          </lifetime>
+                        </entry>
+                        <entry name="Others-IKE-Crypto-Default">
+                          <hash>
+                            <member>sha512</member>
+                            <member>sha384</member>
+                            <member>sha256</member>
+                            <member>sha1</member>
+                            <member>md5</member>
+                          </hash>
+                          <dh-group>
+                            <member>group20</member>
+                            <member>group19</member>
+                            <member>group14</member>
+                            <member>group5</member>
+                            <member>group2</member>
+                            <member>group1</member>
+                          </dh-group>
+                          <encryption>
+                            <member>aes-256-cbc</member>
+                            <member>aes-192-cbc</member>
+                            <member>aes-128-cbc</member>
+                            <member>3des</member>
+                            <member>des</member>
+                          </encryption>
+                          <lifetime>
+                            <hours>8</hours>
+                          </lifetime>
+                        </entry>
+                      </ike-crypto-profiles>
+                      <ipsec-crypto-profiles>
+                        <entry name="CloudGenix-IPSec-Crypto-Default">
+                          <esp>
+                            <authentication>
+                              <member>sha512</member>
+                            </authentication>
+                            <encryption>
+                              <member>aes-256-cbc</member>
+                            </encryption>
+                          </esp>
+                          <lifetime>
+                            <hours>1</hours>
+                          </lifetime>
+                          <dh-group>group20</dh-group>
+                        </entry>
+                        <entry name="Citrix-IPSec-Crypto-Default">
+                          <esp>
+                            <authentication>
+                              <member>sha256</member>
+                            </authentication>
+                            <encryption>
+                              <member>aes-256-cbc</member>
+                            </encryption>
+                          </esp>
+                          <lifetime>
+                            <hours>1</hours>
+                          </lifetime>
+                          <dh-group>group2</dh-group>
+                        </entry>
+                        <entry name="Riverbed-IPSec-Crypto-Default">
+                          <esp>
+                            <authentication>
+                              <member>sha512</member>
+                            </authentication>
+                            <encryption>
+                              <member>aes-256-cbc</member>
+                            </encryption>
+                          </esp>
+                          <lifetime>
+                            <hours>1</hours>
+                          </lifetime>
+                          <dh-group>group2</dh-group>
+                        </entry>
+                        <entry name="SilverPeak-IPSec-Crypto-Default">
+                          <esp>
+                            <authentication>
+                              <member>sha512</member>
+                            </authentication>
+                            <encryption>
+                              <member>aes-256-cbc</member>
+                            </encryption>
+                          </esp>
+                          <lifetime>
+                            <hours>1</hours>
+                          </lifetime>
+                          <dh-group>group14</dh-group>
+                        </entry>
+                        <entry name="CiscoISR-IPSec-Crypto-Default">
+                          <esp>
+                            <authentication>
+                              <member>sha1</member>
+                            </authentication>
+                            <encryption>
+                              <member>aes-128-cbc</member>
+                            </encryption>
+                          </esp>
+                          <lifetime>
+                            <hours>1</hours>
+                          </lifetime>
+                          <dh-group>group5</dh-group>
+                        </entry>
+                        <entry name="CiscoASA-IPSec-Crypto-Default">
+                          <esp>
+                            <authentication>
+                              <member>sha512</member>
+                              <member>sha384</member>
+                              <member>sha256</member>
+                              <member>sha1</member>
+                              <member>md5</member>
+                            </authentication>
+                            <encryption>
+                              <member>aes-256-gcm</member>
+                              <member>aes-128-gcm</member>
+                              <member>aes-256-cbc</member>
+                              <member>aes-192-cbc</member>
+                              <member>3des</member>
+                              <member>des</member>
+                            </encryption>
+                          </esp>
+                          <lifetime>
+                            <hours>1</hours>
+                          </lifetime>
+                          <dh-group>group2</dh-group>
+                        </entry>
+                        <entry name="PaloAlto-Networks-IPSec-Crypto">
+                          <esp>
+                            <authentication>
+                              <member>sha1</member>
+                            </authentication>
+                            <encryption>
+                              <member>aes-128-cbc</member>
+                              <member>3des</member>
+                            </encryption>
+                          </esp>
+                          <lifetime>
+                            <hours>1</hours>
+                          </lifetime>
+                          <dh-group>group2</dh-group>
+                        </entry>
+                        <entry name="Others-IPSec-Crypto-Default">
+                          <esp>
+                            <authentication>
+                              <member>sha512</member>
+                              <member>sha384</member>
+                              <member>sha256</member>
+                              <member>sha1</member>
+                              <member>md5</member>
+                            </authentication>
+                            <encryption>
+                              <member>aes-256-gcm</member>
+                              <member>aes-128-gcm</member>
+                              <member>aes-256-cbc</member>
+                              <member>aes-192-cbc</member>
+                              <member>aes-128-cbc</member>
+                              <member>3des</member>
+                              <member>des</member>
+                            </encryption>
+                          </esp>
+                          <lifetime>
+                            <hours>1</hours>
+                          </lifetime>
+                          <dh-group>group2</dh-group>
+                        </entry>
+                      </ipsec-crypto-profiles>
+                    </crypto-profiles>
+                  </ike>
+                </network>
+              </entry>
+            </devices>
+          </entry>
+          <entry name="Mobile Users Explicit Proxy" help-string="Mobile Users - Explicit Proxy">
+            <parent>Mobile Users Container</parent>
+            <devices>
+              <entry name="localhost.localdomain"/>
+            </devices>
+            <rulebase>
+              <security>
+                <rules>
+                  <entry name="BlockBadIPs">
+                    <to>
+                      <member>any</member>
+                    </to>
+                    <from>
+                      <member>any</member>
+                    </from>
+                    <source>
+                      <member>PA-SWG-bulletproof-ip-list</member>
+                      <member>PA-SWG-highrisk-ip-list</member>
+                      <member>PA-SWG-known-ip-list</member>
+                    </source>
+                    <destination>
+                      <member>any</member>
+                    </destination>
+                    <source-user>
+                      <member>any</member>
+                    </source-user>
+                    <application>
+                      <member>any</member>
+                    </application>
+                    <service>
+                      <member>any</member>
+                    </service>
+                    <action>deny</action>
+                  </entry>
+                </rules>
+              </security>
+            </rulebase>
+            <external-list>
+              <entry name="PA-SWG-bulletproof-ip-list">
+                <type>
+                  <predefined-ip>
+                    <url>panw-bulletproof-ip-list</url>
+                  </predefined-ip>
+                </type>
+              </entry>
+              <entry name="PA-SWG-highrisk-ip-list">
+                <type>
+                  <predefined-ip>
+                    <url>panw-highrisk-ip-list</url>
+                  </predefined-ip>
+                </type>
+              </entry>
+              <entry name="PA-SWG-known-ip-list">
+                <type>
+                  <predefined-ip>
+                    <url>panw-known-ip-list</url>
+                  </predefined-ip>
+                </type>
+              </entry>
+            </external-list>
+          </entry>
+          <entry name="Mobile Users" help-string="Mobile Users - GlobalProtect">
+            <parent>Mobile Users Container</parent>
+            <devices>
+              <entry name="localhost.localdomain">
+                <log-settings>
+                  <system>
+                    <match-list>
+                      <entry name="system-gpcs-default">
+                        <filter>All Logs</filter>
+                        <send-to-panorama>yes</send-to-panorama>
+                      </entry>
+                    </match-list>
+                  </system>
+                  <userid>
+                    <match-list>
+                      <entry name="userid-gpcs-default">
+                        <filter>All Logs</filter>
+                        <send-to-panorama>yes</send-to-panorama>
+                      </entry>
+                    </match-list>
+                  </userid>
+                  <hipmatch>
+                    <match-list>
+                      <entry name="hipmatch-gpcs-default">
+                        <filter>All Logs</filter>
+                        <send-to-panorama>yes</send-to-panorama>
+                      </entry>
+                    </match-list>
+                  </hipmatch>
+                  <globalprotect>
+                    <match-list>
+                      <entry name="gp-gpcs-default">
+                        <filter>All Logs</filter>
+                        <send-to-panorama>yes</send-to-panorama>
+                      </entry>
+                    </match-list>
+                  </globalprotect>
+                  <iptag>
+                    <match-list>
+                      <entry name="ip-tag-gpcs-default">
+                        <filter>All Logs</filter>
+                        <send-to-panorama>yes</send-to-panorama>
+                      </entry>
+                    </match-list>
+                  </iptag>
+                </log-settings>
+                <deviceconfig>
+                  <setting>
+                    <http2>
+                      <connection-logging>yes</connection-logging>
+                    </http2>
+                  </setting>
+                </deviceconfig>
+                <network>
+                  <interface>
+                    <ethernet/>
+                  </interface>
+                </network>
+                <authentication-profile>
+                  <entry name="Local-DB-Profile">
+                    <multi-factor-auth>
+                      <mfa-enable>no</mfa-enable>
+                    </multi-factor-auth>
+                    <method>
+                      <local-database/>
+                    </method>
+                    <allow-list>
+                      <member>all</member>
+                    </allow-list>
+                  </entry>
+                </authentication-profile>
+              </entry>
+            </devices>
+          </entry>
+        </cloud>
+      </device>
+        <plugins>
+            <cloud_services version="1.6.2">
+                <remote-networks>
+                    <trusted-zones>
+                        <member>trust</member>
+                        <member>clientless-vpn</member>
+                    </trusted-zones>
+                    <overlapped-subnets>yes</overlapped-subnets>
+                </remote-networks>
+                <service-connection>
+                    <service-subnet>192.168.255.0/24</service-subnet>
+                    <infra-bgp-as>65534</infra-bgp-as>
+                </service-connection>
+                <mobile-users>
+                    <trusted-zones>
+                        <member>trust</member>
+                        <member>clientless-vpn</member>
+                    </trusted-zones>
+                    <onboarding/>
+                </mobile-users>
+            </cloud_services>
+        </plugins>
+    </entry>
+  </devices>
+  <readonly>
+    <max-internal-id>65543</max-internal-id>
+      <devices>
+      <entry name="localhost.localdomain">
+          <plugins>
+              <cloud_services>
+                  <mobile-users>
+                      <onboarding/>
+                  </mobile-users>
+              </cloud_services>
+          </plugins>
+          <container>
+              <entry name="All">
+                  <id>65537</id>
+              </entry>
+              <entry name="Prisma Access">
+                  <id>65538</id>
+              </entry>
+              <entry name="Mobile Users Container">
+                  <id>65539</id>
+              </entry>
+          </container>
+          <device>
+              <cloud>
+                  <entry name="Service Connections">
+                      <id>65540</id>
+                  </entry>
+                  <entry name="Remote Networks">
+                      <id>65541</id>
+                  </entry>
+                  <entry name="Mobile Users Explicit Proxy">
+                      <id>65542</id>
+                  </entry>
+                  <entry name="Mobile Users">
+                      <id>65543</id>
+                  </entry>
+              </cloud>
+          </device>
+      </entry>
+  </devices>
+  </readonly>
+</config>

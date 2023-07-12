@@ -59,7 +59,10 @@ trait XmlConvertible
         $xpath = DH::elementToPanXPath($this->xmlroot);
         $con = findConnectorOrDie($this);
 
-        $con->sendEditRequest($xpath, $this->getXmlText_inline());
+        if( $con->isAPI() )
+            $con->sendEditRequest($xpath, $this->getXmlText_inline());
+        elseif( $con->isSaseAPI() )
+            $con->sendPUTRequest($this);
     }
 
 

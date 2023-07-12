@@ -70,10 +70,13 @@ class WildfireProfile
      */
     public function API_setName($newName)
     {
+        $this->setName($newName);
+
         $c = findConnectorOrDie($this);
         $xpath = $this->getXPath();
-        $c->sendRenameRequest($xpath, $newName);
-        $this->setName($newName);
+
+        if( $c->isAPI())
+            $c->sendRenameRequest($xpath, $newName);
     }
 
     /**

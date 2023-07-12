@@ -168,6 +168,8 @@ class UTIL
     public $loadEndTime;
     public $loadEndMem;
 
+    public $scope = null;
+
     function __construct($utilType, $argv, $argc, $PHP_FILE, $_supportedArguments = array(), $_usageMsg = "", $projectFolder = "")
     {
         PanAPIConnector::$projectfolder = $projectFolder;
@@ -294,6 +296,7 @@ class UTIL
         $this->supportedArguments['shadow-json']= array('niceName' => 'shadow-json', 'shortHelp' => 'BETA command to display output on stdout not in text but in JSON format');
         $this->supportedArguments['shadow-nojson']= array('niceName' => 'shadow-nojson', 'shortHelp' => 'BETA command to display output on stdout in text format');
         $this->supportedArguments['shadow-displayxmlnode']= array('niceName' => 'shadow-displayxmlnode', 'shortHelp' => 'command to display XML node in addition to for actions=display');
+        $this->supportedArguments['shadow-saseapiqa']= array('niceName' => 'shadow-saseapiqa', 'shortHelp' => 'command to use QA URLs for SASE API');
 
     }
 
@@ -338,6 +341,8 @@ class UTIL
                 $tmp_utilType = "service";
             elseif( $tmp_utilType == "tag-merger" )
                 $tmp_utilType = "tag";
+            elseif( $tmp_utilType == "custom-url-category-merger" )
+                $tmp_utilType = "securityprofile";
             elseif( $tmp_utilType == "rule-merger" )
                 $tmp_utilType = "rule";
 
@@ -927,6 +932,68 @@ class UTIL
             else
                 $this->xmlDoc = $this->configInput['connector']->getSavedConfig($this->configInput['filename']);
         }
+        elseif( $this->configInput['type'] == 'sase-api')
+        {
+            if( $this->debugAPI )
+                $this->configInput['connector']->setShowApiCalls(TRUE);
+            $this->apiMode = TRUE;
+/*
+            $this->configInput['connector']->setUTILtype( $this->utilType );
+            if( !empty(PH::$args['actions']) )
+                $this->configInput['connector']->setUTILaction( PH::$args['actions'] );
+*/
+            $this->scope = $this->configInput['connector']->scope;
+
+            if( isset(PH::$args['out']) )
+            {
+                $this->configOutput = PH::$args['out'];
+                if( !is_string($this->configOutput) || strlen($this->configOutput) < 1 )
+                    $this->display_error_usage_exit('"out" argument is not a valid string');
+            }
+
+            ##############################################
+            //- load fawkes base config into $this->xmldoc
+            $fawkes_filename = dirname(__FILE__)."/../develop/fawkes_baseconfig.xml";
+            $this->configType = 'fawkes';
+            $this->pan = new FawkesConf();
+
+            $this->xmlDoc = new DOMDocument();
+            PH::print_stdout( " - Reading XML file from disk... ".$fawkes_filename );
+            if( !$this->xmlDoc->load($fawkes_filename, XML_PARSE_BIG_LINES) )
+                derr("error while reading xml config file");
+
+            PH::print_stdout( " - Loading configuration through PAN-OS-PHP library... " );
+
+            $this->pan->load_from_domxml($this->xmlDoc, XML_PARSE_BIG_LINES);
+
+            ##############################################
+            PanAPIConnector::loadConnectorsFromUserHome();
+            $TSGid = str_replace( "tsg_id:", "", $this->scope);
+
+            $sase_connector =  new PanSaseAPIConnector($TSGid);
+            if( $this->debugAPI )
+                $sase_connector->showApiCalls = TRUE;
+            $sase_connector->findOrCreateConnectorFromHost($TSGid);
+
+            $folderArray = PanSaseAPIConnector::$folderArray;
+            foreach( $folderArray as $folder )
+            {
+                if( $folder === "Shared" )
+                    $sub = $this->pan->findContainer( "Prisma Access");
+                else
+                {
+                    $sub = $this->pan->findContainer( $folder);
+                    if( $sub === null )
+                    {
+                        $sub = $this->pan->findDeviceCloud( $folder);
+                        if( $sub === null )
+                            $sub = $this->pan->createDeviceCloud( $folder, "Prisma Access" );
+                    }
+                }
+
+                $sase_connector->loadSaseConfig($folder, $sub, $this->utilType);
+            }
+        }
         else
             derr('not supported yet');
 
@@ -979,31 +1046,34 @@ class UTIL
         unset($xpathResult);
 
 
-        if( $this->configType == 'panos' )
+        if( $this->configInput['type'] !== 'sase-api')
         {
-            if( isset(PH::$args['loadpanoramapushedconfig']) )
+            if( $this->configType == 'panos' )
             {
-                $inputConnector = $this->configInput['connector'];
+                if( isset(PH::$args['loadpanoramapushedconfig']) )
+                {
+                    $inputConnector = $this->configInput['connector'];
 
-                PH::print_stdout( " - 'loadPanoramaPushedConfig' was requested, downloading it through API..." );
-                $this->pan = $inputConnector->loadPanoramaPushdedConfig( $this->apiTimeoutValue );
+                    PH::print_stdout( " - 'loadPanoramaPushedConfig' was requested, downloading it through API..." );
+                    $this->pan = $inputConnector->loadPanoramaPushdedConfig( $this->apiTimeoutValue );
+                }
+                else
+                    $this->pan = new PANConf();
             }
+            elseif( $this->configType == 'panorama' )
+                $this->pan = new PanoramaConf();
+            elseif( $this->configType == 'fawkes' )
+                $this->pan = new FawkesConf();
+            elseif( $this->configType == 'buckbeak' )
+                $this->pan = new BuckbeakConf();
             else
-                $this->pan = new PANConf();
+                derr( "configType: ".$this->configType." not supported." );
         }
-        elseif( $this->configType == 'panorama' )
-            $this->pan = new PanoramaConf();
-        elseif( $this->configType == 'fawkes' )
-            $this->pan = new FawkesConf();
-        elseif( $this->configType == 'buckbeak' )
-            $this->pan = new BuckbeakConf();
-        else
-            derr( "configType: ".$this->configType." not supported." );
 
         PH::print_stdout( " - Detected platform type is '{$this->configType}'" );
         PH::print_stdout( array( get_class( $this->pan ) ), false, "platform" );
 
-        if( isset($this->configInput['type']) && $this->configInput['type'] == 'api' )
+        if( isset($this->configInput['type']) && ( $this->configInput['type'] == 'api' || $this->configInput['type'] == 'sase-api' ) )
             $this->pan->connector = $this->configInput['connector'];
         // </editor-fold>
     }
@@ -1133,9 +1203,17 @@ class UTIL
                 $context = new CertificateCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries, $this);
 
             $context->baseObject = $this->pan;
-            if( isset($this->configInput['type']) && $this->configInput['type'] == 'api' )
+            if( isset($this->configInput['type'])  )
             {
-                $context->isAPI = TRUE;
+                if( $this->configInput['type'] == 'api' )
+                    $context->isAPI = TRUE;
+                elseif( $this->configInput['type'] == 'sase-api' )
+                {
+                    $context->isAPI = TRUE;
+                    #$context->isSaseAPI = TRUE;
+                }
+
+
                 $context->connector = $this->pan->connector;
             }
 
@@ -1182,11 +1260,13 @@ class UTIL
         //
         // load the config
         //
-        PH::print_stdout( " - Loading configuration through PAN-OS-PHP library... " );
+        if( $this->configInput['type'] !== "sase-api" )
+            PH::print_stdout( " - Loading configuration through PAN-OS-PHP library... " );
 
         $this->loadStart();
 
-        $this->pan->load_from_domxml($this->xmlDoc, XML_PARSE_BIG_LINES);
+        if( $this->configInput['type'] !== "sase-api" )
+            $this->pan->load_from_domxml($this->xmlDoc, XML_PARSE_BIG_LINES);
 
         if( isset(PH::$args['outputformatset']) )
         {
@@ -1555,7 +1635,6 @@ class UTIL
                     $subGroups2 = $this->pan->getSnippets();
                     $subGroups = array_merge( $subGroups, $subGroups2 );
                 }
-
 
                 foreach( $subGroups as $sub )
                 {

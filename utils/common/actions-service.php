@@ -286,7 +286,7 @@ ServiceCallContext::$supportedActions[] = array(
         if( isset($optionalFields['ResolveSRV']) )
             $addResolveGroupSRVCoverage = TRUE;
 
-        $headers = '<th>location</th><th>name</th><th>type</th><th>dport</th><th>sport</th><th>timeout</th><th>members</th><th>description</th><th>tags</th>';
+        $headers = '<th>ID</th><th>location</th><th>name</th><th>type</th><th>dport</th><th>sport</th><th>timeout</th><th>members</th><th>description</th><th>tags</th>';
 
         $headers .= '<th>port.count</th><th>port.tcp.count</th><th>port.udp.count</th>';
         if( $addWhereUsed )
@@ -308,6 +308,8 @@ ServiceCallContext::$supportedActions[] = array(
                     $lines .= "<tr>\n";
                 else
                     $lines .= "<tr bgcolor=\"#DDDDDD\">";
+
+                $lines .= $encloseFunction( (string)$count );
 
                 $lines .= $encloseFunction(PH::getLocationString($object));
 
@@ -1162,6 +1164,7 @@ ServiceCallContext::$supportedActions[] = array(
 
         PH::$JSON_TMP['sub']['object'][$object->name()]['name'] = $object->name();
         PH::$JSON_TMP['sub']['object'][$object->name()]['type'] = get_class($object);
+
 
         if( $object->isGroup() )
         {

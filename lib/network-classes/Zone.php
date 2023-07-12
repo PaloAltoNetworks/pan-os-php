@@ -96,6 +96,9 @@ class Zone
 
             $node = DH::findFirstElementOrDie('entry', $doc);
 
+            if($this->owner->xmlroot === null)
+                $this->owner->xmlroot = DH::createElement( $this->owner->owner->xmlroot, "zone" );
+
             $rootDoc = $this->owner->xmlroot->ownerDocument;
             $this->xmlroot = $rootDoc->importNode($node, TRUE);
 

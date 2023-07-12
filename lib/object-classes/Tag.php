@@ -32,26 +32,26 @@ class Tag
     public $color;
 
     /** @var string|null */
-    public $comments;
+    public $comments = "";
 
     const NONE = 'none';
-    const color1 = 'red';
-    const color2 = 'green';
-    const color3 = 'blue';
-    const color4 = 'yellow';
-    const color5 = 'copper';
-    const color6 = 'orange';
-    const color7 = 'purple';
-    const color8 = 'gray';
-    const color9 = 'light green';
+    const color1 = 'red';//Red
+    const color2 = 'green';//Green
+    const color3 = 'blue';//Blue
+    const color4 = 'yellow';//Yellow
+    const color5 = 'copper';//Copper
+    const color6 = 'orange';//Orange
+    const color7 = 'purple';//Purple
+    const color8 = 'gray';//Gray
+    const color9 = 'light green';//Light Green
 
-    const color10 = 'cyan';
-    const color11 = 'light gray';
-    const color12 = 'blue gray';
-    const color13 = 'lime';
-    const color14 = 'black';
-    const color15 = 'gold';
-    const color16 = 'brown';
+    const color10 = 'cyan';//Cyan
+    const color11 = 'light gray';//Light Gray
+    const color12 = 'blue gray';//Blue Gray
+    const color13 = 'lime';//Lime
+    const color14 = 'black';//Black
+    const color15 = 'gold';//Gold
+    const color16 = 'brown';//Brown
     //all above have first character capital in Fawkes
     const color17 = 'dark green'; //Olive in Fawkes
     //color18 not defined in PAN-OS
@@ -209,8 +209,13 @@ class Tag
     {
         $c = findConnectorOrDie($this);
         $xpath = $this->getXPath();
-        $c->sendRenameRequest($xpath, $newName);
+
         $this->setName($newName);
+
+        if( $c->isAPI() )
+            $c->sendRenameRequest($xpath, $newName);
+        elseif( $c->isSaseAPI() )
+            $c->sendPUTRequest($this);
     }
 
 
@@ -228,7 +233,7 @@ class Tag
             if( $newColor === "Olive" )
                 $newColor = "dark green";
             elseif( !isset( TAG::$TagColors[ $newColor ] ) )
-                $newColor = lcfirst( $newColor );
+                $newColor = strtolower( $newColor );
         }
 
         if( !isset(self::$TagColors[$newColor]) )
@@ -290,13 +295,20 @@ class Tag
 
         if( $newColor != 'none' )
         {
-            $valueRoot = DH::findFirstElement('color', $this->xmlroot);
-            $c->sendSetRequest($xpath, DH::dom_to_xml($valueRoot, -1, FALSE));
             $this->setColor($newColor);
+
+            $valueRoot = DH::findFirstElement('color', $this->xmlroot);
+            if( $c->isAPI() )
+                $c->sendSetRequest($xpath, DH::dom_to_xml($valueRoot, -1, FALSE));
+            elseif( $c->isSaseAPI() )
+                $c->sendPUTRequest($this);
         }
         else
         {
-            $c->sendEditRequest($xpath, DH::dom_to_xml($this->xmlroot, -1, FALSE));
+            if( $c->isAPI() )
+                $c->sendEditRequest($xpath, DH::dom_to_xml($this->xmlroot, -1, FALSE));
+            elseif( $c->isSaseAPI() )
+                $c->sendPUTRequest($this);
         }
 
 
@@ -405,6 +417,8 @@ class Tag
         if( $this->xmlroot === null )
             return FALSE;
 
+        $this->comments = $newComment;
+
         if( $rewriteXml )
         {
             $commentsRoot = DH::findFirstElement('comments', $this->xmlroot);
@@ -428,6 +442,7 @@ class Tag
      */
     public function API_addComments(string $newComment): bool
     {
+        DH::DEBUGprintDOMDocument($this->xmlroot);
         if( !$this->addComments($newComment) )
             return FALSE;
 
@@ -435,8 +450,11 @@ class Tag
         $xpath = $this->getXPath();
 
         $commentsRoot = DH::findFirstElement('comments', $this->xmlroot);
-        $c->sendEditRequest($xpath . "/comments", DH::dom_to_xml($commentsRoot, -1, FALSE));
-        $this->addComments($newComment);
+
+        if( $c->isAPI() )
+            $c->sendEditRequest($xpath . "/comments", DH::dom_to_xml($commentsRoot, -1, FALSE));
+        elseif( $c->isSaseAPI() )
+            $c->sendPUTRequest($this);
 
         return TRUE;
     }
@@ -448,6 +466,8 @@ class Tag
     {
         if( $this->xmlroot === null )
             return FALSE;
+
+        $this->comments = "";
 
         $commentsRoot = DH::findFirstElement('comments', $this->xmlroot);
         $valueRoot = DH::findFirstElement('color', $this->xmlroot);
@@ -471,7 +491,10 @@ class Tag
         $c = findConnectorOrDie($this);
         $xpath = $this->getXPath();
 
-        $c->sendEditRequest($xpath, DH::dom_to_xml($this->xmlroot, -1, FALSE));
+        if( $c->isAPI() )
+            $c->sendEditRequest($xpath, DH::dom_to_xml($this->xmlroot, -1, FALSE));
+        elseif( $c->isSaseAPI() )
+            $c->sendPUTRequest($this);
 
         return TRUE;
     }

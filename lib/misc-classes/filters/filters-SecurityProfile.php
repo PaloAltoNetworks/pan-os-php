@@ -316,7 +316,7 @@ RQuery::$defaultFilters['securityprofile']['reflocation']['operators']['is.only'
                 return TRUE;
             if( $owner->isFirewall() )
                 return TRUE;
-            return FALSE;
+            return null;
         }
 
         $return = FALSE;
@@ -328,8 +328,8 @@ RQuery::$defaultFilters['securityprofile']['reflocation']['operators']['is.only'
 
         if( count($reflocations) == 1 && $return )
             return TRUE;
-        else
-            return FALSE;
+
+        return NULL;
 
     },
     'arg' => TRUE,
@@ -350,7 +350,7 @@ RQuery::$defaultFilters['securityprofile']['refstore']['operators']['is'] = arra
         if( array_key_exists($value, $refstore) )
             return TRUE;
 
-        return FALSE;
+        return null;
 
     },
     'arg' => TRUE,
@@ -371,7 +371,7 @@ RQuery::$defaultFilters['securityprofile']['reftype']['operators']['is'] = array
         if( array_key_exists($value, $reftype) )
             return TRUE;
 
-        return FALSE;
+        return null;
 
     },
     'arg' => TRUE,
@@ -390,7 +390,7 @@ RQuery::$defaultFilters['securityprofile']['alert']['operators']['has'] = array(
         if( array_key_exists($value, $object->alert) )
             return TRUE;
 
-        return FALSE;
+        return null;
 
     },
     'arg' => TRUE,

@@ -454,8 +454,11 @@ class NatRule extends Rule
             $old->removeReference($this);
             $new->addReference($this);
             $xpath = DH::elementToPanXPath($this->serviceroot);
-            $connector = findConnectorOrDie($this);
-            $connector->sendEditRequest($xpath, DH::dom_to_xml($this->serviceroot, -1, FALSE), TRUE);
+            $con = findConnectorOrDie($this);
+
+            if( $con->isAPI() )
+                $con->sendEditRequest($xpath, DH::dom_to_xml($this->serviceroot, -1, FALSE), TRUE);
+
             return TRUE;
         }
         if( $this->dnathost === $old )
@@ -463,8 +466,10 @@ class NatRule extends Rule
             $this->setDNAT($new, $this->dnatports);
 
             $xpath = DH::elementToPanXPath($this->dnatroot);
-            $connector = findConnectorOrDie($this);
-            $connector->sendEditRequest($xpath, DH::dom_to_xml($this->dnatroot, -1, FALSE), TRUE);
+            $con = findConnectorOrDie($this);
+
+            if( $con->isAPI() )
+                $connector->sendEditRequest($xpath, DH::dom_to_xml($this->dnatroot, -1, FALSE), TRUE);
 
             return TRUE;
         }
@@ -639,10 +644,11 @@ class NatRule extends Rule
         $ret = $this->setNoDNAT();
         if( $ret )
         {
-            $connector = findConnectorOrDie($this);
+            $con = findConnectorOrDie($this);
             $xpath = $this->getXPath() . '/destination-translation';
 
-            $connector->sendDeleteRequest($xpath);
+            if( $con->isAPI() )
+                $con->sendDeleteRequest($xpath);
 
         }
 
@@ -712,9 +718,11 @@ class NatRule extends Rule
                 $xpath = $this->getXPath() . '/destination-translation';
 
             if( $host === null && ($ports === null | $ports == '') || $type == 'none' )
-                $connector->sendDeleteRequest($xpath);
+                if( $connector->isAPI() )
+                    $connector->sendDeleteRequest($xpath);
             else
-                $connector->sendEditRequest($xpath, $this->dnatroot);
+                if( $connector->isAPI() )
+                    $connector->sendEditRequest($xpath, $this->dnatroot);
 
         }
 
@@ -782,7 +790,8 @@ class NatRule extends Rule
             $connector = findConnectorOrDie($this);
             $xpath = $this->getXPath() . '/source-translation';
 
-            $connector->sendDeleteRequest($xpath);
+            if( $connector->isAPI() )
+                $connector->sendDeleteRequest($xpath);
         }
 
         return $ret;
@@ -865,7 +874,8 @@ class NatRule extends Rule
             {
                 //only this is possible to set
                 $xpath = $this->getXPath() . '/source-translation/'.$sourceNatType."/interface-address";
-                $connector->sendSetRequest($xpath, "<interface>".$newSNATInterface."</interface>");
+                if( $connector->isAPI() )
+                    $connector->sendSetRequest($xpath, "<interface>".$newSNATInterface."</interface>");
             }
             elseif( $sourceNatType == "static-ip" )
             {
@@ -913,7 +923,8 @@ class NatRule extends Rule
         {
             $con = findConnectorOrDie($this);
             $xpath = $this->getXPath() . '/service';
-            $con->sendEditRequest($xpath, $this->serviceroot);
+            if( $con->isAPI() )
+                $con->sendEditRequest($xpath, $this->serviceroot);
         }
 
         return $ret;

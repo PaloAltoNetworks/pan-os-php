@@ -245,9 +245,10 @@ class Address
         $c = findConnectorOrDie($this);
         $xpath = $this->getXPath();
 
-        $c->sendEditRequest($xpath, DH::dom_to_xml($this->xmlroot, -1, FALSE));
-
-        $this->setType($newType);
+        if( $c->isAPI() )
+            $c->sendEditRequest($xpath, DH::dom_to_xml($this->xmlroot, -1, FALSE));
+        elseif( $c->isSaseAPI() )
+            $c->sendPUTRequest($this);
 
         return TRUE;
     }
@@ -264,7 +265,10 @@ class Address
         $c = findConnectorOrDie($this);
         $xpath = $this->getXPath();
 
-        $c->sendEditRequest($xpath, DH::dom_to_xml($this->xmlroot, -1, FALSE));
+        if( $c->isAPI() )
+            $c->sendEditRequest($xpath, DH::dom_to_xml($this->xmlroot, -1, FALSE));
+        elseif( $c->isSaseAPI() )
+            $c->sendPUTRequest($this);
 
         $this->setValue($newValue);
 
@@ -283,9 +287,10 @@ class Address
         $c = findConnectorOrDie($this);
         $xpath = $this->getXPath();
 
-        $c->sendEditRequest($xpath, DH::dom_to_xml($this->xmlroot, -1, FALSE));
-
-        $this->setValue($newValue);
+        if( $c->isAPI() )
+            $c->sendEditRequest($xpath, DH::dom_to_xml($this->xmlroot, -1, FALSE));
+        elseif( $c->isSaseAPI() )
+            $c->sendPUTRequest($this);
 
         return TRUE;
     }
@@ -325,6 +330,8 @@ class Address
 
         if( $this->isTmpAddr() )
             unset($this->_ip4Map);
+
+        return TRUE;
     }
 
     /**
@@ -337,10 +344,17 @@ class Address
             mwarning('renaming of TMP object in API is not possible, it was ignored');
             return;
         }
+
+        if( !$this->setName($newName) )
+            return FALSE;
+
         $c = findConnectorOrDie($this);
         $xpath = $this->getXPath();
-        $c->sendRenameRequest($xpath, $newName);
-        $this->setName($newName);
+
+        if( $c->isAPI() )
+            $c->sendRenameRequest($xpath, $newName);
+        elseif( $c->isSaseAPI() )
+            $c->sendPUTRequest($this);
     }
 
 

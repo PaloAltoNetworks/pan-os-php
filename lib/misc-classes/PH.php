@@ -123,6 +123,14 @@ class PH
                     $argc--;
                 continue;
             }
+            elseif( $arg == 'shadow-saseapiqa' )
+            {
+                PH::$saseQAapi = TRUE;
+                unset(PH::$argv[$argIndex]);
+                if( !isset( $_SERVER['REQUEST_METHOD'] ) )
+                    $argc--;
+                continue;
+            }
         }
         unset($argIndex);
         unset($arg);
@@ -156,6 +164,8 @@ class PH
 
     public static $displayCurlRequest = FALSE;
 
+    public static $saseQAapi = FALSE;
+
     public static $shadow_reducexml = FALSE;
 
     public static $shadow_json = FALSE;
@@ -172,7 +182,7 @@ class PH
 
     private static $library_version_major = 2;
     private static $library_version_sub = 1;
-    private static $library_version_bugfix = 8;
+    private static $library_version_bugfix = 10;
 
     //BASIC AUTH PAN-OS 7.1
     public static $softwareupdate_key = "658d787f293e631196dac9fb29490f1cc1bb3827";
@@ -432,40 +442,55 @@ class PH
         $ret = array('status' => 'fail');
         $ret['filename'] = null;
 
+        $pos_sase = strpos($str, 'sase-api://');
         $pos = strpos($str, 'api://');
         if( $pos !== FALSE )
         {
-            PanAPIConnector::loadConnectorsFromUserHome();
-            $host = substr($str, strlen('api://'));
-            $hostExplode = explode('@', $host);
-            if( count($hostExplode) == 1 )
+            if( $pos_sase !== FALSE )
             {
-                $fileExplode = explode('/', $host);
-                if( count($fileExplode) == 2 )
-                {
-                    $ret['filename'] = $fileExplode[1];
-                    $host = $fileExplode[0];
-                }
-                $connector = PanAPIConnector::findOrCreateConnectorFromHost($host);
-                $connector->setType($connector->info_deviceType);
+                PanAPIConnector::loadConnectorsFromUserHome();
+                $host = substr($str, strlen('sase-api://'));
+                $ret['status'] = 'ok';
+                $ret['type'] = 'sase-api';
+
+                $connector = new PanSaseAPIConnector($host);
+                $connector->findOrCreateConnectorFromHost($host);
+                $ret['connector'] = $connector;
             }
             else
             {
-                $fileExplode = explode('/', $hostExplode[1]);
-                if( count($fileExplode) == 2 )
+                PanAPIConnector::loadConnectorsFromUserHome();
+                $host = substr($str, strlen('api://'));
+                $hostExplode = explode('@', $host);
+                if( count($hostExplode) == 1 )
                 {
-                    $ret['filename'] = $fileExplode[1];
-                    $hostExplode[1] = $fileExplode[0];
+                    $fileExplode = explode('/', $host);
+                    if( count($fileExplode) == 2 )
+                    {
+                        $ret['filename'] = $fileExplode[1];
+                        $host = $fileExplode[0];
+                    }
+                    $connector = PanAPIConnector::findOrCreateConnectorFromHost($host);
+                    $connector->setType($connector->info_deviceType);
+                }
+                else
+                {
+                    $fileExplode = explode('/', $hostExplode[1]);
+                    if( count($fileExplode) == 2 )
+                    {
+                        $ret['filename'] = $fileExplode[1];
+                        $hostExplode[1] = $fileExplode[0];
+                    }
+
+                    $connector = PanAPIConnector::findOrCreateConnectorFromHost($hostExplode[1]);
+                    $connector->setType('panos-via-panorama', $hostExplode[0]);
                 }
 
-                $connector = PanAPIConnector::findOrCreateConnectorFromHost($hostExplode[1]);
-                $connector->setType('panos-via-panorama', $hostExplode[0]);
+
+                $ret['status'] = 'ok';
+                $ret['type'] = 'api';
+                $ret['connector'] = $connector;
             }
-
-
-            $ret['status'] = 'ok';
-            $ret['type'] = 'api';
-            $ret['connector'] = $connector;
         }
         else
         {
@@ -770,7 +795,7 @@ class PH
         while( TRUE )
         {
             $class = get_class($panConfObject);
-            if( $class == 'PANConf' || $class == 'PanoramaConf' )
+            if( $class == 'PANConf' || $class == 'PanoramaConf' || $class == "FawkesConf" || $class == "BuckbeakConf" )
                 return $panConfObject;
 
             if( isset($panConfObject->owner) && is_object($panConfObject->owner) )
@@ -780,7 +805,7 @@ class PH
 
         }
 
-        derr("cannot find PanoramaConf or PANConf object");
+        derr("cannot find PanoramaConf or PANConf | Fawkesconf or BuckbeackConf object");
     }
 
     /**
@@ -957,7 +982,8 @@ class PH
         "gcp",
         "vendor-migration",
         "appid-toolbox",
-        "rule-compare"
+        "rule-compare",
+        "custom-url-category-merger"
         );
 
 
@@ -1023,6 +1049,7 @@ class PH
             || $type == "service-merger"
             || $type == "servicegroup-merger"
             || $type == "tag-merger"
+            || $type == "custom-url-category-merger"
         )
             $util = new MERGER($type, $argv, $argc,$PHP_FILE." type=".$type, $_supportedArguments, $_usageMsg, $projectfolder);
 

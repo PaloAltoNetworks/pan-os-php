@@ -183,7 +183,9 @@ class ScheduleStore extends ObjStore
             $xpath = $this->getXPath();
             $con = findConnectorOrDie($this);
             $element = $newSchedule->getXmlText_inline();
-            $con->sendSetRequest($xpath, $element);
+
+            if( $con->isAPI() )
+                $con->sendSetRequest($xpath, $element);
         }
 
         return $newSchedule;
@@ -226,7 +228,9 @@ class ScheduleStore extends ObjStore
         if( $ret && !$schedule->isTmp() )
         {
             $con = findConnectorOrDie($this);
-            $con->sendDeleteRequest($xpath);
+
+            if( $con->isAPI() )
+                $con->sendDeleteRequest($xpath);
         }
 
         return $ret;

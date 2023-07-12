@@ -363,6 +363,8 @@ TagCallContext::$supportedActions['display'] = array(
         $object = $context->object;
         $tmpName = $object->name();
         TAG::replaceNamewith( $tmpName );
+
+
         PH::print_stdout( "     * " . get_class($object) . " '{$tmpName}'  color: '{$object->getColor()}'  comments: '{$object->getComments()}'" );
 
         PH::$JSON_TMP['sub']['object'][$object->name()]['name'] = $tmpName;
@@ -623,7 +625,7 @@ TagCallContext::$supportedActions[] = array(
             $addUsedInLocation = TRUE;
 
 
-        $headers = '<th>location</th><th>name</th><th>color</th><th>description</th>';
+        $headers = '<th>ID</th><th>location</th><th>name</th><th>color</th><th>description</th>';
 
         if( $addWhereUsed )
             $headers .= '<th>where used</th>';
@@ -642,6 +644,8 @@ TagCallContext::$supportedActions[] = array(
                     $lines .= "<tr>\n";
                 else
                     $lines .= "<tr bgcolor=\"#DDDDDD\">";
+
+                $lines .= $encloseFunction( (string)$count );
 
                 $lines .= $encloseFunction(PH::getLocationString($object));
 

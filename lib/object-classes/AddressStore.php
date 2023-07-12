@@ -538,7 +538,13 @@ class AddressStore
         {
             $con = findConnectorOrDie($this);
             $xpath = $s->getXPath();
-            $con->sendSetRequest($xpath, DH::domlist_to_xml($s->xmlroot->childNodes, -1, FALSE));
+
+            if( $con->isAPI())
+                $con->sendSetRequest($xpath, DH::domlist_to_xml($s->xmlroot->childNodes, -1, FALSE));
+            elseif( $con->isSaseAPI())
+            {
+                //how to add multiple objects???
+            }
         }
 
         return $ret;
@@ -616,7 +622,10 @@ class AddressStore
         if( $ret && !$s->isTmpAddr() )
         {
             $con = findConnectorOrDie($this);
-            $con->sendDeleteRequest($xpath);
+            if( $con->isAPI())
+                $con->sendDeleteRequest($xpath);
+            elseif( $con->isSaseAPI() )
+                $con->sendDELETERequest($s);
         }
 
         return $ret;
@@ -771,7 +780,10 @@ class AddressStore
 
         $con = findConnectorOrDie($this);
         $xpath = $newObject->getXPath();
-        $con->sendSetRequest($xpath, $newObject, TRUE);
+        if( $con->isAPI() )
+            $con->sendSetRequest($xpath, $newObject, TRUE);
+        elseif( $con->isSaseAPI() )
+            $con->sendCreateRequest($newObject);
 
         return $newObject;
     }
@@ -816,7 +828,11 @@ class AddressStore
 
         $con = findConnectorOrDie($this);
         $xpath = $newObject->getXPath();
-        $con->sendSetRequest($xpath, $newObject, TRUE);
+        if( $con->isAPI() )
+            $con->sendSetRequest($xpath, $newObject, TRUE);
+        elseif( $con->isSaseAPI() )
+            $con->sendCreateRequest($newObject);
+
 
         return $newObject;
     }

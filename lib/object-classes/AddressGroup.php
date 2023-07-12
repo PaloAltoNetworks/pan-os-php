@@ -184,7 +184,9 @@ class AddressGroup
 
                                 $tag = $this->owner->owner->tagStore->find($replaceTXT);
                                 if( $tag !== null )
+                                {
                                     $tag->addReference($this);
+                                }
                                 else
                                 {
                                     #Todo: what if TAG is in parent tagStore?
@@ -208,6 +210,24 @@ class AddressGroup
                         $this->filter = $tagFilter;
 
                         $tmp_found_addresses = $this->owner->all($tagFilter);
+
+                        $tmpParentStore = $this->owner->parentCentralStore;
+                        while(true)
+                        {
+                            if( $tmpParentStore !== null )
+                            {
+                                $tmp_found_addresses2 = $tmpParentStore->all($tagFilter);
+                                $tmp_found_addresses = array_merge( $tmp_found_addresses, $tmp_found_addresses2 );
+
+                                if( $tmpParentStore->parentCentralStore != null )
+                                    $tmpParentStore = $tmpParentStore->parentCentralStore;
+                                else
+                                    break;
+                            }
+                            else
+                                break;
+                        }
+
                         foreach( $tmp_found_addresses as $address )
                         {
                             if( $this->name() == $address->name() )
@@ -361,7 +381,8 @@ class AddressGroup
             if( $this->owner->owner->version >= 60 )
                 $xpath .= '/static';
 
-            $con->sendSetRequest($xpath, "<member>{$newObject->name()}</member>");
+            if( $con->isAPI() )
+                $con->sendSetRequest($xpath, "<member>{$newObject->name()}</member>");
         }
 
         return $ret;
@@ -412,7 +433,8 @@ class AddressGroup
             if( $this->owner->owner->version >= 60 )
                 $xpath .= '/static';
 
-            $con->sendDeleteRequest($xpath . "/member[text()='{$objectToRemove->name()}']");
+            if( $con->isAPI() )
+                $con->sendDeleteRequest($xpath . "/member[text()='{$objectToRemove->name()}']");
 
             return $ret;
         }
@@ -668,10 +690,13 @@ class AddressGroup
      */
     public function API_setName($newName)
     {
+        $this->setName($newName);
+
         $c = findConnectorOrDie($this);
         $xpath = $this->getXPath();
-        $c->sendRenameRequest($xpath, $newName);
-        $this->setName($newName);
+
+        if( $c->isAPI() )
+            $c->sendRenameRequest($xpath, $newName);
     }
 
     /**
@@ -801,11 +826,17 @@ class AddressGroup
      * @param bool $keepGroupsInList keep groups in the the list on top of just expanding them
      * @return Address[]|AddressGroup[] list of all member objects, if some of them are groups, they are exploded and their members inserted
      */
-    public function & expand($keepGroupsInList = FALSE, &$grpArray=array() )
+    public function & expand($keepGroupsInList = FALSE, &$grpArray=array(), $RuleReferenceLocation = null )
     {
         $ret = array();
 
         $grpArray[$this->name()] = $this;
+
+        if( $RuleReferenceLocation !== null )
+        {
+            foreach( $this->members as $key => $member )
+                $this->members[$key] = $RuleReferenceLocation->addressStore->find($member->name());
+        }
 
         foreach( $this->members as $object )
         {
@@ -978,7 +1009,7 @@ class AddressGroup
     /**
      * @return IP4Map
      */
-    public function getIP4Mapping()
+    public function getIP4Mapping( $RuleReferenceLocation = null )
     {
         $mapObject = new IP4Map();
 
@@ -989,6 +1020,12 @@ class AddressGroup
             return $mapObject;
         }
         */
+
+        if( $RuleReferenceLocation !== null )
+        {
+            foreach( $this->members as $key => $member )
+                $this->members[$key] = $RuleReferenceLocation->addressStore->find($member->name());
+        }
 
         foreach( $this->members as $member )
         {

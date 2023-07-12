@@ -252,4 +252,42 @@ Migration of Stonesoft configurations require a Two-Step process. Please, read t
 
 1. BROWSE for Stonesoft XML configuration files using the Single File or Multiple Files options. Policy names and Domain Names will be presented  
 
-2. Select the policies wishing to migrate and click on IMPORT SELECTED POLICIES  
+2. Select the policies wishing to migrate and click on IMPORT SELECTED POLICIES
+
+### [Sophos](vendors/sophos.md)
+//pan-os-php type=vendor-migration vendor=sophos
+//  file=sophos_config.txt
+//  out=/tmp/sophos.xml in=VM300-Baseline.xml
+//  ruleorder=sophos_packetfilter_order.txt
+
+
+/*
+//Todo: NEEDED config files:
+Sophos UTM API export (copy / past)
+https://www.sophos.com/en-us/medialibrary/PDFs/documentation/UTMonAWS/Sophos-UTM-RESTful-API.pdf?la=en
+https://ip_address_of_ UTM:4444/api/
+
+
+
+//copy all these information into one file
+network/host
+network/dns_host
+network/dns_group
+network/group
+network/range
+network/network
+network/interface_network
+
+service/group
+service/tcp
+service/udp
+service/tcpudp
+
+packetfilter/packetfilter
+
+
+
+
+//rule order information MUST be placed in a separate file
+rule order
+nodes/packetfilter.rules

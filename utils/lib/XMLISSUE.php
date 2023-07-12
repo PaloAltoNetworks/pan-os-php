@@ -133,6 +133,7 @@ class XMLISSUE extends UTIL
         $fixedSecRuleToObjects=0;
 
         $countMissconfiguredSecRuleCategoryObjects=0;
+        $fixedSecRuleCategoryObjects=0;
 
         $countMissconfiguredAddressObjects = 0;
         $countMissconfiguredAddressRegionObjects = 0;
@@ -982,6 +983,7 @@ class XMLISSUE extends UTIL
                                     $secRuleDestination = array();
                                     $secRuleFrom = array();
                                     $secRuleTo = array();
+                                    $secRuleCategory = array();
 
                                     /** @var DOMElement $objectNode */
                                     if( $objectNode->nodeType != XML_ELEMENT_NODE )
@@ -1066,7 +1068,42 @@ class XMLISSUE extends UTIL
 
                                     $objectNode_category = DH::findFirstElement('category', $objectNode);
                                     if( $objectNode_category && !$objectNode_category->hasChildNodes() )
-                                        $secRuleCategoryIndex[$objectName] = $objectNode_category;
+                                    {
+                                        #$secRuleCategoryIndex[$objectName] = $objectNode_category;
+                                    }
+                                    elseif( $objectNode_category !== FALSE )
+                                    {
+                                        //Todo: swaschkut 20230627
+                                        //check if Category has 'any' and additional
+                                        $demo = iterator_to_array($objectNode_category->childNodes);
+                                        foreach( $demo as $objectCategory )
+                                        {
+                                            /** @var DOMElement $objectCategory */
+                                            if( $objectCategory->nodeType != XML_ELEMENT_NODE )
+                                                continue;
+
+                                            $objectCategoryName = $objectCategory->textContent;
+                                            if( isset($secRuleCategory[$objectCategoryName]) )
+                                            {
+                                                $text = "     - Secrule: ".$objectName." has same category defined twice: ".$objectCategoryName;
+                                                $objectNode_category->removeChild($objectCategory);
+                                                $text .=PH::boldText(" (removed)");
+                                                PH::print_stdout( $text );
+                                                $fixedSecRuleCategoryObjects++;
+                                            }
+                                            else
+                                            {
+                                                $secRuleCategory[$objectCategoryName] = $objectCategory;
+                                                #PH::print_stdout( $objectName.'add to array: '.$objectSourceName );
+                                            }
+
+                                        }
+                                        if( isset($secRuleCategory['any']) and count($secRuleCategory) > 1 )
+                                        {
+                                            $secRuleCategoryIndex[$objectName] = $secRuleCategory['any'];
+                                            #PH::print_stdout( "     - Rule: '".$objectName."' has category 'any' + something else defined." );
+                                        }
+                                    }
 
                                     //check if source has 'any' and additional
                                     $objectNode_sources = DH::findFirstElement('source', $objectNode);
@@ -1362,7 +1399,8 @@ class XMLISSUE extends UTIL
                     PH::print_stdout( " - Scanning for missconfigured Category Field in Security Rules...");
                     foreach( $secRuleCategoryIndex as $objectName => $objectNode )
                     {
-                        PH::print_stdout( "   - found Security Rule named '{$objectName}' that has XML element 'category' but not child element 'member' configured at XML line #{$objectNode->getLineNo()}");
+                        #PH::print_stdout( "   - found Security Rule named '{$objectName}' that has XML element 'category' but not child element 'member' configured at XML line #{$objectNode->getLineNo()}");
+                        PH::print_stdout( "   - found Security Rule named '{$objectName}' that has category 'any' and additional category configured at XML line #{$objectNode->getLineNo()}");
                         $countMissconfiguredSecRuleCategoryObjects++;
                     }
 
@@ -1682,6 +1720,7 @@ class XMLISSUE extends UTIL
         PH::print_stdout( " - FIXED: SecRule with duplicate destination members: {$fixedSecRuleDestinationObjects}");
         PH::print_stdout( " - FIXED: SecRule with duplicate service members: {$fixedSecRuleServiceObjects}");
         PH::print_stdout( " - FIXED: SecRule with duplicate application members: {$fixedSecRuleApplicationObjects}");
+        PH::print_stdout( " - FIXED: SecRule with duplicate category members: {$fixedSecRuleCategoryObjects}");
 
         PH::print_stdout( "\n - FIXED: ReadOnly duplicate DeviceGroup : {$fixedReadOnlyDeviceGroupobjects}");
         PH::print_stdout( "\n - FIXED: ReadOnly duplicate Template : {$fixedReadOnlyTemplateobjects}");
@@ -1818,7 +1857,7 @@ class XMLISSUE extends UTIL
             foreach( $nodes as $node )
             {
 
-                //custom-url-catgegory
+                //custom-url-category
                 $staticNode = DH::findFirstElement('list', $node);
                 if( $staticNode === FALSE )
                 {

@@ -126,7 +126,7 @@ ThreatCallContext::$supportedActions[] = array(
             $addUsedInLocation = TRUE;
 
 
-        $headers = '<th>location</th><th>type</th><th>name</th><th>Threatname</th><th>category</th><th>severity</th><th>default-action</th>';
+        $headers = '<th>ID</th><th>location</th><th>type</th><th>name</th><th>Threatname</th><th>category</th><th>severity</th><th>default-action</th>';
 
         if( $addWhereUsed )
             $headers .= '<th>where used</th>';
@@ -145,6 +145,8 @@ ThreatCallContext::$supportedActions[] = array(
                     $lines .= "<tr>\n";
                 else
                     $lines .= "<tr bgcolor=\"#DDDDDD\">";
+
+                $lines .= $encloseFunction( (string)$count );
 
                 $lines .= $encloseFunction(PH::getLocationString($object));
 

@@ -40,7 +40,7 @@ packetfilter/packetfilter
 
 
 
-//rule order information MUST be placed in a seperate file
+//rule order information MUST be placed in a separate file
 rule order
 nodes/packetfilter.rules
 

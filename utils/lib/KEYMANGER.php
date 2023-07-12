@@ -28,10 +28,13 @@ class KEYMANGER extends UTIL
         "
     Examples:
             
-    - php " . basename(__FILE__) . " add=license-apikey apikey=[ your personal company license API key account can be found via https://support.paloaltonetworks.com -> Assets -> API key management - only super user can see this ]
-    - php " . basename(__FILE__) . " add=bpa-apikey apikey=[ PAN-OS BPA can be request via: bpa@paloaltonetworks.com ] 
-    - php " . basename(__FILE__) . " add=ldap-password apikey=[ LDAP password to interact with organisational ldap server ]
-    - php " . basename(__FILE__) . " add=maxmind-licensekey apikey=[ Maxmind license to download Maxmind geo2ip lite database. create free account: https://www.maxmind.com ]";
+    - php " . basename(__FILE__) . " add=license-apikey 'apikey=[ your personal company license API key account can be found via https://support.paloaltonetworks.com -> Assets -> API key management - only super user can see this ]'
+    - php " . basename(__FILE__) . " add=bpa-apikey 'apikey=[ PAN-OS BPA can be request via: bpa@paloaltonetworks.com ]' 
+    - php " . basename(__FILE__) . " add=ldap-password 'apikey=[ LDAP password to interact with organisational ldap server ]'
+    - php " . basename(__FILE__) . " add=maxmind-licensekey apikey=[ Maxmind license to download Maxmind geo2ip lite database. create free account: https://www.maxmind.com ]
+    - php " . basename(__FILE__) . " add=tsg_id{{TSGID}} 'apikey={{CLIENT_ID}}%{{CLIENT_SECRET}}'  | character '%' must be used as separator between client_id and client_secret";
+
+//        pan-os-php type=key-manager add=tsg_id1668544452 'apikey=api-test-swaschkut@1668544451.iam.panserviceaccount.com%6378343f-060e-45ad-9a83-e4273d4a051d'
 
         $this->prepareSupportedArgumentsArray();
         PH::processCliArgs();
@@ -131,18 +134,64 @@ class KEYMANGER extends UTIL
             PH::$JSON_TMP['header'] = $string;
             PH::$JSON_TMP[$addHost]['name'] = $addHost;
 
-            if( $addHost == "bpa-apikey" || $addHost == "license-apikey" || $addHost == "ldap-password" || $addHost == "maxmind-licensekey" )
+            if( $addHost == "bpa-apikey" || $addHost == "license-apikey" || $addHost == "ldap-password" || $addHost == "maxmind-licensekey" || strpos($addHost, "tsg_id") !== FALSE )
             {
-                if( !isset(PH::$args['apikey']) )
-                    derr( "argument apikey - must be set to add BPA-/License-APIkey" );
-
-                foreach( PanAPIConnector::$savedConnectors as $cIndex => $connector )
+                if( strpos($addHost, "tsg_id") !== FALSE )
                 {
-                    if( $connector->apihost == $addHost )
-                        unset(PanAPIConnector::$savedConnectors[$cIndex]);
+                    //get tsg_id
+                    //get client_id
+                    //get client_secret
+                    if( !isset(PH::$args['apikey']) )
+                    {
+                        /*
+                        PH::print_stdout( " ** Please enter scope:  {{TSGID}} | without leading 'tsg_id:" );
+                        $handle = fopen("php://stdin", "r");
+                        $line = fgets($handle);
+                        $tsg_id = trim($line);
+                        */
+
+                        PH::print_stdout( " ** Please enter client_id" );
+                        $handle = fopen("php://stdin", "r");
+                        $line = fgets($handle);
+                        $client_id = trim($line);
+
+                        PH::print_stdout( " ** Please enter client_secret" );
+                        $handle = fopen("php://stdin", "r");
+                        $line = fgets($handle);
+                        $client_secret = trim($line);
+
+                        #$addHost = "tsg_id".$tsg_id;
+                        $key = $client_id."%".$client_secret;
+                    }
+                    else
+                    {
+                        #$addHost = "tsg_id".$tsg_id;
+                        $key = PH::$args['apikey'];
+                    }
+
+
+                    foreach( PanAPIConnector::$savedConnectors as $cIndex => $connector )
+                    {
+                        if( $connector->apihost == $addHost )
+                            unset(PanAPIConnector::$savedConnectors[$cIndex]);
+                    }
+
+                    PanAPIConnector::$savedConnectors[] = new PanAPIConnector($addHost, $key);
+                }
+                else
+                {
+                    if( !isset(PH::$args['apikey']) )
+                        derr( "argument apikey - must be set to add BPA-/License-APIkey" );
+
+                    foreach( PanAPIConnector::$savedConnectors as $cIndex => $connector )
+                    {
+                        if( $connector->apihost == $addHost )
+                            unset(PanAPIConnector::$savedConnectors[$cIndex]);
+                    }
+
+                    PanAPIConnector::$savedConnectors[] = new PanAPIConnector($addHost, PH::$args['apikey']);
                 }
 
-                PanAPIConnector::$savedConnectors[] = new PanAPIConnector($addHost, PH::$args['apikey']);
                 PanAPIConnector::saveConnectorsToUserHome();
             }
             else
@@ -181,27 +230,54 @@ class KEYMANGER extends UTIL
                     }
 
                     PH::enableExceptionSupport();
-                    try
+                    if( strpos($checkHost, "tsg_id") === FALSE )
                     {
-                        if( !isset(PH::$args['apikey']) )
-                            $connector = PanAPIConnector::findOrCreateConnectorFromHost($checkHost, null, TRUE, TRUE, $hiddenPW, $debugAPI , $cliUSER, $cliPW);
-                        else
-                            $connector = PanAPIConnector::findOrCreateConnectorFromHost($checkHost, PH::$args['apikey'], TRUE, TRUE, TRUE, $debugAPI);
+                        try
+                        {
+                            if( !isset(PH::$args['apikey']) )
+                                $connector = PanAPIConnector::findOrCreateConnectorFromHost($checkHost, null, TRUE, TRUE, $hiddenPW, $debugAPI , $cliUSER, $cliPW);
+                            else
+                                $connector = PanAPIConnector::findOrCreateConnectorFromHost($checkHost, PH::$args['apikey'], TRUE, TRUE, TRUE, $debugAPI);
 
-                        if( $debugAPI )
-                            $connector->showApiCalls = true;
+                            if( $debugAPI )
+                                $connector->showApiCalls = true;
 
-                        $connector->testConnectivity( $checkHost );
-                    } catch(Exception $e)
-                    {
-                        PH::disableExceptionSupport();
-                        $string = "   ***** API Error occured : " . $e->getMessage();
-                        PH::$JSON_TMP[$checkHost]['error'] = $string;
-                        PH::print_stdout( $string );
+                            $connector->testConnectivity( $checkHost );
+                        } catch(Exception $e)
+                        {
+                            PH::disableExceptionSupport();
+                            $string = "   ***** API Error occured : " . $e->getMessage();
+                            PH::$JSON_TMP[$checkHost]['error'] = $string;
+                            PH::print_stdout( $string );
+                        }
                     }
+                    else
+                    {
+                        try
+                        {
+                            $TSGid = str_replace( "tsg_id", "", $checkHost);
+                            $sase_connector =  new PanSaseAPIConnector($TSGid);
 
+                            $sase_connector->findOrCreateConnectorFromHost($TSGid);
+
+                            if( $debugAPI )
+                                $sase_connector->showApiCalls = true;
+
+                            $sase_connector->getAccessToken();
+                        } catch(Exception $e)
+                        {
+                            PH::disableExceptionSupport();
+                            $string = "   ***** API Error occured : " . $e->getMessage();
+                            PH::$JSON_TMP[$checkHost]['error'] = $string;
+                            PH::print_stdout( $string );
+                        }
+
+
+                    }
                     PH::disableExceptionSupport();
                     PH::print_stdout();
+
+
                 }
             }
             else
@@ -215,15 +291,30 @@ class KEYMANGER extends UTIL
                 }
                 else
                 {
-                    if( !isset(PH::$args['apikey']) )
-                        $connector = PanAPIConnector::findOrCreateConnectorFromHost($checkHost, null, TRUE, TRUE, $hiddenPW, $debugAPI, $cliUSER, $cliPW);
+                    if( strpos($checkHost, "tsg_id") === FALSE )
+                    {
+                        if( !isset(PH::$args['apikey']) )
+                            $connector = PanAPIConnector::findOrCreateConnectorFromHost($checkHost, null, TRUE, TRUE, $hiddenPW, $debugAPI, $cliUSER, $cliPW);
+                        else
+                            $connector = PanAPIConnector::findOrCreateConnectorFromHost($checkHost, PH::$args['apikey'], TRUE, TRUE, TRUE, $debugAPI);
+
+                        if( $debugAPI )
+                            $connector->showApiCalls = true;
+
+                        $connector->testConnectivity( $checkHost );
+                    }
                     else
-                        $connector = PanAPIConnector::findOrCreateConnectorFromHost($checkHost, PH::$args['apikey'], TRUE, TRUE, TRUE, $debugAPI);
+                    {
+                        $TSGid = str_replace( "tsg_id", "", $checkHost);
+                        $sase_connector =  new PanSaseAPIConnector($TSGid);
 
-                    if( $debugAPI )
-                        $connector->showApiCalls = true;
+                        $sase_connector->findOrCreateConnectorFromHost($TSGid);
 
-                    $connector->testConnectivity( $checkHost );
+                        if( $debugAPI )
+                            $sase_connector->showApiCalls = true;
+
+                        $sase_connector->getAccessToken();
+                    }
                 }
 
                 PH::print_stdout();

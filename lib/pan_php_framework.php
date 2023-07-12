@@ -188,6 +188,7 @@ require_once $basedir . '/misc-classes/CertificateRQueryContext.php';
 require_once $basedir . '/misc-classes/CsvParser.php';
 require_once $basedir . '/misc-classes/trait/PanSubHelperTrait.php';
 require_once $basedir . '/misc-classes/PanAPIConnector.php';
+require_once $basedir . '/misc-classes/PanSaseAPIConnector.php';
 
 
 require_once $basedir . '/helper-classes/IP4Map.php';
@@ -537,7 +538,10 @@ function &cloneArray(&$old)
 
 function __CmpObjName($objA, $objB)
 {
-    return strcmp($objA->name(), $objB->name());
+    if( method_exists($objA,'name') && method_exists($objB,'name') )
+        return strcmp($objA->name(), $objB->name());
+    else
+        return strcmp($objA, $objB);
 }
 
 function __CmpObjMemID($objA, $objB)
@@ -819,7 +823,7 @@ function findConnector($object)
 
 /**
  * @param $object
- * @return PanAPIConnector|null
+ * @return PanAPIConnector|PanSaseAPIConnector|null
  */
 function findConnectorOrDie($object)
 {

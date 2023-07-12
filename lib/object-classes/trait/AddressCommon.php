@@ -500,6 +500,7 @@ trait AddressCommon
 
         foreach( $this->refrules as $objectRef )
         {
+            $success2 = true;
             if(  (get_class($objectRef) == "AddressGroup") && $objectRef->isDynamic() )
                 continue;
 
@@ -515,6 +516,8 @@ trait AddressCommon
                     else
                     {
                         PH::print_stdout( "- SKIP: not possible due to different object type: '".$this->name()."-".$this->type()."' <=> '".$withObject->name()."-".$withObject->type()."'" );
+                        $success = false;
+                        $success2 = false;
                         continue;
                     }
                 }
@@ -530,6 +533,7 @@ trait AddressCommon
                 {
                     PH::print_stdout( "- SKIP: not yet possible on ".get_class($objectRef) );
                     $success = false;
+                    $success2 = false;
                     continue;
                 }
                 else
@@ -540,6 +544,7 @@ trait AddressCommon
                     {
                         PH::print_stdout( "- SKIP: not yet possible on ".get_class($objectRef) );
                         $success = false;
+                        $success2 = false;
                         exit();
                         continue;
                     }
@@ -547,44 +552,52 @@ trait AddressCommon
 
                 #template <tunnel><units><entry name="tunnel.1"><ip>
 
-                #PH::print_stdout("search object: ".$withObject->name()." in store: ".$tmp_store->storeName());
+
                 $tmp_addr = $tmp_store->find( $withObject->name() );
-                if( $tmp_addr === null )
+                if( $tmp_addr !== null )
                 {
-                    #PH::print_stdout("search object: ".$withObject->name()." in store: ".$tmp_store->storeName()." parentStore");
-                    $tmp_addr = $tmp_store->parentCentralStore->find( $withObject->name() );
-                }
+                    #PH::print_stdout("search object: ".$withObject->name()." in store: ".$tmp_store->storeName()." sub: ".$tmp_store->owner->name());
 
+                    if( !$tmp_addr->isAddress() )
+                    {
+                        PH::print_stdout( "- SKIP: not possible due to different object type. object is AddressGroup" );
+                        $success = false;
+                        $success2 = false;
+                        continue;
+                    }
 
-                if( !$tmp_addr->isAddress() )
-                {
-                    PH::print_stdout( "- SKIP: not possible due to different object type. object is AddressGroup" );
-                    $success = false;
-                    continue;
-                }
-                
-                if( $withObject->value() !== $tmp_addr->value() )
-                {
-                    if( $this->type() !== $withObject->type() || $withObject->getNetworkValue() !== $tmp_addr->getNetworkValue())
+                    if( $this->type() !== $withObject->type() || $withObject->value() !== $tmp_addr->value() )
                     {
                         PH::print_stdout( "- SKIP: not possible to replace due to different value: {$objectRef->toString()}" );
-                        PH::print_stdout( " - '".$withObject->value()."' | '".$tmp_addr->value()."'" );
                         $success = false;
+                        $success2 = false;
                         continue;
                     }
                 }
             }
 
+            if( get_class($objectRef) == "AddressGroup" )
+            {
+                if( $objectRef->name() === $withObject->name() )
+                {
+                    PH::print_stdout( "- SKIP: not possible to replace due to same name (will cause LOOP) from member and AddressGroup: '{$objectRef->name()}' and {$withObject->name()}" );
+                    $success = false;
+                    $success2 = false;
+                    continue;
+                }
+            }
 
 
-            if( $displayOutput )
-                PH::print_stdout( $outputPadding . "- replacing in {$objectRef->toString()}" );
-            if( $apiMode )
-                $objectRef->API_replaceReferencedObject($this, $withObject);
-            else
-                $objectRef->replaceReferencedObject($this, $withObject);
+            if( $success2 )
+            {
+                if( $displayOutput )
+                    PH::print_stdout( $outputPadding . "- replacing in {$objectRef->toString()}" );
+                if( $apiMode )
+                    $objectRef->API_replaceReferencedObject($this, $withObject);
+                else
+                    $objectRef->replaceReferencedObject($this, $withObject);
+            }
         }
-
 
         return $success;
     }

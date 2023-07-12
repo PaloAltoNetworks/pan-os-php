@@ -104,6 +104,16 @@ class PanAPIConnector
     private $auditComment = null;
 
 
+    public function isSaseAPI()
+    {
+        return FALSE;
+    }
+
+    public function isAPI()
+    {
+        return TRUE;
+    }
+
     /**
      * @param bool $force Force refresh instead of using cache
      * @throws Exception
@@ -407,7 +417,8 @@ class PanAPIConnector
                 try
                 {
                     $connector->getSoftwareVersion();
-                } catch(Exception $e)
+                }
+                catch(Exception $e)
                 {
                     PH::$useExceptions = $exceptionUse;
 
@@ -512,7 +523,7 @@ class PanAPIConnector
                 $connector = new PanAPIConnector($host, $apiKey, 'panos', null, $port);
         }
 
-        if( $host == "bpa-apikey" || $host == "license-apikey" || $host == "ldap-password" || $host == "maxmind-licensekey" )
+        if( $host == "bpa-apikey" || $host == "license-apikey" || $host == "ldap-password" || $host == "maxmind-licensekey" || strpos($host, "tsg_id") !== FALSE )
         {
             $checkConnectivity = false;
             self::$savedConnectors[] = $connector;

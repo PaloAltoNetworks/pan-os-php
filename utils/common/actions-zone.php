@@ -668,7 +668,7 @@ ZoneCallContext::$supportedActions['exportToExcel'] = array(
         if( isset($optionalFields['NestedMembers']) )
             $addNestedMembers = TRUE;
 
-        $headers = '<th>template</th><th>location</th><th>name</th><th>type</th><th>interfaces</th><th>log-setting</th><th>zone-protection-profile</th>';
+        $headers = '<th>ID</th><th>template</th><th>location</th><th>name</th><th>type</th><th>interfaces</th><th>log-setting</th><th>zone-protection-profile</th>';
 
         if( $addWhereUsed )
             $headers .= '<th>where used</th>';
@@ -723,6 +723,8 @@ ZoneCallContext::$supportedActions['exportToExcel'] = array(
                     $lines .= "<tr>\n";
                 else
                     $lines .= "<tr bgcolor=\"#DDDDDD\">";
+
+                $lines .= $encloseFunction( (string)$count );
 
                 if( $object->owner->owner->owner->owner  !== null && get_class( $object->owner->owner->owner->owner ) == "Template" )
                 {

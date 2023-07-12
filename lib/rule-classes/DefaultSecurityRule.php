@@ -404,7 +404,8 @@ class DefaultSecurityRule extends Rule
             $xpath = $this->getXPath() . '/profile-setting';
             $con = findConnectorOrDie($this);
 
-            $con->sendDeleteRequest($xpath);
+            if( $con->isAPI() )
+                $con->sendDeleteRequest($xpath);
         }
 
         return $ret;
@@ -431,7 +432,8 @@ class DefaultSecurityRule extends Rule
             $xpath = $this->getXPath() . '/profile-setting';
             $con = findConnectorOrDie($this);
 
-            $con->sendEditRequest($xpath, '<profile-setting><group><member>' . $newgroup . '</member></group></profile-setting>');
+            if( $con->isAPI() )
+                $con->sendEditRequest($xpath, '<profile-setting><group><member>' . $newgroup . '</member></group></profile-setting>');
         }
 
         return $ret;
@@ -646,7 +648,8 @@ class DefaultSecurityRule extends Rule
 
         $domNode = DH::findFirstElementOrDie('action', $this->xmlroot);
         $connector = findConnectorOrDie($this);
-        $connector->sendSetRequest($this->getXPath(), '<action>'.$domNode->textContent.'</action>');
+        if( $con->isAPI() )
+            $connector->sendSetRequest($this->getXPath(), '<action>'.$domNode->textContent.'</action>');
     }
 
 
@@ -717,7 +720,8 @@ class DefaultSecurityRule extends Rule
             return FALSE;
 
         $con = findConnectorOrDie($this);
-        $con->sendSetRequest($this->getXPath(), "<log-end>" . boolYesNo($yes) . "</log-end>");
+        if( $con->isAPI() )
+            $con->sendSetRequest($this->getXPath(), "<log-end>" . boolYesNo($yes) . "</log-end>");
 
         return TRUE;
     }
@@ -733,7 +737,8 @@ class DefaultSecurityRule extends Rule
             return FALSE;
 
         $con = findConnectorOrDie($this);
-        $con->sendSetRequest($this->getXPath(), "<log-start>" . boolYesNo($yes) . "</log-start>");
+        if( $con->isAPI() )
+            $con->sendSetRequest($this->getXPath(), "<log-start>" . boolYesNo($yes) . "</log-start>");
 
         return TRUE;
     }

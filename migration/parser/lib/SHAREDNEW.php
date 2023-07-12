@@ -859,7 +859,8 @@ trait SHAREDNEW
             return null;
 
         //remove leading 0 on IP address
-        $IPvalue = ltrim($IPvalue, "0");
+        //20230621 - swaschkut - why was this line added, just commented out
+        //$IPvalue = ltrim($IPvalue, "0");
 
         $value_array = explode( "/", $IPvalue );
         if( isset( $value_array[1] ) )
