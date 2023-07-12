@@ -11,7 +11,7 @@ UTIL:
 * in=sase-api:// - Strate Cloud Manager | extend reading objects based on type=
 * type=rule | actions=display/exporttoexcel - extend additional argument ResolveAddressSummary with name/ip value from nested members
 * type=xml-issue  | extend check with secRule category field for ANY + other category configured
-* type=custom-url-catgory-merger | introduction of new merger utiliy
+* type=custom-url-catgory-merger | introduction of new merger utility
 * type=XYZ | actions=exporttoexcel:file.html - introduce ID field
 * type=addressgroup-merger exportcsv=file.html | extend skipped information with reason column
 
@@ -28,7 +28,7 @@ BUGFIX:
 
 GENERAL:
 * develop - start sase.php _ first version to use sase-api
-* develop sase.xml | check also post rulebase
+* develop sase.php | check also post rulebase
 * introduce a new connection method "in=sase-api://"
 * general | introduce argument shadow-saseapiqa for in=sase-api://
 
