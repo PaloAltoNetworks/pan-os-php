@@ -1,6 +1,14 @@
 CHANGELOG
 
-2.1.9
+2.1.10
+UTIL:
+
+BUGFIX:
+
+GENERAL:
+
+
+2.1.9 (20230712)
 UTIL:
 * type=key-manager - extend support for new connection method "in=sase-api://"
 * type=address/service/rule/tag/schedule | enable support for actions=display with method "in=sase-api://"
