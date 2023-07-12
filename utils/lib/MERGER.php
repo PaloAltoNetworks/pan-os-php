@@ -859,7 +859,7 @@ class MERGER extends UTIL
                                 $diff = $pickedObject->getValueDiff($nextFindObject);
                                 if( count($diff['minus']) != 0 || count($diff['plus']) != 0 )
                                 {
-                                    PH::print_stdout("   * SKIPPED : this group has different member ship compare to upperleve");
+                                    PH::print_stdout("   * SKIPPED : this group has different member ship compare to upperlevel");
                                     $skip = TRUE;
                                 }
                             }
@@ -990,8 +990,9 @@ class MERGER extends UTIL
                         }
                         else
                         {
+                            $stringSkippedReason = $pickedObject->displayValueDiff($tmp_address, 7, true);
                             PH::print_stdout( "    - SKIP: object name '{$pickedObject->_PANC_shortName()}' [with value '{$pickedObject_value}'] is not IDENTICAL to object name: '{$tmp_address->_PANC_shortName()}' [with value '{$tmp_address_value}']" );
-                            $this->skippedObject( $index, $pickedObject, $tmp_address, 'value is not IDENTICAL');
+                            $this->skippedObject( $index, $pickedObject, $tmp_address, $stringSkippedReason);
                             continue;
                         }
 
@@ -1062,7 +1063,7 @@ class MERGER extends UTIL
                         if( !$ancestor->isGroup() )
                         {
                             PH::print_stdout("    - SKIP: object name '{$object->_PANC_shortName()}' as one ancestor is of type: ". get_class( $ancestor )." '{$ancestor->_PANC_shortName()}' value: ".$ancestor->value());
-                            $this->skippedObject( $index, $object, $ancestor, 'ancesotr of type: '.get_class( $ancestor ));
+                            $this->skippedObject( $index, $object, $ancestor, 'ancestor of type: '.get_class( $ancestor ));
                             continue;
                         }
 
@@ -4239,7 +4240,7 @@ class MERGER extends UTIL
         if( !$skipped )
             $headers = '<th>ID</th><th>hash</th><th>kept (create)</th><th>removed</th>';
         else
-            $headers = '<th>ID</th><th>hash</th><th>kept</th><th>not merged with</th>';
+            $headers = '<th>ID</th><th>hash</th><th>kept</th><th>not merged with</th><th>reason</th>';
 
 
         $lines = '';
@@ -4313,6 +4314,14 @@ class MERGER extends UTIL
 
                 $removedArray = explode( "|", $line['removed'] );
                 $lines .= $encloseFunction( $removedArray );
+
+                if( isset( $line['reason'] ) )
+                {
+                    $tmp_array = explode(PHP_EOL, $line['reason']);
+                    $lines .= $encloseFunction( $tmp_array );
+                }
+                else
+                    $lines .= $encloseFunction( "" );
 
                 $lines .= "</tr>\n";
 
@@ -4413,11 +4422,12 @@ class MERGER extends UTIL
                 else
                     $this->skippedObjects[$index]['kept'] .= "{value:GROUP}";
             }
-
+            $this->skippedObjects[$index]['reason'] = $reason;
         }
         else
         {
             $this->skippedObjects[$index]['kept'] = $keptOBJ;
+            $this->skippedObjects[$index]['reason'] = $reason;
         }
 
         if( is_object( $removedOBJ ) )
