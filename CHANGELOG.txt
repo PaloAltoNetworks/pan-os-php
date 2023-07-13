@@ -1,6 +1,14 @@
 CHANGELOG
 
-2.1.10
+2.1.11
+UTIL:
+
+BUGFIX:
+
+GENERAL:
+
+
+2.1.10 (20230714)
 UTIL:
 * type=address | introduce actions=move-wildcard2network
 
