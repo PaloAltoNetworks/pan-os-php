@@ -30,6 +30,9 @@ class PLAYBOOK__
     public $usageMsg = null;
     public $PHP_FILE = "pan-os-php.php type=playbook";
 
+    public $supportedArguments;
+    public $outputformatsetFile;
+
     function __construct( $argv, $argc )
     {
 

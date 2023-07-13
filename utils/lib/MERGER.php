@@ -3741,7 +3741,8 @@ class MERGER extends UTIL
                             //add addmissingobjects
                             if( $this->addMissingObjects )
                             {
-                                $this->customURLcategoryGetValueDiff( $ancestor, $object, true );
+                                if( !$object->sameValue($ancestor) )
+                                    $this->customURLcategoryGetValueDiff( $ancestor, $object, true );
                             }
 
                             if( $object->sameValue($ancestor) || $this->dupAlg == 'samename' ) //same color
@@ -3788,6 +3789,9 @@ class MERGER extends UTIL
                             }
                             else
                                 $ancestor_different_color = "with different value";
+
+                            if( $this->addMissingObjects )
+                                continue;
                         }
 
                         PH::print_stdout("    - object '{$object->name()}' cannot be merged because it has an ancestor " . $ancestor_different_color . "");
@@ -4378,7 +4382,7 @@ class MERGER extends UTIL
                 $removedArray = explode( "|", $line['removed'] );
                 $lines .= $encloseFunction( $removedArray );
 
-                if( isset( $line['reason'] ) )
+                if( isset( $line['reason'] ) && $skipped )
                 {
                     $tmp_array = explode(PHP_EOL, $line['reason']);
                     $lines .= $encloseFunction( $tmp_array );
