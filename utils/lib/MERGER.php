@@ -3788,9 +3788,6 @@ class MERGER extends UTIL
                             }
                             else
                                 $ancestor_different_color = "with different value";
-
-                            if( $this->addMissingObjects )
-                                continue;
                         }
 
                         PH::print_stdout("    - object '{$object->name()}' cannot be merged because it has an ancestor " . $ancestor_different_color . "");
