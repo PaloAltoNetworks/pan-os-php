@@ -592,6 +592,9 @@ class MERGER extends UTIL
             if( $this->dupAlg != 'samevalue' && $this->dupAlg != 'identical' && $this->dupAlg != 'samename' )
                 $display_error = true;
 
+            if( isset(PH::$args['allowaddingmissingobjects']) )
+                $this->addMissingObjects = TRUE;
+
             $defaultDupAlg = 'samevalue';
         }
         /*
@@ -3735,6 +3738,12 @@ class MERGER extends UTIL
                         /** @var customURLProfile $ancestor */
                         if( $this->upperLevelSearch &&  get_class($ancestor) === "customURLProfile" )
                         {
+                            //add addmissingobjects
+                            if( $this->addMissingObjects )
+                            {
+                                $this->customURLcategoryGetValueDiff( $ancestor, $object, true );
+                            }
+
                             if( $object->sameValue($ancestor) || $this->dupAlg == 'samename' ) //same color
                             {
                                 if( $this->dupAlg == 'identical' )
@@ -3780,8 +3789,10 @@ class MERGER extends UTIL
                             else
                                 $ancestor_different_color = "with different value";
 
-
+                            if( $this->addMissingObjects )
+                                continue;
                         }
+
                         PH::print_stdout("    - object '{$object->name()}' cannot be merged because it has an ancestor " . $ancestor_different_color . "");
                         $ancestor->displayValueDiff( $object, 7);
                         $tmp_skippedReason = $ancestor->displayValueDiff( $object, 7, true);
@@ -4375,7 +4386,7 @@ class MERGER extends UTIL
                     $tmp_array = explode(PHP_EOL, $line['reason']);
                     $lines .= $encloseFunction( $tmp_array );
                 }
-                else
+                elseif( $skipped )
                     $lines .= $encloseFunction( "" );
 
                 $lines .= "</tr>\n";

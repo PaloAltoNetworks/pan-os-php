@@ -5,6 +5,7 @@ UTIL:
 
 BUGFIX:
 * type=custom-url-category-merger | bugfix to merge correctly objects in DG hierarchy - add reason for exportcsv=file.html
+* type=custom-url-category-merger | introduce argument allowaddingmissingobjects
 
 GENERAL:
 
