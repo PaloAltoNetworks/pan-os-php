@@ -713,9 +713,9 @@ class MERGER extends UTIL
             else
                 derr("unsupported dupAlgorithm");
 
-//
-// Building a hash table of all address objects with same value
-//
+            //
+            // Building a hash table of all address objects with same value
+            //
             if( $this->upperLevelSearch )
                 $objectsToSearchThrough = $store->nestedPointOfView();
             else
@@ -781,9 +781,9 @@ class MERGER extends UTIL
                     $upperHashMap[$value][] = $object;
             }
 
-//
-// Hashes with single entries have no duplicate, let's remove them
-//
+            //
+            // Hashes with single entries have no duplicate, let's remove them
+            //
             $countConcernedObjects = 0;
             foreach( $hashMap as $index => &$hash )
             {
@@ -1971,9 +1971,9 @@ class MERGER extends UTIL
             else
                 derr("unsupported dupAlgorithm");
 
-//
-// Building a hash table of all service objects with same value
-//
+            //
+            // Building a hash table of all service objects with same value
+            //
             /** @var ServiceStore $store */
             if( $this->upperLevelSearch )
                 $objectsToSearchThrough = $store->nestedPointOfView();
@@ -2047,9 +2047,9 @@ class MERGER extends UTIL
                     $upperHashMap[$value][] = $object;
             }
 
-//
-// Hashes with single entries have no duplicate, let's remove them
-//
+            //
+            // Hashes with single entries have no duplicate, let's remove them
+            //
             $countConcernedObjects = 0;
             foreach( $hashMap as $index => &$hash )
             {
@@ -2310,43 +2310,8 @@ class MERGER extends UTIL
 
                             if( $hashGenerator($object) != $hashGenerator($ancestor) )
                             {
-                                $ancestor->displayValueDiff($object, 7);
 
-                                if( $this->addMissingObjects )
-                                {
-                                    $diff = $ancestor->getValueDiff($object);
-
-                                    if( count($diff['minus']) != 0 )
-                                        foreach( $diff['minus'] as $d )
-                                        {
-                                            /** @var Service|ServiceGroup $d */
-
-                                            if( $ancestor->owner->find($d->name()) !== null )
-                                            {
-                                                PH::print_stdout("      - adding objects to group: " . $d->name() . "");
-                                                if( $this->action === "merge" )
-                                                {
-                                                    if( $this->apiMode )
-                                                        $ancestor->API_addMember($d);
-                                                    else
-                                                        $ancestor->addMember($d);
-                                                }
-                                            }
-                                            else
-                                            {
-                                                PH::print_stdout("      - object not found: " . $d->name() . "");
-                                            }
-                                        }
-
-                                    if( count($diff['plus']) != 0 )
-                                        foreach( $diff['plus'] as $d )
-                                        {
-                                            /** @var Service|ServiceGroup $d */
-                                            //TMP usage to clean DG level SERVICEgroup up
-                                            if( $this->action === "merge" )
-                                                $object->addMember($d);
-                                        }
-                                }
+                                $this->servicegroupGetValueDiff($ancestor, $object, true);
                             }
 
                             if( $hashGenerator($object) == $hashGenerator($ancestor) )
@@ -2483,7 +2448,49 @@ class MERGER extends UTIL
 
         }
     }
-    
+
+    function servicegroupGetValueDiff( $ancestor, $object, $display = false)
+    {
+        if( $display )
+            $ancestor->displayValueDiff($object, 7);
+
+        if( $this->addMissingObjects )
+        {
+            $diff = $ancestor->getValueDiff($object);
+
+            if( count($diff['minus']) != 0 )
+                foreach( $diff['minus'] as $d )
+                {
+                    /** @var Service|ServiceGroup $d */
+
+                    if( $ancestor->owner->find($d->name()) !== null )
+                    {
+                        PH::print_stdout("      - adding objects to group: " . $d->name() . "");
+                        if( $this->action === "merge" )
+                        {
+                            if( $this->apiMode )
+                                $ancestor->API_addMember($d);
+                            else
+                                $ancestor->addMember($d);
+                        }
+                    }
+                    else
+                    {
+                        PH::print_stdout("      - object not found: " . $d->name() . "");
+                    }
+                }
+
+            if( count($diff['plus']) != 0 )
+                foreach( $diff['plus'] as $d )
+                {
+                    /** @var Service|ServiceGroup $d */
+                    //TMP usage to clean DG level SERVICEgroup up
+                    if( $this->action === "merge" )
+                        $object->addMember($d);
+                }
+        }
+    }
+
     function service_merging()
     {
         foreach( $this->location_array as $tmp_location )
@@ -3615,7 +3622,7 @@ class MERGER extends UTIL
                         $exitObject = null;
                         foreach( $child_NamehashMap[ $pickedObject->name() ] as $obj )
                         {
-                            if( !$obj->sameValue($pickedObject) ) //same color
+                            if( !$obj->sameValue($pickedObject) )
                             {
                                 $exit = true;
                                 $exitObject = $obj;
@@ -3624,8 +3631,9 @@ class MERGER extends UTIL
 
                         if( $exit )
                         {
+                            $stringSkippedReason = $pickedObject->displayValueDiff($exitObject, 7, true);
                             PH::print_stdout( "   * SKIP: no creation of object in DG: '".$tmp_DG_name."' as object with same name '{$exitObject->name()}' and different value exist at childDG level" );
-                            $this->skippedObject( $index, $pickedObject, $exitObject);
+                            $this->skippedObject( $index, $pickedObject, $exitObject, $stringSkippedReason);
                             continue;
                         }
                     }
@@ -3656,8 +3664,9 @@ class MERGER extends UTIL
                     }
                     else
                     {
+                        $stringSkippedReason = $pickedObject->displayValueDiff($tmp_tag, 7, true);
                         PH::print_stdout( "    - SKIP: object name '{$pickedObject->_PANC_shortName()}' [with value '".implode("./.",$pickedObject->getmembers())."'] is not IDENTICAL to object name: '{$tmp_tag->_PANC_shortName()}' [with value '".implode("./.",$tmp_tag->getmembers())."'] " );
-                        $this->skippedObject( $index, $pickedObject, $tmp_tag);
+                        $this->skippedObject( $index, $pickedObject, $tmp_tag, $stringSkippedReason);
                         continue;
                     }
                 }
@@ -3724,7 +3733,7 @@ class MERGER extends UTIL
                         }
 
                         /** @var customURLProfile $ancestor */
-                        if( $this->upperLevelSearch &&    get_class($ancestor) !== "customURLProfile" )
+                        if( $this->upperLevelSearch &&  get_class($ancestor) === "customURLProfile" )
                         {
                             if( $object->sameValue($ancestor) || $this->dupAlg == 'samename' ) //same color
                             {
@@ -3752,7 +3761,7 @@ class MERGER extends UTIL
                                 $text = "         ancestor name: '{$ancestor->name()}' DG: ";
                                 if( $ancestor->owner->owner->name() == "" ) $text .= "'shared'";
                                 else $text .= "'{$ancestor->owner->owner->name()}'";
-                                $text .= "  Value: '{".implode("./.",$ancestor->getmembers())."'}' ";
+                                $text .= "  Value: '".implode("./.",$ancestor->getmembers())."' ";
                                 PH::print_stdout($text);
 
                                 if( $pickedObject === $object )
@@ -3774,12 +3783,15 @@ class MERGER extends UTIL
 
                         }
                         PH::print_stdout("    - object '{$object->name()}' cannot be merged because it has an ancestor " . $ancestor_different_color . "");
+                        $ancestor->displayValueDiff( $object, 7);
+                        $tmp_skippedReason = $ancestor->displayValueDiff( $object, 7, true);
 
                         $text = "         ancestor name: '{$ancestor->name()}' DG: ";
                         if( $ancestor->owner->owner->name() == "" ) $text .= "'shared'";
                         else $text .= "'{$ancestor->owner->owner->name()}'";
-                        $text .= "  Value: '{".implode("./.",$ancestor->getmembers())."'}' ";
+                        $text .= "  Value: '".implode("./.",$ancestor->getmembers())."' ";
                         PH::print_stdout($text);
+                        $this->skippedObject( $index, $object, $ancestor, $tmp_skippedReason);
 
                         if( $this->upperLevelSearch )
                             $tmpstring = "|->ERROR ancestor: '" . $object->_PANC_shortName() . "  value: '".implode("./.",$ancestor->getmembers())."' "."' cannot be merged. | ".$text;
@@ -3830,6 +3842,49 @@ class MERGER extends UTIL
 
             PH::print_stdout( "\n\nDuplicates removal is now done. Number of objects after cleanup: '{$store->count()}' (removed {$countRemoved} customURLcategory)\n" );
 
+        }
+    }
+
+    /**
+     * @param customURLProfile $ancestor
+     * @param customURLProfile $object
+     */
+    function customURLcategoryGetValueDiff( $ancestor, $object, $display = false)
+    {
+        if( $display )
+            $ancestor->displayValueDiff($object, 7);
+
+        if( $this->addMissingObjects )
+        {
+            $diff = $ancestor->getValueDiff($object);
+
+            if( count($diff['minus']) != 0 )
+                foreach( $diff['minus'] as $d )
+                {
+                    /** @var string $d */
+
+                    PH::print_stdout("      - adding objects to group: " . $d . "");
+                    if( $this->action === "merge" )
+                    {
+                        if( $this->apiMode )
+                        {
+                            //
+                            mwarning("API mode not implemented yet");
+                            #$ancestor->API_addMember($d);
+                        }
+                        else
+                            $ancestor->addMember($d);
+                    }
+                }
+
+            if( count($diff['plus']) != 0 )
+                foreach( $diff['plus'] as $d )
+                {
+                    /** @var Service|ServiceGroup $d */
+                    //TMP usage to clean DG level customURLcategory up
+                    if( $this->action === "merge" )
+                        $object->addMember($d);
+                }
         }
     }
 
