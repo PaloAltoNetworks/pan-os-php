@@ -308,6 +308,39 @@ class customURLProfile
         return $result;
     }
 
+    public function displayValueDiff(customURLProfile $otherObject, $indent = 0, $toString = FALSE)
+    {
+        $retString = '';
+
+        $indent = str_pad(' ', $indent);
+
+
+        $retString .= $indent . "Diff for between " . $this->toString() . " vs " . $otherObject->toString() . "\n";
+        $retString .= $indent . "  ' - ' means missing member \n";
+        $retString .= $indent . "  ' + ' means additional member \n";
+        $retString .= $indent . "       in ".$this->_PANC_shortName()."\n";
+
+        $diff = $this->getValueDiff($otherObject);
+
+        if( count($diff['minus']) != 0 )
+            foreach( $diff['minus'] as $d )
+            {
+                /** @var string $d */
+                $retString .= $indent . " - {$d}\n";
+            }
+
+        if( count($diff['plus']) != 0 )
+            foreach( $diff['plus'] as $d )
+            {
+                $retString .= $indent . " + {$d}\n";
+            }
+
+        if( $toString )
+            return $retString;
+
+        PH::print_stdout( $retString );
+    }
+
     static public $templatexml = '<entry name="**temporarynamechangeme**"></entry>';
     static public $templatexml_v9 = '<entry name="**temporarynamechangeme**"><type>URL List</type></entry>';
 

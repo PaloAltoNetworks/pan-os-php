@@ -2,8 +2,12 @@ CHANGELOG
 
 2.1.10
 UTIL:
+* type=address | introduce actions=move-wildcard2network
 
 BUGFIX:
+* type=custom-url-category-merger | bugfix to merge correctly objects in DG hierarchy - add reason for exportcsv=file.html
+* type=custom-url-category-merger | introduce argument allowaddingmissingobjects
+* type=playbook | adjustment to fit to PHP  version 8.1.x
 
 GENERAL:
 

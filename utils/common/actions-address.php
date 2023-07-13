@@ -3149,3 +3149,58 @@ AddressCallContext::$supportedActions['move-range2network'] = array(
 
     }
 );
+
+AddressCallContext::$supportedActions['move-wildcard2network'] = array(
+    'name' => 'move-wildcard2network',
+    'MainFunction' => function (AddressCallContext $context) {
+        $object = $context->object;
+
+        if( $object->isGroup() || $object->isRegion() || !$object->isType_ipWildcard() )
+        {
+            $string = "Address object is not of type ip-wildcard";
+            PH::ACTIONstatus( $context, 'skipped', $string);
+            return false;
+        }
+
+
+        $array = explode( "/", $object->value() );
+        $address = $array[0];
+        $wildcardmask = $array[1];
+
+        $cidr_array = explode(".", $wildcardmask);
+        $tmp_hostCidr = "";
+        foreach( $cidr_array as $key => &$entry )
+        {
+            $final_entry = 255 - (int)$entry;
+            if( $key == 0 )
+                $tmp_hostCidr .= $final_entry;
+            else
+                $tmp_hostCidr .= ".".$final_entry;
+        }
+
+        #print $tmp_hostCidr."\n";
+
+        $cidr = CIDR::netmask2cidr($tmp_hostCidr);
+
+
+        if( is_int( $cidr ) )
+        {
+            //network' => $start, 'mask' => $netmask, 'string' => long2ip($start) . '/' . $netmask
+            $object->setType( "ip-netmask" );
+            $value = $address."/".$cidr;
+            $object->setValue( $value );
+
+            if( $context->isAPI )
+                $object->API_sync();
+            $string = "moved to type ip-netmask with value: ".$value;
+            PH::ACTIONlog( $context, $string );
+        }
+        else
+        {
+            $string = "Address object of type ip-wildcard named '" . $object->name() . "' cannot moved to an ip-netmask object type. value: ".$object->value();
+            PH::ACTIONlog( $context, $string );
+        }
+
+
+    }
+);
