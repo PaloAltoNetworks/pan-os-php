@@ -6,6 +6,7 @@ UTIL:
 
 BUGFIX:
 * type=rule actions=exporttoexcel | bugfix for field 'ID' to not add additional data column
+* type=rule actions=exporttoexcel:file.html,resolveAddresssummary | bugfix to display IP value summary for ip-wildmask objects
 
 GENERAL:
 
