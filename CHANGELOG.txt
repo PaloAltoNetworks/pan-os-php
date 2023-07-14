@@ -5,6 +5,7 @@ UTIL:
 * type=rule | introduce new 'filter=(timestamp-rule create <>=! -30 days)' | timestamp-rule-modification
 
 BUGFIX:
+* type=rule actions=exporttoexcel | bugfix for field 'ID' to not add additional data column
 
 GENERAL:
 
