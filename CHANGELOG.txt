@@ -2,6 +2,7 @@ CHANGELOG
 
 2.1.11
 UTIL:
+* type=rule | introduce new 'filter=(timestamp-rule create <>=! -30 days)' | timestamp-rule-modification
 
 BUGFIX:
 

@@ -3178,10 +3178,7 @@ AddressCallContext::$supportedActions['move-wildcard2network'] = array(
                 $tmp_hostCidr .= ".".$final_entry;
         }
 
-        #print $tmp_hostCidr."\n";
-
         $cidr = CIDR::netmask2cidr($tmp_hostCidr);
-
 
         if( is_int( $cidr ) )
         {
@@ -3200,7 +3197,5 @@ AddressCallContext::$supportedActions['move-wildcard2network'] = array(
             $string = "Address object of type ip-wildcard named '" . $object->name() . "' cannot moved to an ip-netmask object type. value: ".$object->value();
             PH::ACTIONlog( $context, $string );
         }
-
-
     }
 );

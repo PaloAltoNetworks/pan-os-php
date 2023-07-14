@@ -2976,6 +2976,50 @@ RQuery::$defaultFilters['rule']['timestamp-first-hit.fast']['operators']['>,<,=,
     'arg' => TRUE,
     'help' => 'returns TRUE if rule name matches the specified timestamp MM/DD/YYYY [american] / DD-MM-YYYY [european] / 21 September 2021 / -90 days',
 );
+RQuery::$defaultFilters['rule']['timestamp-rule-creation.fast']['operators']['>,<,=,!'] = array(
+    'Function' => function (RuleRQueryContext $context) {
+        $object = $context->object;
+
+        if( !$object->isSecurityRule() && !$object->isNatRule() )
+            derr("unsupported filter : rule type " . $object->ruleNature() . " is not supported yet. " . $object->toString());
+
+        $str = $context->value;
+        if (($timestamp = strtotime($str)) === false)
+        {
+            #echo "The string ($str) is bogus"."\n";
+        }
+        else
+        {
+            #echo "$str == " . date('l dS \o\f F Y h:i:s A', $timestamp)."\n";
+        }
+
+        return $object->ruleUsageFast( $context, 'rule-creation-timestamp' );
+    },
+    'arg' => TRUE,
+    'help' => 'returns TRUE if rule name matches the specified timestamp MM/DD/YYYY [american] / DD-MM-YYYY [european] / 21 September 2021 / -90 days',
+);
+RQuery::$defaultFilters['rule']['timestamp-rule-modification.fast']['operators']['>,<,=,!'] = array(
+    'Function' => function (RuleRQueryContext $context) {
+        $object = $context->object;
+
+        if( !$object->isSecurityRule() && !$object->isNatRule() )
+            derr("unsupported filter : rule type " . $object->ruleNature() . " is not supported yet. " . $object->toString());
+
+        $str = $context->value;
+        if (($timestamp = strtotime($str)) === false)
+        {
+            #echo "The string ($str) is bogus"."\n";
+        }
+        else
+        {
+            #echo "$str == " . date('l dS \o\f F Y h:i:s A', $timestamp)."\n";
+        }
+
+        return $object->ruleUsageFast( $context, 'rule-modification-timestamp' );
+    },
+    'arg' => TRUE,
+    'help' => 'returns TRUE if rule name matches the specified timestamp MM/DD/YYYY [american] / DD-MM-YYYY [european] / 21 September 2021 / -90 days',
+);
 RQuery::$defaultFilters['rule']['hit-count.fast']['operators']['>,<,=,!'] = array(
 #RQuery::$defaultFilters['rule']['rule']['operators']['last-hit-timestamp'] = array(
     'Function' => function (RuleRQueryContext $context) {
