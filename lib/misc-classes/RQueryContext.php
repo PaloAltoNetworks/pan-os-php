@@ -14,6 +14,7 @@ class RQueryContext
     public $rQueryObject;
 
     public $nestedQueries;
+    public $cachedSubRQuery;
 
     function __construct(RQuery $r, $value = null, $nestedQueries = null)
     {
