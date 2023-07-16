@@ -10,6 +10,7 @@ BUGFIX:
 
 GENERAL:
 * general - update dynamic content to version: 8729-8157
+* * class EthernetInterface - adding/removing address object instead of IP address - extend with stopping e.g. for type=address actions=name-rename if object is used on ethernet interface
 
 
 2.1.10 (20230714)

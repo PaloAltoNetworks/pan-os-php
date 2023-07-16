@@ -458,6 +458,12 @@ class EthernetInterface
         if( $this->type != 'layer3' )
             derr('cannot be requested from a non Layer3 Interface');
 
+        if( is_object($ip) )
+        {
+            $ip = $ip->name();
+            derr( "adding address object to Interface not implemented yet", null, False );
+        }
+
         $ip = $this->findorCreateAddressObject( $ip );
 
 
@@ -542,6 +548,9 @@ class EthernetInterface
     {
         if( $this->type != 'layer3' )
             derr('cannot be requested from a non Layer3 Interface');
+
+        if( is_object($ip) )
+            derr( "removing address object from Interface not implemented yet", null, False );
 
         $tmp_IPv4 = array();
         foreach( $this->getLayer3IPv4Addresses() as $key => $IPv4Address )
@@ -805,9 +814,9 @@ class EthernetInterface
         {
             if( get_class( $h ) == "Address" )
             {
-                #$this->addIPv4Address( $h );
+                $this->addIPv4Address( $h );
 
-                #$this->removeIPv4Address( $old );
+                $this->removeIPv4Address( $old );
             }
 
             return;
@@ -822,8 +831,8 @@ class EthernetInterface
             $tmp_vsys = $this->owner->owner->network->findVsysInterfaceOwner($this->name());
             if( is_object($tmp_vsys) )
             {
-                $object = $tmp_vsys->addressStore->find($ip);
-                #$object = $tmp_vsys->addressStore->findOrCreate($ip);
+                ##$object = $tmp_vsys->addressStore->find($ip);
+                $object = $tmp_vsys->addressStore->findOrCreate($ip);
             }
 
             else
