@@ -4,6 +4,7 @@ CHANGELOG
 UTIL:
 * type=rule | introduce new 'filter=(timestamp-rule-creation <>=! -30 days)' | timestamp-rule-modification
 * type=address | introduce 'filter=(value ip4.included-in RFC1918)'
+* type=device | introduce actions=xml-extract
 
 BUGFIX:
 * type=rule actions=exporttoexcel | bugfix for field 'ID' to not add additional data column

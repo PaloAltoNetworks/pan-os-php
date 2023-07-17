@@ -3920,3 +3920,48 @@ DeviceCallContext::$supportedActions['system-admin-session'] = array(
     ),
     'help' => "This Action is displaying the actual logged in admin sessions"
 );
+
+DeviceCallContext::$supportedActions[] = array(
+    'name' => 'xml-extract',
+    'GlobalInitFunction' => function( DeviceCallContext $context)
+    {
+        $context->newdoc = new DOMDocument;
+        $context->newdoc->preserveWhiteSpace = false;
+        $context->newdoc->formatOutput = true;
+        $context->rule = $context->newdoc->createElement('devices');
+        $context->newdoc->appendChild($context->rule);
+
+        $context->store = null;
+    },
+    'MainFunction' => function( DeviceCallContext $context)
+    {
+        $rule = $context->object;
+
+        if( $context->store === null )
+            $context->store = $rule->owner;
+
+
+        $node = $context->newdoc->importNode($rule->xmlroot, true);
+        $context->rule->appendChild($node);
+
+
+
+    },
+    'GlobalFinishFunction' => function(DeviceCallContext $context)
+    {
+        PH::$JSON_TMP['xmlroot-actions'] = $context->newdoc->saveXML();
+
+        $store = $context->store;
+
+        if( isset($store->owner->owner) && is_object($store->owner->owner) )
+            $tmp_platform = get_class( $store->owner->owner );
+        elseif( isset($store->owner) && is_object($store->owner) )
+            $tmp_platform = get_class( $store->owner );
+        else
+            $tmp_platform = get_class( $store );
+
+        PH::print_stdout( PH::$JSON_TMP, true, "xmlroot-actions" );
+        PH::$JSON_TMP = array();
+
+    },
+);
