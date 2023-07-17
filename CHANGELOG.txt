@@ -3,6 +3,7 @@ CHANGELOG
 2.1.11
 UTIL:
 * type=rule | introduce new 'filter=(timestamp-rule-creation <>=! -30 days)' | timestamp-rule-modification
+* type=address | introduce 'filter=(value ip4.included-in RFC1918)'
 
 BUGFIX:
 * type=rule actions=exporttoexcel | bugfix for field 'ID' to not add additional data column
