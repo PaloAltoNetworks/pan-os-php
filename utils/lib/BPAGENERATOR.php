@@ -171,7 +171,17 @@ class BPAGENERATOR extends UTIL
                 $reply = json_decode($response, TRUE);
                 if( $reply === null )
                     derr( "invalid JSON file provided", null, FALSE );
-                $response = $reply['task_id'];
+                if( isset( $reply['task_id'] ) )
+                {
+                    #print_r( $reply );
+                    $response = $reply['task_id'];
+                }
+                else
+                {
+                    print_r( $reply );
+                    derr( "'task_id' - not found", null, FALSE );
+                }
+
             }
         } catch(Exception $e)
         {
