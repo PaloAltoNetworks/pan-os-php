@@ -170,12 +170,13 @@ class BPAGENERATOR extends UTIL
             {
                 $reply = json_decode($response, TRUE);
                 if( $reply === null )
-                    derr( "invalid JSON file provided", null, FALSE );
-                if( isset( $reply['task_id'] ) )
                 {
-                    #print_r( $reply );
-                    $response = $reply['task_id'];
+                    PH::print_stdout( "RESPONSE: ".$response);
+                    derr( "invalid JSON file provided", null, FALSE );
                 }
+
+                if( isset( $reply['task_id'] ) )
+                    $response = $reply['task_id'];
                 else
                 {
                     print_r( $reply );

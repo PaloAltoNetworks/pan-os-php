@@ -2,6 +2,7 @@ CHANGELOG
 
 2.1.12
 UTIL:
+* type=bpa-generator | extend response output if not valid JSON
 
 BUGFIX:
 
