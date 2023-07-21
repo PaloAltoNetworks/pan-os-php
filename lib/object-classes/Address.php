@@ -470,25 +470,51 @@ class Address
             else
                 $this->_ip4Map = IP4Map::mapFromText($this->name);
         }
-        elseif( $this->type != self::TypeIpRange && $this->type != self::TypeIpNetmask )
-        #elseif( $this->type != self::TypeIpRange && $this->type != self::TypeIpNetmask && $this->type != self::TypeIpWildcard )
+        elseif( $this->type != self::TypeIpRange && $this->type != self::TypeIpNetmask && $this->type != self::TypeIpWildcard )
         {
             $this->_ip4Map = new IP4Map();
             $this->_ip4Map->unresolved[$this->name] = $this;
         }
-        elseif( $this->type == self::TypeIpNetmask || $this->type == self::TypeIpRange )
-        #elseif( $this->type == self::TypeIpNetmask || $this->type == self::TypeIpRange || $this->type == self::TypeIpWildcard )
+        elseif( $this->type == self::TypeIpNetmask || $this->type == self::TypeIpRange || $this->type == self::TypeIpWildcard )
         {
-            /*
             if( $this->type == self::TypeIpWildcard )
             {
-                print $this->value."\n";
-                derr( "wildcard" );
+                $array = explode( "/", $this->value() );
+                $address = $array[0];
+                $wildcardmask = $array[1];
+
+                $cidr_array = explode(".", $wildcardmask);
+                $tmp_hostCidr = "";
+                foreach( $cidr_array as $key => &$entry )
+                {
+                    $final_entry = 255 - (int)$entry;
+                    if( $key == 0 )
+                        $tmp_hostCidr .= $final_entry;
+                    else
+                        $tmp_hostCidr .= ".".$final_entry;
+                }
+
+                $cidr = CIDR::netmask2cidr($tmp_hostCidr);
+                if( is_int( $cidr ) )
+                {
+                    $tmp_value = $address."/".$cidr;
+
+                    $this->_ip4Map = IP4Map::mapFromText($tmp_value);
+                    if( $this->_ip4Map->count() == 0 )
+                        $this->_ip4Map->unresolved[$this->name] = $this->value();
+                }
+                else
+                {
+                    $this->_ip4Map->unresolved[$this->name] = $this->value();
+                }
+
             }
-            */
-            $this->_ip4Map = IP4Map::mapFromText($this->value);
-            if( $this->_ip4Map->count() == 0 )
-                $this->_ip4Map->unresolved[$this->name] = $this;
+            else
+            {
+                $this->_ip4Map = IP4Map::mapFromText($this->value);
+                if( $this->_ip4Map->count() == 0 )
+                    $this->_ip4Map->unresolved[$this->name] = $this;
+            }
         }
         else
         {

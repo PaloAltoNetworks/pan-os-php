@@ -29,7 +29,7 @@ class KEYMANGER extends UTIL
     Examples:
             
     - php " . basename(__FILE__) . " add=license-apikey 'apikey=[ your personal company license API key account can be found via https://support.paloaltonetworks.com -> Assets -> API key management - only super user can see this ]'
-    - php " . basename(__FILE__) . " add=bpa-apikey 'apikey=[ PAN-OS BPA can be request via: bpa@paloaltonetworks.com ]' 
+    - php " . basename(__FILE__) . " add=bpa-apikey 'apikey=[ PAN-OS BPA key can be request via: https://customersuccess.paloaltonetworks.com/api-signup/ ]' 
     - php " . basename(__FILE__) . " add=ldap-password 'apikey=[ LDAP password to interact with organisational ldap server ]'
     - php " . basename(__FILE__) . " add=maxmind-licensekey apikey=[ Maxmind license to download Maxmind geo2ip lite database. create free account: https://www.maxmind.com ]
     - php " . basename(__FILE__) . " add=tsg_id{{TSGID}} 'apikey={{CLIENT_ID}}%{{CLIENT_SECRET}}'  | character '%' must be used as separator between client_id and client_secret";

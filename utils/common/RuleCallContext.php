@@ -252,6 +252,11 @@ class RuleCallContext extends CallContext
      */
     public function ruleFieldHtmlExport($rule, $fieldName, $wrap = TRUE, $rule_hitcount_array = array())
     {
+        if( $fieldName == 'ID' )
+        {
+            //already added outside
+            return;
+        }
         if( $fieldName == 'location' )
         {
             if( $rule->owner->owner->isPanorama() || $rule->owner->owner->isFirewall() )
@@ -709,7 +714,7 @@ class RuleCallContext extends CallContext
             else
                 return self::enclose( "" );
         }
-        return self::enclose('unsupported');
+        return self::enclose("unsupported: '$fieldName'");
 
     }
 

@@ -566,8 +566,12 @@ trait AddressCommon
                         continue;
                     }
 
-                    if( $this->type() !== $withObject->type() || $withObject->value() !== $tmp_addr->value() )
+                    if( $withObject->type() !== $withObject->type() || str_replace("/32", "", $withObject->value()) !== str_replace("/32", "", $tmp_addr->value() ) )
                     {
+                        if($withObject->type() !== $tmp_addr->type())
+                            print "TYPE: ".$withObject->type()."|".$tmp_addr->type()."|\n";
+                        elseif( str_replace("/32", "", $withObject->value()) !== str_replace("/32", "", $tmp_addr->value() ) )
+                            print "VALUE: ".$withObject->type()."|".$tmp_addr->type()."|\n";
                         PH::print_stdout( "- SKIP: not possible to replace due to different value: {$objectRef->toString()}" );
                         $success = false;
                         $success2 = false;

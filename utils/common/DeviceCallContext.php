@@ -26,6 +26,11 @@ class DeviceCallContext extends CallContext
     public static $commonActionFunctions = array();
     public static $supportedActions = array();
 
+    public $first;
+    public $jsonArray;
+    public $fields;
+    public $ruleContext;
+
     static public function prepareSupportedActions()
     {
         $tmpArgs = array();

@@ -1108,7 +1108,16 @@ RQuery::$defaultFilters['address']['value']['operators']['ip4.included-in'] = ar
         if( $object->isGroup() && ( $object->isDynamic() || $object->count() < 1 || $object->hasFQDN() ) )
             return null;
 
-        $values = explode(',', $context->value);
+        if( $context->value === "RFC1918" )
+        {
+            $values = array();
+            $values[] = "10.0.0.0/8";
+            $values[] = "172.16.0.0/12";
+            $values[] = "192.168.0.0/16";
+        }
+        else
+            $values = explode(',', $context->value);
+
         $mapping = new IP4Map();
 
         $count = 0;
@@ -1144,7 +1153,16 @@ RQuery::$defaultFilters['address']['value']['operators']['ip4.includes-full'] = 
         if( $object->isGroup() && ( $object->isDynamic() || $object->count() < 1 || $object->hasFQDN() ) )
             return null;
 
-        $values = explode(',', $context->value);
+        if( $context->value === "RFC1918" )
+        {
+            $values = array();
+            $values[] = "10.0.0.0/8";
+            $values[] = "172.16.0.0/12";
+            $values[] = "192.168.0.0/16";
+        }
+        else
+            $values = explode(',', $context->value);
+
         $mapping = new IP4Map();
 
         $count = 0;
@@ -1180,7 +1198,16 @@ RQuery::$defaultFilters['address']['value']['operators']['ip4.includes-full-or-p
         if( $object->isGroup() && ( $object->isDynamic() || $object->count() < 1 || $object->hasFQDN() ) )
             return null;
 
-        $values = explode(',', $context->value);
+        if( $context->value === "RFC1918" )
+        {
+            $values = array();
+            $values[] = "10.0.0.0/8";
+            $values[] = "172.16.0.0/12";
+            $values[] = "192.168.0.0/16";
+        }
+        else
+            $values = explode(',', $context->value);
+
         $mapping = new IP4Map();
 
         $count = 0;

@@ -1573,7 +1573,7 @@ class Rule
         /** @var @var RuleRQueryContext $context */
 
 
-        $supported_hitType = array( 'hit-count', 'last-hit-timestamp', 'first-hit-timestamp' );
+        $supported_hitType = array( 'hit-count', 'last-hit-timestamp', 'first-hit-timestamp', 'rule-creation-timestamp', 'rule-modification-timestamp');
         if( !in_array( $hitType, $supported_hitType ) )
             derr( "supported hitType: ".implode( ", ", $supported_hitType ) );
 
@@ -1762,7 +1762,9 @@ class Rule
                                 }
                             }
                         }
-                        elseif( $hitType == "last-hit-timestamp" || $hitType == "first-hit-timestamp" )
+                        elseif( $hitType == "last-hit-timestamp" || $hitType == "first-hit-timestamp"
+                            || $hitType == "rule-creation-timestamp"
+                            || $hitType == "rule-modification-timestamp" )
                         {
                             $timestamp_value = $node->textContent;
                             if( $context->value == 0 )

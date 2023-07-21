@@ -202,6 +202,10 @@ var subjectObject =
                 "name": "move-range2network",
                 "MainFunction": {}
             },
+            "move-wildcard2network": {
+                "name": "move-wildcard2network",
+                "MainFunction": {}
+            },
             "name-addprefix": {
                 "name": "name-addPrefix",
                 "MainFunction": {},
@@ -4209,7 +4213,7 @@ var subjectObject =
                         "Function": {},
                         "arg": true,
                         "ci": {
-                            "fString": "(%PROP% day)",
+                            "fString": "(%PROP% \/day\/)",
                             "input": "input\/panorama-8.0.xml"
                         }
                     },
@@ -4840,6 +4844,24 @@ var subjectObject =
                 }
             },
             "timestamp-last-hit.fast": {
+                "operators": {
+                    ">,<,=,!": {
+                        "Function": {},
+                        "arg": true,
+                        "help": "returns TRUE if rule name matches the specified timestamp MM\/DD\/YYYY [american] \/ DD-MM-YYYY [european] \/ 21 September 2021 \/ -90 days"
+                    }
+                }
+            },
+            "timestamp-rule-creation.fast": {
+                "operators": {
+                    ">,<,=,!": {
+                        "Function": {},
+                        "arg": true,
+                        "help": "returns TRUE if rule name matches the specified timestamp MM\/DD\/YYYY [american] \/ DD-MM-YYYY [european] \/ 21 September 2021 \/ -90 days"
+                    }
+                }
+            },
+            "timestamp-rule-modification.fast": {
                 "operators": {
                     ">,<,=,!": {
                         "Function": {},

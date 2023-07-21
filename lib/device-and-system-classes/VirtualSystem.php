@@ -176,6 +176,7 @@ class VirtualSystem
     public $parentDeviceGroup = null;
 
     public $version = null;
+    public $apiCache;
 
 
     public function __construct(PANConf $owner, DeviceGroup $applicableDG = null)
