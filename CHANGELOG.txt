@@ -1,6 +1,14 @@
 CHANGELOG
 
-2.1.11
+2.1.12
+UTIL:
+
+BUGFIX:
+
+GENERAL:
+
+
+2.1.11 (20230721)
 UTIL:
 * type=rule | introduce new 'filter=(timestamp-rule-creation <>=! -30 days)' | timestamp-rule-modification
 * type=address | introduce 'filter=(value ip4.included-in RFC1918)'
