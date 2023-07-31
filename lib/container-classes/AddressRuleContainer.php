@@ -189,7 +189,7 @@ class AddressRuleContainer extends ObjRuleContainer
     }
 
 
-    public function API_sync()
+    public function API_sync( $new = false )
     {
         $con = findConnectorOrDie($this);
 
@@ -210,7 +210,14 @@ class AddressRuleContainer extends ObjRuleContainer
             }
         }
         elseif( $con->isSaseAPI() )
-            $con->sendPUTRequest($this);
+        {
+            if( $new )
+                $con->sendCreateRequest($this);
+            else
+                $con->sendPUTRequest($this);
+        }
+
+
     }
 
     public function setAny()

@@ -904,6 +904,26 @@ class PanSaseAPIConnector
 
             return $bodyArray;
         }
+        if( get_class( $object ) == "AddressGroup" )
+        {
+            //Sase-API
+
+            $bodyArray['description'] = $object->description();
+            $bodyArray['name'] = $object->name();
+            $bodyArray['folder'] = $object->owner->owner->name();
+            $memberArray = $object->members();
+            if( !$object->isDynamic() )
+            {
+                $bodyArray['static'] = array();
+                foreach($memberArray as $member)
+                    $bodyArray['static'][] = $member->name();
+            }
+            else
+                $bodyArray['dynamic']['filter'] = $object->filter;
+
+
+            return $bodyArray;
+        }
         elseif( get_class( $object ) == "Service" )
         {
             //Sase-API

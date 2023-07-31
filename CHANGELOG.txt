@@ -2,6 +2,7 @@ CHANGELOG
 
 2.1.13
 UTIL:
+* type=address | introduction of actions=upload-address-2cloudmanager:panorama.xml,DGname && actions=upload-addressgroup-2cloudmanager:panorama.xml,DGname
 
 BUGFIX:
 
@@ -11,7 +12,7 @@ GENERAL:
 2.1.12 (20230731)
 UTIL:
 * type=bpa-generator | extend response output if not valid JSON
-* type=gcp | extend for mqsql usage and bring in mysql pw in type=key-manager
+* type=gcp | extend for mysql usage and bring in mysql pw in type=key-manager
 
 BUGFIX:
 * type=XYZ | in=api://{MGMT-IP} actions=name-rename - bugfix for API usage
