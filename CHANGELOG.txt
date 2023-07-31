@@ -1,6 +1,14 @@
 CHANGELOG
 
-2.1.12
+2.1.13
+UTIL:
+
+BUGFIX:
+
+GENERAL:
+
+
+2.1.12 (20230731)
 UTIL:
 * type=bpa-generator | extend response output if not valid JSON
 * type=gcp | extend for mqsql usage and bring in mysql pw in type=key-manager
