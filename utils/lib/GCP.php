@@ -112,6 +112,7 @@ class GCP extends UTIL
             $actionArray[] = "download";
             $actionArray[] = "onboard";
             $actionArray[] = "offboard";
+            $actionArray[] = "mysql-validation";
             if( $this->strposARRAY( strtolower($action), $actionArray  ) == FALSE )
                 derr( "not supported ACTION - ".implode(",", $actionArray) );
         }
@@ -125,6 +126,7 @@ class GCP extends UTIL
             PH::print_stdout( "   - actions=download tenantid=FULL");
             PH::print_stdout( "   - actions=onboard tenantid=XYZ");
             PH::print_stdout( "   - actions=offboard tenantid=XYZ");
+            PH::print_stdout( "   - actions=mysql-validation tenantid=XYZ");
             PH::print_stdout();
             derr( "argument actions= is missing", null, false );
         }
@@ -152,7 +154,7 @@ class GCP extends UTIL
 
         $this->execCLIWithOutput( $get_auth );
 //get correct tenantid
-        if( isset(PH::$args['tenantid']) )
+        if( isset(PH::$args['tenantid']) && $action != "mysql-validation" )
         {
             $tenantIDString = $tenantID;
             $tenantID = $this->grepAllPods( $tenantID );
@@ -328,12 +330,62 @@ class GCP extends UTIL
             mysql> drop database `DATABASE`;
              */
             $username = "paloalto";
-            $password = "PASSWORD";
-            derr("adjustment needed, correct PW in cleartext not stored in sourcecode!");
+            //check if available via .panconfigkeystore
+            $connector = PanAPIConnector::findOrCreateConnectorFromHost( 'gcp-mysql-password' );
+            $mysqlPassword = $connector->apikey;
+
             #$database = substr($tenantID, 0, -2);
             $database = $tenantID;
-            $drop_database_string = 'mysql -h 127.0.0.1 -P 3310 -u '.$username.' -p'.$password.' drop `'.$database.'`';
+            if( !is_numeric($tenantID) )
+                derr( "tenantID: '".$tenantID."' - is not numeric" );
+
+            $drop_database_string = 'mysql -h 127.0.0.1 -P 3310 -u '.$username.' -p'.$mysqlPassword.' drop `'.$database.'`';
             $this->execCLIWithOutput( $mgmtsvc.$drop_database_string );
+        }
+        elseif( $action == "mysql-validation" )
+        {
+            $get_auth = "gcloud container clusters get-credentials admin --region ".$region." --project ".$project;
+            $this->execCLIWithOutput( $get_auth );
+
+            $mgmtsvc_tenantID = $this->grepAllPods( "mgmtsvc" );
+            $mgmtsvc = "kubectl exec -it ".$mgmtsvc_tenantID[0]." -c mgmtsvc --insecure-skip-tls-verify=true -- ";
+
+
+            $username = "paloalto";
+
+            //check if available via .panconfigkeystore
+            $connector = PanAPIConnector::findOrCreateConnectorFromHost( 'gcp-mysql-password' );
+            $mysqlPassword = $connector->apikey;
+
+
+            if( !is_numeric($tenantID) )
+                derr( "tenantID: '".$tenantID."' - is not numeric" );
+
+            $cmdArray = array();
+            $cmdArray[] = array("cmd" => "select * from adi_adm_customer_info where tenant_id='".$tenantID."_onprem'\G" );
+            $cmdArray[] = array("cmd" => "select * from adi_migration where onprem_tenant_id='".$tenantID."_onprem'\G" );
+            /*
+             Use $tenantID;
+              Select * from jobs\G
+             */
+            $cmdArray[] = array("cmd" => "select * from jobs\G", "db" => $tenantID);
+
+            $cmdArray[] = array("cmd" => "select * from spiffy_license_info where cdl_tenant_id='".$tenantID."'\G" );
+
+            $cmdArray[] = array("cmd" => "select * from adi_adm_customer_info where customer_blob like '%".$tenantID."%'\G" );
+
+
+            $cmdArray[] = array("cmd" => "select info_status_message from adi_ext_prisma_access_sync_status where tenant_id='".$tenantID."'\G" );
+
+            foreach( $cmdArray as $cmd )
+            {
+                if( isset( $cmd['db'] ) )
+                    $DB = $cmd['db'];
+                else
+                    $DB = "admin";
+                $drop_database_string = 'mysql -h 127.0.0.1 -P 3310 -u '.$username.' -U '.$DB.' -p'.$mysqlPassword.' -e "'.$cmd['cmd'].'"';
+                $this->execCLIWithOutput( $mgmtsvc.$drop_database_string );
+            }
         }
     }
 
@@ -341,7 +393,15 @@ class GCP extends UTIL
     private function execCLI( $cli, &$output, &$retValue )
     {
         PH::print_stdout();
-        PH::print_stdout( "execute: '".$cli."'");
+        $cliString = $cli;
+        if( strpos( $cliString, "mysql" ) !== FALSE )
+        {
+            $connector = PanAPIConnector::findOrCreateConnectorFromHost( 'gcp-mysql-password' );
+            $mysqlPassword = $connector->apikey;
+            $cliString = str_replace($mysqlPassword, "**********", $cliString);
+        }
+
+        PH::print_stdout( "execute: '".$cliString."'");
         exec($cli, $output, $retValue);
     }
 

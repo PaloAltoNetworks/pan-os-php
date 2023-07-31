@@ -31,6 +31,7 @@ class KEYMANGER extends UTIL
     - php " . basename(__FILE__) . " add=license-apikey 'apikey=[ your personal company license API key account can be found via https://support.paloaltonetworks.com -> Assets -> API key management - only super user can see this ]'
     - php " . basename(__FILE__) . " add=bpa-apikey 'apikey=[ PAN-OS BPA key can be request via: https://customersuccess.paloaltonetworks.com/api-signup/ ]' 
     - php " . basename(__FILE__) . " add=ldap-password 'apikey=[ LDAP password to interact with organisational ldap server ]'
+    - php " . basename(__FILE__) . " add=gcp-mysql-password 'apikey=[ mysql password to interact with organisational GCP mysql server ]'
     - php " . basename(__FILE__) . " add=maxmind-licensekey apikey=[ Maxmind license to download Maxmind geo2ip lite database. create free account: https://www.maxmind.com ]
     - php " . basename(__FILE__) . " add=tsg_id{{TSGID}} 'apikey={{CLIENT_ID}}%{{CLIENT_SECRET}}'  | character '%' must be used as separator between client_id and client_secret";
 
@@ -134,7 +135,7 @@ class KEYMANGER extends UTIL
             PH::$JSON_TMP['header'] = $string;
             PH::$JSON_TMP[$addHost]['name'] = $addHost;
 
-            if( $addHost == "bpa-apikey" || $addHost == "license-apikey" || $addHost == "ldap-password" || $addHost == "maxmind-licensekey" || strpos($addHost, "tsg_id") !== FALSE )
+            if( $addHost == "bpa-apikey" || $addHost == "license-apikey" || $addHost == "ldap-password" || $addHost == "maxmind-licensekey" || strpos($addHost, "tsg_id" || $addHost == "gcp-mysql-password") !== FALSE )
             {
                 if( strpos($addHost, "tsg_id") !== FALSE )
                 {
@@ -223,7 +224,7 @@ class KEYMANGER extends UTIL
                     PH::print_stdout( " - requested to test Host/IP '{$checkHost}'");
                     PH::$JSON_TMP[$checkHost]['name'] = $checkHost;
 
-                    if( $checkHost == "bpa-apikey" || $checkHost == "license-apikey" || $checkHost == "ldap-password" || $checkHost == "maxmind-licensekey" )
+                    if( $checkHost == "bpa-apikey" || $checkHost == "license-apikey" || $checkHost == "ldap-password" || $checkHost == "maxmind-licensekey" || $addHost == "gcp-mysql-password" )
                     {
                         PH::$JSON_TMP[$checkHost]['status'] = "skipped can not be tested";
                         continue;
@@ -285,7 +286,7 @@ class KEYMANGER extends UTIL
                 PH::print_stdout( " - requested to test Host/IP '{$checkHost}'");
                 PH::$JSON_TMP[$checkHost]['name'] = $checkHost;
 
-                if( $checkHost == "bpa-apikey" || $checkHost == "license-apikey" || $checkHost == "ldap-password" || $checkHost == "maxmind-licensekey" )
+                if( $checkHost == "bpa-apikey" || $checkHost == "license-apikey" || $checkHost == "ldap-password" || $checkHost == "maxmind-licensekey" || $addHost == "gcp-mysql-password" )
                 {
                     PH::$JSON_TMP[$checkHost]['status'] = "skipped can not be tested";
                 }
