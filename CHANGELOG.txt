@@ -6,6 +6,7 @@ UTIL:
 * type=gcp | extend for mqsql usage and bring in mysql pw in type=key-manager
 
 BUGFIX:
+* type=XYZ | in=api://{MGMT-IP} actions=name-rename - bugfix for API usage
 
 GENERAL:
 

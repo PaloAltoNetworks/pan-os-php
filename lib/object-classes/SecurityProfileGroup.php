@@ -115,10 +115,10 @@ class SecurityProfileGroup
      */
     public function API_setName($newName)
     {
-        $this->setName($newName);
-
         $c = findConnectorOrDie($this);
         $xpath = $this->getXPath();
+
+        $this->setName($newName);
 
         if( $c->isAPI() )
             $c->sendRenameRequest($xpath, $newName);
