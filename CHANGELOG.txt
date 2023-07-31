@@ -1,6 +1,17 @@
 CHANGELOG
 
-2.1.11
+2.1.12
+UTIL:
+* type=bpa-generator | extend response output if not valid JSON
+* type=gcp | extend for mqsql usage and bring in mysql pw in type=key-manager
+
+BUGFIX:
+* type=XYZ | in=api://{MGMT-IP} actions=name-rename - bugfix for API usage
+
+GENERAL:
+
+
+2.1.11 (20230721)
 UTIL:
 * type=rule | introduce new 'filter=(timestamp-rule-creation <>=! -30 days)' | timestamp-rule-modification
 * type=address | introduce 'filter=(value ip4.included-in RFC1918)'

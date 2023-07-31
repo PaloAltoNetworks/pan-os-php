@@ -345,11 +345,11 @@ class Address
             return;
         }
 
-        if( !$this->setName($newName) )
-            return FALSE;
-
         $c = findConnectorOrDie($this);
         $xpath = $this->getXPath();
+
+        if( !$this->setName($newName) )
+            return FALSE;
 
         if( $c->isAPI() )
             $c->sendRenameRequest($xpath, $newName);

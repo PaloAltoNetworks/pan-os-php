@@ -1052,6 +1052,8 @@ ServiceCallContext::$supportedActions[] = array(
             return;
         }
 
+        $newName = str_replace(",", "_", $newName);
+
         $string = "new name will be '{$newName}'";
         PH::ACTIONlog( $context, $string );
 

@@ -346,7 +346,7 @@ class DefaultSecurityRule extends Rule
     public function securityProfileGroup()
     {
         if( $this->secproftype != 'group' )
-            derr('Cannot be called on a rule that is of security type =' . $this->secproftype);
+            derr('Cannot be called on a rule that is of security profile type = "' . $this->secproftype.'"');
 
         return $this->secprofgroup;
     }

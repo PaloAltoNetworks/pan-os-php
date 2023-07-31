@@ -701,9 +701,9 @@ class Rule
         $con = findConnectorOrDie($this);
         $xpath = $this->getXPath();
 
-        $con->sendRenameRequest($xpath, $newname);
-
         $this->setName($newname);
+
+        $con->sendRenameRequest($xpath, $newname);
     }
 
     public function API_clearPolicyAppUsageDATA()

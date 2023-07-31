@@ -422,7 +422,7 @@ class PanAPIConnector
                 {
                     PH::$useExceptions = $exceptionUse;
 
-                    if( $host != "bpa-apikey" && $host != "license-apikey" && $host != "ldap-password" && $host != "maxmind-licensekey" )
+                    if( $host != "bpa-apikey" && $host != "license-apikey" && $host != "ldap-password" && $host != "maxmind-licensekey" && $host != "gcp-mysql-password" )
                     {
                         $wrongLogin = TRUE;
 
@@ -475,7 +475,7 @@ class PanAPIConnector
             }
 
 
-            if( strlen($apiKey) < 19 && !( $host == "bpa-apikey" || $host == "license-apikey" || $host == "ldap-password" || $host == "maxmind-licensekey" ) )
+            if( strlen($apiKey) < 19 && !( $host == "bpa-apikey" || $host == "license-apikey" || $host == "ldap-password" || $host == "maxmind-licensekey" || $host == "gcp-mysql-password" ) )
             {
                 $user = $apiKey;
 
@@ -523,7 +523,7 @@ class PanAPIConnector
                 $connector = new PanAPIConnector($host, $apiKey, 'panos', null, $port);
         }
 
-        if( $host == "bpa-apikey" || $host == "license-apikey" || $host == "ldap-password" || $host == "maxmind-licensekey" || strpos($host, "tsg_id") !== FALSE )
+        if( $host == "bpa-apikey" || $host == "license-apikey" || $host == "ldap-password" || $host == "maxmind-licensekey" || strpos($host, "tsg_id" || $host == "gcp-mysql-password") !== FALSE )
         {
             $checkConnectivity = false;
             self::$savedConnectors[] = $connector;
