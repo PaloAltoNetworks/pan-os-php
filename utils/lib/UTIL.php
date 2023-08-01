@@ -1210,7 +1210,7 @@ class UTIL
                 elseif( $this->configInput['type'] == 'sase-api' )
                 {
                     $context->isAPI = TRUE;
-                    #$context->isSaseAPI = TRUE;
+                    $context->isSaseAPI = TRUE;
                 }
 
 

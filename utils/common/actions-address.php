@@ -3218,7 +3218,7 @@ AddressCallContext::$supportedActions['upload-Address-2CloudManager'] = array(
         if( $context->isSaseAPI === False )
             derr( "only Strata Cloud manager is supported for this type=address action", null, False );
 
-        $filename = $context->arguments['file'];
+        $filename = $context->arguments['panorama_file'];
         $DGname = $context->arguments['dg_name'];
         $context->objectList = array();
 
@@ -3230,7 +3230,7 @@ AddressCallContext::$supportedActions['upload-Address-2CloudManager'] = array(
         PH::$argv = array();
         $argv2[0] = "test";
 
-        if( file_exists( $context->arguments['file'] ) )
+        if( file_exists( $filename ) )
                 $argv2[] = "in=".$filename;
         else
             derr("cannot open file '{$filename}", null, False);
@@ -3286,19 +3286,23 @@ AddressCallContext::$supportedActions['upload-Address-2CloudManager'] = array(
             $value = $object->value();
             $type = $object->type();
 
-            $string = "upload Address object : '" . $newName . "' - type: ".$type." - value: ".$value;
-            PH::ACTIONlog( $context, $string );
+            $tmpAddr = $addressStore->find( $newName );
+            if( $tmpAddr === null )
+            {
+                $string = "upload Address object : '" . $newName . "' - type: ".$type." - value: ".$value;
+                PH::ACTIONlog( $context, $string );
 
-            if( $context->isAPI )
-                $addressStore->API_newAddress($newName, $type, $value);
+                if( $context->isAPI )
+                    $addressStore->API_newAddress($newName, $type, $value);
+                else
+                    derr( "only API supported" );
+            }
             else
-                derr( "only API supported" );
+                mwarning( "objectname: ".$newName." is already available", null, false );
         }
     },
     'args' => array(
-        'file' => Array( 'type' => 'string',
-            'default' => '*nodefault*'
-        ),
+        'panorama_file' => Array( 'type' => 'string', 'default' => '*nodefault*'),
         'dg_name' => array('type' => 'string', 'default' => '*nodefault*')
     )
 );
@@ -3310,10 +3314,10 @@ AddressCallContext::$supportedActions['upload-AddressGroup-2CloudManager'] = arr
         //possible: XML file / XML API
         //including DG
 
-        #if( $context->isSaseAPI === False )
-        #    derr( "only Strata Cloud manager is supported for this type=address action", null, False );
+        if( $context->isSaseAPI === False )
+            derr( "only Strata Cloud manager is supported for this type=address action", null, False );
 
-        $filename = $context->arguments['file'];
+        $filename = $context->arguments['panorama_file'];
         $DGname = $context->arguments['dg_name'];
         $context->objectList = array();
 
@@ -3325,7 +3329,7 @@ AddressCallContext::$supportedActions['upload-AddressGroup-2CloudManager'] = arr
         PH::$argv = array();
         $argv2[0] = "test";
 
-        if( file_exists( $context->arguments['file'] ) )
+        if( file_exists( $filename ) )
             $argv2[] = "in=".$filename;
         else
             derr("cannot open file '{$filename}", null, False);
@@ -3348,7 +3352,6 @@ AddressCallContext::$supportedActions['upload-AddressGroup-2CloudManager'] = arr
             if( $sub === null )
                 $util2->locationNotFound($DGname);
         }
-
         else
             derr( "only Panorama config file is supported", null, False );
 
@@ -3359,9 +3362,7 @@ AddressCallContext::$supportedActions['upload-AddressGroup-2CloudManager'] = arr
             #print $obj->name()."\n";
             /** @var $obj AddressGroup */
             $context->objectList[$obj->name()]['obj'] = $obj;
-
         }
-
     },
     'MainFunction' => function (AddressCallContext $context) {
     },
@@ -3380,32 +3381,35 @@ AddressCallContext::$supportedActions['upload-AddressGroup-2CloudManager'] = arr
             }
 
             $newName = $object->name();
-            $string = "upload AddressGroup object : '" . $newName;
-            PH::ACTIONlog( $context, $string );
 
-            //check that addressgroup and all members are available
-            //then API sync if possible
-
-            $adrGrp = $addressStore->newAddressGroup( $newName );
-            foreach( $object->members() as $member2 )
+            $adrGrp = $addressStore->find( $newName );
+            if( $adrGrp === null )
             {
-                if( $object->owner === $member2->owner )
-                    $adrGrp->addMember( $member2 );
-                else
+                $string = "upload AddressGroup object : '" . $newName;
+                PH::ACTIONlog( $context, $string );
+
+                //check that addressgroup and all members are available
+                //then API sync if possible
+
+                $adrGrp = $addressStore->newAddressGroup( $newName );
+                foreach( $object->members() as $member2 )
                 {
-                    mwarning( "this objectname: ".$member2->name()." is part of another DG: ".$member2->owner->owner->name() );
+                    if( $object->owner === $member2->owner )
+                        $adrGrp->addMember( $member2 );
+                    else
+                        mwarning( "this objectname: ".$member2->name()." is part of another DG: ".$member2->owner->owner->name() );
                 }
+
+
+                if( $context->isAPI )
+                    $adrGrp->API_sync( true );
             }
-
-
-            if( $context->isAPI )
-                $adrGrp->API_sync( true );
+            else
+                mwarning( "objectname: ".$newName." is already available", null, false );
         }
     },
     'args' => array(
-        'file' => Array( 'type' => 'string',
-            'default' => '*nodefault*'
-        ),
+        'panorama_file' => Array( 'type' => 'string', 'default' => '*nodefault*'),
         'dg_name' => array('type' => 'string', 'default' => '*nodefault*')
     )
 );

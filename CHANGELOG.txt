@@ -3,6 +3,7 @@ CHANGELOG
 2.1.13
 UTIL:
 * type=address | introduction of actions=upload-address-2cloudmanager:panorama.xml,DGname && actions=upload-addressgroup-2cloudmanager:panorama.xml,DGname
+* type=address actions=upload-address-2cloudmanager | extend validation if object name is already available
 
 BUGFIX:
 * class Region | bugfix - introduce method type() - to handle "type=address actions="
