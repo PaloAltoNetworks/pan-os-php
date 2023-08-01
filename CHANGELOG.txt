@@ -6,6 +6,7 @@ UTIL:
 
 BUGFIX:
 * class Region | bugfix - introduce method type() - to handle "type=address actions="
+* type=address actions=move - bugifx/workaround - do not move region objects
 
 GENERAL:
 

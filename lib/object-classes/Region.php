@@ -188,5 +188,22 @@ class Region
         return "region";
     }
 
+    /**
+     * @param $otherObject Region
+     * @return bool
+     */
+    public function equals($otherObject)
+    {
+        if( !$otherObject->isRegion() )
+            return FALSE;
+
+        if( $otherObject->name != $this->name )
+            return FALSE;
+
+        //Todo: same value of Region objects
+        #return $this->sameValue($otherObject);
+        return False;
+    }
+
     static protected $templatexml = '<entry name="**temporarynamechangeme**"><address><member>tempvaluechangeme</member></entry>';
 }

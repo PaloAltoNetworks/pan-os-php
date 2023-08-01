@@ -1424,6 +1424,13 @@ AddressCallContext::$supportedActions[] = array(
             return;
         }
 
+        if( $object->isRegion() )
+        {
+            $string = "this is a Region object - not supported yet";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+
         $localLocation = 'shared';
 
         if( !$object->owner->owner->isPanorama() && !$object->owner->owner->isFirewall() )
