@@ -640,6 +640,7 @@ class PanSaseAPIConnector
 
                         $tmp_addressgroup->setSaseID( $object['id'] );
                     }
+                    //elseif( isset($object['dynamic']) )
                 }
             }
             elseif( $type === "services" )

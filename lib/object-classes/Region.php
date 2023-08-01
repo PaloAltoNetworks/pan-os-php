@@ -180,5 +180,13 @@ class Region
         return $this->members;
     }
 
+    /**
+     * @return string ie: 'ip-netmask' 'ip-range'
+     */
+    public function type()
+    {
+        return "region";
+    }
+
     static protected $templatexml = '<entry name="**temporarynamechangeme**"><address><member>tempvaluechangeme</member></entry>';
 }

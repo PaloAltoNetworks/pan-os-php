@@ -5,6 +5,7 @@ UTIL:
 * type=address | introduction of actions=upload-address-2cloudmanager:panorama.xml,DGname && actions=upload-addressgroup-2cloudmanager:panorama.xml,DGname
 
 BUGFIX:
+* class Region | bugfix - introduce method type() - to handle "type=address actions="
 
 GENERAL:
 
