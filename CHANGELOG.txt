@@ -9,6 +9,7 @@ BUGFIX:
 * class Region | bugfix - introduce method type() - to handle "type=address actions="
 * type=address actions=move - bugifx/workaround - do not move region objects
 * type=addressgroup-merger | bugfix to check childancestor objects availability
+* type=addressgroup-merger | bugfix if multiple childDG has same objectgroup incl. value, but one differ; stop merging
 
 GENERAL:
 

@@ -855,6 +855,7 @@ class MERGER extends UTIL
 
                     $skip = false;
 
+                    //Todo: check all pickedObjects from hash
                     /** @var DeviceGroup $pickedObject_DG */
                     $pickedObject_DG = $pickedObject->owner->owner;
                     if( $pickedObject_DG->parentDeviceGroup !== null )
@@ -877,7 +878,7 @@ class MERGER extends UTIL
                                 $diff = $pickedObject->getValueDiff($nextFindObject);
                                 if( count($diff['minus']) != 0 || count($diff['plus']) != 0 )
                                 {
-                                    PH::print_stdout("   * SKIPPED : this group has different member ship compare to upperlevel");
+                                    PH::print_stdout("   * SKIPPED : this group has different membership compare to upperlevel");
                                     $skip = TRUE;
                                     break;
                                 }
@@ -958,6 +959,14 @@ class MERGER extends UTIL
 
                         }
                     }
+                    $break = $this->checkParentPickObject( $hash );
+                    if( $break )
+                    {
+                        print "this object can not be created\n";
+                        continue;
+                    }
+
+
                     if( $skip )
                         continue;
 
@@ -1015,7 +1024,6 @@ class MERGER extends UTIL
                             $this->skippedObject( $index, $pickedObject, $tmp_address, $stringSkippedReason);
                             continue;
                         }
-
                     }
                 }
 
@@ -2018,6 +2026,46 @@ class MERGER extends UTIL
         return $pickedObject;
     }
 
+    function checkParentPickObject( $hash )
+    {
+        $break = False;
+        foreach( $hash as $pickedObject )
+        {
+            /** @var DeviceGroup $pickedObject_DG */
+            $pickedObject_DG = $pickedObject->owner->owner;
+            if( $pickedObject_DG->parentDeviceGroup !== null )
+            {
+                $nextFindObject = $pickedObject_DG->parentDeviceGroup->addressStore->find( $pickedObject->name(), null, True );
+                if( $nextFindObject !== null )
+                {
+                    /** @var Address|AddressGroup $memberFound */
+                    if( $pickedObject->isAddress() && $nextFindObject->isAddress() )
+                    {
+                        if( $pickedObject->value() !== $nextFindObject->value() )
+                        {
+                            PH::print_stdout("   * SKIPPED : this group has an object named '{$pickedObject->name()} that does exist in target location '{$tmp_DG_name}' with different value");
+                            $break = TRUE;
+                        }
+                    }
+                    elseif( $pickedObject->isGroup() && $nextFindObject->isGroup() )
+                    {
+                        $diff = $pickedObject->getValueDiff($nextFindObject);
+                        if( count($diff['minus']) != 0 || count($diff['plus']) != 0 )
+                        {
+                            PH::print_stdout("   * SKIPPED : this group has different membership compare to upperlevel");
+                            $break = TRUE;
+                        }
+                    }
+                    else
+                    {
+                        PH::print_stdout("   * SKIPPED : this group has an object named '{$pickedObject->name()} that does exist in target location '{$tmp_DG_name}' with different object type");
+                        $break = TRUE;
+                    }
+                }
+            }
+        }
+        return $break;
+    }
 
     function servicegroup_merging()
     {
