@@ -41,6 +41,8 @@ class PanSaseAPIConnector
 
     public $url_token = "https://auth.apps.paloaltonetworks.com/oauth2/access_token";
     public $url_api = "https://api.sase.paloaltonetworks.com";
+    #public $url_api = "https://api.stratacloud.paloaltonetworks.com"; //identical to api.sase.paloaltonetworks.com but introduced on 20230801
+
 
     static public $folderArray = array(
         "All",

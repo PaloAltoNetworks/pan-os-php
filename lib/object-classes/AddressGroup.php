@@ -47,6 +47,7 @@ class AddressGroup
 
     public $filter;
     public $ancestor;
+    public $childancestor;
 
     /**
      * Constructor for AddressGroup. There is little chance that you will ever need that. Look at AddressStore if you want to create an AddressGroup
