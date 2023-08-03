@@ -5,6 +5,7 @@ UTIL:
 * type=address | introduction of actions=upload-address-2cloudmanager:panorama.xml,DGname && actions=upload-addressgroup-2cloudmanager:panorama.xml,DGname
 * type=address actions=upload-address-2cloudmanager | extend validation if object name is already available
 * type=servicegroup-merger | introduce validation extension for childDG merger
+* type=rule-compare | exend with argument 'keepJSONfile1' and 'reuseJSONfile1'
 
 BUGFIX:
 * class Region | bugfix - introduce method type() - to handle "type=address actions="

@@ -36,8 +36,10 @@ class RULE_COMPARE extends UTIL
         $this->supportedArguments['file1'] = array('niceName' => 'File1', 'shortHelp' => 'original PAN-OS XML configuration file');
         $this->supportedArguments['file2'] = array('niceName' => 'File2', 'shortHelp' => 'manipulate/optimised former orginal PAN-OS XML configuration file');
 
+        $this->supportedArguments['keepjsonfile1'] = array('niceName' => 'KeepJsonFile1', 'shortHelp' => 'do not delete JsonFile1 at end of script run');
+        $this->supportedArguments['reusejsonfile1'] = array('niceName' => 'ReuseJsonFile1', 'shortHelp' => 'try to reuse an existing JsonFile1 which was not delete by a previous script run');
 
-        $this->usageMsg = PH::boldText('USAGE: ') . "php " . basename(__FILE__) . " in=api:://[MGMT-IP] argument1 [optional_argument2]";
+        $this->usageMsg = PH::boldText('USAGE: ') . "php " . basename(__FILE__) . " file1=original.xml file2=change_config.xml [keepJSONfile1] [reuseJSONfile1]";
 
 
 
@@ -51,12 +53,24 @@ class RULE_COMPARE extends UTIL
         PH::print_stdout();
         PH::print_stdout();
 
+        if( isset(PH::$args['help'] ) )
+        {
+            PH::print_stdout( $this->usageMsg );
+            exit();
+        }
 
         $ruleDiff = FALSE;
 
 
         $type = 'resolved';
         #$type = 'unresolved';
+
+        $keepjsonfile1 = false;
+        if( isset(PH::$args['keepjsonfile1'] ) )
+            $keepjsonfile1 = true;
+        $reusejsonfile1 = false;
+        if( isset(PH::$args['reusejsonfile1'] ) )
+            $reusejsonfile1 = true;
 
         $file1_name = PH::$args['file1'];
         $file2_name = PH::$args['file2'];
@@ -76,24 +90,28 @@ class RULE_COMPARE extends UTIL
             derr("cannot read configuration file '{$file2_name}''", null, FALSE);
 
         ############################################################
-        $shadow_json = "shadow-json";
-        $cli1 = "php " . dirname(__FILE__) . "/../../utils/pan-os-php.php type=rule 'actions=display:ResolveAddressSummary|ResolveServiceSummary' location=any in=" . $file1_name . " " . $shadow_json . " shadow-ignoreinvalidaddressobjects | tee " . $json_file1_name;
-        PH::print_stdout(" - run command: '" . $cli1 . "'");
-        PH::print_stdout();
-        PH::print_stdout("     running this command will take some time");
-        $retValue = null;
-        exec($cli1, $output, $retValue);
-        foreach( $output as $line )
+        if( !$reusejsonfile1 )
         {
-            $string = '   ##  ';
-            $string .= $line;
-            #PH::print_stdout( $string );
+            $shadow_json = "shadow-json";
+            $cli1 = "php " . dirname(__FILE__) . "/../../utils/pan-os-php.php type=rule 'actions=display:ResolveAddressSummary|ResolveServiceSummary' location=any in=" . $file1_name . " " . $shadow_json . " shadow-ignoreinvalidaddressobjects | tee " . $json_file1_name;
+            PH::print_stdout(" - run command: '" . $cli1 . "'");
+            PH::print_stdout();
+            PH::print_stdout("     running this command will take some time");
+            $retValue = null;
+            exec($cli1, $output, $retValue);
+            foreach( $output as $line )
+            {
+                $string = '   ##  ';
+                $string .= $line;
+                #PH::print_stdout( $string );
+            }
+
+            if( $retValue != 0 )
+                derr("CLI exit with error code '{$retValue}'");
+
+            PH::print_stdout();
         }
 
-        if( $retValue != 0 )
-            derr("CLI exit with error code '{$retValue}'");
-
-        PH::print_stdout();
 
         ############################################################
         $shadow_json = "shadow-json";
@@ -119,6 +137,9 @@ class RULE_COMPARE extends UTIL
         ############################################################
         #$file1 = file_get_contents($file1_name);
         #$file2 = file_get_contents($file2_name);
+
+        if( !file_exists($json_file1_name) )
+            derr("cannot read JSON filename1 '{$json_file1_name}''", null, FALSE);
 
         PH::print_stdout("compare JSON filename1: " . $json_file1_name);
         PH::print_stdout("with    JSON filename2: " . $json_file2_name);
@@ -255,7 +276,9 @@ class RULE_COMPARE extends UTIL
             PH::$JSON_OUT['rule-compare'] = $finalArray;
 
         //cleanup
-        unlink($json_file1_name);
+        if( !$keepjsonfile1 )
+            unlink($json_file1_name);
+
         unlink($json_file2_name);
         unset($file1);
         unset($file2);
