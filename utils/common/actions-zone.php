@@ -680,36 +680,6 @@ ZoneCallContext::$supportedActions['exportToExcel'] = array(
             $headers .= '<th>nested members</th>';
 
         $lines = '';
-        $encloseFunction = function ($value, $nowrap = TRUE) {
-            if( is_string($value) )
-                $output = htmlspecialchars($value);
-            elseif( is_array($value) )
-            {
-                $output = '';
-                $first = TRUE;
-                foreach( $value as $subValue )
-                {
-                    if( !$first )
-                    {
-                        $output .= '<br />';
-                    }
-                    else
-                        $first = FALSE;
-
-                    if( is_string($subValue) )
-                        $output .= htmlspecialchars($subValue);
-                    else
-                        $output .= htmlspecialchars($subValue->name());
-                }
-            }
-            else
-                derr('unsupported');
-
-            if( $nowrap )
-                return '<td style="white-space: nowrap">' . $output . '</td>';
-
-            return '<td>' . $output . '</td>';
-        };
 
         $count = 0;
         if( isset($context->objectList) )
@@ -724,45 +694,45 @@ ZoneCallContext::$supportedActions['exportToExcel'] = array(
                 else
                     $lines .= "<tr bgcolor=\"#DDDDDD\">";
 
-                $lines .= $encloseFunction( (string)$count );
+                $lines .= $context->encloseFunction( (string)$count );
 
                 if( $object->owner->owner->owner->owner  !== null && get_class( $object->owner->owner->owner->owner ) == "Template" )
                 {
-                    $lines .= $encloseFunction($object->owner->owner->owner->owner->name());
-                    $lines .= $encloseFunction($object->owner->owner->name());
+                    $lines .= $context->encloseFunction($object->owner->owner->owner->owner->name());
+                    $lines .= $context->encloseFunction($object->owner->owner->name());
                 }
                 else
                 {
-                    $lines .= $encloseFunction( "" );
-                    $lines .= $encloseFunction($object->owner->owner->name());
+                    $lines .= $context->encloseFunction( "" );
+                    $lines .= $context->encloseFunction($object->owner->owner->name());
                 }
 
 
-                $lines .= $encloseFunction($object->name());
+                $lines .= $context->encloseFunction($object->name());
 
                     if( $object->isTmp() )
                     {
-                        $lines .= $encloseFunction('unknown');
-                        $lines .= $encloseFunction('');
-                        $lines .= $encloseFunction('');
-                        $lines .= $encloseFunction('');
+                        $lines .= $context->encloseFunction('unknown');
+                        $lines .= $context->encloseFunction('');
+                        $lines .= $context->encloseFunction('');
+                        $lines .= $context->encloseFunction('');
                     }
                     else
                     {
-                        $lines .= $encloseFunction($object->type());
-                        $lines .= $encloseFunction( $object->attachedInterfaces->getAll() );
+                        $lines .= $context->encloseFunction($object->type());
+                        $lines .= $context->encloseFunction( $object->attachedInterfaces->getAll() );
 
                         if( $object->logsetting == null )
                             $tmpLogprof = "";
                         else
                             $tmpLogprof = $object->logsetting;
-                        $lines .= $encloseFunction( $tmpLogprof );
+                        $lines .= $context->encloseFunction( $tmpLogprof );
 
                         if( $object->zoneProtectionProfile == null )
                             $tmpZPP = "";
                         else
                             $tmpZPP = $object->zoneProtectionProfile;
-                        $lines .= $encloseFunction( $tmpZPP );
+                        $lines .= $context->encloseFunction( $tmpZPP );
                     }
 
                 if( $addWhereUsed )
@@ -771,7 +741,7 @@ ZoneCallContext::$supportedActions['exportToExcel'] = array(
                     foreach( $object->getReferences() as $ref )
                         $refTextArray[] = $ref->_PANC_shortName();
 
-                    $lines .= $encloseFunction($refTextArray);
+                    $lines .= $context->encloseFunction($refTextArray);
                 }
                 if( $addUsedInLocation )
                 {
@@ -782,7 +752,7 @@ ZoneCallContext::$supportedActions['exportToExcel'] = array(
                         $refTextArray[$location] = $location;
                     }
 
-                    $lines .= $encloseFunction($refTextArray);
+                    $lines .= $context->encloseFunction($refTextArray);
                 }
                 if( $addResolveGroupIPCoverage )
                 {
@@ -792,17 +762,17 @@ ZoneCallContext::$supportedActions['exportToExcel'] = array(
                     foreach( array_keys($mapping->unresolved) as $unresolved )
                         $strMapping[] = $unresolved;
 
-                    $lines .= $encloseFunction($strMapping);
+                    $lines .= $context->encloseFunction($strMapping);
                 }
                 if( $addNestedMembers )
                 {
                     if( $object->isGroup() )
                     {
                         $members = $object->expand(TRUE);
-                        $lines .= $encloseFunction($members);
+                        $lines .= $context->encloseFunction($members);
                     }
                     else
-                        $lines .= $encloseFunction('');
+                        $lines .= $context->encloseFunction('');
                 }
 
                 $lines .= "</tr>\n";

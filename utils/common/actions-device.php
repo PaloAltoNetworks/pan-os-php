@@ -730,36 +730,6 @@ DeviceCallContext::$supportedActions['exportToExcel'] = array(
             $filename = "project/html/".$filename;
 
         $lines = '';
-        $encloseFunction = function ($value, $nowrap = TRUE) {
-            if( is_string($value) )
-                $output = htmlspecialchars($value);
-            elseif( is_array($value) )
-            {
-                $output = '';
-                $first = TRUE;
-                foreach( $value as $subValue )
-                {
-                    if( !$first )
-                    {
-                        $output .= '<br />';
-                    }
-                    else
-                        $first = FALSE;
-
-                    if( is_string($subValue) )
-                        $output .= htmlspecialchars($subValue);
-                    else
-                        $output .= htmlspecialchars($subValue->name());
-                }
-            }
-            else
-                derr('unsupported');
-
-            if( $nowrap )
-                return '<td style="white-space: nowrap">' . $output . '</td>';
-
-            return '<td>' . $output . '</td>';
-        };
 
 
         $addWhereUsed = FALSE;
@@ -795,15 +765,15 @@ DeviceCallContext::$supportedActions['exportToExcel'] = array(
                 else
                     $lines .= "<tr bgcolor=\"#DDDDDD\">";
 
-                $lines .= $encloseFunction( (string)$count );
+                $lines .= $context->encloseFunction( (string)$count );
 
-                #$lines .= $encloseFunction(PH::getLocationString($object));
+                #$lines .= $context->encloseFunction(PH::getLocationString($object));
 
-                $lines .= $encloseFunction($object->name());
+                $lines .= $context->encloseFunction($object->name());
 
                 if( get_class($object) == "TemplateStack" )
                 {
-                    $lines .= $encloseFunction( array_reverse($object->templates) );
+                    $lines .= $context->encloseFunction( array_reverse($object->templates) );
                 }
 
                 if( $addWhereUsed )
@@ -812,7 +782,7 @@ DeviceCallContext::$supportedActions['exportToExcel'] = array(
                     foreach( $object->getReferences() as $ref )
                         $refTextArray[] = $ref->_PANC_shortName();
 
-                    $lines .= $encloseFunction($refTextArray);
+                    $lines .= $context->encloseFunction($refTextArray);
                 }
                 if( $addUsedInLocation )
                 {
@@ -823,7 +793,7 @@ DeviceCallContext::$supportedActions['exportToExcel'] = array(
                         $refTextArray[$location] = $location;
                     }
 
-                    $lines .= $encloseFunction($refTextArray);
+                    $lines .= $context->encloseFunction($refTextArray);
                 }
 
                 $lines .= "</tr>\n";
@@ -1497,41 +1467,6 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
                     $filename = "project/html/".$filename;
 
                 $lines = '';
-                $encloseFunction = function ($value, $nowrap = TRUE) {
-                    if( is_string($value) )
-                        $output = htmlspecialchars($value);
-                    elseif( is_array($value) )
-                    {
-                        $output = '';
-                        $first = TRUE;
-                        foreach( $value as $subValue )
-                        {
-                            if( !$first )
-                            {
-                                $output .= '<br />';
-                            }
-                            else
-                                $first = FALSE;
-
-                            if( is_string($subValue) )
-                                $output .= htmlspecialchars($subValue);
-                            else
-                                $output .= htmlspecialchars($subValue->name());
-                        }
-                    }
-                    else
-                    {
-                        #derr('unsupported');
-                        $output = 'unsupported value/type';
-                    }
-
-
-                    if( $nowrap )
-                        return '<td style="white-space: nowrap">' . $output . '</td>';
-
-                    return '<td>' . $output . '</td>';
-                };
-
 
                 $headers = '<th>sub</th><th>ruletype</th>';
                 foreach( $context->fields as $fieldName => $fieldID )
@@ -1553,10 +1488,10 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
                                 else
                                     $lines .= "<tr bgcolor=\"#DDDDDD\">";
 
-                                #$lines .= $encloseFunction(PH::getLocationString($object));
+                                #$lines .= $context->encloseFunction(PH::getLocationString($object));
 
-                                $lines .= $encloseFunction( strval($subtype) );
-                                $lines .= $encloseFunction( strval($keyruletype) ) ;
+                                $lines .= $context->encloseFunction( strval($subtype) );
+                                $lines .= $context->encloseFunction( strval($keyruletype) ) ;
 
 
                                 if( is_object( $rule['rule'] ) )
@@ -1564,13 +1499,13 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
                                     $line = "";
                                     foreach( $context->fields as $fieldName => $fieldID )
                                         $line .= $context->ruleContext->ruleFieldHtmlExport($rule['rule'], $fieldID);
-                                    #$lines .= $encloseFunction( $line );
+                                    #$lines .= $context->encloseFunction( $line );
                                     $lines .= $line;
 
-                                    #$lines .= $encloseFunction( $rule['rule']->name() );
+                                    #$lines .= $context->encloseFunction( $rule['rule']->name() );
                                 }
                                 else
-                                    $lines .= $encloseFunction( $rule['rule'] );
+                                    $lines .= $context->encloseFunction( $rule['rule'] );
 
                                 $lines .= "</tr>\n";
 
@@ -1582,8 +1517,8 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
                                     else
                                         $lines .= "<tr bgcolor=\"#DDDDDD\">";
 
-                                    $lines .= $encloseFunction( "---" );
-                                    $lines .= $encloseFunction( "shadowed" ) ;
+                                    $lines .= $context->encloseFunction( "---" );
+                                    $lines .= $context->encloseFunction( "shadowed" ) ;
 
 
 
@@ -1592,14 +1527,14 @@ DeviceCallContext::$supportedActions['display-shadowrule'] = array(
                                         $line = "";
                                         foreach( $context->fields as $fieldName => $fieldID )
                                             $line .= $context->ruleContext->ruleFieldHtmlExport($ruleItem, $fieldID);
-                                        #$lines .= $encloseFunction( $line );
+                                        #$lines .= $context->encloseFunction( $line );
                                         $lines .= $line;
 
-                                        #$lines .= $encloseFunction( $ruleItem->name() );
+                                        #$lines .= $context->encloseFunction( $ruleItem->name() );
                                     }
 
                                     else
-                                        $lines .= $encloseFunction( strval($ruleItem) );
+                                        $lines .= $context->encloseFunction( strval($ruleItem) );
 
                                     $lines .= "</tr>\n";
                                 }

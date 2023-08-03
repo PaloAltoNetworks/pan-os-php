@@ -9,6 +9,7 @@ UTIL:
 * type=rule-compare | introduce argument 'generateRuleHtmlFile'
 * type=servicegroup-merger | extend with childancestor validation
 * type=service actions=exporttoexcel:file.html | introduce additional arguments nestedmembers
+* type=XYZ actions=exporttoexcel:file.html | use single function to create spreadsheet content
 
 BUGFIX:
 * class Region | bugfix - introduce method type() - to handle "type=address actions="

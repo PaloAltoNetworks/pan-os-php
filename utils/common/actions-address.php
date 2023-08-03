@@ -794,38 +794,6 @@ AddressCallContext::$supportedActions[] = array(
             $headers .= '<th>nested members count</th>';
 
         $lines = '';
-        $encloseFunction = function ($value, $nowrap = TRUE) {
-            if( is_string($value) )
-                $output = htmlspecialchars($value);
-            elseif( is_array($value) )
-            {
-                $output = '';
-                $first = TRUE;
-                foreach( $value as $subValue )
-                {
-                    if( !$first )
-                    {
-                        $output .= '<br />';
-                    }
-                    else
-                        $first = FALSE;
-
-                    if( is_string($subValue) )
-                        $output .= htmlspecialchars($subValue);
-                    elseif( is_object($subValue) )
-                        $output .= htmlspecialchars($subValue->name());
-                    else
-                        $output .= htmlspecialchars("-null-");
-                }
-            }
-            else
-                derr('unsupported');
-
-            if( $nowrap )
-                return '<td style="white-space: nowrap">' . $output . '</td>';
-
-            return '<td>' . $output . '</td>';
-        };
 
         $count = 0;
         if( isset($context->objectList) )
@@ -840,60 +808,60 @@ AddressCallContext::$supportedActions[] = array(
                 else
                     $lines .= "<tr bgcolor=\"#DDDDDD\">";
 
-                $lines .= $encloseFunction( (string)$count );
+                $lines .= $context->encloseFunction( (string)$count );
 
                 if( $object->owner->owner->isPanorama() || $object->owner->owner->isFirewall() )
-                    $lines .= $encloseFunction('shared');
+                    $lines .= $context->encloseFunction('shared');
                 else
-                    $lines .= $encloseFunction($object->owner->owner->name());
+                    $lines .= $context->encloseFunction($object->owner->owner->name());
 
-                $lines .= $encloseFunction($object->name());
+                $lines .= $context->encloseFunction($object->name());
 
                 if( $object->isGroup() )
                 {
                     if( $object->isDynamic() )
                     {
-                        $lines .= $encloseFunction('group-dynamic');
-                        #$lines .= $encloseFunction('');
-                        $lines .= $encloseFunction($object->members());
+                        $lines .= $context->encloseFunction('group-dynamic');
+                        #$lines .= $context->encloseFunction('');
+                        $lines .= $context->encloseFunction($object->members());
                     }
                     else
                     {
-                        $lines .= $encloseFunction('group-static');
-                        $lines .= $encloseFunction($object->members());
+                        $lines .= $context->encloseFunction('group-static');
+                        $lines .= $context->encloseFunction($object->members());
                     }
-                    $lines .= $encloseFunction($object->description(), FALSE);
+                    $lines .= $context->encloseFunction($object->description(), FALSE);
                     if( $object->isGroup() )
-                        $lines .= $encloseFunction( (string)count( $object->members() ));
+                        $lines .= $context->encloseFunction( (string)count( $object->members() ));
                     else
-                        $lines .= $encloseFunction( '---' );
+                        $lines .= $context->encloseFunction( '---' );
 
                     $counter = 0;
                     $members = $object->expand(FALSE);
                     foreach( $members as $member )
                         $counter += $member->getIPcount();
-                    $lines .= $encloseFunction((string)$counter);
+                    $lines .= $context->encloseFunction((string)$counter);
 
-                    $lines .= $encloseFunction($object->tags->tags());
+                    $lines .= $context->encloseFunction($object->tags->tags());
                 }
                 elseif( $object->isAddress() )
                 {
                     if( $object->isTmpAddr() )
                     {
-                        $lines .= $encloseFunction('unknown');
-                        $lines .= $encloseFunction('');
-                        $lines .= $encloseFunction('');
-                        $lines .= $encloseFunction('');
-                        $lines .= $encloseFunction('');
+                        $lines .= $context->encloseFunction('unknown');
+                        $lines .= $context->encloseFunction('');
+                        $lines .= $context->encloseFunction('');
+                        $lines .= $context->encloseFunction('');
+                        $lines .= $context->encloseFunction('');
                     }
                     else
                     {
-                        $lines .= $encloseFunction($object->type());
-                        $lines .= $encloseFunction($object->value());
-                        $lines .= $encloseFunction($object->description(), FALSE);
-                        $lines .= $encloseFunction( '---' );
-                        $lines .= $encloseFunction( (string)$object->getIPcount() );
-                        $lines .= $encloseFunction($object->tags->tags());
+                        $lines .= $context->encloseFunction($object->type());
+                        $lines .= $context->encloseFunction($object->value());
+                        $lines .= $context->encloseFunction($object->description(), FALSE);
+                        $lines .= $context->encloseFunction( '---' );
+                        $lines .= $context->encloseFunction( (string)$object->getIPcount() );
+                        $lines .= $context->encloseFunction($object->tags->tags());
                     }
                 }
                 elseif( $object->isRegion() )
@@ -908,7 +876,7 @@ AddressCallContext::$supportedActions[] = array(
                     foreach( $object->getReferences() as $ref )
                         $refTextArray[] = $ref->_PANC_shortName();
 
-                    $lines .= $encloseFunction($refTextArray);
+                    $lines .= $context->encloseFunction($refTextArray);
                 }
                 if( $addUsedInLocation )
                 {
@@ -919,7 +887,7 @@ AddressCallContext::$supportedActions[] = array(
                         $refTextArray[$location] = $location;
                     }
 
-                    $lines .= $encloseFunction($refTextArray);
+                    $lines .= $context->encloseFunction($refTextArray);
                 }
                 if( $addResolveGroupIPCoverage )
                 {
@@ -929,17 +897,17 @@ AddressCallContext::$supportedActions[] = array(
                     foreach( array_keys($mapping->unresolved) as $unresolved )
                         $strMapping[] = $unresolved;
 
-                    $lines .= $encloseFunction($strMapping);
+                    $lines .= $context->encloseFunction($strMapping);
                 }
                 if( $addNestedMembers )
                 {
                     if( $object->isGroup() )
                     {
                         $members = $object->expand(FALSE);
-                        $lines .= $encloseFunction($members);
+                        $lines .= $context->encloseFunction($members);
                     }
                     else
-                        $lines .= $encloseFunction('');
+                        $lines .= $context->encloseFunction('');
                 }
                 if( $addResolveIPNestedMembers )
                 {
@@ -948,20 +916,20 @@ AddressCallContext::$supportedActions[] = array(
                         $members = $object->expand(FALSE);
                         foreach( $members as $member )
                             $resolve[] = $member->value();
-                        $lines .= $encloseFunction($resolve);
+                        $lines .= $context->encloseFunction($resolve);
                     }
                     else
-                        $lines .= $encloseFunction('');
+                        $lines .= $context->encloseFunction('');
                 }
                 if( $addNestedMembersCount )
                 {
                     if( $object->isGroup() )
                     {   $resolve = array();
                         $members = $object->expand(FALSE);
-                        $lines .= $encloseFunction( (string)count($members) );
+                        $lines .= $context->encloseFunction( (string)count($members) );
                     }
                     else
-                        $lines .= $encloseFunction('');
+                        $lines .= $context->encloseFunction('');
                 }
 
                 $lines .= "</tr>\n";

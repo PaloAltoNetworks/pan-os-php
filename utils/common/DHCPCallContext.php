@@ -23,7 +23,7 @@ class DHCPCallContext extends CallContext
 {
     /** @var  DHCP */
     public $object;
-
+    public $objectList;
 
 
     public static $commonActionFunctions = Array();

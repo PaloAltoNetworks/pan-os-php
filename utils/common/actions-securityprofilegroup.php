@@ -228,44 +228,6 @@ SecurityProfileGroupCallContext::$supportedActions[] = array(
             $filename = "project/html/".$filename;
 
         $lines = '';
-        $encloseFunction = function ($value, $nowrap = TRUE) {
-            if( is_string($value) )
-                $output = htmlspecialchars($value);
-            elseif( is_array($value) )
-            {
-                $output = '';
-                $first = TRUE;
-                foreach( $value as $subValue )
-                {
-                    if( !$first )
-                    {
-                        $output .= '<br />';
-                    }
-                    else
-                        $first = FALSE;
-
-                    if( is_string($subValue) )
-                        $output .= htmlspecialchars($subValue);
-                    else
-                        $output .= htmlspecialchars($subValue->name());
-                }
-            }
-            elseif( is_object($value) )
-                $output = htmlspecialchars($value->name());
-            elseif( $value == null )
-                $output = "---";
-            else
-            {
-                derr('unsupported');
-            }
-
-
-            if( $nowrap )
-                return '<td style="white-space: nowrap">' . $output . '</td>';
-
-            return '<td>' . $output . '</td>';
-        };
-
 
         $addWhereUsed = FALSE;
         $addUsedInLocation = FALSE;
@@ -299,11 +261,11 @@ SecurityProfileGroupCallContext::$supportedActions[] = array(
                 else
                     $lines .= "<tr bgcolor=\"#DDDDDD\">";
 
-                $lines .= $encloseFunction( (string)$count );
+                $lines .= $context->encloseFunction( (string)$count );
 
-                $lines .= $encloseFunction(PH::getLocationString($object));
+                $lines .= $context->encloseFunction(PH::getLocationString($object));
 
-                $lines .= $encloseFunction($object->name());
+                $lines .= $context->encloseFunction($object->name());
 
                 
                 $counter_array = array();
@@ -311,17 +273,17 @@ SecurityProfileGroupCallContext::$supportedActions[] = array(
                 if( count( $refLoc ) == 0 )
                 {
                     $refLoc = "---";
-                    $lines .= $encloseFunction($refLoc);
+                    $lines .= $context->encloseFunction($refLoc);
                 }
                 else
                 {
-                    $lines .= $encloseFunction($refLoc);
+                    $lines .= $context->encloseFunction($refLoc);
                 }
 
                 if( count( $counter_array ) == 0 )
                 {
                     $refLoc = "---";
-                    $lines .= $encloseFunction($refLoc);
+                    $lines .= $context->encloseFunction($refLoc);
                 }
                 else
                 {
@@ -330,7 +292,7 @@ SecurityProfileGroupCallContext::$supportedActions[] = array(
                         $tmparray[$key] = (string)$counter_array[$key];
                     $counter_array = $tmparray;
 
-                    $lines .= $encloseFunction($counter_array);
+                    $lines .= $context->encloseFunction($counter_array);
                 }
 
                 $refCount = $object->countReferences();
@@ -338,23 +300,23 @@ SecurityProfileGroupCallContext::$supportedActions[] = array(
                     $refCount = "---";
                 else
                     $refCount = (string)$refCount ;
-                $lines .= $encloseFunction( $refCount );
+                $lines .= $context->encloseFunction( $refCount );
 
                 //private $secprof_array = array('virus', 'spyware', 'vulnerability', 'file-blocking', 'wildfire-analysis', 'url-filtering', 'data-filtering');
 
-                $lines .= $encloseFunction($object->secprofiles['virus']);
+                $lines .= $context->encloseFunction($object->secprofiles['virus']);
 
-                $lines .= $encloseFunction($object->secprofiles['spyware']);
+                $lines .= $context->encloseFunction($object->secprofiles['spyware']);
 
-                $lines .= $encloseFunction($object->secprofiles['vulnerability']);
+                $lines .= $context->encloseFunction($object->secprofiles['vulnerability']);
 
-                $lines .= $encloseFunction($object->secprofiles['url-filtering']);
+                $lines .= $context->encloseFunction($object->secprofiles['url-filtering']);
 
-                $lines .= $encloseFunction($object->secprofiles['file-blocking']);
+                $lines .= $context->encloseFunction($object->secprofiles['file-blocking']);
 
-                $lines .= $encloseFunction($object->secprofiles['data-filtering']);
+                $lines .= $context->encloseFunction($object->secprofiles['data-filtering']);
 
-                $lines .= $encloseFunction($object->secprofiles['wildfire-analysis']);
+                $lines .= $context->encloseFunction($object->secprofiles['wildfire-analysis']);
 
                 if( $addWhereUsed )
                 {
@@ -362,7 +324,7 @@ SecurityProfileGroupCallContext::$supportedActions[] = array(
                     foreach( $object->getReferences() as $ref )
                         $refTextArray[] = $ref->_PANC_shortName();
 
-                    $lines .= $encloseFunction($refTextArray);
+                    $lines .= $context->encloseFunction($refTextArray);
                 }
                 if( $addUsedInLocation )
                 {
@@ -373,7 +335,7 @@ SecurityProfileGroupCallContext::$supportedActions[] = array(
                         $refTextArray[$location] = $location;
                     }
 
-                    $lines .= $encloseFunction($refTextArray);
+                    $lines .= $context->encloseFunction($refTextArray);
                 }
 
                 $lines .= "</tr>\n";

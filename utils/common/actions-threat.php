@@ -82,37 +82,6 @@ ThreatCallContext::$supportedActions[] = array(
             $filename = "project/html/".$filename;
 
         $lines = '';
-        $encloseFunction = function ($value, $nowrap = TRUE) {
-            if( is_string($value) )
-                $output = htmlspecialchars($value);
-            elseif( is_array($value) )
-            {
-                $output = '';
-                $first = TRUE;
-                foreach( $value as $subValue )
-                {
-                    if( !$first )
-                    {
-                        $output .= '<br />';
-                    }
-                    else
-                        $first = FALSE;
-
-                    if( is_string($subValue) )
-                        $output .= htmlspecialchars($subValue);
-                    else
-                        $output .= htmlspecialchars($subValue->name());
-                }
-            }
-            else
-                derr('unsupported');
-
-            if( $nowrap )
-                return '<td style="white-space: nowrap">' . $output . '</td>';
-
-            return '<td>' . $output . '</td>';
-        };
-
 
         $addWhereUsed = FALSE;
         $addUsedInLocation = FALSE;
@@ -146,21 +115,21 @@ ThreatCallContext::$supportedActions[] = array(
                 else
                     $lines .= "<tr bgcolor=\"#DDDDDD\">";
 
-                $lines .= $encloseFunction( (string)$count );
+                $lines .= $context->encloseFunction( (string)$count );
 
-                $lines .= $encloseFunction(PH::getLocationString($object));
+                $lines .= $context->encloseFunction(PH::getLocationString($object));
 
-                $lines .= $encloseFunction(get_class($object));
+                $lines .= $context->encloseFunction(get_class($object));
 
-                $lines .= $encloseFunction($object->name());
+                $lines .= $context->encloseFunction($object->name());
 
-                $lines .= $encloseFunction($object->threatname());
+                $lines .= $context->encloseFunction($object->threatname());
 
-                $lines .= $encloseFunction($object->category());
+                $lines .= $context->encloseFunction($object->category());
 
-                $lines .= $encloseFunction($object->severity());
+                $lines .= $context->encloseFunction($object->severity());
 
-                $lines .= $encloseFunction($object->defaultAction());
+                $lines .= $context->encloseFunction($object->defaultAction());
 
                 if( $addWhereUsed )
                 {
@@ -168,7 +137,7 @@ ThreatCallContext::$supportedActions[] = array(
                     foreach( $object->getReferences() as $ref )
                         $refTextArray[] = $ref->_PANC_shortName();
 
-                    $lines .= $encloseFunction($refTextArray);
+                    $lines .= $context->encloseFunction($refTextArray);
                 }
                 if( $addUsedInLocation )
                 {
@@ -179,7 +148,7 @@ ThreatCallContext::$supportedActions[] = array(
                         $refTextArray[$location] = $location;
                     }
 
-                    $lines .= $encloseFunction($refTextArray);
+                    $lines .= $context->encloseFunction($refTextArray);
                 }
 
                 $lines .= "</tr>\n";

@@ -581,36 +581,6 @@ TagCallContext::$supportedActions[] = array(
             $filename = "project/html/".$filename;
 
         $lines = '';
-        $encloseFunction = function ($value, $nowrap = TRUE) {
-            if( is_string($value) )
-                $output = htmlspecialchars($value);
-            elseif( is_array($value) )
-            {
-                $output = '';
-                $first = TRUE;
-                foreach( $value as $subValue )
-                {
-                    if( !$first )
-                    {
-                        $output .= '<br />';
-                    }
-                    else
-                        $first = FALSE;
-
-                    if( is_string($subValue) )
-                        $output .= htmlspecialchars($subValue);
-                    else
-                        $output .= htmlspecialchars($subValue->name());
-                }
-            }
-            else
-                derr('unsupported');
-
-            if( $nowrap )
-                return '<td style="white-space: nowrap">' . $output . '</td>';
-
-            return '<td>' . $output . '</td>';
-        };
 
 
         $addWhereUsed = FALSE;
@@ -645,24 +615,24 @@ TagCallContext::$supportedActions[] = array(
                 else
                     $lines .= "<tr bgcolor=\"#DDDDDD\">";
 
-                $lines .= $encloseFunction( (string)$count );
+                $lines .= $context->encloseFunction( (string)$count );
 
-                $lines .= $encloseFunction(PH::getLocationString($object));
+                $lines .= $context->encloseFunction(PH::getLocationString($object));
 
-                $lines .= $encloseFunction($object->name());
+                $lines .= $context->encloseFunction($object->name());
 
                 if( $object->isTag() )
                 {
                     if( $object->isTmp() )
                     {
-                        $lines .= $encloseFunction('unknown');
-                        $lines .= $encloseFunction('');
+                        $lines .= $context->encloseFunction('unknown');
+                        $lines .= $context->encloseFunction('');
 
                     }
                     else
                     {
-                        $lines .= $encloseFunction($object->color);
-                        $lines .= $encloseFunction($object->getComments());
+                        $lines .= $context->encloseFunction($object->color);
+                        $lines .= $context->encloseFunction($object->getComments());
                     }
                 }
 
@@ -672,7 +642,7 @@ TagCallContext::$supportedActions[] = array(
                     foreach( $object->getReferences() as $ref )
                         $refTextArray[] = $ref->_PANC_shortName();
 
-                    $lines .= $encloseFunction($refTextArray);
+                    $lines .= $context->encloseFunction($refTextArray);
                 }
                 if( $addUsedInLocation )
                 {
@@ -683,7 +653,7 @@ TagCallContext::$supportedActions[] = array(
                         $refTextArray[$location] = $location;
                     }
 
-                    $lines .= $encloseFunction($refTextArray);
+                    $lines .= $context->encloseFunction($refTextArray);
                 }
 
                 $lines .= "</tr>\n";
