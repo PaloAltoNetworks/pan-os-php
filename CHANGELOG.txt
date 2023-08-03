@@ -6,6 +6,7 @@ UTIL:
 * type=address actions=upload-address-2cloudmanager | extend validation if object name is already available
 * type=servicegroup-merger | introduce validation extension for childDG merger
 * type=rule-compare | exend with argument 'keepJSONfile1' and 'reuseJSONfile1'
+* type=rule-compare | introduce argument 'generateRuleHtmlFile'
 
 BUGFIX:
 * class Region | bugfix - introduce method type() - to handle "type=address actions="

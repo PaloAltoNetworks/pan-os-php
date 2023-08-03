@@ -39,7 +39,7 @@ class RULE_COMPARE extends UTIL
         $this->supportedArguments['keepjsonfile1'] = array('niceName' => 'KeepJsonFile1', 'shortHelp' => 'do not delete JsonFile1 at end of script run');
         $this->supportedArguments['reusejsonfile1'] = array('niceName' => 'ReuseJsonFile1', 'shortHelp' => 'try to reuse an existing JsonFile1 which was not delete by a previous script run');
 
-        $this->usageMsg = PH::boldText('USAGE: ') . "php " . basename(__FILE__) . " file1=original.xml file2=change_config.xml [keepJSONfile1] [reuseJSONfile1]";
+        $this->usageMsg = PH::boldText('USAGE: ') . "php " . basename(__FILE__) . " file1=original.xml file2=change_config.xml [keepJSONfile1] [reuseJSONfile1] [generateRuleHTMLFile]";
 
 
 
@@ -71,6 +71,9 @@ class RULE_COMPARE extends UTIL
         $reusejsonfile1 = false;
         if( isset(PH::$args['reusejsonfile1'] ) )
             $reusejsonfile1 = true;
+        $generateRuleHTMLfile = false;
+        if( isset(PH::$args['generaterulehtmlfile'] ) )
+            $generateRuleHTMLfile = true;
 
         $file1_name = PH::$args['file1'];
         $file2_name = PH::$args['file2'];
@@ -92,53 +95,20 @@ class RULE_COMPARE extends UTIL
         ############################################################
         if( !$reusejsonfile1 )
         {
-            $shadow_json = "shadow-json";
-            $cli1 = "php " . dirname(__FILE__) . "/../../utils/pan-os-php.php type=rule 'actions=display:ResolveAddressSummary|ResolveServiceSummary' location=any in=" . $file1_name . " " . $shadow_json . " shadow-ignoreinvalidaddressobjects | tee " . $json_file1_name;
-            PH::print_stdout(" - run command: '" . $cli1 . "'");
-            PH::print_stdout();
-            PH::print_stdout("     running this command will take some time");
-            $retValue = null;
-            exec($cli1, $output, $retValue);
-            foreach( $output as $line )
-            {
-                $string = '   ##  ';
-                $string .= $line;
-                #PH::print_stdout( $string );
-            }
-
-            if( $retValue != 0 )
-                derr("CLI exit with error code '{$retValue}'");
-
-            PH::print_stdout();
+            $this->createJson( $file1_name, $json_file1_name);
         }
+        else
+            PH::print_stdout( "JSON file1 will be reuse" );
 
 
         ############################################################
-        $shadow_json = "shadow-json";
-        $cli2 = "php " . dirname(__FILE__) . "/../../utils/pan-os-php.php type=rule 'actions=display:ResolveAddressSummary|ResolveServiceSummary' location=any in=" . $file2_name . " " . $shadow_json . " shadow-ignoreinvalidaddressobjects | tee " . $json_file2_name;
-        PH::print_stdout(" - run command: '" . $cli2 . "'");
-        PH::print_stdout();
-        PH::print_stdout("     running this command will take some time");
-        $retValue = null;
-        exec($cli2, $output, $retValue);
-        foreach( $output as $line )
-        {
-            $string = '   ##  ';
-            $string .= $line;
-
-            #PH::print_stdout( $string );
-        }
-
-        if( $retValue != 0 )
-            derr("CLI exit with error code '{$retValue}'");
-
-        PH::print_stdout();
+        $this->createJson( $file2_name, $json_file2_name);
 
         ############################################################
         #$file1 = file_get_contents($file1_name);
         #$file2 = file_get_contents($file2_name);
 
-        if( !file_exists($json_file1_name) )
+        if( !file_exists($json_file1_name) || filesize($json_file1_name) === 0 )
             derr("cannot read JSON filename1 '{$json_file1_name}''", null, FALSE);
 
         PH::print_stdout("compare JSON filename1: " . $json_file1_name);
@@ -223,6 +193,7 @@ class RULE_COMPARE extends UTIL
 
                     PH::print_stdout("--------------------------------------------------");
                     PH::print_stdout("SUB: '" . $subName . "' | Rule diff found: '" . PH::boldText($key)."'");
+
                     $finalArray[$subName][$key] = array();
                     if( !empty($diff_src) )
                     {
@@ -249,6 +220,13 @@ class RULE_COMPARE extends UTIL
                         PH::print_stdout( PH::boldText("  ".$keyword) );
                         $this->printArray($srv1, $srv2, $compareArray);
                         $finalArray[$subName][$key][$keyword] = $compareArray;
+                    }
+
+                    if( $generateRuleHTMLfile )
+                    {
+                        PH::print_stdout( "create HTML file");
+                        $this->generateRuleHTMLfile( $file1_name, $subName, $key );
+                        $this->generateRuleHTMLfile( $file2_name, $subName, $key );
                     }
                 }
             }
@@ -370,5 +348,44 @@ class RULE_COMPARE extends UTIL
             $compareArray['file1'] = array();
             $compareArray['file2'] = array();
         }
+    }
+
+    function createJson( $file_name, $json_file_name)
+    {
+        $shadow_json = "shadow-json";
+        $cli = "php " . dirname(__FILE__) . "/../../utils/pan-os-php.php type=rule 'actions=display:ResolveAddressSummary|ResolveServiceSummary' location=any in=" . $file_name . " " . $shadow_json . " shadow-ignoreinvalidaddressobjects | tee " . $json_file_name;
+
+        $this->executeCommand( $cli );
+
+        PH::print_stdout();
+    }
+
+    function generateRuleHTMLfile( $file_name, $subName, $key )
+    {
+        $shadow_json = "";
+        $spreadsheetFiletype = "html";
+        $cli = "php " . dirname(__FILE__) . "/../../utils/pan-os-php.php type=rule 'actions=exporttoexcel:".$file_name."_".$subName."_".$key.".".$spreadsheetFiletype.",ResolveAddressSummary|ResolveServiceSummary' 'location=".$subName."' in=" . $file_name . " 'filter=(name eq ".$key.")'" . $shadow_json . " shadow-ignoreinvalidaddressobjects";
+
+        $this->executeCommand( $cli );
+
+        PH::print_stdout();
+    }
+
+    function executeCommand( $cli )
+    {
+        PH::print_stdout(" - run command: '" . $cli . "'");
+        PH::print_stdout();
+        PH::print_stdout("     running this command will take some time");
+        $retValue = null;
+        exec($cli, $output, $retValue);
+        foreach( $output as $line )
+        {
+            $string = '   ##  ';
+            $string .= $line;
+            #PH::print_stdout( $string );
+        }
+
+        if( $retValue != 0 )
+            derr("CLI exit with error code '{$retValue}'");
     }
 }
