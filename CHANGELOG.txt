@@ -4,6 +4,7 @@ CHANGELOG
 UTIL:
 * type=address | introduction of actions=upload-address-2cloudmanager:panorama.xml,DGname && actions=upload-addressgroup-2cloudmanager:panorama.xml,DGname
 * type=address actions=upload-address-2cloudmanager | extend validation if object name is already available
+* type=servicegroup-merger | introduce validation extension for childDG merger
 
 BUGFIX:
 * class Region | bugfix - introduce method type() - to handle "type=address actions="
@@ -152,7 +153,6 @@ UTIL:
 * type=rule-merger | argument additionalmatch - change supported argument from 'logprof' to 'logsetting'
 * type=address 'filter=(object is.region)' - extend display with custom region value information
 * type=rule-compare | introduce new utility - to compare rule SRC/DST/SRV of two files
-* type=servicegroup-merger | introduce validation extension for childDG merger
 
 BUGFIX:
 * type=address | bugfix for filter=(value string.XYZ ) if Object of type Region is hit
