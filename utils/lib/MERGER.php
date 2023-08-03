@@ -2067,6 +2067,48 @@ class MERGER extends UTIL
         return $break;
     }
 
+    function checkParentServicePickObject($hash)
+    {
+        $break = False;
+        foreach( $hash as $pickedObject )
+        {
+            /** @var DeviceGroup $pickedObject_DG */
+            $pickedObject_DG = $pickedObject->owner->owner;
+            if( $pickedObject_DG->parentDeviceGroup !== null )
+            {
+                $nextFindObject = $pickedObject_DG->parentDeviceGroup->serviceStore->find( $pickedObject->name(), null, True );
+                if( $nextFindObject !== null )
+                {
+                    /** @var Service|ServiceGroup $memberFound */
+                    if( $pickedObject->isService() && $nextFindObject->isService() )
+                    {
+                        if( $pickedObject->getDestPort() !== $nextFindObject->getDestPort() || $pickedObject->getSourcePort() !== $nextFindObject->getSourcePort() || $pickedObject->protocol() !== $nextFindObject->protocol() )
+                        {
+                            PH::print_stdout("   * SKIPPED : this group has an object named '{$pickedObject->name()} that does exist in target location '{$tmp_DG_name}' with different value or protocol");
+                            $break = TRUE;
+                        }
+                    }
+                    elseif( $pickedObject->isGroup() && $nextFindObject->isGroup() )
+                    {
+                        //todo 20230518 check deeper if this group group part must be validate more
+                        $diff = $pickedObject->getValueDiff($nextFindObject);
+                        if( count($diff['minus']) != 0 || count($diff['plus']) != 0 )
+                        {
+                            PH::print_stdout("   * SKIPPED : this group has different member ship compare to upperlevel");
+                            $break = TRUE;
+                        }
+                    }
+                    else
+                    {
+                        PH::print_stdout("   * SKIPPED : this group has an object named '{$pickedObject->name()} that does exist in target location '{$tmp_DG_name}' with different object type");
+                        $break = TRUE;
+                    }
+                }
+            }
+        }
+        return $break;
+    }
+
     function servicegroup_merging()
     {
         foreach( $this->location_array as $tmp_location )
@@ -2260,38 +2302,12 @@ class MERGER extends UTIL
 
                     $skip = FALSE;
 
-                    /** @var DeviceGroup $pickedObject_DG */
-                    $pickedObject_DG = $pickedObject->owner->owner;
-                    if( $pickedObject_DG->parentDeviceGroup !== null )
+
+                    $break = $this->checkParentServicePickObject( $hash );
+                    if( $break )
                     {
-                        $nextFindObject = $pickedObject_DG->parentDeviceGroup->serviceStore->find( $pickedObject->name(), null, True );
-                        if( $nextFindObject !== null )
-                        {
-                            /** @var Service|ServiceGroup $memberFound */
-                            if( $pickedObject->isService() && $nextFindObject->isService() )
-                            {
-                                if( $pickedObject->getDestPort() !== $nextFindObject->getDestPort() || $pickedObject->getSourcePort() !== $nextFindObject->getSourcePort() || $pickedObject->protocol() !== $nextFindObject->protocol() )
-                                {
-                                    PH::print_stdout("   * SKIPPED : this group has an object named '{$pickedObject->name()} that does exist in target location '{$tmp_DG_name}' with different value or protocol");
-                                    $skip = TRUE;
-                                }
-                            }
-                            elseif( $pickedObject->isGroup() && $nextFindObject->isGroup() )
-                            {
-                                //todo 20230518 check deeper if this group group part must be validate more
-                                $diff = $pickedObject->getValueDiff($nextFindObject);
-                                if( count($diff['minus']) != 0 || count($diff['plus']) != 0 )
-                                {
-                                    PH::print_stdout("   * SKIPPED : this group has different member ship compare to upperleve");
-                                    $skip = TRUE;
-                                }
-                            }
-                            else
-                            {
-                                PH::print_stdout("   * SKIPPED : this group has an object named '{$pickedObject->name()} that does exist in target location '{$tmp_DG_name}' with different object type");
-                                $skip = TRUE;
-                            }
-                        }
+                        PH::print_stdout("     this object can not be created" );
+                        continue;
                     }
 
                     foreach( $pickedObject->members() as $memberObject )
@@ -2320,7 +2336,7 @@ class MERGER extends UTIL
                                 $diff = $memberObject->getValueDiff($memberFound);
                                 if( count($diff['minus']) != 0 || count($diff['plus']) != 0 )
                                 {
-                                    PH::print_stdout("   * SKIPPED : this group has different member ship compare to upperleve");
+                                    PH::print_stdout("   * SKIPPED : this group has different member ship compare to upperlevel");
                                     $skip = TRUE;
                                 }
                             }

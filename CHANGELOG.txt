@@ -152,6 +152,7 @@ UTIL:
 * type=rule-merger | argument additionalmatch - change supported argument from 'logprof' to 'logsetting'
 * type=address 'filter=(object is.region)' - extend display with custom region value information
 * type=rule-compare | introduce new utility - to compare rule SRC/DST/SRV of two files
+* type=servicegroup-merger | introduce validation extension for childDG merger
 
 BUGFIX:
 * type=address | bugfix for filter=(value string.XYZ ) if Object of type Region is hit
