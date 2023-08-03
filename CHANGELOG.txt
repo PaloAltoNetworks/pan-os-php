@@ -10,6 +10,7 @@ UTIL:
 * type=servicegroup-merger | extend with childancestor validation
 * type=service actions=exporttoexcel:file.html | introduce additional arguments nestedmembers
 * type=XYZ actions=exporttoexcel:file.html | use single function to create spreadsheet content
+* type=dhcp | introduce actions=exporttoexcel:file.html
 
 BUGFIX:
 * class Region | bugfix - introduce method type() - to handle "type=address actions="
