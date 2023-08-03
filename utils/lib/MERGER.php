@@ -856,14 +856,13 @@ class MERGER extends UTIL
                     $skip = false;
 
                     //Todo: check all pickedObjects from hash
-                    /** @var DeviceGroup $pickedObject_DG */
+                    /*
                     $pickedObject_DG = $pickedObject->owner->owner;
                     if( $pickedObject_DG->parentDeviceGroup !== null )
                     {
                         $nextFindObject = $pickedObject_DG->parentDeviceGroup->addressStore->find( $pickedObject->name(), null, True );
                         if( $nextFindObject !== null )
                         {
-                            /** @var Address|AddressGroup $memberFound */
                             if( $pickedObject->isAddress() && $nextFindObject->isAddress() )
                             {
                                 if( $pickedObject->value() !== $nextFindObject->value() )
@@ -890,6 +889,13 @@ class MERGER extends UTIL
                                 break;
                             }
                         }
+                    }
+                    */
+                    $break = $this->checkParentPickObject( $hash );
+                    if( $break )
+                    {
+                        PH::print_stdout("     this object can not be created" );
+                        continue;
                     }
 
                     foreach( $pickedObject->members() as $memberObject )
@@ -958,12 +964,6 @@ class MERGER extends UTIL
                             }
 
                         }
-                    }
-                    $break = $this->checkParentPickObject( $hash );
-                    if( $break )
-                    {
-                        print "this object can not be created\n";
-                        continue;
                     }
 
 

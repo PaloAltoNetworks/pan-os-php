@@ -865,10 +865,10 @@ class AddressGroup
                 }
 
                 /** @var AddressGroup $object */
-                $tmpList = $object->expand( $keepGroupsInList, $grpArray );
+                $tmpList = $object->expand( $keepGroupsInList, $grpArray, $RuleReferenceLocation );
 
-                //$ret = array_merge($ret, $tmpList);
-                $ret = $ret + $tmpList;
+                $ret = array_merge($ret, $tmpList);
+                #$ret = $ret + $tmpList;
 
                 unset($tmpList);
                 if( $keepGroupsInList )
