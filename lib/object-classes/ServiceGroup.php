@@ -657,9 +657,17 @@ class ServiceGroup
      * @param bool $keepGroupsInList
      * @return Service[]|ServiceGroup[] list of all member objects, if some of them are groups, they are exploded and their members inserted
      */
-    public function &expand($keepGroupsInList = FALSE, &$grpArray=array())
+    public function &expand($keepGroupsInList = FALSE, &$grpArray=array(), $RuleReferenceLocation = null )
     {
         $ret = array();
+
+        $grpArray[$this->name()] = $this;
+
+        if( $RuleReferenceLocation !== null )
+        {
+            foreach( $this->members as $key => $member )
+                $this->members[$key] = $RuleReferenceLocation->serviceStore->find($member->name());
+        }
 
         foreach( $this->members as $object )
         {
@@ -669,8 +677,8 @@ class ServiceGroup
             {
                 if( array_key_exists($serial, $grpArray) )
                 {
-                    mwarning("servicegroup with name: " . $object->name() . " is added as subgroup to servicegroup: " . $this->name() . ", you should review your XML config file", $object->xmlroot, false);
-                    return $ret;
+                    #mwarning("servicegroup with name: " . $object->name() . " is added as subgroup to servicegroup: " . $this->name() . ", you should review your XML config file", $object->xmlroot, false);
+                    #return $ret;
                 }
                 else
                     $grpArray[$serial] = $serial;
@@ -682,7 +690,7 @@ class ServiceGroup
                 }
 
                 /** @var ServiceGroup $object */
-                $tmpList = $object->expand( $keepGroupsInList, $grpArray);
+                $tmpList = $object->expand( $keepGroupsInList, $grpArray, $RuleReferenceLocation);
 
                 $ret = array_merge($ret, $tmpList);
                 unset($tmpList);

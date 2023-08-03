@@ -8,6 +8,7 @@ UTIL:
 * type=rule-compare | exend with argument 'keepJSONfile1' and 'reuseJSONfile1'
 * type=rule-compare | introduce argument 'generateRuleHtmlFile'
 * type=servicegroup-merger | extend with childancestor validation
+* type=service actions=exporttoexcel:file.html | introduce additional arguments nestedmembers
 
 BUGFIX:
 * class Region | bugfix - introduce method type() - to handle "type=address actions="

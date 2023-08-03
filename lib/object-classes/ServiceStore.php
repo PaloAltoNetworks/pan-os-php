@@ -202,6 +202,7 @@ class ServiceStore
                             unset($tmpGroupDeps[$groupName]);
                     }
                 }
+                /*
                 elseif( count($groupDependencies) == 1 )
                 {
                     unset($sortingArray[$groupName]);
@@ -218,6 +219,7 @@ class ServiceStore
                             unset($tmpGroupDeps[$groupName]);
                     }
                 }
+                */
             }
 
             $loopCount++;

@@ -848,7 +848,7 @@ class AddressGroup
                 if( array_key_exists($serial, $grpArray) )
                 {
                     #mwarning("addressgroup with name: " . $object->name() . " is added as subgroup to addressgroup: " . $this->name() . ", you should review your XML config file", $object->xmlroot, false, false);
-                    return $ret;
+                    #return $ret;
                 }
                 else
                 {

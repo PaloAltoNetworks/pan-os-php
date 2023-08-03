@@ -238,6 +238,47 @@ ServiceCallContext::$supportedActions[] = array(
         if( isset( $_SERVER['REQUEST_METHOD'] ) )
             $filename = "project/html/".$filename;
 
+        $addWhereUsed = FALSE;
+        $addUsedInLocation = FALSE;
+        $addResolveGroupSRVCoverage = FALSE;
+        $addNestedMembers = FALSE;
+        $addResolveSRVNestedMembers = FALSE;
+        $addNestedMembersCount = FALSE;
+
+        $optionalFields = &$context->arguments['additionalFields'];
+
+        if( isset($optionalFields['WhereUsed']) )
+            $addWhereUsed = TRUE;
+
+        if( isset($optionalFields['UsedInLocation']) )
+            $addUsedInLocation = TRUE;
+
+        if( isset($optionalFields['ResolveSRV']) )
+            $addResolveGroupSRVCoverage = TRUE;
+
+        if( isset($optionalFields['NestedMembers']) )
+        {
+            $addNestedMembers = TRUE;
+            $addResolveSRVNestedMembers = TRUE;
+            $addNestedMembersCount = TRUE;
+        }
+
+        $headers = '<th>ID</th><th>location</th><th>name</th><th>type</th><th>dport</th><th>sport</th><th>timeout</th><th>members</th><th>members count</th><th>description</th><th>tags</th>';
+
+        $headers .= '<th>port.count</th><th>port.tcp.count</th><th>port.udp.count</th>';
+        if( $addWhereUsed )
+            $headers .= '<th>where used</th>';
+        if( $addUsedInLocation )
+            $headers .= '<th>location used</th>';
+        if( $addResolveGroupSRVCoverage )
+            $headers .= '<th>srv resolution</th>';
+        if( $addNestedMembers )
+            $headers .= '<th>nested members</th>';
+        if( $addResolveSRVNestedMembers )
+            $headers .= '<th>nested members srv resolution</th>';
+        if( $addNestedMembersCount )
+            $headers .= '<th>nested members count</th>';
+
         $lines = '';
         $encloseFunction = function ($value, $nowrap = TRUE) {
             if( is_string($value) )
@@ -257,8 +298,10 @@ ServiceCallContext::$supportedActions[] = array(
 
                     if( is_string($subValue) )
                         $output .= htmlspecialchars($subValue);
-                    else
+                    elseif( is_object($subValue) )
                         $output .= htmlspecialchars($subValue->name());
+                    else
+                        $output .= htmlspecialchars("-null-");
                 }
             }
             else
@@ -269,32 +312,6 @@ ServiceCallContext::$supportedActions[] = array(
 
             return '<td>' . $output . '</td>';
         };
-
-
-        $addWhereUsed = FALSE;
-        $addUsedInLocation = FALSE;
-        $addResolveGroupSRVCoverage = FALSE;
-
-        $optionalFields = &$context->arguments['additionalFields'];
-
-        if( isset($optionalFields['WhereUsed']) )
-            $addWhereUsed = TRUE;
-
-        if( isset($optionalFields['UsedInLocation']) )
-            $addUsedInLocation = TRUE;
-
-        if( isset($optionalFields['ResolveSRV']) )
-            $addResolveGroupSRVCoverage = TRUE;
-
-        $headers = '<th>ID</th><th>location</th><th>name</th><th>type</th><th>dport</th><th>sport</th><th>timeout</th><th>members</th><th>description</th><th>tags</th>';
-
-        $headers .= '<th>port.count</th><th>port.tcp.count</th><th>port.udp.count</th>';
-        if( $addWhereUsed )
-            $headers .= '<th>where used</th>';
-        if( $addUsedInLocation )
-            $headers .= '<th>location used</th>';
-        if( $addResolveGroupSRVCoverage )
-            $headers .= '<th>srv resolution</th>';
 
         $count = 0;
         if( isset($context->objectList) )
@@ -322,6 +339,7 @@ ServiceCallContext::$supportedActions[] = array(
                     $lines .= $encloseFunction('');
                     $lines .= $encloseFunction('');
                     $lines .= $encloseFunction($object->members());
+                    $lines .= $encloseFunction( (string)count( $object->members() ));
                     $lines .= $encloseFunction('');
                     $lines .= $encloseFunction($object->tags->tags());
                 }
@@ -333,6 +351,7 @@ ServiceCallContext::$supportedActions[] = array(
                         $lines .= $encloseFunction('');
                         $lines .= $encloseFunction('');
                         $lines .= $encloseFunction('');
+                        $lines .= $encloseFunction( '---' );
                         $lines .= $encloseFunction('');
                         $lines .= $encloseFunction('');
                     }
@@ -347,6 +366,7 @@ ServiceCallContext::$supportedActions[] = array(
                         $lines .= $encloseFunction($object->getSourcePort());
                         $lines .= $encloseFunction($object->getTimeout());
                         $lines .= $encloseFunction('');
+                        $lines .= $encloseFunction( '---' );
                         $lines .= $encloseFunction($object->description(), FALSE);
                         $lines .= $encloseFunction($object->tags->tags());
                     }
@@ -435,6 +455,45 @@ ServiceCallContext::$supportedActions[] = array(
                     $lines .= $encloseFunction($port_mapping_text);
                 }
 
+                if( $addNestedMembers )
+                {
+                    if( $object->isGroup() )
+                    {
+                        $members = $object->expand(FALSE);
+                        $lines .= $encloseFunction($members);
+                    }
+                    else
+                        $lines .= $encloseFunction('');
+                }
+                if( $addResolveSRVNestedMembers )
+                {
+                    if( $object->isGroup() )
+                    {   $resolve = array();
+                        $members = $object->expand(FALSE);
+                        foreach( $members as $member )
+                        {
+                            $srcport = "";
+                            if( $member->getSourcePort() !== "" )
+                                $srcport = "srcp:".$member->getSourcePort();
+                            $resolve[] = $member->protocol()."/".$member->getDestPort().$srcport;
+                        }
+
+                        $lines .= $encloseFunction($resolve);
+                    }
+                    else
+                        $lines .= $encloseFunction('');
+                }
+                if( $addNestedMembersCount )
+                {
+                    if( $object->isGroup() )
+                    {   $resolve = array();
+                        $members = $object->expand(FALSE);
+                        $lines .= $encloseFunction( (string)count($members) );
+                    }
+                    else
+                        $lines .= $encloseFunction('');
+                }
+
                 $lines .= "</tr>\n";
             }
         }
@@ -458,11 +517,12 @@ ServiceCallContext::$supportedActions[] = array(
             array('type' => 'pipeSeparatedList',
                 'subtype' => 'string',
                 'default' => '*NONE*',
-                'choices' => array('WhereUsed', 'UsedInLocation', 'ResolveSRV'),
+                'choices' => array('WhereUsed', 'UsedInLocation', 'ResolveSRV', 'NestedMembers'),
                 'help' =>
                     "pipe(|) separated list of additional field to include in the report. The following is available:\n" .
                     "  - WhereUsed : list places where object is used (rules, groups ...)\n" .
                     "  - UsedInLocation : list locations (vsys,dg,shared) where object is used\n".
+                    "  - NestedMembers: lists all members, even the ones that may be included in nested groups\n" .
                     "  - ResolveSRV\n"
 
             )
