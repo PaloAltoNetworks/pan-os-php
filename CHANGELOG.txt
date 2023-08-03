@@ -7,6 +7,7 @@ UTIL:
 * type=servicegroup-merger | introduce validation extension for childDG merger
 * type=rule-compare | exend with argument 'keepJSONfile1' and 'reuseJSONfile1'
 * type=rule-compare | introduce argument 'generateRuleHtmlFile'
+* type=servicegroup-merger | extend with childancestor validation
 
 BUGFIX:
 * class Region | bugfix - introduce method type() - to handle "type=address actions="

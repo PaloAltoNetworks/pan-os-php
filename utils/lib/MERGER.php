@@ -1238,7 +1238,7 @@ class MERGER extends UTIL
                             else
                             {
                                 */
-                                $this->addressgroupGetValueDiff($ancestor, $object, true);
+                                $this->addressgroupGetValueDiff($childancestor, $object, true);
 
                                 if( isset($childancestor->owner) )
                                 {
@@ -2243,6 +2243,7 @@ class MERGER extends UTIL
                     $hashMap[$value][] = $object;
                     if( $parentStore !== null )
                         $object->ancestor = self::findAncestor( $parentStore, $object, "serviceStore");
+                    $object->childancestor = self::findChildAncestor( $childDeviceGroups, $object, "serviceStore");
                 }
                 else
                     $upperHashMap[$value][] = $object;
@@ -2538,6 +2539,50 @@ class MERGER extends UTIL
                         continue;
                     }
 
+                    if( isset( $object->childancestor ) )
+                    {
+                        $childancestor = $object->childancestor;
+
+                        if( $childancestor !== null )
+                        {
+                            if( !$childancestor->isGroup() )
+                            {
+                                PH::print_stdout("    - SKIP: object name '{$object->_PANC_shortName()}' as one ancestor is of type: ". get_class( $childancestor )." '{$childancestor->_PANC_shortName()}' value: ".$childancestor->value());
+                                $this->skippedObject( $index, $object, $childancestor, 'childancestor of type: '.get_class( $childancestor ));
+                                break;
+                            }
+
+                            //Todo check ip4mapping of $childancestor and $object
+                            /*
+                            if( $hashGenerator($object) == $hashGenerator($ancestor) )
+                            {
+                                print "additional validation needed if same value\n";
+                                break;
+                            }
+                            else
+                            {
+                                */
+                            $this->servicegroupGetValueDiff($childancestor, $object, true);
+
+                            if( isset($childancestor->owner) )
+                            {
+                                $tmp_ancestor_DGname = $childancestor->owner->owner->name();
+                                if( $tmp_ancestor_DGname === "" )
+                                    $tmp_ancestor_DGname = "shared";
+                            }
+                            else
+                                $tmp_ancestor_DGname = "shared";
+
+
+
+                            PH::print_stdout("    - group '{$object->name()}' cannot be merged because it has an ancestor at DG: ".$tmp_ancestor_DGname );
+                            PH::print_stdout( "    - ancestor type: ".get_class( $childancestor ) );
+                            $this->skippedObject( $index, $object, $childancestor, 'childancestor at DG: '.$tmp_ancestor_DGname);
+
+                            break;
+                            //}
+                        }
+                    }
                     if( $object === $pickedObject )
                     {
                         #PH::print_stdout("    - SKIPPED: '{$object->name()}' === '{$pickedObject->name()}': ");
