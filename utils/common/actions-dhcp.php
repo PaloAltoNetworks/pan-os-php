@@ -181,17 +181,17 @@ DHCPCallContext::$supportedActions['exportToExcel'] = array(
 
                 $lines .= $context->encloseFunction((string)$count);
 
-                if( get_class($context->subSystem) == "PANConf" )
+                if( get_class($object->owner->owner) == "PANConf" )
                 {
-                    if( isset($context->subSystem->owner) && $context->subSystem->owner !== null && (get_class($context->subSystem->owner) == "Template" || get_class($context->subSystem->owner) == "TemplateStack" ) )
+                    if( isset($object->owner->owner->owner) && $object->owner->owner->owner !== null && (get_class($object->owner->owner->owner) == "Template" || get_class($context->subSystem->owner) == "TemplateStack" ) )
                     {
-                        $lines .= $context->encloseFunction($context->subSystem->owner->name());
-                        $lines .= $context->encloseFunction($context->subSystem->name());
+                        $lines .= $context->encloseFunction($object->owner->owner->owner->name());
+                        $lines .= $context->encloseFunction($object->owner->owner->name());
                     }
                     else
                     {
                         $lines .= $context->encloseFunction("---");
-                        $lines .= $context->encloseFunction($context->subSystem->name());
+                        $lines .= $context->encloseFunction($context->owner->owner->name());
                     }
                 }
 
