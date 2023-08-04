@@ -12,6 +12,7 @@ UTIL:
 * type=XYZ actions=exporttoexcel:file.html | use single function to create spreadsheet content
 * type=dhcp | introduce actions=exporttoexcel:file.html
 * type=dhcp | improvement for actions=exporttoexcel
+* type=dhcp actions=display/exporttoexcel | extend with additional DHCP information
 
 BUGFIX:
 * class Region | bugfix - introduce method type() - to handle "type=address actions="

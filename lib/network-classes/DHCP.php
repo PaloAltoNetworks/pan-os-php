@@ -27,6 +27,11 @@ class DHCP
     /** @var DHCPStore */
     public $owner;
     public $server_leases = array();
+    public $server_ip_pool = array();
+    public $relay_ipv4 = array();
+    public $relay_ipv6 = array();
+    public $relay_ipv4_status = false;
+    public $relay_ipv6_status = false;
 
     /**
      * @param $name string
@@ -76,47 +81,72 @@ class DHCP
                         $tmp_mac = $tmp_mac_xml->textContent;
 
                         $this->server_leases[] = array( 'ip' => $tmp_IP, 'mac' => $tmp_mac );
-                        #PH::print_stdout("   * "."IP: ".$tmp_IP." | mac: ".$tmp_mac);
                     }
-
                 }
             }
 
-            #DH::DEBUGprintDOMDocument($tmp_server);
+            $tmp_ip_pool = DH::findFirstElement("ip-pool", $tmp_server);
+            if( $tmp_ip_pool !== false )
+            {
+                foreach( $tmp_ip_pool->childNodes as $entry )
+                {
+                    if( $entry->nodeType != XML_ELEMENT_NODE )
+                        continue;
 
+                    $this->server_ip_pool[] = $entry->textContent;
+                }
+            }
                 /*
               <option>
                <lease>
                 <unlimited/>
                </lease>
               </option>
-              <ip-pool>
-               <member>192.168.10.127/28</member>
-              </ip-pool>
               <mode>auto</mode>
              */
-
-
         }
         $tmp_relay = DH::findFirstElement("relay", $xml);
         if( $tmp_relay !== false )
         {
-            #DH::DEBUGprintDOMDocument($tmp_relay);
-            /*
-            <relay>
-                <ip>
-                    <server>
-                        <member>1.2.3.4</member>
-                    </server>
-                    <enabled>yes</enabled>
-                </ip>
-                <ipv6>
-                    <enabled>no</enabled>
-                </ipv6>
-            </relay>
-             */
-        }
+            $tmp_relay_ipv4 = DH::findFirstElement("ip", $tmp_relay);
+            if( $tmp_relay_ipv4 !== false )
+            {
+                $tmp_enabled = DH::findFirstElement("enabled", $tmp_relay_ipv4);
+                if( $tmp_enabled->textContent == "yes" )
+                    $this->relay_ipv4_status = true;
 
+                $tmp_server = DH::findFirstElement("server", $tmp_relay_ipv4);
+                if( $tmp_server !== false )
+                {
+                    foreach( $tmp_server->childNodes as $entry )
+                    {
+                        if( $entry->nodeType != XML_ELEMENT_NODE )
+                            continue;
+
+                        $this->relay_ipv4[] = $entry->textContent;
+                    }
+                }
+            }
+            $tmp_relay_ipv6 = DH::findFirstElement("ipv6", $tmp_relay);
+            if( $tmp_relay_ipv6 !== false )
+            {
+                $tmp_enabled = DH::findFirstElement("enabled", $tmp_relay_ipv6);
+                if( $tmp_enabled->textContent == "yes" )
+                    $this->relay_ipv6_status = true;
+
+                $tmp_server = DH::findFirstElement("server", $tmp_relay_ipv6);
+                if( $tmp_server !== false )
+                {
+                    foreach( $tmp_server->childNodes as $entry )
+                    {
+                        if( $entry->nodeType != XML_ELEMENT_NODE )
+                            continue;
+
+                        $this->relay_ipv6[] = $entry->textContent;
+                    }
+                }
+            }
+        }
     }
 
     /**

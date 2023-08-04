@@ -22,24 +22,62 @@
 
 DHCPCallContext::$supportedActions['display'] = Array(
     'name' => 'display',
-    'MainFunction' => function ( DHCPCallContext $context )
-    {
+    'MainFunction' => function ( DHCPCallContext $context ) {
         $object = $context->object;
-        PH::print_stdout("     * ".get_class($object)." '{$object->name()}'" );
+        PH::print_stdout("     * " . get_class($object) . " '{$object->name()}'");
         PH::$JSON_TMP['sub']['object'][$object->name()]['name'] = $object->name();
         PH::$JSON_TMP['sub']['object'][$object->name()]['type'] = get_class($object);
 
-        PH::print_stdout("       RESERVATION:" );
-
-        foreach( $object->server_leases as $lease )
+        if( count($object->server_leases) > 0 )
         {
-            #PH::print_stdout("       - "."IP: ".$lease['ip']." | mac: ".$lease['mac']);
-            PH::print_stdout("       - "."".$lease['ip']." | ".$lease['mac']);
-            PH::$JSON_TMP['sub']['object'][$object->name()]['server']['reserved'][] = $lease;
+            PH::print_stdout("       SERVER reservation:");
+
+            foreach( $object->server_leases as $lease )
+            {
+                #PH::print_stdout("       - "."IP: ".$lease['ip']." | mac: ".$lease['mac']);
+                PH::print_stdout("       - " . "" . $lease['ip'] . " | " . $lease['mac']);
+                PH::$JSON_TMP['sub']['object'][$object->name()]['server']['reserved'][] = $lease;
+            }
         }
+        if( count($object->server_ip_pool) > 0 )
+        {
+            PH::print_stdout("       SERVER ip-pool:");
+
+            foreach( $object->server_ip_pool as $ip_pool )
+            {
+                PH::print_stdout("       - " . "" . $ip_pool);
+                PH::$JSON_TMP['sub']['object'][$object->name()]['server']['ip-pool'][] = $ip_pool;
+            }
+        }
+
+        if( count($object->relay_ipv4) > 0 )
+        {
+            if( $object->relay_ipv4_status )
+                PH::print_stdout("       RELAY IPV4 [enabled]:" );
+            else
+                PH::print_stdout("       RELAY IPV4 [disabled]:" );
+            foreach( $object->relay_ipv4 as $server )
+            {
+                PH::print_stdout("       - "."".$server);
+                PH::$JSON_TMP['sub']['object'][$object->name()]['relay']['ipv4'][] = $server;
+            }
+        }
+
+        if( count($object->relay_ipv6) > 0 )
+        {
+            if( $object->relay_ipv6_status )
+                PH::print_stdout("       RELAY IPV6 [enabled]:" );
+            else
+                PH::print_stdout("       RELAY IPV6 [disabled]:" );
+            foreach( $object->relay_ipv6 as $server )
+            {
+                PH::print_stdout("       - "."".$server);
+                PH::$JSON_TMP['sub']['object'][$object->name()]['relay']['ipv6'][] = $server;
+            }
+        }
+
     },
 
-    //Todo: display routes to zone / Interface IP
 );
 
 DHCPCallContext::$supportedActions['dhcp-server-reservation-create'] = Array(
@@ -118,7 +156,7 @@ DHCPCallContext::$supportedActions['exportToExcel'] = array(
             $addUsedInLocation = TRUE;
 
         $headers = '<th>ID</th><th>template</th><th>location</th><th>name</th>';
-        $headers .= '<th>Reservation</th>';
+        $headers .= '<th>SERVER reservation</th><th>SERVER ip-pool</th><th>RELAY IPv4</th><th>RELAY IPv6</th>';
 
         if( $addWhereUsed )
             $headers .= '<th>where used</th>';
@@ -160,10 +198,39 @@ DHCPCallContext::$supportedActions['exportToExcel'] = array(
 
                 $lines .= $context->encloseFunction($object->name());
 
-                $tmpString = "";
+                $tmpArray = array();
                 foreach( $object->server_leases as $lease )
-                    $tmpString .= $lease['ip']." | ".$lease['mac'];
-                $lines .= $context->encloseFunction($tmpString);
+                    $tmpArray[] = $lease['ip']." | ".$lease['mac'];
+                $lines .= $context->encloseFunction($tmpArray);
+
+                $tmpString = "";
+                #foreach( $object->server_ip_pool as $server )
+                #    $tmpString .= $server;
+                $lines .= $context->encloseFunction($object->server_ip_pool);
+
+                $tmpArray = array();
+                if( count($object->relay_ipv4) > 0 )
+                {
+                    if( $object->relay_ipv4_status )
+                        $tmpArray[] = "[enabled]";
+                    else
+                        $tmpArray[] = "[disabled]";
+                    foreach( $object->relay_ipv4 as $server )
+                        $tmpArray[] = $server;
+                }
+                $lines .= $context->encloseFunction($tmpArray);
+
+                $tmpArray = array();
+                if( count($object->relay_ipv6) > 0 )
+                {
+                    if( $object->relay_ipv6_status )
+                        $tmpArray[] = "[enabled]";
+                    else
+                        $tmpArray[] = "[disabled]";
+                    foreach( $object->relay_ipv6 as $server )
+                        $tmpArray[] = $server;
+                }
+                $lines .= $context->encloseFunction($tmpArray);
 
                 if( $addWhereUsed )
                 {
