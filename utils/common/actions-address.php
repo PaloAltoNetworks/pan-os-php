@@ -810,10 +810,16 @@ AddressCallContext::$supportedActions[] = array(
 
                 $lines .= $context->encloseFunction( (string)$count );
 
-                if( $object->owner->owner->isPanorama() || $object->owner->owner->isFirewall() )
-                    $lines .= $context->encloseFunction('shared');
+                if( isset($object->owner) && isset($object->owner->owner) )
+                {
+                    if($object->owner->owner->isPanorama() || $object->owner->owner->isFirewall() )
+                        $lines .= $context->encloseFunction('shared');
+                    else
+                        $lines .= $context->encloseFunction($object->owner->owner->name());
+                }
                 else
-                    $lines .= $context->encloseFunction($object->owner->owner->name());
+                    $lines .= $context->encloseFunction("---");
+
 
                 $lines .= $context->encloseFunction($object->name());
 

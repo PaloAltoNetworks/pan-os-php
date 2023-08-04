@@ -81,7 +81,42 @@ class DHCP
 
                 }
             }
+
+            #DH::DEBUGprintDOMDocument($tmp_server);
+
+                /*
+              <option>
+               <lease>
+                <unlimited/>
+               </lease>
+              </option>
+              <ip-pool>
+               <member>192.168.10.127/28</member>
+              </ip-pool>
+              <mode>auto</mode>
+             */
+
+
         }
+        $tmp_relay = DH::findFirstElement("relay", $xml);
+        if( $tmp_relay !== false )
+        {
+            #DH::DEBUGprintDOMDocument($tmp_relay);
+            /*
+            <relay>
+                <ip>
+                    <server>
+                        <member>1.2.3.4</member>
+                    </server>
+                    <enabled>yes</enabled>
+                </ip>
+                <ipv6>
+                    <enabled>no</enabled>
+                </ipv6>
+            </relay>
+             */
+        }
+
     }
 
     /**
