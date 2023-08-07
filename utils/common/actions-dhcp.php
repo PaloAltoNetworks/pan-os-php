@@ -191,7 +191,7 @@ DHCPCallContext::$supportedActions['exportToExcel'] = array(
                     else
                     {
                         $lines .= $context->encloseFunction("---");
-                        $lines .= $context->encloseFunction($context->owner->owner->name());
+                        $lines .= $context->encloseFunction($object->owner->owner->name());
                     }
                 }
 

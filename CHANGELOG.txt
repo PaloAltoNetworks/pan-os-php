@@ -22,6 +22,7 @@ BUGFIX:
 * class AddressGroup  | bugfix for method expand() - to correctly extract all submembers and their value for type=rule 'actions=exporttoexcel:file.html,resolveaddresssummary'
 * type=address actions=exporttoexcel:file.html | bugfix to crash for tmp objects
 * type=dhcp actions=exporttoexcel | bugfix to add correct template
+* class PH - workaround for none working API mode connector - discard setType()
 
 GENERAL:
 * dynamic update version  8739-8206

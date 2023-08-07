@@ -471,7 +471,8 @@ class PH
                         $host = $fileExplode[0];
                     }
                     $connector = PanAPIConnector::findOrCreateConnectorFromHost($host);
-                    $connector->setType($connector->info_deviceType);
+                    #swaschkut: not working 20230807
+                    #$connector->setType($connector->info_deviceType);
                 }
                 else
                 {
