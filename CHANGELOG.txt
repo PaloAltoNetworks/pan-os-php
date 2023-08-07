@@ -24,6 +24,7 @@ BUGFIX:
 * type=dhcp actions=exporttoexcel | bugfix to add correct template
 
 GENERAL:
+* dynamic update version  8739-8206
 
 
 2.1.12 (20230731)
