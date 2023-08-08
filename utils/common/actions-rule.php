@@ -3844,7 +3844,12 @@ RuleCallContext::$supportedActions[] = array(
             }
 
             if( $addResolvedServiceSummary )
-                PH::$JSON_TMP['sub']['object'][$rule->name()]['srv_resolved_sum'] = $rule->ServiceResolveSummary();
+            {
+                PH::$JSON_TMP['sub']['object'][$rule->name()]['srv_resolved_sum'] = $rule->ServiceResolveSummary($rule->owner->owner);
+                PH::$JSON_TMP['sub']['object'][$rule->name()]['srv_resolved_nested_name'] = $context->ServiceResolveNameNestedSummary( $rule );
+                PH::$JSON_TMP['sub']['object'][$rule->name()]['srv_resolved_nested_value'] = $context->ServiceResolveValueNestedSummary( $rule );
+            }
+
 
             if( $addResolvedServiceAppDefaultSummary )
                 PH::$JSON_TMP['sub']['object'][$rule->name()]['srv_appdefault_resolved_sum'] = $rule->ServiceAppDefaultResolveSummary();
@@ -4352,6 +4357,9 @@ RuleCallContext::$supportedActions[] = array(
             'dst_resolved_nested_location' => 'dst_resolved_nested_location',
             'service' => 'service',
             'service_resolved_sum' => 'service_resolved_sum',
+            'service_resolved_nested_name' => 'service_resolved_nested_name',
+            'service_resolved_nested_value' => 'service_resolved_nested_value',
+            'service_resolved_nested_location' => 'service_resolved_nested_location',
             'service_appdefault_resolved_sum' => 'service_appdefault_resolved_sum',
             'service_count' => 'service_count',
             'service_count_tcp' => 'service_count_tcp',
@@ -4413,10 +4421,11 @@ RuleCallContext::$supportedActions[] = array(
                             $fieldName == 'snat_address_resolved_sum')
                             && !$addResolvedAddressSummary) ||
                         (($fieldName == 'service_resolved_sum' ||
+                                $fieldName == 'service_resolved_nested_name' || $fieldName == 'service_resolved_nested_value' || $fieldName == 'service_resolved_nested_location' ||
                                 $fieldName == 'service_count' || $fieldName == 'service_count_tcp' || $fieldName == 'service_count_udp') && !$addResolvedServiceSummary) ||
                         (($fieldName == 'service_appdefault_resolved_sum') && !$addResolvedServiceAppDefaultSummary) ||
                         (($fieldName == 'application_resolved_sum') && !$addResolvedApplicationSummary) ||
-                        (($fieldName == 'schedule_resolved_sum') && !$addResolvedScheduleSummary) ||
+                        (($fieldName == 'schedule_resolved_sum' ) && !$addResolvedScheduleSummary) ||
                         (($fieldName == 'application_seen') && (!$addAppSeenSummary || !$context->isAPI) ) ||
                         (($fieldName == 'first-hit' || $fieldName == 'last-hit' || $fieldName == 'hit-count') && (!$addHitCountSummary || !$context->isAPI) ) ||
                         (($fieldName == 'nat_rule_type' || $fieldName == 'snat_type' || $fieldName == 'snat_address' ||

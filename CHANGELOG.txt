@@ -13,6 +13,7 @@ UTIL:
 * type=dhcp | introduce actions=exporttoexcel:file.html
 * type=dhcp | improvement for actions=exporttoexcel
 * type=dhcp actions=display/exporttoexcel | extend with additional DHCP information
+* type=rule 'actions=exporttoexcel:file.html,resovleservicesummary' | extend with column service_resolve_nested/_name/_value/_location
 
 BUGFIX:
 * class Region | bugfix - introduce method type() - to handle "type=address actions="

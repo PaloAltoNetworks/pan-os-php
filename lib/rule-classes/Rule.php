@@ -1799,7 +1799,7 @@ class Rule
             }
     }
 
-    public function ServiceResolveSummary()
+    public function ServiceResolveSummary( $RuleReferenceLocation = null )
     {
         $port_mapping_text = array();
 
@@ -1843,6 +1843,12 @@ class Rule
 
 
         $objects = $this->services->getAll();
+
+        if( $RuleReferenceLocation !== null )
+        {
+            foreach( $objects as $key => $member )
+                $objects[$key] = $RuleReferenceLocation->serviceStore->find($member->name());
+        }
 
         $array = array();
         foreach( $objects as $object )

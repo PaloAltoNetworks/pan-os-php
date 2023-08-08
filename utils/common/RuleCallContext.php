@@ -390,8 +390,24 @@ class RuleCallContext extends CallContext
 
         if( $fieldName == 'service_resolved_sum' )
         {
-            $port_mapping_text = $rule->ServiceResolveSummary( );
+            $port_mapping_text = $rule->ServiceResolveSummary( $rule->owner->owner );
             return self::enclose($port_mapping_text);
+        }
+
+        if( $fieldName == 'service_resolved_nested_name' )
+        {
+            $strMapping = $this->ServiceResolveNameNestedSummary( $rule );
+            return self::enclose($strMapping);
+        }
+        if( $fieldName == 'service_resolved_nested_value' )
+        {
+            $strMapping = $this->ServiceResolveValueNestedSummary( $rule );
+            return self::enclose($strMapping);
+        }
+        if( $fieldName == 'service_resolved_nested_location' )
+        {
+            $strMapping = $this->ServiceResolveLocationNestedSummary( $rule );
+            return self::enclose($strMapping);
         }
 
         if( $fieldName == 'service_appdefault_resolved_sum' )
@@ -948,6 +964,132 @@ class RuleCallContext extends CallContext
 
 
         return $calculatedCounter;
+    }
+
+    public function ServiceResolveValueNestedSummary( $rule )
+    {
+        if( $rule->services->isAny() )
+            return array( '0.0.0.0/0', '::0-ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff');
+
+        $allMembers = $rule->services->getAll();
+        $strMapping = array();
+        foreach($allMembers as $member)
+        {
+            if( $member->isGroup() )
+            {
+                $tmp_array = array();
+                $members = $member->expand(FALSE, $tmp_array, $rule->owner->owner);
+                foreach( $members as $member )
+                {
+                    $tmp_member = $rule->owner->owner->serviceStore->find($member->name());
+
+                    $port_mapping = $tmp_member->dstPortMapping( array(), $rule->owner->owner );
+                    $mapping_texts = $port_mapping->mappingToText();
+
+                    //TODO: handle predefined service objects in a different way
+                    if( $tmp_member->name() == 'service-http' )
+                        $mapping_texts = 'tcp/80';
+                    if( $tmp_member->name() == 'service-https' )
+                        $mapping_texts = 'tcp/443';
+
+                    $strMapping[] = $mapping_texts;
+                    #$strMapping[] = "group";
+                }
+            }
+
+            else
+            {
+                $tmp_member = $rule->owner->owner->serviceStore->find($member->name());
+
+                $port_mapping = $tmp_member->dstPortMapping( array(), $rule->owner->owner );
+                $mapping_texts = $port_mapping->mappingToText();
+
+                //TODO: handle predefined service objects in a different way
+                if( $tmp_member->name() == 'service-http' )
+                    $mapping_texts = 'tcp/80';
+                if( $tmp_member->name() == 'service-https' )
+                    $mapping_texts = 'tcp/443';
+
+                $strMapping[] = $mapping_texts;
+
+            }
+
+        }
+
+
+        if( count( $strMapping) === 1 && empty( $strMapping[0] ) )
+            $strMapping = array();
+
+        return $strMapping;
+    }
+    public function ServiceResolveNameNestedSummary( $rule )
+    {
+        /** @var SecurityRule $rule */
+        if( $rule->services->isAny() )
+            return array('tcp/0-65535', 'udp/0-65535');
+
+        $allMembers = $rule->services->getAll();
+        $strMapping = array();
+        foreach($allMembers as $member1)
+        {
+            if( $member1->isGroup() )
+            {
+                $tmp_array = array();
+                $members = $member1->expand(FALSE, $tmp_array, $rule->owner->owner);
+                foreach( $members as $member2 )
+                {
+                    $strMapping[] = $member2->name();
+                }
+            }
+
+            else
+                $strMapping[] = $member1->name();
+        }
+
+
+        if( count( $strMapping) === 1 && empty( $strMapping[0] ) )
+            $strMapping = array();
+
+        return $strMapping;
+    }
+
+    public function ServiceResolveLocationNestedSummary( $rule )
+    {
+        if( $rule->services->isAny() )
+            return array('tcp/0-65535', 'udp/0-65535');
+
+        $allMembers = $rule->services->getAll();
+        $strMapping = array();
+        foreach($allMembers as $member)
+        {
+            if( $member->isGroup() )
+            {
+                $tmp_array = array();
+                $members = $member->expand(FALSE, $tmp_array, $rule->owner->owner);
+                foreach( $members as $member )
+                {
+                    $tmp_name = $member->owner->owner->name();
+                    if( empty($tmp_name) )
+                        $tmp_name = "shared";
+
+                    $strMapping[] = $tmp_name;
+                }
+            }
+            else
+            {
+                $tmp_name = $member->owner->owner->name();
+                if( empty($tmp_name) )
+                    $tmp_name = "shared";
+
+                $strMapping[] = $tmp_name;
+            }
+        }
+
+
+        if( count( $strMapping) === 1 && empty( $strMapping[0] ) )
+            $strMapping = array();
+
+        return $strMapping;
     }
 
     public function ApplicationResolveSummary( $rule, $returnString = false )
