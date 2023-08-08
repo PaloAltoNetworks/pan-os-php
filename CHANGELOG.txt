@@ -14,6 +14,7 @@ UTIL:
 * type=dhcp | improvement for actions=exporttoexcel
 * type=dhcp actions=display/exporttoexcel | extend with additional DHCP information
 * type=rule 'actions=exporttoexcel:file.html,resovleservicesummary' | extend with column service_resolve_nested/_name/_value/_location
+* type=service actions=exporttoexcel:file.html | correct predefined service-http/-https output
 
 BUGFIX:
 * class Region | bugfix - introduce method type() - to handle "type=address actions="

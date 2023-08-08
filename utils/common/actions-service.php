@@ -315,7 +315,23 @@ ServiceCallContext::$supportedActions[] = array(
                 {
                     if( $object->isTmpSrv() )
                     {
-                        $lines .= $context->encloseFunction('unknown');
+                        if( $object->name() == "service-http" )
+                        {
+                            $lines .= $context->encloseFunction('service-tcp');
+                            $lines .= $context->encloseFunction('40');
+                        }
+                        elseif( $object->name() == "service-https" )
+                        {
+                            $lines .= $context->encloseFunction('service-tcp');
+                            $lines .= $context->encloseFunction('443');
+                        }
+                        else
+                        {
+                            $lines .= $context->encloseFunction('unknown');
+                            $lines .= $context->encloseFunction('');
+                        }
+
+
                         $lines .= $context->encloseFunction('');
                         $lines .= $context->encloseFunction('');
                         $lines .= $context->encloseFunction('');
