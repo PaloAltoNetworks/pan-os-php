@@ -21,8 +21,6 @@
 class AddressCallContext extends CallContext
 {
     /** @var  Address|AddressGroup */
-    public $object;
-    public $objectList;
 
     public static $commonActionFunctions = array();
     public static $supportedActions = array();

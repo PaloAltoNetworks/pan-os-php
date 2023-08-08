@@ -21,7 +21,6 @@
 class ApplicationCallContext extends CallContext
 {
     /** @var  App */
-    public $object;
 
     public $counter_containers;
     public $tmpcounter;

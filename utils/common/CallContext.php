@@ -26,6 +26,7 @@ class CallContext
 
     /** @var  Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $object */
     public $object;
+    public $objectList;
 
     public $actionRef;
 

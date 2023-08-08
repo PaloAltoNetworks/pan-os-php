@@ -243,6 +243,7 @@ ServiceCallContext::$supportedActions[] = array(
         $addResolveGroupSRVCoverage = FALSE;
         $addNestedMembers = FALSE;
         $addResolveSRVNestedMembers = FALSE;
+        $addResolveLocationNestedMembers = FALSE;
         $addNestedMembersCount = FALSE;
 
         $optionalFields = &$context->arguments['additionalFields'];
@@ -260,6 +261,7 @@ ServiceCallContext::$supportedActions[] = array(
         {
             $addNestedMembers = TRUE;
             $addResolveSRVNestedMembers = TRUE;
+            $addResolveLocationNestedMembers = TRUE;
             $addNestedMembersCount = TRUE;
         }
 
@@ -276,6 +278,9 @@ ServiceCallContext::$supportedActions[] = array(
             $headers .= '<th>nested members</th>';
         if( $addResolveSRVNestedMembers )
             $headers .= '<th>nested members srv resolution</th>';
+        if( $addResolveLocationNestedMembers )
+            $headers .= '<th>nested members location resolution</th>';
+
         if( $addNestedMembersCount )
             $headers .= '<th>nested members count</th>';
 
@@ -443,7 +448,8 @@ ServiceCallContext::$supportedActions[] = array(
                 {
                     if( $object->isGroup() )
                     {
-                        $members = $object->expand(FALSE);
+                        $tmp_array = array();
+                        $members = $object->expand(FALSE, $tmp_array, $object->owner->owner);
                         $lines .= $context->encloseFunction($members);
                     }
                     else
@@ -452,8 +458,10 @@ ServiceCallContext::$supportedActions[] = array(
                 if( $addResolveSRVNestedMembers )
                 {
                     if( $object->isGroup() )
-                    {   $resolve = array();
-                        $members = $object->expand(FALSE);
+                    {
+                        $resolve = array();
+                        $tmp_array = array();
+                        $members = $object->expand(FALSE, $tmp_array, $object->owner->owner);
                         foreach( $members as $member )
                         {
                             $srcport = "";
@@ -467,11 +475,30 @@ ServiceCallContext::$supportedActions[] = array(
                     else
                         $lines .= $context->encloseFunction('');
                 }
+                if( $addResolveLocationNestedMembers )
+                {
+                    if( $object->isGroup() )
+                    {   $resolve = array();
+                        $tmp_array = array();
+                        $members = $object->expand(FALSE, $tmp_array, $object->owner->owner);
+                        foreach( $members as $member )
+                        {
+                            $tmp_name = $member->owner->owner->name();
+                            if( empty($tmp_name) )
+                                $tmp_name = "shared";
+                            $resolve[] = $tmp_name;
+                        }
+
+                        $lines .= $context->encloseFunction($resolve);
+                    }
+                    else
+                        $lines .= $context->encloseFunction('');
+                }
                 if( $addNestedMembersCount )
                 {
                     if( $object->isGroup() )
                     {   $resolve = array();
-                        $members = $object->expand(FALSE);
+                        $members = $object->expand(FALSE, $tmp_array, $object->owner->owner);
                         $lines .= $context->encloseFunction( (string)count($members) );
                     }
                     else

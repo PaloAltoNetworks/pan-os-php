@@ -1493,9 +1493,9 @@ class MERGER extends UTIL
                     {
                         $hashMap[$value][] = $object;
                         if( $parentStore !== null )
-                        {
                             $object->ancestor = self::findAncestor( $parentStore, $object, "addressStore" );
-                        }
+
+                        $object->childancestor = self::findChildAncestor( $childDeviceGroups, $object, "addressStore");
                     }
                     else
                         $upperHashMap[$value][] = $object;
@@ -1521,9 +1521,9 @@ class MERGER extends UTIL
                     {
                         $hashMap[$value][] = $object;
                         if( $parentStore !== null )
-                        {
                             $object->ancestor = self::findAncestor( $parentStore, $object, "addressStore" );
-                        }
+
+                        $object->childancestor = self::findChildAncestor( $childDeviceGroups, $object, "addressStore");
                     }
                     else
                         $upperHashMap[$value][] = $object;
@@ -2243,6 +2243,7 @@ class MERGER extends UTIL
                     $hashMap[$value][] = $object;
                     if( $parentStore !== null )
                         $object->ancestor = self::findAncestor( $parentStore, $object, "serviceStore");
+
                     $object->childancestor = self::findChildAncestor( $childDeviceGroups, $object, "serviceStore");
                 }
                 else
@@ -2790,6 +2791,8 @@ class MERGER extends UTIL
                         $hashMap[$value][] = $object;
                         if( $parentStore !== null )
                             $object->ancestor = self::findAncestor($parentStore, $object, "serviceStore");
+
+                        $object->childancestor = self::findChildAncestor( $childDeviceGroups, $object, "serviceStore");
                     }
                     else
                         $upperHashMap[$value][] = $object;
@@ -2817,6 +2820,7 @@ class MERGER extends UTIL
                         $hashMap[$value][] = $object;
                         if( $parentStore !== null )
                             $object->ancestor = self::findAncestor($parentStore, $object, "serviceStore");
+                        $object->childancestor = self::findChildAncestor( $childDeviceGroups, $object, "serviceStore");
                     }
                     else
                         $upperHashMap[$value][] = $object;

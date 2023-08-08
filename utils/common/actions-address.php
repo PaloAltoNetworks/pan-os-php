@@ -697,7 +697,8 @@ AddressCallContext::$supportedActions[] = array(
         }
 
         /** @var AddressGroup $object */
-        $members = $object->expand();
+        $tmp_array = array();
+        $members = $object->expand(FALSE,$tmp_array, $object->owner->owner);
         $mapping = new IP4Map();
 
         $listOfNotConvertibleObjects = array();
@@ -757,6 +758,7 @@ AddressCallContext::$supportedActions[] = array(
         $addResolveGroupIPCoverage = FALSE;
         $addNestedMembers = FALSE;
         $addResolveIPNestedMembers = FALSE;
+        $addResolveLocationNestedMembers = FALSE;
         $addNestedMembersCount = FALSE;
 
         $optionalFields = &$context->arguments['additionalFields'];
@@ -774,6 +776,7 @@ AddressCallContext::$supportedActions[] = array(
         {
             $addNestedMembers = TRUE;
             $addResolveIPNestedMembers = TRUE;
+            $addResolveLocationNestedMembers = TRUE;
             $addNestedMembersCount = TRUE;
         }
 
@@ -790,6 +793,8 @@ AddressCallContext::$supportedActions[] = array(
             $headers .= '<th>nested members</th>';
         if( $addResolveIPNestedMembers )
             $headers .= '<th>nested members ip resolution</th>';
+        if( $addResolveLocationNestedMembers )
+            $headers .= '<th>nested members location resolution</th>';
         if( $addNestedMembersCount )
             $headers .= '<th>nested members count</th>';
 
@@ -843,7 +848,7 @@ AddressCallContext::$supportedActions[] = array(
                         $lines .= $context->encloseFunction( '---' );
 
                     $counter = 0;
-                    $members = $object->expand(FALSE);
+                    $members = $object->expand(FALSE, $tmp_array, $object->owner->owner);
                     foreach( $members as $member )
                         $counter += $member->getIPcount();
                     $lines .= $context->encloseFunction((string)$counter);
@@ -909,7 +914,8 @@ AddressCallContext::$supportedActions[] = array(
                 {
                     if( $object->isGroup() )
                     {
-                        $members = $object->expand(FALSE);
+                        $tmp_array = array();
+                        $members = $object->expand(FALSE, $tmp_array, $object->owner->owner);
                         $lines .= $context->encloseFunction($members);
                     }
                     else
@@ -919,9 +925,29 @@ AddressCallContext::$supportedActions[] = array(
                 {
                     if( $object->isGroup() )
                     {   $resolve = array();
-                        $members = $object->expand(FALSE);
+                        $tmp_array = array();
+                        $members = $object->expand(FALSE, $tmp_array, $object->owner->owner);
                         foreach( $members as $member )
                             $resolve[] = $member->value();
+                        $lines .= $context->encloseFunction($resolve);
+                    }
+                    else
+                        $lines .= $context->encloseFunction('');
+                }
+                if( $addResolveLocationNestedMembers )
+                {
+                    if( $object->isGroup() )
+                    {   $resolve = array();
+                        $tmp_array = array();
+                        $members = $object->expand(FALSE, $tmp_array, $object->owner->owner);
+                        foreach( $members as $member )
+                        {
+                            $tmp_name = $member->owner->owner->name();
+                            if( empty($tmp_name) )
+                                $tmp_name = "shared";
+                            $resolve[] = $tmp_name;
+                        }
+
                         $lines .= $context->encloseFunction($resolve);
                     }
                     else
@@ -931,7 +957,8 @@ AddressCallContext::$supportedActions[] = array(
                 {
                     if( $object->isGroup() )
                     {   $resolve = array();
-                        $members = $object->expand(FALSE);
+                        $tmp_array = array();
+                        $members = $object->expand(FALSE, $tmp_array, $object->owner->owner);
                         $lines .= $context->encloseFunction( (string)count($members) );
                     }
                     else
