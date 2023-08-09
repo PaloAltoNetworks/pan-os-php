@@ -300,7 +300,7 @@ class GCP extends UTIL
 
             $this->execCLIWithOutput( $get_auth );
             $mgmtsvc_tenantID = $this->grepAllPods( "mgmtsvc" );
-            #PH::print_stdout( "mgmtsvc tenantID: '".$mgmtsvc_tenantID[0]."'");
+            PH::print_stdout( "mgmtsvc tenantID: '".$mgmtsvc_tenantID[0]."'");
 
 
             $mgmtsvc = "kubectl exec -it ".$mgmtsvc_tenantID[0]." -c mgmtsvc --insecure-skip-tls-verify=true -- ";
