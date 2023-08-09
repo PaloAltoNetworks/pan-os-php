@@ -28,6 +28,7 @@ BUGFIX:
 * type=dhcp actions=exporttoexcel | bugfix to add correct template
 * class PH - workaround for none working API mode connector - discard setType()
 * class RULEUTIL - defaultSecurityRules not available in Fawkes Snippet
+* type=rule - actions=display/exporttoexcel:resolveaddresssummary | add new src/dst_resovled_sum - for better nested calculation
 
 GENERAL:
 * dynamic update version  8739-8206

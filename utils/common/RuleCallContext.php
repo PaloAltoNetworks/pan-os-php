@@ -353,6 +353,15 @@ class RuleCallContext extends CallContext
             if( $rule->source->isAny() )
                 return self::enclose('any');
             return self::enclose($rule->source->getAll(), $wrap);
+            /*
+            $members = $rule->source->getAll();
+            $string_array = array();
+            foreach( $members as $member )
+            {
+                $string_array[] = $member->name()." [".$member->owner->owner->name()."]";
+            }
+            return self::enclose($string_array);
+            */
         }
 
         if( $fieldName == 'destination' )
@@ -608,10 +617,17 @@ class RuleCallContext extends CallContext
 
             return self::enclose($resolve);
         }
-        if( $fieldName == 'src_resolved_sum' )
+        if( $fieldName == 'src_resolved_sumOLD' )
         {
             $unresolvedArray = array();
             $strMapping = $this->AddressResolveSummary( $rule, "source", $unresolvedArray );
+            $strMapping = array_merge( $strMapping, $unresolvedArray );
+            return self::enclose($strMapping);
+        }
+        if( $fieldName == 'src_resolved_sum' )
+        {
+            $unresolvedArray = array();
+            $strMapping = $this->AddressResolveSummaryNEW( $rule, "source", $unresolvedArray );
             $strMapping = array_merge( $strMapping, $unresolvedArray );
             return self::enclose($strMapping);
         }
@@ -649,10 +665,17 @@ class RuleCallContext extends CallContext
 
             return self::enclose($resolve);
         }
-        if( $fieldName == 'dst_resolved_sum' )
+        if( $fieldName == 'dst_resolved_sumOLD' )
         {
             $unresolvedArray = array();
             $strMapping = $this->AddressResolveSummary( $rule, "destination", $unresolvedArray );
+            $strMapping = array_merge( $strMapping, $unresolvedArray );
+            return self::enclose($strMapping);
+        }
+        if( $fieldName == 'dst_resolved_sum' )
+        {
+            $unresolvedArray = array();
+            $strMapping = $this->AddressResolveSummaryNEW( $rule, "destination", $unresolvedArray );
             $strMapping = array_merge( $strMapping, $unresolvedArray );
             return self::enclose($strMapping);
         }
@@ -797,8 +820,11 @@ class RuleCallContext extends CallContext
         {
             if( $member->isGroup() )
             {
+                /** @var AddressGroup $member */
                 $tmp_array = array();
                 $members = $member->expand(FALSE, $tmp_array, $rule->owner->owner);
+                #foreach($tmp_array as $groups)
+                #    $strMapping[] = "";
                 foreach( $members as $member )
                 {
                     $tmp_member = $rule->owner->owner->addressStore->find($member->name());
@@ -821,6 +847,53 @@ class RuleCallContext extends CallContext
 
         return $strMapping;
     }
+
+    public function AddressResolveSummaryNEW( $rule, $typeSrcDst, &$unresolvedArray = array() )
+    {
+        $mapObject = new IP4Map();
+        if( $rule->$typeSrcDst->isAny() )
+        {
+            $localMap = IP4Map::mapFromText('0.0.0.0-255.255.255.255');
+            $mapObject->addMap($localMap, TRUE);
+            #$localMap = IP4Map::mapFromText('::0-ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff');
+            #$mapObject->addMap($localMap, TRUE);
+        }
+
+        $allMembers = $rule->$typeSrcDst->getAll();
+        $strMapping = array();
+        foreach($allMembers as $member)
+        {
+            if( $member->isGroup() )
+            {
+                /** @var AddressGroup $member */
+                $tmp_array = array();
+                $members = $member->expand(FALSE, $tmp_array, $rule->owner->owner);
+                foreach( $members as $member )
+                {
+                    $tmp_member = $rule->owner->owner->addressStore->find($member->name());
+                    $localMap = $tmp_member->getIP4Mapping();
+                    $mapObject->addMap($localMap, TRUE);
+                }
+            }
+
+            else
+            {
+                $tmp_member = $rule->owner->owner->addressStore->find($member->name());
+                $localMap = $tmp_member->getIP4Mapping();
+                $mapObject->addMap($localMap, TRUE);
+            }
+
+        }
+
+        $mapObject->sortAndRecalculate();
+        $strMapping = explode(',', $mapObject->dumpToString());
+
+        if( count( $strMapping) === 1 && empty( $strMapping[0] ) )
+            $strMapping = array();
+
+        return $strMapping;
+    }
+
     public function AddressResolveNameNestedSummary( $rule, $typeSrcDst, &$unresolvedArray = array() )
     {
         if( $rule->$typeSrcDst->isAny() )
@@ -834,6 +907,8 @@ class RuleCallContext extends CallContext
             {
                 $tmp_array = array();
                 $members = $member->expand(FALSE, $tmp_array, $rule->owner->owner);
+                #foreach($tmp_array as $groups)
+                #    $strMapping[] = $groups->name();
                 foreach( $members as $member )
                 {
                     $strMapping[] = $member->name();
@@ -864,6 +939,15 @@ class RuleCallContext extends CallContext
             {
                 $tmp_array = array();
                 $members = $member->expand(FALSE, $tmp_array, $rule->owner->owner);
+                /*
+                foreach($tmp_array as $groups)
+                {
+                    $tmp_name = $groups->owner->owner->name();
+                    if( empty($tmp_name) )
+                        $tmp_name = "shared";
+
+                    $strMapping[] = $tmp_name;
+                }*/
                 foreach( $members as $member )
                 {
                     $tmp_name = $member->owner->owner->name();

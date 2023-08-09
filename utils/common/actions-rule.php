@@ -3823,7 +3823,7 @@ RuleCallContext::$supportedActions[] = array(
             if( $addResolvedAddressSummary )
             {
                 $unresolvedArray = array();
-                PH::$JSON_TMP['sub']['object'][$rule->name()]['src_resolved_sum']['resolved'] = $context->AddressResolveSummary( $rule, "source", $unresolvedArray );
+                PH::$JSON_TMP['sub']['object'][$rule->name()]['src_resolved_sum']['resolved'] = $context->AddressResolveSummaryNEW( $rule, "source", $unresolvedArray );
                 PH::$JSON_TMP['sub']['object'][$rule->name()]['src_resolved_sum']['unresolved'] = $unresolvedArray;
                 $unresolvedArray = array();
                 PH::$JSON_TMP['sub']['object'][$rule->name()]['src_resolved_value'] = $context->AddressResolveValueSummary( $rule, "source", $unresolvedArray );
@@ -3833,7 +3833,7 @@ RuleCallContext::$supportedActions[] = array(
                 PH::$JSON_TMP['sub']['object'][$rule->name()]['src_resolved_nested_value'] = $context->AddressResolveValueNestedSummary( $rule, "source", $unresolvedArray );
 
                 $unresolvedArray = array();
-                PH::$JSON_TMP['sub']['object'][$rule->name()]['dst_resolved_sum']['resolved'] = $context->AddressResolveSummary( $rule, "destination", $unresolvedArray );
+                PH::$JSON_TMP['sub']['object'][$rule->name()]['dst_resolved_sum']['resolved'] = $context->AddressResolveSummaryNEW( $rule, "destination", $unresolvedArray );
                 PH::$JSON_TMP['sub']['object'][$rule->name()]['dst_resolved_sum']['unresolved'] = $unresolvedArray;
                 $unresolvedArray = array();
                 PH::$JSON_TMP['sub']['object'][$rule->name()]['dst_resolved_value'] = $context->AddressResolveValueSummary( $rule, "destination", $unresolvedArray );
@@ -4344,6 +4344,7 @@ RuleCallContext::$supportedActions[] = array(
             'src' => 'source',
             'src_resolved_value' => 'src_resolved_value',
             'src_resolved_sum' => 'src_resolved_sum',
+            'src_resolved_sumOLD' => 'src_resolved_sumOLD',
             'src_resolved_nested_name' => 'src_resolved_nested_name',
             'src_resolved_nested_value' => 'src_resolved_nested_value',
             'src_resolved_nested_location' => 'src_resolved_nested_location',
@@ -4352,6 +4353,7 @@ RuleCallContext::$supportedActions[] = array(
             'dst_interface' => 'dst_interface',
             'dst_resolved_value' => 'dst_resolved_value',
             'dst_resolved_sum' => 'dst_resolved_sum',
+            'dst_resolved_sumOLD' => 'dst_resolved_sumOLD',
             'dst_resolved_nested_name' => 'dst_resolved_nested_name',
             'dst_resolved_nested_value' => 'dst_resolved_nested_value',
             'dst_resolved_nested_location' => 'dst_resolved_nested_location',
@@ -4413,9 +4415,9 @@ RuleCallContext::$supportedActions[] = array(
                 foreach( $fields as $fieldName => $fieldID )
                 {
                         if( ((
-                            $fieldName == 'src_resolved_sum' || $fieldName == 'src_resolved_value' ||
+                            $fieldName == 'src_resolved_sum' || $fieldName == 'src_resolved_sumOLD' || $fieldName == 'src_resolved_value' ||
                             $fieldName == 'src_resolved_nested_name' || $fieldName == 'src_resolved_nested_value' || $fieldName == 'src_resolved_nested_location' ||
-                            $fieldName == 'dst_resolved_sum' || $fieldName == 'dst_resolved_value' ||
+                            $fieldName == 'dst_resolved_sum' || $fieldName == 'dst_resolved_sumOLD' || $fieldName == 'dst_resolved_value' ||
                             $fieldName == 'dst_resolved_nested_name' || $fieldName == 'dst_resolved_nested_value' || $fieldName == 'dst_resolved_nested_location' ||
                             $fieldName == 'dnat_host_resolved_sum' ||
                             $fieldName == 'snat_address_resolved_sum')
