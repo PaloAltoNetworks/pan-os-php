@@ -26,6 +26,7 @@ BUGFIX:
 * type=address actions=exporttoexcel:file.html | bugfix to crash for tmp objects
 * type=dhcp actions=exporttoexcel | bugfix to add correct template
 * class PH - workaround for none working API mode connector - discard setType()
+* class RULEUTIL - defaultSecurityRules not available in Fawkes Snippet
 
 GENERAL:
 * dynamic update version  8739-8206
