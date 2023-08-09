@@ -16,6 +16,7 @@ UTIL:
 * type=rule 'actions=exporttoexcel:file.html,resovleservicesummary' | extend with column service_resolve_nested/_name/_value/_location
 * type=service actions=exporttoexcel:file.html | correct predefined service-http/-https output
 * type=address/server actions=exporttoexcel:file.html,nestedmembers | extend with column nested members location
+* class Address - use $RuleReferenceLocation
 
 BUGFIX:
 * class Region | bugfix - introduce method type() - to handle "type=address actions="

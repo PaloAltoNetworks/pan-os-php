@@ -623,7 +623,7 @@ class AddressRuleContainer extends ObjRuleContainer
             elseif( $member->isAddress() )
             {
                 /** @var Address $member */
-                $localMap = $member->getIP4Mapping();
+                $localMap = $member->getIP4Mapping( $RuleReferenceLocation );
                 $mapObject->addMap($localMap, TRUE);
             }
             elseif( $member->isGroup() )
@@ -640,7 +640,7 @@ class AddressRuleContainer extends ObjRuleContainer
             elseif( $member->isRegion() )
             {
                 /** @var Region $member */
-                $localMap = $member->getIP4Mapping();
+                $localMap = $member->getIP4Mapping( $RuleReferenceLocation );
                 $mapObject->addMap($localMap, TRUE);
             }
             else
