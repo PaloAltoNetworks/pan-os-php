@@ -156,7 +156,7 @@ class Region
      * Return an array['start']= startip and ['end']= endip
      * @return IP4Map
      */
-    public function getIP4Mapping()
+    public function getIP4Mapping( $RuleReferenceLocation = null)
     {
         if( isset($this->_ip4Map) )
         {
