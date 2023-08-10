@@ -17,6 +17,7 @@ UTIL:
 * type=service actions=exporttoexcel:file.html | correct predefined service-http/-https output
 * type=address/server actions=exporttoexcel:file.html,nestedmembers | extend with column nested members location
 * class Address - use $RuleReferenceLocation
+* type=zone | introduce 'filter=(interface is.set)'
 
 BUGFIX:
 * class Region | bugfix - introduce method type() - to handle "type=address actions="
