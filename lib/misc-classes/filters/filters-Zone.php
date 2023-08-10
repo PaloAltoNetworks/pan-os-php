@@ -471,4 +471,19 @@ RQuery::$defaultFilters['zone']['userid']['operators']['is.enabled'] = array(
         'input' => 'input/panorama-8.0.xml'
     )
 );
+
+RQuery::$defaultFilters['zone']['interface']['operators']['is.set'] = array(
+    'Function' => function (ZoneRQueryContext $context) {
+        $object = $context->object;
+
+        $interfaces = $object->attachedInterfaces->getAll();
+        if( count($interfaces) > 0)
+            return TRUE;
+        else
+            return FALSE;
+
+        return null;
+    },
+    'arg' => FALSE
+);
 // </editor-fold>

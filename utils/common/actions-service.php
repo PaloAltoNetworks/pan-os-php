@@ -238,42 +238,13 @@ ServiceCallContext::$supportedActions[] = array(
         if( isset( $_SERVER['REQUEST_METHOD'] ) )
             $filename = "project/html/".$filename;
 
-        $lines = '';
-        $encloseFunction = function ($value, $nowrap = TRUE) {
-            if( is_string($value) )
-                $output = htmlspecialchars($value);
-            elseif( is_array($value) )
-            {
-                $output = '';
-                $first = TRUE;
-                foreach( $value as $subValue )
-                {
-                    if( !$first )
-                    {
-                        $output .= '<br />';
-                    }
-                    else
-                        $first = FALSE;
-
-                    if( is_string($subValue) )
-                        $output .= htmlspecialchars($subValue);
-                    else
-                        $output .= htmlspecialchars($subValue->name());
-                }
-            }
-            else
-                derr('unsupported');
-
-            if( $nowrap )
-                return '<td style="white-space: nowrap">' . $output . '</td>';
-
-            return '<td>' . $output . '</td>';
-        };
-
-
         $addWhereUsed = FALSE;
         $addUsedInLocation = FALSE;
         $addResolveGroupSRVCoverage = FALSE;
+        $addNestedMembers = FALSE;
+        $addResolveSRVNestedMembers = FALSE;
+        $addResolveLocationNestedMembers = FALSE;
+        $addNestedMembersCount = FALSE;
 
         $optionalFields = &$context->arguments['additionalFields'];
 
@@ -286,7 +257,15 @@ ServiceCallContext::$supportedActions[] = array(
         if( isset($optionalFields['ResolveSRV']) )
             $addResolveGroupSRVCoverage = TRUE;
 
-        $headers = '<th>ID</th><th>location</th><th>name</th><th>type</th><th>dport</th><th>sport</th><th>timeout</th><th>members</th><th>description</th><th>tags</th>';
+        if( isset($optionalFields['NestedMembers']) )
+        {
+            $addNestedMembers = TRUE;
+            $addResolveSRVNestedMembers = TRUE;
+            $addResolveLocationNestedMembers = TRUE;
+            $addNestedMembersCount = TRUE;
+        }
+
+        $headers = '<th>ID</th><th>location</th><th>name</th><th>type</th><th>dport</th><th>sport</th><th>timeout</th><th>members</th><th>members count</th><th>description</th><th>tags</th>';
 
         $headers .= '<th>port.count</th><th>port.tcp.count</th><th>port.udp.count</th>';
         if( $addWhereUsed )
@@ -295,6 +274,17 @@ ServiceCallContext::$supportedActions[] = array(
             $headers .= '<th>location used</th>';
         if( $addResolveGroupSRVCoverage )
             $headers .= '<th>srv resolution</th>';
+        if( $addNestedMembers )
+            $headers .= '<th>nested members</th>';
+        if( $addResolveSRVNestedMembers )
+            $headers .= '<th>nested members srv resolution</th>';
+        if( $addResolveLocationNestedMembers )
+            $headers .= '<th>nested members location resolution</th>';
+
+        if( $addNestedMembersCount )
+            $headers .= '<th>nested members count</th>';
+
+        $lines = '';
 
         $count = 0;
         if( isset($context->objectList) )
@@ -309,57 +299,76 @@ ServiceCallContext::$supportedActions[] = array(
                 else
                     $lines .= "<tr bgcolor=\"#DDDDDD\">";
 
-                $lines .= $encloseFunction( (string)$count );
+                $lines .= $context->encloseFunction( (string)$count );
 
-                $lines .= $encloseFunction(PH::getLocationString($object));
+                $lines .= $context->encloseFunction(PH::getLocationString($object));
 
-                $lines .= $encloseFunction($object->name());
+                $lines .= $context->encloseFunction($object->name());
 
                 if( $object->isGroup() )
                 {
-                    $lines .= $encloseFunction('group');
-                    $lines .= $encloseFunction('');
-                    $lines .= $encloseFunction('');
-                    $lines .= $encloseFunction('');
-                    $lines .= $encloseFunction($object->members());
-                    $lines .= $encloseFunction('');
-                    $lines .= $encloseFunction($object->tags->tags());
+                    $lines .= $context->encloseFunction('group');
+                    $lines .= $context->encloseFunction('');
+                    $lines .= $context->encloseFunction('');
+                    $lines .= $context->encloseFunction('');
+                    $lines .= $context->encloseFunction($object->members());
+                    $lines .= $context->encloseFunction( (string)count( $object->members() ));
+                    $lines .= $context->encloseFunction('');
+                    $lines .= $context->encloseFunction($object->tags->tags());
                 }
                 elseif( $object->isService() )
                 {
                     if( $object->isTmpSrv() )
                     {
-                        $lines .= $encloseFunction('unknown');
-                        $lines .= $encloseFunction('');
-                        $lines .= $encloseFunction('');
-                        $lines .= $encloseFunction('');
-                        $lines .= $encloseFunction('');
-                        $lines .= $encloseFunction('');
+                        if( $object->name() == "service-http" )
+                        {
+                            $lines .= $context->encloseFunction('service-tcp');
+                            $lines .= $context->encloseFunction('40');
+                        }
+                        elseif( $object->name() == "service-https" )
+                        {
+                            $lines .= $context->encloseFunction('service-tcp');
+                            $lines .= $context->encloseFunction('443');
+                        }
+                        else
+                        {
+                            $lines .= $context->encloseFunction('unknown');
+                            $lines .= $context->encloseFunction('');
+                        }
+
+
+                        $lines .= $context->encloseFunction('');
+                        $lines .= $context->encloseFunction('');
+                        $lines .= $context->encloseFunction('');
+                        $lines .= $context->encloseFunction( '---' );
+                        $lines .= $context->encloseFunction('');
+                        $lines .= $context->encloseFunction('');
                     }
                     else
                     {
                         if( $object->isTcp() )
-                            $lines .= $encloseFunction('service-tcp');
+                            $lines .= $context->encloseFunction('service-tcp');
                         else
-                            $lines .= $encloseFunction('service-udp');
+                            $lines .= $context->encloseFunction('service-udp');
 
-                        $lines .= $encloseFunction($object->getDestPort());
-                        $lines .= $encloseFunction($object->getSourcePort());
-                        $lines .= $encloseFunction($object->getTimeout());
-                        $lines .= $encloseFunction('');
-                        $lines .= $encloseFunction($object->description(), FALSE);
-                        $lines .= $encloseFunction($object->tags->tags());
+                        $lines .= $context->encloseFunction($object->getDestPort());
+                        $lines .= $context->encloseFunction($object->getSourcePort());
+                        $lines .= $context->encloseFunction($object->getTimeout());
+                        $lines .= $context->encloseFunction('');
+                        $lines .= $context->encloseFunction( '---' );
+                        $lines .= $context->encloseFunction($object->description(), FALSE);
+                        $lines .= $context->encloseFunction($object->tags->tags());
                     }
                 }
 
                 $calculatedCounter = $context->ServiceCount( $object, "both" );
-                $lines .= $encloseFunction((string)$calculatedCounter);
+                $lines .= $context->encloseFunction((string)$calculatedCounter);
 
                 $calculatedCounter = $context->ServiceCount( $object, "tcp" );
-                $lines .= $encloseFunction((string)$calculatedCounter);
+                $lines .= $context->encloseFunction((string)$calculatedCounter);
 
                 $calculatedCounter = $context->ServiceCount( $object, "udp" );
-                $lines .= $encloseFunction((string)$calculatedCounter);
+                $lines .= $context->encloseFunction((string)$calculatedCounter);
 
 
                 if( $addWhereUsed )
@@ -368,7 +377,7 @@ ServiceCallContext::$supportedActions[] = array(
                     foreach( $object->getReferences() as $ref )
                         $refTextArray[] = $ref->_PANC_shortName();
 
-                    $lines .= $encloseFunction($refTextArray);
+                    $lines .= $context->encloseFunction($refTextArray);
                 }
                 if( $addUsedInLocation )
                 {
@@ -379,7 +388,7 @@ ServiceCallContext::$supportedActions[] = array(
                         $refTextArray[$location] = $location;
                     }
 
-                    $lines .= $encloseFunction($refTextArray);
+                    $lines .= $context->encloseFunction($refTextArray);
                 }
                 if( $addResolveGroupSRVCoverage )
                 {
@@ -432,7 +441,68 @@ ServiceCallContext::$supportedActions[] = array(
                         }
                     }
 
-                    $lines .= $encloseFunction($port_mapping_text);
+                    $lines .= $context->encloseFunction($port_mapping_text);
+                }
+
+                if( $addNestedMembers )
+                {
+                    if( $object->isGroup() )
+                    {
+                        $tmp_array = array();
+                        $members = $object->expand(FALSE, $tmp_array, $object->owner->owner);
+                        $lines .= $context->encloseFunction($members);
+                    }
+                    else
+                        $lines .= $context->encloseFunction('');
+                }
+                if( $addResolveSRVNestedMembers )
+                {
+                    if( $object->isGroup() )
+                    {
+                        $resolve = array();
+                        $tmp_array = array();
+                        $members = $object->expand(FALSE, $tmp_array, $object->owner->owner);
+                        foreach( $members as $member )
+                        {
+                            $srcport = "";
+                            if( $member->getSourcePort() !== "" )
+                                $srcport = "srcp:".$member->getSourcePort();
+                            $resolve[] = $member->protocol()."/".$member->getDestPort().$srcport;
+                        }
+
+                        $lines .= $context->encloseFunction($resolve);
+                    }
+                    else
+                        $lines .= $context->encloseFunction('');
+                }
+                if( $addResolveLocationNestedMembers )
+                {
+                    if( $object->isGroup() )
+                    {   $resolve = array();
+                        $tmp_array = array();
+                        $members = $object->expand(FALSE, $tmp_array, $object->owner->owner);
+                        foreach( $members as $member )
+                        {
+                            $tmp_name = $member->owner->owner->name();
+                            if( empty($tmp_name) )
+                                $tmp_name = "shared";
+                            $resolve[] = $tmp_name;
+                        }
+
+                        $lines .= $context->encloseFunction($resolve);
+                    }
+                    else
+                        $lines .= $context->encloseFunction('');
+                }
+                if( $addNestedMembersCount )
+                {
+                    if( $object->isGroup() )
+                    {   $resolve = array();
+                        $members = $object->expand(FALSE, $tmp_array, $object->owner->owner);
+                        $lines .= $context->encloseFunction( (string)count($members) );
+                    }
+                    else
+                        $lines .= $context->encloseFunction('');
                 }
 
                 $lines .= "</tr>\n";
@@ -458,11 +528,12 @@ ServiceCallContext::$supportedActions[] = array(
             array('type' => 'pipeSeparatedList',
                 'subtype' => 'string',
                 'default' => '*NONE*',
-                'choices' => array('WhereUsed', 'UsedInLocation', 'ResolveSRV'),
+                'choices' => array('WhereUsed', 'UsedInLocation', 'ResolveSRV', 'NestedMembers'),
                 'help' =>
                     "pipe(|) separated list of additional field to include in the report. The following is available:\n" .
                     "  - WhereUsed : list places where object is used (rules, groups ...)\n" .
                     "  - UsedInLocation : list locations (vsys,dg,shared) where object is used\n".
+                    "  - NestedMembers: lists all members, even the ones that may be included in nested groups\n" .
                     "  - ResolveSRV\n"
 
             )

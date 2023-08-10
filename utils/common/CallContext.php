@@ -26,6 +26,7 @@ class CallContext
 
     /** @var  Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $object */
     public $object;
+    public $objectList;
 
     public $actionRef;
 
@@ -277,5 +278,37 @@ class CallContext
         }
 
         return $ret;
+    }
+
+    public function encloseFunction( $value, $nowrap = TRUE )
+    {
+        if( is_string($value) )
+            $output = htmlspecialchars($value);
+        elseif( is_array($value) )
+        {
+            $output = '';
+            $first = TRUE;
+            foreach( $value as $subValue )
+            {
+                if( !$first )
+                {
+                    $output .= '<br />';
+                }
+                else
+                    $first = FALSE;
+
+                if( is_string($subValue) )
+                    $output .= htmlspecialchars($subValue);
+                else
+                    $output .= htmlspecialchars($subValue->name());
+            }
+        }
+        else
+            derr('unsupported');
+
+        if( $nowrap )
+            return '<td style="white-space: nowrap">' . $output . '</td>';
+
+        return '<td>' . $output . '</td>';
     }
 }

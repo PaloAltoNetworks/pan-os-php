@@ -41,6 +41,8 @@ class PanSaseAPIConnector
 
     public $url_token = "https://auth.apps.paloaltonetworks.com/oauth2/access_token";
     public $url_api = "https://api.sase.paloaltonetworks.com";
+    #public $url_api = "https://api.stratacloud.paloaltonetworks.com"; //identical to api.sase.paloaltonetworks.com but introduced on 20230801
+
 
     static public $folderArray = array(
         "All",
@@ -640,6 +642,7 @@ class PanSaseAPIConnector
 
                         $tmp_addressgroup->setSaseID( $object['id'] );
                     }
+                    //elseif( isset($object['dynamic']) )
                 }
             }
             elseif( $type === "services" )
@@ -901,6 +904,26 @@ class PanSaseAPIConnector
                 $bodyArray['fqdn'] = $object->value();
 
             $bodyArray['folder'] = $object->owner->owner->name();
+
+            return $bodyArray;
+        }
+        if( get_class( $object ) == "AddressGroup" )
+        {
+            //Sase-API
+
+            $bodyArray['description'] = $object->description();
+            $bodyArray['name'] = $object->name();
+            $bodyArray['folder'] = $object->owner->owner->name();
+            $memberArray = $object->members();
+            if( !$object->isDynamic() )
+            {
+                $bodyArray['static'] = array();
+                foreach($memberArray as $member)
+                    $bodyArray['static'][] = $member->name();
+            }
+            else
+                $bodyArray['dynamic']['filter'] = $object->filter;
+
 
             return $bodyArray;
         }

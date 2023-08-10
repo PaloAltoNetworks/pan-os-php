@@ -189,7 +189,7 @@ class AddressRuleContainer extends ObjRuleContainer
     }
 
 
-    public function API_sync()
+    public function API_sync( $new = false )
     {
         $con = findConnectorOrDie($this);
 
@@ -210,7 +210,14 @@ class AddressRuleContainer extends ObjRuleContainer
             }
         }
         elseif( $con->isSaseAPI() )
-            $con->sendPUTRequest($this);
+        {
+            if( $new )
+                $con->sendCreateRequest($this);
+            else
+                $con->sendPUTRequest($this);
+        }
+
+
     }
 
     public function setAny()
@@ -616,7 +623,7 @@ class AddressRuleContainer extends ObjRuleContainer
             elseif( $member->isAddress() )
             {
                 /** @var Address $member */
-                $localMap = $member->getIP4Mapping();
+                $localMap = $member->getIP4Mapping( $RuleReferenceLocation );
                 $mapObject->addMap($localMap, TRUE);
             }
             elseif( $member->isGroup() )
@@ -633,7 +640,7 @@ class AddressRuleContainer extends ObjRuleContainer
             elseif( $member->isRegion() )
             {
                 /** @var Region $member */
-                $localMap = $member->getIP4Mapping();
+                $localMap = $member->getIP4Mapping( $RuleReferenceLocation );
                 $mapObject->addMap($localMap, TRUE);
             }
             else

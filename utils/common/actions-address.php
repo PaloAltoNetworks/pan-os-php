@@ -697,7 +697,8 @@ AddressCallContext::$supportedActions[] = array(
         }
 
         /** @var AddressGroup $object */
-        $members = $object->expand();
+        $tmp_array = array();
+        $members = $object->expand(FALSE,$tmp_array, $object->owner->owner);
         $mapping = new IP4Map();
 
         $listOfNotConvertibleObjects = array();
@@ -757,6 +758,7 @@ AddressCallContext::$supportedActions[] = array(
         $addResolveGroupIPCoverage = FALSE;
         $addNestedMembers = FALSE;
         $addResolveIPNestedMembers = FALSE;
+        $addResolveLocationNestedMembers = FALSE;
         $addNestedMembersCount = FALSE;
 
         $optionalFields = &$context->arguments['additionalFields'];
@@ -774,6 +776,7 @@ AddressCallContext::$supportedActions[] = array(
         {
             $addNestedMembers = TRUE;
             $addResolveIPNestedMembers = TRUE;
+            $addResolveLocationNestedMembers = TRUE;
             $addNestedMembersCount = TRUE;
         }
 
@@ -790,42 +793,12 @@ AddressCallContext::$supportedActions[] = array(
             $headers .= '<th>nested members</th>';
         if( $addResolveIPNestedMembers )
             $headers .= '<th>nested members ip resolution</th>';
+        if( $addResolveLocationNestedMembers )
+            $headers .= '<th>nested members location resolution</th>';
         if( $addNestedMembersCount )
             $headers .= '<th>nested members count</th>';
 
         $lines = '';
-        $encloseFunction = function ($value, $nowrap = TRUE) {
-            if( is_string($value) )
-                $output = htmlspecialchars($value);
-            elseif( is_array($value) )
-            {
-                $output = '';
-                $first = TRUE;
-                foreach( $value as $subValue )
-                {
-                    if( !$first )
-                    {
-                        $output .= '<br />';
-                    }
-                    else
-                        $first = FALSE;
-
-                    if( is_string($subValue) )
-                        $output .= htmlspecialchars($subValue);
-                    elseif( is_object($subValue) )
-                        $output .= htmlspecialchars($subValue->name());
-                    else
-                        $output .= htmlspecialchars("-null-");
-                }
-            }
-            else
-                derr('unsupported');
-
-            if( $nowrap )
-                return '<td style="white-space: nowrap">' . $output . '</td>';
-
-            return '<td>' . $output . '</td>';
-        };
 
         $count = 0;
         if( isset($context->objectList) )
@@ -840,60 +813,66 @@ AddressCallContext::$supportedActions[] = array(
                 else
                     $lines .= "<tr bgcolor=\"#DDDDDD\">";
 
-                $lines .= $encloseFunction( (string)$count );
+                $lines .= $context->encloseFunction( (string)$count );
 
-                if( $object->owner->owner->isPanorama() || $object->owner->owner->isFirewall() )
-                    $lines .= $encloseFunction('shared');
+                if( isset($object->owner) && isset($object->owner->owner) )
+                {
+                    if($object->owner->owner->isPanorama() || $object->owner->owner->isFirewall() )
+                        $lines .= $context->encloseFunction('shared');
+                    else
+                        $lines .= $context->encloseFunction($object->owner->owner->name());
+                }
                 else
-                    $lines .= $encloseFunction($object->owner->owner->name());
+                    $lines .= $context->encloseFunction("---");
 
-                $lines .= $encloseFunction($object->name());
+
+                $lines .= $context->encloseFunction($object->name());
 
                 if( $object->isGroup() )
                 {
                     if( $object->isDynamic() )
                     {
-                        $lines .= $encloseFunction('group-dynamic');
-                        #$lines .= $encloseFunction('');
-                        $lines .= $encloseFunction($object->members());
+                        $lines .= $context->encloseFunction('group-dynamic');
+                        #$lines .= $context->encloseFunction('');
+                        $lines .= $context->encloseFunction($object->members());
                     }
                     else
                     {
-                        $lines .= $encloseFunction('group-static');
-                        $lines .= $encloseFunction($object->members());
+                        $lines .= $context->encloseFunction('group-static');
+                        $lines .= $context->encloseFunction($object->members());
                     }
-                    $lines .= $encloseFunction($object->description(), FALSE);
+                    $lines .= $context->encloseFunction($object->description(), FALSE);
                     if( $object->isGroup() )
-                        $lines .= $encloseFunction( (string)count( $object->members() ));
+                        $lines .= $context->encloseFunction( (string)count( $object->members() ));
                     else
-                        $lines .= $encloseFunction( '---' );
+                        $lines .= $context->encloseFunction( '---' );
 
                     $counter = 0;
-                    $members = $object->expand(FALSE);
+                    $members = $object->expand(FALSE, $tmp_array, $object->owner->owner);
                     foreach( $members as $member )
                         $counter += $member->getIPcount();
-                    $lines .= $encloseFunction((string)$counter);
+                    $lines .= $context->encloseFunction((string)$counter);
 
-                    $lines .= $encloseFunction($object->tags->tags());
+                    $lines .= $context->encloseFunction($object->tags->tags());
                 }
                 elseif( $object->isAddress() )
                 {
                     if( $object->isTmpAddr() )
                     {
-                        $lines .= $encloseFunction('unknown');
-                        $lines .= $encloseFunction('');
-                        $lines .= $encloseFunction('');
-                        $lines .= $encloseFunction('');
-                        $lines .= $encloseFunction('');
+                        $lines .= $context->encloseFunction('unknown');
+                        $lines .= $context->encloseFunction('');
+                        $lines .= $context->encloseFunction('');
+                        $lines .= $context->encloseFunction('');
+                        $lines .= $context->encloseFunction('');
                     }
                     else
                     {
-                        $lines .= $encloseFunction($object->type());
-                        $lines .= $encloseFunction($object->value());
-                        $lines .= $encloseFunction($object->description(), FALSE);
-                        $lines .= $encloseFunction( '---' );
-                        $lines .= $encloseFunction( (string)$object->getIPcount() );
-                        $lines .= $encloseFunction($object->tags->tags());
+                        $lines .= $context->encloseFunction($object->type());
+                        $lines .= $context->encloseFunction($object->value());
+                        $lines .= $context->encloseFunction($object->description(), FALSE);
+                        $lines .= $context->encloseFunction( '---' );
+                        $lines .= $context->encloseFunction( (string)$object->getIPcount() );
+                        $lines .= $context->encloseFunction($object->tags->tags());
                     }
                 }
                 elseif( $object->isRegion() )
@@ -908,7 +887,7 @@ AddressCallContext::$supportedActions[] = array(
                     foreach( $object->getReferences() as $ref )
                         $refTextArray[] = $ref->_PANC_shortName();
 
-                    $lines .= $encloseFunction($refTextArray);
+                    $lines .= $context->encloseFunction($refTextArray);
                 }
                 if( $addUsedInLocation )
                 {
@@ -919,7 +898,7 @@ AddressCallContext::$supportedActions[] = array(
                         $refTextArray[$location] = $location;
                     }
 
-                    $lines .= $encloseFunction($refTextArray);
+                    $lines .= $context->encloseFunction($refTextArray);
                 }
                 if( $addResolveGroupIPCoverage )
                 {
@@ -929,39 +908,61 @@ AddressCallContext::$supportedActions[] = array(
                     foreach( array_keys($mapping->unresolved) as $unresolved )
                         $strMapping[] = $unresolved;
 
-                    $lines .= $encloseFunction($strMapping);
+                    $lines .= $context->encloseFunction($strMapping);
                 }
                 if( $addNestedMembers )
                 {
                     if( $object->isGroup() )
                     {
-                        $members = $object->expand(FALSE);
-                        $lines .= $encloseFunction($members);
+                        $tmp_array = array();
+                        $members = $object->expand(FALSE, $tmp_array, $object->owner->owner);
+                        $lines .= $context->encloseFunction($members);
                     }
                     else
-                        $lines .= $encloseFunction('');
+                        $lines .= $context->encloseFunction('');
                 }
                 if( $addResolveIPNestedMembers )
                 {
                     if( $object->isGroup() )
                     {   $resolve = array();
-                        $members = $object->expand(FALSE);
+                        $tmp_array = array();
+                        $members = $object->expand(FALSE, $tmp_array, $object->owner->owner);
                         foreach( $members as $member )
                             $resolve[] = $member->value();
-                        $lines .= $encloseFunction($resolve);
+                        $lines .= $context->encloseFunction($resolve);
                     }
                     else
-                        $lines .= $encloseFunction('');
+                        $lines .= $context->encloseFunction('');
+                }
+                if( $addResolveLocationNestedMembers )
+                {
+                    if( $object->isGroup() )
+                    {   $resolve = array();
+                        $tmp_array = array();
+                        $members = $object->expand(FALSE, $tmp_array, $object->owner->owner);
+                        foreach( $members as $member )
+                        {
+                            $tmp_name = $member->owner->owner->name();
+                            if( empty($tmp_name) )
+                                $tmp_name = "shared";
+                            $resolve[] = $tmp_name;
+                        }
+
+                        $lines .= $context->encloseFunction($resolve);
+                    }
+                    else
+                        $lines .= $context->encloseFunction('');
                 }
                 if( $addNestedMembersCount )
                 {
                     if( $object->isGroup() )
                     {   $resolve = array();
-                        $members = $object->expand(FALSE);
-                        $lines .= $encloseFunction( (string)count($members) );
+                        $tmp_array = array();
+                        $members = $object->expand(FALSE, $tmp_array, $object->owner->owner);
+                        $lines .= $context->encloseFunction( (string)count($members) );
                     }
                     else
-                        $lines .= $encloseFunction('');
+                        $lines .= $context->encloseFunction('');
                 }
 
                 $lines .= "</tr>\n";
@@ -1420,6 +1421,13 @@ AddressCallContext::$supportedActions[] = array(
         if( $object->isTmpAddr() )
         {
             $string = "this is a temporary object";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+
+        if( $object->isRegion() )
+        {
+            $string = "this is a Region object - not supported yet";
             PH::ACTIONstatus( $context, "SKIPPED", $string );
             return;
         }
@@ -3198,4 +3206,211 @@ AddressCallContext::$supportedActions['move-wildcard2network'] = array(
             PH::ACTIONlog( $context, $string );
         }
     }
+);
+
+
+AddressCallContext::$supportedActions['upload-Address-2CloudManager'] = array(
+    'name' => 'upload-address-2cloudmanager',
+    'GlobalInitFunction' => function (AddressCallContext $context) {
+        //get Panorama config
+        //possible: XML file / XML API
+        //including DG
+
+        if( $context->isSaseAPI === False )
+            derr( "only Strata Cloud manager is supported for this type=address action", null, False );
+
+        $filename = $context->arguments['panorama_file'];
+        $DGname = $context->arguments['dg_name'];
+        $context->objectList = array();
+
+        ##########################################
+
+        $argv2 = array();
+        $argc2 = array();
+        PH::$args = array();
+        PH::$argv = array();
+        $argv2[0] = "test";
+
+        if( file_exists( $filename ) )
+                $argv2[] = "in=".$filename;
+        else
+            derr("cannot open file '{$filename}", null, False);
+
+        //create new UTIL with Panorama config in
+        $util2 = new UTIL("custom", $argv2, $argc2, "actions=upload-address-2cloudmanager");
+        $util2->utilInit();
+        $util2->load_config();
+
+##########################################
+##########################################
+
+        $pan = $util2->pan;
+
+        //check that load config file is Panorama
+        if( $pan->isPanorama() )
+        {
+            //find DG name
+            $sub = $pan->findDeviceGroup( $DGname );
+            if( $sub === null )
+                $util2->locationNotFound($DGname);
+        }
+
+        else
+            derr( "only Panorama config file is supported", null, False );
+
+        ##########################################
+
+        foreach( $sub->addressStore->all( "!(object is.group) and !(object is.tmp)" ) as $obj )
+        {
+            $context->objectList[] = $obj;
+            #print $obj->name()."\n";
+        }
+
+    },
+    'MainFunction' => function (AddressCallContext $context) {
+
+    },
+    'GlobalFinishFunction' => function (AddressCallContext $context) {
+
+        $addressStore = $context->subSystem->addressStore;
+
+        foreach( $context->objectList as $object )
+        {
+            if( $object->isGroup() || $object->isTmpAddr() )
+            {
+                $string = "Address object is Group or TMP - not supported";
+                PH::ACTIONstatus( $context, 'skipped', $string);
+                continue;
+            }
+
+            $newName = $object->name();
+            $value = $object->value();
+            $type = $object->type();
+
+            $tmpAddr = $addressStore->find( $newName );
+            if( $tmpAddr === null )
+            {
+                $string = "upload Address object : '" . $newName . "' - type: ".$type." - value: ".$value;
+                PH::ACTIONlog( $context, $string );
+
+                if( $context->isAPI )
+                    $addressStore->API_newAddress($newName, $type, $value);
+                else
+                    derr( "only API supported" );
+            }
+            else
+                mwarning( "objectname: ".$newName." is already available", null, false );
+        }
+    },
+    'args' => array(
+        'panorama_file' => Array( 'type' => 'string', 'default' => '*nodefault*'),
+        'dg_name' => array('type' => 'string', 'default' => '*nodefault*')
+    )
+);
+
+AddressCallContext::$supportedActions['upload-AddressGroup-2CloudManager'] = array(
+    'name' => 'upload-addressgroup-2cloudmanager',
+    'GlobalInitFunction' => function (AddressCallContext $context) {
+        //get Panorama config
+        //possible: XML file / XML API
+        //including DG
+
+        if( $context->isSaseAPI === False )
+            derr( "only Strata Cloud manager is supported for this type=address action", null, False );
+
+        $filename = $context->arguments['panorama_file'];
+        $DGname = $context->arguments['dg_name'];
+        $context->objectList = array();
+
+        ##########################################
+
+        $argv2 = array();
+        $argc2 = array();
+        PH::$args = array();
+        PH::$argv = array();
+        $argv2[0] = "test";
+
+        if( file_exists( $filename ) )
+            $argv2[] = "in=".$filename;
+        else
+            derr("cannot open file '{$filename}", null, False);
+
+        //create new UTIL with Panorama config in
+        $util2 = new UTIL("custom", $argv2, $argc2, "actions=upload-address-2cloudmanager");
+        $util2->utilInit();
+        $util2->load_config();
+
+##########################################
+##########################################
+
+        $pan = $util2->pan;
+
+        //check that load config file is Panorama
+        if( $pan->isPanorama() )
+        {
+            //find DG name
+            $sub = $pan->findDeviceGroup( $DGname );
+            if( $sub === null )
+                $util2->locationNotFound($DGname);
+        }
+        else
+            derr( "only Panorama config file is supported", null, False );
+
+        ##########################################
+
+        foreach( $sub->addressStore->all( "(object is.group)" ) as $obj )
+        {
+            #print $obj->name()."\n";
+            /** @var $obj AddressGroup */
+            $context->objectList[$obj->name()]['obj'] = $obj;
+        }
+    },
+    'MainFunction' => function (AddressCallContext $context) {
+    },
+    'GlobalFinishFunction' => function (AddressCallContext $context) {
+
+        $addressStore = $context->subSystem->addressStore;
+
+        foreach( $context->objectList as $object_entry )
+        {
+            $object = $object_entry['obj'];
+            if( !$object->isGroup() )
+            {
+                $string = "Address object is not Group - not supported";
+                PH::ACTIONstatus( $context, 'skipped', $string);
+                continue;
+            }
+
+            $newName = $object->name();
+
+            $adrGrp = $addressStore->find( $newName );
+            if( $adrGrp === null )
+            {
+                $string = "upload AddressGroup object : '" . $newName;
+                PH::ACTIONlog( $context, $string );
+
+                //check that addressgroup and all members are available
+                //then API sync if possible
+
+                $adrGrp = $addressStore->newAddressGroup( $newName );
+                foreach( $object->members() as $member2 )
+                {
+                    if( $object->owner === $member2->owner )
+                        $adrGrp->addMember( $member2 );
+                    else
+                        mwarning( "this objectname: ".$member2->name()." is part of another DG: ".$member2->owner->owner->name() );
+                }
+
+
+                if( $context->isAPI )
+                    $adrGrp->API_sync( true );
+            }
+            else
+                mwarning( "objectname: ".$newName." is already available", null, false );
+        }
+    },
+    'args' => array(
+        'panorama_file' => Array( 'type' => 'string', 'default' => '*nodefault*'),
+        'dg_name' => array('type' => 'string', 'default' => '*nodefault*')
+    )
 );

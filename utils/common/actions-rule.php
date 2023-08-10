@@ -3823,7 +3823,7 @@ RuleCallContext::$supportedActions[] = array(
             if( $addResolvedAddressSummary )
             {
                 $unresolvedArray = array();
-                PH::$JSON_TMP['sub']['object'][$rule->name()]['src_resolved_sum']['resolved'] = $context->AddressResolveSummary( $rule, "source", $unresolvedArray );
+                PH::$JSON_TMP['sub']['object'][$rule->name()]['src_resolved_sum']['resolved'] = $context->AddressResolveSummaryNEW( $rule, "source", $unresolvedArray );
                 PH::$JSON_TMP['sub']['object'][$rule->name()]['src_resolved_sum']['unresolved'] = $unresolvedArray;
                 $unresolvedArray = array();
                 PH::$JSON_TMP['sub']['object'][$rule->name()]['src_resolved_value'] = $context->AddressResolveValueSummary( $rule, "source", $unresolvedArray );
@@ -3833,7 +3833,7 @@ RuleCallContext::$supportedActions[] = array(
                 PH::$JSON_TMP['sub']['object'][$rule->name()]['src_resolved_nested_value'] = $context->AddressResolveValueNestedSummary( $rule, "source", $unresolvedArray );
 
                 $unresolvedArray = array();
-                PH::$JSON_TMP['sub']['object'][$rule->name()]['dst_resolved_sum']['resolved'] = $context->AddressResolveSummary( $rule, "destination", $unresolvedArray );
+                PH::$JSON_TMP['sub']['object'][$rule->name()]['dst_resolved_sum']['resolved'] = $context->AddressResolveSummaryNEW( $rule, "destination", $unresolvedArray );
                 PH::$JSON_TMP['sub']['object'][$rule->name()]['dst_resolved_sum']['unresolved'] = $unresolvedArray;
                 $unresolvedArray = array();
                 PH::$JSON_TMP['sub']['object'][$rule->name()]['dst_resolved_value'] = $context->AddressResolveValueSummary( $rule, "destination", $unresolvedArray );
@@ -3844,7 +3844,12 @@ RuleCallContext::$supportedActions[] = array(
             }
 
             if( $addResolvedServiceSummary )
-                PH::$JSON_TMP['sub']['object'][$rule->name()]['srv_resolved_sum'] = $rule->ServiceResolveSummary();
+            {
+                PH::$JSON_TMP['sub']['object'][$rule->name()]['srv_resolved_sum'] = $rule->ServiceResolveSummary($rule->owner->owner);
+                PH::$JSON_TMP['sub']['object'][$rule->name()]['srv_resolved_nested_name'] = $context->ServiceResolveNameNestedSummary( $rule );
+                PH::$JSON_TMP['sub']['object'][$rule->name()]['srv_resolved_nested_value'] = $context->ServiceResolveValueNestedSummary( $rule );
+            }
+
 
             if( $addResolvedServiceAppDefaultSummary )
                 PH::$JSON_TMP['sub']['object'][$rule->name()]['srv_appdefault_resolved_sum'] = $rule->ServiceAppDefaultResolveSummary();
@@ -4300,36 +4305,6 @@ RuleCallContext::$supportedActions[] = array(
         if( isset( $_SERVER['REQUEST_METHOD'] ) )
             $filename = "project/html/".$filename;
 
-        $encloseFunction = function ($value, $nowrap = TRUE) {
-            if( is_string($value) )
-                $output = htmlspecialchars($value);
-            elseif( is_array($value) )
-            {
-                $output = '';
-                $first = TRUE;
-                foreach( $value as $subValue )
-                {
-                    if( !$first )
-                    {
-                        $output .= '<br />';
-                    }
-                    else
-                        $first = FALSE;
-
-                    if( is_string($subValue) )
-                        $output .= htmlspecialchars($subValue);
-                    else
-                        $output .= htmlspecialchars($subValue->name());
-                }
-            }
-            else
-                derr('unsupported');
-
-            if( $nowrap )
-                return '<td style="white-space: nowrap">' . $output . '</td>';
-
-            return '<td>' . $output . '</td>';
-        };
 
         $addResolvedAddressSummary = FALSE;
         $addResolvedServiceSummary = FALSE;
@@ -4369,6 +4344,7 @@ RuleCallContext::$supportedActions[] = array(
             'src' => 'source',
             'src_resolved_value' => 'src_resolved_value',
             'src_resolved_sum' => 'src_resolved_sum',
+            'src_resolved_sumOLD' => 'src_resolved_sumOLD',
             'src_resolved_nested_name' => 'src_resolved_nested_name',
             'src_resolved_nested_value' => 'src_resolved_nested_value',
             'src_resolved_nested_location' => 'src_resolved_nested_location',
@@ -4377,11 +4353,15 @@ RuleCallContext::$supportedActions[] = array(
             'dst_interface' => 'dst_interface',
             'dst_resolved_value' => 'dst_resolved_value',
             'dst_resolved_sum' => 'dst_resolved_sum',
+            'dst_resolved_sumOLD' => 'dst_resolved_sumOLD',
             'dst_resolved_nested_name' => 'dst_resolved_nested_name',
             'dst_resolved_nested_value' => 'dst_resolved_nested_value',
             'dst_resolved_nested_location' => 'dst_resolved_nested_location',
             'service' => 'service',
             'service_resolved_sum' => 'service_resolved_sum',
+            'service_resolved_nested_name' => 'service_resolved_nested_name',
+            'service_resolved_nested_value' => 'service_resolved_nested_value',
+            'service_resolved_nested_location' => 'service_resolved_nested_location',
             'service_appdefault_resolved_sum' => 'service_appdefault_resolved_sum',
             'service_count' => 'service_count',
             'service_count_tcp' => 'service_count_tcp',
@@ -4430,23 +4410,24 @@ RuleCallContext::$supportedActions[] = array(
                 else
                     $lines .= "<tr bgcolor=\"#DDDDDD\">";
 
-                $lines .= $encloseFunction( (string)$count );
+                $lines .= $context->encloseFunction( (string)$count );
 
                 foreach( $fields as $fieldName => $fieldID )
                 {
                         if( ((
-                            $fieldName == 'src_resolved_sum' || $fieldName == 'src_resolved_value' ||
+                            $fieldName == 'src_resolved_sum' || $fieldName == 'src_resolved_sumOLD' || $fieldName == 'src_resolved_value' ||
                             $fieldName == 'src_resolved_nested_name' || $fieldName == 'src_resolved_nested_value' || $fieldName == 'src_resolved_nested_location' ||
-                            $fieldName == 'dst_resolved_sum' || $fieldName == 'dst_resolved_value' ||
+                            $fieldName == 'dst_resolved_sum' || $fieldName == 'dst_resolved_sumOLD' || $fieldName == 'dst_resolved_value' ||
                             $fieldName == 'dst_resolved_nested_name' || $fieldName == 'dst_resolved_nested_value' || $fieldName == 'dst_resolved_nested_location' ||
                             $fieldName == 'dnat_host_resolved_sum' ||
                             $fieldName == 'snat_address_resolved_sum')
                             && !$addResolvedAddressSummary) ||
                         (($fieldName == 'service_resolved_sum' ||
+                                $fieldName == 'service_resolved_nested_name' || $fieldName == 'service_resolved_nested_value' || $fieldName == 'service_resolved_nested_location' ||
                                 $fieldName == 'service_count' || $fieldName == 'service_count_tcp' || $fieldName == 'service_count_udp') && !$addResolvedServiceSummary) ||
                         (($fieldName == 'service_appdefault_resolved_sum') && !$addResolvedServiceAppDefaultSummary) ||
                         (($fieldName == 'application_resolved_sum') && !$addResolvedApplicationSummary) ||
-                        (($fieldName == 'schedule_resolved_sum') && !$addResolvedScheduleSummary) ||
+                        (($fieldName == 'schedule_resolved_sum' ) && !$addResolvedScheduleSummary) ||
                         (($fieldName == 'application_seen') && (!$addAppSeenSummary || !$context->isAPI) ) ||
                         (($fieldName == 'first-hit' || $fieldName == 'last-hit' || $fieldName == 'hit-count') && (!$addHitCountSummary || !$context->isAPI) ) ||
                         (($fieldName == 'nat_rule_type' || $fieldName == 'snat_type' || $fieldName == 'snat_address' ||

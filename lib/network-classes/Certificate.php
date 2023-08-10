@@ -266,14 +266,13 @@ class Certificate
             $c = findConnectorOrDie($this);
             $path = $this->getXPath();
 
+            $this->setName($newname);
             $c->sendRenameRequest($path, $newname);
         }
         else
         {
             mwarning('this is a temporary object, cannot be renamed from API');
         }
-
-        $this->setName($newname);
     }
 
     public function hasPublicKey()

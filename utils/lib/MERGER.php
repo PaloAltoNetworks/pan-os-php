@@ -449,6 +449,19 @@ class MERGER extends UTIL
         }
     }
 
+    function findChildAncestor( $childDeviceGroups, $object, $StoreType= "addressStore" )
+    {
+
+        foreach( $childDeviceGroups as $deviceGroup )
+        {
+            $findAncestor = $deviceGroup->addressStore->find($object->name(), null, FALSE);
+            if( $findAncestor !== null )
+                return $findAncestor;
+        }
+
+        return null;
+    }
+
     function add_supported_arguments()
     {
         $this->supportedArguments[] = array('niceName' => 'in', 'shortHelp' => 'input file ie: in=config.xml', 'argDesc' => '[filename]');
@@ -779,6 +792,8 @@ class MERGER extends UTIL
                     $hashMap[$value][] = $object;
                     if( $parentStore !== null )
                         $object->ancestor = self::findAncestor( $parentStore, $object, "addressStore");
+
+                    $object->childancestor = self::findChildAncestor( $childDeviceGroups, $object, "addressStore");
                 }
                 else
                     $upperHashMap[$value][] = $object;
@@ -840,14 +855,14 @@ class MERGER extends UTIL
 
                     $skip = false;
 
-                    /** @var DeviceGroup $pickedObject_DG */
+                    //Todo: check all pickedObjects from hash
+                    /*
                     $pickedObject_DG = $pickedObject->owner->owner;
                     if( $pickedObject_DG->parentDeviceGroup !== null )
                     {
                         $nextFindObject = $pickedObject_DG->parentDeviceGroup->addressStore->find( $pickedObject->name(), null, True );
                         if( $nextFindObject !== null )
                         {
-                            /** @var Address|AddressGroup $memberFound */
                             if( $pickedObject->isAddress() && $nextFindObject->isAddress() )
                             {
                                 if( $pickedObject->value() !== $nextFindObject->value() )
@@ -862,8 +877,9 @@ class MERGER extends UTIL
                                 $diff = $pickedObject->getValueDiff($nextFindObject);
                                 if( count($diff['minus']) != 0 || count($diff['plus']) != 0 )
                                 {
-                                    PH::print_stdout("   * SKIPPED : this group has different member ship compare to upperlevel");
+                                    PH::print_stdout("   * SKIPPED : this group has different membership compare to upperlevel");
                                     $skip = TRUE;
+                                    break;
                                 }
                             }
                             else
@@ -873,6 +889,13 @@ class MERGER extends UTIL
                                 break;
                             }
                         }
+                    }
+                    */
+                    $break = $this->checkParentPickObject( $hash );
+                    if( $break )
+                    {
+                        PH::print_stdout("     this object can not be created" );
+                        continue;
                     }
 
                     foreach( $pickedObject->members() as $memberObject )
@@ -928,8 +951,9 @@ class MERGER extends UTIL
                                 $diff = $memberObject->getValueDiff($memberFound);
                                 if( count($diff['minus']) != 0 || count($diff['plus']) != 0 )
                                 {
-                                    PH::print_stdout("   * SKIPPED : this group has different member ship compare to upperleve");
+                                    PH::print_stdout("   * SKIPPED : this group has different member ship compare to upperlevel");
                                     $skip = TRUE;
+                                    break;
                                 }
                             }
                             else
@@ -941,6 +965,8 @@ class MERGER extends UTIL
 
                         }
                     }
+
+
                     if( $skip )
                         continue;
 
@@ -998,7 +1024,6 @@ class MERGER extends UTIL
                             $this->skippedObject( $index, $pickedObject, $tmp_address, $stringSkippedReason);
                             continue;
                         }
-
                     }
                 }
 
@@ -1008,6 +1033,52 @@ class MERGER extends UTIL
                 {
                     if( $tmp_address === null )
                         continue;
+
+                    if( isset( $object->childancestor ) )
+                    {
+                        $childancestor = $object->childancestor;
+
+                        if( $childancestor !== null )
+                        {
+                            if( !$childancestor->isGroup() )
+                            {
+                                PH::print_stdout("    - SKIP: object name '{$object->_PANC_shortName()}' as one ancestor is of type: ". get_class( $childancestor )." '{$childancestor->_PANC_shortName()}' value: ".$childancestor->value());
+                                $this->skippedObject( $index, $object, $childancestor, 'childancestor of type: '.get_class( $childancestor ));
+                                break;
+                            }
+
+                            //Todo check ip4mapping of $childancestor and $object
+                            /*
+                            if( $hashGenerator($object) == $hashGenerator($ancestor) )
+                            {
+                                print "additional validation needed if same value\n";
+                                break;
+                            }
+                            else
+                            {
+
+                            */
+                                $this->addressgroupGetValueDiff($ancestor, $object, true);
+
+                                if( isset($childancestor->owner) )
+                                {
+                                    $tmp_ancestor_DGname = $childancestor->owner->owner->name();
+                                    if( $tmp_ancestor_DGname === "" )
+                                        $tmp_ancestor_DGname = "shared";
+                                }
+                                else
+                                    $tmp_ancestor_DGname = "shared";
+
+
+
+                                PH::print_stdout("    - group '{$object->name()}' cannot be merged because it has an ancestor at DG: ".$tmp_ancestor_DGname );
+                                PH::print_stdout( "    - ancestor type: ".get_class( $childancestor ) );
+                                $this->skippedObject( $index, $object, $childancestor, 'childancestor at DG: '.$tmp_ancestor_DGname);
+
+                                break;
+                            //}
+                        }
+                    }
 
                     if( $this->dupAlg == 'identical' )
                         if( $object->name() != $tmp_address->name() )
@@ -1142,6 +1213,51 @@ class MERGER extends UTIL
                             continue;
                         }
 
+                    }
+
+                    if( isset( $object->childancestor ) )
+                    {
+                        $childancestor = $object->childancestor;
+
+                        if( $childancestor !== null )
+                        {
+                            if( !$childancestor->isGroup() )
+                            {
+                                PH::print_stdout("    - SKIP: object name '{$object->_PANC_shortName()}' as one ancestor is of type: ". get_class( $childancestor )." '{$childancestor->_PANC_shortName()}' value: ".$childancestor->value());
+                                $this->skippedObject( $index, $object, $childancestor, 'childancestor of type: '.get_class( $childancestor ));
+                                break;
+                            }
+
+                            //Todo check ip4mapping of $childancestor and $object
+                            /*
+                            if( $hashGenerator($object) == $hashGenerator($ancestor) )
+                            {
+                                print "additional validation needed if same value\n";
+                                break;
+                            }
+                            else
+                            {
+                                */
+                                $this->addressgroupGetValueDiff($childancestor, $object, true);
+
+                                if( isset($childancestor->owner) )
+                                {
+                                    $tmp_ancestor_DGname = $childancestor->owner->owner->name();
+                                    if( $tmp_ancestor_DGname === "" )
+                                        $tmp_ancestor_DGname = "shared";
+                                }
+                                else
+                                    $tmp_ancestor_DGname = "shared";
+
+
+
+                                PH::print_stdout("    - group '{$object->name()}' cannot be merged because it has an ancestor at DG: ".$tmp_ancestor_DGname );
+                                PH::print_stdout( "    - ancestor type: ".get_class( $childancestor ) );
+                                $this->skippedObject( $index, $object, $childancestor, 'childancestor at DG: '.$tmp_ancestor_DGname);
+
+                                break;
+                            //}
+                        }
                     }
 
                     if( $object === $pickedObject )
@@ -1377,9 +1493,9 @@ class MERGER extends UTIL
                     {
                         $hashMap[$value][] = $object;
                         if( $parentStore !== null )
-                        {
                             $object->ancestor = self::findAncestor( $parentStore, $object, "addressStore" );
-                        }
+
+                        $object->childancestor = self::findChildAncestor( $childDeviceGroups, $object, "addressStore");
                     }
                     else
                         $upperHashMap[$value][] = $object;
@@ -1405,9 +1521,9 @@ class MERGER extends UTIL
                     {
                         $hashMap[$value][] = $object;
                         if( $parentStore !== null )
-                        {
                             $object->ancestor = self::findAncestor( $parentStore, $object, "addressStore" );
-                        }
+
+                        $object->childancestor = self::findChildAncestor( $childDeviceGroups, $object, "addressStore");
                     }
                     else
                         $upperHashMap[$value][] = $object;
@@ -1910,6 +2026,88 @@ class MERGER extends UTIL
         return $pickedObject;
     }
 
+    function checkParentPickObject( $hash )
+    {
+        $break = False;
+        foreach( $hash as $pickedObject )
+        {
+            /** @var DeviceGroup $pickedObject_DG */
+            $pickedObject_DG = $pickedObject->owner->owner;
+            if( $pickedObject_DG->parentDeviceGroup !== null )
+            {
+                $nextFindObject = $pickedObject_DG->parentDeviceGroup->addressStore->find( $pickedObject->name(), null, True );
+                if( $nextFindObject !== null )
+                {
+                    /** @var Address|AddressGroup $memberFound */
+                    if( $pickedObject->isAddress() && $nextFindObject->isAddress() )
+                    {
+                        if( $pickedObject->value() !== $nextFindObject->value() )
+                        {
+                            PH::print_stdout("   * SKIPPED : this group has an object named '{$pickedObject->name()} that does exist in target location '{$tmp_DG_name}' with different value");
+                            $break = TRUE;
+                        }
+                    }
+                    elseif( $pickedObject->isGroup() && $nextFindObject->isGroup() )
+                    {
+                        $diff = $pickedObject->getValueDiff($nextFindObject);
+                        if( count($diff['minus']) != 0 || count($diff['plus']) != 0 )
+                        {
+                            PH::print_stdout("   * SKIPPED : this group has different membership compare to upperlevel");
+                            $break = TRUE;
+                        }
+                    }
+                    else
+                    {
+                        PH::print_stdout("   * SKIPPED : this group has an object named '{$pickedObject->name()} that does exist in target location '{$tmp_DG_name}' with different object type");
+                        $break = TRUE;
+                    }
+                }
+            }
+        }
+        return $break;
+    }
+
+    function checkParentServicePickObject($hash)
+    {
+        $break = False;
+        foreach( $hash as $pickedObject )
+        {
+            /** @var DeviceGroup $pickedObject_DG */
+            $pickedObject_DG = $pickedObject->owner->owner;
+            if( $pickedObject_DG->parentDeviceGroup !== null )
+            {
+                $nextFindObject = $pickedObject_DG->parentDeviceGroup->serviceStore->find( $pickedObject->name(), null, True );
+                if( $nextFindObject !== null )
+                {
+                    /** @var Service|ServiceGroup $memberFound */
+                    if( $pickedObject->isService() && $nextFindObject->isService() )
+                    {
+                        if( $pickedObject->getDestPort() !== $nextFindObject->getDestPort() || $pickedObject->getSourcePort() !== $nextFindObject->getSourcePort() || $pickedObject->protocol() !== $nextFindObject->protocol() )
+                        {
+                            PH::print_stdout("   * SKIPPED : this group has an object named '{$pickedObject->name()} that does exist in target location '{$tmp_DG_name}' with different value or protocol");
+                            $break = TRUE;
+                        }
+                    }
+                    elseif( $pickedObject->isGroup() && $nextFindObject->isGroup() )
+                    {
+                        //todo 20230518 check deeper if this group group part must be validate more
+                        $diff = $pickedObject->getValueDiff($nextFindObject);
+                        if( count($diff['minus']) != 0 || count($diff['plus']) != 0 )
+                        {
+                            PH::print_stdout("   * SKIPPED : this group has different member ship compare to upperlevel");
+                            $break = TRUE;
+                        }
+                    }
+                    else
+                    {
+                        PH::print_stdout("   * SKIPPED : this group has an object named '{$pickedObject->name()} that does exist in target location '{$tmp_DG_name}' with different object type");
+                        $break = TRUE;
+                    }
+                }
+            }
+        }
+        return $break;
+    }
 
     function servicegroup_merging()
     {
@@ -2045,6 +2243,8 @@ class MERGER extends UTIL
                     $hashMap[$value][] = $object;
                     if( $parentStore !== null )
                         $object->ancestor = self::findAncestor( $parentStore, $object, "serviceStore");
+
+                    $object->childancestor = self::findChildAncestor( $childDeviceGroups, $object, "serviceStore");
                 }
                 else
                     $upperHashMap[$value][] = $object;
@@ -2104,38 +2304,12 @@ class MERGER extends UTIL
 
                     $skip = FALSE;
 
-                    /** @var DeviceGroup $pickedObject_DG */
-                    $pickedObject_DG = $pickedObject->owner->owner;
-                    if( $pickedObject_DG->parentDeviceGroup !== null )
+
+                    $break = $this->checkParentServicePickObject( $hash );
+                    if( $break )
                     {
-                        $nextFindObject = $pickedObject_DG->parentDeviceGroup->serviceStore->find( $pickedObject->name(), null, True );
-                        if( $nextFindObject !== null )
-                        {
-                            /** @var Service|ServiceGroup $memberFound */
-                            if( $pickedObject->isService() && $nextFindObject->isService() )
-                            {
-                                if( $pickedObject->getDestPort() !== $nextFindObject->getDestPort() || $pickedObject->getSourcePort() !== $nextFindObject->getSourcePort() || $pickedObject->protocol() !== $nextFindObject->protocol() )
-                                {
-                                    PH::print_stdout("   * SKIPPED : this group has an object named '{$pickedObject->name()} that does exist in target location '{$tmp_DG_name}' with different value or protocol");
-                                    $skip = TRUE;
-                                }
-                            }
-                            elseif( $pickedObject->isGroup() && $nextFindObject->isGroup() )
-                            {
-                                //todo 20230518 check deeper if this group group part must be validate more
-                                $diff = $pickedObject->getValueDiff($nextFindObject);
-                                if( count($diff['minus']) != 0 || count($diff['plus']) != 0 )
-                                {
-                                    PH::print_stdout("   * SKIPPED : this group has different member ship compare to upperleve");
-                                    $skip = TRUE;
-                                }
-                            }
-                            else
-                            {
-                                PH::print_stdout("   * SKIPPED : this group has an object named '{$pickedObject->name()} that does exist in target location '{$tmp_DG_name}' with different object type");
-                                $skip = TRUE;
-                            }
-                        }
+                        PH::print_stdout("     this object can not be created" );
+                        continue;
                     }
 
                     foreach( $pickedObject->members() as $memberObject )
@@ -2164,7 +2338,7 @@ class MERGER extends UTIL
                                 $diff = $memberObject->getValueDiff($memberFound);
                                 if( count($diff['minus']) != 0 || count($diff['plus']) != 0 )
                                 {
-                                    PH::print_stdout("   * SKIPPED : this group has different member ship compare to upperleve");
+                                    PH::print_stdout("   * SKIPPED : this group has different member ship compare to upperlevel");
                                     $skip = TRUE;
                                 }
                             }
@@ -2366,6 +2540,50 @@ class MERGER extends UTIL
                         continue;
                     }
 
+                    if( isset( $object->childancestor ) )
+                    {
+                        $childancestor = $object->childancestor;
+
+                        if( $childancestor !== null )
+                        {
+                            if( !$childancestor->isGroup() )
+                            {
+                                PH::print_stdout("    - SKIP: object name '{$object->_PANC_shortName()}' as one ancestor is of type: ". get_class( $childancestor )." '{$childancestor->_PANC_shortName()}' value: ".$childancestor->value());
+                                $this->skippedObject( $index, $object, $childancestor, 'childancestor of type: '.get_class( $childancestor ));
+                                break;
+                            }
+
+                            //Todo check ip4mapping of $childancestor and $object
+                            /*
+                            if( $hashGenerator($object) == $hashGenerator($ancestor) )
+                            {
+                                print "additional validation needed if same value\n";
+                                break;
+                            }
+                            else
+                            {
+                                */
+                            $this->servicegroupGetValueDiff($childancestor, $object, true);
+
+                            if( isset($childancestor->owner) )
+                            {
+                                $tmp_ancestor_DGname = $childancestor->owner->owner->name();
+                                if( $tmp_ancestor_DGname === "" )
+                                    $tmp_ancestor_DGname = "shared";
+                            }
+                            else
+                                $tmp_ancestor_DGname = "shared";
+
+
+
+                            PH::print_stdout("    - group '{$object->name()}' cannot be merged because it has an ancestor at DG: ".$tmp_ancestor_DGname );
+                            PH::print_stdout( "    - ancestor type: ".get_class( $childancestor ) );
+                            $this->skippedObject( $index, $object, $childancestor, 'childancestor at DG: '.$tmp_ancestor_DGname);
+
+                            break;
+                            //}
+                        }
+                    }
                     if( $object === $pickedObject )
                     {
                         #PH::print_stdout("    - SKIPPED: '{$object->name()}' === '{$pickedObject->name()}': ");
@@ -2573,6 +2791,8 @@ class MERGER extends UTIL
                         $hashMap[$value][] = $object;
                         if( $parentStore !== null )
                             $object->ancestor = self::findAncestor($parentStore, $object, "serviceStore");
+
+                        $object->childancestor = self::findChildAncestor( $childDeviceGroups, $object, "serviceStore");
                     }
                     else
                         $upperHashMap[$value][] = $object;
@@ -2600,6 +2820,7 @@ class MERGER extends UTIL
                         $hashMap[$value][] = $object;
                         if( $parentStore !== null )
                             $object->ancestor = self::findAncestor($parentStore, $object, "serviceStore");
+                        $object->childancestor = self::findChildAncestor( $childDeviceGroups, $object, "serviceStore");
                     }
                     else
                         $upperHashMap[$value][] = $object;

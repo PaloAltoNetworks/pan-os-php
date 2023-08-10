@@ -452,34 +452,39 @@ class Address
      * Return an array['start']= startip and ['end']= endip
      * @return IP4Map
      */
-    public function getIP4Mapping()
+    public function getIP4Mapping( $RuleReferenceLocation = null )
     {
-        if( isset($this->_ip4Map) )
+        if( $RuleReferenceLocation !== null )
+            $object = $RuleReferenceLocation->addressStore->find($this->name());
+        else
+            $object = $this;
+            
+        if( isset($object->_ip4Map) )
         {
-            return $this->_ip4Map;
+            return $object->_ip4Map;
         }
 
-        if( $this->isTmpAddr() )
+        if( $object->isTmpAddr() )
         {
-            if( !$this->nameIsValidRuleIPEntry() )
+            if( !$object->nameIsValidRuleIPEntry() )
             {
                 // if this object is temporary/unsupported, we send an empty mapping
-                $this->_ip4Map = new IP4Map();
-                $this->_ip4Map->unresolved[$this->name] = $this;
+                $object->_ip4Map = new IP4Map();
+                $object->_ip4Map->unresolved[$object->name] = $object;
             }
             else
-                $this->_ip4Map = IP4Map::mapFromText($this->name);
+                $object->_ip4Map = IP4Map::mapFromText($object->name);
         }
-        elseif( $this->type != self::TypeIpRange && $this->type != self::TypeIpNetmask && $this->type != self::TypeIpWildcard )
+        elseif( $object->type != self::TypeIpRange && $object->type != self::TypeIpNetmask && $object->type != self::TypeIpWildcard )
         {
-            $this->_ip4Map = new IP4Map();
-            $this->_ip4Map->unresolved[$this->name] = $this;
+            $object->_ip4Map = new IP4Map();
+            $object->_ip4Map->unresolved[$object->name] = $object;
         }
-        elseif( $this->type == self::TypeIpNetmask || $this->type == self::TypeIpRange || $this->type == self::TypeIpWildcard )
+        elseif( $object->type == self::TypeIpNetmask || $object->type == self::TypeIpRange || $object->type == self::TypeIpWildcard )
         {
-            if( $this->type == self::TypeIpWildcard )
+            if( $object->type == self::TypeIpWildcard )
             {
-                $array = explode( "/", $this->value() );
+                $array = explode( "/", $object->value() );
                 $address = $array[0];
                 $wildcardmask = $array[1];
 
@@ -499,29 +504,29 @@ class Address
                 {
                     $tmp_value = $address."/".$cidr;
 
-                    $this->_ip4Map = IP4Map::mapFromText($tmp_value);
-                    if( $this->_ip4Map->count() == 0 )
-                        $this->_ip4Map->unresolved[$this->name] = $this->value();
+                    $object->_ip4Map = IP4Map::mapFromText($tmp_value);
+                    if( $object->_ip4Map->count() == 0 )
+                        $object->_ip4Map->unresolved[$object->name] = $object->value();
                 }
                 else
                 {
-                    $this->_ip4Map->unresolved[$this->name] = $this->value();
+                    $object->_ip4Map->unresolved[$object->name] = $object->value();
                 }
 
             }
             else
             {
-                $this->_ip4Map = IP4Map::mapFromText($this->value);
-                if( $this->_ip4Map->count() == 0 )
-                    $this->_ip4Map->unresolved[$this->name] = $this;
+                $object->_ip4Map = IP4Map::mapFromText($object->value);
+                if( $object->_ip4Map->count() == 0 )
+                    $object->_ip4Map->unresolved[$object->name] = $object;
             }
         }
         else
         {
-            derr("unexpected type: ".$this->type() );
+            derr("unexpected type: ".$object->type() );
         }
 
-        return $this->_ip4Map;
+        return $object->_ip4Map;
     }
 
 

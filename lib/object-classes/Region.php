@@ -156,7 +156,7 @@ class Region
      * Return an array['start']= startip and ['end']= endip
      * @return IP4Map
      */
-    public function getIP4Mapping()
+    public function getIP4Mapping( $RuleReferenceLocation = null)
     {
         if( isset($this->_ip4Map) )
         {
@@ -178,6 +178,31 @@ class Region
     public function members()
     {
         return $this->members;
+    }
+
+    /**
+     * @return string ie: 'ip-netmask' 'ip-range'
+     */
+    public function type()
+    {
+        return "region";
+    }
+
+    /**
+     * @param $otherObject Region
+     * @return bool
+     */
+    public function equals($otherObject)
+    {
+        if( !$otherObject->isRegion() )
+            return FALSE;
+
+        if( $otherObject->name != $this->name )
+            return FALSE;
+
+        //Todo: same value of Region objects
+        #return $this->sameValue($otherObject);
+        return False;
     }
 
     static protected $templatexml = '<entry name="**temporarynamechangeme**"><address><member>tempvaluechangeme</member></entry>';

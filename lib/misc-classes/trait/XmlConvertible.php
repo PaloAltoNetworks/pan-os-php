@@ -54,7 +54,7 @@ trait XmlConvertible
         return DH::domlist_to_xml($this->xmlroot->childNodes, -1, FALSE);
     }
 
-    public function API_sync()
+    public function API_sync( $new = false)
     {
         $xpath = DH::elementToPanXPath($this->xmlroot);
         $con = findConnectorOrDie($this);
@@ -62,7 +62,13 @@ trait XmlConvertible
         if( $con->isAPI() )
             $con->sendEditRequest($xpath, $this->getXmlText_inline());
         elseif( $con->isSaseAPI() )
-            $con->sendPUTRequest($this);
+        {
+            if( $new )
+                $con->sendCreateRequest($this);
+            else
+                $con->sendPUTRequest($this);
+        }
+
     }
 
 

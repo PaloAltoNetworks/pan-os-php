@@ -182,7 +182,7 @@ class PH
 
     private static $library_version_major = 2;
     private static $library_version_sub = 1;
-    private static $library_version_bugfix = 12;
+    private static $library_version_bugfix = 13;
 
     //BASIC AUTH PAN-OS 7.1
     public static $softwareupdate_key = "658d787f293e631196dac9fb29490f1cc1bb3827";
@@ -471,7 +471,8 @@ class PH
                         $host = $fileExplode[0];
                     }
                     $connector = PanAPIConnector::findOrCreateConnectorFromHost($host);
-                    $connector->setType($connector->info_deviceType);
+                    #swaschkut: not working 20230807
+                    #$connector->setType($connector->info_deviceType);
                 }
                 else
                 {

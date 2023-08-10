@@ -469,36 +469,6 @@ SecurityProfileCallContext::$supportedActions[] = array(
 
 
         $lines = '';
-        $encloseFunction = function ($value, $nowrap = TRUE) {
-            if( is_string($value) )
-                $output = htmlspecialchars($value);
-            elseif( is_array($value) )
-            {
-                $output = '';
-                $first = TRUE;
-                foreach( $value as $subValue )
-                {
-                    if( !$first )
-                    {
-                        $output .= '<br />';
-                    }
-                    else
-                        $first = FALSE;
-
-                    if( is_string($subValue) )
-                        $output .= htmlspecialchars($subValue);
-                    else
-                        $output .= htmlspecialchars($subValue->name());
-                }
-            }
-            else
-                derr('unsupported');
-
-            if( $nowrap )
-                return '<td style="white-space: nowrap">' . $output . '</td>';
-
-            return '<td>' . $output . '</td>';
-        };
 
         $count = 0;
         if( isset($context->objectList) )
@@ -513,32 +483,32 @@ SecurityProfileCallContext::$supportedActions[] = array(
                 else
                     $lines .= "<tr bgcolor=\"#DDDDDD\">";
 
-                $lines .= $encloseFunction( (string)$count );
+                $lines .= $context->encloseFunction( (string)$count );
 
                 if( $object->owner->owner === null )
                 {
-                    $lines .= $encloseFunction('predefined');
+                    $lines .= $context->encloseFunction('predefined');
                 }
                 else
                 {
                     if( $object->owner->owner !== null && ( $object->owner->owner->isPanorama() || $object->owner->owner->isFirewall() ) )
-                        $lines .= $encloseFunction('shared');
+                        $lines .= $context->encloseFunction('shared');
                     else
-                        $lines .= $encloseFunction($object->owner->owner->name());
+                        $lines .= $context->encloseFunction($object->owner->owner->name());
                 }
 
 
-                $lines .= $encloseFunction($object->name());
+                $lines .= $context->encloseFunction($object->name());
 
-                $lines .= $encloseFunction( $object->owner->name() );
+                $lines .= $context->encloseFunction( $object->owner->name() );
 
 
                 if( isset($object->secprof_type) )
-                    $lines .= $encloseFunction($object->secprof_type);
+                    $lines .= $context->encloseFunction($object->secprof_type);
                 else
-                    $lines .= $encloseFunction(get_class($object) );
+                    $lines .= $context->encloseFunction(get_class($object) );
 
-                #$lines .= $encloseFunction($object->value());
+                #$lines .= $context->encloseFunction($object->value());
                 if( !empty( $object->threatException ) )
                 {
                     $tmp_array = array();
@@ -546,10 +516,10 @@ SecurityProfileCallContext::$supportedActions[] = array(
                         $tmp_array[] = $threatname;
 
                     $string = implode( ",", $tmp_array);
-                    $lines .= $encloseFunction( $string );
+                    $lines .= $context->encloseFunction( $string );
                 }
                 else
-                    $lines .= $encloseFunction('');
+                    $lines .= $context->encloseFunction('');
 
                 if( get_class($object) == "customURLProfile" )
                 {
@@ -561,11 +531,11 @@ SecurityProfileCallContext::$supportedActions[] = array(
                         $tmp_array[] = $member;
 
                     $string = implode( ",", $tmp_array);
-                    $lines .= $encloseFunction( $tmp_array );
+                    $lines .= $context->encloseFunction( $tmp_array );
                 }
                 else
                 {
-                    $lines .= $encloseFunction('');
+                    $lines .= $context->encloseFunction('');
                 }
 
                 if( $addWhereUsed )
@@ -574,7 +544,7 @@ SecurityProfileCallContext::$supportedActions[] = array(
                     foreach( $object->getReferences() as $ref )
                         $refTextArray[] = $ref->_PANC_shortName();
 
-                    $lines .= $encloseFunction($refTextArray);
+                    $lines .= $context->encloseFunction($refTextArray);
                 }
                 if( $addUsedInLocation )
                 {
@@ -585,7 +555,7 @@ SecurityProfileCallContext::$supportedActions[] = array(
                         $refTextArray[$location] = $location;
                     }
 
-                    $lines .= $encloseFunction($refTextArray);
+                    $lines .= $context->encloseFunction($refTextArray);
                 }
 
                 $lines .= "</tr>\n";
