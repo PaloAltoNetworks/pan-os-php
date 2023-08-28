@@ -433,14 +433,14 @@ class CONVERTER extends UTIL
             $this->display_error_usage_exit('"vendor" is missing from arguments');
 
         if( isset(PH::$args['in']) )
-        {
             $this->configInput = PH::$args['in'];
-            $this->configInput = PH::processIOMethod($this->configInput, TRUE);
-        }
         elseif( isset(PH::$args['template']) )
-            $this->configInput['filename'] = __DIR__ . "/../panorama_baseconfig.xml";
+            $this->configInput = __DIR__ . "/../panorama_baseconfig.xml";
         else
-            $this->configInput['filename'] = __DIR__ . "/../panos_baseconfig.xml";
+            $this->configInput = __DIR__ . "/../panos_baseconfig.xml";
+
+        $this->configInput = PH::processIOMethod($this->configInput, TRUE);
+
 
 
         if( isset(PH::$args['routetable']) )
