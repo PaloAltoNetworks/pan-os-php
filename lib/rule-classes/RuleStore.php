@@ -498,7 +498,7 @@ class RuleStore
      * @param integer|string $startCount
      * @return string
      */
-    public function findAvailableName($base, $suffix = '', $startCount = '')
+    public function findAvailableName($base, $suffix = '', $startCount = '', $nested = TRUE)
     {
         //Todo based on PAN-OS rule name was extended
         if( $this->owner->version >= 81 )
@@ -524,7 +524,7 @@ class RuleStore
             else
                 $newname = $base . $suffix . $inc;
 
-            if( $this->isRuleNameAvailable($newname) )
+            if( $this->isRuleNameAvailable($newname, $nested) )
                 return $newname;
 
             if( $startCount == '' )
@@ -575,15 +575,15 @@ class RuleStore
      * @param null|bool $inPostRuleBase
      * @return Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AuthenticationRule|PbfRule|QoSRule|DoSRule
      */
-    public function cloneRule($rule, $newName = null, $inPostRuleBase = null)
+    public function cloneRule($rule, $newName = null, $inPostRuleBase = null, $nested = TRUE )
     {
         if( $newName !== null )
         {
-            if( !$this->isRuleNameAvailable($newName) )
+            if( !$this->isRuleNameAvailable($newName, $nested) )
                 derr('this rule name is not available: ' . $newName);
         }
         else
-            $newName = $this->findAvailableName($rule->name(), '');
+            $newName = $this->findAvailableName($rule->name(), '', '', $nested);
 
         if( $inPostRuleBase === null )
             $inPostRuleBase = $rule->isPostRule();
@@ -610,9 +610,9 @@ class RuleStore
      * @param $inPostRuleBase null|bool
      * @return NatRule|SecurityRule
      */
-    public function API_cloneRule($rule, $newName, $inPostRuleBase = null)
+    public function API_cloneRule($rule, $newName, $inPostRuleBase = null, $nested = TRUE)
     {
-        $nr = $this->cloneRule($rule, $newName, $inPostRuleBase);
+        $nr = $this->cloneRule($rule, $newName, $inPostRuleBase, $nested);
 
         $con = findConnectorOrDie($this);
 

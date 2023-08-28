@@ -4030,7 +4030,7 @@ RuleCallContext::$supportedActions[] = array(
             }
             else
             {
-                $ruleStore->API_cloneRule($rule, null, $moveToPost);
+                $ruleStore->API_cloneRule($rule, null, $moveToPost, FALSE);
                 $rule->owner->API_remove($rule);
             }
         }
@@ -4046,14 +4046,16 @@ RuleCallContext::$supportedActions[] = array(
             }
             else
             {
-                $ruleStore->cloneRule($rule, null, $moveToPost);
+                $ruleStore->cloneRule($rule, null, $moveToPost, FALSE);
                 $rule->owner->remove($rule);
             }
         }
 
     },
-    'args' => array('location' => array('type' => 'string', 'default' => '*nodefault*'),
-        'preORpost' => array('type' => 'string', 'default' => 'pre', 'choices' => array('pre', 'post')))
+    'args' => array(
+        'location' => array('type' => 'string', 'default' => '*nodefault*'),
+        'preORpost' => array('type' => 'string', 'default' => 'pre', 'choices' => array('pre', 'post'))
+    )
 );
 
 RuleCallContext::$supportedActions[] = array(
