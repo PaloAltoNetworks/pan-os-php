@@ -1292,6 +1292,13 @@ class AddressGroup
         }
     }
 
+    /**
+     * @return string ie: 'ip-netmask' 'ip-range'
+     */
+    public function type()
+    {
+        return "address-group";
+    }
 
     static protected $templatexml = '<entry name="**temporarynamechangeme**"></entry>';
     static protected $templatexml_v6 = '<entry name="**temporarynamechangeme**"><static></static></entry>';
