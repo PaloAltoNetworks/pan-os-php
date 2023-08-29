@@ -1046,7 +1046,7 @@ class UTIL
         unset($xpathResult);
 
 
-        if( $this->configInput['type'] !== 'sase-api')
+        if( isset($this->configInput['type']) && $this->configInput['type'] !== 'sase-api')
         {
             if( $this->configType == 'panos' )
             {

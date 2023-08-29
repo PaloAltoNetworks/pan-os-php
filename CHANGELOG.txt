@@ -1,6 +1,21 @@
 CHANGELOG
 
-2.1.13
+2.1.14
+UTIL:
+type=rule actions=display | introduction of argument actions=display:hitcount,ApplicationSeen
+
+BUGFIX:
+* type=vendor-migration | general bugfix to use correct baseconfig file if no argument in= is defined
+* class AddressGroup | bugfix for missing function type() - related to type=address actions=move
+* type=rule location=DG1 'actions=move:DG2,pre' - no rulename change
+* class AddressCommon | bugfix if rule is already deleted - AddressRuleContainer is NULL => type=rule actions=removeWhereUsed
+* type=rule | bugfix for actions=exporttoexcel - to correctly display columns
+
+GENERAL:
+* update to  App-ID version: 8748-8241
+
+
+2.1.13 (20230810)
 UTIL:
 * type=address | introduction of actions=upload-address-2cloudmanager:panorama.xml,DGname && actions=upload-addressgroup-2cloudmanager:panorama.xml,DGname
 * type=address actions=upload-address-2cloudmanager | extend validation if object name is already available
