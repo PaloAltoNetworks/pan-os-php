@@ -3804,6 +3804,8 @@ RuleCallContext::$supportedActions[] = array(
         $addResolvedApplicationSummary = FALSE;
         $addResolvedScheduleSummary = FALSE;
         $addResolvedServiceAppDefaultSummary = FALSE;
+        $addAppSeenSummary = FALSE;
+        $addHitCountSummary = FALSE;
 
         $optionalFields = &$context->arguments['additionalFields'];
 
@@ -3817,6 +3819,10 @@ RuleCallContext::$supportedActions[] = array(
             $addResolvedApplicationSummary = TRUE;
         if( isset($optionalFields['ResolveScheduleSummary']) )
             $addResolvedScheduleSummary = TRUE;
+        if( isset($optionalFields['ApplicationSeen']) )
+            $addAppSeenSummary = TRUE;
+        if( isset($optionalFields['HitCount']) )
+            $addHitCountSummary = TRUE;
 
         if( get_class( $context->object ) === "SecurityRule" )
         {
@@ -3863,6 +3869,18 @@ RuleCallContext::$supportedActions[] = array(
 
             if( $addResolvedScheduleSummary )
                 PH::$JSON_TMP['sub']['object'][$rule->name()]['schedule_resolved_sum'] = $context->ScheduleResolveSummary( $rule );
+
+            if( $addAppSeenSummary )
+                PH::$JSON_TMP['sub']['object'][$rule->name()]['application_seen'] = $context->API_apps_seen( $rule );
+
+            if( $addHitCountSummary && $context->isAPI)
+            {
+                $rule_hitcount_array = $context->API_showRuleHitCount( $rule,false, false );
+
+                PH::$JSON_TMP['sub']['object'][$rule->name()]['first-hit'] = $rule_hitcount_array['first-hit'];
+                PH::$JSON_TMP['sub']['object'][$rule->name()]['last-hit'] = $rule_hitcount_array['last-hit'];
+                PH::$JSON_TMP['sub']['object'][$rule->name()]['hit-count'] = $rule_hitcount_array['hit-count'];
+            }
         }
     },
     'args' => array(
@@ -3870,13 +3888,15 @@ RuleCallContext::$supportedActions[] = array(
         array('type' => 'pipeSeparatedList',
             'subtype' => 'string',
             'default' => '*NONE*',
-            'choices' => array('ResolveAddressSummary', 'ResolveServiceSummary', 'ResolveServiceAppDefaultSummary','ResolveApplicationSummary', 'ResolveScheduleSummary'),
+            'choices' => array('ResolveAddressSummary', 'ResolveServiceSummary', 'ResolveServiceAppDefaultSummary','ResolveApplicationSummary', 'ResolveScheduleSummary', 'ApplicationSeen', 'HitCount'),
             'help' => "pipe(|) separated list of additional field to include in the report. The following is available:\n" .
                 "  - ResolveAddressSummary : fields with address objects will be resolved to IP addressed and summarized in a new column)\n" .
                 "  - ResolveServiceSummary : fields with service objects will be resolved to their value and summarized in a new column)\n"  .
                 "  - ResolveServiceAppDefaultSummary : fields with application objects will be resolved to their service default value and summarized in a new column)\n"  .
                 "  - ResolveApplicationSummary : fields with application objects will be resolved to their category and risk)\n"  .
-                "  - ResolveScheduleSummary : fields with schedule objects will be resolved to their expire time)\n"
+                "  - ResolveScheduleSummary : fields with schedule objects will be resolved to their expire time)\n" .
+                "  - ApplicationSeen : all App-ID seen on the Device SecurityRule will be listed\n" .
+                "  - HitCount : Rule - 'first-hit' - 'last-hit' - 'hit-count' will be listed"
         )
     )
 );
@@ -4455,14 +4475,15 @@ RuleCallContext::$supportedActions[] = array(
         foreach( $fields as $fieldName => $value )
         {
             if( ((
-                        $fieldName == 'src_resolved_sum' || $fieldName == 'src_resolved_value' ||
+                        $fieldName == 'src_resolved_sum' || $fieldName == 'src_resolved_sumOLD' || $fieldName == 'src_resolved_value' ||
                         $fieldName == 'src_resolved_nested_name' || $fieldName == 'src_resolved_nested_value' || $fieldName == 'src_resolved_nested_location' ||
-                        $fieldName == 'dst_resolved_sum' || $fieldName == 'dst_resolved_value' ||
+                        $fieldName == 'dst_resolved_sum' || $fieldName == 'dst_resolved_sumOLD' || $fieldName == 'dst_resolved_value' ||
                         $fieldName == 'dst_resolved_nested_name' || $fieldName == 'dst_resolved_nested_value' || $fieldName == 'dst_resolved_nested_location' ||
                         $fieldName == 'dnat_host_resolved_sum' ||
                         $fieldName == 'snat_address_resolved_sum')
                     && !$addResolvedAddressSummary) ||
                 (($fieldName == 'service_resolved_sum' ||
+                        $fieldName == 'service_resolved_nested_name' || $fieldName == 'service_resolved_nested_value' || $fieldName == 'service_resolved_nested_location' ||
                         $fieldName == 'service_count' || $fieldName == 'service_count_tcp' || $fieldName == 'service_count_udp') && !$addResolvedServiceSummary) ||
                 (($fieldName == 'service_appdefault_resolved_sum') && !$addResolvedServiceAppDefaultSummary) ||
                 (($fieldName == 'application_resolved_sum') && !$addResolvedApplicationSummary) ||
