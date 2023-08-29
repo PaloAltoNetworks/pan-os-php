@@ -12,6 +12,7 @@ BUGFIX:
 * type=rule | bugfix for actions=exporttoexcel - to correctly display columns
 
 GENERAL:
+* update to  App-ID version: 8748-8241
 
 
 2.1.13 (20230810)
