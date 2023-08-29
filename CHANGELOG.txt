@@ -7,6 +7,7 @@ BUGFIX:
 * type=vendor-migration | general bugfix to use correct baseconfig file if no argument in= is defined
 * class AddressGroup | bugfix for missing function type() - related to type=address actions=move
 * type=rule location=DG1 'actions=move:DG2,pre' - no rulename change
+* class AddressCommon | bugfix if rule is already deleted - AddressRuleContainer is NULL => type=rule actions=removeWhereUsed
 
 GENERAL:
 

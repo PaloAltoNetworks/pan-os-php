@@ -255,6 +255,10 @@ trait AddressCommon
             elseif( $refClass == 'AddressRuleContainer' )
             {
                 /** @var AddressRuleContainer $ref */
+                //->0 === null will happen if rule was already deleted
+                if( $ref->o === null )
+                    continue;
+
                 if( $ref->count() <= 1 && $actionIfLastInRule == 'delete' )
                 {
                     if( $displayOutput )
