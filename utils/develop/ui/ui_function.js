@@ -84,7 +84,7 @@ function addNewRow()
                     <td>
                         <li>
                         shadow-json
-                        <input type="checkbox" id="shadowjson${Idx}" name="shadowjson${Idx}"
+                        <input type="checkbox" id="shadowjson${Idx}" name="shadowjson${Idx}" checked
                         >
                         </li><li>
                         location
