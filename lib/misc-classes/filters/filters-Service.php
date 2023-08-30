@@ -20,7 +20,10 @@ RQuery::$defaultFilters['service']['reflocationcount']['operators']['>,<,=,!'] =
 );
 RQuery::$defaultFilters['service']['object']['operators']['is.unused'] = array(
     'Function' => function (ServiceRQueryContext $context) {
-        return $context->object->countReferences() == 0;
+        $object = $context->object;
+
+        return $object->objectIsUnused();
+        #return $context->object->countReferences() == 0;
     },
     'arg' => FALSE,
     'ci' => array(

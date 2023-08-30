@@ -4,6 +4,7 @@ CHANGELOG
 UTIL:
 
 BUGFIX:
+* type=address/service 'filter=(object is.unused/is.unused.recursive) | overwritten objects used at higher DG level are now also used
 
 GENERAL:
 
