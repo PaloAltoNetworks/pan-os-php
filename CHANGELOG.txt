@@ -5,6 +5,7 @@ UTIL:
 
 BUGFIX:
 * type=address/service 'filter=(object is.unused/is.unused.recursive) | overwritten objects used at higher DG level are now also used
+* bugfix to create correct XML file Increament for prettyXML - so that it is identical to Panorama / Firewall created config
 
 GENERAL:
 

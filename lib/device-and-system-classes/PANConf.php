@@ -702,7 +702,7 @@ class PANConf
         if( $printMessage )
             PH::print_stdout( "Now saving PANConf to file '$fileName'...");
 
-        $xml = &DH::dom_to_xml($this->xmlroot, $indentingXml, $lineReturn, -1, $indentingXmlIncreament);
+        $xml = &DH::dom_to_xml($this->xmlroot, $indentingXml, $lineReturn, -1, $indentingXmlIncreament + 1);
 
         $path_parts = pathinfo($fileName);
         if (!is_dir($path_parts['dirname']))
