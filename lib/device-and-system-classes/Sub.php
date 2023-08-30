@@ -47,10 +47,7 @@ class Sub
             $finalroot = DH::findFirstElement('rules', $tmproot);
             if( $finalroot !== FALSE )
             {
-                if( !DH::hasChild($finalroot) )
-                    $finalroot = $this->createDefaultSecurityRule( );
-                else
-                    $finalroot = $this->createPartialDefaultSecurityRule( $finalroot );
+                $finalroot = $this->createPartialDefaultSecurityRule( $finalroot );
             }
         }
 

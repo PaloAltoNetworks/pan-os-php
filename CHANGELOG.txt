@@ -4,6 +4,7 @@ CHANGELOG
 UTIL:
 
 BUGFIX:
+* class Sub | bugfix for default-securiy-rules | if partial config is already available
 
 GENERAL:
 
