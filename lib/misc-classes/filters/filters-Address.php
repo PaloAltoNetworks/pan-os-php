@@ -20,7 +20,10 @@ RQuery::$defaultFilters['address']['reflocationcount']['operators']['>,<,=,!'] =
 );
 RQuery::$defaultFilters['address']['object']['operators']['is.unused'] = array(
     'Function' => function (AddressRQueryContext $context) {
-        return $context->object->countReferences() == 0;
+        $object = $context->object;
+
+        return $object->objectIsUnused();
+        #return $context->object->countReferences() == 0;
     },
     'arg' => FALSE,
     'ci' => array(
@@ -33,7 +36,6 @@ RQuery::$defaultFilters['address']['object']['operators']['is.unused.recursive']
         $object = $context->object;
 
         return $object->objectIsUnusedRecursive();
-
     },
     'arg' => FALSE,
     'ci' => array(

@@ -509,6 +509,31 @@ trait ReferenceableObject
         return $this->name;
     }
 
+    public function objectIsUnused()
+    {
+        $className = "";
+
+        if( get_class($this) == 'Service' || get_class($this) == 'ServiceGroup' )
+            $className = 'ServiceGroup';
+        elseif( get_class($this) == 'Address' || get_class($this) == 'AddressGroup' )
+            $className = 'AddressGroup';
+        else
+            return null;
+
+        /** @var Address|AddressGroup|Service|ServiceGroup $this */
+        if( $this->countReferences() == 0 )
+        {
+            //- check if higher DG has same name and only if it is also unused return TRUE
+            $tmp_obj = $this->owner->find( $this->name() );
+            if( $tmp_obj === null || $tmp_obj->countReferences() == 0 )
+                return TRUE;
+            else
+                return FALSE;
+        }
+
+        return FALSE;
+    }
+
     public function objectIsUnusedRecursive()
     {
         $className = "";
@@ -520,9 +545,16 @@ trait ReferenceableObject
         else
             return null;
 
-        /** @var Service|ServiceGroup $ref */
+        /** @var Address|AddressGroup|Service|ServiceGroup $this */
         if( $this->countReferences() == 0 )
-            return TRUE;
+        {
+            //- check if higher DG has same name and only if it is also unused return TRUE
+            $tmp_obj = $this->owner->find( $this->name() );
+            if( $tmp_obj === null || $tmp_obj->countReferences() == 0 )
+                return TRUE;
+            else
+                return FALSE;
+        }
 
         $groups = $this->findReferencesWithClass($className);
 
@@ -540,7 +572,5 @@ trait ReferenceableObject
         }
 
         return TRUE;
-
     }
-
 }
