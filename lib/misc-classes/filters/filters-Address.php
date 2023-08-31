@@ -585,6 +585,19 @@ RQuery::$defaultFilters['address']['tag']['operators']['has.regex'] = array(
         'input' => 'input/panorama-8.0.xml'
     )
 );
+RQuery::$defaultFilters['address']['tag']['operators']['is.set'] = array(
+    'Function' => function (AddressRQueryContext $context) {
+        if( $context->object->isRegion() )
+            return FALSE;
+        return count($context->object->tags->getAll()) > 0;
+    },
+    'arg' => FALSE,
+    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->tags->parentCentralStore->find('!value!');",
+    'ci' => array(
+        'fString' => '(%PROP% grp.shared-group1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 RQuery::$defaultFilters['address']['location']['operators']['is'] = array(
     'Function' => function (AddressRQueryContext $context) {
         $owner = $context->object->owner->owner;

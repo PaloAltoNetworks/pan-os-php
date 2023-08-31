@@ -4,6 +4,7 @@ CHANGELOG
 UTIL:
 * type=address | new 'filter=(name same.as.region.predefined)'
 * class UTIL | extend if API mode - with App-id/AV/WF/Threat version info
+* type=address | introduce 'filter=(tag is.set)'
 
 BUGFIX:
 * class Sub | bugfix for default-securiy-rules | if partial config is already available
