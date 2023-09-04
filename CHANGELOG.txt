@@ -8,6 +8,7 @@ UTIL:
 
 BUGFIX:
 * class Sub | bugfix for default-securiy-rules | if partial config is already available
+* type=address-merger | bugfix to not delete TAG object from upperlevel if TAG object with same name exist at childDG
 
 GENERAL:
 * develop pan-os-php-api | per default enable shadow-json checkbox  - with shadow-nojson, output has a bug and filter are not working correctly - fixing later
