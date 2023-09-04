@@ -1597,7 +1597,7 @@ AddressCallContext::$supportedActions[] = array(
                 $tmpObject = $startLocation->parentDeviceGroup->addressStore->find($object->name(), null, FALSE);
                 if( $tmpObject != null )
                 {
-                    if( ($object->isGroup() and !$tmpObject->isGroup()) || (!$object->isGroup() and $tmpObject->isGroup()) )
+                    if( ($object->isGroup() and $tmpObject->isGroup()) || ($object->isGroup() and !$tmpObject->isGroup()) || (!$object->isGroup() and $tmpObject->isGroup()) )
                         $skipped = TRUE;
                     elseif( $object->type() != $tmpObject->type() )
                         $skipped = TRUE;

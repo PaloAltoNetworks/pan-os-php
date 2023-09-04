@@ -696,7 +696,7 @@ ServiceCallContext::$supportedActions[] = array(
                 $tmpObject = $startLocation->parentDeviceGroup->serviceStore->find($object->name(), null, FALSE);
                 if( $tmpObject != null )
                 {
-                    if( ($object->isGroup() and !$tmpObject->isGroup()) || (!$object->isGroup() and $tmpObject->isGroup()) )
+                    if( ($object->isGroup() and $tmpObject->isGroup()) || ($object->isGroup() and !$tmpObject->isGroup()) || (!$object->isGroup() and $tmpObject->isGroup()) )
                         $skipped = TRUE;
                     elseif( $object->protocol() != $tmpObject->protocol() )
                         $skipped = TRUE;
