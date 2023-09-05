@@ -1451,10 +1451,6 @@ AddressCallContext::$supportedActions[] = array(
 
         if( $targetLocation == 'shared' )
         {
-            $findSubSystem = $rootObject->findSubSystemByName($targetLocation);
-            if( $findSubSystem === null )
-                derr("cannot find VSYS/DG named '$targetLocation'");
-
             $targetStore = $rootObject->addressStore;
         }
         else
@@ -1562,62 +1558,66 @@ AddressCallContext::$supportedActions[] = array(
                 }
             }
 
-            //validation if upper/lower level is not changed
-            $tmplocalSub = $rootObject->findSubSystemByName($localLocation);
-            if( $tmplocalSub->isPanorama() )
+            if( !$context->subSystem->isFirewall() && !$context->subSystem->isVirtualSystem() )
             {
-                /** @var PanoramaConf $tmplocalSub */
-                $tmpChildSubs = $tmplocalSub->deviceGroups;
-            }
-            else
-                $tmpChildSubs = $tmplocalSub->childDeviceGroups();
-            $lowerLevelMove = false;
-            foreach( $tmpChildSubs as $childDG )
-            {
-                if( $targetLocation == $childDG->name() )
-                    $lowerLevelMove = true;
-            }
 
-            if( !$lowerLevelMove )
-            {
-                $startLocation = $tmplocalSub;
-                $endLocation = $findSubSystem;
-            }
-            else
-            {
-                $endLocation = $tmplocalSub;
-                $startLocation = $findSubSystem;
-            }
-            $skipped = FALSE;
-            do
-            {
-                if( !isset($startLocation->parentDeviceGroup->addressStore) )
-                    break;
-
-                $tmpObject = $startLocation->parentDeviceGroup->addressStore->find($object->name(), null, FALSE);
-                if( $tmpObject != null )
+                //validation if upper/lower level is not changed
+                $tmplocalSub = $rootObject->findSubSystemByName($localLocation);
+                if( $tmplocalSub->isPanorama() )
                 {
-                    if( ($object->isGroup() and $tmpObject->isGroup()) || ($object->isGroup() and !$tmpObject->isGroup()) || (!$object->isGroup() and $tmpObject->isGroup()) )
-                        $skipped = TRUE;
-                    elseif( $object->type() != $tmpObject->type() )
-                        $skipped = TRUE;
-                    elseif( $object->value() != $tmpObject->value() )
-                        $skipped = TRUE;
+                    /** @var PanoramaConf $tmplocalSub */
+                    $tmpChildSubs = $tmplocalSub->deviceGroups;
+                }
+                else
+                    $tmpChildSubs = $tmplocalSub->childDeviceGroups();
+
+                $lowerLevelMove = FALSE;
+                foreach( $tmpChildSubs as $childDG )
+                {
+                    if( $targetLocation == $childDG->name() )
+                        $lowerLevelMove = TRUE;
                 }
 
-                if( !$skipped )
-                    $startLocation = $startLocation->parentDeviceGroup;
+                if( !$lowerLevelMove )
+                {
+                    $startLocation = $tmplocalSub;
+                    $endLocation = $findSubSystem;
+                }
                 else
                 {
-                    if( !$lowerLevelMove )
-                        $string = "moving to upper level DG is not possible because of object available at lower DG level with same name but different object type or value";
-                    else
-                        $string = "moving to lower level DG is not possible because of object available at upper DG level with same name but different object type or value";
-                    PH::ACTIONstatus($context, "SKIPPED", $string);
-                    return;
+                    $endLocation = $tmplocalSub;
+                    $startLocation = $findSubSystem;
                 }
-            } while( $startLocation != $endLocation );
+                $skipped = FALSE;
+                do
+                {
+                    if( !isset($startLocation->parentDeviceGroup->addressStore) )
+                        break;
 
+                    $tmpObject = $startLocation->parentDeviceGroup->addressStore->find($object->name(), null, FALSE);
+                    if( $tmpObject != null )
+                    {
+                        if( ($object->isGroup() and $tmpObject->isGroup()) || ($object->isGroup() and !$tmpObject->isGroup()) || (!$object->isGroup() and $tmpObject->isGroup()) )
+                            $skipped = TRUE;
+                        elseif( $object->type() != $tmpObject->type() )
+                            $skipped = TRUE;
+                        elseif( $object->value() != $tmpObject->value() )
+                            $skipped = TRUE;
+                    }
+
+                    if( !$skipped )
+                        $startLocation = $startLocation->parentDeviceGroup;
+                    else
+                    {
+                        if( !$lowerLevelMove )
+                            $string = "moving to upper level DG is not possible because of object available at lower DG level with same name but different object type or value";
+                        else
+                            $string = "moving to lower level DG is not possible because of object available at upper DG level with same name but different object type or value";
+                        PH::ACTIONstatus($context, "SKIPPED", $string);
+                        return;
+                    }
+                } while( $startLocation != $endLocation );
+            }
             ///////////////////////////////
 
             $string = "moved, no conflict";
