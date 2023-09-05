@@ -144,6 +144,8 @@ class PANConf
 
     public $_auditComment = false;
 
+    public $panorama = null;
+
     public function name()
     {
         return $this->name;
