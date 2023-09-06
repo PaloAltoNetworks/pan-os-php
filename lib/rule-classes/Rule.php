@@ -196,6 +196,7 @@ class Rule
             {
                 $grouptagName = $node->textContent;
                 $this->grouptag = $this->owner->owner->tagStore->find( $grouptagName, $this->grouptag);
+                $this->grouptag->addReference($this);
             }
             else if( $node->nodeName == 'description' )
             {
