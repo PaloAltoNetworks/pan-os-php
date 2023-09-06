@@ -12,6 +12,7 @@ BUGFIX:
 * type=address/service actions=move | bugfix if group with same name already exist - correctly skip movement
 * class PANConf | fix for PHP 8.2
 * type=address/service actions=move:shared location=any - bugfix for Firewall config
+* type=rule-merger | bugfix to not add description twice, which exceeds description length to >1024
 
 GENERAL:
 * develop pan-os-php-api | per default enable shadow-json checkbox  - with shadow-nojson, output has a bug and filter are not working correctly - fixing later
