@@ -113,8 +113,11 @@ trait ObjectWithDescription
         $description = $this->description();
         $other_description = $other->description();
 
-        $description = mb_convert_encoding($description, 'UTF-8', 'ISO-8859-1');
-        $other_description = mb_convert_encoding($other_description, 'UTF-8', 'ISO-8859-1');
+        $description = iconv('UTF-8', 'ISO-8859-1//TRANSLIT//IGNORE', $description);
+        $other_description = iconv('UTF-8', 'ISO-8859-1//TRANSLIT//IGNORE', $other_description);
+
+        #$description = mb_convert_encoding($description, 'UTF-8', 'ISO-8859-1');
+        #$other_description = mb_convert_encoding($other_description, 'UTF-8', 'ISO-8859-1');
 
         if ( (empty($description) && empty($other_description)) || ( !empty($description) && !empty($other_description) && strpos($description, $other_description) !== false  )) {
             return;
