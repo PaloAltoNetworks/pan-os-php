@@ -905,12 +905,12 @@ class PANConf
         $stdoutarray['address objects']['unused'] = $gnaddresssUnused;
 
         $stdoutarray['addressgroup objects'] = array();
-        $stdoutarray['addressgroup objects']['shared'] = $this->addressStore->countTmpAddresses();
+        $stdoutarray['addressgroup objects']['shared'] = $this->addressStore->countAddressGroups();
         $stdoutarray['addressgroup objects']['total VSYSs'] = $gnaddressGs;
         $stdoutarray['addressgroup objects']['unused'] = $gnaddressGsUnused;
 
         $stdoutarray['temporary address objects'] = array();
-        $stdoutarray['temporary address objects']['shared'] = $this->addressStore->countAddresses();
+        $stdoutarray['temporary address objects']['shared'] = $this->addressStore->countTmpAddresses();
         $stdoutarray['temporary address objects']['total VSYSs'] = $gnTmpAddresses;
 
         $stdoutarray['region objects'] = array();
