@@ -111,6 +111,9 @@ class XMLISSUE extends UTIL
         $countDuplicateServiceObjects = 0;
         $fixedDuplicateServiceObjects = 0;
 
+        $countDuplicateTagObjects = 0;
+        $fixedDuplicateTagObjects = 0;
+
         $countDuplicateSecRuleObjects = 0;
         $countDuplicateNATRuleObjects = 0;
 
@@ -121,6 +124,9 @@ class XMLISSUE extends UTIL
         $fixedSecRuleServiceObjects=0;
         $countMissconfiguredSecRuleApplicationObjects=0;
         $fixedSecRuleApplicationObjects=0;
+
+        $countMissconfiguredSecRuleTagObjects=0;
+        $fixedSecRuleTagObjects=0;
 
         $countMissconfiguredSecRuleSourceObjects=0;
         $fixedSecRuleSourceObjects=0;
@@ -984,6 +990,7 @@ class XMLISSUE extends UTIL
                                     $secRuleFrom = array();
                                     $secRuleTo = array();
                                     $secRuleCategory = array();
+                                    $secRuleTags = array();
 
                                     /** @var DOMElement $objectNode */
                                     if( $objectNode->nodeType != XML_ELEMENT_NODE )
@@ -1038,6 +1045,31 @@ class XMLISSUE extends UTIL
 
                                     }
 
+
+                                    $objectNode_tags = DH::findFirstElement('tag', $objectNode);
+                                    if( $objectNode_tags !== false )
+                                    {
+                                        $demo = iterator_to_array($objectNode_tags->childNodes);
+                                        foreach( $demo as $objectTag )
+                                        {
+                                            /** @var DOMElement $objectTag */
+                                            if( $objectTag->nodeType != XML_ELEMENT_NODE )
+                                                continue;
+
+                                            $objectTagName = $objectTag->textContent;
+                                            if( isset($secRuleTags[$objectTagName]) )
+                                            {
+                                                //Secrule service has twice same service added
+                                                $text = "     - Secrule: ".$objectName." has same tag defined twice: ".$objectTagName;
+                                                $objectNode_tags->removeChild($objectTag);
+                                                $text .= PH::boldText(" (removed - no manual fix needed)");
+                                                PH::print_stdout( $text );
+                                                $fixedSecRuleTagObjects++;
+                                            }
+                                            else
+                                                $secRuleTags[$objectTagName] = $objectTag;
+                                        }
+                                    }
 
                                     //check if application has 'any' adn additional
                                     $objectNode_applications = DH::findFirstElement('application', $objectNode);
@@ -1721,6 +1753,7 @@ class XMLISSUE extends UTIL
         PH::print_stdout( " - FIXED: SecRule with duplicate service members: {$fixedSecRuleServiceObjects}");
         PH::print_stdout( " - FIXED: SecRule with duplicate application members: {$fixedSecRuleApplicationObjects}");
         PH::print_stdout( " - FIXED: SecRule with duplicate category members: {$fixedSecRuleCategoryObjects}");
+        PH::print_stdout( " - FIXED: SecRule with duplicate tag members: {$fixedSecRuleTagObjects}");
 
         PH::print_stdout( "\n - FIXED: ReadOnly duplicate DeviceGroup : {$fixedReadOnlyDeviceGroupobjects}");
         PH::print_stdout( "\n - FIXED: ReadOnly duplicate Template : {$fixedReadOnlyTemplateobjects}");
