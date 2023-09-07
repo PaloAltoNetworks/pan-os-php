@@ -3446,7 +3446,9 @@ class MERGER extends UTIL
                     $tmp_DG_name = 'shared';
 
                 /** @var Tag $tmp_tag */
-                $tmp_tag = $store->find( $pickedObject->name() );
+                $tmpPickedName = $pickedObject->name();
+                TAG::revertreplaceNamewith($tmpPickedName);
+                $tmp_tag = $store->find( $tmpPickedName );
                 if( $tmp_tag == null )
                 {
                     if( isset( $child_NamehashMap[ $pickedObject->name() ] ) )
@@ -3470,18 +3472,20 @@ class MERGER extends UTIL
                             continue;
                         }
                     }
-                    PH::print_stdout( "   * create object in DG: '".$tmp_DG_name."' : '".$pickedObject->name()."'" );
+                    PH::print_stdout( "   * create object in DG: '".$tmp_DG_name."' : '".$tmpPickedName."'" );
 
                     if( $this->action === "merge" )
                     {
-                        $tmp_tag = $store->createTag($pickedObject->name() );
+                        $tmp_tag = $store->createTag($tmpPickedName );
                         $tmp_tag->setColor( $pickedObject->getColor() );
 
                         /** @var TagStore $store */
                         if( $this->apiMode )
                             $tmp_tag->API_sync();
 
-                        $value = $tmp_tag->name();
+                        $tmpPickedName = $tmp_tag->name();
+                        TAG::replaceNamewith($tmpPickedName);
+                        $value = $tmpPickedName;
                         $hashMap[$value][] = $tmp_tag;
                     }
                     else
@@ -4274,7 +4278,9 @@ class MERGER extends UTIL
                     $tmp_DG_name = 'shared';
 
                 /** @var Tag $tmp_tag */
-                $tmp_tag = $store->find( $pickedObject->name() );
+                $tmpPickedName = $pickedObject->name();
+                TAG::revertreplaceNamewith($tmpPickedName);
+                $tmp_tag = $store->find( $tmpPickedName );
                 if( $tmp_tag == null )
                 {
                     if( isset( $child_NamehashMap[ $pickedObject->name() ] ) )
@@ -4297,18 +4303,20 @@ class MERGER extends UTIL
                             continue;
                         }
                     }
-                    PH::print_stdout( "   * create object in DG: '".$tmp_DG_name."' : '".$pickedObject->name()."'" );
+                    PH::print_stdout( "   * create object in DG: '".$tmp_DG_name."' : '".$tmpPickedName."'" );
 
                     if( $this->action === "merge" )
                     {
-                        $tmp_tag = $store->createTag($pickedObject->name() );
+                        $tmp_tag = $store->createTag($tmpPickedName );
                         $tmp_tag->setColor( $pickedObject->getColor() );
 
                         /** @var TagStore $store */
                         if( $this->apiMode )
                             $tmp_tag->API_sync();
 
-                        $value = $tmp_tag->name();
+                        $tmpPickedName = $tmp_tag->name();
+                        TAG::replaceNamewith($tmpPickedName);
+                        $value = $tmpPickedName;
                         $hashMap[$value][] = $tmp_tag;
                     }
                     else

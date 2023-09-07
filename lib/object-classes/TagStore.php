@@ -138,8 +138,6 @@ class TagStore extends ObjStore
 
     function createTag($name, $ref = null)
     {
-        TAG::replaceNamewith( $name );
-
         if( $this->find($name, null, FALSE) !== null )
             derr('Tag named "' . $name . '" already exists, cannot create');
 
