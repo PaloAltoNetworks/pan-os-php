@@ -54,8 +54,8 @@ class Rule
      */
     public $tags;
 
-    /** @var Tag */
-    #public $grouptag = null;
+    /** @var GroupTagRuleContainer */
+    public $grouptag;
 
     /**
      * @var ServiceRuleContainer
@@ -194,9 +194,13 @@ class Rule
             }
             else if( $node->nodeName == 'group-tag' )
             {
+                $this->grouptag->load_from_domxml($node);
+                /*
+                $this->grouptag->xmlroot = $node;
                 $grouptagName = $node->textContent;
-                $this->grouptag = $this->owner->owner->tagStore->find( $grouptagName, $this->grouptag);
-                $this->grouptag->addReference($this);
+                $tmpTag = $this->owner->owner->tagStore->find( $grouptagName, $this->grouptag);
+                $this->grouptag->addTag($tmpTag);
+                */
             }
             else if( $node->nodeName == 'description' )
             {

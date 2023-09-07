@@ -1276,7 +1276,7 @@ RQuery::$defaultFilters['rule']['tag.count']['operators']['>,<,=,!'] = array(
 RQuery::$defaultFilters['rule']['group-tag']['operators']['is'] = array(
     'eval' => function ($object, &$nestedQueries, $value) {
         /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AuthenticationRule|PbfRule|QoSRule|DoSRule $object */
-        return $object->grouptagIs( $value ) === TRUE;
+        return $object->grouptag->hasTag( $value ) === TRUE;
     },
     'arg' => TRUE,
     'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->tags->parentCentralStore->find('!value!');",
@@ -1292,12 +1292,8 @@ RQuery::$defaultFilters['rule']['group-tag']['operators']['is.set'] = array(
         if( !$rule->isSecurityRule() && !$rule->isDoSRule() &&  !$rule->isPbfRule() && !$rule->isQoSRule() )
             return FALSE;
 
-        $grouptag = $rule->groupTag();
-
-        if( is_object( $grouptag ) )
-        {
+        if( count($rule->grouptag->getAll() ) > 0 )
             return TRUE;
-        }
 
         return FALSE;
     },
@@ -1314,16 +1310,19 @@ RQuery::$defaultFilters['rule']['group-tag']['operators']['is.regex'] = array(
         if( !$rule->isSecurityRule() && !$rule->isDoSRule() &&  !$rule->isPbfRule() && !$rule->isQoSRule() )
             return FALSE;
 
-        $grouptag = $rule->groupTag();
-
-        if( is_object( $grouptag ) )
+        $grouptags = $rule->grouptag->getAll();
+        foreach($grouptags as $grouptag)
         {
-            $matching = preg_match($context->value, $grouptag->name());
-            if( $matching === FALSE )
-                derr("regular expression error on '{$context->value}'");
-            if( $matching === 1 )
-                return TRUE;
+            if( is_object( $grouptag ) )
+            {
+                $matching = preg_match($context->value, $grouptag->name());
+                if( $matching === FALSE )
+                    derr("regular expression error on '{$context->value}'");
+                if( $matching === 1 )
+                    return TRUE;
+            }
         }
+
 
         return FALSE;
     },
