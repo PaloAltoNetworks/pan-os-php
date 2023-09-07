@@ -1031,6 +1031,13 @@ class DIFF extends UTIL
         {
             if( $this->outputFormatSet )
             {
+                $multiVSYS = FALSE;
+                if( $this->configType == 'panos' )
+                {
+                    if( count($this->pan->getVirtualSystems()) > 1 )
+                        $multiVSYS = TRUE;
+                }
+
                 if( $this->debugAPI )
                 {
                     //intermediate, remove it later on
@@ -1093,7 +1100,7 @@ class DIFF extends UTIL
 
                     }
 
-                    DH::elementToPanSetCommand( 'set', $element, $xpath,$array, $this->debugAPI );
+                    DH::elementToPanSetCommand( 'set', $element, $xpath,$array, $multiVSYS, $this->debugAPI );
 
                     //manipulation needed based on flood xyz red issue in PAN-OS
                     self::fixFloodSetCommand($array);
@@ -1128,7 +1135,7 @@ class DIFF extends UTIL
 
                     }
 
-                    DH::elementToPanSetCommand( 'delete', $element, $xpath,$array, $this->debugAPI );
+                    DH::elementToPanSetCommand( 'delete', $element, $xpath,$array, $multiVSYS, $this->debugAPI );
 
                     self::arraySetCommand( $array, "diff_delete" );
                     //Todo: swaschkut 20220728

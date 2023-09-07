@@ -519,7 +519,7 @@ class DH
     /**
      * @param DOMNode $element
      */
-    static public function elementToPanSetCommand( $type, $element, $xpath, &$array, $debug = false )
+    static public function elementToPanSetCommand( $type, $element, $xpath, &$array, $multiVSYS, $debug = false )
     {
         if( $type !== "set" && $type !== "delete" )
             return;
@@ -540,10 +540,12 @@ class DH
         $replace = "/devices/entry[@name='localhost.localdomain']";
         $fullpath = str_replace($replace, "", $fullpath);
 
-        //Todo: 20230907 - this was wrong removed again
-        //bug related to multi-vsys -
-        #$replace = "/vsys/entry[@name='vsys1']";
-        #$fullpath = str_replace($replace, "", $fullpath);
+        //Todo: 20230907 - if FW - no multivsys - remove it
+        if( !$multiVSYS )
+        {
+            $replace = "/vsys/entry[@name='vsys1']";
+            $fullpath = str_replace($replace, "", $fullpath);
+        }
 
         $fullpath = str_replace("/", " ", $fullpath);
         $fullpath = str_replace("entry[@name='", '"', $fullpath);

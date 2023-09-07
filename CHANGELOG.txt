@@ -20,6 +20,7 @@ BUGFIX:
 * class PANConf - bugfix for type=stats on FW config for tmp/ghost object count on 'shared'
 * type=XYZ outputformatset=setcommand.txt | bugfix to always have correct xPath availalble for set commands
 * bugfix - related to TAG objects where name include character '(' and/or ')' - final fix for tag-merger including method createTag()
+* bugfix for argument outputformatset - no multi-vsys device - remove vsys1 to fit set commands
 
 GENERAL:
 * develop pan-os-php-api | per default enable shadow-json checkbox  - with shadow-nojson, output has a bug and filter are not working correctly - fixing later
