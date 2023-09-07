@@ -6,6 +6,7 @@ UTIL:
 * class UTIL | extend if API mode - with App-id/AV/WF/Threat version info
 * type=address | introduce 'filter=(tag is.set)'
 * type=xml-issue | extend with rule tag object validation for twice set the same tag object
+* introduce GroupTagRuleContainer to all Rule classes
 
 BUGFIX:
 * class Sub | bugfix for default-securiy-rules | if partial config is already available

@@ -86,6 +86,7 @@ class NatRule extends Rule
         $this->parentServiceStore = $this->owner->owner->serviceStore;
 
         $this->tags = new TagRuleContainer($this);
+        $this->grouptag = new TagRuleContainer($this);
 
         $this->from = new ZoneRuleContainer($this);
         $this->from->name = 'from';
