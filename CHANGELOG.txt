@@ -18,6 +18,7 @@ BUGFIX:
 * type=tag actions=delete 'filter=(object is.unused) | bugfix for group-tag used in Rules, reference missing
 * introduce GroupTagRulecontainer - to fix type=tag-merger issue if group-tag is used
 * class PANConf - bugfix for type=stats on FW config for tmp/ghost object count on 'shared'
+* type=XYZ outputformatset=setcommand.txt | bugfix to always have correct xPath availalble for set commands
 
 GENERAL:
 * develop pan-os-php-api | per default enable shadow-json checkbox  - with shadow-nojson, output has a bug and filter are not working correctly - fixing later

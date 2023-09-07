@@ -519,7 +519,7 @@ class DH
     /**
      * @param DOMNode $element
      */
-    static public function elementToPanSetCommand( $type, $element, &$array )
+    static public function elementToPanSetCommand( $type, $element, $xpath, &$array, $debug = false )
     {
         if( $type !== "set" && $type !== "delete" )
             return;
@@ -528,7 +528,11 @@ class DH
             $element = DH::firstChildElement($element);
 
         //get xPATH
-        $orig_fullxpath = DH::elementToPanXPath($element);
+        #$orig_fullxpath = DH::elementToPanXPath($element);
+        $orig_fullxpath = $xpath;
+
+        if( $debug )
+            PH::print_stdout( "orig_fullpath|".$orig_fullxpath."|");
 
         $fullpath = $orig_fullxpath;
         $replace = "/config";
@@ -536,15 +540,19 @@ class DH
         $replace = "/devices/entry[@name='localhost.localdomain']";
         $fullpath = str_replace($replace, "", $fullpath);
 
-        //bug related to multi-vsys
-        $replace = "/vsys/entry[@name='vsys1']";
-        $fullpath = str_replace($replace, "", $fullpath);
+        //Todo: 20230907 - this was wrong removed again
+        //bug related to multi-vsys -
+        #$replace = "/vsys/entry[@name='vsys1']";
+        #$fullpath = str_replace($replace, "", $fullpath);
+
         $fullpath = str_replace("/", " ", $fullpath);
         $fullpath = str_replace("entry[@name='", '"', $fullpath);
         $fullpath = str_replace("']", '"', $fullpath);
 
         $xpath = $type . $fullpath;
 
+        if( $debug )
+            PH::print_stdout( "|".$fullpath."|");
 
         if( strpos( $xpath, " member" ) !== FALSE )
         {
@@ -561,7 +569,7 @@ class DH
         if( $element->nodeType == XML_ELEMENT_NODE ) //1
         {
             $string = "";
-            self::CHILDelementToPanSetCommand( $type, $element, $array, $xpath, $string);
+            self::CHILDelementToPanSetCommand( $type, $element, $array, $xpath, $string, $debug);
         }
         else
             derr('unsupported node type=' . $element->nodeType);
@@ -570,7 +578,7 @@ class DH
     /**
      * @param DOMNode $element
      */
-    static public function CHILDelementToPanSetCommand( $type, $element, &$array, $xpath, $string )
+    static public function CHILDelementToPanSetCommand( $type, $element, &$array, $xpath, $string, $debug = false )
     {
         #print "---------------\n";
         #print "nodename: ".$element->nodeName."\n";
@@ -589,7 +597,7 @@ class DH
                 {
                     $finalstring = $xpath.$string;
 
-                    self::setCommandvalidation( $finalstring, $array);
+                    self::setCommandvalidation( $finalstring, $array, $debug);
 
                     return;
                 }
@@ -641,7 +649,7 @@ class DH
                             #print "1-2\n";
                             $finalstring = $xpath.$string;
 
-                            self::setCommandvalidation( $finalstring, $array);
+                            self::setCommandvalidation( $finalstring, $array, $debug);
 
                             return;
                         }
@@ -654,14 +662,14 @@ class DH
             {
                 #print "xpath: ".$xpath."\n";
                 #print "string: ".$string."\n";
-                self::CHILDelementToPanSetCommand( $type, $childElement, $array, $xpath, $string );
+                self::CHILDelementToPanSetCommand( $type, $childElement, $array, $xpath, $string, $debug );
             }
 
             if( $element->hasChildNodes() === FALSE )
             {
                 $finalstring = $xpath.$string;
 
-                self::setCommandvalidation( $finalstring, $array);
+                self::setCommandvalidation( $finalstring, $array, $debug);
             }
         }
         else
@@ -680,7 +688,7 @@ class DH
 
                 #print "final: ".$finalstring."\n";
 
-                self::setCommandvalidation( $finalstring, $array);
+                self::setCommandvalidation( $finalstring, $array, $debug);
             }
         }
     }
@@ -689,7 +697,7 @@ class DH
      * @param string $finalstring
      * @param array $array
      **/
-    static public function setCommandvalidation( $finalstring, &$array )
+    static public function setCommandvalidation( $finalstring, &$array, $debug = false )
     {
         if( strpos($finalstring, "set ") !== FALSE
             && strpos($finalstring, " profiles zone-protection-profile ") !== FALSE
@@ -718,7 +726,12 @@ class DH
 
 
         if( !empty( $finalstring ) )
+        {
+            if( $debug )
+                PH::print_stdout($finalstring);
             $array[] = $finalstring;
+        }
+
     }
 
     /**
