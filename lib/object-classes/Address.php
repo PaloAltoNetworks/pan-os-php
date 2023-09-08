@@ -678,7 +678,11 @@ class Address
             /** @var  Tag $tag*/
             if( !$pickedObject->tags->hasTag( $tag ) )
             {
-                $upperLevelTag = $pickedObject->owner->owner->tagStore->parentCentralStore->find( $tag->name() );
+                $upperLevelTag = null;
+                if( isset($pickedObject->owner->owner->tagStore->parentCentralStore) )
+                    $upperLevelTag = $pickedObject->owner->owner->tagStore->parentCentralStore->find( $tag->name() );
+
+
                 $newTag = $pickedObject->owner->owner->tagStore->find( $tag->name() );
                 if( $newTag === null )
                 {
