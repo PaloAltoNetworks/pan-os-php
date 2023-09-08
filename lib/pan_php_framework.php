@@ -199,6 +199,7 @@ require_once $basedir . '/helper-classes/cidr.php';
 require_once $basedir . '/container-classes/ObjRuleContainer.php';
 require_once $basedir . '/container-classes/ZoneRuleContainer.php';
 require_once $basedir . '/container-classes/TagRuleContainer.php';
+require_once $basedir . '/container-classes/GroupTagRuleContainer.php';
 require_once $basedir . '/container-classes/AppRuleContainer.php';
 require_once $basedir . '/container-classes/AddressRuleContainer.php';
 require_once $basedir . '/container-classes/ServiceRuleContainer.php';

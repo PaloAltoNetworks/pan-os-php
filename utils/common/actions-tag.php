@@ -362,7 +362,7 @@ TagCallContext::$supportedActions['display'] = array(
     'MainFunction' => function (TagCallContext $context) {
         $object = $context->object;
         $tmpName = $object->name();
-        TAG::replaceNamewith( $tmpName );
+        TAG::revertreplaceNamewith( $tmpName );
 
 
         PH::print_stdout( "     * " . get_class($object) . " '{$tmpName}'  color: '{$object->getColor()}'  comments: '{$object->getComments()}'" );

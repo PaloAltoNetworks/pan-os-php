@@ -71,50 +71,34 @@ cd [/rootFolder/parentFolder/childFolder]
  
 #Additional Information
 
-Docker build
-============
-
-There are Dockerfiles available with OS: Ubuntu20/22 and CentOS 7
-
-For a quick start please use [WIKI docker](https://github.com/PaloAltoNetworks/pan-os-php/wiki/docker)
-
-
-* **MacOS** : [run on MacOS terminal]
-	```bash
-	cd [pan-os-php Root folder]
-	docker build -t pan-os-php -f docker/Dockerfile .
-	cd [go to the Folder you like to share with the Container]
-	docker run --name panosphp --rm -v ${PWD}:/share -it pan-os-php
-	```
-
-* **WINDOWS** : [run on Windows terminal]
-	```bash
-	cd [pan-os-php Root folder]
-	docker build -t pan-os-php -f docker/Dockerfile .
-	cd [go to the Folder you like to share with the Container]
-	docker run --name panosphp --rm -v "%CD%":/share -it pan-os-php
-	```
-
-
-
-
 Docker PAN-OS-PHP API and UI
 ============
 final production Container:
    ```bash
-    cd [pan-os-php Root folder]
-    docker build -t pan-os-php-api:latest -f docker/Dockerfile-API .
-    docker run -d -p 8082:80 pan-os-php-api:latest
+    docker run -d -p 8082:80 swaschkut/pan-os-php-api:latest
    ```
-local Development Container:
-   ```bash
-   docker run -d -p 8082:80 --mount type=bind,source="[absolute_ROOTFOLDER]/pan-os-php",target=/var/www/html -v [absolute_ROOTFOLDER]/pan-os-php/var/docker/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini php:apache
-   ```
-
 PAN-OS-PHP UI is available at: (which triggers next PAN-OS-PHP API)
    ```bash
    http://localhost:8082/utils/develop/ui
    ```
+
+PAN-OS-PHP API is also working with PAN-OS XML API, therefor you need to prepare you Docker installation:
+```bash
+   API: http://localhost:8082/utils/api/v1/tool.php/key-manager?&add=MGMTIP&user=USERNAME&pw=PASSWORD
+   ```
+
+
+Examples to run PAN-OS-PHP against PAN-OS FW and Panorama offline configuration files, and manipulate in the same way as on PAN-OS-PHP ClI:
+   ```bash
+   ClI: pan-os-php type=address help
+   API: http://localhost:8082/utils/api/v1/tool.php/address?help
+   ```
+   ```bash
+   CLI: pan-os-php type=address listactions
+   API: http://localhost:8082/utils/api/v1/tool.php/address?listactions
+   ```
+
+
 To get it working on your own PAN-OS Firewall / Panorama config files,
 please upload your config files via PAN-OS-PHP UI (URL above)
 
@@ -171,18 +155,34 @@ The following "RESTAPI" routes are available:
 - /xml-op-json
 - /bpa-generator
 
-PAN-OS-PHP API is also working with PAN-OS XML API, therefor you need to prepare you Docker installation:
-```bash
-   API: http://localhost:8082/utils/api/v1/tool.php/key-manager?&add=MGMTIP&user=USERNAME&pw=PASSWORD
-   ```
 
 
-Examples to run PAN-OS-PHP against PAN-OS FW and Panorama offline configuration files, and manipulate in the same way as on PAN-OS-PHP ClI:
+Docker build
+============
+
+There are Dockerfiles available with OS: Ubuntu20/22 and CentOS 7
+
+For a quick start please use [WIKI docker](https://github.com/PaloAltoNetworks/pan-os-php/wiki/docker)
+
+
+* **MacOS** : [run on MacOS terminal]
+  ```bash
+  cd [pan-os-php Root folder]
+  docker build -t pan-os-php -f docker/Dockerfile .
+  cd [go to the Folder you like to share with the Container]
+  docker run --name panosphp --rm -v ${PWD}:/share -it pan-os-php
+  ```
+
+* **WINDOWS** : [run on Windows terminal]
+  ```bash
+  cd [pan-os-php Root folder]
+  docker build -t pan-os-php -f docker/Dockerfile .
+  cd [go to the Folder you like to share with the Container]
+  docker run --name panosphp --rm -v "%CD%":/share -it pan-os-php
+  ```
+
+----------------
+local Development Container:
    ```bash
-   ClI: pan-os-php type=address help
-   API: http://localhost:8082/utils/api/v1/tool.php/address?help
-   ```
-   ```bash
-   CLI: pan-os-php type=address listactions
-   API: http://localhost:8082/utils/api/v1/tool.php/address?listactions
+   docker run -d -p 8082:80 --mount type=bind,source="[absolute_ROOTFOLDER]/pan-os-php",target=/var/www/html -v [absolute_ROOTFOLDER]/pan-os-php/var/docker/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini php:apache
    ```

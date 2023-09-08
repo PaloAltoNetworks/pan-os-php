@@ -450,14 +450,14 @@ class RULEMERGER extends UTIL
                 $ruleToMerge->owner->API_remove($ruleToMerge);
 
                 $rule->tags->API_addTag( $mergedTag );
-                $rule->API_setDescription( $rule->description()." |".$ruleToMerge->name() );
+                #$rule->API_setDescription( $rule->description()." |".$ruleToMerge->name() );
             }
             else
             {
                 $ruleToMerge->owner->remove($ruleToMerge);
 
                 $rule->tags->addTag( $mergedTag );
-                $rule->setDescription( $rule->description()." |".$ruleToMerge->name() );
+                #$rule->setDescription( $rule->description()." |".$ruleToMerge->name() );
             }
             $ruleToMerge->alreadyMerged = TRUE;
         }

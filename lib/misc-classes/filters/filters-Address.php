@@ -479,6 +479,42 @@ RQuery::$defaultFilters['address']['name']['operators']['is.in.file'] = array(
     },
     'arg' => TRUE
 );
+RQuery::$defaultFilters['address']['name']['operators']['same.as.region.predefined'] = array(
+    'Function' => function (AddressRQueryContext $context) {
+        $object = $context->object;
+
+        if( !isset($context->cachedList) )
+        {
+            $list = array();
+            $filename = dirname(__FILE__) . '/../../object-classes/predefined.xml';
+
+            $xmlDoc_region = new DOMDocument();
+            $xmlDoc_region->load($filename, XML_PARSE_BIG_LINES);
+
+            $cursor = DH::findXPathSingleEntryOrDie('/predefined/region', $xmlDoc_region);
+            foreach( $cursor->childNodes as $region_entry )
+            {
+                if( $region_entry->nodeType != XML_ELEMENT_NODE )
+                    continue;
+
+                $region_name = DH::findAttribute('name', $region_entry);
+                #PH::print_stdout( $region_name );
+                $list[$region_name] = TRUE;
+            }
+
+            $context->cachedList = &$list;
+        }
+        else
+            $list = &$context->cachedList;
+
+        return isset($list[$object->name()]);
+    },
+    'arg' => FALSE,
+    'ci' => array(
+        'fString' => '(%PROP% new test 1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 RQuery::$defaultFilters['address']['netmask']['operators']['>,<,=,!'] = array(
     'eval' => '!$object->isGroup() && !$object->isRegion() && $object->isType_ipNetmask() && $object->getNetworkMask() !operator! !value!',
     'arg' => TRUE,
@@ -546,6 +582,19 @@ RQuery::$defaultFilters['address']['tag']['operators']['has.regex'] = array(
     'arg' => TRUE,
     'ci' => array(
         'fString' => '(%PROP% /grp/)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['address']['tag']['operators']['is.set'] = array(
+    'Function' => function (AddressRQueryContext $context) {
+        if( $context->object->isRegion() )
+            return FALSE;
+        return count($context->object->tags->getAll()) > 0;
+    },
+    'arg' => FALSE,
+    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->tags->parentCentralStore->find('!value!');",
+    'ci' => array(
+        'fString' => '(%PROP% grp.shared-group1)',
         'input' => 'input/panorama-8.0.xml'
     )
 );

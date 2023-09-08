@@ -60,7 +60,7 @@ class Address
     public $_ip4Map = null;
 
     public $ancestor;
-
+    public $childancestor;
 
     /**
      * you should not need this one for normal use
@@ -678,9 +678,15 @@ class Address
             /** @var  Tag $tag*/
             if( !$pickedObject->tags->hasTag( $tag ) )
             {
+                $upperLevelTag = null;
+                if( isset($pickedObject->owner->owner->tagStore->parentCentralStore) )
+                    $upperLevelTag = $pickedObject->owner->owner->tagStore->parentCentralStore->find( $tag->name() );
+
+
                 $newTag = $pickedObject->owner->owner->tagStore->find( $tag->name() );
                 if( $newTag === null )
                 {
+                    PH::print_stdout( "       - tag not found - create it in: ".$pickedObject->owner->owner->tagStore->_PANC_shortName() );
                     $newTag = $pickedObject->owner->owner->tagStore->createTag( $tag->name() );
                     $newTag->setColor( $tag->getColor() );
                     $newTag->addComments( $tag->getComments() );
@@ -688,6 +694,8 @@ class Address
                     if( $apiMode )
                         $newTag->API_sync();
                 }
+                else
+                    PH::print_stdout( "       - tag found in: ".$newTag->owner->_PANC_shortName() );
                 
                 if( $apiMode )
                 {
@@ -695,17 +703,42 @@ class Address
                     if( $tag !== $newTag)
                     {
                         $tag->replaceMeGlobally($newTag);
-                        $tag->owner->API_removeTag($tag);
+
+                        if( get_class($tag->owner->owner) !== "PanoramaConf" )
+                        {
+                            $tagDG_childDGS = $tag->owner->owner->childDeviceGroups(TRUE);
+                            if( !in_array($newTag->owner->owner->name(), $tagDG_childDGS) )
+                                $tag->owner->API_removeTag($tag);
+                        }
                     }
                 }
                 else
                 {
+                    PH::print_stdout( "       - add tag to picked object: ".$pickedObject->name() );
                     $pickedObject->tags->addTag( $newTag );
                     if( $tag !== $newTag)
                     {
                         $tag->replaceMeGlobally($newTag);
                         if( $tag->owner !== null )
-                            $tag->owner->removeTag($tag);
+                        {
+                            /*
+                            if( $upperLevelTag === null )
+                            {
+                                PH::print_stdout( "       - delete old tag from: ".$tag->owner->_PANC_shortName() );
+                                $tag->owner->removeTag($tag);
+                            }*/
+                            if( get_class($tag->owner->owner) !== "PanoramaConf" )
+                            {
+                                $tagDG_childDGS = $tag->owner->owner->childDeviceGroups(true);
+                                if( !in_array( $newTag->owner->owner->name(), $tagDG_childDGS ) )
+                                {
+                                    //do not delete TAG if TAG is from upperlevel DG and newtag is from childDG
+                                    PH::print_stdout( "       - delete old tag from: ".$tag->owner->_PANC_shortName() );
+                                    $tag->owner->removeTag($tag);
+                                }
+                            }
+
+                        }
                     }
                 }
             }

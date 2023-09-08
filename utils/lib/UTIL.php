@@ -1297,12 +1297,28 @@ class UTIL
         PH::print_stdout( array( "value" => $this->loadArrayMem[0], "type" => $this->loadArrayMem[1]) , false, "loadmemory");
         // --------------------
 
+        $panc_version = $this->pan->appStore->predefinedStore_appid_version;
+        PH::print_stdout( " - PAN-OS-PHP APP-ID version: ".$panc_version );
+        PH::print_stdout( array( $panc_version ), false, "PAN-OS-PHP APP-ID version" );
+
+        PH::print_stdout();
+        if($this->configInput['type'] == 'api')
+        {
+            PH::print_stdout( " - PAN-OS APP-ID version: ".$this->configInput['connector']->info_app_version );
+            PH::print_stdout( array( $this->configInput['connector']->info_app_version ), false, "PAN-OS APP-ID version" );
+
+            PH::print_stdout( " - PAN-OS AV version: ".$this->configInput['connector']->info_av_version );
+            PH::print_stdout( array( $this->configInput['connector']->info_av_version ), false, "PAN-OS AV version" );
+
+            PH::print_stdout( " - PAN-OS WF version: ".$this->configInput['connector']->info_wildfire_version );
+            PH::print_stdout( array( $this->configInput['connector']->info_wildfire_version ), false, "PAN-OS WF version" );
+
+            PH::print_stdout( " - PAN-OS THREAT version: ".$this->configInput['connector']->info_threat_version );
+            PH::print_stdout( array( $this->configInput['connector']->info_threat_version ), false, "PAN-OS THREAT version" );
+        }
         PH::print_stdout( " - PAN-OS version: {$this->pan->version}" );
         PH::print_stdout( array( $this->pan->version ), false, "PAN-OS version" );
 
-        $panc_version = $this->pan->appStore->predefinedStore_appid_version;
-        PH::print_stdout( " - PAN-OS APP-ID version: ".$panc_version );
-        PH::print_stdout( array( $panc_version ), false, "PAN-OS APP-ID version" );
 
         if( isset( $this->pan->timezone ) && $this->pan->timezone !== null )
             PH::print_stdout( " - PAN-OS Device timezone: ".$this->pan->timezone ." is used. actual time: ".date('Y/m/d H:i:s') );

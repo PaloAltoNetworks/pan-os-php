@@ -115,6 +115,7 @@ class SecurityRule extends RuleWithUserID
         $this->parentServiceStore = $this->owner->owner->serviceStore;
 
         $this->tags = new TagRuleContainer($this);
+        $this->grouptag = new GroupTagRuleContainer($this);
 
         $this->from = new ZoneRuleContainer($this);
         $this->from->name = 'from';
@@ -1150,11 +1151,9 @@ class SecurityRule extends RuleWithUserID
         foreach( $this->tags->getAll() as $tag )
             PH::$JSON_TMP['sub']['object'][$this->name()]['tag'][] = $tag->name();
 
-        if( $this->grouptag !== null )
-        {
-            PH::print_stdout( $padding . "  GroupTag:  " . $this->grouptag->name() );
-            PH::$JSON_TMP['sub']['object'][$this->name()]['group-tag'] = $this->grouptag->name();
-        }
+        PH::print_stdout( $padding . "  Group-Tag:  " . $this->grouptag->toString_inline() );
+        foreach( $this->grouptag->getAll() as $tag )
+            PH::$JSON_TMP['sub']['object'][$this->name()]['group-tag'] = $tag->name();
 
         if( $this->_targets !== null )
         {
@@ -1668,6 +1667,7 @@ class SecurityRule extends RuleWithUserID
         $this->source->__destruct();
         $this->destination->__destruct();
         $this->tags->__destruct();
+        $this->grouptag->__destruct();
         $this->apps->__destruct();
         $this->services->__destruct();
 
