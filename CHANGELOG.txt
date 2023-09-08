@@ -1,6 +1,14 @@
 CHANGELOG
 
-2.1.16
+2.1.17
+UTIL:
+
+BUGFIX:
+
+GENERAL:
+
+
+2.1.16  (20230908)
 UTIL:
 * type=address | new 'filter=(name same.as.region.predefined)'
 * class UTIL | extend if API mode - with App-id/AV/WF/Threat version info
