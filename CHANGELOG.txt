@@ -5,6 +5,7 @@ UTIL:
 * type=certificate | extend to TemplateStack
 
 BUGFIX:
+* type=ssh-connector in=admin@MGMT-IP setcommand-file=set-commands.txt | bugfix to correctly send set commands
 
 GENERAL:
 

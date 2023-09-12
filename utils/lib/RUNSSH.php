@@ -54,27 +54,46 @@ class RUNSSH
         $configureFound = false;
         $combinedCommands = "";
         $write = false;
+        $maxcommandCounter = count($commands)+1;
         foreach( $commands as $k => $command )
         {
+            PH::print_stdout("-------------");
             PH::print_stdout(  strtoupper($command) . ":");
 
-
-            if( strpos( $command, "configure" ) !== FALSE )
+            if( strpos( $command, "set cli pager" ) !== FALSE )
             {
                 $configureFound = true;
+                print "write 1a\n";
+                print "command: ".$command."\n";
                 $ssh->write($command . "\n");
                 $configureCounter = 0;
+                $maxcommandCounter--;
+            }
+            elseif( strpos( $command, "configure" ) !== FALSE )
+            {
+                $configureFound = true;
+                print "write 1b\n";
+                print "command: ".$command."\n";
+                $ssh->write($command . "\n");
+                $configureCounter = 0;
+                $maxcommandCounter--;
             }
 
 
-            if( $configureFound && $configureCounter != 0 )
+            if( $configureFound && $configureCounter > 0 )
             {
+                print "TEST\n";
+                print "counter: ".$configureCounter."\n";
+                print "maxcounter: ".$maxcommandCounter."\n";
+
                 $combinedCommands .= $command."\n";
                 $configureCounter++;
-                if( $configureCounter == $setcommandMaxLine )
+                if( $configureCounter == $setcommandMaxLine || $configureCounter == $maxcommandCounter )
                 {
                     $configureCounter = 1;
 
+                    print "write 2\n";
+                    print "command: ".$combinedCommands."\n";
                     $ssh->write( $combinedCommands );
                     $write = true;
                     $combinedCommands = "";
@@ -86,6 +105,8 @@ class RUNSSH
             }
             else
             {
+                print "write 3\n";
+                print "command: ".$command."\n";
                 $ssh->write($command . "\n");
                 $write = true;
             }
@@ -96,6 +117,7 @@ class RUNSSH
             if( $write )
             {
                 sleep(1);
+                print "read\n";
                 $tmp_string = $ssh->read();
                 PH::print_stdout( $tmp_string );
 
