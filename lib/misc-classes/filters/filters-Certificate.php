@@ -1,5 +1,36 @@
 <?php
 
+RQuery::$defaultFilters['certificate']['name']['operators']['eq'] = array(
+    'Function' => function (CertificateRQueryContext $context) {
+        return $context->object->name() == $context->value;
+    },
+    'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP% new test 1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['certificate']['name']['operators']['eq.nocase'] = array(
+    'Function' => function (CertificateRQueryContext $context) {
+        return strtolower($context->object->name()) == strtolower($context->value);
+    },
+    'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP% new test 2)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['certificate']['name']['operators']['contains'] = array(
+    'Function' => function (CertificateRQueryContext $context) {
+        return strpos($context->object->name(), $context->value) !== FALSE;
+    },
+    'arg' => TRUE,
+    'ci' => array(
+        'fString' => '(%PROP% -)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
 RQuery::$defaultFilters['certificate']['publickey-algorithm']['operators']['is.rsa'] = array(
     'Function' => function (CertificateRQueryContext $context) {
         if( !$context->object->hasPublicKey() )

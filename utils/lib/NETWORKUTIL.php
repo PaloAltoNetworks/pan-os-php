@@ -206,6 +206,18 @@ class NETWORKUTIL extends UTIL
                         }
 
                     }
+
+                    foreach( $this->pan->templatestacks as $templatestack )
+                    {
+                        if( $this->templateName == 'any' || $this->templateName == $templatestack->name() )
+                        {
+                            if( $location == 'shared' || $location == 'any' )
+                            {
+                                if( $this->utilType == 'certificate' )
+                                    $this->objectsToProcess[] = Array('store' => $templatestack->certificateStore, 'objects' => $templatestack->certificateStore->getAll());
+                            }
+                        }
+                    }
                 }
                 else
                 {
@@ -216,6 +228,14 @@ class NETWORKUTIL extends UTIL
                         {
                             #if( $this->utilType == 'interface' )
                             #    $this->objectsToProcess[] = Array('store' => $sub->deviceConfiguration->network, 'objects' => $sub->deviceConfiguration->network->getAllInterfaces());
+
+                            /*
+                            if( get_class($sub) === "Container" )
+                                continue;
+                            foreach( $sub->deviceConfiguration->getVirtualSystems() as $vsys )
+                                if( $this->utilType == 'certificate' )
+                                    $this->objectsToProcess[] = Array('store' => $vsys->certificateStore, 'objects' => $vsys->certificateStore->getAll());
+                            */
                         }
                     }
                 }

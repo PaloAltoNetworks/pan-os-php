@@ -36,6 +36,9 @@ class TemplateStack
 
     public $FirewallsSerials = array();
 
+    /** @var CertificateStore */
+    public $certificateStore = null;
+
     /** @var  PANConf */
     public $deviceConfiguration;
 
@@ -49,6 +52,9 @@ class TemplateStack
         $this->name = $name;
         $this->owner = $owner;
         $this->deviceConfiguration = new PANConf(null, null, $this);
+
+        $this->certificateStore = new CertificateStore($this);
+        $this->certificateStore->setName('certificateStore');
     }
 
     public function load_from_domxml(DOMElement $xml)
@@ -98,7 +104,23 @@ class TemplateStack
         if( $tmp !== false )
         {
             $this->deviceConfiguration->load_from_domxml($tmp);
+
+            $shared = DH::findFirstElement('shared', $tmp);
+            if( $shared !== false )
+            {
+                //
+                // Extract Certificate objects
+                //
+                $tmp = DH::findFirstElement('certificate', $shared);
+                if( $tmp !== FALSE )
+                {
+                    $this->certificateStore->load_from_domxml($tmp);
+                }
+                // End of Certificate objects extraction
+            }
         }
+
+
     }
 
     public function name()

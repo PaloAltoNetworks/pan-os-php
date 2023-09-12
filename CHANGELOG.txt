@@ -2,6 +2,7 @@ CHANGELOG
 
 2.1.17
 UTIL:
+* type=certificate | extend to TemplateStack
 
 BUGFIX:
 
