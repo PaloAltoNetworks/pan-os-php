@@ -533,6 +533,8 @@ class UTIL
                 ThreatCallContext::prepareSupportedActions();
             elseif( $this->utilType == 'device' )
                 DeviceCallContext::prepareSupportedActions();
+            elseif( $this->utilType == 'certificate' )
+                CertificateCallContext::prepareSupportedActions();
 
 
         }
