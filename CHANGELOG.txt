@@ -4,6 +4,7 @@ CHANGELOG
 UTIL:
 * type=certificate | extend to TemplateStack
 * introduce class SharedGatewayStore | extend different classes to support SharedGateway
+* type=zone | extend with SharedGateway
 
 BUGFIX:
 * type=ssh-connector in=admin@MGMT-IP setcommand-file=set-commands.txt | bugfix to correctly send set commands

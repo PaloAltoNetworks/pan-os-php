@@ -135,6 +135,29 @@ class NETWORKUTIL extends UTIL
 
                     self::GlobalInitAction($sub);
                 }
+
+                foreach( $this->pan->getSharedGateways() as $sub )
+                {
+                    if( ($location == 'any' || $location == $sub->name() && !isset($ruleStoresToProcess[$sub->name()])) )
+                    {
+                        if( $this->utilType == 'virtualwire' )
+                        {}
+                        elseif( $this->utilType == 'interface' )
+                            $this->objectsToProcess[] = Array('store' => $sub->importedInterfaces, 'objects' => $sub->importedInterfaces->getAll());
+                        elseif( $this->utilType == 'routing' )
+                        {}
+                        elseif( $this->utilType == 'zone' )
+                            $this->objectsToProcess[] = array('store' => $sub->zoneStore, 'objects' => $sub->zoneStore->getall());
+                        elseif( $this->utilType == 'dhcp' )
+                        {}
+                        elseif( $this->utilType == 'certificate' )
+                            $this->objectsToProcess[] = Array('store' => $sub->certificateStore, 'objects' => $sub->certificateStore->getAll());
+
+                        $locationFound = TRUE;
+                    }
+
+                    self::GlobalInitAction($sub);
+                }
             }
             else
             {
