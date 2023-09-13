@@ -1541,7 +1541,9 @@ class UTIL
                 if( $location == 'shared' || $location == 'any' )
                 {
                     if( $this->utilType == 'address' )
+                    {
                         $this->objectsToProcess[] = array('store' => $this->pan->addressStore, 'objects' => $this->pan->addressStore->all(null, TRUE));
+                    }
                     elseif( $this->utilType == 'service' )
                         $this->objectsToProcess[] = array('store' => $this->pan->serviceStore, 'objects' => $this->pan->serviceStore->all(null, TRUE));
                     elseif( $this->utilType == 'tag' )
@@ -1600,6 +1602,26 @@ class UTIL
                         self::GlobalInitAction($sub);
                     }
                 }
+
+                foreach( $this->pan->getSharedGateways() as $sub )
+                {
+                    if( ($location == 'any' || $location == $sub->name() && !isset($ruleStoresToProcess[$sub->name()])) )
+                    {
+                        if( $this->utilType == 'address' )
+                            $this->objectsToProcess[] = array('store' => $sub->addressStore, 'objects' => $sub->addressStore->all(null, TRUE));
+                        elseif( $this->utilType == 'service' )
+                            $this->objectsToProcess[] = array('store' => $sub->serviceStore, 'objects' => $sub->serviceStore->all(null, TRUE));
+                        elseif( $this->utilType == 'tag' )
+                            $this->objectsToProcess[] = array('store' => $sub->tagStore, 'objects' => $sub->tagStore->getall());
+                        elseif( $this->utilType == 'securityprofilegroup' )
+                            $this->objectsToProcess[] = array('store' => $sub->securityProfileGroupStore, 'objects' => $sub->securityProfileGroupStore->getAll());
+                        elseif( $this->utilType == 'schedule' )
+                            $this->objectsToProcess[] = array('store' => $sub->scheduleStore, 'objects' => $sub->scheduleStore->getall());
+                        elseif( $this->utilType == 'application' )
+                            $this->objectsToProcess[] = array('store' => $sub->appStore, 'objects' => $sub->appStore->apps());
+                    }
+                }
+
             }
             else
             {

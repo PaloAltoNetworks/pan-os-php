@@ -178,8 +178,12 @@ class VirtualSystem
     public $version = null;
     public $apiCache;
 
-
-    public function __construct(PANConf $owner, DeviceGroup $applicableDG = null)
+    /**
+     * VirtualSystem constructor.
+     * @param PANConf|SharedGatewayStore $owner
+     * @param DeviceGroup $applicableDG
+     */
+    public function __construct( $owner, $applicableDG = null)
     {
         $this->owner = $owner;
 
@@ -190,15 +194,24 @@ class VirtualSystem
         $this->tagStore = new TagStore($this);
         $this->tagStore->name = 'tags';
 
-        $this->importedInterfaces = new InterfaceContainer($this, $owner->network);
-        $this->importedVirtualRouter = new VirtualRouterContainer($this, $owner->network);
+        if( get_class($owner) == "SharedGatewayStore" )
+        {
+
+        }
+        else
+        {
+            $this->importedInterfaces = new InterfaceContainer($this, $owner->network);
+            $this->importedVirtualRouter = new VirtualRouterContainer($this, $owner->network);
+        }
+
 
 
         #$this->appStore = $owner->appStore;
         $this->appStore = new AppStore($this);
         $this->appStore->name = 'customApplication';
 
-        $this->threatStore = $owner->threatStore;
+        if( get_class($owner) !== "SharedGatewayStore" )
+            $this->threatStore = $owner->threatStore;
 
         $this->zoneStore = new ZoneStore($this);
         $this->zoneStore->setName('zoneStore');
@@ -321,8 +334,11 @@ class VirtualSystem
         $this->sdWanRules->name = 'SDWan';
 
 
-        $this->dosRules->_networkStore = $this->owner->network;
-        $this->pbfRules->_networkStore = $this->owner->network;
+        if( get_class($owner) !== "SharedGatewayStore" )
+        {
+            $this->dosRules->_networkStore = $this->owner->network;
+            $this->pbfRules->_networkStore = $this->owner->network;
+        }
     }
 
 
@@ -355,16 +371,21 @@ class VirtualSystem
         {
             $networkRoot = DH::findFirstElementOrCreate('network', $importroot);
             $tmp = DH::findFirstElementOrCreate('interface', $networkRoot);
-            $this->importedInterfaces->load_from_domxml($tmp);
+            if( $this->importedInterfaces !== null )
+                $this->importedInterfaces->load_from_domxml($tmp);
 
             $tmp = DH::findFirstElement('virtual-router', $networkRoot);
             if( $tmp !== FALSE )
-                $this->importedVirtualRouter->load_from_domxml($tmp);
+            {
+                if( $this->importedVirtualRouter !== null )
+                    $this->importedVirtualRouter->load_from_domxml($tmp);
+            }
+
         }
 
         //
 
-        if( $this->owner->owner === null )
+        if( $this->owner->owner === null || get_class($this->owner) == "SharedGatewayStore" )
         {
 
             //
@@ -656,32 +677,36 @@ class VirtualSystem
         //
         // add reference to address object, if interface IP-address is using this object
         //
-        foreach( $this->importedInterfaces->interfaces() as $interface )
+        if( $this->importedInterfaces !== null)
         {
-            if( $interface->isEthernetType() && $interface->type() == "layer3" )
-                $interfaces = $interface->getLayer3IPv4Addresses();
-            elseif( $interface->isVlanType() || $interface->isLoopbackType() || $interface->isTunnelType() )
-                $interfaces = $interface->getIPv4Addresses();
-            else
-                $interfaces = array();
-
-
-            foreach( $interfaces as $layer3IPv4Address )
+            foreach( $this->importedInterfaces->interfaces() as $interface )
             {
-                if( substr_count($layer3IPv4Address, '.') != 3 )
-                {
-                    $object = $this->addressStore->find($layer3IPv4Address);
-                    if( is_object($object) )
-                        $object->addReference($interface);
-                    else
-                    {
-                        //Todo: fix needed too many warnings - if address object is coming from other address store
-                        #mwarning("interface configured objectname: " . $layer3IPv4Address . " not found.\n", $interface);
-                    }
+                if( $interface->isEthernetType() && $interface->type() == "layer3" )
+                    $interfaces = $interface->getLayer3IPv4Addresses();
+                elseif( $interface->isVlanType() || $interface->isLoopbackType() || $interface->isTunnelType() )
+                    $interfaces = $interface->getIPv4Addresses();
+                else
+                    $interfaces = array();
 
+
+                foreach( $interfaces as $layer3IPv4Address )
+                {
+                    if( substr_count($layer3IPv4Address, '.') != 3 )
+                    {
+                        $object = $this->addressStore->find($layer3IPv4Address);
+                        if( is_object($object) )
+                            $object->addReference($interface);
+                        else
+                        {
+                            //Todo: fix needed too many warnings - if address object is coming from other address store
+                            #mwarning("interface configured objectname: " . $layer3IPv4Address . " not found.\n", $interface);
+                        }
+
+                    }
                 }
             }
         }
+
         //Todo: addressobject reference missing for: IKE gateway / GP Portal / GP Gateway (where GP is not implemented at all)
 
 

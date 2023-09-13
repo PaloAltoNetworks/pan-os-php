@@ -77,7 +77,8 @@ class Zone
 
         if( $this->owner->owner->isVirtualSystem() )
         {
-            $this->attachedInterfaces = new InterfaceContainer($this, $this->owner->owner->owner->network);
+            if( get_class( $this->owner->owner->owner ) !== "SharedGatewayStore" )
+                $this->attachedInterfaces = new InterfaceContainer($this, $this->owner->owner->owner->network);
         }
         else
             $this->attachedInterfaces = new InterfaceContainer($this, null);
@@ -175,7 +176,8 @@ class Zone
             {
                 $this->type = $node->tagName;
 
-                $this->attachedInterfaces->load_from_domxml($node);
+                if( $this->attachedInterfaces !== null )
+                    $this->attachedInterfaces->load_from_domxml($node);
             }
             else if( $node->tagName == 'external' )
             {
@@ -186,8 +188,8 @@ class Zone
                         continue;
                     $this->externalVsys[$memberNode->textContent] = $memberNode->textContent;
                 }
-
-                $this->attachedInterfaces->load_from_domxml($node);
+                if( $this->attachedInterfaces !== null )
+                    $this->attachedInterfaces->load_from_domxml($node);
             }
             elseif( $node->tagName == 'tap' )
             {
