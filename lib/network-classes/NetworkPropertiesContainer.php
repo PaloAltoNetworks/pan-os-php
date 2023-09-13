@@ -141,9 +141,19 @@ class NetworkPropertiesContainer
         $tmp = DH::findFirstElement('shared-gateway', $this->xmlroot);
         if( $tmp !== FALSE )
         {
-                $this->sharedGatewayStore->load_from_domxml($tmp);
+            $this->sharedGatewayStore->load_from_domxml($tmp);
 
-                $this->owner->sharedGateways = $this->sharedGatewayStore->virtualSystems;
+            $this->owner->sharedGateways = $this->sharedGatewayStore->virtualSystems;
+
+            foreach( $this->owner->sharedGateways as $localVsys )
+            {
+                $importedInterfaces = $localVsys->importedInterfaces->interfaces();
+                foreach( $importedInterfaces as &$ifName )
+                {
+                    $ifName->importedByVSYS = $localVsys;
+                }
+            }
+
         }
 
     }

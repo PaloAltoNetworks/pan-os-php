@@ -198,6 +198,68 @@ class RULEUTIL extends UTIL
 
                     self::GlobalInitAction($sub, $this->ruleTypes);
                 }
+
+                foreach( $this->pan->getSharedGateways() as $sub )
+                {
+                    if( ($location == 'any' || $location == $sub->name() && !isset($ruleStoresToProcess[$sub->name()])) )
+                    {
+                        if( array_search('any', $this->ruleTypes) !== FALSE || array_search('security', $this->ruleTypes) !== FALSE )
+                        {
+                            $this->objectsToProcess[] = array('store' => $sub->securityRules, 'rules' => $sub->securityRules->rules());
+                        }
+                        if( array_search('any', $this->ruleTypes) !== FALSE || array_search('nat', $this->ruleTypes) !== FALSE )
+                        {
+                            $this->objectsToProcess[] = array('store' => $sub->natRules, 'rules' => $sub->natRules->rules());
+                        }
+                        if( array_search('any', $this->ruleTypes) !== FALSE || array_search('qos', $this->ruleTypes) !== FALSE )
+                        {
+                            $this->objectsToProcess[] = array('store' => $sub->qosRules, 'rules' => $sub->qosRules->rules());
+                        }
+                        if( array_search('any', $this->ruleTypes) !== FALSE || array_search('pbf', $this->ruleTypes) !== FALSE )
+                        {
+                            $this->objectsToProcess[] = array('store' => $sub->pbfRules, 'rules' => $sub->pbfRules->rules());
+                        }
+                        if( array_search('any', $this->ruleTypes) !== FALSE || array_search('decryption', $this->ruleTypes) !== FALSE )
+                        {
+                            $this->objectsToProcess[] = array('store' => $sub->decryptionRules, 'rules' => $sub->decryptionRules->rules());
+                        }
+                        if( array_search('any', $this->ruleTypes) !== FALSE || array_search('appoverride', $this->ruleTypes) !== FALSE )
+                        {
+                            $this->objectsToProcess[] = array('store' => $sub->appOverrideRules, 'rules' => $sub->appOverrideRules->rules());
+                        }
+                        if( array_search('any', $this->ruleTypes) !== FALSE || array_search('captiveportal', $this->ruleTypes) !== FALSE )
+                        {
+                            $this->objectsToProcess[] = array('store' => $sub->captivePortalRules, 'rules' => $sub->captivePortalRules->rules());
+                        }
+                        if( array_search('any', $this->ruleTypes) !== FALSE || array_search('authentication', $this->ruleTypes) !== FALSE )
+                        {
+                            $this->objectsToProcess[] = array('store' => $sub->authenticationRules, 'rules' => $sub->authenticationRules->rules());
+                        }
+                        if( array_search('any', $this->ruleTypes) !== FALSE || array_search('dos', $this->ruleTypes) !== FALSE )
+                        {
+                            $this->objectsToProcess[] = array('store' => $sub->dosRules, 'rules' => $sub->dosRules->rules());
+                        }
+                        if( array_search('any', $this->ruleTypes) !== FALSE || array_search('tunnelinspection', $this->ruleTypes) !== FALSE )
+                        {
+                            $this->objectsToProcess[] = array('store' => $sub->tunnelInspectionRules, 'rules' => $sub->tunnelInspectionRules->rules());
+                        }
+                        if( array_search('any', $this->ruleTypes) !== FALSE || array_search('defaultsecurity', $this->ruleTypes) !== FALSE )
+                        {
+                            $this->objectsToProcess[] = array('store' => $sub->defaultSecurityRules, 'rules' => $sub->defaultSecurityRules->resultingRuleSet());
+                        }
+                        if( array_search('any', $this->ruleTypes) !== FALSE || array_search('networkpacketbroker', $this->ruleTypes) !== FALSE )
+                        {
+                            $this->objectsToProcess[] = array('store' => $sub->networkPacketBrokerRules, 'rules' => $sub->networkPacketBrokerRules->rules());
+                        }
+                        if( array_search('any', $this->ruleTypes) !== FALSE || array_search('sdwan', $this->ruleTypes) !== FALSE )
+                        {
+                            $this->objectsToProcess[] = array('store' => $sub->sdWanRules, 'rules' => $sub->sdWanRules->rules());
+                        }
+                        $locationFound = TRUE;
+
+                        self::GlobalInitAction($sub, $this->ruleTypes);
+                    }
+                }
             }
             else
             {

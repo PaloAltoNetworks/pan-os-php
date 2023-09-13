@@ -1619,6 +1619,9 @@ class UTIL
                             $this->objectsToProcess[] = array('store' => $sub->scheduleStore, 'objects' => $sub->scheduleStore->getall());
                         elseif( $this->utilType == 'application' )
                             $this->objectsToProcess[] = array('store' => $sub->appStore, 'objects' => $sub->appStore->apps());
+
+                        $locationFound = TRUE;
+                        self::GlobalInitAction($this->pan);
                     }
                 }
 
@@ -1644,7 +1647,6 @@ class UTIL
                         $this->objectsToProcess[] = array('store' => $this->pan->threatStore, 'objects' => $this->pan->threatStore->getAll());
 
                     $locationFound = TRUE;
-
                     self::GlobalInitAction($this->pan);
                 }
                 elseif( $this->configType == 'fawkes' && ($location == 'ANY' || $location == 'any') )
@@ -1655,7 +1657,6 @@ class UTIL
                         $this->objectsToProcess[] = array('store' => $this->pan->threatStore, 'objects' => $this->pan->threatStore->getAll());
 
                     $locationFound = TRUE;
-
                     self::GlobalInitAction($this->pan);
                 }
 

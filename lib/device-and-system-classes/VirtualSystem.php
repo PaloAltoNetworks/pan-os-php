@@ -196,7 +196,8 @@ class VirtualSystem
 
         if( get_class($owner) == "SharedGatewayStore" )
         {
-
+            $this->importedInterfaces = new InterfaceContainer($this, $owner->owner->network);
+            $this->importedVirtualRouter = new VirtualRouterContainer($this, $owner->owner->network);
         }
         else
         {
@@ -334,7 +335,12 @@ class VirtualSystem
         $this->sdWanRules->name = 'SDWan';
 
 
-        if( get_class($owner) !== "SharedGatewayStore" )
+        if( get_class($owner) === "SharedGatewayStore" )
+        {
+            $this->dosRules->_networkStore = $this->owner->owner->network;
+            $this->pbfRules->_networkStore = $this->owner->owner->network;
+        }
+        else
         {
             $this->dosRules->_networkStore = $this->owner->network;
             $this->pbfRules->_networkStore = $this->owner->network;
@@ -723,7 +729,7 @@ class VirtualSystem
         if( $this->rulebaseroot === FALSE )
             $this->rulebaseroot = null;
 
-        if( $this->owner->owner === null && $this->rulebaseroot !== null )
+        if( ($this->owner->owner === null || get_class($this->owner) == "SharedGatewayStore") && $this->rulebaseroot !== null )
         {
             //
             // Security Rules extraction

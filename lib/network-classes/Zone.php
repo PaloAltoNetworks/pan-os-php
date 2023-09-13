@@ -77,7 +77,9 @@ class Zone
 
         if( $this->owner->owner->isVirtualSystem() )
         {
-            if( get_class( $this->owner->owner->owner ) !== "SharedGatewayStore" )
+            if( get_class( $this->owner->owner->owner ) === "SharedGatewayStore" )
+                $this->attachedInterfaces = new InterfaceContainer($this, $this->owner->owner->owner->owner->network);
+            else
                 $this->attachedInterfaces = new InterfaceContainer($this, $this->owner->owner->owner->network);
         }
         else
