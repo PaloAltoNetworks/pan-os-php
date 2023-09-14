@@ -1731,6 +1731,11 @@ class UTIL
                 PH::print_stdout( " - " . $sub->name() . " [".$sub->alternativeName()."]" );
                 PH::$JSON_OUT['error-location'][] = $sub->name();
             }
+            foreach( $this->pan->getSharedGateways() as $sub )
+            {
+                PH::print_stdout( " - " . $sub->name() . " [".$sub->alternativeName()."]" );
+                PH::$JSON_OUT['error-location'][] = $sub->name();
+            }
         }
         else
         {
