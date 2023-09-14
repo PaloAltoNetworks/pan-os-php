@@ -3460,7 +3460,7 @@ AddressCallContext::$supportedActions['combine-addressgroups'] = array(
 
             foreach($group->tags->getAll() as $tag)
             {
-                PH::print_stdout("   - add tag: ". $tag->name());
+                PH::print_stdout("     - add tag: ". $tag->name());
                 if( $context->isAPI )
                     $obj->tags->API_addTag($tag);
                 else
