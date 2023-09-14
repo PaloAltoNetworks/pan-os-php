@@ -1021,8 +1021,11 @@ class RuleStore
         {
             $varName = $this->getStoreVarName();
             /** @var RuleStore $var */
-            $var = $this->owner->parentDeviceGroup->$varName;
-            $res = $var->resultingPreRuleSet();
+            if( isset($this->owner->parentDeviceGroup->$varName) )
+            {
+                $var = $this->owner->parentDeviceGroup->$varName;
+                $res = $var->resultingPreRuleSet();
+            }
         }
 
         $res = array_merge($res, $this->_rules);
@@ -1036,8 +1039,11 @@ class RuleStore
         {
             $varName = $this->getStoreVarName();
             /** @var RuleStore $var */
-            $var = $this->owner->parentDeviceGroup->$varName;
-            $res = array_merge($res, $var->resultingPostRuleSet());
+            if( isset($this->owner->parentDeviceGroup->$varName) )
+            {
+                $var = $this->owner->parentDeviceGroup->$varName;
+                $res = array_merge($res, $var->resultingPostRuleSet());
+            }
         }
 
         return $res;

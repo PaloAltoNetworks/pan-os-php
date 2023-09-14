@@ -94,12 +94,12 @@ class ServiceGroup
 
             if( $membersRoot === FALSE )
             {
-                derr('unsupported non v6 syntax type ServiceGroup', $this->xmlroot);
+                derr('unsupported syntax type ServiceGroup', $this->xmlroot);
             }
-
             foreach( $membersRoot->childNodes as $node )
             {
-                if( $node->nodeType != 1 ) continue;
+                /** @var DOMElement $node */
+                if( $node->nodeType != XML_ELEMENT_NODE ) continue;
 
                 $memberName = $node->textContent;
 

@@ -189,18 +189,21 @@ class VirtualSystem
 
         $this->parentDeviceGroup = $applicableDG;
 
-        $this->version = &$owner->version;
 
         $this->tagStore = new TagStore($this);
         $this->tagStore->name = 'tags';
 
         if( get_class($owner) == "SharedGatewayStore" )
         {
+            $this->version = &$owner->owner->version;
+
             $this->importedInterfaces = new InterfaceContainer($this, $owner->owner->network);
             $this->importedVirtualRouter = new VirtualRouterContainer($this, $owner->owner->network);
         }
         else
         {
+            $this->version = &$owner->version;
+
             $this->importedInterfaces = new InterfaceContainer($this, $owner->network);
             $this->importedVirtualRouter = new VirtualRouterContainer($this, $owner->network);
         }
@@ -345,6 +348,26 @@ class VirtualSystem
             $this->dosRules->_networkStore = $this->owner->network;
             $this->pbfRules->_networkStore = $this->owner->network;
         }
+
+        $storeType = array(
+            'addressStore', 'serviceStore', 'tagStore', 'scheduleStore', 'appStore',
+
+            'securityProfileGroupStore',
+
+            'URLProfileStore', 'AntiVirusProfileStore', 'FileBlockingProfileStore', 'DataFilteringProfileStore',
+            'VulnerabilityProfileStore', 'AntiSpywareProfileStore', 'WildfireProfileStore',
+            'DecryptionProfileStore', 'HipObjectsProfileStore'
+
+        );
+
+        foreach( $storeType as $type )
+        {
+            if( get_class($this->owner) === "SharedGatewayStore" )
+                $this->$type->parentCentralStore = $this->owner->owner->$type;
+            else
+                $this->$type->parentCentralStore = $this->owner->$type;
+        }
+
     }
 
 
@@ -410,7 +433,7 @@ class VirtualSystem
             // Extract region objects
             //
             $tmp = DH::findFirstElement('region', $xml);
-            if( $tmp !== false )
+            if( $tmp !== FALSE )
                 $this->addressStore->load_regions_from_domxml($tmp);
             //print "VSYS '".$this->name."' address objectsloaded\n" ;
             // End of address objects extraction
@@ -450,8 +473,10 @@ class VirtualSystem
             //												//
             $tmp = DH::findFirstElement('service-group', $xml);
             if( $tmp !== FALSE )
+            {
+                #print "VSYS '".$this->name."' service groups loaded\n" ;
                 $this->serviceStore->load_servicegroups_from_domxml($tmp);
-            //print "VSYS '".$this->name."' service groups loaded\n" ;
+            }
             // End of <service-group> extraction
 
             //
