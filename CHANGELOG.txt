@@ -7,6 +7,7 @@ UTIL:
 * type=zone | extend with SharedGateway
 * type=rule | extend with SharedGateway
 * type=service | improvement for SharedGateway - class VirtualSystem
+* develop script "shared_gateway.php" | introduction
 
 BUGFIX:
 * type=ssh-connector in=admin@MGMT-IP setcommand-file=set-commands.txt | bugfix to correctly send set commands
