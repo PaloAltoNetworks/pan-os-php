@@ -118,6 +118,7 @@ class GCP extends UTIL
             $actionArray[] = "upload";
             $actionArray[] = "download";
             $actionArray[] = "validation";
+            $actionArray[] = "image-validation";
             $actionArray[] = "onboard";
             $actionArray[] = "offboard";
             $actionArray[] = "mysql-validation";
@@ -133,6 +134,7 @@ class GCP extends UTIL
             PH::print_stdout( "   - actions=upload tenantid=FULL");
             PH::print_stdout( "   - actions=download tenantid=FULL");
             PH::print_stdout( "   - actions=validation tenantid=XYZ validation-command='XYZ'");
+            PH::print_stdout( "   - actions=image-validation");
             PH::print_stdout( "   - actions=onboard tenantid=XYZ");
             PH::print_stdout( "   - actions=offboard tenantid=XYZ");
             PH::print_stdout( "   - actions=mysql-validation tenantid=XYZ");
@@ -313,6 +315,30 @@ class GCP extends UTIL
                 $container = substr($tenantID, 0, -2);
 
             $cli = "kubectl ".$this->insecureValue." exec ".$tenantID." -c ".$container." -- ".$validation_command;
+
+            $this->execCLI($cli, $output, $retValue);
+
+            foreach( $output as $line )
+            {
+                $string = '   ##  ';
+                $string .= $line;
+
+                PH::print_stdout($string);
+            }
+        }
+        elseif( $action == "image-validation" )
+        {
+            if( strpos( $tenantID, "expedition" ) !== False )
+            {
+                $container = "expedition";
+                $this->configPath = "/tmp/";
+            }
+            else
+                $container = substr($tenantID, 0, -2);
+
+            $cli = "kubectl ".$this->insecureValue." describe pod ".$tenantID." | grep 'Image '";
+
+            //describe pod expedition-77b4c645b9-sxqrp | grep Image
 
             $this->execCLI($cli, $output, $retValue);
 

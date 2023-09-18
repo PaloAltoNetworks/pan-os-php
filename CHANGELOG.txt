@@ -10,6 +10,7 @@ UTIL:
 * develop script "shared_gateway.php" | introduction
 * type=address in=api://192.168.55.129 'actions=combine-addressgroups:{NEW_GROUP_NAME},true' 'filter=(name regex /{FILTER}/)'
 * type=gcp actions=validation | introduction of new action
+* type=gcp actions=image-validation | introduction of new action
 
 BUGFIX:
 * type=ssh-connector in=admin@MGMT-IP setcommand-file=set-commands.txt | bugfix to correctly send set commands
