@@ -336,7 +336,7 @@ class GCP extends UTIL
             else
                 $container = substr($tenantID, 0, -2);
 
-            $cli = "kubectl ".$this->insecureValue." describe pod ".$tenantID." | grep 'Image '";
+            $cli = "kubectl ".$this->insecureValue." describe pod ".$tenantID." | grep 'Image: '";
 
             //describe pod expedition-77b4c645b9-sxqrp | grep Image
 
