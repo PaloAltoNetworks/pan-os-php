@@ -11,6 +11,7 @@ UTIL:
 * type=address in=api://192.168.55.129 'actions=combine-addressgroups:{NEW_GROUP_NAME},true' 'filter=(name regex /{FILTER}/)'
 * type=gcp actions=validation | introduction of new action
 * type=gcp actions=image-validation | introduction of new action
+* type=device | extend to display for FW config, per default also all sharedgateways in additional to vsys
 
 BUGFIX:
 * type=ssh-connector in=admin@MGMT-IP setcommand-file=set-commands.txt | bugfix to correctly send set commands
