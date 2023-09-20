@@ -4,6 +4,7 @@ CHANGELOG
 UTIL:
 
 BUGFIX:
+* type=address/service 'actions=move:shared,skipIfConflict' | bugfix as variable $findSubSystem was not declared for targetlocation 'shared'
 
 GENERAL:
 

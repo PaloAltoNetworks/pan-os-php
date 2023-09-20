@@ -1451,6 +1451,7 @@ AddressCallContext::$supportedActions[] = array(
 
         if( $targetLocation == 'shared' )
         {
+            $findSubSystem = $rootObject;
             $targetStore = $rootObject->addressStore;
         }
         else
