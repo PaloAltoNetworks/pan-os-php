@@ -1,6 +1,14 @@
 CHANGELOG
 
-2.1.17
+2.1.18
+UTIL:
+
+BUGFIX:
+
+GENERAL:
+
+
+2.1.17 (20230920)
 UTIL:
 * type=certificate | extend to TemplateStack
 * introduce class SharedGatewayStore | extend different classes to support SharedGateway
