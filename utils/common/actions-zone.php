@@ -429,7 +429,8 @@ ZoneCallContext::$supportedActions['display'] = array(
 
         //DISPLAY interfaces attached to zones
         $interfaces = $object->attachedInterfaces;
-        foreach( $interfaces->getAll() as $interface )
+        if( $interfaces !== null )
+            foreach( $interfaces->getAll() as $interface )
         {
             $tmp_txt = "         " . $interface->type . " - ";
             $tmp_txt .= $interface->name();
@@ -720,7 +721,8 @@ ZoneCallContext::$supportedActions['exportToExcel'] = array(
                     else
                     {
                         $lines .= $context->encloseFunction($object->type());
-                        $lines .= $context->encloseFunction( $object->attachedInterfaces->getAll() );
+                        if( $object->attachedInterfaces !==  null )
+                            $lines .= $context->encloseFunction( $object->attachedInterfaces->getAll() );
 
                         if( $object->logsetting == null )
                             $tmpLogprof = "";

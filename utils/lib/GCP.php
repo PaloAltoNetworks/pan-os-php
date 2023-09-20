@@ -38,6 +38,9 @@ class GCP extends UTIL
     private $insecureValue = "--insecure-skip-tls-verify=true";
 
 
+    private $project_json = null;
+    private $validation_command = null;
+
 
     public function utilStart()
     {
@@ -100,6 +103,10 @@ class GCP extends UTIL
             $outputfilename = PH::$args['out'];
         elseif( isset(PH::$args['in']) )
             $outputfilename = $inputconfig;
+        elseif( isset(PH::$args['project-json']) )
+            $project_json = PH::$args['project-json'];
+        elseif( isset(PH::$args['validation-command']) )
+            $validation_command = PH::$args['validation-command'];
 
         if( isset(PH::$args['actions']) )
         {
@@ -110,6 +117,8 @@ class GCP extends UTIL
             $actionArray[] = "expedition-log";
             $actionArray[] = "upload";
             $actionArray[] = "download";
+            $actionArray[] = "validation";
+            $actionArray[] = "image-validation";
             $actionArray[] = "onboard";
             $actionArray[] = "offboard";
             $actionArray[] = "mysql-validation";
@@ -124,6 +133,8 @@ class GCP extends UTIL
             PH::print_stdout( "   - actions=expedition-log tenantid=090");
             PH::print_stdout( "   - actions=upload tenantid=FULL");
             PH::print_stdout( "   - actions=download tenantid=FULL");
+            PH::print_stdout( "   - actions=validation tenantid=XYZ validation-command='XYZ'");
+            PH::print_stdout( "   - actions=image-validation");
             PH::print_stdout( "   - actions=onboard tenantid=XYZ");
             PH::print_stdout( "   - actions=offboard tenantid=XYZ");
             PH::print_stdout( "   - actions=mysql-validation tenantid=XYZ");
@@ -287,6 +298,57 @@ class GCP extends UTIL
 
             $cli = "kubectl ".$this->insecureValue." exec ".$tenantID." -c ".$container." -- cat ".$this->configPath.$inputconfig." > ".$outputfilename;
             $this->execCLIWithOutput( $cli );
+        }
+        elseif( $action == "validation" )
+        {
+
+            if( $validation_command === null )
+                derr( "argument 'validation-command=COMMAND' is not specified" );
+
+
+            if( strpos( $tenantID, "expedition" ) !== False )
+            {
+                $container = "expedition";
+                $this->configPath = "/tmp/";
+            }
+            else
+                $container = substr($tenantID, 0, -2);
+
+            $cli = "kubectl ".$this->insecureValue." exec ".$tenantID." -c ".$container." -- ".$validation_command;
+
+            $this->execCLI($cli, $output, $retValue);
+
+            foreach( $output as $line )
+            {
+                $string = '   ##  ';
+                $string .= $line;
+
+                PH::print_stdout($string);
+            }
+        }
+        elseif( $action == "image-validation" )
+        {
+            if( strpos( $tenantID, "expedition" ) !== False )
+            {
+                $container = "expedition";
+                $this->configPath = "/tmp/";
+            }
+            else
+                $container = substr($tenantID, 0, -2);
+
+            $cli = "kubectl ".$this->insecureValue." describe pod ".$tenantID." | grep 'Image: '";
+
+            //describe pod expedition-77b4c645b9-sxqrp | grep Image
+
+            $this->execCLI($cli, $output, $retValue);
+
+            foreach( $output as $line )
+            {
+                $string = '   ##  ';
+                $string .= $line;
+
+                PH::print_stdout($string);
+            }
         }
         elseif( $action == "onboard" )
         {

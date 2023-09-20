@@ -73,6 +73,9 @@ class PANConf
     /** @var VirtualSystem[] */
     public $virtualSystems = array();
 
+    /** @var VirtualSystem[] */
+    public $sharedGateways = array();
+
     /** @var PanAPIConnector|null $connector */
     public $connector = null;
 
@@ -134,6 +137,30 @@ class PANConf
     /** @var SecurityProfileStore */
     public $HipProfilesProfileStore = null;
 
+    /** @var SecurityProfileStore */
+    public $GTPProfileStore = null;
+
+    /** @var SecurityProfileStore */
+    public $SCEPProfileStore = null;
+
+    /** @var SecurityProfileStore */
+    public $PacketBrokerProfileStore = null;
+
+    /** @var SecurityProfileStore */
+    public $SDWanErrorCorrectionProfileStore = null;
+
+    /** @var SecurityProfileStore */
+    public $SDWanPathQualityProfileStore = null;
+
+    /** @var SecurityProfileStore */
+    public $SDWanSaasQualityProfileStore = null;
+
+    /** @var SecurityProfileStore */
+    public $SDWanTrafficDistributionProfileStore = null;
+
+    /** @var SecurityProfileStore */
+    public $DataObjectsProfileStore = null;
+    
     /** @var ScheduleStore */
     public $scheduleStore = null;
 
@@ -682,9 +709,43 @@ class PANConf
      * @param string $name
      * @return VirtualSystem|null
      */
+    public function findSharedGateway_by_displayName($displayname)
+    {
+        $tmp_vsys = $this->getSharedGateways();
+        foreach( $tmp_vsys as $vsys )
+        {
+            if( $vsys->alternativeName() == $displayname )
+                return $vsys;
+
+        }
+
+        return null;
+    }
+
+    /**
+     * @param string $name
+     * @return VirtualSystem|null
+     */
     public function findVirtualSystem($name)
     {
         foreach( $this->virtualSystems as $vsys )
+        {
+            if( $vsys->name() == $name )
+            {
+                return $vsys;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param string $name
+     * @return VirtualSystem|null
+     */
+    public function findSharedGateway($name)
+    {
+        foreach( $this->sharedGateways as $vsys )
         {
             if( $vsys->name() == $name )
             {
@@ -767,6 +828,13 @@ class PANConf
         return $this->virtualSystems;
     }
 
+    /**
+     * @return VirtualSystem[]
+     */
+    public function getSharedGateways()
+    {
+        return $this->sharedGateways;
+    }
 
     public function display_statistics( $connector = null )
     {

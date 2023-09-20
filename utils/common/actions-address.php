@@ -3414,3 +3414,71 @@ AddressCallContext::$supportedActions['upload-AddressGroup-2CloudManager'] = arr
         'dg_name' => array('type' => 'string', 'default' => '*nodefault*')
     )
 );
+
+AddressCallContext::$supportedActions['combine-addressgroups'] = array(
+    'name' => 'combine-addressgroups',
+    'GlobalInitFunction' => function (AddressCallContext $context) {
+
+        $new_addressgroup_name = $context->arguments['new_addressgroup_name'];
+
+        $obj = $context->subSystem->addressStore->find($new_addressgroup_name);
+        if( $obj !== null )
+        {
+            derr("this action is only working if no addressgroup with name: ".$new_addressgroup_name." is not already available", null, False);
+        }
+
+
+        $context->objectList = array();
+    },
+    'MainFunction' => function (AddressCallContext $context) {
+        $object = $context->object;
+        if( !$object->isAddress() )
+            $context->objectList[] = $object;
+    },
+    'GlobalFinishFunction' => function (AddressCallContext $context) {
+        $new_addressgroup_name = $context->arguments['new_addressgroup_name'];
+        $replace_groups = $context->arguments['replace_groups'];
+
+        PH::print_stdout("   - create AddressGroup: ". $new_addressgroup_name );
+
+        if( $context->isAPI )
+            $obj = $context->subSystem->addressStore->API_newAddressGroup($new_addressgroup_name);
+        else
+            $obj = $context->subSystem->addressStore->newAddressGroup($new_addressgroup_name);
+
+        foreach( $context->objectList as $group )
+        {
+            /** @var AddressGroup $group*/
+            foreach( $group->members() as $member )
+            {
+                PH::print_stdout("     - add address as member: ". $member->name());
+                if( $context->isAPI )
+                    $obj->API_addMember($member);
+                else
+                    $obj->addMember($member);
+            }
+
+            foreach($group->tags->getAll() as $tag)
+            {
+                PH::print_stdout("     - add tag: ". $tag->name());
+                if( $context->isAPI )
+                    $obj->tags->API_addTag($tag);
+                else
+                    $obj->tags->addTag($tag);
+            }
+
+            if( $replace_groups )
+            {
+                PH::print_stdout( " replace addressgroup: ". $group->name() . " with new addressgroup: ". $obj->name());
+                if( $context->isAPI )
+                    $group->replaceMeGlobally($obj,true);
+                else
+                    $group->replaceMeGlobally($obj);
+            }
+        }
+    },
+    'args' => array(
+        'new_addressgroup_name' => Array( 'type' => 'string', 'default' => '*nodefault*'),
+        'replace_groups' => array('type' => 'bool', 'default' => FALSE)
+    )
+);

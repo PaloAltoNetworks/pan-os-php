@@ -75,6 +75,8 @@ class DEVICEUTIL extends UTIL
             {
                 if( array_search('any', $this->deviceTypes) !== FALSE || array_search('vsys', $this->deviceTypes) !== FALSE )
                     $this->objectsToProcess[] = array('store' => $this->pan, 'objects' => $this->pan->getVirtualSystems());
+                if( array_search('any', $this->deviceTypes) !== FALSE || array_search('vsys', $this->deviceTypes) !== FALSE )
+                    $this->objectsToProcess[] = array('store' => $this->pan, 'objects' => $this->pan->getSharedGateways());
             }
             elseif( $this->configType == 'panorama' )
             {

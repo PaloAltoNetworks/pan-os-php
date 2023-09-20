@@ -41,5 +41,5 @@ class CertificateCallContext extends CallContext
     }
 }
 require_once  "actions-certificate.php";
-DHCPCallContext::prepareSupportedActions();
+CertificateCallContext::prepareSupportedActions();
 

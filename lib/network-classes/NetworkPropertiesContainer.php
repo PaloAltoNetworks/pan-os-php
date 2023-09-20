@@ -38,8 +38,12 @@ class NetworkPropertiesContainer
     /** @var greTunnelStore */
     public $greTunnelStore;
 
-    /** @var dhcpStore */
+    /** @var DHCPStore */
     public $dhcpStore;
+
+    /** @var SharedGatewayStore */
+    public $sharedGatewayStore;
+
 
     /** @var vlanIfStore */
     public $vlanIfStore;
@@ -75,6 +79,8 @@ class NetworkPropertiesContainer
         $this->tunnelIfStore = new TunnelIfStore('TunnelIfaces', $owner);
         $this->virtualWireStore = new VirtualWireStore('', $owner);
         $this->dhcpStore = new DHCPStore('DHCP', $owner);
+
+        $this->sharedGatewayStore = new SharedGatewayStore('SharedGateway', $owner);
     }
 
     function load_from_domxml(DOMElement $xml)
@@ -132,6 +138,23 @@ class NetworkPropertiesContainer
                 $this->dhcpStore->load_from_domxml($tmp);
         }
 
+        $tmp = DH::findFirstElement('shared-gateway', $this->xmlroot);
+        if( $tmp !== FALSE )
+        {
+            $this->sharedGatewayStore->load_from_domxml($tmp);
+
+            $this->owner->sharedGateways = $this->sharedGatewayStore->virtualSystems;
+
+            foreach( $this->owner->sharedGateways as $localVsys )
+            {
+                $importedInterfaces = $localVsys->importedInterfaces->interfaces();
+                foreach( $importedInterfaces as &$ifName )
+                {
+                    $ifName->importedByVSYS = $localVsys;
+                }
+            }
+
+        }
 
     }
 
