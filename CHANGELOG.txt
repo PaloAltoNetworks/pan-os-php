@@ -17,6 +17,7 @@ BUGFIX:
 * type=ssh-connector in=admin@MGMT-IP setcommand-file=set-commands.txt | bugfix to correctly send set commands
 
 GENERAL:
+* update App-ID version to: 8756-8298
 
 
 2.1.16  (20230908)
