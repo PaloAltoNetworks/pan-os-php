@@ -1,12 +1,16 @@
 CHANGELOG
 
-2.1.18
+2.1.19
 UTIL:
 
 BUGFIX:
-* type=address/service 'actions=move:shared,skipIfConflict' | bugfix as variable $findSubSystem was not declared for targetlocation 'shared'
 
 GENERAL:
+
+
+2.1.18 (20230920)
+BUGFIX:
+* type=address/service 'actions=move:shared,skipIfConflict' | bugfix as variable $findSubSystem was not declared for targetlocation 'shared'
 
 
 2.1.17 (20230920)
