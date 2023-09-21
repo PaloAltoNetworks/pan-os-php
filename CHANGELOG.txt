@@ -3,7 +3,6 @@ CHANGELOG
 2.1.19
 UTIL:
 * different classes | improve usage of flag 'XML_PARSE_BIG_LINES' in method loadXML
-* all type=XYZ | start supporting location=!shared
 
 BUGFIX:
 

@@ -1405,16 +1405,6 @@ class UTIL
                         else
                             $this->objectsLocation[$key] = 'any';
                     }
-                    elseif( strtolower($location) == '!shared' )
-                    {
-                        if( $this->configType == 'panos' )
-                            $tmp_locArray = $this->pan->getVirtualSystems();
-                        elseif( $this->configType == 'panorama' )
-                            $tmp_locArray = $this->pan->getDeviceGroups();
-                        foreach( $tmp_locArray as $loc )
-                            $this->objectsLocation[] = $loc->name();
-                    }
-
                 }
                 unset($location);
             }
