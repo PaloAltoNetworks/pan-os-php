@@ -1243,7 +1243,7 @@ trait SHAREDNEW
 
 
         $doc = new DOMDocument();
-        $doc->loadXML($app_string);
+        $doc->loadXML($app_string, XML_PARSE_BIG_LINES);
         $tmp = DH::findFirstElement('application', $doc);
         print "load appid\n";
         $this->sub->appStore->load_application_custom_from_domxml($tmp);

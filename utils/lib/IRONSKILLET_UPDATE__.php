@@ -261,7 +261,7 @@ class IRONSKILLET_UPDATE__
 
                                     //read new XML string
                                     $newdoc2 = new DOMDocument;
-                                    $newdoc2->loadXML($xmlString);
+                                    $newdoc2->loadXML($xmlString, XML_PARSE_BIG_LINES);
 
                                     /** @var DOMElement $rootNode2 */
                                     $rootNode2 = $newdoc2->firstChild;

@@ -10,7 +10,7 @@ function stonesoft_checkfile( $fileName, &$firewalls, &$policy, &$mapping )
     $stonesoft = file_get_contents($fileName);
 
     $doc = new DOMDocument();
-    $doc->loadXML($stonesoft);
+    $doc->loadXML($stonesoft, XML_PARSE_BIG_LINES);
 
 
     $granted_policy_ref = $doc->getElementsByTagName('granted_policy_ref');

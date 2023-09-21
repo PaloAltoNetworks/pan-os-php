@@ -199,7 +199,7 @@ class SOFTWARE_PREPARATION__
             $content = file_get_contents($input_file_name);
 
             $dom = new DOMDocument;
-            $dom->loadXML($content);
+            $dom->loadXML($content, XML_PARSE_BIG_LINES);
             if (!$dom) {
                 echo 'problems by parsing the document';
                 exit;

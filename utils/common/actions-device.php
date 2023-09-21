@@ -1728,7 +1728,7 @@ DeviceCallContext::$commonActionFunctions['sp_spg-create'] = array(
             $store = $sharedStore->$type;
             $profile = new $typeclass($name . "-" . $type_name, $store);
             $newdoc = new DOMDocument;
-            $newdoc->loadXML($context->$xmlString);
+            $newdoc->loadXML($context->$xmlString, XML_PARSE_BIG_LINES);
             $node = $newdoc->importNode($newdoc->firstChild, TRUE);
             $node = DH::findFirstElementByNameAttr("entry", $name . "-" . $type_name, $node);
 
@@ -1756,7 +1756,7 @@ DeviceCallContext::$commonActionFunctions['sp_spg-create'] = array(
             $store = $sharedStore->$type;
             $profile = new $typeclass($name . "-" . $type_name, $store);
             $newdoc = new DOMDocument;
-            $newdoc->loadXML($context->$xmlString);
+            $newdoc->loadXML($context->$xmlString, XML_PARSE_BIG_LINES);
             $node = $newdoc->importNode($newdoc->firstChild, TRUE);
             $node = DH::findFirstElementByNameAttr("entry", $name . "-" . $type_name, $node);
 
@@ -2127,7 +2127,7 @@ DeviceCallContext::$supportedActions['LogForwardingProfile-create-BP'] = array(
                 $ownerDocument = $sub->xmlroot->ownerDocument;
 
                 $newdoc = new DOMDocument;
-                $newdoc->loadXML( $lfp_bp_xmlstring );
+                $newdoc->loadXML( $lfp_bp_xmlstring, XML_PARSE_BIG_LINES);
                 $node = $newdoc->importNode($newdoc->firstChild, TRUE);
                 $node = DH::findFirstElementByNameAttr( "entry", "default", $node );
                 $node = $ownerDocument->importNode($node, TRUE);
@@ -2225,7 +2225,7 @@ DeviceCallContext::$commonActionFunctions['zpp-create'] = array(
                 $ownerDocument = $sub->xmlroot->ownerDocument;
 
                 $newdoc = new DOMDocument;
-                $newdoc->loadXML( $zpp_bp_xmlstring );
+                $newdoc->loadXML( $zpp_bp_xmlstring, XML_PARSE_BIG_LINES);
                 $node = $newdoc->importNode($newdoc->firstChild, TRUE);
                 $node = DH::findFirstElementByNameAttr( "entry", $entryProfileName, $node );
                 if( $node === false || $node === null )
@@ -2433,7 +2433,7 @@ DeviceCallContext::$supportedActions['DefaultSecurityRule-create-BP'] = array(
                 $ownerDocument = $sub->xmlroot->ownerDocument;
 
                 $newdoc = new DOMDocument;
-                $newdoc->loadXML( $defaultSecurityRules_xml );
+                $newdoc->loadXML( $defaultSecurityRules_xml, XML_PARSE_BIG_LINES);
                 $node = $newdoc->importNode($newdoc->firstChild, TRUE);
                 $node = $ownerDocument->importNode($node, TRUE);
                 $rulebase->appendChild( $node );

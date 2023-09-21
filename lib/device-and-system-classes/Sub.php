@@ -66,7 +66,7 @@ class Sub
         $ownerDocument = $this->rulebaseroot->ownerDocument;
 
         $newdoc = new DOMDocument;
-        $newdoc->loadXML( $this->defaultSecurityRules_xml );
+        $newdoc->loadXML( $this->defaultSecurityRules_xml, XML_PARSE_BIG_LINES);
         $node = $newdoc->importNode($newdoc->firstChild, TRUE);
         $node = $ownerDocument->importNode($node, TRUE);
 
@@ -82,7 +82,7 @@ class Sub
         $ownerDocument = $this->rulebaseroot->ownerDocument;
 
         $newdoc = new DOMDocument;
-        $newdoc->loadXML( $this->defaultSecurityRules_xml );
+        $newdoc->loadXML( $this->defaultSecurityRules_xml, XML_PARSE_BIG_LINES);
         $node = $newdoc->importNode($newdoc->firstChild, TRUE);
         $ruleNode = DH::findFirstElement('rules', $node);
 

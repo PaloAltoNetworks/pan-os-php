@@ -279,7 +279,7 @@ class LICENSE__
 
 
             $dom = new DOMDocument;
-            $dom->loadXML($content);
+            $dom->loadXML($content, XML_PARSE_BIG_LINES);
             if( !$dom )
             {
                 echo 'problems by parsing the document';
@@ -370,7 +370,7 @@ class LICENSE__
                     derr("SERVER response: 'Serial Number doesn't belong to this support account. Use different License API key'", null, FALSE);
 
                 $xmlDoc = new DOMDocument();
-                $xmlDoc->loadXML($curl_response);
+                $xmlDoc->loadXML($curl_response, XML_PARSE_BIG_LINES);
 
 
                 if( $debug )

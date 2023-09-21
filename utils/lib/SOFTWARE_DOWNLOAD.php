@@ -281,7 +281,7 @@ class SOFTWARE_DOWNLOAD extends UTIL
 
 
             $dom = new DOMDocument;
-            $dom->loadXML($content);
+            $dom->loadXML($content, XML_PARSE_BIG_LINES);
             if (!$dom) {
                 echo 'problems by parsing the document';
                 exit;
@@ -1139,7 +1139,7 @@ class SOFTWARE_DOWNLOAD extends UTIL
 
 
         $xmlDoc = new DOMDocument();
-        $xmlDoc->loadXML($curl_response);
+        $xmlDoc->loadXML($curl_response, XML_PARSE_BIG_LINES);
 
 
         $x = $xmlDoc->documentElement;

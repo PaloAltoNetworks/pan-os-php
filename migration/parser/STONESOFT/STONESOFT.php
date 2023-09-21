@@ -116,7 +116,7 @@ class STONESOFT extends PARSER
 
 
         $doc = new DOMDocument();
-        $doc->loadXML($data);
+        $doc->loadXML($data, XML_PARSE_BIG_LINES);
 
 
         $root = $doc->documentElement; // Root node
