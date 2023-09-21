@@ -1077,5 +1077,10 @@ class PANConf
         return $this->findVirtualSystem($location);
     }
 
+    // this is for !shared
+    public function childDeviceGroups()
+    {
+        return $this->getVirtualSystems();
+    }
 }
 

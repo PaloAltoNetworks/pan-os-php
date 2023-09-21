@@ -2362,6 +2362,10 @@ class PanoramaConf
         return $this->findDeviceGroup($location);
     }
 
+    public function childDeviceGroups()
+    {
+        return $this->getDeviceGroups();
+    }
 }
 
 
