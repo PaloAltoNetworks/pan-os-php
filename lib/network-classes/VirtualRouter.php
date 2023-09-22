@@ -149,6 +149,14 @@ class VirtualRouter
         return $this->_staticRoutes;
     }
 
+    /**
+     * @return int
+     */
+    public function count()
+    {
+        return count($this->_staticRoutes);
+    }
+
     public function addstaticRoute($staticRoute, $version = 'ip')
     {
         if( !is_object($staticRoute) )

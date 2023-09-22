@@ -184,6 +184,7 @@ require_once $basedir . '/misc-classes/DeviceRQueryContext.php';
 require_once $basedir . '/misc-classes/DHCPRQueryContext.php';
 require_once $basedir . '/misc-classes/CertificateRQueryContext.php';
 
+require_once $basedir . '/misc-classes/StaticRouteRQueryContext.php';
 
 require_once $basedir . '/misc-classes/CsvParser.php';
 require_once $basedir . '/misc-classes/trait/PanSubHelperTrait.php';

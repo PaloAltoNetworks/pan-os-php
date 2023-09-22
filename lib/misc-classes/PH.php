@@ -942,7 +942,7 @@ class PH
         "address", "service", "tag", "schedule", "application", "threat",
         "rule",
         "device", "securityprofile", "securityprofilegroup",
-        "zone",  "interface", "virtualwire", "routing", "dhcp", "certificate",
+        "zone",  "interface", "virtualwire", "routing", "dhcp", "certificate", "static-route",
         "key-manager",
         "address-merger", "addressgroup-merger",
         "service-merger", "servicegroup-merger",
@@ -1036,6 +1036,7 @@ class PH
             || $type == "virtualwire"
             || $type == "dhcp"
             || $type == "certificate"
+            || $type == "static-route"
         )
             $util = new NETWORKUTIL($type, $argv, $argc,$PHP_FILE." type=".$type, $_supportedArguments, $_usageMsg, $projectfolder);
 

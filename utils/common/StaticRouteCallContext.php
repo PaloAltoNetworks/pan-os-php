@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ISC License
  *
@@ -18,27 +19,27 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+class StaticRouteCallContext extends CallContext
+{
+    /** @var  Routing */
+    public $object;
 
 
-RoutingCallContext::$supportedActions['display'] = Array(
-    'name' => 'display',
-    'MainFunction' => function ( RoutingCallContext $context )
+
+    public static $commonActionFunctions = Array();
+    public static $supportedActions = Array();
+
+    static public function prepareSupportedActions()
     {
-        $virtualRouter = $context->object;
-        PH::print_stdout("     * ".get_class($virtualRouter)." '{$virtualRouter->name()}'" );
-        PH::$JSON_TMP['sub']['object'][$virtualRouter->name()]['name'] = $virtualRouter->name();
-        PH::$JSON_TMP['sub']['object'][$virtualRouter->name()]['type'] = get_class($virtualRouter);
-
-
-        foreach( $virtualRouter->staticRoutes() as $staticRoute )
+        $tmpArgs = Array();
+        foreach( self::$supportedActions as &$arg )
         {
-            $text = $staticRoute->display( $virtualRouter, true );
-            PH::print_stdout( $text );
+            $tmpArgs[strtolower($arg['name'])] = $arg;
         }
-
-        PH::print_stdout();
-    },
-
-    //Todo: display routes to zone / Interface IP
-);
+        ksort($tmpArgs);
+        self::$supportedActions = $tmpArgs;
+    }
+}
+require_once  "actions-static-route.php";
+StaticRouteCallContext::prepareSupportedActions();
 

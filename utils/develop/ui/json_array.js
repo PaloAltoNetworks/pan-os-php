@@ -42,6 +42,22 @@ var subjectObject =
                     }
                 }
             },
+            "combine-addressgroups": {
+                "name": "combine-addressgroups",
+                "GlobalInitFunction": {},
+                "MainFunction": {},
+                "GlobalFinishFunction": {},
+                "args": {
+                    "new_addressgroup_name": {
+                        "type": "string",
+                        "default": "*nodefault*"
+                    },
+                    "replace_groups": {
+                        "type": "bool",
+                        "default": false
+                    }
+                }
+            },
             "create-address": {
                 "name": "create-address",
                 "MainFunction": {},
@@ -572,6 +588,14 @@ var subjectObject =
                     "is.in.file": {
                         "Function": {},
                         "arg": true
+                    },
+                    "same.as.region.predefined": {
+                        "Function": {},
+                        "arg": false,
+                        "ci": {
+                            "fString": "(%PROP% new test 1)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
                     }
                 }
             },
@@ -876,6 +900,15 @@ var subjectObject =
                         "arg": true,
                         "ci": {
                             "fString": "(%PROP% \/grp\/)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    },
+                    "is.set": {
+                        "Function": {},
+                        "arg": false,
+                        "argObjectFinder": "$objectFind=null;\n$objectFind=$object->tags->parentCentralStore->find('!value!');",
+                        "ci": {
+                            "fString": "(%PROP% grp.shared-group1)",
                             "input": "input\/panorama-8.0.xml"
                         }
                     }
@@ -1331,6 +1364,34 @@ var subjectObject =
             }
         },
         "filter": {
+            "name": {
+                "operators": {
+                    "eq": {
+                        "Function": {},
+                        "arg": true,
+                        "ci": {
+                            "fString": "(%PROP% new test 1)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    },
+                    "eq.nocase": {
+                        "Function": {},
+                        "arg": true,
+                        "ci": {
+                            "fString": "(%PROP% new test 2)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    },
+                    "contains": {
+                        "Function": {},
+                        "arg": true,
+                        "ci": {
+                            "fString": "(%PROP% -)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    }
+                }
+            },
             "publickey-algorithm": {
                 "operators": {
                     "is.rsa": {
@@ -1739,6 +1800,20 @@ var subjectObject =
                     }
                 }
             },
+            "sharedgateway-delete": {
+                "name": "sharedgateway-delete",
+                "MainFunction": {}
+            },
+            "sharedgateway-migrate-to-vsys": {
+                "name": "sharedgateway-migrate-to-vsys",
+                "MainFunction": {},
+                "args": {
+                    "name": {
+                        "type": "string",
+                        "default": "false"
+                    }
+                }
+            },
             "sp_spg-create-alert-only-bp": {
                 "name": "sp_spg-create-alert-only-bp",
                 "GlobalInitFunction": {},
@@ -1833,6 +1908,10 @@ var subjectObject =
             },
             "template-delete": {
                 "name": "template-delete",
+                "MainFunction": {}
+            },
+            "virtualsystem-delete": {
+                "name": "virtualsystem-delete",
                 "MainFunction": {}
             },
             "xml-extract": {
@@ -7007,6 +7086,16 @@ var subjectObject =
     "ssh-connector": {
         "name": "ssh-connector",
         "action": [],
+        "filter": []
+    },
+    "static-route": {
+        "name": "static-route",
+        "action": {
+            "display": {
+                "name": "display",
+                "MainFunction": {}
+            }
+        },
         "filter": []
     },
     "stats": {

@@ -20,25 +20,17 @@
 
 
 
-RoutingCallContext::$supportedActions['display'] = Array(
+StaticRouteCallContext::$supportedActions['display'] = Array(
     'name' => 'display',
-    'MainFunction' => function ( RoutingCallContext $context )
+    'MainFunction' => function ( StaticRouteCallContext $context )
     {
-        $virtualRouter = $context->object;
-        PH::print_stdout("     * ".get_class($virtualRouter)." '{$virtualRouter->name()}'" );
-        PH::$JSON_TMP['sub']['object'][$virtualRouter->name()]['name'] = $virtualRouter->name();
-        PH::$JSON_TMP['sub']['object'][$virtualRouter->name()]['type'] = get_class($virtualRouter);
+        $staticRoute = $context->object;
+        PH::print_stdout("     * ".get_class($staticRoute)." '{$staticRoute->name()}'" );
+        PH::$JSON_TMP['sub']['object'][$staticRoute->owner->name()]['name'] = $staticRoute->name();
+        PH::$JSON_TMP['sub']['object'][$staticRoute->owner->name()]['type'] = get_class($staticRoute);
 
-
-        foreach( $virtualRouter->staticRoutes() as $staticRoute )
-        {
-            $text = $staticRoute->display( $virtualRouter, true );
-            PH::print_stdout( $text );
-        }
-
-        PH::print_stdout();
+        $text = $staticRoute->display( $staticRoute->owner );
+        PH::print_stdout( $text );
     },
-
-    //Todo: display routes to zone / Interface IP
 );
 

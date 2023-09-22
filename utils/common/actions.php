@@ -96,3 +96,7 @@ DHCPCallContext::prepareSupportedActions();
 require_once ( "CertificateCallContext.php");
 require_once  "actions-certificate.php";
 CertificateCallContext::prepareSupportedActions();
+
+require_once ( "StaticRouteCallContext.php");
+require_once  "actions-static-route.php";
+StaticRouteCallContext::prepareSupportedActions();
