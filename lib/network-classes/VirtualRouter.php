@@ -85,6 +85,11 @@ class VirtualRouter
                         $newRoute = new StaticRoute('***tmp**', $this);
                         $newRoute->load_from_xml($node->item($i));
                         $this->_staticRoutes[] = $newRoute;
+
+                        $ser = spl_object_hash($newRoute);
+
+                        $this->fastMemToIndex[$ser] = $newRoute;
+                        $this->fastNameToIndex[$newRoute->name()] = $newRoute;
                     }
                 }
             }
@@ -225,7 +230,7 @@ class VirtualRouter
 
         if( !isset($this->fastNameToIndex[$staticRoute->name()]) )
         {
-            mdeb('Tried to remove an object that is not part of this store');
+            mwarning('Tried to remove an object that is not part of this store', null, false);
             return FALSE;
         }
 

@@ -14,6 +14,17 @@ RQuery::$defaultFilters['static-route']['name']['operators']['eq'] = Array(
     )
 );
 
+RQuery::$defaultFilters['static-route']['virtualrouter-name']['operators']['eq'] = Array(
+    'Function' => function(StaticRouteRQueryContext $context )
+    {
+        return $context->object->owner->name() == $context->value;
+    },
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% ethernet1/1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 
 RQuery::$defaultFilters['static-route']['nexthop-ip']['operators']['is.set'] = Array(
     'Function' => function(StaticRouteRQueryContext $context )

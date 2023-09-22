@@ -7,6 +7,7 @@ UTIL:
 * type=gcp | introduce argument 'namespace=XYZ' to specify and better filter for get pods
 * type=device | introduce actions=virtualSystem-delete/sharedgateway-delete/sharedgateway-migrate-to-vsys
 * type=static-route | introduction of new type= | with 'filter=(nexthop-ip is.set)' / (nexthop-vr is.set) / nexthop-interface is.set) /  (destination ip4.includes-full 172.33.10.0/23)
+* type=static-route actions=delete | introduce new action
 
 BUGFIX:
 * class PANConf|VirtualSystem | bugfix to support SharedGateway also for Tag objects correctly

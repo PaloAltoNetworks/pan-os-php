@@ -21,7 +21,7 @@
 
 class StaticRouteCallContext extends CallContext
 {
-    /** @var  Routing */
+    /** @var  StaticRoute */
     public $object;
 
 

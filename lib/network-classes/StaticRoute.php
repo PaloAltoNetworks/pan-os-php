@@ -170,6 +170,11 @@ class StaticRoute
         return $tmpRoute;
     }
 
+    function remove()
+    {
+        $this->owner->removeStaticRoute($this, true);
+    }
+
     /**
      * @return string
      */

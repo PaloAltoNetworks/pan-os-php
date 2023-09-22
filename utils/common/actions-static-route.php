@@ -34,3 +34,10 @@ StaticRouteCallContext::$supportedActions['display'] = Array(
     },
 );
 
+StaticRouteCallContext::$supportedActions['delete'] = Array(
+    'name' => 'delete',
+    'MainFunction' => function ( StaticRouteCallContext $context )
+    {
+        $context->object->remove();
+    },
+);
