@@ -4,6 +4,7 @@ CHANGELOG
 UTIL:
 * different classes | improve usage of flag 'XML_PARSE_BIG_LINES' in method loadXML
 * class PANConf / Panoramaconfg | implement method ChildDeviceGroups() for 'location=shared:excludemaindg'
+* type=gcp | introduce argument 'namespace=XYZ' to specify and better filter for get pods
 
 BUGFIX:
 * class PANConf|VirtualSystem | bugfix to support SharedGateway also for Tag objects correctly

@@ -55,6 +55,7 @@ class GCP extends UTIL
         $this->supportedArguments['region'] = Array('niceName' => 'Region', 'shortHelp' => 'specify the region | default: region=us-central1 | region=europe-west3', 'argDesc' => '=us-central1');
         $this->supportedArguments['project'] = Array('niceName' => 'Project', 'shortHelp' => 'specify the project | default: project=ngfw-dev', 'argDesc' => '=ngfw-dev');
         $this->supportedArguments['tenantid'] = Array('niceName' => 'TenantID', 'shortHelp' => 'TenantID you like to use. also possible to bring in a part script will do grep', 'argDesc' => '=123456789');
+        $this->supportedArguments['namespace'] = Array('niceName' => 'Namespace', 'shortHelp' => 'specify the namespace you like to used | default: namespace=default', 'argDesc' => '=xyz');
         $this->supportedArguments['actions'] = Array('niceName' => 'actions', 'shortHelp' => 'specify the action the script should trigger', 'argDesc' => 'actions=grep');
 
 
@@ -90,9 +91,18 @@ class GCP extends UTIL
         else
             $project = "ngfw-dev";
 
+        if( isset(PH::$args['namespace']) )
+            $namespace = PH::$args['namespace'];
+        else
+            $namespace = "default";
 
         if( isset(PH::$args['tenantid']) )
+        {
             $tenantID = PH::$args['tenantid'];
+            if( strpos( $tenantID, "toggle" ) !== false )
+                $namespace = "adift";
+        }
+
         else
             derr( "argument tenantid=[ID] is missing", null, false );
 
@@ -148,7 +158,7 @@ class GCP extends UTIL
         $this->http_auth = "https://".$this->http_auth_IP."/";
 
         $get_auth = "gcloud container clusters get-credentials ".$cluster." --region ".$region." --project ".$project;
-        $this->get_all_pods = "kubectl ".$this->insecureValue." get pods";
+        $this->get_all_pods = "kubectl ".$this->insecureValue." get pods -n ".$namespace;
 
         $cliArray = array();
         $cliArray2 = array();
@@ -275,7 +285,7 @@ class GCP extends UTIL
             else
                 $container = substr($tenantID, 0, -2);
 
-            $cli = "kubectl ".$this->insecureValue." cp ".$inputconfig." -c ".$container." ".$tenantID.":".$this->configPath.$outputfilename;
+            $cli = "kubectl ".$this->insecureValue." cp ".$inputconfig." -c ".$container." ".$tenantID.":".$this->configPath.$outputfilename. " -n ".$namespace;
             $this->execCLIWithOutput( $cli );
         }
         elseif( $action == "download" )
@@ -296,7 +306,7 @@ class GCP extends UTIL
             else
                 $container = substr($tenantID, 0, -2);
 
-            $cli = "kubectl ".$this->insecureValue." exec ".$tenantID." -c ".$container." -- cat ".$this->configPath.$inputconfig." > ".$outputfilename;
+            $cli = "kubectl ".$this->insecureValue." exec ".$tenantID." -c ".$container." -- cat ".$this->configPath.$inputconfig." -n ".$namespace." > ".$outputfilename;
             $this->execCLIWithOutput( $cli );
         }
         elseif( $action == "validation" )
@@ -314,7 +324,7 @@ class GCP extends UTIL
             else
                 $container = substr($tenantID, 0, -2);
 
-            $cli = "kubectl ".$this->insecureValue." exec ".$tenantID." -c ".$container." -- ".$validation_command;
+            $cli = "kubectl ".$this->insecureValue." exec ".$tenantID." -c ".$container." -n ".$namespace." -- ".$validation_command;
 
             $this->execCLI($cli, $output, $retValue);
 
@@ -336,7 +346,7 @@ class GCP extends UTIL
             else
                 $container = substr($tenantID, 0, -2);
 
-            $cli = "kubectl ".$this->insecureValue." describe pod ".$tenantID." | grep 'Image: '";
+            $cli = "kubectl ".$this->insecureValue." describe pod ".$tenantID." -n ".$namespace." | grep 'Image: '";
 
             //describe pod expedition-77b4c645b9-sxqrp | grep Image
 
