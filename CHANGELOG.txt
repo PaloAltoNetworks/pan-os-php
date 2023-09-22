@@ -10,6 +10,7 @@ BUGFIX:
 * class PANConf|VirtualSystem | bugfix to support SharedGateway also for Tag objects correctly
 
 GENERAL:
+* Class VirtualSystem/SharedGatewayStore | better handling of version variable
 
 
 2.1.18 (20230920)

@@ -420,7 +420,7 @@ class VirtualSystem
             //
             // Extract Tag objects
             //
-            if( $this->owner->version >= 60 or (get_class($this->owner) == "SharedGatewayStore" and $this->owner->owner->version >= 60) )
+            if( $this->owner->version >= 60 )
             {
                 $tmp = DH::findFirstElement('tag', $xml);
                 if( $tmp !== FALSE )

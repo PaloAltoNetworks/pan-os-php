@@ -41,6 +41,8 @@ class SharedGatewayStore extends ObjStore
         $this->name = $name;
         $this->owner = $owner;
         $this->classn = &self::$childn;
+
+        $this->version = &$owner->version;
     }
 
     public function load_from_domxml(DOMElement $xml)
