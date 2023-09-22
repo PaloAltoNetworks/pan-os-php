@@ -11,6 +11,7 @@ UTIL:
 
 BUGFIX:
 * class PANConf|VirtualSystem | bugfix to support SharedGateway also for Tag objects correctly
+* type=xml-issue | bugfix to display read-only DeviceGroup duplicate address-group fixes correctly in summary
 
 GENERAL:
 * Class VirtualSystem/SharedGatewayStore | better handling of version variable
