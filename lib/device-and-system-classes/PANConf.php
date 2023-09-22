@@ -1074,7 +1074,10 @@ class PANConf
 
     public function findSubSystemByName($location)
     {
-        return $this->findVirtualSystem($location);
+        $vsys = $this->findVirtualSystem($location);
+        if( $vsys === null )
+            $vsys = $this->findSharedGateway($location);
+        return $vsys;
     }
 
     // this is for !shared

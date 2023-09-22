@@ -6,6 +6,7 @@ UTIL:
 * class PANConf / Panoramaconfg | implement method ChildDeviceGroups() for 'location=shared:excludemaindg'
 
 BUGFIX:
+* class PANConf|VirtualSystem | bugfix to support SharedGateway also for Tag objects correctly
 
 GENERAL:
 
