@@ -1072,6 +1072,42 @@ class PANConf
         return $newVsys;
     }
 
+    /**
+     * Remove a VirtualSystem.
+     * @param VirtualSystem $vsys
+     **/
+    public function removeVirtualSystem( $vsys )
+    {
+        $VSYSname = $vsys->name();
+
+        //remove VSYS from XML
+        $xPath = "/config/devices/entry[@name='localhost.localdomain']/vsys";
+        $dgNode = DH::findXPathSingleEntryOrDie($xPath, $this->xmlroot);
+
+        $DGremove = DH::findFirstElementByNameAttrOrDie('entry', $VSYSname, $dgNode);
+        $dgNode->removeChild( $DGremove );
+
+        unset($this->virtualSystems[ $VSYSname ]);
+    }
+
+    /**
+     * Remove a VirtualSystem.
+     * @param VirtualSystem $vsys
+     **/
+    public function removeSharedGateway( $vsys )
+    {
+        $VSYSname = $vsys->name();
+
+        //remove VSYS from XML
+        $xPath = "/config/devices/entry[@name='localhost.localdomain']/network/shared-gateway";
+        $dgNode = DH::findXPathSingleEntryOrDie($xPath, $this->xmlroot);
+
+        $DGremove = DH::findFirstElementByNameAttrOrDie('entry', $VSYSname, $dgNode);
+        $dgNode->removeChild( $DGremove );
+
+        unset($this->sharedGateways[ $VSYSname ]);
+    }
+
     public function findSubSystemByName($location)
     {
         $vsys = $this->findVirtualSystem($location);
