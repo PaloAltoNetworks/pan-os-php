@@ -756,16 +756,22 @@ RuleCallContext::$supportedActions[] = array(
             $list = &$context->cachedList;
         foreach( $list as $zone => $truefalse )
         {
+            /*
             if( !$rule->from->hasZone($zone) )
             {
-                $string = "no zone with requested name was found";
+                $string = "no zone with requested name '".$zone."' was found";
                 PH::ACTIONstatus( $context, "SKIPPED", $string );
-                return;
+                continue;
             }
+            */
 
             $objectFind = $rule->from->parentCentralStore->find($zone);
             if( $objectFind === null )
-                derr("zone named '{$zone}' not found");
+            {
+                mwarning("zone named '{$zone}' not found");
+                continue;
+            }
+
 
             if( $context->isAPI )
                 $rule->to->API_removeZone($objectFind);
@@ -1009,16 +1015,22 @@ RuleCallContext::$supportedActions[] = array(
             $list = &$context->cachedList;
         foreach( $list as $zone => $truefalse )
         {
+            /*
             if( !$rule->to->hasZone($zone) )
             {
-                $string = "no zone with requested name was found";
+                $string = "no zone with requested name '".$zone."' was found";
                 PH::ACTIONstatus( $context, "SKIPPED", $string );
-                return;
+                continue;
             }
+            */
 
             $objectFind = $rule->from->parentCentralStore->find($zone);
             if( $objectFind === null )
-                derr("zone named '{$zone}' not found");
+            {
+                mwarning("zone named '{$zone}' not found");
+                continue;
+            }
+
 
             if( $context->isAPI )
                 $rule->to->API_removeZone($objectFind);
