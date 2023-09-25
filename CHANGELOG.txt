@@ -14,6 +14,7 @@ BUGFIX:
 * class PANConf|VirtualSystem | bugfix to support SharedGateway also for Tag objects correctly
 * type=xml-issue | bugfix to display read-only DeviceGroup duplicate address-group fixes correctly in summary
 * type=address-merger | bugfix - do not merger address objects if tag count of planned merged object exceeds PAN-OS limit of 64 tag members
+* type=address-merger | bugfix for removing tag objects from upper level, if adr merged objects are using them and tag is also available at address level
 
 GENERAL:
 * Class VirtualSystem/SharedGatewayStore | better handling of version variable
