@@ -27,6 +27,7 @@ class RuleCallContext extends CallContext
 
     public $fields;
     public $ruleList;
+    public $cachedList;
 
     static public function prepareSupportedActions()
     {

@@ -708,6 +708,75 @@ RuleCallContext::$supportedActions[] = array(
     'args' => array('zoneName' => array('type' => 'string', 'default' => '*nodefault*')),
 );
 RuleCallContext::$supportedActions[] = array(
+    'name' => 'from-Remove-from-file',
+    'section' => 'zone',
+    'MainFunction' => function (RuleCallContext $context) {
+        $rule = $context->object;
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+        if( $rule->isDoSRule() && $rule->isZoneBasedTo() )
+        {
+            $string = "TO is Zone based, not supported yet.";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+        if( $rule->isPbfRule() )
+        {
+            $string = "there is no TO in PBF Rules.";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+
+
+        //open file
+        //per line do:
+        if( !isset($context->cachedList) )
+        {
+            $text = file_get_contents($context->arguments['fileName']);
+
+            if( $text === FALSE )
+                derr("cannot open file '{$context->arguments['fileName']}");
+
+            $lines = explode("\n", $text);
+            foreach( $lines as $line )
+            {
+                $line = trim($line);
+                if( strlen($line) == 0 )
+                    continue;
+                $list[$line] = TRUE;
+            }
+
+            $context->cachedList = &$list;
+        }
+        else
+            $list = &$context->cachedList;
+        foreach( $list as $zone => $truefalse )
+        {
+            if( !$rule->from->hasZone($zone) )
+            {
+                $string = "no zone with requested name was found";
+                PH::ACTIONstatus( $context, "SKIPPED", $string );
+                return;
+            }
+
+            $objectFind = $rule->from->parentCentralStore->find($zone);
+            if( $objectFind === null )
+                derr("zone named '{$zone}' not found");
+
+            if( $context->isAPI )
+                $rule->to->API_removeZone($objectFind);
+            else
+                $rule->to->removeZone($objectFind);
+        }
+
+    },
+    'args' => array('fileName' => array('type' => 'string', 'default' => '*nodefault*')),
+);
+RuleCallContext::$supportedActions[] = array(
     'name' => 'from-Remove-Force-Any',
     'section' => 'zone',
     'MainFunction' => function (RuleCallContext $context) {
@@ -890,6 +959,75 @@ RuleCallContext::$supportedActions[] = array(
             $rule->to->removeZone($objectFind);
     },
     'args' => array('zoneName' => array('type' => 'string', 'default' => '*nodefault*')),
+);
+RuleCallContext::$supportedActions[] = array(
+    'name' => 'to-Remove-from-file',
+    'section' => 'zone',
+    'MainFunction' => function (RuleCallContext $context) {
+        $rule = $context->object;
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+        if( $rule->isDoSRule() && $rule->isZoneBasedTo() )
+        {
+            $string = "TO is Zone based, not supported yet.";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+        if( $rule->isPbfRule() )
+        {
+            $string = "there is no TO in PBF Rules.";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+
+
+        //open file
+        //per line do:
+        if( !isset($context->cachedList) )
+        {
+            $text = file_get_contents($context->arguments['fileName']);
+
+            if( $text === FALSE )
+                derr("cannot open file '{$context->arguments['fileName']}");
+
+            $lines = explode("\n", $text);
+            foreach( $lines as $line )
+            {
+                $line = trim($line);
+                if( strlen($line) == 0 )
+                    continue;
+                $list[$line] = TRUE;
+            }
+
+            $context->cachedList = &$list;
+        }
+        else
+            $list = &$context->cachedList;
+        foreach( $list as $zone => $truefalse )
+        {
+            if( !$rule->to->hasZone($zone) )
+            {
+                $string = "no zone with requested name was found";
+                PH::ACTIONstatus( $context, "SKIPPED", $string );
+                return;
+            }
+
+            $objectFind = $rule->from->parentCentralStore->find($zone);
+            if( $objectFind === null )
+                derr("zone named '{$zone}' not found");
+
+            if( $context->isAPI )
+                $rule->to->API_removeZone($objectFind);
+            else
+                $rule->to->removeZone($objectFind);
+        }
+
+    },
+    'args' => array('fileName' => array('type' => 'string', 'default' => '*nodefault*')),
 );
 RuleCallContext::$supportedActions[] = array(
     'name' => 'to-Remove-Force-Any',
