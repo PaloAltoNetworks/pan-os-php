@@ -37,6 +37,7 @@ class Address
 
     /** @var TagRuleContainer */
     public $tags;
+    public $tagLimit = 64;
 
     const TypeTmp = 0;
     const TypeIpNetmask = 1;
