@@ -1433,11 +1433,30 @@ class UTIL
             $rootDG = $loc_explode[0];
             $opt_argument = strtolower($loc_explode[1]);
 
-            $DG = $this->pan->findDeviceGroup( $rootDG );
-            if( $DG === null )
-                $this->locationNotFound($rootDG);
+            if( $this->configType == 'panos' )
+            {
+                if( $rootDG == "shared" )
+                {
+                    $DG = $this->pan;
+                    $childDGs = $this->pan->getVirtualSystems();
+                }
+                else
+                {
+                    $DG = $this->pan->findVirtualSystem( $rootDG );
+                    if( $DG === null )
+                        $this->locationNotFound($rootDG);
+                    $childDGs = array();
+                }
+            }
+            elseif($this->configType == 'panorama')
+            {
+                $DG = $this->pan->findDeviceGroup( $rootDG );
+                if( $DG === null )
+                    $this->locationNotFound($rootDG);
 
-            $childDGs = $DG->childDeviceGroups( TRUE );
+                $childDGs = $DG->childDeviceGroups( TRUE );
+            }
+
 
             $this->objectsLocation = array();
 
