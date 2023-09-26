@@ -131,6 +131,14 @@ class PH
                     $argc--;
                 continue;
             }
+            elseif( $arg == 'shadow-loadreduce' )
+            {
+                PH::$shadow_loadreduce = TRUE;
+                unset(PH::$argv[$argIndex]);
+                if( !isset( $_SERVER['REQUEST_METHOD'] ) )
+                    $argc--;
+                continue;
+            }
         }
         unset($argIndex);
         unset($arg);
@@ -172,6 +180,8 @@ class PH
 
     public static $shadow_displayxmlnode = FALSE;
 
+    public static $shadow_loadreduce = FALSE;
+
     public static $JSON_OUT = array();
     public static $JSON_TMP = array();
     public static $JSON_OUTlog = "";
@@ -198,6 +208,8 @@ class PH
     public static $license_user_encrypt_digest = "6gtYixyTgBf/lBfxPzor8hqI8cmrvtn06UskXAb5EWBhQHuJm7/0J9WfZbH8lk3AAWnUhpaG/NWlGdDevT5PMKPSQUawo4V2Tl8IbNB2Nnw=";
     public static $license_pw_encrypt__digest = "hdRb8p8a8vKDpuhdfDnDkDWaZRUthNCE0EDqZSBx2mNy+gqakPa74GJJAINJfC+HCZqtYs0ut/uxs1nOAcEXQlRqppEXuy+s1MNoMULt4DM=";
 
+    public static $loadStartTime;
+    public static $loadStartMem;
 
     static public function decrypt($ciphertext, $key)
     {
@@ -683,6 +695,17 @@ class PH
 
         }
 
+    }
+
+    static public function print_DEBUG_loadtime( $type )
+    {
+        $loadEndTime = microtime(TRUE);
+        $loadEndMem = memory_get_usage(TRUE);
+        $loadElapsedTime = number_format(($loadEndTime - PH::$loadStartTime), 2, '.', '');
+        #$loadUsedMem = convert($loadEndMem - PH::$loadStartMem, PH::$loadArrayMem);
+
+        PH::print_stdout( "debugLoadTime - start ". $type);
+        PH::print_stdout( "runtime: ".$loadElapsedTime );
     }
 
     static public function ACTIONstatus( $context, $status, $string )

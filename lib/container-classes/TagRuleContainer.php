@@ -211,21 +211,24 @@ class TagRuleContainer extends ObjRuleContainer
                 $f = $this->parentCentralStore->findOrCreate($node->textContent, $this);
                 $this->o[] = $f;
 
-                //$f TAG -> if $f has reference of dynamic addressgroup, also add dynamic Addressgroup as reference to $this
-                $refClass = get_class($this->owner);
-                if( $refClass == "Address" || $refClass == "AddressGroup" )
-                    foreach( $f->refrules as $ref )
-                    {
-                        #PH::print_stdout(  '  - ' . $ref->toString() );
-                        $refClass = get_class($ref);
-                        #PH::print_stdout(  "refclass: " . $refClass );
-                        if( $refClass == 'AddressGroup' )
+                if( !PH::$shadow_loadreduce )
+                {
+                    //$f TAG -> if $f has reference of dynamic addressgroup, also add dynamic Addressgroup as reference to $this
+                    $refClass = get_class($this->owner);
+                    if( $refClass == "Address" || $refClass == "AddressGroup" )
+                        foreach( $f->refrules as $ref )
                         {
-                            /** @var AddressGroup $ref */
-                            if( $ref->isDynamic() )
-                                $this->owner->addReference($ref);
+                            #PH::print_stdout(  '  - ' . $ref->toString() );
+                            $refClass = get_class($ref);
+                            #PH::print_stdout(  "refclass: " . $refClass );
+                            if( $refClass == 'AddressGroup' )
+                            {
+                                /** @var AddressGroup $ref */
+                                if( $ref->isDynamic() )
+                                    $this->owner->addReference($ref);
+                            }
                         }
-                    }
+                }
             }
         }
 

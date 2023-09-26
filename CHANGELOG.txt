@@ -9,6 +9,7 @@ UTIL:
 * type=static-route | introduction of new type= | with 'filter=(nexthop-ip is.set)' / (nexthop-vr is.set) / nexthop-interface is.set) /  (destination ip4.includes-full 172.33.10.0/23)
 * type=static-route actions=delete | introduce new action
 * type=rule | introduce actions=from-/to-remove-from-file:FILE.txt
+* type=XYZ | introduce new arguments: shadow-loadreduce - to not update TAG object related address-groups | debugloadtime - display load time for specific XML sections
 
 BUGFIX:
 * class PANConf|VirtualSystem | bugfix to support SharedGateway also for Tag objects correctly

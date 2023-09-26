@@ -319,7 +319,7 @@ class DeviceGroup
      * !! Should not be used outside of a PanoramaConf constructor. !!
      * @param DOMElement $xml
      */
-    public function load_from_domxml($xml)
+    public function load_from_domxml($xml, $debugLoadTime = false)
     {
         $this->xmlroot = $xml;
 
@@ -328,6 +328,8 @@ class DeviceGroup
         if( $this->name === FALSE )
             derr("VirtualSystem name not found\n");
 
+        if( $debugLoadTime )
+            PH::print_DEBUG_loadtime("tag");
         //
         // Extract Tag objects
         //
@@ -340,6 +342,8 @@ class DeviceGroup
         // End of Tag objects extraction
 
 
+        if( $debugLoadTime )
+            PH::print_DEBUG_loadtime("region");
         //
         // Extract region objects
         //
@@ -349,6 +353,8 @@ class DeviceGroup
         //print "VSYS '".$this->name."' address objectsloaded\n" ;
         // End of address objects extraction
 
+        if( $debugLoadTime )
+            PH::print_DEBUG_loadtime("address");
         //
         // Extract address objects
         //
@@ -358,6 +364,8 @@ class DeviceGroup
         // End of address objects extraction
 
 
+        if( $debugLoadTime )
+            PH::print_DEBUG_loadtime("address-group");
         //
         // Extract address groups in this DV
         //
@@ -367,7 +375,8 @@ class DeviceGroup
         // End of address groups extraction
 
 
-
+        if( $debugLoadTime )
+            PH::print_DEBUG_loadtime("service");
         //												//
         // Extract service objects in this VirtualSystem			//
         //												//
@@ -377,6 +386,8 @@ class DeviceGroup
         // End of <service> extraction
 
 
+        if( $debugLoadTime )
+            PH::print_DEBUG_loadtime("service-group");
         //												//
         // Extract service groups in this VirtualSystem			//
         //												//
@@ -385,6 +396,8 @@ class DeviceGroup
             $this->serviceStore->load_servicegroups_from_domxml($tmp);
         // End of <service-group> extraction
 
+        if( $debugLoadTime )
+            PH::print_DEBUG_loadtime("application");
         //
         // Extract application
         //
@@ -393,6 +406,8 @@ class DeviceGroup
             $this->appStore->load_application_custom_from_domxml($tmp);
         // End of application extraction
 
+        if( $debugLoadTime )
+            PH::print_DEBUG_loadtime("application-filter");
         //
         // Extract application filter
         //
@@ -401,6 +416,8 @@ class DeviceGroup
             $this->appStore->load_application_filter_from_domxml($tmp);
         // End of application filter groups extraction
 
+        if( $debugLoadTime )
+            PH::print_DEBUG_loadtime("application-group");
         //
         // Extract application groups
         //
@@ -410,6 +427,8 @@ class DeviceGroup
         // End of application groups extraction
 
 
+        if( $debugLoadTime )
+            PH::print_DEBUG_loadtime("profiles");
         // Extract SecurityProfiles objects
         //
         $this->securityProfilebaseroot = DH::findFirstElement('profiles', $xml);
@@ -576,6 +595,8 @@ class DeviceGroup
         }
 
 
+        if( $debugLoadTime )
+            PH::print_DEBUG_loadtime("profile-group");
         //
         // Extract SecurityProfile groups in this DV
         //
@@ -585,6 +606,8 @@ class DeviceGroup
         // End of address groups extraction
 
 
+        if( $debugLoadTime )
+            PH::print_DEBUG_loadtime("schedule");
         //
         // Extract schedule objects
         //
@@ -594,6 +617,8 @@ class DeviceGroup
         // End of address groups extraction
 
 
+        if( $debugLoadTime )
+            PH::print_DEBUG_loadtime("pre-/post-rulebase");
         //
         // Extracting policies
         //
@@ -972,6 +997,8 @@ class DeviceGroup
             }
         }
 
+        if( $debugLoadTime )
+            PH::print_DEBUG_loadtime("nestedPointOfView");
         $this->addressStore->nestedPointOfView();
         $this->serviceStore->nestedPointOfView();
         $this->tagStore->nestedPointOfView();

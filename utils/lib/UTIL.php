@@ -113,6 +113,7 @@ class UTIL
     public $objectsFilter = null;
     public $errorMessage = '';
     public $debugAPI = FALSE;
+    public $debugLoadTime = FALSE;
 
     public $projectFolder = null;
 
@@ -264,6 +265,7 @@ class UTIL
         $this->supportedArguments['stats'] = array('niceName' => 'Stats', 'shortHelp' => 'display stats after changes');
         $this->supportedArguments['actions'] = array('niceName' => 'Actions', 'shortHelp' => 'action to apply on each rule matched by Filter. ie: actions=from-Add:net-Inside,netDMZ', 'argDesc' => 'action:arg1[,arg2]');
         $this->supportedArguments['debugapi'] = array('niceName' => 'DebugAPI', 'shortHelp' => 'prints API calls when they happen');
+        $this->supportedArguments['debugloadtime'] = array('niceName' => 'DebugLoadTime', 'shortHelp' => 'print LoadTime of specific config parts');
         $this->supportedArguments['filter'] = array('niceName' => 'Filter', 'shortHelp' => "filters objects based on a query. ie: 'filter=((from has external) or (source has privateNet1) and (to has external))'", 'argDesc' => '(field operator [value])');
         $this->supportedArguments['loadplugin'] = array('niceName' => 'loadPlugin', 'shortHelp' => 'a PHP file which contains a plugin to expand capabilities of this script', 'argDesc' => '[filename]');
         $this->supportedArguments['help'] = array('niceName' => 'help', 'shortHelp' => 'this message');
@@ -857,6 +859,11 @@ class UTIL
             $this->debugAPI = TRUE;
         }
 
+        if( isset(PH::$args['debugloadtime']) )
+        {
+            $this->debugLoadTime = TRUE;
+        }
+
     }
 
     public function inputValidation()
@@ -1272,7 +1279,7 @@ class UTIL
         $this->loadStart();
 
         if( $this->configInput['type'] !== "sase-api" )
-            $this->pan->load_from_domxml($this->xmlDoc, XML_PARSE_BIG_LINES);
+            $this->pan->load_from_domxml($this->xmlDoc, $this->debugLoadTime);
 
         if( isset(PH::$args['outputformatset']) )
         {
@@ -1368,6 +1375,9 @@ class UTIL
     {
         $this->loadStartMem = memory_get_usage(TRUE);
         $this->loadStartTime = microtime(TRUE);
+
+        PH::$loadStartTime = $this->loadStartTime;
+        PH::$loadStartMem = $this->loadStartMem;
     }
 
     public function loadEnd()
@@ -1969,6 +1979,12 @@ class UTIL
             $lineReturn = false;
             $indentingXml = -1;
             $indentingXmlIncreament = 0;
+
+            //remove empty XML nodes
+            $xpath = new DOMXPath($this->pan->xmlroot->ownerDocument);
+            foreach( $xpath->query('//*[not(node())]') as $node )
+                $node->parentNode->removeChild($node);
+
         }
 
 

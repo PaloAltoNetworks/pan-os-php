@@ -160,85 +160,88 @@ class AddressGroup
                     $tmp_filter = DH::findFirstElement('filter', $tmp);
                     $this->filter = $tmp_filter->nodeValue;
 
-                    $patterns = array( "@'(.*?)'@", "@\"(.*?)\"@");
-                    $tagFilter = $this->filter;
-
-                    $memberName = trim( $tagFilter );
-
-                    foreach( $patterns as $pattern)
+                    if( !PH::$shadow_loadreduce )
                     {
-                        $names = array();
+                        $patterns = array("@'(.*?)'@", "@\"(.*?)\"@");
+                        $tagFilter = $this->filter;
 
-                        $is_match = preg_match_all($pattern, $tagFilter, $names);
+                        $memberName = trim($tagFilter);
 
-                        foreach( $names[1] as $key => $replaceTXT )
+                        foreach( $patterns as $pattern )
                         {
-                            if( !empty($replaceTXT) )
+                            $names = array();
+
+                            $is_match = preg_match_all($pattern, $tagFilter, $names);
+
+                            foreach( $names[1] as $key => $replaceTXT )
                             {
-                                $replaceTXT2 = $replaceTXT;
-                                TAG::replaceNamewith( $replaceTXT2 );
-
-                                $pattern = $names[0][$key];
-                                $replacements = "(tag has " . $replaceTXT2 . ")";
-
-                                $tagFilter = str_replace($pattern, $replacements, $tagFilter);
-
-                                $tag = $this->owner->owner->tagStore->find($replaceTXT);
-                                if( $tag !== null )
+                                if( !empty($replaceTXT) )
                                 {
-                                    $tag->addReference($this);
+                                    $replaceTXT2 = $replaceTXT;
+                                    TAG::replaceNamewith($replaceTXT2);
+
+                                    $pattern = $names[0][$key];
+                                    $replacements = "(tag has " . $replaceTXT2 . ")";
+
+                                    $tagFilter = str_replace($pattern, $replacements, $tagFilter);
+
+                                    $tag = $this->owner->owner->tagStore->find($replaceTXT);
+                                    if( $tag !== null )
+                                    {
+                                        $tag->addReference($this);
+                                    }
+                                    else
+                                    {
+                                        #Todo: what if TAG is in parent tagStore?
+                                        #stop throwing WARNING - as it could be that DAG filter is not based on TAG, e.g. VMware info
+                                        #mwarning( "TAG not found: ".$test." - for DAG: '".$this->name()."' in location: ".$this->owner->owner->name(), null, false );
+                                    }
                                 }
                                 else
-                                {
-                                    #Todo: what if TAG is in parent tagStore?
-                                    #stop throwing WARNING - as it could be that DAG filter is not based on TAG, e.g. VMware info
-                                    #mwarning( "TAG not found: ".$test." - for DAG: '".$this->name()."' in location: ".$this->owner->owner->name(), null, false );
-                                }
+                                    mwarning("dynamic AddressGroup with name: " . $this->name() . " has an empty filter, you should review your XML config file", $this->xmlroot, FALSE, FALSE);
                             }
-                            else
-                                mwarning("dynamic AddressGroup with name: " . $this->name() . " has an empty filter, you should review your XML config file", $this->xmlroot, false, false);
-                        }
-                    }
-
-                    if( !empty($tagFilter) && $tagFilter !== "(tag has )" )
-                    {
-                        #print "|".$tagFilter."|\n";
-                        if(  strpos( $tagFilter, '(tag has' ) === false )
-                        {
-                            $tagFilter = "(tag has ".$tagFilter.")";
                         }
 
-                        $this->filter = $tagFilter;
-
-                        $tmp_found_addresses = $this->owner->all($tagFilter);
-
-                        $tmpParentStore = $this->owner->parentCentralStore;
-                        while(true)
+                        if( !empty($tagFilter) && $tagFilter !== "(tag has )" )
                         {
-                            if( $tmpParentStore !== null )
+                            #print "|".$tagFilter."|\n";
+                            if( strpos($tagFilter, '(tag has') === FALSE )
                             {
-                                $tmp_found_addresses2 = $tmpParentStore->all($tagFilter);
-                                $tmp_found_addresses = array_merge( $tmp_found_addresses, $tmp_found_addresses2 );
+                                $tagFilter = "(tag has " . $tagFilter . ")";
+                            }
 
-                                if( $tmpParentStore->parentCentralStore != null )
-                                    $tmpParentStore = $tmpParentStore->parentCentralStore;
+                            $this->filter = $tagFilter;
+
+                            $tmp_found_addresses = $this->owner->all($tagFilter);
+
+                            $tmpParentStore = $this->owner->parentCentralStore;
+                            while( TRUE )
+                            {
+                                if( $tmpParentStore !== null )
+                                {
+                                    $tmp_found_addresses2 = $tmpParentStore->all($tagFilter);
+                                    $tmp_found_addresses = array_merge($tmp_found_addresses, $tmp_found_addresses2);
+
+                                    if( $tmpParentStore->parentCentralStore != null )
+                                        $tmpParentStore = $tmpParentStore->parentCentralStore;
+                                    else
+                                        break;
+                                }
                                 else
                                     break;
                             }
-                            else
-                                break;
-                        }
 
-                        foreach( $tmp_found_addresses as $address )
-                        {
-                            if( $this->name() == $address->name() )
+                            foreach( $tmp_found_addresses as $address )
                             {
-                                mwarning("dynamic AddressGroup with name: " . $this->name() . " is added as subgroup to itself, you should review your XML config file", $this->xmlroot, false, false);
-                            }
-                            else
-                            {
-                                $this->members[] = $address;
-                                $address->addReference($this);
+                                if( $this->name() == $address->name() )
+                                {
+                                    mwarning("dynamic AddressGroup with name: " . $this->name() . " is added as subgroup to itself, you should review your XML config file", $this->xmlroot, FALSE, FALSE);
+                                }
+                                else
+                                {
+                                    $this->members[] = $address;
+                                    $address->addReference($this);
+                                }
                             }
                         }
                     }
