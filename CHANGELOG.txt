@@ -10,6 +10,7 @@ UTIL:
 * type=static-route actions=delete | introduce new action
 * type=rule | introduce actions=from-/to-remove-from-file:FILE.txt
 * type=XYZ | introduce new arguments: shadow-loadreduce - to not update TAG object related address-groups | debugloadtime - display load time for specific XML sections
+* develop | introduce config_validation.php
 
 BUGFIX:
 * class PANConf|VirtualSystem | bugfix to support SharedGateway also for Tag objects correctly
