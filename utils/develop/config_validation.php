@@ -102,13 +102,13 @@ if( $cycleConnectedFirewalls && $util->pan->isPanorama() )
     }
 
 
-    /*
+
     foreach($devices_array as $key => $device)
     {
         #print "name: ".$device['serial']."\n";
-        print "name: ".$key."\n";
+        #print "name: ".$key."\n";
+        PH::print_stdout( "FW-serial: ".$device['serial']." in scope");
     }
-    */
 
     $firewallSerials = $inputConnector->panorama_getConnectedFirewallsSerials();
 
@@ -127,7 +127,11 @@ if( $cycleConnectedFirewalls && $util->pan->isPanorama() )
         */
 
         if( !in_array( $fw['serial'], array_keys($devices_array)  ) )
+        {
+            PH::print_stdout( "FW-serial: ".$fw['serial']." not in location scope - skipped");
             continue;
+        }
+
 
         $argv = array();
         $argc = array();
