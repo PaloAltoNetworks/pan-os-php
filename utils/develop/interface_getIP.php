@@ -62,6 +62,7 @@ if( !$util->apiMode )
     derr( "only PAN-OS API connection is supported" );
 
 $inputConnector = $util->pan->connector;
+$panoramaMGMTip = $inputConnector->info_mgmtip;
 $cycleConnectedFirewalls = FALSE;
 
 if( isset(PH::$args['cycleconnectedfirewalls']) )
@@ -86,7 +87,8 @@ if( $cycleConnectedFirewalls && $util->pan->isPanorama() )
         PH::$argv = array();
 
         $argv[0] = "test";
-        $argv[] = "in=api://".$fw['serial']."@".$inputConnector->info_mgmtip."/merged-config";
+        //must be fixed value from above $panoramaMGMTip, if not ->refreshSystemInfos later on is updating to FW MGMT IP
+        $argv[] = "in=api://".$fw['serial']."@".$panoramaMGMTip."/merged-config";
 
         PH::print_stdout( "--------------------------------------------------------------------------------" );
 
