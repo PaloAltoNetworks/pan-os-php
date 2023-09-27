@@ -205,9 +205,9 @@ function config_validation( $pan, $argument, &$array )
     $zone_array = $argument;
 
     /** @var PANConf $pan */
-    $inputConnector = $pan->connector;
+    $inputConnector2 = $pan->connector;
 
-    $inputConnector->refreshSystemInfos( true );
+    #$inputConnector2->refreshSystemInfos( true );
 
     //todo: what about multi-vsys?
     #$vsys = $pan->findVirtualSystem("vsys1");
@@ -220,10 +220,10 @@ function config_validation( $pan, $argument, &$array )
 
             if( $zoneInternet === null )
             {
-                $array[ $inputConnector->info_hostname ][ $vsys->name() ][] = $zoneName;
+                $array[ $inputConnector2->info_hostname ][ $vsys->name() ][] = $zoneName;
 
                 PH::print_stdout();
-                PH::print_stdout( $inputConnector->info_hostname.", ".$vsys->name().", ".$zoneName." not available" );
+                PH::print_stdout( $inputConnector2->info_hostname.", ".$vsys->name().", ".$zoneName." not available" );
                 PH::print_stdout( "--------------------------------------------------------------------------------" );
             }
         }
