@@ -22,7 +22,6 @@ set_include_path(dirname(__FILE__) . '/../' . PATH_SEPARATOR . get_include_path(
 require_once dirname(__FILE__)."/../../lib/pan_php_framework.php";
 require_once dirname(__FILE__)."/../../utils/lib/UTIL.php";
 
-
 PH::print_stdout();
 PH::print_stdout( "***********************************************" );
 PH::print_stdout( "************ config validation UTILITY ****************" );
@@ -66,6 +65,7 @@ if( !$util->apiMode )
     derr( "only PAN-OS API connection is supported" );
 
 $inputConnector = $util->pan->connector;
+$panoramaMGMTip = $inputConnector->info_mgmtip;
 $cycleConnectedFirewalls = FALSE;
 
 if( isset(PH::$args['cycleconnectedfirewalls']) )
@@ -114,21 +114,9 @@ if( $cycleConnectedFirewalls && $util->pan->isPanorama() )
 
     foreach( $firewallSerials as $fw )
     {
-        //validate if FWserial is in scope
-        //check if serial is in $devices_array
-        /*
-        print "filtered:\n";
-        print_r($devices_array);
-        print "filtered: serials:\n";
-        print_r( array_keys($devices_array) );
-
-        print "connected:\n";
-        print_r( $fw );
-        */
-
         if( !in_array( $fw['serial'], array_keys($devices_array)  ) )
         {
-            PH::print_stdout( "FW-serial: ".$fw['serial']." not in location scope - skipped");
+            #PH::print_stdout( "FW-serial: ".$fw['serial']." not in location scope - skipped");
             continue;
         }
 
@@ -139,7 +127,8 @@ if( $cycleConnectedFirewalls && $util->pan->isPanorama() )
         PH::$argv = array();
 
         $argv[0] = "test";
-        $argv[] = "in=api://".$fw['serial']."@".$inputConnector->info_mgmtip."/merged-config";
+        //must be fixed value from above $panoramaMGMTip, if not ->refreshSystemInfos later on is updating to FW MGMT IP
+        $argv[] = "in=api://".$fw['serial']."@".$panoramaMGMTip."/merged-config";
 
         PH::print_stdout( "--------------------------------------------------------------------------------" );
 
@@ -207,7 +196,7 @@ function config_validation( $pan, $argument, &$array )
     /** @var PANConf $pan */
     $inputConnector2 = $pan->connector;
 
-    #$inputConnector2->refreshSystemInfos( true );
+    $inputConnector2->refreshSystemInfos( true );
 
     //todo: what about multi-vsys?
     #$vsys = $pan->findVirtualSystem("vsys1");
