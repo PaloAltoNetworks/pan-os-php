@@ -3059,6 +3059,8 @@ RuleCallContext::$supportedActions[] = array(
 
         $object = $context->object;
 
+        $pregReplace = FALSE;
+
         $characterToreplace = $context->arguments['search'];
         if( strpos($characterToreplace, '$$comma$$') !== FALSE )
             $characterToreplace = str_replace('$$comma$$', ",", $characterToreplace);
@@ -3070,6 +3072,12 @@ RuleCallContext::$supportedActions[] = array(
             $characterToreplace = str_replace('$$pipe$$', "|", $characterToreplace);
         if( strpos($characterToreplace, '$$newline$$') !== FALSE )
             $characterToreplace = str_replace('$$newline$$', "\n", $characterToreplace);
+        if( strpos($characterToreplace, '$$appRID#$$') !== FALSE )
+        {
+            $characterToreplace = str_replace('$$appRID#$$', "appRID#[0-9]+", $characterToreplace);
+            $pregReplace = TRUE;
+        }
+
 
         $characterForreplace = $context->arguments['replace'];
         if( strpos($characterForreplace, '$$comma$$') !== FALSE )
@@ -3085,9 +3093,14 @@ RuleCallContext::$supportedActions[] = array(
 
         $description = $object->description();
 
-        $newDescription = str_replace($characterToreplace, $characterForreplace, $description);
-        //todo add regex replacement 20210305
-        //$desc = preg_replace('/appRID#[0-9]+/', '', $rule->description());
+        if( $pregReplace )
+        {
+            //todo add regex replacement 20210305
+            $newDescription = preg_replace('/ appRID#[0-9]+/', $characterForreplace, $description);
+        }
+        else
+            $newDescription = str_replace($characterToreplace, $characterForreplace, $description);
+
 
         if( $description == $newDescription )
         {
@@ -3110,7 +3123,7 @@ RuleCallContext::$supportedActions[] = array(
         'search' => array('type' => 'string', 'default' => '*nodefault*'),
         'replace' => array('type' => 'string', 'default' => '')
     ),
-    'help' => 'possible variable $$comma$$ or $$forwardslash$$ or $$colon$$ or $$pipe$$ or $$newline$$; example "actions=description-Replace-Character:$$comma$$word1"'
+    'help' => 'possible variable $$comma$$ or $$forwardslash$$ or $$colon$$ or $$pipe$$ or $$newline$$ or $$appRID#$$; example "actions=description-Replace-Character:$$comma$$word1"'
 );
 
 //                                                   //
@@ -5704,3 +5717,40 @@ RuleCallContext::$supportedActions[] = array(
     }
 );
 
+RuleCallContext::$supportedActions[] = array(
+    'name' => 'appid-toolbox-cleanup',
+    'MainFunction' => function (RuleCallContext $context) {
+        $object = $context->object;
+
+        ########################################################################
+        //delete cloned rules
+        if( strpos( $object->name(), "-app" ) && $object->isDisabled() )
+        {
+            if( $context->isAPI )
+                $object->owner->API_remove($object);
+            else
+                $object->owner->remove($object);
+        }
+
+        ########################################################################
+        //remove description
+        $description = $object->description();
+        $newDescription = preg_replace('/ appRID#[0-9]+/', "", $description);
+
+
+        if( $description == $newDescription )
+        {
+            $string = "new and old description are the same" ;
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+
+        $string = "new description will be '{$newDescription}'";
+        PH::ACTIONlog( $context, $string );
+
+        if( $context->isAPI )
+            $object->API_setDescription($newDescription);
+        else
+            $object->setDescription($newDescription);
+    }
+);

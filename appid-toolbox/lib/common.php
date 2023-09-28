@@ -57,20 +57,26 @@ date_default_timezone_set( $timezone_name );
 class DeviceGroupRuleAppUsage
 {
     public $logs = Array();
+    public $logsSrcDst = Array();
 
-    public function load_from_file($filename)
+    public function load_from_file($filename, $SrcDst = false)
     {
         $xmlDoc = new DOMDocument();
         $xmlDoc->Load($filename);
 
         $recordsNode = DH::findFirstElementOrDie('records', $xmlDoc);
 
+        if( $SrcDst )
+            $keyword = "ips";
+        else
+            $keyword = "apps";
+
         foreach( $recordsNode->childNodes as $entryNode )
         {
             if( $entryNode->nodeType != XML_ELEMENT_NODE )
                 continue;
 
-            $logRecord = Array( 'apps' => Array() );
+            $logRecord = Array( $keyword => Array() );
 
             /** @var DOMElement $entryNode */
 
@@ -88,27 +94,55 @@ class DeviceGroupRuleAppUsage
 
                 /** @var DOMElement $appNode */
 
-                $logRecord['apps'][$appNode->getAttribute('name')] = Array( 'name' => $appNode->getAttribute('name'), 'count' => $appNode->getAttribute('count'));
+                $logRecord[$keyword][$appNode->getAttribute('name')] = Array( 'name' => $appNode->getAttribute('name'), 'count' => $appNode->getAttribute('count'));
             }
 
-            $this->logs[$ruleName] = &$logRecord;
+            if( $SrcDst )
+                $this->logsSrcDst[$ruleName] = &$logRecord;
+            else
+                $this->logs[$ruleName] = &$logRecord;
             unset($logRecord);
         }
 
 
     }
 
-    public function save_to_file($filename)
+    public function save_to_file($filename, $SrcDst = false)
     {
         $xml = "<records>\n";
 
-        foreach($this->logs as $name => &$log)
+        if($SrcDst)
+        {
+            $logArray = $this->logsSrcDst;
+            $keyWord = "ips";
+        }
+        else
+        {
+            $logArray = $this->logs;
+            $keyWord = "apps";
+        }
+
+
+        foreach($logArray as $name => &$log)
         {
             $xml .= "  <entry name=\"{$name}\" timestamp=\"{$log['timestamp']}\" Htimestamp=\"".timestamp_to_date($log['timestamp'])."\">\n";
 
-            foreach( $log['apps'] as &$app )
+            foreach( $log[$keyWord] as $key => &$app )
             {
-                $xml .= "    <app name=\"{$app['name']}\" count=\"{$app['count']}\"/>\n";
+                if( $keyWord == "apps")
+                {
+                    $xml .= "    <".$keyWord." name=\"{$app['name']}\" count=\"{$app['count']}\"/>\n";
+                }
+                else
+                {
+                    #$xml .= "    <".$keyWord.">\n";
+                    foreach( $app as $ip )
+                    {
+                        $xml .= "    <".$keyWord."-".$key." name=\"{$ip['name']}\" count=\"{$ip['count']}\"/>\n";
+                    }
+
+                    #$xml .= "    </".$keyWord.">\n";
+                }
             }
 
             $xml .= "  </entry>\n";
@@ -118,6 +152,7 @@ class DeviceGroupRuleAppUsage
 
         file_put_contents($filename, $xml);
     }
+
 
     public function addRuleStats($ruleName , $appName, $hitCount)
     {
@@ -139,33 +174,75 @@ class DeviceGroupRuleAppUsage
             $record['apps'][$appName] = Array('name'=>$appName, 'count' => $hitCount);
     }
 
+    public function addRuleStats_SrcDst($ruleName , $srcOrDst, $ip, $hitCount)
+    {
+        if( isset($this->logsSrcDst[$ruleName]) )
+        {
+            $record = &$this->logsSrcDst[$ruleName];
+        }
+        else
+        {
+            $SrcDstArray = array('src', 'dst');
+            $record = Array( 'ips' => $SrcDstArray );
+            $this->logsSrcDst[$ruleName] = &$record;
+        }
+
+        $record['timestamp'] = time();
+
+        if( isset($record['ips'][$srcOrDst][$ip]) )
+            $record['ips'][$srcOrDst][$ip]['count'] += $hitCount;
+        else
+            $record['ips'][$srcOrDst][$ip] = Array('name'=>$ip, 'count' => $hitCount);
+    }
+
     /**
      * @param string $ruleName
      * @return null|int
      */
-    public function getRuleUpdateTimestamp($ruleName)
+    public function getRuleUpdateTimestamp($ruleName, $SrcDst = false)
     {
-        if( isset($this->logs[$ruleName]) )
-        {
-            return $this->logs[$ruleName]['timestamp'];
-        }
+        if( $SrcDst )
+            if( isset($this->logsSrcDst[$ruleName]) )
+            {
+                return $this->logsSrcDst[$ruleName]['timestamp'];
+            }
+        else
+            if( isset($this->logs[$ruleName]) )
+            {
+                return $this->logs[$ruleName]['timestamp'];
+            }
+
         return null;
     }
 
 
-    public function resetRulesStats($ruleName)
+    public function resetRulesStats($ruleName, $SrcDst = false)
     {
-        if( isset($this->logs[$ruleName]) )
-            unset($this->logs[$ruleName]);
+        if( $SrcDst )
+            if( isset($this->logsSrcDst[$ruleName]) )
+                unset($this->logsSrcDst[$ruleName]);
+        else
+            if( isset($this->logs[$ruleName]) )
+                unset($this->logs[$ruleName]);
     }
 
 
-    public function getRuleStats($ruleName)
+    public function getRuleStats($ruleName, $SrcDst = false)
     {
-        if( !isset($this->logs[$ruleName]) )
-            return null;
+        if( $SrcDst )
+        {
+            if( !isset($this->logsSrcDst[$ruleName]) )
+                return null;
 
-        return $this->logs[$ruleName]['apps'];
+            return $this->logsSrcDst[$ruleName]['ips'];
+        }
+        else
+        {
+            if( !isset($this->logs[$ruleName]) )
+                return null;
+
+            return $this->logs[$ruleName]['apps'];
+        }
     }
 
     public function isRuleUsed($ruleName, $ignoreApps = Array('incomplete', 'non-syn-tcp') )
@@ -183,21 +260,34 @@ class DeviceGroupRuleAppUsage
 
     }
 
-    public function createRuleStats($ruleName)
+    public function createRuleStats($ruleName, $SrcDst = false)
     {
-        if( !isset($this->logs[$ruleName]) )
-        {
-            $record = Array( 'apps' => Array(), 'timestamp' => time() );
-            $this->logs[$ruleName] = &$record;
-        }
+        if( $SrcDst )
+            if( !isset($this->logsSrcDst[$ruleName]) )
+            {
+                $record = Array( 'ips' => Array(), 'timestamp' => time() );
+                $this->logsSrcDst[$ruleName] = &$record;
+            }
+        else
+            if( !isset($this->logs[$ruleName]) )
+            {
+                $record = Array( 'apps' => Array(), 'timestamp' => time() );
+                $this->logs[$ruleName] = &$record;
+            }
     }
 
-    public function updateRuleUpdateTimestamp($ruleName)
+    public function updateRuleUpdateTimestamp($ruleName, $SrcDst = false)
     {
-        if( isset($this->logs[$ruleName]) )
-        {
-            $this->logs[$ruleName]['timestamp'] = time();
-        }
+        if( $SrcDst )
+            if( isset($this->logsSrcDst[$ruleName]) )
+            {
+                $this->logsSrcDst[$ruleName]['timestamp'] = time();
+            }
+        else
+            if( isset($this->logs[$ruleName]) )
+            {
+                $this->logs[$ruleName]['timestamp'] = time();
+            }
     }
 
 
