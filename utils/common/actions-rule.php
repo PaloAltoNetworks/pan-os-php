@@ -5754,3 +5754,282 @@ RuleCallContext::$supportedActions[] = array(
             $object->setDescription($newDescription);
     }
 );
+
+RuleCallContext::$supportedActions[] = Array(
+    'name' => 'appid-stats-FastAPI',
+    'section' => 'application',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+        $customLogHistory = $context->arguments['logHistory'];
+        if( $customLogHistory == "last-15-minutes" )
+            $logHistory = 15 * 60;
+        elseif( is_int($customLogHistory) )
+            $logHistory = $customLogHistory * 24 * 3600;
+        else
+            $logHistory = strtotime($customLogHistory);
+
+
+        if( $context->isAPI )
+        {
+            $report = $rule->API_getAppContainerStats2( time() - ($logHistory), time() + 0, false );
+            if( count( $report ) > 0 )
+            {
+                PH::print_stdout( "     - found APPID traffic: ".count($report));
+                foreach($report as $entry)
+                {
+                    $string = "      - ".$entry['app'];
+                    if( isset($entry['repeatcnt']) )
+                        $string .= " - count: ".$entry['repeatcnt'];
+                    elseif( isset($entry['session']) )
+                        $string .= " - session: ".$entry['sessions'];
+
+                    PH::print_stdout( $string );
+                }
+
+            }
+        }
+        else
+            derr( 'only supported in API mode' );
+    },
+    'args' => Array( 'logHistory' => Array( 'type' => 'string', 'default' => 'last-15-minutes' ) ),
+    'help' => 'returns TRUE if rule name matches the specified timestamp MM/DD/YYYY [american] / DD-MM-YYYY [european] / 21 September 2021 / -90 days',
+);
+
+RuleCallContext::$supportedActions[] = Array(
+    'name' => 'service-stats-FastAPI',
+    'section' => 'service',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+        $customLogHistory = $context->arguments['logHistory'];
+        if( $customLogHistory == "last-15-minutes" )
+            $logHistory = 15 * 60;
+        elseif( is_int($customLogHistory) )
+            $logHistory = $customLogHistory * 24 * 3600;
+        else
+            $logHistory = strtotime($customLogHistory);
+
+
+        if( $context->isAPI )
+        {
+            $report = $rule->API_getServiceStats( time() - ($logHistory), time() + 0, false );
+            if( count( $report ) > 0 )
+            {
+                PH::print_stdout( "     - found SRV traffic: ".count($report));
+                foreach($report as $entry)
+                {
+                    $string = "      - ".$entry['dport']." - ".$entry['app'];
+                    if( isset($entry['repeatcnt']) )
+                        $string .= " - count: ".$entry['repeatcnt'];
+                    elseif( isset($entry['session']) )
+                        $string .= " - session: ".$entry['sessions'];
+                    if( isset($entry['proto']) )
+                        $string .= " - protocol: ".$entry['proto'];
+
+                    PH::print_stdout( $string );
+                }
+
+            }
+        }
+        else
+            derr( 'only supported in API mode' );
+    },
+    'args' => Array( 'logHistory' => Array( 'type' => 'string', 'default' => 'last-15-minutes' ) ),
+    'help' => 'returns TRUE if rule name matches the specified timestamp MM/DD/YYYY [american] / DD-MM-YYYY [european] / 21 September 2021 / -90 days',
+);
+RuleCallContext::$supportedActions[] = Array(
+    'name' => 'address-source-stats-FastAPI',
+    'section' => 'address',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+        $customLogHistory = $context->arguments['logHistory'];
+        if( $customLogHistory == "last-15-minutes" )
+            $logHistory = 15 * 60;
+        elseif( is_int($customLogHistory) )
+            $logHistory = $customLogHistory * 24 * 3600;
+        else
+            $logHistory = strtotime($customLogHistory);
+
+        if( $context->isAPI )
+        {
+            $report_src = $rule->API_getAddressStats( time() - ($logHistory ), time() + 0, 'src', false );
+            if( count( $report_src ) > 0 )
+            {
+                PH::print_stdout( "     - found SRC traffic: ".count($report_src));
+                foreach($report_src as $entry)
+                {
+                    $string = "      - ".$entry['src'];
+                    if( isset($entry['repeatcnt']) )
+                        $string .= " - count: ".$entry['repeatcnt'];
+                    elseif( isset($entry['session']) )
+                        $string .= " - session: ".$entry['sessions'];
+
+                    PH::print_stdout( $string );
+                }
+            }
+        }
+        else
+            derr( 'only supported in API mode' );
+    },
+    'args' => Array( 'logHistory' => Array( 'type' => 'string', 'default' => 'last-15-minutes' ) ),
+    'help' => 'returns TRUE if rule name matches the specified timestamp MM/DD/YYYY [american] / DD-MM-YYYY [european] / 21 September 2021 / -90 days',
+);
+RuleCallContext::$supportedActions[] = Array(
+    'name' => 'address-destination-stats-FastAPI',
+    'section' => 'address',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+        $customLogHistory = $context->arguments['logHistory'];
+        if( $customLogHistory == "last-15-minutes" )
+            $logHistory = 15 * 60;
+        elseif( is_int($customLogHistory) )
+            $logHistory = $customLogHistory * 24 * 3600;
+        else
+            $logHistory = strtotime($customLogHistory);
+
+        if( $context->isAPI )
+        {
+            $report_dst = $rule->API_getAddressStats( time() - ($logHistory), time() + 0 , 'dst', false );
+            if( count( $report_dst ) > 0 )
+            {
+                PH::print_stdout( "     - found DST traffic: ".count($report_dst));
+                foreach($report_dst as $entry)
+                {
+                    $string = "      - ".$entry['dst'];
+                    if( isset($entry['repeatcnt']) )
+                        $string .= " - count: ".$entry['repeatcnt'];
+                    elseif( isset($entry['session']) )
+                        $string .= " - session: ".$entry['sessions'];
+
+                    PH::print_stdout( $string );
+                }
+            }
+        }
+        else
+            derr( 'only supported in API mode' );
+    },
+    'args' => Array( 'logHistory' => Array( 'type' => 'string', 'default' => 'last-15-minutes' ) ),
+    'help' => 'returns TRUE if rule name matches the specified timestamp MM/DD/YYYY [american] / DD-MM-YYYY [european] / 21 September 2021 / -90 days',
+);
+RuleCallContext::$supportedActions[] = Array(
+    'name' => 'address-stats-FastAPI',
+    'section' => 'address',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+        $customLogHistory = $context->arguments['logHistory'];
+        if( $customLogHistory == "last-15-minutes" )
+            $logHistory = 15 * 60;
+        elseif( is_int($customLogHistory) )
+            $logHistory = $customLogHistory * 24 * 3600;
+        else
+            $logHistory = strtotime($customLogHistory);
+
+        if( $context->isAPI )
+        {
+            $report_src = $rule->API_getAddressStats( time() - ($logHistory), time() + 0 , 'src', false );
+            $report_dst = $rule->API_getAddressStats( time() - ($logHistory), time() + 0 , 'dst', false );
+
+            if( count( $report_src ) > 0 )
+            {
+                PH::print_stdout( "     - found SRC traffic: ".count($report_src));
+                foreach($report_src as $entry)
+                {
+                    $string = "      - ".$entry['src'];
+                    if( isset($entry['repeatcnt']) )
+                        $string .= " - count: ".$entry['repeatcnt'];
+                    elseif( isset($entry['session']) )
+                        $string .= " - session: ".$entry['sessions'];
+
+                    PH::print_stdout( $string );
+                }
+            }
+
+            PH::print_stdout();
+
+            if( count( $report_dst ) > 0 )
+            {
+                PH::print_stdout( "     - found DST traffic: ".count($report_dst));
+                foreach($report_dst as $entry)
+                {
+                    $string = "      - ".$entry['dst'];
+                    if( isset($entry['repeatcnt']) )
+                        $string .= " - count: ".$entry['repeatcnt'];
+                    elseif( isset($entry['session']) )
+                        $string .= " - session: ".$entry['sessions'];
+
+                    PH::print_stdout( $string );
+                }
+            }
+
+            $report = $rule->API_getAddressStats( time() - ($logHistory), time() + 0 , 'both', false );
+
+            PH::print_stdout();
+
+            if( count( $report ) > 0 )
+            {
+                PH::print_stdout( "     - found SRC -> DST traffic: ".count($report));
+                foreach($report as $flow)
+                {
+                    $string = "      - ".$entry['src']." -> ".$entry['dst'];
+                    if( isset($entry['repeatcnt']) )
+                        $string .= " - count: ".$entry['repeatcnt'];
+                    elseif( isset($entry['session']) )
+                        $string .= " - session: ".$entry['sessions'];
+
+                    PH::print_stdout( $string );
+                }
+            }
+        }
+        else
+            derr( 'only supported in API mode' );
+    },
+    'args' => Array( 'logHistory' => Array( 'type' => 'string', 'default' => 'last-15-minutes' ) ),
+    'help' => 'returns TRUE if rule name matches the specified timestamp MM/DD/YYYY [american] / DD-MM-YYYY [european] / 21 September 2021 / -90 days',
+);
+
+RuleCallContext::$supportedActions[] = Array(
+    'name' => 'traffic-stats-FastAPI',
+    'section' => 'address',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+        $customLogHistory = $context->arguments['logHistory'];
+        if( $customLogHistory == "last-15-minutes" )
+            $logHistory = 15 * 60;
+        elseif( is_int($customLogHistory) )
+            $logHistory = $customLogHistory * 24 * 3600;
+        else
+            $logHistory = strtotime($customLogHistory);
+
+        if( $context->isAPI )
+        {
+            $report = $rule->API_getAddressStats( time() - ($logHistory), time() + 0 , 'srcdstsrv', false );
+
+            if( count( $report ) > 0 )
+            {
+                PH::print_stdout( "     - found SRC -> DST -> SRV traffic: ".count($report));
+                foreach($report as $entry)
+                {
+                    $string = "      - ".$entry['src']." -> ".$entry['dst'];
+                    $string .= " - port: ".$entry['dport'];//." - app: ".$entry['app'];
+                    if( isset($entry['proto']) )
+                        $string .= " - protocol: ".$entry['proto'];
+                    if( isset($entry['repeatcnt']) )
+                        $string .= " - count: ".$entry['repeatcnt'];
+                    elseif( isset($entry['session']) )
+                        $string .= " - session: ".$entry['sessions'];
+
+                    PH::print_stdout( $string );
+                }
+            }
+        }
+        else
+            derr( 'only supported in API mode' );
+    },
+    'args' => Array( 'logHistory' => Array( 'type' => 'string', 'default' => 'last-15-minutes' ) ),
+    'help' => 'returns TRUE if rule name matches the specified timestamp MM/DD/YYYY [american] / DD-MM-YYYY [european] / 21 September 2021 / -90 days',
+);

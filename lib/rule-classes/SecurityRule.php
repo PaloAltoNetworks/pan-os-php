@@ -1576,6 +1576,11 @@ class SecurityRule extends RuleWithUserID
             $dvq = '(' . array_to_devicequery($devices) . ')';
         }
 
+        $repeatOrCount = 'sessions';
+
+        if( !$fastMode )
+            $repeatOrCount = 'repeatcnt';
+
         $startString = date('Y/m/d H:i:00', $startTimestamp);
 
         if( $endTimestamp === null )
@@ -1586,7 +1591,15 @@ class SecurityRule extends RuleWithUserID
             $endString = date('Y/m/d H:00:00', $endTimestamp);
 
         $query = "<type>"
-            . "<" . $type . "><aggregate-by><member>proto</member><member>dport</member></aggregate-by>"
+            . "<" . $type . "><aggregate-by>";
+        if( !$fastMode )
+            $query .= "<member>proto</member>";
+
+        $query .= "<member>dport</member>";
+        $query .= "<member>app</member>";
+
+        $query .= "</aggregate-by>"
+            . "<values><member>{$repeatOrCount}</member></values>"
             . "</" . $type . "></type>"
             #. "<period>" . $timePeriod . "</period>"
             . "<start-time>{$startString}</start-time>"
@@ -1655,6 +1668,11 @@ class SecurityRule extends RuleWithUserID
             $first = FALSE;
         }
 
+        $repeatOrCount = 'sessions';
+
+        if( !$fastMode )
+            $repeatOrCount = 'repeatcnt';
+
         $startString = date('Y/m/d H:i:00', $startTimestamp);
 
         if( $endTimestamp === null )
@@ -1665,9 +1683,29 @@ class SecurityRule extends RuleWithUserID
             $endString = date('Y/m/d H:00:00', $endTimestamp);
 
         $query = "<type>"
-            . "<" . $type . "><aggregate-by><member>" . $srcORdst . "</member></aggregate-by>"
-            . "<values><member>sessions</member></values>"
-            . "</" . $type . "></type>"
+            . "<" . $type . "><aggregate-by>";
+
+        if( $srcORdst == "both" or $srcORdst == "srcdstsrv" )
+        {
+            $query .= "<member>src</member>";
+            $query .= "<member>dst</member>";
+        }
+        else
+            $query .= "<member>" . $srcORdst . "</member>";
+
+        $query .= "</aggregate-by>"
+            . "<values>";
+        if( $srcORdst == "srcdstsrv" )
+        {
+            $query .= "<member>dport</member>";
+            $query .= "<member>app</member>";
+            if( !$fastMode )
+                $query .= "<member>proto</member>";
+        }
+
+        $query .= "<member>{$repeatOrCount}</member>";
+
+        $query .= "</values></" . $type . "></type>"
             #. "<period>" . $timePeriod . "</period>"
             . "<start-time>{$startString}</start-time>"
             . "<end-time>{$endString}</end-time>"
