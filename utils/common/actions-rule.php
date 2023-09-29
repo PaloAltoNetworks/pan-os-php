@@ -5756,7 +5756,7 @@ RuleCallContext::$supportedActions[] = array(
 );
 
 RuleCallContext::$supportedActions[] = Array(
-    'name' => 'appid-stats-FastAPI',
+    'name' => 'stats-appid-FastAPI',
     'section' => 'application',
     'MainFunction' => function(RuleCallContext $context)
     {
@@ -5797,7 +5797,7 @@ RuleCallContext::$supportedActions[] = Array(
 );
 
 RuleCallContext::$supportedActions[] = Array(
-    'name' => 'service-stats-FastAPI',
+    'name' => 'stats-service-FastAPI',
     'section' => 'service',
     'MainFunction' => function(RuleCallContext $context)
     {
@@ -5839,7 +5839,7 @@ RuleCallContext::$supportedActions[] = Array(
     'help' => 'returns TRUE if rule name matches the specified timestamp MM/DD/YYYY [american] / DD-MM-YYYY [european] / 21 September 2021 / -90 days',
 );
 RuleCallContext::$supportedActions[] = Array(
-    'name' => 'address-source-stats-FastAPI',
+    'name' => 'stats-address-source-FastAPI',
     'section' => 'address',
     'MainFunction' => function(RuleCallContext $context)
     {
@@ -5877,7 +5877,7 @@ RuleCallContext::$supportedActions[] = Array(
     'help' => 'returns TRUE if rule name matches the specified timestamp MM/DD/YYYY [american] / DD-MM-YYYY [european] / 21 September 2021 / -90 days',
 );
 RuleCallContext::$supportedActions[] = Array(
-    'name' => 'address-destination-stats-FastAPI',
+    'name' => 'stats-address-destination-FastAPI',
     'section' => 'address',
     'MainFunction' => function(RuleCallContext $context)
     {
@@ -5915,7 +5915,7 @@ RuleCallContext::$supportedActions[] = Array(
     'help' => 'returns TRUE if rule name matches the specified timestamp MM/DD/YYYY [american] / DD-MM-YYYY [european] / 21 September 2021 / -90 days',
 );
 RuleCallContext::$supportedActions[] = Array(
-    'name' => 'address-stats-FastAPI',
+    'name' => 'stats-address-FastAPI',
     'section' => 'address',
     'MainFunction' => function(RuleCallContext $context)
     {
@@ -5992,7 +5992,7 @@ RuleCallContext::$supportedActions[] = Array(
 );
 
 RuleCallContext::$supportedActions[] = Array(
-    'name' => 'traffic-stats-FastAPI',
+    'name' => 'stats-traffic-FastAPI',
     'section' => 'address',
     'MainFunction' => function(RuleCallContext $context)
     {

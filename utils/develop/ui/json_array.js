@@ -2288,6 +2288,10 @@ var subjectObject =
                 "section": "app",
                 "MainFunction": {}
             },
+            "appid-toolbox-cleanup": {
+                "name": "appid-toolbox-cleanup",
+                "MainFunction": {}
+            },
             "bidirnat-split": {
                 "name": "biDirNat-Split",
                 "MainFunction": {},
@@ -2393,7 +2397,7 @@ var subjectObject =
                         "default": ""
                     }
                 },
-                "help": "possible variable $$comma$$ or $$forwardslash$$ or $$colon$$ or $$pipe$$ or $$newline$$; example \"actions=description-Replace-Character:$$comma$$word1\""
+                "help": "possible variable $$comma$$ or $$forwardslash$$ or $$colon$$ or $$pipe$$ or $$newline$$ or $$appRID#$$; example \"actions=description-Replace-Character:$$comma$$word1\""
             },
             "disabled-set": {
                 "name": "disabled-Set",
@@ -2684,6 +2688,17 @@ var subjectObject =
                     }
                 }
             },
+            "from-remove-from-file": {
+                "name": "from-Remove-from-file",
+                "section": "zone",
+                "MainFunction": {},
+                "args": {
+                    "fileName": {
+                        "type": "string",
+                        "default": "*nodefault*"
+                    }
+                }
+            },
             "from-replace": {
                 "name": "from-Replace",
                 "section": "zone",
@@ -2953,7 +2968,7 @@ var subjectObject =
                     },
                     "replace": {
                         "type": "string",
-                        "default": "*nodefault*"
+                        "default": ""
                     }
                 },
                 "help": ""
@@ -3275,6 +3290,78 @@ var subjectObject =
                 "section": "address",
                 "MainFunction": {}
             },
+            "stats-address-destination-fastapi": {
+                "name": "stats-address-destination-FastAPI",
+                "section": "address",
+                "MainFunction": {},
+                "args": {
+                    "logHistory": {
+                        "type": "string",
+                        "default": "last-15-minutes"
+                    }
+                },
+                "help": "returns TRUE if rule name matches the specified timestamp MM\/DD\/YYYY [american] \/ DD-MM-YYYY [european] \/ 21 September 2021 \/ -90 days"
+            },
+            "stats-address-fastapi": {
+                "name": "stats-address-FastAPI",
+                "section": "address",
+                "MainFunction": {},
+                "args": {
+                    "logHistory": {
+                        "type": "string",
+                        "default": "last-15-minutes"
+                    }
+                },
+                "help": "returns TRUE if rule name matches the specified timestamp MM\/DD\/YYYY [american] \/ DD-MM-YYYY [european] \/ 21 September 2021 \/ -90 days"
+            },
+            "stats-address-source-fastapi": {
+                "name": "stats-address-source-FastAPI",
+                "section": "address",
+                "MainFunction": {},
+                "args": {
+                    "logHistory": {
+                        "type": "string",
+                        "default": "last-15-minutes"
+                    }
+                },
+                "help": "returns TRUE if rule name matches the specified timestamp MM\/DD\/YYYY [american] \/ DD-MM-YYYY [european] \/ 21 September 2021 \/ -90 days"
+            },
+            "stats-appid-fastapi": {
+                "name": "stats-appid-FastAPI",
+                "section": "application",
+                "MainFunction": {},
+                "args": {
+                    "logHistory": {
+                        "type": "string",
+                        "default": "last-15-minutes"
+                    }
+                },
+                "help": "returns TRUE if rule name matches the specified timestamp MM\/DD\/YYYY [american] \/ DD-MM-YYYY [european] \/ 21 September 2021 \/ -90 days"
+            },
+            "stats-service-fastapi": {
+                "name": "stats-service-FastAPI",
+                "section": "service",
+                "MainFunction": {},
+                "args": {
+                    "logHistory": {
+                        "type": "string",
+                        "default": "last-15-minutes"
+                    }
+                },
+                "help": "returns TRUE if rule name matches the specified timestamp MM\/DD\/YYYY [american] \/ DD-MM-YYYY [european] \/ 21 September 2021 \/ -90 days"
+            },
+            "stats-traffic-fastapi": {
+                "name": "stats-traffic-FastAPI",
+                "section": "address",
+                "MainFunction": {},
+                "args": {
+                    "logHistory": {
+                        "type": "string",
+                        "default": "last-15-minutes"
+                    }
+                },
+                "help": "returns TRUE if rule name matches the specified timestamp MM\/DD\/YYYY [american] \/ DD-MM-YYYY [european] \/ 21 September 2021 \/ -90 days"
+            },
             "tag-add": {
                 "name": "tag-Add",
                 "section": "tag",
@@ -3450,6 +3537,17 @@ var subjectObject =
                 "MainFunction": {},
                 "args": {
                     "zoneName": {
+                        "type": "string",
+                        "default": "*nodefault*"
+                    }
+                }
+            },
+            "to-remove-from-file": {
+                "name": "to-Remove-from-file",
+                "section": "zone",
+                "MainFunction": {},
+                "args": {
+                    "fileName": {
                         "type": "string",
                         "default": "*nodefault*"
                     }
@@ -7091,12 +7189,89 @@ var subjectObject =
     "static-route": {
         "name": "static-route",
         "action": {
+            "delete": {
+                "name": "delete",
+                "MainFunction": {}
+            },
             "display": {
                 "name": "display",
                 "MainFunction": {}
             }
         },
-        "filter": []
+        "filter": {
+            "destination": {
+                "operators": {
+                    "ip4.includes-full": {
+                        "Function": {},
+                        "arg": true,
+                        "ci": {
+                            "fString": "(%PROP% 1.1.1.1)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    }
+                }
+            },
+            "name": {
+                "operators": {
+                    "eq": {
+                        "Function": {},
+                        "arg": true,
+                        "ci": {
+                            "fString": "(%PROP% ethernet1\/1)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    }
+                }
+            },
+            "nexthop-interface": {
+                "operators": {
+                    "is.set": {
+                        "Function": {},
+                        "arg": false,
+                        "ci": {
+                            "fString": "(%PROP% ethernet1\/1)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    }
+                }
+            },
+            "nexthop-ip": {
+                "operators": {
+                    "is.set": {
+                        "Function": {},
+                        "arg": false,
+                        "ci": {
+                            "fString": "(%PROP% ethernet1\/1)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    }
+                }
+            },
+            "nexthop-vr": {
+                "operators": {
+                    "is.set": {
+                        "Function": {},
+                        "arg": false,
+                        "ci": {
+                            "fString": "(%PROP% ethernet1\/1)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    }
+                }
+            },
+            "virtualrouter-name": {
+                "operators": {
+                    "eq": {
+                        "Function": {},
+                        "arg": true,
+                        "ci": {
+                            "fString": "(%PROP% ethernet1\/1)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    }
+                }
+            }
+        }
     },
     "stats": {
         "name": "stats",

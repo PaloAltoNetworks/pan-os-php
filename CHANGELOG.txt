@@ -13,7 +13,7 @@ UTIL:
 * develop | introduce config_validation.php
 * type=appid-toolbox | improvements for further. new features - example rule address/service report generator
 * type=rule actions=name-replace-character | set default value for replace to ''
-* type=rule | introduce new actions=appid-stats-fastapi:-90days/service-stats-fastapi:/address-source-stats-fastapi/address-destination-stats-fastapi/address-stats-fastapi/traffic-stats-fastapi
+* type=rule | introduce new actions=stats-appid-fastapi:-90days/stats-service-fastapi:/stats-address-source-fastapi/stats-address-destination-fastapi/stats-address-fastapi/stats-traffic-fastapi
 
 BUGFIX:
 * class PANConf|VirtualSystem | bugfix to support SharedGateway also for Tag objects correctly
