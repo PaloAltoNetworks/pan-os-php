@@ -3911,7 +3911,7 @@ RuleCallContext::$supportedActions[] = array(
         'default' => '*nodefault*'),
         'replace' => array(
             'type' => 'string',
-            'default' => '*nodefault*')
+            'default' => '')
     ),
     'help' => ''
 );
