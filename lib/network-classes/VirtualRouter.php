@@ -33,6 +33,8 @@ class VirtualRouter
     /** @var InterfaceContainer */
     public $attachedInterfaces;
 
+    public $routingProtocols = array();
+
     protected $xmlroot_protocol = false;
 
     protected $fastMemToIndex;
@@ -62,6 +64,22 @@ class VirtualRouter
             derr("virtual-router name not found\n");
 
         $this->xmlroot_protocol = DH::findFirstElement('protocol', $xml);
+
+        if(  $this->xmlroot_protocol !== False )
+        {
+            foreach( $this->xmlroot_protocol->childNodes as $node )
+            {
+                if( $node->nodeType != XML_ELEMENT_NODE )
+                    continue;
+
+                $tmpProtocolName = $node->nodeName;
+                $this->routingProtocols[$tmpProtocolName] = array();
+
+                $protocolEnabled = DH::findFirstElement("enable", $node);
+                if( $protocolEnabled !== FALSE )
+                    $this->routingProtocols[$tmpProtocolName]['enabled'] = $protocolEnabled->textContent;
+            }
+        }
 
         $node = DH::findFirstElementOrCreate('interface', $xml);
 

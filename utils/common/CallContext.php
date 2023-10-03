@@ -34,6 +34,9 @@ class CallContext
     public $isSaseAPI = FALSE;
     public $projectFolder = null;
 
+    public $first;
+    public $uuid;
+
     /** @var  $baseObject PANConf|PanoramaConf */
     public $baseObject;
 

@@ -6033,3 +6033,74 @@ RuleCallContext::$supportedActions[] = Array(
     'args' => Array( 'logHistory' => Array( 'type' => 'string', 'default' => 'last-15-minutes' ) ),
     'help' => 'returns TRUE if rule name matches the specified timestamp MM/DD/YYYY [american] / DD-MM-YYYY [european] / 21 September 2021 / -90 days',
 );
+RuleCallContext::$supportedActions[] = array(
+    'name' => 'create-new-Rule-from-file-FastAPI',
+    'GlobalInitFunction' => function(RuleCallContext $context)
+    {
+        $context->uuid = array();
+        $context->first = true;
+    },
+    'MainFunction' => function (RuleCallContext $context) {
+        $rule = $context->object;
+
+        if( !$context->isAPI )
+            derr('you cannot call this action without API mode');
+
+        if( $context->first )
+        {
+            if( !isset($context->cachedList) )
+            {
+                $text = file_get_contents($context->arguments['fileName']);
+
+                if( $text === FALSE )
+                    derr("cannot open file '{$context->arguments['fileName']}");
+
+                $lines = explode("\n", $text);
+                foreach( $lines as $line )
+                {
+                    $line = trim($line);
+                    if( strlen($line) == 0 )
+                        continue;
+                    $list[$line] = TRUE;
+                }
+
+                $context->cachedList = &$list;
+            }
+            else
+                $list = &$context->cachedList;
+            foreach( $list as $rulename => $truefalse )
+            {
+                $tmpRule = $rule->owner->find( $rulename );
+                if( $tmpRule == null )
+                {
+                    $tmpRule = $rule->owner->newSecurityRule( $rulename );
+
+                    $string = "QUEUED for bundled API call";
+                    PH::ACTIONlog( $context, $string );
+
+                    $newdoc = new DOMDocument;
+                    $node = $newdoc->importNode($tmpRule->xmlroot, true);
+                    $newdoc->appendChild($node);
+
+                    $string = "";
+                    foreach( $newdoc->documentElement->childNodes as $childnode )
+                    {
+                        $lineReturn = false;
+                        $indentingXmlIncreament = 1;
+                        $indentingXml = 0;
+                        $xml = &DH::dom_to_xml($childnode, $indentingXml, $lineReturn, -1, $indentingXmlIncreament);
+                        #print $xml;
+                        $string .= $xml;
+                    }
+
+
+                    $context->addRuleToMergedApiChange2($tmpRule, $string);
+                }
+            }
+        }
+    },
+    'GlobalFinishFunction' => function (RuleCallContext $context) {
+        $context->doBundled_API_Call();
+    },
+    'args' => array('fileName' => array('type' => 'string', 'default' => '*nodefault*')),
+);

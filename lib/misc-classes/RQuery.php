@@ -103,6 +103,8 @@ class RQuery
             $this->contextObject = new ThreatRQueryContext($this);
         elseif( $this->objectType == 'interface' )
             $this->contextObject = new InterfaceRQueryContext($this);
+        elseif( $this->objectType == 'routing' )
+            $this->contextObject = new RoutingRQueryContext($this);
         elseif( $this->objectType == 'dhcp' )
             $this->contextObject = new DHCPRQueryContext($this);
         elseif( $this->objectType == 'certificate' )

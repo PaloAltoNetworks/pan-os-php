@@ -29,6 +29,8 @@ class RuleCallContext extends CallContext
     public $ruleList;
     public $cachedList;
 
+    public $mergeArray;
+
     static public function prepareSupportedActions()
     {
         $tmpArgs = array();
@@ -43,6 +45,37 @@ class RuleCallContext extends CallContext
     public function addRuleToMergedApiChange($setValue)
     {
         $rule = $this->object;
+
+        if( !isset($this->mergeArray) )
+            $this->mergeArray = array();
+
+        $mergeArray = &$this->mergeArray;
+        $panoramaMode = $this->baseObject->isPanorama();
+        $subSystem = $this->subSystem;
+
+
+        $classToType = array('SecurityRule' => 'security', 'NatRule' => 'nat', 'DefaultSecurityRule' => 'defaultsecurity');
+        $type = $classToType[get_class($rule)];
+
+        if( !$panoramaMode )
+        {
+            $mergeArray[$subSystem->name()][$type][$rule->name()] = $setValue;
+            return;
+        }
+
+        $ruleLocation = 'pre-rulebase';
+        if( $rule->isPostRule() )
+            $ruleLocation = 'post-rulebase';
+
+        if( $rule->owner->owner->isPanorama() )
+            $mergeArray['shared'][$ruleLocation][$type][$rule->name()] = $setValue;
+        else
+            $mergeArray[$subSystem->name()][$ruleLocation][$type][$rule->name()] = $setValue;
+    }
+
+    public function addRuleToMergedApiChange2($rule, $setValue)
+    {
+        #$rule = $this->object;
 
         if( !isset($this->mergeArray) )
             $this->mergeArray = array();
