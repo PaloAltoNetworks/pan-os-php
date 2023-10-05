@@ -16,6 +16,7 @@ UTIL:
 * type=rule | introduce new actions=stats-appid-fastapi:-90days/stats-service-fastapi:/stats-address-source-fastapi/stats-address-destination-fastapi/stats-address-fastapi/stats-traffic-fastapi
 * type=routing | introduce actions=exporttoexcel:file.html
 * type=routing | introduce 'filter=(protocol.bgp is.enabled)'
+* type=gcp | introdruce $namespace | improve handling for tenant like togglesvc
 
 BUGFIX:
 * class PANConf|VirtualSystem | bugfix to support SharedGateway also for Tag objects correctly
