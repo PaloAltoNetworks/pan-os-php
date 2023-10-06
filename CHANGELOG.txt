@@ -17,6 +17,7 @@ UTIL:
 * type=routing | introduce actions=exporttoexcel:file.html
 * type=routing | introduce 'filter=(protocol.bgp is.enabled)'
 * type=gcp | introdruce $namespace | improve handling for tenant like togglesvc
+* type=xpath | introduce actions=remove | introduce 'filter-text=NODETEXT'
 
 BUGFIX:
 * class PANConf|VirtualSystem | bugfix to support SharedGateway also for Tag objects correctly
