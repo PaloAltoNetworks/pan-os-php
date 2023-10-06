@@ -1,6 +1,14 @@
 CHANGELOG
 
-2.1.19
+2.1.20
+UTIL:
+
+BUGFIX:
+
+GENERAL:
+
+
+2.1.19 (20231006)
 UTIL:
 * different classes | improve usage of flag 'XML_PARSE_BIG_LINES' in method loadXML
 * class PANConf / Panoramaconfg | implement method ChildDeviceGroups() for 'location=shared:excludemaindg'
