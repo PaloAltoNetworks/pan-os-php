@@ -2187,6 +2187,28 @@ var subjectObject =
             "display": {
                 "name": "display",
                 "MainFunction": {}
+            },
+            "exporttoexcel": {
+                "name": "exportToExcel",
+                "MainFunction": {},
+                "GlobalInitFunction": {},
+                "GlobalFinishFunction": {},
+                "args": {
+                    "filename": {
+                        "type": "string",
+                        "default": "*nodefault*"
+                    },
+                    "additionalFields": {
+                        "type": "pipeSeparatedList",
+                        "subtype": "string",
+                        "default": "*NONE*",
+                        "choices": [
+                            "WhereUsed",
+                            "UsedInLocation"
+                        ],
+                        "help": "pipe(|) separated list of additional field to include in the report. The following is available:\n  - WhereUsed : list places where object is used (rules, groups ...)\n  - UsedInLocation : list locations (vsys,dg,shared) where object is used\n"
+                    }
+                }
             }
         },
         "filter": {
@@ -2195,6 +2217,18 @@ var subjectObject =
                     "eq": {
                         "Function": {},
                         "arg": true,
+                        "ci": {
+                            "fString": "(%PROP% ethernet1\/1)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    }
+                }
+            },
+            "protocol.bgp": {
+                "operators": {
+                    "is.enabled": {
+                        "Function": {},
+                        "arg": false,
                         "ci": {
                             "fString": "(%PROP% ethernet1\/1)",
                             "input": "input\/panorama-8.0.xml"
@@ -2348,6 +2382,18 @@ var subjectObject =
                             "pre",
                             "post"
                         ]
+                    }
+                }
+            },
+            "create-new-rule-from-file-fastapi": {
+                "name": "create-new-Rule-from-file-FastAPI",
+                "GlobalInitFunction": {},
+                "MainFunction": {},
+                "GlobalFinishFunction": {},
+                "args": {
+                    "fileName": {
+                        "type": "string",
+                        "default": "*nodefault*"
                     }
                 }
             },

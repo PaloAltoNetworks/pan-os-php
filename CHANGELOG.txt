@@ -29,6 +29,8 @@ BUGFIX:
 
 GENERAL:
 * Class VirtualSystem/SharedGatewayStore | better handling of version variable
+* update actions/filter JSON file
+* APP-ID update to Device App-ID version: 8762-8327
 
 
 2.1.18 (20230920)
