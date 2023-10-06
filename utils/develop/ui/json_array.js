@@ -42,6 +42,22 @@ var subjectObject =
                     }
                 }
             },
+            "combine-addressgroups": {
+                "name": "combine-addressgroups",
+                "GlobalInitFunction": {},
+                "MainFunction": {},
+                "GlobalFinishFunction": {},
+                "args": {
+                    "new_addressgroup_name": {
+                        "type": "string",
+                        "default": "*nodefault*"
+                    },
+                    "replace_groups": {
+                        "type": "bool",
+                        "default": false
+                    }
+                }
+            },
             "create-address": {
                 "name": "create-address",
                 "MainFunction": {},
@@ -572,6 +588,14 @@ var subjectObject =
                     "is.in.file": {
                         "Function": {},
                         "arg": true
+                    },
+                    "same.as.region.predefined": {
+                        "Function": {},
+                        "arg": false,
+                        "ci": {
+                            "fString": "(%PROP% new test 1)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
                     }
                 }
             },
@@ -876,6 +900,15 @@ var subjectObject =
                         "arg": true,
                         "ci": {
                             "fString": "(%PROP% \/grp\/)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    },
+                    "is.set": {
+                        "Function": {},
+                        "arg": false,
+                        "argObjectFinder": "$objectFind=null;\n$objectFind=$object->tags->parentCentralStore->find('!value!');",
+                        "ci": {
+                            "fString": "(%PROP% grp.shared-group1)",
                             "input": "input\/panorama-8.0.xml"
                         }
                     }
@@ -1331,6 +1364,34 @@ var subjectObject =
             }
         },
         "filter": {
+            "name": {
+                "operators": {
+                    "eq": {
+                        "Function": {},
+                        "arg": true,
+                        "ci": {
+                            "fString": "(%PROP% new test 1)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    },
+                    "eq.nocase": {
+                        "Function": {},
+                        "arg": true,
+                        "ci": {
+                            "fString": "(%PROP% new test 2)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    },
+                    "contains": {
+                        "Function": {},
+                        "arg": true,
+                        "ci": {
+                            "fString": "(%PROP% -)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    }
+                }
+            },
             "publickey-algorithm": {
                 "operators": {
                     "is.rsa": {
@@ -1739,6 +1800,20 @@ var subjectObject =
                     }
                 }
             },
+            "sharedgateway-delete": {
+                "name": "sharedgateway-delete",
+                "MainFunction": {}
+            },
+            "sharedgateway-migrate-to-vsys": {
+                "name": "sharedgateway-migrate-to-vsys",
+                "MainFunction": {},
+                "args": {
+                    "name": {
+                        "type": "string",
+                        "default": "false"
+                    }
+                }
+            },
             "sp_spg-create-alert-only-bp": {
                 "name": "sp_spg-create-alert-only-bp",
                 "GlobalInitFunction": {},
@@ -1833,6 +1908,10 @@ var subjectObject =
             },
             "template-delete": {
                 "name": "template-delete",
+                "MainFunction": {}
+            },
+            "virtualsystem-delete": {
+                "name": "virtualsystem-delete",
                 "MainFunction": {}
             },
             "xml-extract": {
@@ -2108,6 +2187,28 @@ var subjectObject =
             "display": {
                 "name": "display",
                 "MainFunction": {}
+            },
+            "exporttoexcel": {
+                "name": "exportToExcel",
+                "MainFunction": {},
+                "GlobalInitFunction": {},
+                "GlobalFinishFunction": {},
+                "args": {
+                    "filename": {
+                        "type": "string",
+                        "default": "*nodefault*"
+                    },
+                    "additionalFields": {
+                        "type": "pipeSeparatedList",
+                        "subtype": "string",
+                        "default": "*NONE*",
+                        "choices": [
+                            "WhereUsed",
+                            "UsedInLocation"
+                        ],
+                        "help": "pipe(|) separated list of additional field to include in the report. The following is available:\n  - WhereUsed : list places where object is used (rules, groups ...)\n  - UsedInLocation : list locations (vsys,dg,shared) where object is used\n"
+                    }
+                }
             }
         },
         "filter": {
@@ -2116,6 +2217,18 @@ var subjectObject =
                     "eq": {
                         "Function": {},
                         "arg": true,
+                        "ci": {
+                            "fString": "(%PROP% ethernet1\/1)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    }
+                }
+            },
+            "protocol.bgp": {
+                "operators": {
+                    "is.enabled": {
+                        "Function": {},
+                        "arg": false,
                         "ci": {
                             "fString": "(%PROP% ethernet1\/1)",
                             "input": "input\/panorama-8.0.xml"
@@ -2209,6 +2322,10 @@ var subjectObject =
                 "section": "app",
                 "MainFunction": {}
             },
+            "appid-toolbox-cleanup": {
+                "name": "appid-toolbox-cleanup",
+                "MainFunction": {}
+            },
             "bidirnat-split": {
                 "name": "biDirNat-Split",
                 "MainFunction": {},
@@ -2268,6 +2385,18 @@ var subjectObject =
                     }
                 }
             },
+            "create-new-rule-from-file-fastapi": {
+                "name": "create-new-Rule-from-file-FastAPI",
+                "GlobalInitFunction": {},
+                "MainFunction": {},
+                "GlobalFinishFunction": {},
+                "args": {
+                    "fileName": {
+                        "type": "string",
+                        "default": "*nodefault*"
+                    }
+                }
+            },
             "delete": {
                 "name": "delete",
                 "MainFunction": {}
@@ -2314,7 +2443,7 @@ var subjectObject =
                         "default": ""
                     }
                 },
-                "help": "possible variable $$comma$$ or $$forwardslash$$ or $$colon$$ or $$pipe$$ or $$newline$$; example \"actions=description-Replace-Character:$$comma$$word1\""
+                "help": "possible variable $$comma$$ or $$forwardslash$$ or $$colon$$ or $$pipe$$ or $$newline$$ or $$appRID#$$; example \"actions=description-Replace-Character:$$comma$$word1\""
             },
             "disabled-set": {
                 "name": "disabled-Set",
@@ -2605,6 +2734,17 @@ var subjectObject =
                     }
                 }
             },
+            "from-remove-from-file": {
+                "name": "from-Remove-from-file",
+                "section": "zone",
+                "MainFunction": {},
+                "args": {
+                    "fileName": {
+                        "type": "string",
+                        "default": "*nodefault*"
+                    }
+                }
+            },
             "from-replace": {
                 "name": "from-Replace",
                 "section": "zone",
@@ -2874,7 +3014,7 @@ var subjectObject =
                     },
                     "replace": {
                         "type": "string",
-                        "default": "*nodefault*"
+                        "default": ""
                     }
                 },
                 "help": ""
@@ -3196,6 +3336,78 @@ var subjectObject =
                 "section": "address",
                 "MainFunction": {}
             },
+            "stats-address-destination-fastapi": {
+                "name": "stats-address-destination-FastAPI",
+                "section": "address",
+                "MainFunction": {},
+                "args": {
+                    "logHistory": {
+                        "type": "string",
+                        "default": "last-15-minutes"
+                    }
+                },
+                "help": "returns TRUE if rule name matches the specified timestamp MM\/DD\/YYYY [american] \/ DD-MM-YYYY [european] \/ 21 September 2021 \/ -90 days"
+            },
+            "stats-address-fastapi": {
+                "name": "stats-address-FastAPI",
+                "section": "address",
+                "MainFunction": {},
+                "args": {
+                    "logHistory": {
+                        "type": "string",
+                        "default": "last-15-minutes"
+                    }
+                },
+                "help": "returns TRUE if rule name matches the specified timestamp MM\/DD\/YYYY [american] \/ DD-MM-YYYY [european] \/ 21 September 2021 \/ -90 days"
+            },
+            "stats-address-source-fastapi": {
+                "name": "stats-address-source-FastAPI",
+                "section": "address",
+                "MainFunction": {},
+                "args": {
+                    "logHistory": {
+                        "type": "string",
+                        "default": "last-15-minutes"
+                    }
+                },
+                "help": "returns TRUE if rule name matches the specified timestamp MM\/DD\/YYYY [american] \/ DD-MM-YYYY [european] \/ 21 September 2021 \/ -90 days"
+            },
+            "stats-appid-fastapi": {
+                "name": "stats-appid-FastAPI",
+                "section": "application",
+                "MainFunction": {},
+                "args": {
+                    "logHistory": {
+                        "type": "string",
+                        "default": "last-15-minutes"
+                    }
+                },
+                "help": "returns TRUE if rule name matches the specified timestamp MM\/DD\/YYYY [american] \/ DD-MM-YYYY [european] \/ 21 September 2021 \/ -90 days"
+            },
+            "stats-service-fastapi": {
+                "name": "stats-service-FastAPI",
+                "section": "service",
+                "MainFunction": {},
+                "args": {
+                    "logHistory": {
+                        "type": "string",
+                        "default": "last-15-minutes"
+                    }
+                },
+                "help": "returns TRUE if rule name matches the specified timestamp MM\/DD\/YYYY [american] \/ DD-MM-YYYY [european] \/ 21 September 2021 \/ -90 days"
+            },
+            "stats-traffic-fastapi": {
+                "name": "stats-traffic-FastAPI",
+                "section": "address",
+                "MainFunction": {},
+                "args": {
+                    "logHistory": {
+                        "type": "string",
+                        "default": "last-15-minutes"
+                    }
+                },
+                "help": "returns TRUE if rule name matches the specified timestamp MM\/DD\/YYYY [american] \/ DD-MM-YYYY [european] \/ 21 September 2021 \/ -90 days"
+            },
             "tag-add": {
                 "name": "tag-Add",
                 "section": "tag",
@@ -3371,6 +3583,17 @@ var subjectObject =
                 "MainFunction": {},
                 "args": {
                     "zoneName": {
+                        "type": "string",
+                        "default": "*nodefault*"
+                    }
+                }
+            },
+            "to-remove-from-file": {
+                "name": "to-Remove-from-file",
+                "section": "zone",
+                "MainFunction": {},
+                "args": {
+                    "fileName": {
                         "type": "string",
                         "default": "*nodefault*"
                     }
@@ -7008,6 +7231,93 @@ var subjectObject =
         "name": "ssh-connector",
         "action": [],
         "filter": []
+    },
+    "static-route": {
+        "name": "static-route",
+        "action": {
+            "delete": {
+                "name": "delete",
+                "MainFunction": {}
+            },
+            "display": {
+                "name": "display",
+                "MainFunction": {}
+            }
+        },
+        "filter": {
+            "destination": {
+                "operators": {
+                    "ip4.includes-full": {
+                        "Function": {},
+                        "arg": true,
+                        "ci": {
+                            "fString": "(%PROP% 1.1.1.1)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    }
+                }
+            },
+            "name": {
+                "operators": {
+                    "eq": {
+                        "Function": {},
+                        "arg": true,
+                        "ci": {
+                            "fString": "(%PROP% ethernet1\/1)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    }
+                }
+            },
+            "nexthop-interface": {
+                "operators": {
+                    "is.set": {
+                        "Function": {},
+                        "arg": false,
+                        "ci": {
+                            "fString": "(%PROP% ethernet1\/1)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    }
+                }
+            },
+            "nexthop-ip": {
+                "operators": {
+                    "is.set": {
+                        "Function": {},
+                        "arg": false,
+                        "ci": {
+                            "fString": "(%PROP% ethernet1\/1)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    }
+                }
+            },
+            "nexthop-vr": {
+                "operators": {
+                    "is.set": {
+                        "Function": {},
+                        "arg": false,
+                        "ci": {
+                            "fString": "(%PROP% ethernet1\/1)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    }
+                }
+            },
+            "virtualrouter-name": {
+                "operators": {
+                    "eq": {
+                        "Function": {},
+                        "arg": true,
+                        "ci": {
+                            "fString": "(%PROP% ethernet1\/1)",
+                            "input": "input\/panorama-8.0.xml"
+                        }
+                    }
+                }
+            }
+        }
     },
     "stats": {
         "name": "stats",

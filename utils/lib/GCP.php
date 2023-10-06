@@ -55,6 +55,7 @@ class GCP extends UTIL
         $this->supportedArguments['region'] = Array('niceName' => 'Region', 'shortHelp' => 'specify the region | default: region=us-central1 | region=europe-west3', 'argDesc' => '=us-central1');
         $this->supportedArguments['project'] = Array('niceName' => 'Project', 'shortHelp' => 'specify the project | default: project=ngfw-dev', 'argDesc' => '=ngfw-dev');
         $this->supportedArguments['tenantid'] = Array('niceName' => 'TenantID', 'shortHelp' => 'TenantID you like to use. also possible to bring in a part script will do grep', 'argDesc' => '=123456789');
+        $this->supportedArguments['namespace'] = Array('niceName' => 'Namespace', 'shortHelp' => 'specify the namespace you like to used | default: namespace=default', 'argDesc' => '=xyz');
         $this->supportedArguments['actions'] = Array('niceName' => 'actions', 'shortHelp' => 'specify the action the script should trigger', 'argDesc' => 'actions=grep');
 
 
@@ -90,9 +91,18 @@ class GCP extends UTIL
         else
             $project = "ngfw-dev";
 
+        if( isset(PH::$args['namespace']) )
+            $namespace = PH::$args['namespace'];
+        else
+            $namespace = "default";
 
         if( isset(PH::$args['tenantid']) )
+        {
             $tenantID = PH::$args['tenantid'];
+            if( strpos( $tenantID, "toggle" ) !== false )
+                $namespace = "adift";
+        }
+
         else
             derr( "argument tenantid=[ID] is missing", null, false );
 
@@ -148,7 +158,7 @@ class GCP extends UTIL
         $this->http_auth = "https://".$this->http_auth_IP."/";
 
         $get_auth = "gcloud container clusters get-credentials ".$cluster." --region ".$region." --project ".$project;
-        $this->get_all_pods = "kubectl ".$this->insecureValue." get pods";
+        $this->get_all_pods = "kubectl ".$this->insecureValue." get pods -n ".$namespace;
 
         $cliArray = array();
         $cliArray2 = array();
@@ -179,7 +189,7 @@ class GCP extends UTIL
 
         if( $action == "grep" )
         {
-            $kubectlArray = $this->createKubectl( $tenantID );
+            $kubectlArray = $this->createKubectl( $tenantID, $namespace );
 
             if( $kubectlArray !== null )
                 foreach( $kubectlArray as $kubectlString )
@@ -193,7 +203,7 @@ class GCP extends UTIL
         }
         elseif( $action == "expedition-log" )
         {
-            $tmpArray = $this->createKubectl( "expedition", "-- cat /var/log/expedition.log" );
+            $tmpArray = $this->createKubectl( "expedition", $namespace, "-- cat /var/log/expedition.log" );
             $cliArray2[] = $tmpArray[0];
 
 
@@ -229,7 +239,7 @@ class GCP extends UTIL
 
                             PH::print_stdout( $tmpTenantid );
 
-                            $tenant_exec_array = $this->createKubectl( $tmpTenantid );
+                            $tenant_exec_array = $this->createKubectl( $tmpTenantid, $namespace );
                             if( $tenant_exec_array === null )
                             {
                                 PH::print_stdout( "Tenant: '".$tmpTenantid."' not FOUND as a pod on cluster: ".$cluster );
@@ -275,7 +285,7 @@ class GCP extends UTIL
             else
                 $container = substr($tenantID, 0, -2);
 
-            $cli = "kubectl ".$this->insecureValue." cp ".$inputconfig." -c ".$container." ".$tenantID.":".$this->configPath.$outputfilename;
+            $cli = "kubectl ".$this->insecureValue." cp ".$inputconfig." -c ".$container." ".$tenantID.":".$this->configPath.$outputfilename. " -n ".$namespace;
             $this->execCLIWithOutput( $cli );
         }
         elseif( $action == "download" )
@@ -296,7 +306,7 @@ class GCP extends UTIL
             else
                 $container = substr($tenantID, 0, -2);
 
-            $cli = "kubectl ".$this->insecureValue." exec ".$tenantID." -c ".$container." -- cat ".$this->configPath.$inputconfig." > ".$outputfilename;
+            $cli = "kubectl ".$this->insecureValue." exec ".$tenantID." -c ".$container." -- cat ".$this->configPath.$inputconfig." -n ".$namespace." > ".$outputfilename;
             $this->execCLIWithOutput( $cli );
         }
         elseif( $action == "validation" )
@@ -314,7 +324,7 @@ class GCP extends UTIL
             else
                 $container = substr($tenantID, 0, -2);
 
-            $cli = "kubectl ".$this->insecureValue." exec ".$tenantID." -c ".$container." -- ".$validation_command;
+            $cli = "kubectl ".$this->insecureValue." exec ".$tenantID." -c ".$container." -n ".$namespace." -- ".$validation_command;
 
             $this->execCLI($cli, $output, $retValue);
 
@@ -336,7 +346,7 @@ class GCP extends UTIL
             else
                 $container = substr($tenantID, 0, -2);
 
-            $cli = "kubectl ".$this->insecureValue." describe pod ".$tenantID." | grep 'Image: '";
+            $cli = "kubectl ".$this->insecureValue." describe pod ".$tenantID." -n ".$namespace." | grep 'Image: '";
 
             //describe pod expedition-77b4c645b9-sxqrp | grep Image
 
@@ -365,7 +375,7 @@ class GCP extends UTIL
             PH::print_stdout( "mgmtsvc tenantID: '".$mgmtsvc_tenantID[0]."'");
 
 
-            $mgmtsvc = "kubectl exec -it ".$mgmtsvc_tenantID[0]." -c mgmtsvc --insecure-skip-tls-verify=true -- ";
+            $mgmtsvc = "kubectl exec -it ".$mgmtsvc_tenantID[0]." -c mgmtsvc -n ".$namespace." --insecure-skip-tls-verify=true -- ";
 
             #$tenant = "swaschkut-2";
             #$cluster = "paas-f4";
@@ -379,7 +389,7 @@ class GCP extends UTIL
             $this->execCLIWithOutput( $get_auth );
 
             $mgmtsvc_tenantID = $this->grepAllPods( "mgmtsvc" );
-            $mgmtsvc = "kubectl exec -it ".$mgmtsvc_tenantID[0]." -c mgmtsvc --insecure-skip-tls-verify=true -- ";
+            $mgmtsvc = "kubectl exec -it ".$mgmtsvc_tenantID[0]." -c mgmtsvc -n ".$namespace." --insecure-skip-tls-verify=true -- ";
 
             $offboard_string = 'curl --header "Content-Type: application/json; charset=UTF-8" --request POST --data \'{"id":"'.$tenantID.'", "r":"false", "mig":"false"}\' http://127.0.0.1:8085/api/v1/src/mgmtsvc/customer/offboard';
             $this->execCLIWithOutput( $mgmtsvc.$offboard_string );
@@ -410,7 +420,7 @@ class GCP extends UTIL
             $this->execCLIWithOutput( $get_auth );
 
             $mgmtsvc_tenantID = $this->grepAllPods( "mgmtsvc" );
-            $mgmtsvc = "kubectl exec -it ".$mgmtsvc_tenantID[0]." -c mgmtsvc --insecure-skip-tls-verify=true -- ";
+            $mgmtsvc = "kubectl exec -it ".$mgmtsvc_tenantID[0]." -c mgmtsvc -n ".$namespace." --insecure-skip-tls-verify=true -- ";
 
 
             $username = "paloalto";
@@ -512,7 +522,7 @@ class GCP extends UTIL
     }
 
 
-    private function createKubectl( $tenantID, $command = "-- bash" )
+    private function createKubectl( $tenantID, $namespace, $command = "-- bash" )
     {
         $return = array();
         //get correct onprem tenant
@@ -523,11 +533,13 @@ class GCP extends UTIL
             foreach( $tenantIDarray as $tenantID )
             {
                 if( strpos( $tenantID, "expedition" ) !== FALSE )
-                    $tenant_exec = "kubectl ".$this->insecureValue." exec -it " . $tenantID . " -c expedition";
+                    $tenant_exec = "kubectl ".$this->insecureValue." exec -it " . $tenantID . " -c expedition -n ".$namespace;
                 elseif( strpos( $tenantID, "mgmtsvc" ) !== FALSE )
-                    $tenant_exec = "kubectl ".$this->insecureValue." exec -it " . $tenantID . " -c mgmtsvc";
+                    $tenant_exec = "kubectl ".$this->insecureValue." exec -it " . $tenantID . " -c mgmtsvc -n ".$namespace;
+                elseif( strpos( $tenantID, "togglesvc" ) !== FALSE )
+                    $tenant_exec = "kubectl ".$this->insecureValue." exec -it " . $tenantID . " -c togglesvc -n ".$namespace;
                 else
-                    $tenant_exec = "kubectl ".$this->insecureValue." exec -it " . $tenantID . " -c ".substr($tenantID, 0, -2);
+                    $tenant_exec = "kubectl ".$this->insecureValue." exec -it " . $tenantID . " -c ".substr($tenantID, 0, -2). " -n ".$namespace;
 
                 $return[] = $tenant_exec." ".$command;
             }
@@ -585,6 +597,7 @@ class GCP extends UTIL
   "code": 403
 }';
 
+
         $curl = curl_init($this->http_auth);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
@@ -594,6 +607,9 @@ class GCP extends UTIL
         $response = curl_exec($curl);
         curl_close($curl);
 
+        $exec = 'open -a "Google Chrome" '.$this->http_auth;
+        exec( $exec );
+        /*
         if( $expectedResponse !== $response )
         {
             $counter = 0;
@@ -614,6 +630,7 @@ class GCP extends UTIL
             }
             while( $expectedResponse !== $response && $counter < 2 );
         }
+        */
 
         if( $expectedResponse === $response )
         {
@@ -624,7 +641,7 @@ class GCP extends UTIL
         else
         {
             $message = "please open: ".$this->http_auth." in WebBrowser for MFA authentication. Then rerun this script";
-            derr( $message, null, FALSE );
+            #derr( $message, null, FALSE );
         }
     }
 

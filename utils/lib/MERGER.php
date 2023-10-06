@@ -276,7 +276,7 @@ class MERGER extends UTIL
             if( !$pan->isFawkes() && !$pan->isBuckbeak() )
             {
                 $objectsLocations = $objectsLocation;
-                print "location count: ".count($objectsLocations);
+                #print "location count: ".count($objectsLocations);
                 foreach( $objectsLocations as $key => $objectsLocation )
                 {
                     if( $objectsLocation == "shared" )
@@ -1706,6 +1706,13 @@ class MERGER extends UTIL
                             continue;
                         }
 
+                    if( $object->tags->count() + $tmp_address->tags->count() > $object->tagLimit )
+                    {
+                        PH::print_stdout("    - SKIP: tag count of name '{$tmp_address->_PANC_shortName()}' [with value '{$tmp_address->value()}'] added with object name from upperlevel '{$object->_PANC_shortName()}' [with value '{$object->value()}'] exceed PAN-OS limit ".$object->tagLimit);
+                        $this->skippedObject( $index, $object, $tmp_address);
+                        continue;
+                    }
+
                     PH::print_stdout("    - replacing '{$object->_PANC_shortName()}' ...");
                     $success = true;
                     if( $this->action === "merge" )
@@ -1785,6 +1792,13 @@ class MERGER extends UTIL
                                         continue;
                                     }
 
+                                if( $pickedObject->tags->count() + $ancestor->tags->count() > $pickedObject->tagLimit )
+                                {
+                                    PH::print_stdout("    - SKIP: tag count of name '{$ancestor->_PANC_shortName()}' [with value '{$ancestor->value()}'] added with object name from upperlevel '{$pickedObject->_PANC_shortName()}' [with value '{$pickedObject->value()}'] exceed PAN-OS limit ".$pickedObject->tagLimit);
+                                    $this->skippedObject( $index, $pickedObject, $ancestor);
+                                    continue;
+                                }
+
                                 if( $this->action === "merge" )
                                     $object->merge_tag_description_to($ancestor, $this->apiMode);
 
@@ -1863,6 +1877,13 @@ class MERGER extends UTIL
                     {
                         if( $pickedObject->isType_TMP() )
                             continue;
+
+                        if( $object->tags->count() + $pickedObject->tags->count() > $object->tagLimit )
+                        {
+                            PH::print_stdout("    - SKIP: tag count of name '{$pickedObject->_PANC_shortName()}' [with value '{$pickedObject->value()}'] added with object name from upperlevel '{$object->_PANC_shortName()}' [with value '{$object->value()}'] exceed PAN-OS limit ".$object->tagLimit);
+                            $this->skippedObject( $index, $object, $pickedObject);
+                            continue;
+                        }
 
                         PH::print_stdout("    - replacing '{$object->_PANC_shortName()}' ...");
 

@@ -25,6 +25,7 @@ class XPATH extends UTIL
         $this->usageMsg = PH::boldText("USAGE: ")."php ".basename(__FILE__)." in=inputfile.xml ".
             "        \"filter-node=certificate\"\n".
             "        \"[filter-nameattribute=address_object_name]\"\n".
+            "        \"[filter-text=xml-node-text]\"\n".
             "        \"[filter-xpath=/config/devices/entry[@name='localhost.localdomain']/deviceconfig/system/update-server]\"\n".
             "        \"[display-fullxpath]\"\n".
             "        \"[display-xmlnode]\"\n".
@@ -56,16 +57,31 @@ class XPATH extends UTIL
         $displayXMLnode = false;
         $displayXMLlineno = false;
         $displayAttributeName = false;
+        $action = "display";
 
-        if( !isset( PH::$args['filter-node'] ) && !isset( PH::$args['filter-nameattribute'] ) && !isset( PH::$args['filter-xpath'] ) )
+        if( isset( PH::$args['actions'] ) )
+        {
+            $supportedActions = array( 'display', 'remove' );
+            $action = PH::$args['actions'];
+
+            if( !in_array( $action, $supportedActions ) )
+                derr( "action: ". $action. " not supported", null, false );
+        }
+
+
+        if( !isset( PH::$args['filter-node'] ) && !isset( PH::$args['filter-nameattribute'] ) && !isset( PH::$args['filter-xpath'] ) && !isset( PH::$args['filter-text'] ) )
             $this->display_error_usage_exit('"filter-node" argument is not set: example "certificate"');
         elseif( !isset( PH::$args['filter-node'] ) && isset( PH::$args['filter-nameattribute'] ) )
             $qualifiedNodeName = "entry";
+        elseif( isset( PH::$args['filter-text'] ) )
+            $qualifiedNodeName = "//*[text()[contains(.,'".PH::$args['filter-text']."')]]";
         elseif( !isset( PH::$args['filter-xpath'] ) )
             $qualifiedNodeName = PH::$args['filter-node'];
 
         if( isset( PH::$args['filter-xpath'] ) )
             $xpath = PH::$args['filter-xpath'];
+        elseif( isset( PH::$args['filter-text'] ) )
+            $xpath = $qualifiedNodeName;
 
         if( isset( PH::$args['display-fullxpath'] ) )
             $fullxpath = true;
@@ -85,7 +101,7 @@ class XPATH extends UTIL
             $displayAttributeName = true;
         ########################################################################################################################
 
-        if( !isset( PH::$args['filter-xpath'] ) )
+        if( !isset( PH::$args['filter-xpath'] ) && !isset( PH::$args['filter-text'] ) )
         {
             //todo: missing connector support
             $nodeList = $this->xmlDoc->getElementsByTagName($qualifiedNodeName);
@@ -162,9 +178,9 @@ class XPATH extends UTIL
                             PH::print_stdout("     |" . $item['xpath'] . "|");
 
                         if( $displayXMLnode )
-                            $this->getXpathDisplay( $item['xpath'], "");
+                            $this->getXpathDisplay( $item['xpath'], "", false, $action);
                         if( $displayAttributeName )
-                            $this->getXpathDisplay( $item['xpath'], "", true);
+                            $this->getXpathDisplay( $item['xpath'], "", true, $action);
                     }
                 }
             }
@@ -186,9 +202,9 @@ class XPATH extends UTIL
                         PH::print_stdout( "   * line: ".$miscEntry['line'] );
 
                     if( $displayXMLnode )
-                        $this->getXpathDisplay( $xpath, "");
+                        $this->getXpathDisplay( $xpath, "", false, $action);
                     if( $displayAttributeName )
-                        $this->getXpathDisplay( $xpath, "", true);
+                        $this->getXpathDisplay( $xpath, "", true, $action);
                 }
             }
 
@@ -218,17 +234,17 @@ class XPATH extends UTIL
                         if( $this->debugAPI )
                             $fw_con->setShowApiCalls( $this->debugAPI );
                         if( $displayAttributeName )
-                            $this->getXpathDisplay( $xpath, $this->pan->connector->serial, true);
+                            $this->getXpathDisplay( $xpath, $this->pan->connector->serial, true, $action);
                         else
-                            $this->getXpathDisplay( $xpath, $this->pan->connector->serial);
+                            $this->getXpathDisplay( $xpath, $this->pan->connector->serial, false, $action);
                     }
                     else
                     {
                         $this->pan->connector->refreshSystemInfos();
                         if( $displayAttributeName )
-                            $this->getXpathDisplay( $xpath, $this->pan->connector->serial, true);
+                            $this->getXpathDisplay( $xpath, $this->pan->connector->serial, true, $action);
                         else
-                            $this->getXpathDisplay( $xpath, $this->pan->connector->info_serial);
+                            $this->getXpathDisplay( $xpath, $this->pan->connector->info_serial, false, $action);
                     }
                 }
                 elseif( $this->configType == 'panorama' )
@@ -251,19 +267,37 @@ class XPATH extends UTIL
                         $i++;
 
                         if( $displayAttributeName )
-                            $this->getXpathDisplay( $xpath, $child['serial'], true);
+                            $this->getXpathDisplay( $xpath, $child['serial'], true, $action);
                         else
-                            $this->getXpathDisplay( $xpath, $child['serial']);
+                            $this->getXpathDisplay( $xpath, $child['serial'],false, $action);
                     }
                 }
             }
             else
             {
                 if( $displayAttributeName )
-                    $this->getXpathDisplay( $xpath, "", true);
+                    $this->getXpathDisplay( $xpath, "", true, $action);
                 else
-                    $this->getXpathDisplay( $xpath, "");
+                    $this->getXpathDisplay( $xpath, "", false, $action);
             }
+        }
+
+        if( $action == "remove" )
+        {
+            //todo: save output
+            //check if out is set
+            if( isset( PH::$args['out'] ) )
+            {
+                $lineReturn = TRUE;
+                $indentingXml = 0;
+                $indentingXmlIncreament = 1;
+
+                $xml = &DH::dom_to_xml($this->xmlDoc->documentElement, $indentingXml, $lineReturn, -1, $indentingXmlIncreament + 1);
+
+                file_put_contents(PH::$args['out'], $xml);
+            }
+            else
+                derr( "action=remove used - but argument 'out=FILENAME' is not set " );
         }
     }
 
@@ -285,16 +319,46 @@ class XPATH extends UTIL
         
     }
     
-    function getXpathDisplay( $xpath, $serial, $entry = false)
+    function getXpathDisplay( $xpath, $serial, $entry = false, $actions = "display")
     {
+        $text_contains_search = false;
+
         PH::$JSON_TMP[$serial]['serial'] = $serial;
         //check Xpath
         $xpathResult = DH::findXPath( $xpath, $this->xmlDoc);
         PH::print_stdout( "   * XPATH: ".$xpath );
+
+        if( strpos($xpath, "[text()[contains(") !== FALSE )
+            $text_contains_search = true;
+
         PH::$JSON_TMP[$serial]['xpath'] = $xpath;
 
         foreach( $xpathResult as $xpath1 )
         {
+            if($text_contains_search)
+            {
+                /** @var DOMElement $xpath1 */
+                PH::print_stdout();
+                $nodePath = $xpath1->getNodePath();
+                PH::print_stdout( "   * XPATH: ".$nodePath );
+
+                $tmpArray = explode("]", $nodePath);
+                $tmp_path = "";
+                foreach( $tmpArray as $key => $path_tmp )
+                {
+                    if( !empty($path_tmp) )
+                    {
+                        $tmp_path .= $path_tmp."]";
+
+                        $xpathResult = DH::findXPath( $tmp_path, $this->xmlDoc);
+                        if( $xpathResult[0]->hasAttribute('name') )
+                            print "    - "."entry[@name='".$xpathResult[0]->getAttribute('name')."']\n";
+                        else
+                            print "    - ".$xpathResult[0]->nodeName."\n";
+                    }
+                }
+            }
+
             $newdoc = new DOMDocument;
             $node = $newdoc->importNode($xpath1, true);
             $newdoc->appendChild($node);
@@ -319,6 +383,12 @@ class XPATH extends UTIL
                     if( $child->getAttribute('name') !== "" )
                         PH::print_stdout( "     - name: ". $child->getAttribute('name') );
                 }
+            }
+
+            if( $actions === "remove" )
+            {
+                PH::print_stdout("remove xpath!!!");
+                $xpath1->parentNode->removeChild($xpath1);
             }
         }
 

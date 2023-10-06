@@ -1509,7 +1509,8 @@ class SecurityRule extends RuleWithUserID
     }
 
 
-    public function &API_getServiceStats($timePeriod = 'last-30-days', $fastMode = TRUE, $limit = 50, $specificApps = null)
+    #public function &API_getServiceStats($timePeriod = 'last-30-days', $fastMode = TRUE, $limit = 50, $specificApps = null)
+    public function &API_getServiceStats($startTimestamp, $endTimestamp = null, $fastMode = TRUE, $limit = 50, $specificApps = null)
     {
         $con = findConnectorOrDie($this);
 
@@ -1575,9 +1576,34 @@ class SecurityRule extends RuleWithUserID
             $dvq = '(' . array_to_devicequery($devices) . ')';
         }
 
+        $repeatOrCount = 'sessions';
+
+        if( !$fastMode )
+            $repeatOrCount = 'repeatcnt';
+
+        $startString = date('Y/m/d H:i:00', $startTimestamp);
+
+        if( $endTimestamp === null )
+        {
+            $endString = date('Y/m/d H:00:00');
+        }
+        else
+            $endString = date('Y/m/d H:00:00', $endTimestamp);
+
         $query = "<type>"
-            . "<" . $type . "><aggregate-by><member>proto</member><member>dport</member></aggregate-by>"
-            . "</" . $type . "></type><period>" . $timePeriod . "</period>"
+            . "<" . $type . "><aggregate-by>";
+        if( !$fastMode )
+            $query .= "<member>proto</member>";
+
+        $query .= "<member>dport</member>";
+        $query .= "<member>app</member>";
+
+        $query .= "</aggregate-by>"
+            . "<values><member>{$repeatOrCount}</member></values>"
+            . "</" . $type . "></type>"
+            #. "<period>" . $timePeriod . "</period>"
+            . "<start-time>{$startString}</start-time>"
+            . "<end-time>{$endString}</end-time>"
             . "<topn>{$limit}</topn><topm>50</topm><caption>untitled</caption>"
             . "<query>" . "$dvq $query_appfilter and (rule eq '" . $this->name . "')</query>";
 
@@ -1593,7 +1619,8 @@ class SecurityRule extends RuleWithUserID
         return $ret;
     }
 
-    public function &API_getAddressStats($timePeriod = 'last-30-days', $srcORdst = 'src', $fastMode = TRUE, $limit = 50, $excludedAddresses = array())
+    #public function &API_getAddressStats($timePeriod = 'last-30-days', $srcORdst = 'src', $fastMode = TRUE, $limit = 50, $excludedAddresses = array())
+    public function &API_getAddressStats($startTimestamp, $endTimestamp = null, $srcORdst = 'src', $fastMode = TRUE, $limit = 50, $excludedAddresses = array())
     {
         $con = findConnectorOrDie($this);
 
@@ -1629,23 +1656,61 @@ class SecurityRule extends RuleWithUserID
             $dvq = '(' . array_to_devicequery($devices) . ')';
         }
 
-        $excludedAppsString = '';
+        $excludedAddressString = '';
 
         $first = TRUE;
         foreach( $excludedAddresses as &$e )
         {
             if( !$first )
-                $excludedAppsString .= ' and ';
+                $excludedAddressString .= ' and ';
 
-            $excludedAppsString .= "(app neq $e)";
+            $excludedAddressString .= "(app neq $e)";
             $first = FALSE;
         }
 
+        $repeatOrCount = 'sessions';
+
+        if( !$fastMode )
+            $repeatOrCount = 'repeatcnt';
+
+        $startString = date('Y/m/d H:i:00', $startTimestamp);
+
+        if( $endTimestamp === null )
+        {
+            $endString = date('Y/m/d H:00:00');
+        }
+        else
+            $endString = date('Y/m/d H:00:00', $endTimestamp);
+
         $query = "<type>"
-            . "<" . $type . "><aggregate-by><member>" . $srcORdst . "</member></aggregate-by>"
-            . "</" . $type . "></type><period>" . $timePeriod . "</period>"
+            . "<" . $type . "><aggregate-by>";
+
+        if( $srcORdst == "both" or $srcORdst == "srcdstsrv" )
+        {
+            $query .= "<member>src</member>";
+            $query .= "<member>dst</member>";
+        }
+        else
+            $query .= "<member>" . $srcORdst . "</member>";
+
+        $query .= "</aggregate-by>"
+            . "<values>";
+        if( $srcORdst == "srcdstsrv" )
+        {
+            $query .= "<member>dport</member>";
+            $query .= "<member>app</member>";
+            if( !$fastMode )
+                $query .= "<member>proto</member>";
+        }
+
+        $query .= "<member>{$repeatOrCount}</member>";
+
+        $query .= "</values></" . $type . "></type>"
+            #. "<period>" . $timePeriod . "</period>"
+            . "<start-time>{$startString}</start-time>"
+            . "<end-time>{$endString}</end-time>"
             . "<topn>{$limit}</topn><topm>50</topm><caption>untitled</caption>"
-            . "<query>" . "$dvq {$excludedAppsString} and (rule eq '" . $this->name . "')</query>";
+            . "<query>" . "$dvq {$excludedAddressString} and (rule eq '" . $this->name . "')</query>";
 
 
         $apiArgs = array();

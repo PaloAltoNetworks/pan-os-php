@@ -92,7 +92,7 @@ trait ObjectWithDescription
             if( $con->isAPI() )
             {
                 /** @var PanAPIConnector $con */
-                if( strlen($this->_description) < 1 )
+                if( $this->_description == null ) //|| strlen($this->_description) < 1 )
                         $con->sendDeleteRequest($xpath);
                 else
                     $con->sendSetRequest($this->getXPath(), '<' . $tagName . '>' . htmlspecialchars($this->_description) . '</' . $tagName . '>');

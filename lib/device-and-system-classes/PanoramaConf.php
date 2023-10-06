@@ -373,7 +373,7 @@ class PanoramaConf
      * @param DOMElement|DOMDocument $xml
      * @throws Exception
      */
-    public function load_from_domxml($xml)
+    public function load_from_domxml($xml, $debugLoadTime = false)
     {
         if( $xml->nodeType == XML_DOCUMENT_NODE )
         {
@@ -401,6 +401,9 @@ class PanoramaConf
             $this->version = $version['version'];
         }
 
+
+        if( $debugLoadTime )
+            PH::print_DEBUG_loadtime("mgt-config");
 
         $tmp = DH::findFirstElementOrCreate('mgt-config', $this->xmlroot);
         $tmp = DH::findFirstElement('devices', $tmp);
@@ -446,6 +449,9 @@ class PanoramaConf
         $this->templatestackroot = DH::findFirstElementOrCreate('template-stack', $this->localhostroot);
         $this->logcollectorgrouproot = DH::findFirstElement('log-collector-group', $this->localhostroot);
 
+
+        if( $debugLoadTime )
+            PH::print_DEBUG_loadtime("shared objects");
         //
         // Extract Tag objects
         //
@@ -1066,6 +1072,8 @@ class PanoramaConf
         //
 
 
+        if( $debugLoadTime )
+            PH::print_DEBUG_loadtime("Template");
         //
         // loading templates
         //
@@ -1082,6 +1090,8 @@ class PanoramaConf
         // end of Templates
         //
 
+        if( $debugLoadTime )
+            PH::print_DEBUG_loadtime("TemplateStack");
         //
         // loading templatestacks
         //
@@ -1100,6 +1110,8 @@ class PanoramaConf
         // end of Templates
         //
 
+        if( $debugLoadTime )
+            PH::print_DEBUG_loadtime("DeviceGroup");
         //
         // loading Device Groups now
         //
@@ -1112,7 +1124,7 @@ class PanoramaConf
                 //PH::print_stdout(  "Device Group '$lvname' found" );
 
                 $ldv = new DeviceGroup($this);
-                $ldv->load_from_domxml($node);
+                $ldv->load_from_domxml($node, $debugLoadTime);
                 $this->deviceGroups[] = $ldv;
             }
         }
@@ -1251,7 +1263,10 @@ class PanoramaConf
                     }
                 }
 
-                $ldv->load_from_domxml($deviceGroupNodes[$dgName]);
+                if( $debugLoadTime )
+                    PH::print_DEBUG_loadtime("DeviceGroup - ".$dgName);
+
+                $ldv->load_from_domxml($deviceGroupNodes[$dgName], $debugLoadTime);
                 $this->deviceGroups[] = $ldv;
 
             }
@@ -1261,6 +1276,8 @@ class PanoramaConf
         // End of DeviceGroup loading
         //
 
+        if( $debugLoadTime )
+            PH::print_DEBUG_loadtime("LogCollectorGroup");
         //
         // loading LogCollectorGroup
         //
@@ -1284,6 +1301,8 @@ class PanoramaConf
         //
 
 
+        if( $debugLoadTime )
+            PH::print_DEBUG_loadtime("Device config");
         //
         // Extract setting related configs
         //
@@ -2362,6 +2381,10 @@ class PanoramaConf
         return $this->findDeviceGroup($location);
     }
 
+    public function childDeviceGroups()
+    {
+        return $this->getDeviceGroups();
+    }
 }
 
 

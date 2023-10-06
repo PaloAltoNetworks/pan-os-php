@@ -157,6 +157,7 @@ class XMLISSUE extends UTIL
         $countMissconfiguredSecRuleServiceAppDefaultObjects = 0;
 
         $fixedReadOnlyDeviceGroupobjects=0;
+        $fixedReadOnlyAddressGroupobjects=0;
         $fixedReadOnlyTemplateobjects=0;
         $fixedReadOnlyTemplateStackobjects=0;
 
@@ -1452,7 +1453,7 @@ class XMLISSUE extends UTIL
             ///config/readonly/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='mn053-mnr-int']/address-group
             ///
             ///
-            PH::print_stdout( " - Scanning for /config/readonly/devices/entry[@name='localhost.localdomain']/device-group/ for duplicate address-group ...");
+            PH::print_stdout( " - Scanning for /config/readonly/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='".$locationName."'] for duplicate address-group ...");
             $tmpReadOnly = DH::findXPath("/config/readonly/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='".$locationName."']", $this->xmlDoc);
             $readOnly = array();
 
@@ -1485,6 +1486,7 @@ class XMLISSUE extends UTIL
                     $readonlyAddressgroups->removeChild($objectAddressGroup);
                     $text .= PH::boldText(" (removed)");
                     PH::print_stdout($text);
+                    $fixedReadOnlyAddressGroupobjects++;
                 }
                 else
                     $readonlyDGAddressgroups[$objectAddressGroupName] = $objectAddressGroup;
@@ -1595,6 +1597,7 @@ class XMLISSUE extends UTIL
                 $readonlyAddressgroups->removeChild($objectAddressGroup);
                 $text .=PH::boldText(" (removed)");
                 PH::print_stdout($text);
+                $fixedReadOnlyAddressGroupobjects++;
             }
             else
                 $readonlyDGAddressgroups[$objectAddressGroupName] = $objectAddressGroup;
@@ -1755,6 +1758,7 @@ class XMLISSUE extends UTIL
         PH::print_stdout( " - FIXED: SecRule with duplicate category members: {$fixedSecRuleCategoryObjects}");
         PH::print_stdout( " - FIXED: SecRule with duplicate tag members: {$fixedSecRuleTagObjects}");
 
+        PH::print_stdout( "\n - FIXED: ReadOnly duplicate AddressGroup : {$fixedReadOnlyAddressGroupobjects}");
         PH::print_stdout( "\n - FIXED: ReadOnly duplicate DeviceGroup : {$fixedReadOnlyDeviceGroupobjects}");
         PH::print_stdout( "\n - FIXED: ReadOnly duplicate Template : {$fixedReadOnlyTemplateobjects}");
         PH::print_stdout( " - FIXED: ReadOnly duplicate TemplateStack : {$fixedReadOnlyTemplateStackobjects}");

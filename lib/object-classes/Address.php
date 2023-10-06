@@ -37,6 +37,7 @@ class Address
 
     /** @var TagRuleContainer */
     public $tags;
+    public $tagLimit = 64;
 
     const TypeTmp = 0;
     const TypeIpNetmask = 1;
@@ -703,13 +704,7 @@ class Address
                     if( $tag !== $newTag)
                     {
                         $tag->replaceMeGlobally($newTag);
-
-                        if( get_class($tag->owner->owner) !== "PanoramaConf" )
-                        {
-                            $tagDG_childDGS = $tag->owner->owner->childDeviceGroups(TRUE);
-                            if( !in_array($newTag->owner->owner->name(), $tagDG_childDGS) )
-                                $tag->owner->API_removeTag($tag);
-                        }
+                        #$tag->owner->API_removeTag($tag);
                     }
                 }
                 else
@@ -719,26 +714,9 @@ class Address
                     if( $tag !== $newTag)
                     {
                         $tag->replaceMeGlobally($newTag);
-                        if( $tag->owner !== null )
-                        {
-                            /*
-                            if( $upperLevelTag === null )
-                            {
-                                PH::print_stdout( "       - delete old tag from: ".$tag->owner->_PANC_shortName() );
-                                $tag->owner->removeTag($tag);
-                            }*/
-                            if( get_class($tag->owner->owner) !== "PanoramaConf" )
-                            {
-                                $tagDG_childDGS = $tag->owner->owner->childDeviceGroups(true);
-                                if( !in_array( $newTag->owner->owner->name(), $tagDG_childDGS ) )
-                                {
-                                    //do not delete TAG if TAG is from upperlevel DG and newtag is from childDG
-                                    PH::print_stdout( "       - delete old tag from: ".$tag->owner->_PANC_shortName() );
-                                    $tag->owner->removeTag($tag);
-                                }
-                            }
 
-                        }
+                        #if( $tag->owner !== null )
+                        #    $tag->owner->removeTag($tag);
                     }
                 }
             }

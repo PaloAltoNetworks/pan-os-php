@@ -434,20 +434,20 @@ ScheduleCallContext::$supportedActions[] = array(
         if( $foundObject === null )
             derr("cannot find an object named '{$context->arguments['objectName']}'");
 
-        /** @var ZoneRuleContainer $objectRef */
+        /** @var SecurityRule $objectRef */
         foreach( $objectRefs as $objectRef )
         {
             $tmp_class = get_class($objectRef);
 
-            if( $tmp_class == "ZoneRuleContainer" )
+            if( $tmp_class == "SecurityRule" )
             {
                 $string = "replacing in {$objectRef->toString()}";
                 PH::ACTIONlog( $context, $string );
 
                 if( $context->isAPI )
-                    $objectRef->API_replaceReferencedObject($object, $foundObject);
+                    $objectRef->API_setSchedule($foundObject);
                 else
-                    $objectRef->replaceReferencedObject($object, $foundObject);
+                    $objectRef->setSchedule($foundObject);
             }
             else
             {

@@ -183,17 +183,24 @@ trait lib_2_report_generator
 
         $inputConnector->refreshSystemInfos();
         $ruleStatFile = $inputConnector->info_serial . '-' . $location . '-stats.xml';
+        $ruleStatFile_SrcDst = $inputConnector->info_serial . '-' . $location . '-statsSrcDst.xml';
         $ruleStatHtmlFile = $inputConnector->info_serial . '-' . $location . '-stats.html';
 
         if( file_exists($ruleStatFile) )
         {
             PH::print_stdout(" - Previous rule stats found, loading from file $ruleStatFile... ");
             $ruleStats->load_from_file($ruleStatFile);
-
         }
         else
             PH::print_stdout(" - No cached stats found (missing file '$ruleStatFile')");
 
+        if( file_exists($ruleStatFile_SrcDst) )
+        {
+            PH::print_stdout(" - Previous rule stats found, loading from file $ruleStatFile_SrcDst... ");
+            $ruleStats->load_from_file($ruleStatFile_SrcDst, true);
+        }
+        else
+            PH::print_stdout(" - No cached stats found (missing file '$ruleStatFile_SrcDst')");
 
 //
 // Cooking additional query parameters
@@ -218,8 +225,7 @@ trait lib_2_report_generator
             $additionalQueryString = ' and ( ' . $additionalQueryString . ' )';
 
 
-        $rules = $subSystem->securityRules->rules("(description regex /" . RuleIDTagLibrary::$tagBaseName . "/) and !(tag has " . TH::$tag_misc_ignore . " )" . $additionalQueryString
-        );
+        $rules = $subSystem->securityRules->rules("(description regex /" . RuleIDTagLibrary::$tagBaseName . "/) and !(tag has " . TH::$tag_misc_ignore . " )" . $additionalQueryString );
 
         PH::print_stdout(" - Found " . count($rules) . " rules which will potentially be processed for log statistics");
 
@@ -237,6 +243,7 @@ trait lib_2_report_generator
             if( $rule->isDisabled() )
             {
                 PH::print_stdout("    * SKIPPED : it's disabled");
+                PH::print_stdout();
                 continue;
             }
 
@@ -245,6 +252,7 @@ trait lib_2_report_generator
             if( $stats !== null && !$updatePreviousData && !$resetPreviousData )
             {
                 PH::print_stdout("    * SKIPPED : found in cache");
+                PH::print_stdout();
                 continue;
             }
 
@@ -253,6 +261,7 @@ trait lib_2_report_generator
             {
                 $lastReportTime = round($lastReportTime, 2);
                 PH::print_stdout("    * SKIPPED : last report was run {$lastReportTime} days ago which is less then skipIfLastReportLessThanXDays value");
+                PH::print_stdout();
                 continue;
             }
 
@@ -283,7 +292,7 @@ trait lib_2_report_generator
 
                 // if container of app is valid, we want to use this container rather than
                 $container = array_pop($line);
-                if( strlen($container) > 0 && $container != 'none' )
+                if( $container != null && strlen($container) > 0 && $container != 'none' && $container != '(null)' )
                     $app = $container;
 
                 PH::print_stdout("      - $app ($count)");
@@ -291,13 +300,77 @@ trait lib_2_report_generator
                 $ruleStats->addRuleStats($rule->name(), $app, $count);
             }
 
-            $ruleStats->save_to_file($ruleStatFile);
+            //not performant to write file for each rule
+            #$ruleStats->save_to_file($ruleStatFile);
 
             PH::print_stdout();
+
+            #######################################################
+            //enalbe if fully published
+            $srcOrDst = false;
+            if( $srcOrDst )
+            {
+                PH::print_stdout("   * Generating SRC report... ");
+                $reports = $rule->API_getAddressStats(time() - ($logHistory * 24 * 3600), time() + 0, 'src', TRUE);
+                #print_r($reports);
+                PH::print_stdout("     * Results (" . count($reports) . "):");
+
+
+                $ruleStats->createRuleStats($rule->name(), true);
+                $ruleStats->updateRuleUpdateTimestamp($rule->name(), true);
+
+
+                foreach( $reports as $line )
+                {
+                    $count = array_pop($line);
+                    $app = array_pop($line);
+
+                    // if container of app is valid, we want to use this container rather than
+                    $container = array_pop($line);
+                    if( $container != null && strlen($container) > 0 && $container != 'none' && $container != '(null)' )
+                        $app = $container;
+
+                    PH::print_stdout("      - $app ($count)");
+
+                    $ruleStats->addRuleStats_SrcDst($rule->name(), 'src', $app, $count);
+                }
+
+                PH::print_stdout("   * Generating DST report... ");
+                $reports_dst = $rule->API_getAddressStats(time() - ($logHistory * 24 * 3600), time() + 0, 'dst', TRUE);
+                #print_r($reports_dst);
+                PH::print_stdout("     * Results (" . count($reports_dst) . "):");
+
+                foreach( $reports_dst as $line )
+                {
+                    $count = array_pop($line);
+                    $app = array_pop($line);
+
+                    // if container of app is valid, we want to use this container rather than
+                    $container = array_pop($line);
+                    if( $container != null && strlen($container) > 0 && $container != 'none' && $container != '(null)' )
+                        $app = $container;
+
+                    PH::print_stdout("      - $app ($count)");
+
+                    $ruleStats->addRuleStats_SrcDst($rule->name(), 'dst', $app, $count);
+                }
+                ###################
+
+
+                //not performant to write file for each rule
+                $ruleStats->save_to_file($ruleStatFile_SrcDst, true);
+            }
         }
 
-//Todo - export not working for HTML but tool is using XML file - HTML is only for user
-#PH::print_stdout( "\n\nExporting stats to html file '{$ruleStatHtmlFile}'... " );
-#$ruleStats->exportToCSV($ruleStatHtmlFile);
+
+        $ruleStats->save_to_file($ruleStatFile);
+
+        if( $srcOrDst )
+            $ruleStats->save_to_file($ruleStatFile_SrcDst, true);
+
+
+        //Todo - export not working for HTML but tool is using XML file - HTML is only for user
+        #PH::print_stdout( "\n\nExporting stats to html file '{$ruleStatHtmlFile}'... " );
+        #$ruleStats->exportToCSV($ruleStatHtmlFile);
     }
 }

@@ -170,6 +170,11 @@ class StaticRoute
         return $tmpRoute;
     }
 
+    function remove()
+    {
+        $this->owner->removeStaticRoute($this, true);
+    }
+
     /**
      * @return string
      */
@@ -192,6 +197,14 @@ class StaticRoute
     public function destinationIPMapping()
     {
         return cidr::stringToStartEnd($this->_destination);
+    }
+
+    /**
+     * @return IP4Map
+     */
+    public function destinationIP4Map()
+    {
+        return IP4Map::mapFromText($this->_destination);
     }
 
     public function nexthopIP()
@@ -239,4 +252,47 @@ class StaticRoute
         DH::createOrResetElement($this->xmlroot, 'interface', $this->_interface->name());
     }
 
+
+    public function display($virtualRouter, $includingName = false)
+    {
+        $text = "";
+
+        if( $includingName )
+            $text .= "       - '" . PH::boldText($this->name())."'".str_pad(" ", 30 - strlen($this->name()) );
+        else
+            $text .= "       ";
+
+        $tmpArray[$this->name()]['name'] = $this->name();
+
+        $text .= " - DEST: " . str_pad($this->destination(), 20);
+        $tmpArray[$this->name()]['destination'] = $this->destination();
+
+        if( $this->nexthopIP() !== null )
+        {
+            $text .= " - NEXTHOP: " . str_pad($this->nexthopIP(), 20);
+            $tmpArray[$this->name()]['nexthop'] = $this->nexthopIP();
+        }
+        else
+            $text .= str_pad( " ", 30 );
+
+        if( $this->nexthopInterface() != null )
+        {
+            $text .= "\n           - NEXT INTERFACE: " . str_pad($this->nexthopInterface()->toString(), 20);
+            $tmpArray[$this->name()]['nexthopinterface'] = $this->nexthopInterface()->name();
+        }
+
+        if( $this->nexthopVR() != null )
+        {
+            $text .= "  - NEXT VR: " . str_pad($this->nexthopVR(), 20);
+            $tmpArray[$this->name()]['nexthopvr'] = $this->nexthopVR();
+        }
+
+
+        if( $includingName )
+            PH::$JSON_TMP['sub']['object'][$virtualRouter->name()]['staticroute'] = $tmpArray;
+        else
+            PH::$JSON_TMP['sub']['object'] = $tmpArray;
+
+        return $text;
+    }
 }

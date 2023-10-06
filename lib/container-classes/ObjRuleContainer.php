@@ -115,6 +115,10 @@ class ObjRuleContainer
 
     protected function has($obj, $caseSensitive = TRUE)
     {
+        $tmpObj = $obj;
+        if( !is_string($obj) )
+            $obj = $obj->name();
+
         if( is_string($obj) )
         {
             if( !$caseSensitive )
@@ -138,6 +142,7 @@ class ObjRuleContainer
             return FALSE;
         }
 
+        $obj = $tmpObj;
         foreach( $this->o as $o )
         {
             if( $o === $obj )

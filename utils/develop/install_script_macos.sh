@@ -9,7 +9,10 @@ echo "START \"install script for MACOS\"" \
 && echo "" \
 && echo "\"install HOMEBREW\"" \
 && echo "https://osxdaily.com/2018/03/07/how-install-homebrew-mac-os/" \
+&& echo "For MacOS Catalina, macOS Mojave, and MacOS Big Sur:" \
 && /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)" \
+&& echo "For MacOS Ventura, MacOS Monterey:" \
+&& /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" \
 && echo "" \
 && echo "" \
 && echo "" \
@@ -30,6 +33,7 @@ echo "START \"install script for MACOS\"" \
 && echo "" \
 && php -v \
 && echo "" \
+&& echo "RUN echo 'include_path = "/usr/local/Cellar/php/8.2.11/share/php/pear:/Users/swaschkut/Documents/PAN-scripting/pan-os-php"' >> /usr/local/etc/php/8.2/php.ini" \
 && echo "" \
 && echo "install GIT" \
 && brew install git \
@@ -44,6 +48,7 @@ echo "START \"install script for MACOS\"" \
 && chmod -R 777 ${FOLDER_PATH} \
 && echo "" \
 && cp ${FOLDER_PATH}/utils/bash_autocompletion/pan-os-php.sh /usr/share/bash-completion/completions/pan-os-php \
+&& ln -s ${FOLDER_PATH}/utils/bash_autocompletion/pan-os-php.sh pan-os-php
 && echo "" \
 && echo "" \
 && echo "" \
@@ -56,6 +61,8 @@ echo "START \"install script for MACOS\"" \
 && echo "chpass -s /usr/local/bin/bash ${USER_VAR}" \
 && echo "" \
 && echo "" \
+&& echo "" \
+&& brew install jq \
 && echo "" \
 && echo "" \
 && echo "set user bash profile"   \

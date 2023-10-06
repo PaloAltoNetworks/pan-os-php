@@ -206,7 +206,7 @@ file_put_contents($file."_BCorig1.xml", $xml);
     if( isset(PH::$args['loadxmlfromfile'])  )
         $xmlDoc->load( $file."_BCorig1.xml" );
     else
-        $xmlDoc->loadXML($xml);
+        $xmlDoc->loadXML($xml, XML_PARSE_BIG_LINES);
 
     $xmlString = $xmlDoc->saveXML();
     file_put_contents($file."_BCorig2.xml", $xmlString);

@@ -97,9 +97,9 @@ class CONFIGSIZE extends UTIL
         $this->xmlDoc->preserveWhiteSpace = false;
         $this->xmlDoc->formatOutput = true;
 
-
-
-        $xml = &DH::dom_to_xml( $this->xmlDoc );
+        //these are the default values
+        //$xml = &DH::dom_to_xml( $this->xmlDoc, $indentingXml = 0, $lineReturn = TRUE, -1, $indentingXmlIncreament = 1 );
+        $xml = &DH::dom_to_xml( $this->xmlDoc);
         $xml_reduced = &DH::dom_to_xml( $this->xmlDoc, $this->indentingXml, $this->lineReturn, -1, $this->indentingXmlIncreament );
 
         $len_xml = strlen( $xml );
@@ -148,6 +148,7 @@ class CONFIGSIZE extends UTIL
         $this->supportedArguments['in'] = Array('niceName' => 'in', 'shortHelp' => 'input file or api. ie: in=config.xml  or in=api://192.168.1.1 or in=api://0018CAEC3@panorama.company.com', 'argDesc' => '[filename]|[api://IP]|[api://serial@IP]');
         $this->supportedArguments['out'] = Array('niceName' => 'out', 'shortHelp' => 'output file to save config after changes. Only required when input is a file. ie: out=save-config.xml', 'argDesc' => '[filename]');
         $this->supportedArguments['debugapi'] = Array('niceName' => 'DebugAPI', 'shortHelp' => 'prints API calls when they happen');
+        $this->supportedArguments['debugloadtime'] = array('niceName' => 'DebugLoadTime', 'shortHelp' => 'print LoadTime of specific config parts');
         $this->supportedArguments['help'] = Array('niceName' => 'help', 'shortHelp' => 'this message');
         $this->supportedArguments['location'] = Array('niceName' => 'Location', 'shortHelp' => 'specify if you want to limit your query to a VSYS/DG. By default location=shared for Panorama, =vsys1 for PANOS. ie: location=any or location=vsys2,vsys1', 'argDesc' => 'sub1[,sub2]');
         $this->supportedArguments['minkilobyte'] = Array('niceName' => 'MinKilobyte', 'shortHelp' => 'the amount of kB, where script start displaying XML information', 'argDesc' => '1000');

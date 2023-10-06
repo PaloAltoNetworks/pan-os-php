@@ -708,6 +708,81 @@ RuleCallContext::$supportedActions[] = array(
     'args' => array('zoneName' => array('type' => 'string', 'default' => '*nodefault*')),
 );
 RuleCallContext::$supportedActions[] = array(
+    'name' => 'from-Remove-from-file',
+    'section' => 'zone',
+    'MainFunction' => function (RuleCallContext $context) {
+        $rule = $context->object;
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+        if( $rule->isDoSRule() && $rule->isZoneBasedTo() )
+        {
+            $string = "TO is Zone based, not supported yet.";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+        if( $rule->isPbfRule() )
+        {
+            $string = "there is no TO in PBF Rules.";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+
+
+        //open file
+        //per line do:
+        if( !isset($context->cachedList) )
+        {
+            $text = file_get_contents($context->arguments['fileName']);
+
+            if( $text === FALSE )
+                derr("cannot open file '{$context->arguments['fileName']}");
+
+            $lines = explode("\n", $text);
+            foreach( $lines as $line )
+            {
+                $line = trim($line);
+                if( strlen($line) == 0 )
+                    continue;
+                $list[$line] = TRUE;
+            }
+
+            $context->cachedList = &$list;
+        }
+        else
+            $list = &$context->cachedList;
+        foreach( $list as $zone => $truefalse )
+        {
+            /*
+            if( !$rule->from->hasZone($zone) )
+            {
+                $string = "no zone with requested name '".$zone."' was found";
+                PH::ACTIONstatus( $context, "SKIPPED", $string );
+                continue;
+            }
+            */
+
+            $objectFind = $rule->from->parentCentralStore->find($zone);
+            if( $objectFind === null )
+            {
+                mwarning("zone named '{$zone}' not found");
+                continue;
+            }
+
+
+            if( $context->isAPI )
+                $rule->to->API_removeZone($objectFind);
+            else
+                $rule->to->removeZone($objectFind);
+        }
+
+    },
+    'args' => array('fileName' => array('type' => 'string', 'default' => '*nodefault*')),
+);
+RuleCallContext::$supportedActions[] = array(
     'name' => 'from-Remove-Force-Any',
     'section' => 'zone',
     'MainFunction' => function (RuleCallContext $context) {
@@ -890,6 +965,81 @@ RuleCallContext::$supportedActions[] = array(
             $rule->to->removeZone($objectFind);
     },
     'args' => array('zoneName' => array('type' => 'string', 'default' => '*nodefault*')),
+);
+RuleCallContext::$supportedActions[] = array(
+    'name' => 'to-Remove-from-file',
+    'section' => 'zone',
+    'MainFunction' => function (RuleCallContext $context) {
+        $rule = $context->object;
+        if( $rule->isDefaultSecurityRule() )
+        {
+            $string = "DefaultSecurityRule - action not supported";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+        if( $rule->isDoSRule() && $rule->isZoneBasedTo() )
+        {
+            $string = "TO is Zone based, not supported yet.";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+        if( $rule->isPbfRule() )
+        {
+            $string = "there is no TO in PBF Rules.";
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+
+
+        //open file
+        //per line do:
+        if( !isset($context->cachedList) )
+        {
+            $text = file_get_contents($context->arguments['fileName']);
+
+            if( $text === FALSE )
+                derr("cannot open file '{$context->arguments['fileName']}");
+
+            $lines = explode("\n", $text);
+            foreach( $lines as $line )
+            {
+                $line = trim($line);
+                if( strlen($line) == 0 )
+                    continue;
+                $list[$line] = TRUE;
+            }
+
+            $context->cachedList = &$list;
+        }
+        else
+            $list = &$context->cachedList;
+        foreach( $list as $zone => $truefalse )
+        {
+            /*
+            if( !$rule->to->hasZone($zone) )
+            {
+                $string = "no zone with requested name '".$zone."' was found";
+                PH::ACTIONstatus( $context, "SKIPPED", $string );
+                continue;
+            }
+            */
+
+            $objectFind = $rule->from->parentCentralStore->find($zone);
+            if( $objectFind === null )
+            {
+                mwarning("zone named '{$zone}' not found");
+                continue;
+            }
+
+
+            if( $context->isAPI )
+                $rule->to->API_removeZone($objectFind);
+            else
+                $rule->to->removeZone($objectFind);
+        }
+
+    },
+    'args' => array('fileName' => array('type' => 'string', 'default' => '*nodefault*')),
 );
 RuleCallContext::$supportedActions[] = array(
     'name' => 'to-Remove-Force-Any',
@@ -2909,6 +3059,8 @@ RuleCallContext::$supportedActions[] = array(
 
         $object = $context->object;
 
+        $pregReplace = FALSE;
+
         $characterToreplace = $context->arguments['search'];
         if( strpos($characterToreplace, '$$comma$$') !== FALSE )
             $characterToreplace = str_replace('$$comma$$', ",", $characterToreplace);
@@ -2920,6 +3072,12 @@ RuleCallContext::$supportedActions[] = array(
             $characterToreplace = str_replace('$$pipe$$', "|", $characterToreplace);
         if( strpos($characterToreplace, '$$newline$$') !== FALSE )
             $characterToreplace = str_replace('$$newline$$', "\n", $characterToreplace);
+        if( strpos($characterToreplace, '$$appRID#$$') !== FALSE )
+        {
+            $characterToreplace = str_replace('$$appRID#$$', "appRID#[0-9]+", $characterToreplace);
+            $pregReplace = TRUE;
+        }
+
 
         $characterForreplace = $context->arguments['replace'];
         if( strpos($characterForreplace, '$$comma$$') !== FALSE )
@@ -2935,9 +3093,14 @@ RuleCallContext::$supportedActions[] = array(
 
         $description = $object->description();
 
-        $newDescription = str_replace($characterToreplace, $characterForreplace, $description);
-        //todo add regex replacement 20210305
-        //$desc = preg_replace('/appRID#[0-9]+/', '', $rule->description());
+        if( $pregReplace )
+        {
+            //todo add regex replacement 20210305
+            $newDescription = preg_replace('/ appRID#[0-9]+/', $characterForreplace, $description);
+        }
+        else
+            $newDescription = str_replace($characterToreplace, $characterForreplace, $description);
+
 
         if( $description == $newDescription )
         {
@@ -2960,7 +3123,7 @@ RuleCallContext::$supportedActions[] = array(
         'search' => array('type' => 'string', 'default' => '*nodefault*'),
         'replace' => array('type' => 'string', 'default' => '')
     ),
-    'help' => 'possible variable $$comma$$ or $$forwardslash$$ or $$colon$$ or $$pipe$$ or $$newline$$; example "actions=description-Replace-Character:$$comma$$word1"'
+    'help' => 'possible variable $$comma$$ or $$forwardslash$$ or $$colon$$ or $$pipe$$ or $$newline$$ or $$appRID#$$; example "actions=description-Replace-Character:$$comma$$word1"'
 );
 
 //                                                   //
@@ -3748,7 +3911,7 @@ RuleCallContext::$supportedActions[] = array(
         'default' => '*nodefault*'),
         'replace' => array(
             'type' => 'string',
-            'default' => '*nodefault*')
+            'default' => '')
     ),
     'help' => ''
 );
@@ -5554,3 +5717,390 @@ RuleCallContext::$supportedActions[] = array(
     }
 );
 
+RuleCallContext::$supportedActions[] = array(
+    'name' => 'appid-toolbox-cleanup',
+    'MainFunction' => function (RuleCallContext $context) {
+        $object = $context->object;
+
+        ########################################################################
+        //delete cloned rules
+        if( strpos( $object->name(), "-app" ) && $object->isDisabled() )
+        {
+            if( $context->isAPI )
+                $object->owner->API_remove($object);
+            else
+                $object->owner->remove($object);
+        }
+
+        ########################################################################
+        //remove description
+        $description = $object->description();
+        $newDescription = preg_replace('/ appRID#[0-9]+/', "", $description);
+
+
+        if( $description == $newDescription )
+        {
+            $string = "new and old description are the same" ;
+            PH::ACTIONstatus( $context, "SKIPPED", $string );
+            return;
+        }
+
+        $string = "new description will be '{$newDescription}'";
+        PH::ACTIONlog( $context, $string );
+
+        if( $context->isAPI )
+            $object->API_setDescription($newDescription);
+        else
+            $object->setDescription($newDescription);
+    }
+);
+
+RuleCallContext::$supportedActions[] = Array(
+    'name' => 'stats-appid-FastAPI',
+    'section' => 'application',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+        $customLogHistory = $context->arguments['logHistory'];
+        if( $customLogHistory == "last-15-minutes" )
+            $logHistory = 15 * 60;
+        elseif( is_int($customLogHistory) )
+            $logHistory = $customLogHistory * 24 * 3600;
+        else
+            $logHistory = strtotime($customLogHistory);
+
+
+        if( $context->isAPI )
+        {
+            $report = $rule->API_getAppContainerStats2( time() - ($logHistory), time() + 0, false );
+            if( count( $report ) > 0 )
+            {
+                PH::print_stdout( "     - found APPID traffic: ".count($report));
+                foreach($report as $entry)
+                {
+                    $string = "      - ".$entry['app'];
+                    if( isset($entry['repeatcnt']) )
+                        $string .= " - count: ".$entry['repeatcnt'];
+                    elseif( isset($entry['session']) )
+                        $string .= " - session: ".$entry['sessions'];
+
+                    PH::print_stdout( $string );
+                }
+
+            }
+        }
+        else
+            derr( 'only supported in API mode' );
+    },
+    'args' => Array( 'logHistory' => Array( 'type' => 'string', 'default' => 'last-15-minutes' ) ),
+    'help' => 'returns TRUE if rule name matches the specified timestamp MM/DD/YYYY [american] / DD-MM-YYYY [european] / 21 September 2021 / -90 days',
+);
+
+RuleCallContext::$supportedActions[] = Array(
+    'name' => 'stats-service-FastAPI',
+    'section' => 'service',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+        $customLogHistory = $context->arguments['logHistory'];
+        if( $customLogHistory == "last-15-minutes" )
+            $logHistory = 15 * 60;
+        elseif( is_int($customLogHistory) )
+            $logHistory = $customLogHistory * 24 * 3600;
+        else
+            $logHistory = strtotime($customLogHistory);
+
+
+        if( $context->isAPI )
+        {
+            $report = $rule->API_getServiceStats( time() - ($logHistory), time() + 0, false );
+            if( count( $report ) > 0 )
+            {
+                PH::print_stdout( "     - found SRV traffic: ".count($report));
+                foreach($report as $entry)
+                {
+                    $string = "      - ".$entry['dport']." - ".$entry['app'];
+                    if( isset($entry['repeatcnt']) )
+                        $string .= " - count: ".$entry['repeatcnt'];
+                    elseif( isset($entry['session']) )
+                        $string .= " - session: ".$entry['sessions'];
+                    if( isset($entry['proto']) )
+                        $string .= " - protocol: ".$entry['proto'];
+
+                    PH::print_stdout( $string );
+                }
+
+            }
+        }
+        else
+            derr( 'only supported in API mode' );
+    },
+    'args' => Array( 'logHistory' => Array( 'type' => 'string', 'default' => 'last-15-minutes' ) ),
+    'help' => 'returns TRUE if rule name matches the specified timestamp MM/DD/YYYY [american] / DD-MM-YYYY [european] / 21 September 2021 / -90 days',
+);
+RuleCallContext::$supportedActions[] = Array(
+    'name' => 'stats-address-source-FastAPI',
+    'section' => 'address',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+        $customLogHistory = $context->arguments['logHistory'];
+        if( $customLogHistory == "last-15-minutes" )
+            $logHistory = 15 * 60;
+        elseif( is_int($customLogHistory) )
+            $logHistory = $customLogHistory * 24 * 3600;
+        else
+            $logHistory = strtotime($customLogHistory);
+
+        if( $context->isAPI )
+        {
+            $report_src = $rule->API_getAddressStats( time() - ($logHistory ), time() + 0, 'src', false );
+            if( count( $report_src ) > 0 )
+            {
+                PH::print_stdout( "     - found SRC traffic: ".count($report_src));
+                foreach($report_src as $entry)
+                {
+                    $string = "      - ".$entry['src'];
+                    if( isset($entry['repeatcnt']) )
+                        $string .= " - count: ".$entry['repeatcnt'];
+                    elseif( isset($entry['session']) )
+                        $string .= " - session: ".$entry['sessions'];
+
+                    PH::print_stdout( $string );
+                }
+            }
+        }
+        else
+            derr( 'only supported in API mode' );
+    },
+    'args' => Array( 'logHistory' => Array( 'type' => 'string', 'default' => 'last-15-minutes' ) ),
+    'help' => 'returns TRUE if rule name matches the specified timestamp MM/DD/YYYY [american] / DD-MM-YYYY [european] / 21 September 2021 / -90 days',
+);
+RuleCallContext::$supportedActions[] = Array(
+    'name' => 'stats-address-destination-FastAPI',
+    'section' => 'address',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+        $customLogHistory = $context->arguments['logHistory'];
+        if( $customLogHistory == "last-15-minutes" )
+            $logHistory = 15 * 60;
+        elseif( is_int($customLogHistory) )
+            $logHistory = $customLogHistory * 24 * 3600;
+        else
+            $logHistory = strtotime($customLogHistory);
+
+        if( $context->isAPI )
+        {
+            $report_dst = $rule->API_getAddressStats( time() - ($logHistory), time() + 0 , 'dst', false );
+            if( count( $report_dst ) > 0 )
+            {
+                PH::print_stdout( "     - found DST traffic: ".count($report_dst));
+                foreach($report_dst as $entry)
+                {
+                    $string = "      - ".$entry['dst'];
+                    if( isset($entry['repeatcnt']) )
+                        $string .= " - count: ".$entry['repeatcnt'];
+                    elseif( isset($entry['session']) )
+                        $string .= " - session: ".$entry['sessions'];
+
+                    PH::print_stdout( $string );
+                }
+            }
+        }
+        else
+            derr( 'only supported in API mode' );
+    },
+    'args' => Array( 'logHistory' => Array( 'type' => 'string', 'default' => 'last-15-minutes' ) ),
+    'help' => 'returns TRUE if rule name matches the specified timestamp MM/DD/YYYY [american] / DD-MM-YYYY [european] / 21 September 2021 / -90 days',
+);
+RuleCallContext::$supportedActions[] = Array(
+    'name' => 'stats-address-FastAPI',
+    'section' => 'address',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+        $customLogHistory = $context->arguments['logHistory'];
+        if( $customLogHistory == "last-15-minutes" )
+            $logHistory = 15 * 60;
+        elseif( is_int($customLogHistory) )
+            $logHistory = $customLogHistory * 24 * 3600;
+        else
+            $logHistory = strtotime($customLogHistory);
+
+        if( $context->isAPI )
+        {
+            $report_src = $rule->API_getAddressStats( time() - ($logHistory), time() + 0 , 'src', false );
+            $report_dst = $rule->API_getAddressStats( time() - ($logHistory), time() + 0 , 'dst', false );
+
+            if( count( $report_src ) > 0 )
+            {
+                PH::print_stdout( "     - found SRC traffic: ".count($report_src));
+                foreach($report_src as $entry)
+                {
+                    $string = "      - ".$entry['src'];
+                    if( isset($entry['repeatcnt']) )
+                        $string .= " - count: ".$entry['repeatcnt'];
+                    elseif( isset($entry['session']) )
+                        $string .= " - session: ".$entry['sessions'];
+
+                    PH::print_stdout( $string );
+                }
+            }
+
+            PH::print_stdout();
+
+            if( count( $report_dst ) > 0 )
+            {
+                PH::print_stdout( "     - found DST traffic: ".count($report_dst));
+                foreach($report_dst as $entry)
+                {
+                    $string = "      - ".$entry['dst'];
+                    if( isset($entry['repeatcnt']) )
+                        $string .= " - count: ".$entry['repeatcnt'];
+                    elseif( isset($entry['session']) )
+                        $string .= " - session: ".$entry['sessions'];
+
+                    PH::print_stdout( $string );
+                }
+            }
+
+            $report = $rule->API_getAddressStats( time() - ($logHistory), time() + 0 , 'both', false );
+
+            PH::print_stdout();
+
+            if( count( $report ) > 0 )
+            {
+                PH::print_stdout( "     - found SRC -> DST traffic: ".count($report));
+                foreach($report as $flow)
+                {
+                    $string = "      - ".$entry['src']." -> ".$entry['dst'];
+                    if( isset($entry['repeatcnt']) )
+                        $string .= " - count: ".$entry['repeatcnt'];
+                    elseif( isset($entry['session']) )
+                        $string .= " - session: ".$entry['sessions'];
+
+                    PH::print_stdout( $string );
+                }
+            }
+        }
+        else
+            derr( 'only supported in API mode' );
+    },
+    'args' => Array( 'logHistory' => Array( 'type' => 'string', 'default' => 'last-15-minutes' ) ),
+    'help' => 'returns TRUE if rule name matches the specified timestamp MM/DD/YYYY [american] / DD-MM-YYYY [european] / 21 September 2021 / -90 days',
+);
+
+RuleCallContext::$supportedActions[] = Array(
+    'name' => 'stats-traffic-FastAPI',
+    'section' => 'address',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+        $customLogHistory = $context->arguments['logHistory'];
+        if( $customLogHistory == "last-15-minutes" )
+            $logHistory = 15 * 60;
+        elseif( is_int($customLogHistory) )
+            $logHistory = $customLogHistory * 24 * 3600;
+        else
+            $logHistory = strtotime($customLogHistory);
+
+        if( $context->isAPI )
+        {
+            $report = $rule->API_getAddressStats( time() - ($logHistory), time() + 0 , 'srcdstsrv', false );
+
+            if( count( $report ) > 0 )
+            {
+                PH::print_stdout( "     - found SRC -> DST -> SRV traffic: ".count($report));
+                foreach($report as $entry)
+                {
+                    $string = "      - ".$entry['src']." -> ".$entry['dst'];
+                    $string .= " - port: ".$entry['dport'];//." - app: ".$entry['app'];
+                    if( isset($entry['proto']) )
+                        $string .= " - protocol: ".$entry['proto'];
+                    if( isset($entry['repeatcnt']) )
+                        $string .= " - count: ".$entry['repeatcnt'];
+                    elseif( isset($entry['session']) )
+                        $string .= " - session: ".$entry['sessions'];
+
+                    PH::print_stdout( $string );
+                }
+            }
+        }
+        else
+            derr( 'only supported in API mode' );
+    },
+    'args' => Array( 'logHistory' => Array( 'type' => 'string', 'default' => 'last-15-minutes' ) ),
+    'help' => 'returns TRUE if rule name matches the specified timestamp MM/DD/YYYY [american] / DD-MM-YYYY [european] / 21 September 2021 / -90 days',
+);
+RuleCallContext::$supportedActions[] = array(
+    'name' => 'create-new-Rule-from-file-FastAPI',
+    'GlobalInitFunction' => function(RuleCallContext $context)
+    {
+        $context->uuid = array();
+        $context->first = true;
+    },
+    'MainFunction' => function (RuleCallContext $context) {
+        $rule = $context->object;
+
+        if( !$context->isAPI )
+            derr('you cannot call this action without API mode');
+
+        if( $context->first )
+        {
+            if( !isset($context->cachedList) )
+            {
+                $text = file_get_contents($context->arguments['fileName']);
+
+                if( $text === FALSE )
+                    derr("cannot open file '{$context->arguments['fileName']}");
+
+                $lines = explode("\n", $text);
+                foreach( $lines as $line )
+                {
+                    $line = trim($line);
+                    if( strlen($line) == 0 )
+                        continue;
+                    $list[$line] = TRUE;
+                }
+
+                $context->cachedList = &$list;
+            }
+            else
+                $list = &$context->cachedList;
+            foreach( $list as $rulename => $truefalse )
+            {
+                $tmpRule = $rule->owner->find( $rulename );
+                if( $tmpRule == null )
+                {
+                    $tmpRule = $rule->owner->newSecurityRule( $rulename );
+
+                    $string = "QUEUED for bundled API call";
+                    PH::ACTIONlog( $context, $string );
+
+                    $newdoc = new DOMDocument;
+                    $node = $newdoc->importNode($tmpRule->xmlroot, true);
+                    $newdoc->appendChild($node);
+
+                    $string = "";
+                    foreach( $newdoc->documentElement->childNodes as $childnode )
+                    {
+                        $lineReturn = false;
+                        $indentingXmlIncreament = 1;
+                        $indentingXml = 0;
+                        $xml = &DH::dom_to_xml($childnode, $indentingXml, $lineReturn, -1, $indentingXmlIncreament);
+                        #print $xml;
+                        $string .= $xml;
+                    }
+
+
+                    $context->addRuleToMergedApiChange2($tmpRule, $string);
+                }
+            }
+        }
+    },
+    'GlobalFinishFunction' => function (RuleCallContext $context) {
+        $context->doBundled_API_Call();
+    },
+    'args' => array('fileName' => array('type' => 'string', 'default' => '*nodefault*')),
+);

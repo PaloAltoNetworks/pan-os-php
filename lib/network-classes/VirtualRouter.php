@@ -33,6 +33,8 @@ class VirtualRouter
     /** @var InterfaceContainer */
     public $attachedInterfaces;
 
+    public $routingProtocols = array();
+
     protected $xmlroot_protocol = false;
 
     protected $fastMemToIndex;
@@ -63,6 +65,22 @@ class VirtualRouter
 
         $this->xmlroot_protocol = DH::findFirstElement('protocol', $xml);
 
+        if(  $this->xmlroot_protocol !== False )
+        {
+            foreach( $this->xmlroot_protocol->childNodes as $node )
+            {
+                if( $node->nodeType != XML_ELEMENT_NODE )
+                    continue;
+
+                $tmpProtocolName = $node->nodeName;
+                $this->routingProtocols[$tmpProtocolName] = array();
+
+                $protocolEnabled = DH::findFirstElement("enable", $node);
+                if( $protocolEnabled !== FALSE )
+                    $this->routingProtocols[$tmpProtocolName]['enabled'] = $protocolEnabled->textContent;
+            }
+        }
+
         $node = DH::findFirstElementOrCreate('interface', $xml);
 
         $this->attachedInterfaces->load_from_domxml($node);
@@ -85,6 +103,11 @@ class VirtualRouter
                         $newRoute = new StaticRoute('***tmp**', $this);
                         $newRoute->load_from_xml($node->item($i));
                         $this->_staticRoutes[] = $newRoute;
+
+                        $ser = spl_object_hash($newRoute);
+
+                        $this->fastMemToIndex[$ser] = $newRoute;
+                        $this->fastNameToIndex[$newRoute->name()] = $newRoute;
                     }
                 }
             }
@@ -147,6 +170,14 @@ class VirtualRouter
     public function staticRoutes()
     {
         return $this->_staticRoutes;
+    }
+
+    /**
+     * @return int
+     */
+    public function count()
+    {
+        return count($this->_staticRoutes);
     }
 
     public function addstaticRoute($staticRoute, $version = 'ip')
@@ -217,7 +248,7 @@ class VirtualRouter
 
         if( !isset($this->fastNameToIndex[$staticRoute->name()]) )
         {
-            mdeb('Tried to remove an object that is not part of this store');
+            mwarning('Tried to remove an object that is not part of this store', null, false);
             return FALSE;
         }
 

@@ -271,7 +271,7 @@ class PANConf
      * @param $xml DOMElement|DOMDocument
      * @throws Exception
      */
-    public function load_from_domxml($xml)
+    public function load_from_domxml($xml, $debugLoadTime = false)
     {
 
         if( $xml->nodeType == XML_DOCUMENT_NODE )
@@ -287,12 +287,11 @@ class PANConf
             #$tmp_doc = DH::findFirstElementOrDie('config', $tmp_root);
 
             $dom = new DOMDocument();
-            $domNode = $dom->importNode( $xml, true );
+            $domNode = $dom->importNode($xml, TRUE);
 
-            $dom->appendChild( $domNode );
+            $dom->appendChild($domNode);
             $this->xmldoc = $dom;
         }
-
 
 
         if( $this->owner !== null )
@@ -346,6 +345,9 @@ class PANConf
 
         if( $this->owner === null )
         {
+            if( $debugLoadTime )
+                PH::print_DEBUG_loadtime("shared");
+
             $this->sharedroot = DH::findFirstElementOrDie('shared', $this->xmlroot);
             //
             // Extract Tag objects
@@ -363,7 +365,7 @@ class PANConf
             // Extract region objects
             //
             $tmp = DH::findFirstElement('region', $xml);
-            if( $tmp !== false )
+            if( $tmp !== FALSE )
                 $this->addressStore->load_regions_from_domxml($tmp);
             //print "VSYS '".$this->name."' address objectsloaded\n" ;
             // End of address objects extraction
@@ -584,7 +586,11 @@ class PANConf
         //
         $tmp = DH::findFirstElement('network', $this->localhostroot);
         if( $tmp !== FALSE )
+        {
+            if( $debugLoadTime )
+                PH::print_DEBUG_loadtime("network");
             $this->network->load_from_domxml($tmp);
+        }
         //
 
         // Now listing and extracting all VirtualSystem configurations
@@ -612,6 +618,9 @@ class PANConf
                 $localVsys = new VirtualSystem($this, $dg);
             else
                 $localVsys = new VirtualSystem($this);
+
+            if( $debugLoadTime )
+                PH::print_DEBUG_loadtime("vsys");
 
             $localVsys->load_from_domxml($node);
             $this->virtualSystems[] = $localVsys;
@@ -659,7 +668,7 @@ class PANConf
                 if( $timezone )
                 {
                     $this->timezone = $timezone->textContent;
-                    date_default_timezone_set( $timezone->textContent );
+                    date_default_timezone_set($timezone->textContent);
                 }
             }
         }
@@ -671,7 +680,11 @@ class PANConf
         //
         $tmp = DH::findFirstElement('network', $this->localhostroot);
         if( $tmp !== FALSE )
+        {
+            if( $debugLoadTime )
+                PH::print_DEBUG_loadtime("network part 2");
             $this->network->load_from_domxml_2($tmp);
+        }
         //
     }
 
@@ -1072,10 +1085,54 @@ class PANConf
         return $newVsys;
     }
 
-    public function findSubSystemByName($location)
+    /**
+     * Remove a VirtualSystem.
+     * @param VirtualSystem $vsys
+     **/
+    public function removeVirtualSystem( $vsys )
     {
-        return $this->findVirtualSystem($location);
+        $VSYSname = $vsys->name();
+
+        //remove VSYS from XML
+        $xPath = "/config/devices/entry[@name='localhost.localdomain']/vsys";
+        $dgNode = DH::findXPathSingleEntryOrDie($xPath, $this->xmlroot);
+
+        $DGremove = DH::findFirstElementByNameAttrOrDie('entry', $VSYSname, $dgNode);
+        $dgNode->removeChild( $DGremove );
+
+        unset($this->virtualSystems[ $VSYSname ]);
     }
 
+    /**
+     * Remove a VirtualSystem.
+     * @param VirtualSystem $vsys
+     **/
+    public function removeSharedGateway( $vsys )
+    {
+        $VSYSname = $vsys->name();
+
+        //remove VSYS from XML
+        $xPath = "/config/devices/entry[@name='localhost.localdomain']/network/shared-gateway";
+        $dgNode = DH::findXPathSingleEntryOrDie($xPath, $this->xmlroot);
+
+        $DGremove = DH::findFirstElementByNameAttrOrDie('entry', $VSYSname, $dgNode);
+        $dgNode->removeChild( $DGremove );
+
+        unset($this->sharedGateways[ $VSYSname ]);
+    }
+
+    public function findSubSystemByName($location)
+    {
+        $vsys = $this->findVirtualSystem($location);
+        if( $vsys === null )
+            $vsys = $this->findSharedGateway($location);
+        return $vsys;
+    }
+
+    // this is for !shared
+    public function childDeviceGroups()
+    {
+        return $this->getVirtualSystems();
+    }
 }
 

@@ -83,6 +83,12 @@ class NETWORKUTIL extends UTIL
                     {
                         $this->objectsToProcess[] = Array('store' => $this->pan->certificateStore, 'objects' => $this->pan->certificateStore->getAll());
                     }
+                    elseif( $this->utilType == 'static-route' )
+                    {
+                        foreach($this->pan->network->virtualRouterStore->getAll() as $vr )
+                            $this->objectsToProcess[] = Array('store' => $vr, 'objects' => $vr->staticRoutes());
+                    }
+
 
 
                     $locationFound = TRUE;
@@ -201,7 +207,11 @@ class NETWORKUTIL extends UTIL
                                 {
                                     $this->objectsToProcess[] = Array('store' => $template->certificateStore, 'objects' => $template->certificateStore->getAll());
                                 }
-
+                                elseif( $this->utilType == 'static-route' )
+                                {
+                                    foreach($template->deviceConfiguration->network->virtualRouterStore->getAll() as $vr )
+                                        $this->objectsToProcess[] = Array('store' => $vr, 'objects' => $vr->staticRoutes());
+                                }
 
                                 $locationFound = true;
                             }

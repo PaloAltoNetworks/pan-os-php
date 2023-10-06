@@ -14,6 +14,20 @@ RQuery::$defaultFilters['routing']['name']['operators']['eq'] = Array(
     )
 );
 
+RQuery::$defaultFilters['routing']['protocol.bgp']['operators']['is.enabled'] = Array(
+    'Function' => function(RoutingRQueryContext $context )
+    {
+        $object = $context->object;
+        if( isset( $object->routingProtocols['bgp'] ) and $object->routingProtocols['bgp']['enabled'] == "yes" )
+            return TRUE;
 
+        return FALSE;
+    },
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP% ethernet1/1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 
 // </editor-fold>

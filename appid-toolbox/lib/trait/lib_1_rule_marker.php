@@ -42,7 +42,7 @@ trait lib_1_rule_marker
         if( isset(PH::$args['help']) )
             $this->display_usage_and_exit_p1();
 
-        $supportedOptions = array('phase', 'in', 'out', 'help', 'location');
+        $supportedOptions = array('phase', 'in', 'out', 'help', 'location', 'debugapi');
         $supportedOptions = array_flip($supportedOptions);
 
         foreach( PH::$args as $arg => $argvalue )
@@ -54,6 +54,10 @@ trait lib_1_rule_marker
 
         $debugAPI = FALSE;
 
+        if( isset(PH::$args['debugapi']) )
+        {
+            $debugAPI = TRUE;
+        }
 
         $return = AppIDToolbox_common::location();
         $configInput = $return['configInput'];
@@ -99,11 +103,12 @@ trait lib_1_rule_marker
 
         foreach( $rules as $rule )
         {
+            PH::print_stdout();
             PH::print_stdout(" - rule '{$rule->name()}'");
 
             if( $ridTagLibrary->ruleIsTagged($rule) )
             {
-                PH::print_stdout(" SKIPPED : already tagged");
+                PH::print_stdout("   SKIPPED : already tagged");
                 $alreadyMarked++;
                 continue;
             }
@@ -112,7 +117,7 @@ trait lib_1_rule_marker
 
 
             $newTagName = $ridTagLibrary->findAvailableTagName('appRID#');
-            PH::print_stdout();
+
             PH::print_stdout("    * creating Virtual TAG '$newTagName' ... ");
 
             PH::print_stdout("    * applying tag to rule description... ");
@@ -129,10 +134,10 @@ trait lib_1_rule_marker
                 $xmlPreRules .= "<entry name=\"{$rule->name()}\"><description>" . htmlspecialchars($rule->description()) . "</description></entry>";
         }
 
-        PH::print_stdout("\n\nNumber of rules marked: {$markedRules}    (vs already marked: {$alreadyMarked}");
+        PH::print_stdout("\n\nNumber of rules marked: '{$markedRules}'    (vs already marked: '{$alreadyMarked}')");
 
         if( $markedRules < 1 )
-            PH::print_stdout("\n\n No change to push as not rule is set to be marked");
+            PH::print_stdout("\n\nNo change to push as no rule is set to be marked");
         else
         {
             if( $configInput['type'] == 'api' )

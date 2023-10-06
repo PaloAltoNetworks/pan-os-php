@@ -593,6 +593,103 @@ DeviceCallContext::$supportedActions['Template-clone '] = array(
     ),
 );
 
+DeviceCallContext::$supportedActions['VirtualSystem-delete'] = array(
+    'name' => 'virtualsystem-delete',
+    'MainFunction' => function (DeviceCallContext $context) {
+
+        $object = $context->object;
+        $name = $object->name();
+
+        $pan = $context->subSystem;
+        if( !$pan->isFirewall() )
+            derr( "only supported on Firewall config" );
+
+        if( get_class($object) == "VirtualSystem" )
+        {
+            $string ="     * delete VirtualSystem: " . $name;
+            PH::ACTIONlog( $context, $string );
+
+            if( $context->isAPI )
+            {
+                $con = findConnectorOrDie($object);
+                $xpath = DH::elementToPanXPath($object->xmlroot);
+
+                $con->sendDeleteRequest($xpath);
+            }
+
+            $pan->removeVirtualSystem($object);
+        }
+    }
+);
+
+DeviceCallContext::$supportedActions['SharedGateway-delete'] = array(
+    'name' => 'sharedgateway-delete',
+    'MainFunction' => function (DeviceCallContext $context) {
+
+        $object = $context->object;
+        $name = $object->name();
+
+        $pan = $context->subSystem;
+        if( !$pan->isFirewall() )
+            derr( "only supported on Firewall config" );
+
+        if( get_class($object) == "VirtualSystem" )
+        {
+            $string ="     * delete SharedGateway: " . $name;
+            PH::ACTIONlog( $context, $string );
+
+            if( $context->isAPI )
+            {
+                $con = findConnectorOrDie($object);
+                $xpath = DH::elementToPanXPath($object->xmlroot);
+
+                $con->sendDeleteRequest($xpath);
+            }
+
+            $pan->removeSharedGateway($object);
+        }
+    }
+);
+
+DeviceCallContext::$supportedActions['SharedGateway-migrate-to-vsys'] = array(
+    'name' => 'sharedgateway-migrate-to-vsys',
+    'MainFunction' => function (DeviceCallContext $context) {
+
+        $object = $context->object;
+        $name = $object->name();
+
+        $pan = $context->subSystem;
+        if( !$pan->isFirewall() )
+            derr( "only supported on Firewall config", null, false );
+        if( get_class($object->owner) !== "SharedGatewayStore" )
+            derr( "this is not a SharedGateway", null, false );
+
+        if( get_class($object) == "VirtualSystem" )
+        {
+            $newVSYSname = $context->arguments['name'];
+            $vsys_number = str_replace( "vsys", "", $newVSYSname);
+
+            $string ="     * migrate SharedGateway: " . $name." to vsys: ".$newVSYSname;
+            PH::ACTIONlog( $context, $string );
+
+            $vsys = $pan->createVirtualSystem($vsys_number);
+
+            $clone = $object->xmlroot->cloneNode(true);
+
+            $clone->setAttribute("name", "vsys".$vsys_number);
+
+            $vsys->xmlroot->parentNode->appendChild($clone);
+            $vsys->xmlroot->parentNode->removeChild($vsys->xmlroot);
+
+            $object->owner->xmlroot->removeChild($object->xmlroot);
+        }
+    },
+    'args' => array(
+        'name' => array('type' => 'string', 'default' => 'false'),
+    ),
+);
+
+
 DeviceCallContext::$supportedActions['ManagedDevice-create'] = array(
     'name' => 'manageddevice-create',
     'MainFunction' => function (DeviceCallContext $context) {
@@ -1728,7 +1825,7 @@ DeviceCallContext::$commonActionFunctions['sp_spg-create'] = array(
             $store = $sharedStore->$type;
             $profile = new $typeclass($name . "-" . $type_name, $store);
             $newdoc = new DOMDocument;
-            $newdoc->loadXML($context->$xmlString);
+            $newdoc->loadXML($context->$xmlString, XML_PARSE_BIG_LINES);
             $node = $newdoc->importNode($newdoc->firstChild, TRUE);
             $node = DH::findFirstElementByNameAttr("entry", $name . "-" . $type_name, $node);
 
@@ -1756,7 +1853,7 @@ DeviceCallContext::$commonActionFunctions['sp_spg-create'] = array(
             $store = $sharedStore->$type;
             $profile = new $typeclass($name . "-" . $type_name, $store);
             $newdoc = new DOMDocument;
-            $newdoc->loadXML($context->$xmlString);
+            $newdoc->loadXML($context->$xmlString, XML_PARSE_BIG_LINES);
             $node = $newdoc->importNode($newdoc->firstChild, TRUE);
             $node = DH::findFirstElementByNameAttr("entry", $name . "-" . $type_name, $node);
 
@@ -2127,7 +2224,7 @@ DeviceCallContext::$supportedActions['LogForwardingProfile-create-BP'] = array(
                 $ownerDocument = $sub->xmlroot->ownerDocument;
 
                 $newdoc = new DOMDocument;
-                $newdoc->loadXML( $lfp_bp_xmlstring );
+                $newdoc->loadXML( $lfp_bp_xmlstring, XML_PARSE_BIG_LINES);
                 $node = $newdoc->importNode($newdoc->firstChild, TRUE);
                 $node = DH::findFirstElementByNameAttr( "entry", "default", $node );
                 $node = $ownerDocument->importNode($node, TRUE);
@@ -2225,7 +2322,7 @@ DeviceCallContext::$commonActionFunctions['zpp-create'] = array(
                 $ownerDocument = $sub->xmlroot->ownerDocument;
 
                 $newdoc = new DOMDocument;
-                $newdoc->loadXML( $zpp_bp_xmlstring );
+                $newdoc->loadXML( $zpp_bp_xmlstring, XML_PARSE_BIG_LINES);
                 $node = $newdoc->importNode($newdoc->firstChild, TRUE);
                 $node = DH::findFirstElementByNameAttr( "entry", $entryProfileName, $node );
                 if( $node === false || $node === null )
@@ -2433,7 +2530,7 @@ DeviceCallContext::$supportedActions['DefaultSecurityRule-create-BP'] = array(
                 $ownerDocument = $sub->xmlroot->ownerDocument;
 
                 $newdoc = new DOMDocument;
-                $newdoc->loadXML( $defaultSecurityRules_xml );
+                $newdoc->loadXML( $defaultSecurityRules_xml, XML_PARSE_BIG_LINES);
                 $node = $newdoc->importNode($newdoc->firstChild, TRUE);
                 $node = $ownerDocument->importNode($node, TRUE);
                 $rulebase->appendChild( $node );

@@ -137,7 +137,7 @@ class IPSecCryptoProfileStore extends ObjStore
 
         if( !isset($this->_all[$objectName]) )
         {
-            mdeb('Tried to remove an object that is not part of this store');
+            mwarning('Tried to remove an object that is not part of this store', null, false);
             return FALSE;
         }
 

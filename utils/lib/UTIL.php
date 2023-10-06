@@ -113,6 +113,7 @@ class UTIL
     public $objectsFilter = null;
     public $errorMessage = '';
     public $debugAPI = FALSE;
+    public $debugLoadTime = FALSE;
 
     public $projectFolder = null;
 
@@ -258,12 +259,13 @@ class UTIL
     {
         $this->supportedArguments['in'] = array('niceName' => 'in', 'shortHelp' => 'input file or api. ie: in=config.xml  or in=api://192.168.1.1 or in=api://0018CAEC3@panorama.company.com', 'argDesc' => '[filename]|[api://IP]|[api://serial@IP]');
         $this->supportedArguments['out'] = array('niceName' => 'out', 'shortHelp' => 'output file to save config after changes. Only required when input is a file. ie: out=save-config.xml', 'argDesc' => '[filename]');
-        $this->supportedArguments['location'] = array('niceName' => 'Location', 'shortHelp' => 'specify if you want to limit your query to a VSYS/DG. By default location=shared for Panorama, =vsys1 for PANOS. ie: location=any or location=vsys2,vsys1', 'argDesc' => 'sub1[,sub2]');
+        $this->supportedArguments['location'] = array('niceName' => 'Location', 'shortHelp' => 'specify if you want to limit your query to a VSYS/DG. By default location=shared for Panorama, =vsys1 for PANOS. ie: location=any or location=vsys2,vsys1 or location={DGname}:excludeMaindg [only childDGs of {DGname}] or location={DGname}:includechilddgs [{DGname} + all childDGs]', 'argDesc' => 'sub1[,sub2]');
         $this->supportedArguments['listactions'] = array('niceName' => 'ListActions', 'shortHelp' => 'lists available Actions');
         $this->supportedArguments['listfilters'] = array('niceName' => 'ListFilters', 'shortHelp' => 'lists available Filters');
         $this->supportedArguments['stats'] = array('niceName' => 'Stats', 'shortHelp' => 'display stats after changes');
         $this->supportedArguments['actions'] = array('niceName' => 'Actions', 'shortHelp' => 'action to apply on each rule matched by Filter. ie: actions=from-Add:net-Inside,netDMZ', 'argDesc' => 'action:arg1[,arg2]');
         $this->supportedArguments['debugapi'] = array('niceName' => 'DebugAPI', 'shortHelp' => 'prints API calls when they happen');
+        $this->supportedArguments['debugloadtime'] = array('niceName' => 'DebugLoadTime', 'shortHelp' => 'print LoadTime of specific config parts');
         $this->supportedArguments['filter'] = array('niceName' => 'Filter', 'shortHelp' => "filters objects based on a query. ie: 'filter=((from has external) or (source has privateNet1) and (to has external))'", 'argDesc' => '(field operator [value])');
         $this->supportedArguments['loadplugin'] = array('niceName' => 'loadPlugin', 'shortHelp' => 'a PHP file which contains a plugin to expand capabilities of this script', 'argDesc' => '[filename]');
         $this->supportedArguments['help'] = array('niceName' => 'help', 'shortHelp' => 'this message');
@@ -428,6 +430,8 @@ class UTIL
             $tmp_array = &DHCPCallContext::$supportedActions;
         elseif( $this->utilType == 'certificate' )
             $tmp_array = &CertificateCallContext::$supportedActions;
+        elseif( $this->utilType == 'static-route' )
+            $tmp_array = &StaticRouteCallContext::$supportedActions;
 
         return $tmp_array;
     }
@@ -855,6 +859,11 @@ class UTIL
             $this->debugAPI = TRUE;
         }
 
+        if( isset(PH::$args['debugloadtime']) )
+        {
+            $this->debugLoadTime = TRUE;
+        }
+
     }
 
     public function inputValidation()
@@ -1203,6 +1212,8 @@ class UTIL
                 $context = new DHCPCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries, $this);
             elseif( $this->utilType == 'certificate' )
                 $context = new CertificateCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries, $this);
+            elseif( $this->utilType == 'static-route' )
+                $context = new StaticRouteCallContext($tmp_array[$actionName], $explodedAction[1], $this->nestedQueries, $this);
 
             $context->baseObject = $this->pan;
             if( isset($this->configInput['type'])  )
@@ -1268,7 +1279,7 @@ class UTIL
         $this->loadStart();
 
         if( $this->configInput['type'] !== "sase-api" )
-            $this->pan->load_from_domxml($this->xmlDoc, XML_PARSE_BIG_LINES);
+            $this->pan->load_from_domxml($this->xmlDoc, $this->debugLoadTime);
 
         if( isset(PH::$args['outputformatset']) )
         {
@@ -1364,6 +1375,9 @@ class UTIL
     {
         $this->loadStartMem = memory_get_usage(TRUE);
         $this->loadStartTime = microtime(TRUE);
+
+        PH::$loadStartTime = $this->loadStartTime;
+        PH::$loadStartMem = $this->loadStartMem;
     }
 
     public function loadEnd()
@@ -1405,7 +1419,6 @@ class UTIL
                         else
                             $this->objectsLocation[$key] = 'any';
                     }
-
                 }
                 unset($location);
             }
@@ -1420,11 +1433,30 @@ class UTIL
             $rootDG = $loc_explode[0];
             $opt_argument = strtolower($loc_explode[1]);
 
-            $DG = $this->pan->findDeviceGroup( $rootDG );
-            if( $DG === null )
-                $this->locationNotFound($rootDG);
+            if( $this->configType == 'panos' )
+            {
+                if( $rootDG == "shared" )
+                {
+                    $DG = $this->pan;
+                    $childDGs = $this->pan->getVirtualSystems();
+                }
+                else
+                {
+                    $DG = $this->pan->findVirtualSystem( $rootDG );
+                    if( $DG === null )
+                        $this->locationNotFound($rootDG);
+                    $childDGs = array();
+                }
+            }
+            elseif($this->configType == 'panorama')
+            {
+                $DG = $this->pan->findDeviceGroup( $rootDG );
+                if( $DG === null )
+                    $this->locationNotFound($rootDG);
 
-            $childDGs = $DG->childDeviceGroups( TRUE );
+                $childDGs = $DG->childDeviceGroups( TRUE );
+            }
+
 
             $this->objectsLocation = array();
 
@@ -1966,6 +1998,12 @@ class UTIL
             $lineReturn = false;
             $indentingXml = -1;
             $indentingXmlIncreament = 0;
+
+            //remove empty XML nodes
+            $xpath = new DOMXPath($this->pan->xmlroot->ownerDocument);
+            foreach( $xpath->query('//*[not(node())]') as $node )
+                $node->parentNode->removeChild($node);
+
         }
 
 

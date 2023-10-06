@@ -1,12 +1,41 @@
 CHANGELOG
 
-2.1.18
+2.1.19
 UTIL:
+* different classes | improve usage of flag 'XML_PARSE_BIG_LINES' in method loadXML
+* class PANConf / Panoramaconfg | implement method ChildDeviceGroups() for 'location=shared:excludemaindg'
+* type=gcp | introduce argument 'namespace=XYZ' to specify and better filter for get pods
+* type=device | introduce actions=virtualSystem-delete/sharedgateway-delete/sharedgateway-migrate-to-vsys
+* type=static-route | introduction of new type= | with 'filter=(nexthop-ip is.set)' / (nexthop-vr is.set) / nexthop-interface is.set) /  (destination ip4.includes-full 172.33.10.0/23)
+* type=static-route actions=delete | introduce new action
+* type=rule | introduce actions=from-/to-remove-from-file:FILE.txt
+* type=XYZ | introduce new arguments: shadow-loadreduce - to not update TAG object related address-groups | debugloadtime - display load time for specific XML sections
+* develop | introduce config_validation.php
+* type=appid-toolbox | improvements for further. new features - example rule address/service report generator
+* type=rule actions=name-replace-character | set default value for replace to ''
+* type=rule | introduce new actions=stats-appid-fastapi:-90days/stats-service-fastapi:/stats-address-source-fastapi/stats-address-destination-fastapi/stats-address-fastapi/stats-traffic-fastapi
+* type=routing | introduce actions=exporttoexcel:file.html
+* type=routing | introduce 'filter=(protocol.bgp is.enabled)'
+* type=gcp | introdruce $namespace | improve handling for tenant like togglesvc
+* type=xpath | introduce actions=remove | introduce 'filter-text=NODETEXT'
 
 BUGFIX:
-* type=address/service 'actions=move:shared,skipIfConflict' | bugfix as variable $findSubSystem was not declared for targetlocation 'shared'
+* class PANConf|VirtualSystem | bugfix to support SharedGateway also for Tag objects correctly
+* type=xml-issue | bugfix to display read-only DeviceGroup duplicate address-group fixes correctly in summary
+* type=address-merger | bugfix - do not merger address objects if tag count of planned merged object exceeds PAN-OS limit of 64 tag members
+* type=address-merger | bugfix for removing tag objects from upper level, if adr merged objects are using them and tag is also available at address level
+* bugfix for argument 'location=shared:excludemaindg' on FW config file
+* type=schedule | bugfix actions=replacewithobject:OBJECTNAME
 
 GENERAL:
+* Class VirtualSystem/SharedGatewayStore | better handling of version variable
+* update actions/filter JSON file
+* APP-ID update to Device App-ID version: 8762-8327
+
+
+2.1.18 (20230920)
+BUGFIX:
+* type=address/service 'actions=move:shared,skipIfConflict' | bugfix as variable $findSubSystem was not declared for targetlocation 'shared'
 
 
 2.1.17 (20230920)
