@@ -61,11 +61,11 @@ class XPATH extends UTIL
 
         if( isset( PH::$args['actions'] ) )
         {
-            $supportedActions = array( 'display', 'remove' );
+            $supportedActions = array( 'display', 'remove', 'set-text' );
             $action = PH::$args['actions'];
 
-            if( !in_array( $action, $supportedActions ) )
-                derr( "action: ". $action. " not supported", null, false );
+            if( !in_array( $action, $supportedActions ) && strpos( $action, 'set-text:' ) === FALSE )
+                    derr( "action: ". $action. " not supported", null, false );
         }
 
 
@@ -282,7 +282,7 @@ class XPATH extends UTIL
             }
         }
 
-        if( $action == "remove" )
+        if( $action == "remove" || strpos( $action, 'set-text:' ) !== FALSE )
         {
             //todo: save output
             //check if out is set
@@ -348,7 +348,9 @@ class XPATH extends UTIL
                 {
                     if( !empty($path_tmp) )
                     {
-                        $tmp_path .= $path_tmp."]";
+                        $newstring = substr($path_tmp, -7);
+                        if( strpos( $newstring, "[" ) !== false )
+                            $tmp_path .= $path_tmp."]";
 
                         $xpathResult = DH::findXPath( $tmp_path, $this->xmlDoc);
                         if( $xpathResult[0]->hasAttribute('name') )
@@ -389,6 +391,19 @@ class XPATH extends UTIL
             {
                 PH::print_stdout("remove xpath!!!");
                 $xpath1->parentNode->removeChild($xpath1);
+            }
+
+            if( strpos( $actions, 'set-text:' ) !== FALSE )
+            {
+                $array = explode( ":", $actions );
+                if( isset( $array[1] ) )
+                {
+                    $tmpText = $array[1];
+                    PH::print_stdout("set xpath Text: ".$array[1]);
+                    $xpath1->textContent = $array[1];
+
+                    DH::DEBUGprintDOMDocument($xpath1);
+                }
             }
         }
 
