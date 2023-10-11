@@ -10,6 +10,7 @@ BUGFIX:
 * type=rule actions=stats-XYZ-FastAPI | bugfix to read argument correctly
 
 GENERAL:
+* GENERAL: Device App-ID update to version: 8763-8333
 
 
 2.1.19 (20231006)
