@@ -1538,8 +1538,8 @@ RQuery::$defaultFilters['rule']['app']['operators']['has.seen.fast-api'] = array
     'Function' => function (RuleRQueryContext $context) {
         $rule = $context->object;
 
-        if( !$context->isAPI )
-            derr( "this filter is only supported in API mode", null, false );
+        #if( !$context->isAPI )
+        #    derr( "this filter is only supported in API mode", null, false );
 
         $rule_array = $rule->API_apps_seen();
 
