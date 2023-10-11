@@ -3,6 +3,7 @@ CHANGELOG
 2.1.20
 UTIL:
 * type=xpath | introduce "actions=set-text:NODETEXT"
+* type=rule | new 'filter=(app has.seen.fast-api unknow-tcp)' - to filter for device traffic log if specific app-id was seen
 
 BUGFIX:
 * type=gcp actions=download | bugfix to handle command order correctly
