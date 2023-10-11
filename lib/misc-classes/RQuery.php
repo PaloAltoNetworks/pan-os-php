@@ -60,6 +60,8 @@ class RQuery
     /** @var  string field to which this Rquery applies */
     public $field;
 
+    public $isAPI = FALSE;
+
 
     public $inverted = FALSE;
 
@@ -70,7 +72,7 @@ class RQuery
     public $padded;
     public $contextObject;
 
-    public function __construct($objectType, $level = 0)
+    public function __construct($objectType, $level = 0, $isAPI = false)
     {
         $this->level = $level;
         $this->padded = str_pad('', ($this->level + 1) * 2, ' ');
@@ -113,6 +115,10 @@ class RQuery
             $this->contextObject = new StaticRouteRQueryContext($this);
         else
             derr("unsupported object type '$objectType'");
+
+        if( $isAPI )
+            $this->contextObject->isAPI = TRUE;
+
     }
 
     /**

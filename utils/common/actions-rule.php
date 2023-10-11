@@ -5763,11 +5763,25 @@ RuleCallContext::$supportedActions[] = Array(
         $rule = $context->object;
         $customLogHistory = $context->arguments['logHistory'];
         if( $customLogHistory == "last-15-minutes" )
+        {
+            #print "last15\n";
             $logHistory = 15 * 60;
-        elseif( is_int($customLogHistory) )
+        }
+        elseif( is_int(intval($customLogHistory)) )
+        {
+            #print "INT\n";
             $logHistory = $customLogHistory * 24 * 3600;
+        }
         else
+        {
+            #print "ELSE\n";
             $logHistory = strtotime($customLogHistory);
+        }
+        #print time()."\n";
+        #print date('Y/m/d H:i:00', time());
+        #print $logHistory."\n";
+        #print time() - ($logHistory)."\n";
+        #print date('Y/m/d H:i:00', time()- ($logHistory));
 
 
         if( $context->isAPI )
@@ -5805,7 +5819,7 @@ RuleCallContext::$supportedActions[] = Array(
         $customLogHistory = $context->arguments['logHistory'];
         if( $customLogHistory == "last-15-minutes" )
             $logHistory = 15 * 60;
-        elseif( is_int($customLogHistory) )
+        elseif( is_int(intval($customLogHistory)) )
             $logHistory = $customLogHistory * 24 * 3600;
         else
             $logHistory = strtotime($customLogHistory);
@@ -5847,7 +5861,7 @@ RuleCallContext::$supportedActions[] = Array(
         $customLogHistory = $context->arguments['logHistory'];
         if( $customLogHistory == "last-15-minutes" )
             $logHistory = 15 * 60;
-        elseif( is_int($customLogHistory) )
+        elseif( is_int(intval($customLogHistory)) )
             $logHistory = $customLogHistory * 24 * 3600;
         else
             $logHistory = strtotime($customLogHistory);
@@ -5885,7 +5899,7 @@ RuleCallContext::$supportedActions[] = Array(
         $customLogHistory = $context->arguments['logHistory'];
         if( $customLogHistory == "last-15-minutes" )
             $logHistory = 15 * 60;
-        elseif( is_int($customLogHistory) )
+        elseif( is_int(intval($customLogHistory)) )
             $logHistory = $customLogHistory * 24 * 3600;
         else
             $logHistory = strtotime($customLogHistory);
@@ -5923,7 +5937,7 @@ RuleCallContext::$supportedActions[] = Array(
         $customLogHistory = $context->arguments['logHistory'];
         if( $customLogHistory == "last-15-minutes" )
             $logHistory = 15 * 60;
-        elseif( is_int($customLogHistory) )
+        elseif( is_int(intval($customLogHistory)) )
             $logHistory = $customLogHistory * 24 * 3600;
         else
             $logHistory = strtotime($customLogHistory);

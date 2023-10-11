@@ -1481,10 +1481,10 @@ class SecurityRule extends RuleWithUserID
 
         if( $endTimestamp === null )
         {
-            $endString = date('Y/m/d H:00:00');
+            $endString = date('Y/m/d H:i:00');
         }
         else
-            $endString = date('Y/m/d H:00:00', $endTimestamp);
+            $endString = date('Y/m/d H:i:00', $endTimestamp);
 
         $query = '<type>'
             . "<{$type}><aggregate-by><member>container-of-app</member><member>app</member></aggregate-by>"
@@ -1585,10 +1585,10 @@ class SecurityRule extends RuleWithUserID
 
         if( $endTimestamp === null )
         {
-            $endString = date('Y/m/d H:00:00');
+            $endString = date('Y/m/d H:i:00');
         }
         else
-            $endString = date('Y/m/d H:00:00', $endTimestamp);
+            $endString = date('Y/m/d H:i:00', $endTimestamp);
 
         $query = "<type>"
             . "<" . $type . "><aggregate-by>";
@@ -1677,10 +1677,10 @@ class SecurityRule extends RuleWithUserID
 
         if( $endTimestamp === null )
         {
-            $endString = date('Y/m/d H:00:00');
+            $endString = date('Y/m/d H:i:00');
         }
         else
-            $endString = date('Y/m/d H:00:00', $endTimestamp);
+            $endString = date('Y/m/d H:i:00', $endTimestamp);
 
         $query = "<type>"
             . "<" . $type . "><aggregate-by>";

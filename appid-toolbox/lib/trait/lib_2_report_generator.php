@@ -272,33 +272,61 @@ trait lib_2_report_generator
 
             PH::print_stdout("   * Generating report... ");
             //if fastMode: panorama-trsum/trsum ELSE: panorama-traffic/traffic
-            $reports = $rule->API_getAppContainerStats2(time() - ($logHistory * 24 * 3600), time() + 0, TRUE);
-            if( count($reports) == 0 )
+            $oldWay = true;
+
+            if( $oldWay )
             {
-                $reports = $rule->API_getAppContainerStats2(time() - ($logHistory * 24 * 3600), time() + 0, FALSE);
+                $reports = $rule->API_getAppContainerStats2(time() - ($logHistory * 24 * 3600), time() + 0, TRUE);
+                if( count($reports) == 0 )
+                {
+                    $reports = $rule->API_getAppContainerStats2(time() - ($logHistory * 24 * 3600), time() + 0, FALSE);
+                }
+
+
+                $ruleStats->createRuleStats($rule->name());
+
+                PH::print_stdout("     * Results (" . count($reports) . "):");
+
+                $ruleStats->updateRuleUpdateTimestamp($rule->name());
+
+                foreach( $reports as $line )
+                {
+                    $count = array_pop($line);
+                    $app = array_pop($line);
+
+                    // if container of app is valid, we want to use this container rather than
+                    $container = array_pop($line);
+                    if( $container != null && strlen($container) > 0 && $container != 'none' && $container != '(null)' )
+                        $app = $container;
+
+                    PH::print_stdout("      - $app ($count)");
+
+                    $ruleStats->addRuleStats($rule->name(), $app, $count);
+                }
+            }
+            else
+            {
+                $reports = $rule->API_apps_seen();
+
+                if(isset($reports['apps-seen']))
+                {
+                    $ruleStats->createRuleStats($rule->name());
+
+                    PH::print_stdout("     * Results (" . $reports['apps-seen-count'] . "):");
+
+                    foreach( $reports['apps-seen'] as $app => $line )
+                    {
+                        #if( $line['bytes'] > 0 ) {
+                        #PH::print_stdout("      - $app ($count)");
+                        $count = 0;
+                        PH::print_stdout("      - $app ()");
+
+                        $ruleStats->addRuleStats($rule->name(), $app, $count);
+                        #}
+                    }
+                }
             }
 
-
-            $ruleStats->createRuleStats($rule->name());
-
-            PH::print_stdout("     * Results (" . count($reports) . "):");
-
-            $ruleStats->updateRuleUpdateTimestamp($rule->name());
-
-            foreach( $reports as $line )
-            {
-                $count = array_pop($line);
-                $app = array_pop($line);
-
-                // if container of app is valid, we want to use this container rather than
-                $container = array_pop($line);
-                if( $container != null && strlen($container) > 0 && $container != 'none' && $container != '(null)' )
-                    $app = $container;
-
-                PH::print_stdout("      - $app ($count)");
-
-                $ruleStats->addRuleStats($rule->name(), $app, $count);
-            }
 
             //not performant to write file for each rule
             #$ruleStats->save_to_file($ruleStatFile);
