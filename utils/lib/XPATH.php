@@ -19,6 +19,7 @@
 
 class XPATH extends UTIL
 {
+    public $jsonArray = array();
 
     public function utilStart()
     {
@@ -52,6 +53,8 @@ class XPATH extends UTIL
 
     public function main()
     {
+        global $jsonArray;
+
         $fullxpath = false;
         $xpath = null;
         $displayXMLnode = false;
@@ -61,11 +64,26 @@ class XPATH extends UTIL
 
         if( isset( PH::$args['actions'] ) )
         {
-            $supportedActions = array( 'display', 'remove', 'set-text' );
+            $supportedActions = array( 'display', 'remove', 'set-text', 'manipulate' );
             $action = PH::$args['actions'];
 
-            if( !in_array( $action, $supportedActions ) && strpos( $action, 'set-text:' ) === FALSE )
+            if( !in_array( $action, $supportedActions ) && strpos( $action, 'set-text:' ) === FALSE && strpos( $action, 'manipulate:' ) === FALSE )
                     derr( "action: ". $action. " not supported", null, false );
+
+            if( strpos( $action, 'manipulate:' ) !== FALSE )
+            {
+                //read file from:
+                $tmpArray = explode( ":", $action );
+                if( isset($tmpArray[1]) )
+                {
+                    $strJsonFileContents = file_get_contents($tmpArray[1]);
+                    $jsonArray = json_decode($strJsonFileContents, true);
+                    if( $jsonArray === null )
+                        derr( "invalid JSON file provided", null, FALSE );
+                }
+                else
+                    derr("actions=manipulation:FILENAME.json - used; but JSON file not correct mentioned", null, False);
+            }
         }
 
 
@@ -282,7 +300,7 @@ class XPATH extends UTIL
             }
         }
 
-        if( $action == "remove" || strpos( $action, 'set-text:' ) !== FALSE )
+        if( $action == "remove" || strpos( $action, 'set-text:' ) !== FALSE || strpos( $action, 'manipulate:' ) !== FALSE )
         {
             //todo: save output
             //check if out is set
@@ -321,6 +339,8 @@ class XPATH extends UTIL
     
     function getXpathDisplay( $xpath, $serial, $entry = false, $actions = "display")
     {
+        global $jsonArray;
+
         $text_contains_search = false;
 
         PH::$JSON_TMP[$serial]['serial'] = $serial;
@@ -404,6 +424,11 @@ class XPATH extends UTIL
 
                     DH::DEBUGprintDOMDocument($xpath1);
                 }
+            }
+
+            if( strpos( $actions, 'manipulate:' ) !== FALSE )
+            {
+                print_r($jsonArray);
             }
         }
 
