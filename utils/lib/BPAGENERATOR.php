@@ -439,6 +439,9 @@ class BPAGENERATOR extends UTIL
         $needle2 = "> show system files";
         $systeminfo = PH::find_string_between($techSupportFileString, $needle1, $needle2);
 
+        $test = explode( "> show system last-commit-info", $systeminfo );
+        $systeminfo = $test[0];
+
         $tmpArray = explode(PHP_EOL, $systeminfo);
 
         $systeminfoArray = array();
@@ -448,7 +451,10 @@ class BPAGENERATOR extends UTIL
                 continue;
 
             $exploded = explode( ": ", $entry );
-            $systeminfoArray[$exploded[0]] = $exploded[1];
+            if( isset($exploded[1]) )
+                $systeminfoArray[$exploded[0]] = $exploded[1];
+            else
+                $systeminfoArray[$exploded[0]] = "";
         }
 
         return $systeminfoArray;
@@ -480,7 +486,10 @@ class BPAGENERATOR extends UTIL
             else
             {
                 $exploded = explode( ": ", $entry );
-                $licArray[$exploded[0]] = $exploded[1];
+                if( isset($exploded[1]) )
+                    $licArray[$exploded[0]] = $exploded[1];
+                else
+                    $licArray[$exploded[0]] = "";
 
                 if (strpos($entry, "Expired?:") !== FALSE)
                     $licenseinfoArray['licenses'][] = $licArray;

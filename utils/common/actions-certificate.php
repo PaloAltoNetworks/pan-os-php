@@ -73,3 +73,9 @@ CertificateCallContext::$supportedActions['display'] = Array(
     },
 );
 
+/*
+//introduce exporttoexcel
+
+"Name","Subject","Issuer","CA","Key","Expires","Status","Algorithm","Usage","Cloud Secret Name"
+"demo1234567","CN = test.test.de","CN = test.test.de","Yes","true","Oct 11 23:24:44 2024 GMT","valid","RSA","",""
+ */
