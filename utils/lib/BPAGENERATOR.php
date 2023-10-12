@@ -219,8 +219,10 @@ class BPAGENERATOR extends UTIL
         }
         else
         {
-            #$TSFfile = $this->projectFolder."/techsupport.txt";
-            $TSFfile = "techsupport.txt";
+            if( !empty($this->projectFolder) )
+                $TSFfile = $this->projectFolder."/techsupport.txt";
+            else
+                $TSFfile = "techsupport.txt";
             if( file_exists($TSFfile) )
             {
                 PH::print_stdout( " - read device info from file: ".$TSFfile );
