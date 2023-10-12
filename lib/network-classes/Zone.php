@@ -205,8 +205,6 @@ class Zone
             {
                 $this->type = $node->tagName;
             }
-
-
             elseif( $node->tagName == 'zone-protection-profile' )
             {
                 $this->zoneProtectionProfile = $node->textContent;
@@ -219,8 +217,12 @@ class Zone
             {
 
             }
+            elseif( $node->tagName == 'net-inspection' )
+            {
+
+            }
             else
-                mwarning("zone type: " . $node->tagName . " is not yet supported.");
+                mwarning("zone type: " . $node->tagName . " is not yet supported.", null, False);
 
         }
     }
