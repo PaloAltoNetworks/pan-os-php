@@ -4558,6 +4558,7 @@ RuleCallContext::$supportedActions[] = array(
             'security-profile' => 'security-profile',
             'disabled' => 'disabled',
             'src_user' => 'src-user',
+            'url_category' => 'url-category',
             'log_start' => 'log_start',
             'log_end' => 'log_end',
             'log_prof' => 'log_profile',
