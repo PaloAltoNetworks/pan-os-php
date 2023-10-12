@@ -7,6 +7,7 @@ UTIL:
 * type=rule actions=exporttoexcel | extend with column 'url-category'
 * type=bpa-generator | introduction to support offline XML config file
 * type=bpa-generator | improve offline config handling
+* type=tsf | in addition to extract XML config, also extract /tmp/cli/techsupport_*.txt
 
 BUGFIX:
 * type=gcp actions=download | bugfix to handle command order correctly
