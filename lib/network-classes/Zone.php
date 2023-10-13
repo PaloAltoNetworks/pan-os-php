@@ -221,6 +221,10 @@ class Zone
             {
 
             }
+            elseif( $node->tagName == 'prenat-identification' )
+            {
+
+            }
             else
                 mwarning("zone type: " . $node->tagName . " is not yet supported.", null, False);
 

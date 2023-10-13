@@ -17,6 +17,7 @@ BUGFIX:
 
 GENERAL:
 * GENERAL: Device App-ID update to version: 8763-8333
+* class Zone.php | extend validation for new PAN-OS features 'net-inspection' 'prenat-identification'
 
 
 2.1.19 (20231006)
