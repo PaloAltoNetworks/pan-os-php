@@ -170,3 +170,29 @@ RQuery::$defaultFilters['certificate']['publickey-length']['operators']['>,<,=,!
         'input' => 'input/panorama-8.0.xml'
     )
 );
+
+RQuery::$defaultFilters['certificate']['expired']['operators']['>,<,=,!'] = array(
+    'Function' => function (CertificateRQueryContext $context) {
+        $object = $context->object;
+
+
+        $timestamp_value = strtotime($object->notValidafter);
+        if( $context->value == 0 )
+            $filter_timestamp = $context->value;
+        else
+            $filter_timestamp = strtotime($context->value);
+        $operator = $context->operator;
+        if( $operator == '=' )
+            $operator = '==';
+
+        $operator_string = $timestamp_value." ".$operator." ".$filter_timestamp;
+        if( $operator == '==' && $timestamp_value == 0 )
+            return true;
+        elseif( $timestamp_value != 0 && eval("return $operator_string;" ) )
+            return true;
+
+        return false;
+    },
+    'arg' => TRUE,
+    'help' => 'returns TRUE if rule name matches the specified timestamp MM/DD/YYYY [american] / DD-MM-YYYY [european] / 21 September 2021 / -90 days',
+);

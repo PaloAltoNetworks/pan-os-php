@@ -3830,6 +3830,11 @@ var subjectObject =
                         "arg": true,
                         "help": "example: 'filter=(app has.from.query subquery1)' 'subquery1=(object is.application-group)'"
                     },
+                    "has.seen.fast-api": {
+                        "Function": {},
+                        "arg": true,
+                        "help": "example: 'filter=(app has.seen.fast-api unknown-tcp)'"
+                    },
                     "category.is": {
                         "Function": {},
                         "arg": true,

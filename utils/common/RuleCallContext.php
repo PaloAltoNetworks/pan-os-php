@@ -551,7 +551,16 @@ class RuleCallContext extends CallContext
                 return self::enclose($rule->userID_type(), $wrap);
             }
 
-            return self::enclose('');
+            return self::enclose('any');
+        }
+
+        if( $fieldName == 'url-category' )
+        {
+            #if( $rule->isSecurityRule() || $rule->isPbfRule() || $rule->isDecryptionRule() )
+            if( $rule->isSecurityRule() )
+                return self::enclose($rule->urlCategories(), $wrap);
+
+            return self::enclose('any');
         }
 
         if( $fieldName == 'log_start' )

@@ -19,6 +19,9 @@
 
 class TSF__
 {
+    public $usageMsg;
+    public $supportedArguments;
+
     private $projectfolder = null;
     private $actions = "extract-running-config";
 
@@ -46,6 +49,12 @@ class TSF__
             if( substr("$this->projectfolder", -1) !== "/" )
                 $this->projectfolder .= "/";
         }
+        else
+            $this->projectfolder = "panosphpTSF/";
+        if (!file_exists($this->projectfolder)) {
+            mkdir($this->projectfolder, 0777, true);
+        }
+
 
         $this->actions = 'extract-running-config';
         if( isset(PH::$args['actions']) )
@@ -98,11 +107,20 @@ class TSF__
         }
 
         $cliArray = array();
-        $cliArray[] = "cp ".$filename_path." ".$this->projectfolder.$filename;
-        $cliArray[] = "tar -xf ".$this->projectfolder."".$filename." --directory ".$this->projectfolder." opt/pancfg/mgmt/".$ext_folder."/".$ext_filename;
+        $cliArray[] = "cp ".$filename_path." ".$this->projectfolder."panosphp-".$filename;
+
+        $cliArray[] = "tar -xf ".$this->projectfolder."panosphp-".$filename." --directory ./".$this->projectfolder." ./opt/pancfg/mgmt/".$ext_folder;
         $cliArray[] = "cp ".$this->projectfolder."opt/pancfg/mgmt/".$ext_folder."/".$ext_filename." ".$this->projectfolder.$ext_filename;
-        $cliArray[] = "rm -r ".$this->projectfolder."opt";
-        $cliArray[] = "rm -r ".$this->projectfolder."".$filename;
+
+        $cliArray[] = "tar -xf ".$this->projectfolder."panosphp-".$filename." --directory ./".$this->projectfolder." ./tmp/cli/";
+        $cliArray[] = "cp ".$this->projectfolder."tmp/cli/techsupport_*.txt ".$this->projectfolder."techsupport.txt";
+
+        $cliArray[] = "rm -rf ".$this->projectfolder."opt";
+        $cliArray[] = "rm -rf ".$this->projectfolder."tmp";
+        $cliArray[] = "rm -rf ".$this->projectfolder."etc";
+        $cliArray[] = "rm -rf ".$this->projectfolder."var";
+
+        $cliArray[] = "rm -rf ".$this->projectfolder."panosphp-".$filename;
 
         PH::print_stdout();
 

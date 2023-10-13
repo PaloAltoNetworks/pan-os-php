@@ -1253,7 +1253,15 @@ class UTIL
 
         if( $this->objectsFilter !== null )
         {
-            $this->objectFilterRQuery = new RQuery($this->utilType);
+            /*
+            if( isset($this->configInput['type'])  ) {
+                if ($this->configInput['type'] == 'api')
+                    $this->objectFilterRQuery = new RQuery($this->utilType, 0, TRUE);
+            }
+            else
+            */
+                $this->objectFilterRQuery = new RQuery($this->utilType);
+
             $res = $this->objectFilterRQuery->parseFromString($this->objectsFilter, $errorMessage);
             if( $res === FALSE )
             {

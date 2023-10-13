@@ -1534,6 +1534,25 @@ RQuery::$defaultFilters['rule']['app']['operators']['has.from.query'] = array(
     'help' => 'example: \'filter=(app has.from.query subquery1)\' \'subquery1=(object is.application-group)\'',
 );
 
+RQuery::$defaultFilters['rule']['app']['operators']['has.seen.fast-api'] = array(
+    'Function' => function (RuleRQueryContext $context) {
+        $rule = $context->object;
+
+        #if( !$context->isAPI )
+        #    derr( "this filter is only supported in API mode", null, false );
+
+        $rule_array = $rule->API_apps_seen();
+
+        if( isset($rule_array['apps-seen']) && in_array( $context->value, array_keys($rule_array['apps-seen'])) )
+            return TRUE;
+
+        return null;
+    },
+    'arg' => TRUE,
+    'help' => 'example: \'filter=(app has.seen.fast-api unknown-tcp)\'',
+);
+
+
 //                                              //
 //          Services properties                 //
 //                                              //

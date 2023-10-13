@@ -306,7 +306,7 @@ class GCP extends UTIL
             else
                 $container = substr($tenantID, 0, -2);
 
-            $cli = "kubectl ".$this->insecureValue." exec ".$tenantID." -c ".$container." -- cat ".$this->configPath.$inputconfig." -n ".$namespace." > ".$outputfilename;
+            $cli = "kubectl ".$this->insecureValue." exec ".$tenantID." -c ".$container." -n ".$namespace." -- cat ".$this->configPath.$inputconfig." > ".$outputfilename;
             $this->execCLIWithOutput( $cli );
         }
         elseif( $action == "validation" )

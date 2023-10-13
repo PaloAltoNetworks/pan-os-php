@@ -271,9 +271,6 @@ DHCPCallContext::$supportedActions['exportToExcel'] = array(
         $content = str_replace('%JSCONTENT%', $jscontent, $content);
 
         file_put_contents($filename, $content);
-
-
-        file_put_contents($filename, $content);
     },
     'args' => array('filename' => array('type' => 'string', 'default' => '*nodefault*'),
         'additionalFields' =>

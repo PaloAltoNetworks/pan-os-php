@@ -11,6 +11,8 @@ class RQueryContext
     public $value;
     public $operator;
 
+    public $isAPI = FALSE;
+
     public $rQueryObject;
 
     public $nestedQueries;

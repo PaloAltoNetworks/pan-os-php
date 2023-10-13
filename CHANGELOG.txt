@@ -1,6 +1,28 @@
 CHANGELOG
 
-2.1.19
+2.1.20
+UTIL:
+* type=xpath | introduce "actions=set-text:NODETEXT"
+* type=rule | new 'filter=(app has.seen.fast-api unknow-tcp)' - to filter for device traffic log if specific app-id was seen
+* type=rule actions=exporttoexcel | extend with column 'url-category'
+* type=bpa-generator | introduction to support offline XML config file
+* type=bpa-generator | improve offline config handling
+* type=tsf | in addition to extract XML config, also extract /tmp/cli/techsupport_*.txt
+* type=bpa-generator | introduce support to reach techsupport.txt from TSF /tmp/cli/techsupport_*.txt
+* type=bpa-generator | introduce support to handle TSF file from 11.1
+* type=certificate | introduce actions=exporttoexcel:CERT_file.html | 'filter=(expired < 90days)' | 'filter=(expired < today)'
+* type=certificate actions=exporttoexcel:file.html | extend with column subject and issuer
+
+BUGFIX:
+* type=gcp actions=download | bugfix to handle command order correctly
+* type=rule actions=stats-XYZ-FastAPI | bugfix to read argument correctly
+
+GENERAL:
+* GENERAL: Device App-ID update to version: 8763-8333
+* class Zone.php | extend validation for new PAN-OS features 'net-inspection' 'prenat-identification'
+
+
+2.1.19 (20231006)
 UTIL:
 * different classes | improve usage of flag 'XML_PARSE_BIG_LINES' in method loadXML
 * class PANConf / Panoramaconfg | implement method ChildDeviceGroups() for 'location=shared:excludemaindg'

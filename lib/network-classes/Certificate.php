@@ -49,6 +49,8 @@ class Certificate
     public $notValidbefore = null;
     public $notValidafter = null;
 
+    public $publicKeyDetailArray = null;
+
     /**
      * @param string $name
      * @param CertificateStore $owner
@@ -227,8 +229,10 @@ class Certificate
                         //this does not contain the bits
                         $cert = openssl_x509_read($this->publicKey);
                         if( $cert !== FALSE )
+                        {
                             $cert_obj = openssl_x509_parse($cert);
-                        #print_r( $cert_obj );
+                            $this->publicKeyDetailArray = $cert_obj ;
+                        }
 
                         //publicKey Signature Algorithm
                         if( isset($cert_obj['signatureTypeLN']) )

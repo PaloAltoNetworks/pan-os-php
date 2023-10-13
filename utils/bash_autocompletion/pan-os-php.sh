@@ -76,7 +76,7 @@ __pan-os-php_scripts()
     arguments_gcp=('type=' 'in=' 'out=' 'cluster=' 'project=' 'tenantid=' 'actions=' 'region=' )
     arguments_gcp_actions=('grep' 'upload' 'download' 'onboard' 'offboard' )
 
-    arguments_xpath=('type=' 'in=' 'filter-nameattribute=' 'filter-node=' 'filter-xpath=' 'display-fullxpath' 'display-nameattribute' 'display-xmlnode' 'display-xmllineno' )
+    arguments_xpath=('type=' 'in=' 'filter-nameattribute=' 'filter-node=' 'filter-xpath=' 'filter-text=' 'display-fullxpath' 'display-nameattribute' 'display-xmlnode' 'display-xmllineno' )
 
 
     DIR="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
