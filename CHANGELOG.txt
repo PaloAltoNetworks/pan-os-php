@@ -11,6 +11,7 @@ UTIL:
 * type=bpa-generator | introduce support to reach techsupport.txt from TSF /tmp/cli/techsupport_*.txt
 * type=bpa-generator | introduce support to handle TSF file from 11.1
 * type=certificate | introduce actions=exporttoexcel:CERT_file.html | 'filter=(expired < 90days)' | 'filter=(expired < today)'
+* type=certificate actions=exporttoexcel:file.html | extend with column subject and issuer
 
 BUGFIX:
 * type=gcp actions=download | bugfix to handle command order correctly

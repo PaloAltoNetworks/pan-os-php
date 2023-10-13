@@ -73,12 +73,6 @@ CertificateCallContext::$supportedActions['display'] = Array(
     },
 );
 
-/*
-//introduce exporttoexcel
-
-"Name","Subject","Issuer","CA","Key","Expires","Status","Algorithm","Usage","Cloud Secret Name"
-"demo1234567","CN = test.test.de","CN = test.test.de","Yes","true","Oct 11 23:24:44 2024 GMT","valid","RSA","",""
- */
 
 CertificateCallContext::$supportedActions['exportToExcel'] = array(
     'name' => 'exportToExcel',
@@ -100,6 +94,7 @@ CertificateCallContext::$supportedActions['exportToExcel'] = array(
 
         $headers = '<th>ID</th><th>template</th><th>location</th><th>name</th>';
         $headers .= '<th>Algorithm</th><th>not Valid before</th><th>not Valid after</th>';
+        $headers .= '<th>Subject</th><th>Issuer</th>';
 
 
 
@@ -138,6 +133,11 @@ CertificateCallContext::$supportedActions['exportToExcel'] = array(
                     $lines .= $context->encloseFunction($object->owner->owner->name());
                     $lines .= $context->encloseFunction($object->owner->name());
                 }
+                else
+                {
+                    $lines .= $context->encloseFunction($object->owner->owner->name());
+                    $lines .= $context->encloseFunction($object->owner->name());
+                }
 
 
                 $lines .= $context->encloseFunction($object->name());
@@ -157,6 +157,41 @@ CertificateCallContext::$supportedActions['exportToExcel'] = array(
                     $notValidafter = $object->notValidafter;
                 $lines .= $context->encloseFunction($notValidafter);
 
+                $subject = "";
+                if( isset($object->publicKeyDetailArray['subject'] ) )
+                {
+                    $input = $object->publicKeyDetailArray['subject'];
+                    $subject = implode(', ', array_map(
+                        function ($v, $k) {
+                            if(is_array($v)){
+                                return $k.'[]='.implode('&'.$k.'[]=', $v);
+                            }else{
+                                return $k.'='.$v;
+                            }
+                        },
+                        $input,
+                        array_keys($input)
+                    ));
+                }
+                $lines .= $context->encloseFunction($subject);
+
+                $issuer = "";
+                if( isset($object->publicKeyDetailArray['issuer'] ) )
+                {
+                    $input = $object->publicKeyDetailArray['issuer'];
+                    $issuer = implode(', ', array_map(
+                        function ($v, $k) {
+                            if(is_array($v)){
+                                return $k.'[]='.implode('&'.$k.'[]=', $v);
+                            }else{
+                                return $k.'='.$v;
+                            }
+                        },
+                        $input,
+                        array_keys($input)
+                    ));
+                }
+                $lines .= $context->encloseFunction($issuer);
 
                 $lines .= "</tr>\n";
 

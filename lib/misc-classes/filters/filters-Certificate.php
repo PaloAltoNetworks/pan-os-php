@@ -186,15 +186,10 @@ RQuery::$defaultFilters['certificate']['expired']['operators']['>,<,=,!'] = arra
             $operator = '==';
 
         $operator_string = $timestamp_value." ".$operator." ".$filter_timestamp;
-        print "|".$operator_string."|\n";
         if( $operator == '==' && $timestamp_value == 0 )
-        {
             return true;
-        }
         elseif( $timestamp_value != 0 && eval("return $operator_string;" ) )
-        {
             return true;
-        }
 
         return false;
     },
